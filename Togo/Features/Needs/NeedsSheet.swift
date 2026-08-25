@@ -1,0 +1,119 @@
+import SwiftUI
+import SwiftData
+
+/// «Просится» — главная кнопка приложения и единственное место, где приложение
+/// может незаметно испортить поведение. Четыре исхода вердикта, и «Вывожу»
+/// первой кнопкой во всех: вердикт не блокирует выход.
+struct NeedsSheet: View {
+    let dog: Dog?
+
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var context
+    @Environment(AppState.self) private var appState
+    @State private var askSignal = false
+
+    private var signals: NeedSignals {
+        Diary.signals(dog?.events ?? [], episodeActive: appState.isEpisodeActive)
+    }
+
+    private var verdict: NeedVerdict { VerdictEngine.evaluate(signals) }
+
+    var body: some View {
+        TGSheet(title: verdict.title, subtitle: verdict.badge) {
+            TGCard {
+                Text(VerdictEngine.explanation(verdict, signals))
+                    .textStyle(AppFont.body)
+                    .foregroundStyle(Token.Ink.primary)
+                TGDivider()
+                Text(VerdictEngine.factLine(signals))
+                    .textStyle(AppFont.caption)
+                    .foregroundStyle(Token.Ink.secondary)
+            }
+
+            if case .unknown(.notEnoughData) = verdict {
+                TGExplainer(text: "Через три-четыре дня приложение выучит его интервалы и начнёт подсказывать, настоящая ли нужда. Пока — выводи, как обычно.")
+            }
+
+            VStack(spacing: 10) {
+                TGButton(title: "Вывожу", systemImage: "figure.walk.departure") { startOuting() }
+                TGButton(title: verdict.alternativeAction, variant: .secondary, size: .medium) { dismiss() }
+            }
+            .padding(.top, 4)
+        }
+        .presentationDetents([.medium, .large])
+        .sheet(isPresented: $askSignal) {
+            HowAskedSheet(dog: dog) { dismiss() }
+        }
+    }
+
+    private func startOuting() {
+        guard let dog else { return }
+        let event = LogEvent(kind: .outing, authorName: appState.currentUserName)
+        event.dog = dog
+        context.insert(event)
+        Haptics.success()
+        appState.startWalk(by: appState.currentUserName)
+        LiveActivityController.startWalk(dogName: dog.name, by: appState.currentUserName, at: event.date)
+
+        // Спрашиваем не каждый раз: только при смене сигнала или раз в пять выходов.
+        if Diary.shouldAskHowAsked(dog.events) {
+            askSignal = true
+        } else {
+            appState.showUndo("Записано · Выход", eventID: event.id)
+            dismiss()
+        }
+    }
+}
+
+/// Один тап, который меняет поведение. Дверь откроется — то, что он сделал,
+/// закрепится; приложение обязано спросить, что именно это было.
+struct HowAskedSheet: View {
+    let dog: Dog?
+    var onDone: () -> Void
+
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var context
+    @Environment(AppState.self) private var appState
+
+    var body: some View {
+        TGSheet(
+            title: "Как попросил?",
+            subtitle: "Дверь откроется — то, что он сделал, закрепится. Отметь, и приложение покажет, если что-то идёт не туда."
+        ) {
+            VStack(spacing: 8) {
+                ForEach(AskSignal.allCases, id: \.self) { signal in
+                    Button { record(signal) } label: {
+                        HStack(spacing: 12) {
+                            Image(systemName: signal.symbol)
+                                .font(.system(size: 16, weight: .medium))
+                                .foregroundStyle(signal.isCalm ? Token.Action.done : Token.Ink.silhouette)
+                                .frame(width: 24)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(signal.title).textStyle(AppFont.body).foregroundStyle(Token.Ink.primary)
+                                if signal == .satAtDoor {
+                                    Text("то, что учим").textStyle(AppFont.micro).foregroundStyle(Token.Action.done)
+                                }
+                            }
+                            Spacer(minLength: 0)
+                        }
+                        .frame(minHeight: Token.Size.tapTarget)
+                        .padding(.horizontal, 14)
+                        .background(Token.Surface.card, in: RoundedRectangle(cornerRadius: Token.Radius.tile, style: .continuous))
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            TGExplainer(text: "Спрашиваем не каждый раз: только когда сигнал меняется или раз в несколько выходов.")
+        }
+        .presentationDetents([.medium])
+    }
+
+    private func record(_ signal: AskSignal) {
+        if let dog, let last = Diary.last(dog.events, kind: .outing) {
+            last.askSignal = signal
+        }
+        Haptics.tap()
+        dismiss()
+        onDone()
+    }
+}

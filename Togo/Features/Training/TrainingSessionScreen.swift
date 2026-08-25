@@ -1,0 +1,242 @@
+import SwiftUI
+import SwiftData
+
+/// Занятие. Приложение здесь — секундомер и зеркало, а не счётчик корма.
+struct TrainingSessionScreen: View {
+    let dog: Dog?
+
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var context
+    @Environment(AppState.self) private var appState
+    @Query private var steps: [TrainingStep]
+
+    @State private var session: MarkerSession
+    @State private var now = Date()
+    @State private var summary: TrainingSession?
+
+    private let tick = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
+
+    init(dog: Dog?) {
+        self.dog = dog
+        _session = State(initialValue: MarkerSession(limitMinutes: dog?.sessionLengthMinutes ?? 3))
+    }
+
+    private var currentStep: TrainingStep? {
+        steps.filter { $0.dog?.persistentModelID == dog?.persistentModelID }
+            .sorted { $0.order < $1.order }
+            .first { !$0.isClosed } ?? steps.first
+    }
+
+    var body: some View {
+        Group {
+            if let summary {
+                SessionSummarySheet(session: summary, step: currentStep) { dismiss() }
+            } else {
+                sessionSheet
+            }
+        }
+        .presentationDetents([.large])
+        .onReceive(tick) { now = $0 }
+    }
+
+    private var sessionSheet: some View {
+        TGSheet(
+            title: session.isRunning ? "Занятие идёт" : "Точность маркера",
+            subtitle: currentStep?.fullSummary ?? "поставь руку один раз — потом маркер уйдёт на кнопку громкости"
+        ) {
+            clock
+            markerPad
+            recentMarks
+            markerKindRow
+            observations
+        } footer: {
+            if session.isRunning {
+                TGButton(title: "Закончить на удаче", systemImage: "checkmark") { finish() }
+                TGButton(title: "Сбросить отметки", variant: .quiet, size: .medium) { session.reset() }
+            } else {
+                TGButton(title: "Начать занятие · \(dog?.sessionLengthMinutes ?? 3) минуты", systemImage: "play.fill") {
+                    session.start()
+                    Haptics.tap()
+                }
+            }
+        }
+    }
+
+    // MARK: Часы
+
+    private var clock: some View {
+        TGCard {
+            HStack(alignment: .firstTextBaseline) {
+                Text(Fmt.stopwatch(session.elapsed(at: now))).textStyle(AppFont.display)
+                Spacer()
+                if let accuracy = session.lastAccuracy, let ms = session.lastDelayMs {
+                    VStack(alignment: .trailing, spacing: 0) {
+                        Text(accuracy.title).textStyle(AppFont.cardTitle.color(accuracy.color))
+                        Text("\(ms) мс").textStyle(AppFont.numeric(15).color(Token.Ink.secondary))
+                    }
+                }
+            }
+            ProgressView(value: min(1, session.elapsed(at: now) / Double(session.limitSeconds)))
+                .tint(session.isOvertime(at: now) ? Token.Status.overdueText : Token.Action.primary)
+            Text(session.hint(at: now)).textStyle(AppFont.caption)
+
+            if session.isOvertime(at: now) {
+                TGBanner(tone: .alarm, title: "Три минуты прошли",
+                         subtitle: "Дальше прогресс не пишем: после трёх минут собака угадывает, а не учится.",
+                         systemImage: "hourglass")
+            }
+        }
+    }
+
+    // MARK: Два тапа — вся точность
+
+    private var markerPad: some View {
+        VStack(spacing: Token.Space.s10) {
+            Button { session.markAction(); Haptics.tap() } label: {
+                VStack(spacing: Token.Space.s2) {
+                    Text("Он сделал").textStyle(AppFont.cardTitle)
+                    Text("сел, посмотрел, подошёл").textStyle(AppFont.caption)
+                }
+                .frame(maxWidth: .infinity, minHeight: 72)
+                .background(Token.Surface.sunken,
+                            in: RoundedRectangle(cornerRadius: Token.Radius.tile, style: .continuous))
+            }
+            .buttonStyle(.plain)
+            .disabled(!session.isRunning || session.isWaitingForMark)
+
+            Button { mark() } label: {
+                VStack(spacing: Token.Space.s2) {
+                    Text("Клик").textStyle(AppFont.cardTitle)
+                    Text(dog?.markerKind.title ?? "маркер").textStyle(AppFont.caption)
+                }
+                .frame(maxWidth: .infinity, minHeight: 92)
+                .background(session.isWaitingForMark ? Token.Action.primary : Token.Action.primaryQuiet,
+                            in: RoundedRectangle(cornerRadius: Token.Radius.tile, style: .continuous))
+            }
+            .buttonStyle(.plain)
+            .disabled(!session.isWaitingForMark)
+
+            Button("Не получилось") { session.markMiss() }
+                .textStyle(AppFont.caption)
+                .disabled(!session.isRunning)
+        }
+    }
+
+    private func mark() {
+        session.markMarker()
+        Haptics.marker()
+    }
+
+    // MARK: Последние отметки
+
+    private var recentMarks: some View {
+        TGCard {
+            HStack {
+                TGSectionHeader(title: "последние отметки")
+                Spacer()
+                Text("среднее \(session.averageDelayMs) мс").textStyle(AppFont.micro)
+            }
+            Text("\(session.onTimeCount) из \(session.delaysMs.count) в момент")
+                .textStyle(AppFont.numeric(20))
+            HStack(spacing: Token.Space.s4) {
+                ForEach(Array(session.delaysMs.suffix(12).enumerated()), id: \.offset) { _, ms in
+                    RoundedRectangle(cornerRadius: 2)
+                        .fill(MarkAccuracy.from(delayMilliseconds: ms).color)
+                        .frame(height: CGFloat(min(48, max(6, ms / 25))))
+                        .frame(maxWidth: .infinity)
+                }
+            }
+            .frame(height: 48, alignment: .bottom)
+            TGExplainer(text: "Ниже — быстрее. До полусекунды собака связывает маркер со своим действием. После секунды она уже сделала что-то другое, и вы отмечаете именно это.")
+        }
+    }
+
+    // MARK: Чем маркируешь
+
+    private var markerKindRow: some View {
+        TGCard {
+            TGSectionHeader(title: "чем маркируешь")
+            TGChipGroup(
+                items: MarkerKind.allCases,
+                title: \.title,
+                isSelected: { dog?.markerKind == $0 }
+            ) { kind in
+                dog?.markerKind = kind
+                Haptics.tap()
+            }
+            TGExplainer(text: "Маркер один и тот же всегда и больше ничего не значит. «Молодец» не годится: его говорят весь день.")
+        }
+    }
+
+    // MARK: Что заметила
+
+    private var observations: some View {
+        TGCard {
+            TGSectionHeader(title: "что заметила", subtitle: "это про условия, а не про собаку")
+            TGChipGroup(
+                items: SessionObservation.allCases,
+                title: \.title,
+                isSelected: { session.observations.contains($0) },
+                tone: { $0.stopsSession ? .alarm : .neutral }
+            ) { observation in
+                toggle(observation)
+            }
+            if session.observations.contains(.refusedFood) {
+                TGBanner(tone: .alarm, title: "Если не берёт еду — заканчивай",
+                         subtitle: "Отказ от корма, за который он обычно работает, значит, что сейчас он учиться не может. Это не упрямство. Вернись к задаче попроще завтра.",
+                         systemImage: "hand.raised")
+            }
+        }
+    }
+
+    private func toggle(_ observation: SessionObservation) {
+        if session.observations.contains(observation) {
+            session.observations.remove(observation)
+        } else {
+            session.observations.insert(observation)
+        }
+        Haptics.tap()
+    }
+
+    // MARK: Итог
+
+    private func finish() {
+        guard let dog else { return }
+        let record = TrainingSession(
+            cue: currentStep?.cue ?? "Занятие",
+            place: currentStep?.place ?? "дома",
+            person: appState.currentUserName,
+            distanceMeters: currentStep?.distanceMeters ?? 2
+        )
+        record.durationSeconds = Int(session.elapsed(at: now))
+        record.markDelaysMs = session.delaysMs
+        record.successes = session.successes
+        record.attempts = max(session.attempts, session.delaysMs.count)
+        record.gramsUsed = session.gramsUsed()
+        record.observations = session.observations
+        record.countsTowardProgress = session.countsTowardProgress(at: now)
+        record.dog = dog
+        context.insert(record)
+
+        // Шаг закрыт при 4 из 5 в двух занятиях подряд; два плохих подряд —
+        // предложение вернуться на шаг назад.
+        if let step = currentStep, record.countsTowardProgress {
+            if record.isGoodSession {
+                step.consecutiveGoodSessions += 1
+                step.status = step.isClosed ? .works : .learning
+            } else if record.isPoorSession {
+                step.consecutiveGoodSessions = 0
+            }
+        }
+
+        let event = LogEvent(kind: .training, authorName: appState.currentUserName)
+        event.grams = record.gramsUsed
+        event.note = record.cue
+        event.trainingSessionID = record.id
+        event.dog = dog
+        context.insert(event)
+
+        Haptics.success()
+        summary = record
+    }
+}

@@ -1,0 +1,174 @@
+import Foundation
+
+/// Четыре исхода вердикта «просится». Во всех четырёх кнопка «Вывожу» —
+/// первая: вердикт не блокирует выход и не знает лучше человека.
+nonisolated enum NeedVerdict: Equatable, Sendable {
+    /// Дольше, чем он когда-либо терпел.
+    case urgent
+    /// Дольше, чем обычно.
+    case likelyNeed
+    /// Данных мало или картина неоднозначная — и это написано прямо.
+    case unknown(reason: UnknownReason)
+    /// Вышли недавно, и он сходил.
+    case probablyAttention
+    /// Эпизод активен — вердикт не считается вовсе.
+    case episode
+
+    enum UnknownReason: Equatable, Sendable {
+        case notEnoughData(days: Int)
+        case ambiguous
+    }
+
+    var badge: String {
+        switch self {
+        case .urgent: "срочно"
+        case .likelyNeed: "похоже на нужду"
+        case .unknown: "неясно"
+        case .probablyAttention: "не похоже · выход всё равно доступен"
+        case .episode: "эпизод"
+        }
+    }
+
+    var title: String {
+        switch self {
+        case .urgent: "Выведи сейчас"
+        case .likelyNeed: "Выведи"
+        case .unknown: "Непонятно"
+        case .probablyAttention: "Скорее внимания"
+        case .episode: "Выводи по первому знаку"
+        }
+    }
+
+    /// Вторая кнопка. Первая всегда «Вывожу».
+    var alternativeAction: String {
+        switch self {
+        case .urgent, .likelyNeed: "Не сейчас"
+        case .unknown: "Играем, не пойдём"
+        case .probablyAttention: "Поиграю с ним"
+        case .episode: "Не сейчас"
+        }
+    }
+}
+
+/// Срез фактов, из которых считается вердикт. Отдельная структура,
+/// чтобы логику можно было проверить тестами без базы.
+nonisolated struct NeedSignals: Sendable {
+    var now: Date
+    var lastUrine: Date?
+    var lastStool: Date?
+    var lastMeal: Date?
+    var lastWalk: Date?
+    /// Интервалы между мочеиспусканиями за всю историю, в секундах.
+    var urineIntervals: [TimeInterval]
+    var daysOfData: Int
+    var episodeActive: Bool
+    /// Последний выход закончился результатом.
+    var lastOutingHadResult: Bool
+
+    init(
+        now: Date = Date(),
+        lastUrine: Date? = nil,
+        lastStool: Date? = nil,
+        lastMeal: Date? = nil,
+        lastWalk: Date? = nil,
+        urineIntervals: [TimeInterval] = [],
+        daysOfData: Int = 0,
+        episodeActive: Bool = false,
+        lastOutingHadResult: Bool = false
+    ) {
+        self.now = now
+        self.lastUrine = lastUrine
+        self.lastStool = lastStool
+        self.lastMeal = lastMeal
+        self.lastWalk = lastWalk
+        self.urineIntervals = urineIntervals
+        self.daysOfData = daysOfData
+        self.episodeActive = episodeActive
+        self.lastOutingHadResult = lastOutingHadResult
+    }
+
+    var sinceUrine: TimeInterval? { lastUrine.map { now.timeIntervalSince($0) } }
+
+    var typicalUrineInterval: TimeInterval? {
+        guard !urineIntervals.isEmpty else { return nil }
+        let sorted = urineIntervals.sorted()
+        return sorted[sorted.count / 2]
+    }
+
+    var longestUrineInterval: TimeInterval? { urineIntervals.max() }
+}
+
+nonisolated enum VerdictEngine {
+    /// Меньше четырёх дней данных — всегда «непонятно».
+    static let minimumDaysOfData = 4
+    /// Дольше обычного, но не рекорд.
+    static let likelyNeedFactor = 1.15
+    /// Только что вышли и он сходил.
+    static let recentFactor = 0.35
+
+    static func evaluate(_ s: NeedSignals) -> NeedVerdict {
+        // Эпизод активен — вердикты гасим, вместо них «выводи по первому знаку».
+        if s.episodeActive { return .episode }
+
+        guard s.daysOfData >= minimumDaysOfData else {
+            return .unknown(reason: .notEnoughData(days: max(1, s.daysOfData)))
+        }
+
+        guard let since = s.sinceUrine, let typical = s.typicalUrineInterval, typical > 0 else {
+            return .unknown(reason: .ambiguous)
+        }
+
+        if let longest = s.longestUrineInterval, since > longest {
+            return .urgent
+        }
+        if since > typical * likelyNeedFactor {
+            return .likelyNeed
+        }
+        if since < typical * recentFactor, s.lastOutingHadResult {
+            return .probablyAttention
+        }
+        return .unknown(reason: .ambiguous)
+    }
+
+    /// Строка фактов под вердиктом: ничего не надо вспоминать.
+    static func factLine(_ s: NeedSignals) -> String {
+        var parts: [String] = []
+        if let stool = s.lastStool {
+            let cal = Calendar.current
+            parts.append(cal.isDateInToday(stool)
+                ? "стул сегодня \(Fmt.clock(stool))"
+                : "стул \(Fmt.shortDay(stool))")
+        } else {
+            parts.append("стула ещё не было")
+        }
+        if let meal = s.lastMeal {
+            parts.append("ел \(Fmt.duration(s.now.timeIntervalSince(meal))) назад")
+        }
+        if let walk = s.lastWalk {
+            parts.append("гулял \(Fmt.duration(s.now.timeIntervalSince(walk))) назад")
+        }
+        return parts.joined(separator: " · ")
+    }
+
+    /// Объяснение под заголовком — то, что человек читает вместо процента уверенности.
+    static func explanation(_ verdict: NeedVerdict, _ s: NeedSignals) -> String {
+        switch verdict {
+        case .urgent:
+            let since = s.sinceUrine.map(Fmt.duration) ?? "долго"
+            return "Не писал \(since). Это дольше, чем он когда-либо терпел."
+        case .likelyNeed:
+            let since = s.sinceUrine.map(Fmt.duration) ?? "долго"
+            return "Не писал \(since) — дольше, чем обычно."
+        case .unknown(.notEnoughData(let days)):
+            return "Приложение пока не знает его интервалов. Выведи, если сомневаешься: данных \(Fmt.days(days)), это мало."
+        case .unknown(.ambiguous):
+            let since = s.sinceUrine.map(Fmt.duration) ?? "недавно"
+            return "Писал \(since) назад. Может, скучно — а может, живот. Выведи, если сомневаешься: приложение не знает лучше тебя."
+        case .probablyAttention:
+            let since = s.sinceUrine.map(Fmt.duration) ?? "недавно"
+            return "Вышли \(since) назад, и он сходил. Всё равно можно вывести — запись ляжет в дневник, и в следующий раз вердикт будет точнее."
+        case .episode:
+            return "Идёт эпизод: два инцидента за сутки. Пока он не закончится, приложение не считает вердикты — выводи по первому знаку."
+        }
+    }
+}

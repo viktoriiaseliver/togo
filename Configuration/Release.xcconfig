@@ -1,0 +1,5 @@
+#include "Shared.xcconfig"
+
+// В CI номер сборки подставляется из переменной окружения:
+//   xcodebuild BUILD_NUMBER=$GITHUB_RUN_NUMBER
+BUILD_NUMBER = 1

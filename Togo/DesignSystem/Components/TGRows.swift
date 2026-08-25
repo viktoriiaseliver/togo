@@ -1,0 +1,151 @@
+import SwiftUI
+
+/// Figma: `SectionHeader`. Заглавная микро-строка над группой.
+struct TGSectionHeader: View {
+    let title: String
+    var subtitle: String?
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Token.Space.s4) {
+            Text(title)
+                .textStyle(AppFont.micro.color(Token.Ink.faint))
+                .textCase(.uppercase)
+                .kerning(0.6)
+            if let subtitle {
+                Text(subtitle).textStyle(AppFont.caption)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .accessibilityAddTraits(.isHeader)
+    }
+}
+
+/// Figma: `Explainer`. Объяснение стоит там, где возникает вопрос —
+/// отдельной справки в приложении нет и не нужно.
+struct TGExplainer: View {
+    let text: String
+
+    var body: some View {
+        Text(text)
+            .textStyle(AppFont.caption)
+            .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+/// Figma: `ListRow`. Свойства — `title`, `value`, `systemImage`, `accessory`, `tone`.
+struct TGListRow: View {
+    enum Accessory: Sendable { case chevron, checkmark, none }
+
+    @Environment(\.theme) private var theme
+
+    let title: String
+    var value: String?
+    var systemImage: String?
+    var accessory: Accessory = .chevron
+    var tone: Color = Token.Ink.primary
+
+    var body: some View {
+        HStack(spacing: Token.Space.s12) {
+            if let systemImage {
+                Image(systemName: systemImage)
+                    .font(.system(size: Token.Size.iconMd, weight: .medium))
+                    .foregroundStyle(Token.Ink.secondary)
+                    .frame(width: Token.Space.s24)
+                    .accessibilityHidden(true)
+            }
+            Text(title).textStyle(AppFont.body.color(tone))
+            Spacer(minLength: Token.Space.s8)
+            if let value {
+                Text(value).textStyle(AppFont.caption)
+            }
+            accessoryView
+        }
+        .frame(minHeight: Token.Size.tapTarget)
+        .padding(.vertical, theme.density.rowPadding - Token.Space.s12)
+        .contentShape(Rectangle())
+    }
+
+    @ViewBuilder
+    private var accessoryView: some View {
+        // Шеврон и галочка ничего не добавляют голосом: состояние строки
+        // читается из её текста.
+        switch accessory {
+        case .chevron:
+            Image(systemName: "chevron.right")
+                .font(.system(size: Token.Size.iconSm, weight: .semibold))
+                .foregroundStyle(Token.Ink.faint)
+                .accessibilityHidden(true)
+        case .checkmark:
+            Image(systemName: "checkmark.circle.fill")
+                .font(.system(size: Token.Size.iconMd, weight: .semibold))
+                .foregroundStyle(Token.Action.done)
+                .accessibilityHidden(true)
+        case .none:
+            EmptyView()
+        }
+    }
+}
+
+/// Figma: `Stat`. Число и подпись. Счётчики не украшены иконками и не раскрашены.
+struct TGStat: View {
+    let value: String
+    let caption: String
+    var size: CGFloat = 22
+
+    var body: some View {
+        VStack(spacing: Token.Space.s2) {
+            Text(value).textStyle(AppFont.numeric(size))
+            Text(caption).textStyle(AppFont.micro)
+        }
+        .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .combine)
+    }
+}
+
+/// Figma: `Avatar`. Свойства — `initial`, `image`, `size`, `tint`.
+struct TGAvatar: View {
+    var initial: String
+    var image: Data?
+    var size: CGFloat = Token.Size.avatarSm
+    var tint: Color = Token.Action.done
+
+    var body: some View {
+        Group {
+            if let image, let uiImage = UIImage(data: image) {
+                Image(uiImage: uiImage).resizable().scaledToFill()
+            } else {
+                Text(initial)
+                    .font(.system(size: size * 0.46, weight: .bold))
+                    .foregroundStyle(foreground)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(tint)
+            }
+        }
+        .frame(width: size, height: size)
+        .clipShape(Circle())
+        .accessibilityHidden(true)
+    }
+
+    private var foreground: Color {
+        tint == Token.Action.primaryQuiet ? Token.Ink.primary : .white
+    }
+}
+
+/// Figma: `SyncMark`. Галочка синхронизации в строке ленты — по ней видно,
+/// что запись дошла до остальных, а не только «записалась у меня».
+struct TGSyncMark: View {
+    let author: String
+    let isSynced: Bool
+
+    var body: some View {
+        HStack(spacing: Token.Space.s4) {
+            Text(String(author.prefix(1)))
+                .font(.system(size: 11, weight: .bold))
+                .foregroundStyle(Token.Ink.secondary)
+            Image(systemName: isSynced ? "checkmark.circle.fill" : "arrow.triangle.2.circlepath")
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundStyle(isSynced ? Token.Action.done : Token.Ink.faint)
+        }
+        .accessibilityLabel(isSynced ? "Синхронизировано, автор \(author)" : "Ждёт синхронизации, автор \(author)")
+    }
+}

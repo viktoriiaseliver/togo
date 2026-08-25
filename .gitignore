@@ -1,0 +1,29 @@
+# Xcode
+build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+*.xcworkspace/xcuserdata/
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM.zip
+*.xcarchive
+
+# macOS
+.DS_Store
+
+# Секреты и локальные настройки подписи
+Configuration/Local.xcconfig
+*.p8
+*.p12
+*.mobileprovision
+.env
+
+# Fastlane
+fastlane/report.xml
+fastlane/screenshots/**/*.png
+fastlane/test_output
+
+# Промежуточные материалы из Claude Design
+.design-source/

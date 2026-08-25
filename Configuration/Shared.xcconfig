@@ -1,0 +1,18 @@
+// Общие настройки проекта Того.
+// Здесь одно место, где меняются идентификатор, команда и версия.
+
+// Идентификатор приложения. Расширения наследуют его как префикс.
+APP_BUNDLE_ID = app.togo.diary
+
+// Team ID из App Store Connect. Пусто — сборка только в симуляторе.
+DEVELOPMENT_TEAM =
+
+// Версия для App Store и номер сборки.
+MARKETING_VERSION = 1.0.0
+BUILD_NUMBER = 1
+
+// App Group — общее хранилище приложения, виджетов и Live Activity.
+APP_GROUP_ID = group.app.togo.diary
+
+// Схема ссылок для приглашений в семью: togo://join/...
+URL_SCHEME = togo

@@ -1,0 +1,4 @@
+#include "Shared.xcconfig"
+
+BUILD_NUMBER = 1
+SWIFT_ACTIVE_COMPILATION_CONDITIONS = $(inherited) DEBUG
