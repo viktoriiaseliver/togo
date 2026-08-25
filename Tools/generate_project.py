@@ -59,6 +59,7 @@ BC_UIT_D=uid();  BC_UIT_R=uid()
 FR_SHARED=uid(); FR_DEBUG=uid(); FR_RELEASE=uid()
 FR_APP_PLIST=uid(); FR_WID_PLIST=uid()
 FR_APP_ENT=uid(); FR_WID_ENT=uid()
+FR_APP_ENT_P=uid(); FR_WID_ENT_P=uid()
 FR_STOREKIT=uid()
 
 def q(s):
@@ -127,6 +128,8 @@ a('\t\t%s /* Togo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = t
 a('\t\t%s /* TogoWidgets-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TogoWidgets-Info.plist"; sourceTree = "<group>"; };' % FR_WID_PLIST)
 a('\t\t%s /* Togo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Togo.entitlements; sourceTree = "<group>"; };' % FR_APP_ENT)
 a('\t\t%s /* TogoWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TogoWidgets.entitlements; sourceTree = "<group>"; };' % FR_WID_ENT)
+a('\t\t%s /* Togo-Personal.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Togo-Personal.entitlements"; sourceTree = "<group>"; };' % FR_APP_ENT_P)
+a('\t\t%s /* TogoWidgets-Personal.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "TogoWidgets-Personal.entitlements"; sourceTree = "<group>"; };' % FR_WID_ENT_P)
 a('\t\t%s /* Togo.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Togo.storekit; sourceTree = "<group>"; };' % FR_STOREKIT)
 a('/* End PBXFileReference section */')
 
@@ -181,6 +184,7 @@ a('\t\t\tchildren = (')
 for p, n in ((FR_SHARED,'Shared.xcconfig'), (FR_DEBUG,'Debug.xcconfig'), (FR_RELEASE,'Release.xcconfig'),
              (FR_APP_PLIST,'Togo-Info.plist'), (FR_WID_PLIST,'TogoWidgets-Info.plist'),
              (FR_APP_ENT,'Togo.entitlements'), (FR_WID_ENT,'TogoWidgets.entitlements'),
+             (FR_APP_ENT_P,'Togo-Personal.entitlements'), (FR_WID_ENT_P,'TogoWidgets-Personal.entitlements'),
              (FR_STOREKIT,'Togo.storekit')):
     a('\t\t\t\t%s /* %s */,' % (p, n))
 a('\t\t\t);')
@@ -385,7 +389,7 @@ cfg(BC_PROJ_R, 'Release', FR_RELEASE, d)
 APP = {
     'ASSETCATALOG_COMPILER_APPICON_NAME': 'AppIcon',
     'ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME': 'AccentColor',
-    'CODE_SIGN_ENTITLEMENTS': 'Configuration/Togo.entitlements',
+    'CODE_SIGN_ENTITLEMENTS': 'Configuration/Togo$(ENTITLEMENTS_VARIANT).entitlements',
     'CODE_SIGN_STYLE': 'Automatic',
     'CURRENT_PROJECT_VERSION': '$(BUILD_NUMBER)',
     'DEVELOPMENT_ASSET_PATHS': '""',
@@ -406,7 +410,7 @@ cfg(BC_APP_R, 'Release', None, APP)
 WID = {
     'ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME': 'AccentColor',
     'ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME': 'WidgetBackground',
-    'CODE_SIGN_ENTITLEMENTS': 'Configuration/TogoWidgets.entitlements',
+    'CODE_SIGN_ENTITLEMENTS': 'Configuration/TogoWidgets$(ENTITLEMENTS_VARIANT).entitlements',
     'CODE_SIGN_STYLE': 'Automatic',
     'CURRENT_PROJECT_VERSION': '$(BUILD_NUMBER)',
     'DEVELOPMENT_TEAM': '$(DEVELOPMENT_TEAM)',

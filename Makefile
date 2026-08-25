@@ -57,6 +57,11 @@ unit: ## Только модульные тесты — быстрая обра�
 		-destination '$(DESTINATION)' test -only-testing:TogoTests \
 		| grep -E "Test run|✘|error:"
 
+.PHONY: device
+device: ## Поставить на подключённый iPhone: make device TEAM=XXXXXXXXXX
+	@test -n "$(TEAM)" || (echo "Укажи TEAM=... — id команды из Xcode → Settings → Accounts" && exit 1)
+	@bash Tools/install_device.sh "$(TEAM)"
+
 .PHONY: archive
 archive: ## Собрать архив для App Store Connect
 	@xcodebuild -project $(PROJECT) -scheme $(SCHEME) -configuration Release \

@@ -40,23 +40,12 @@ struct ProfileScreen: View {
                 TextField("Acana ягнёнок", text: Binding(get: { dog.foodBrand }, set: { dog.foodBrand = $0 }))
             }
             TGDivider()
-            Stepper(value: Binding(get: { dog.portionGrams }, set: { dog.portionGrams = $0 }), in: 0...600, step: 5) {
-                HStack {
-                    Text("Порция").textStyle(AppFont.body)
-                    Spacer()
-                    Text("\(dog.portionGrams) г × \(dog.mealsPerDay)").textStyle(AppFont.numeric(15))
-                }
+            NavigationLink { ScheduleScreen(dog: dog) } label: {
+                TGListRow(title: "Режим и порция",
+                          value: "\(dog.portionGrams) г × \(dog.mealsPerDay)",
+                          systemImage: "clock")
             }
-            .frame(minHeight: Token.Size.tapTarget)
-            TGDivider()
-            Stepper(value: Binding(get: { dog.mealsPerDay }, set: { dog.mealsPerDay = $0 }), in: 1...4) {
-                HStack {
-                    Text("Кормлений в день").textStyle(AppFont.body)
-                    Spacer()
-                    Text("\(dog.mealsPerDay)").textStyle(AppFont.numeric(15))
-                }
-            }
-            .frame(minHeight: Token.Size.tapTarget)
+            .buttonStyle(.plain)
             TGDivider()
             LabeledField(label: "Нельзя") {
                 TextField("курица, кукуруза", text: Binding(
@@ -286,5 +275,46 @@ private struct CareTaskRow: View {
         if days < 0 { return Token.Status.overdueText }
         if days <= 1 { return Token.Status.waitingText }
         return Token.Ink.secondary
+    }
+}
+
+
+/// Режим дня и питания в профиле. Тот же редактор, что и в онбординге,
+/// только сохраняет сразу в собаку.
+struct ScheduleScreen: View {
+    let dog: Dog
+
+    @Environment(AppState.self) private var appState
+    @Environment(\.dismiss) private var dismiss
+    @State private var draft = ScheduleDraft()
+    @State private var loaded = false
+
+    private var canEdit: Bool { appState.can(.editProfile) }
+
+    var body: some View {
+        TGScreen {
+            if !canEdit {
+                TGBanner(tone: .waiting, title: "Только чтение",
+                         subtitle: "Режим питания меняет тот, кому владелец выдал право на профиль.",
+                         systemImage: "lock")
+            }
+            ScheduleEditor(draft: $draft)
+                .disabled(!canEdit)
+        } bottom: {
+            if canEdit {
+                TGButton(title: "Сохранить") {
+                    draft.apply(to: dog)
+                    Haptics.success()
+                    dismiss()
+                }
+            }
+        }
+        .navigationTitle("Режим")
+        .navigationBarTitleDisplayMode(.large)
+        .task {
+            guard !loaded else { return }
+            draft = ScheduleDraft.from(dog)
+            loaded = true
+        }
     }
 }

@@ -361,13 +361,13 @@
       },
       "comment": "recentMarks"
     },
-    "%@ из 3": {
+    "%@ из 4": {
       "extractionState": "manual",
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ из 3"
+            "value": "%@ из 4"
           }
         },
         "en": {
@@ -648,6 +648,30 @@
         }
       },
       "comment": "nextStepText"
+    },
+    "%@-е": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@-е"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "count"
     },
     ") · ты помощник": {
       "extractionState": "manual",
@@ -1153,6 +1177,30 @@
       },
       "comment": "body"
     },
+    "«Настройки → собака → Питание и режим». Приложение потом сравнит это с тем, как вы кормите на самом деле, и скажет, если Стич переедает.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«Настройки → собака → Питание и режим». Приложение потом сравнит это с тем, как вы кормите на самом деле, и скажет, если Стич переедает."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "explainerCard"
+    },
     "«Не брал еду» в занятии": {
       "extractionState": "manual",
       "localizations": {
@@ -1344,6 +1392,30 @@
         }
       },
       "comment": "aboutSection"
+    },
+    "Бодрствует": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Бодрствует"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "dayCard"
     },
     "Больше": {
       "extractionState": "manual",
@@ -2328,6 +2400,30 @@
         }
       },
       "comment": "body"
+    },
+    "Встаёт": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Встаёт"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "dayCard"
     },
     "Всё": {
       "extractionState": "manual",
@@ -6817,6 +6913,30 @@
       },
       "comment": "body"
     },
+    "Кормление": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Кормление"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "count"
+    },
     "Кормление в %@ попадает в окно натощак ": {
       "extractionState": "manual",
       "localizations": {
@@ -6840,30 +6960,6 @@
         }
       },
       "comment": "result"
-    },
-    "Кормлений в день": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Кормлений в день"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        }
-      },
-      "comment": "nutrition"
     },
     "Короткая версия: дневник живёт на твоём телефоне. Мы не заводим аккаунт, не собираем аналитику о том, что ты записываешь, и не передаём данные третьим лицам.": {
       "extractionState": "manual",
@@ -7248,6 +7344,30 @@
         }
       },
       "comment": "body"
+    },
+    "Ложится": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ложится"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "dayCard"
     },
     "Лужа": {
       "extractionState": "manual",
@@ -8136,6 +8256,30 @@
         }
       },
       "comment": "body"
+    },
+    "Настроить режим вручную": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Настроить режим вручную"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "scheduleCard"
     },
     "Настройки": {
       "extractionState": "manual",
@@ -10177,6 +10321,30 @@
       },
       "comment": "body"
     },
+    "Первое": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Первое"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "count"
+    },
     "Первые три-четыре дня оно честно отвечает «непонятно» — интервалов ещё не знает. Это не поломка.": {
       "extractionState": "manual",
       "localizations": {
@@ -11329,30 +11497,6 @@
       },
       "comment": "body"
     },
-    "Порция": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Порция"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        }
-      },
-      "comment": "nutrition"
-    },
     "Порция из профиля подставляется в кнопку «Еда» — жать нужно один раз.": {
       "extractionState": "manual",
       "localizations": {
@@ -11376,6 +11520,30 @@
         }
       },
       "comment": "body"
+    },
+    "Порция одна на все кормления: уменьшишь её — уменьшится весь день. Норму называет врач, приложение её не выдумывает.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Порция одна на все кормления: уменьшишь её — уменьшится весь день. Норму называет врач, приложение её не выдумывает."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "mealsCard"
     },
     "Порция подставлена из профиля: жать нужно один раз, граммы уже подписаны.": {
       "extractionState": "manual",
@@ -11496,6 +11664,30 @@
         }
       },
       "comment": "body"
+    },
+    "Последнее": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Последнее"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "count"
     },
     "Последний выход был \\(Fmt.duration(event.date.timeIntervalSince(lastOuting.date))) назад.": {
       "extractionState": "manual",
@@ -11976,6 +12168,30 @@
         }
       },
       "comment": "settings"
+    },
+    "Приблизительно — приложение потом сверит это с тем, как вы кормите на самом деле, и поправит.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Приблизительно — приложение потом сверит это с тем, как вы кормите на самом деле, и поправит."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
     },
     "Прививки и визиты": {
       "extractionState": "manual",
@@ -12697,6 +12913,30 @@
       },
       "comment": "body"
     },
+    "Разложить ровно": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Разложить ровно"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "timesCard"
+    },
     "Разрешение": {
       "extractionState": "manual",
       "localizations": {
@@ -12769,6 +13009,30 @@
       },
       "comment": "conflictsCard"
     },
+    "Режим": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Режим"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
+    },
     "Режим включится сам в день отъезда и выключится, когда вернётесь.": {
       "extractionState": "manual",
       "localizations": {
@@ -12776,6 +13040,78 @@
           "stringUnit": {
             "state": "translated",
             "value": "Режим включится сам в день отъезда и выключится, когда вернётесь."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
+    },
+    "Режим дня": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Режим дня"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
+    },
+    "Режим и порция": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Режим и порция"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "nutrition"
+    },
+    "Режим питания меняет тот, кому владелец выдал право на профиль.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Режим питания меняет тот, кому владелец выдал право на профиль."
           }
         },
         "en": {
@@ -13440,6 +13776,30 @@
         }
       },
       "comment": "body"
+    },
+    "Сколько раз в день": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сколько раз в день"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "mealsCard"
     },
     "Сколько раз в день выходили. Ровная линия — устоявшийся режим.": {
       "extractionState": "manual",
@@ -16801,6 +17161,30 @@
       },
       "comment": "body"
     },
+    "Это можно поменять когда угодно": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Это можно поменять когда угодно"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "explainerCard"
+    },
     "Это одно и то же": {
       "extractionState": "manual",
       "localizations": {
@@ -17472,6 +17856,30 @@
         }
       },
       "comment": "scheduleCard"
+    },
+    "во сколько кормить": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "во сколько кормить"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "timesCard"
     },
     "восстановить из файла": {
       "extractionState": "manual",
@@ -18193,6 +18601,30 @@
       },
       "comment": "body"
     },
+    "день собаки": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "день собаки"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "dayCard"
+    },
     "для лужи выключено: это не новость для семьи": {
       "extractionState": "manual",
       "localizations": {
@@ -18528,6 +18960,30 @@
         }
       },
       "comment": "water"
+    },
+    "еда": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "еда"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "mealsCard"
     },
     "еда внутри окна мешает всасыванию": {
       "extractionState": "manual",
@@ -19152,6 +19608,30 @@
         }
       },
       "comment": "summary"
+    },
+    "из этого окна раскладываются кормления и выходы": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "из этого окна раскладываются кормления и выходы"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "dayCard"
     },
     "индейка": {
       "extractionState": "manual",
@@ -20737,6 +21217,30 @@
       },
       "comment": "merge"
     },
+    "одно кормление": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "одно кормление"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "timesCard"
+    },
     "особенности": {
       "extractionState": "manual",
       "localizations": {
@@ -21961,6 +22465,30 @@
       },
       "comment": "readableStatus"
     },
+    "расставлено вручную": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "расставлено вручную"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "timesCard"
+    },
     "режим дня · свайп вправо = сделано": {
       "extractionState": "manual",
       "localizations": {
@@ -22032,6 +22560,30 @@
         }
       },
       "comment": "header"
+    },
+    "ровно через \\(Fmt.duration(Double($0) * 60))": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ровно через \\(Fmt.duration(Double($0) * 60))"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "timesCard"
     },
     "роли, дежурство, ссылка ситтера": {
       "extractionState": "manual",

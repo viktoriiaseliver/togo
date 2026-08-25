@@ -16,3 +16,11 @@ APP_GROUP_ID = group.app.togo.diary
 
 // Схема ссылок для приглашений в семью: togo://join/...
 URL_SCHEME = togo
+
+// Какой файл прав подписи брать. Пусто — полный набор: App Groups и iCloud,
+// как нужно для App Store. Для установки на свой телефон с бесплатной
+// командой разработчика их выдать нельзя, поэтому:
+//
+//   make device TEAM=XXXXXXXXXX      # ставит с ENTITLEMENTS_VARIANT=-Personal
+//
+ENTITLEMENTS_VARIANT =

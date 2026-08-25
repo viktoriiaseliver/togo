@@ -183,6 +183,12 @@ struct FeedingScreen: View {
                          isEnabled: !report.suggestedMealTimes.isEmpty) {
                     applySchedule()
                 }
+                if let dog {
+                    NavigationLink { ScheduleScreen(dog: dog) } label: {
+                        TGListRow(title: "Настроить режим вручную", systemImage: "clock")
+                    }
+                    .buttonStyle(.plain)
+                }
             }
             TGExplainer(text: "Ровный интервал между кормлениями важнее точного часа: собака привыкает к промежутку, а не к цифре на часах.")
         }

@@ -234,3 +234,117 @@ struct FeedingTests {
         #expect(report.suggestedPortionGrams == nil)
     }
 }
+
+@Suite("Режим дня")
+@MainActor
+struct ScheduleTests {
+    private func стич() -> Dog {
+        let dog = Dog(name: "Стич", weightKg: 4.1)
+        dog.portionGrams = 60
+        dog.mealsPerDay = 2
+        dog.wakeMinuteOfDay = 7 * 60
+        dog.sleepMinuteOfDay = 23 * 60
+        return dog
+    }
+
+    @Test("Кормления раскладываются по окну бодрствования, а не по общей таблице")
+    func mealsFollowTheDog() {
+        let dog = стич()
+        let times = dog.evenMealTimes()
+
+        #expect(times.count == 2)
+        #expect(times[0] == 7 * 60 + 30, "первое — через полчаса после подъёма")
+        #expect(times[1] == 7 * 60 + 30 + (14 * 60 - 30), "последнее — за два часа до отбоя")
+    }
+
+    @Test("Ранний подъём двигает всё расписание")
+    func earlyRiser() {
+        let dog = стич()
+        dog.wakeMinuteOfDay = 5 * 60
+        dog.sleepMinuteOfDay = 21 * 60
+
+        let times = dog.evenMealTimes()
+        #expect(times[0] == 5 * 60 + 30)
+        #expect(times.allSatisfy { $0 < 21 * 60 })
+    }
+
+    @Test("Три кормления идут через равные промежутки")
+    func threeMealsEven() {
+        let dog = стич()
+        dog.mealsPerDay = 3
+
+        let times = dog.evenMealTimes()
+        #expect(times.count == 3)
+        let intervals = zip(times, times.dropFirst()).map { $1 - $0 }
+        #expect(Set(intervals).count == 1)
+    }
+
+    @Test("Одно кормление — одно время, без деления на ноль")
+    func singleMeal() {
+        let dog = стич()
+        dog.mealsPerDay = 1
+        #expect(dog.evenMealTimes().count == 1)
+    }
+
+    @Test("Ночная смена: отбой после полуночи считается правильно")
+    func nightShift() {
+        let dog = стич()
+        dog.wakeMinuteOfDay = 10 * 60
+        dog.sleepMinuteOfDay = 2 * 60
+
+        #expect(dog.awakeMinutes == 16 * 60)
+        #expect(dog.evenMealTimes().allSatisfy { (0..<(24 * 60)).contains($0) })
+    }
+
+    @Test("Черновик и модель говорят одно и то же")
+    func draftMatchesDog() {
+        let dog = стич()
+        var draft = ScheduleDraft.from(dog)
+        draft.mealsPerDay = 3
+        draft.portionGrams = 45
+        draft.apply(to: dog)
+
+        #expect(dog.mealsPerDay == 3)
+        #expect(dog.portionGrams == 45)
+        #expect(dog.dailyGrams == 135)
+        #expect(dog.mealTimes == draft.evenMealTimes)
+    }
+
+    @Test("Ручная раскладка не пересчитывается")
+    func manualTimesStay() {
+        var draft = ScheduleDraft()
+        draft.mealsPerDay = 2
+        draft.mealTimes = [6 * 60, 20 * 60]
+        draft.isManual = true
+
+        #expect(draft.effectiveMealTimes == [6 * 60, 20 * 60])
+    }
+
+    @Test("Сменил число кормлений — предлагаем ровное расписание заново")
+    func suggestionFollowsWindow() {
+        let dog = стич()
+        dog.mealsPerDay = 3
+        dog.wakeMinuteOfDay = 6 * 60
+        dog.sleepMinuteOfDay = 22 * 60
+
+        let suggested = FeedingAnalyzer.suggestedMealTimes(
+            observed: [8 * 60, 19 * 60],
+            normMeals: 3,
+            days: [],
+            awakeWindow: (wake: dog.wakeMinuteOfDay, sleep: dog.sleepMinuteOfDay)
+        )
+        #expect(suggested.count == 3)
+        #expect(suggested[0] == 6 * 60 + 30)
+    }
+
+    @Test("Если человек уже кормит столько раз, сколько собирался, ритм не ломаем")
+    func keepsExistingRhythm() {
+        let suggested = FeedingAnalyzer.suggestedMealTimes(
+            observed: [8 * 60, 19 * 60],
+            normMeals: 2,
+            days: [],
+            awakeWindow: (wake: 7 * 60, sleep: 23 * 60)
+        )
+        #expect(suggested == [8 * 60, 19 * 60])
+    }
+}

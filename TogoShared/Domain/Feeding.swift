@@ -98,6 +98,7 @@ nonisolated enum FeedingAnalyzer {
             observed: observed,
             normMeals: normMeals,
             days: complete,
+            awakeWindow: dog.map { (wake: $0.wakeMinuteOfDay, sleep: $0.sleepMinuteOfDay) },
             calendar: calendar
         )
 
@@ -202,18 +203,32 @@ nonisolated enum FeedingAnalyzer {
         observed: [Int],
         normMeals: Int,
         days: [FeedingReport.Day],
+        awakeWindow: (wake: Int, sleep: Int)? = nil,
         calendar: Calendar = .current
     ) -> [Int] {
         guard normMeals > 0 else { return [] }
+        // Если человек уже кормит столько раз, сколько собирался, — его
+        // расписание и есть правильное. Ломать сложившийся ритм незачем.
         if observed.count == normMeals { return observed }
 
-        let first = observed.first ?? 7 * 60 + 30
-        let last = observed.last ?? 18 * 60 + 30
-        guard normMeals > 1 else { return [first] }
+        // Иначе раскладываем по окну бодрствования, которое человек указал
+        // сам, а не по средним цифрам из интернета.
+        let first: Int
+        let last: Int
+        if let awakeWindow {
+            let span = awakeWindow.sleep > awakeWindow.wake
+                ? awakeWindow.sleep - awakeWindow.wake
+                : awakeWindow.sleep + 24 * 60 - awakeWindow.wake
+            first = awakeWindow.wake + 30
+            last = awakeWindow.wake + max(90, span - 120)
+        } else {
+            first = observed.first ?? 7 * 60 + 30
+            last = observed.last ?? 18 * 60 + 30
+        }
 
-        let span = max(60, last - first)
-        let step = span / (normMeals - 1)
-        return (0..<normMeals).map { first + step * $0 }
+        guard normMeals > 1 else { return [first % (24 * 60)] }
+        let step = max(60, last - first) / (normMeals - 1)
+        return (0..<normMeals).map { (first + step * $0) % (24 * 60) }
     }
 
     // MARK: Еда → стул → выходы

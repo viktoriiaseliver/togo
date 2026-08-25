@@ -10,16 +10,17 @@ struct OnboardingFlow: View {
 
     @State private var step: Step = .welcome
     @State private var draft = DogDraft()
+    @State private var schedule = ScheduleDraft()
 
     /// Онбординг можно пройти заново из настроек. Тогда собака уже есть,
     /// и шаги, которые её создают, надо пропустить — иначе получится вторая.
     private var isReplay: Bool { !dogs.isEmpty }
 
     enum Step: Int, CaseIterable {
-        case welcome, dog, family, notifications
+        case welcome, dog, schedule, family, notifications
 
         var index: Int { rawValue }
-        var progress: String? { self == .welcome ? nil : "\(rawValue) из 3" }
+        var progress: String? { self == .welcome ? nil : "\(rawValue) из 4" }
     }
 
     var body: some View {
@@ -40,6 +41,12 @@ struct OnboardingFlow: View {
                             }
                     } else {
                         DogStep(draft: $draft) { advance() }
+                    }
+                case .schedule:
+                    if isReplay {
+                        HowItWorksReplayEnd(onDone: finish)
+                    } else {
+                        ScheduleStep(draft: $schedule) { advance() }
                     }
                 case .family:
                     if isReplay {
@@ -80,7 +87,7 @@ struct OnboardingFlow: View {
 
     private func advance() {
         // Повторное прохождение ничего не создаёт: это чтение, а не установка.
-        if step == .dog, !isReplay { saveDog() }
+        if step == .schedule, !isReplay { saveDog() }
         withAnimation(.easeInOut(duration: Token.Duration.quick)) {
             step = Step(rawValue: step.rawValue + 1) ?? .notifications
         }
@@ -94,6 +101,7 @@ struct OnboardingFlow: View {
 
     private func saveDog() {
         let dog = draft.makeDog()
+        schedule.apply(to: dog)
         context.insert(dog)
         SeedData.attachStarterCare(to: dog, context: context)
         let me = FamilyMember(name: draft.ownerName, role: .owner, isMe: true)
@@ -124,14 +132,14 @@ struct DogDraft {
         Double(weight.replacingOccurrences(of: ",", with: "."))
     }
 
+    /// Режим питания приезжает отдельным шагом — здесь только то,
+    /// что человек ввёл на карточке собаки.
     func makeDog() -> Dog {
         let dog = Dog(name: name.trimmingCharacters(in: .whitespaces), weightKg: weightValue ?? 0)
         dog.breed = breed.isEmpty ? nil : breed
         dog.birthDate = hasBirthDate ? birthDate : nil
         dog.isOnTreatment = isOnTreatment
         dog.photo = photo
-        dog.portionGrams = 60
-        dog.mealsPerDay = 2
         return dog
     }
 }
@@ -237,6 +245,25 @@ private struct DogStep: View {
             }
         } bottom: {
             TGButton(title: "Дальше", isEnabled: draft.isValid, action: onNext)
+        }
+    }
+}
+
+// MARK: - Шаг 3 · режим дня и питания
+
+/// Сколько раз ест, во сколько встаёт, сколько граммов за раз.
+/// Спрашиваем сразу: без этого приложение не сможет ни подсказать время
+/// кормления, ни заметить, что собака переедает.
+private struct ScheduleStep: View {
+    @Binding var draft: ScheduleDraft
+    var onNext: () -> Void
+
+    var body: some View {
+        TGScreen(title: "Режим дня") {
+            TGExplainer(text: "Приблизительно — приложение потом сверит это с тем, как вы кормите на самом деле, и поправит.")
+            ScheduleEditor(draft: $draft, isVerbose: true)
+        } bottom: {
+            TGButton(title: "Дальше", action: onNext)
         }
     }
 }

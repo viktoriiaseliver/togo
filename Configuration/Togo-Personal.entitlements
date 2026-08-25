@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!--
+	Вариант подписи для личной установки на свой телефон.
+
+	Бесплатная команда разработчика не даёт ни App Groups, ни iCloud —
+	Apple выдаёт их только по платной программе. Поэтому здесь их нет,
+	и приложение честно работает без них: дневник хранится локально,
+	iCloud на экране «Перенос» показан как недоступный, виджет не видит
+	общего хранилища. Всё остальное работает целиком.
+
+	Сборка:  xcodebuild ... ENTITLEMENTS_VARIANT=-Personal
+	-->
+</dict>
+</plist>
