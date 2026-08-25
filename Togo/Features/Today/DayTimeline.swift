@@ -23,7 +23,7 @@ struct DayTimeline: View {
                         TimelineRow(event: event)
                             .contentShape(Rectangle())
                             .onTapGesture { onTap(event) }
-                        if event.id != events.last?.id { TGDivider().padding(.leading, 52) }
+                        if event.id != events.last?.id { TGDivider(inset: 52) }
                     }
                     NowMarker(now: now)
                 }
@@ -42,15 +42,17 @@ struct TimelineRow: View {
                 .foregroundStyle(Token.Ink.secondary)
                 .frame(width: 40, alignment: .leading)
 
+            // Иконка повторяет название записи — голосом её произносить незачем.
             Image(systemName: event.kind.symbol)
                 .font(.system(size: 14, weight: .medium))
-                .foregroundStyle(event.raisesAlarm ? Token.Status.overdueText : Token.Ink.silhouette)
+                .foregroundStyle(event.symbolColor)
                 .frame(width: 20)
+                .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(event.kind.title)
                     .textStyle(AppFont.bodyEmphasis)
-                    .foregroundStyle(event.raisesAlarm ? Token.Status.overdueText : Token.Ink.primary)
+                    .foregroundStyle(event.titleColor)
                 if let subtitle = event.subtitle {
                     Text(subtitle).textStyle(AppFont.caption).foregroundStyle(Token.Ink.secondary)
                 }
@@ -58,17 +60,10 @@ struct TimelineRow: View {
 
             Spacer(minLength: 8)
 
-            HStack(spacing: 4) {
-                Text(String(event.authorName.prefix(1)))
-                    .font(.system(size: 11, weight: .bold))
-                    .foregroundStyle(Token.Ink.secondary)
-                Image(systemName: event.isSynced ? "checkmark.circle.fill" : "arrow.triangle.2.circlepath")
-                    .font(.system(size: 11, weight: .semibold))
-                    .foregroundStyle(event.isSynced ? Token.Action.done : Token.Ink.faint)
-                    .accessibilityLabel(event.isSynced ? "Синхронизировано" : "Ждёт синхронизации")
-            }
+            TGSyncMark(author: event.authorName, isSynced: event.isSynced)
         }
         .padding(.vertical, 10)
+        .accessibilityElement(children: .combine)
     }
 }
 
@@ -77,8 +72,14 @@ struct NowMarker: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            Text("сейчас").textStyle(AppFont.micro).foregroundStyle(Token.Action.primary)
-                .frame(width: 40, alignment: .leading)
+            // Колонка времени в строках ленты — 40pt, но «сейчас» в неё
+            // не влезает и переносится. Метке нужна своя ширина.
+            Text("сейчас")
+                .textStyle(AppFont.micro)
+                .foregroundStyle(Token.Action.primary)
+                .lineLimit(1)
+                .fixedSize()
+                .frame(width: 48, alignment: .leading)
             Circle().fill(Token.Action.primary).frame(width: 8, height: 8)
             Rectangle().fill(Token.Action.primary.opacity(0.28)).frame(height: 1)
             Text(Fmt.clock(now))
@@ -139,7 +140,7 @@ struct DayPlanList: View {
                 VStack(spacing: 0) {
                     ForEach(items) { item in
                         SwipeToCompleteRow(item: item, now: now) { onComplete(item) }
-                        if item.id != items.last?.id { TGDivider().padding(.leading, 52) }
+                        if item.id != items.last?.id { TGDivider(inset: 52) }
                     }
                 }
             }
