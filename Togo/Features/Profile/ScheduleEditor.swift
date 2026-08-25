@@ -6,6 +6,23 @@ import SwiftUI
 /// Работает с черновиком, а не с моделью: в онбординге собаки ещё нет,
 /// а в профиле правку не хочется писать в базу на каждое касание степпера.
 struct ScheduleDraft: Equatable {
+    /// С какого конца человек считает норму. Оба способа встречаются
+    /// одинаково часто: на упаковке пишут дневную норму, а отмеряют
+    /// обычно порцию за раз.
+    enum NormEntry: String, CaseIterable {
+        case perServing
+        case perDay
+
+        var title: String {
+            switch self {
+            case .perServing: "Считаю за раз"
+            case .perDay: "Знаю дневную норму"
+            }
+        }
+    }
+
+    var normEntry: NormEntry = .perServing
+    var dailyNormGrams: Int = 120
     var mealsPerDay: Int = 2
     var portionGrams: Int = 60
     var wakeMinuteOfDay: Int = 7 * 60
@@ -14,36 +31,51 @@ struct ScheduleDraft: Equatable {
     /// Времена расставлены вручную — тогда приложение их не пересчитывает.
     var isManual: Bool = false
 
-    var dailyGrams: Int { portionGrams * mealsPerDay }
+    var dailyGrams: Int {
+        normEntry == .perDay ? dailyNormGrams : portionGrams * mealsPerDay
+    }
+
+    /// Порция за раз при заданной дневной норме.
+    var servingGrams: Int {
+        guard normEntry == .perDay, mealsPerDay > 0 else { return portionGrams }
+        return max(1, Int((Double(dailyNormGrams) / Double(mealsPerDay) / 5).rounded()) * 5)
+    }
 
     var awakeMinutes: Int {
         let span = sleepMinuteOfDay - wakeMinuteOfDay
         return span > 0 ? span : span + 24 * 60
     }
 
-    /// Ровный интервал между кормлениями важнее точного часа: собака
-    /// привыкает к промежутку, а не к цифре на часах.
-    var evenMealTimes: [Int] {
-        guard mealsPerDay > 0 else { return [] }
-        let first = wakeMinuteOfDay + 30
-        guard mealsPerDay > 1 else { return [first % (24 * 60)] }
-        let last = wakeMinuteOfDay + max(90, awakeMinutes - 120)
-        let step = (last - first) / (mealsPerDay - 1)
-        return (0..<mealsPerDay).map { (first + step * $0) % (24 * 60) }
+    /// Раскладка по суткам целиком: считает и ночной перерыв тоже.
+    var plan: MealSchedule.Plan {
+        MealSchedule.plan(mealsPerDay: mealsPerDay,
+                          wake: wakeMinuteOfDay,
+                          sleep: sleepMinuteOfDay)
     }
+
+    var evenMealTimes: [Int] { plan.times }
 
     var effectiveMealTimes: [Int] {
         isManual && mealTimes.count == mealsPerDay ? mealTimes.sorted() : evenMealTimes
     }
 
-    var intervalBetweenMeals: Int? {
+    /// Что получилось на самом деле — с учётом ручных правок.
+    var effectivePlan: MealSchedule.Plan {
         let times = effectiveMealTimes
-        guard times.count > 1 else { return nil }
-        return times[1] - times[0]
+        return MealSchedule.Plan(
+            times: times,
+            dayInterval: MealSchedule.dayInterval(times),
+            nightGap: MealSchedule.nightGap(times),
+            isCompressed: plan.isCompressed
+        )
     }
+
+    var intervalBetweenMeals: Int? { effectivePlan.dayInterval }
 
     static func from(_ dog: Dog) -> ScheduleDraft {
         var draft = ScheduleDraft()
+        draft.normEntry = dog.usesDailyNorm ? .perDay : .perServing
+        draft.dailyNormGrams = dog.dailyGrams
         draft.mealsPerDay = dog.mealsPerDay
         draft.portionGrams = dog.portionGrams
         draft.wakeMinuteOfDay = dog.wakeMinuteOfDay
@@ -55,7 +87,8 @@ struct ScheduleDraft: Equatable {
 
     func apply(to dog: Dog) {
         dog.mealsPerDay = mealsPerDay
-        dog.portionGrams = portionGrams
+        dog.dailyNormGrams = normEntry == .perDay ? dailyNormGrams : nil
+        dog.portionGrams = normEntry == .perDay ? servingGrams : portionGrams
         dog.wakeMinuteOfDay = wakeMinuteOfDay
         dog.sleepMinuteOfDay = sleepMinuteOfDay
         dog.mealTimes = effectiveMealTimes
@@ -117,14 +150,39 @@ struct ScheduleEditor: View {
             }
 
             TGDivider()
-            Stepper(value: $draft.portionGrams, in: 5...600, step: 5) {
-                HStack {
-                    Text("Грамм за раз").textStyle(AppFont.body)
-                    Spacer(minLength: Token.Space.s8)
-                    Text("\(draft.portionGrams) г").textStyle(AppFont.numeric(17))
+            TGChipGroup(items: ScheduleDraft.NormEntry.allCases, title: \.title,
+                        isSelected: { $0 == draft.normEntry },
+                        minimumWidth: 150) { draft.normEntry = $0 }
+                .padding(.vertical, Token.Space.s8)
+
+            if draft.normEntry == .perServing {
+                TGDivider()
+                Stepper(value: $draft.portionGrams, in: 5...600, step: 5) {
+                    HStack {
+                        Text("Грамм за раз").textStyle(AppFont.body)
+                        Spacer(minLength: Token.Space.s8)
+                        Text("\(draft.portionGrams) г").textStyle(AppFont.numeric(17))
+                    }
                 }
+                .frame(minHeight: Token.Size.tapTarget)
+            } else {
+                TGDivider()
+                Stepper(value: $draft.dailyNormGrams, in: 10...2000, step: 10) {
+                    HStack {
+                        Text("Норма в день").textStyle(AppFont.body)
+                        Spacer(minLength: Token.Space.s8)
+                        Text("\(draft.dailyNormGrams) г").textStyle(AppFont.numeric(17))
+                    }
+                }
+                .frame(minHeight: Token.Size.tapTarget)
+                TGDivider()
+                HStack {
+                    Text("Значит за раз").textStyle(AppFont.body)
+                    Spacer(minLength: Token.Space.s8)
+                    Text("\(draft.servingGrams) г").textStyle(AppFont.numeric(17).color(Token.Ink.secondary))
+                }
+                .frame(minHeight: Token.Size.tapTarget)
             }
-            .frame(minHeight: Token.Size.tapTarget)
 
             TGDivider()
             HStack {
@@ -133,7 +191,7 @@ struct ScheduleEditor: View {
                 Text("\(draft.dailyGrams) г").textStyle(AppFont.numeric(20))
             }
             .frame(minHeight: Token.Size.tapTarget)
-            TGExplainer(text: "Порция одна на все кормления: уменьшишь её — уменьшится весь день. Норму называет врач, приложение её не выдумывает.")
+            TGExplainer(text: "Порция одна на все кормления: уменьшишь её — уменьшится весь день. Норму называет врач или упаковка, приложение её не выдумывает. Для влажного корма граммы другие: он на три четверти вода.")
         }
     }
 
@@ -144,10 +202,7 @@ struct ScheduleEditor: View {
             HStack {
                 TGSectionHeader(
                     title: "во сколько кормить",
-                    subtitle: draft.isManual
-                        ? "расставлено вручную"
-                        : draft.intervalBetweenMeals.map { "ровно через \(Fmt.duration(Double($0) * 60))" }
-                            ?? "одно кормление"
+                    subtitle: draft.isManual ? "расставлено вручную" : scheduleSubtitle
                 )
                 if draft.isManual {
                     Button("Разложить ровно") {
@@ -168,6 +223,44 @@ struct ScheduleEditor: View {
                     )
                 )
                 if index != draft.effectiveMealTimes.count - 1 { TGDivider() }
+            }
+
+            TGDivider()
+            rhythmRow
+        }
+    }
+
+    private var scheduleSubtitle: String {
+        guard let interval = draft.effectivePlan.dayInterval else { return "одно кормление" }
+        return "ровно через \(Fmt.duration(Double(interval) * 60))"
+    }
+
+    /// Ночь — тоже промежуток между кормлениями, и обычно самый длинный.
+    /// Показываем его рядом с дневным: иначе человек его просто не видит.
+    @ViewBuilder
+    private var rhythmRow: some View {
+        let plan = draft.effectivePlan
+        if plan.times.count > 1 {
+            HStack(spacing: 0) {
+                TGStat(value: plan.dayInterval.map { Fmt.duration(Double($0) * 60) } ?? "—",
+                       caption: "днём между едой", size: 17)
+                TGStat(value: Fmt.duration(Double(plan.nightGap) * 60),
+                       caption: "ночной перерыв", size: 17)
+            }
+
+            if plan.hasLongNight {
+                TGBanner(
+                    tone: .waiting,
+                    title: "Ночь длиннее \(Fmt.duration(Double(MealSchedule.longNightThreshold) * 60))",
+                    subtitle: "Долгий перерыв натощак у части собак даёт утреннюю рвоту желчью. Если такое бывает — сдвинь последнее кормление позже или добавь ещё одно. Это наблюдение, а не назначение: сверь с врачом.",
+                    systemImage: "moon"
+                )
+            } else if let overhang = plan.nightOverhang, overhang <= 60 {
+                TGExplainer(text: "Промежутки ровные и днём, и ночью — собаке так спокойнее всего.")
+            }
+
+            if plan.isCompressed {
+                TGExplainer(text: "Ровный шаг по суткам не влезает в окно бодрствования: кормления разложены поровну между первым и последним, ночь получается длиннее. Раньше вставать или позже ложиться — единственный способ это выровнять.")
             }
         }
     }

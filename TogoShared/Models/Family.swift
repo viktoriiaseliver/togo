@@ -124,8 +124,14 @@ final class Trip {
     }
 
     func isActive(on date: Date = Date()) -> Bool {
-        let cal = Calendar.current
-        return date >= cal.startOfDay(for: startDate) && date <= cal.date(byAdding: .day, value: 1, to: cal.startOfDay(for: endDate))!
+        let calendar = Calendar.current
+        let from = calendar.startOfDay(for: startDate)
+        // Последний день поездки считается целиком: возвращаются вечером.
+        guard let until = calendar.date(byAdding: .day, value: 1,
+                                        to: calendar.startOfDay(for: endDate)) else {
+            return false
+        }
+        return date >= from && date <= until
     }
 
     func dayNumber(on date: Date = Date()) -> Int {

@@ -12,11 +12,15 @@ struct NeedsSheet: View {
     @Environment(AppState.self) private var appState
     @State private var askSignal = false
 
-    private var signals: NeedSignals {
-        Diary.signals(dog?.events ?? [], episodeActive: appState.isEpisodeActive)
-    }
+    /// Считаем один раз при открытии: тело шторки обращается к вердикту
+    /// и к фактам по три раза, а каждый расчёт проходит всю историю.
+    @State private var signals = NeedSignals()
+    @State private var verdict: NeedVerdict = .unknown(reason: .ambiguous)
 
-    private var verdict: NeedVerdict { VerdictEngine.evaluate(signals) }
+    private func evaluate() {
+        signals = Diary.signals(dog?.events ?? [], episodeActive: appState.isEpisodeActive)
+        verdict = VerdictEngine.evaluate(signals)
+    }
 
     var body: some View {
         TGSheet(title: verdict.title, subtitle: verdict.badge) {
@@ -41,18 +45,18 @@ struct NeedsSheet: View {
             .padding(.top, 4)
         }
         .presentationDetents([.medium, .large])
+        .task { evaluate() }
         .sheet(isPresented: $askSignal) {
             HowAskedSheet(dog: dog) { dismiss() }
         }
     }
 
     private func startOuting() {
-        guard let dog else { return }
-        let event = LogEvent(kind: .outing, authorName: appState.currentUserName)
-        event.dog = dog
-        context.insert(event)
-        Haptics.success()
-        appState.startWalk(by: appState.currentUserName)
+        guard let dog,
+              let event = EventLog(context: context, appState: appState)
+                  .record(.outing, dog: dog, confirmation: nil)
+        else { return }
+        appState.startOuting(by: appState.currentUserName)
         LiveActivityController.startWalk(dogName: dog.name, by: appState.currentUserName, at: event.date)
 
         // Спрашиваем не каждый раз: только при смене сигнала или раз в пять выходов.

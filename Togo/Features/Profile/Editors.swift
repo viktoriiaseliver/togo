@@ -114,6 +114,9 @@ struct CareTaskEditorSheet: View {
     @State private var title = ""
     @State private var detail = ""
     @State private var intervalDays = 30
+    @State private var kind: CareKind = .periodic
+    @State private var scheduledDate = Date()
+    @State private var lastDone: Date?
     @State private var category: CareCategory = .grooming
     @State private var isSeasonal = false
     @State private var seasonStart = 4
@@ -135,17 +138,65 @@ struct CareTaskEditorSheet: View {
                 }
                 TGDivider()
                 LabeledField(label: "Пояснение") {
-                    TextField("каждые 3 недели", text: $detail)
+                    TextField("когда стучат по полу", text: $detail)
                 }
-                TGDivider()
-                Stepper(value: $intervalDays, in: 1...365) {
-                    HStack {
-                        Text("Как часто").textStyle(AppFont.body)
-                        Spacer()
-                        Text("раз в \(Fmt.days(intervalDays))").textStyle(AppFont.numeric(15))
+            }
+
+            TGCard {
+                TGSectionHeader(title: "какого сорта дело",
+                                subtitle: "от этого зависит, как оно себя ведёт")
+                TGChipGroup(items: CareKind.allCases, title: \.title,
+                            isSelected: { $0 == kind }) { kind = $0 }
+                TGExplainer(text: kindExplainer)
+            }
+
+            switch kind {
+            case .daily:
+                EmptyView()
+            case .periodic:
+                TGCard(spacing: 0) {
+                    Stepper(value: $intervalDays, in: 1...365) {
+                        HStack {
+                            Text("Как часто").textStyle(AppFont.body)
+                            Spacer()
+                            Text("раз в \(Fmt.days(intervalDays))").textStyle(AppFont.numeric(15))
+                        }
+                    }
+                    .frame(minHeight: Token.Size.tapTarget)
+                    TGDivider()
+                    Toggle(isOn: Binding(get: { lastDone != nil },
+                                         set: { lastDone = $0 ? Date() : nil })) {
+                        VStack(alignment: .leading, spacing: Token.Space.s2) {
+                            Text("Уже делали").textStyle(AppFont.body)
+                            Text("иначе срок неизвестен — и приложение так и скажет")
+                                .textStyle(AppFont.caption)
+                        }
+                    }
+                    .frame(minHeight: Token.Size.tapTarget)
+                    if lastDone != nil {
+                        TGDivider()
+                        DatePicker("Последний раз",
+                                   selection: Binding(get: { lastDone ?? Date() },
+                                                      set: { lastDone = $0 }),
+                                   in: ...Date(), displayedComponents: .date)
+                            .frame(minHeight: Token.Size.tapTarget)
                     }
                 }
-                .frame(minHeight: Token.Size.tapTarget)
+            case .dated:
+                TGCard(spacing: 0) {
+                    DatePicker("Когда", selection: $scheduledDate, displayedComponents: .date)
+                        .frame(minHeight: Token.Size.tapTarget)
+                    TGDivider()
+                    Stepper(value: $intervalDays, in: 0...730, step: 30) {
+                        HStack {
+                            Text("Повторять").textStyle(AppFont.body)
+                            Spacer()
+                            Text(intervalDays == 0 ? "один раз" : "раз в \(Fmt.days(intervalDays))")
+                                .textStyle(AppFont.numeric(15))
+                        }
+                    }
+                    .frame(minHeight: Token.Size.tapTarget)
+                }
             }
 
             TGCard {
@@ -154,6 +205,7 @@ struct CareTaskEditorSheet: View {
                             isSelected: { $0 == category }) { category = $0 }
             }
 
+            if kind != .daily {
             TGCard {
                 Toggle(isOn: $isSeasonal) {
                     VStack(alignment: .leading, spacing: Token.Space.s2) {
@@ -172,6 +224,7 @@ struct CareTaskEditorSheet: View {
                     }
                     .pickerStyle(.menu)
                 }
+            }
             }
 
             if !isNew {
@@ -197,6 +250,17 @@ struct CareTaskEditorSheet: View {
         }
     }
 
+    private var kindExplainer: String {
+        switch kind {
+        case .daily:
+            "Привычка. Просрочки у неё нет — есть серия дней подряд. Зубы чистят каждый день: налёт твердеет за сутки."
+        case .periodic:
+            "Раз в N дней от последнего раза. Пока ни разу не делали, срок неизвестен, и приложение не станет выдумывать просрочку."
+        case .dated:
+            "Конкретный день: прививка, визит. Напомним заранее и сдвинем дату на следующий раз."
+        }
+    }
+
     private func месяц(_ number: Int) -> String {
         DateFormatter().monthSymbols?[number - 1].capitalized ?? "\(number)"
     }
@@ -205,7 +269,10 @@ struct CareTaskEditorSheet: View {
         guard !loaded, let task else { loaded = true; return }
         title = task.title
         detail = task.detail
+        kind = task.kind
         intervalDays = task.intervalDays
+        scheduledDate = task.scheduledDate ?? Date()
+        lastDone = task.lastDone
         category = task.category
         isSeasonal = task.seasonStartMonth != nil
         seasonStart = task.seasonStartMonth ?? 4
@@ -214,17 +281,22 @@ struct CareTaskEditorSheet: View {
     }
 
     private func save() {
-        let target = task ?? CareTask(title: title, detail: detail, intervalDays: intervalDays, category: category)
+        let target = task ?? CareTask(title: title, detail: detail, kind: kind,
+                                      intervalDays: intervalDays, category: category)
         target.title = title
         target.detail = detail
+        target.kind = kind
         target.intervalDays = intervalDays
         target.category = category
-        target.seasonStartMonth = isSeasonal ? seasonStart : nil
-        target.seasonEndMonth = isSeasonal ? seasonEnd : nil
+        target.lastDone = kind == .daily ? target.lastDone : lastDone
+        target.scheduledDate = kind == .dated ? scheduledDate : nil
+        target.seasonStartMonth = (isSeasonal && kind != .daily) ? seasonStart : nil
+        target.seasonEndMonth = (isSeasonal && kind != .daily) ? seasonEnd : nil
         if task == nil {
             target.dog = dog
             context.insert(target)
         }
+        try? context.save()
         Haptics.success()
         dismiss()
     }
@@ -371,6 +443,7 @@ struct MedicationEditorSheet: View {
             target.dog = dog
             context.insert(target)
         }
+        try? context.save()
         Haptics.success()
         dismiss()
     }

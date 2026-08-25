@@ -53,6 +53,14 @@ nonisolated struct FeedingReport: Equatable, Sendable {
     /// Предложенное время попало в окно натощак — показываем конфликт явно.
     var conflicts: [String]
 
+    static let empty = FeedingReport(
+        days: [], normGramsPerDay: 0, normMealsPerDay: 0,
+        averageGramsPerDay: 0, averageMealsPerDay: 0,
+        status: .notEnoughData(days: 0), observedMealTimes: [],
+        suggestedPortionGrams: nil, suggestedMealTimes: [],
+        stoolLagMinutes: nil, suggestedOutingTimes: [], conflicts: []
+    )
+
     var todayGrams: Int { days.last?.grams ?? 0 }
     var todayMeals: Int { days.last?.meals ?? 0 }
     var remainingGramsToday: Int { max(0, normGramsPerDay - todayGrams) }
@@ -211,20 +219,16 @@ nonisolated enum FeedingAnalyzer {
         // расписание и есть правильное. Ломать сложившийся ритм незачем.
         if observed.count == normMeals { return observed }
 
-        // Иначе раскладываем по окну бодрствования, которое человек указал
-        // сам, а не по средним цифрам из интернета.
-        let first: Int
-        let last: Int
+        // Иначе раскладываем по суткам целиком: ночь — тоже промежуток
+        // между кормлениями, и её тоже надо учитывать.
         if let awakeWindow {
-            let span = awakeWindow.sleep > awakeWindow.wake
-                ? awakeWindow.sleep - awakeWindow.wake
-                : awakeWindow.sleep + 24 * 60 - awakeWindow.wake
-            first = awakeWindow.wake + 30
-            last = awakeWindow.wake + max(90, span - 120)
-        } else {
-            first = observed.first ?? 7 * 60 + 30
-            last = observed.last ?? 18 * 60 + 30
+            return MealSchedule.evenTimes(mealsPerDay: normMeals,
+                                          wake: awakeWindow.wake,
+                                          sleep: awakeWindow.sleep)
         }
+
+        let first = observed.first ?? 7 * 60 + 30
+        let last = observed.last ?? 18 * 60 + 30
 
         guard normMeals > 1 else { return [first % (24 * 60)] }
         let step = max(60, last - first) / (normMeals - 1)
@@ -244,10 +248,17 @@ nonisolated enum FeedingAnalyzer {
             .sorted()
         guard !meals.isEmpty, !stools.isEmpty else { return nil }
 
+        // Оба массива отсортированы, поэтому идём по ним одним проходом.
+        // Поиск `meals.last(where:)` внутри цикла давал квадрат: на годе
+        // записей это десятки тысяч сравнений на каждую перерисовку.
         var lags: [Int] = []
+        var mealIndex = 0
         for stool in stools {
-            guard let meal = meals.last(where: { $0 < stool }) else { continue }
-            let lag = stool.timeIntervalSince(meal)
+            while mealIndex + 1 < meals.count, meals[mealIndex + 1] < stool {
+                mealIndex += 1
+            }
+            guard mealIndex < meals.count, meals[mealIndex] < stool else { continue }
+            let lag = stool.timeIntervalSince(meals[mealIndex])
             if lag <= maxLagHours * 3600 { lags.append(Int(lag / 60)) }
         }
         guard lags.count >= 3 else { return nil }

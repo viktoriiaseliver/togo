@@ -3,176 +3,6 @@ import SwiftData
 import UniformTypeIdentifiers
 import CoreTransferable
 
-/// Полный слепок дневника: то, что переживает переустановку и переезд
-/// на новый телефон.
-///
-/// Формат намеренно простой — плоский JSON с версией. Его можно открыть
-/// текстовым редактором и увидеть, что именно уезжает: приложение,
-/// которое хранит здоровье собаки, не имеет права быть чёрным ящиком.
-nonisolated struct BackupArchive: Codable, Sendable {
-    /// Версия формата. Читатель обязан проверить её первой строкой.
-    var formatVersion: Int = 1
-    var createdAt: Date
-    var appVersion: String
-
-    var dogs: [DogSnapshot]
-    var members: [MemberSnapshot]
-    var episodes: [EpisodeSnapshot]
-
-    struct DogSnapshot: Codable, Sendable {
-        var name: String
-        var photo: Data?
-        var breed: String?
-        var birthDate: Date?
-        var weightKg: Double
-        var targetWeightLow: Double?
-        var targetWeightHigh: Double?
-        var foodBrand: String
-        var portionGrams: Int
-        var mealsPerDay: Int
-        var mealTimes: [Int]
-        var forbiddenFoods: [String]
-        var rewards: [String]
-        var trainingFoodFromPortion: Bool
-        var markerKindRaw: String
-        var sessionLengthMinutes: Int
-        var isOnTreatment: Bool
-        var createdAt: Date
-
-        var events: [EventSnapshot]
-        var weights: [WeightSnapshot]
-        var careTasks: [CareTaskSnapshot]
-        var medications: [MedicationSnapshot]
-        var trainingSteps: [TrainingStepSnapshot]
-        var trainingSessions: [TrainingSessionSnapshot]
-        var trips: [TripSnapshot]
-    }
-
-    struct EventSnapshot: Codable, Sendable {
-        var id: UUID
-        var date: Date
-        var kindRaw: String
-        var authorName: String
-        var isSynced: Bool
-        var note: String?
-        var outcomeRaw: String?
-        var askSignalRaw: String?
-        var durationSeconds: Int?
-        var stoolFormRaw: String?
-        var stoolFlagsRaw: [String]
-        var grams: Int?
-        var milliliters: Int?
-        var fromPortion: Bool
-        var incidentKindRaw: String?
-        var incidentDetailRaw: String?
-        var toldFamily: Bool
-        var deletedAt: Date?
-        var deletedBy: String?
-    }
-
-    struct WeightSnapshot: Codable, Sendable {
-        var date: Date
-        var kg: Double
-    }
-
-    struct CareTaskSnapshot: Codable, Sendable {
-        var title: String
-        var detail: String
-        var intervalDays: Int
-        var lastDone: Date?
-        var categoryRaw: String
-        var seasonStartMonth: Int?
-        var seasonEndMonth: Int?
-        var snoozeCount: Int
-    }
-
-    struct MedicationSnapshot: Codable, Sendable {
-        var name: String
-        var doseText: String
-        var times: [Int]
-        var fastingMinutes: Int
-        var isPaused: Bool
-        var prescriber: String?
-        var cancelledAt: Date?
-        var cancelledNote: String?
-        var doses: [DoseSnapshot]
-    }
-
-    struct DoseSnapshot: Codable, Sendable {
-        var scheduledAt: Date
-        var givenAt: Date?
-        var givenBy: String?
-        var cancelledAt: Date?
-        var cancelReason: String?
-    }
-
-    struct TrainingStepSnapshot: Codable, Sendable {
-        var cue: String
-        var place: String
-        var person: String
-        var distanceMeters: Int
-        var statusRaw: String
-        var consecutiveGoodSessions: Int
-        var order: Int
-    }
-
-    struct TrainingSessionSnapshot: Codable, Sendable {
-        var startedAt: Date
-        var durationSeconds: Int
-        var cue: String
-        var place: String
-        var person: String
-        var distanceMeters: Int
-        var markDelaysMs: [Int]
-        var successes: Int
-        var attempts: Int
-        var gramsUsed: Int
-        var observationsRaw: [String]
-        var countsTowardProgress: Bool
-    }
-
-    struct TripSnapshot: Codable, Sendable {
-        var destination: String
-        var startDate: Date
-        var endDate: Date
-        var transportRaw: String
-        var travelHours: Double
-        var lodging: String
-        var participants: [String]
-        var departureMinuteOfDay: Int
-        var packedItems: [String]
-    }
-
-    struct MemberSnapshot: Codable, Sendable {
-        var name: String
-        var roleRaw: String
-        var note: String?
-        var isMe: Bool
-        var customPermissionsRaw: [String]?
-        var isOnDuty: Bool
-        var dutyUntil: Date?
-        var accessExpiresAt: Date?
-        var acceptedAt: Date?
-    }
-
-    struct EpisodeSnapshot: Codable, Sendable {
-        var startedAt: Date
-        var endedAt: Date?
-        var title: String
-        var detail: String
-    }
-
-    /// Коротко для экрана: что именно уедет в файл.
-    var summary: String {
-        let events = dogs.reduce(0) { $0 + $1.events.count }
-        return [
-            Fmt.plural(dogs.count, "собака", "собаки", "собак"),
-            Fmt.plural(events, "запись", "записи", "записей"),
-            Fmt.plural(members.count, "человек", "человека", "человек"),
-        ].joined(separator: " · ")
-    }
-}
-
 /// Ошибки чтения бэкапа. Каждая говорит, что случилось и что делать —
 /// «не удалось импортировать» без объяснения бесполезно.
 nonisolated enum BackupError: LocalizedError, Sendable {
@@ -197,14 +27,28 @@ nonisolated enum BackupService {
 
     @MainActor
     static func archive(context: ModelContext, appVersion: String) throws -> BackupArchive {
+        // Сохраняем перед выгрузкой. Без этого связи, добавленные только что,
+        // в файл не попадут — человек увезёт бэкап без последних записей
+        // и ничего не заметит. Тихая потеря данных в файле переноса — худшее,
+        // что может сделать эта функция.
+        try? context.save()
+
         let dogs = try context.fetch(FetchDescriptor<Dog>())
+        // Детей берём явными выборками и раскладываем по собакам сами:
+        // полагаться на то, что обратная связь уже materialised, нельзя.
+        let allStocks = (try? context.fetch(FetchDescriptor<FoodStock>())) ?? []
+        let allHeats = (try? context.fetch(FetchDescriptor<HeatRecord>())) ?? []
         let members = try context.fetch(FetchDescriptor<FamilyMember>())
         let episodes = try context.fetch(FetchDescriptor<Episode>())
 
         return BackupArchive(
             createdAt: Date(),
             appVersion: appVersion,
-            dogs: dogs.map(snapshot),
+            dogs: dogs.map { dog in
+                snapshot(dog,
+                         stocks: allStocks.filter { $0.dog?.persistentModelID == dog.persistentModelID },
+                         heats: allHeats.filter { $0.dog?.persistentModelID == dog.persistentModelID })
+            },
             members: members.map { member in
                 BackupArchive.MemberSnapshot(
                     name: member.name, roleRaw: member.roleRaw, note: member.note,
@@ -221,13 +65,18 @@ nonisolated enum BackupService {
     }
 
     @MainActor
-    private static func snapshot(_ dog: Dog) -> BackupArchive.DogSnapshot {
+    private static func snapshot(
+        _ dog: Dog,
+        stocks: [FoodStock] = [],
+        heats: [HeatRecord] = []
+    ) -> BackupArchive.DogSnapshot {
         BackupArchive.DogSnapshot(
             name: dog.name, photo: dog.photo, breed: dog.breed, birthDate: dog.birthDate,
             weightKg: dog.weightKg, targetWeightLow: dog.targetWeightLow,
             targetWeightHigh: dog.targetWeightHigh, foodBrand: dog.foodBrand,
             portionGrams: dog.portionGrams, mealsPerDay: dog.mealsPerDay,
             mealTimes: dog.mealTimes, forbiddenFoods: dog.forbiddenFoods,
+            dailyNormGrams: dog.dailyNormGrams,
             rewards: dog.rewards, trainingFoodFromPortion: dog.trainingFoodFromPortion,
             markerKindRaw: dog.markerKindRaw, sessionLengthMinutes: dog.sessionLengthMinutes,
             isOnTreatment: dog.isOnTreatment, createdAt: dog.createdAt,
@@ -288,6 +137,14 @@ nonisolated enum BackupService {
                     participants: $0.participants, departureMinuteOfDay: $0.departureMinuteOfDay,
                     packedItems: $0.packedItems
                 )
+            },
+            stocks: stocks.map {
+                BackupArchive.StockSnapshot(kindRaw: $0.kindRaw, brand: $0.brand,
+                                            packGrams: $0.packGrams, packsLeft: $0.packsLeft,
+                                            gramsPerDay: $0.gramsPerDay, openedAt: $0.openedAt)
+            },
+            heats: heats.map {
+                BackupArchive.HeatSnapshot(startedAt: $0.startedAt, endedAt: $0.endedAt, note: $0.note)
             }
         )
     }
@@ -405,6 +262,11 @@ nonisolated enum BackupService {
             }
         }
 
+        // Сохраняем сразу: восстановление должно пережить закрытие
+        // приложения, даже если человек тут же его убьёт. Заодно связи
+        // применяются, и экраны показывают восстановленное, а не пустоту.
+        try? context.save()
+
         return restored
     }
 
@@ -421,6 +283,7 @@ nonisolated enum BackupService {
         dog.mealsPerDay = snapshot.mealsPerDay
         dog.mealTimes = snapshot.mealTimes
         dog.forbiddenFoods = snapshot.forbiddenFoods
+        dog.dailyNormGrams = snapshot.dailyNormGrams
         dog.rewards = snapshot.rewards
         dog.trainingFoodFromPortion = snapshot.trainingFoodFromPortion
         dog.markerKindRaw = snapshot.markerKindRaw
@@ -531,6 +394,23 @@ nonisolated enum BackupService {
             session.countsTowardProgress = sessionSnapshot.countsTowardProgress
             session.dog = dog
             context.insert(session)
+        }
+        for stockSnapshot in snapshot.stocks ?? [] {
+            let stock = FoodStock(kind: FoodKind(rawValue: stockSnapshot.kindRaw) ?? .dry,
+                                  brand: stockSnapshot.brand,
+                                  packGrams: stockSnapshot.packGrams,
+                                  packsLeft: stockSnapshot.packsLeft,
+                                  gramsPerDay: stockSnapshot.gramsPerDay)
+            stock.openedAt = stockSnapshot.openedAt
+            stock.dog = dog
+            context.insert(stock)
+        }
+        for heatSnapshot in snapshot.heats ?? [] {
+            let heat = HeatRecord(startedAt: heatSnapshot.startedAt,
+                                  endedAt: heatSnapshot.endedAt,
+                                  note: heatSnapshot.note)
+            heat.dog = dog
+            context.insert(heat)
         }
         for tripSnapshot in snapshot.trips {
             let trip = Trip(destination: tripSnapshot.destination,

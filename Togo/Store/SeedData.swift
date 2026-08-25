@@ -7,40 +7,73 @@ import SwiftData
 /// только те повторяющиеся дела, которые есть у любой собаки, и то — с пустой
 /// датой последнего раза, чтобы срок считался с сегодня.
 enum SeedData {
+    /// На первом запуске приложение не навязывает девять дел разом.
+    /// Оно заводит только вес — и предлагает выбрать уход самому.
     static func attachStarterCare(to dog: Dog, context: ModelContext) {
-        for task in starterCareTasks() {
-            task.dog = dog
-            context.insert(task)
-        }
         let weight = WeightEntry(kg: dog.weightKg)
         weight.dog = dog
         context.insert(weight)
     }
 
-    static func starterCareTasks() -> [CareTask] {
-        let grooming: [(String, String, Int)] = [
-            ("Вычесать", "2 раза в неделю · в линьку каждый день", 3),
-            ("Когти", "каждые 3 недели", 21),
-            ("Купать", "раз в 2 месяца", 60),
-            ("Уши и зубы", "раз в неделю", 7),
-        ]
-        let medical: [(String, String, Int, Int?, Int?)] = [
-            ("Антипаразитарка", "раз в месяц", 30, nil, nil),
-            ("Капли от клещей", "раз в 4 недели", 28, 4, 10),
-            ("Бешенство", "раз в год · нужна для поездок", 365, nil, nil),
-            ("Комплексная", "раз в год", 365, nil, nil),
-            ("Взвесить", "раз в две недели", 14, nil, nil),
-        ]
+    /// Что можно предложить завести. Человек отмечает нужное — и только оно
+    /// попадает в приложение. Интервалы здесь ориентировочные и правятся.
+    struct CareSuggestion: Identifiable, Hashable {
+        var id: String { title }
+        var title: String
+        var detail: String
+        var kind: CareKind
+        var intervalDays: Int
+        var category: CareCategory
+        var seasonStartMonth: Int?
+        var seasonEndMonth: Int?
+        /// Отмечено по умолчанию — то, что нужно почти всем.
+        var isDefault: Bool = false
 
-        var tasks = grooming.map { CareTask(title: $0.0, detail: $0.1, intervalDays: $0.2, category: .grooming) }
-        tasks += medical.map { title, detail, days, seasonStart, seasonEnd in
-            let task = CareTask(title: title, detail: detail, intervalDays: days, category: .medical)
-            task.seasonStartMonth = seasonStart
-            task.seasonEndMonth = seasonEnd
+        func makeTask() -> CareTask {
+            let task = CareTask(title: title, detail: detail, kind: kind,
+                                intervalDays: intervalDays, category: category)
+            task.seasonStartMonth = seasonStartMonth
+            task.seasonEndMonth = seasonEndMonth
             return task
         }
-        return tasks
     }
+
+    static let careSuggestions: [CareSuggestion] = [
+        // Каждый день
+        CareSuggestion(title: "Зубы", detail: "чистить каждый день — налёт твердеет за сутки",
+                       kind: .daily, intervalDays: 1, category: .grooming, isDefault: true),
+        CareSuggestion(title: "Вычесать", detail: "каждый день в линьку, иначе пару раз в неделю",
+                       kind: .daily, intervalDays: 1, category: .grooming),
+        CareSuggestion(title: "Лапы после улицы", detail: "особенно зимой, где реагенты",
+                       kind: .daily, intervalDays: 1, category: .grooming),
+        CareSuggestion(title: "Глаза", detail: "протереть, если текут",
+                       kind: .daily, intervalDays: 1, category: .grooming),
+
+        // Регулярно
+        CareSuggestion(title: "Когти", detail: "когда стучат по полу — уже пора",
+                       kind: .periodic, intervalDays: 21, category: .grooming, isDefault: true),
+        CareSuggestion(title: "Уши", detail: "осмотреть и почистить, если нужно",
+                       kind: .periodic, intervalDays: 7, category: .grooming, isDefault: true),
+        CareSuggestion(title: "Купать", detail: "чаще, чем раз в месяц, обычно не надо",
+                       kind: .periodic, intervalDays: 60, category: .grooming),
+        CareSuggestion(title: "Взвесить", detail: "видно раньше, чем на глаз",
+                       kind: .periodic, intervalDays: 14, category: .medical, isDefault: true),
+        CareSuggestion(title: "Антипаразитарка", detail: "от глистов, по назначению врача",
+                       kind: .periodic, intervalDays: 90, category: .medical, isDefault: true),
+        CareSuggestion(title: "Капли от клещей", detail: "в сезон, раз в месяц",
+                       kind: .periodic, intervalDays: 30, category: .medical,
+                       seasonStartMonth: 4, seasonEndMonth: 10, isDefault: true),
+
+        // По дате
+        CareSuggestion(title: "Прививка от бешенства", detail: "раз в год, нужна для поездок",
+                       kind: .dated, intervalDays: 365, category: .medical, isDefault: true),
+        CareSuggestion(title: "Комплексная прививка", detail: "раз в год",
+                       kind: .dated, intervalDays: 365, category: .medical),
+        CareSuggestion(title: "Осмотр у врача", detail: "раз в год, у пожилых чаще",
+                       kind: .dated, intervalDays: 365, category: .medical),
+        CareSuggestion(title: "Чистка зубов у врача", detail: "по показаниям",
+                       kind: .dated, intervalDays: 365, category: .medical),
+    ]
 
     /// Подготовка к процедурам — то, что приложение может предложить само,
     /// потому что уже знает про забор крови и поездку.
@@ -54,9 +87,11 @@ enum SeedData {
     }
 
     /// Демо-набор для превью и UI-тестов. В обычный запуск не попадает.
+    private static let calendarNow = Calendar.current
+
     @MainActor
     static func makePreviewContainer() -> ModelContainer {
-        let container = Persistence.container(inMemory: true)
+        let container = Persistence.container()
         let context = container.mainContext
 
         let dog = Dog(name: "Стич", weightKg: 4.1)
@@ -69,6 +104,18 @@ enum SeedData {
         dog.forbiddenFoods = ["курица", "кукуруза"]
         context.insert(dog)
         attachStarterCare(to: dog, context: context)
+
+        for suggestion in careSuggestions.filter(\.isDefault) {
+            let task = suggestion.makeTask()
+            if task.kind == .periodic {
+                task.lastDone = calendarNow.date(byAdding: .day, value: -task.intervalDays / 2, to: .now)
+            }
+            if task.kind == .dated {
+                task.scheduledDate = calendarNow.date(byAdding: .day, value: 40, to: .now)
+            }
+            task.dog = dog
+            context.insert(task)
+        }
 
         let me = FamilyMember(name: "Виктория", role: .owner, isMe: true)
         let teo = FamilyMember(name: "Тео", role: .coOwner)

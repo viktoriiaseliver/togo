@@ -6,16 +6,22 @@ import SwiftData
 struct HealthScreen: View {
     @Environment(AppState.self) private var appState
     @Query private var dogs: [Dog]
+    @Query private var allMedications: [Medication]
 
     @State private var editing: Medication?
     @State private var isAdding = false
 
     private var dog: Dog? { dogs.first }
 
+    private var medications: [Medication] {
+        guard let dog else { return [] }
+        return allMedications.filter { $0.dog?.persistentModelID == dog.persistentModelID }
+    }
+
     var body: some View {
         NavigationStack {
             TGScreen {
-                if dog?.medications.isEmpty ?? true {
+                if medications.isEmpty {
                     EmptyStateCard(
                         systemImage: "pills",
                         title: "Схемы лечения пока нет",
@@ -24,7 +30,7 @@ struct HealthScreen: View {
                         action: canEdit ? { isAdding = true } : nil
                     )
                 } else {
-                    ForEach(dog?.medications ?? []) { medication in
+                    ForEach(medications) { medication in
                         Button { if canEdit { editing = medication } } label: {
                             MedicationCard(medication: medication, canEdit: canEdit)
                         }
@@ -182,12 +188,10 @@ struct ProtocolScreen: View {
     }
 
     private func recordDraw() {
-        guard let dog else { return }
-        let event = LogEvent(kind: .note, authorName: appState.currentUserName)
-        event.note = "Забор крови"
-        event.dog = dog
-        context.insert(event)
-        Haptics.success()
+        EventLog(context: context, appState: appState)
+            .record(.note, dog: dog, confirmation: "Записано · забор крови") { event in
+                event.note = "Забор крови"
+            }
     }
 }
 

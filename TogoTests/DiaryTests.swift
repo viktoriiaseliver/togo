@@ -121,12 +121,24 @@ struct DiaryTests {
 
     @Test("Сводка дня складывает граммы, миллилитры и выходы")
     func daySummary() {
+        // День задан явно, а не «час назад»: под утро такой тест уезжает
+        // во вчера и падает на ровном месте. Полдень — безопасная точка.
+        let полдень = Calendar.current.date(
+            bySettingHour: 12, minute: 0, second: 0, of: .now
+        ) ?? .now
+
+        func запись(_ kind: LogKind, час: Int) -> LogEvent {
+            LogEvent(kind: kind,
+                     date: полдень.addingTimeInterval(Double(час - 12) * 3600),
+                     authorName: "Виктория")
+        }
+
         let dog = Dog(name: "Стич", weightKg: 4.1)
         dog.portionGrams = 60
-        let meal = event(.meal, minutesAgo: 60); meal.grams = 60
-        let water = event(.water, minutesAgo: 30); water.milliliters = 190
-        let outing = event(.outing, minutesAgo: 10)
-        let summary = Diary.summary([meal, water, outing], day: Date(), dog: dog)
+        let meal = запись(.meal, час: 8); meal.grams = 60
+        let water = запись(.water, час: 10); water.milliliters = 190
+        let outing = запись(.outing, час: 11)
+        let summary = Diary.summary([meal, water, outing], day: полдень, dog: dog)
         #expect(summary.eatenGrams == 60)
         #expect(summary.drankMl == 190)
         #expect(summary.outings == 1)

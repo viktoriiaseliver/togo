@@ -247,14 +247,16 @@ struct ScheduleTests {
         return dog
     }
 
-    @Test("Кормления раскладываются по окну бодрствования, а не по общей таблице")
-    func mealsFollowTheDog() {
-        let dog = стич()
-        let times = dog.evenMealTimes()
+    @Test("Два кормления встают ровно через двенадцать часов")
+    func twoMealsSplitTheDay() {
+        let dog = стич()   // встаёт в 7:00, ложится в 23:00
+        let plan = dog.mealPlan()
 
-        #expect(times.count == 2)
-        #expect(times[0] == 7 * 60 + 30, "первое — через полчаса после подъёма")
-        #expect(times[1] == 7 * 60 + 30 + (14 * 60 - 30), "последнее — за два часа до отбоя")
+        #expect(plan.times == [7 * 60 + 30, 19 * 60 + 30])
+        #expect(plan.dayInterval == 12 * 60)
+        #expect(plan.nightGap == 12 * 60, "ночь ровно такая же, как день")
+        #expect(!plan.hasLongNight)
+        #expect(!plan.isCompressed)
     }
 
     @Test("Ранний подъём двигает всё расписание")
@@ -268,15 +270,19 @@ struct ScheduleTests {
         #expect(times.allSatisfy { $0 < 21 * 60 })
     }
 
-    @Test("Три кормления идут через равные промежутки")
-    func threeMealsEven() {
+    @Test("Три кормления сжимаются в бодрствование, и это видно")
+    func threeMealsCompressed() {
         let dog = стич()
         dog.mealsPerDay = 3
+        let plan = dog.mealPlan()
 
-        let times = dog.evenMealTimes()
-        #expect(times.count == 3)
-        let intervals = zip(times, times.dropFirst()).map { $1 - $0 }
-        #expect(Set(intervals).count == 1)
+        // Идеальный шаг 8 ч дал бы последнее кормление в 23:30 — после отбоя.
+        #expect(plan.isCompressed)
+        #expect(plan.times.count == 3)
+        #expect(plan.times.last! <= MealSchedule.latestMeal(wake: 7 * 60, sleep: 23 * 60))
+
+        let intervals = zip(plan.times, plan.times.dropFirst()).map { $1 - $0 }
+        #expect(Set(intervals).count == 1, "между первым и последним — поровну")
     }
 
     @Test("Одно кормление — одно время, без деления на ноль")
@@ -293,7 +299,9 @@ struct ScheduleTests {
         dog.sleepMinuteOfDay = 2 * 60
 
         #expect(dog.awakeMinutes == 16 * 60)
-        #expect(dog.evenMealTimes().allSatisfy { (0..<(24 * 60)).contains($0) })
+        let plan = dog.mealPlan()
+        #expect(plan.times.allSatisfy { (0..<(24 * 60)).contains($0) })
+        #expect(plan.nightGap > 0 && plan.nightGap < 24 * 60)
     }
 
     @Test("Черновик и модель говорят одно и то же")
@@ -335,6 +343,7 @@ struct ScheduleTests {
         )
         #expect(suggested.count == 3)
         #expect(suggested[0] == 6 * 60 + 30)
+        #expect(MealSchedule.nightGap(suggested) < 24 * 60)
     }
 
     @Test("Если человек уже кормит столько раз, сколько собирался, ритм не ломаем")
@@ -346,5 +355,252 @@ struct ScheduleTests {
             awakeWindow: (wake: 7 * 60, sleep: 23 * 60)
         )
         #expect(suggested == [8 * 60, 19 * 60])
+    }
+}
+
+
+@Suite("Раскладка кормлений по суткам")
+struct MealScheduleTests {
+    @Test("Ночь считается как промежуток по кругу суток")
+    func nightGapWrapsMidnight() {
+        #expect(MealSchedule.nightGap([7 * 60 + 30, 19 * 60 + 30]) == 12 * 60)
+        #expect(MealSchedule.nightGap([8 * 60, 22 * 60]) == 10 * 60)
+        #expect(MealSchedule.nightGap([9 * 60]) == 24 * 60, "одно кормление — ровно сутки")
+    }
+
+    @Test("Дневной промежуток берётся самый короткий")
+    func dayIntervalIsShortest() {
+        #expect(MealSchedule.dayInterval([8 * 60, 13 * 60, 21 * 60]) == 5 * 60)
+        #expect(MealSchedule.dayInterval([8 * 60]) == nil)
+    }
+
+    @Test("Четыре кормления не выходят за окно бодрствования")
+    func fourMealsStayAwake() {
+        let plan = MealSchedule.plan(mealsPerDay: 4, wake: 7 * 60, sleep: 23 * 60)
+        let latest = MealSchedule.latestMeal(wake: 7 * 60, sleep: 23 * 60)
+
+        #expect(plan.times.count == 4)
+        #expect(plan.times.first! == 7 * 60 + 30)
+        #expect(plan.times.last! == latest)
+        #expect(plan.isCompressed)
+    }
+
+    @Test("Ранний подъём и поздний отбой дают ровные сутки на трёх кормлениях")
+    func longDayFitsIdealStep() {
+        // Бодрствует 18 часов: идеальный шаг восемь часов влезает целиком.
+        let plan = MealSchedule.plan(mealsPerDay: 3, wake: 5 * 60, sleep: 23 * 60)
+
+        #expect(!plan.isCompressed)
+        #expect(plan.dayInterval == 8 * 60)
+        #expect(plan.nightGap == 8 * 60, "ночь такая же, как день")
+    }
+
+    @Test("Одно кормление в день не роняет расчёт")
+    func singleMeal() {
+        let plan = MealSchedule.plan(mealsPerDay: 1, wake: 7 * 60, sleep: 23 * 60)
+        #expect(plan.times == [7 * 60 + 30])
+        #expect(plan.dayInterval == nil)
+        #expect(plan.nightGap == 24 * 60)
+        #expect(plan.hasLongNight)
+    }
+
+    @Test("Долгая ночь помечается")
+    func longNightFlagged() {
+        // Короткий день: встаёт в 9, ложится в 20 — ночь получается длинной.
+        let plan = MealSchedule.plan(mealsPerDay: 2, wake: 9 * 60, sleep: 20 * 60)
+        #expect(plan.nightGap > MealSchedule.longNightThreshold)
+        #expect(plan.hasLongNight)
+    }
+
+    @Test("Последнее кормление всегда с запасом до сна")
+    func lastMealLeavesTimeBeforeSleep() {
+        for meals in 1...5 {
+            let plan = MealSchedule.plan(mealsPerDay: meals, wake: 7 * 60, sleep: 23 * 60)
+            let gapToSleep = MealSchedule.forward(from: plan.times.last!, to: 23 * 60)
+            #expect(gapToSleep >= MealSchedule.beforeSleep,
+                    "\(meals) кормлений: нужно успеть погулять перед сном")
+        }
+    }
+
+    @Test("Сумма всех промежутков — ровно сутки")
+    func gapsAddUpToDay() {
+        for meals in 2...5 {
+            let plan = MealSchedule.plan(mealsPerDay: meals, wake: 6 * 60, sleep: 22 * 60)
+            let gaps = zip(plan.times, plan.times.dropFirst())
+                .map { MealSchedule.forward(from: $0, to: $1) }
+            #expect(gaps.reduce(0, +) + plan.nightGap == MealSchedule.minutesInDay)
+        }
+    }
+}
+
+@Suite("Запас корма и цикл")
+@MainActor
+struct BagAndHeatTests {
+    private let calendar = Calendar.current
+
+    private func днейНазад(_ дней: Int) -> Date {
+        calendar.date(byAdding: .day, value: -дней, to: .now)!
+    }
+
+    @Test("Сухой корм считается мешками")
+    func dryStockMath() {
+        // Мешок 3 кг при 120 г в день — двадцать пять дней.
+        let мешок = FoodStock(kind: .dry, packGrams: 3000, packsLeft: 1, gramsPerDay: 120)
+
+        #expect(мешок.remainingGrams == 3000)
+        #expect(мешок.daysLeft == 25)
+        #expect(!мешок.needsRestock)
+    }
+
+    @Test("Влажный считается банками, и это осмысленная цифра")
+    func wetStockMath() {
+        // Двенадцать банок по 400 г, съедает 800 г в день — две банки в день.
+        let банки = FoodStock(kind: .wet, packGrams: 400, packsLeft: 12, gramsPerDay: 800)
+
+        #expect(банки.daysLeft == 6)
+        #expect(банки.packsPerDay == 2)
+        #expect(банки.needsRestock, "меньше недели — пора покупать")
+    }
+
+    @Test("Початый мешок считается дробным")
+    func partialPack() {
+        let мешок = FoodStock(kind: .dry, packGrams: 6000, packsLeft: 0.5, gramsPerDay: 300)
+        #expect(мешок.remainingGrams == 3000)
+        #expect(мешок.daysLeft == 10)
+    }
+
+    @Test("Сколько упаковок купить на месяц — с учётом остатка")
+    func packsNeeded() {
+        // Съедает 100 г в день, банки по 300 г, осталось 5 банок.
+        // На 30 дней нужно 3000 г, есть 1500 — не хватает 1500, это 5 банок.
+        let банки = FoodStock(kind: .wet, packGrams: 300, packsLeft: 5, gramsPerDay: 100)
+        #expect(банки.packsNeeded(forDays: 30) == 5)
+    }
+
+    @Test("Если запаса хватает, покупать нечего")
+    func nothingToBuy() {
+        let мешок = FoodStock(kind: .dry, packGrams: 12000, packsLeft: 1, gramsPerDay: 100)
+        #expect(мешок.packsNeeded(forDays: 30) == 0)
+    }
+
+    @Test("Пустой запас не уходит в минус и не делит на ноль")
+    func emptyStock() {
+        let пусто = FoodStock(kind: .dry, packGrams: 3000, packsLeft: 0, gramsPerDay: 120)
+        #expect(пусто.remainingGrams == 0)
+        #expect(пусто.daysLeft == 0)
+
+        let безнормы = FoodStock(kind: .wet, packGrams: 400, packsLeft: 10, gramsPerDay: 0)
+        #expect(безнормы.daysLeft == nil)
+        #expect(безнормы.runsOutOn() == nil)
+        #expect(безнормы.packsNeeded(forDays: 30) == 0)
+    }
+
+    @Test("Фасовки у сухого и влажного разные")
+    func packSizesDiffer() {
+        #expect(FoodKind.wet.commonPackSizes.contains(100))
+        #expect(FoodKind.wet.commonPackSizes.contains(500))
+        #expect(FoodKind.wet.commonPackSizes.allSatisfy { $0 <= 500 })
+        #expect(FoodKind.dry.commonPackSizes.contains(3000))
+        #expect(FoodKind.dry.commonPackSizes.contains(15000))
+    }
+
+    @Test("Про влажный корм приложение обязано предупредить")
+    func wetCaution() {
+        #expect(FoodKind.wet.caution != nil, "граммы сухого и влажного не равны")
+        #expect(FoodKind.dry.caution == nil)
+    }
+
+    @Test("Смешанное кормление: закончится то, что закончится раньше")
+    func mixedFeeding() {
+        let dog = Dog(name: "Стич", weightKg: 4.1)
+        let сухой = FoodStock(kind: .dry, brand: "Acana", packGrams: 3000, packsLeft: 1, gramsPerDay: 60)
+        let влажный = FoodStock(kind: .wet, brand: "Паучи", packGrams: 100, packsLeft: 6, gramsPerDay: 60)
+        сухой.dog = dog
+        влажный.dog = dog
+
+        let план = FoodPlanner.plan([сухой, влажный])
+        #expect(план.totalGramsPerDay == 120)
+        #expect(план.whatRunsOutFirst == "Паучи", "их хватит на 10 дней против пятидесяти")
+        #expect(план.needsRestock == false)
+    }
+
+    @Test("Норму можно задать с любого конца")
+    func normFromEitherEnd() {
+        let dog = Dog(name: "Стич", weightKg: 4.1)
+        dog.portionGrams = 60
+        dog.mealsPerDay = 2
+        #expect(dog.dailyGrams == 120)
+        #expect(!dog.usesDailyNorm)
+
+        // Врач назвал дневную норму — она главнее, а порция считается из неё.
+        dog.dailyNormGrams = 150
+        #expect(dog.dailyGrams == 150)
+        #expect(dog.usesDailyNorm)
+        #expect(dog.derivedPortionGrams == 75)
+    }
+
+    @Test("Порция из дневной нормы округляется до пяти граммов")
+    func derivedPortionRounds() {
+        let dog = Dog(name: "Стич", weightKg: 4.1)
+        dog.mealsPerDay = 3
+        dog.dailyNormGrams = 200
+        #expect(dog.derivedPortionGrams % 5 == 0)
+        #expect(dog.derivedPortionGrams == 65)
+    }
+
+    @Test("Одной записи о течке мало для среднего — и приложение это признаёт")
+    func heatSingleRecord() {
+        let forecast = HeatCycle.forecast([HeatRecord(startedAt: днейНазад(30))])
+
+        #expect(forecast.averageIntervalDays == nil)
+        #expect(forecast.isEstimate, "ориентир, а не расчёт")
+        #expect(forecast.daysUntilNext == HeatCycle.typicalIntervalDays - 30)
+    }
+
+    @Test("По двум записям считается её собственный промежуток")
+    func heatAverage() {
+        let records = [
+            HeatRecord(startedAt: днейНазад(400)),
+            HeatRecord(startedAt: днейНазад(200)),
+        ]
+        let forecast = HeatCycle.forecast(records)
+
+        #expect(forecast.averageIntervalDays == 200)
+        #expect(!forecast.isEstimate)
+        #expect(forecast.daysUntilNext == 0)
+    }
+
+    @Test("Без записей ничего не выдумываем")
+    func heatEmpty() {
+        let forecast = HeatCycle.forecast([])
+        #expect(forecast.lastStart == nil)
+        #expect(forecast.expectedNext == nil)
+        #expect(forecast.daysUntilNext == nil)
+    }
+
+    @Test("Цикл нужен только нестерилизованной девочке")
+    func heatTrackingApplies() {
+        let девочка = Dog(name: "Ася", weightKg: 12)
+        девочка.sex = .female
+        #expect(девочка.tracksHeat)
+
+        девочка.isNeutered = true
+        #expect(!девочка.tracksHeat)
+
+        let стич = Dog(name: "Стич", weightKg: 4.1)
+        стич.sex = .male
+        #expect(!стич.tracksHeat)
+    }
+
+    @Test("Идущая течка знает свой день")
+    func ongoingHeat() {
+        let запись = HeatRecord(startedAt: днейНазад(5))
+        #expect(запись.isOngoing)
+        #expect(запись.dayNumber() == 6)
+        #expect(запись.dayCount == nil)
+
+        запись.endedAt = Date()
+        #expect(!запись.isOngoing)
+        #expect(запись.dayCount == 6)
     }
 }

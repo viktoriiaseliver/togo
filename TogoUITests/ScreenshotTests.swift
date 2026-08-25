@@ -61,45 +61,46 @@ nonisolated final class ScreenshotTests: XCTestCase {
         capture("06-family")
     }
 
-    /// Ищет элемент по началу подписи, доскролливая при необходимости.
-    private func найти(_ подпись: String, попыток: Int = 6) -> XCUIElement {
-        for попытка in 0..<попыток {
-            let элемент = app.descendants(matching: .any)
-                .matching(NSPredicate(format: "label BEGINSWITH %@", подпись))
-                .firstMatch
-            if элемент.exists && элемент.isHittable { return элемент }
-            if попытка < попыток - 1 { app.swipeUp() }
-        }
-        return app.descendants(matching: .any)
-            .matching(NSPredicate(format: "label BEGINSWITH %@", подпись))
-            .firstMatch
+
+    func test12Прогулка() {
+        app.buttons["Гулять"].firstMatch.tap()
+        let пошли = app.buttons["Пошли"].firstMatch
+        XCTAssertTrue(пошли.waitForExistence(timeout: 5))
+        пошли.tap()
+
+        let пописал = app.buttons["Пописал"].firstMatch
+        XCTAssertTrue(пописал.waitForExistence(timeout: 5), "таймер должен пойти сразу")
+        пописал.tap()
+        пописал.tap()
+        app.buttons["Стул"].firstMatch.tap()
+        capture("12-walk-mode")
     }
 
     func test08Питание() {
         app.buttons["Ещё"].firstMatch.tap()
-        найти("Профиль собаки").tap()
-        найти("Питание и режим").tap()
+        найти("Профиль собаки", в: app).tap()
+        найти("Питание и режим", в: app).tap()
         _ = app.navigationBars["Питание"].waitForExistence(timeout: 5)
         capture("08-feeding")
     }
 
     func test09Права() {
         app.tabBars.buttons["Семья"].tap()
-        найти("Мама").tap()
+        найти("Мама", в: app).tap()
         _ = app.staticTexts["ЧТО РАЗРЕШЕНО"].waitForExistence(timeout: 5)
         capture("09-permissions")
     }
 
     func test10Перенос() {
         app.buttons["Настройки"].tap()
-        найти("Перенос и восстановление").tap()
+        найти("Перенос и восстановление", в: app).tap()
         _ = app.navigationBars["Перенос"].waitForExistence(timeout: 5)
         capture("10-backup")
     }
 
     func test11Язык() {
         app.buttons["Настройки"].tap()
-        найти("Язык").tap()
+        найти("Язык", в: app).tap()
         _ = app.navigationBars["Язык"].waitForExistence(timeout: 5)
         capture("11-language")
     }

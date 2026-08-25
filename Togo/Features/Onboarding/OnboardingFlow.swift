@@ -17,10 +17,10 @@ struct OnboardingFlow: View {
     private var isReplay: Bool { !dogs.isEmpty }
 
     enum Step: Int, CaseIterable {
-        case welcome, dog, schedule, family, notifications
+        case welcome, dog, schedule, care, family, notifications
 
         var index: Int { rawValue }
-        var progress: String? { self == .welcome ? nil : "\(rawValue) из 4" }
+        var progress: String? { self == .welcome ? nil : "\(rawValue) из 5" }
     }
 
     var body: some View {
@@ -47,6 +47,12 @@ struct OnboardingFlow: View {
                         HowItWorksReplayEnd(onDone: finish)
                     } else {
                         ScheduleStep(draft: $schedule) { advance() }
+                    }
+                case .care:
+                    if isReplay {
+                        HowItWorksReplayEnd(onDone: finish)
+                    } else {
+                        CareStep(onNext: { advance() })
                     }
                 case .family:
                     if isReplay {
@@ -265,6 +271,83 @@ private struct ScheduleStep: View {
         } bottom: {
             TGButton(title: "Дальше", action: onNext)
         }
+    }
+}
+
+// MARK: - Шаг 4 · уход
+
+/// Уход приложение не заводит за человека: у каждой собаки он свой.
+/// Здесь только предложения, из которых отмечают нужное — и шаг можно
+/// пропустить целиком.
+private struct CareStep: View {
+    var onNext: () -> Void
+
+    @Environment(\.modelContext) private var context
+    @Query private var dogs: [Dog]
+    @State private var chosen: Set<String> = []
+    @State private var loaded = false
+
+    var body: some View {
+        TGScreen(title: "Что делаешь для ухода") {
+            TGExplainer(text: "Отмечено то, что нужно почти всем. Зубы — потому что налёт твердеет за сутки, их чистят каждый день. Остальное у каждой собаки своё, и это можно поменять когда угодно.")
+
+            ForEach(CareKind.allCases, id: \.self) { kind in
+                let group = SeedData.careSuggestions.filter { $0.kind == kind }
+                TGCard(spacing: 0) {
+                    TGSectionHeader(title: kind.sectionTitle)
+                    ForEach(group) { suggestion in
+                        Button { toggle(suggestion) } label: {
+                            HStack(spacing: Token.Space.s12) {
+                                Image(systemName: chosen.contains(suggestion.id)
+                                      ? "checkmark.circle.fill" : "circle")
+                                    .font(.system(size: 22))
+                                    .foregroundStyle(chosen.contains(suggestion.id)
+                                                     ? Token.Action.done : Token.Ink.faint)
+                                VStack(alignment: .leading, spacing: Token.Space.s2) {
+                                    Text(suggestion.title).textStyle(AppFont.body)
+                                    Text(suggestion.detail)
+                                        .textStyle(AppFont.caption)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                }
+                                Spacer(minLength: 0)
+                            }
+                            .frame(minHeight: Token.Size.tapTarget)
+                            .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                        if suggestion.id != group.last?.id { TGDivider() }
+                    }
+                }
+            }
+        } bottom: {
+            TGButton(title: chosen.isEmpty ? "Пропустить" : "Дальше · \(chosen.count)") {
+                save()
+                onNext()
+            }
+        }
+        .task {
+            guard !loaded else { return }
+            chosen = Set(SeedData.careSuggestions.filter(\.isDefault).map(\.id))
+            loaded = true
+        }
+    }
+
+    private func toggle(_ suggestion: SeedData.CareSuggestion) {
+        if chosen.contains(suggestion.id) { chosen.remove(suggestion.id) } else { chosen.insert(suggestion.id) }
+        Haptics.tap()
+    }
+
+    private func save() {
+        guard let dog = dogs.first else { return }
+        for suggestion in SeedData.careSuggestions where chosen.contains(suggestion.id) {
+            let task = suggestion.makeTask()
+            if task.kind == .dated {
+                task.scheduledDate = Calendar.current.date(byAdding: .day, value: 30, to: .now)
+            }
+            task.dog = dog
+            context.insert(task)
+        }
+        try? context.save()
     }
 }
 

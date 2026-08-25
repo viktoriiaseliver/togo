@@ -169,14 +169,11 @@ struct MealSheet: View {
             amount: dog?.portionGrams ?? 60,
             explainer: "Порция подставлена из профиля: жать нужно один раз, граммы уже подписаны."
         ) { grams in
-            guard let dog else { return }
-            let event = LogEvent(kind: .meal, authorName: appState.currentUserName)
-            event.grams = grams
-            event.note = dog.foodBrand.isEmpty ? nil : dog.foodBrand
-            event.dog = dog
-            context.insert(event)
-            Haptics.success()
-            appState.showUndo("Записано · Еда \(grams) г", eventID: event.id)
+            EventLog(context: context, appState: appState)
+                .record(.meal, dog: dog, confirmation: "Записано · Еда \(grams) г") { event in
+                    event.grams = grams
+                    event.note = dog?.foodBrand.isEmpty == false ? dog?.foodBrand : nil
+                }
         }
     }
 }
@@ -196,13 +193,10 @@ struct WaterSheet: View {
             amount: 100,
             explainer: "В поездке эта строка поднимается выше таймлайна: смена воды чаще всего даёт сбой именно тут."
         ) { ml in
-            guard let dog else { return }
-            let event = LogEvent(kind: .water, authorName: appState.currentUserName)
-            event.milliliters = ml
-            event.dog = dog
-            context.insert(event)
-            Haptics.success()
-            appState.showUndo("Записано · Вода \(ml) мл", eventID: event.id)
+            EventLog(context: context, appState: appState)
+                .record(.water, dog: dog, confirmation: "Записано · Вода \(ml) мл") { event in
+                    event.milliliters = ml
+                }
         }
     }
 }
@@ -222,14 +216,11 @@ struct TreatSheet: View {
             amount: 5,
             explainer: "Лимита на лакомства нет. Есть дневная норма, часть которой собака зарабатывает, — это и снимает конфликт между занятиями и весом."
         ) { grams in
-            guard let dog else { return }
-            let event = LogEvent(kind: .treat, authorName: appState.currentUserName)
-            event.grams = grams
-            event.fromPortion = dog.trainingFoodFromPortion
-            event.dog = dog
-            context.insert(event)
-            Haptics.success()
-            appState.showUndo("Записано · Лакомство \(grams) г", eventID: event.id)
+            EventLog(context: context, appState: appState)
+                .record(.treat, dog: dog, confirmation: "Записано · Лакомство \(grams) г") { event in
+                    event.grams = grams
+                    event.fromPortion = dog?.trainingFoodFromPortion ?? true
+                }
         }
     }
 }
@@ -250,13 +241,10 @@ struct NoteSheet: View {
                     .scrollContentBackground(.hidden)
             }
             TGButton(title: "Записать", isEnabled: !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty) {
-                guard let dog else { return }
-                let event = LogEvent(kind: .note, authorName: appState.currentUserName)
-                event.note = text
-                event.dog = dog
-                context.insert(event)
-                Haptics.success()
-                appState.showUndo("Записано · Заметка", eventID: event.id)
+                EventLog(context: context, appState: appState)
+                    .record(.note, dog: dog, confirmation: "Записано · Заметка") { event in
+                        event.note = text
+                    }
                 dismiss()
             }
         }
@@ -298,6 +286,22 @@ struct EventEditSheet: View {
                         .textStyle(AppFont.body)
                         .frame(minHeight: Token.Size.tapTarget)
 
+                        if event.kind == .walk {
+                            TGDivider()
+                            Stepper(value: Binding(
+                                get: { (event.durationSeconds ?? 0) / 60 },
+                                set: { event.durationSeconds = $0 * 60 }
+                            ), in: 0...300, step: 5) {
+                                HStack {
+                                    Text("Сколько гуляли").textStyle(AppFont.body)
+                                    Spacer()
+                                    Text("\((event.durationSeconds ?? 0) / 60) мин")
+                                        .textStyle(AppFont.numeric(15))
+                                }
+                            }
+                            .frame(minHeight: Token.Size.tapTarget)
+                        }
+
                         if event.kind == .outing {
                             TGDivider()
                             Picker("Результат", selection: Binding(
@@ -328,7 +332,7 @@ struct EventEditSheet: View {
                 .disabled(!canEdit)
 
                 if canEdit {
-                TGButton(title: "Удалить событие", variant: .destructive, size: .medium, systemImage: "trash") {
+                TGButton(title: "Удалить запись", variant: .destructive, size: .medium, systemImage: "trash") {
                     event.deletedAt = Date()
                     event.deletedBy = appState.currentUserName
                     Haptics.warning()

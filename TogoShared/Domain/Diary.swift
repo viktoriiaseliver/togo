@@ -170,8 +170,11 @@ nonisolated enum Diary {
 
     /// Две записи об одном событии в пределах 20 минут дают карточку слияния
     /// обоим авторам — а не тихую перезапись.
-    static func mergeCandidates(_ events: [LogEvent]) -> [(LogEvent, LogEvent)] {
-        let sorted = active(events).sorted { $0.date < $1.date }
+    static func mergeCandidates(_ events: [LogEvent], now: Date = Date()) -> [(LogEvent, LogEvent)] {
+        // Смотрим только последние сутки: карточка слияния нужна сразу,
+        // а не через месяц, и разбирать ради неё всю историю незачем.
+        let recent = active(events).filter { now.timeIntervalSince($0.date) < 24 * 3600 }
+        let sorted = recent.sorted { $0.date < $1.date }
         var pairs: [(LogEvent, LogEvent)] = []
         for (index, event) in sorted.enumerated() {
             for other in sorted[(index + 1)...] {

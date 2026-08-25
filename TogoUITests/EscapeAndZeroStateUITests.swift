@@ -5,21 +5,6 @@ import XCTest
 nonisolated final class EscapeAndZeroStateUITests: XCTestCase {
     private var app: XCUIApplication!
 
-    /// Ищет элемент по началу подписи и при необходимости доскроллит до него.
-    /// Подписи в приложении составные («Профиль собаки, Стич»), поэтому
-    /// точное совпадение по идентификатору здесь не годится.
-    private func найти(_ подпись: String, попыток: Int = 6) -> XCUIElement {
-        for попытка in 0..<попыток {
-            let элемент = app.descendants(matching: .any)
-                .matching(NSPredicate(format: "label BEGINSWITH %@", подпись))
-                .firstMatch
-            if элемент.exists && элемент.isHittable { return элемент }
-            if попытка < попыток - 1 { app.swipeUp() }
-        }
-        return app.descendants(matching: .any)
-            .matching(NSPredicate(format: "label BEGINSWITH %@", подпись))
-            .firstMatch
-    }
 
     override func setUp() {
         continueAfterFailure = false
@@ -43,17 +28,17 @@ nonisolated final class EscapeAndZeroStateUITests: XCTestCase {
 
     func testИзШторкиЕщёОткрываетсяПрофиль() {
         app.buttons["Ещё"].firstMatch.tap()
-        let профиль = найти("Профиль собаки")
+        let профиль = найти("Профиль собаки", в: app)
         XCTAssertTrue(профиль.waitForExistence(timeout: 3))
         профиль.tap()
-        XCTAssertTrue(найти("Питание и режим").waitForExistence(timeout: 5),
+        XCTAssertTrue(найти("Питание и режим", в: app).waitForExistence(timeout: 5),
                       "переход в профиль из шторки должен работать, а не быть мёртвой ссылкой")
     }
 
     func testПитаниеДоступноИзПрофиля() {
         app.buttons["Ещё"].firstMatch.tap()
-        найти("Профиль собаки").tap()
-        let питание = найти("Питание и режим")
+        найти("Профиль собаки", в: app).tap()
+        let питание = найти("Питание и режим", в: app)
         XCTAssertTrue(питание.waitForExistence(timeout: 5))
         питание.tap()
         XCTAssertTrue(app.navigationBars["Питание"].waitForExistence(timeout: 5))
@@ -61,7 +46,7 @@ nonisolated final class EscapeAndZeroStateUITests: XCTestCase {
 
     func testИнструкциюМожноПеречитать() {
         app.buttons["Настройки"].tap()
-        let как = найти("Как это работает")
+        let как = найти("Как это работает", в: app)
         XCTAssertTrue(как.waitForExistence(timeout: 5))
         как.tap()
         XCTAssertTrue(app.navigationBars["Как это работает"].waitForExistence(timeout: 5))
@@ -71,11 +56,11 @@ nonisolated final class EscapeAndZeroStateUITests: XCTestCase {
     func testУдалениеВсехДанныхВозвращаетКОнбордингу() {
         app.buttons["Настройки"].tap()
 
-        let данные = найти("Данные и приватность")
+        let данные = найти("Данные и приватность", в: app)
         XCTAssertTrue(данные.waitForExistence(timeout: 5))
         данные.tap()
 
-        let удалить = найти("Удалить все данные")
+        let удалить = найти("Удалить все данные", в: app)
         XCTAssertTrue(удалить.waitForExistence(timeout: 5))
         удалить.tap()
 

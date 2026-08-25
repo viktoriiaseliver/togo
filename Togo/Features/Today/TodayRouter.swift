@@ -11,7 +11,7 @@ struct TodayRouter: View {
         Group {
             switch route {
             case .needs:            NeedsSheet(dog: dog)
-            case .walk:             WalkStartSheet(dog: dog)
+            case .walk:             WalkModeScreen(dog: dog)
             case .walkResult:       WalkResultSheet(dog: dog)
             case .stool:            StoolSheet(dog: dog)
             case .meal:             MealSheet(dog: dog)
@@ -61,6 +61,17 @@ struct MoreSheet: View {
                     row("Уход и напоминания", "scissors") { next = .care }
                 }
                 .padding(.horizontal, 12)
+            }
+            if let dog {
+                NavigationLink { EmergencyScreen(dog: dog) } label: {
+                    TGCard(padding: 14) {
+                        TGListRow(title: "Если что-то случилось",
+                                  value: "телефоны и что сказать врачу",
+                                  systemImage: "cross.case",
+                                  tone: Token.Status.overdueText)
+                    }
+                }
+                .buttonStyle(.plain)
             }
             NavigationLink { ProfileScreen(dog: dog) } label: {
                 TGCard(padding: 14) {

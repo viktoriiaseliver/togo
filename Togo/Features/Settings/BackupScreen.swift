@@ -19,7 +19,8 @@ struct BackupScreen: View {
     @State private var pendingArchive: BackupArchive?
     @State private var strategy: BackupService.Strategy = .merge
     @State private var message: Message?
-    @State private var cloud: Persistence.CloudState = .unavailable
+    @State private var cloud: Persistence.CloudState?
+    @State private var isBuilding = true
 
     private struct Message: Identifiable {
         let id = UUID()
@@ -40,6 +41,7 @@ struct BackupScreen: View {
         .navigationBarTitleDisplayMode(.large)
         .task {
             rebuild()
+            isBuilding = false
             cloud = await Persistence.cloudState()
         }
         .fileImporter(isPresented: $isImporting, allowedContentTypes: [.json]) { result in
@@ -65,17 +67,21 @@ struct BackupScreen: View {
     private var iCloudCard: some View {
         TGCard {
             TGSectionHeader(title: "переустановка")
-            HStack(alignment: .top, spacing: Token.Space.s12) {
-                Image(systemName: cloud.isGood ? "checkmark.icloud" : "icloud.slash")
-                    .font(.system(size: Token.Size.iconLg, weight: .medium))
-                    .foregroundStyle(cloud.isGood ? Token.Action.done : Token.Ink.faint)
-                    .accessibilityHidden(true)
-                VStack(alignment: .leading, spacing: Token.Space.s2) {
-                    Text(cloud.title).textStyle(AppFont.bodyEmphasis)
-                    Text(cloud.detail)
-                        .textStyle(AppFont.caption)
-                        .fixedSize(horizontal: false, vertical: true)
+            if let cloud {
+                HStack(alignment: .top, spacing: Token.Space.s12) {
+                    Image(systemName: cloud.isGood ? "checkmark.icloud" : "icloud.slash")
+                        .font(.system(size: Token.Size.iconLg, weight: .medium))
+                        .foregroundStyle(cloud.isGood ? Token.Action.done : Token.Ink.faint)
+                        .accessibilityHidden(true)
+                    VStack(alignment: .leading, spacing: Token.Space.s2) {
+                        Text(cloud.title).textStyle(AppFont.bodyEmphasis)
+                        Text(cloud.detail)
+                            .textStyle(AppFont.caption)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                 }
+            } else {
+                TGLoading(message: "Проверяю iCloud…", isCompact: true)
             }
             TGExplainer(text: "iCloud — это твоё хранилище, а не наше: у приложения нет серверов и нет доступа к твоим записям.")
         }
@@ -87,7 +93,9 @@ struct BackupScreen: View {
         TGCard {
             TGSectionHeader(title: "сохранить файл",
                             subtitle: archive.map(\.summary) ?? "считаю…")
-            if let fileData, archive != nil {
+            if isBuilding {
+                TGLoading(message: "Собираю файл из дневника…", isCompact: true)
+            } else if let fileData, archive != nil {
                 ShareLink(
                     item: BackupFile(name: BackupService.fileName(), data: fileData),
                     preview: SharePreview("Дневник Того")

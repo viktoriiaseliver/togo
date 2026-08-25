@@ -1,0 +1,298 @@
+import SwiftUI
+import SwiftData
+
+/// Уход. Три разных сорта дел, и путать их нельзя:
+/// зубы чистят каждый день, когти стригут раз в три недели, прививку делают
+/// в конкретный день. Раньше всё лежало одной кучей — и приложение в первый
+/// же день кричало «сегодня» про всё сразу.
+struct CareScreen: View {
+    let dog: Dog?
+
+    @Environment(\.modelContext) private var context
+    @Environment(AppState.self) private var appState
+
+    /// Запросом, а не через связь: только что добавленное дело в обратной
+    /// связи появляется не сразу, и список выглядит неизменившимся.
+    @Query private var allTasks: [CareTask]
+
+    @State private var editing: CareTask?
+    @State private var isAdding = false
+    @State private var isChoosing = false
+    @State private var now = Date()
+
+    private var tasks: [CareTask] {
+        guard let dog else { return [] }
+        return allTasks.filter { $0.dog?.persistentModelID == dog.persistentModelID }
+    }
+
+    var body: some View {
+        TGScreen {
+            if tasks.isEmpty {
+                emptyState
+            } else {
+                ForEach(CareKind.allCases, id: \.self) { kind in
+                    section(kind)
+                }
+                footer
+            }
+        }
+        .navigationTitle("Уход")
+        .navigationBarTitleDisplayMode(.large)
+        .toolbar {
+            if dog != nil {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Menu {
+                        Button("Выбрать из списка", systemImage: "checklist") { isChoosing = true }
+                        Button("Своё дело", systemImage: "plus") { isAdding = true }
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                    .accessibilityLabel("Добавить дело")
+                }
+            }
+        }
+        .sheet(isPresented: $isAdding) { CareTaskEditorSheet(dog: dog) }
+        .sheet(isPresented: $isChoosing) { CareSuggestionsSheet(dog: dog) }
+        .sheet(item: $editing) { task in CareTaskEditorSheet(task: task, dog: dog) }
+    }
+
+    private var emptyState: some View {
+        VStack(alignment: .leading, spacing: Token.Spacing.stack) {
+            EmptyStateCard(
+                systemImage: "scissors",
+                title: "Уход настраивается под собаку",
+                message: "У каждой собаки он свой: шипперке не купают часто, а зубы чистят всем и каждый день. Выбери из списка то, что делаешь, — или заведи своё.",
+                actionTitle: dog == nil ? nil : "Выбрать из списка",
+                action: dog == nil ? nil : { isChoosing = true }
+            )
+            if dog != nil {
+                TGButton(title: "Завести своё дело", variant: .secondary,
+                         size: .medium, systemImage: "plus") { isAdding = true }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func section(_ kind: CareKind) -> some View {
+        let group = tasks.filter { $0.kind == kind }
+        if !group.isEmpty {
+            TGCard(spacing: 0) {
+                TGSectionHeader(title: kind.sectionTitle, subtitle: subtitle(for: kind, group: group))
+                ForEach(sorted(group)) { task in
+                    CareTaskRow(task: task, now: now,
+                                onToggle: { toggle(task) },
+                                onEdit: { editing = task })
+                    if task.id != sorted(group).last?.id { TGDivider() }
+                }
+            }
+        }
+    }
+
+    private func subtitle(for kind: CareKind, group: [CareTask]) -> String? {
+        switch kind {
+        case .daily:
+            let done = group.filter { $0.isDoneToday(on: now) }.count
+            return "сегодня \(done) из \(group.count)"
+        case .periodic:
+            let overdue = group.filter { $0.isOverdue(on: now) }.count
+            return overdue > 0 ? "просрочено: \(overdue)" : nil
+        case .dated:
+            return "напомним заранее"
+        }
+    }
+
+    private func sorted(_ group: [CareTask]) -> [CareTask] {
+        group.sorted { left, right in
+            (left.daysUntilDue(from: now) ?? 9999) < (right.daysUntilDue(from: now) ?? 9999)
+        }
+    }
+
+    private var footer: some View {
+        TGExplainer(text: "Всё это приходит одним брифом в выбранный час, а не восемью пушами. Прерывают только доза и окно натощак.")
+    }
+
+    private func toggle(_ task: CareTask) {
+        // Ежедневное можно снять, если отметили по ошибке: у привычки
+        // нет долга, но и врать себе незачем.
+        if task.kind == .daily, task.isDoneToday(on: now) {
+            task.lastDone = nil
+            task.streak = max(0, task.streak - 1)
+            Haptics.warning()
+            appState.showUndo("Снято · \(task.title)")
+            return
+        }
+
+        task.markDone()
+        EventLog(context: context, appState: appState)
+            .record(.care, dog: dog, confirmation: confirmation(for: task)) { event in
+                event.note = task.title
+                event.careTaskID = task.id
+            }
+    }
+
+    private func confirmation(for task: CareTask) -> String {
+        if task.kind == .daily, task.streak > 1 {
+            return "\(task.title) · \(Fmt.days(task.streak)) подряд"
+        }
+        return "Записано · \(task.title)"
+    }
+}
+
+/// Строка дела. Ежедневное — с кружком-галочкой, остальное — со сроком.
+private struct CareTaskRow: View {
+    let task: CareTask
+    let now: Date
+    var onToggle: () -> Void
+    var onEdit: () -> Void
+
+    private var isDoneToday: Bool { task.isDoneToday(on: now) }
+
+    var body: some View {
+        HStack(spacing: Token.Space.s12) {
+            if task.kind == .daily {
+                Button(action: onToggle) {
+                    Image(systemName: isDoneToday ? "checkmark.circle.fill" : "circle")
+                        .font(.system(size: 24, weight: .regular))
+                        .foregroundStyle(isDoneToday ? Token.Action.done : Token.Ink.faint)
+                        .frame(width: Token.Size.tapTarget, height: Token.Size.tapTarget)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(isDoneToday ? "Снять отметку: \(task.title)" : "Отметить: \(task.title)")
+            }
+
+            VStack(alignment: .leading, spacing: Token.Space.s2) {
+                Text(task.title)
+                    .textStyle(AppFont.bodyEmphasis.color(
+                        isDoneToday && task.kind == .daily ? Token.Ink.faint : Token.Ink.primary
+                    ))
+                    .strikethrough(isDoneToday && task.kind == .daily, color: Token.Ink.faint)
+                Text(task.detail)
+                    .textStyle(AppFont.caption)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            Spacer(minLength: Token.Space.s8)
+
+            VStack(alignment: .trailing, spacing: Token.Space.s4) {
+                Text(task.statusText(on: now))
+                    .textStyle(AppFont.micro.color(statusColor))
+                    .multilineTextAlignment(.trailing)
+                if task.snoozeCount >= 2 {
+                    Text("откладывали \(task.snoozeCount) раза")
+                        .textStyle(AppFont.micro.color(Token.Ink.faint))
+                }
+            }
+
+            if task.kind != .daily {
+                Button(action: onToggle) {
+                    Text(task.isNeverDone ? "Сделали" : "Сделали")
+                        .textStyle(AppFont.captionEmphasis.color(Token.Action.done))
+                        .frame(minHeight: Token.Size.tapTarget)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .frame(minHeight: 54)
+        .contentShape(Rectangle())
+        .onTapGesture(perform: onEdit)
+        .accessibilityAction(named: "Поправить", onEdit)
+    }
+
+    private var statusColor: Color {
+        if !task.isInSeason(on: now) { return Token.Ink.faint }
+        if task.isOverdue(on: now) { return Token.Status.overdueText }
+        if task.isNeverDone { return Token.Ink.faint }
+        if task.isDue(on: now) { return Token.Status.waitingText }
+        return Token.Ink.secondary
+    }
+}
+
+/// Выбор из готового списка. Отмечаешь то, что делаешь, — и только оно
+/// попадает в приложение.
+struct CareSuggestionsSheet: View {
+    let dog: Dog?
+
+    @Environment(\.modelContext) private var context
+    @Environment(\.dismiss) private var dismiss
+    @Query private var allTasks: [CareTask]
+    @State private var chosen: Set<String> = []
+    @State private var loaded = false
+
+    private var existing: Set<String> {
+        guard let dog else { return [] }
+        return Set(allTasks
+            .filter { $0.dog?.persistentModelID == dog.persistentModelID }
+            .map(\.title))
+    }
+
+    var body: some View {
+        TGSheet(title: "Что делаешь", subtitle: "интервалы потом можно поправить", closeTitle: "Отмена") {
+            ForEach(CareKind.allCases, id: \.self) { kind in
+                let group = SeedData.careSuggestions.filter { $0.kind == kind }
+                TGCard(spacing: 0) {
+                    TGSectionHeader(title: kind.sectionTitle)
+                    ForEach(group) { suggestion in
+                        row(suggestion)
+                        if suggestion.id != group.last?.id { TGDivider() }
+                    }
+                }
+            }
+            TGExplainer(text: "Ничего обязательного здесь нет. Зубы отмечены потому, что налёт твердеет за сутки и чистить их надо каждый день — остальное у каждой собаки своё.")
+        } footer: {
+            TGButton(title: chosen.isEmpty ? "Ничего не добавлять" : "Добавить · \(chosen.count)") {
+                add()
+            }
+        }
+        .presentationDetents([.large])
+        .task {
+            guard !loaded else { return }
+            chosen = Set(SeedData.careSuggestions.filter(\.isDefault).map(\.id))
+                .subtracting(existing)
+            loaded = true
+        }
+    }
+
+    private func row(_ suggestion: SeedData.CareSuggestion) -> some View {
+        let already = existing.contains(suggestion.title)
+        return Button {
+            guard !already else { return }
+            if chosen.contains(suggestion.id) { chosen.remove(suggestion.id) } else { chosen.insert(suggestion.id) }
+            Haptics.tap()
+        } label: {
+            HStack(spacing: Token.Space.s12) {
+                Image(systemName: already ? "checkmark.circle.fill"
+                                          : (chosen.contains(suggestion.id) ? "checkmark.circle.fill" : "circle"))
+                    .font(.system(size: 22))
+                    .foregroundStyle(already ? Token.Ink.faint
+                                             : (chosen.contains(suggestion.id) ? Token.Action.done : Token.Ink.faint))
+                VStack(alignment: .leading, spacing: Token.Space.s2) {
+                    Text(suggestion.title).textStyle(AppFont.body)
+                    Text(already ? "уже заведено" : suggestion.detail)
+                        .textStyle(AppFont.caption)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer(minLength: 0)
+            }
+            .frame(minHeight: Token.Size.tapTarget)
+            .contentShape(Rectangle())
+            .opacity(already ? 0.5 : 1)
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func add() {
+        for suggestion in SeedData.careSuggestions where chosen.contains(suggestion.id) {
+            let task = suggestion.makeTask()
+            if task.kind == .dated {
+                task.scheduledDate = Calendar.current.date(byAdding: .day, value: 30, to: .now)
+            }
+            task.dog = dog
+            context.insert(task)
+        }
+        try? context.save()
+        if !chosen.isEmpty { Haptics.success() }
+        dismiss()
+    }
+}

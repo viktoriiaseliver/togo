@@ -8,9 +8,18 @@ final class CareTask {
     var id: UUID = UUID()
     var title: String = ""
     var detail: String = ""
-    var intervalDays: Int = 30
-    var lastDone: Date?
+    var kindRaw: String = CareKind.periodic.rawValue
     var categoryRaw: String = CareCategory.grooming.rawValue
+
+    /// Для регулярного: раз в сколько дней.
+    var intervalDays: Int = 30
+    /// Для «по дате»: когда именно и за сколько дней предупредить.
+    var scheduledDate: Date?
+    var remindDaysBefore: Int = 14
+
+    var lastDone: Date?
+    /// Для ежедневного: сколько дней подряд делали. Не награда, а зеркало.
+    var streak: Int = 0
 
     /// Сезонное само знает про сезон: капли от клещей молчат зимой.
     var seasonStartMonth: Int?
@@ -21,12 +30,27 @@ final class CareTask {
 
     var dog: Dog?
 
-    init(title: String, detail: String, intervalDays: Int, category: CareCategory, lastDone: Date? = nil) {
+    init(
+        title: String,
+        detail: String,
+        kind: CareKind = .periodic,
+        intervalDays: Int = 30,
+        category: CareCategory = .grooming,
+        lastDone: Date? = nil,
+        scheduledDate: Date? = nil
+    ) {
         self.title = title
         self.detail = detail
+        self.kindRaw = kind.rawValue
         self.intervalDays = intervalDays
         self.categoryRaw = category.rawValue
         self.lastDone = lastDone
+        self.scheduledDate = scheduledDate
+    }
+
+    var kind: CareKind {
+        get { CareKind(rawValue: kindRaw) ?? .periodic }
+        set { kindRaw = newValue.rawValue }
     }
 
     var category: CareCategory {
@@ -34,9 +58,35 @@ final class CareTask {
         set { categoryRaw = newValue.rawValue }
     }
 
+    // MARK: Когда
+
+    /// Ни разу не делали. Для регулярного это не просрочка, а «пока неизвестно»:
+    /// приложение спросит дату последнего раза, а не станет пугать.
+    var isNeverDone: Bool { lastDone == nil && kind != .dated }
+
     var dueDate: Date? {
-        guard let lastDone else { return Date() }
-        return Calendar.current.date(byAdding: .day, value: intervalDays, to: lastDone)
+        switch kind {
+        case .daily:
+            return Calendar.current.startOfDay(for: .now)
+        case .periodic:
+            guard let lastDone else { return nil }
+            return Calendar.current.date(byAdding: .day, value: intervalDays, to: lastDone)
+        case .dated:
+            return scheduledDate
+        }
+    }
+
+    func daysUntilDue(from date: Date = Date()) -> Int? {
+        guard let dueDate else { return nil }
+        let calendar = Calendar.current
+        return calendar.dateComponents([.day],
+                                       from: calendar.startOfDay(for: date),
+                                       to: calendar.startOfDay(for: dueDate)).day
+    }
+
+    func isDoneToday(on date: Date = Date()) -> Bool {
+        guard let lastDone else { return false }
+        return Calendar.current.isDate(lastDone, inSameDayAs: date)
     }
 
     func isInSeason(on date: Date = Date()) -> Bool {
@@ -45,15 +95,66 @@ final class CareTask {
         return start <= end ? (month >= start && month <= end) : (month >= start || month <= end)
     }
 
-    func daysUntilDue(from date: Date = Date()) -> Int? {
-        guard let dueDate else { return nil }
-        return Calendar.current.dateComponents([.day], from: Calendar.current.startOfDay(for: date),
-                                               to: Calendar.current.startOfDay(for: dueDate)).day
+    /// Просится ли на главный экран прямо сейчас.
+    func isDue(on date: Date = Date()) -> Bool {
+        guard isInSeason(on: date) else { return false }
+        switch kind {
+        case .daily:
+            return !isDoneToday(on: date)
+        case .periodic:
+            guard let days = daysUntilDue(from: date) else { return false }
+            return days <= 0
+        case .dated:
+            guard let days = daysUntilDue(from: date) else { return false }
+            return days <= remindDaysBefore
+        }
     }
 
-    func isDue(on date: Date = Date()) -> Bool {
-        guard isInSeason(on: date), let days = daysUntilDue(from: date) else { return false }
-        return days <= 0
+    /// Просрочено по-настоящему — это только про даты и регулярное.
+    /// У ежедневного просрочки нет: пропущенный день не долг.
+    func isOverdue(on date: Date = Date()) -> Bool {
+        guard kind != .daily, isInSeason(on: date), let days = daysUntilDue(from: date) else { return false }
+        return days < 0
+    }
+
+    /// Что написать в строке справа. Одна фраза на все три сорта ухода.
+    func statusText(on date: Date = Date()) -> String {
+        guard isInSeason(on: date) else { return "вне сезона" }
+        switch kind {
+        case .daily:
+            if isDoneToday(on: date) { return streak > 1 ? "\(streak) дней подряд" : "сегодня сделали" }
+            return streak > 1 ? "серия \(streak) дней" : "сегодня"
+        case .periodic:
+            guard let days = daysUntilDue(from: date) else { return "ещё не делали" }
+            if days < 0 { return "просрочено на \(Fmt.days(-days))" }
+            if days == 0 { return "сегодня" }
+            if days == 1 { return "завтра" }
+            return "через \(Fmt.days(days))"
+        case .dated:
+            guard let days = daysUntilDue(from: date) else { return "дата не назначена" }
+            if days < 0 { return "просрочено" }
+            if days == 0 { return "сегодня" }
+            return Fmt.shortDay(dueDate ?? date)
+        }
+    }
+
+    /// Отметить сделанным. Для ежедневного ведёт серию, для «по дате»
+    /// двигает дату на следующий раз.
+    func markDone(at date: Date = Date()) {
+        if kind == .daily {
+            let calendar = Calendar.current
+            if let lastDone, let yesterday = calendar.date(byAdding: .day, value: -1, to: date),
+               calendar.isDate(lastDone, inSameDayAs: yesterday) {
+                streak += 1
+            } else if !isDoneToday(on: date) {
+                streak = 1
+            }
+        }
+        if kind == .dated, let scheduled = scheduledDate, intervalDays > 0 {
+            scheduledDate = Calendar.current.date(byAdding: .day, value: intervalDays, to: scheduled)
+        }
+        lastDone = date
+        snoozeCount = 0
     }
 }
 

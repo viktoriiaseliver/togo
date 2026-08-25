@@ -45,6 +45,16 @@ struct BackupTests {
         уход.dog = dog
         context.insert(уход)
 
+        let сухой = FoodStock(kind: .dry, brand: "Acana", packGrams: 3000,
+                              packsLeft: 0.5, gramsPerDay: 60)
+        сухой.dog = dog
+        context.insert(сухой)
+
+        let влажный = FoodStock(kind: .wet, brand: "Паучи", packGrams: 100,
+                                packsLeft: 12, gramsPerDay: 60)
+        влажный.dog = dog
+        context.insert(влажный)
+
         context.insert(FamilyMember(name: "Виктория", role: .owner, isMe: true))
         let мама = FamilyMember(name: "Мама", role: .caregiver)
         мама.permissions = [.logBasics, .seeMedical, .giveDose, .editTreatment]
@@ -80,6 +90,8 @@ struct BackupTests {
         #expect(стич.medications.count == 1)
         #expect(стич.medications.first?.fastingMinutes == 45)
         #expect(стич.medications.first?.doses.count == 1)
+        #expect(стич.stocks.count == 2, "запас корма переезжает вместе с собакой")
+        #expect(стич.stocks.contains { $0.kind == .wet && $0.packGrams == 100 })
     }
 
     @Test("Права, выданные поимённо, переезжают вместе с человеком")
@@ -162,6 +174,23 @@ struct BackupTests {
         let записи = try новый.fetch(FetchDescriptor<LogEvent>())
         #expect(записи.contains { $0.isDeleted && $0.deletedBy == "Тео" })
         #expect(Diary.active(записи).count == 2, "удалённая в выборки не попадает")
+    }
+
+    @Test("Только что добавленное попадает в файл, а не теряется тихо")
+    func archiveSeesUnsavedChanges() throws {
+        let context = контекст()
+        let dog = завестиСтича(в: context)
+
+        // Добавили корм и сразу жмём «сохранить в файл» — так и делают.
+        let новый = FoodStock(kind: .wet, brand: "Только что", packGrams: 150,
+                              packsLeft: 8, gramsPerDay: 150)
+        новый.dog = dog
+        context.insert(новый)
+
+        let архив = try BackupService.archive(context: context, appVersion: "1.0.0")
+        let корма = архив.dogs.first?.stocks ?? []
+        #expect(корма.count == 3, "несохранённое тоже должно уехать в файл")
+        #expect(корма.contains { $0.brand == "Только что" })
     }
 
     @Test("Чужой файл отвергается с внятным объяснением")

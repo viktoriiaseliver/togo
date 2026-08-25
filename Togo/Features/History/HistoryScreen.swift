@@ -284,7 +284,8 @@ private struct DayCell: View {
                 .frame(width: 5, height: 5)
                 .opacity(marker == .none ? 0 : 1)
         }
-        .frame(maxWidth: .infinity, minHeight: 38)
+        // Ячейку календаря нажимают пальцем — значит, не меньше 44.
+        .frame(maxWidth: .infinity, minHeight: Token.Size.tapTarget)
         .background(isToday ? Token.Action.primaryQuiet : .clear,
                     in: RoundedRectangle(cornerRadius: Token.Radius.small, style: .continuous))
         .contentShape(Rectangle())
@@ -314,7 +315,9 @@ struct DayReadingScreen: View {
             } else {
                 TGCard(spacing: 0) {
                     ForEach(dayEvents) { event in
-                        TimelineRow(event: event)
+                        TimelineRow(event: event,
+                                    isFirst: event.id == dayEvents.first?.id,
+                                    isLast: event.id == dayEvents.last?.id)
                         if event.id != dayEvents.last?.id { TGDivider(inset: 52) }
                     }
                 }

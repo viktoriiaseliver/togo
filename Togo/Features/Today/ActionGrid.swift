@@ -145,12 +145,13 @@ struct CareRow: View {
                         .font(.system(size: 16, weight: .medium))
                         .foregroundStyle(Token.Ink.silhouette)
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Уход · \(Fmt.plural(tasks.count, "дело", "дела", "дел")) в этом месяце")
+                        Text(headline)
                             .textStyle(AppFont.bodyEmphasis)
                             .foregroundStyle(Token.Ink.primary)
-                        Text(tasks.map(summary).joined(separator: " · "))
+                        Text(tasks.map(\.title).joined(separator: " · "))
                             .textStyle(AppFont.caption)
                             .foregroundStyle(Token.Ink.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
                     Spacer(minLength: 8)
                     Image(systemName: "chevron.right")
@@ -162,9 +163,13 @@ struct CareRow: View {
         .buttonStyle(.plain)
     }
 
-    private func summary(_ task: CareTask) -> String {
-        guard let days = task.daysUntilDue() else { return task.title.lowercased() }
-        if days <= 0 { return "\(task.title.lowercased()) сегодня" }
-        return "\(task.title.lowercased()) через \(Fmt.days(days))"
+    /// Заголовок говорит про сегодня, а список — что именно.
+    /// «Уход · 3 дела в этом месяце» было неправдой: дела были на сегодня.
+    private var headline: String {
+        let overdue = tasks.filter { $0.isOverdue() }
+        if !overdue.isEmpty {
+            return "Уход · просрочено \(Fmt.plural(overdue.count, "дело", "дела", "дел"))"
+        }
+        return "Уход сегодня · \(Fmt.plural(tasks.count, "дело", "дела", "дел"))"
     }
 }

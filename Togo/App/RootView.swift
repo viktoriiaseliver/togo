@@ -13,6 +13,12 @@ struct RootView: View {
 
     private var dog: Dog? { dogs.first }
 
+    /// На «Сегодня» под тостом стоит сетка действий — её высоту надо
+    /// перешагнуть. На остальных вкладках хватает высоты таб-бара.
+    private var toastInset: CGFloat {
+        selection == .today ? 150 : 20
+    }
+
     var body: some View {
         TabView(selection: $selection) {
             TodayScreen()
@@ -33,7 +39,12 @@ struct RootView: View {
                 .tabItem { Label("Семья", systemImage: "person.2") }
                 .tag(Tab.family)
         }
-        .overlay(alignment: .bottom) { UndoToastView().padding(.bottom, 62) }
+        // Тост подтверждения должен быть виден, а не прятаться за сеткой
+        // кнопок: «нажала — и ничего не произошло» — худшее, что может
+        // сделать приложение, которое просят отмечать по десять раз в день.
+        .overlay(alignment: .bottom) {
+            UndoToastView().padding(.bottom, toastInset)
+        }
         .onOpenURL(perform: handle)
     }
 
@@ -53,8 +64,16 @@ struct UndoToastView: View {
         @Bindable var appState = appState
         if let toast = appState.undo {
             HStack(spacing: 12) {
-                Image(systemName: "checkmark.circle.fill").foregroundStyle(Token.Action.done)
-                Text(toast.message).textStyle(AppFont.caption).foregroundStyle(Token.Ink.primary)
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundStyle(Token.Action.done)
+                    .accessibilityHidden(true)
+                // Подпись вешаем на текст, а не на всю плашку: иначе она
+                // перекрывает собственное имя кнопки «Отменить», и до неё
+                // не добраться ни голосом, ни тестом.
+                Text(toast.message)
+                    .textStyle(AppFont.caption)
+                    .foregroundStyle(Token.Ink.primary)
+                    .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 8)
                 Button("Отменить") { undo(toast) }
                     .textStyle(AppFont.captionEmphasis)
@@ -68,7 +87,8 @@ struct UndoToastView: View {
             .transition(.move(edge: .bottom).combined(with: .opacity))
             .task(id: toast.id) {
                 try? await Task.sleep(for: .seconds(5))
-                if appState.undo?.id == toast.id { appState.undo = nil }
+                guard appState.undo?.id == toast.id else { return }
+                withAnimation(.easeOut(duration: 0.2)) { appState.undo = nil }
             }
         }
     }

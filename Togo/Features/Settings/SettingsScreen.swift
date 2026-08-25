@@ -167,7 +167,7 @@ struct SettingsScreen: View {
 /// Час брифа и тихие часы — единственные ручки, которые человек реально крутит.
 struct NotificationSettingsScreen: View {
     @Environment(Settings.self) private var settings
-    @State private var status: String = "проверяю…"
+    @State private var status: String?
 
     var body: some View {
         @Bindable var settings = settings
@@ -200,7 +200,11 @@ struct NotificationSettingsScreen: View {
             }
 
             Section {
-                LabeledContent("Разрешение", value: status)
+                if let status {
+                    LabeledContent("Разрешение", value: status)
+                } else {
+                    TGLoading(message: "Спрашиваю систему…", isCompact: true)
+                }
                 Button("Открыть настройки iOS") { openSystemSettings() }
             } footer: {
                 Text("Дневник работает целиком и без уведомлений: они нужны только дозе, окну натощак и эскалации.")

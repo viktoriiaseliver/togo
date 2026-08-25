@@ -29,9 +29,9 @@ final class AppState {
 
     /// Активный эпизод: 2+ инцидента за 24 часа.
     var activeEpisode: Episode?
-    /// Идущий выход — Live Activity с секундами, видна всей семье.
-    var walkStartedAt: Date?
-    var walkStartedBy: String?
+    /// Идущий выход или прогулка. Одновременно идёт что-то одно:
+    /// выход — это короткий поход по нужде, прогулка — долгая, с отметками.
+    var session: ActiveSession?
 
     /// Тост отмены: каждая запись отменяется, удаление обратимо 5 секунд.
     var undo: UndoToast?
@@ -44,19 +44,60 @@ final class AppState {
         var eventID: UUID?
     }
 
-    func startWalk(by name: String) {
-        walkStartedAt = Date()
-        walkStartedBy = name
+    // MARK: Идущая сессия
+
+    var isWalking: Bool { session?.kind == .walk }
+    var walkStartedAt: Date? { session?.startedAt }
+    var walkStartedBy: String? { session?.startedBy }
+
+    func startOuting(by name: String, at date: Date = Date()) {
+        session = ActiveSession(kind: .outing, startedAt: date, startedBy: name)
     }
 
+    func startWalk(by name: String, at date: Date = Date()) {
+        session = ActiveSession(kind: .walk, startedAt: date, startedBy: name)
+    }
+
+    /// Отметить, что собака что-то сделала прямо сейчас.
+    func mark(_ kind: ActiveSession.Mark.Kind, at date: Date = Date()) {
+        session?.marks.append(ActiveSession.Mark(kind: kind, at: date))
+    }
+
+    func pauseSession() {
+        session?.pause()
+    }
+
+    func resumeSession() {
+        session?.resume()
+    }
+
+    /// Убрать последнюю отметку: на морозе одной рукой промахнуться легко.
+    @discardableResult
+    func undoLastMark() -> ActiveSession.Mark? {
+        guard session?.marks.isEmpty == false else { return nil }
+        return session?.marks.removeLast()
+    }
+
+    @discardableResult
+    func finishSession() -> ActiveSession? {
+        defer { session = nil }
+        return session
+    }
+
+    /// Совместимость со старым кодом выхода: возвращает длительность.
+    @discardableResult
     func stopWalk() -> TimeInterval {
-        defer { walkStartedAt = nil; walkStartedBy = nil }
-        guard let walkStartedAt else { return 0 }
-        return Date().timeIntervalSince(walkStartedAt)
+        guard let finished = finishSession() else { return 0 }
+        return Date().timeIntervalSince(finished.startedAt)
     }
 
+    /// Подтверждение записи. Показывается всегда, когда что-то записано:
+    /// человек должен видеть, что тап сработал, — и иметь возможность
+    /// тут же его отменить.
     func showUndo(_ message: String, eventID: UUID? = nil) {
-        undo = UndoToast(message: message, eventID: eventID)
+        withAnimation(.spring(duration: 0.28)) {
+            undo = UndoToast(message: message, eventID: eventID)
+        }
     }
 }
 

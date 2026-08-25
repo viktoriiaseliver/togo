@@ -19,6 +19,7 @@ struct ProfileScreen: View {
                          systemImage: "lock")
             }
             if let dog {
+                age(dog)
                 nutrition(dog)
                 weight(dog)
                 marker(dog)
@@ -59,6 +60,28 @@ struct ProfileScreen: View {
     }
 
     // MARK: Вес
+
+    private func age(_ dog: Dog) -> some View {
+        Group {
+            if let description = dog.ageDescription, let stage = dog.lifeStage {
+                TGCard {
+                    HStack {
+                        VStack(alignment: .leading, spacing: Token.Space.s2) {
+                            Text("Возраст").textStyle(AppFont.cardTitle)
+                            Text(stage.title).textStyle(AppFont.caption)
+                        }
+                        Spacer()
+                        Text(description).textStyle(AppFont.numeric(20))
+                    }
+                    if stage == .puppy {
+                        TGExplainer(text: "Щенку нужно больше кормлений в день и меньше нагрузки за раз. Число кормлений задаётся в «Режиме».")
+                    } else if stage == .senior {
+                        TGExplainer(text: "У пожилой собаки чаще меняются и вес, и режим выходов. Взвешивание раз в две недели тут полезнее, чем раз в месяц.")
+                    }
+                }
+            }
+        }
+    }
 
     private func weight(_ dog: Dog) -> some View {
         NavigationLink { WeightScreen(dog: dog) } label: {
@@ -155,6 +178,24 @@ struct ProfileScreen: View {
             NavigationLink { TripSetupScreen(dog: dog) } label: {
                 TGListRow(title: "Поездка", systemImage: "car")
             }
+            TGDivider()
+            if dog.tracksHeat {
+                NavigationLink { HeatScreen(dog: dog) } label: {
+                    TGListRow(title: "Цикл",
+                              value: HeatCycle.forecast(dog.heats).expectedNext.map(Fmt.shortDay),
+                              systemImage: "calendar.badge.clock")
+                }
+                TGDivider()
+            }
+            NavigationLink { DocumentsScreen(dog: dog) } label: {
+                TGListRow(title: "Документы и контакты",
+                          value: dog.chipNumber == nil ? "не заполнены" : nil,
+                          systemImage: "doc.text.image")
+            }
+            TGDivider()
+            NavigationLink { EmergencyScreen(dog: dog) } label: {
+                TGListRow(title: "Если что-то случилось", systemImage: "cross.case")
+            }
         }
         .buttonStyle(.plain)
     }
@@ -163,158 +204,5 @@ struct ProfileScreen: View {
         text.split(separator: ",")
             .map { $0.trimmingCharacters(in: .whitespaces) }
             .filter { !$0.isEmpty }
-    }
-}
-
-/// Уход и напоминания. Сезонное само знает про сезон:
-/// капли от клещей молчат зимой и просыпаются в апреле.
-struct CareScreen: View {
-    let dog: Dog?
-
-    @Environment(\.modelContext) private var context
-    @Environment(AppState.self) private var appState
-
-    @State private var editing: CareTask?
-    @State private var isAdding = false
-
-    private var tasks: [CareTask] { dog?.careTasks ?? [] }
-
-    var body: some View {
-        TGScreen {
-            if tasks.isEmpty {
-                EmptyStateCard(
-                    systemImage: "scissors",
-                    title: "Напоминаний пока нет",
-                    message: "Заведи то, что повторяется: когти, вычёсывание, антипаразитарку, прививки. Всё это придёт одним брифом в выбранный час, а не восемью пушами.",
-                    actionTitle: dog == nil ? nil : "Добавить напоминание",
-                    action: dog == nil ? nil : { isAdding = true }
-                )
-            } else {
-                ForEach(CareCategory.allCases, id: \.self) { category in
-                    let group = tasks.filter { $0.category == category }
-                    if !group.isEmpty {
-                        TGCard(spacing: 0) {
-                            TGSectionHeader(title: category.title)
-                            ForEach(group.sorted { ($0.daysUntilDue() ?? 999) < ($1.daysUntilDue() ?? 999) }) { task in
-                                CareTaskRow(task: task, onDone: { complete(task) }, onEdit: { editing = task })
-                                if task.id != group.last?.id { TGDivider() }
-                            }
-                        }
-                    }
-                }
-                TGExplainer(text: "Всё это приходит одним брифом в выбранный час, а не восемью пушами. Прерывают только доза и окно натощак.")
-            }
-        }
-        .navigationTitle("Уход")
-        .navigationBarTitleDisplayMode(.large)
-        .toolbar {
-            if dog != nil {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button { isAdding = true } label: { Image(systemName: "plus") }
-                        .accessibilityLabel("Добавить напоминание")
-                }
-            }
-        }
-        .sheet(isPresented: $isAdding) { CareTaskEditorSheet(dog: dog) }
-        .sheet(item: $editing) { task in CareTaskEditorSheet(task: task, dog: dog) }
-    }
-
-    private func complete(_ task: CareTask) {
-        task.lastDone = Date()
-        task.snoozeCount = 0
-        let event = LogEvent(kind: .care, authorName: appState.currentUserName)
-        event.note = task.title
-        event.careTaskID = task.id
-        event.dog = dog
-        context.insert(event)
-        Haptics.success()
-        appState.showUndo("Записано · \(task.title)", eventID: event.id)
-    }
-}
-
-private struct CareTaskRow: View {
-    let task: CareTask
-    var onDone: () -> Void
-    var onEdit: () -> Void
-
-    var body: some View {
-        HStack(spacing: Token.Space.s12) {
-            VStack(alignment: .leading, spacing: Token.Space.s2) {
-                Text(task.title).textStyle(AppFont.bodyEmphasis)
-                Text(task.detail).textStyle(AppFont.caption)
-            }
-            Spacer(minLength: Token.Space.s8)
-            VStack(alignment: .trailing, spacing: Token.Space.s4) {
-                Text(dueLabel).textStyle(AppFont.micro.color(dueColor))
-                if task.snoozeCount >= 2 {
-                    Text("откладывали \(task.snoozeCount) раза").textStyle(AppFont.micro.color(Token.Ink.faint))
-                }
-            }
-            Button("Сделали", action: onDone)
-                .textStyle(AppFont.captionEmphasis.color(Token.Action.done))
-        }
-        .frame(minHeight: 54)
-        .contentShape(Rectangle())
-        // Тап по строке правит напоминание, кнопка справа его закрывает.
-        .onTapGesture(perform: onEdit)
-        .accessibilityAction(named: "Поправить", onEdit)
-    }
-
-    private var dueLabel: String {
-        guard task.isInSeason() else { return "вне сезона" }
-        guard let days = task.daysUntilDue() else { return "—" }
-        if days < 0 { return "просрочено" }
-        if days == 0 { return "сегодня" }
-        if days == 1 { return "завтра" }
-        return "через \(Fmt.days(days))"
-    }
-
-    private var dueColor: Color {
-        guard task.isInSeason() else { return Token.Ink.faint }
-        guard let days = task.daysUntilDue() else { return Token.Ink.secondary }
-        if days < 0 { return Token.Status.overdueText }
-        if days <= 1 { return Token.Status.waitingText }
-        return Token.Ink.secondary
-    }
-}
-
-
-/// Режим дня и питания в профиле. Тот же редактор, что и в онбординге,
-/// только сохраняет сразу в собаку.
-struct ScheduleScreen: View {
-    let dog: Dog
-
-    @Environment(AppState.self) private var appState
-    @Environment(\.dismiss) private var dismiss
-    @State private var draft = ScheduleDraft()
-    @State private var loaded = false
-
-    private var canEdit: Bool { appState.can(.editProfile) }
-
-    var body: some View {
-        TGScreen {
-            if !canEdit {
-                TGBanner(tone: .waiting, title: "Только чтение",
-                         subtitle: "Режим питания меняет тот, кому владелец выдал право на профиль.",
-                         systemImage: "lock")
-            }
-            ScheduleEditor(draft: $draft)
-                .disabled(!canEdit)
-        } bottom: {
-            if canEdit {
-                TGButton(title: "Сохранить") {
-                    draft.apply(to: dog)
-                    Haptics.success()
-                    dismiss()
-                }
-            }
-        }
-        .navigationTitle("Режим")
-        .navigationBarTitleDisplayMode(.large)
-        .task {
-            guard !loaded else { return }
-            draft = ScheduleDraft.from(dog)
-            loaded = true
-        }
     }
 }

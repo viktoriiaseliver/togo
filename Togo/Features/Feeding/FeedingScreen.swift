@@ -11,11 +11,24 @@ struct FeedingScreen: View {
     let dog: Dog?
 
     @Environment(\.modelContext) private var context
+    @Query private var allStocks: [FoodStock]
     @State private var now = Date()
+
+    private var stocks: [FoodStock] {
+        guard let dog else { return [] }
+        return allStocks.filter { $0.dog?.persistentModelID == dog.persistentModelID }
+    }
     @State private var isApplyingPortion = false
 
-    private var report: FeedingReport {
-        FeedingAnalyzer.report(
+    /// Отчёт считается один раз и лежит в состоянии.
+    ///
+    /// Раньше это было вычисляемое свойство: SwiftUI дёргал его по четыре
+    /// раза за перерисовку, и каждый раз он проходил две недели записей.
+    /// На годовом дневнике это уже заметно пальцами.
+    @State private var report: FeedingReport = .empty
+
+    private func rebuildReport() {
+        report = FeedingAnalyzer.report(
             events: dog?.events ?? [],
             dog: dog,
             now: now,
@@ -48,6 +61,7 @@ struct FeedingScreen: View {
                 )
             } else {
                 todayCard
+                stockCard
                 statusCard
                 chartCard
                 scheduleCard
@@ -58,7 +72,13 @@ struct FeedingScreen: View {
         }
         .navigationTitle("Питание")
         .navigationBarTitleDisplayMode(.large)
-        .task { now = Date() }
+        .task {
+            now = Date()
+            rebuildReport()
+        }
+        .onChange(of: dog?.events.count) { _, _ in rebuildReport() }
+        .onChange(of: dog?.portionGrams) { _, _ in rebuildReport() }
+        .onChange(of: dog?.mealsPerDay) { _, _ in rebuildReport() }
     }
 
     // MARK: Сегодня
@@ -85,6 +105,61 @@ struct FeedingScreen: View {
         let minute = FeedingAnalyzer.minuteOfDay(now)
         let schedule = report.suggestedMealTimes.isEmpty ? (dog?.mealTimes ?? []) : report.suggestedMealTimes
         return schedule.sorted().first { $0 > minute } ?? schedule.sorted().first
+    }
+
+    // MARK: Запас корма
+
+    private var plan: FoodPlan {
+        FoodPlanner.plan(stocks, from: now)
+    }
+
+    @ViewBuilder
+    private var stockCard: some View {
+        if let dog {
+            TGCard {
+                TGSectionHeader(
+                    title: "запас корма",
+                    subtitle: stocks.isEmpty ? nil : planSubtitle
+                )
+
+                if stocks.isEmpty {
+                    TGExplainer(text: "Впиши, чем кормишь и в какой фасовке — приложение посчитает, на сколько хватит, и напомнит за неделю до конца. Сухой считается мешками, влажный — банками.")
+                } else {
+                    ForEach(stocks) { stock in
+                        StockRow(stock: stock, now: now)
+                        if stock.id != stocks.last?.id { TGDivider() }
+                    }
+                    if plan.needsRestock {
+                        TGBanner(tone: .waiting, title: "Пора покупать",
+                                 subtitle: restockText(dog),
+                                 systemImage: "cart")
+                    }
+                }
+
+                NavigationLink { FoodStockScreen(dog: dog) } label: {
+                    TGListRow(title: stocks.isEmpty ? "Записать корм" : "Поправить запас",
+                              systemImage: "shippingbox")
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
+
+    private var planSubtitle: String? {
+        guard let out = plan.firstRunOut, let what = plan.whatRunsOutFirst else { return nil }
+        return "\(what) закончится \(Fmt.shortDay(out))"
+    }
+
+    private func restockText(_ dog: Dog) -> String {
+        let нужно = stocks
+            .filter(\.needsRestock)
+            .map { stock -> String in
+                let packs = stock.packsNeeded(forDays: FoodPlanner.planningDays)
+                let unit = stock.kind.unitName(count: Double(packs))
+                let name = stock.brand.isEmpty ? stock.kind.title.lowercased() : stock.brand
+                return "\(name): \(packs) \(unit) на месяц"
+            }
+        return нужно.joined(separator: " · ")
     }
 
     // MARK: Норма и отклонение
@@ -190,7 +265,22 @@ struct FeedingScreen: View {
                     .buttonStyle(.plain)
                 }
             }
-            TGExplainer(text: "Ровный интервал между кормлениями важнее точного часа: собака привыкает к промежутку, а не к цифре на часах.")
+            if let dog {
+                TGDivider()
+                let plan = MealSchedule.plan(mealsPerDay: dog.mealsPerDay,
+                                             wake: dog.wakeMinuteOfDay,
+                                             sleep: dog.sleepMinuteOfDay)
+                HStack(spacing: 0) {
+                    TGStat(value: plan.dayInterval.map { Fmt.duration(Double($0) * 60) } ?? "—",
+                           caption: "днём между едой", size: 17)
+                    TGStat(value: Fmt.duration(Double(plan.nightGap) * 60),
+                           caption: "ночной перерыв", size: 17)
+                }
+                if plan.hasLongNight {
+                    TGExplainer(text: "Ночной перерыв длинный. У части собак это даёт утреннюю рвоту желчью — если такое бывает, сдвинь последнее кормление позже или добавь ещё одно.")
+                }
+            }
+            TGExplainer(text: "Ровный интервал между кормлениями важнее точного часа: собака привыкает к промежутку, а не к цифре на часах. Ночь считается так же, как день.")
         }
     }
 
@@ -292,26 +382,5 @@ struct FeedingScreen: View {
     }
 }
 
-/// Пустое состояние одного вида на всё приложение: что это, почему пусто
-/// и что нажать. «Нет данных» без объяснения — это тупик.
-struct EmptyStateCard: View {
-    let systemImage: String
-    let title: String
-    let message: String
-    var actionTitle: String?
-    var action: (() -> Void)?
 
-    var body: some View {
-        TGCard {
-            Image(systemName: systemImage)
-                .font(.system(size: 26, weight: .light))
-                .foregroundStyle(Token.Ink.silhouette)
-                .accessibilityHidden(true)
-            Text(title).textStyle(AppFont.cardTitle)
-            Text(message).textStyle(AppFont.caption)
-            if let actionTitle, let action {
-                TGButton(title: actionTitle, variant: .secondary, size: .medium, action: action)
-            }
-        }
-    }
-}
+

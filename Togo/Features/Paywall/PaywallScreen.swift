@@ -20,7 +20,19 @@ struct PaywallScreen: View {
 
             featureList
             freeList
-            planPicker
+
+            TGStateful(
+                isLoading: store.isLoading,
+                isEmpty: store.products.isEmpty,
+                loadingMessage: "Спрашиваю цены у App Store…",
+                emptyImage: "wifi.exclamationmark",
+                emptyTitle: "Цены не загрузились",
+                emptyMessage: "Обычно это связь. Приложение работает и без подписки — всё, что важно для безопасности собаки, бесплатно навсегда.",
+                emptyActionTitle: "Попробовать снова",
+                emptyAction: { Task { await store.load() } }
+            ) {
+                planPicker
+            }
 
             if let error = store.lastError {
                 TGBanner(tone: .alarm, title: "Не получилось", subtitle: error,

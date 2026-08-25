@@ -30,6 +30,15 @@ struct TodayScreen: View {
                     VStack(alignment: .leading, spacing: Token.Spacing.stack) {
                         header
 
+                        if Persistence.isEphemeral {
+                            TGBanner(
+                                tone: .alarm,
+                                title: "Записи сейчас не сохраняются",
+                                subtitle: "Дневник не смог открыть своё хранилище и работает во временном режиме. Всё, что запишешь, пропадёт при перезапуске. Перезапусти приложение; если не поможет — напиши в поддержку, старые записи никуда не делись.",
+                                systemImage: "externaldrive.badge.exclamationmark"
+                            )
+                        }
+
                         if let fasting = fastingWindow {
                             TGBanner(
                                 tone: .waiting,
@@ -57,10 +66,13 @@ struct TodayScreen: View {
                             summaryStrip
                         }
 
-                        if let walkStart = appState.walkStartedAt {
-                            WalkInProgressCard(startedAt: walkStart, by: appState.walkStartedBy ?? "", now: now) {
-                                route = .walkResult
-                            }
+                        if let session = appState.session {
+                            ActiveSessionCard(
+                                session: session,
+                                now: now,
+                                onOpen: { route = session.kind == .walk ? .walk : .walkResult },
+                                onFinish: { route = .walkResult }
+                            )
                         }
 
                         DayTimeline(events: Diary.onDay(events, now), now: now) { event in
@@ -175,10 +187,16 @@ struct TodayScreen: View {
     }
 
     /// Груминг и вес живут в профиле и всплывают на главном только когда подошёл срок.
+    /// На главном показываем только то, что правда просится сегодня.
+    /// «Через 30 дней» — это не дело на сегодня, это шум.
     private var dueCare: [CareTask]? {
         guard let dog else { return nil }
-        let due = dog.careTasks.filter { $0.isDue(on: now) || ($0.daysUntilDue(from: now) ?? 99) <= 30 }
-        return due.isEmpty ? nil : Array(due.sorted { ($0.daysUntilDue() ?? 0) < ($1.daysUntilDue() ?? 0) }.prefix(3))
+        let due = dog.careTasks.filter { $0.isDue(on: now) }
+        guard !due.isEmpty else { return nil }
+        return Array(
+            due.sorted { ($0.daysUntilDue(from: now) ?? 0) < ($1.daysUntilDue(from: now) ?? 0) }
+                .prefix(3)
+        )
     }
 
     private var planItems: [DayPlanItem] {
@@ -211,20 +229,18 @@ struct TodayScreen: View {
 
     private func complete(_ item: DayPlanItem) {
         guard let dog else { return }
-        let event: LogEvent
-        switch item.kind {
-        case .meal:
-            event = LogEvent(kind: .meal, authorName: appState.currentUserName)
-            event.grams = dog.portionGrams
-            event.note = dog.foodBrand.isEmpty ? nil : dog.foodBrand
-        case .dose:
-            event = LogEvent(kind: .dose, authorName: appState.currentUserName)
-            event.note = item.title
-        }
-        event.dog = dog
-        context.insert(event)
-        Haptics.success()
-        appState.showUndo("Записано · \(item.title)", eventID: event.id)
+        EventLog(context: context, appState: appState)
+            .record(item.kind == .meal ? .meal : .dose,
+                    dog: dog,
+                    confirmation: "Записано · \(item.title)") { event in
+                switch item.kind {
+                case .meal:
+                    event.grams = dog.portionGrams
+                    event.note = dog.foodBrand.isEmpty ? nil : dog.foodBrand
+                case .dose:
+                    event.note = item.title
+                }
+            }
     }
 }
 
