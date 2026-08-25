@@ -15,13 +15,17 @@ struct TGBanner: View {
             Image(systemName: systemImage)
                 .font(.system(size: Token.Size.iconLg - 2, weight: .semibold))
                 .foregroundStyle(tone.foreground)
+                .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: Token.Space.s2) {
                 // Кегль поднят до section: мелкую плашку натощак можно было проскроллить.
                 Text(title)
                     .font(.system(size: Token.Component.Banner.titleSize, weight: Token.FontWeight.semibold))
                     .foregroundStyle(tone.foreground)
+                    .fixedSize(horizontal: false, vertical: true)
                 if let subtitle {
-                    Text(subtitle).textStyle(AppFont.caption.color(tone.foreground.opacity(0.85)))
+                    Text(subtitle)
+                        .textStyle(AppFont.caption.color(tone.foreground.opacity(0.85)))
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
             Spacer(minLength: 0)

@@ -143,7 +143,8 @@ private struct IncidentDetailStep: View {
                     HStack(spacing: Token.Space.s12) {
                         Text(Fmt.clock(row.date))
                             .textStyle(AppFont.numeric(13, weight: .medium))
-                            .frame(width: 44, alignment: .leading)
+                            .fixedSize()
+                            .frame(minWidth: 44, alignment: .leading)
                         Text(row.subtitle ?? row.kind.title).textStyle(AppFont.caption)
                         Spacer(minLength: 0)
                     }

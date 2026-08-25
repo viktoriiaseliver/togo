@@ -38,6 +38,7 @@ struct SettingsScreen: View {
         Section {
             if store.isPro {
                 LabeledContent("Того Pro", value: "активна")
+                NavigationLink("Что будет, если отключить") { DowngradeScreen() }
                 Button("Управлять подпиской") { openSubscriptionSettings() }
             } else {
                 Button { showPaywall = true } label: {
@@ -45,6 +46,12 @@ struct SettingsScreen: View {
                 }
                 Button("Восстановить покупки") { Task { await store.restore() } }
             }
+            #if DEBUG
+            Toggle("Отладка · включить Pro", isOn: Binding(
+                get: { store.debugOverride ?? store.isPro },
+                set: { store.debugOverride = $0 }
+            ))
+            #endif
         } header: {
             Text("подписка")
         } footer: {
@@ -66,6 +73,7 @@ struct SettingsScreen: View {
                 Text("\(Fmt.clock(minuteOfDay: settings.quietHoursStart * 60)) — \(Fmt.clock(minuteOfDay: settings.quietHoursEnd * 60))")
             }
             Toggle("Отклик при записи", isOn: $settings.haptics)
+            NavigationLink("Язык") { LanguageScreen() }
         } header: {
             Text("что прерывает")
         } footer: {
@@ -76,7 +84,7 @@ struct SettingsScreen: View {
     // MARK: Собака
 
     private var dogSection: some View {
-        Section("собака") {
+        Section {
             ForEach(dogs) { dog in
                 NavigationLink {
                     ProfileScreen(dog: dog)
@@ -84,9 +92,17 @@ struct SettingsScreen: View {
                     LabeledContent(dog.name, value: Fmt.weight(dog.weightKg))
                 }
             }
-            if dogs.count >= 1 && !store.isPro {
+            if dogs.isEmpty || store.isPro {
+                NavigationLink("Добавить собаку") { DogEditorScreen() }
+            } else {
                 Button("Добавить вторую собаку") { showPaywall = true }
             }
+        } header: {
+            Text(dogs.count > 1 ? "собаки" : "собака")
+        } footer: {
+            Text(dogs.isEmpty
+                 ? "Без собаки приложению нечего считать — начните с неё."
+                 : "Удалить собаку можно в её профиле, внизу.")
         }
     }
 
@@ -94,11 +110,12 @@ struct SettingsScreen: View {
 
     private var dataSection: some View {
         Section {
+            NavigationLink("Перенос и восстановление") { BackupScreen() }
             NavigationLink("Данные и приватность") { DataPrivacyScreen() }
         } header: {
             Text("данные")
         } footer: {
-            Text("Всё считается на телефоне. Аккаунт не нужен, и никакие записи не уходят на наши серверы.")
+            Text("Всё считается на телефоне. Аккаунт не нужен, и никакие записи не уходят на наши серверы. Переустановку дневник переживает через iCloud или через файл.")
         }
     }
 
@@ -117,6 +134,8 @@ struct SettingsScreen: View {
 
     private var aboutSection: some View {
         Section {
+            NavigationLink("Как это работает") { HowItWorksScreen() }
+            Button("Пройти онбординг заново") { replayOnboarding() }
             NavigationLink("Что нового") { WhatsNewScreen() }
             NavigationLink("Поддержка") { SupportScreen() }
             Button("Оценить приложение") { requestReview() }
@@ -131,6 +150,12 @@ struct SettingsScreen: View {
         } header: {
             Text("о приложении")
         }
+    }
+
+    /// Онбординг можно пройти заново: данные при этом не трогаем —
+    /// человек просто перечитывает то, что ему рассказали один раз.
+    private func replayOnboarding() {
+        settings.onboardingCompleted = false
     }
 
     private func openSubscriptionSettings() {

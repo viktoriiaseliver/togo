@@ -62,7 +62,7 @@ struct TripSetupScreen: View {
             TGButton(title: "Включить режим", systemImage: "car", isEnabled: !destination.isEmpty) { save() }
         }
         .navigationTitle("Поездка")
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarTitleDisplayMode(.large)
     }
 
     private var dayCount: Int {
@@ -180,7 +180,10 @@ struct TripTodayBlock: View {
                 .addingTimeInterval(Double(trip.departureMinuteOfDay) * 60)
             ForEach(trip.transport.windows(before: departure), id: \.0) { offset, at, title in
                 HStack(spacing: Token.Space.s12) {
-                    Text(offset).textStyle(AppFont.numeric(13, weight: .medium)).frame(width: 44, alignment: .leading)
+                    Text(offset)
+                        .textStyle(AppFont.numeric(13, weight: .medium))
+                        .fixedSize()
+                        .frame(minWidth: 44, alignment: .leading)
                     Text(title).textStyle(AppFont.body)
                     Spacer(minLength: 0)
                     Text(Fmt.clock(at)).textStyle(AppFont.caption)

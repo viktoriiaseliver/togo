@@ -13,6 +13,7 @@ struct TrainingSessionScreen: View {
     @State private var session: MarkerSession
     @State private var now = Date()
     @State private var summary: TrainingSession?
+    @State private var isConfirmingExit = false
 
     private let tick = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
 
@@ -37,12 +38,25 @@ struct TrainingSessionScreen: View {
         }
         .presentationDetents([.large])
         .onReceive(tick) { now = $0 }
+        .confirmationDialog("Занятие не сохранится", isPresented: $isConfirmingExit, titleVisibility: .visible) {
+            Button("Сохранить и выйти") { finish() }
+            Button("Выйти без записи", role: .destructive) { dismiss() }
+            Button("Вернуться к занятию", role: .cancel) {}
+        } message: {
+            Text("Отметок уже \(session.delaysMs.count). Их можно записать — прогресс посчитается, если занятие уложилось в три минуты.")
+        }
     }
 
     private var sessionSheet: some View {
         TGSheet(
             title: session.isRunning ? "Занятие идёт" : "Точность маркера",
-            subtitle: currentStep?.fullSummary ?? "поставь руку один раз — потом маркер уйдёт на кнопку громкости"
+            subtitle: currentStep?.fullSummary ?? "поставь руку один раз — потом маркер уйдёт на кнопку громкости",
+            closeTitle: session.isRunning ? "Прервать занятие" : "Закрыть",
+            // Молча терять отметки нельзя: занятие уже прошло, даже если
+            // человек передумал его сохранять.
+            onClose: session.isRunning && !session.delaysMs.isEmpty
+                ? { isConfirmingExit = true }
+                : nil
         ) {
             clock
             markerPad

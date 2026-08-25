@@ -45,13 +45,20 @@ struct TGButton: View {
         Button(action: action) {
             Label {
                 Text(title)
+                    .multilineTextAlignment(.center)
+                    // Длинная подпись переносится, а кнопка становится выше.
+                    // Ужимать текст на главном действии нельзя.
+                    .fixedSize(horizontal: false, vertical: true)
             } icon: {
-                if let systemImage { Image(systemName: systemImage) }
+                if let systemImage {
+                    Image(systemName: systemImage).accessibilityHidden(true)
+                }
             }
             .labelStyle(TGButtonLabelStyle(hasIcon: systemImage != nil))
             .font(size.style.font)
+            .padding(.vertical, Token.Space.s8)
             .frame(maxWidth: fullWidth ? .infinity : nil, minHeight: size.height)
-            .padding(.horizontal, fullWidth ? 0 : Token.Space.s20)
+            .padding(.horizontal, fullWidth ? Token.Space.s12 : Token.Space.s20)
         }
         .buttonStyle(TGButtonStyle(variant: variant, isEnabled: isEnabled))
         .disabled(!isEnabled)

@@ -7,20 +7,29 @@ struct HealthScreen: View {
     @Environment(AppState.self) private var appState
     @Query private var dogs: [Dog]
 
+    @State private var editing: Medication?
+    @State private var isAdding = false
+
     private var dog: Dog? { dogs.first }
 
     var body: some View {
         NavigationStack {
             TGScreen {
-                ForEach(dog?.medications ?? []) { medication in
-                    MedicationCard(medication: medication, canEdit: appState.role.canEditTreatment)
-                }
-
                 if dog?.medications.isEmpty ?? true {
-                    TGCard {
-                        Text("Схемы пока нет").textStyle(AppFont.cardTitle)
-                        Text("Добавь препарат, и приложение начнёт напоминать про дозу и держать окно натощак.")
-                            .textStyle(AppFont.caption)
+                    EmptyStateCard(
+                        systemImage: "pills",
+                        title: "Схемы лечения пока нет",
+                        message: "Добавь препарат — приложение начнёт напоминать про дозу, держать окно натощак и защищать от двойной дозы. Это бесплатно и работает всегда.",
+                        actionTitle: canEdit ? "Добавить препарат" : nil,
+                        action: canEdit ? { isAdding = true } : nil
+                    )
+                } else {
+                    ForEach(dog?.medications ?? []) { medication in
+                        Button { if canEdit { editing = medication } } label: {
+                            MedicationCard(medication: medication, canEdit: canEdit)
+                        }
+                        .buttonStyle(.plain)
+                        .disabled(!canEdit)
                     }
                 }
 
@@ -29,8 +38,23 @@ struct HealthScreen: View {
             }
             .navigationTitle("Здоровье")
             .navigationBarTitleDisplayMode(.large)
+            .toolbar {
+                if canEdit, dog != nil {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button { isAdding = true } label: { Image(systemName: "plus") }
+                            .accessibilityLabel("Добавить препарат")
+                    }
+                }
+            }
+            .sheet(isPresented: $isAdding) { MedicationEditorSheet(dog: dog) }
+            .sheet(item: $editing) { medication in
+                MedicationEditorSheet(medication: medication, dog: dog)
+            }
         }
     }
+
+    /// Схему меняет только владелец. Остальные видят её и отмечают приёмы.
+    private var canEdit: Bool { appState.can(.editTreatment) }
 
     private var sectionsGrid: some View {
         TGCard(spacing: 0) {
@@ -117,7 +141,7 @@ struct ProtocolScreen: View {
     }
 
     var body: some View {
-        TGScreen(title: "Протокол контроля") {
+        TGScreen {
             if let dose = lastDose, let givenAt = dose.givenAt {
                 TGCard {
                     Text("T+\(Fmt.duration(now.timeIntervalSince(givenAt)))").textStyle(AppFont.display)
@@ -153,7 +177,7 @@ struct ProtocolScreen: View {
             }
         }
         .navigationTitle("Протокол")
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarTitleDisplayMode(.large)
         .onReceive(tick) { now = $0 }
     }
 
@@ -178,7 +202,8 @@ private struct ProtocolRow: View {
         HStack(alignment: .top, spacing: Token.Space.s12) {
             Text(label)
                 .textStyle(AppFont.numeric(15))
-                .frame(width: 32, alignment: .leading)
+                .fixedSize()
+                .frame(minWidth: 32, alignment: .leading)
             VStack(alignment: .leading, spacing: Token.Space.s2) {
                 Text("\(Fmt.clock(time)) · \(title)").textStyle(AppFont.bodyEmphasis)
                 Text(detail).textStyle(AppFont.caption)
@@ -205,7 +230,7 @@ struct VetReportScreen: View {
     }
 
     var body: some View {
-        TGScreen(title: "Отчёт врачу") {
+        TGScreen {
             TGCard(spacing: 0) {
                 DatePicker("С", selection: $from, displayedComponents: .date)
                     .frame(minHeight: Token.Size.tapTarget)
@@ -244,7 +269,7 @@ struct VetReportScreen: View {
             .buttonStyle(.plain)
         }
         .navigationTitle("Отчёт")
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarTitleDisplayMode(.large)
     }
 
     private var contents: [(String, Int)] {
@@ -266,7 +291,7 @@ struct WeightScreen: View {
     @State private var newWeight = ""
 
     var body: some View {
-        TGScreen(title: "Вес") {
+        TGScreen {
             TGCard {
                 HStack(alignment: .firstTextBaseline) {
                     Text(dog.map { Fmt.weight($0.weightKg) } ?? "—").textStyle(AppFont.display)
@@ -312,7 +337,7 @@ struct WeightScreen: View {
             }
         }
         .navigationTitle("Вес")
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarTitleDisplayMode(.large)
     }
 
     private var parsedWeight: Double? {

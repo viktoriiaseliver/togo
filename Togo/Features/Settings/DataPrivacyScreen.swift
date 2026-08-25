@@ -5,6 +5,7 @@ import SwiftData
 /// оба без писем и ожидания.
 struct DataPrivacyScreen: View {
     @Environment(\.modelContext) private var context
+    @Environment(AppState.self) private var appState
     @Query private var dogs: [Dog]
     @Query private var events: [LogEvent]
 
@@ -14,7 +15,7 @@ struct DataPrivacyScreen: View {
     private var activeEvents: [LogEvent] { Diary.active(events) }
 
     var body: some View {
-        TGScreen(title: "Данные и приватность") {
+        TGScreen {
             TGCard {
                 Text("Всё лежит на телефоне").textStyle(AppFont.cardTitle)
                 Text("Аккаунта нет, серверов у нас нет. Записи хранятся в базе приложения и в общем хранилище с виджетами.")
@@ -25,6 +26,12 @@ struct DataPrivacyScreen: View {
                     TGStat(value: "\(dogs.count)", caption: "собак")
                     TGStat(value: "\(Diary.daysOfData(activeEvents))", caption: "дней")
                 }
+            }
+
+            if !appState.can(.exportData) {
+                TGBanner(tone: .waiting, title: "Выгрузка недоступна",
+                         subtitle: "Право «Выгружать данные и отчёты» выдаёт владелец в разделе «Семья».",
+                         systemImage: "lock")
             }
 
             TGCard {
@@ -44,6 +51,7 @@ struct DataPrivacyScreen: View {
                 }
                 TGExplainer(text: "CSV открывается в Numbers и Excel. Бристольская шкала есть только здесь — в интерфейсе её цифр нет.")
             }
+            .disabled(!appState.can(.exportData))
 
             TGCard {
                 TGSectionHeader(title: "удалить")
@@ -60,7 +68,7 @@ struct DataPrivacyScreen: View {
             }
         }
         .navigationTitle("Данные")
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarTitleDisplayMode(.large)
         .confirmationDialog("Удалить все данные?", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
             Button("Удалить всё", role: .destructive) { deleteEverything() }
             Button("Отмена", role: .cancel) {}
@@ -94,7 +102,7 @@ struct SupportScreen: View {
     }
 
     var body: some View {
-        TGScreen(title: "Поддержка") {
+        TGScreen {
             TGCard {
                 Text("Отвечает человек").textStyle(AppFont.cardTitle)
                 Text("Обычно в течение двух рабочих дней. Если что-то в приложении мешает ухаживать за собакой — пиши сразу, это важнее фич.")
@@ -126,7 +134,7 @@ struct SupportScreen: View {
             }
         }
         .navigationTitle("Поддержка")
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarTitleDisplayMode(.large)
     }
 
     private func openMail() {
@@ -195,7 +203,7 @@ struct AboutScreen: View {
             }
         }
         .navigationTitle("О приложении")
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarTitleDisplayMode(.large)
     }
 
     private let principles = [
@@ -227,7 +235,7 @@ struct WhatsNewScreen: View {
     ]
 
     var body: some View {
-        TGScreen(title: "Что нового") {
+        TGScreen {
             ForEach(Self.releases) { release in
                 TGCard {
                     HStack {
@@ -252,6 +260,6 @@ struct WhatsNewScreen: View {
             }
         }
         .navigationTitle("Что нового")
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarTitleDisplayMode(.large)
     }
 }

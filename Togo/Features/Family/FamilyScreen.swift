@@ -23,6 +23,15 @@ struct FamilyScreen: View {
                 if let conflict = mergeConflict {
                     MergeConflictCard(left: conflict.0, right: conflict.1)
                 }
+                if members.filter({ !$0.isMe }).isEmpty {
+                    EmptyStateCard(
+                        systemImage: "person.2",
+                        title: "Пока вы вдвоём с собакой",
+                        message: "Позовите тех, кто тоже за ней ходит: со-владельца, ситтера, ребёнка или врача. Роль выбирается заранее, ссылка живёт сутки, а принявший роль поменять не сможет.",
+                        actionTitle: nil,
+                        action: nil
+                    )
+                }
                 if let duty { dutyCard(duty) }
                 membersCard
                 rolesExplainer
@@ -58,7 +67,7 @@ struct FamilyScreen: View {
 
     /// Передача дежурства — одно действие, а не форма.
     private func passDuty(from current: FamilyMember) {
-        let candidates = members.filter { $0.role.canGiveDose && $0.id != current.id }
+        let candidates = members.filter { $0.can(.giveDose) && $0.id != current.id }
         guard let next = candidates.first else { return }
         current.isOnDuty = false
         next.isOnDuty = true
@@ -106,8 +115,11 @@ private struct MemberRow: View {
             TGAvatar(initial: member.initial, tint: member.isMe ? Token.Action.primaryQuiet : Token.Action.done)
             VStack(alignment: .leading, spacing: Token.Space.s2) {
                 Text(member.name).textStyle(AppFont.bodyEmphasis)
-                Text("\(member.role.title.lowercased()) · \(member.role.permissionSummary)")
+                Text(member.hasCustomPermissions
+                     ? "\(member.role.title.lowercased()) · права изменены"
+                     : "\(member.role.title.lowercased()) · \(member.role.permissionSummary)")
                     .textStyle(AppFont.caption)
+                    .lineLimit(2)
             }
             Spacer(minLength: Token.Space.s8)
             if member.isInvitePending {
@@ -128,29 +140,64 @@ struct MemberScreen: View {
 
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
+    @Environment(AppState.self) private var appState
+
+    /// Права выдаёт тот, у кого есть право их выдавать.
+    private var canManage: Bool { appState.can(.manageFamily) }
 
     var body: some View {
-        TGScreen(title: member.name) {
+        TGScreen {
             TGCard {
-                TGSectionHeader(title: "роль")
+                TGSectionHeader(title: "роль", subtitle: "это пресет прав, а не потолок")
                 TGChipGroup(
                     items: FamilyRole.allCases,
                     title: \.title,
                     subtitle: { $0.permissionSummary },
                     isSelected: { $0 == member.role }
                 ) { role in
+                    guard canManage else { return }
                     member.role = role
+                    member.resetPermissions()
                     Haptics.tap()
                 }
+                .disabled(!canManage)
             }
 
             TGCard {
-                TGSectionHeader(title: "что доступно")
-                PermissionRow(title: "Записывать бытовое", granted: member.role.canWrite)
-                PermissionRow(title: "Видеть медицинское", granted: member.role.canSeeMedical)
-                PermissionRow(title: "Отмечать дозу", granted: member.role.canGiveDose)
-                PermissionRow(title: "Менять схему лечения", granted: member.role.canEditTreatment)
-                PermissionRow(title: "Приглашать людей", granted: member.role.canInvite)
+                HStack {
+                    TGSectionHeader(
+                        title: "что разрешено",
+                        subtitle: member.hasCustomPermissions
+                            ? "права выданы поимённо, роль их больше не задаёт"
+                            : "по роли «\(member.role.title.lowercased())»"
+                    )
+                    if member.hasCustomPermissions, canManage {
+                        Button("По роли") {
+                            member.resetPermissions()
+                            Haptics.tap()
+                        }
+                        .textStyle(AppFont.captionEmphasis.color(Token.Action.done))
+                    }
+                }
+                ForEach(Permission.allCases, id: \.self) { permission in
+                    PermissionToggle(
+                        permission: permission,
+                        isOn: member.can(permission),
+                        isEditable: canManage && !(member.role == .owner && permission.isOwnerOnlyByDefault)
+                    ) { granted in
+                        var next = member.permissions
+                        if granted { next.insert(permission) } else { next.remove(permission) }
+                        member.permissions = next
+                        if member.isMe { appState.adopt(member) }
+                        Haptics.tap()
+                    }
+                    if permission != Permission.allCases.last { TGDivider() }
+                }
+                if !canManage {
+                    TGExplainer(text: "Менять права может тот, у кого есть право «Приглашать и менять роли». Обычно это владелец.")
+                } else if member.role == .owner {
+                    TGExplainer(text: "У владельца нельзя снять управление семьёй — иначе права станет некому раздавать.")
+                }
             }
 
             if let expires = member.accessExpiresAt {
@@ -167,22 +214,31 @@ struct MemberScreen: View {
             }
         }
         .navigationTitle(member.name)
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarTitleDisplayMode(.large)
     }
 }
 
-private struct PermissionRow: View {
-    let title: String
-    let granted: Bool
+/// Одно право — один переключатель. Выключенное право видно и объяснено,
+/// а не просто отсутствует в списке.
+private struct PermissionToggle: View {
+    let permission: Permission
+    let isOn: Bool
+    let isEditable: Bool
+    let onChange: (Bool) -> Void
 
     var body: some View {
-        HStack {
-            Image(systemName: granted ? "checkmark.circle.fill" : "minus.circle")
-                .foregroundStyle(granted ? Token.Action.done : Token.Ink.faint)
-            Text(title).textStyle(AppFont.body)
-            Spacer(minLength: 0)
+        Toggle(isOn: Binding(get: { isOn }, set: onChange)) {
+            VStack(alignment: .leading, spacing: Token.Space.s2) {
+                Text(permission.title)
+                    .textStyle(AppFont.body)
+                    .fixedSize(horizontal: false, vertical: true)
+                Text(permission.detail)
+                    .textStyle(AppFont.caption)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
         }
-        .frame(minHeight: 34)
+        .disabled(!isEditable)
+        .frame(minHeight: Token.Size.tapTarget)
     }
 }
 
@@ -250,7 +306,10 @@ struct SitterPreviewScreen: View {
                 TGSectionHeader(title: "что нужно сделать")
                 ForEach(plan, id: \.0) { time, title in
                     HStack(spacing: Token.Space.s12) {
-                        Text(time).textStyle(AppFont.numeric(13, weight: .medium)).frame(width: 44, alignment: .leading)
+                        Text(time)
+                            .textStyle(AppFont.numeric(13, weight: .medium))
+                            .fixedSize()
+                            .frame(minWidth: 44, alignment: .leading)
                         Text(title).textStyle(AppFont.body)
                         Spacer(minLength: 0)
                         Image(systemName: "chevron.right")
@@ -274,7 +333,7 @@ struct SitterPreviewScreen: View {
             }
         }
         .navigationTitle("Вид ситтера")
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarTitleDisplayMode(.large)
     }
 
     private var plan: [(String, String)] {

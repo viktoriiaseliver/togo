@@ -15,9 +15,20 @@ struct TGSheetHandle: View {
 
 /// Figma: `Sheet`. Родительский каркас шторки: ручка, заголовок, прокрутка,
 /// действие внизу. Дети приходят слотом — так же, как слот в Figma-компоненте.
+///
+/// Выход есть всегда: ручка, свайп вниз и явный крестик. Эвристика Нильсена
+/// №3 — свобода и контроль: из любого места должен быть виден путь назад,
+/// а не только жест, о котором надо догадаться.
 struct TGSheet<Content: View, Footer: View>: View {
+    @Environment(\.dismiss) private var dismiss
+
     let title: String
     var subtitle: String?
+    /// Подпись кнопки закрытия. Меняется там, где «Закрыть» звучит неверно —
+    /// например «Отмена» в форме, которая что-то создаёт.
+    var closeTitle: String = "Закрыть"
+    /// Что делать при закрытии, если недостаточно просто убрать шторку.
+    var onClose: (() -> Void)?
     @ViewBuilder var content: Content
     @ViewBuilder var footer: Footer
 
@@ -40,14 +51,31 @@ struct TGSheet<Content: View, Footer: View>: View {
     }
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: Token.Space.s4) {
-            Text(title).textStyle(AppFont.screenTitle)
-            if let subtitle {
-                Text(subtitle).textStyle(AppFont.caption)
+        HStack(alignment: .top, spacing: Token.Space.s12) {
+            VStack(alignment: .leading, spacing: Token.Space.s4) {
+                Text(title).textStyle(AppFont.screenTitle)
+                if let subtitle {
+                    Text(subtitle).textStyle(AppFont.caption)
+                }
             }
+            .accessibilityAddTraits(.isHeader)
+
+            Spacer(minLength: 0)
+
+            Button {
+                onClose?()
+                dismiss()
+            } label: {
+                Image(systemName: "xmark")
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundStyle(Token.Ink.secondary)
+                    .frame(width: 30, height: 30)
+                    .background(Token.Surface.sunken, in: Circle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(closeTitle)
         }
         .padding(.top, Token.Space.s8)
-        .accessibilityAddTraits(.isHeader)
     }
 
     @ViewBuilder
@@ -63,8 +91,15 @@ struct TGSheet<Content: View, Footer: View>: View {
 }
 
 extension TGSheet where Footer == EmptyView {
-    init(title: String, subtitle: String? = nil, @ViewBuilder content: () -> Content) {
-        self.init(title: title, subtitle: subtitle, content: content, footer: { EmptyView() })
+    init(
+        title: String,
+        subtitle: String? = nil,
+        closeTitle: String = "Закрыть",
+        onClose: (() -> Void)? = nil,
+        @ViewBuilder content: () -> Content
+    ) {
+        self.init(title: title, subtitle: subtitle, closeTitle: closeTitle,
+                  onClose: onClose, content: content, footer: { EmptyView() })
     }
 }
 

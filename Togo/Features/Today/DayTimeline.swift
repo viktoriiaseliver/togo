@@ -40,7 +40,8 @@ struct TimelineRow: View {
             Text(Fmt.clock(event.date))
                 .textStyle(AppFont.numeric(13, weight: .medium))
                 .foregroundStyle(Token.Ink.secondary)
-                .frame(width: 40, alignment: .leading)
+                .fixedSize()
+                .frame(minWidth: 40, alignment: .leading)
 
             // Иконка повторяет название записи — голосом её произносить незачем.
             Image(systemName: event.kind.symbol)
@@ -171,7 +172,8 @@ struct SwipeToCompleteRow: View {
                 Text(Fmt.clock(item.time))
                     .textStyle(AppFont.numeric(13, weight: .medium))
                     .foregroundStyle(isOverdue ? Token.Status.overdueText : Token.Ink.secondary)
-                    .frame(width: 40, alignment: .leading)
+                    .fixedSize()
+                    .frame(minWidth: 40, alignment: .leading)
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(item.title)

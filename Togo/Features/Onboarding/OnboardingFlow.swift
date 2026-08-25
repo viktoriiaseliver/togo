@@ -6,9 +6,14 @@ import SwiftData
 struct OnboardingFlow: View {
     @Environment(\.modelContext) private var context
     @Environment(Settings.self) private var settings
+    @Query private var dogs: [Dog]
 
     @State private var step: Step = .welcome
     @State private var draft = DogDraft()
+
+    /// Онбординг можно пройти заново из настроек. Тогда собака уже есть,
+    /// и шаги, которые её создают, надо пропустить — иначе получится вторая.
+    private var isReplay: Bool { !dogs.isEmpty }
 
     enum Step: Int, CaseIterable {
         case welcome, dog, family, notifications
@@ -21,17 +26,52 @@ struct OnboardingFlow: View {
         NavigationStack {
             Group {
                 switch step {
-                case .welcome:       WelcomeStep { advance() }
-                case .dog:           DogStep(draft: $draft) { advance() }
-                case .family:        FamilyStep(onSkip: { advance() }, onInvite: { advance() })
+                case .welcome:       WelcomeStep(isReplay: isReplay) { advance() }
+                case .dog:
+                    if isReplay {
+                        // Собака уже есть — вместо формы показываем то,
+                        // ради чего онбординг и перечитывают.
+                        HowItWorksScreen()
+                            .safeAreaInset(edge: .bottom) {
+                                TGButton(title: "Дальше") { advance() }
+                                    .padding(.horizontal, Token.Spacing.screenPadding)
+                                    .padding(.bottom, Token.Space.s8)
+                                    .background(.regularMaterial)
+                            }
+                    } else {
+                        DogStep(draft: $draft) { advance() }
+                    }
+                case .family:
+                    if isReplay {
+                        HowItWorksReplayEnd(onDone: finish)
+                    } else {
+                        FamilyStep(onSkip: { advance() }, onInvite: { advance() })
+                    }
                 case .notifications: NotificationsPrimingStep(onDone: finish)
                 }
             }
             .background(Token.Surface.screen)
             .toolbar {
-                if let progress = step.progress {
+                if let progress = step.progress, !isReplay {
                     ToolbarItem(placement: .principal) {
                         Text(progress).textStyle(AppFont.micro)
+                    }
+                }
+                // Шаг назад есть везде, кроме первого экрана: человек должен
+                // иметь право передумать, а не только идти вперёд.
+                if step != .welcome {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button {
+                            back()
+                        } label: {
+                            Label("Назад", systemImage: "chevron.left")
+                        }
+                    }
+                }
+                // Выход есть и отсюда: перечитал — и вернулся к дневнику.
+                if isReplay {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button("Закрыть") { finish() }
                     }
                 }
             }
@@ -39,9 +79,16 @@ struct OnboardingFlow: View {
     }
 
     private func advance() {
-        if step == .dog { saveDog() }
+        // Повторное прохождение ничего не создаёт: это чтение, а не установка.
+        if step == .dog, !isReplay { saveDog() }
         withAnimation(.easeInOut(duration: Token.Duration.quick)) {
             step = Step(rawValue: step.rawValue + 1) ?? .notifications
+        }
+    }
+
+    private func back() {
+        withAnimation(.easeInOut(duration: Token.Duration.quick)) {
+            step = Step(rawValue: step.rawValue - 1) ?? .welcome
         }
     }
 
@@ -92,6 +139,7 @@ struct DogDraft {
 // MARK: - Шаг 1 · зачем это
 
 private struct WelcomeStep: View {
+    var isReplay: Bool = false
     var onNext: () -> Void
 
     private let promises = [
@@ -127,7 +175,9 @@ private struct WelcomeStep: View {
             }
             .padding(.top, Token.Space.s8)
         } bottom: {
-            TGButton(title: "Добавить собаку", systemImage: "plus", action: onNext)
+            TGButton(title: isReplay ? "Перечитать" : "Добавить собаку",
+                     systemImage: isReplay ? "book" : "plus",
+                     action: onNext)
             Text("Всё считается на телефоне. Аккаунт не нужен.")
                 .textStyle(AppFont.micro)
                 .frame(maxWidth: .infinity)
@@ -197,12 +247,22 @@ struct LabeledField<Content: View>: View {
     @ViewBuilder var content: Content
 
     var body: some View {
-        HStack {
-            Text(label).textStyle(AppFont.body)
-            Spacer(minLength: Token.Space.s12)
-            content
-                .multilineTextAlignment(.trailing)
-                .textStyle(AppFont.body)
+        ViewThatFits(in: .horizontal) {
+            HStack {
+                Text(label).textStyle(AppFont.body).fixedSize()
+                Spacer(minLength: Token.Space.s12)
+                content
+                    .multilineTextAlignment(.trailing)
+                    .textStyle(AppFont.body)
+            }
+            // При крупном шрифте подпись и поле перестают помещаться рядом —
+            // тогда поле уезжает под подпись, а не сжимается в щель.
+            VStack(alignment: .leading, spacing: Token.Space.s4) {
+                Text(label).textStyle(AppFont.caption)
+                content
+                    .multilineTextAlignment(.leading)
+                    .textStyle(AppFont.body)
+            }
         }
         .frame(minHeight: Token.Size.tapTarget)
     }
@@ -325,6 +385,24 @@ private struct InterruptRow: View {
                 }
                 Spacer(minLength: 0)
             }
+        }
+    }
+}
+
+
+/// Конец повторного прохождения: ничего не создаём, просто выпускаем обратно.
+private struct HowItWorksReplayEnd: View {
+    var onDone: () -> Void
+
+    var body: some View {
+        TGScreen(title: "Это всё") {
+            TGCard {
+                Text("Инструкция всегда под рукой").textStyle(AppFont.cardTitle)
+                Text("«Настройки → Как это работает» открывает тот же текст в любой момент. Отдельной справки в приложении нет: объяснения стоят там, где возникает вопрос.")
+                    .textStyle(AppFont.caption)
+            }
+        } bottom: {
+            TGButton(title: "Вернуться к дневнику", action: onDone)
         }
     }
 }

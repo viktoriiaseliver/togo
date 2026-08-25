@@ -16,7 +16,20 @@ final class SubscriptionStore {
     }
 
     private(set) var products: [Product] = []
-    private(set) var isPro = false
+    private(set) var entitled = false
+
+    #if DEBUG
+    /// Проверять надо оба состояния — и с подпиской, и без. В отладочной
+    /// сборке её можно включить и выключить руками, не покупая ничего.
+    var debugOverride: Bool? {
+        didSet { UserDefaults.standard.set(debugOverride, forKey: "debug.pro") }
+    }
+
+    var isPro: Bool { debugOverride ?? entitled }
+    #else
+    var isPro: Bool { entitled }
+    #endif
+
     private(set) var isLoading = false
     private(set) var lastError: String?
 
@@ -26,6 +39,9 @@ final class SubscriptionStore {
     private var updatesTask: Task<Void, Never>?
 
     init() {
+        #if DEBUG
+        debugOverride = UserDefaults.standard.object(forKey: "debug.pro") as? Bool
+        #endif
         updatesTask = Task { [weak self] in
             for await update in Transaction.updates {
                 await self?.handle(update)
@@ -82,7 +98,7 @@ final class SubscriptionStore {
                 active = true
             }
         }
-        isPro = active
+        entitled = active
     }
 
     private func handle(_ result: VerificationResult<Transaction>) async {
@@ -97,6 +113,14 @@ final class SubscriptionStore {
         ("pawprint.circle", "Вторая и следующие собаки", "переключатель наверху главного"),
         ("person.3", "Семья больше двух человек", "роли, дежурство, ссылка ситтера"),
         ("doc.text", "Отчёты врачу без ограничений", "CSV остаётся бесплатным"),
+    ]
+
+    /// Что перестанет работать после отключения подписки. Показывается
+    /// до отмены, а не после: человек должен понимать, что теряет.
+    static let lostOnDowngrade = [
+        ("square.grid.3x3", "Матрица переноса навыка", "занятия и «не брал еду» останутся"),
+        ("pawprint.circle", "Вторая и следующие собаки", "их записи сохранятся и вернутся при возобновлении"),
+        ("person.3", "Семья больше двух человек", "лишние участники станут наблюдателями, никого не удалим"),
     ]
 
     static let freeForever = [

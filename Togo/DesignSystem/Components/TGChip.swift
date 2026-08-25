@@ -12,12 +12,19 @@ struct TGChip: View {
         Button(action: action) {
             TGTile(isSelected: isSelected, tone: tone, minHeight: Token.Component.Chip.height) {
                 VStack(spacing: Token.Space.s2) {
-                    Text(title).textStyle(AppFont.captionEmphasis.color(foreground))
+                    Text(title)
+                        .textStyle(AppFont.captionEmphasis.color(foreground))
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
                     if let subtitle {
-                        Text(subtitle).textStyle(AppFont.micro.color(Token.Ink.faint))
+                        Text(subtitle)
+                            .textStyle(AppFont.micro.color(Token.Ink.faint))
+                            .multilineTextAlignment(.center)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
                 }
                 .padding(.horizontal, Token.Space.s14)
+                .padding(.vertical, Token.Space.s8)
             }
         }
         .buttonStyle(.plain)

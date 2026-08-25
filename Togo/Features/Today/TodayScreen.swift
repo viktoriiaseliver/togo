@@ -81,7 +81,7 @@ struct TodayScreen: View {
                 ActionGrid(
                     portionGrams: dog?.portionGrams ?? 0,
                     isTravelling: activeTrip != nil,
-                    canWriteMedical: appState.role.canSeeMedical
+                    canWriteMedical: appState.can(.seeMedical)
                 ) { route = $0 }
             }
             .navigationBarTitleDisplayMode(.inline)
@@ -167,7 +167,7 @@ struct TodayScreen: View {
     }
 
     private var overdueDose: DoseRecord? {
-        guard let dog, dog.isOnTreatment, appState.role.canSeeMedical else { return nil }
+        guard let dog, dog.isOnTreatment, appState.can(.seeMedical) else { return nil }
         return dog.medications
             .flatMap(\.doses)
             .filter { $0.escalationStage(at: now) >= 2 }
@@ -194,7 +194,7 @@ struct TodayScreen: View {
             items.append(DayPlanItem(id: "meal-\(minute)", time: at, title: "Еда · \(dog.portionGrams) г",
                                      hint: dog.foodBrand, kind: .meal, isDone: done))
         }
-        if dog.isOnTreatment, appState.role.canSeeMedical {
+        if dog.isOnTreatment, appState.can(.seeMedical) {
             for medication in dog.medications where !medication.isPaused {
                 for minute in medication.times.sorted() {
                     let at = startOfDay.addingTimeInterval(Double(minute) * 60)

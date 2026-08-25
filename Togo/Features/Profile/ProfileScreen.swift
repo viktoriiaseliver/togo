@@ -7,9 +7,17 @@ struct ProfileScreen: View {
     let dog: Dog?
 
     @Environment(\.modelContext) private var context
+    @Environment(AppState.self) private var appState
+
+    private var canEdit: Bool { appState.can(.editProfile) }
 
     var body: some View {
-        TGScreen(title: dog?.name ?? "Профиль") {
+        TGScreen {
+            if !canEdit {
+                TGBanner(tone: .waiting, title: "Только чтение",
+                         subtitle: "Профиль, питание и уход меняет тот, кому владелец выдал это право.",
+                         systemImage: "lock")
+            }
             if let dog {
                 nutrition(dog)
                 weight(dog)
@@ -18,8 +26,9 @@ struct ProfileScreen: View {
                 links(dog)
             }
         }
+        .disabled(false)
         .navigationTitle(dog?.name ?? "Профиль")
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarTitleDisplayMode(.large)
     }
 
     // MARK: Питание
@@ -57,6 +66,7 @@ struct ProfileScreen: View {
             }
             TGExplainer(text: "Порция подставляется в кнопку «Еда» на главном: жать нужно один раз, граммы уже подписаны.")
         }
+        .disabled(!canEdit)
     }
 
     // MARK: Вес
@@ -119,6 +129,7 @@ struct ProfileScreen: View {
             .frame(minHeight: Token.Size.tapTarget)
             TGExplainer(text: "Ограничения на лакомства нет. Есть дневная норма, часть которой собака зарабатывает, — это и снимает конфликт между занятиями и весом.")
         }
+        .disabled(!canEdit)
     }
 
     // MARK: Лечение
@@ -133,12 +144,17 @@ struct ProfileScreen: View {
             }
             TGExplainer(text: "Выключишь — вкладка исчезнет, а записи останутся в истории.")
         }
+        .disabled(!canEdit)
     }
 
     // MARK: Переходы
 
     private func links(_ dog: Dog) -> some View {
         TGCard(spacing: 0) {
+            NavigationLink { FeedingScreen(dog: dog) } label: {
+                TGListRow(title: "Питание и режим", value: "\(dog.dailyGrams) г в день", systemImage: "fork.knife")
+            }
+            TGDivider()
             NavigationLink { CareScreen(dog: dog) } label: {
                 TGListRow(title: "Уход и напоминания", systemImage: "scissors")
             }
@@ -169,26 +185,49 @@ struct CareScreen: View {
     @Environment(\.modelContext) private var context
     @Environment(AppState.self) private var appState
 
+    @State private var editing: CareTask?
+    @State private var isAdding = false
+
     private var tasks: [CareTask] { dog?.careTasks ?? [] }
 
     var body: some View {
-        TGScreen(title: "Уход и напоминания") {
-            ForEach(CareCategory.allCases, id: \.self) { category in
-                let group = tasks.filter { $0.category == category }
-                if !group.isEmpty {
-                    TGCard(spacing: 0) {
-                        TGSectionHeader(title: category.title)
-                        ForEach(group.sorted { ($0.daysUntilDue() ?? 999) < ($1.daysUntilDue() ?? 999) }) { task in
-                            CareTaskRow(task: task) { complete(task) }
-                            if task.id != group.last?.id { TGDivider() }
+        TGScreen {
+            if tasks.isEmpty {
+                EmptyStateCard(
+                    systemImage: "scissors",
+                    title: "Напоминаний пока нет",
+                    message: "Заведи то, что повторяется: когти, вычёсывание, антипаразитарку, прививки. Всё это придёт одним брифом в выбранный час, а не восемью пушами.",
+                    actionTitle: dog == nil ? nil : "Добавить напоминание",
+                    action: dog == nil ? nil : { isAdding = true }
+                )
+            } else {
+                ForEach(CareCategory.allCases, id: \.self) { category in
+                    let group = tasks.filter { $0.category == category }
+                    if !group.isEmpty {
+                        TGCard(spacing: 0) {
+                            TGSectionHeader(title: category.title)
+                            ForEach(group.sorted { ($0.daysUntilDue() ?? 999) < ($1.daysUntilDue() ?? 999) }) { task in
+                                CareTaskRow(task: task, onDone: { complete(task) }, onEdit: { editing = task })
+                                if task.id != group.last?.id { TGDivider() }
+                            }
                         }
                     }
                 }
+                TGExplainer(text: "Всё это приходит одним брифом в выбранный час, а не восемью пушами. Прерывают только доза и окно натощак.")
             }
-            TGExplainer(text: "Всё это приходит одним брифом в выбранный час, а не восемью пушами. Прерывают только доза и окно натощак.")
         }
         .navigationTitle("Уход")
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarTitleDisplayMode(.large)
+        .toolbar {
+            if dog != nil {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button { isAdding = true } label: { Image(systemName: "plus") }
+                        .accessibilityLabel("Добавить напоминание")
+                }
+            }
+        }
+        .sheet(isPresented: $isAdding) { CareTaskEditorSheet(dog: dog) }
+        .sheet(item: $editing) { task in CareTaskEditorSheet(task: task, dog: dog) }
     }
 
     private func complete(_ task: CareTask) {
@@ -207,6 +246,7 @@ struct CareScreen: View {
 private struct CareTaskRow: View {
     let task: CareTask
     var onDone: () -> Void
+    var onEdit: () -> Void
 
     var body: some View {
         HStack(spacing: Token.Space.s12) {
@@ -225,6 +265,10 @@ private struct CareTaskRow: View {
                 .textStyle(AppFont.captionEmphasis.color(Token.Action.done))
         }
         .frame(minHeight: 54)
+        .contentShape(Rectangle())
+        // Тап по строке правит напоминание, кнопка справа его закрывает.
+        .onTapGesture(perform: onEdit)
+        .accessibilityAction(named: "Поправить", onEdit)
     }
 
     private var dueLabel: String {

@@ -11,8 +11,11 @@ struct TGSectionHeader: View {
                 .textStyle(AppFont.micro.color(Token.Ink.faint))
                 .textCase(.uppercase)
                 .kerning(0.6)
+                .fixedSize(horizontal: false, vertical: true)
             if let subtitle {
-                Text(subtitle).textStyle(AppFont.caption)
+                Text(subtitle)
+                    .textStyle(AppFont.caption)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -28,6 +31,7 @@ struct TGExplainer: View {
     var body: some View {
         Text(text)
             .textStyle(AppFont.caption)
+            .fixedSize(horizontal: false, vertical: true)
             .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
@@ -45,7 +49,7 @@ struct TGListRow: View {
     var tone: Color = Token.Ink.primary
 
     var body: some View {
-        HStack(spacing: Token.Space.s12) {
+        HStack(alignment: .firstTextBaseline, spacing: Token.Space.s12) {
             if let systemImage {
                 Image(systemName: systemImage)
                     .font(.system(size: Token.Size.iconMd, weight: .medium))
@@ -53,16 +57,43 @@ struct TGListRow: View {
                     .frame(width: Token.Space.s24)
                     .accessibilityHidden(true)
             }
-            Text(title).textStyle(AppFont.body.color(tone))
-            Spacer(minLength: Token.Space.s8)
-            if let value {
-                Text(value).textStyle(AppFont.caption)
+
+            // При крупном шрифте подпись и значение перестают помещаться
+            // в строку — тогда они встают друг под друга, а не ужимаются
+            // до нечитаемого.
+            ViewThatFits(in: .horizontal) {
+                HStack(alignment: .firstTextBaseline, spacing: Token.Space.s8) {
+                    titleText
+                    Spacer(minLength: Token.Space.s8)
+                    valueText
+                }
+                VStack(alignment: .leading, spacing: Token.Space.s2) {
+                    titleText
+                    valueText
+                }
             }
+
             accessoryView
         }
         .frame(minHeight: Token.Size.tapTarget)
-        .padding(.vertical, theme.density.rowPadding - Token.Space.s12)
+        .padding(.vertical, max(0, theme.density.rowPadding - Token.Space.s12))
         .contentShape(Rectangle())
+    }
+
+    private var titleText: some View {
+        Text(title)
+            .textStyle(AppFont.body.color(tone))
+            .fixedSize(horizontal: false, vertical: true)
+            .multilineTextAlignment(.leading)
+    }
+
+    @ViewBuilder
+    private var valueText: some View {
+        if let value {
+            Text(value)
+                .textStyle(AppFont.caption)
+                .fixedSize(horizontal: false, vertical: true)
+        }
     }
 
     @ViewBuilder
@@ -94,8 +125,16 @@ struct TGStat: View {
 
     var body: some View {
         VStack(spacing: Token.Space.s2) {
-            Text(value).textStyle(AppFont.numeric(size))
-            Text(caption).textStyle(AppFont.micro)
+            Text(value)
+                .textStyle(AppFont.numeric(size))
+                .lineLimit(1)
+                // Число лучше показать чуть мельче, чем обрезать: «190 мл»
+                // с многоточием не читается вообще.
+                .minimumScaleFactor(0.6)
+            Text(caption)
+                .textStyle(AppFont.micro)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity)
         .accessibilityElement(children: .combine)

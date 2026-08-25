@@ -1,0 +1,287 @@
+import Foundation
+
+/// Питание: сколько, сколько раз и во сколько.
+///
+/// Приложение не ставит целей по проценту и не считает норму само —
+/// норму называет врач, она лежит в профиле как порция × число кормлений.
+/// Здесь считается только одно: расходится ли то, что записано, с этой нормой,
+/// и во сколько собака ест на самом деле.
+nonisolated struct FeedingReport: Equatable, Sendable {
+    /// Один день: сколько съел и во сколько.
+    struct Day: Equatable, Sendable, Identifiable {
+        var date: Date
+        var grams: Int
+        /// Минуты от полуночи по каждому кормлению.
+        var mealMinutes: [Int]
+        var isComplete: Bool
+
+        var id: Date { date }
+        var meals: Int { mealMinutes.count }
+    }
+
+    enum Status: Equatable, Sendable {
+        /// Меньше трёх полных дней — выводов не делаем и говорим об этом прямо.
+        case notEnoughData(days: Int)
+        case underNorm
+        case onNorm
+        case overNorm
+
+        var title: String {
+            switch self {
+            case .notEnoughData: "Пока не с чем сравнивать"
+            case .underNorm: "Ест меньше нормы"
+            case .onNorm: "Ест по норме"
+            case .overNorm: "Ест больше нормы"
+            }
+        }
+    }
+
+    var days: [Day]
+    var normGramsPerDay: Int
+    var normMealsPerDay: Int
+    var averageGramsPerDay: Double
+    var averageMealsPerDay: Double
+    var status: Status
+    /// Во сколько он ест на самом деле — по наблюдениям, а не по расписанию.
+    var observedMealTimes: [Int]
+    /// Что предложить, если расходится с нормой.
+    var suggestedPortionGrams: Int?
+    var suggestedMealTimes: [Int]
+    /// Сколько в среднем проходит от еды до стула — из этого и растут выходы.
+    var stoolLagMinutes: Int?
+    var suggestedOutingTimes: [Int]
+    /// Предложенное время попало в окно натощак — показываем конфликт явно.
+    var conflicts: [String]
+
+    var todayGrams: Int { days.last?.grams ?? 0 }
+    var todayMeals: Int { days.last?.meals ?? 0 }
+    var remainingGramsToday: Int { max(0, normGramsPerDay - todayGrams) }
+
+    /// На сколько процентов расходится с нормой. Отрицательное — недоедает.
+    var deviationPercent: Int {
+        guard normGramsPerDay > 0, averageGramsPerDay > 0 else { return 0 }
+        return Int(((averageGramsPerDay / Double(normGramsPerDay)) - 1) * 100)
+    }
+}
+
+nonisolated enum FeedingAnalyzer {
+    /// Сколько дней смотрим назад. Две недели — достаточно, чтобы увидеть
+    /// режим, и мало, чтобы не тащить прошлые схемы кормления.
+    static let windowDays = 14
+    /// Три полных дня — минимум, ниже которого выводы врут.
+    static let minimumCompleteDays = 3
+    /// Порог, ниже которого расхождение не стоит внимания человека.
+    static let tolerance = 0.05
+
+    static func report(
+        events: [LogEvent],
+        dog: Dog?,
+        now: Date = Date(),
+        calendar: Calendar = .current,
+        fastingWindows: [(start: Int, end: Int)] = []
+    ) -> FeedingReport {
+        let norm = dog?.dailyGrams ?? 0
+        let normMeals = dog?.mealsPerDay ?? 0
+        let days = dailyIntake(events: events, now: now, calendar: calendar)
+        let complete = days.filter(\.isComplete)
+
+        let averageGrams = complete.isEmpty ? 0
+            : Double(complete.map(\.grams).reduce(0, +)) / Double(complete.count)
+        let averageMeals = complete.isEmpty ? 0
+            : Double(complete.map(\.meals).reduce(0, +)) / Double(complete.count)
+
+        let status = self.status(completeDays: complete.count, average: averageGrams, norm: norm)
+        let observed = mealTimeClusters(days: complete)
+        let lag = mealToStoolLag(events: events)
+
+        let suggestedTimes = suggestedMealTimes(
+            observed: observed,
+            normMeals: normMeals,
+            days: complete,
+            calendar: calendar
+        )
+
+        return FeedingReport(
+            days: days,
+            normGramsPerDay: norm,
+            normMealsPerDay: normMeals,
+            averageGramsPerDay: averageGrams,
+            averageMealsPerDay: averageMeals,
+            status: status,
+            observedMealTimes: observed,
+            suggestedPortionGrams: suggestedPortion(status: status, dog: dog),
+            suggestedMealTimes: suggestedTimes,
+            stoolLagMinutes: lag,
+            suggestedOutingTimes: suggestedOutingTimes(mealTimes: suggestedTimes, lag: lag, days: complete),
+            conflicts: conflicts(mealTimes: suggestedTimes, fastingWindows: fastingWindows)
+        )
+    }
+
+    // MARK: По дням
+
+    static func dailyIntake(
+        events: [LogEvent],
+        now: Date = Date(),
+        calendar: Calendar = .current
+    ) -> [FeedingReport.Day] {
+        let meals = Diary.active(events).filter { $0.kind == .meal }
+        let today = calendar.startOfDay(for: now)
+
+        return (0..<windowDays).reversed().compactMap { offset in
+            guard let day = calendar.date(byAdding: .day, value: -offset, to: today) else { return nil }
+            let ofDay = meals.filter { calendar.isDate($0.date, inSameDayAs: day) }
+            // Пустые прошлые дни — это не «съел ноль», а «дневник не вели».
+            // Такие дни в среднее не попадают.
+            let isToday = offset == 0
+            guard !ofDay.isEmpty || isToday else { return nil }
+            return FeedingReport.Day(
+                date: day,
+                grams: ofDay.compactMap(\.grams).reduce(0, +),
+                mealMinutes: ofDay.map { minuteOfDay($0.date, calendar: calendar) }.sorted(),
+                isComplete: !isToday && !ofDay.isEmpty
+            )
+        }
+    }
+
+    static func status(completeDays: Int, average: Double, norm: Int) -> FeedingReport.Status {
+        guard completeDays >= minimumCompleteDays, norm > 0 else {
+            return .notEnoughData(days: completeDays)
+        }
+        let ratio = average / Double(norm)
+        if ratio > 1 + tolerance { return .overNorm }
+        if ratio < 1 - tolerance * 2 { return .underNorm }
+        return .onNorm
+    }
+
+    // MARK: Во сколько ест на самом деле
+
+    /// Одномерная кластеризация времён: соседние кормления в пределах
+    /// полутора часов — это одно и то же кормление в разные дни.
+    static func mealTimeClusters(days: [FeedingReport.Day], gapMinutes: Int = 90) -> [Int] {
+        let times = days.flatMap(\.mealMinutes).sorted()
+        guard !times.isEmpty else { return [] }
+
+        var clusters: [[Int]] = [[times[0]]]
+        for time in times.dropFirst() {
+            if time - (clusters[clusters.count - 1].last ?? time) <= gapMinutes {
+                clusters[clusters.count - 1].append(time)
+            } else {
+                clusters.append([time])
+            }
+        }
+
+        // Кластер считается настоящим кормлением, если он есть хотя бы
+        // в трети дней: разовый ночной перекус расписанием не становится.
+        let threshold = max(1, days.count / 3)
+        return clusters
+            .filter { $0.count >= threshold }
+            .map { median($0) }
+            .sorted()
+    }
+
+    // MARK: Что предложить
+
+    /// Если ест больше нормы — уменьшаем не одно кормление, а все сразу:
+    /// порция в профиле одна на все приёмы, и это правильно.
+    static func suggestedPortion(status: FeedingReport.Status, dog: Dog?) -> Int? {
+        guard let dog, dog.mealsPerDay > 0 else { return nil }
+        switch status {
+        case .overNorm, .underNorm:
+            // Норма делится поровну и округляется до пяти граммов:
+            // мерить точнее на кухонных весах всё равно не выйдет.
+            let perMeal = Double(dog.dailyGrams) / Double(dog.mealsPerDay)
+            return max(5, Int((perMeal / 5).rounded()) * 5)
+        case .onNorm, .notEnoughData:
+            return nil
+        }
+    }
+
+    /// Кормления раскладываются по дню равномерно внутри бодрствования,
+    /// но отталкиваются от того, во сколько собака уже ест.
+    static func suggestedMealTimes(
+        observed: [Int],
+        normMeals: Int,
+        days: [FeedingReport.Day],
+        calendar: Calendar = .current
+    ) -> [Int] {
+        guard normMeals > 0 else { return [] }
+        if observed.count == normMeals { return observed }
+
+        let first = observed.first ?? 7 * 60 + 30
+        let last = observed.last ?? 18 * 60 + 30
+        guard normMeals > 1 else { return [first] }
+
+        let span = max(60, last - first)
+        let step = span / (normMeals - 1)
+        return (0..<normMeals).map { first + step * $0 }
+    }
+
+    // MARK: Еда → стул → выходы
+
+    /// Сколько в среднем проходит от кормления до стула. Из этого числа
+    /// и получаются осмысленные времена выходов.
+    static func mealToStoolLag(events: [LogEvent], maxLagHours: Double = 8) -> Int? {
+        let active = Diary.active(events)
+        let meals = active.filter { $0.kind == .meal }.map(\.date).sorted()
+        let stools = active
+            .filter { $0.kind == .stool || ($0.kind == .outing && ($0.outcome == .stool || $0.outcome == .both)) }
+            .map(\.date)
+            .sorted()
+        guard !meals.isEmpty, !stools.isEmpty else { return nil }
+
+        var lags: [Int] = []
+        for stool in stools {
+            guard let meal = meals.last(where: { $0 < stool }) else { continue }
+            let lag = stool.timeIntervalSince(meal)
+            if lag <= maxLagHours * 3600 { lags.append(Int(lag / 60)) }
+        }
+        guard lags.count >= 3 else { return nil }
+        return median(lags)
+    }
+
+    /// Выходы предлагаются двумя источниками: через задержку после каждого
+    /// кормления и утром сразу после подъёма.
+    static func suggestedOutingTimes(mealTimes: [Int], lag: Int?, days: [FeedingReport.Day]) -> [Int] {
+        guard let lag, let firstMeal = mealTimes.first else { return [] }
+        var times = [max(0, firstMeal - 30)]                 // утренний, до еды
+        times += mealTimes.map { ($0 + lag) % (24 * 60) }    // после каждого кормления
+        return Array(Set(times)).sorted()
+    }
+
+    // MARK: Конфликты с лечением
+
+    /// Стич — сложный случай: лечение даёт окна натощак, и предложенное
+    /// кормление может попасть внутрь окна. Такое надо показывать явно,
+    /// а не молча двигать: двигать должен человек вместе с врачом.
+    static func conflicts(mealTimes: [Int], fastingWindows: [(start: Int, end: Int)]) -> [String] {
+        var result: [String] = []
+        for time in mealTimes {
+            for window in fastingWindows where isInside(time, window) {
+                result.append(
+                    "Кормление в \(Fmt.clock(minuteOfDay: time)) попадает в окно натощак "
+                    + "\(Fmt.clock(minuteOfDay: window.start))–\(Fmt.clock(minuteOfDay: window.end))"
+                )
+            }
+        }
+        return result
+    }
+
+    private static func isInside(_ minute: Int, _ window: (start: Int, end: Int)) -> Bool {
+        window.start <= window.end
+            ? (minute >= window.start && minute < window.end)
+            : (minute >= window.start || minute < window.end)
+    }
+
+    // MARK: Мелочи
+
+    static func minuteOfDay(_ date: Date, calendar: Calendar = .current) -> Int {
+        let parts = calendar.dateComponents([.hour, .minute], from: date)
+        return (parts.hour ?? 0) * 60 + (parts.minute ?? 0)
+    }
+
+    static func median(_ values: [Int]) -> Int {
+        let sorted = values.sorted()
+        guard !sorted.isEmpty else { return 0 }
+        return sorted[sorted.count / 2]
+    }
+}

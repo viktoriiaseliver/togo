@@ -19,10 +19,20 @@ struct HistoryScreen: View {
     var body: some View {
         NavigationStack {
             TGScreen {
-                filterPicker
-                MonthCalendar(month: $month, events: filtered, onSelect: { selectedDay = $0 })
-                chartCard
-                episodesCard
+                if events.isEmpty {
+                    EmptyStateCard(
+                        systemImage: "calendar",
+                        title: "История начнётся с первой записи",
+                        message: "Здесь появятся календарь с точкой на каждый день, графики по стулу и весу и список эпизодов. Пока записей нет — и заполнять ничего заранее не надо.",
+                        actionTitle: nil,
+                        action: nil
+                    )
+                } else {
+                    filterPicker
+                    MonthCalendar(month: $month, events: filtered, onSelect: { selectedDay = $0 })
+                    chartCard
+                    episodesCard
+                }
             }
             .navigationTitle("История")
             .navigationBarTitleDisplayMode(.large)

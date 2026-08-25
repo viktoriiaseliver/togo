@@ -25,7 +25,7 @@ struct TodayRouter: View {
             case .edit(let id):     EventEditSheet(eventID: id)
             }
         }
-        .presentationDragIndicator(.hidden)
+        .presentationDragIndicator(.visible)
         .presentationCornerRadius(Token.Radius.sheet)
     }
 }
@@ -37,6 +37,18 @@ struct MoreSheet: View {
     @State private var next: TodayRoute?
 
     var body: some View {
+        // Без NavigationStack переход в профиль отсюда был мёртвой ссылкой:
+        // шторка — отдельная иерархия, навигации в ней нет по умолчанию.
+        NavigationStack {
+            content
+        }
+        .presentationDetents([.medium])
+        .sheet(item: $next) { route in
+            TodayRouter(route: route, dog: dog, now: Date())
+        }
+    }
+
+    private var content: some View {
         TGSheet(title: "Ещё", subtitle: "то, что нужно реже, чем раз в день") {
             TGCard(padding: 4) {
                 VStack(spacing: 0) {
@@ -56,10 +68,6 @@ struct MoreSheet: View {
                 }
             }
             .buttonStyle(.plain)
-        }
-        .presentationDetents([.medium])
-        .sheet(item: $next) { route in
-            TodayRouter(route: route, dog: dog, now: Date())
         }
     }
 

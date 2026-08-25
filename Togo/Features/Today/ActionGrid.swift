@@ -73,9 +73,13 @@ struct BigAction: View {
                 Image(systemName: systemImage)
                     .font(.system(size: 16, weight: .semibold))
                     .accessibilityHidden(true)
-                Text(title).textStyle(AppFont.cardTitle)
+                Text(title)
+                    .textStyle(AppFont.cardTitle)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.75)
             }
             .foregroundStyle(Token.Ink.primary)
+            .padding(.horizontal, Token.Space.s8)
             .frame(maxWidth: .infinity, minHeight: 54)
             .background(
                 RoundedRectangle(cornerRadius: Token.Radius.control, style: .continuous)
@@ -99,9 +103,18 @@ struct SmallAction: View {
                 Image(systemName: systemImage)
                     .font(.system(size: 15, weight: .medium))
                     .accessibilityHidden(true)
-                Text(title).font(.system(size: 11, weight: .medium))
+                Text(title)
+                    .font(.system(size: 11, weight: .medium))
+                    .lineLimit(1)
+                    // Пять плиток в ряд — колонка узкая. Чуть мельче лучше,
+                    // чем «Инциде…».
+                    .minimumScaleFactor(0.7)
                 if let subtitle {
-                    Text(subtitle).font(.system(size: 10, weight: .regular)).foregroundStyle(Token.Ink.faint)
+                    Text(subtitle)
+                        .font(.system(size: 10, weight: .regular))
+                        .foregroundStyle(Token.Ink.faint)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
                 }
             }
             .foregroundStyle(Token.Ink.primary)

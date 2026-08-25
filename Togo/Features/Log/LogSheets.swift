@@ -276,9 +276,18 @@ struct EventEditSheet: View {
 
     private var event: LogEvent? { events.first { $0.id == eventID } }
 
+    /// Свои записи ведут все, кому это разрешено; править и удалять
+    /// уже записанное — отдельное право.
+    private var canEdit: Bool { appState.can(.editRecords) }
+
     var body: some View {
         TGSheet(title: event?.kind.title ?? "Запись",
                       subtitle: event.map { "Записала \($0.authorName) в \(Fmt.clock($0.date)) · синхронизировано" }) {
+            if !canEdit {
+                TGBanner(tone: .waiting, title: "Только чтение",
+                         subtitle: "Твоя роль позволяет записывать своё, но не править уже записанное. Права выдаёт владелец в разделе «Семья».",
+                         systemImage: "lock")
+            }
             if let event {
                 TGCard(padding: 4) {
                     VStack(spacing: 0) {
@@ -316,7 +325,9 @@ struct EventEditSheet: View {
                     }
                     .padding(.horizontal, 12)
                 }
+                .disabled(!canEdit)
 
+                if canEdit {
                 TGButton(title: "Удалить событие", variant: .destructive, size: .medium, systemImage: "trash") {
                     event.deletedAt = Date()
                     event.deletedBy = appState.currentUserName
@@ -325,6 +336,7 @@ struct EventEditSheet: View {
                     dismiss()
                 }
                 TGExplainer(text: "Удаление можно отменить 5 секунд. В истории останется след, что запись была и кто её убрал.")
+                }
             }
         }
         .presentationDetents([.medium, .large])

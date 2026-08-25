@@ -23,6 +23,21 @@ tokens: ## Пересобрать токены из DesignTokens/tokens.json
 project: ## Перегенерировать Togo.xcodeproj и схему
 	@python3 Tools/generate_project.py
 
+.PHONY: texts
+texts: ## Пересобрать docs/TEXTS.md и каталог строк из исходников
+	@python3 Tools/extract_texts.py
+
+.PHONY: loc-export
+loc-export: ## Выгрузить XLIFF для переводчика (build/loc/*.xcloc)
+	@xcodebuild -project $(PROJECT) -exportLocalizations \
+		-localizationPath build/loc -exportLanguage en -exportLanguage fr
+	@echo "Отдай переводчику папки в build/loc — они открываются в любом CAT-редакторе"
+
+.PHONY: loc-import
+loc-import: ## Влить перевод обратно: make loc-import LOC=build/loc/en.xcloc
+	@test -n "$(LOC)" || (echo "Укажи LOC=путь/к/en.xcloc" && exit 1)
+	@xcodebuild -project $(PROJECT) -importLocalizations -localizationPath $(LOC)
+
 .PHONY: bootstrap
 bootstrap: tokens project ## Собрать проект с нуля после клонирования
 
@@ -54,6 +69,10 @@ tokens-check: ## Проверить, что сгенерированные то�
 	@git diff --quiet -- TogoShared/Generated DesignTokens/build \
 		|| (echo "Токены разошлись: запусти make tokens и закоммить результат" && exit 1)
 	@echo "Токены совпадают с источником"
+
+.PHONY: journal
+journal: ## Завести запись в журнале проекта за сегодня
+	@bash Tools/new_journal.sh
 
 .PHONY: clean
 clean: ## Убрать артефакты сборки

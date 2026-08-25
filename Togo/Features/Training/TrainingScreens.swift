@@ -96,7 +96,7 @@ struct TransferMatrixScreen: View {
     }
 
     var body: some View {
-        TGScreen(title: "Перенос навыка") {
+        TGScreen {
             TGExplainer(text: "Навык не «выучен» или «не выучен». «Ко мне» дома и «ко мне» на улице рядом с другой собакой — два разных навыка.")
 
             axisCard(title: "где", values: places)
@@ -110,7 +110,7 @@ struct TransferMatrixScreen: View {
             }
         }
         .navigationTitle("Перенос навыка")
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarTitleDisplayMode(.large)
         .sheet(isPresented: $showPaywall) { NavigationStack { PaywallScreen() } }
     }
 
@@ -194,7 +194,7 @@ struct ProcedurePrepScreen: View {
     @Environment(\.modelContext) private var context
 
     var body: some View {
-        TGScreen(title: "Подготовка к процедурам") {
+        TGScreen {
             TGExplainer(text: "Самое ценное обучение для собаки с регулярными процедурами — не «место», а спокойно дать лапу, стоять при осмотре и самой залезать в переноску.")
 
             ForEach(skills) { skill in
@@ -220,7 +220,7 @@ struct ProcedurePrepScreen: View {
             }
         }
         .navigationTitle("Процедуры")
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarTitleDisplayMode(.large)
         .task { seedIfEmpty() }
     }
 

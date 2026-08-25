@@ -35,30 +35,43 @@ final class Dog {
     var createdAt: Date = Date()
 
     @Relationship(deleteRule: .cascade, inverse: \LogEvent.dog)
-    var events: [LogEvent] = []
+    var eventsStorage: [LogEvent]?
 
     @Relationship(deleteRule: .cascade, inverse: \WeightEntry.dog)
-    var weights: [WeightEntry] = []
+    var weightsStorage: [WeightEntry]?
 
     @Relationship(deleteRule: .cascade, inverse: \CareTask.dog)
-    var careTasks: [CareTask] = []
+    var careTasksStorage: [CareTask]?
 
     @Relationship(deleteRule: .cascade, inverse: \Medication.dog)
-    var medications: [Medication] = []
+    var medicationsStorage: [Medication]?
 
     @Relationship(deleteRule: .cascade, inverse: \TrainingStep.dog)
-    var trainingSteps: [TrainingStep] = []
+    var trainingStepsStorage: [TrainingStep]?
 
     @Relationship(deleteRule: .cascade, inverse: \TrainingSession.dog)
-    var trainingSessions: [TrainingSession] = []
+    var trainingSessionsStorage: [TrainingSession]?
 
     @Relationship(deleteRule: .cascade, inverse: \Trip.dog)
-    var trips: [Trip] = []
+    var tripsStorage: [Trip]?
 
     init(name: String, weightKg: Double) {
         self.name = name
         self.weightKg = weightKg
     }
+
+
+    // CloudKit требует, чтобы все связи были опциональными: иначе хранилище
+    // не открывается вовсе. Поэтому хранимое свойство — опциональный массив,
+    // а наружу торчит обычный: остальному коду про это знать незачем.
+
+    var events: [LogEvent] { eventsStorage ?? [] }
+    var weights: [WeightEntry] { weightsStorage ?? [] }
+    var careTasks: [CareTask] { careTasksStorage ?? [] }
+    var medications: [Medication] { medicationsStorage ?? [] }
+    var trainingSteps: [TrainingStep] { trainingStepsStorage ?? [] }
+    var trainingSessions: [TrainingSession] { trainingSessionsStorage ?? [] }
+    var trips: [Trip] { tripsStorage ?? [] }
 
     var markerKind: MarkerKind {
         get { MarkerKind(rawValue: markerKindRaw) ?? .clicker }

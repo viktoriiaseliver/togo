@@ -75,7 +75,7 @@ final class Medication {
     var dog: Dog?
 
     @Relationship(deleteRule: .cascade, inverse: \DoseRecord.medication)
-    var doses: [DoseRecord] = []
+    var dosesStorage: [DoseRecord]?
 
     init(name: String, doseText: String, times: [Int], fastingMinutes: Int = 0) {
         self.name = name
@@ -83,6 +83,9 @@ final class Medication {
         self.times = times
         self.fastingMinutes = fastingMinutes
     }
+
+    // CloudKit требует опциональных связей — см. пояснение в Dog.
+    var doses: [DoseRecord] { dosesStorage ?? [] }
 
     var scheduleSummary: String {
         let clock = times.sorted().map { String(format: "%02d:%02d", $0 / 60, $0 % 60) }.joined(separator: " и ")
