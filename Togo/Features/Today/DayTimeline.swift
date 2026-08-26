@@ -185,6 +185,13 @@ struct DayPlanItem: Identifiable, Equatable {
     var hint: String?
     let kind: Kind
     var isDone: Bool
+    /// К какому препарату относится пункт — нужно, чтобы отметить приём,
+    /// а не только записать строку в ленту.
+    var medication: Medication?
+
+    static func == (lhs: DayPlanItem, rhs: DayPlanItem) -> Bool {
+        lhs.id == rhs.id && lhs.isDone == rhs.isDone && lhs.time == rhs.time
+    }
 }
 
 /// Свайп вправо означает «сделано» — и в режиме дня, и у ситтера.

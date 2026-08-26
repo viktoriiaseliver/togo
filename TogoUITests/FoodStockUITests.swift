@@ -15,9 +15,9 @@ nonisolated final class FoodStockUITests: XCTestCase {
     }
 
 
+    /// Два тапа от вкладки вместо четырёх уровней внутри шторки.
     private func открытьЗапас() {
-        app.buttons["Ещё"].firstMatch.tap()
-        найти("Профиль собаки", в: app).tap()
+        app.tabBars.buttons["Стич"].tap()
         найти("Питание и режим", в: app).tap()
         _ = app.navigationBars["Питание"].waitForExistence(timeout: 5)
         найти("Записать корм", в: app).tap()

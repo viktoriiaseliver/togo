@@ -26,22 +26,29 @@ nonisolated final class EscapeAndZeroStateUITests: XCTestCase {
         }
     }
 
-    func testИзШторкиЕщёОткрываетсяПрофиль() {
+    func testИзШторкиЕщёМожноУйтиНаВкладкуСобаки() {
         app.buttons["Ещё"].firstMatch.tap()
-        let профиль = найти("Профиль собаки", в: app)
-        XCTAssertTrue(профиль.waitForExistence(timeout: 3))
-        профиль.tap()
-        XCTAssertTrue(найти("Питание и режим", в: app).waitForExistence(timeout: 5),
-                      "переход в профиль из шторки должен работать, а не быть мёртвой ссылкой")
+        let всё = найти("Всё про собаку", в: app)
+        XCTAssertTrue(всё.waitForExistence(timeout: 3))
+        всё.tap()
+        // Шторка закрывается и переключает вкладку, а не строит дерево внутри себя.
+        XCTAssertTrue(найти("Питание и режим", в: app).waitForExistence(timeout: 5))
     }
 
-    func testПитаниеДоступноИзПрофиля() {
-        app.buttons["Ещё"].firstMatch.tap()
-        найти("Профиль собаки", в: app).tap()
+    func testПитаниеВДвухТапахОтВкладки() {
+        app.tabBars.buttons["Стич"].tap()
         let питание = найти("Питание и режим", в: app)
         XCTAssertTrue(питание.waitForExistence(timeout: 5))
         питание.tap()
         XCTAssertTrue(app.navigationBars["Питание"].waitForExistence(timeout: 5))
+    }
+
+    func testНастройкиДоступныСКаждойВкладки() {
+        for вкладка in ["История", "Семья", "Стич"] {
+            app.tabBars.buttons[вкладка].tap()
+            XCTAssertTrue(app.buttons["Настройки"].firstMatch.waitForExistence(timeout: 3),
+                          "шестерёнка должна быть на вкладке «\(вкладка)»")
+        }
     }
 
     func testИнструкциюМожноПеречитать() {

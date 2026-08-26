@@ -45,6 +45,7 @@ struct HealthScreen: View {
             .navigationTitle("Здоровье")
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
+                SettingsToolbarItem()
                 if canEdit, dog != nil {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button { isAdding = true } label: { Image(systemName: "plus") }

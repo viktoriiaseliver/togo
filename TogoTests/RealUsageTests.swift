@@ -350,3 +350,164 @@ struct SecondPassTests {
         #expect(Diary.summary([гость], day: полдень, dog: dog).eatenGrams == 0)
     }
 }
+
+/// Дыры в логике, найденные при ревизии по HIG: не в навигации, а в том,
+/// что за ней стоит.
+@Suite("Дозы и эпизоды")
+@MainActor
+struct TreatmentAndEpisodeTests {
+    private func контекст() -> ModelContext {
+        ModelContext(Persistence.container())
+    }
+
+    private func стич(на лечении: Bool, в context: ModelContext) -> Dog {
+        let dog = Dog(name: "Стич", weightKg: 4.73)
+        dog.isOnTreatment = лечении
+        context.insert(dog)
+        return dog
+    }
+
+    // MARK: Приёмы препаратов
+
+    @Test("Отметки приёма заводятся на день по расписанию")
+    func dosesAreCreated() throws {
+        let context = контекст()
+        let dog = стич(на: true, в: context)
+        let схема = Medication(name: "Lévothyrox", doseText: "66 мкг",
+                               times: [7 * 60, 19 * 60], fastingMinutes: 45)
+        схема.dog = dog
+        context.insert(схема)
+
+        let создано = DoseScheduler.ensureDoses(for: dog, context: context)
+        #expect(создано == 2, "две отметки на день — по числу приёмов")
+
+        // Повторный заход ничего не задваивает.
+        #expect(DoseScheduler.ensureDoses(for: dog, context: context) == 0)
+    }
+
+    @Test("У здоровой собаки отметок не заводится")
+    func healthyDogHasNoDoses() {
+        let context = контекст()
+        let dog = стич(на: false, в: context)
+        #expect(DoseScheduler.ensureDoses(for: dog, context: context) == 0)
+    }
+
+    @Test("Схема на паузе не создаёт приёмов")
+    func pausedMedicationIsSkipped() {
+        let context = контекст()
+        let dog = стич(на: true, в: context)
+        let схема = Medication(name: "Что-то", doseText: "1 т", times: [9 * 60])
+        схема.isPaused = true
+        схема.dog = dog
+        context.insert(схема)
+
+        #expect(DoseScheduler.ensureDoses(for: dog, context: context) == 0)
+    }
+
+    @Test("Окно натощак считается от фактической отметки, а не от расписания")
+    func fastingFromActualTime() {
+        let context = контекст()
+        let dog = стич(на: true, в: context)
+        let схема = Medication(name: "Lévothyrox", doseText: "66 мкг",
+                               times: [7 * 60], fastingMinutes: 45)
+        схема.dog = dog
+        context.insert(схема)
+
+        let calendar = Calendar.current
+        let поплану = calendar.date(bySettingHour: 7, minute: 0, second: 0, of: .now)!
+        let наделе = поплану.addingTimeInterval(12 * 60)   // дали в 07:12
+
+        DoseScheduler.markGiven(схема, scheduledAt: поплану, by: "Виктория",
+                                at: наделе, context: context)
+
+        let окно = DoseScheduler.fastingEnds(for: dog, at: наделе.addingTimeInterval(60))
+        #expect(окно != nil, "окно должно идти")
+        #expect(окно?.givenAt == наделе)
+        #expect(окно?.until == наделе.addingTimeInterval(45 * 60),
+                "45 минут от 07:12, а не от 07:00")
+    }
+
+    @Test("Защита от двойной дозы: второй раз отметить нельзя")
+    func doubleDoseIsBlocked() {
+        let context = контекст()
+        let dog = стич(на: true, в: context)
+        let схема = Medication(name: "Lévothyrox", doseText: "66 мкг", times: [7 * 60])
+        схема.dog = dog
+        context.insert(схема)
+
+        let время = Calendar.current.date(bySettingHour: 7, minute: 0, second: 0, of: .now)!
+        let первая = DoseScheduler.markGiven(схема, scheduledAt: время, by: "Виктория",
+                                             at: время, context: context)
+        let вторая = DoseScheduler.markGiven(схема, scheduledAt: время, by: "Тео",
+                                             at: время.addingTimeInterval(600), context: context)
+
+        #expect(первая?.givenBy == "Виктория")
+        #expect(вторая?.givenBy == "Виктория", "вторая отметка не перезаписывает первую")
+        #expect(схема.doses.filter(\.isGiven).count == 1)
+    }
+
+    @Test("Окно натощак заканчивается, а не висит вечно")
+    func fastingEnds() {
+        let context = контекст()
+        let dog = стич(на: true, в: context)
+        let схема = Medication(name: "Lévothyrox", doseText: "66 мкг",
+                               times: [7 * 60], fastingMinutes: 45)
+        схема.dog = dog
+        context.insert(схема)
+
+        let дали = Date()
+        DoseScheduler.markGiven(схема, scheduledAt: дали, by: "Виктория", at: дали, context: context)
+
+        #expect(DoseScheduler.fastingEnds(for: dog, at: дали.addingTimeInterval(30 * 60)) != nil)
+        #expect(DoseScheduler.fastingEnds(for: dog, at: дали.addingTimeInterval(46 * 60)) == nil)
+    }
+
+    // MARK: Эпизоды
+
+    @Test("Эпизод заканчивается сам, а не глушит вердикт навсегда")
+    func episodeExpires() {
+        let эпизод = Episode(title: "Эпизод", detail: "")
+        #expect(эпизод.isActive())
+
+        let через_сутки = Date().addingTimeInterval(24 * 3600)
+        #expect(эпизод.isActive(at: через_сутки), "сутки — ещё идёт")
+
+        let через_трое = Date().addingTimeInterval(72 * 3600)
+        #expect(!эпизод.isActive(at: через_трое), "двое суток тишины — прошло")
+    }
+
+    @Test("Новый инцидент продлевает эпизод, а не заводит второй")
+    func episodeExtends() {
+        let эпизод = Episode(title: "Эпизод", detail: "")
+        let позже = Date().addingTimeInterval(30 * 3600)
+        эпизод.extend(to: позже)
+
+        #expect(эпизод.lastIncidentAt == позже)
+        #expect(эпизод.isActive(at: позже.addingTimeInterval(24 * 3600)))
+        #expect(!эпизод.isActive(at: позже.addingTimeInterval(72 * 3600)))
+    }
+
+    @Test("Эпизод можно закрыть руками")
+    func episodeCanBeClosed() {
+        let эпизод = Episode(title: "Эпизод", detail: "")
+        эпизод.close()
+        #expect(!эпизод.isActive(at: Date().addingTimeInterval(60)))
+    }
+
+    @Test("Состояние подтягивает эпизод из базы, а не помнит его в памяти")
+    func stateRefreshesEpisode() {
+        let свежий = Episode(title: "Эпизод", detail: "")
+        let старый = Episode(title: "Старый", detail: "",
+                             startedAt: Date().addingTimeInterval(-10 * 24 * 3600))
+        старый.lastIncidentAt = Date().addingTimeInterval(-10 * 24 * 3600)
+
+        let state = AppState()
+        state.refreshEpisode(from: [старый, свежий])
+
+        #expect(state.activeEpisode === свежий)
+        #expect(state.isEpisodeActive)
+
+        state.refreshEpisode(from: [старый])
+        #expect(state.activeEpisode == nil, "прошедший эпизод не глушит вердикт")
+    }
+}

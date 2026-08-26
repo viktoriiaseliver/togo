@@ -75,6 +75,9 @@ final class Episode {
     var id: UUID = UUID()
     var startedAt: Date = Date()
     var endedAt: Date?
+    /// Когда был последний инцидент этого эпизода. От него и считается,
+    /// закончился ли он.
+    var lastIncidentAt: Date = Date()
     var title: String = ""
     var detail: String = ""
 
@@ -82,11 +85,37 @@ final class Episode {
         self.title = title
         self.detail = detail
         self.startedAt = startedAt
+        self.lastIncidentAt = startedAt
     }
 
+    /// Сколько тишины считается концом эпизода.
+    ///
+    /// Двое суток без новых инцидентов — значит, прошло. Раньше эпизод
+    /// не заканчивался никогда: `endedAt` не выставлял никто, а `isActive`
+    /// без него возвращал `true`. То есть после двух инцидентов за сутки
+    /// вердикт «просится» замолкал навсегда — и человек не понимал, почему
+    /// приложение перестало подсказывать.
+    static let quietPeriod: TimeInterval = 48 * 3600
+
     func isActive(at date: Date = Date()) -> Bool {
-        guard let endedAt else { return true }
-        return date < endedAt
+        if let endedAt { return date < endedAt }
+        return date.timeIntervalSince(lastIncidentAt) < Self.quietPeriod
+    }
+
+    /// Продлить: случился ещё один инцидент.
+    func extend(to date: Date = Date()) {
+        lastIncidentAt = max(lastIncidentAt, date)
+        endedAt = nil
+    }
+
+    /// Закрыть руками: человек видит, что собаке лучше.
+    func close(at date: Date = Date()) {
+        endedAt = date
+    }
+
+    /// Когда эпизод закончится сам, если больше ничего не случится.
+    var quietUntil: Date {
+        lastIncidentAt.addingTimeInterval(Self.quietPeriod)
     }
 }
 

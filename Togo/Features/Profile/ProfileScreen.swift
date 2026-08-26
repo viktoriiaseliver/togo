@@ -24,7 +24,6 @@ struct ProfileScreen: View {
                 weight(dog)
                 marker(dog)
                 treatment(dog)
-                links(dog)
             }
         }
         .disabled(false)
@@ -159,46 +158,6 @@ struct ProfileScreen: View {
         .disabled(!canEdit)
     }
 
-    // MARK: Переходы
-
-    private func links(_ dog: Dog) -> some View {
-        TGCard(spacing: 0) {
-            NavigationLink { FeedingScreen(dog: dog) } label: {
-                TGListRow(title: "Питание и режим", value: "\(dog.dailyGrams) г в день", systemImage: "fork.knife")
-            }
-            TGDivider()
-            NavigationLink { CareScreen(dog: dog) } label: {
-                TGListRow(title: "Уход и напоминания", systemImage: "scissors")
-            }
-            TGDivider()
-            NavigationLink { TransferMatrixScreen(dog: dog) } label: {
-                TGListRow(title: "Перенос навыка", systemImage: "square.grid.3x3")
-            }
-            TGDivider()
-            NavigationLink { TripSetupScreen(dog: dog) } label: {
-                TGListRow(title: "Поездка", systemImage: "car")
-            }
-            TGDivider()
-            if dog.tracksHeat {
-                NavigationLink { HeatScreen(dog: dog) } label: {
-                    TGListRow(title: "Цикл",
-                              value: HeatCycle.forecast(dog.heats).expectedNext.map(Fmt.shortDay),
-                              systemImage: "calendar.badge.clock")
-                }
-                TGDivider()
-            }
-            NavigationLink { DocumentsScreen(dog: dog) } label: {
-                TGListRow(title: "Документы и контакты",
-                          value: dog.chipNumber == nil ? "не заполнены" : nil,
-                          systemImage: "doc.text.image")
-            }
-            TGDivider()
-            NavigationLink { EmergencyScreen(dog: dog) } label: {
-                TGListRow(title: "Если что-то случилось", systemImage: "cross.case")
-            }
-        }
-        .buttonStyle(.plain)
-    }
 
     private func splitList(_ text: String) -> [String] {
         text.split(separator: ",")

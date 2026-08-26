@@ -77,8 +77,7 @@ nonisolated final class ScreenshotTests: XCTestCase {
     }
 
     func test08Питание() {
-        app.buttons["Ещё"].firstMatch.tap()
-        найти("Профиль собаки", в: app).tap()
+        app.tabBars.buttons["Стич"].tap()
         найти("Питание и режим", в: app).tap()
         _ = app.navigationBars["Питание"].waitForExistence(timeout: 5)
         capture("08-feeding")

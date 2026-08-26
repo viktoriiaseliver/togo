@@ -9,7 +9,7 @@ struct RootView: View {
     @Query private var dogs: [Dog]
     @State private var selection: Tab = .today
 
-    enum Tab: Hashable { case today, history, health, family }
+    enum Tab: Hashable { case today, dog, history, health, family }
 
     private var dog: Dog? { dogs.first }
 
@@ -19,11 +19,19 @@ struct RootView: View {
         selection == .today ? 150 : 20
     }
 
+    /// Переключить вкладку снаружи — например из шторки «Ещё», которая
+    /// больше не строит навигацию сама.
+    func show(_ tab: Tab) { selection = tab }
+
     var body: some View {
         TabView(selection: $selection) {
-            TodayScreen()
+            TodayScreen(onOpenDog: { selection = .dog })
                 .tabItem { Label("Сегодня", systemImage: "sun.horizon") }
                 .tag(Tab.today)
+
+            DogTab()
+                .tabItem { Label(dog?.name ?? "Собака", systemImage: "pawprint") }
+                .tag(Tab.dog)
 
             HistoryScreen()
                 .tabItem { Label("История", systemImage: "calendar") }

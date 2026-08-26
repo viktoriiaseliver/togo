@@ -62,13 +62,23 @@ struct IncidentSheet: View {
     /// пока не станет понятно, что происходит.
     private func raiseEpisodeIfNeeded(for dog: Dog) {
         let recent = Diary.incidentsInLast24h(dog.events)
-        guard recent.count >= 2, appState.activeEpisode == nil else { return }
+        guard recent.count >= 2 else { return }
+
+        // Ещё один инцидент — не новый эпизод, а продолжение старого.
+        if let running = appState.activeEpisode, running.isActive() {
+            running.extend()
+            try? context.save()
+            return
+        }
+
         let episode = Episode(
             title: "Эпизод",
-            detail: "Два инцидента за сутки. Вердикты «просится» на паузе.",
-            startedAt: recent.first?.date ?? Date()
+            detail: "Два инцидента за сутки. Вердикты «просится» на паузе, пока не станет понятно, что происходит.",
+            startedAt: recent.map(\.date).min() ?? Date()
         )
+        episode.extend()
         context.insert(episode)
+        try? context.save()
         appState.activeEpisode = episode
     }
 }

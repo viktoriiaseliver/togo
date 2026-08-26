@@ -23,6 +23,8 @@ nonisolated final class TodayFlowUITests: XCTestCase {
         XCTAssertTrue(app.tabBars.buttons["Сегодня"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.tabBars.buttons["История"].exists)
         XCTAssertTrue(app.tabBars.buttons["Семья"].exists)
+        XCTAssertTrue(app.tabBars.buttons["Стич"].exists,
+                      "всё про собаку — своя вкладка, а не четыре уровня в шторке")
         XCTAssertFalse(app.tabBars.buttons["Здоровье"].exists,
                        "у здоровой собаки медицины на главном нет вовсе")
     }

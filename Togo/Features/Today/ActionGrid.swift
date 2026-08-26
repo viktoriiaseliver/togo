@@ -13,7 +13,6 @@ enum TodayRoute: Identifiable, Hashable {
     case incident
     case note
     case training
-    case care
     case more
     case edit(UUID)
 

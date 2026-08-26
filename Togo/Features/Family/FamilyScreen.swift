@@ -42,6 +42,7 @@ struct FamilyScreen: View {
             }
             .navigationTitle("Семья")
             .navigationBarTitleDisplayMode(.large)
+            .toolbar { SettingsToolbarItem() }
             .sheet(isPresented: $showInvite) { InviteSheet() }
             .sheet(isPresented: $showPaywall) { NavigationStack { PaywallScreen() } }
         }

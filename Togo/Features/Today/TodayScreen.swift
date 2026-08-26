@@ -5,12 +5,16 @@ import SwiftData
 /// В поездке между натощак и таймлайном встаёт блок дороги, а сводка «ел и пил»
 /// поднимается выше таймлайна.
 struct TodayScreen: View {
+    /// Куда уводить, когда речь про собаку целиком: вкладка, а не шторка.
+    var onOpenDog: () -> Void = {}
+
     @Environment(AppState.self) private var appState
     @Environment(Settings.self) private var settings
     @Environment(\.modelContext) private var context
     @Query private var dogs: [Dog]
     @Query private var members: [FamilyMember]
     @Query private var trips: [Trip]
+    @Query private var episodes: [Episode]
 
     @State private var route: TodayRoute?
     @State private var now = Date()
@@ -58,7 +62,7 @@ struct TodayScreen: View {
                         }
 
                         if let care = dueCare, !care.isEmpty {
-                            CareRow(tasks: care) { route = .care }
+                            CareRow(tasks: care) { onOpenDog() }
                         }
 
                         if let trip = activeTrip {
@@ -98,21 +102,23 @@ struct TodayScreen: View {
                 ) { route = $0 }
             }
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    NavigationLink { SettingsScreen() } label: {
-                        Image(systemName: "gearshape")
-                            .accessibilityLabel("Настройки")
-                    }
-                }
-            }
+            .toolbar { SettingsToolbarItem() }
             .onReceive(tick) { date in
                 now = date
                 LiveActivityController.publishSnapshot(dog: dog, appState: appState, now: date)
             }
-            .task { LiveActivityController.publishSnapshot(dog: dog, appState: appState, now: now) }
+            .task {
+                LiveActivityController.publishSnapshot(dog: dog, appState: appState, now: now)
+                // Отметки приёма на сегодня заводятся лениво: без них
+                // эскалация не знает, что дозу пропустили.
+                if let dog { DoseScheduler.ensureDoses(for: dog, on: now, context: context) }
+                appState.refreshEpisode(from: episodes, at: now)
+            }
+            .onChange(of: episodes.count) { _, _ in
+                appState.refreshEpisode(from: episodes, at: now)
+            }
             .sheet(item: $route) { route in
-                TodayRouter(route: route, dog: dog, now: now)
+                TodayRouter(route: route, dog: dog, now: now, onOpenDog: onOpenDog)
             }
         }
     }
@@ -163,20 +169,13 @@ struct TodayScreen: View {
         var doseAt: Date
     }
 
-    /// Окно натощак — единственное, что имеет право стоять выше всего на экране.
+    /// Окно натощак — единственное, что имеет право стоять выше всего
+    /// на экране. Считается от фактической отметки приёма.
     private var fastingWindow: FastingWindow? {
-        guard let dog, dog.isOnTreatment else { return nil }
-        for medication in dog.medications where medication.fastingMinutes > 0 && !medication.isPaused {
-            guard let dose = medication.doses
-                .filter({ $0.isGiven })
-                .max(by: { ($0.givenAt ?? .distantPast) < ($1.givenAt ?? .distantPast) }),
-                  let givenAt = dose.givenAt else { continue }
-            let ends = givenAt.addingTimeInterval(Double(medication.fastingMinutes) * 60)
-            if now < ends {
-                return FastingWindow(remaining: ends.timeIntervalSince(now), medication: medication.name, doseAt: givenAt)
-            }
-        }
-        return nil
+        guard let dog, let window = DoseScheduler.fastingEnds(for: dog, at: now) else { return nil }
+        return FastingWindow(remaining: window.until.timeIntervalSince(now),
+                             medication: window.medication,
+                             doseAt: window.givenAt)
     }
 
     private var overdueDose: DoseRecord? {
@@ -221,7 +220,8 @@ struct TodayScreen: View {
                     items.append(DayPlanItem(id: "dose-\(medication.id)-\(minute)", time: at,
                                              title: "\(medication.name) · \(medication.doseText)",
                                              hint: medication.fastingMinutes > 0 ? "натощак \(medication.fastingMinutes) мин" : nil,
-                                             kind: .dose, isDone: done))
+                                             kind: .dose, isDone: done,
+                                             medication: medication))
                 }
             }
         }
@@ -242,6 +242,13 @@ struct TodayScreen: View {
                     event.note = item.title
                 }
             }
+
+        // Отметка приёма — не то же самое, что запись в ленте: от неё
+        // считается окно натощак и на неё смотрит защита от двойной дозы.
+        if item.kind == .dose, let medication = item.medication {
+            DoseScheduler.markGiven(medication, scheduledAt: item.time,
+                                    by: appState.currentUserName, at: now, context: context)
+        }
     }
 }
 
