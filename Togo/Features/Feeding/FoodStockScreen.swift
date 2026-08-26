@@ -91,31 +91,39 @@ struct FoodStockScreen: View {
                          size: .medium, systemImage: "plus") { isAdding = true }
             }
         }
-        .navigationTitle("Запас корма")
+        .navigationTitle("Чем кормим")
         .navigationBarTitleDisplayMode(.large)
         .sheet(isPresented: $isAdding) { FoodStockEditorSheet(dog: dog) }
         .sheet(item: $editing) { stock in FoodStockEditorSheet(stock: stock, dog: dog) }
     }
 
-    /// Сходится ли сумма по кормам с дневной нормой. Не ошибка — но человек
-    /// должен видеть расхождение, а не узнавать о нём через месяц по весам.
+    /// Сходится ли сумма по кормам с дневной нормой.
+    ///
+    /// Показывается только при смешанном кормлении. Когда корм один,
+    /// его расход равен норме по построению — и карточка повторяла бы
+    /// число, которое человек только что видел на «Питании».
+    @ViewBuilder
     private var balanceCard: some View {
-        TGCard {
-            HStack {
-                Text("Выходит в день").textStyle(AppFont.body)
-                Spacer()
-                Text("\(total) г").textStyle(AppFont.numeric(20))
-            }
-            if dog.dailyGrams > 0, total != dog.dailyGrams {
-                TGBanner(
-                    tone: .waiting,
-                    title: total > dog.dailyGrams ? "Больше нормы из профиля" : "Меньше нормы из профиля",
-                    subtitle: "В профиле стоит \(dog.dailyGrams) г в день, по кормам выходит \(total) г. Это не ошибка — но стоит проверить, что вы имели в виду.",
-                    systemImage: "arrow.left.arrow.right"
-                )
-            }
-            if dog.stocks.contains(where: { $0.kind == .wet }) {
-                TGExplainer(text: FoodKind.wet.caution ?? "")
+        if stocks.count > 1 || dog.stocks.contains(where: { $0.kind == .wet }) {
+            TGCard {
+                if stocks.count > 1 {
+                    HStack {
+                        Text("Выходит в день").textStyle(AppFont.body)
+                        Spacer()
+                        Text("\(total) г").textStyle(AppFont.numeric(20))
+                    }
+                    if dog.dailyGrams > 0, total != dog.dailyGrams {
+                        TGBanner(
+                            tone: .waiting,
+                            title: total > dog.dailyGrams ? "Больше нормы" : "Меньше нормы",
+                            subtitle: "Норма — \(dog.dailyGrams) г в день, по кормам выходит \(total) г. Это не ошибка: поправить можно или раскладку здесь, или саму норму на «Питании».",
+                            systemImage: "arrow.left.arrow.right"
+                        )
+                    }
+                }
+                if dog.stocks.contains(where: { $0.kind == .wet }) {
+                    TGExplainer(text: FoodKind.wet.caution ?? "")
+                }
             }
         }
     }
@@ -154,12 +162,24 @@ struct FoodStockEditorSheet: View {
 
     @Query private var allStocks: [FoodStock]
 
-    private var existingGramsPerDay: Int {
-        allStocks
-            .filter { $0.dog?.persistentModelID == dog.persistentModelID }
-            .map(\.gramsPerDay)
-            .reduce(0, +)
+    private var siblings: [FoodStock] {
+        allStocks.filter {
+            $0.dog?.persistentModelID == dog.persistentModelID
+                && $0.persistentModelID != stock?.persistentModelID
+        }
     }
+
+    /// Сколько дневной нормы уже разобрали другие корма.
+    private var otherGramsPerDay: Int { siblings.map(\.gramsPerDay).reduce(0, +) }
+
+    /// Корм у собаки один — а значит, спрашивать «сколько в день»
+    /// второй раз незачем: это ровно дневная норма из режима питания.
+    /// Пока спрашивали, два числа расходились молча, и обратный отсчёт
+    /// запаса считал не по той цифре.
+    private var isOnlyFood: Bool { siblings.isEmpty }
+
+    /// Сколько нормы осталось нераспределённым.
+    private var unassignedGrams: Int { dog.dailyGrams - otherGramsPerDay - gramsPerDay }
 
     @State private var kind: FoodKind = .dry
     @State private var brand = ""
@@ -251,6 +271,29 @@ struct FoodStockEditorSheet: View {
         }
     }
 
+    /// Сходится ли раскладка с нормой. Смешанное кормление — это всегда
+    /// «столько-то сухого плюс банка сверху», и человек должен видеть,
+    /// что в сумме получается ровно норма, а не считать в уме.
+    @ViewBuilder
+    private var splitRow: some View {
+        HStack(alignment: .top) {
+            Text("Из \(dog.dailyGrams) г в день").textStyle(AppFont.caption)
+            Spacer(minLength: Token.Space.s8)
+            Text(splitStatus)
+                .textStyle(AppFont.caption.color(unassignedGrams == 0 ? Token.Action.done : Token.Status.waitingText))
+                .multilineTextAlignment(.trailing)
+        }
+        .frame(minHeight: Token.Size.tapTarget)
+    }
+
+    private var splitStatus: String {
+        switch unassignedGrams {
+        case 0: "норма разложена полностью"
+        case let left where left > 0: "осталось разложить \(left) г"
+        case let over: "перебор на \(-over) г"
+        }
+    }
+
     private var amountCard: some View {
         TGCard(spacing: 0) {
             TGSectionHeader(title: "сколько есть и сколько уходит")
@@ -267,14 +310,28 @@ struct FoodStockEditorSheet: View {
             .frame(minHeight: Token.Size.tapTarget)
 
             TGDivider()
-            Stepper(value: $gramsPerDay, in: 0...2000, step: kind == .wet ? 25 : 5) {
+            if isOnlyFood {
+                // Корм один — цифра берётся из режима питания и правится там.
+                // Два места для одного числа и были главной путаницей.
                 HStack {
                     Text("В день").textStyle(AppFont.body)
                     Spacer()
-                    Text("\(gramsPerDay) г").textStyle(AppFont.numeric(17))
+                    Text("\(dog.dailyGrams) г").textStyle(AppFont.numeric(17))
                 }
+                .frame(minHeight: Token.Size.tapTarget)
+                TGExplainer(text: "Это дневная норма из режима питания — здесь её не дублируем. Добавишь второй корм, и появится, как поделить норму между ними.")
+            } else {
+                Stepper(value: $gramsPerDay, in: 0...2000, step: kind == .wet ? 25 : 5) {
+                    HStack {
+                        Text("В день").textStyle(AppFont.body)
+                        Spacer()
+                        Text("\(gramsPerDay) г").textStyle(AppFont.numeric(17))
+                    }
+                }
+                .frame(minHeight: Token.Size.tapTarget)
+                TGDivider()
+                splitRow
             }
-            .frame(minHeight: Token.Size.tapTarget)
 
             if kind == .wet, gramsPerDay > 0, packGrams > 0 {
                 TGDivider()
@@ -317,11 +374,15 @@ struct FoodStockEditorSheet: View {
             // Подставляем всю дневную норму: у большинства корм один.
             // Первый корм забирает всю дневную норму, следующий — остаток:
             // при смешанном кормлении человеку не надо считать в уме.
-            gramsPerDay = existingGramsPerDay == 0
-                ? dog.dailyGrams
-                : max(0, dog.dailyGrams - existingGramsPerDay)
+            gramsPerDay = max(0, dog.dailyGrams - otherGramsPerDay)
         }
         loaded = true
+    }
+
+    /// Марка корма едет в профиль собаки: это единственное место,
+    /// где её теперь вводят, а подпись к кормлению её ждёт.
+    private func syncBrand() {
+        if let brand = FeedingMigration.primaryBrand(of: dog) { dog.foodBrand = brand }
     }
 
     private func save() {
@@ -331,7 +392,9 @@ struct FoodStockEditorSheet: View {
         target.brand = brand
         target.packGrams = packGrams
         target.packsLeft = packsLeft
-        target.gramsPerDay = gramsPerDay
+        // У единственного корма расход равен дневной норме: отдельного
+        // числа для него не спрашиваем и не храним расхождение.
+        target.gramsPerDay = isOnlyFood ? dog.dailyGrams : gramsPerDay
         if stock == nil {
             target.openedAt = Date()
             target.dog = dog
@@ -343,6 +406,7 @@ struct FoodStockEditorSheet: View {
         target.countedAt = Date()
         // Сохраняем сразу: иначе связь применяется не мгновенно,
         // и человек возвращается на экран, где ничего не изменилось.
+        syncBrand()
         try? context.save()
         Haptics.success()
         dismiss()

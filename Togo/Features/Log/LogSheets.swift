@@ -195,7 +195,7 @@ struct MealSheet: View {
             unit: "граммов",
             step: 5,
             range: 0...600,
-            amount: dog?.portionGrams ?? 60,
+            amount: dog?.servingGrams ?? 60,
             explainer: "Порция подставлена из профиля: жать нужно один раз, граммы уже подписаны."
         ) { grams in
             EventLog(context: context, appState: appState)

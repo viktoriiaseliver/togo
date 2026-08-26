@@ -31,24 +31,25 @@ struct ProfileScreen: View {
         .navigationBarTitleDisplayMode(.large)
     }
 
-    // MARK: Питание
+    // MARK: Что нельзя
 
+    /// В профиле осталось только то, что про саму собаку.
+    ///
+    /// Здесь были и марка корма, и ссылка на режим — притом что до питания
+    /// из этой же вкладки ведёт отдельный пункт. Получалось два пути к одному
+    /// экрану, из которых один длиннее, и третье место, где заводят корм.
+    /// Аллергии — единственное про еду, что действительно свойство собаки,
+    /// а не расписания: их спрашивают у врача один раз и на всю жизнь.
     private func nutrition(_ dog: Dog) -> some View {
         TGCard(spacing: 0) {
-            TGSectionHeader(title: "питание")
-            LabeledField(label: "Корм") {
-                TextField("Acana ягнёнок", text: Binding(get: { dog.foodBrand }, set: { dog.foodBrand = $0 }))
-            }
-            TGDivider()
-                        TGLink(title: "Режим и порция", value: "\(dog.portionGrams) г × \(dog.mealsPerDay)", systemImage: "clock") { ScheduleScreen(dog: dog) }
-            TGDivider()
+            TGSectionHeader(title: "чего нельзя")
             LabeledField(label: "Нельзя") {
                 TextField("курица, кукуруза", text: Binding(
                     get: { dog.forbiddenFoods.joined(separator: ", ") },
                     set: { dog.forbiddenFoods = splitList($0) }
                 ))
             }
-            TGExplainer(text: "Порция подставляется в кнопку «Еда» на главном: жать нужно один раз, граммы уже подписаны.")
+            TGExplainer(text: "Попадёт в карточку для передержки и в напоминание перед поездкой. Сколько и во сколько собака ест — на экране «Питание».")
         }
         .disabled(!canEdit)
     }

@@ -109,7 +109,7 @@ struct TodayScreen: View {
             }
             .safeAreaInset(edge: .bottom) {
                 ActionGrid(
-                    portionGrams: dog?.portionGrams ?? 0,
+                    portionGrams: dog?.servingGrams ?? 0,
                     isTravelling: activeTrip != nil,
                     canWriteMedical: appState.can(.seeMedical)
                 ) { route = $0 }
@@ -222,11 +222,15 @@ struct TodayScreen: View {
         let startOfDay = cal.startOfDay(for: now)
         let doneMealTimes = Diary.onDay(events, now).filter { $0.kind == .meal }.map(\.date)
 
-        for minute in dog.mealTimes.sorted() {
+        // Каждая запись закрывает ровно один пункт — ближайший к себе.
+        let mealMinutes = dog.mealTimes.sorted()
+        let mealDone = MealSchedule.matchDone(planned: mealMinutes, logged: doneMealTimes,
+                                              startOfDay: startOfDay)
+        for (index, minute) in mealMinutes.enumerated() {
             let at = startOfDay.addingTimeInterval(Double(minute) * 60)
-            let done = doneMealTimes.contains { abs($0.timeIntervalSince(at)) < 90 * 60 }
-            items.append(DayPlanItem(id: "meal-\(minute)", time: at, title: "Еда · \(dog.portionGrams) г",
-                                     hint: dog.foodBrand, kind: .meal, isDone: done))
+            items.append(DayPlanItem(id: "meal-\(minute)", time: at,
+                                     title: "Еда · \(dog.servingGrams) г",
+                                     hint: dog.foodBrand, kind: .meal, isDone: mealDone[index]))
         }
         if dog.isOnTreatment, appState.can(.seeMedical) {
             for medication in dog.medications where !medication.isPaused {
@@ -272,7 +276,7 @@ struct TodayScreen: View {
                     confirmation: "Записано · \(item.title)") { event in
                 switch item.kind {
                 case .meal:
-                    event.grams = dog.portionGrams
+                    event.grams = dog.servingGrams
                     event.note = dog.foodBrand.isEmpty ? nil : dog.foodBrand
                 case .dose:
                     event.note = item.title

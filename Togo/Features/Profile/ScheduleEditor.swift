@@ -21,24 +21,22 @@ struct ScheduleDraft: Equatable {
         }
     }
 
+    /// Только способ ввода: какой шаговик человек видит. На хранение
+    /// не влияет — число всё равно одно.
     var normEntry: NormEntry = .perServing
-    var dailyNormGrams: Int = 120
     var mealsPerDay: Int = 2
-    var portionGrams: Int = 60
+    /// Сколько собака съедает за сутки. Одно число, как и в модели.
+    var dailyGrams: Int = 120
     var wakeMinuteOfDay: Int = 7 * 60
     var sleepMinuteOfDay: Int = 23 * 60
     var mealTimes: [Int] = []
     /// Времена расставлены вручную — тогда приложение их не пересчитывает.
     var isManual: Bool = false
 
-    var dailyGrams: Int {
-        normEntry == .perDay ? dailyNormGrams : portionGrams * mealsPerDay
-    }
-
-    /// Порция за раз при заданной дневной норме.
+    /// Порция за раз: норма, поделённая на число кормлений.
     var servingGrams: Int {
-        guard normEntry == .perDay, mealsPerDay > 0 else { return portionGrams }
-        return max(1, Int((Double(dailyNormGrams) / Double(mealsPerDay) / 5).rounded()) * 5)
+        guard mealsPerDay > 0 else { return dailyGrams }
+        return max(5, Int((Double(dailyGrams) / Double(mealsPerDay) / 5).rounded()) * 5)
     }
 
     var awakeMinutes: Int {
@@ -74,10 +72,8 @@ struct ScheduleDraft: Equatable {
 
     static func from(_ dog: Dog) -> ScheduleDraft {
         var draft = ScheduleDraft()
-        draft.normEntry = dog.usesDailyNorm ? .perDay : .perServing
-        draft.dailyNormGrams = dog.dailyGrams
         draft.mealsPerDay = dog.mealsPerDay
-        draft.portionGrams = dog.portionGrams
+        draft.dailyGrams = dog.dailyGrams
         draft.wakeMinuteOfDay = dog.wakeMinuteOfDay
         draft.sleepMinuteOfDay = dog.sleepMinuteOfDay
         draft.mealTimes = dog.mealTimes
@@ -86,9 +82,9 @@ struct ScheduleDraft: Equatable {
     }
 
     func apply(to dog: Dog) {
-        dog.mealsPerDay = mealsPerDay
-        dog.dailyNormGrams = normEntry == .perDay ? dailyNormGrams : nil
-        dog.portionGrams = normEntry == .perDay ? servingGrams : portionGrams
+        dog.mealsPerDay = max(1, mealsPerDay)
+        dog.setDailyGrams(dailyGrams)
+        dog.syncSingleFoodShare()
         dog.wakeMinuteOfDay = wakeMinuteOfDay
         dog.sleepMinuteOfDay = sleepMinuteOfDay
         dog.mealTimes = effectiveMealTimes
@@ -155,44 +151,47 @@ struct ScheduleEditor: View {
                         minimumWidth: 150) { draft.normEntry = $0 }
                 .padding(.vertical, Token.Space.s8)
 
-            if draft.normEntry == .perServing {
-                TGDivider()
-                Stepper(value: $draft.portionGrams, in: 5...600, step: 5) {
-                    HStack {
-                        Text("Грамм за раз").textStyle(AppFont.body)
-                        Spacer(minLength: Token.Space.s8)
-                        Text("\(draft.portionGrams) г").textStyle(AppFont.numeric(17))
-                    }
-                }
-                .frame(minHeight: Token.Size.tapTarget)
-            } else {
-                TGDivider()
-                Stepper(value: $draft.dailyNormGrams, in: 10...2000, step: 10) {
-                    HStack {
-                        Text("Норма в день").textStyle(AppFont.body)
-                        Spacer(minLength: Token.Space.s8)
-                        Text("\(draft.dailyNormGrams) г").textStyle(AppFont.numeric(17))
-                    }
-                }
-                .frame(minHeight: Token.Size.tapTarget)
-                TGDivider()
-                HStack {
-                    Text("Значит за раз").textStyle(AppFont.body)
-                    Spacer(minLength: Token.Space.s8)
-                    Text("\(draft.servingGrams) г").textStyle(AppFont.numeric(17).color(Token.Ink.secondary))
-                }
-                .frame(minHeight: Token.Size.tapTarget)
-            }
-
+            // Оба шаговика правят одно и то же число — просто с разных
+            // концов. Раньше это были два разных поля, и они расходились.
             TGDivider()
-            HStack {
-                Text("Выходит в день").textStyle(AppFont.bodyEmphasis)
-                Spacer(minLength: Token.Space.s8)
-                Text("\(draft.dailyGrams) г").textStyle(AppFont.numeric(20))
+            if draft.normEntry == .perServing {
+                amountRow(title: "Грамм за раз", grams: draft.servingGrams,
+                          step: 5, range: 5...600) { draft.dailyGrams = $0 * max(1, draft.mealsPerDay) }
+                TGDivider()
+                totalRow(title: "Выходит в день", grams: draft.dailyGrams)
+            } else {
+                amountRow(title: "Норма в день", grams: draft.dailyGrams,
+                          step: 10, range: 10...2000) { draft.dailyGrams = $0 }
+                TGDivider()
+                totalRow(title: "Значит за раз", grams: draft.servingGrams)
             }
-            .frame(minHeight: Token.Size.tapTarget)
-            TGExplainer(text: "Порция одна на все кормления: уменьшишь её — уменьшится весь день. Норму называет врач или упаковка, приложение её не выдумывает. Для влажного корма граммы другие: он на три четверти вода.")
+            TGExplainer(text: "Число одно: порция — это норма, делённая на кормления. Поменяешь число кормлений — дневная еда останется прежней, изменится только порция. Норму называет врач или упаковка, приложение её не выдумывает. Для влажного корма граммы другие: он на три четверти вода.")
         }
+    }
+
+    /// Шаговик с граммами. Значение приходит посчитанным, а наружу
+    /// отдаётся то, что человек накрутил, — правит его всегда `dailyGrams`.
+    private func amountRow(title: String, grams: Int, step: Int,
+                           range: ClosedRange<Int>,
+                           set: @escaping (Int) -> Void) -> some View {
+        Stepper(value: Binding(get: { grams }, set: set), in: range, step: step) {
+            HStack {
+                Text(title).textStyle(AppFont.body)
+                Spacer(minLength: Token.Space.s8)
+                Text("\(grams) г").textStyle(AppFont.numeric(17))
+            }
+        }
+        .frame(minHeight: Token.Size.tapTarget)
+    }
+
+    /// Вторая половина той же арифметики — её показывают, но не правят.
+    private func totalRow(title: String, grams: Int) -> some View {
+        HStack {
+            Text(title).textStyle(AppFont.bodyEmphasis)
+            Spacer(minLength: Token.Space.s8)
+            Text("\(grams) г").textStyle(AppFont.numeric(20))
+        }
+        .frame(minHeight: Token.Size.tapTarget)
     }
 
     // MARK: Во сколько

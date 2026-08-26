@@ -339,9 +339,9 @@ struct SitterPreviewScreen: View {
 
     private var plan: [(String, String)] {
         [("08:00", "Утренний выход"),
-         ("08:30", "Еда · \(dog?.portionGrams ?? 60) г"),
+         ("08:30", "Еда · \(dog?.servingGrams ?? 60) г"),
          ("13:00", "Прогулка 30 мин"),
-         ("18:30", "Еда · \(dog?.portionGrams ?? 60) г")]
+         ("18:30", "Еда · \(dog?.servingGrams ?? 60) г")]
     }
 }
 

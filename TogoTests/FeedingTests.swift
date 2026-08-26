@@ -1,5 +1,6 @@
 import Testing
 import Foundation
+import SwiftData
 @testable import Togo
 
 @Suite("Питание · сколько, сколько раз и во сколько")
@@ -31,7 +32,6 @@ struct FeedingTests {
         let events = [еда(1, час: 8, граммы: 60), еда(2, час: 8, граммы: 60)]
         let report = FeedingAnalyzer.report(events: events, dog: стич())
         #expect(report.status == .notEnoughData(days: 2))
-        #expect(report.suggestedPortionGrams == nil)
     }
 
     @Test("Ест по норме — менять нечего")
@@ -44,7 +44,6 @@ struct FeedingTests {
         let report = FeedingAnalyzer.report(events: events, dog: стич())
         #expect(report.status == .onNorm)
         #expect(report.averageGramsPerDay == 120)
-        #expect(report.suggestedPortionGrams == nil)
     }
 
     @Test("Переедание видно и меряется в процентах")
@@ -82,21 +81,17 @@ struct FeedingTests {
         let report = FeedingAnalyzer.report(events: events, dog: dog)
 
         // Норма 120 г делится на два кормления — по 60 г, а не «уменьшить ужин».
-        #expect(report.suggestedPortionGrams == 60)
-        #expect(report.suggestedPortionGrams! * dog.mealsPerDay == dog.dailyGrams)
+        #expect(dog.servingGrams == 60)
+        #expect(dog.servingGrams * dog.mealsPerDay == dog.dailyGrams)
     }
 
-    @Test("Предложенная порция округляется до пяти граммов")
+    @Test("Порция округляется до пяти граммов")
     func portionRoundsToFive() {
         let dog = стич()
-        dog.portionGrams = 47
         dog.mealsPerDay = 3
-        var events: [LogEvent] = []
-        for день in 1...5 {
-            for час in [7, 13, 19] { events.append(еда(день, час: час, граммы: 70)) }
-        }
-        let report = FeedingAnalyzer.report(events: events, dog: dog)
-        #expect(report.suggestedPortionGrams! % 5 == 0)
+        dog.setDailyGrams(141)
+        #expect(dog.servingGrams % 5 == 0)
+        #expect(dog.servingGrams == 45)
     }
 
     @Test("Дни без записей в среднее не попадают")
@@ -231,7 +226,6 @@ struct FeedingTests {
     func noDog() {
         let report = FeedingAnalyzer.report(events: [], dog: nil)
         #expect(report.normGramsPerDay == 0)
-        #expect(report.suggestedPortionGrams == nil)
     }
 }
 
@@ -309,11 +303,11 @@ struct ScheduleTests {
         let dog = стич()
         var draft = ScheduleDraft.from(dog)
         draft.mealsPerDay = 3
-        draft.portionGrams = 45
+        draft.dailyGrams = 135
         draft.apply(to: dog)
 
         #expect(dog.mealsPerDay == 3)
-        #expect(dog.portionGrams == 45)
+        #expect(dog.servingGrams == 45)
         #expect(dog.dailyGrams == 135)
         #expect(dog.mealTimes == draft.evenMealTimes)
     }
@@ -524,28 +518,29 @@ struct BagAndHeatTests {
         #expect(план.needsRestock == false)
     }
 
-    @Test("Норму можно задать с любого конца")
+    @Test("Норму можно задать с любого конца, но хранится одно число")
     func normFromEitherEnd() {
         let dog = Dog(name: "Стич", weightKg: 4.1)
-        dog.portionGrams = 60
         dog.mealsPerDay = 2
-        #expect(dog.dailyGrams == 120)
-        #expect(!dog.usesDailyNorm)
 
-        // Врач назвал дневную норму — она главнее, а порция считается из неё.
-        dog.dailyNormGrams = 150
+        // Человек отмеряет порцию за раз.
+        dog.setServingGrams(60)
+        #expect(dog.dailyGrams == 120)
+        #expect(dog.servingGrams == 60)
+
+        // Врач назвал дневную норму — порция считается из неё.
+        dog.setDailyGrams(150)
         #expect(dog.dailyGrams == 150)
-        #expect(dog.usesDailyNorm)
-        #expect(dog.derivedPortionGrams == 75)
+        #expect(dog.servingGrams == 75)
     }
 
     @Test("Порция из дневной нормы округляется до пяти граммов")
     func derivedPortionRounds() {
         let dog = Dog(name: "Стич", weightKg: 4.1)
         dog.mealsPerDay = 3
-        dog.dailyNormGrams = 200
-        #expect(dog.derivedPortionGrams % 5 == 0)
-        #expect(dog.derivedPortionGrams == 65)
+        dog.setDailyGrams(200)
+        #expect(dog.servingGrams % 5 == 0)
+        #expect(dog.servingGrams == 65)
     }
 
     @Test("Одной записи о течке мало для среднего — и приложение это признаёт")
@@ -630,5 +625,174 @@ struct GapFormatTests {
     func handlesZero() {
         #expect(Fmt.gap(0) == "0 мин")
         #expect(Fmt.gap(-100) == "0 мин")
+    }
+}
+
+// MARK: - Ревизия питания: одно число про количество еды
+
+@Suite("Питание · сколько на самом деле")
+struct FeedingAmountTests {
+
+    private func dog(daily: Int? = nil, portion: Int = 60, meals: Int = 2) -> Dog {
+        let dog = Dog(name: "Стич", weightKg: 12)
+        dog.mealsPerDay = meals
+        dog.portionGrams = portion
+        dog.dailyNormGrams = daily
+        return dog
+    }
+
+    @Test("Смена числа кормлений делит ту же норму, а не меняет её")
+    func mealsPerDayKeepsDailyAmount() {
+        // Раньше при норме «60 г за раз» переход с двух кормлений на три
+        // молча поднимал дневную еду со 120 до 180 граммов. Человек менял
+        // режим дня, а получал другую диету.
+        let stitch = dog(portion: 60, meals: 2)
+        #expect(stitch.dailyGrams == 120)
+
+        stitch.setMealsPerDay(3)
+
+        #expect(stitch.dailyGrams == 120)
+        #expect(stitch.servingGrams == 40)
+    }
+
+    @Test("Порция и день на одной карточке не противоречат друг другу")
+    func servingMatchesDaily() {
+        // На экране питания «грамм за раз» и «выходит в день» стояли рядом
+        // и брались из разных полей: при заданной дневной норме первое
+        // можно было менять, а второе не двигалось.
+        let stitch = dog(daily: 300, meals: 2)
+        stitch.setServingGrams(120)
+
+        #expect(stitch.servingGrams == 120)
+        #expect(stitch.dailyGrams == 240)
+    }
+
+    @Test("Норма в день делится поровну и округляется до пяти граммов")
+    func servingRounding() {
+        let stitch = dog(daily: 310, meals: 3)
+        #expect(stitch.servingGrams == 105)      // 103.3 → 105
+        #expect(stitch.dailyGrams == 310)        // сама норма не съезжает
+    }
+}
+
+@Suite("Питание · что считается приёмом пищи")
+struct MealCountingTests {
+
+    private func meal(_ hour: Int, grams: Int) -> LogEvent {
+        let event = LogEvent(kind: .meal, date: at(hour, 0), authorName: "Виктория")
+        event.grams = grams
+        return event
+    }
+
+    private func treat(_ hour: Int, grams: Int) -> LogEvent {
+        let event = LogEvent(kind: .treat, date: at(hour, 0), authorName: "Виктория")
+        event.grams = grams
+        event.fromPortion = true
+        return event
+    }
+
+    private func at(_ hour: Int, _ minute: Int) -> Date {
+        let noon = Calendar.current.startOfDay(for: Date().addingTimeInterval(-86_400))
+        return noon.addingTimeInterval(Double(hour * 60 + minute) * 60)
+    }
+
+    @Test("Лакомство добавляет граммы, но не считается кормлением")
+    func treatsAddGramsNotMeals() {
+        // Лакомства из порции — та же еда, и в граммах их учитывать надо.
+        // Но «сколько раз ел» и «во сколько ест» они портят: горсть корма
+        // на занятии в 15:40 превращалась в третье кормление, и приложение
+        // предлагало под него расписание.
+        let events = [meal(8, grams: 60), treat(15, grams: 10), meal(19, grams: 60)]
+        let days = FeedingAnalyzer.dailyIntake(events: events)
+        let day = try! #require(days.first { $0.grams > 0 })
+
+        #expect(day.grams == 130)
+        #expect(day.meals == 2)
+        #expect(day.mealMinutes == [8 * 60, 19 * 60])
+    }
+
+    @Test("Одно кормление закрывает один пункт плана, а не все соседние")
+    func oneMealTicksOneSlot() {
+        // Пункты плана проверялись независимо: «есть ли хоть одна запись
+        // в пределах полутора часов». У щенка с пятью кормлениями одна
+        // запись закрывала сразу два пункта, и день выглядел выполненным.
+        let planned = [11 * 60, 12 * 60, 13 * 60]
+        let logged = [at(12, 5)]
+        let done = MealSchedule.matchDone(planned: planned, logged: logged,
+                                          startOfDay: Calendar.current.startOfDay(for: logged[0]))
+
+        #expect(done == [false, true, false])
+    }
+}
+
+@Suite("Питание · корм в одном месте")
+struct FoodSourceOfTruthTests {
+
+    @Test("Единственный корм расходуется ровно по норме")
+    func singleFoodFollowsNorm() throws {
+        // «Сколько в день» спрашивали дважды: в режиме питания и у корма.
+        // Поменяв норму, человек не подозревал, что обратный отсчёт мешка
+        // продолжает считать по старой цифре.
+        let container = try ModelContainer(
+            for: Dog.self,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+        )
+        let context = ModelContext(container)
+
+        let stitch = Dog(name: "Стич", weightKg: 12)
+        stitch.mealsPerDay = 2
+        stitch.setDailyGrams(120)
+        context.insert(stitch)
+
+        let acana = FoodStock(kind: .dry, brand: "Acana", packGrams: 3000,
+                              packsLeft: 2, gramsPerDay: 120)
+        acana.dog = stitch
+        context.insert(acana)
+        try context.save()
+
+        stitch.setDailyGrams(200)
+        stitch.syncSingleFoodShare()
+
+        #expect(acana.gramsPerDay == 200)
+    }
+
+    @Test("При двух кормах норму делит человек, и приложение не трогает раскладку")
+    func mixedFeedingKeepsSplit() throws {
+        let container = try ModelContainer(
+            for: Dog.self,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+        )
+        let context = ModelContext(container)
+
+        let stitch = Dog(name: "Стич", weightKg: 12)
+        stitch.setDailyGrams(300)
+        context.insert(stitch)
+
+        let dry = FoodStock(kind: .dry, brand: "Acana", packGrams: 3000,
+                            packsLeft: 1, gramsPerDay: 200)
+        let wet = FoodStock(kind: .wet, brand: "Animonda", packGrams: 100,
+                            packsLeft: 6, gramsPerDay: 100)
+        for stock in [dry, wet] { stock.dog = stitch; context.insert(stock) }
+        try context.save()
+
+        stitch.setDailyGrams(400)
+        stitch.syncSingleFoodShare()
+
+        // Как поделить 400 между мешком и банками, знает только человек.
+        #expect(dry.gramsPerDay == 200)
+        #expect(wet.gramsPerDay == 100)
+    }
+
+    @Test("Марка корма берётся из запаса, а не из отдельного поля")
+    func brandComesFromStock() {
+        let stitch = Dog(name: "Стич", weightKg: 12)
+        let wet = FoodStock(kind: .wet, brand: "Animonda", packGrams: 100,
+                            packsLeft: 6, gramsPerDay: 100)
+        let dry = FoodStock(kind: .dry, brand: "Acana", packGrams: 3000,
+                            packsLeft: 1, gramsPerDay: 200)
+        stitch.stocksStorage = [wet, dry]
+
+        // Основной корм — сухой: в подписи к кормлению человек ждёт мешок.
+        #expect(FeedingMigration.primaryBrand(of: stitch) == "Acana")
     }
 }

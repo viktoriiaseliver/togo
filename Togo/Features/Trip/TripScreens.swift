@@ -115,7 +115,7 @@ struct PackingListCard: View {
     var body: some View {
         TGCard {
             TGSectionHeader(title: "что взять на \(Fmt.days(days))",
-                            subtitle: "посчитано из веса \(Fmt.weight(dog.weightKg)) и порции \(dog.portionGrams) г")
+                            subtitle: "посчитано из веса \(Fmt.weight(dog.weightKg)) и порции \(dog.servingGrams) г")
             ForEach(items, id: \.0) { title, amount, note in
                 VStack(alignment: .leading, spacing: Token.Space.s2) {
                     HStack {
@@ -136,7 +136,7 @@ struct PackingListCard: View {
 
     /// Запас — два кормления сверх поездки, вода в жару в полтора раза больше.
     private var items: [(String, String, String)] {
-        let food = dog.dailyGrams * days + dog.portionGrams * 2
+        let food = dog.dailyGrams * days + dog.servingGrams * 2
         let water = Double(dog.waterNormMl * days) * 1.5 / 1000
         return [
             ("Корм", "\(food) г", "\(dog.dailyGrams * days) г на дни плюс запас на два кормления"),

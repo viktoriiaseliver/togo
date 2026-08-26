@@ -279,11 +279,15 @@ nonisolated enum BackupService {
         dog.targetWeightLow = snapshot.targetWeightLow
         dog.targetWeightHigh = snapshot.targetWeightHigh
         dog.foodBrand = snapshot.foodBrand
-        dog.portionGrams = snapshot.portionGrams
+        dog.portionGrams = snapshot.portionGrams   // ниже пересчитается из нормы
         dog.mealsPerDay = snapshot.mealsPerDay
         dog.mealTimes = snapshot.mealTimes
         dog.forbiddenFoods = snapshot.forbiddenFoods
-        dog.dailyNormGrams = snapshot.dailyNormGrams
+        // Архив мог быть записан старой версией, где количество еды жило
+        // в двух полях сразу и они не сходились. Приводим к одному числу
+        // тут же, а не оставляем расхождение на потом.
+        dog.setDailyGrams(snapshot.dailyNormGrams
+                          ?? max(0, snapshot.portionGrams * max(1, snapshot.mealsPerDay)))
         dog.rewards = snapshot.rewards
         dog.trainingFoodFromPortion = snapshot.trainingFoodFromPortion
         dog.markerKindRaw = snapshot.markerKindRaw

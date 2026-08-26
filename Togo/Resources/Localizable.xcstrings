@@ -457,30 +457,6 @@
       },
       "comment": "body"
     },
-    "%@ г × %@": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ г × %@"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        }
-      },
-      "comment": "nutrition"
-    },
     "%@ г в день": {
       "extractionState": "manual",
       "localizations": {
@@ -1223,7 +1199,7 @@
           }
         }
       },
-      "comment": "nutrition"
+      "comment": "dog"
     },
     "App Tracking Transparency в приложении не запрашивается, потому что отслеживания нет.": {
       "extractionState": "manual",
@@ -1944,13 +1920,13 @@
       },
       "comment": "body"
     },
-    "Больше нормы из профиля": {
+    "Больше нормы": {
       "extractionState": "manual",
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Больше нормы из профиля"
+            "value": "Больше нормы"
           }
         },
         "en": {
@@ -2111,30 +2087,6 @@
         }
       },
       "comment": "body"
-    },
-    "В профиле стоит %@ г в день, по кормам выходит %@ г. Это не ошибка — но стоит проверить, что вы имели в виду.": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "В профиле стоит %@ г в день, по кормам выходит %@ г. Это не ошибка — но стоит проверить, что вы имели в виду."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        }
-      },
-      "comment": "balanceCard"
     },
     "В среднем %@ г в день при норме %@ г. Менять нечего.": {
       "extractionState": "manual",
@@ -4150,7 +4102,7 @@
           }
         }
       },
-      "comment": "portionCard"
+      "comment": "balanceCard"
     },
     "Выходы · 30 дней": {
       "extractionState": "manual",
@@ -4390,7 +4342,7 @@
           }
         }
       },
-      "comment": "portionCard"
+      "comment": "mealsCard"
     },
     "Граммы": {
       "extractionState": "manual",
@@ -5688,30 +5640,6 @@
       },
       "comment": "body"
     },
-    "Дозировки и норму сверяй с врачом. Приложение только считает то, что вы сами записали.": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Дозировки и норму сверяй с врачом. Приложение только считает то, что вы сами записали."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        }
-      },
-      "comment": "portionCard"
-    },
     "Документы": {
       "extractionState": "manual",
       "localizations": {
@@ -5974,7 +5902,7 @@
           }
         }
       },
-      "comment": "done"
+      "comment": "at"
     },
     "Еда и режим": {
       "extractionState": "manual",
@@ -6911,30 +6839,6 @@
         }
       },
       "comment": "contents"
-    },
-    "Запас корма": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Запас корма"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        }
-      },
-      "comment": "body"
     },
     "Записала %@": {
       "extractionState": "manual",
@@ -7942,7 +7846,7 @@
           }
         }
       },
-      "comment": "mealsCard"
+      "comment": "amountCard"
     },
     "Знаю дневную норму": {
       "extractionState": "manual",
@@ -8111,6 +8015,30 @@
         }
       },
       "comment": "since"
+    },
+    "Из %@ г в день": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Из %@ г в день"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "splitRow"
     },
     "Иконки": {
       "extractionState": "manual",
@@ -9311,6 +9239,30 @@
       },
       "comment": "result"
     },
+    "Кормлений": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Кормлений"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "amountCard"
+    },
     "Короткая версия: дневник живёт на твоём телефоне. Мы не заводим аккаунт, не собираем аналитику о том, что ты записываешь, и не передаём данные третьим лицам.": {
       "extractionState": "manual",
       "localizations": {
@@ -10295,13 +10247,13 @@
       },
       "comment": "body"
     },
-    "Меньше нормы из профиля": {
+    "Меньше нормы": {
       "extractionState": "manual",
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Меньше нормы из профиля"
+            "value": "Меньше нормы"
           }
         },
         "en": {
@@ -12045,7 +11997,7 @@
           }
         }
       },
-      "comment": "mealsCard"
+      "comment": "amountCard"
     },
     "Норма воды ≈ %@ мл в день. В жару смотри на эту строку первым делом: смена воды и корма чаще всего даёт сбой именно тут.": {
       "extractionState": "manual",
@@ -12070,6 +12022,54 @@
         }
       },
       "comment": "onSiteAdvice"
+    },
+    "Норма — %@ г в день, по кормам выходит %@ г. Это не ошибка: поправить можно или раскладку здесь, или саму норму на «Питании».": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Норма — %@ г в день, по кормам выходит %@ г. Это не ошибка: поправить можно или раскладку здесь, или саму норму на «Питании»."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "balanceCard"
+    },
+    "Норму называет врач или упаковка — приложение её не выдумывает. Для влажного корма граммы другие: он на три четверти вода.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Норму называет врач или упаковка — приложение её не выдумывает. Для влажного корма граммы другие: он на три четверти вода."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "amountCard"
     },
     "Нормы приложение не выдумывает: её называет врач, а приложение только сравнивает с ней записанное.": {
       "extractionState": "manual",
@@ -14999,6 +14999,30 @@
       },
       "comment": "body"
     },
+    "Поменять норму и режим": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Поменять норму и режим"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "amountCard"
+    },
     "Помощник": {
       "extractionState": "manual",
       "localizations": {
@@ -15022,6 +15046,30 @@
         }
       },
       "comment": "title"
+    },
+    "Попадёт в карточку для передержки и в напоминание перед поездкой. Сколько и во сколько собака ест — на экране «Питание».": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Попадёт в карточку для передержки и в напоминание перед поездкой. Сколько и во сколько собака ест — на экране «Питание»."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "nutrition"
     },
     "Попил": {
       "extractionState": "manual",
@@ -15094,30 +15142,6 @@
         }
       },
       "comment": "body"
-    },
-    "Поправить запас": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Поправить запас"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        }
-      },
-      "comment": "stockCard"
     },
     "Попробовать неделю бесплатно · дальше %@": {
       "extractionState": "manual",
@@ -15239,30 +15263,6 @@
       },
       "comment": "body"
     },
-    "Порция одна на все кормления: уменьшишь её — уменьшится весь день. Норму называет врач или упаковка, приложение её не выдумывает. Для влажного корма граммы другие: он на три четверти вода.": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Порция одна на все кормления: уменьшишь её — уменьшится весь день. Норму называет врач или упаковка, приложение её не выдумывает. Для влажного корма граммы другие: он на три четверти вода."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        }
-      },
-      "comment": "mealsCard"
-    },
     "Порция подставлена из профиля: жать нужно один раз, граммы уже подписаны.": {
       "extractionState": "manual",
       "localizations": {
@@ -15286,30 +15286,6 @@
         }
       },
       "comment": "body"
-    },
-    "Порция подставляется в кнопку «Еда» на главном: жать нужно один раз, граммы уже подписаны.": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Порция подставляется в кнопку «Еда» на главном: жать нужно один раз, граммы уже подписаны."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        }
-      },
-      "comment": "nutrition"
     },
     "После выхода приложение иногда спрашивает, чем именно она попросила. Не каждый раз: при смене сигнала или примерно раз в пять выходов.": {
       "extractionState": "manual",
@@ -15502,30 +15478,6 @@
         }
       },
       "comment": "windowsExplainer"
-    },
-    "Поставить %@ г": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Поставить %@ г"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        }
-      },
-      "comment": "portionCard"
     },
     "Поставить на паузу": {
       "extractionState": "manual",
@@ -15814,30 +15766,6 @@
         }
       },
       "comment": "body"
-    },
-    "Предлагаем %@ г за раз": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Предлагаем %@ г за раз"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        }
-      },
-      "comment": "portionCard"
     },
     "Предыдущий месяц": {
       "extractionState": "manual",
@@ -17182,30 +17110,6 @@
         }
       },
       "comment": "body"
-    },
-    "Режим и порция": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Режим и порция"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        }
-      },
-      "comment": "nutrition"
     },
     "Режим питания меняет тот, кому владелец выдал право на профиль.": {
       "extractionState": "manual",
@@ -21911,6 +21815,30 @@
       },
       "comment": "title"
     },
+    "Чем кормим": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Чем кормим"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "stockCard"
+    },
     "Чем платим": {
       "extractionState": "manual",
       "localizations": {
@@ -22102,6 +22030,30 @@
         }
       },
       "comment": "body"
+    },
+    "Число одно: порция — это норма, делённая на кормления. Поменяешь число кормлений — дневная еда останется прежней, изменится только порция. Норму называет врач или упаковка, приложение её не выдумывает. Для влажного корма граммы другие: он на три четверти вода.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Число одно: порция — это норма, делённая на кормления. Поменяешь число кормлений — дневная еда останется прежней, изменится только порция. Норму называет врач или упаковка, приложение её не выдумывает. Для влажного корма граммы другие: он на три четверти вода."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "mealsCard"
     },
     "Чистка зубов у врача": {
       "extractionState": "manual",
@@ -22799,6 +22751,30 @@
       },
       "comment": "body"
     },
+    "Это дневная норма из режима питания — здесь её не дублируем. Добавишь второй корм, и появится, как поделить норму между ними.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Это дневная норма из режима питания — здесь её не дублируем. Добавишь второй корм, и появится, как поделить норму между ними."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "amountCard"
+    },
     "Это дневник собаки, а не медкарта. Медицина включается режимом и в большинстве экранов её просто нет.": {
       "extractionState": "manual",
       "localizations": {
@@ -22990,30 +22966,6 @@
         }
       },
       "comment": "amountCard"
-    },
-    "Это ровно норма, разделённая на %@ кормления. Меняется сразу для всех приёмов — отдельных порций у приложения нет.": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Это ровно норма, разделённая на %@ кормления. Меняется сразу для всех приёмов — отдельных порций у приложения нет."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        }
-      },
-      "comment": "portionCard"
     },
     "Этого хватает паре: и лечение, и окно натощак, и защита от двойной дозы. За безопасность собаки денег не берём.": {
       "extractionState": "manual",
@@ -28247,6 +28199,30 @@
       },
       "comment": "body"
     },
+    "норма разложена полностью": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "норма разложена полностью"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "splitStatus"
+    },
     "нормально · держим этот шаг": {
       "extractionState": "manual",
       "localizations": {
@@ -28631,6 +28607,30 @@
       },
       "comment": "todayCard"
     },
+    "осталось разложить %@ г": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "осталось разложить %@ г"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "let"
+    },
     "останется навсегда": {
       "extractionState": "manual",
       "localizations": {
@@ -28871,6 +28871,30 @@
       },
       "comment": "body"
     },
+    "перебор на %@ г": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "перебор на %@ г"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "let"
+    },
     "перевод готовится": {
       "extractionState": "manual",
       "localizations": {
@@ -28990,30 +29014,6 @@
         }
       },
       "comment": "iCloudCard"
-    },
-    "питание": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "питание"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        }
-      },
-      "comment": "nutrition"
     },
     "пн": {
       "extractionState": "manual",
@@ -29423,13 +29423,13 @@
       },
       "comment": "subscriptionSection"
     },
-    "порция": {
+    "порция — это норма, делённая на кормления": {
       "extractionState": "manual",
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "порция"
+            "value": "порция — это норма, делённая на кормления"
           }
         },
         "en": {
@@ -29445,31 +29445,7 @@
           }
         }
       },
-      "comment": "portionCard"
-    },
-    "порция одна на все кормления — уменьшив её, уменьшаешь весь день": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "порция одна на все кормления — уменьшив её, уменьшаешь весь день"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        }
-      },
-      "comment": "portionCard"
+      "comment": "amountCard"
     },
     "порция, вес, напоминания, занятия": {
       "extractionState": "manual",
@@ -30622,6 +30598,30 @@
         }
       },
       "comment": "statusText"
+    },
+    "сколько": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "сколько"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "amountCard"
     },
     "сколько есть и сколько уходит": {
       "extractionState": "manual",
@@ -32254,6 +32254,30 @@
         }
       },
       "comment": "task"
+    },
+    "чего нельзя": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "чего нельзя"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "nutrition"
     },
     "человек": {
       "extractionState": "manual",

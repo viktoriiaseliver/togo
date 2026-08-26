@@ -117,3 +117,51 @@ nonisolated enum MealSchedule {
         return delta > 0 ? delta : delta + minutesInDay
     }
 }
+
+// MARK: - Что из плана уже сделано
+
+extension MealSchedule {
+    /// Насколько запись может отстоять от запланированного времени
+    /// и всё ещё считаться этим кормлением. Полтора часа — это «покормила
+    /// не по будильнику, а когда встала».
+    nonisolated static let doneTolerance = 90 * 60.0
+
+    /// Разметить пункты плана: какие из них закрыты записями.
+    ///
+    /// Раньше каждый пункт спрашивал независимо: «есть ли хоть одна запись
+    /// в пределах полутора часов». У щенка с пятью кормлениями пункты стоят
+    /// в трёх с половиной часах друг от друга, но стоит расставить времена
+    /// вручную поближе — и одна запись закрывала сразу два пункта. День
+    /// выглядел выполненным, хотя собаку покормили один раз.
+    ///
+    /// Теперь каждая запись закрывает ровно один пункт — ближайший
+    /// к себе и ещё свободный.
+    nonisolated static func matchDone(
+        planned: [Int],
+        logged: [Date],
+        startOfDay: Date
+    ) -> [Bool] {
+        var done = [Bool](repeating: false, count: planned.count)
+        let slots = planned.map { startOfDay.addingTimeInterval(Double($0) * 60) }
+
+        // Сначала самые «уверенные» пары: у кого расстояние меньше, тот
+        // и занимает пункт. Иначе первая по времени запись могла бы забрать
+        // пункт, который куда точнее подходит следующей.
+        var pairs: [(distance: Double, slot: Int, record: Int)] = []
+        for (recordIndex, date) in logged.enumerated() {
+            for (slotIndex, slot) in slots.enumerated() {
+                let distance = abs(date.timeIntervalSince(slot))
+                guard distance <= doneTolerance else { continue }
+                pairs.append((distance, slotIndex, recordIndex))
+            }
+        }
+        pairs.sort { $0.distance < $1.distance }
+
+        var usedRecords = Set<Int>()
+        for pair in pairs where !done[pair.slot] && !usedRecords.contains(pair.record) {
+            done[pair.slot] = true
+            usedRecords.insert(pair.record)
+        }
+        return done
+    }
+}

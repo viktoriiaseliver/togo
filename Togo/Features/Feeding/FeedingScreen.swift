@@ -60,14 +60,19 @@ struct FeedingScreen: View {
                     action: nil
                 )
             } else {
+                // Порядок по тому, зачем сюда заходят: сначала «что сейчас»
+                // и «сколько класть» — это девять из десяти заходов, —
+                // потом запас и разбор, и только в конце длинные графики.
+                // Норма стояла последней, под графиками: самый частый
+                // вопрос был спрятан глубже всего.
                 todayCard
+                amountCard
                 stockCard
                 statusCard
+                if !report.conflicts.isEmpty { conflictsCard }
                 chartCard
                 scheduleCard
                 if report.stoolLagMinutes != nil { outingsCard }
-                if !report.conflicts.isEmpty { conflictsCard }
-                portionCard
             }
         }
         .navigationTitle("Питание")
@@ -77,7 +82,7 @@ struct FeedingScreen: View {
             rebuildReport()
         }
         .onChange(of: dog?.events.count) { _, _ in rebuildReport() }
-        .onChange(of: dog?.portionGrams) { _, _ in rebuildReport() }
+        .onChange(of: dog?.dailyNormGrams) { _, _ in rebuildReport() }
         .onChange(of: dog?.mealsPerDay) { _, _ in rebuildReport() }
     }
 
@@ -136,7 +141,7 @@ struct FeedingScreen: View {
                     }
                 }
 
-                                TGLink(title: stocks.isEmpty ? "Записать корм" : "Поправить запас", systemImage: "shippingbox") { FoodStockScreen(dog: dog) }
+                                TGLink(title: stocks.isEmpty ? "Записать корм" : "Чем кормим", systemImage: "shippingbox") { FoodStockScreen(dog: dog) }
             }
         }
     }
@@ -313,53 +318,51 @@ struct FeedingScreen: View {
         }
     }
 
-    // MARK: Порция
+    // MARK: Сколько
 
-    private var portionCard: some View {
-        TGCard {
-            TGSectionHeader(title: "порция",
-                            subtitle: "порция одна на все кормления — уменьшив её, уменьшаешь весь день")
-            if let dog {
-                Stepper(value: Binding(get: { dog.portionGrams }, set: { setPortion($0, on: dog) }),
-                        in: 5...600, step: 5) {
-                    HStack {
-                        Text("Грамм за раз").textStyle(AppFont.body)
-                        Spacer()
-                        Text("\(dog.portionGrams) г").textStyle(AppFont.numeric(17))
-                    }
-                }
-                .frame(minHeight: Token.Size.tapTarget)
+    /// Только показывает арифметику и ведёт в единственный редактор.
+    ///
+    /// Раньше здесь стоял свой шаговик по граммам за раз. Он писал порцию
+    /// мимо дневной нормы, и на этой же карточке «грамм за раз»
+    /// и «выходит в день» переставали сходиться между собой.
+    @ViewBuilder
+    private var amountCard: some View {
+        if let dog {
+            TGCard(spacing: 0) {
+                TGSectionHeader(title: "сколько",
+                                subtitle: "порция — это норма, делённая на кормления")
+                amountRow("Норма в день", "\(dog.dailyGrams) г", isTotal: true)
                 TGDivider()
-                HStack {
-                    Text("Выходит в день").textStyle(AppFont.body)
-                    Spacer()
-                    Text("\(dog.dailyGrams) г").textStyle(AppFont.numeric(17))
+                amountRow("Кормлений", "\(dog.mealsPerDay)")
+                TGDivider()
+                amountRow("Значит за раз", "\(dog.servingGrams) г")
+                TGDivider()
+                TGLink(title: "Поменять норму и режим", systemImage: "slider.horizontal.3") {
+                    ScheduleScreen(dog: dog)
                 }
-                .frame(minHeight: Token.Size.tapTarget)
-
-                if let suggested = report.suggestedPortionGrams, suggested != dog.portionGrams {
-                    TGBanner(tone: .waiting,
-                             title: "Предлагаем \(suggested) г за раз",
-                             subtitle: "Это ровно норма, разделённая на \(dog.mealsPerDay) кормления. Меняется сразу для всех приёмов — отдельных порций у приложения нет.",
-                             systemImage: "equal.circle")
-                    TGButton(title: "Поставить \(suggested) г", variant: .secondary, size: .medium) {
-                        setPortion(suggested, on: dog)
-                    }
-                }
-                TGExplainer(text: "Дозировки и норму сверяй с врачом. Приложение только считает то, что вы сами записали.")
+                TGExplainer(text: "Норму называет врач или упаковка — приложение её не выдумывает. Для влажного корма граммы другие: он на три четверти вода.")
             }
         }
     }
 
-    private func setPortion(_ grams: Int, on dog: Dog) {
-        dog.portionGrams = grams
-        Haptics.tap()
+    private func amountRow(_ title: String, _ value: String, isTotal: Bool = false) -> some View {
+        HStack {
+            Text(title).textStyle(isTotal ? AppFont.bodyEmphasis : AppFont.body)
+            Spacer(minLength: Token.Space.s8)
+            Text(value).textStyle(AppFont.numeric(isTotal ? 20 : 17))
+        }
+        .frame(minHeight: Token.Size.tapTarget)
     }
 
     private func applySchedule() {
         guard let dog else { return }
         dog.mealTimes = report.suggestedMealTimes
-        dog.mealsPerDay = max(1, report.suggestedMealTimes.count)
+        // Через `setMealsPerDay`, а не присваиванием: дневная норма должна
+        // остаться прежней, а порция — пересчитаться. Прямое присваивание
+        // молча меняло то, сколько собака ест за сутки.
+        dog.setMealsPerDay(report.suggestedMealTimes.count)
+        dog.syncSingleFoodShare()
+        try? context.save()
         Haptics.success()
     }
 }

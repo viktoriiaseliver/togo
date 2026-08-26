@@ -70,6 +70,7 @@ struct AppRoot: View {
                     // Уход у тех, кто ставил приложение до переделки, чинится
                     // один раз и молча: человек не должен ничего править руками.
                     let fixed = CareMigration.run(context: context)
+                    FeedingMigration.run(context: context)
                     if fixed > 0 { StartupLog.note("уход починен: \(fixed)") }
                     Persistence.removeLegacyStoreIfSafe(context: context)
                 }

@@ -45,7 +45,12 @@ nonisolated struct FeedingReport: Equatable, Sendable {
     /// Во сколько он ест на самом деле — по наблюдениям, а не по расписанию.
     var observedMealTimes: [Int]
     /// Что предложить, если расходится с нормой.
-    var suggestedPortionGrams: Int?
+    ///
+    /// Отдельной подсказки по порции здесь нет намеренно. Она была,
+    /// и предлагала «норму, делённую на кормления» — то есть ровно ту
+    /// порцию, которая и так стоит в профиле. Появиться такая подсказка
+    /// могла только после того, как порцию рассогласовали с нормой руками,
+    /// и предлагала отменить только что сделанное.
     var suggestedMealTimes: [Int]
     /// Сколько в среднем проходит от еды до стула — из этого и растут выходы.
     var stoolLagMinutes: Int?
@@ -57,7 +62,7 @@ nonisolated struct FeedingReport: Equatable, Sendable {
         days: [], normGramsPerDay: 0, normMealsPerDay: 0,
         averageGramsPerDay: 0, averageMealsPerDay: 0,
         status: .notEnoughData(days: 0), observedMealTimes: [],
-        suggestedPortionGrams: nil, suggestedMealTimes: [],
+        suggestedMealTimes: [],
         stoolLagMinutes: nil, suggestedOutingTimes: [], conflicts: []
     )
 
@@ -118,7 +123,6 @@ nonisolated enum FeedingAnalyzer {
             averageMealsPerDay: averageMeals,
             status: status,
             observedMealTimes: observed,
-            suggestedPortionGrams: suggestedPortion(status: status, dog: dog),
             suggestedMealTimes: suggestedTimes,
             stoolLagMinutes: lag,
             suggestedOutingTimes: suggestedOutingTimes(mealTimes: suggestedTimes, lag: lag, days: complete),
@@ -133,24 +137,33 @@ nonisolated enum FeedingAnalyzer {
         now: Date = Date(),
         calendar: Calendar = .current
     ) -> [FeedingReport.Day] {
-        // Лакомства из порции — та же еда: иначе «ест меньше нормы»
-        // покажется у всех, кто занимается с собакой.
-        let meals = Diary.active(events)
-            .filter { $0.kind == .meal || ($0.kind == .treat && $0.fromPortion) }
+        // Граммы и кормления считаются по-разному, и это важно.
+        //
+        // Лакомство из порции — та же еда, в граммы оно обязано попасть:
+        // иначе «ест меньше нормы» вылезет у всех, кто занимается
+        // с собакой. Но кормлением оно не является. Пока лакомства шли
+        // в общую кучу, горсть корма на занятии в 15:40 становилась
+        // третьим кормлением: приложение считало, что собака ест три раза,
+        // и предлагало под это расписание.
+        let active = Diary.active(events)
+        let meals = active.filter { $0.kind == .meal }
+        let extras = active.filter { $0.kind == .treat && $0.fromPortion }
         let today = calendar.startOfDay(for: now)
 
         return (0..<windowDays).reversed().compactMap { offset in
             guard let day = calendar.date(byAdding: .day, value: -offset, to: today) else { return nil }
-            let ofDay = meals.filter { calendar.isDate($0.date, inSameDayAs: day) }
+            let mealsOfDay = meals.filter { calendar.isDate($0.date, inSameDayAs: day) }
+            let extrasOfDay = extras.filter { calendar.isDate($0.date, inSameDayAs: day) }
             // Пустые прошлые дни — это не «съел ноль», а «дневник не вели».
             // Такие дни в среднее не попадают.
             let isToday = offset == 0
-            guard !ofDay.isEmpty || isToday else { return nil }
+            let hasAnything = !mealsOfDay.isEmpty || !extrasOfDay.isEmpty
+            guard hasAnything || isToday else { return nil }
             return FeedingReport.Day(
                 date: day,
-                grams: ofDay.compactMap(\.grams).reduce(0, +),
-                mealMinutes: ofDay.map { minuteOfDay($0.date, calendar: calendar) }.sorted(),
-                isComplete: !isToday && !ofDay.isEmpty
+                grams: (mealsOfDay + extrasOfDay).compactMap(\.grams).reduce(0, +),
+                mealMinutes: mealsOfDay.map { minuteOfDay($0.date, calendar: calendar) }.sorted(),
+                isComplete: !isToday && hasAnything
             )
         }
     }
@@ -192,21 +205,6 @@ nonisolated enum FeedingAnalyzer {
     }
 
     // MARK: Что предложить
-
-    /// Если ест больше нормы — уменьшаем не одно кормление, а все сразу:
-    /// порция в профиле одна на все приёмы, и это правильно.
-    static func suggestedPortion(status: FeedingReport.Status, dog: Dog?) -> Int? {
-        guard let dog, dog.mealsPerDay > 0 else { return nil }
-        switch status {
-        case .overNorm, .underNorm:
-            // Норма делится поровну и округляется до пяти граммов:
-            // мерить точнее на кухонных весах всё равно не выйдет.
-            let perMeal = Double(dog.dailyGrams) / Double(dog.mealsPerDay)
-            return max(5, Int((perMeal / 5).rounded()) * 5)
-        case .onNorm, .notEnoughData:
-            return nil
-        }
-    }
 
     /// Кормления раскладываются по дню равномерно внутри бодрствования,
     /// но отталкиваются от того, во сколько собака уже ест.

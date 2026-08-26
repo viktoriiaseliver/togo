@@ -19,7 +19,12 @@ final class Dog {
     var targetWeightHigh: Double?
 
     // Питание
+    /// Чем кормят. Пишется из запаса корма — отдельно это поле не правят:
+    /// иначе марка в профиле и марка на упаковке начинают расходиться.
     var foodBrand: String = ""
+    /// Порция за раз. Хранится ради старых бэкапов и виджета; правильное
+    /// значение здесь всегда `servingGrams` — его пишет `setDailyGrams`.
+    /// Единственное настоящее число про количество еды — `dailyNormGrams`.
     var portionGrams: Int = 0
     var mealsPerDay: Int = 2
     var mealTimes: [Int] = [7 * 60 + 30, 18 * 60 + 30]   // минуты от полуночи
@@ -31,14 +36,18 @@ final class Dog {
     var sleepMinuteOfDay: Int = 23 * 60
     var forbiddenFoods: [String] = []
 
-    /// Дневная норма, если человек её знает. Часто её называет врач
-    /// или пишет упаковка — тогда порция за раз считается из неё,
-    /// а не наоборот.
+    /// Сколько собака съедает за сутки — единственное хранимое число
+    /// про количество еды.
+    ///
+    /// Раньше их было два: «порция за раз» и «норма в день», и какое
+    /// из них главное, решала ветка в `dailyGrams`. Из-за этого на одной
+    /// карточке стояли рядом два числа, которые не сходились: поменять
+    /// «грамм за раз» было можно, а «выходит в день» не двигалось.
+    /// Осталось одно, а порция считается делением.
+    ///
+    /// Опциональность — след старой схемы: у собак, заведённых до этой
+    /// правки, поле пустое, и его заполняет `FeedingMigration`.
     var dailyNormGrams: Int?
-
-    /// Каким кормом кормят. Влажный и сухой по-разному фасуют и по-разному
-    /// считают, поэтому вид корма — не украшение, а часть арифметики.
-    var foodKindRaw: String = FoodKind.dry.rawValue
 
     /// Чем платим на занятиях. У каждой собаки своя иерархия.
     var rewards: [String] = []
@@ -98,8 +107,6 @@ final class Dog {
     @Relationship(deleteRule: .cascade, inverse: \FoodStock.dog)
     var stocksStorage: [FoodStock]?
 
-    @Relationship(deleteRule: .cascade, inverse: \FoodStock.dog)
-    var foodStocksStorage: [FoodStock]?
 
     init(name: String, weightKg: Double) {
         self.name = name
@@ -121,12 +128,7 @@ final class Dog {
     var documents: [DogDocument] { documentsStorage ?? [] }
     var heats: [HeatRecord] { heatsStorage ?? [] }
     var stocks: [FoodStock] { stocksStorage ?? [] }
-    var foodStocks: [FoodStock] { foodStocksStorage ?? [] }
 
-    var foodKind: FoodKind {
-        get { FoodKind(rawValue: foodKindRaw) ?? .dry }
-        set { foodKindRaw = newValue.rawValue }
-    }
 
     var sex: DogSex {
         get { DogSex(rawValue: sexRaw) ?? .unknown }
@@ -181,19 +183,51 @@ final class Dog {
 
     /// Сколько собака съедает за сутки.
     ///
-    /// Считать можно с двух концов, и оба встречаются одинаково часто:
-    /// кто-то знает дневную норму с упаковки, кто-то отмеряет порцию за раз.
-    /// Что человек ввёл, то и главное.
-    var dailyGrams: Int { dailyNormGrams ?? (portionGrams * mealsPerDay) }
+    /// Спрашивать можно с двух концов — кто-то знает норму с упаковки,
+    /// кто-то отмеряет порцию за раз, — но храним всегда дневную.
+    var dailyGrams: Int { dailyNormGrams ?? max(0, portionGrams * mealsPerDay) }
 
-    /// Порция за раз, выведенная из дневной нормы.
-    var derivedPortionGrams: Int {
-        guard mealsPerDay > 0 else { return portionGrams }
-        return max(1, Int((Double(dailyGrams) / Double(mealsPerDay) / 5).rounded()) * 5)
+    /// Сколько класть в миску за раз: норма, поделённая на число кормлений.
+    ///
+    /// Округляем до пяти граммов — точнее на кухонных весах всё равно
+    /// не отмерить, а число вроде «103 г» выглядит как требование.
+    var servingGrams: Int {
+        guard mealsPerDay > 0 else { return dailyGrams }
+        return max(5, Int((Double(dailyGrams) / Double(mealsPerDay) / 5).rounded()) * 5)
     }
 
-    /// Норма задана дневная, а не по разу.
-    var usesDailyNorm: Bool { dailyNormGrams != nil }
+    /// Задать дневную норму. Порция пересчитывается сама.
+    func setDailyGrams(_ grams: Int) {
+        dailyNormGrams = max(0, grams)
+        portionGrams = servingGrams
+    }
+
+    /// Задать порцию за раз — норма получается умножением.
+    func setServingGrams(_ grams: Int) {
+        setDailyGrams(max(0, grams) * max(1, mealsPerDay))
+    }
+
+    /// Держать расход единственного корма равным норме.
+    ///
+    /// Когда корм один, «сколько в день» у него — это и есть дневная норма,
+    /// и отдельно её не спрашивают. Но норму можно поменять в режиме
+    /// питания, и без этой синхронизации обратный отсчёт запаса продолжал
+    /// бы считать по старой цифре — молча и незаметно.
+    func syncSingleFoodShare() {
+        guard stocks.count == 1 else { return }
+        stocks[0].gramsPerDay = dailyGrams
+    }
+
+    /// Поменять число кормлений, не меняя, сколько собака съедает за сутки.
+    ///
+    /// Это и была самая обидная путаница: человек переводил щенка с двух
+    /// кормлений на три, а приложение молча поднимало дневную еду
+    /// в полтора раза — потому что хранило порцию, а не норму.
+    func setMealsPerDay(_ count: Int) {
+        let daily = dailyGrams
+        mealsPerDay = max(1, count)
+        setDailyGrams(daily)
+    }
 
     /// Норма воды примерно 50 мл на килограмм — используется только как ориентир
     /// в поездке, где смена воды чаще всего даёт сбой.

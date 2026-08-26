@@ -97,7 +97,7 @@ enum SeedData {
         let dog = Dog(name: "Стич", weightKg: 4.1)
         dog.breed = "Шипперке"
         dog.foodBrand = "Acana ягнёнок"
-        dog.portionGrams = 60
+        dog.setServingGrams(60)
         dog.targetWeightLow = 4.0
         dog.targetWeightHigh = 4.3
         dog.rewards = ["сыр", "индейка", "мячик"]
