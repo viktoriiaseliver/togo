@@ -26,10 +26,22 @@ nonisolated enum Diary {
             .sorted { $0.date < $1.date }
     }
 
+    /// Сколько времени собака способна терпеть — это промежуток между
+    /// **опорожнениями**, а не между отметками.
+    ///
+    /// За одну прогулку собака метит три раза за десять минут, и раньше
+    /// это давало три интервала по десять минут вперемешку с настоящими
+    /// четырёхчасовыми. Медиана уезжала вниз, и вердикт начинал считать
+    /// нормой десять минут — то есть переставал работать у любого, кто
+    /// отмечает прогулку подробно.
+    static let sameEmptyingWindow: TimeInterval = 45 * 60
+
     static func urineIntervals(_ events: [LogEvent]) -> [TimeInterval] {
         let dates = urineEvents(events).map(\.date)
         guard dates.count > 1 else { return [] }
-        return zip(dates, dates.dropFirst()).map { $1.timeIntervalSince($0) }
+        return zip(dates, dates.dropFirst())
+            .map { $1.timeIntervalSince($0) }
+            .filter { $0 > sameEmptyingWindow }
     }
 
     static func daysOfData(_ events: [LogEvent], now: Date = Date(), calendar: Calendar = .current) -> Int {
@@ -71,7 +83,13 @@ nonisolated enum Diary {
     static func summary(_ events: [LogEvent], day: Date, dog: Dog?) -> DaySummary {
         let today = onDay(events, day)
         return DaySummary(
-            eatenGrams: today.filter { $0.kind == .meal }.compactMap(\.grams).reduce(0, +),
+            // Лакомства, взятые из дневной порции, — это та же еда.
+            // Не считать их значит показывать «съел 60 из 120», когда
+            // тридцать граммов ушло на занятие.
+            eatenGrams: today
+                .filter { $0.kind == .meal || ($0.kind == .treat && $0.fromPortion) }
+                .compactMap(\.grams)
+                .reduce(0, +),
             dailyGrams: dog?.dailyGrams ?? 0,
             drankMl: today.filter { $0.kind == .water }.compactMap(\.milliliters).reduce(0, +),
             outings: today.filter { $0.kind == .outing }.count,

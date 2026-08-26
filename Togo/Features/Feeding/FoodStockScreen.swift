@@ -16,15 +16,15 @@ struct StockRow: View {
             VStack(alignment: .leading, spacing: Token.Space.s2) {
                 Text(stock.brand.isEmpty ? stock.kind.title : stock.brand)
                     .textStyle(AppFont.bodyEmphasis)
-                Text(stock.summary)
+                Text(stock.summary(at: now))
                     .textStyle(AppFont.caption)
                     .fixedSize(horizontal: false, vertical: true)
             }
             Spacer(minLength: Token.Space.s8)
             VStack(alignment: .trailing, spacing: Token.Space.s2) {
-                Text(stock.daysLeft.map { Fmt.days($0) } ?? "—")
+                Text(stock.daysLeft(at: now).map { Fmt.days($0) } ?? "—")
                     .textStyle(AppFont.numeric(15).color(
-                        stock.needsRestock ? Token.Status.waitingText : Token.Ink.primary
+                        stock.needsRestock(at: now) ? Token.Status.waitingText : Token.Ink.primary
                     ))
                 Text("хватит").textStyle(AppFont.micro)
             }
@@ -290,7 +290,7 @@ struct FoodStockEditorSheet: View {
 
             let preview = FoodStock(kind: kind, packGrams: packGrams,
                                     packsLeft: packsLeft, gramsPerDay: gramsPerDay)
-            if let days = preview.daysLeft {
+            if let days = preview.daysLeft() {
                 TGDivider()
                 HStack(spacing: 0) {
                     TGStat(value: Fmt.days(days), caption: "хватит на", size: 17)
@@ -336,6 +336,10 @@ struct FoodStockEditorSheet: View {
             target.dog = dog
             context.insert(target)
         }
+        // Пересчёт остатка — это новая точка отсчёта: человек только что
+        // посмотрел, сколько у него банок. Без неё расход считался бы
+        // от старой даты и уводил цифру в минус.
+        target.countedAt = Date()
         // Сохраняем сразу: иначе связь применяется не мгновенно,
         // и человек возвращается на экран, где ничего не изменилось.
         try? context.save()

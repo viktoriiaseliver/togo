@@ -214,3 +214,139 @@ struct RealUsageTests {
         #expect(VerdictEngine.evaluate(signals) != .urgent)
     }
 }
+
+/// Баги, найденные при повторном осмотре живого устройства.
+@Suite("Второй осмотр телефона")
+@MainActor
+struct SecondPassTests {
+    private let calendar = Calendar.current
+
+    private func днейНазад(_ дней: Int) -> Date {
+        calendar.date(byAdding: .day, value: -дней, to: .now)!
+    }
+
+    // MARK: Запас корма замирал
+
+    @Test("Остаток корма убывает сам, а не ждёт, пока его пересчитают")
+    func stockCountsDown() {
+        // Пять паучей по 150 г при 195 г в день — на четыре дня.
+        let корм = FoodStock(kind: .wet, brand: "Edgar Cooper", packGrams: 150,
+                             packsLeft: 5, gramsPerDay: 195, countedAt: днейНазад(2))
+
+        #expect(корм.countedGrams == 750)
+        #expect(корм.usedGrams() == 390, "за два дня съедено 390 г")
+        #expect(корм.remainingGrams() == 360)
+        #expect(корм.daysLeft() == 1)
+        #expect(корм.needsRestock())
+    }
+
+    @Test("В день пересчёта остаток равен тому, что назвал человек")
+    func freshCountIsExact() {
+        let корм = FoodStock(kind: .dry, packGrams: 3000, packsLeft: 1,
+                             gramsPerDay: 120, countedAt: .now)
+        #expect(корм.usedGrams() == 0)
+        #expect(корм.remainingGrams() == 3000)
+        #expect(корм.daysLeft() == 25)
+    }
+
+    @Test("Кончившийся корм не уходит в минус")
+    func stockNeverNegative() {
+        let корм = FoodStock(kind: .wet, packGrams: 150, packsLeft: 2,
+                             gramsPerDay: 195, countedAt: днейНазад(30))
+        #expect(корм.remainingGrams() == 0)
+        #expect(корм.daysLeft() == 0)
+        #expect(корм.packsRemaining() == 0)
+    }
+
+    @Test("Сводка по влажному считает банками, и цифра свежая")
+    func wetSummaryIsCurrent() {
+        let корм = FoodStock(kind: .wet, packGrams: 150, packsLeft: 6,
+                             gramsPerDay: 150, countedAt: днейНазад(2))
+        #expect(корм.packsRemaining() == 4)
+        #expect(корм.summary().contains("4"))
+    }
+
+    // MARK: Прогулка ломала вердикт
+
+    @Test("Три отметки мочи за одну прогулку не считаются тремя интервалами")
+    func walkMarksDoNotPoisonVerdict() {
+        var события: [LogEvent] = []
+
+        // Четыре дня по три выхода с интервалом четыре часа.
+        for день in 1...4 {
+            for час in [8, 12, 16] {
+                let выход = LogEvent(kind: .outing,
+                                     date: дата(день, час: час),
+                                     authorName: "Виктория")
+                выход.outcome = .urine
+                события.append(выход)
+            }
+        }
+
+        let ровные = Diary.urineIntervals(события)
+        #expect(ровные.allSatisfy { $0 >= 4 * 3600 - 1 })
+
+        // Та же история, но на каждой прогулке собака метит трижды
+        // с интервалом в десять минут — как оно и бывает.
+        for день in 1...4 {
+            for час in [8, 12, 16] {
+                for минута in [10, 20] {
+                    let метка = LogEvent(kind: .outing,
+                                         date: дата(день, час: час, минута: минута),
+                                         authorName: "Виктория")
+                    метка.outcome = .urine
+                    события.append(метка)
+                }
+            }
+        }
+
+        let сметками = Diary.urineIntervals(события)
+        #expect(сметками.allSatisfy { $0 > Diary.sameEmptyingWindow },
+                "десятиминутные промежутки внутри одной прогулки — не интервалы терпения")
+
+        // Медиана не должна уехать вниз: иначе вердикт начнёт считать
+        // нормой десять минут и перестанет работать.
+        let медиана = сметками.sorted()[сметками.count / 2]
+        #expect(медиана >= 3 * 3600)
+    }
+
+    private func дата(_ дней: Int, час: Int, минута: Int = 0) -> Date {
+        let день = calendar.date(byAdding: .day, value: -дней,
+                                 to: calendar.startOfDay(for: .now))!
+        return день.addingTimeInterval(Double(час * 60 + минута) * 60)
+    }
+
+    // MARK: Лакомства из порции
+
+    @Test("Лакомство из порции считается съеденным за день")
+    func treatsCountTowardDailyFood() {
+        let dog = Dog(name: "Стич", weightKg: 4.73)
+        dog.portionGrams = 65
+        dog.mealsPerDay = 3
+
+        let полдень = calendar.date(bySettingHour: 12, minute: 0, second: 0, of: .now)!
+        let еда = LogEvent(kind: .meal, date: полдень, authorName: "Виктория")
+        еда.grams = 65
+        let занятие = LogEvent(kind: .treat, date: полдень.addingTimeInterval(3600),
+                               authorName: "Виктория")
+        занятие.grams = 30
+        занятие.fromPortion = true
+
+        let сводка = Diary.summary([еда, занятие], day: полдень, dog: dog)
+        #expect(сводка.eatenGrams == 95, "иначе «съел 65 из 195», хотя съел 95")
+    }
+
+    @Test("Лакомство сверх порции в дневную норму не идёт")
+    func extraTreatsDoNotCount() {
+        let dog = Dog(name: "Стич", weightKg: 4.73)
+        dog.portionGrams = 65
+        dog.mealsPerDay = 3
+
+        let полдень = calendar.date(bySettingHour: 12, minute: 0, second: 0, of: .now)!
+        let гость = LogEvent(kind: .treat, date: полдень, authorName: "Тео")
+        гость.grams = 20
+        гость.fromPortion = false
+
+        #expect(Diary.summary([гость], day: полдень, dog: dog).eatenGrams == 0)
+    }
+}

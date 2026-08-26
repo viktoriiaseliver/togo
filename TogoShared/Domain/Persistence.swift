@@ -79,7 +79,10 @@ nonisolated enum Persistence {
         let legacy = ["Togo.store", "Togo.store-shm", "Togo.store-wal"]
             .map { support.appending(path: $0) }
 
-        guard FileManager.default.fileExists(atPath: legacy[0].path()) else { return }
+        // `URL.path()` возвращает путь с процентным кодированием, а в нём
+        // есть пробел: «Application%20Support». Файл по такому пути
+        // не находится, и уборка молча не делала ничего.
+        guard FileManager.default.fileExists(atPath: legacy[0].path(percentEncoded: false)) else { return }
         for url in legacy {
             try? FileManager.default.removeItem(at: url)
         }

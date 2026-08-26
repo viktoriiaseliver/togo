@@ -447,9 +447,9 @@ struct BagAndHeatTests {
         // Мешок 3 кг при 120 г в день — двадцать пять дней.
         let мешок = FoodStock(kind: .dry, packGrams: 3000, packsLeft: 1, gramsPerDay: 120)
 
-        #expect(мешок.remainingGrams == 3000)
-        #expect(мешок.daysLeft == 25)
-        #expect(!мешок.needsRestock)
+        #expect(мешок.remainingGrams() == 3000)
+        #expect(мешок.daysLeft() == 25)
+        #expect(!мешок.needsRestock())
     }
 
     @Test("Влажный считается банками, и это осмысленная цифра")
@@ -457,16 +457,16 @@ struct BagAndHeatTests {
         // Двенадцать банок по 400 г, съедает 800 г в день — две банки в день.
         let банки = FoodStock(kind: .wet, packGrams: 400, packsLeft: 12, gramsPerDay: 800)
 
-        #expect(банки.daysLeft == 6)
+        #expect(банки.daysLeft() == 6)
         #expect(банки.packsPerDay == 2)
-        #expect(банки.needsRestock, "меньше недели — пора покупать")
+        #expect(банки.needsRestock(), "меньше недели — пора покупать")
     }
 
     @Test("Початый мешок считается дробным")
     func partialPack() {
         let мешок = FoodStock(kind: .dry, packGrams: 6000, packsLeft: 0.5, gramsPerDay: 300)
-        #expect(мешок.remainingGrams == 3000)
-        #expect(мешок.daysLeft == 10)
+        #expect(мешок.remainingGrams() == 3000)
+        #expect(мешок.daysLeft() == 10)
     }
 
     @Test("Сколько упаковок купить на месяц — с учётом остатка")
@@ -486,11 +486,11 @@ struct BagAndHeatTests {
     @Test("Пустой запас не уходит в минус и не делит на ноль")
     func emptyStock() {
         let пусто = FoodStock(kind: .dry, packGrams: 3000, packsLeft: 0, gramsPerDay: 120)
-        #expect(пусто.remainingGrams == 0)
-        #expect(пусто.daysLeft == 0)
+        #expect(пусто.remainingGrams() == 0)
+        #expect(пусто.daysLeft() == 0)
 
         let безнормы = FoodStock(kind: .wet, packGrams: 400, packsLeft: 10, gramsPerDay: 0)
-        #expect(безнормы.daysLeft == nil)
+        #expect(безнормы.daysLeft() == nil)
         #expect(безнормы.runsOutOn() == nil)
         #expect(безнормы.packsNeeded(forDays: 30) == 0)
     }

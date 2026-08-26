@@ -19,8 +19,13 @@ final class FoodStock {
     var brand: String = ""
     /// Размер одной упаковки в граммах: мешок, банка, пауч.
     var packGrams: Int = 3000
-    /// Сколько упаковок осталось. Дробное, потому что мешок початый.
+    /// Сколько упаковок было **на дату пересчёта**. Дробное, потому что
+    /// мешок початый.
     var packsLeft: Double = 1
+    /// Когда человек в последний раз сказал, сколько осталось. От этой даты
+    /// и считается расход: без неё цифра «хватит на N дней» замирает
+    /// навсегда и врёт уже на следующий день.
+    var countedAt: Date?
     var openedAt: Date?
     /// Сколько граммов этого корма собака получает в день.
     /// Для смешанного кормления у каждого корма своя цифра.
@@ -28,12 +33,20 @@ final class FoodStock {
 
     var dog: Dog?
 
-    init(kind: FoodKind, brand: String = "", packGrams: Int, packsLeft: Double, gramsPerDay: Int) {
+    init(
+        kind: FoodKind,
+        brand: String = "",
+        packGrams: Int,
+        packsLeft: Double,
+        gramsPerDay: Int,
+        countedAt: Date = Date()
+    ) {
         self.kindRaw = kind.rawValue
         self.brand = brand
         self.packGrams = packGrams
         self.packsLeft = packsLeft
         self.gramsPerDay = gramsPerDay
+        self.countedAt = countedAt
     }
 
     var kind: FoodKind {
@@ -42,28 +55,50 @@ final class FoodStock {
         set { kindRaw = newValue.rawValue }
     }
 
-    var remainingGrams: Int { Int(packsLeft * Double(packGrams)) }
+    /// Сколько было на момент пересчёта.
+    var countedGrams: Int { Int(packsLeft * Double(packGrams)) }
+
+    /// Сколько съедено с тех пор.
+    func usedGrams(at now: Date = Date()) -> Int {
+        guard let countedAt, gramsPerDay > 0 else { return 0 }
+        let calendar = Calendar.current
+        let days = calendar.dateComponents([.day],
+                                           from: calendar.startOfDay(for: countedAt),
+                                           to: calendar.startOfDay(for: now)).day ?? 0
+        return min(countedGrams, max(0, days) * gramsPerDay)
+    }
+
+    /// Сколько осталось сейчас.
+    func remainingGrams(at now: Date = Date()) -> Int {
+        max(0, countedGrams - usedGrams(at: now))
+    }
 
     /// На сколько дней хватит при текущей норме.
-    var daysLeft: Int? {
+    func daysLeft(at now: Date = Date()) -> Int? {
         guard gramsPerDay > 0 else { return nil }
-        return remainingGrams / gramsPerDay
+        return remainingGrams(at: now) / gramsPerDay
     }
 
     func runsOutOn(from date: Date = Date()) -> Date? {
-        guard let daysLeft else { return nil }
-        return Calendar.current.date(byAdding: .day, value: daysLeft,
+        guard let days = daysLeft(at: date) else { return nil }
+        return Calendar.current.date(byAdding: .day, value: days,
                                      to: Calendar.current.startOfDay(for: date))
     }
 
     /// Пора покупать. Неделя — чтобы успеть заказать и не переводить
     /// собаку на другой корм резко.
-    var needsRestock: Bool { (daysLeft ?? 99) <= 7 }
+    func needsRestock(at now: Date = Date()) -> Bool { (daysLeft(at: now) ?? 99) <= 7 }
+
+    /// Сколько упаковок осталось сейчас — для влажного это осмысленная цифра.
+    func packsRemaining(at now: Date = Date()) -> Double {
+        guard packGrams > 0 else { return 0 }
+        return Double(remainingGrams(at: now)) / Double(packGrams)
+    }
 
     /// Сколько упаковок купить, чтобы хватило на столько-то дней.
-    func packsNeeded(forDays days: Int) -> Int {
+    func packsNeeded(forDays days: Int, at now: Date = Date()) -> Int {
         guard gramsPerDay > 0, packGrams > 0 else { return 0 }
-        let need = Double(gramsPerDay * days) - Double(remainingGrams)
+        let need = Double(gramsPerDay * days) - Double(remainingGrams(at: now))
         guard need > 0 else { return 0 }
         return Int((need / Double(packGrams)).rounded(.up))
     }
@@ -74,12 +109,13 @@ final class FoodStock {
         return Double(gramsPerDay) / Double(packGrams)
     }
 
-    var summary: String {
-        let unit = kind.unitName(count: packsLeft)
+    func summary(at now: Date = Date()) -> String {
+        let left = packsRemaining(at: now)
+        let unit = kind.unitName(count: left)
         if kind == .dry {
-            return String(format: "%.1f %@ · %d г в день", packsLeft, unit, gramsPerDay)
+            return String(format: "%.1f %@ · %d г в день", left, unit, gramsPerDay)
         }
-        return String(format: "%.0f %@ по %d г", packsLeft, unit, packGrams)
+        return String(format: "%.0f %@ по %d г", left.rounded(), unit, packGrams)
     }
 }
 
@@ -169,7 +205,7 @@ nonisolated enum FoodPlanner {
             totalGramsPerDay: stocks.map(\.gramsPerDay).reduce(0, +),
             firstRunOut: soonest?.0,
             whatRunsOutFirst: soonest?.1,
-            needsRestock: stocks.contains(where: \.needsRestock)
+            needsRestock: stocks.contains { $0.needsRestock(at: date) }
         )
     }
 }

@@ -152,9 +152,9 @@ struct FeedingScreen: View {
 
     private func restockText(_ dog: Dog) -> String {
         let нужно = stocks
-            .filter(\.needsRestock)
+            .filter { $0.needsRestock(at: now) }
             .map { stock -> String in
-                let packs = stock.packsNeeded(forDays: FoodPlanner.planningDays)
+                let packs = stock.packsNeeded(forDays: FoodPlanner.planningDays, at: now)
                 let unit = stock.kind.unitName(count: Double(packs))
                 let name = stock.brand.isEmpty ? stock.kind.title.lowercased() : stock.brand
                 return "\(name): \(packs) \(unit) на месяц"

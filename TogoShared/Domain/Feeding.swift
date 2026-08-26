@@ -133,7 +133,10 @@ nonisolated enum FeedingAnalyzer {
         now: Date = Date(),
         calendar: Calendar = .current
     ) -> [FeedingReport.Day] {
-        let meals = Diary.active(events).filter { $0.kind == .meal }
+        // Лакомства из порции — та же еда: иначе «ест меньше нормы»
+        // покажется у всех, кто занимается с собакой.
+        let meals = Diary.active(events)
+            .filter { $0.kind == .meal || ($0.kind == .treat && $0.fromPortion) }
         let today = calendar.startOfDay(for: now)
 
         return (0..<windowDays).reversed().compactMap { offset in
