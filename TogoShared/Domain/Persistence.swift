@@ -61,6 +61,31 @@ nonisolated enum Persistence {
         return (containers ?? []).isEmpty == false
     }
 
+    /// Убрать хранилище, оставшееся от прежней сборки.
+    ///
+    /// В одной из версий путь к базе был задан явно (`Togo.store`),
+    /// а потом снова стал стандартным (`default.store`). На живом телефоне
+    /// от этого остался мёртвый файл на полтора мегабайта.
+    ///
+    /// Удаляем **только** если в текущем хранилище есть собака: иначе есть
+    /// риск, что данные как раз в старом файле, и его надо не стирать,
+    /// а читать. Молча терять записи нельзя ни при каких обстоятельствах.
+    @MainActor
+    static func removeLegacyStoreIfSafe(context: ModelContext) {
+        let hasData = ((try? context.fetch(FetchDescriptor<Dog>()))?.isEmpty == false)
+        guard hasData else { return }
+
+        let support = URL.applicationSupportDirectory
+        let legacy = ["Togo.store", "Togo.store-shm", "Togo.store-wal"]
+            .map { support.appending(path: $0) }
+
+        guard FileManager.default.fileExists(atPath: legacy[0].path()) else { return }
+        for url in legacy {
+            try? FileManager.default.removeItem(at: url)
+        }
+        StartupLog.note("убрано хранилище прежней сборки")
+    }
+
     private static func provisioningEntitlements() -> [String: Any]? {
         guard let url = Bundle.main.url(forResource: "embedded", withExtension: "mobileprovision"),
               let data = try? Data(contentsOf: url),

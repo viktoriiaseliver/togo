@@ -60,9 +60,21 @@ final class CareTask {
 
     // MARK: Когда
 
-    /// Ни разу не делали. Для регулярного это не просрочка, а «пока неизвестно»:
-    /// приложение спросит дату последнего раза, а не станет пугать.
-    var isNeverDone: Bool { lastDone == nil && kind != .dated }
+    /// Даты нет: для регулярного не знаем, когда делали, для «по дате»
+    /// не назначен день. Это не просрочка — но и не молчание навсегда:
+    /// такое дело видно в отдельной группе и просит поставить дату.
+    ///
+    /// Раньше здесь была дыра: дело без даты никогда не становилось сроком,
+    /// то есть заведённое напоминание не напоминало вообще ни о чём.
+    var needsDate: Bool {
+        switch kind {
+        case .daily: false
+        case .periodic: lastDone == nil
+        case .dated: scheduledDate == nil
+        }
+    }
+
+    var isNeverDone: Bool { needsDate }
 
     var dueDate: Date? {
         switch kind {
@@ -125,13 +137,13 @@ final class CareTask {
             if isDoneToday(on: date) { return streak > 1 ? "\(streak) дней подряд" : "сегодня сделали" }
             return streak > 1 ? "серия \(streak) дней" : "сегодня"
         case .periodic:
-            guard let days = daysUntilDue(from: date) else { return "ещё не делали" }
+            guard let days = daysUntilDue(from: date) else { return "когда делали?" }
             if days < 0 { return "просрочено на \(Fmt.days(-days))" }
             if days == 0 { return "сегодня" }
             if days == 1 { return "завтра" }
             return "через \(Fmt.days(days))"
         case .dated:
-            guard let days = daysUntilDue(from: date) else { return "дата не назначена" }
+            guard let days = daysUntilDue(from: date) else { return "когда делали?" }
             if days < 0 { return "просрочено" }
             if days == 0 { return "сегодня" }
             return Fmt.shortDay(dueDate ?? date)

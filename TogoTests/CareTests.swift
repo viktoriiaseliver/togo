@@ -61,7 +61,7 @@ struct CareTests {
 
     // MARK: Регулярно
 
-    @Test("Ни разу не делали — это «неизвестно», а не «просрочено»")
+    @Test("Ни разу не делали — это вопрос о дате, а не просрочка")
     func periodicNeverDone() {
         let когти = CareTask(title: "Когти", detail: "", kind: .periodic, intervalDays: 21)
 
@@ -69,7 +69,9 @@ struct CareTests {
         #expect(когти.dueDate == nil)
         #expect(!когти.isDue(), "не кричим в первый же день")
         #expect(!когти.isOverdue())
-        #expect(когти.statusText() == "ещё не делали")
+        // Формулировка поменялась: «ещё не делали» было тупиком, теперь
+        // приложение спрашивает дату и начинает работать.
+        #expect(когти.statusText() == "когда делали?")
     }
 
     @Test("Срок считается от последнего раза")

@@ -292,6 +292,7 @@ struct WeightScreen: View {
     let dog: Dog?
 
     @Environment(\.modelContext) private var context
+    @Environment(AppState.self) private var appState
     @State private var newWeight = ""
 
     var body: some View {
@@ -354,6 +355,14 @@ struct WeightScreen: View {
         entry.dog = dog
         context.insert(entry)
         dog.weightKg = kg
+
+        // Взвесили — значит, напоминание «Взвесить» отработало. Просить
+        // человека отметить то же самое второй раз незачем.
+        if let task = dog.careTasks.first(where: { $0.title == "Взвесить" }) {
+            task.markDone()
+        }
+
+        try? context.save()
         newWeight = ""
         Haptics.success()
     }

@@ -279,10 +279,14 @@ struct EventEditSheet: View {
             if let event {
                 TGCard(padding: 4) {
                     VStack(spacing: 0) {
+                        // Запись в будущем ломает всё, что считается
+                        // от «последнего раза»: вердикт решит, что собака
+                        // только что выходила. В живом дневнике такая
+                        // запись уже появилась — время выставили вечером.
                         DatePicker("Время", selection: Binding(
                             get: { event.date },
-                            set: { event.date = $0 }
-                        ), displayedComponents: .hourAndMinute)
+                            set: { event.date = min($0, .now) }
+                        ), in: ...Date(), displayedComponents: .hourAndMinute)
                         .textStyle(AppFont.body)
                         .frame(minHeight: Token.Size.tapTarget)
 

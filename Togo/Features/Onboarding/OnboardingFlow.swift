@@ -126,6 +126,8 @@ struct DogDraft {
     var name = ""
     var weight = ""
     var breed = ""
+    var sex: DogSex = .unknown
+    var isNeutered = false
     var birthDate: Date?
     var hasBirthDate = false
     var isOnTreatment = false
@@ -143,6 +145,8 @@ struct DogDraft {
     func makeDog() -> Dog {
         let dog = Dog(name: name.trimmingCharacters(in: .whitespaces), weightKg: weightValue ?? 0)
         dog.breed = breed.isEmpty ? nil : breed
+        dog.sex = sex
+        dog.isNeutered = isNeutered
         dog.birthDate = hasBirthDate ? birthDate : nil
         dog.isOnTreatment = isOnTreatment
         dog.photo = photo
@@ -224,6 +228,27 @@ private struct DogStep: View {
                 TGDivider()
                 LabeledField(label: "Порода") {
                     TextField("можно пропустить", text: $draft.breed)
+                }
+                TGDivider()
+                // Спрашиваем здесь: без пола не появится календарь цикла,
+                // а искать его потом в профиле никто не будет.
+                HStack {
+                    Text("Кто это").textStyle(AppFont.body)
+                    Spacer(minLength: Token.Space.s8)
+                    Picker("Кто это", selection: $draft.sex) {
+                        ForEach(DogSex.allCases, id: \.self) { Text($0.title).tag($0) }
+                    }
+                    .pickerStyle(.menu)
+                    .tint(Token.Ink.secondary)
+                }
+                .frame(minHeight: Token.Size.tapTarget)
+                if draft.sex != .unknown {
+                    TGDivider()
+                    Toggle(isOn: $draft.isNeutered) {
+                        Text(draft.sex == .male ? "Кастрирован" : "Стерилизована")
+                            .textStyle(AppFont.body)
+                    }
+                    .frame(minHeight: Token.Size.tapTarget)
                 }
                 TGDivider()
                 Toggle(isOn: $draft.hasBirthDate) {

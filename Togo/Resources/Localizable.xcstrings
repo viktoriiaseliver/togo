@@ -697,6 +697,30 @@
       },
       "comment": "markLabel"
     },
+    "%@ уже записана в %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ уже записана в %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "duplicateMessage"
+    },
     "%@ ч": {
       "extractionState": "manual",
       "localizations": {
@@ -1585,6 +1609,29 @@
       },
       "comment": "body"
     },
+    "Бешенство": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Бешенство"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      }
+    },
     "Библиотека компонентов": {
       "extractionState": "manual",
       "localizations": {
@@ -2303,7 +2350,7 @@
           }
         }
       },
-      "comment": "task"
+      "comment": "entry"
     },
     "Взвешивание": {
       "extractionState": "manual",
@@ -4104,6 +4151,30 @@
         }
       },
       "comment": "body"
+    },
+    "Давно": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Давно"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "title"
     },
     "Дальше": {
       "extractionState": "manual",
@@ -7849,6 +7920,30 @@
       },
       "comment": "task"
     },
+    "Кастрирован": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Кастрирован"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
+    },
     "Кашица": {
       "extractionState": "manual",
       "localizations": {
@@ -8065,6 +8160,30 @@
       },
       "comment": "body"
     },
+    "Когда делали последний раз?": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Когда делали последний раз?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "needsDateCard"
+    },
     "Когда идти к врачу, а не в приложение": {
       "extractionState": "manual",
       "localizations": {
@@ -8088,6 +8207,30 @@
         }
       },
       "comment": "body"
+    },
+    "Когда назначено?": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Когда назначено?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "needsDateCard"
     },
     "Когда родился": {
       "extractionState": "manual",
@@ -8184,6 +8327,29 @@
         }
       },
       "comment": "detail"
+    },
+    "Комплексная": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Комплексная"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      }
     },
     "Комплексная прививка": {
       "extractionState": "manual",
@@ -8624,6 +8790,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Кто у тебя живёт"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
+    },
+    "Кто это": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Кто это"
           }
         },
         "en": {
@@ -9368,6 +9558,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Менять схему лечения"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "title"
+    },
+    "Месяц назад": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Месяц назад"
           }
         },
         "en": {
@@ -10448,6 +10662,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Не указан"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "title"
+    },
+    "Неделю назад": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Неделю назад"
           }
         },
         "en": {
@@ -17545,6 +17783,30 @@
       },
       "comment": "body"
     },
+    "Стерилизована": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Стерилизована"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
+    },
     "Стирает записи, собак, схемы лечения и семью на этом устройстве. Отменить это будет нельзя — сначала выгрузи CSV, если он может пригодиться.": {
       "extractionState": "manual",
       "localizations": {
@@ -18648,6 +18910,30 @@
         }
       },
       "comment": "body"
+    },
+    "Точность здесь не нужна: приложению хватит примерной даты, чтобы посчитать следующий срок. Поправить можно в любой момент.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Точность здесь не нужна: приложению хватит примерной даты, чтобы посчитать следующий срок. Поправить можно в любой момент."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "needsDateCard"
     },
     "Точность маркера": {
       "extractionState": "manual",
@@ -19849,6 +20135,30 @@
       },
       "comment": "task"
     },
+    "Уши и зубы": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Уши и зубы"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "changed"
+    },
     "Файл можно положить в «Файлы», отправить себе в мессенджер или сохранить в iCloud Drive. Внутри обычный JSON — его видно глазами.": {
       "extractionState": "manual",
       "localizations": {
@@ -20280,6 +20590,30 @@
         }
       },
       "comment": "detail"
+    },
+    "Через месяц": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Через месяц"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "title"
     },
     "Через три-четыре дня приложение выучит его интервалы и начнёт подсказывать, настоящая ли нужда. Пока — выводи, как обычно.": {
       "extractionState": "manual",
@@ -22825,30 +23159,6 @@
       },
       "comment": "header"
     },
-    "дата не назначена": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "дата не назначена"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        }
-      },
-      "comment": "statusText"
-    },
     "дата;время;форма;бристоль;особенности;автор": {
       "extractionState": "manual",
       "localizations": {
@@ -23568,30 +23878,6 @@
         }
       },
       "comment": "body"
-    },
-    "ещё не делали": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ещё не делали"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        }
-      },
-      "comment": "statusText"
     },
     "ещё не спрашивали": {
       "extractionState": "manual",
@@ -24696,6 +24982,30 @@
         }
       },
       "comment": "outingsCard"
+    },
+    "когда делали?": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "когда делали?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "statusText"
     },
     "когда стучат по полу": {
       "extractionState": "manual",
@@ -26401,6 +26711,30 @@
       },
       "comment": "plan"
     },
+    "нужна дата": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "нужна дата"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "needsDateCard"
+    },
     "нужно к поездке": {
       "extractionState": "manual",
       "localizations": {
@@ -27312,6 +27646,30 @@
         }
       },
       "comment": "title"
+    },
+    "пока её нет, приложение не может напомнить": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "пока её нет, приложение не может напомнить"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "needsDateCard"
     },
     "пока ничего не отмечено": {
       "extractionState": "manual",
@@ -29617,6 +29975,30 @@
       },
       "comment": "verdictLine"
     },
+    "убрано хранилище прежней сборки": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "убрано хранилище прежней сборки"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "legacy"
+    },
     "убрать": {
       "extractionState": "manual",
       "localizations": {
@@ -29736,6 +30118,30 @@
         }
       },
       "comment": "settings"
+    },
+    "уход починен: %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "уход починен: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "fixed"
     },
     "участники · %@": {
       "extractionState": "manual",

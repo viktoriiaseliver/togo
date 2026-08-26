@@ -44,6 +44,7 @@ struct TogoApp: App {
 /// вкладок нет вовсе: показывать пустую навигацию новому человеку не за чем.
 struct AppRoot: View {
     @Environment(Settings.self) private var settings
+    @Environment(\.modelContext) private var context
     @Query private var dogs: [Dog]
     @State private var showsWhatsNew = false
 
@@ -55,7 +56,14 @@ struct AppRoot: View {
                 .sheet(isPresented: $showsWhatsNew) {
                     NavigationStack { WhatsNewScreen() }
                 }
-                .task { checkVersion() }
+                .task {
+                    checkVersion()
+                    // Уход у тех, кто ставил приложение до переделки, чинится
+                    // один раз и молча: человек не должен ничего править руками.
+                    let fixed = CareMigration.run(context: context)
+                    if fixed > 0 { StartupLog.note("уход починен: \(fixed)") }
+                    Persistence.removeLegacyStoreIfSafe(context: context)
+                }
         } else {
             OnboardingFlow()
         }

@@ -30,6 +30,7 @@ struct CareScreen: View {
             if tasks.isEmpty {
                 emptyState
             } else {
+                if !withoutDate.isEmpty { needsDateCard }
                 ForEach(CareKind.allCases, id: \.self) { kind in
                     section(kind)
                 }
@@ -74,7 +75,7 @@ struct CareScreen: View {
 
     @ViewBuilder
     private func section(_ kind: CareKind) -> some View {
-        let group = tasks.filter { $0.kind == kind }
+        let group = tasks.filter { $0.kind == kind && !$0.needsDate }
         if !group.isEmpty {
             TGCard(spacing: 0) {
                 TGSectionHeader(title: kind.sectionTitle, subtitle: subtitle(for: kind, group: group))
@@ -86,6 +87,85 @@ struct CareScreen: View {
                 }
             }
         }
+    }
+
+    /// Дела, у которых нет даты последнего раза.
+    ///
+    /// Без неё регулярное дело не становится сроком — то есть заведённое
+    /// напоминание не напоминает ни о чём. Раньше это было тихой дырой:
+    /// человек завёл девять дел, и все они молчали навсегда.
+    private var withoutDate: [CareTask] {
+        tasks.filter(\.needsDate)
+    }
+
+    private var needsDateCard: some View {
+        TGCard {
+            TGSectionHeader(
+                title: "нужна дата",
+                subtitle: "пока её нет, приложение не может напомнить"
+            )
+            ForEach(withoutDate) { task in
+                VStack(alignment: .leading, spacing: Token.Space.s8) {
+                    Text(task.title).textStyle(AppFont.bodyEmphasis)
+                    Text(task.kind == .dated ? "Когда назначено?" : "Когда делали последний раз?")
+                        .textStyle(AppFont.caption)
+                    TGChipGroup(
+                        items: task.kind == .dated ? DateGuess.forDated : DateGuess.forPeriodic,
+                        title: \.title,
+                        isSelected: { _ in false },
+                        minimumWidth: 96
+                    ) { guess in
+                        setDate(guess, for: task)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.vertical, Token.Space.s6)
+                if task.id != withoutDate.last?.id { TGDivider() }
+            }
+            TGExplainer(text: "Точность здесь не нужна: приложению хватит примерной даты, чтобы посчитать следующий срок. Поправить можно в любой момент.")
+        }
+    }
+
+    /// Варианты «когда» — намеренно грубые: точной даты человек не помнит,
+    /// а требовать её значит не получить никакой.
+    private enum DateGuess: String, CaseIterable {
+        case today, weekAgo, monthAgo, longAgo, soon
+
+        var title: String {
+            switch self {
+            case .today: "Сегодня"
+            case .weekAgo: "Неделю назад"
+            case .monthAgo: "Месяц назад"
+            case .longAgo: "Давно"
+            case .soon: "Через месяц"
+            }
+        }
+
+        func date(from now: Date) -> Date? {
+            let calendar = Calendar.current
+            switch self {
+            case .today: return now
+            case .weekAgo: return calendar.date(byAdding: .day, value: -7, to: now)
+            case .monthAgo: return calendar.date(byAdding: .month, value: -1, to: now)
+            case .longAgo: return calendar.date(byAdding: .month, value: -6, to: now)
+            case .soon: return calendar.date(byAdding: .month, value: 1, to: now)
+            }
+        }
+
+        static var forPeriodic: [DateGuess] { [.today, .weekAgo, .monthAgo, .longAgo] }
+        static var forDated: [DateGuess] { [.today, .soon] }
+    }
+
+    private func setDate(_ guess: DateGuess, for task: CareTask) {
+        guard let date = guess.date(from: now) else { return }
+        if task.kind == .dated {
+            task.scheduledDate = date
+        } else {
+            task.lastDone = date
+        }
+        try? context.save()
+        Haptics.tap()
+        appState.showUndo("\(task.title) · \(guess.title.lowercased())")
     }
 
     private func subtitle(for kind: CareKind, group: [CareTask]) -> String? {

@@ -21,6 +21,14 @@ struct EventLog {
     ///   - confirmation: что показать в тосте. Пусто — тост не показываем
     ///     (например, когда экран сам скажет о результате крупнее).
     ///   - configure: заполнение полей, специфичных для вида записи.
+    /// Насколько близко две одинаковые записи считаются одним тапом.
+    ///
+    /// Не выдумано: в живом дневнике нашлись три записи еды по 65 г
+    /// с интервалом в две секунды — человек жал кнопку, не получая отклика,
+    /// а потом удалял всё три. Отклик починен, но защита нужна всё равно:
+    /// палец соскакивает, и кнопку жмут дважды.
+    static let duplicateWindow: TimeInterval = 90
+
     @discardableResult
     func record(
         _ kind: LogKind,
@@ -28,9 +36,16 @@ struct EventLog {
         at date: Date = .now,
         confirmation: String?,
         haptic: Haptic = .success,
+        allowDuplicate: Bool = false,
         configure: (LogEvent) -> Void = { _ in }
     ) -> LogEvent? {
         guard let dog else { return nil }
+
+        if !allowDuplicate, let recent = recentDuplicate(of: kind, dog: dog, at: date) {
+            appState.showUndo(duplicateMessage(kind, at: recent.date))
+            Haptics.warning()
+            return nil
+        }
 
         let event = LogEvent(kind: kind, date: date, authorName: appState.currentUserName)
         configure(event)
@@ -46,6 +61,25 @@ struct EventLog {
             appState.showUndo(confirmation, eventID: event.id)
         }
         return event
+    }
+
+    /// Такая же запись минуту назад — почти наверняка второй тап,
+    /// а не второе кормление.
+    private func recentDuplicate(of kind: LogKind, dog: Dog, at date: Date) -> LogEvent? {
+        // Повторяемое по смыслу не ловим: собака и правда писает трижды
+        // за прогулку, а воду пьёт когда хочет.
+        guard Self.deduplicated.contains(kind) else { return nil }
+
+        return Diary.active(dog.events)
+            .filter { $0.kind == kind && abs(date.timeIntervalSince($0.date)) < Self.duplicateWindow }
+            .max { $0.date < $1.date }
+    }
+
+    /// Виды записей, где два тапа подряд почти наверняка ошибка.
+    private static let deduplicated: Set<LogKind> = [.meal, .walk, .care, .dose, .weight]
+
+    private func duplicateMessage(_ kind: LogKind, at date: Date) -> String {
+        "\(kind.title) уже записана в \(Fmt.clock(date))"
     }
 
     enum Haptic {
