@@ -210,6 +210,28 @@ struct CareScreen: View {
             }
     }
 
+    /// Отложить на завтра. Счётчик нужен не для укора: отложенное дважды
+    /// подсвечивается в брифе, но в тревогу не переходит.
+    private func snooze(_ task: CareTask) {
+        let calendar = Calendar.current
+        switch task.kind {
+        case .daily:
+            // Ежедневное не откладывают — его просто не делают сегодня.
+            return
+        case .periodic:
+            task.lastDone = calendar.date(byAdding: .day,
+                                          value: -(task.intervalDays - 1),
+                                          to: now)
+        case .dated:
+            task.scheduledDate = calendar.date(byAdding: .day, value: 1,
+                                               to: task.scheduledDate ?? now)
+        }
+        task.snoozeCount += 1
+        try? context.save()
+        Haptics.tap()
+        appState.showUndo("\(task.title) · до завтра")
+    }
+
     private func confirmation(for task: CareTask) -> String {
         if task.kind == .daily, task.streak > 1 {
             return "\(task.title) · \(Fmt.days(task.streak)) подряд"
@@ -223,6 +245,7 @@ private struct CareTaskRow: View {
     let task: CareTask
     let now: Date
     var onToggle: () -> Void
+    var onSnooze: (() -> Void)?
     var onEdit: () -> Void
 
     private var isDoneToday: Bool { task.isDoneToday(on: now) }
@@ -266,7 +289,7 @@ private struct CareTaskRow: View {
 
             if task.kind != .daily {
                 Button(action: onToggle) {
-                    Text(task.isNeverDone ? "Сделали" : "Сделали")
+                    Text("Сделали")
                         .textStyle(AppFont.captionEmphasis.color(Token.Action.done))
                         .frame(minHeight: Token.Size.tapTarget)
                         .contentShape(Rectangle())
@@ -278,6 +301,12 @@ private struct CareTaskRow: View {
         .contentShape(Rectangle())
         .onTapGesture(perform: onEdit)
         .accessibilityAction(named: "Поправить", onEdit)
+        .swipeActions(edge: .leading, allowsFullSwipe: false) {
+            if let onSnooze {
+                Button("Потом", action: onSnooze).tint(Token.Status.waitingText)
+            }
+        }
+        .accessibilityAction(named: "Отложить до завтра") { onSnooze?() }
     }
 
     private var statusColor: Color {

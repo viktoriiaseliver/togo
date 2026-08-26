@@ -53,12 +53,20 @@ struct TodayScreen: View {
                         }
 
                         if let overdue = overdueDose {
-                            TGBanner(
-                                tone: .alarm,
-                                title: "Доза \(Fmt.clock(overdue.scheduledAt)) не отмечена",
-                                subtitle: dutyMember.map { "Сегодня дежурит \($0.name)" } ?? "Кто-то один — отметьте",
-                                systemImage: "exclamationmark.triangle"
-                            )
+                            VStack(alignment: .leading, spacing: Token.Space.s8) {
+                                TGBanner(
+                                    tone: .alarm,
+                                    title: "Доза \(Fmt.clock(overdue.scheduledAt)) не отмечена",
+                                    subtitle: claimSubtitle(overdue),
+                                    systemImage: "exclamationmark.triangle"
+                                )
+                                if !overdue.claimIsActive(at: now) {
+                                    TGButton(title: "Беру на себя", variant: .secondary,
+                                             size: .medium, systemImage: "hand.raised") {
+                                        claim(overdue)
+                                    }
+                                }
+                            }
                         }
 
                         if let care = dueCare, !care.isEmpty {
@@ -85,6 +93,11 @@ struct TodayScreen: View {
                         }
 
                         if activeTrip == nil { summaryStrip }
+
+                        // Единственная запись, которая меняет поведение,
+                        // а не фиксирует его. Показывается, только когда
+                        // сигналов набралось достаточно.
+                        AskSignalCard(events: events, dogName: dog?.name ?? "Он", now: now)
 
                         DayPlanList(items: planItems, now: now) { item in
                             complete(item)
@@ -113,6 +126,9 @@ struct TodayScreen: View {
                 // эскалация не знает, что дозу пропустили.
                 if let dog { DoseScheduler.ensureDoses(for: dog, on: now, context: context) }
                 appState.refreshEpisode(from: episodes, at: now)
+                // Напоминания пересобираются при каждом открытии: их мало,
+                // а разойтись они могут молча.
+                await ReminderScheduler.refresh(dog: dog, settings: settings, at: now)
             }
             .onChange(of: episodes.count) { _, _ in
                 appState.refreshEpisode(from: episodes, at: now)
@@ -228,6 +244,26 @@ struct TodayScreen: View {
         return items.sorted { $0.time < $1.time }
     }
 
+    /// «Беру на себя» с запасом в 45 минут — чтобы двое не дали дозу дважды.
+    ///
+    /// Механика была написана в модели и не вызывалась ниоткуда: то есть
+    /// защита между людьми не работала совсем.
+    private func claim(_ dose: DoseRecord) {
+        dose.claimedBy = appState.currentUserName
+        dose.claimedAt = now
+        try? context.save()
+        Haptics.tap()
+        appState.showUndo("Доза за тобой · 45 минут")
+    }
+
+    private func claimSubtitle(_ dose: DoseRecord) -> String {
+        if dose.claimIsActive(at: now), let who = dose.claimedBy {
+            let осталось = DoseRecord.claimTTL - now.timeIntervalSince(dose.claimedAt ?? now)
+            return "\(who) взяла на себя · \(Fmt.duration(осталось)) осталось"
+        }
+        return dutyMember.map { "Сегодня дежурит \($0.name)" } ?? "Кто-то один — отметьте"
+    }
+
     private func complete(_ item: DayPlanItem) {
         guard let dog else { return }
         EventLog(context: context, appState: appState)
@@ -246,8 +282,13 @@ struct TodayScreen: View {
         // Отметка приёма — не то же самое, что запись в ленте: от неё
         // считается окно натощак и на неё смотрит защита от двойной дозы.
         if item.kind == .dose, let medication = item.medication {
-            DoseScheduler.markGiven(medication, scheduledAt: item.time,
-                                    by: appState.currentUserName, at: now, context: context)
+            if let dose = DoseScheduler.markGiven(medication, scheduledAt: item.time,
+                                                  by: appState.currentUserName, at: now,
+                                                  context: context) {
+                // Отметили — значит, догонять уже не надо.
+                ReminderScheduler.cancelDose(dose)
+            }
+            Task { await ReminderScheduler.refresh(dog: dog, settings: settings, at: now) }
         }
     }
 }

@@ -22,10 +22,29 @@ struct TrainingSessionScreen: View {
         _session = State(initialValue: MarkerSession(limitMinutes: dog?.sessionLengthMinutes ?? 3))
     }
 
-    private var currentStep: TrainingStep? {
+    private var mySteps: [TrainingStep] {
         steps.filter { $0.dog?.persistentModelID == dog?.persistentModelID }
             .sorted { $0.order < $1.order }
-            .first { !$0.isClosed } ?? steps.first
+    }
+
+    private var currentStep: TrainingStep? {
+        mySteps.first { !$0.isClosed } ?? mySteps.first
+    }
+
+    /// Первый шаг заводится сам при первом занятии.
+    ///
+    /// Раньше шаги не создавал никто: занятие всегда шло «без шага»,
+    /// прогресс не двигался, а матрица переноса оставалась пустой навсегда.
+    /// Начинаем с самого лёгкого — дома, два метра: с этого и начинают.
+    private func ensureFirstStep() {
+        guard let dog, mySteps.isEmpty else { return }
+        let step = TrainingStep(cue: "Ко мне", place: "Дома",
+                                person: appState.currentUserName,
+                                distanceMeters: 2, order: 0)
+        step.status = .learning
+        step.dog = dog
+        context.insert(step)
+        try? context.save()
     }
 
     var body: some View {
@@ -37,6 +56,7 @@ struct TrainingSessionScreen: View {
             }
         }
         .presentationDetents([.large])
+        .task { ensureFirstStep() }
         .onReceive(tick) { now = $0 }
         .confirmationDialog("Занятие не сохранится", isPresented: $isConfirmingExit, titleVisibility: .visible) {
             Button("Сохранить и выйти") { finish() }
@@ -212,6 +232,31 @@ struct TrainingSessionScreen: View {
         Haptics.tap()
     }
 
+    /// Шаг закрыт — открываем следующий, изменив **одно** условие.
+    /// Сначала растёт дистанция, и только потом меняется место: менять
+    /// два условия разом значит не понять, что именно не сработало.
+    private func openNextStep(after step: TrainingStep, for dog: Dog) {
+        let дистанции = [2, 5, 10, 20]
+        let места = ["Дома", "Коридор", "Двор", "Улица без собак", "Парк, есть собаки"]
+
+        let next: TrainingStep
+        if let дальше = дистанции.first(where: { $0 > step.distanceMeters }) {
+            next = TrainingStep(cue: step.cue, place: step.place, person: step.person,
+                                distanceMeters: дальше, order: step.order + 1)
+        } else if let индекс = места.firstIndex(of: step.place), индекс + 1 < места.count {
+            // Новое место — возвращаем короткую дистанцию.
+            next = TrainingStep(cue: step.cue, place: места[индекс + 1], person: step.person,
+                                distanceMeters: дистанции[0], order: step.order + 1)
+        } else {
+            return
+        }
+
+        next.status = .notStarted
+        next.dog = dog
+        context.insert(next)
+        try? context.save()
+    }
+
     // MARK: Итог
 
     private func finish() {
@@ -238,6 +283,7 @@ struct TrainingSessionScreen: View {
             if record.isGoodSession {
                 step.consecutiveGoodSessions += 1
                 step.status = step.isClosed ? .works : .learning
+                if step.isClosed { openNextStep(after: step, for: dog) }
             } else if record.isPoorSession {
                 step.consecutiveGoodSessions = 0
             }

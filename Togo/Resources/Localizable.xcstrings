@@ -1,6 +1,30 @@
 {
   "sourceLanguage": "ru",
   "strings": {
+    " · откладывали %@ раза": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": " · откладывали %@ раза"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "snoozed"
+    },
     " и ": {
       "extractionState": "manual",
       "localizations": {
@@ -145,6 +169,30 @@
       },
       "comment": "water"
     },
+    "%@ %@ в %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ %@ в %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "Доза по часам"
+    },
     "%@ \\(stock.kind.unitName(count: Double(packs))) по %@": {
       "extractionState": "manual",
       "localizations": {
@@ -241,6 +289,30 @@
       },
       "comment": "count"
     },
+    "%@ · до завтра": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · до завтра"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "calendar"
+    },
     "%@ · натощак %@ мин": {
       "extractionState": "manual",
       "localizations": {
@@ -312,6 +384,30 @@
         }
       },
       "comment": "body"
+    },
+    "%@ взяла на себя · %@ осталось": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ взяла на себя · %@ осталось"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "claimSubtitle"
     },
     "%@ вывела %@": {
       "extractionState": "manual",
@@ -673,6 +769,30 @@
       },
       "comment": "resultCard"
     },
+    "%@ просьб за неделю": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ просьб за неделю"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "header"
+    },
     "%@ раза": {
       "extractionState": "manual",
       "localizations": {
@@ -793,6 +913,30 @@
       },
       "comment": "minutes"
     },
+    "%@ чаще просит спокойно. Дверь открывается после тишины — тишина и закрепляется.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ чаще просит спокойно. Дверь открывается после тишины — тишина и закрепляется."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "advice"
+    },
     "%@ шт": {
       "extractionState": "manual",
       "localizations": {
@@ -912,6 +1056,30 @@
         }
       },
       "comment": "name"
+    },
+    "%@: спокойно %@, лай %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: спокойно %@, лай %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "total"
     },
     ") · ты помощник": {
       "extractionState": "manual",
@@ -1608,6 +1776,30 @@
         }
       },
       "comment": "detail"
+    },
+    "Беру на себя": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Беру на себя"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
     },
     "Бесплатно — одна собака и два человека": {
       "extractionState": "manual",
@@ -4632,6 +4824,30 @@
       },
       "comment": "body"
     },
+    "Двор": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Двор"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "openNextStep"
+    },
     "Девочка": {
       "extractionState": "manual",
       "localizations": {
@@ -5328,6 +5544,30 @@
       },
       "comment": "body"
     },
+    "Доза %@ пропущена": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Доза %@ пропущена"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "Доза по часам"
+    },
     "Доза дана в %@ под наблюдением": {
       "extractionState": "manual",
       "localizations": {
@@ -5351,6 +5591,30 @@
         }
       },
       "comment": "body"
+    },
+    "Доза за тобой · 45 минут": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Доза за тобой · 45 минут"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "claim"
     },
     "Доза по часам": {
       "extractionState": "manual",
@@ -5495,6 +5759,30 @@
         }
       },
       "comment": "plan"
+    },
+    "Дома": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Дома"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "step"
     },
     "Доступ до %@": {
       "extractionState": "manual",
@@ -5831,6 +6119,30 @@
         }
       },
       "comment": "body"
+    },
+    "Если лай не уходит за две недели или появился резко — это может быть не поведение, а дискомфорт. Тогда к врачу, а не к занятиям.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Если лай не уходит за две недели или появился резко — это может быть не поведение, а дискомфорт. Тогда к врачу, а не к занятиям."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "advice"
     },
     "Если не берёт еду — заканчивай": {
       "extractionState": "manual",
@@ -6839,6 +7151,30 @@
         }
       },
       "comment": "duration"
+    },
+    "Записано в ленту. Если дали — поправьте время записи.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Записано в ленту. Если дали — поправьте время записи."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "Доза по часам"
     },
     "Записать": {
       "extractionState": "manual",
@@ -8016,6 +8352,30 @@
       },
       "comment": "body"
     },
+    "Как он просит": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Как он просит"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "header"
+    },
     "Как отменить": {
       "extractionState": "manual",
       "localizations": {
@@ -8376,6 +8736,30 @@
       },
       "comment": "body"
     },
+    "Ко мне": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ко мне"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "step"
+    },
     "Когда": {
       "extractionState": "manual",
       "localizations": {
@@ -8686,6 +9070,30 @@
         }
       },
       "comment": "kindExplainer"
+    },
+    "Коридор": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Коридор"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "openNextStep"
     },
     "Корм": {
       "extractionState": "manual",
@@ -9141,7 +9549,31 @@
           }
         }
       },
-      "comment": "body"
+      "comment": "claimSubtitle"
+    },
+    "Кто-то один — отметьте. Если дали, поправьте время.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Кто-то один — отметьте. Если дали, поправьте время."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "Доза по часам"
     },
     "Куда": {
       "extractionState": "manual",
@@ -9238,6 +9670,30 @@
         }
       },
       "comment": "title"
+    },
+    "Лай вытесняет спокойный сигнал": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Лай вытесняет спокойный сигнал"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "header"
     },
     "Лакомство": {
       "extractionState": "manual",
@@ -10727,6 +11183,30 @@
       },
       "comment": "body"
     },
+    "Не открывать дверь в момент лая — подождать одну-две секунды тишины и открыть тогда. Открывается дверь после тишины — закрепляется тишина. Ругать не нужно: лай не проступок, это то, что работало.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не открывать дверь в момент лая — подождать одну-две секунды тишины и открыть тогда. Открывается дверь после тишины — закрепляется тишина. Ругать не нужно: лай не проступок, это то, что работало."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "advice"
+    },
     "Не писал %@ — дольше, чем обычно.": {
       "extractionState": "manual",
       "localizations": {
@@ -11927,6 +12407,30 @@
       },
       "comment": "body"
     },
+    "Он": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Он"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
+    },
     "Он не брал еду — значит, задача была слишком сложной. Это не про собаку.": {
       "extractionState": "manual",
       "localizations": {
@@ -12382,6 +12886,30 @@
         }
       },
       "comment": "subscriptionSection"
+    },
+    "Отложить до завтра": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отложить до завтра"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
     },
     "Отмена": {
       "extractionState": "manual",
@@ -13030,6 +13558,30 @@
         }
       },
       "comment": "water"
+    },
+    "Парк, есть собаки": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Парк, есть собаки"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "openNextStep"
     },
     "Паспорт": {
       "extractionState": "manual",
@@ -14087,6 +14639,30 @@
       },
       "comment": "body"
     },
+    "Пока поровну. Смотреть надо не на отдельную неделю, а на то, куда идёт соотношение.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пока поровну. Смотреть надо не на отдельную неделю, а на то, куда идёт соотношение."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "advice"
+    },
     "Пока пусто": {
       "extractionState": "manual",
       "localizations": {
@@ -14926,6 +15502,30 @@
         }
       },
       "comment": "parts"
+    },
+    "Потом": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Потом"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
     },
     "Похоже на глистов": {
       "extractionState": "manual",
@@ -17037,7 +17637,7 @@
           }
         }
       },
-      "comment": "body"
+      "comment": "claimSubtitle"
     },
     "Сейчас %@": {
       "extractionState": "manual",
@@ -20423,6 +21023,30 @@
       },
       "comment": "body"
     },
+    "Улица без собак": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Улица без собак"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "openNextStep"
+    },
     "Управлять подпиской": {
       "extractionState": "manual",
       "localizations": {
@@ -21191,6 +21815,30 @@
       },
       "comment": "detail"
     },
+    "Через 10 минут доза": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Через 10 минут доза"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "Доза по часам"
+    },
     "Через месяц": {
       "extractionState": "manual",
       "localizations": {
@@ -21502,6 +22150,30 @@
         }
       },
       "comment": "body"
+    },
+    "Что делать": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Что делать"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "advice"
     },
     "Что можно отметить по дороге": {
       "extractionState": "manual",
@@ -23830,6 +24502,30 @@
         }
       },
       "comment": "treatment"
+    },
+    "две недели назад": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "две недели назад"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "bars"
     },
     "дежурит %@": {
       "extractionState": "manual",
@@ -29975,6 +30671,30 @@
       },
       "comment": "exportCard"
     },
+    "спокойно %@ · лай %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "спокойно %@ · лай %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "row"
+    },
     "спокойно 10 секунд": {
       "extractionState": "manual",
       "localizations": {
@@ -32038,6 +32758,30 @@
         }
       },
       "comment": "episodesCard"
+    },
+    "эта неделя": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "эта неделя"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "bars"
     },
     "эти телефоны появятся на экране «Если что-то случилось»": {
       "extractionState": "manual",
