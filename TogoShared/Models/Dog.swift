@@ -108,6 +108,9 @@ final class Dog {
     @Relationship(deleteRule: .cascade, inverse: \DogDocument.dog)
     var documentsStorage: [DogDocument]?
 
+    @Relationship(deleteRule: .cascade, inverse: \DayOut.dog)
+    var daysOutStorage: [DayOut]?
+
     @Relationship(deleteRule: .cascade, inverse: \HeatRecord.dog)
     var heatsStorage: [HeatRecord]?
 
@@ -133,6 +136,7 @@ final class Dog {
     var trainingSessions: [TrainingSession] { trainingSessionsStorage ?? [] }
     var trips: [Trip] { tripsStorage ?? [] }
     var documents: [DogDocument] { documentsStorage ?? [] }
+    var daysOut: [DayOut] { daysOutStorage ?? [] }
     var heats: [HeatRecord] { heatsStorage ?? [] }
     var stocks: [FoodStock] { stocksStorage ?? [] }
 

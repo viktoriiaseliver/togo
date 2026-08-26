@@ -28,11 +28,22 @@ struct TimelineBlock: Identifiable {
 
     /// Когда событие закончилось. Для прогулки — по её длительности,
     /// а если её нет, то по последней отметке.
+    /// Когда событие закончилось.
+    ///
+    /// Берётся позднее из двух: конец по длительности и последняя отметка.
+    /// Длительность прогулки считается **без пауз** — постояли у магазина,
+    /// и она меньше, чем времени прошло. В живом дневнике нашлась прогулка
+    /// на пятнадцать минут, отметки которой стоят через тридцать три:
+    /// без этого правила отметка оказывалась позже конца своего же события.
     var endedAt: Date {
-        if let seconds = event.durationSeconds, seconds > 0 {
-            return event.date.addingTimeInterval(Double(seconds))
-        }
-        return max(marks.map(\.date).max() ?? event.date, event.date)
+        let byDuration = event.date.addingTimeInterval(Double(event.durationSeconds ?? 0))
+        return max(byDuration, marks.map(\.date).max() ?? event.date)
+    }
+
+    /// Гуляли меньше, чем были на улице, — значит, стояли на паузе.
+    var hadPause: Bool {
+        guard let seconds = event.durationSeconds, seconds > 0 else { return false }
+        return endedAt.timeIntervalSince(event.date) - Double(seconds) > 120
     }
 
     /// Событие заняло время, а не случилось мгновенно.
@@ -147,11 +158,22 @@ enum TimelineBuilder {
 /// Связью служила подпись «на прогулке» словами — по ней и восстанавливаем,
 /// с проверкой по времени: отметка должна попадать в окно прогулки.
 enum WalkLinkMigration {
-    /// Запас на случай, если прогулку закончили с задержкой.
-    static let slack: TimeInterval = 5 * 60
     static let legacyNote = "на прогулке"
 
+    /// Дольше этого отметка к прогулке уже не относится, даже если других
+    /// прогулок в этот день не было.
+    static let maxReach: TimeInterval = 4 * 3600
+
     /// Проставить связи. Возвращает, сколько отметок нашли свою прогулку.
+    ///
+    /// Ищем не по длительности, а по соседству: отметка принадлежит
+    /// последней прогулке, начавшейся раньше неё, — и только если между
+    /// ними не началась другая.
+    ///
+    /// По длительности не выходит: она считается **без пауз**. В живом
+    /// дневнике нашлась прогулка на пятнадцать минут, отметки которой
+    /// стоят через тридцать три — человек постоял у магазина, — и окно
+    /// по длительности их не захватывало.
     @discardableResult
     static func link(_ events: [LogEvent]) -> Int {
         let walks = events.filter { $0.kind == .walk && $0.deletedAt == nil }
@@ -160,12 +182,13 @@ enum WalkLinkMigration {
 
         var linked = 0
         for event in events where event.walkEventID == nil && event.note == legacyNote {
-            guard let walk = walks.last(where: { walk in
-                let start = walk.date.addingTimeInterval(-slack)
-                let end = walk.date
-                    .addingTimeInterval(Double(walk.durationSeconds ?? 0) + slack)
-                return event.date >= start && event.date <= end
-            }) else { continue }
+            guard let walk = walks.last(where: { $0.date <= event.date }) else { continue }
+            // Между прогулкой и отметкой началась следующая — значит,
+            // отметка уже из неё.
+            let nextStarted = walks.first { $0.date > walk.date && $0.date <= event.date }
+            guard nextStarted == nil else { continue }
+            guard event.date.timeIntervalSince(walk.date) <= maxReach else { continue }
+
             event.walkEventID = walk.id
             linked += 1
         }

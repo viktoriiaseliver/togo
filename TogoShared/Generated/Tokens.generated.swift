@@ -167,6 +167,18 @@ nonisolated enum Token {
                 static let background = Color(hex: 0xF2EDE2)
                 static let label = Color(hex: 0x948B7C)
             }
+            enum Finish {
+                static let background = Color(hex: 0xE3EFEC)
+                static let height: CGFloat = 50
+                static let label = Color(hex: 0x1F5A51)
+                static let radius: CGFloat = 14
+            }
+            enum Hold {
+                static let background = Color(hex: 0xFBEFD6)
+                static let height: CGFloat = 50
+                static let label = Color(hex: 0x8A5A00)
+                static let radius: CGFloat = 14
+            }
             enum Primary {
                 static let background = Color(hex: 0xC87F3C)
                 static let height: CGFloat = 52

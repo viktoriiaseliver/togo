@@ -103,13 +103,21 @@ struct WalkModeScreen: View {
             VStack(spacing: Token.Space.s10) {
                 markGrid
                 HStack(spacing: Token.Space.s10) {
+                    // Пауза обратима и ничего не записывает — янтарная,
+                    // как всё отложенное. «Продолжить» возвращает к делу,
+                    // поэтому оно уже не «ждём», а обычное второе действие.
                     TGButton(title: session.isPaused ? "Продолжить" : "Пауза",
-                             variant: .secondary, size: .medium,
+                             variant: session.isPaused ? .secondary : .hold,
+                             size: .medium,
                              systemImage: session.isPaused ? "play.fill" : "pause.fill",
                              fullWidth: true) {
                         togglePause()
                     }
-                    TGButton(title: "Закончить", variant: .secondary, size: .medium,
+                    // Завершение создаёт записи — зелёное, как «сделано».
+                    // Раньше обе кнопки были одинаково серыми, и отличить
+                    // «постоять» от «всё, записали» можно было только
+                    // прочитав подпись.
+                    TGButton(title: "Закончить", variant: .finish, size: .medium,
                              systemImage: "checkmark", fullWidth: true) {
                         finish()
                     }
@@ -127,8 +135,7 @@ struct WalkModeScreen: View {
     private func header(_ session: ActiveSession) -> some View {
         HStack(alignment: .top, spacing: Token.Space.s12) {
             VStack(alignment: .leading, spacing: Token.Space.s4) {
-                Text(Fmt.stopwatch(session.duration(at: now)))
-                    .textStyle(AppFont.screenTitle)
+                TGStopwatch(session: session, now: now, style: AppFont.screenTitle)
                 Text((session.isPaused ? session.kind.pausedTitle : session.kind.runningTitle)
                      + " · " + session.tally)
                     .textStyle(AppFont.caption)
@@ -162,7 +169,7 @@ struct WalkModeScreen: View {
             .buttonStyle(.plain)
 
             HStack(spacing: Token.Space.s10) {
-                ForEach([ActiveSession.Mark.Kind.stool, .water, .reaction], id: \.self) { kind in
+                ForEach([ActiveSession.Mark.Kind.stool, .reaction], id: \.self) { kind in
                     Button { mark(kind) } label: {
                         markLabel(kind, count: session?.count(of: kind) ?? 0)
                             .frame(maxWidth: .infinity, minHeight: 68)
@@ -325,7 +332,6 @@ struct WalkModeScreen: View {
                     // сводка считает лакомствами только то, что взято
                     // из дневной порции.
                     event.fromPortion = dog.trainingFoodFromPortion
-                case .water: event.milliliters = 50
                 default: break
                 }
                 event.note = "на прогулке"
@@ -492,10 +498,10 @@ struct ActiveSessionCard: View {
                         .textStyle(AppFont.micro.color(
                             session.isPaused ? Token.Status.waitingText : Token.Action.primary
                         ))
-                    Text(Fmt.stopwatch(session.duration(at: now)))
-                        .textStyle(AppFont.display.color(
-                            session.isPaused ? Token.Ink.secondary : Token.Ink.primary
-                        ))
+                    TGStopwatch(session: session, now: now,
+                                style: AppFont.display.color(
+                                    session.isPaused ? Token.Ink.secondary : Token.Ink.primary
+                                ))
                 }
                 Spacer()
                 Button(session.kind == .walk ? "Открыть" : "Стоп") {

@@ -85,7 +85,7 @@ struct DataPrivacyScreen: View {
         for model in [LogEvent.self, WeightEntry.self, DoseRecord.self, Medication.self,
                       CareTask.self, TrainingSession.self, TrainingStep.self, ProcedureSkill.self,
                       Trip.self, Episode.self, FamilyMember.self,
-                      FoodStock.self, HeatRecord.self, DogDocument.self,
+                      FoodStock.self, HeatRecord.self, DogDocument.self, DayOut.self,
                       Dog.self] as [any PersistentModel.Type] {
             try? context.delete(model: model)
         }

@@ -35,6 +35,14 @@ nonisolated enum Fmt {
     /// взяться и которая никому не нужна: промежуток читают глазами,
     /// чтобы понять порядок величины. Округляем до получаса, а после двух
     /// часов минуты выбрасываем совсем.
+    /// Число с одним знаком после запятой — и без него, если знак нулевой.
+    /// «4 раза в день» читается, «4,0 раза» выглядит отчётом.
+    static func decimal(_ value: Double) -> String {
+        value == value.rounded()
+            ? String(Int(value))
+            : String(format: "%.1f", value).replacingOccurrences(of: ".", with: ",")
+    }
+
     static func gap(_ interval: TimeInterval) -> String {
         let minutes = max(0, Int(interval / 60))
         if minutes < 90 { return "\(minutes) мин" }

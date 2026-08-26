@@ -16,11 +16,11 @@ struct TodayRouter: View {
             case .walkResult:       WalkResultSheet(dog: dog)
             case .stool:            StoolSheet(dog: dog)
             case .meal:             MealSheet(dog: dog)
-            case .water:            WaterSheet(dog: dog)
             case .treat:            TreatSheet(dog: dog)
             case .incident:         IncidentSheet(dog: dog)
             case .note:             NoteSheet(dog: dog)
             case .training:         TrainingSessionScreen(dog: dog)
+            case .dayOut:           DayOutStartSheet(dog: dog)
             case .more:             MoreSheet(dog: dog, onOpenDog: onOpenDog)
             case .edit(let id):     EventEditSheet(eventID: id)
             }
@@ -55,6 +55,8 @@ struct MoreSheet: View {
                     row("Занятие · \(dog?.sessionLengthMinutes ?? 3) минуты", "target") { next = .training }
                     TGDivider()
                     row("Заметка", "text.alignleft") { next = .note }
+                    TGDivider()
+                    row("Собака со мной весь день", "figure.walk.motion") { next = .dayOut }
                 }
                 .padding(.horizontal, 12)
             }

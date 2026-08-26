@@ -168,6 +168,23 @@ final class CareTask {
         lastDone = date
         snoozeCount = 0
     }
+
+    /// Отменить отметку.
+    ///
+    /// Отметили не то — обычное дело: сработал свайп, зубы почистил
+    /// кто-то другой, прививку перенесли. Без отката отметка о прививке
+    /// сдвигала дату на год вперёд, и вернуть её было нельзя ничем,
+    /// кроме как завести напоминание заново.
+    func undoDone(previousDone: Date?) {
+        if kind == .dated, let scheduled = scheduledDate, intervalDays > 0 {
+            scheduledDate = Calendar.current.date(byAdding: .day, value: -intervalDays,
+                                                  to: scheduled)
+        }
+        if kind == .daily {
+            streak = max(0, streak - 1)
+        }
+        lastDone = previousDone
+    }
 }
 
 /// Схему лечения меняет только владелец. Остальные видят и исполняют.

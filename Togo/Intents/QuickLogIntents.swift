@@ -116,18 +116,6 @@ struct LogMealIntent: AppIntent {
     }
 }
 
-struct LogWaterIntent: AppIntent {
-    static let title: LocalizedStringResource = "Записать, что попил"
-    static let description = IntentDescription("Записывает воду в дневник Того.")
-    static let openAppWhenRun = false
-
-    @MainActor
-    func perform() async throws -> some IntentResult & ProvidesDialog {
-        let message = try QuickLog.record(.water) { $0.milliliters = 100 }
-        return .result(dialog: IntentDialog(stringLiteral: message))
-    }
-}
-
 // MARK: - Сколько он уже дома
 
 struct TimeIndoorsIntent: AppIntent {

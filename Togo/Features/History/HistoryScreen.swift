@@ -9,6 +9,7 @@ struct HistoryScreen: View {
     @Query private var dogs: [Dog]
     @Query private var episodes: [Episode]
     @Query private var members: [FamilyMember]
+    @Query private var daysOut: [DayOut]
 
     @Environment(\.modelContext) private var context
     @Environment(AppState.self) private var appState
@@ -33,6 +34,8 @@ struct HistoryScreen: View {
                     )
                 } else {
                     filterPicker
+                    WalkRhythmCard(rhythm: WalkRhythmAnalyzer.rhythm(events: events))
+                    dayOutCard
                     MonthCalendar(month: $month, events: filtered, onSelect: { selectedDay = $0 })
                     chartCard
                     episodesCard
@@ -55,6 +58,29 @@ struct HistoryScreen: View {
                 Button("Ещё рано", role: .cancel) { closing = nil }
             } message: { _ in
                 Text("Записи останутся в истории. Вердикт «просится» снова начнёт считаться по обычным промежуткам — во время эпизода он не считается совсем.")
+            }
+        }
+    }
+
+    /// Что бывает после долгих дней с собакой.
+    ///
+    /// Причинность приложение не утверждает: оно показывает совпадение
+    /// и оставляет вывод человеку. Этого хватает, чтобы прийти к врачу
+    /// не с «ей плохо», а с «после долгих дней у неё вот что».
+    @ViewBuilder
+    private var dayOutCard: some View {
+        let mine = daysOut.filter { $0.dog?.persistentModelID == dog?.persistentModelID }
+        let trace = DayOutAnalyzer.trace(daysOut: mine, events: events,
+                                         norm: dog?.dailyGrams ?? 0)
+        if !trace.findings.isEmpty {
+            TGCard {
+                TGSectionHeader(title: "после долгих дней",
+                                subtitle: "по \(Fmt.plural(trace.longDays, "дню", "дням", "дням")), где она была с тобой дольше \(Int(DayOut.longDayHours)) часов")
+                ForEach(trace.findings, id: \.self) { line in
+                    Text("• " + line).textStyle(AppFont.caption).wraps()
+                }
+                TGDivider()
+                TGExplainer(text: "Это совпадение, а не причина: приложение не ставит диагнозов. Но показать эту строку врачу полезнее, чем сказать «она иногда вялая».")
             }
         }
     }
@@ -132,7 +158,7 @@ extension HistoryScreen {
         Text("Идёт. Закроется сам \(Fmt.shortDay(episode.quietUntil)), если больше ничего не случится.")
             .textStyle(AppFont.micro.color(Token.Status.waitingText))
             .wraps()
-        TGButton(title: "Собаке лучше — закрыть", variant: .secondary, size: .medium,
+        TGButton(title: "Собаке лучше — закрыть", variant: .finish, size: .medium,
                  systemImage: "checkmark") {
             closing = episode
         }

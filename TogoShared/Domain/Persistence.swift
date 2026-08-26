@@ -41,6 +41,7 @@ nonisolated enum Persistence {
     static let schema = Schema([
         Dog.self,
         DogDocument.self,
+        DayOut.self,
         HeatRecord.self,
         FoodStock.self,
         LogEvent.self,

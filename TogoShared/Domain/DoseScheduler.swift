@@ -71,6 +71,30 @@ nonisolated enum DoseScheduler {
         return dose
     }
 
+    /// Снять отметку с дозы.
+    ///
+    /// Отметили не ту или не тот человек — снять отметку должно быть можно.
+    /// Иначе защита от двойной дозы работает против человека: она навсегда
+    /// считает, что лекарство дано, и окно натощак отсчитывается от ошибки.
+    @MainActor
+    static func unmark(
+        _ medication: Medication,
+        scheduledAt scheduled: Date,
+        context: ModelContext
+    ) {
+        let calendar = Calendar.current
+        guard let dose = medication.doses.first(where: {
+            calendar.isDate($0.scheduledAt, equalTo: scheduled, toGranularity: .minute)
+        }) else { return }
+
+        dose.givenAt = nil
+        dose.givenBy = nil
+        // Заодно снимаем «беру на себя»: договорённость была про тот раз.
+        dose.claimedBy = nil
+        dose.claimedAt = nil
+        try? context.save()
+    }
+
     /// Окно натощак: когда снова можно кормить.
     ///
     /// Считается от фактической отметки, а не от расписания: таблетку дали

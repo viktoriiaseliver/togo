@@ -8,7 +8,11 @@ nonisolated enum LogKind: String, Codable, CaseIterable, Sendable {
     case outing        // выход по нужде
     case walk          // прогулка
     case meal          // еда
-    case water         // вода
+    /// Вода. Записывать её вручную больше негде: сколько собака выпила,
+    /// человек всё равно не знает — миска стоит целый день, и цифра
+    /// бралась из воздуха. Вид записи оставлен, чтобы уже записанное
+    /// не превратилось в нечитаемое.
+    case water
     case stool         // стул
     case treat         // лакомство
     case incident      // рвота, лужа, стул в доме

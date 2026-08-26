@@ -8,12 +8,12 @@ enum TodayRoute: Identifiable, Hashable {
     case walkResult
     case stool
     case meal
-    case water
     case treat
     case incident
     case note
     case training
     case more
+    case dayOut
     case edit(UUID)
 
     var id: String {
@@ -48,7 +48,6 @@ struct ActionGrid: View {
                 SmallAction(title: "Стул", systemImage: "leaf") { onSelect(.stool) }
                 SmallAction(title: "Еда", subtitle: portionGrams > 0 ? "\(portionGrams) г" : nil,
                             systemImage: "fork.knife") { onSelect(.meal) }
-                SmallAction(title: "Вода", systemImage: "drop") { onSelect(.water) }
                 SmallAction(title: "Инцидент", systemImage: "exclamationmark.triangle") { onSelect(.incident) }
                 SmallAction(title: "Ещё", systemImage: "ellipsis") { onSelect(.more) }
             }
@@ -131,44 +130,3 @@ struct SmallAction: View {
     }
 }
 
-/// Строка ухода на главном: появляется, только когда подошёл срок.
-struct CareRow: View {
-    let tasks: [CareTask]
-    var action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            TGCard(padding: 14) {
-                HStack(spacing: 12) {
-                    Image(systemName: "scissors")
-                        .font(.system(size: 16, weight: .medium))
-                        .foregroundStyle(Token.Ink.silhouette)
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(headline)
-                            .textStyle(AppFont.bodyEmphasis)
-                            .foregroundStyle(Token.Ink.primary)
-                        Text(tasks.map(\.title).joined(separator: " · "))
-                            .textStyle(AppFont.caption)
-                            .foregroundStyle(Token.Ink.secondary)
-                            .wraps()
-                    }
-                    Spacer(minLength: 8)
-                    Image(systemName: "chevron.right")
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(Token.Ink.faint)
-                }
-            }
-        }
-        .buttonStyle(.plain)
-    }
-
-    /// Заголовок говорит про сегодня, а список — что именно.
-    /// «Уход · 3 дела в этом месяце» было неправдой: дела были на сегодня.
-    private var headline: String {
-        let overdue = tasks.filter { $0.isOverdue() }
-        if !overdue.isEmpty {
-            return "Уход · просрочено \(Fmt.plural(overdue.count, "дело", "дела", "дел"))"
-        }
-        return "Уход сегодня · \(Fmt.plural(tasks.count, "дело", "дела", "дел"))"
-    }
-}

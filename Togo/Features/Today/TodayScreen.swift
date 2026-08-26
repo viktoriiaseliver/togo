@@ -15,15 +15,34 @@ struct TodayScreen: View {
     @Query private var members: [FamilyMember]
     @Query private var trips: [Trip]
     @Query private var episodes: [Episode]
+    @Query private var daysOut: [DayOut]
 
     @State private var route: TodayRoute?
+    @State private var finishingDayOut: DayOut?
     @State private var now = Date()
+    /// Когда в последний раз предлагали воду в режиме «собака со мной».
+    @State private var lastWaterOffer: Date?
+    /// Когда дело ухода было сделано в прошлый раз — чтобы «вернуть»
+    /// возвращало именно туда, а не обнуляло срок.
+    @State private var lastCareDone: [UUID: Date?] = [:]
 
     private let tick = Timer.publish(every: 30, on: .main, in: .common).autoconnect()
 
     private var dog: Dog? { appState.activeDog(from: dogs) }
     private var events: [LogEvent] { dog?.events ?? [] }
     private var activeTrip: Trip? { trips.first { $0.isActive(on: now) } }
+
+    /// Идущий день с собакой.
+    private var activeDayOut: DayOut? {
+        daysOut.first { $0.dog?.persistentModelID == dog?.persistentModelID && $0.isActive(at: now) }
+    }
+
+    /// Собака весь день рядом — поездка это или день по делам, неважно.
+    ///
+    /// В такой день приложение молчит про «просится»: она выходит
+    /// постоянно, промежутки считаются по чужому дню, и вердикт
+    /// не помогает, а мешает.
+    private var isDogAlongside: Bool { activeDayOut != nil || activeTrip != nil }
     private var dutyMember: FamilyMember? { members.first(where: \.isOnDuty) }
 
     var body: some View {
@@ -69,13 +88,22 @@ struct TodayScreen: View {
                             }
                         }
 
-                        if let care = dueCare, !care.isEmpty {
-                            CareRow(tasks: care) { onOpenDog() }
-                        }
-
                         if let trip = activeTrip {
                             TripTodayBlock(trip: trip, dog: dog, now: now)
                             summaryStrip
+                        }
+
+                        if let day = activeDayOut {
+                            DayOutCard(day: day, now: now, lastWater: lastWaterOffer) {
+                                lastWaterOffer = Date()
+                                Haptics.tap()
+                            } onFinish: {
+                                // День закрываем сразу: иначе итог считался бы
+                                // от «сейчас» и рос, пока человек его читает.
+                                day.endedAt = Date()
+                                try? context.save()
+                                finishingDayOut = day
+                            }
                         }
 
                         if let session = appState.session {
@@ -101,6 +129,8 @@ struct TodayScreen: View {
 
                         DayPlanList(items: planItems, now: now) { item in
                             complete(item)
+                        } onUndo: { item in
+                            uncomplete(item)
                         }
                     }
                     .padding(.horizontal, Token.Spacing.screenPadding)
@@ -110,7 +140,7 @@ struct TodayScreen: View {
             .safeAreaInset(edge: .bottom) {
                 ActionGrid(
                     portionGrams: dog?.servingGrams ?? 0,
-                    isTravelling: activeTrip != nil,
+                    isTravelling: isDogAlongside,
                     canWriteMedical: appState.can(.seeMedical)
                 ) { route = $0 }
             }
@@ -135,6 +165,9 @@ struct TodayScreen: View {
             }
             .sheet(item: $route) { route in
                 TodayRouter(route: route, dog: dog, now: now, onOpenDog: onOpenDog)
+            }
+            .sheet(item: $finishingDayOut) { day in
+                DayOutSummarySheet(day: day)
             }
         }
     }
@@ -205,16 +238,6 @@ struct TodayScreen: View {
     /// Груминг и вес живут в профиле и всплывают на главном только когда подошёл срок.
     /// На главном показываем только то, что правда просится сегодня.
     /// «Через 30 дней» — это не дело на сегодня, это шум.
-    private var dueCare: [CareTask]? {
-        guard let dog else { return nil }
-        let due = dog.careTasks.filter { $0.isDue(on: now) }
-        guard !due.isEmpty else { return nil }
-        return Array(
-            due.sorted { ($0.daysUntilDue(from: now) ?? 0) < ($1.daysUntilDue(from: now) ?? 0) }
-                .prefix(3)
-        )
-    }
-
     private var planItems: [DayPlanItem] {
         guard let dog else { return [] }
         var items: [DayPlanItem] = []
@@ -232,6 +255,25 @@ struct TodayScreen: View {
                                      title: "Еда · \(dog.servingGrams) г",
                                      hint: dog.foodBrand, kind: .meal, isDone: mealDone[index]))
         }
+        // Уход — такой же пункт дня, как еда и доза. Отдельной карточкой
+        // он говорил, что надо сделать, но сделать оттуда было нельзя:
+        // тап уводил на вкладку собаки, где дело приходилось искать
+        // руками. Пять шагов на действие в одну секунду.
+        for task in dog.careTasks where task.isDue(on: now) {
+            items.append(DayPlanItem(
+                id: "care-\(task.id)",
+                // Уход ставим в конец дня: у него нет часа, и он не должен
+                // мешаться между кормлениями.
+                time: startOfDay.addingTimeInterval(Double(dog.sleepMinuteOfDay) * 60),
+                title: task.title,
+                hint: task.detail.isEmpty ? nil : task.detail,
+                kind: .care,
+                isDone: task.isDoneToday(on: now),
+                careTask: task,
+                showsTime: false
+            ))
+        }
+
         if dog.isOnTreatment, appState.can(.seeMedical) {
             for medication in dog.medications where !medication.isPaused {
                 for minute in medication.times.sorted() {
@@ -269,6 +311,59 @@ struct TodayScreen: View {
         return dutyMember.map { "Сегодня дежурит \($0.name)" } ?? "Кто-то один — отметьте"
     }
 
+    /// Вернуть пункт в невыполненные.
+    ///
+    /// Отметить не то — обычное дело: сработал свайп, покормила не она,
+    /// доза оказалась другой. Раньше отменить это можно было только
+    /// найдя запись в ленте и удалив её оттуда — то есть догадавшись,
+    /// что «сделано» в режиме дня и запись в ленте это одно и то же.
+    /// Какой записью в ленте отмечается пункт плана.
+    private func logKind(of item: DayPlanItem) -> LogKind {
+        switch item.kind {
+        case .meal: .meal
+        case .dose: .dose
+        case .care: .care
+        }
+    }
+
+    private func uncomplete(_ item: DayPlanItem) {
+        guard let dog else { return }
+
+        // Убираем ту запись, которая этот пункт и закрыла, — ближайшую
+        // к его времени.
+        let kind = logKind(of: item)
+        let candidates = Diary.onDay(events, now)
+            .filter { $0.kind == kind }
+            .sorted { abs($0.date.timeIntervalSince(item.time)) < abs($1.date.timeIntervalSince(item.time)) }
+
+        // У ухода часа нет, и сверять с ним нечего: убираем сегодняшнюю
+        // запись про это же дело.
+        if item.kind == .care {
+            candidates.first { $0.careTaskID == item.careTask?.id }.map { event in
+                event.deletedAt = Date()
+                event.deletedBy = appState.currentUserName
+            }
+            if let task = item.careTask {
+                task.undoDone(previousDone: lastCareDone[task.id] ?? nil)
+            }
+        } else if let event = candidates.first,
+                  abs(event.date.timeIntervalSince(item.time)) <= MealSchedule.doneTolerance {
+            event.deletedAt = Date()
+            event.deletedBy = appState.currentUserName
+        }
+
+        // Доза — не только запись в ленте: от неё считается окно натощак
+        // и защита от второй дозы.
+        if item.kind == .dose, let medication = item.medication {
+            DoseScheduler.unmark(medication, scheduledAt: item.time, context: context)
+        }
+
+        try? context.save()
+        Haptics.warning()
+        appState.showUndo("Снова в списке · \(item.title)")
+        _ = dog
+    }
+
     private func complete(_ item: DayPlanItem) {
         guard let dog else { return }
         // Права на бытовое и на дозы существовали, но не проверялись нигде:
@@ -282,13 +377,16 @@ struct TodayScreen: View {
             return
         }
         EventLog(context: context, appState: appState)
-            .record(item.kind == .meal ? .meal : .dose,
+            .record(logKind(of: item),
                     dog: dog,
                     confirmation: "Записано · \(item.title)") { event in
                 switch item.kind {
                 case .meal:
                     event.grams = dog.servingGrams
                     event.note = dog.foodBrand.isEmpty ? nil : dog.foodBrand
+                case .care:
+                    event.note = item.title
+                    event.careTaskID = item.careTask?.id
                 case .dose:
                     event.note = item.title
                     // Связь с препаратом писать было некому: поле в модели
@@ -298,6 +396,14 @@ struct TodayScreen: View {
                     event.medicationID = item.medication?.id
                 }
             }
+
+        // Уход — не только строка в ленте: от отметки считается,
+        // когда дело понадобится в следующий раз.
+        if item.kind == .care, let task = item.careTask {
+            lastCareDone[task.id] = task.lastDone
+            task.markDone(at: now)
+            try? context.save()
+        }
 
         // Отметка приёма — не то же самое, что запись в ленте: от неё
         // считается окно натощак и на неё смотрит защита от двойной дозы.

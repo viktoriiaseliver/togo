@@ -32,6 +32,10 @@ struct NeedsSheet: View {
                 Text(VerdictEngine.factLine(signals))
                     .textStyle(AppFont.caption)
                     .foregroundStyle(Token.Ink.secondary)
+                // Одной строкой: сколько раз в день выходите обычно.
+                // Вердикт отвечает «сейчас или нет», а это — «а вообще как».
+                WalkRhythmCard(rhythm: WalkRhythmAnalyzer.rhythm(events: dog?.events ?? []),
+                               compact: true)
             }
 
             if case .unknown(.notEnoughData) = verdict {

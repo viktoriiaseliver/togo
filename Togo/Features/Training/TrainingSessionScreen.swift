@@ -85,7 +85,8 @@ struct TrainingSessionScreen: View {
             observations
         } footer: {
             if session.isRunning {
-                TGButton(title: "Закончить на удаче", systemImage: "checkmark") { finish() }
+                TGButton(title: "Закончить на удаче", variant: .finish,
+                     systemImage: "checkmark") { finish() }
                 TGButton(title: "Сбросить отметки", variant: .quiet, size: .medium) { session.reset() }
             } else {
                 TGButton(title: "Начать занятие · \(dog?.sessionLengthMinutes ?? 3) минуты", systemImage: "play.fill") {

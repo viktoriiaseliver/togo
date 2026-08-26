@@ -207,29 +207,6 @@ struct MealSheet: View {
     }
 }
 
-struct WaterSheet: View {
-    let dog: Dog?
-    @Environment(\.modelContext) private var context
-    @Environment(AppState.self) private var appState
-
-    var body: some View {
-        QuantitySheet(
-            title: "Вода",
-            subtitle: dog.map { "норма примерно \($0.waterNormMl) мл в день" },
-            unit: "миллилитров",
-            step: 20,
-            range: 0...2000,
-            amount: 100,
-            explainer: "В поездке эта строка поднимается выше таймлайна: смена воды чаще всего даёт сбой именно тут."
-        ) { ml in
-            EventLog(context: context, appState: appState)
-                .record(.water, dog: dog, confirmation: "Записано · Вода \(ml) мл") { event in
-                    event.milliliters = ml
-                }
-        }
-    }
-}
-
 struct TreatSheet: View {
     let dog: Dog?
     @Environment(\.modelContext) private var context
