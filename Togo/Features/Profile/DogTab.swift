@@ -17,12 +17,13 @@ struct DogTab: View {
     @Query private var dogs: [Dog]
     @Query private var trips: [Trip]
 
-    private var dog: Dog? { dogs.first }
+    private var dog: Dog? { appState.activeDog(from: dogs) }
 
     var body: some View {
         NavigationStack {
             TGScreen {
                 if let dog {
+                    DogSwitcher(dogs: dogs, active: dog)
                     header(dog)
                     emergency(dog)
                     everyday(dog)
@@ -98,6 +99,10 @@ struct DogTab: View {
             TGDivider()
             TGLink(title: "Занятия и шаги", value: trainingSummary(dog),
                    systemImage: "list.bullet") { TrainingLibraryScreen(dog: dog) }
+            TGDivider()
+            TGLink(title: dogs.count > 1 ? "Собаки" : "Завести ещё собаку",
+                   value: dogs.count > 1 ? "\(dogs.count)" : nil,
+                   systemImage: "pawprint") { DogsScreen() }
         }
         .buttonStyle(.plain)
     }

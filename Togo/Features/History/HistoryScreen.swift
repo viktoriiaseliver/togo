@@ -11,12 +11,13 @@ struct HistoryScreen: View {
     @Query private var members: [FamilyMember]
 
     @Environment(\.modelContext) private var context
+    @Environment(AppState.self) private var appState
     @State private var closing: Episode?
     @State private var month: Date = Calendar.current.startOfMonth(for: .now)
     @State private var filter: HistoryFilter = .all
     @State private var selectedDay: Date?
 
-    private var dog: Dog? { dogs.first }
+    private var dog: Dog? { appState.activeDog(from: dogs) }
     private var events: [LogEvent] { Diary.active(dog?.events ?? []) }
 
     var body: some View {

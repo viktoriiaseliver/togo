@@ -13,10 +13,14 @@ nonisolated struct WalkActivityAttributes: ActivityAttributes {
         public var startedAt: Date
         /// Результат уже отмечен — активность можно свернуть.
         public var outcome: String?
+        /// Что успели отметить: «моча 2 · стул». Показывается прямо
+        /// на заблокированном экране — иначе нажатие проходит вслепую.
+        public var tally: String?
 
-        public init(startedAt: Date, outcome: String? = nil) {
+        public init(startedAt: Date, outcome: String? = nil, tally: String? = nil) {
             self.startedAt = startedAt
             self.outcome = outcome
+            self.tally = tally
         }
     }
 

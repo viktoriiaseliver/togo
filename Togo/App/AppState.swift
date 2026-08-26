@@ -23,9 +23,23 @@ final class AppState {
     func adopt(_ member: FamilyMember) {
         role = member.role
         customPermissions = member.hasCustomPermissions ? member.permissions : nil
+        // Имя тоже: без него все записи в семье подписаны одним человеком,
+        // и «кто дал дозу» перестаёт быть вопросом с ответом.
+        currentUserName = member.name
     }
+
     /// Кто сейчас за рулём: подставляется в автора записи.
-    var currentUserName: String = "Виктория"
+    ///
+    /// Хранится на телефоне, потому что записывать можно и не открывая
+    /// приложение — голосом, кнопкой «Действие», с живой активности.
+    var currentUserName: String = AppState.storedUserName {
+        didSet { UserDefaults.standard.set(currentUserName, forKey: Keys.userName) }
+    }
+
+    /// Имя для тех, кто пишет в дневник без экранов.
+    static var storedUserName: String {
+        UserDefaults.standard.string(forKey: Keys.userName) ?? "Виктория"
+    }
 
     /// Активный эпизод: 2+ инцидента за 24 часа.
     ///
@@ -51,6 +65,7 @@ final class AppState {
     }
 
     init() {
+        activeDogID = UserDefaults.standard.string(forKey: Keys.activeDog).flatMap(UUID.init)
         session = ActiveSessionStore.load()
         // Прогулку могли забыть: приложение сняли из многозадачности,
         // сессия протухла через восемь часов — а на экране блокировки
@@ -64,6 +79,39 @@ final class AppState {
     var undo: UndoToast?
 
     var isEpisodeActive: Bool { activeEpisode?.isActive() ?? false }
+
+    // MARK: Какая собака открыта
+
+    /// У кого сегодня смотрим день.
+    ///
+    /// Модель с самого начала держала несколько собак — связи, бэкап
+    /// и права написаны на многих, — но экраны брали `dogs.first`,
+    /// то есть вторую собаку было некуда девать. Выбор живёт здесь,
+    /// а не в базе: это состояние телефона, а не свойство собаки.
+    /// У мамы на её телефоне может быть открыт другой пёс.
+    var activeDogID: UUID? {
+        didSet { UserDefaults.standard.set(activeDogID?.uuidString, forKey: Keys.activeDog) }
+    }
+
+    /// Кого показывать из тех, что есть.
+    ///
+    /// Если выбранная собака удалена или выбора ещё не было, берётся
+    /// первая: экран не должен оставаться пустым из-за настройки.
+    func activeDog(from dogs: [Dog]) -> Dog? {
+        dogs.first { $0.id == activeDogID } ?? dogs.first
+    }
+
+    /// Переключиться на другую собаку.
+    func select(_ dog: Dog) {
+        guard activeDogID != dog.id else { return }
+        activeDogID = dog.id
+        Haptics.tap()
+    }
+
+    enum Keys {
+        static let activeDog = "active.dog"
+        static let userName = "current.user"
+    }
 
     struct UndoToast: Identifiable, Equatable {
         /// Что именно отменяет кнопка.
@@ -103,6 +151,19 @@ final class AppState {
     /// Отметить, что собака что-то сделала прямо сейчас.
     func mark(_ kind: ActiveSession.Mark.Kind, at date: Date = Date()) {
         session?.marks.append(ActiveSession.Mark(kind: kind, at: date))
+    }
+
+    /// Перечитать прогулку с диска.
+    ///
+    /// Пока приложение было в фоне, отметку могли поставить с экрана
+    /// блокировки — кнопкой на живой активности. Копия в памяти об этом
+    /// не знает, и первое же изменение затёрло бы её.
+    func reloadSession() {
+        guard let stored = ActiveSessionStore.load() else {
+            if session != nil { session = nil }
+            return
+        }
+        if stored != session { session = stored }
     }
 
     /// Снять все отметки одного вида. Нужно для тех, что ставятся один раз

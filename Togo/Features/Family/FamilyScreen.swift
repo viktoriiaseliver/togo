@@ -14,7 +14,7 @@ struct FamilyScreen: View {
     @State private var showInvite = false
     @State private var showPaywall = false
 
-    private var dog: Dog? { dogs.first }
+    private var dog: Dog? { appState.activeDog(from: dogs) }
     private var duty: FamilyMember? { members.first(where: \.isOnDuty) }
 
     var body: some View {

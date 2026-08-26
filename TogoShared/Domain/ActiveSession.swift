@@ -174,6 +174,33 @@ nonisolated enum ActiveSessionStore {
         defaults.set(data, forKey: key)
     }
 
+    /// Прочитать, изменить, записать обратно.
+    ///
+    /// Нужно тем, кто отмечает мимо экранов: кнопка на живой активности
+    /// нажимается, когда приложение в фоне, и его копия прогулки в памяти
+    /// может быть старше сохранённой.
+    @discardableResult
+    static func mutate(_ change: (inout ActiveSession) -> Void) -> ActiveSession? {
+        guard var session = load() else { return nil }
+        change(&session)
+        save(session)
+        return session
+    }
+
+    /// Поставить отметку на идущей прогулке.
+    static func appendMark(_ kind: ActiveSession.Mark.Kind,
+                           at date: Date = Date()) -> ActiveSession? {
+        mutate { session in
+            // То же правило, что и в приложении: неповторяемое
+            // переключается, а не копится.
+            if !kind.isRepeatable, session.count(of: kind) > 0 {
+                session.marks.removeAll { $0.kind == kind }
+            } else {
+                session.marks.append(ActiveSession.Mark(kind: kind, at: date))
+            }
+        }
+    }
+
     static func load(now: Date = Date()) -> ActiveSession? {
         guard let data = defaults.data(forKey: key),
               let session = try? JSONDecoder().decode(ActiveSession.self, from: data)

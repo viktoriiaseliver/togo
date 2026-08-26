@@ -167,6 +167,7 @@ struct SettingsScreen: View {
 /// Час брифа и тихие часы — единственные ручки, которые человек реально крутит.
 struct NotificationSettingsScreen: View {
     @Environment(Settings.self) private var settings
+    @Environment(AppState.self) private var appState
     @Query private var dogs: [Dog]
     @State private var status: String?
 
@@ -182,7 +183,7 @@ struct NotificationSettingsScreen: View {
                 }
                 .pickerStyle(.menu)
                 .onChange(of: settings.briefHour) { _, _ in
-                    Task { await ReminderScheduler.scheduleBrief(dog: dogs.first, settings: settings) }
+                    Task { await ReminderScheduler.scheduleBrief(dog: appState.activeDog(from: dogs), settings: settings) }
                 }
             } header: {
                 Text("утренний бриф")

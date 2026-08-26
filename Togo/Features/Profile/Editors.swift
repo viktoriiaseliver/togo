@@ -11,6 +11,7 @@ struct DogEditorScreen: View {
 
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
+    @Environment(AppState.self) private var appState
 
     @State private var draft = DogDraft()
     @State private var isConfirmingDelete = false
@@ -90,14 +91,25 @@ struct DogEditorScreen: View {
             let new = draft.makeDog()
             context.insert(new)
             SeedData.attachStarterCare(to: new, context: context)
+            // Сохраняем сразу и сразу открываем: заводят вторую собаку,
+            // чтобы на неё смотреть, а не чтобы она лежала в списке.
+            try? context.save()
+            appState.select(new)
         }
+        try? context.save()
         Haptics.success()
         dismiss()
     }
 
+    /// Удалить собаку.
+    ///
+    /// Если удалили ту, что была открыта, выбор снимается: `activeDog`
+    /// вернёт первую из оставшихся, а не будет держаться за пустоту.
     private func delete() {
         guard let dog else { return }
+        if appState.activeDogID == dog.id { appState.activeDogID = nil }
         context.delete(dog)
+        try? context.save()
         Haptics.warning()
         dismiss()
     }

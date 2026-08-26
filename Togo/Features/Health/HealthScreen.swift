@@ -11,7 +11,7 @@ struct HealthScreen: View {
     @State private var editing: Medication?
     @State private var isAdding = false
 
-    private var dog: Dog? { dogs.first }
+    private var dog: Dog? { appState.activeDog(from: dogs) }
 
     private var medications: [Medication] {
         guard let dog else { return [] }

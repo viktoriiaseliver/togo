@@ -3,6 +3,7 @@ import SwiftData
 
 @main
 struct TogoApp: App {
+    @Environment(\.scenePhase) private var scenePhase
     @State private var appState = AppState()
     @State private var settings = Settings()
     @State private var subscriptions = SubscriptionStore()
@@ -11,6 +12,8 @@ struct TogoApp: App {
     private let container: ModelContainer? = TogoApp.isUITesting
         ? SeedData.makePreviewContainer()
         : Persistence.appContainer()
+
+
 
     /// UI-тесты запускаются на чистой базе в памяти с демо-собакой:
     /// так тест не зависит от того, что человек уже записал на этом устройстве.
@@ -25,6 +28,7 @@ struct TogoApp: App {
         if Self.isUITesting {
             ActiveSessionStore.save(nil)
         }
+        Persistence.shared = container
     }
 
     var body: some Scene {
@@ -45,6 +49,12 @@ struct TogoApp: App {
             // и половинчатая тёмная хуже, чем честно светлая.
             .preferredColorScheme(.light)
             .task { StartupLog.note("интерфейс показан") }
+            // Пока телефон лежал в кармане, отметку могли поставить
+            // кнопкой на живой активности. Перечитываем прогулку,
+            // иначе первое же изменение затёрло бы такую отметку.
+            .onChange(of: scenePhase) { _, phase in
+                if phase == .active { appState.reloadSession() }
+            }
         }
     }
 }

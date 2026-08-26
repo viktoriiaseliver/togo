@@ -11,14 +11,16 @@ enum LiveActivityController {
         ActivityAuthorizationInfo().areActivitiesEnabled
     }
 
-    static func startWalk(dogName: String, by person: String, at date: Date) {
+    static func startWalk(dogName: String, by person: String, at date: Date,
+                          tally: String? = nil) {
         // Список живых активностей — единственный источник правды.
         // Своей копии не держим: она разъедется после перезапуска приложения.
         guard isAvailable, Activity<WalkActivityAttributes>.activities.isEmpty else { return }
         do {
             _ = try Activity.request(
                 attributes: WalkActivityAttributes(dogName: dogName, startedBy: person),
-                content: .init(state: .init(startedAt: date), staleDate: date.addingTimeInterval(4 * 3600)),
+                content: .init(state: .init(startedAt: date, tally: tally),
+                               staleDate: date.addingTimeInterval(4 * 3600)),
                 pushType: nil
             )
         } catch {
@@ -40,8 +42,9 @@ enum LiveActivityController {
 
     /// Возобновить показ. `startedAt` сдвигаем на всё, что простояли,
     /// чтобы таймер продолжился с той же цифры.
-    static func resumeWalk(dogName: String, by person: String, effectiveStart: Date) {
-        startWalk(dogName: dogName, by: person, at: effectiveStart)
+    static func resumeWalk(dogName: String, by person: String, effectiveStart: Date,
+                           tally: String? = nil) {
+        startWalk(dogName: dogName, by: person, at: effectiveStart, tally: tally)
     }
 
     /// Погасить всё, что осталось от прошлых запусков.

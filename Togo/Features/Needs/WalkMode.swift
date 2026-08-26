@@ -276,7 +276,8 @@ struct WalkModeScreen: View {
             if let resumed = appState.session, let dog {
                 LiveActivityController.resumeWalk(
                     dogName: dog.name, by: resumed.startedBy,
-                    effectiveStart: Date().addingTimeInterval(-resumed.duration())
+                    effectiveStart: Date().addingTimeInterval(-resumed.duration()),
+                    tally: resumed.marks.isEmpty ? nil : resumed.tally
                 )
             }
             Haptics.tap()

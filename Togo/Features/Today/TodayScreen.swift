@@ -21,7 +21,7 @@ struct TodayScreen: View {
 
     private let tick = Timer.publish(every: 30, on: .main, in: .common).autoconnect()
 
-    private var dog: Dog? { dogs.first }
+    private var dog: Dog? { appState.activeDog(from: dogs) }
     private var events: [LogEvent] { dog?.events ?? [] }
     private var activeTrip: Trip? { trips.first { $0.isActive(on: now) } }
     private var dutyMember: FamilyMember? { members.first(where: \.isOnDuty) }

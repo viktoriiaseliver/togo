@@ -11,7 +11,7 @@ struct RootView: View {
 
     enum Tab: Hashable { case today, dog, history, health, family }
 
-    private var dog: Dog? { dogs.first }
+    private var dog: Dog? { appState.activeDog(from: dogs) }
 
     /// На «Сегодня» под тостом стоит сетка действий — её высоту надо
     /// перешагнуть. На остальных вкладках хватает высоты таб-бара.

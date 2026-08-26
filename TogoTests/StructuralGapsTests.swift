@@ -333,3 +333,132 @@ struct OriginGapTests {
         #expect(event.medicationID == medication.id)
     }
 }
+
+@Suite("Несколько собак")
+@MainActor
+struct MultipleDogsTests {
+
+    private func setup() throws -> (ModelContext, Dog, Dog, AppState) {
+        let container = try ModelContainer(
+            for: Dog.self,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+        )
+        let context = ModelContext(container)
+        let stitch = Dog(name: "Стич", weightKg: 4.7)
+        let bagheera = Dog(name: "Багира", weightKg: 12)
+        context.insert(stitch)
+        context.insert(bagheera)
+        try context.save()
+        return (context, stitch, bagheera, AppState())
+    }
+
+    @Test("Без выбора открыта первая — экран не остаётся пустым")
+    func fallsBackToFirst() throws {
+        let (_, stitch, bagheera, appState) = try setup()
+        #expect(appState.activeDog(from: [stitch, bagheera])?.id == stitch.id)
+    }
+
+    @Test("Выбор запоминается")
+    func selectionSticks() throws {
+        let (_, stitch, bagheera, appState) = try setup()
+        appState.select(bagheera)
+        #expect(appState.activeDog(from: [stitch, bagheera])?.id == bagheera.id)
+    }
+
+    @Test("Удалили открытую — открывается оставшаяся, а не пустота")
+    func deletedActiveFallsBack() throws {
+        let (_, stitch, bagheera, appState) = try setup()
+        appState.select(bagheera)
+
+        // Багиры больше нет: выбор указывает в никуда.
+        #expect(appState.activeDog(from: [stitch])?.id == stitch.id)
+    }
+
+    @Test("Дневники не смешиваются")
+    func diariesStaySeparate() throws {
+        let (context, stitch, bagheera, _) = try setup()
+
+        let meal = LogEvent(kind: .meal, date: Date(), authorName: "Виктория")
+        meal.dog = stitch
+        context.insert(meal)
+        try context.save()
+
+        #expect(stitch.events.count == 1)
+        #expect(bagheera.events.isEmpty)
+    }
+
+    @Test("У собаки своё устойчивое имя, переживающее перенос")
+    func dogHasStableID() throws {
+        let (_, stitch, bagheera, _) = try setup()
+        #expect(stitch.id != bagheera.id)
+    }
+}
+
+@Suite("Отметки не доставая телефон")
+@MainActor
+struct HandsFreeTests {
+
+    private func startWalk() {
+        ActiveSessionStore.save(
+            ActiveSession(kind: .walk, startedAt: Date().addingTimeInterval(-600),
+                          startedBy: "Виктория")
+        )
+    }
+
+    @Test("Кнопка с экрана блокировки кладёт отметку в сохранённую прогулку")
+    func markGoesToStoredSession() {
+        // Приложение в этот момент в фоне, и его копия прогулки в памяти
+        // может быть старше сохранённой. Пишем в ту, что на диске.
+        startWalk()
+        defer { ActiveSessionStore.save(nil) }
+
+        let session = ActiveSessionStore.appendMark(.urine)
+
+        #expect(session?.count(of: .urine) == 1)
+        #expect(ActiveSessionStore.load()?.count(of: .urine) == 1)
+    }
+
+    @Test("Повторяемое копится, неповторяемое переключается")
+    func repeatableAccumulates() {
+        startWalk()
+        defer { ActiveSessionStore.save(nil) }
+
+        _ = ActiveSessionStore.appendMark(.urine)
+        _ = ActiveSessionStore.appendMark(.urine)
+        #expect(ActiveSessionStore.load()?.count(of: .urine) == 2)
+
+        _ = ActiveSessionStore.appendMark(.note)
+        _ = ActiveSessionStore.appendMark(.note)
+        #expect(ActiveSessionStore.load()?.count(of: .note) == 0)
+    }
+
+    @Test("Без прогулки кнопка ничего не создаёт")
+    func noWalkNoMark() {
+        ActiveSessionStore.save(nil)
+        #expect(ActiveSessionStore.appendMark(.urine) == nil)
+    }
+
+    @Test("Приложение перечитывает прогулку, вернувшись на экран")
+    func appPicksUpBackgroundMark() {
+        startWalk()
+        defer { ActiveSessionStore.save(nil) }
+
+        let appState = AppState()
+        #expect(appState.session?.marks.isEmpty == true)
+
+        // Пока экран был заблокирован, нажали кнопку на живой активности.
+        _ = ActiveSessionStore.appendMark(.stool)
+        appState.reloadSession()
+
+        #expect(appState.session?.count(of: .stool) == 1)
+    }
+
+    @Test("С экрана блокировки доступны только две отметки")
+    func lockScreenOffersTwo() {
+        // На морозе одной рукой человек попадёт в две большие цели,
+        // а не в восемь маленьких.
+        #expect(WalkMarkKind.allCases.count == 2)
+        #expect(WalkMarkKind.urine.markKind == .urine)
+        #expect(WalkMarkKind.stool.markKind == .stool)
+    }
+}
