@@ -89,6 +89,7 @@ private struct IncidentDetailStep: View {
             subtitle: "записано · дальше только если хочешь"
         ) {
             if kind == .vomit { vomitDetails }
+            if kind.asksReactionDetails { reactionDetails }
             if kind.showsPunishmentWarning { punishmentWarning }
             if let previous = previousIncident { episodeNotice(previous) }
             tellFamilyToggle
@@ -114,6 +115,29 @@ private struct IncidentDetailStep: View {
             if event.vomitDetail?.raisesAlarm == true {
                 TGExplainer(text: "Кровь — единственный флаг, который поднимает запись в терракот и предлагает собрать выписку.")
             }
+        }
+    }
+
+    // MARK: Срыв
+
+    /// Те же два вопроса, что и после прогулки: на что и как близко.
+    /// Ругать собаку за срыв бессмысленно — она в этот момент за порогом.
+    private var reactionDetails: some View {
+        TGCard {
+            TGSectionHeader(title: "на что сорвался")
+            TGChipGroup(items: ReactionTrigger.allCases, title: \.title,
+                        isSelected: { $0 == event.reactionTrigger }, minimumWidth: 130) { chosen in
+                event.reactionTrigger = event.reactionTrigger == chosen ? nil : chosen
+                Haptics.tap()
+            }
+            TGDivider()
+            TGSectionHeader(title: "как близко")
+            TGChipGroup(items: ReactionDistance.allCases, title: \.title,
+                        isSelected: { $0 == event.reactionDistance }, minimumWidth: 110) { chosen in
+                event.reactionDistance = event.reactionDistance == chosen ? nil : chosen
+                Haptics.tap()
+            }
+            TGExplainer(text: "Срыв — это порог, а не проступок. Собака в этот момент не может учиться: полезно отойти дальше и дать ей выдохнуть, а не отчитывать.")
         }
     }
 

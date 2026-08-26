@@ -9,8 +9,8 @@ import Foundation
 ///
 /// Время считается от `startedAt`, а не счётчиком: приложение можно свернуть,
 /// заблокировать телефон и убрать в карман — секунды не собьются.
-nonisolated struct ActiveSession: Equatable, Sendable {
-    enum Kind: String, Sendable {
+nonisolated struct ActiveSession: Equatable, Sendable, Codable {
+    enum Kind: String, Sendable, Codable {
         case outing
         case walk
 
@@ -19,9 +19,9 @@ nonisolated struct ActiveSession: Equatable, Sendable {
         var pausedTitle: String { self == .outing ? "выход на паузе" : "на паузе" }
     }
 
-    struct Mark: Equatable, Identifiable, Sendable {
-        enum Kind: String, CaseIterable, Sendable {
-            case urine, stool, water, treat, training, incident, note
+    struct Mark: Equatable, Identifiable, Sendable, Codable {
+        enum Kind: String, CaseIterable, Sendable, Codable {
+            case urine, stool, water, treat, training, reaction, incident, note
 
             var title: String {
                 switch self {
@@ -30,6 +30,7 @@ nonisolated struct ActiveSession: Equatable, Sendable {
                 case .water: "Попил"
                 case .treat: "Лакомство"
                 case .training: "Занятие"
+                case .reaction: "Сорвался"
                 case .incident: "Инцидент"
                 case .note: "Заметка"
                 }
@@ -42,6 +43,7 @@ nonisolated struct ActiveSession: Equatable, Sendable {
                 case .water: "waterbottle"
                 case .treat: "sparkles"
                 case .training: "target"
+                case .reaction: "bolt"
                 case .incident: "exclamationmark.triangle"
                 case .note: "text.alignleft"
                 }
@@ -55,16 +57,22 @@ nonisolated struct ActiveSession: Equatable, Sendable {
                 case .water: .water
                 case .treat: .treat
                 case .training: .training
+                case .reaction: .reaction
                 case .incident: .incident
                 case .note: .note
                 }
             }
 
             /// Отметки, которые ставят по несколько раз за прогулку.
-            var isRepeatable: Bool { self == .urine || self == .stool || self == .water }
+            /// Отметки, которые ставят по несколько раз за прогулку.
+            /// Срыв — как раз такая: у реактивной собаки их бывает пять
+            /// за один выход, и важно именно количество.
+            var isRepeatable: Bool {
+                self == .urine || self == .stool || self == .water || self == .reaction
+            }
         }
 
-        let id = UUID()
+        var id = UUID()
         var kind: Kind
         var at: Date
 
@@ -110,9 +118,12 @@ nonisolated struct ActiveSession: Equatable, Sendable {
         marks.filter { $0.kind == kind }.count
     }
 
+    /// Сколько раз собака сорвалась за этот выход.
+    var reactions: Int { count(of: .reaction) }
+
     /// Короткая сводка для карточки и для итога: «моча 2 · стул · вода».
     var tally: String {
-        let order: [Mark.Kind] = [.urine, .stool, .water, .treat, .training, .incident]
+        let order: [Mark.Kind] = [.urine, .stool, .water, .treat, .training, .reaction, .incident]
         let parts: [String] = order.compactMap { kind in
             let count = count(of: kind)
             guard count > 0 else { return nil }
@@ -131,5 +142,47 @@ nonisolated struct ActiveSession: Equatable, Sendable {
         case (false, true): return .stool
         case (false, false): return marks.isEmpty ? nil : OutingOutcome.none
         }
+    }
+}
+
+
+/// Хранение идущей прогулки между запусками.
+///
+/// Прогулка длится полчаса, и всё это время телефон лежит в кармане:
+/// система вправе выгрузить приложение в любой момент. Пока сессия жила
+/// только в памяти, это означало сброшенный таймер и «начинай заново» —
+/// ровно то, на что и жаловались.
+nonisolated enum ActiveSessionStore {
+    private static let key = "active.session"
+
+    private static var defaults: UserDefaults {
+        UserDefaults(suiteName: AppIdentifiers.appGroup) ?? .standard
+    }
+
+    /// Дольше этого прогулка почти наверняка забыта, а не идёт.
+    /// Подбирать не из головы: восемь часов — это уже не выход с собакой.
+    static let staleAfter: TimeInterval = 8 * 3600
+
+    static func save(_ session: ActiveSession?) {
+        guard let session else {
+            defaults.removeObject(forKey: key)
+            return
+        }
+        guard let data = try? JSONEncoder().encode(session) else { return }
+        defaults.set(data, forKey: key)
+    }
+
+    static func load(now: Date = Date()) -> ActiveSession? {
+        guard let data = defaults.data(forKey: key),
+              let session = try? JSONDecoder().decode(ActiveSession.self, from: data)
+        else { return nil }
+
+        // Забытую прогулку не воскрешаем: показать через сутки таймер
+        // на девятнадцать часов — хуже, чем не показать ничего.
+        guard now.timeIntervalSince(session.startedAt) < staleAfter else {
+            save(nil)
+            return nil
+        }
+        return session
     }
 }

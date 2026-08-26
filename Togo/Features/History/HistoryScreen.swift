@@ -113,13 +113,14 @@ private struct DayRef: Identifiable {
 // MARK: - Фильтр
 
 nonisolated enum HistoryFilter: String, CaseIterable, Sendable {
-    case all, stool, symptoms, weight
+    case all, stool, symptoms, reactions, weight
 
     var title: String {
         switch self {
         case .all: "Всё"
         case .stool: "Стул"
         case .symptoms: "Симптомы"
+        case .reactions: "Срывы"
         case .weight: "Вес"
         }
     }
@@ -130,6 +131,7 @@ nonisolated enum HistoryFilter: String, CaseIterable, Sendable {
         case .all: true
         case .stool: event.kind == .stool || (event.kind == .outing && event.outcome != .urine)
         case .symptoms: event.kind == .incident || event.raisesAlarm
+        case .reactions: event.kind == .reaction || event.incidentKind == .reaction
         case .weight: event.kind == .weight
         }
     }
@@ -139,6 +141,7 @@ nonisolated enum HistoryFilter: String, CaseIterable, Sendable {
         case .all: "Выходы · 30 дней"
         case .stool: "Стул · 30 дней"
         case .symptoms: "Инциденты · 30 дней"
+        case .reactions: "Срывы · 30 дней"
         case .weight: "Вес · 30 дней"
         }
     }
@@ -148,6 +151,7 @@ nonisolated enum HistoryFilter: String, CaseIterable, Sendable {
         case .all: "Сколько раз в день выходили. Ровная линия — устоявшийся режим."
         case .stool: "Выше — жиже. Терракотовые столбики — дни с кровью или слизью."
         case .symptoms: "Столбик есть — был инцидент. Пусто — и хорошо."
+        case .reactions: "Сколько раз собака срывалась за день. Смотреть надо не на отдельный день, а на то, куда идёт линия за месяц."
         case .weight: "Зелёная полоса — коридор, который назвал врач."
         }
     }
@@ -157,6 +161,7 @@ nonisolated enum HistoryFilter: String, CaseIterable, Sendable {
         case .all: Double(events.filter { $0.kind == .outing }.count)
         case .stool: events.compactMap { $0.stoolForm?.bristolScore }.map(Double.init).max() ?? 0
         case .symptoms: Double(events.filter { $0.kind == .incident }.count)
+        case .reactions: Double(events.filter { $0.kind == .reaction || $0.incidentKind == .reaction }.count)
         case .weight: 0
         }
     }

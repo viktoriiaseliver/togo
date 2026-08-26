@@ -121,11 +121,11 @@ struct WalkModeScreen: View {
             .buttonStyle(.plain)
 
             HStack(spacing: Token.Space.s10) {
-                ForEach([ActiveSession.Mark.Kind.stool, .water], id: \.self) { kind in
+                ForEach([ActiveSession.Mark.Kind.stool, .water, .reaction], id: \.self) { kind in
                     Button { mark(kind) } label: {
                         markLabel(kind, count: session?.count(of: kind) ?? 0)
                             .frame(maxWidth: .infinity, minHeight: 68)
-                            .background(Token.Surface.sunken,
+                            .background(kind == .reaction ? Token.Status.waitingBg : Token.Surface.sunken,
                                         in: RoundedRectangle(cornerRadius: Token.Radius.tile, style: .continuous))
                     }
                     .buttonStyle(.plain)
@@ -273,19 +273,14 @@ struct WalkSummarySheet: View {
     let dog: Dog?
     var onDone: () -> Void
 
+    @Environment(\.modelContext) private var context
+    @State private var trigger: ReactionTrigger?
+    @State private var distance: ReactionDistance?
+
     var body: some View {
         TGSheet(title: "Погуляли", subtitle: Fmt.duration(session.duration())) {
-            TGCard {
-                HStack(spacing: 0) {
-                    TGStat(value: Fmt.duration(session.duration()), caption: "в пути", size: 20)
-                    TGStat(value: "\(session.count(of: .urine))", caption: "раз пописал", size: 20)
-                    TGStat(value: session.count(of: .stool) > 0 ? "да" : "нет", caption: "стул", size: 20)
-                }
-                if !session.marks.isEmpty {
-                    TGDivider()
-                    Text(session.tally).textStyle(AppFont.caption)
-                }
-            }
+            statsCard
+            if session.reactions > 0 { reactionCard }
             if session.count(of: .stool) > 0 {
                 TGExplainer(text: "Стул записан как обычный. Если было что-то не так — тапни по строке в ленте и уточни.")
             }
@@ -293,8 +288,69 @@ struct WalkSummarySheet: View {
                 TGExplainer(text: "Отметок не было — записалась только прогулка. Это нормально: не каждый выход надо разбирать.")
             }
         } footer: {
-            TGButton(title: "Готово", action: onDone)
+            TGButton(title: "Готово") {
+                saveReactionDetails()
+                onDone()
+            }
         }
+    }
+
+    private var statsCard: some View {
+        TGCard {
+            HStack(spacing: 0) {
+                TGStat(value: Fmt.duration(session.duration()), caption: "в пути", size: 20)
+                TGStat(value: "\(session.count(of: .urine))", caption: "раз пописал", size: 20)
+                if session.reactions > 0 {
+                    TGStat(value: "\(session.reactions)", caption: "срывов", size: 20)
+                } else {
+                    TGStat(value: session.count(of: .stool) > 0 ? "да" : "нет", caption: "стул", size: 20)
+                }
+            }
+            if !session.marks.isEmpty {
+                TGDivider()
+                Text(session.tally).textStyle(AppFont.caption)
+            }
+        }
+    }
+
+    /// Спрашиваем не «почему собака плохая», а на что и как близко.
+    /// Из этих двух ответов и складывается работа с порогом.
+    private var reactionCard: some View {
+        TGCard {
+            TGSectionHeader(title: session.reactions == 1 ? "на что сорвался" : "на что срывался",
+                            subtitle: "одним тапом, если помнишь")
+            TGChipGroup(items: ReactionTrigger.allCases, title: \.title,
+                        isSelected: { $0 == trigger }, minimumWidth: 130) { chosen in
+                trigger = trigger == chosen ? nil : chosen
+                Haptics.tap()
+            }
+
+            TGDivider()
+            TGSectionHeader(title: "как близко",
+                            subtitle: "дистанция — главная ручка: что рвёт в двух метрах, часто спокойно проходится в двадцати")
+            TGChipGroup(items: ReactionDistance.allCases, title: \.title,
+                        isSelected: { $0 == distance }, minimumWidth: 110) { chosen in
+                distance = distance == chosen ? nil : chosen
+                Haptics.tap()
+            }
+
+            TGDivider()
+            Text("Срыв — это порог, а не проступок")
+                .textStyle(AppFont.bodyEmphasis)
+            Text("Собака, которая сорвалась, в этот момент не может учиться, и ругать её бессмысленно. Полезно другое: отойти дальше, дать ей выдохнуть и в следующий раз пройти на той дистанции, где она справляется.")
+                .textStyle(AppFont.caption)
+        }
+    }
+
+    /// Дописываем подробности в уже созданные записи срывов.
+    private func saveReactionDetails() {
+        guard trigger != nil || distance != nil, let dog else { return }
+        let times = Set(session.marks.filter { $0.kind == .reaction }.map(\.at))
+        for event in dog.events where event.kind == .reaction && times.contains(event.date) {
+            event.reactionTrigger = trigger
+            event.reactionDistance = distance
+        }
+        try? context.save()
     }
 }
 

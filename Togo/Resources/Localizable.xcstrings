@@ -2064,6 +2064,30 @@
       },
       "comment": "dayEvents"
     },
+    "Велосипед, самокат": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Велосипед, самокат"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "title"
+    },
     "Вернуться к дневнику": {
       "extractionState": "manual",
       "localizations": {
@@ -2831,6 +2855,30 @@
         }
       },
       "comment": "stockCard"
+    },
+    "Вплотную": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вплотную"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "title"
     },
     "Врач читает много и не пишет; ребёнок пишет бытовое и не видит медицинского. Дежурный получает напоминания — и только он.": {
       "extractionState": "manual",
@@ -4176,6 +4224,30 @@
       },
       "comment": "title"
     },
+    "Далеко": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Далеко"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "title"
+    },
     "Дальше": {
       "extractionState": "manual",
       "localizations": {
@@ -5423,6 +5495,30 @@
         }
       },
       "comment": "detail"
+    },
+    "Другая собака": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Другая собака"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "title"
     },
     "Другое": {
       "extractionState": "manual",
@@ -7152,6 +7248,30 @@
       },
       "comment": "title"
     },
+    "Звук": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Звук"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "title"
+    },
     "Здесь появятся календарь с точкой на каждый день, графики по стулу и весу и список эпизодов. Пока записей нет — и заполнять ничего заранее не надо.": {
       "extractionState": "manual",
       "localizations": {
@@ -8639,6 +8759,30 @@
       },
       "comment": "detail"
     },
+    "Кошка": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Кошка"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "title"
+    },
     "Кровь": {
       "extractionState": "manual",
       "localizations": {
@@ -9383,6 +9527,30 @@
       },
       "comment": "lockedCard"
     },
+    "Машина": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Машина"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "title"
+    },
     "Медицинскую часть, историю за прошлые месяцы и контакты семьи. Записывать выходы, еду и прогулки можешь.": {
       "extractionState": "manual",
       "localizations": {
@@ -9582,6 +9750,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Месяц назад"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "title"
+    },
+    "Метров пять": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Метров пять"
           }
         },
         "en": {
@@ -10486,6 +10678,30 @@
         }
       },
       "comment": "count"
+    },
+    "Не поняла": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не поняла"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "title"
     },
     "Не сейчас": {
       "extractionState": "manual",
@@ -16007,6 +16223,30 @@
       },
       "comment": "conflictsCard"
     },
+    "Ребёнок": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ребёнок"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "title"
+    },
     "Режим": {
       "extractionState": "manual",
       "localizations": {
@@ -16991,6 +17231,30 @@
       },
       "comment": "chartExplainer"
     },
+    "Сколько раз собака срывалась за день. Смотреть надо не на отдельный день, а на то, куда идёт линия за месяц.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сколько раз собака срывалась за день. Смотреть надо не на отдельный день, а на то, куда идёт линия за месяц."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "chartExplainer"
+    },
     "Скорее внимания": {
       "extractionState": "manual",
       "localizations": {
@@ -17303,6 +17567,30 @@
       },
       "comment": "body"
     },
+    "Собака, которая сорвалась, в этот момент не может учиться, и ругать её бессмысленно. Полезно другое: отойти дальше, дать ей выдохнуть и в следующий раз пройти на той дистанции, где она справляется.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Собака, которая сорвалась, в этот момент не может учиться, и ругать её бессмысленно. Полезно другое: отойти дальше, дать ей выдохнуть и в следующий раз пройти на той дистанции, где она справляется."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "reactionCard"
+    },
     "Собака: кличка, вес, порода, порция, режим кормления, чем маркируешь": {
       "extractionState": "manual",
       "localizations": {
@@ -17446,6 +17734,30 @@
         }
       },
       "comment": "detail"
+    },
+    "Сорвался": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сорвался"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "title"
     },
     "Сохранить": {
       "extractionState": "manual",
@@ -17686,6 +17998,126 @@
         }
       },
       "comment": "body"
+    },
+    "Срыв": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Срыв"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "title"
+    },
+    "Срыв — это порог, а не проступок": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Срыв — это порог, а не проступок"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "reactionCard"
+    },
+    "Срыв — это порог, а не проступок. Собака в этот момент не может учиться: полезно отойти дальше и дать ей выдохнуть, а не отчитывать.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Срыв — это порог, а не проступок. Собака в этот момент не может учиться: полезно отойти дальше и дать ей выдохнуть, а не отчитывать."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "reactionDetails"
+    },
+    "Срывы": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Срывы"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "title"
+    },
+    "Срывы · 30 дней": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Срывы · 30 дней"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "chartTitle"
     },
     "Ссылка живёт 24 часа. Роль выбираешь заранее — принявший не сможет её поменять.": {
       "extractionState": "manual",
@@ -20543,6 +20975,30 @@
       },
       "comment": "body"
     },
+    "Человек": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Человек"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "title"
+    },
     "Чем платим": {
       "extractionState": "manual",
       "localizations": {
@@ -22125,7 +22581,7 @@
           }
         }
       },
-      "comment": "body"
+      "comment": "statsCard"
     },
     "в сезон, раз в месяц": {
       "extractionState": "manual",
@@ -23109,7 +23565,7 @@
           }
         }
       },
-      "comment": "body"
+      "comment": "statsCard"
     },
     "данные": {
       "extractionState": "manual",
@@ -23326,6 +23782,30 @@
         }
       },
       "comment": "dayCard"
+    },
+    "дистанция — главная ручка: что рвёт в двух метрах, часто спокойно проходится в двадцати": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "дистанция — главная ручка: что рвёт в двух метрах, часто спокойно проходится в двадцати"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "reactionCard"
     },
     "для лужи выключено: это не новость для семьи": {
       "extractionState": "manual",
@@ -24791,6 +25271,30 @@
       },
       "comment": "body"
     },
+    "как близко": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "как близко"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "reactionCard"
+    },
     "как попросил": {
       "extractionState": "manual",
       "localizations": {
@@ -25895,6 +26399,54 @@
       },
       "comment": "duration"
     },
+    "на что сорвался": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "на что сорвался"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "reactionCard"
+    },
+    "на что срывался": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "на что срывался"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "reactionCard"
+    },
     "наблюдать": {
       "extractionState": "manual",
       "localizations": {
@@ -26517,7 +27069,7 @@
           }
         }
       },
-      "comment": "body"
+      "comment": "statsCard"
     },
     "нет данных": {
       "extractionState": "manual",
@@ -26902,6 +27454,30 @@
         }
       },
       "comment": "body"
+    },
+    "одним тапом, если помнишь": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "одним тапом, если помнишь"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "reactionCard"
     },
     "одно кормление": {
       "extractionState": "manual",
@@ -28509,7 +29085,7 @@
           }
         }
       },
-      "comment": "body"
+      "comment": "statsCard"
     },
     "разрешены": {
       "extractionState": "manual",
@@ -29327,6 +29903,30 @@
       },
       "comment": "badge"
     },
+    "срывов": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "срывов"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "statsCard"
+    },
     "ссылка живёт 24 часа": {
       "extractionState": "manual",
       "localizations": {
@@ -29397,7 +29997,7 @@
           }
         }
       },
-      "comment": "body"
+      "comment": "statsCard"
     },
     "стул %@": {
       "extractionState": "manual",

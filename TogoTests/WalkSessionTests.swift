@@ -142,3 +142,128 @@ struct DogProfileTests {
         #expect(ToxicItem.common.count <= 12, "длинный список в панике никто не дочитает")
     }
 }
+
+/// Прогулка сбрасывалась, и приходилось начинать новую. Причина: сессия
+/// жила только в памяти, а телефон полчаса лежит в кармане — система вправе
+/// выгрузить приложение в любой момент.
+@Suite("Прогулка переживает закрытие приложения")
+@MainActor
+struct SessionPersistenceTests {
+    private func чистое() {
+        ActiveSessionStore.save(nil)
+    }
+
+    @Test("Прогулка возвращается после перезапуска")
+    func sessionSurvivesRelaunch() {
+        чистое()
+        let начало = Date().addingTimeInterval(-900)
+
+        // Первый запуск: пошли гулять и отметили пару вещей.
+        let первый = AppState()
+        первый.startWalk(by: "Виктория", at: начало)
+        первый.mark(.urine)
+        первый.mark(.reaction)
+
+        // Приложение выгрузили. Второй запуск — новое состояние.
+        let второй = AppState()
+
+        #expect(второй.session != nil, "прогулка не должна пропадать")
+        #expect(второй.session?.startedAt == начало, "и таймер продолжается с того же места")
+        #expect(второй.session?.marks.count == 2, "отметки тоже на месте")
+        #expect(второй.session?.reactions == 1)
+        чистое()
+    }
+
+    @Test("Завершённая прогулка не воскресает")
+    func finishedSessionDoesNotReturn() {
+        чистое()
+        let первый = AppState()
+        первый.startWalk(by: "Виктория")
+        первый.finishSession()
+
+        #expect(AppState().session == nil)
+        чистое()
+    }
+
+    @Test("Забытую прогулку через сутки не показываем")
+    func staleSessionIsDropped() {
+        чистое()
+        let давно = Date().addingTimeInterval(-20 * 3600)
+        ActiveSessionStore.save(
+            ActiveSession(kind: .walk, startedAt: давно, startedBy: "Виктория")
+        )
+
+        #expect(ActiveSessionStore.load() == nil,
+                "таймер на двадцать часов хуже, чем никакого")
+        #expect(AppState().session == nil)
+        чистое()
+    }
+
+    @Test("Пауза тоже переживает перезапуск")
+    func pauseSurvives() {
+        чистое()
+        let первый = AppState()
+        первый.startWalk(by: "Виктория", at: Date().addingTimeInterval(-600))
+        первый.pauseSession()
+
+        let второй = AppState()
+        #expect(второй.session?.isPaused == true)
+        чистое()
+    }
+}
+
+@Suite("Срывы на прогулке")
+@MainActor
+struct ReactionTests {
+    @Test("Срывов может быть несколько за выход — считается количество")
+    func reactionsAreCounted() {
+        var session = ActiveSession(kind: .walk, startedAt: Date(), startedBy: "Виктория")
+        for _ in 0..<4 { session.marks.append(.init(kind: .reaction)) }
+
+        #expect(session.reactions == 4)
+        #expect(session.tally.contains("сорвался ×4"))
+        #expect(ActiveSession.Mark.Kind.reaction.isRepeatable)
+    }
+
+    @Test("Срыв становится своей записью в ленте, а не инцидентом")
+    func reactionMapsToOwnKind() {
+        #expect(ActiveSession.Mark.Kind.reaction.logKind == .reaction)
+        #expect(LogKind.reaction.title == "Срыв")
+    }
+
+    @Test("У срыва есть на что и как близко")
+    func reactionDetails() {
+        let event = LogEvent(kind: .reaction, authorName: "Виктория")
+        event.reactionTrigger = .dog
+        event.reactionDistance = .close
+
+        #expect(event.subtitle?.contains("другая собака") == true)
+        #expect(event.subtitle?.contains("вплотную") == true)
+    }
+
+    @Test("Срыв не поднимает запись в терракот: это порог, а не кровь")
+    func reactionIsNotAlarm() {
+        let event = LogEvent(kind: .reaction, authorName: "Виктория")
+        event.reactionTrigger = .dog
+        #expect(!event.raisesAlarm)
+    }
+
+    @Test("Срыв бывает и не на прогулке — тогда это инцидент")
+    func reactionAsIncident() {
+        #expect(IncidentKind.reaction.asksReactionDetails)
+        #expect(!IncidentKind.vomit.asksReactionDetails)
+        #expect(!IncidentKind.reaction.showsPunishmentWarning,
+                "строка про наказание — про лужу, у срыва свой текст")
+    }
+
+    @Test("В истории срывы — отдельный фильтр")
+    func reactionsHaveTheirOwnFilter() {
+        let срыв = LogEvent(kind: .reaction, authorName: "Виктория")
+        let рвота = LogEvent(kind: .incident, authorName: "Виктория")
+        рвота.incidentKind = .vomit
+
+        #expect(HistoryFilter.reactions.matches(срыв))
+        #expect(!HistoryFilter.reactions.matches(рвота))
+        #expect(HistoryFilter.reactions.title == "Срывы")
+    }
+}

@@ -14,6 +14,7 @@ nonisolated enum LogKind: String, Codable, CaseIterable, Sendable {
     case incident      // рвота, лужа, стул в доме
     case dose          // приём препарата
     case training      // занятие
+    case reaction      // срыв на прогулке
     case weight        // взвешивание
     case care          // груминг, когти, антипаразитарка
     case travelStop    // остановка в дороге
@@ -30,6 +31,7 @@ nonisolated enum LogKind: String, Codable, CaseIterable, Sendable {
         case .incident: "Инцидент"
         case .dose: "Доза"
         case .training: "Занятие"
+        case .reaction: "Срыв"
         case .weight: "Взвешивание"
         case .care: "Уход"
         case .travelStop: "Остановка"
@@ -48,6 +50,7 @@ nonisolated enum LogKind: String, Codable, CaseIterable, Sendable {
         case .incident: "exclamationmark.triangle"
         case .dose: "pills"
         case .training: "target"
+        case .reaction: "bolt"
         case .weight: "scalemass"
         case .care: "scissors"
         case .travelStop: "car"
@@ -167,13 +170,14 @@ nonisolated enum StoolFlag: String, Codable, CaseIterable, Sendable {
 }
 
 nonisolated enum IncidentKind: String, Codable, CaseIterable, Sendable {
-    case vomit, puddle, stoolIndoors, other
+    case vomit, puddle, stoolIndoors, reaction, other
 
     var title: String {
         switch self {
         case .vomit: "Вырвал"
         case .puddle: "Лужа в доме"
         case .stoolIndoors: "Стул в доме"
+        case .reaction: "Сорвался"
         case .other: "Другое"
         }
     }
@@ -183,6 +187,7 @@ nonisolated enum IncidentKind: String, Codable, CaseIterable, Sendable {
         case .vomit: "arrow.up.circle"
         case .puddle: "drop.triangle"
         case .stoolIndoors: "house"
+        case .reaction: "bolt"
         case .other: "questionmark.circle"
         }
     }
@@ -193,6 +198,9 @@ nonisolated enum IncidentKind: String, Codable, CaseIterable, Sendable {
 
     /// После лужи показываем строку «не наказывай» и час предыстории.
     var showsPunishmentWarning: Bool { self == .puddle || self == .stoolIndoors }
+
+    /// Срыв просит уточнить, на что и как близко.
+    var asksReactionDetails: Bool { self == .reaction }
 }
 
 nonisolated enum VomitDetail: String, Codable, CaseIterable, Sendable {
@@ -209,4 +217,56 @@ nonisolated enum VomitDetail: String, Codable, CaseIterable, Sendable {
     }
 
     var raisesAlarm: Bool { self == .blood }
+}
+
+
+/// На что собака сорвалась.
+///
+/// Срыв — это не плохое поведение и не «агрессия»: это порог. Собака,
+/// которая сорвалась, в этот момент не может учиться, и ругать её
+/// бессмысленно. Ценность записи в другом: видно, **на что** и **как часто**,
+/// а значит видно, растёт порог или падает.
+nonisolated enum ReactionTrigger: String, Codable, CaseIterable, Sendable {
+    case dog, person, child, bike, car, cat, sound, unclear
+
+    var title: String {
+        switch self {
+        case .dog: "Другая собака"
+        case .person: "Человек"
+        case .child: "Ребёнок"
+        case .bike: "Велосипед, самокат"
+        case .car: "Машина"
+        case .cat: "Кошка"
+        case .sound: "Звук"
+        case .unclear: "Не поняла"
+        }
+    }
+
+    var symbol: String {
+        switch self {
+        case .dog: "dog"
+        case .person: "figure.stand"
+        case .child: "figure.and.child.holdinghands"
+        case .bike: "bicycle"
+        case .car: "car"
+        case .cat: "cat"
+        case .sound: "speaker.wave.3"
+        case .unclear: "questionmark"
+        }
+    }
+}
+
+/// Насколько близко это было. Дистанция — главная ручка в работе
+/// с реактивной собакой: то, что рвёт в двух метрах, часто спокойно
+/// проходится в двадцати.
+nonisolated enum ReactionDistance: String, Codable, CaseIterable, Sendable {
+    case close, medium, far
+
+    var title: String {
+        switch self {
+        case .close: "Вплотную"
+        case .medium: "Метров пять"
+        case .far: "Далеко"
+        }
+    }
 }

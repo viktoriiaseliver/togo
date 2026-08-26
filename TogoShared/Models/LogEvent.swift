@@ -29,6 +29,10 @@ final class LogEvent {
     var milliliters: Int?
     var fromPortion: Bool = false
 
+    // Срыв на прогулке
+    var reactionTriggerRaw: String?
+    var reactionDistanceRaw: String?
+
     // Инцидент
     var incidentKindRaw: String?
     var incidentDetailRaw: String?
@@ -88,6 +92,16 @@ final class LogEvent {
         set { incidentDetailRaw = newValue?.rawValue }
     }
 
+    var reactionTrigger: ReactionTrigger? {
+        get { reactionTriggerRaw.flatMap(ReactionTrigger.init) }
+        set { reactionTriggerRaw = newValue?.rawValue }
+    }
+
+    var reactionDistance: ReactionDistance? {
+        get { reactionDistanceRaw.flatMap(ReactionDistance.init) }
+        set { reactionDistanceRaw = newValue?.rawValue }
+    }
+
     var isDeleted: Bool { deletedAt != nil }
 
     /// Кровь — единственный флаг, поднимающий бытовую запись в терракот.
@@ -106,6 +120,8 @@ final class LogEvent {
         if let grams { parts.append("\(grams) г") }
         if let milliliters { parts.append("\(milliliters) мл") }
         if let durationSeconds, durationSeconds > 0 { parts.append("\(durationSeconds / 60) мин") }
+        if let reactionTrigger { parts.append(reactionTrigger.title.lowercased()) }
+        if let reactionDistance { parts.append(reactionDistance.title.lowercased()) }
         if let incidentKind { parts.append(incidentKind.title.lowercased()) }
         if let vomitDetail { parts.append(vomitDetail.title) }
         if let note, !note.isEmpty { parts.append(note) }

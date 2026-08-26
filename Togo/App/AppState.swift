@@ -31,7 +31,17 @@ final class AppState {
     var activeEpisode: Episode?
     /// Идущий выход или прогулка. Одновременно идёт что-то одно:
     /// выход — это короткий поход по нужде, прогулка — долгая, с отметками.
-    var session: ActiveSession?
+    ///
+    /// Сохраняется на диск при каждом изменении: телефон лежит в кармане
+    /// полчаса, система вправе выгрузить приложение, и прогулка не должна
+    /// от этого пропадать.
+    var session: ActiveSession? {
+        didSet { ActiveSessionStore.save(session) }
+    }
+
+    init() {
+        session = ActiveSessionStore.load()
+    }
 
     /// Тост отмены: каждая запись отменяется, удаление обратимо 5 секунд.
     var undo: UndoToast?
