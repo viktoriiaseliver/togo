@@ -50,6 +50,18 @@ nonisolated struct BackupArchive: Codable, Sendable {
         /// Появилось позже — у старых файлов этого поля нет.
         var stocks: [StockSnapshot]?
         var heats: [HeatSnapshot]?
+        /// Снимки документов. Тоже позже: экрана у них не было вовсе,
+        /// а значит, и сохранять было нечего.
+        var documents: [DocumentSnapshot]?
+    }
+
+    /// Фотография документа целиком: паспорт, потерянный вместе
+    /// с телефоном, восстанавливать неоткуда.
+    struct DocumentSnapshot: Codable, Sendable {
+        var title: String
+        var image: Data?
+        var addedAt: Date
+        var note: String?
     }
 
     struct StockSnapshot: Codable, Sendable {

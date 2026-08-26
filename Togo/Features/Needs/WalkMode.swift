@@ -244,6 +244,16 @@ struct WalkModeScreen: View {
     // MARK: Действия
 
     private func mark(_ kind: ActiveSession.Mark.Kind) {
+        // Неповторяемое переключается, а не копится. Свойство `isRepeatable`
+        // было описано в модели и не использовалось нигде: занятие можно
+        // было отметить пять раз подряд, и в ленту уезжали пять записей.
+        if !kind.isRepeatable, (appState.session?.count(of: kind) ?? 0) > 0 {
+            appState.removeMarks(of: kind)
+            Haptics.warning()
+            appState.showUndo("Отметка убрана · \(kind.title)")
+            return
+        }
+
         appState.mark(kind)
         Haptics.tap()
         let count = appState.session?.count(of: kind) ?? 1
@@ -261,9 +271,18 @@ struct WalkModeScreen: View {
         guard let session else { return }
         if session.isPaused {
             appState.resumeSession()
+            // Начало сдвигаем на всё простоянное: на блокировке должно
+            // быть то же время, что и здесь.
+            if let resumed = appState.session, let dog {
+                LiveActivityController.resumeWalk(
+                    dogName: dog.name, by: resumed.startedBy,
+                    effectiveStart: Date().addingTimeInterval(-resumed.duration())
+                )
+            }
             Haptics.tap()
         } else {
             appState.pauseSession()
+            Task { await LiveActivityController.pauseWalk() }
             Haptics.warning()
         }
     }
@@ -296,7 +315,12 @@ struct WalkModeScreen: View {
                 switch entry.kind {
                 case .urine: event.outcome = .urine
                 case .stool: event.stoolForm = Diary.usualStool(dog.events)
-                case .treat: event.grams = 5
+                case .treat:
+                    event.grams = 5
+                    // Без этого пять граммов исчезали из подсчёта питания:
+                    // сводка считает лакомствами только то, что взято
+                    // из дневной порции.
+                    event.fromPortion = dog.trainingFoodFromPortion
                 case .water: event.milliliters = 50
                 default: break
                 }
@@ -317,22 +341,64 @@ struct WalkSummarySheet: View {
     @Environment(\.modelContext) private var context
     @State private var trigger: ReactionTrigger?
     @State private var distance: ReactionDistance?
+    @State private var noteText = ""
+
+    /// Есть ли что терять при закрытии.
+    private var hasAnswers: Bool {
+        trigger != nil || distance != nil
+            || !noteText.trimmingCharacters(in: .whitespaces).isEmpty
+    }
 
     var body: some View {
-        TGSheet(title: "Погуляли", subtitle: Fmt.duration(session.duration())) {
+        // Итог закрывается и крестиком, и свайпом — а ответы про срыв
+        // сохранялись только по кнопке «Готово». Человек отвечал на два
+        // вопроса, смахивал шторку и терял оба ответа молча.
+        TGSheet(title: "Погуляли", subtitle: Fmt.duration(session.duration()),
+                onClose: { save() }, hasUnsavedChanges: hasAnswers) {
             statsCard
             if session.reactions > 0 { reactionCard }
-            if session.count(of: .stool) > 0 {
-                TGExplainer(text: "Стул записан как обычный. Если было что-то не так — тапни по строке в ленте и уточни.")
-            }
+            if session.count(of: .stool) > 0 { stoolNote }
+            if session.count(of: .note) > 0 { noteCard }
             if session.marks.isEmpty {
                 TGExplainer(text: "Отметок не было — записалась только прогулка. Это нормально: не каждый выход надо разбирать.")
             }
         } footer: {
             TGButton(title: "Готово") {
-                saveReactionDetails()
+                save()
                 onDone()
             }
+        }
+    }
+
+    /// Что на самом деле записалось со стулом.
+    ///
+    /// Раньше здесь стояло «стул записан как обычный» — и это было неправдой.
+    /// Форму приложение подставляет, только если последние четыре стула были
+    /// одинаковыми и без особенностей; в остальных случаях она пустая,
+    /// и такая запись не попадает даже в график по стулу.
+    @ViewBuilder
+    private var stoolNote: some View {
+        if let dog, Diary.usualStool(dog.events) != nil {
+            TGExplainer(text: "Стул записан таким же, как обычно у него. Если было не так — тапни по строке в ленте и поправь.")
+        } else {
+            TGExplainer(text: "Стул записан без формы: приложение не угадывает её за тебя. Тапни по строке в ленте и выбери — тогда он попадёт в график.")
+        }
+    }
+
+    /// Заметку набирают здесь, а не на улице.
+    ///
+    /// Кнопка «Заметка» в режиме прогулки ставила отметку без единого слова:
+    /// в ленте оставалась пустая запись с подписью «на прогулке». Печатать
+    /// на морозе всё равно невозможно — поэтому спрашиваем текст один раз,
+    /// когда человек уже вернулся и остановился.
+    private var noteCard: some View {
+        TGCard {
+            TGSectionHeader(title: session.count(of: .note) == 1 ? "что за заметка" : "заметки с прогулки",
+                            subtitle: "отметку поставили на ходу — допиши словами")
+            TextEditor(text: $noteText)
+                .textStyle(AppFont.body)
+                .frame(minHeight: 80)
+                .scrollContentBackground(.hidden)
         }
     }
 
@@ -383,13 +449,24 @@ struct WalkSummarySheet: View {
         }
     }
 
-    /// Дописываем подробности в уже созданные записи срывов.
-    private func saveReactionDetails() {
-        guard trigger != nil || distance != nil, let dog else { return }
-        let times = Set(session.marks.filter { $0.kind == .reaction }.map(\.at))
-        for event in dog.events where event.kind == .reaction && times.contains(event.date) {
-            event.reactionTrigger = trigger
-            event.reactionDistance = distance
+    /// Дописываем подробности в уже созданные записи.
+    private func save() {
+        guard hasAnswers, let dog else { return }
+
+        if trigger != nil || distance != nil {
+            let times = Set(session.marks.filter { $0.kind == .reaction }.map(\.at))
+            for event in dog.events where event.kind == .reaction && times.contains(event.date) {
+                event.reactionTrigger = trigger
+                event.reactionDistance = distance
+            }
+        }
+
+        let text = noteText.trimmingCharacters(in: .whitespaces)
+        if !text.isEmpty {
+            let times = Set(session.marks.filter { $0.kind == .note }.map(\.at))
+            for event in dog.events where event.kind == .note && times.contains(event.date) {
+                event.note = text
+            }
         }
         try? context.save()
     }

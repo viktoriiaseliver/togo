@@ -248,7 +248,9 @@ struct DocumentsScreen: View {
                 }
             }
 
-            TGExplainer(text: "Всё это лежит на телефоне и никуда не отправляется само. Фотографии паспорта удобно держать здесь же — на границе и у врача их спрашивают первыми.")
+            DocumentPhotosCard(dog: dog)
+
+            TGExplainer(text: "Всё это лежит на телефоне и никуда не отправляется само.")
         }
         .navigationTitle("Документы")
         .navigationBarTitleDisplayMode(.large)

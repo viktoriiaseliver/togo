@@ -38,6 +38,7 @@ nonisolated enum BackupService {
         // полагаться на то, что обратная связь уже materialised, нельзя.
         let allStocks = (try? context.fetch(FetchDescriptor<FoodStock>())) ?? []
         let allHeats = (try? context.fetch(FetchDescriptor<HeatRecord>())) ?? []
+        let allDocuments = (try? context.fetch(FetchDescriptor<DogDocument>())) ?? []
         let members = try context.fetch(FetchDescriptor<FamilyMember>())
         let episodes = try context.fetch(FetchDescriptor<Episode>())
 
@@ -47,7 +48,8 @@ nonisolated enum BackupService {
             dogs: dogs.map { dog in
                 snapshot(dog,
                          stocks: allStocks.filter { $0.dog?.persistentModelID == dog.persistentModelID },
-                         heats: allHeats.filter { $0.dog?.persistentModelID == dog.persistentModelID })
+                         heats: allHeats.filter { $0.dog?.persistentModelID == dog.persistentModelID },
+                         documents: allDocuments.filter { $0.dog?.persistentModelID == dog.persistentModelID })
             },
             members: members.map { member in
                 BackupArchive.MemberSnapshot(
@@ -68,7 +70,8 @@ nonisolated enum BackupService {
     private static func snapshot(
         _ dog: Dog,
         stocks: [FoodStock] = [],
-        heats: [HeatRecord] = []
+        heats: [HeatRecord] = [],
+        documents: [DogDocument] = []
     ) -> BackupArchive.DogSnapshot {
         BackupArchive.DogSnapshot(
             name: dog.name, photo: dog.photo, breed: dog.breed, birthDate: dog.birthDate,
@@ -145,6 +148,10 @@ nonisolated enum BackupService {
             },
             heats: heats.map {
                 BackupArchive.HeatSnapshot(startedAt: $0.startedAt, endedAt: $0.endedAt, note: $0.note)
+            },
+            documents: documents.map {
+                BackupArchive.DocumentSnapshot(title: $0.title, image: $0.image,
+                                               addedAt: $0.addedAt, note: $0.note)
             }
         )
     }
@@ -415,6 +422,14 @@ nonisolated enum BackupService {
                                   note: heatSnapshot.note)
             heat.dog = dog
             context.insert(heat)
+        }
+        for documentSnapshot in snapshot.documents ?? [] {
+            let document = DogDocument(title: documentSnapshot.title,
+                                       image: documentSnapshot.image,
+                                       note: documentSnapshot.note)
+            document.addedAt = documentSnapshot.addedAt
+            document.dog = dog
+            context.insert(document)
         }
         for tripSnapshot in snapshot.trips {
             let trip = Trip(destination: tripSnapshot.destination,

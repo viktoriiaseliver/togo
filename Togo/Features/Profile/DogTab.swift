@@ -127,7 +127,9 @@ struct DogTab: View {
             TGSectionHeader(title: "поездки",
                             subtitle: мои.isEmpty ? "режим включится сам в день отъезда" : nil)
             ForEach(мои) { trip in
-                                TGLink(title: trip.destination, value: trip.isActive() ? "идёт" : Fmt.shortDay(trip.startDate), systemImage: trip.transport.symbol) { TripScreen(trip: trip, dog: dog) }
+                TGLink(title: trip.destination,
+                       value: trip.isActive() ? "идёт" : Fmt.shortDay(trip.startDate),
+                       systemImage: trip.transport.symbol) { TripScreen(trip: trip, dog: dog) }
                 TGDivider()
             }
                         TGLink(title: мои.isEmpty ? "Запланировать поездку" : "Ещё поездка", systemImage: "plus") { TripSetupScreen(dog: dog) }

@@ -253,6 +253,7 @@ struct TodayScreen: View {
     /// Механика была написана в модели и не вызывалась ниоткуда: то есть
     /// защита между людьми не работала совсем.
     private func claim(_ dose: DoseRecord) {
+        guard appState.can(.giveDose) else { return }
         dose.claimedBy = appState.currentUserName
         dose.claimedAt = now
         try? context.save()
@@ -270,6 +271,16 @@ struct TodayScreen: View {
 
     private func complete(_ item: DayPlanItem) {
         guard let dog else { return }
+        // Права на бытовое и на дозы существовали, но не проверялись нигде:
+        // выданная роль «только смотреть» всё равно позволяла отмечать еду,
+        // а «нельзя давать препараты» — отмечать приёмы.
+        let allowed: Permission = item.kind == .dose ? .giveDose : .logBasics
+        guard appState.can(allowed) else {
+            appState.showUndo(item.kind == .dose
+                              ? "Дозы отмечает тот, кому это разрешено"
+                              : "Записывать может тот, кому это разрешено")
+            return
+        }
         EventLog(context: context, appState: appState)
             .record(item.kind == .meal ? .meal : .dose,
                     dog: dog,
@@ -280,6 +291,11 @@ struct TodayScreen: View {
                     event.note = dog.foodBrand.isEmpty ? nil : dog.foodBrand
                 case .dose:
                     event.note = item.title
+                    // Связь с препаратом писать было некому: поле в модели
+                    // есть, а запись оставалась ничьей. Без неё из ленты
+                    // не видно, какой именно препарат отметили, если
+                    // название успели поменять.
+                    event.medicationID = item.medication?.id
                 }
             }
 

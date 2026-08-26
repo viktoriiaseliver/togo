@@ -41,6 +41,16 @@ struct EventLog {
     ) -> LogEvent? {
         guard let dog else { return nil }
 
+        // Права проверяются здесь, а не на каждом экране: это единственная
+        // дверь, через которую в дневник попадает запись. Раньше `logBasics`
+        // и `giveDose` не проверялись вовсе — то есть выданная роль
+        // «только смотреть» всё равно позволяла записывать что угодно.
+        guard appState.can(kind.requiredPermission) else {
+            appState.showUndo("Это записывает тот, кому разрешено")
+            Haptics.warning()
+            return nil
+        }
+
         if !allowDuplicate, let recent = recentDuplicate(of: kind, dog: dog, at: date) {
             appState.showUndo(duplicateMessage(kind, at: recent.date))
             Haptics.warning()

@@ -116,6 +116,7 @@ struct CareTaskEditorSheet: View {
     @State private var intervalDays = 30
     @State private var kind: CareKind = .periodic
     @State private var scheduledDate = Date()
+    @State private var remindDaysBefore = 14
     @State private var lastDone: Date?
     @State private var category: CareCategory = .grooming
     @State private var isSeasonal = false
@@ -187,6 +188,20 @@ struct CareTaskEditorSheet: View {
                 TGCard(spacing: 0) {
                     DatePicker("Когда", selection: $scheduledDate, displayedComponents: .date)
                         .frame(minHeight: Token.Size.tapTarget)
+                    TGDivider()
+                    // «Напомним заранее» было написано в пояснении, а на
+                    // сколько именно — задать было негде: поле в модели
+                    // стояло на четырнадцати днях и не менялось никогда.
+                    // Прививку и визит к врачу планируют по-разному.
+                    Stepper(value: $remindDaysBefore, in: 0...60, step: 1) {
+                        HStack {
+                            Text("Напомнить за").textStyle(AppFont.body)
+                            Spacer()
+                            Text(remindDaysBefore == 0 ? "в день визита" : Fmt.days(remindDaysBefore))
+                                .textStyle(AppFont.numeric(15))
+                        }
+                    }
+                    .frame(minHeight: Token.Size.tapTarget)
                     TGDivider()
                     Stepper(value: $intervalDays, in: 0...730, step: 30) {
                         HStack {
@@ -273,6 +288,7 @@ struct CareTaskEditorSheet: View {
         kind = task.kind
         intervalDays = task.intervalDays
         scheduledDate = task.scheduledDate ?? Date()
+        remindDaysBefore = task.remindDaysBefore
         lastDone = task.lastDone
         category = task.category
         isSeasonal = task.seasonStartMonth != nil
@@ -291,6 +307,7 @@ struct CareTaskEditorSheet: View {
         target.category = category
         target.lastDone = kind == .daily ? target.lastDone : lastDone
         target.scheduledDate = kind == .dated ? scheduledDate : nil
+        target.remindDaysBefore = remindDaysBefore
         target.seasonStartMonth = (isSeasonal && kind != .daily) ? seasonStart : nil
         target.seasonEndMonth = (isSeasonal && kind != .daily) ? seasonEnd : nil
         if task == nil {

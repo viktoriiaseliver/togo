@@ -9,7 +9,9 @@ import SwiftData
 final class DogDocument {
     var id: UUID = UUID()
     var title: String = ""
-    var image: Data?
+    /// Снимок лежит рядом с базой, а не внутри неё: страница паспорта
+    /// весит куда больше всех записей дневника вместе взятых.
+    @Attribute(.externalStorage) var image: Data?
     var addedAt: Date = Date()
     var note: String?
 

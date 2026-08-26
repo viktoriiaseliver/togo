@@ -78,9 +78,15 @@ struct DataPrivacyScreen: View {
     }
 
     private func deleteEverything() {
+        // Список полный намеренно: полагаться на каскад от собаки здесь
+        // нельзя. Запас корма, течки и снимки документов в нём не значились
+        // вовсе — то есть после «удалить все данные» фотография паспорта
+        // оставалась лежать на телефоне.
         for model in [LogEvent.self, WeightEntry.self, DoseRecord.self, Medication.self,
                       CareTask.self, TrainingSession.self, TrainingStep.self, ProcedureSkill.self,
-                      Trip.self, Episode.self, FamilyMember.self, Dog.self] as [any PersistentModel.Type] {
+                      Trip.self, Episode.self, FamilyMember.self,
+                      FoodStock.self, HeatRecord.self, DogDocument.self,
+                      Dog.self] as [any PersistentModel.Type] {
             try? context.delete(model: model)
         }
         NotificationCenterService.cancelAll()

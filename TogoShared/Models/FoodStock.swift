@@ -103,7 +103,9 @@ final class FoodStock {
         return Int((need / Double(packGrams)).rounded(.up))
     }
 
-    /// Сколько упаковок уходит в день — для влажного это осмысленная цифра.
+
+    /// Сколько упаковок уходит в день — для влажного это осмысленная цифра:
+    /// человек думает банками, а не граммами.
     var packsPerDay: Double? {
         guard packGrams > 0, gramsPerDay > 0 else { return nil }
         return Double(gramsPerDay) / Double(packGrams)

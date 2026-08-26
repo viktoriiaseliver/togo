@@ -26,6 +26,35 @@ enum LiveActivityController {
         }
     }
 
+    /// Пауза на экране блокировки.
+    ///
+    /// Свой таймер Live Activity ведёт сама, от `startedAt`, и остановить
+    /// его на ходу нельзя. Поэтому на паузе активность гасим, а на
+    /// «Продолжить» запускаем заново от смещённого начала — так на
+    /// блокировке видно то же время, что и в приложении. Раньше пауза
+    /// до экрана блокировки не доходила вовсе: приложение говорило
+    /// «на паузе», а часы там продолжали идти.
+    static func pauseWalk() async {
+        await finishWalk(outcome: nil)
+    }
+
+    /// Возобновить показ. `startedAt` сдвигаем на всё, что простояли,
+    /// чтобы таймер продолжился с той же цифры.
+    static func resumeWalk(dogName: String, by person: String, effectiveStart: Date) {
+        startWalk(dogName: dogName, by: person, at: effectiveStart)
+    }
+
+    /// Погасить всё, что осталось от прошлых запусков.
+    ///
+    /// `startWalk` намеренно не создаёт вторую активность, если одна уже
+    /// живёт. Но живой могла остаться и активность от прогулки, которую
+    /// давно забыли: приложение сняли из многозадачности, сессия протухла
+    /// через восемь часов, а на блокировке всё ещё «гуляем». Тогда
+    /// следующая прогулка оставалась вообще без Live Activity.
+    nonisolated static func discardStale() async {
+        await finishWalk(outcome: nil)
+    }
+
     /// Гасим всё, что осталось живого: активность могла пережить перезапуск.
     nonisolated static func finishWalk(outcome: String?) async {
         let state = WalkActivityAttributes.ContentState(startedAt: .now, outcome: outcome)

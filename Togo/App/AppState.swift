@@ -52,6 +52,12 @@ final class AppState {
 
     init() {
         session = ActiveSessionStore.load()
+        // Прогулку могли забыть: приложение сняли из многозадачности,
+        // сессия протухла через восемь часов — а на экране блокировки
+        // всё ещё «гуляем», и новая прогулка осталась бы без активности.
+        if session == nil {
+            Task { await LiveActivityController.discardStale() }
+        }
     }
 
     /// Тост отмены: каждая запись отменяется, удаление обратимо 5 секунд.
@@ -82,6 +88,12 @@ final class AppState {
     /// Отметить, что собака что-то сделала прямо сейчас.
     func mark(_ kind: ActiveSession.Mark.Kind, at date: Date = Date()) {
         session?.marks.append(ActiveSession.Mark(kind: kind, at: date))
+    }
+
+    /// Снять все отметки одного вида. Нужно для тех, что ставятся один раз
+    /// за прогулку: повторный тап по ним — это «нет, всё-таки не было».
+    func removeMarks(of kind: ActiveSession.Mark.Kind) {
+        session?.marks.removeAll { $0.kind == kind }
     }
 
     func pauseSession() {

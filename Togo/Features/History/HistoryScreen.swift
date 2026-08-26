@@ -10,6 +10,8 @@ struct HistoryScreen: View {
     @Query private var episodes: [Episode]
     @Query private var members: [FamilyMember]
 
+    @Environment(\.modelContext) private var context
+    @State private var closing: Episode?
     @State private var month: Date = Calendar.current.startOfMonth(for: .now)
     @State private var filter: HistoryFilter = .all
     @State private var selectedDay: Date?
@@ -42,6 +44,16 @@ struct HistoryScreen: View {
                                  set: { selectedDay = $0?.date })) { ref in
                 DayReadingScreen(day: ref.date, events: events,
                                  showsAuthor: members.count > 1)
+            }
+            .confirmationDialog("Закрыть эпизод?",
+                                isPresented: Binding(get: { closing != nil },
+                                                     set: { if !$0 { closing = nil } }),
+                                titleVisibility: .visible,
+                                presenting: closing) { episode in
+                Button("Закрыть") { close(episode) }
+                Button("Ещё рано", role: .cancel) { closing = nil }
+            } message: { _ in
+                Text("Записи останутся в истории. Вердикт «просится» снова начнёт считаться по обычным промежуткам — во время эпизода он не считается совсем.")
             }
         }
     }
@@ -98,12 +110,38 @@ struct HistoryScreen: View {
                             Spacer()
                             Text(Fmt.shortDay(episode.startedAt)).textStyle(AppFont.micro)
                         }
-                        Text(episode.detail).textStyle(AppFont.caption)
+                        Text(episode.detail).textStyle(AppFont.caption).wraps()
+                        if episode.isActive() { activeEpisodeFooter(episode) }
                     }
                     .frame(minHeight: Token.Size.tapTarget)
+                    if episode.id != episodes.last?.id { TGDivider() }
                 }
             }
         }
+    }
+}
+
+extension HistoryScreen {
+    /// Пока эпизод идёт, вердикт «просится» не считается вовсе — а человек
+    /// не видел ни того, что эпизод ещё идёт, ни когда он кончится.
+    /// Закрыть его руками было нельзя: метод в модели был, вызывать его
+    /// было неоткуда.
+    @ViewBuilder
+    func activeEpisodeFooter(_ episode: Episode) -> some View {
+        Text("Идёт. Закроется сам \(Fmt.shortDay(episode.quietUntil)), если больше ничего не случится.")
+            .textStyle(AppFont.micro.color(Token.Status.waitingText))
+            .wraps()
+        TGButton(title: "Собаке лучше — закрыть", variant: .secondary, size: .medium,
+                 systemImage: "checkmark") {
+            closing = episode
+        }
+    }
+
+    func close(_ episode: Episode) {
+        episode.close()
+        try? context.save()
+        Haptics.success()
+        closing = nil
     }
 }
 

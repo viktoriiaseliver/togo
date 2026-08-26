@@ -320,19 +320,56 @@ struct WeightScreen: View {
                     TGExplainer(text: "Пока одно значение — то, что ты ввела при добавлении собаки.")
                 } else {
                     ForEach(Array(history)) { entry in
-                        HStack {
-                            Text(Fmt.shortDay(entry.date)).textStyle(AppFont.caption)
-                            Spacer()
-                            Text(Fmt.weight(entry.kg)).textStyle(AppFont.numeric(15))
+                        Button { removing = entry } label: {
+                            HStack {
+                                Text(Fmt.shortDay(entry.date)).textStyle(AppFont.caption)
+                                Spacer()
+                                Text(Fmt.weight(entry.kg)).textStyle(AppFont.numeric(15))
+                            }
+                            .frame(minHeight: Token.Size.tapTarget)
+                            .contentShape(Rectangle())
                         }
-                        .frame(minHeight: 34)
+                        .buttonStyle(.plain)
                     }
+                    // Взвешивание — единственное, что нельзя было исправить.
+                    // Опечатка «12,4 → 124» оставалась в графике навсегда
+                    // и уводила коридор веса вместе с собой.
+                    TGExplainer(text: "Ошиблась — тапни по строке и удали.")
                 }
             }
         }
         .navigationTitle("Вес")
         .navigationBarTitleDisplayMode(.large)
+        .confirmationDialog("Удалить взвешивание?",
+                            isPresented: Binding(get: { removing != nil },
+                                                 set: { if !$0 { removing = nil } }),
+                            titleVisibility: .visible,
+                            presenting: removing) { entry in
+            Button("Удалить", role: .destructive) { delete(entry) }
+            Button("Отмена", role: .cancel) { removing = nil }
+        } message: { entry in
+            Text("\(Fmt.shortDay(entry.date)) · \(Fmt.weight(entry.kg)). Из графика и из коридора веса запись тоже уйдёт.")
+        }
     }
+
+    /// Удалить взвешивание, вернув текущий вес к предыдущему замеру.
+    private func delete(_ entry: WeightEntry) {
+        guard let dog else { return }
+        context.delete(entry)
+        // Текущий вес показывается по всему приложению — если удалили
+        // последнее взвешивание, он обязан откатиться, а не остаться
+        // от только что стёртой записи.
+        let rest = dog.weights.filter { $0.persistentModelID != entry.persistentModelID }
+        if let latest = rest.max(by: { $0.date < $1.date }) {
+            dog.weightKg = latest.kg
+        }
+        try? context.save()
+        Haptics.warning()
+        removing = nil
+    }
+
+    /// Какую запись предлагается удалить.
+    @State private var removing: WeightEntry?
 
     private var parsedWeight: Double? {
         Double(newWeight.replacingOccurrences(of: ",", with: "."))

@@ -294,6 +294,14 @@ struct FoodStockEditorSheet: View {
         }
     }
 
+    /// Черновик для арифметики: те же поля, что и в форме, но считает
+    /// их модель, а не экран.
+    private var draftStock: FoodStock {
+        FoodStock(kind: kind, brand: brand, packGrams: packGrams,
+                  packsLeft: packsLeft,
+                  gramsPerDay: isOnlyFood ? dog.dailyGrams : gramsPerDay)
+    }
+
     private var amountCard: some View {
         TGCard(spacing: 0) {
             TGSectionHeader(title: "сколько есть и сколько уходит")
@@ -333,14 +341,14 @@ struct FoodStockEditorSheet: View {
                 splitRow
             }
 
-            if kind == .wet, gramsPerDay > 0, packGrams > 0 {
+            // Ту же арифметику считала и модель, и этот экран — своими
+            // руками. Считает теперь одна модель.
+            if kind == .wet, let perDay = draftStock.packsPerDay {
                 TGDivider()
                 HStack {
                     Text("Это примерно").textStyle(AppFont.body)
                     Spacer()
-                    Text(String(format: "%.1f %@ в день",
-                                Double(gramsPerDay) / Double(packGrams),
-                                kind.unitName(count: 1)))
+                    Text(String(format: "%.1f %@ в день", perDay, kind.unitName(count: perDay)))
                         .textStyle(AppFont.numeric(15).color(Token.Ink.secondary))
                 }
                 .frame(minHeight: Token.Size.tapTarget)
