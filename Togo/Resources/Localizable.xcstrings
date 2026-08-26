@@ -6000,30 +6000,6 @@
       },
       "comment": "body"
     },
-    "Ждёт синхронизации, автор %@": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ждёт синхронизации, автор %@"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        }
-      },
-      "comment": "body"
-    },
     "Забор крови": {
       "extractionState": "manual",
       "localizations": {
@@ -6480,13 +6456,37 @@
       },
       "comment": "body"
     },
-    "Записала %@ в %@ · синхронизировано": {
+    "Записала %@": {
       "extractionState": "manual",
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Записала %@ в %@ · синхронизировано"
+            "value": "Записала %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
+    },
+    "Записала %@ в %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Записала %@ в %@"
           }
         },
         "en": {
@@ -17038,30 +17038,6 @@
         }
       },
       "comment": "title"
-    },
-    "Синхронизировано, автор %@": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Синхронизировано, автор %@"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        }
-      },
-      "comment": "body"
     },
     "Системный San Francisco. Он уже загружен, умеет Dynamic Type и не требует лицензии.": {
       "extractionState": "manual",

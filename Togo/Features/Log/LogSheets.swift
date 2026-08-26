@@ -270,7 +270,10 @@ struct EventEditSheet: View {
 
     var body: some View {
         TGSheet(title: event?.kind.title ?? "Запись",
-                      subtitle: event.map { "Записала \($0.authorName) в \(Fmt.clock($0.date)) · синхронизировано" }) {
+                      // «синхронизировано» отсюда убрано вместе с галочкой:
+                      // обмена между устройствами пока нет, и говорить о нём
+                      // нельзя.
+                      subtitle: event.map { "Записала \($0.authorName) в \(Fmt.clock($0.date))" }) {
             if !canEdit {
                 TGBanner(tone: .waiting, title: "Только чтение",
                          subtitle: "Твоя роль позволяет записывать своё, но не править уже записанное. Права выдаёт владелец в разделе «Семья».",

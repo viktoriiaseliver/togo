@@ -8,6 +8,7 @@ import Charts
 struct HistoryScreen: View {
     @Query private var dogs: [Dog]
     @Query private var episodes: [Episode]
+    @Query private var members: [FamilyMember]
 
     @State private var month: Date = Calendar.current.startOfMonth(for: .now)
     @State private var filter: HistoryFilter = .all
@@ -38,7 +39,8 @@ struct HistoryScreen: View {
             .navigationBarTitleDisplayMode(.large)
             .sheet(item: Binding(get: { selectedDay.map(DayRef.init) },
                                  set: { selectedDay = $0?.date })) { ref in
-                DayReadingScreen(day: ref.date, events: events)
+                DayReadingScreen(day: ref.date, events: events,
+                                 showsAuthor: members.count > 1)
             }
         }
     }
@@ -311,6 +313,7 @@ private struct DayCell: View {
 struct DayReadingScreen: View {
     let day: Date
     let events: [LogEvent]
+    var showsAuthor: Bool = false
 
     var body: some View {
         TGSheet(title: Fmt.dayTitle(day), subtitle: "режим чтения") {
@@ -322,7 +325,8 @@ struct DayReadingScreen: View {
                     ForEach(dayEvents) { event in
                         TimelineRow(event: event,
                                     isFirst: event.id == dayEvents.first?.id,
-                                    isLast: event.id == dayEvents.last?.id)
+                                    isLast: event.id == dayEvents.last?.id,
+                                    showsAuthor: showsAuthor)
                         if event.id != dayEvents.last?.id { TGDivider(inset: 52) }
                     }
                 }

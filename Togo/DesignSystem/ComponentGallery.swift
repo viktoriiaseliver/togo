@@ -47,7 +47,7 @@ struct ComponentGallery: View {
                 }
             }
 
-            group("Stat · Avatar · SyncMark") {
+            group("Stat · Avatar · Author") {
                 TGCard {
                     HStack(spacing: 0) {
                         TGStat(value: "60 г", caption: "съел")
@@ -59,8 +59,8 @@ struct ComponentGallery: View {
                         TGAvatar(initial: "В")
                         TGAvatar(initial: "С", size: Token.Size.avatarMd, tint: Token.Action.primaryQuiet)
                         Spacer()
-                        TGSyncMark(author: "Тео", isSynced: true)
-                        TGSyncMark(author: "Мама", isSynced: false)
+                        TGAuthorMark(author: "Тео")
+                        TGAuthorMark(author: "Мама")
                     }
                 }
             }

@@ -75,7 +75,8 @@ struct TodayScreen: View {
                             )
                         }
 
-                        DayTimeline(events: Diary.onDay(events, now), now: now) { event in
+                        DayTimeline(events: Diary.onDay(events, now), now: now,
+                                    showsAuthor: members.count > 1) { event in
                             route = .edit(event.id)
                         }
 

@@ -18,6 +18,15 @@ struct TogoApp: App {
         ProcessInfo.processInfo.arguments.contains("-UITesting")
     }
 
+    init() {
+        // Прогулка теперь переживает закрытие приложения — значит, она
+        // переживает и предыдущий тест. Для UI-тестов состояние чистится:
+        // иначе второй тест открывает чужую прогулку вместо своей.
+        if Self.isUITesting {
+            ActiveSessionStore.save(nil)
+        }
+    }
+
     var body: some Scene {
         WindowGroup {
             Group {

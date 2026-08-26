@@ -6,6 +6,7 @@ import SwiftUI
 struct DayTimeline: View {
     let events: [LogEvent]
     let now: Date
+    var showsAuthor: Bool = false
     var onTap: (LogEvent) -> Void
 
     var body: some View {
@@ -26,7 +27,8 @@ struct DayTimeline: View {
                         TimelineRow(
                             event: event,
                             isFirst: index == 0,
-                            isLast: false
+                            isLast: false,
+                            showsAuthor: showsAuthor
                         )
                         .contentShape(Rectangle())
                         .onTapGesture { onTap(event) }
@@ -51,6 +53,8 @@ struct TimelineRow: View {
     let event: LogEvent
     var isFirst: Bool = false
     var isLast: Bool = false
+    /// В семье из одного человека подпись автора — шум: и так понятно, кто.
+    var showsAuthor: Bool = false
 
     var body: some View {
         HStack(alignment: .top, spacing: Token.Space.s8) {
@@ -73,7 +77,9 @@ struct TimelineRow: View {
                         .textStyle(AppFont.bodyEmphasis)
                         .foregroundStyle(event.titleColor)
                     Spacer(minLength: Token.Space.s8)
-                    TGSyncMark(author: event.authorName, isSynced: event.isSynced)
+                    if showsAuthor {
+                        TGAuthorMark(author: event.authorName)
+                    }
                 }
                 if let subtitle = event.subtitle {
                     Text(subtitle)

@@ -170,21 +170,23 @@ struct TGAvatar: View {
     }
 }
 
-/// Figma: `SyncMark`. Галочка синхронизации в строке ленты — по ней видно,
-/// что запись дошла до остальных, а не только «записалась у меня».
-struct TGSyncMark: View {
+/// Figma: `Author`. Кто записал.
+///
+/// Раньше здесь была ещё и зелёная галочка «синхронизировано» — у каждой
+/// записи, всегда. Синхронизации в приложении нет, поле `isSynced` всегда
+/// `true`, то есть галочка была украшением, притворяющимся сведениями.
+/// Убрана до тех пор, пока обмен между устройствами не появится
+/// по-настоящему.
+///
+/// Инициал автора остаётся, но только когда в семье больше одного
+/// человека: одному себе представляться незачем.
+struct TGAuthorMark: View {
     let author: String
-    let isSynced: Bool
 
     var body: some View {
-        HStack(spacing: Token.Space.s4) {
-            Text(String(author.prefix(1)))
-                .font(.system(size: 11, weight: .bold))
-                .foregroundStyle(Token.Ink.secondary)
-            Image(systemName: isSynced ? "checkmark.circle.fill" : "arrow.triangle.2.circlepath")
-                .font(.system(size: 11, weight: .semibold))
-                .foregroundStyle(isSynced ? Token.Action.done : Token.Ink.faint)
-        }
-        .accessibilityLabel(isSynced ? "Синхронизировано, автор \(author)" : "Ждёт синхронизации, автор \(author)")
+        Text(String(author.prefix(1)))
+            .font(.system(size: 11, weight: .bold))
+            .foregroundStyle(Token.Ink.secondary)
+            .accessibilityLabel("Записала \(author)")
     }
 }
