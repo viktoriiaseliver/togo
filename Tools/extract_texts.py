@@ -223,8 +223,21 @@ def markdown(collected):
     return "\n".join(lines) + "\n"
 
 
+# Языки, которые попадают в сборку.
+#
+# Пока только русский. Пустые английский и французский здесь были —
+# и Xcode честно собирал из них `en.lproj` и `fr.lproj`. App Store берёт
+# список языков из этих папок, а не из Info.plist: карточка приложения
+# обещала бы английский и французский, а интерфейс оставался русским.
+#
+# Документ для переводчика от этого не страдает: ключи целиком лежат
+# в `docs/TEXTS.md`, и он не зависит от того, что собрано в бандл.
+# Когда перевод вернётся — дописать сюда язык и заполнить значения.
+BUNDLED_LANGUAGES = ("ru",)
+
+
 def catalog(collected):
-    """String Catalog: русский — источник, английский и французский пустые."""
+    """String Catalog: русский — источник."""
     strings = {}
     for _path, items in collected:
         for text, context, _number in items:
@@ -234,7 +247,9 @@ def catalog(collected):
             entry["localizations"]["ru"] = {
                 "stringUnit": {"state": "translated", "value": text}
             }
-            for language in ("en", "fr"):
+            for language in BUNDLED_LANGUAGES:
+                if language == "ru":
+                    continue
                 entry["localizations"].setdefault(language, {
                     "stringUnit": {"state": "new", "value": ""}
                 })

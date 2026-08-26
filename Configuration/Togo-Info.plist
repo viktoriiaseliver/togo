@@ -20,11 +20,15 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<!--
+	  Пока только русский. Ключи для английского и французского собраны
+	  (docs/TEXTS.md), но перевода ещё нет: заявить язык, которого в
+	  интерфейсе нет, — значит показать в App Store поддержку, которой
+	  не существует, и получить единицу в отзыве.
+	-->
 	<key>CFBundleLocalizations</key>
 	<array>
 		<string>ru</string>
-		<string>en</string>
-		<string>fr</string>
 	</array>
 	<key>CFBundleURLTypes</key>
 	<array>
@@ -71,24 +75,35 @@
 	<key>NSSupportsLiveActivitiesFrequentUpdates</key>
 	<true/>
 
+	<!--
+	  Единственный фоновый режим — приём тихих уведомлений CloudKit.
+	  Он не для наших пушей: своих уведомлений через сервер приложение
+	  не шлёт. Без него зеркалирование узнаёт об изменениях с других
+	  устройств только при запуске, и обмен превращается в «иногда
+	  подтягивается».
+	-->
 	<key>UIBackgroundModes</key>
 	<array>
-		<string>processing</string>
-	</array>
-	<key>BGTaskSchedulerPermittedIdentifiers</key>
-	<array>
-		<string>app.togo.diary.morning-brief</string>
+		<string>remote-notification</string>
 	</array>
 
-	<key>NSCameraUsageDescription</key>
-	<string>Камера нужна, чтобы сфотографировать собаку, ветеринарный паспорт или упаковку корма. Снимки остаются на телефоне.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Доступ к фото нужен, чтобы поставить фото собаки и приложить снимок паспорта или анализа к записи. Библиотеку целиком приложение не читает.</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Чтобы сохранить отчёт врачу или график в фотоплёнку.</string>
-	<key>NSUserTrackingUsageDescription</key>
-	<string>Того не отслеживает вас и не передаёт данные рекламным сетям.</string>
-	<key>NSFaceIDUsageDescription</key>
-	<string>Face ID закрывает дневник, если телефоном пользуется кто-то ещё.</string>
+	<!--
+	  Фоновый режим `processing` отсюда убран. `BGTaskScheduler`
+	  в приложении не вызывается ни разу: утренний бриф — это обычное
+	  локальное уведомление по расписанию, фон ему не нужен.
+	  А объявленный и неиспользуемый фоновый режим — это Guideline 2.5.4
+	  и отклонение на ревью.
+	-->
+
+	<!--
+	  Строк-разрешений здесь больше нет, и это не забывчивость.
+	  Снимки документов выбираются системным `PhotosPicker`: он работает
+	  в отдельном процессе, отдаёт приложению ровно один выбранный кадр
+	  и доступа к библиотеке не требует вовсе.
+
+	  Камеры, Face ID и отслеживания в приложении нет. Объявлять строки
+	  под них — значит обещать ревьюеру функции, которых не существует,
+	  и получить вопрос, на который нечего ответить.
+	-->
 </dict>
 </plist>

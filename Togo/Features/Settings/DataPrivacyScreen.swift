@@ -146,7 +146,7 @@ struct SupportScreen: View {
     private func openMail() {
         let subject = "Того \(settings.appVersion) — вопрос"
         let body = "\n\n---\n" + diagnostics
-        var components = URLComponents(string: "mailto:support@togo.app")
+        var components = URLComponents(string: "mailto:\(Contacts.support)")
         components?.queryItems = [
             URLQueryItem(name: "subject", value: subject),
             URLQueryItem(name: "body", value: body),

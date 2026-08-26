@@ -262,7 +262,9 @@ struct FamilyStep: View {
     @Environment(\.modelContext) private var context
     @State private var role: FamilyRole = .coOwner
 
-    private var inviteLink: String { "togo.app/j/\(String(UUID().uuidString.prefix(4)))…" }
+    /// Ссылки-приглашения пока нет: показывать её на онбординге —
+    /// значит обещать обмен между телефонами, которого ещё не существует.
+    private var inviteLink: String { "участник заводится в «Семье»" }
 
     var body: some View {
         TGScreen(title: "Кто ещё за ним ходит") {

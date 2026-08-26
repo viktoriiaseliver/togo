@@ -11,6 +11,27 @@ nonisolated enum AppIdentifiers {
     static let urlScheme = "togo"
 }
 
+/// Куда человек пишет, если что-то не так.
+///
+/// **Заменить перед отправкой в App Store.** Ревьюер проверяет адрес
+/// поддержки: письмо на несуществующий ящик отскакивает, и это отказ
+/// по Guideline 1.5 — не придирка, а прямое основание.
+///
+/// Собрано в одном месте намеренно: раньше `togo.app` был вписан
+/// в пяти файлах, и поменять его, ничего не забыв, было нельзя.
+nonisolated enum Contacts {
+    /// Общая поддержка. Этот же адрес указывается в App Store Connect.
+    static let support = "support@togo.app"
+    /// Вопросы о данных — по закону нужен отдельный.
+    static let privacy = "privacy@togo.app"
+
+    static func mail(_ address: String, subject: String) -> URL? {
+        var components = URLComponents(string: "mailto:\(address)")
+        components?.queryItems = [URLQueryItem(name: "subject", value: subject)]
+        return components?.url
+    }
+}
+
 nonisolated let log = Logger(subsystem: AppIdentifiers.bundlePrefix, category: "app")
 
 /// Всё считается на телефоне. Аккаунт не нужен — это обещание с первого экрана

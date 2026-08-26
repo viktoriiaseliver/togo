@@ -10,8 +10,22 @@
 	<array>
 		<string>CloudKit</string>
 	</array>
-	<key>com.apple.developer.ubiquity-kvstore-identifier</key>
-	<string>$(TeamIdentifierPrefix)$(APP_BUNDLE_ID)</string>
+	<!--
+	  Хранилища «ключ-значение» в iCloud приложение не использует:
+	  настройки телефона остаются на телефоне, а дневник синхронизируется
+	  через CloudKit. Заявленная и неиспользуемая возможность — лишний
+	  повод для вопросов на ревью и лишняя строка в профиле подписи.
+	-->
+
+	<!--
+	  Push нужен самому CloudKit: без него зеркалирование узнаёт
+	  об изменениях с других устройств только при запуске приложения,
+	  и «синхронизация» превращается в «иногда подтягивается».
+	  Своих уведомлений через сервер приложение не шлёт.
+	-->
+	<key>aps-environment</key>
+	<string>development</string>
+
 	<key>com.apple.security.application-groups</key>
 	<array>
 		<string>$(APP_GROUP_ID)</string>

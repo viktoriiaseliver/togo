@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Куда собираем: App Store Connect, сразу с загрузкой. -->
+	<key>method</key>
+	<string>app-store-connect</string>
+	<key>destination</key>
+	<string>upload</string>
+
+	<!-- Team ID подставляет скрипт: он у каждого свой. -->
+	<key>teamID</key>
+	<string>TEAM_ID_PLACEHOLDER</string>
+
+	<!--
+	  Символы нужны, чтобы падения в TestFlight приходили с именами функций,
+	  а не голыми адресами.
+	-->
+	<key>uploadSymbols</key>
+	<true/>
+
+	<!--
+	  Номер версии и сборки задаёт репозиторий, а не Xcode. Иначе Xcode
+	  начнёт править их сам, и в git окажется не то, что уехало в App Store.
+	-->
+	<key>manageAppVersionAndBuildNumber</key>
+	<false/>
+
+	<key>signingStyle</key>
+	<string>automatic</string>
+	<key>stripSwiftSymbols</key>
+	<true/>
+</dict>
+</plist>

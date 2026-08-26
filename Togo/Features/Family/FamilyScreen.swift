@@ -252,8 +252,6 @@ struct InviteSheet: View {
 
     private let token = String(UUID().uuidString.prefix(6))
 
-    private var link: String { "https://togo.app/j/\(token)" }
-
     var body: some View {
         TGSheet(title: "Пригласить", subtitle: "ссылка живёт 24 часа") {
             TGCard {
@@ -271,27 +269,31 @@ struct InviteSheet: View {
                 ) { role = $0 }
             }
             TGCard {
-                Text(link).textStyle(AppFont.numeric(15))
-                TGExplainer(text: "В ссылке только случайный токен. Ни имени собаки, ни записей в ней нет.")
+                TGSectionHeader(title: "пока только на этом телефоне")
+                TGExplainer(text: "Обмена между устройствами ещё нет, и приглашение по ссылке появится вместе с ним. Сейчас участник заводится здесь: имя подставляется в автора записи, а права решают, что ему можно.")
+                TGExplainer(text: "Это уже работает, если телефон один на семью или его передают из рук в руки — а так чаще всего и бывает.")
             }
         } footer: {
-            ShareLink(item: URL(string: link)!) {
-                Text("Отправить ссылку")
-                    .textStyle(AppFont.cardTitle.color(Token.Ink.onAccent))
-                    .frame(maxWidth: .infinity, minHeight: Token.Component.Button.Primary.height)
-                    .background(Token.Action.primary,
-                                in: RoundedRectangle(cornerRadius: Token.Radius.control, style: .continuous))
+            TGButton(title: "Добавить", isEnabled: !name.trimmingCharacters(in: .whitespaces).isEmpty) {
+                create()
+                dismiss()
             }
-            .simultaneousGesture(TapGesture().onEnded { create() })
         }
         .presentationDetents([.large])
     }
 
+    /// Участник заводится сразу и целиком: приглашения по ссылке нет,
+    /// потому что нечему приходить — обмена между устройствами ещё нет.
+    /// Токен всё равно записываем: он понадобится, когда обмен появится,
+    /// и заводить его задним числом будет неоткуда.
     private func create() {
-        let member = FamilyMember(name: name.isEmpty ? "Приглашение" : name, role: role)
+        let member = FamilyMember(name: name.trimmingCharacters(in: .whitespaces),
+                                  role: role)
         member.inviteToken = token
         member.inviteExpiresAt = Date().addingTimeInterval(24 * 3600)
         context.insert(member)
+        try? context.save()
+        Haptics.success()
     }
 }
 

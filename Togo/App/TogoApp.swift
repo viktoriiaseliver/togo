@@ -139,7 +139,7 @@ struct StorageFailureScreen: View {
 
             TGButton(title: "Написать в поддержку", variant: .secondary,
                      size: .medium, systemImage: "envelope") {
-                if let url = URL(string: "mailto:support@togo.app?subject=Дневник%20не%20открылся") {
+                if let url = Contacts.mail(Contacts.support, subject: "Дневник не открылся") {
                     openURL(url)
                 }
             }

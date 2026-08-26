@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!--
+	  Манифест приватности. Обязателен с мая 2024: без него сборку
+	  не принимает App Store Connect, а не отклоняет ревью — то есть
+	  узнать об этом можно только в момент загрузки.
+
+	  У Того он короткий, потому что и рассказывать нечего: приложение
+	  ничего не собирает, никуда не отправляет и не отслеживает.
+	  Единственное, что приходится объявлять, — обращение к настройкам
+	  приложения, и то по формальной причине.
+	-->
+
+	<!-- Данные не собираются. Ни аналитики, ни крашлитики, ни рекламы. -->
+	<key>NSPrivacyCollectedDataTypes</key>
+	<array/>
+
+	<!-- Отслеживания нет: ATT не запрашивается, IDFA не читается. -->
+	<key>NSPrivacyTracking</key>
+	<false/>
+	<key>NSPrivacyTrackingDomains</key>
+	<array/>
+
+	<key>NSPrivacyAccessedAPITypes</key>
+	<array>
+		<dict>
+			<!--
+			  Настройки приложения: идущая прогулка, выбранная собака,
+			  час утреннего брифа. Всё это про сам телефон и никуда
+			  с него не уходит.
+
+			  CA92.1 — «доступ только к своим настройкам»: ровно наш случай,
+			  чужие контейнеры приложение не читает.
+			-->
+			<key>NSPrivacyAccessedAPIType</key>
+			<string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+			<key>NSPrivacyAccessedAPITypeReasons</key>
+			<array>
+				<string>CA92.1</string>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>
