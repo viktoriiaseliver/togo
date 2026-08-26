@@ -57,7 +57,7 @@ struct DogTab: View {
                         Text([dog.breed, dog.ageDescription, Fmt.weight(dog.weightKg)]
                             .compactMap { $0 }.joined(separator: " · "))
                             .textStyle(AppFont.caption)
-                            .fixedSize(horizontal: false, vertical: true)
+                            .wraps()
                     }
                     Spacer(minLength: Token.Space.s8)
                     Image(systemName: "chevron.right")
@@ -88,23 +88,13 @@ struct DogTab: View {
     private func everyday(_ dog: Dog) -> some View {
         TGCard(spacing: 0) {
             TGSectionHeader(title: "каждый день")
-            NavigationLink { FeedingScreen(dog: dog) } label: {
-                TGListRow(title: "Питание и режим",
-                          value: "\(dog.dailyGrams) г в день",
-                          systemImage: "fork.knife")
-            }
+                        TGLink(title: "Питание и режим", value: "\(dog.dailyGrams) г в день", systemImage: "fork.knife") { FeedingScreen(dog: dog) }
             TGDivider()
-            NavigationLink { CareScreen(dog: dog) } label: {
-                TGListRow(title: "Уход", value: careSummary(dog), systemImage: "scissors")
-            }
+                        TGLink(title: "Уход", value: careSummary(dog), systemImage: "scissors") { CareScreen(dog: dog) }
             TGDivider()
-            NavigationLink { WeightScreen(dog: dog) } label: {
-                TGListRow(title: "Вес", value: Fmt.weight(dog.weightKg), systemImage: "scalemass")
-            }
+                        TGLink(title: "Вес", value: Fmt.weight(dog.weightKg), systemImage: "scalemass") { WeightScreen(dog: dog) }
             TGDivider()
-            NavigationLink { TransferMatrixScreen(dog: dog) } label: {
-                TGListRow(title: "Перенос навыка", systemImage: "square.grid.3x3")
-            }
+                        TGLink(title: "Перенос навыка", systemImage: "square.grid.3x3") { TransferMatrixScreen(dog: dog) }
         }
         .buttonStyle(.plain)
     }
@@ -119,18 +109,10 @@ struct DogTab: View {
     private func documents(_ dog: Dog) -> some View {
         TGCard(spacing: 0) {
             TGSectionHeader(title: "на случай, когда спросят")
-            NavigationLink { DocumentsScreen(dog: dog) } label: {
-                TGListRow(title: "Документы и контакты",
-                          value: dog.chipNumber == nil ? "не заполнены" : nil,
-                          systemImage: "doc.text.image")
-            }
+                        TGLink(title: "Документы и контакты", value: dog.chipNumber == nil ? "не заполнены" : nil, systemImage: "doc.text.image") { DocumentsScreen(dog: dog) }
             if dog.tracksHeat {
                 TGDivider()
-                NavigationLink { HeatScreen(dog: dog) } label: {
-                    TGListRow(title: "Цикл",
-                              value: HeatCycle.forecast(dog.heats).expectedNext.map(Fmt.shortDay),
-                              systemImage: "calendar.badge.clock")
-                }
+                                TGLink(title: "Цикл", value: HeatCycle.forecast(dog.heats).expectedNext.map(Fmt.shortDay), systemImage: "calendar.badge.clock") { HeatScreen(dog: dog) }
             }
         }
         .buttonStyle(.plain)
@@ -145,17 +127,10 @@ struct DogTab: View {
             TGSectionHeader(title: "поездки",
                             subtitle: мои.isEmpty ? "режим включится сам в день отъезда" : nil)
             ForEach(мои) { trip in
-                NavigationLink { TripScreen(trip: trip, dog: dog) } label: {
-                    TGListRow(title: trip.destination,
-                              value: trip.isActive() ? "идёт" : Fmt.shortDay(trip.startDate),
-                              systemImage: trip.transport.symbol)
-                }
+                                TGLink(title: trip.destination, value: trip.isActive() ? "идёт" : Fmt.shortDay(trip.startDate), systemImage: trip.transport.symbol) { TripScreen(trip: trip, dog: dog) }
                 TGDivider()
             }
-            NavigationLink { TripSetupScreen(dog: dog) } label: {
-                TGListRow(title: мои.isEmpty ? "Запланировать поездку" : "Ещё поездка",
-                          systemImage: "plus")
-            }
+                        TGLink(title: мои.isEmpty ? "Запланировать поездку" : "Ещё поездка", systemImage: "plus") { TripSetupScreen(dog: dog) }
         }
         .buttonStyle(.plain)
     }

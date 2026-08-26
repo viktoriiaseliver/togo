@@ -18,7 +18,7 @@ struct StockRow: View {
                     .textStyle(AppFont.bodyEmphasis)
                 Text(stock.summary(at: now))
                     .textStyle(AppFont.caption)
-                    .fixedSize(horizontal: false, vertical: true)
+                    .wraps()
             }
             Spacer(minLength: Token.Space.s8)
             VStack(alignment: .trailing, spacing: Token.Space.s2) {
@@ -175,7 +175,8 @@ struct FoodStockEditorSheet: View {
     var body: some View {
         TGSheet(title: isNew ? "Корм" : (brand.isEmpty ? kind.title : brand),
                 subtitle: "фасовка и остаток считаются отдельно для каждого корма",
-                closeTitle: isNew ? "Отмена" : "Закрыть") {
+                closeTitle: isNew ? "Отмена" : "Закрыть",
+                hasUnsavedChanges: isNew && !brand.trimmingCharacters(in: .whitespaces).isEmpty) {
             kindCard
             packCard
             amountCard

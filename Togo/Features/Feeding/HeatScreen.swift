@@ -138,7 +138,8 @@ struct HeatEditorSheet: View {
     var body: some View {
         TGSheet(title: isNew ? "Течка" : Fmt.shortDay(startedAt),
                 subtitle: "даты можно поправить когда угодно",
-                closeTitle: isNew ? "Отмена" : "Закрыть") {
+                closeTitle: isNew ? "Отмена" : "Закрыть",
+                hasUnsavedChanges: isNew && !note.trimmingCharacters(in: .whitespaces).isEmpty) {
             TGCard(spacing: 0) {
                 DatePicker("Началась", selection: $startedAt, in: ...Date(), displayedComponents: .date)
                     .frame(minHeight: Token.Size.tapTarget)

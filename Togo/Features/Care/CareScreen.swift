@@ -272,7 +272,7 @@ private struct CareTaskRow: View {
                     .strikethrough(isDoneToday && task.kind == .daily, color: Token.Ink.faint)
                 Text(task.detail)
                     .textStyle(AppFont.caption)
-                    .fixedSize(horizontal: false, vertical: true)
+                    .wraps()
             }
 
             Spacer(minLength: Token.Space.s8)
@@ -380,7 +380,7 @@ struct CareSuggestionsSheet: View {
                     Text(suggestion.title).textStyle(AppFont.body)
                     Text(already ? "уже заведено" : suggestion.detail)
                         .textStyle(AppFont.caption)
-                        .fixedSize(horizontal: false, vertical: true)
+                        .wraps()
                 }
                 Spacer(minLength: 0)
             }

@@ -232,10 +232,10 @@ private struct PermissionToggle: View {
             VStack(alignment: .leading, spacing: Token.Space.s2) {
                 Text(permission.title)
                     .textStyle(AppFont.body)
-                    .fixedSize(horizontal: false, vertical: true)
+                    .wraps()
                 Text(permission.detail)
                     .textStyle(AppFont.caption)
-                    .fixedSize(horizontal: false, vertical: true)
+                    .wraps()
             }
         }
         .disabled(!isEditable)

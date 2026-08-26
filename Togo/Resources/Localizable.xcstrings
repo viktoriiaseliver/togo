@@ -2304,6 +2304,30 @@
       },
       "comment": "body"
     },
+    "Введённое не сохранится.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Введённое не сохранится."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
+    },
     "Велосипед, самокат": {
       "extractionState": "manual",
       "localizations": {
@@ -6598,7 +6622,31 @@
           }
         }
       },
-      "comment": "closeTitle"
+      "comment": "title"
+    },
+    "Закрыть без сохранения?": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Закрыть без сохранения?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
     },
     "Закрыть приложение полностью и открыть заново.": {
       "extractionState": "manual",
@@ -11358,6 +11406,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Не сейчас"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
+    },
+    "Не сохранять": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не сохранять"
           }
         },
         "en": {
@@ -16631,6 +16703,30 @@
       },
       "comment": "walkSheet"
     },
+    "Продолжить заполнять": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Продолжить заполнять"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
+    },
     "Пройти онбординг заново": {
       "extractionState": "manual",
       "localizations": {
@@ -17517,7 +17613,7 @@
           }
         }
       },
-      "comment": "walkSheet"
+      "comment": "header"
     },
     "Своя фасовка": {
       "extractionState": "manual",

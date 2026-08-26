@@ -122,7 +122,7 @@ struct TimelineRow: View {
                     Text(subtitle)
                         .textStyle(AppFont.caption)
                         .foregroundStyle(Token.Ink.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
+                        .wraps()
                 }
             }
             .padding(.top, 3)

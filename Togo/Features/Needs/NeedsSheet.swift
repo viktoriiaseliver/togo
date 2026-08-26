@@ -37,12 +37,11 @@ struct NeedsSheet: View {
             if case .unknown(.notEnoughData) = verdict {
                 TGExplainer(text: "Через три-четыре дня приложение выучит его интервалы и начнёт подсказывать, настоящая ли нужда. Пока — выводи, как обычно.")
             }
-
-            VStack(spacing: 10) {
-                TGButton(title: "Вывожу", systemImage: "figure.walk.departure") { startOuting() }
-                TGButton(title: verdict.alternativeAction, variant: .secondary, size: .medium) { dismiss() }
-            }
-            .padding(.top, 4)
+        } footer: {
+            // Главное действие закреплено внизу: до него дотягивается большой
+            // палец, и оно не уезжает вместе с текстом вердикта.
+            TGButton(title: "Вывожу", systemImage: "figure.walk.departure") { startOuting() }
+            TGButton(title: verdict.alternativeAction, variant: .secondary, size: .medium) { dismiss() }
         }
         .presentationDetents([.medium, .large])
         .task { evaluate() }

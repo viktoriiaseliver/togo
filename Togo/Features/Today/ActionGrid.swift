@@ -150,7 +150,7 @@ struct CareRow: View {
                         Text(tasks.map(\.title).joined(separator: " · "))
                             .textStyle(AppFont.caption)
                             .foregroundStyle(Token.Ink.secondary)
-                            .fixedSize(horizontal: false, vertical: true)
+                            .wraps()
                     }
                     Spacer(minLength: 8)
                     Image(systemName: "chevron.right")

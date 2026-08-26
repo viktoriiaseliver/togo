@@ -11,11 +11,11 @@ struct TGSectionHeader: View {
                 .textStyle(AppFont.micro.color(Token.Ink.faint))
                 .textCase(.uppercase)
                 .kerning(0.6)
-                .fixedSize(horizontal: false, vertical: true)
+                .wraps()
             if let subtitle {
                 Text(subtitle)
                     .textStyle(AppFont.caption)
-                    .fixedSize(horizontal: false, vertical: true)
+                    .wraps()
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -31,7 +31,7 @@ struct TGExplainer: View {
     var body: some View {
         Text(text)
             .textStyle(AppFont.caption)
-            .fixedSize(horizontal: false, vertical: true)
+            .wraps()
             .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
@@ -83,7 +83,7 @@ struct TGListRow: View {
     private var titleText: some View {
         Text(title)
             .textStyle(AppFont.body.color(tone))
-            .fixedSize(horizontal: false, vertical: true)
+            .wraps()
             .multilineTextAlignment(.leading)
     }
 
@@ -92,7 +92,7 @@ struct TGListRow: View {
         if let value {
             Text(value)
                 .textStyle(AppFont.caption)
-                .fixedSize(horizontal: false, vertical: true)
+                .wraps()
         }
     }
 
@@ -134,7 +134,7 @@ struct TGStat: View {
             Text(caption)
                 .textStyle(AppFont.micro)
                 .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
+                .wraps()
         }
         .frame(maxWidth: .infinity)
         .accessibilityElement(children: .combine)

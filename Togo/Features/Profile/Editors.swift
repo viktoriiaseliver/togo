@@ -130,7 +130,8 @@ struct CareTaskEditorSheet: View {
         TGSheet(
             title: isNew ? "Новое напоминание" : title,
             subtitle: "попадёт в утренний бриф, а не в отдельный пуш",
-            closeTitle: isNew ? "Отмена" : "Закрыть"
+            closeTitle: isNew ? "Отмена" : "Закрыть",
+            hasUnsavedChanges: isNew && !title.trimmingCharacters(in: .whitespaces).isEmpty
         ) {
             TGCard(spacing: 0) {
                 LabeledField(label: "Что делаем") {
@@ -324,7 +325,9 @@ struct MedicationEditorSheet: View {
         TGSheet(
             title: isNew ? "Новый препарат" : name,
             subtitle: "доза по часам — одна из трёх вещей, которым можно прерывать человека",
-            closeTitle: isNew ? "Отмена" : "Закрыть"
+            closeTitle: isNew ? "Отмена" : "Закрыть",
+            hasUnsavedChanges: isNew && !(name + doseText + prescriber)
+                .trimmingCharacters(in: .whitespaces).isEmpty
         ) {
             TGCard(spacing: 0) {
                 LabeledField(label: "Название") {

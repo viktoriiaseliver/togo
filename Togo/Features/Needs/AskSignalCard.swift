@@ -103,18 +103,18 @@ struct AskSignalCard: View {
                 .textStyle(AppFont.bodyEmphasis)
             Text("Не открывать дверь в момент лая — подождать одну-две секунды тишины и открыть тогда. Открывается дверь после тишины — закрепляется тишина. Ругать не нужно: лай не проступок, это то, что работало.")
                 .textStyle(AppFont.caption)
-                .fixedSize(horizontal: false, vertical: true)
+                .wraps()
             Text("Если лай не уходит за две недели или появился резко — это может быть не поведение, а дискомфорт. Тогда к врачу, а не к занятиям.")
                 .textStyle(AppFont.caption)
-                .fixedSize(horizontal: false, vertical: true)
+                .wraps()
         } else if thisWeek.calm > thisWeek.barking {
             Text("\(dogName) чаще просит спокойно. Дверь открывается после тишины — тишина и закрепляется.")
                 .textStyle(AppFont.caption)
-                .fixedSize(horizontal: false, vertical: true)
+                .wraps()
         } else {
             Text("Пока поровну. Смотреть надо не на отдельную неделю, а на то, куда идёт соотношение.")
                 .textStyle(AppFont.caption)
-                .fixedSize(horizontal: false, vertical: true)
+                .wraps()
         }
     }
 }

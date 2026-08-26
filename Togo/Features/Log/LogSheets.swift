@@ -79,11 +79,14 @@ struct StoolSheet: View {
                 )
             }
 
+            TGExplainer(text: flags.isEmpty
+                ? "Бристольская шкала 1–7 существует, но только в базе и в отчёте врачу — выбирать её руками не нужно."
+                : "Подтверждение нужно потому, что запись с особенностью уходит в медицинскую часть и попадает в отчёт врачу.")
+        } footer: {
+            // Кнопка появляется, только когда отмечены особенности: без них
+            // форма уже записана, и подтверждать нечего.
             if !flags.isEmpty {
                 TGButton(title: "Подтвердить запись") { confirm() }
-                TGExplainer(text: "Подтверждение нужно потому, что запись с особенностью уходит в медицинскую часть и попадает в отчёт врачу.")
-            } else {
-                TGExplainer(text: "Бристольская шкала 1–7 существует, но только в базе и в отчёте врачу — выбирать её руками не нужно.")
             }
         }
         .presentationDetents([.large])
@@ -132,11 +135,36 @@ struct QuantitySheet: View {
     let unit: String
     let step: Int
     let range: ClosedRange<Int>
-    @State var amount: Int
     var explainer: String?
     var onSave: (Int) -> Void
 
+    /// Начальное значение приходит снаружи, но живёт как состояние.
+    /// Просто `@State var amount: Int` с присваиванием из параметра —
+    /// смелл: SwiftUI обновит его только при первом создании, и это
+    /// поведение легко принять за ошибку.
+    @State private var amount: Int
+
     @Environment(\.dismiss) private var dismiss
+
+    init(
+        title: String,
+        subtitle: String?,
+        unit: String,
+        step: Int,
+        range: ClosedRange<Int>,
+        amount: Int,
+        explainer: String? = nil,
+        onSave: @escaping (Int) -> Void
+    ) {
+        self.title = title
+        self.subtitle = subtitle
+        self.unit = unit
+        self.step = step
+        self.range = range
+        self.explainer = explainer
+        self.onSave = onSave
+        _amount = State(initialValue: amount)
+    }
 
     var body: some View {
         TGSheet(title: title, subtitle: subtitle) {
@@ -144,6 +172,7 @@ struct QuantitySheet: View {
                 TGStepper(value: $amount, unit: unit, step: step, range: range)
             }
             if let explainer { TGExplainer(text: explainer) }
+        } footer: {
             TGButton(title: "Записать") {
                 onSave(amount)
                 dismiss()
@@ -233,14 +262,17 @@ struct NoteSheet: View {
     @State private var text = ""
 
     var body: some View {
-        TGSheet(title: "Заметка", subtitle: "то, что не попадает ни в одну кнопку") {
+        TGSheet(title: "Заметка", subtitle: "то, что не попадает ни в одну кнопку",
+                hasUnsavedChanges: !text.trimmingCharacters(in: .whitespaces).isEmpty) {
             TGCard {
                 TextEditor(text: $text)
                     .textStyle(AppFont.body)
                     .frame(minHeight: 120)
                     .scrollContentBackground(.hidden)
             }
-            TGButton(title: "Записать", isEnabled: !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty) {
+        } footer: {
+            TGButton(title: "Записать",
+                     isEnabled: !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty) {
                 EventLog(context: context, appState: appState)
                     .record(.note, dog: dog, confirmation: "Записано · Заметка") { event in
                         event.note = text

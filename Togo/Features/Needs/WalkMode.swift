@@ -78,29 +78,70 @@ struct WalkModeScreen: View {
 
     // MARK: Прогулка идёт
 
+    /// Отметки закреплены, список прокручивается.
+    ///
+    /// Было наоборот: сетка отметок уезжала вверх вместе с прокруткой,
+    /// а «Пауза» и «Закончить» оставались приколоты внизу. То есть самые
+    /// частые кнопки убегали от пальца, а самые редкие занимали лучшее
+    /// место — на морозе одной рукой это просто не работает.
     private func walkSheet(_ session: ActiveSession) -> some View {
-        TGSheet(
-            title: Fmt.stopwatch(session.duration(at: now)),
-            subtitle: (session.isPaused ? session.kind.pausedTitle : session.kind.runningTitle)
-                + " · " + session.tally,
-            closeTitle: "Свернуть"
-        ) {
-            markGrid
-            if !session.marks.isEmpty { marksList(session) }
-        } footer: {
-            HStack(spacing: Token.Space.s10) {
-                TGButton(title: session.isPaused ? "Продолжить" : "Пауза",
-                         variant: .secondary, size: .medium,
-                         systemImage: session.isPaused ? "play.fill" : "pause.fill",
-                         fullWidth: true) {
-                    togglePause()
+        VStack(spacing: 0) {
+            TGSheetHandle()
+            header(session)
+
+            if session.marks.isEmpty {
+                Spacer(minLength: 0)
+            } else {
+                ScrollView {
+                    marksList(session)
+                        .padding(.horizontal, Token.Spacing.screenPadding)
+                        .padding(.bottom, Token.Space.s10)
                 }
-                TGButton(title: "Закончить", variant: .secondary, size: .medium,
-                         systemImage: "checkmark", fullWidth: true) {
-                    finish()
+                .scrollBounceBehavior(.basedOnSize)
+            }
+
+            VStack(spacing: Token.Space.s10) {
+                markGrid
+                HStack(spacing: Token.Space.s10) {
+                    TGButton(title: session.isPaused ? "Продолжить" : "Пауза",
+                             variant: .secondary, size: .medium,
+                             systemImage: session.isPaused ? "play.fill" : "pause.fill",
+                             fullWidth: true) {
+                        togglePause()
+                    }
+                    TGButton(title: "Закончить", variant: .secondary, size: .medium,
+                             systemImage: "checkmark", fullWidth: true) {
+                        finish()
+                    }
                 }
             }
+            .padding(.horizontal, Token.Spacing.screenPadding)
+            .padding(.top, Token.Space.s10)
+            .padding(.bottom, Token.Space.s8)
+            .background(.regularMaterial)
         }
+        .background(Token.Surface.screen)
+    }
+
+    /// Часы и сводка — то, на что смотрят, но не нажимают.
+    private func header(_ session: ActiveSession) -> some View {
+        HStack(alignment: .top, spacing: Token.Space.s12) {
+            VStack(alignment: .leading, spacing: Token.Space.s4) {
+                Text(Fmt.stopwatch(session.duration(at: now)))
+                    .textStyle(AppFont.screenTitle)
+                Text((session.isPaused ? session.kind.pausedTitle : session.kind.runningTitle)
+                     + " · " + session.tally)
+                    .textStyle(AppFont.caption)
+                    .wraps()
+            }
+            Spacer(minLength: 0)
+            TGCloseButton(title: "Свернуть") { dismiss() }
+                .padding(.trailing, -Token.Space.s6)
+                .padding(.top, -Token.Space.s6)
+        }
+        .padding(.horizontal, Token.Spacing.screenPadding)
+        .padding(.top, Token.Space.s8)
+        .padding(.bottom, Token.Space.s12)
     }
 
     @ViewBuilder
@@ -387,7 +428,7 @@ struct ActiveSessionCard: View {
             }
             Text("\(session.startedBy) · с \(Fmt.clock(session.startedAt)) · \(session.tally)")
                 .textStyle(AppFont.caption)
-                .fixedSize(horizontal: false, vertical: true)
+                .wraps()
         }
         .contentShape(Rectangle())
         .onTapGesture(perform: onOpen)

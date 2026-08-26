@@ -18,18 +18,8 @@ struct DowngradeScreen: View {
             TGCard {
                 TGSectionHeader(title: "перестанет работать")
                 ForEach(SubscriptionStore.lostOnDowngrade, id: \.1) { symbol, title, detail in
-                    HStack(alignment: .top, spacing: Token.Space.s12) {
-                        Image(systemName: symbol)
-                            .font(.system(size: Token.Size.iconMd, weight: .medium))
-                            .foregroundStyle(Token.Status.waitingText)
-                            .frame(width: Token.Space.s24)
-                            .accessibilityHidden(true)
-                        VStack(alignment: .leading, spacing: Token.Space.s2) {
-                            Text(title).textStyle(AppFont.bodyEmphasis)
-                            Text(detail).textStyle(AppFont.caption)
-                        }
-                        Spacer(minLength: 0)
-                    }
+                    TGIconRow(symbol: symbol, title: title, detail: detail,
+                              tint: Token.Status.waitingText)
                 }
             }
 

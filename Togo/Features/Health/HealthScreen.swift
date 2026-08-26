@@ -65,27 +65,15 @@ struct HealthScreen: View {
 
     private var sectionsGrid: some View {
         TGCard(spacing: 0) {
-            NavigationLink { ProtocolScreen(dog: dog) } label: {
-                TGListRow(title: "Протокол контроля", value: "T0 / +4 / +6", systemImage: "timer")
-            }
+                        TGLink(title: "Протокол контроля", value: "T0 / +4 / +6", systemImage: "timer") { ProtocolScreen(dog: dog) }
             TGDivider()
-            NavigationLink { WeightScreen(dog: dog) } label: {
-                TGListRow(title: "Вес и симптомы",
-                          value: dog.map { Fmt.weight($0.weightKg) },
-                          systemImage: "scalemass")
-            }
+                        TGLink(title: "Вес и симптомы", value: dog.map { Fmt.weight($0.weightKg) }, systemImage: "scalemass") { WeightScreen(dog: dog) }
             TGDivider()
-            NavigationLink { CareScreen(dog: dog) } label: {
-                TGListRow(title: "Прививки и визиты", systemImage: "syringe")
-            }
+                        TGLink(title: "Прививки и визиты", systemImage: "syringe") { CareScreen(dog: dog) }
             TGDivider()
-            NavigationLink { VetReportScreen(dog: dog) } label: {
-                TGListRow(title: "Отчёт врачу", systemImage: "doc.text")
-            }
+                        TGLink(title: "Отчёт врачу", systemImage: "doc.text") { VetReportScreen(dog: dog) }
             TGDivider()
-            NavigationLink { ProcedurePrepScreen() } label: {
-                TGListRow(title: "Подготовка к процедурам", systemImage: "hand.raised")
-            }
+                        TGLink(title: "Подготовка к процедурам", systemImage: "hand.raised") { ProcedurePrepScreen() }
         }
         .buttonStyle(.plain)
     }

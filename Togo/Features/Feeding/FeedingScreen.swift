@@ -136,11 +136,7 @@ struct FeedingScreen: View {
                     }
                 }
 
-                NavigationLink { FoodStockScreen(dog: dog) } label: {
-                    TGListRow(title: stocks.isEmpty ? "Записать корм" : "Поправить запас",
-                              systemImage: "shippingbox")
-                }
-                .buttonStyle(.plain)
+                                TGLink(title: stocks.isEmpty ? "Записать корм" : "Поправить запас", systemImage: "shippingbox") { FoodStockScreen(dog: dog) }
             }
         }
     }
@@ -214,18 +210,7 @@ struct FeedingScreen: View {
                 }
             }
             .frame(height: 150)
-            .chartYAxis {
-                AxisMarks(position: .leading) { _ in
-                    AxisGridLine().foregroundStyle(Token.Surface.hairline)
-                    AxisValueLabel().foregroundStyle(Token.Ink.faint)
-                }
-            }
-            .chartXAxis {
-                AxisMarks(values: .stride(by: .day, count: 4)) { _ in
-                    AxisValueLabel(format: .dateTime.day().month(.abbreviated))
-                        .foregroundStyle(Token.Ink.faint)
-                }
-            }
+            .tgChartAxes(xStrideDays: 4)
             TGExplainer(text: "Дни без записей в среднее не попадают: пустой день — это «дневник не вели», а не «не ел».")
         }
     }
@@ -259,10 +244,7 @@ struct FeedingScreen: View {
                     applySchedule()
                 }
                 if let dog {
-                    NavigationLink { ScheduleScreen(dog: dog) } label: {
-                        TGListRow(title: "Настроить режим вручную", systemImage: "clock")
-                    }
-                    .buttonStyle(.plain)
+                                        TGLink(title: "Настроить режим вручную", systemImage: "clock") { ScheduleScreen(dog: dog) }
                 }
             }
             if let dog {

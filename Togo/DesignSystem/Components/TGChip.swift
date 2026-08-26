@@ -15,12 +15,12 @@ struct TGChip: View {
                     Text(title)
                         .textStyle(AppFont.captionEmphasis.color(foreground))
                         .multilineTextAlignment(.center)
-                        .fixedSize(horizontal: false, vertical: true)
+                        .wraps()
                     if let subtitle {
                         Text(subtitle)
                             .textStyle(AppFont.micro.color(Token.Ink.faint))
                             .multilineTextAlignment(.center)
-                            .fixedSize(horizontal: false, vertical: true)
+                            .wraps()
                     }
                 }
                 .padding(.horizontal, Token.Space.s14)

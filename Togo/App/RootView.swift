@@ -81,7 +81,7 @@ struct UndoToastView: View {
                 Text(toast.message)
                     .textStyle(AppFont.caption)
                     .foregroundStyle(Token.Ink.primary)
-                    .fixedSize(horizontal: false, vertical: true)
+                    .wraps()
                 Spacer(minLength: 8)
                 Button("Отменить") { undo(toast) }
                     .textStyle(AppFont.captionEmphasis)

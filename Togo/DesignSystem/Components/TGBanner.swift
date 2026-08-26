@@ -21,11 +21,11 @@ struct TGBanner: View {
                 Text(title)
                     .font(.system(size: Token.Component.Banner.titleSize, weight: Token.FontWeight.semibold))
                     .foregroundStyle(tone.foreground)
-                    .fixedSize(horizontal: false, vertical: true)
+                    .wraps()
                 if let subtitle {
                     Text(subtitle)
                         .textStyle(AppFont.caption.color(tone.foreground.opacity(0.85)))
-                        .fixedSize(horizontal: false, vertical: true)
+                        .wraps()
                 }
             }
             Spacer(minLength: 0)

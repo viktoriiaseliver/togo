@@ -77,7 +77,7 @@ struct BackupScreen: View {
                         Text(cloud.title).textStyle(AppFont.bodyEmphasis)
                         Text(cloud.detail)
                             .textStyle(AppFont.caption)
-                            .fixedSize(horizontal: false, vertical: true)
+                            .wraps()
                     }
                 }
             } else {
@@ -145,7 +145,7 @@ struct BackupScreen: View {
                         .foregroundStyle(Token.Ink.faint)
                         .padding(.top, 7)
                         .accessibilityHidden(true)
-                    Text(line).textStyle(AppFont.caption).fixedSize(horizontal: false, vertical: true)
+                    Text(line).textStyle(AppFont.caption).wraps()
                     Spacer(minLength: 0)
                 }
             }

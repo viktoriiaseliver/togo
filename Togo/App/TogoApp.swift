@@ -111,7 +111,7 @@ struct StorageFailureScreen: View {
                             .accessibilityHidden(true)
                         Text(step)
                             .textStyle(AppFont.caption)
-                            .fixedSize(horizontal: false, vertical: true)
+                            .wraps()
                         Spacer(minLength: 0)
                     }
                 }
@@ -121,7 +121,7 @@ struct StorageFailureScreen: View {
                 TGSectionHeader(title: "что записало приложение при запуске")
                 Text(StartupLog.read())
                     .textStyle(AppFont.numeric(12, weight: .regular))
-                    .fixedSize(horizontal: false, vertical: true)
+                    .wraps()
                 TGExplainer(text: "Здесь только этапы запуска — ничего о собаке. Эти строки помогают понять причину.")
             }
 

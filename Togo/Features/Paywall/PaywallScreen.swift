@@ -66,17 +66,7 @@ struct PaywallScreen: View {
         TGCard {
             TGSectionHeader(title: "что открывает")
             ForEach(SubscriptionStore.proFeatures, id: \.1) { symbol, title, detail in
-                HStack(alignment: .top, spacing: Token.Space.s12) {
-                    Image(systemName: symbol)
-                        .font(.system(size: Token.Size.iconMd, weight: .medium))
-                        .foregroundStyle(Token.Action.primary)
-                        .frame(width: Token.Space.s24)
-                    VStack(alignment: .leading, spacing: Token.Space.s2) {
-                        Text(title).textStyle(AppFont.bodyEmphasis)
-                        Text(detail).textStyle(AppFont.caption)
-                    }
-                    Spacer(minLength: 0)
-                }
+                TGIconRow(symbol: symbol, title: title, detail: detail)
             }
         }
     }

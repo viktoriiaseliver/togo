@@ -15,7 +15,7 @@ struct TGLoading: View {
                 .tint(Token.Ink.secondary)
             Text(message)
                 .textStyle(AppFont.caption)
-                .fixedSize(horizontal: false, vertical: true)
+                .wraps()
             Spacer(minLength: 0)
         }
         .frame(maxWidth: .infinity, alignment: .leading)

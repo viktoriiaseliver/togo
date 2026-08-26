@@ -191,18 +191,7 @@ struct HistoryChart: View {
             .foregroundStyle(point.isAlarm ? Token.Status.overdueText : Token.Ink.silhouette)
             .cornerRadius(2)
         }
-        .chartYAxis {
-            AxisMarks(position: .leading) { _ in
-                AxisGridLine().foregroundStyle(Token.Surface.hairline)
-                AxisValueLabel().foregroundStyle(Token.Ink.faint)
-            }
-        }
-        .chartXAxis {
-            AxisMarks(values: .stride(by: .day, count: 7)) { value in
-                AxisValueLabel(format: .dateTime.day().month(.abbreviated))
-                    .foregroundStyle(Token.Ink.faint)
-            }
-        }
+        .tgChartAxes()
     }
 }
 

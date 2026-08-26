@@ -40,12 +40,7 @@ struct ProfileScreen: View {
                 TextField("Acana ягнёнок", text: Binding(get: { dog.foodBrand }, set: { dog.foodBrand = $0 }))
             }
             TGDivider()
-            NavigationLink { ScheduleScreen(dog: dog) } label: {
-                TGListRow(title: "Режим и порция",
-                          value: "\(dog.portionGrams) г × \(dog.mealsPerDay)",
-                          systemImage: "clock")
-            }
-            .buttonStyle(.plain)
+                        TGLink(title: "Режим и порция", value: "\(dog.portionGrams) г × \(dog.mealsPerDay)", systemImage: "clock") { ScheduleScreen(dog: dog) }
             TGDivider()
             LabeledField(label: "Нельзя") {
                 TextField("курица, кукуруза", text: Binding(

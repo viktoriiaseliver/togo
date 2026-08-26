@@ -110,7 +110,7 @@ struct EmergencyScreen: View {
                         if expanded == item.id {
                             Text(item.detail)
                                 .textStyle(AppFont.caption)
-                                .fixedSize(horizontal: false, vertical: true)
+                                .wraps()
                             Text(item.urgency.title)
                                 .textStyle(AppFont.captionEmphasis.color(Token.Ink.primary))
                         }
@@ -139,7 +139,7 @@ struct EmergencyScreen: View {
                     Text(value)
                         .textStyle(AppFont.bodyEmphasis)
                         .multilineTextAlignment(.trailing)
-                        .fixedSize(horizontal: false, vertical: true)
+                        .wraps()
                 }
                 .frame(minHeight: 38)
             }

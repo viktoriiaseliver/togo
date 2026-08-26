@@ -48,7 +48,7 @@ struct TGButton: View {
                     .multilineTextAlignment(.center)
                     // Длинная подпись переносится, а кнопка становится выше.
                     // Ужимать текст на главном действии нельзя.
-                    .fixedSize(horizontal: false, vertical: true)
+                    .wraps()
             } icon: {
                 if let systemImage {
                     Image(systemName: systemImage).accessibilityHidden(true)

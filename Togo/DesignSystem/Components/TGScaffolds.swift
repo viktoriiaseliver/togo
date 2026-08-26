@@ -29,8 +29,18 @@ struct TGSheet<Content: View, Footer: View>: View {
     var closeTitle: String = "Закрыть"
     /// Что делать при закрытии, если недостаточно просто убрать шторку.
     var onClose: (() -> Void)?
+    /// Есть ли несохранённые правки.
+    ///
+    /// Пока форма пустая, шторка закрывается свайпом как обычно. Как только
+    /// человек что-то ввёл, свайп перестаёт закрывать, а крестик спрашивает.
+    /// Правило Apple: если действие теряет введённое, его подтверждают —
+    /// смахнуть шторку вниз слишком легко случайно, а форму потом набирать
+    /// заново.
+    var hasUnsavedChanges: Bool = false
     @ViewBuilder var content: Content
     @ViewBuilder var footer: Footer
+
+    @State private var isConfirmingDiscard = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -48,6 +58,19 @@ struct TGSheet<Content: View, Footer: View>: View {
         }
         .background(Token.Component.Sheet.background)
         .themeSurface(.screen)
+        .interactiveDismissDisabled(hasUnsavedChanges)
+        .confirmationDialog("Закрыть без сохранения?", isPresented: $isConfirmingDiscard,
+                            titleVisibility: .visible) {
+            Button("Не сохранять", role: .destructive) { close() }
+            Button("Продолжить заполнять", role: .cancel) {}
+        } message: {
+            Text("Введённое не сохранится.")
+        }
+    }
+
+    private func close() {
+        onClose?()
+        dismiss()
     }
 
     private var header: some View {
@@ -62,18 +85,13 @@ struct TGSheet<Content: View, Footer: View>: View {
 
             Spacer(minLength: 0)
 
-            Button {
-                onClose?()
-                dismiss()
-            } label: {
-                Image(systemName: "xmark")
-                    .font(.system(size: 13, weight: .bold))
-                    .foregroundStyle(Token.Ink.secondary)
-                    .frame(width: 30, height: 30)
-                    .background(Token.Surface.sunken, in: Circle())
+            TGCloseButton(title: closeTitle) {
+                if hasUnsavedChanges { isConfirmingDiscard = true } else { close() }
             }
-            .buttonStyle(.plain)
-            .accessibilityLabel(closeTitle)
+            // Цель 44×44 тянет заголовок вниз — компенсируем, чтобы
+            // крестик остался на одной линии с первой строкой.
+            .padding(.trailing, -Token.Space.s6)
+            .padding(.top, -Token.Space.s6)
         }
         .padding(.top, Token.Space.s8)
     }
