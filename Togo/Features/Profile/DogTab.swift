@@ -94,7 +94,10 @@ struct DogTab: View {
             TGDivider()
                         TGLink(title: "Вес", value: Fmt.weight(dog.weightKg), systemImage: "scalemass") { WeightScreen(dog: dog) }
             TGDivider()
-                        TGLink(title: "Перенос навыка", systemImage: "square.grid.3x3") { TransferMatrixScreen(dog: dog) }
+            TGLink(title: "Перенос навыка", systemImage: "square.grid.3x3") { TransferMatrixScreen(dog: dog) }
+            TGDivider()
+            TGLink(title: "Занятия и шаги", value: trainingSummary(dog),
+                   systemImage: "list.bullet") { TrainingLibraryScreen(dog: dog) }
         }
         .buttonStyle(.plain)
     }
@@ -102,6 +105,11 @@ struct DogTab: View {
     private func careSummary(_ dog: Dog) -> String? {
         let due = dog.careTasks.filter { $0.isDue() }.count
         return due > 0 ? "\(due) сегодня" : nil
+    }
+
+    private func trainingSummary(_ dog: Dog) -> String? {
+        let count = dog.trainingSessions.count
+        return count == 0 ? nil : Fmt.plural(count, "занятие", "занятия", "занятий")
     }
 
     // MARK: Документы и цикл

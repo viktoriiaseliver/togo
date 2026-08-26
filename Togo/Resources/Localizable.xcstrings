@@ -241,6 +241,30 @@
       },
       "comment": "fullSummary"
     },
+    "%@ · %@ м": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · %@ м"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "parts"
+    },
     "%@ · %@ подряд": {
       "extractionState": "manual",
       "localizations": {
@@ -288,6 +312,30 @@
         }
       },
       "comment": "count"
+    },
+    "%@ · %@. Запись в ленте останется — её убирают там же, где и любую другую.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · %@. Запись в ленте останется — её убирают там же, где и любую другую."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
     },
     "%@ · %@. Из графика и из коридора веса запись тоже уйдёт.": {
       "extractionState": "manual",
@@ -623,7 +671,7 @@
           }
         }
       },
-      "comment": "resultCard"
+      "comment": "parts"
     },
     "%@ из %@ в момент": {
       "extractionState": "manual",
@@ -1032,6 +1080,30 @@
         }
       },
       "comment": "count"
+    },
+    "%@. Из матрицы переноса он тоже уйдёт. Занятия, которые уже прошли, останутся.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@. Из матрицы переноса он тоже уйдёт. Занятия, которые уже прошли, останутся."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
     },
     "%@: %@ %@ на месяц": {
       "extractionState": "manual",
@@ -1520,6 +1592,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "privacy@togo.app — на письмо отвечает человек, обычно в течение двух рабочих дней."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
+    },
+    "«%@» пропадёт вместе с накопленными попытками. Заготовки можно вернуть, когда список опустеет.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«%@» пропадёт вместе с накопленными попытками. Заготовки можно вернуть, когда список опустеет."
           }
         },
         "en": {
@@ -2351,6 +2447,30 @@
         }
       },
       "comment": "title"
+    },
+    "Вернуть заготовки": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вернуть заготовки"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
     },
     "Вернуться к дневнику": {
       "extractionState": "manual",
@@ -6936,6 +7056,30 @@
       },
       "comment": "body"
     },
+    "Занятий пока не было": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Занятий пока не было"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
+    },
     "Занятия": {
       "extractionState": "manual",
       "localizations": {
@@ -6943,6 +7087,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Занятия"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
+    },
+    "Занятия и шаги": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Занятия и шаги"
           }
         },
         "en": {
@@ -10079,6 +10247,30 @@
       },
       "comment": "body"
     },
+    "Лишнее — тапни и удали.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Лишнее — тапни и удали."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "stepsCard"
+    },
     "Ложится": {
       "extractionState": "manual",
       "localizations": {
@@ -10950,6 +11142,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Навык не «выучен» или «не выучен». «Ко мне» дома и «ко мне» на улице рядом с другой собакой — два разных навыка."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
+    },
+    "Навыки для процедур убраны. Заготовки можно вернуть — это три самых нужных: дать лапу, стоять при осмотре и залезть в переноску.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Навыки для процедур убраны. Заготовки можно вернуть — это три самых нужных: дать лапу, стоять при осмотре и залезть в переноску."
           }
         },
         "en": {
@@ -13607,6 +13823,30 @@
       },
       "comment": "count"
     },
+    "Отмечено по напоминанию из ухода. Само напоминание правится там же — здесь меняется только эта запись.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отмечено по напоминанию из ухода. Само напоминание правится там же — здесь меняется только эта запись."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "origin"
+    },
     "Отмечено то, что нужно почти всем. Зубы — потому что налёт твердеет за сутки, их чистят каждый день. Остальное у каждой собаки своё, и это можно поменять когда угодно.": {
       "extractionState": "manual",
       "localizations": {
@@ -14118,6 +14358,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Первый тап записывает, второй уточняет. Вопросов «почему» и «чья вина» приложение не задаёт."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
+    },
+    "Первый шаг заведётся сам, как только начнёшь занятие. Здесь потом будет видно, что накопилось, и лишнее можно будет убрать.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Первый шаг заведётся сам, как только начнёшь занятие. Здесь потом будет видно, что накопилось, и лишнее можно будет убрать."
           }
         },
         "en": {
@@ -15166,6 +15430,30 @@
         }
       },
       "comment": "forecastCard"
+    },
+    "Показаны последние двадцать из %@.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Показаны последние двадцать из %@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "sessionsCard"
     },
     "Покупка не прошла. Попробуй ещё раз.": {
       "extractionState": "manual",
@@ -16774,6 +17062,30 @@
         }
       },
       "comment": "active"
+    },
+    "Приём по схеме лечения. Если препарат переименовали, здесь всё равно видно, какой именно отметили.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Приём по схеме лечения. Если препарат переименовали, здесь всё равно видно, какой именно отметили."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "origin"
     },
     "Приёмы и пропуски": {
       "extractionState": "manual",
@@ -18407,6 +18719,30 @@
       },
       "comment": "detail"
     },
+    "След занятия. Само занятие лежит в «Занятиях и шагах» — там его можно и убрать.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "След занятия. Само занятие лежит в «Занятиях и шагах» — там его можно и убрать."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "result"
+    },
     "Следующее занятие": {
       "extractionState": "manual",
       "localizations": {
@@ -19078,6 +19414,30 @@
         }
       },
       "comment": "toxicCard"
+    },
+    "Список пуст": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Список пуст"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
     },
     "Спрашиваем не каждый раз: только когда сигнал меняется или раз в несколько выходов.": {
       "extractionState": "manual",
@@ -20975,6 +21335,30 @@
       },
       "comment": "body"
     },
+    "Убрать навык?": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Убрать навык?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
+    },
     "Убрать поездку": {
       "extractionState": "manual",
       "localizations": {
@@ -21189,7 +21573,7 @@
           }
         }
       },
-      "comment": "history"
+      "comment": "body"
     },
     "Удалить %@?": {
       "extractionState": "manual",
@@ -21318,6 +21702,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Удалить всё"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
+    },
+    "Удалить занятие?": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Удалить занятие?"
           }
         },
         "en": {
@@ -21534,6 +21942,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Удалить схему «%@»?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
+    },
+    "Удалить шаг?": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Удалить шаг?"
           }
         },
         "en": {
@@ -26111,6 +26543,54 @@
       },
       "comment": "noteCard"
     },
+    "занятие": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "занятие"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "count"
+    },
+    "занятий": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "занятий"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "count"
+    },
     "занятия": {
       "extractionState": "manual",
       "localizations": {
@@ -26133,7 +26613,7 @@
           }
         }
       },
-      "comment": "marker"
+      "comment": "sessionsCard"
     },
     "занятия и «не брал еду» останутся": {
       "extractionState": "manual",
@@ -26542,6 +27022,30 @@
         }
       },
       "comment": "summary"
+    },
+    "из них складывается матрица переноса": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "из них складывается матрица переноса"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "stepsCard"
     },
     "из этого окна раскладываются кормления и выходы": {
       "extractionState": "manual",
@@ -28271,6 +28775,30 @@
       },
       "comment": "title"
     },
+    "не в счёт": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "не в счёт"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "sessionsCard"
+    },
     "не вызывай рвоту сама — при части веществ это делает хуже": {
       "extractionState": "manual",
       "localizations": {
@@ -29447,6 +29975,30 @@
       },
       "comment": "profile"
     },
+    "откуда эта запись": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "откуда эта запись"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "originCard"
+    },
     "отметку поставили на ходу — допиши словами": {
       "extractionState": "manual",
       "localizations": {
@@ -30238,6 +30790,30 @@
         }
       },
       "comment": "recentMarks"
+    },
+    "последние сверху": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "последние сверху"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "sessionsCard"
     },
     "поставь руку один раз — потом маркер уйдёт на кнопку громкости": {
       "extractionState": "manual",
@@ -33646,6 +34222,30 @@
         }
       },
       "comment": "detail"
+    },
+    "шаги": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "шаги"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "stepsCard"
     },
     "щелчок языком": {
       "extractionState": "manual",

@@ -227,3 +227,109 @@ struct DayPlanGapTests {
         #expect(event.medicationID == medication.id)
     }
 }
+
+@Suite("Пробелы · обучение")
+@MainActor
+struct TrainingGapTests {
+
+    private func setup() throws -> (ModelContext, Dog) {
+        let container = try ModelContainer(
+            for: Dog.self,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+        )
+        let context = ModelContext(container)
+        let dog = Dog(name: "Стич", weightKg: 12)
+        context.insert(dog)
+        return (context, dog)
+    }
+
+    @Test("Удаление шага не стирает уже проведённые занятия")
+    func deletingStepKeepsSessions() throws {
+        // Шаг заводится сам при первом занятии и сам плодит следующие.
+        // Убрать «Ко мне · Коридор · 2 м», заведённое на пробу, было
+        // нельзя — оно оставалось в матрице переноса навсегда.
+        let (context, dog) = try setup()
+
+        let step = TrainingStep(cue: "Ко мне", place: "Коридор",
+                                person: "Виктория", distanceMeters: 2, order: 0)
+        step.dog = dog
+        context.insert(step)
+
+        let session = TrainingSession(cue: "Ко мне", place: "Коридор",
+                                      person: "Виктория", distanceMeters: 2)
+        session.dog = dog
+        context.insert(session)
+        try context.save()
+
+        context.delete(step)
+        try context.save()
+
+        let steps = try context.fetch(FetchDescriptor<TrainingStep>())
+        let sessions = try context.fetch(FetchDescriptor<TrainingSession>())
+        #expect(steps.isEmpty)
+        #expect(sessions.count == 1)
+    }
+
+    @Test("Удаление занятия не трогает запись в ленте")
+    func deletingSessionKeepsLogEvent() throws {
+        let (context, dog) = try setup()
+
+        let session = TrainingSession(cue: "Ко мне", place: "Дома",
+                                      person: "Виктория", distanceMeters: 2)
+        session.dog = dog
+        context.insert(session)
+
+        let event = LogEvent(kind: .training, date: Date(), authorName: "Виктория")
+        event.trainingSessionID = session.id
+        event.dog = dog
+        context.insert(event)
+        try context.save()
+
+        context.delete(session)
+        try context.save()
+
+        let events = try context.fetch(FetchDescriptor<LogEvent>())
+        #expect(events.count == 1)
+        // Связь осталась висеть — и это правильно: запись о занятии
+        // в дневнике переживает удаление разбора этого занятия.
+        #expect(events[0].trainingSessionID == session.id)
+    }
+
+    @Test("Заготовки навыков для процедур существуют и их можно вернуть")
+    func procedureSeedIsRecoverable() {
+        // Условием подстановки было «список пуст» — то есть удалить навык
+        // было нельзя даже теоретически: он возвращался при заходе.
+        let seed = SeedData.procedureSkills()
+        #expect(seed.count >= 3)
+        #expect(seed.allSatisfy { !$0.title.isEmpty })
+    }
+}
+
+@Suite("Пробелы · откуда запись")
+@MainActor
+struct OriginGapTests {
+
+    @Test("Запись помнит напоминание, по которому её отметили")
+    func careEventRemembersTask() {
+        let task = CareTask(title: "Когти", detail: "подстричь",
+                            kind: .periodic, intervalDays: 21, category: .grooming)
+        let event = LogEvent(kind: .care, date: Date(), authorName: "Виктория")
+        event.careTaskID = task.id
+
+        #expect(event.careTaskID == task.id)
+    }
+
+    @Test("Переименование препарата не путает старые записи")
+    func doseSurvivesRename() {
+        // В записи лежало имя строкой. Препарат переименовали — и понять,
+        // какой именно отметили, стало нельзя.
+        let medication = Medication(name: "Метронидазол", doseText: "полтаблетки", times: [8 * 60])
+        let event = LogEvent(kind: .dose, date: Date(), authorName: "Виктория")
+        event.medicationID = medication.id
+        event.note = "Метронидазол · полтаблетки"
+
+        medication.name = "Метрогил"
+
+        #expect(event.medicationID == medication.id)
+    }
+}

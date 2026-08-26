@@ -192,25 +192,51 @@ struct TransferMatrixScreen: View {
 struct ProcedurePrepScreen: View {
     @Query private var skills: [ProcedureSkill]
     @Environment(\.modelContext) private var context
+    @Environment(AppState.self) private var appState
+
+    /// Заготовки подставляются один раз.
+    ///
+    /// Раньше условием было «список пуст» — то есть удалить навык было
+    /// нельзя даже теоретически: он возвращался при следующем заходе.
+    @AppStorage("procedureSkills.seeded") private var seeded = false
+
+    @State private var removing: ProcedureSkill?
+
+    private var canEdit: Bool { appState.can(.editProfile) }
 
     var body: some View {
         TGScreen {
             TGExplainer(text: "Самое ценное обучение для собаки с регулярными процедурами — не «место», а спокойно дать лапу, стоять при осмотре и самой залезать в переноску.")
 
+            if skills.isEmpty {
+                EmptyStateCard(
+                    systemImage: "hand.raised",
+                    title: "Список пуст",
+                    message: "Навыки для процедур убраны. Заготовки можно вернуть — это три самых нужных: дать лапу, стоять при осмотре и залезть в переноску.",
+                    actionTitle: canEdit ? "Вернуть заготовки" : nil,
+                    action: canEdit ? { seed() } : nil
+                )
+            }
+
             ForEach(skills) { skill in
-                TGCard {
-                    HStack {
-                        VStack(alignment: .leading, spacing: Token.Space.s2) {
-                            Text(skill.title).textStyle(AppFont.bodyEmphasis)
-                            Text(skill.detail).textStyle(AppFont.caption)
+                Button { if canEdit { removing = skill } } label: {
+                    TGCard {
+                        HStack {
+                            VStack(alignment: .leading, spacing: Token.Space.s2) {
+                                Text(skill.title).textStyle(AppFont.bodyEmphasis)
+                                Text(skill.detail).textStyle(AppFont.caption).wraps()
+                            }
+                            Spacer(minLength: Token.Space.s8)
+                            Text(skill.status.title).textStyle(AppFont.caption.color(skill.status.color))
                         }
-                        Spacer(minLength: Token.Space.s8)
-                        Text(skill.status.title).textStyle(AppFont.caption.color(skill.status.color))
+                        if skill.attempts > 0 {
+                            Text("\(skill.successes) из \(skill.attempts)").textStyle(AppFont.numeric(17))
+                        }
                     }
-                    if skill.attempts > 0 {
-                        Text("\(skill.successes) из \(skill.attempts)").textStyle(AppFont.numeric(17))
-                    }
+                    .contentShape(Rectangle())
                 }
+                .buttonStyle(.plain)
+                .disabled(!canEdit)
             }
 
             TGCard {
@@ -221,11 +247,34 @@ struct ProcedurePrepScreen: View {
         }
         .navigationTitle("Процедуры")
         .navigationBarTitleDisplayMode(.large)
-        .task { seedIfEmpty() }
+        .task { seedOnce() }
+        .confirmationDialog("Убрать навык?",
+                            isPresented: Binding(get: { removing != nil },
+                                                 set: { if !$0 { removing = nil } }),
+                            titleVisibility: .visible,
+                            presenting: removing) { skill in
+            Button("Убрать", role: .destructive) { delete(skill) }
+            Button("Отмена", role: .cancel) { removing = nil }
+        } message: { skill in
+            Text("«\(skill.title)» пропадёт вместе с накопленными попытками. Заготовки можно вернуть, когда список опустеет.")
+        }
     }
 
-    private func seedIfEmpty() {
-        guard skills.isEmpty else { return }
+    private func seedOnce() {
+        guard !seeded, skills.isEmpty else { return }
+        seed()
+    }
+
+    private func seed() {
         SeedData.procedureSkills().forEach(context.insert)
+        try? context.save()
+        seeded = true
+    }
+
+    private func delete(_ skill: ProcedureSkill) {
+        context.delete(skill)
+        try? context.save()
+        Haptics.warning()
+        removing = nil
     }
 }

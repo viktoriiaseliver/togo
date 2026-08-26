@@ -293,6 +293,9 @@ struct EventEditSheet: View {
     @Environment(\.modelContext) private var context
     @Environment(AppState.self) private var appState
     @Query private var events: [LogEvent]
+    @Query private var careTasks: [CareTask]
+    @Query private var medications: [Medication]
+    @Query private var trainingSessions: [TrainingSession]
 
     private var event: LogEvent? { events.first { $0.id == eventID } }
 
@@ -370,6 +373,8 @@ struct EventEditSheet: View {
                 }
                 .disabled(!canEdit)
 
+                originCard
+
                 if canEdit {
                 TGButton(title: "Удалить запись", variant: .destructive, size: .medium, systemImage: "trash") {
                     event.deletedAt = Date()
@@ -383,6 +388,51 @@ struct EventEditSheet: View {
             }
         }
         .presentationDetents([.medium, .large])
+    }
+
+    /// Откуда взялась запись.
+    ///
+    /// Связи с задачей ухода, препаратом и занятием писались в модель
+    /// и не читались никем: из ленты нельзя было понять, какое напоминание
+    /// отметили и какое занятие оставило след. Особенно это било по дозам:
+    /// препарат могли переименовать, а в записи оставалось старое имя.
+    @ViewBuilder
+    private var originCard: some View {
+        if let origin {
+            TGCard(spacing: 0) {
+                TGSectionHeader(title: "откуда эта запись")
+                TGListRow(title: origin.title, value: origin.detail,
+                          systemImage: origin.symbol, accessory: .none)
+                TGExplainer(text: origin.explainer)
+            }
+        }
+    }
+
+    private struct Origin {
+        var title: String
+        var detail: String?
+        var symbol: String
+        var explainer: String
+    }
+
+    private var origin: Origin? {
+        guard let event else { return nil }
+
+        if let id = event.careTaskID, let task = careTasks.first(where: { $0.id == id }) {
+            return Origin(title: task.title, detail: task.kind.title, symbol: task.kind.symbol,
+                          explainer: "Отмечено по напоминанию из ухода. Само напоминание правится там же — здесь меняется только эта запись.")
+        }
+        if let id = event.medicationID, let medication = medications.first(where: { $0.id == id }) {
+            return Origin(title: medication.name, detail: medication.doseText, symbol: "pills",
+                          explainer: "Приём по схеме лечения. Если препарат переименовали, здесь всё равно видно, какой именно отметили.")
+        }
+        if let id = event.trainingSessionID,
+           let session = trainingSessions.first(where: { $0.id == id }) {
+            let result = session.attempts > 0 ? "\(session.successes) из \(session.attempts)" : nil
+            return Origin(title: "\(session.cue) · \(session.place)", detail: result, symbol: "target",
+                          explainer: "След занятия. Само занятие лежит в «Занятиях и шагах» — там его можно и убрать.")
+        }
+        return nil
     }
 }
 
