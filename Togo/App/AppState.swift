@@ -66,9 +66,24 @@ final class AppState {
     var isEpisodeActive: Bool { activeEpisode?.isActive() ?? false }
 
     struct UndoToast: Identifiable, Equatable {
+        /// Что именно отменяет кнопка.
+        ///
+        /// Раньше тост знал только `eventID`, и отмена всегда означала
+        /// «удалить эту запись». Для только что созданной записи это верно,
+        /// а для удалённой — ровно наоборот: «Отменить» должно её вернуть.
+        /// Поэтому у удаления `eventID` просто не проставляли, и кнопка
+        /// не делала ничего — хотя рядом было написано, что удаление
+        /// обратимо пять секунд.
+        enum Action: Equatable {
+            /// Убрать только что созданную запись.
+            case removeCreated(UUID)
+            /// Вернуть удалённые: прогулку и всё, что в ней отмечено.
+            case restoreDeleted([UUID])
+        }
+
         let id = UUID()
         var message: String
-        var eventID: UUID?
+        var action: Action?
     }
 
     // MARK: Идущая сессия
@@ -128,8 +143,17 @@ final class AppState {
     /// человек должен видеть, что тап сработал, — и иметь возможность
     /// тут же его отменить.
     func showUndo(_ message: String, eventID: UUID? = nil) {
+        show(message, action: eventID.map(UndoToast.Action.removeCreated))
+    }
+
+    /// Тост об удалении: кнопка возвращает записи на место.
+    func showUndoRestore(_ message: String, eventIDs: [UUID]) {
+        show(message, action: .restoreDeleted(eventIDs))
+    }
+
+    private func show(_ message: String, action: UndoToast.Action?) {
         withAnimation(.spring(duration: 0.28)) {
-            undo = UndoToast(message: message, eventID: eventID)
+            undo = UndoToast(message: message, action: action)
         }
     }
 }

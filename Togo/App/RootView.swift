@@ -102,12 +102,26 @@ struct UndoToastView: View {
     }
 
     private func undo(_ toast: AppState.UndoToast) {
-        if let id = toast.eventID {
-            let descriptor = FetchDescriptor<LogEvent>(predicate: #Predicate { $0.id == id })
-            if let event = try? context.fetch(descriptor).first {
-                context.delete(event)
+        switch toast.action {
+        case .removeCreated(let id):
+            if let event = event(id) { context.delete(event) }
+        case .restoreDeleted(let ids):
+            // Прогулка возвращается вместе с отметками — тем же составом,
+            // каким уходила.
+            for id in ids {
+                guard let event = event(id) else { continue }
+                event.deletedAt = nil
+                event.deletedBy = nil
             }
+        case nil:
+            break
         }
+        try? context.save()
         appState.undo = nil
+    }
+
+    private func event(_ id: UUID) -> LogEvent? {
+        let descriptor = FetchDescriptor<LogEvent>(predicate: #Predicate { $0.id == id })
+        return try? context.fetch(descriptor).first
     }
 }

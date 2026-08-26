@@ -321,25 +321,36 @@ struct EventEditSheet: View {
                         // от «последнего раза»: вердикт решит, что собака
                         // только что выходила. В живом дневнике такая
                         // запись уже появилась — время выставили вечером.
-                        DatePicker("Время", selection: Binding(
+                        DatePicker(event.kind == .walk ? "Вышли" : "Время", selection: Binding(
                             get: { event.date },
-                            set: { event.date = min($0, .now) }
+                            set: { setStart(min($0, .now), on: event) }
                         ), in: ...Date(), displayedComponents: .hourAndMinute)
                         .textStyle(AppFont.body)
                         .frame(minHeight: Token.Size.tapTarget)
 
                         if event.kind == .walk {
+                            // Спрашиваем то, что человек знает: во сколько
+                            // ушли и во сколько вернулись. Длительность
+                            // считается сама.
+                            //
+                            // Раньше рядом со временем начала стоял отдельный
+                            // шаговик «сколько гуляли» — и, поправив начало,
+                            // приходилось руками пересчитывать длительность,
+                            // иначе прогулка молча уезжала концом вперёд.
                             TGDivider()
-                            Stepper(value: Binding(
-                                get: { (event.durationSeconds ?? 0) / 60 },
-                                set: { event.durationSeconds = $0 * 60 }
-                            ), in: 0...300, step: 5) {
-                                HStack {
-                                    Text("Сколько гуляли").textStyle(AppFont.body)
-                                    Spacer()
-                                    Text("\((event.durationSeconds ?? 0) / 60) мин")
-                                        .textStyle(AppFont.numeric(15))
-                                }
+                            DatePicker("Вернулись", selection: Binding(
+                                get: { walkEnd(of: event) },
+                                set: { setWalkEnd($0, on: event) }
+                            ), in: event.date...Date(), displayedComponents: .hourAndMinute)
+                            .textStyle(AppFont.body)
+                            .frame(minHeight: Token.Size.tapTarget)
+
+                            TGDivider()
+                            HStack {
+                                Text("Гуляли").textStyle(AppFont.body)
+                                Spacer()
+                                Text(Fmt.duration(Double(event.durationSeconds ?? 0)))
+                                    .textStyle(AppFont.numeric(15))
                             }
                             .frame(minHeight: Token.Size.tapTarget)
                         }
@@ -376,18 +387,75 @@ struct EventEditSheet: View {
                 originCard
 
                 if canEdit {
-                TGButton(title: "Удалить запись", variant: .destructive, size: .medium, systemImage: "trash") {
-                    event.deletedAt = Date()
-                    event.deletedBy = appState.currentUserName
-                    Haptics.warning()
-                    appState.showUndo("Удалено · \(event.kind.title)")
-                    dismiss()
+                TGButton(title: deleteTitle(for: event), variant: .destructive,
+                         size: .medium, systemImage: "trash") {
+                    delete(event)
                 }
-                TGExplainer(text: "Удаление можно отменить 5 секунд. В истории останется след, что запись была и кто её убрал.")
+                TGExplainer(text: deleteExplainer(for: event))
                 }
             }
         }
         .presentationDetents([.medium, .large])
+    }
+
+    /// Отметки, сделанные внутри этой прогулки.
+    private func marks(of event: LogEvent) -> [LogEvent] {
+        guard event.kind == .walk else { return [] }
+        return events.filter { $0.walkEventID == event.id && $0.deletedAt == nil }
+    }
+
+    private func deleteTitle(for event: LogEvent) -> String {
+        let count = marks(of: event).count
+        return count == 0 ? "Удалить запись" : "Удалить прогулку и \(count) отметки"
+    }
+
+    private func deleteExplainer(for event: LogEvent) -> String {
+        marks(of: event).isEmpty
+            ? "Удаление можно отменить 5 секунд. В истории останется след, что запись была и кто её убрал."
+            : "Прогулка удалится вместе с тем, что в ней отмечено: это одно событие, а не несколько записей. Отменить можно 5 секунд."
+    }
+
+    /// Удаление прогулки забирает с собой её отметки.
+    ///
+    /// Раньше их приходилось искать и удалять по одной: в живом дневнике
+    /// видно, как человек убирал одну прогулку тремя действиями подряд.
+    private func delete(_ event: LogEvent) {
+        let now = Date()
+        let who = appState.currentUserName
+        let removed = marks(of: event) + [event]
+        for target in removed {
+            target.deletedAt = now
+            target.deletedBy = who
+        }
+        try? context.save()
+        Haptics.warning()
+        appState.showUndoRestore("Удалено · \(event.kind.title)",
+                                 eventIDs: removed.map(\.id))
+        dismiss()
+    }
+
+    /// Когда вернулись с прогулки.
+    private func walkEnd(of event: LogEvent) -> Date {
+        event.date.addingTimeInterval(Double(event.durationSeconds ?? 0))
+    }
+
+    /// Поправили время возвращения — пересчитываем длительность.
+    private func setWalkEnd(_ end: Date, on event: LogEvent) {
+        event.durationSeconds = max(0, Int(end.timeIntervalSince(event.date)))
+    }
+
+    /// Поправили время выхода.
+    ///
+    /// У прогулки конец остаётся на месте: человек помнит, когда вернулся,
+    /// и передвигать это за него нельзя. Меняется длительность.
+    private func setStart(_ start: Date, on event: LogEvent) {
+        guard event.kind == .walk, event.durationSeconds != nil else {
+            event.date = start
+            return
+        }
+        let end = walkEnd(of: event)
+        event.date = start
+        event.durationSeconds = max(0, Int(end.timeIntervalSince(start)))
     }
 
     /// Откуда взялась запись.

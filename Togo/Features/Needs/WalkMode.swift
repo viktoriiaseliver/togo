@@ -303,8 +303,8 @@ struct WalkModeScreen: View {
         let log = EventLog(context: context, appState: appState)
         let duration = Int(finished.duration())
 
-        log.record(.walk, dog: dog, at: finished.startedAt,
-                   confirmation: "Записано · прогулка \(duration / 60) мин") { event in
+        let walkEvent = log.record(.walk, dog: dog, at: finished.startedAt,
+                                   confirmation: "Записано · прогулка \(duration / 60) мин") { event in
             event.durationSeconds = duration
             event.note = finished.marks.isEmpty ? nil : finished.tally
         }
@@ -312,6 +312,9 @@ struct WalkModeScreen: View {
         for entry in finished.marks {
             log.record(entry.kind.logKind, dog: dog, at: entry.at,
                        confirmation: nil, haptic: .none) { event in
+                // Настоящая связь, а не подпись словами: по ней лента
+                // собирает прогулку обратно в одно событие.
+                event.walkEventID = walkEvent?.id
                 switch entry.kind {
                 case .urine: event.outcome = .urine
                 case .stool: event.stoolForm = Diary.usualStool(dog.events)

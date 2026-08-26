@@ -59,3 +59,18 @@ nonisolated enum FeedingMigration {
         return (named.first { $0.kind == .dry } ?? named[0]).brand
     }
 }
+
+/// Разовое связывание отметок с их прогулками.
+///
+/// Живёт рядом с остальными починками: запускается один раз при старте
+/// и молча выпрямляет то, что уже лежит на устройствах.
+enum WalkLinkStartup {
+    @MainActor
+    @discardableResult
+    static func run(context: ModelContext) -> Int {
+        guard let events = try? context.fetch(FetchDescriptor<LogEvent>()) else { return 0 }
+        let linked = WalkLinkMigration.link(events)
+        if linked > 0 { try? context.save() }
+        return linked
+    }
+}

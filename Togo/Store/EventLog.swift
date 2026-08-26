@@ -51,14 +51,18 @@ struct EventLog {
             return nil
         }
 
-        if !allowDuplicate, let recent = recentDuplicate(of: kind, dog: dog, at: date) {
+        // Событие собираем до сверки: чтобы понять, дубль ли это,
+        // надо знать, на какое дело или лекарство оно ссылается.
+        let event = LogEvent(kind: kind, date: date, authorName: appState.currentUserName)
+        configure(event)
+
+        if !allowDuplicate,
+           let recent = recentDuplicate(of: kind, dog: dog, at: date, like: event) {
             appState.showUndo(duplicateMessage(kind, at: recent.date))
             Haptics.warning()
             return nil
         }
 
-        let event = LogEvent(kind: kind, date: date, authorName: appState.currentUserName)
-        configure(event)
         event.dog = dog
         context.insert(event)
 
@@ -75,14 +79,47 @@ struct EventLog {
 
     /// Такая же запись минуту назад — почти наверняка второй тап,
     /// а не второе кормление.
-    private func recentDuplicate(of kind: LogKind, dog: Dog, at date: Date) -> LogEvent? {
+    ///
+    /// Спрашиваем хранилище напрямую, а не связь `dog.events`. Связь
+    /// применяется не мгновенно, и защита не срабатывала вовсе: в живом
+    /// дневнике нашлись три записи еды по 65 г с интервалом в две секунды,
+    /// хотя окно защиты — полторы минуты.
+    private func recentDuplicate(of kind: LogKind, dog: Dog, at date: Date,
+                                 like candidate: LogEvent) -> LogEvent? {
         // Повторяемое по смыслу не ловим: собака и правда писает трижды
         // за прогулку, а воду пьёт когда хочет.
         guard Self.deduplicated.contains(kind) else { return nil }
 
-        return Diary.active(dog.events)
-            .filter { $0.kind == kind && abs(date.timeIntervalSince($0.date)) < Self.duplicateWindow }
-            .max { $0.date < $1.date }
+        let raw = kind.rawValue
+        let from = date.addingTimeInterval(-Self.duplicateWindow)
+        let till = date.addingTimeInterval(Self.duplicateWindow)
+        var descriptor = FetchDescriptor<LogEvent>(
+            predicate: #Predicate { $0.kindRaw == raw && $0.date > from && $0.date < till },
+            sortBy: [SortDescriptor(\.date, order: .reverse)]
+        )
+        descriptor.fetchLimit = 30
+
+        let dogID = dog.persistentModelID
+        return (try? context.fetch(descriptor))?.first { existing in
+            existing.deletedAt == nil
+                && existing.dog?.persistentModelID == dogID
+                && existing.persistentModelID != candidate.persistentModelID
+                && refersToSameThing(existing, candidate)
+        }
+    }
+
+    /// Две записи одного вида — это правда одно и то же?
+    ///
+    /// По виду судить мало. В живом дневнике две записи ухода стоят
+    /// в секунде друг от друга — «Вычесать» и «Когти», — и это два разных
+    /// дела, а не двойной тап. То же с препаратами: два лекарства в один
+    /// час дают порознь и намеренно.
+    private func refersToSameThing(_ lhs: LogEvent, _ rhs: LogEvent) -> Bool {
+        switch lhs.kind {
+        case .care: lhs.careTaskID == rhs.careTaskID
+        case .dose: lhs.medicationID == rhs.medicationID
+        default: true
+        }
     }
 
     /// Виды записей, где два тапа подряд почти наверняка ошибка.

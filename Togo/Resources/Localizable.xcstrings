@@ -2448,6 +2448,30 @@
       },
       "comment": "title"
     },
+    "Вернулись": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вернулись"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
+    },
     "Вернуть заготовки": {
       "extractionState": "manual",
       "localizations": {
@@ -4344,6 +4368,30 @@
       },
       "comment": "chartExplainer"
     },
+    "Вышли": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вышли"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
+    },
     "Вышли %@ назад, и он сходил. Всё равно можно вывести — запись ляжет в дневник, и в следующий раз вердикт будет точнее.": {
       "extractionState": "manual",
       "localizations": {
@@ -4567,6 +4615,30 @@
           "stringUnit": {
             "state": "translated",
             "value": "Груминг, антипаразитарка, прививки, взвешивание — не восемь пушей, а один бриф в выбранный час. Час можно сдвинуть в настройках."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
+    },
+    "Гуляли": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Гуляли"
           }
         },
         "en": {
@@ -7438,7 +7510,7 @@
           }
         }
       },
-      "comment": "duration"
+      "comment": "walkEvent"
     },
     "Записано в ленту. Если дали — поправьте время записи.": {
       "extractionState": "manual",
@@ -17231,6 +17303,30 @@
       },
       "comment": "markGrid"
     },
+    "Прогулка удалится вместе с тем, что в ней отмечено: это одно событие, а не несколько записей. Отменить можно 5 секунд.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Прогулка удалится вместе с тем, что в ней отмечено: это одно событие, а не несколько записей. Отменить можно 5 секунд."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "deleteExplainer"
+    },
     "Продолжает подниматься в желудке и выделяет спирт.": {
       "extractionState": "manual",
       "localizations": {
@@ -18335,13 +18431,13 @@
       },
       "comment": "body"
     },
-    "Сейчас %@, с последней записи %@": {
+    "Сейчас %@, дома %@ с прошлого выхода": {
       "extractionState": "manual",
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Сейчас %@, с последней записи %@"
+            "value": "Сейчас %@, дома %@ с прошлого выхода"
           }
         },
         "en": {
@@ -18550,30 +18646,6 @@
         }
       },
       "comment": "packCard"
-    },
-    "Сколько гуляли": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Сколько гуляли"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        }
-      },
-      "comment": "body"
     },
     "Сколько он не писал и что было утром — не открывая приложение.": {
       "extractionState": "manual",
@@ -21477,7 +21549,7 @@
           }
         }
       },
-      "comment": "body"
+      "comment": "deleteExplainer"
     },
     "Удаление стирает базу на устройстве. Копию в iCloud удаляет система вместе с данными приложения.": {
       "extractionState": "manual",
@@ -21549,7 +21621,7 @@
           }
         }
       },
-      "comment": "body"
+      "comment": "removed"
     },
     "Удалить": {
       "extractionState": "manual",
@@ -21814,6 +21886,30 @@
         }
       },
       "comment": "body"
+    },
+    "Удалить прогулку и %@ отметки": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Удалить прогулку и %@ отметки"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "count"
     },
     "Удалить снимок": {
       "extractionState": "manual",
@@ -26159,6 +26255,78 @@
       },
       "comment": "record"
     },
+    "дома %@ с прошлого выхода": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "дома %@ с прошлого выхода"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
+    },
+    "дома между выходами": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "дома между выходами"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
+    },
+    "дома с прошлого выхода": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "дома с прошлого выхода"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
+    },
     "его норма ≈ %@ мл в день, в жару больше · складная поилка": {
       "extractionState": "manual",
       "localizations": {
@@ -26517,7 +26685,7 @@
           }
         }
       },
-      "comment": "header"
+      "comment": "markTitle"
     },
     "заметки с прогулки": {
       "extractionState": "manual",
@@ -26565,7 +26733,7 @@
           }
         }
       },
-      "comment": "count"
+      "comment": "markTitle"
     },
     "занятий": {
       "extractionState": "manual",
@@ -27213,7 +27381,7 @@
           }
         }
       },
-      "comment": "header"
+      "comment": "markTitle"
     },
     "истекло": {
       "extractionState": "manual",
@@ -27935,6 +28103,30 @@
       },
       "comment": "nutrition"
     },
+    "лакомство": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "лакомство"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "markTitle"
+    },
     "легко, можно сложнее": {
       "extractionState": "manual",
       "localizations": {
@@ -28319,6 +28511,54 @@
       },
       "comment": "header"
     },
+    "минут": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "минут"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "minutes"
+    },
+    "минута": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "минута"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "minutes"
+    },
     "минуты": {
       "extractionState": "manual",
       "localizations": {
@@ -28341,7 +28581,7 @@
           }
         }
       },
-      "comment": "header"
+      "comment": "minutes"
     },
     "можно пропустить": {
       "extractionState": "manual",
@@ -28509,7 +28749,7 @@
           }
         }
       },
-      "comment": "duration"
+      "comment": "walkEvent"
     },
     "на случай, когда спросят": {
       "extractionState": "manual",
@@ -30647,6 +30887,54 @@
       },
       "comment": "body"
     },
+    "попил": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "попил"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "markTitle"
+    },
+    "пописал": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "пописал"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "markTitle"
+    },
     "попробовать": {
       "extractionState": "manual",
       "localizations": {
@@ -31246,30 +31534,6 @@
         }
       },
       "comment": "task"
-    },
-    "прошло %@": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "прошло %@"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "new",
-            "value": ""
-          }
-        }
-      },
-      "comment": "body"
     },
     "пт": {
       "extractionState": "manual",
@@ -32111,6 +32375,30 @@
       },
       "comment": "dogSection"
     },
+    "сорвался": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "сорвался"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "markTitle"
+    },
     "сохранить файл": {
       "extractionState": "manual",
       "localizations": {
@@ -32566,6 +32854,30 @@
         }
       },
       "comment": "detail"
+    },
+    "сходил по-большому": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "сходил по-большому"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "markTitle"
     },
     "считаю…": {
       "extractionState": "manual",
