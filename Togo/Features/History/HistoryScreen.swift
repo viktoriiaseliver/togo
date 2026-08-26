@@ -316,21 +316,19 @@ struct DayReadingScreen: View {
     let events: [LogEvent]
     var showsAuthor: Bool = false
 
+    private var dayEvents: [LogEvent] {
+        Diary.onDay(events, day)
+    }
+
     var body: some View {
         TGSheet(title: Fmt.dayTitle(day), subtitle: "режим чтения") {
-            let dayEvents = Diary.onDay(events, day)
             if dayEvents.isEmpty {
                 TGCard { TGExplainer(text: "В этот день записей нет.") }
             } else {
-                TGCard(spacing: 0) {
-                    ForEach(dayEvents) { event in
-                        TimelineRow(event: event,
-                                    isFirst: event.id == dayEvents.first?.id,
-                                    isLast: event.id == dayEvents.last?.id,
-                                    showsAuthor: showsAuthor)
-                        if event.id != dayEvents.last?.id { TGDivider(inset: 52) }
-                    }
-                }
+                // Тот же рельс, что и на главном: промежутки между записями
+                // в прошлом читают ровно за тем же, зачем и сегодня.
+                DayTimeline(events: dayEvents, now: day,
+                            showsAuthor: showsAuthor, showsNow: false) { _ in }
             }
         }
         .presentationDetents([.medium, .large])

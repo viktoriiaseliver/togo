@@ -1,13 +1,30 @@
 import SwiftUI
 
-/// Таймлайн всегда показывает, где «сейчас», охряной точкой между прошлым
-/// и запланированным. У каждой записи стоит галочка синхронизации, а не просто
-/// аватар: видно, что запись дошла до остальных.
+/// Лента дня.
+///
+/// Переделана по трём претензиям, которые видно глазами дизайнера:
+///
+/// 1. **Цвет опять ничего не значил.** Точки на рельсе были все
+///    сине-зелёные — то есть цвет был украшением, как та галочка
+///    синхронизации. Теперь маркер нейтральный, а терракот получает
+///    только то, что его правда заслуживает: кровь и инциденты.
+/// 2. **Иконка дублировала подпись.** Рядом со словом «Еда» стояла вилка,
+///    и то и другое в одной строке. Иконка переехала на сам рельс
+///    и стала маркером — так делают Apple в «Дневнике» и «Кошельке».
+/// 3. **Промежутки были не видны.** Всё приложение про интервалы —
+///    «не писал 5 ч 20 мин», — а на ленте они не показывались нигде.
+///    Теперь промежуток стоит между записями, в колонке времени.
+///    Это то, ради чего ленту вообще читают.
 struct DayTimeline: View {
     let events: [LogEvent]
     let now: Date
     var showsAuthor: Bool = false
+    /// В прошедшем дне «сейчас» не место: он давно прошёл.
+    var showsNow: Bool = true
     var onTap: (LogEvent) -> Void
+
+    /// Короче часа промежуток не показываем: это шум, а не сведения.
+    private static let gapThreshold: TimeInterval = 60 * 60
 
     var body: some View {
         TGCard {
@@ -15,68 +32,88 @@ struct DayTimeline: View {
                 .textStyle(AppFont.micro)
                 .textCase(.lowercase)
                 .foregroundStyle(Token.Ink.faint)
+                .accessibilityAddTraits(.isHeader)
 
             if events.isEmpty {
                 EmptyDayState()
             } else {
-                // Лента — это лента: непрерывный рельс с точками, а не
-                // список строк с разделителями. По рельсу видно, что день
-                // идёт, и где в нём «сейчас».
                 VStack(spacing: 0) {
                     ForEach(Array(events.enumerated()), id: \.element.id) { index, event in
-                        TimelineRow(
-                            event: event,
-                            isFirst: index == 0,
-                            isLast: false,
-                            showsAuthor: showsAuthor
-                        )
-                        .contentShape(Rectangle())
-                        .onTapGesture { onTap(event) }
+                        // Кнопка, а не жест: строка отвечает на нажатие
+                        // и становится кнопкой для голоса. Жест не делает
+                        // ни того, ни другого.
+                        Button { onTap(event) } label: {
+                            TimelineRow(
+                                event: event,
+                                isFirst: index == 0,
+                                showsAuthor: showsAuthor
+                            )
+                        }
+                        .buttonStyle(TimelineRowButtonStyle())
+
+                        if let gap = gap(after: index) {
+                            TimelineGap(interval: gap)
+                        }
                     }
-                    NowMarker(now: now)
+                    if showsNow {
+                        NowMarker(now: now, sinceLast: sinceLastEntry)
+                    }
                 }
             }
         }
     }
+
+    /// Промежуток до следующей записи.
+    private func gap(after index: Int) -> TimeInterval? {
+        guard index + 1 < events.count else { return nil }
+        let interval = events[index + 1].date.timeIntervalSince(events[index].date)
+        return interval >= Self.gapThreshold ? interval : nil
+    }
+
+    /// Сколько прошло с последней записи. Самая полезная цифра на экране:
+    /// именно её человек и ищет глазами.
+    private var sinceLastEntry: TimeInterval? {
+        guard let last = events.last?.date else { return nil }
+        let interval = now.timeIntervalSince(last)
+        return interval >= Self.gapThreshold ? interval : nil
+    }
 }
 
-/// Геометрия рельса. Одна на строку и на маркер «сейчас» — иначе точки
-/// разъезжаются на пиксель, и это видно.
+/// Геометрия рельса. В одном месте, иначе маркеры разъезжаются на пиксель —
+/// и это видно.
 enum TimelineRail {
-    static let timeWidth: CGFloat = 44
-    static let railWidth: CGFloat = 22
-    static let dotSize: CGFloat = 9
-    static let lineWidth: CGFloat = 2
+    static let timeWidth: CGFloat = 48
+    static let railWidth: CGFloat = 30
+    static let markerSize: CGFloat = 24
+    static let nowDotSize: CGFloat = 12
+    static let lineWidth: CGFloat = 1.5
+    /// Отрезок над маркером — чтобы линия шла непрерывно.
+    static let topStub: CGFloat = 4
 }
 
 struct TimelineRow: View {
     let event: LogEvent
     var isFirst: Bool = false
-    var isLast: Bool = false
     /// В семье из одного человека подпись автора — шум: и так понятно, кто.
     var showsAuthor: Bool = false
 
     var body: some View {
-        HStack(alignment: .top, spacing: Token.Space.s8) {
+        HStack(alignment: .top, spacing: Token.Space.s6) {
             Text(Fmt.clock(event.date))
                 .textStyle(AppFont.numeric(13, weight: .medium))
                 .foregroundStyle(Token.Ink.secondary)
                 .fixedSize()
-                .frame(minWidth: TimelineRail.timeWidth, alignment: .leading)
-                .padding(.top, 2)
+                .frame(width: TimelineRail.timeWidth, alignment: .leading)
+                .padding(.top, 5)
 
-            rail
+            marker
 
             VStack(alignment: .leading, spacing: Token.Space.s2) {
-                HStack(spacing: Token.Space.s6) {
-                    Image(systemName: event.kind.symbol)
-                        .font(.system(size: 12, weight: .semibold))
-                        .foregroundStyle(event.symbolColor)
-                        .accessibilityHidden(true)
+                HStack(spacing: Token.Space.s8) {
                     Text(event.kind.title)
                         .textStyle(AppFont.bodyEmphasis)
                         .foregroundStyle(event.titleColor)
-                    Spacer(minLength: Token.Space.s8)
+                    Spacer(minLength: 0)
                     if showsAuthor {
                         TGAuthorMark(author: event.authorName)
                     }
@@ -88,22 +125,30 @@ struct TimelineRow: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
-            .padding(.bottom, Token.Space.s14)
+            .padding(.top, 3)
+            .padding(.bottom, Token.Space.s10)
         }
         .accessibilityElement(children: .combine)
     }
 
-    /// Точка на рельсе: сверху отрезок к предыдущей записи, снизу — к следующей.
-    private var rail: some View {
+    /// Маркер — это и есть иконка записи. Кружок нейтральный; терракот
+    /// достаётся только тому, что его заслуживает.
+    private var marker: some View {
         VStack(spacing: 0) {
             Rectangle()
                 .fill(isFirst ? Color.clear : Token.Surface.hairline)
-                .frame(width: TimelineRail.lineWidth, height: 6)
-            Circle()
-                .fill(event.raisesAlarm ? Token.Status.overdueText : Token.Action.done)
-                .frame(width: TimelineRail.dotSize, height: TimelineRail.dotSize)
+                .frame(width: TimelineRail.lineWidth, height: TimelineRail.topStub)
+
+            Image(systemName: event.kind.symbol)
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundStyle(event.raisesAlarm ? Token.Status.overdueText : Token.Ink.silhouette)
+                .frame(width: TimelineRail.markerSize, height: TimelineRail.markerSize)
+                .background(
+                    Circle().fill(event.raisesAlarm ? Token.Status.overdueBg : Token.Surface.sunken)
+                )
+
             Rectangle()
-                .fill(isLast ? Color.clear : Token.Surface.hairline)
+                .fill(Token.Surface.hairline)
                 .frame(width: TimelineRail.lineWidth)
         }
         .frame(width: TimelineRail.railWidth)
@@ -111,44 +156,91 @@ struct TimelineRow: View {
     }
 }
 
-/// «Сейчас» — живая точка на том же рельсе, между прошлым и запланированным.
-struct NowMarker: View {
-    let now: Date
+/// Нажатие видно: строка на мгновение подсвечивается. Без этого тап
+/// по ленте ощущается как промах.
+struct TimelineRowButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .contentShape(Rectangle())
+            .background(
+                RoundedRectangle(cornerRadius: Token.Radius.small, style: .continuous)
+                    .fill(Token.Surface.sunken)
+                    .opacity(configuration.isPressed ? 1 : 0)
+                    .padding(.horizontal, -Token.Space.s6)
+            )
+            .animation(.easeOut(duration: Token.Duration.instant), value: configuration.isPressed)
+    }
+}
+
+/// Промежуток между записями.
+///
+/// Единственное, что отличает эту ленту от списка строк: всё приложение
+/// про интервалы, и здесь они наконец видны.
+struct TimelineGap: View {
+    let interval: TimeInterval
 
     var body: some View {
-        HStack(alignment: .center, spacing: Token.Space.s8) {
-            Text("сейчас")
-                .textStyle(AppFont.micro)
-                .foregroundStyle(Token.Action.primary)
+        HStack(alignment: .center, spacing: Token.Space.s6) {
+            Text(Fmt.gap(interval))
+                .textStyle(AppFont.micro.color(Token.Ink.faint))
                 .lineLimit(1)
-                .fixedSize()
-                .frame(minWidth: TimelineRail.timeWidth, alignment: .leading)
-
-            ZStack {
-                Rectangle()
-                    .fill(Token.Surface.hairline)
-                    .frame(width: TimelineRail.lineWidth, height: 10)
-                    .offset(y: -8)
-                Circle()
-                    .fill(Token.Action.primary)
-                    .frame(width: TimelineRail.dotSize + 3, height: TimelineRail.dotSize + 3)
-                Circle()
-                    .stroke(Token.Action.primary.opacity(0.25), lineWidth: 4)
-                    .frame(width: TimelineRail.dotSize + 9, height: TimelineRail.dotSize + 9)
-            }
-            .frame(width: TimelineRail.railWidth)
+                .minimumScaleFactor(0.8)
+                .frame(width: TimelineRail.timeWidth, alignment: .trailing)
 
             Rectangle()
-                .fill(Token.Action.primary.opacity(0.22))
-                .frame(height: 1)
+                .fill(Token.Surface.hairline)
+                .frame(width: TimelineRail.lineWidth)
+                .frame(width: TimelineRail.railWidth)
 
-            Text(Fmt.clock(now))
-                .textStyle(AppFont.numeric(13, weight: .medium))
-                .foregroundStyle(Token.Action.primary)
+            Spacer(minLength: 0)
         }
-        .padding(.top, Token.Space.s2)
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("Сейчас \(Fmt.clock(now))")
+        .frame(height: 22)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("прошло \(Fmt.duration(interval))")
+    }
+}
+
+/// «Сейчас» — живая точка на том же рельсе.
+///
+/// Единственная охряная вещь в ленте: охра означает действие и текущий
+/// момент, и больше ничего.
+struct NowMarker: View {
+    let now: Date
+    var sinceLast: TimeInterval?
+
+    var body: some View {
+        VStack(spacing: 0) {
+            if let sinceLast {
+                TimelineGap(interval: sinceLast)
+            }
+
+            HStack(alignment: .center, spacing: Token.Space.s6) {
+                Text(Fmt.clock(now))
+                    .textStyle(AppFont.numeric(13, weight: .semibold))
+                    .foregroundStyle(Token.Action.primary)
+                    .fixedSize()
+                    .frame(width: TimelineRail.timeWidth, alignment: .leading)
+
+                ZStack {
+                    Circle()
+                        .fill(Token.Action.primary.opacity(0.18))
+                        .frame(width: TimelineRail.nowDotSize + 10,
+                               height: TimelineRail.nowDotSize + 10)
+                    Circle()
+                        .fill(Token.Action.primary)
+                        .frame(width: TimelineRail.nowDotSize, height: TimelineRail.nowDotSize)
+                }
+                .frame(width: TimelineRail.railWidth)
+
+                Text("сейчас")
+                    .textStyle(AppFont.micro.color(Token.Action.primary))
+                Spacer(minLength: 0)
+            }
+            .padding(.top, Token.Space.s2)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(sinceLast.map { "Сейчас \(Fmt.clock(now)), с последней записи \(Fmt.duration($0))" }
+                            ?? "Сейчас \(Fmt.clock(now))")
     }
 }
 

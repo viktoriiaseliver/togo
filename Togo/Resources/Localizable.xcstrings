@@ -1321,6 +1321,30 @@
       },
       "comment": "body"
     },
+    "\\(Int(hours.rounded())) ч": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "\\(Int(hours.rounded())) ч"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "hours"
+    },
     "iCloud выключен ограничениями устройства. Дневник хранится только здесь — переносить придётся файлом.": {
       "extractionState": "manual",
       "localizations": {
@@ -2278,7 +2302,7 @@
           }
         }
       },
-      "comment": "dayEvents"
+      "comment": "body"
     },
     "Велосипед, самокат": {
       "extractionState": "manual",
@@ -17663,6 +17687,30 @@
       },
       "comment": "body"
     },
+    "Сейчас %@, с последней записи %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сейчас %@, с последней записи %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
+    },
     "Сел у двери": {
       "extractionState": "manual",
       "localizations": {
@@ -29854,6 +29902,30 @@
         }
       },
       "comment": "task"
+    },
+    "прошло %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "прошло %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "new",
+            "value": ""
+          }
+        }
+      },
+      "comment": "body"
     },
     "пт": {
       "extractionState": "manual",

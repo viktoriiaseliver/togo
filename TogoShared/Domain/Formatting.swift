@@ -29,6 +29,25 @@ nonisolated enum Fmt {
         return "\(hours) ч \(minutes) мин"
     }
 
+    /// Промежуток для ленты: коротко и без ложной точности.
+    ///
+    /// «4 ч 58 мин» между записями — это точность, которой там неоткуда
+    /// взяться и которая никому не нужна: промежуток читают глазами,
+    /// чтобы понять порядок величины. Округляем до получаса, а после двух
+    /// часов минуты выбрасываем совсем.
+    static func gap(_ interval: TimeInterval) -> String {
+        let minutes = max(0, Int(interval / 60))
+        if minutes < 90 { return "\(minutes) мин" }
+
+        let hours = Double(minutes) / 60
+        if minutes >= 120 { return "\(Int(hours.rounded())) ч" }
+
+        let half = (Double(minutes) / 30).rounded() * 30
+        let wholeHours = Int(half) / 60
+        let rest = Int(half) % 60
+        return rest == 0 ? "\(wholeHours) ч" : "\(wholeHours) ч \(rest) мин"
+    }
+
     static func stopwatch(_ interval: TimeInterval) -> String {
         let total = max(0, Int(interval))
         return String(format: "%d:%02d", total / 60, total % 60)

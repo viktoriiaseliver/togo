@@ -604,3 +604,31 @@ struct BagAndHeatTests {
         #expect(запись.dayCount == 6)
     }
 }
+
+@Suite("Промежутки в ленте")
+struct GapFormatTests {
+    @Test("Меньше полутора часов — минуты как есть")
+    func minutesStayExact() {
+        #expect(Fmt.gap(25 * 60) == "25 мин")
+        #expect(Fmt.gap(89 * 60) == "89 мин")
+    }
+
+    @Test("До двух часов округляем до получаса")
+    func roundsToHalfHour() {
+        #expect(Fmt.gap(95 * 60) == "1 ч 30 мин")
+        #expect(Fmt.gap(115 * 60) == "2 ч")
+    }
+
+    @Test("После двух часов минуты выбрасываем: это ложная точность")
+    func dropsMinutesAfterTwoHours() {
+        #expect(Fmt.gap(298 * 60) == "5 ч", "«4 ч 58 мин» никому не нужно")
+        #expect(Fmt.gap(4 * 3600) == "4 ч")
+        #expect(Fmt.gap(7 * 3600 + 40 * 60) == "8 ч")
+    }
+
+    @Test("Ноль и отрицательное не роняют формат")
+    func handlesZero() {
+        #expect(Fmt.gap(0) == "0 мин")
+        #expect(Fmt.gap(-100) == "0 мин")
+    }
+}
