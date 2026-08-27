@@ -277,7 +277,7 @@ struct MonthCalendar: View {
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: Token.Space.s4), count: 7),
                       spacing: Token.Space.s6) {
                 ForEach(weekdays, id: \.self) { day in
-                    Text(day).textStyle(AppFont.micro.color(Token.Ink.faint))
+                    Text(day).textStyle(AppFont.micro.color(Token.Ink.secondary))
                 }
                 ForEach(gridDays, id: \.self) { day in
                     DayCell(day: day, month: month, marker: marker(for: day))

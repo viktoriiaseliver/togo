@@ -8,7 +8,7 @@ struct TGSectionHeader: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Token.Space.s4) {
             Text(title)
-                .textStyle(AppFont.micro.color(Token.Ink.faint))
+                .textStyle(AppFont.caps)
                 .textCase(.uppercase)
                 .kerning(0.6)
                 .wraps()

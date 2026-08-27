@@ -18,7 +18,7 @@ struct TGChip: View {
                         .wraps()
                     if let subtitle {
                         Text(subtitle)
-                            .textStyle(AppFont.micro.color(Token.Ink.faint))
+                            .textStyle(AppFont.micro.color(Token.Ink.secondary))
                             .multilineTextAlignment(.center)
                             .wraps()
                     }

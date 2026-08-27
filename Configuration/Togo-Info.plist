@@ -47,17 +47,6 @@
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 
-	<!--
-	  Брендовый шрифт. Он используется только для вордмарка и крупных
-	  чисел — секундомера, отсчёта натощак, веса; весь интерфейс
-	  по-прежнему системный SF Pro. Onest под лицензией SIL OFL 1.1,
-	  вкладывать в приложение её прямо разрешает.
-	-->
-	<key>UIAppFonts</key>
-	<array>
-		<string>Onest-ExtraBold.ttf</string>
-	</array>
-
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>
@@ -78,8 +67,13 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
+	<!--
+	  Тема тёмная и единственная. Макет собран на чёрном: пять уровней
+	  поверхности разделяет шаг светлоты, а не линия, и в светлой гамме
+	  эта конструкция не работает — её пришлось бы придумывать заново.
+	-->
 	<key>UIUserInterfaceStyle</key>
-	<string>Light</string>
+	<string>Dark</string>
 
 	<key>NSSupportsLiveActivities</key>
 	<true/>

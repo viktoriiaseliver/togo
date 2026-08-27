@@ -3,36 +3,18 @@ import SwiftUI
 /// Текстовые стили. Один стиль — одна строка токенов, как текстовый стиль
 /// в Figma: кегль, начертание, цвет по умолчанию.
 ///
-/// Шрифтов два, и роли у них разные.
-///
-/// **SF Pro** — весь интерфейс: заголовки, строки, меты. Он уже загружен,
-/// умеет Dynamic Type из коробки и не тянет за собой лицензию.
-///
-/// **Onest ExtraBold** — только вордмарк и крупные числа от 28 пунктов:
-/// секундомер прогулки, обратный отсчёт натощак, вес. Это те цифры,
-/// на которые смотрят с расстояния вытянутой руки, и им нужен характер,
-/// которого у системного шрифта нет. Больше нигде он не появляется —
-/// иначе перестал бы быть брендом и стал просто ещё одним шрифтом.
+/// Шрифт системный, и только он. Брендовый Onest в приложении был
+/// ровно один ход дизайна и убран вместе с ним: новая шкала собрана
+/// на SF Pro целиком, а вложенный шрифт, которым никто не пользуется, —
+/// это лишние сто килобайт и лишняя строка в лицензиях.
 struct TextStyleToken: Equatable, Sendable {
-    /// Имя из таблицы шрифта, а не имя файла: iOS ищет именно его.
-    static let brandFont = "Onest-ExtraBold"
-
     var size: CGFloat
     var weight: Font.Weight
     var color: Color
     var rounded: Bool = false
     var monospacedDigits: Bool = false
-    /// Брендовый шрифт вместо системного.
-    var brand: Bool = false
 
     var font: Font {
-        if brand {
-            // `relativeTo` обязателен: без него кастомный шрифт
-            // перестаёт слушаться Dynamic Type, и человек с крупным
-            // текстом получает мелкие цифры именно там, где они важнее
-            // всего.
-            return .custom(Self.brandFont, size: size, relativeTo: .largeTitle)
-        }
         var font = Font.system(size: size, weight: weight, design: rounded ? .rounded : .default)
         if monospacedDigits { font = font.monospacedDigit() }
         return font
@@ -52,30 +34,36 @@ struct TextStyleToken: Equatable, Sendable {
 }
 
 enum AppFont {
+    /// Название экрана. 34/700 — как большой заголовок в iOS.
     static let screenTitle = TextStyleToken(size: Token.FontSize.screen, weight: Token.FontWeight.bold, color: Token.Ink.primary)
+    /// Заголовок группы и карточки. 20/600 — в системе это одна ступень.
     static let sectionTitle = TextStyleToken(size: Token.FontSize.section, weight: Token.FontWeight.semibold, color: Token.Ink.primary)
-    static let cardTitle = TextStyleToken(size: Token.FontSize.title, weight: Token.FontWeight.semibold, color: Token.Ink.primary)
+    static let cardTitle = TextStyleToken(size: Token.FontSize.section, weight: Token.FontWeight.semibold, color: Token.Ink.primary)
+    /// Тело списка. 17/400.
     static let body = TextStyleToken(size: Token.FontSize.body, weight: Token.FontWeight.regular, color: Token.Ink.primary)
     static let bodyEmphasis = TextStyleToken(size: Token.FontSize.body, weight: Token.FontWeight.medium, color: Token.Ink.primary)
-    static let caption = TextStyleToken(size: Token.FontSize.caption, weight: Token.FontWeight.regular, color: Token.Ink.secondary)
-    static let captionEmphasis = TextStyleToken(size: Token.FontSize.caption, weight: Token.FontWeight.medium, color: Token.Ink.primary)
-    /// Слабый серый допустим только с 14pt и крупнее — ниже не хватает контраста,
-    /// поэтому micro всегда medium и никогда не faint по умолчанию.
-    static let micro = TextStyleToken(size: Token.FontSize.micro, weight: Token.FontWeight.medium, color: Token.Ink.secondary)
+    /// Мета: время, автор, подпись. 15/400.
+    static let caption = TextStyleToken(size: Token.FontSize.meta, weight: Token.FontWeight.regular, color: Token.Ink.secondary)
+    static let captionEmphasis = TextStyleToken(size: Token.FontSize.meta, weight: Token.FontWeight.medium, color: Token.Ink.primary)
+    /// Раньше здесь было двенадцать пунктов. Ниже четырнадцати
+    /// в системе не существует, и мета сведена к пятнадцати.
+    static let micro = TextStyleToken(size: Token.FontSize.meta, weight: Token.FontWeight.regular, color: Token.Ink.secondary)
+    /// Капс: название секции. 14/600, в вёрстке — прописными.
+    static let caps = TextStyleToken(size: Token.FontSize.caption, weight: Token.FontWeight.semibold, color: Token.Ink.secondary)
 
-    /// Крупные числа: секундомер, задержка маркера, вес.
+    /// Числа в строках и на плитках.
     static func numeric(_ size: CGFloat, weight: Font.Weight = Token.FontWeight.semibold) -> TextStyleToken {
-        TextStyleToken(size: size, weight: weight, color: Token.Ink.primary, rounded: true, monospacedDigits: true)
+        TextStyleToken(size: size, weight: weight, color: Token.Ink.primary, monospacedDigits: true)
     }
 
-    /// Крупные числа бренда: секундомер, отсчёт натощак, вес.
+    /// Крупная цифра карточки.
     static let display = TextStyleToken(size: Token.FontSize.display, weight: Token.FontWeight.bold,
-                                        color: Token.Ink.primary, monospacedDigits: true, brand: true)
+                                        color: Token.Ink.primary, monospacedDigits: true)
+    /// Герой: ответ на главный вопрос. Один на экран.
     static let hero = TextStyleToken(size: Token.FontSize.hero, weight: Token.FontWeight.bold,
-                                     color: Token.Ink.primary, monospacedDigits: true, brand: true)
-    /// Вордмарк: онбординг, «о приложении».
+                                     color: Token.Ink.primary, monospacedDigits: true)
     static let wordmark = TextStyleToken(size: Token.FontSize.display, weight: Token.FontWeight.bold,
-                                         color: Token.Ink.primary, brand: true)
+                                         color: Token.Ink.primary)
 }
 
 extension View {

@@ -62,6 +62,12 @@ struct TodayScreen: View {
                             )
                         }
 
+                        TodayHero(indoors: timeIndoors,
+                                  session: appState.session,
+                                  now: now,
+                                  rhythm: WalkRhythmAnalyzer.rhythm(events: events, now: now),
+                                  outingsToday: outingsToday)
+
                         if let fasting = fastingWindow {
                             TGBanner(
                                 tone: .waiting,
@@ -115,7 +121,7 @@ struct TodayScreen: View {
                             )
                         }
 
-                        DayTimeline(events: Diary.onDay(events, now), now: now,
+                        DayTimeline(events: Diary.onDayWithTraces(events, now), now: now,
                                     showsAuthor: members.count > 1) { event in
                             route = .edit(event.id)
                         }
@@ -179,36 +185,41 @@ struct TodayScreen: View {
             DogAvatar(dog: dog)
             VStack(alignment: .leading, spacing: 2) {
                 Text(dog?.name ?? "Собака").textStyle(AppFont.cardTitle).foregroundStyle(Token.Ink.primary)
-                // Самый частый вопрос — «давно ли гуляли». Раньше ответ
-                // лежал внизу ленты, под всеми записями дня: чтобы его
-                // увидеть, надо было прокрутить экран целиком.
-                Text(sinceWalkLine)
+                // В шапке — только то, что не меняется в течение дня.
+                // «Давно ли гуляли» переехало в героя: это ответ на главный
+                // вопрос, и мелкой строкой рядом с весом он не читался.
+                Text(identityLine)
                     .textStyle(AppFont.caption)
                     .foregroundStyle(Token.Ink.secondary)
-                    .wraps()
+                    .lineLimit(1)
             }
-            Spacer()
+            Spacer(minLength: Token.Space.s8)
+            // Имя дежурного стоит строкой слева: подпись справа
+            // повторяла его слово в слово.
             if let duty = dutyMember {
-                HStack(spacing: 6) {
-                    Text("дежурит \(duty.name)").textStyle(AppFont.micro).foregroundStyle(Token.Ink.secondary)
-                    TGAvatar(initial: duty.initial, tint: Token.Action.done)
-                }
+                TGAvatar(initial: duty.initial, tint: Token.Action.doneQuiet)
             }
         }
         .padding(.top, 4)
     }
 
-    /// Сколько прошло с последнего выхода — или что он идёт прямо сейчас.
-    private var sinceWalkLine: String {
+    /// Вес и дежурный: две вещи, которые за день не меняются.
+    private var identityLine: String {
         let weight = dog.map { Fmt.weight($0.weightKg) } ?? "—"
-        if let session = appState.session {
-            return weight + " · " + (session.isPaused ? "выход на паузе" : "гуляете сейчас")
-        }
-        let blocks = TimelineBuilder.blocks(Diary.active(events))
-        guard let indoors = TimelineBuilder.timeIndoorsNow(blocks, now: now, threshold: 0) else {
-            return weight + " · сегодня ещё не выходили"
-        }
-        return weight + " · гуляли \(Fmt.gap(indoors)) назад"
+        guard let duty = dutyMember else { return weight }
+        return weight + " · дежурит " + duty.name
+    }
+
+    /// Сколько собака дома прямо сейчас.
+    private var timeIndoors: TimeInterval? {
+        TimelineBuilder.timeIndoorsNow(TimelineBuilder.blocks(Diary.active(events)),
+                                       now: now, threshold: 0)
+    }
+
+    /// Сколько раз сегодня выходили. Отметки внутри прогулки —
+    /// не отдельные выходы.
+    private var outingsToday: Int {
+        TimelineBuilder.blocks(Diary.onDay(events, now)).filter(\.isOuting).count
     }
 
     private var summaryStrip: some View {
@@ -219,10 +230,11 @@ struct TodayScreen: View {
             HStack(alignment: .top, spacing: 0) {
                 TGStat(value: "\(summary.eatenGrams) г",
                             caption: summary.dailyGrams > 0 ? "из \(summary.dailyGrams) съел" : "съел")
-                // Здесь стояло «выпил N мл». Ввод воды убран — записывать
-                // миллилитры было нечем, — и показатель навсегда застыл
-                // на нуле. На его месте то, ради чего в сводку и смотрят.
-                TGStat(value: indoors.map(Fmt.gap) ?? "—", caption: "с прогулки")
+                // «С прогулки» отсюда убрано: на этот вопрос отвечает
+                // герой вверху экрана крупной цифрой, и повторять его
+                // мелким шрифтом — ровно тот дубль, который аудит
+                // и просил вычистить.
+                TGStat(value: "\(summary.meals)", caption: Fmt.plural(summary.meals, "кормление", "кормления", "кормлений").replacingOccurrences(of: "\(summary.meals) ", with: ""))
                 TGStat(value: "\(summary.outings)", caption: Fmt.outings(summary.outings).replacingOccurrences(of: "\(summary.outings) ", with: ""))
             }
             if summary.trainingGrams > 0 {

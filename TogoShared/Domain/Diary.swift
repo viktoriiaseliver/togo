@@ -13,6 +13,23 @@ nonisolated enum Diary {
             .sorted { $0.date < $1.date }
     }
 
+    /// День вместе со следами отменённого.
+    ///
+    /// Удаление обратимо пять секунд, но тост уезжает — и если запись
+    /// просто исчезала, человек оставался без ответа на вопрос «я точно
+    /// это удалила?». Теперь строка остаётся: приглушённая, зачёркнутая
+    /// и с подписью «отменено».
+    static func onDayWithTraces(_ events: [LogEvent], _ day: Date,
+                                calendar: Calendar = .current) -> [LogEvent] {
+        events
+            .filter { calendar.isDate($0.date, inSameDayAs: day) }
+            .filter { event in
+                guard let deletedAt = event.deletedAt else { return true }
+                return calendar.isDate(deletedAt, inSameDayAs: day)
+            }
+            .sorted { $0.date < $1.date }
+    }
+
     static func last(_ events: [LogEvent], kind: LogKind, before date: Date = Date()) -> LogEvent? {
         active(events)
             .filter { $0.kind == kind && $0.date <= date }
@@ -75,6 +92,7 @@ nonisolated enum Diary {
         var eatenGrams: Int
         var dailyGrams: Int
         var outings: Int
+        var meals: Int
         var walkMinutes: Int
         var trainingGrams: Int
     }
@@ -91,6 +109,7 @@ nonisolated enum Diary {
                 .reduce(0, +),
             dailyGrams: dog?.dailyGrams ?? 0,
             outings: today.filter { $0.kind == .outing }.count,
+            meals: today.filter { $0.kind == .meal }.count,
             walkMinutes: today.filter { $0.kind == .walk }.compactMap(\.durationSeconds).reduce(0, +) / 60,
             trainingGrams: today.filter { $0.kind == .training }.compactMap(\.grams).reduce(0, +)
         )

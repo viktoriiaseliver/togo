@@ -283,7 +283,7 @@ private struct CareTaskRow: View {
                     .multilineTextAlignment(.trailing)
                 if task.snoozeCount >= 2 {
                     Text("откладывали \(task.snoozeCount) раза")
-                        .textStyle(AppFont.micro.color(Token.Ink.faint))
+                        .textStyle(AppFont.micro.color(Token.Ink.secondary))
                 }
             }
 

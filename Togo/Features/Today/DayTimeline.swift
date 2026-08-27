@@ -108,6 +108,10 @@ struct TimelineRow: View {
 
     private var event: LogEvent { block.event }
 
+    /// Запись удалили, но след остался: тост уезжает через пять секунд,
+    /// и без строки человек оставался без ответа на «я точно это убрала?».
+    private var isCancelled: Bool { event.deletedAt != nil }
+
     var body: some View {
         HStack(alignment: .top, spacing: Token.Space.s6) {
             time
@@ -115,9 +119,10 @@ struct TimelineRow: View {
 
             VStack(alignment: .leading, spacing: Token.Space.s2) {
                 HStack(spacing: Token.Space.s8) {
-                    Text(event.kind.title)
+                    Text(isCancelled ? event.kind.title + " · отменено" : event.kind.title)
                         .textStyle(AppFont.bodyEmphasis)
-                        .foregroundStyle(event.titleColor)
+                        .foregroundStyle(isCancelled ? Token.Ink.faint : event.titleColor)
+                        .strikethrough(isCancelled, color: Token.Ink.faint)
                     Spacer(minLength: 0)
                     if showsAuthor {
                         TGAuthorMark(author: event.authorName)
@@ -161,9 +166,15 @@ struct TimelineRow: View {
     /// («пописал · стул») здесь не повторяем: он и так стоит строками
     /// ниже, и раньше одно и то же было написано дважды.
     private var subtitle: String? {
+        if isCancelled { return "след остаётся" }
         guard block.isSpan else { return event.subtitle }
         let minutes = Int(block.endedAt.timeIntervalSince(block.startedAt)) / 60
         return Fmt.plural(minutes, "минута", "минуты", "минут")
+    }
+
+    private var markerTint: Color {
+        if isCancelled { return Token.Ink.faint }
+        return event.raisesAlarm ? Token.Status.overdueText : Token.Ink.primary
     }
 
     /// Маркер — это и есть иконка записи. Кружок нейтральный; терракот
@@ -176,10 +187,11 @@ struct TimelineRow: View {
 
             Image(systemName: event.kind.symbol)
                 .font(.system(size: 11, weight: .semibold))
-                .foregroundStyle(event.raisesAlarm ? Token.Status.overdueText : Token.Ink.silhouette)
+                .foregroundStyle(markerTint)
                 .frame(width: TimelineRail.markerSize, height: TimelineRail.markerSize)
                 .background(
-                    Circle().fill(event.raisesAlarm ? Token.Status.overdueBg : Token.Surface.sunken)
+                    Circle().fill(isCancelled ? Token.Surface.sunken
+                                  : (event.raisesAlarm ? Token.Status.overdueBg : Token.Surface.control))
                 )
 
             Rectangle()
@@ -282,7 +294,7 @@ struct TimelineGap: View {
     var body: some View {
         HStack(alignment: .center, spacing: Token.Space.s6) {
             Text(Fmt.gap(interval))
-                .textStyle(AppFont.micro.color(Token.Ink.faint))
+                .textStyle(AppFont.micro)
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)
                 .frame(width: TimelineRail.timeWidth, alignment: .trailing)
@@ -293,7 +305,7 @@ struct TimelineGap: View {
                 .frame(width: TimelineRail.railWidth)
 
             Text(isOpen ? "дома с прошлого выхода" : "дома между выходами")
-                .textStyle(AppFont.micro.color(Token.Ink.faint))
+                .textStyle(AppFont.micro.color(Token.Ink.secondary))
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)
             Spacer(minLength: 0)

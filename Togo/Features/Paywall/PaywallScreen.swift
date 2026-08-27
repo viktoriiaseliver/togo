@@ -113,7 +113,7 @@ struct PaywallScreen: View {
     private var legalText: some View {
         VStack(alignment: .leading, spacing: Token.Space.s8) {
             Text("Подписка продлевается автоматически, пока её не отменить не позже чем за 24 часа до конца периода. Оплата спишется с Apple ID при подтверждении покупки. Отменить можно в настройках App Store.")
-                .textStyle(AppFont.micro.color(Token.Ink.faint))
+                .textStyle(AppFont.micro.color(Token.Ink.secondary))
             HStack(spacing: Token.Space.s16) {
                 NavigationLink("Условия использования") { TermsScreen() }
                 NavigationLink("Политика конфиденциальности") { PrivacyPolicyScreen() }

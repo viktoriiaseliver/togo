@@ -1,17 +1,17 @@
 {
   "sourceLanguage": "ru",
   "strings": {
-    " · гуляли %@ назад": {
+    " · дежурит ": {
       "extractionState": "manual",
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": " · гуляли %@ назад"
+            "value": " · дежурит "
           }
         }
       },
-      "comment": "blocks"
+      "comment": "weight"
     },
     " · откладывали %@ раза": {
       "extractionState": "manual",
@@ -25,17 +25,17 @@
       },
       "comment": "snoozed"
     },
-    " · сегодня ещё не выходили": {
+    " · отменено": {
       "extractionState": "manual",
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": " · сегодня ещё не выходили"
+            "value": " · отменено"
           }
         }
       },
-      "comment": "blocks"
+      "comment": "body"
     },
     " и ": {
       "extractionState": "manual",
@@ -529,6 +529,18 @@
       },
       "comment": "minutes"
     },
+    "%@ ч %@ м": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ч %@ м"
+          }
+        }
+      },
+      "comment": "rest"
+    },
     "%@ ч %@ мин": {
       "extractionState": "manual",
       "localizations": {
@@ -733,6 +745,18 @@
       },
       "comment": "awaitingDateRow"
     },
+    ")) за день — ": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": ")) за день — "
+          }
+        }
+      },
+      "comment": "usual"
+    },
     ")) и запас": {
       "extractionState": "manual",
       "localizations": {
@@ -744,6 +768,18 @@
         }
       },
       "comment": "packingCard"
+    },
+    ")) из %@ за день": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": ")) из %@ за день"
+          }
+        }
+      },
+      "comment": "usual"
     },
     ")), где она была с тобой дольше %@ часов": {
       "extractionState": "manual",
@@ -2243,6 +2279,18 @@
         }
       },
       "comment": "windowsExplainer"
+    },
+    "Выход на паузе": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выход на паузе"
+          }
+        }
+      },
+      "comment": "voiceOver"
     },
     "Выход перед машиной": {
       "extractionState": "manual",
@@ -4488,6 +4536,18 @@
       },
       "comment": "ongoingCard"
     },
+    "Идёт выход": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Идёт выход"
+          }
+        }
+      },
+      "comment": "voiceOver"
+    },
     "Идёт эпизод: два инцидента за сутки. Пока он не закончится, приложение не считает вердикты — выводи по первому знаку.": {
       "extractionState": "manual",
       "localizations": {
@@ -5867,6 +5927,18 @@
       },
       "comment": "body"
     },
+    "На улице были %@ назад. ": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "На улице были %@ назад. "
+          }
+        }
+      },
+      "comment": "voiceOver"
+    },
     "На устройстве не осталось ни одной записи.": {
       "extractionState": "manual",
       "localizations": {
@@ -6754,6 +6826,18 @@
         }
       },
       "comment": "body"
+    },
+    "Обычно выходите чаще · %@ ": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Обычно выходите чаще · %@ "
+          }
+        }
+      },
+      "comment": "usual"
     },
     "Обычно около %@. На прогулках сейчас внимательнее: кобели чувствуют за километр, и это не про воспитание.": {
       "extractionState": "manual",
@@ -9850,6 +9934,18 @@
         }
       },
       "comment": "claimSubtitle"
+    },
+    "Сегодня ещё не выходили": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сегодня ещё не выходили"
+          }
+        }
+      },
+      "comment": "headline"
     },
     "Сегодня ещё не выходили.": {
       "extractionState": "manual",
@@ -13449,7 +13545,7 @@
           }
         }
       },
-      "comment": "weight"
+      "comment": "pausedTitle"
     },
     "выход, еда, прогулка": {
       "extractionState": "manual",
@@ -13583,18 +13679,6 @@
       },
       "comment": "runningTitle"
     },
-    "гуляете сейчас": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "гуляете сейчас"
-          }
-        }
-      },
-      "comment": "weight"
-    },
     "гулял \\(Fmt.duration(now.timeIntervalSince($0))) назад": {
       "extractionState": "manual",
       "localizations": {
@@ -13702,18 +13786,6 @@
         }
       },
       "comment": "bars"
-    },
-    "дежурит %@": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "дежурит %@"
-          }
-        }
-      },
-      "comment": "header"
     },
     "день": {
       "extractionState": "manual",
@@ -14675,6 +14747,18 @@
       },
       "comment": "reactionCard"
     },
+    "как обычно": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "как обычно"
+          }
+        }
+      },
+      "comment": "usual"
+    },
     "как попросил": {
       "extractionState": "manual",
       "localizations": {
@@ -14867,6 +14951,18 @@
       },
       "comment": "preview"
     },
+    "кормление": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "кормление"
+          }
+        }
+      },
+      "comment": "indoors"
+    },
     "кормлений": {
       "extractionState": "manual",
       "localizations": {
@@ -14877,7 +14973,19 @@
           }
         }
       },
-      "comment": "todayCard"
+      "comment": "indoors"
+    },
+    "кормления": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "кормления"
+          }
+        }
+      },
+      "comment": "indoors"
     },
     "коротко — это правильно": {
       "extractionState": "manual",
@@ -15285,7 +15393,7 @@
           }
         }
       },
-      "comment": "body"
+      "comment": "headline"
     },
     "на прогулке": {
       "extractionState": "manual",
@@ -15310,6 +15418,30 @@
         }
       },
       "comment": "documents"
+    },
+    "на улице": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "на улице"
+          }
+        }
+      },
+      "comment": "headline"
+    },
+    "на улице были": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "на улице были"
+          }
+        }
+      },
+      "comment": "headline"
     },
     "на что сорвался": {
       "extractionState": "manual",
@@ -15346,6 +15478,18 @@
         }
       },
       "comment": "toxicCard"
+    },
+    "назад": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "назад"
+          }
+        }
+      },
+      "comment": "headline"
     },
     "название": {
       "extractionState": "manual",
@@ -17075,18 +17219,6 @@
       },
       "comment": "title"
     },
-    "с прогулки": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "с прогулки"
-          }
-        }
-      },
-      "comment": "indoors"
-    },
     "самолёт": {
       "extractionState": "manual",
       "localizations": {
@@ -17242,6 +17374,18 @@
         }
       },
       "comment": "scheduleCard"
+    },
+    "след остаётся": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "след остаётся"
+          }
+        }
+      },
+      "comment": "subtitle"
     },
     "следующая": {
       "extractionState": "manual",

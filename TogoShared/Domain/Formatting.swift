@@ -43,6 +43,18 @@ nonisolated enum Fmt {
             : String(format: "%.1f", value).replacingOccurrences(of: ".", with: ",")
     }
 
+    /// Часы и минуты для героя: «2 ч 12 м».
+    ///
+    /// Секундомер здесь не годится — он считает минуты и секунды,
+    /// и два с половиной часа превращались в «165:16».
+    static func hoursMinutes(_ interval: TimeInterval) -> String {
+        let minutes = max(0, Int(interval) / 60)
+        let hours = minutes / 60
+        guard hours > 0 else { return "\(minutes) мин" }
+        let rest = minutes % 60
+        return rest == 0 ? "\(hours) ч" : "\(hours) ч \(rest) м"
+    }
+
     static func gap(_ interval: TimeInterval) -> String {
         let minutes = max(0, Int(interval / 60))
         if minutes < 90 { return "\(minutes) мин" }
