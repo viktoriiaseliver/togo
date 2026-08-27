@@ -457,7 +457,7 @@ struct DogAvatar: View {
             initial: dog?.initial ?? "?",
             image: dog?.photo,
             size: Token.Size.avatarMd,
-            tint: Token.Action.primaryQuiet
+            tint: Token.Action.doneQuiet
         )
     }
 }

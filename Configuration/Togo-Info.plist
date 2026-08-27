@@ -47,6 +47,17 @@
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 
+	<!--
+	  Брендовый шрифт. Он используется только для вордмарка и крупных
+	  чисел — секундомера, отсчёта натощак, веса; весь интерфейс
+	  по-прежнему системный SF Pro. Onest под лицензией SIL OFL 1.1,
+	  вкладывать в приложение её прямо разрешает.
+	-->
+	<key>UIAppFonts</key>
+	<array>
+		<string>Onest-ExtraBold.ttf</string>
+	</array>
+
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>

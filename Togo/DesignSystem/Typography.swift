@@ -3,16 +3,36 @@ import SwiftUI
 /// Текстовые стили. Один стиль — одна строка токенов, как текстовый стиль
 /// в Figma: кегль, начертание, цвет по умолчанию.
 ///
-/// Шрифт системный: SF Pro единственный, который уже загружен, умеет
-/// Dynamic Type и не тянет за собой лицензию.
+/// Шрифтов два, и роли у них разные.
+///
+/// **SF Pro** — весь интерфейс: заголовки, строки, меты. Он уже загружен,
+/// умеет Dynamic Type из коробки и не тянет за собой лицензию.
+///
+/// **Onest ExtraBold** — только вордмарк и крупные числа от 28 пунктов:
+/// секундомер прогулки, обратный отсчёт натощак, вес. Это те цифры,
+/// на которые смотрят с расстояния вытянутой руки, и им нужен характер,
+/// которого у системного шрифта нет. Больше нигде он не появляется —
+/// иначе перестал бы быть брендом и стал просто ещё одним шрифтом.
 struct TextStyleToken: Equatable, Sendable {
+    /// Имя из таблицы шрифта, а не имя файла: iOS ищет именно его.
+    static let brandFont = "Onest-ExtraBold"
+
     var size: CGFloat
     var weight: Font.Weight
     var color: Color
     var rounded: Bool = false
     var monospacedDigits: Bool = false
+    /// Брендовый шрифт вместо системного.
+    var brand: Bool = false
 
     var font: Font {
+        if brand {
+            // `relativeTo` обязателен: без него кастомный шрифт
+            // перестаёт слушаться Dynamic Type, и человек с крупным
+            // текстом получает мелкие цифры именно там, где они важнее
+            // всего.
+            return .custom(Self.brandFont, size: size, relativeTo: .largeTitle)
+        }
         var font = Font.system(size: size, weight: weight, design: rounded ? .rounded : .default)
         if monospacedDigits { font = font.monospacedDigit() }
         return font
@@ -48,10 +68,14 @@ enum AppFont {
         TextStyleToken(size: size, weight: weight, color: Token.Ink.primary, rounded: true, monospacedDigits: true)
     }
 
+    /// Крупные числа бренда: секундомер, отсчёт натощак, вес.
     static let display = TextStyleToken(size: Token.FontSize.display, weight: Token.FontWeight.bold,
-                                        color: Token.Ink.primary, rounded: true, monospacedDigits: true)
+                                        color: Token.Ink.primary, monospacedDigits: true, brand: true)
     static let hero = TextStyleToken(size: Token.FontSize.hero, weight: Token.FontWeight.bold,
-                                     color: Token.Ink.primary, rounded: true, monospacedDigits: true)
+                                     color: Token.Ink.primary, monospacedDigits: true, brand: true)
+    /// Вордмарк: онбординг, «о приложении».
+    static let wordmark = TextStyleToken(size: Token.FontSize.display, weight: Token.FontWeight.bold,
+                                         color: Token.Ink.primary, brand: true)
 }
 
 extension View {

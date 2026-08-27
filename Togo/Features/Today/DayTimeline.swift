@@ -321,23 +321,23 @@ struct NowMarker: View {
             HStack(alignment: .center, spacing: Token.Space.s6) {
                 Text(Fmt.clock(now))
                     .textStyle(AppFont.numeric(13, weight: .semibold))
-                    .foregroundStyle(Token.Action.primary)
+                    .foregroundStyle(Token.Status.doneText)
                     .fixedSize()
                     .frame(width: TimelineRail.timeWidth, alignment: .leading)
 
                 ZStack {
                     Circle()
-                        .fill(Token.Action.primary.opacity(0.18))
+                        .fill(Token.Action.done.opacity(0.18))
                         .frame(width: TimelineRail.nowDotSize + 10,
                                height: TimelineRail.nowDotSize + 10)
                     Circle()
-                        .fill(Token.Action.primary)
+                        .fill(Token.Action.done)
                         .frame(width: TimelineRail.nowDotSize, height: TimelineRail.nowDotSize)
                 }
                 .frame(width: TimelineRail.railWidth)
 
                 Text("сейчас")
-                    .textStyle(AppFont.micro.color(Token.Action.primary))
+                    .textStyle(AppFont.micro.color(Token.Status.doneText))
                 Spacer(minLength: 0)
             }
             .padding(.top, Token.Space.s2)

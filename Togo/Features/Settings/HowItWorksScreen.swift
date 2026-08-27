@@ -71,7 +71,7 @@ struct HowItWorksScreen: View {
                     HStack(spacing: Token.Space.s10) {
                         Image(systemName: chapter.systemImage)
                             .font(.system(size: Token.Size.iconMd, weight: .medium))
-                            .foregroundStyle(Token.Action.primary)
+                            .foregroundStyle(Token.Status.doneText)
                             .accessibilityHidden(true)
                         Text(chapter.title).textStyle(AppFont.cardTitle)
                     }

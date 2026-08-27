@@ -112,7 +112,7 @@ struct TrainingSessionScreen: View {
                 }
             }
             ProgressView(value: min(1, session.elapsed(at: now) / Double(session.limitSeconds)))
-                .tint(session.isOvertime(at: now) ? Token.Status.overdueText : Token.Action.primary)
+                .tint(session.isOvertime(at: now) ? Token.Status.overdueText : Token.Status.doneText)
             Text(session.hint(at: now)).textStyle(AppFont.caption)
 
             if session.isOvertime(at: now) {

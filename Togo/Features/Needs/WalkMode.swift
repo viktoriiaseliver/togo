@@ -103,20 +103,18 @@ struct WalkModeScreen: View {
             VStack(spacing: Token.Space.s10) {
                 markGrid
                 HStack(spacing: Token.Space.s10) {
-                    // Пауза обратима и ничего не записывает — янтарная,
-                    // как всё отложенное. «Продолжить» возвращает к делу,
-                    // поэтому оно уже не «ждём», а обычное второе действие.
+                    // Пауза обратима и ничего не записывает — ей хватает
+                    // камня. Горчицей её красить нельзя: этот цвет занят
+                    // окном натощак и больше нигде не появляется.
                     TGButton(title: session.isPaused ? "Продолжить" : "Пауза",
-                             variant: session.isPaused ? .secondary : .hold,
-                             size: .medium,
+                             variant: .secondary, size: .medium,
                              systemImage: session.isPaused ? "play.fill" : "pause.fill",
                              fullWidth: true) {
                         togglePause()
                     }
-                    // Завершение создаёт записи — зелёное, как «сделано».
-                    // Раньше обе кнопки были одинаково серыми, и отличить
-                    // «постоять» от «всё, записали» можно было только
-                    // прочитав подпись.
+                    // Завершение — шалфей: оно закрывает начатое, а кирпич
+                    // на этом экране уже занят отметкой, которую жмут
+                    // десять раз за прогулку.
                     TGButton(title: "Закончить", variant: .finish, size: .medium,
                              systemImage: "checkmark", fullWidth: true) {
                         finish()
@@ -496,7 +494,9 @@ struct ActiveSessionCard: View {
                 VStack(alignment: .leading, spacing: Token.Space.s2) {
                     Text(session.isPaused ? session.kind.pausedTitle : session.kind.runningTitle)
                         .textStyle(AppFont.micro.color(
-                            session.isPaused ? Token.Status.waitingText : Token.Action.primary
+                            // Горчица занята окном натощак: пауза красится
+                            // спокойным серым, идущая прогулка — шалфеем.
+                            session.isPaused ? Token.Ink.secondary : Token.Status.doneText
                         ))
                     TGStopwatch(session: session, now: now,
                                 style: AppFont.display.color(

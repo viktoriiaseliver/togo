@@ -94,7 +94,7 @@ struct PaywallScreen: View {
                     TGTile(isSelected: selected?.id == product.id, minHeight: 68) {
                         HStack(spacing: Token.Space.s12) {
                             Image(systemName: selected?.id == product.id ? "largecircle.fill.circle" : "circle")
-                                .foregroundStyle(Token.Action.primary)
+                                .foregroundStyle(Token.Status.doneText)
                             VStack(alignment: .leading, spacing: Token.Space.s2) {
                                 Text(product.displayName).textStyle(AppFont.bodyEmphasis)
                                 Text(subscriptionCaption(product)).textStyle(AppFont.caption)

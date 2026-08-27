@@ -160,7 +160,7 @@ struct DayOutCard: View {
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: Token.Space.s2) {
                     Text("собака с тобой")
-                        .textStyle(AppFont.micro.color(Token.Action.primary))
+                        .textStyle(AppFont.micro.color(Token.Status.doneText))
                     Text(Fmt.duration(day.duration(at: now)))
                         .textStyle(AppFont.display)
                     Text("рассчитывали на \(Fmt.plural(day.plannedHours, "час", "часа", "часов"))")
@@ -185,7 +185,7 @@ struct DayOutCard: View {
                     Button("Предложила", action: onWater)
                         .textStyle(AppFont.captionEmphasis)
                         .buttonStyle(.plain)
-                        .foregroundStyle(Token.Action.primary)
+                        .foregroundStyle(Token.Status.doneText)
                         .frame(minHeight: Token.Size.tapTarget)
                 }
             }

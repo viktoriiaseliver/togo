@@ -113,7 +113,7 @@ private struct MemberRow: View {
 
     var body: some View {
         HStack(spacing: Token.Space.s12) {
-            TGAvatar(initial: member.initial, tint: member.isMe ? Token.Action.primaryQuiet : Token.Action.done)
+            TGAvatar(initial: member.initial, tint: member.isMe ? Token.Action.doneQuiet : Token.Action.done)
             VStack(alignment: .leading, spacing: Token.Space.s2) {
                 Text(member.name).textStyle(AppFont.bodyEmphasis)
                 Text(member.hasCustomPermissions

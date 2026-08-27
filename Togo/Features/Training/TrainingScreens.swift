@@ -178,7 +178,7 @@ struct TransferMatrixScreen: View {
             HStack {
                 Text("Матрица человек × место × отвлечения").textStyle(AppFont.cardTitle)
                 Spacer()
-                Text("Pro").textStyle(AppFont.micro.color(Token.Action.primary))
+                Text("Pro").textStyle(AppFont.micro.color(Token.Status.doneText))
             }
             Text("Полная матрица переноса — в подписке. Само обучение, «не брал еду» и правило одного изменения за раз остаются бесплатными.")
                 .textStyle(AppFont.caption)

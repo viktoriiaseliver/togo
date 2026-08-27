@@ -51,7 +51,7 @@ struct StoolSheet: View {
                         .frame(maxWidth: .infinity, minHeight: 68)
                         .background(
                             RoundedRectangle(cornerRadius: Token.Radius.tile, style: .continuous)
-                                .fill(form == candidate ? Token.Action.primaryQuiet : Token.Surface.card)
+                                .fill(form == candidate ? Token.Action.doneQuiet : Token.Surface.card)
                         )
                     }
                     .buttonStyle(.plain)

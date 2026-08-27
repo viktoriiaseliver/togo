@@ -52,7 +52,7 @@ struct DogTab: View {
             TGCard {
                 HStack(spacing: Token.Space.s12) {
                     TGAvatar(initial: dog.initial, image: dog.photo,
-                             size: Token.Size.avatarMd, tint: Token.Action.primaryQuiet)
+                             size: Token.Size.avatarMd, tint: Token.Action.doneQuiet)
                     VStack(alignment: .leading, spacing: Token.Space.s2) {
                         Text(dog.name).textStyle(AppFont.cardTitle)
                         Text([dog.breed, dog.ageDescription, Fmt.weight(dog.weightKg)]
@@ -184,7 +184,7 @@ struct TripScreen: View {
                     }
                     Spacer(minLength: Token.Space.s8)
                     if trip.isActive() {
-                        Text("идёт").textStyle(AppFont.micro.color(Token.Action.primary))
+                        Text("идёт").textStyle(AppFont.micro.color(Token.Status.doneText))
                     }
                 }
                 TGExplainer(text: trip.transport.windowsExplainer)

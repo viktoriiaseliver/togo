@@ -166,7 +166,7 @@ struct TGAvatar: View {
     }
 
     private var foreground: Color {
-        tint == Token.Action.primaryQuiet ? Token.Ink.primary : .white
+        tint == Token.Action.doneQuiet || tint == Token.Action.primaryQuiet ? Token.Ink.primary : .white
     }
 }
 

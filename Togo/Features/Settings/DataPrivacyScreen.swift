@@ -180,7 +180,7 @@ struct AboutScreen: View {
             VStack(spacing: Token.Space.s8) {
                 Image(systemName: "pawprint.fill")
                     .font(.system(size: 44))
-                    .foregroundStyle(Token.Action.primary)
+                    .foregroundStyle(Token.Status.doneText)
                 Text("Того").textStyle(AppFont.screenTitle)
                 Text("версия \(settings.appVersion) (\(settings.buildNumber))").textStyle(AppFont.caption)
             }
@@ -201,7 +201,7 @@ struct AboutScreen: View {
                     HStack(alignment: .top, spacing: Token.Space.s8) {
                         Image(systemName: "circle.fill")
                             .font(.system(size: 5))
-                            .foregroundStyle(Token.Action.primary)
+                            .foregroundStyle(Token.Status.doneText)
                             .padding(.top, 7)
                         Text(line).textStyle(AppFont.caption)
                     }

@@ -46,7 +46,7 @@ private struct DogChip: View {
         HStack(spacing: Token.Space.s6) {
             TGAvatar(initial: dog.initial, image: dog.photo,
                      size: Token.Size.avatarSm,
-                     tint: isActive ? Token.Action.primaryQuiet : Token.Surface.sunken)
+                     tint: isActive ? Token.Action.doneQuiet : Token.Surface.sunken)
             Text(dog.name)
                 .textStyle(isActive ? AppFont.captionEmphasis : AppFont.caption)
                 .foregroundStyle(isActive ? Token.Ink.primary : Token.Ink.secondary)
@@ -55,10 +55,10 @@ private struct DogChip: View {
         .padding(.trailing, Token.Space.s12)
         .frame(minHeight: Token.Size.tapTarget)
         .background(
-            Capsule().fill(isActive ? Token.Action.primaryQuiet : Token.Surface.card)
+            Capsule().fill(isActive ? Token.Action.doneQuiet : Token.Surface.card)
         )
         .overlay(
-            Capsule().stroke(isActive ? Token.Action.primary : Token.Surface.hairline,
+            Capsule().stroke(isActive ? Token.Action.done : Token.Surface.hairline,
                              lineWidth: isActive ? 1.5 : 1)
         )
         .contentShape(Capsule())
@@ -112,7 +112,7 @@ private struct DogRow: View {
     var body: some View {
         HStack(spacing: Token.Space.s12) {
             TGAvatar(initial: dog.initial, image: dog.photo,
-                     size: Token.Size.avatarSm, tint: Token.Action.primaryQuiet)
+                     size: Token.Size.avatarSm, tint: Token.Action.doneQuiet)
             VStack(alignment: .leading, spacing: Token.Space.s2) {
                 Text(dog.name).textStyle(AppFont.body)
                 Text([dog.breed, dog.ageDescription].compactMap { $0 }.joined(separator: " · "))
@@ -122,7 +122,7 @@ private struct DogRow: View {
             if isActive {
                 Image(systemName: "checkmark")
                     .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(Token.Action.primary)
+                    .foregroundStyle(Token.Status.doneText)
                     .accessibilityLabel("открыта сейчас")
             }
         }

@@ -1,5 +1,6 @@
 import Testing
 import SwiftUI
+import UIKit
 @testable import Togo
 
 /// Токены нельзя править в Swift руками: источник — DesignTokens/tokens.json.
@@ -49,10 +50,14 @@ struct DesignTokenTests {
         #expect(AppFont.caption.size >= 14)
     }
 
-    @Test("Чернила по охре проходят AA — белого текста на кнопке быть не должно")
-    func ochreButtonContrast() {
-        #expect(contrast(Token.Component.Button.Primary.label, Token.Component.Button.Primary.background) > 4.5)
-        #expect(contrast(.white, Token.Action.primary) < 4.5)
+    @Test("Белый по кирпичу проходит AA")
+    func brickButtonContrast() {
+        // Прошлый брендинг был на охре, и белый по ней не проходил —
+        // подпись главной кнопки приходилось делать чернильной.
+        // Кирпич темнее, и белый на нём читается: 5,4:1.
+        #expect(contrast(Token.Component.Button.Primary.label,
+                         Token.Component.Button.Primary.background) > 4.5)
+        #expect(Token.Component.Button.Primary.label == Token.Ink.onAccent)
     }
 
     @Test("Текст состояний читается на своём фоне")
@@ -90,5 +95,99 @@ struct DesignTokenTests {
     func bannerTitleIsBigEnough() {
         #expect(Token.Component.Banner.titleSize >= Token.FontSize.section)
         #expect(Token.Component.Banner.titleSize > Token.FontSize.body)
+    }
+}
+
+// MARK: - Брендинг «кирпич и шалфей»
+
+@Suite("Брендинг · роли цвета")
+@MainActor
+struct BrandRoleTests {
+
+    /// Контрасты назвал дизайнер и проверил их сам; тест держит их
+    /// от тихого сползания при следующей правке палитры.
+    private func contrast(_ a: Color, _ b: Color) -> Double {
+        func luminance(_ color: Color) -> Double {
+            let parts = UIColor(color).cgColor.components ?? [0, 0, 0, 1]
+            let rgb = parts.count >= 3 ? Array(parts.prefix(3)) : [parts[0], parts[0], parts[0]]
+            let linear = rgb.map { channel -> Double in
+                let value = Double(channel)
+                return value <= 0.03928 ? value / 12.92 : pow((value + 0.055) / 1.055, 2.4)
+            }
+            return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2]
+        }
+        let first = luminance(a), second = luminance(b)
+        return (max(first, second) + 0.05) / (min(first, second) + 0.05)
+    }
+
+    @Test("Кирпичный текст читается на камне")
+    func brickOnStone() {
+        #expect(contrast(Token.Status.overdueText, Token.Surface.screen) >= 4.5)
+    }
+
+    @Test("Шалфейный текст читается на камне")
+    func sageOnStone() {
+        #expect(contrast(Token.Status.doneText, Token.Surface.screen) >= 4.5)
+    }
+
+    @Test("Горчица читается на своём тинте")
+    func mustardOnTint() {
+        #expect(contrast(Token.Status.waitingText, Token.Status.waitingBg) >= 4.5)
+    }
+
+    @Test("Белый читается на кирпичной заливке")
+    func whiteOnBrick() {
+        #expect(contrast(Token.Ink.onAccent, Token.Action.primary) >= 4.5)
+    }
+
+    @Test("Действие и «сделано» — разные цвета")
+    func actionIsNotDone() {
+        // Кирпич — одно главное действие на экран. Шалфей — норма
+        // и навигация. Слить их значило бы потерять оба смысла.
+        #expect(Token.Action.primary != Token.Action.done)
+    }
+
+    @Test("Горчица встречается ровно в одном месте")
+    func mustardIsSingular() {
+        // Единственный запрет в приложении — окно натощак.
+        // Если этот цвет появится где-то ещё, запрет перестанет читаться.
+        #expect(Token.Status.waitingText != Token.Action.primary)
+        #expect(Token.Status.waitingText != Token.Action.done)
+        #expect(Token.Status.waitingText != Token.Status.overdueText)
+    }
+}
+
+@Suite("Брендинг · шрифт")
+@MainActor
+struct BrandFontTests {
+
+    @Test("Onest вложен в приложение и зарегистрирован")
+    func brandFontIsAvailable() {
+        // Имя берётся из таблицы шрифта, а не из имени файла: iOS ищет
+        // именно его, и опечатка здесь тихо откатывает всё на системный —
+        // приложение при этом собирается и работает.
+        #expect(UIFont(name: TextStyleToken.brandFont, size: 34) != nil)
+    }
+
+    @Test("Брендовый шрифт достаётся только крупным числам и вордмарку")
+    func brandFontIsRare() {
+        // «Onest 800 — только вордмарк и display 28px+». Если он утечёт
+        // в строки и меты, брендом быть перестанет.
+        #expect(AppFont.display.brand)
+        #expect(AppFont.hero.brand)
+        #expect(AppFont.wordmark.brand)
+
+        #expect(!AppFont.body.brand)
+        #expect(!AppFont.caption.brand)
+        #expect(!AppFont.micro.brand)
+        #expect(!AppFont.screenTitle.brand)
+        #expect(!AppFont.cardTitle.brand)
+        #expect(!AppFont.numeric(17).brand)
+    }
+
+    @Test("Крупные числа и правда крупные")
+    func brandSizesAreLarge() {
+        #expect(AppFont.display.size >= 28)
+        #expect(AppFont.hero.size >= 28)
     }
 }

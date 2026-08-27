@@ -8,21 +8,19 @@ import SwiftUI
 struct TGButton: View {
     /// Вариант — это про смысл действия, а не про цвет.
     ///
-    /// Раньше «Пауза» и «Закончить» были одинаково серыми: два разных
-    /// по последствиям действия выглядели одним. Цвет обязан отличать
-    /// «приостановить» от «завершить» и «завершить» от «удалить» —
-    /// иначе он ничего не значит и его можно было бы не рисовать.
+    /// Правило брендинга: **кирпич — ровно одно главное действие
+    /// на экран.** Если кирпича на экране два, один из них лишний.
+    /// Горчица занята окном натощак и больше нигде не появляется —
+    /// поэтому отдельного «приостановить» цветом нет: пауза обратима
+    /// и ничего не записывает, ей хватает камня.
     enum Variant: String, CaseIterable, Sendable {
         /// Главное действие экрана. На экране оно одно.
         case primary
         /// Второй путь: тоже нормальный, но не основной.
         case secondary
-        /// Завершает начатое: прогулку, занятие, эпизод.
-        /// Зелёное — то же, которым помечено «сделано».
+        /// Завершает начатое: занятие, эпизод. Шалфей — тот же, которым
+        /// помечено «сделано» и «норма».
         case finish
-        /// Приостанавливает, обратимо. Янтарное — то же, которым помечено
-        /// всё отложенное и ждущее.
-        case hold
         /// Без фона. Для действий, которые не должны спорить за внимание.
         case quiet
         /// Убирает данные. Терракот — и только он.
@@ -113,7 +111,6 @@ struct TGButtonStyle: ButtonStyle {
         case .primary: return Token.Component.Button.Primary.background
         case .secondary: return Token.Component.Button.Secondary.background
         case .finish: return Token.Component.Button.Finish.background
-        case .hold: return Token.Component.Button.Hold.background
         case .quiet: return .clear
         case .destructive: return Token.Component.Button.Destructive.background
         }
@@ -125,7 +122,6 @@ struct TGButtonStyle: ButtonStyle {
         case .primary: return Token.Component.Button.Primary.label
         case .secondary: return Token.Component.Button.Secondary.label
         case .finish: return Token.Component.Button.Finish.label
-        case .hold: return Token.Component.Button.Hold.label
         case .quiet: return Token.Ink.secondary
         case .destructive: return Token.Component.Button.Destructive.label
         }

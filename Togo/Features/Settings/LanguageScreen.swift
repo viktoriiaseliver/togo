@@ -82,7 +82,7 @@ struct LanguageScreen: View {
                 Spacer(minLength: Token.Space.s8)
                 if settings.preferredLanguage == code {
                     Image(systemName: "checkmark")
-                        .foregroundStyle(Token.Action.primary)
+                        .foregroundStyle(Token.Status.doneText)
                         .accessibilityLabel("Выбрано")
                 }
             }

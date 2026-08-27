@@ -13,7 +13,7 @@ struct TGIconRow: View {
     let title: String
     let detail: String
     /// Иконка здесь всегда декоративная: смысл несёт заголовок рядом.
-    var tint: Color = Token.Action.primary
+    var tint: Color = Token.Status.doneText
 
     var body: some View {
         HStack(alignment: .top, spacing: Token.Space.s12) {

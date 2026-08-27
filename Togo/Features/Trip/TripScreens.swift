@@ -157,7 +157,7 @@ struct TripTodayBlock: View {
             HStack {
                 Image(systemName: trip.transport.symbol)
                     .font(.system(size: Token.Size.iconMd, weight: .medium))
-                    .foregroundStyle(Token.Action.primary)
+                    .foregroundStyle(Token.Status.doneText)
                 VStack(alignment: .leading, spacing: Token.Space.s2) {
                     Text(trip.destination).textStyle(AppFont.cardTitle)
                     Text("день \(trip.dayNumber(on: now)) из \(trip.dayCount)").textStyle(AppFont.caption)

@@ -348,7 +348,7 @@ private struct DayCell: View {
         }
         // Ячейку календаря нажимают пальцем — значит, не меньше 44.
         .frame(maxWidth: .infinity, minHeight: Token.Size.tapTarget)
-        .background(isToday ? Token.Action.primaryQuiet : .clear,
+        .background(isToday ? Token.Action.doneQuiet : .clear,
                     in: RoundedRectangle(cornerRadius: Token.Radius.small, style: .continuous))
         .contentShape(Rectangle())
         .accessibilityLabel(Fmt.shortDay(day))
