@@ -25,6 +25,15 @@ struct TodayScreen: View {
     /// Когда дело ухода было сделано в прошлый раз — чтобы «вернуть»
     /// возвращало именно туда, а не обнуляло срок.
     @State private var lastCareDone: [UUID: Date?] = [:]
+    @State private var lockedDose: LockedDose?
+
+    /// Доза, по которой открыт замок.
+    struct LockedDose: Identifiable {
+        let item: DayPlanItem
+        let givenBy: String
+        let givenAt: Date
+        var id: String { item.id }
+    }
 
     private let tick = Timer.publish(every: 30, on: .main, in: .common).autoconnect()
 
@@ -136,6 +145,7 @@ struct TodayScreen: View {
                         DayPlanList(items: planItems, now: now,
                                     onComplete: { complete($0) },
                                     onUndo: { uncomplete($0) },
+                                    onOpen: { open($0) },
                                     awaitingDate: careAwaitingDate,
                                     onOpenCare: onOpenDog)
                     }
@@ -174,6 +184,16 @@ struct TodayScreen: View {
             }
             .sheet(item: $finishingDayOut) { day in
                 DayOutSummarySheet(day: day)
+            }
+            .sheet(item: $lockedDose) { locked in
+                DoseLockSheet(title: locked.item.title,
+                              markedBy: locked.givenBy,
+                              markedAt: locked.givenAt) {
+                    // Другая доза — записываем отдельно, со своим временем.
+                    route = .more
+                } onUndo: {
+                    uncomplete(locked.item)
+                }
             }
         }
     }
@@ -401,6 +421,28 @@ struct TodayScreen: View {
         Haptics.warning()
         appState.showUndo("Снова в списке · \(item.title)")
         _ = dog
+    }
+
+    /// Тап по тексту строки: открыть запись, а не отметить.
+    ///
+    /// Повторный тап по **кругу** уже закрытой дозы открывает замок —
+    /// он объясняет, кто дал и когда, вместо второй отметки.
+    private func open(_ item: DayPlanItem) {
+        guard item.isDone else { return }
+        if item.kind == .dose, let medication = item.medication,
+           let dose = medication.doses.first(where: {
+               Calendar.current.isDate($0.scheduledAt, equalTo: item.time, toGranularity: .minute)
+           }), dose.isGiven {
+            lockedDose = LockedDose(item: item, givenBy: dose.givenBy ?? "кто-то",
+                                    givenAt: dose.givenAt ?? item.time)
+            return
+        }
+        // Остальное открывается своей записью в ленте.
+        if let event = Diary.onDay(events, now)
+            .filter({ $0.kind == logKind(of: item) })
+            .min(by: { abs($0.date.timeIntervalSince(item.time)) < abs($1.date.timeIntervalSince(item.time)) }) {
+            route = .edit(event.id)
+        }
     }
 
     private func complete(_ item: DayPlanItem) {

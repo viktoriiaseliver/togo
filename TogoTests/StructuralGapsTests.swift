@@ -1,6 +1,8 @@
 import Testing
 import Foundation
 import SwiftData
+import SwiftUI
+import UIKit
 @testable import Togo
 
 /// Пробелы, найденные обходом по веткам логики.
@@ -460,5 +462,100 @@ struct HandsFreeTests {
         #expect(WalkMarkKind.allCases.count == 2)
         #expect(WalkMarkKind.urine.markKind == .urine)
         #expect(WalkMarkKind.stool.markKind == .stool)
+    }
+}
+
+@Suite("Прототип v2 · отметка и замок")
+@MainActor
+struct PrototypeV2Tests {
+
+    @Test("Токены совпадают с хендофом")
+    func tokensMatchHandoff() {
+        // Пакет передан как high-fidelity: «цвета, типографика, радиусы,
+        // отступы и копирайтинг финальные — воспроизводить точно».
+        func hex(_ color: Color) -> String {
+            let parts = UIColor(color).cgColor.components ?? []
+            guard parts.count >= 3 else { return "" }
+            return String(format: "#%02X%02X%02X",
+                          Int(parts[0] * 255 + 0.5), Int(parts[1] * 255 + 0.5),
+                          Int(parts[2] * 255 + 0.5))
+        }
+        #expect(hex(Token.Surface.screen) == "#131211")
+        #expect(hex(Token.Surface.card) == "#1B1917")
+        #expect(hex(Token.Surface.sunken) == "#262320")
+        #expect(hex(Token.Surface.control) == "#33302B")
+        #expect(hex(Token.Action.primary) == "#2FE0BE")
+        #expect(hex(Token.Status.waitingText) == "#FFD60A")
+        #expect(hex(Token.Status.overdueText) == "#FF453A")
+        // Текст на мяте хендоф уточнил: было #00201A, стало #052018.
+        #expect(hex(Token.Ink.onAccent) == "#052018")
+    }
+
+    @Test("Радиусы и отступы по хендофу")
+    func metricsMatchHandoff() {
+        // «12 контролы · 16 вложенные карточки, кнопки · 20 карточки ·
+        // 26 шторки · 999 пилюли. Экран 18.»
+        #expect(Token.Radius.small == 12)
+        #expect(Token.Radius.control == 16)
+        #expect(Token.Radius.card == 20)
+        #expect(Token.Radius.sheet == 26)
+        #expect(Token.Spacing.screenPadding == 18)
+    }
+
+    @Test("Отметить можно только кругом, и он не меньше сорока четырёх")
+    func checkboxIsTapTarget() {
+        // «Отметка: ТОЛЬКО круг-чекбокс 44pt слева (как Напоминания).
+        // Тап по тексту = деталь.» У строки два разных исхода, и они
+        // не должны зависеть от того, куда попал палец.
+        #expect(Token.Size.tapTarget >= 44)
+    }
+
+    @Test("Доза, отмеченная один раз, вторую отметку не принимает")
+    func doubleDoseIsImpossible() throws {
+        let container = try ModelContainer(
+            for: Dog.self,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+        )
+        let context = ModelContext(container)
+        let dog = Dog(name: "Бим", weightKg: 12)
+        context.insert(dog)
+
+        let medication = Medication(name: "Апоквел", doseText: "1 таблетка", times: [20 * 60])
+        medication.dog = dog
+        context.insert(medication)
+        try context.save()
+
+        let scheduled = Calendar.current.startOfDay(for: Date()).addingTimeInterval(20 * 3600)
+        let first = DoseScheduler.markGiven(medication, scheduledAt: scheduled,
+                                            by: "Аня", context: context)
+        let second = DoseScheduler.markGiven(medication, scheduledAt: scheduled,
+                                             by: "Тео", context: context)
+
+        // Вторая отметка возвращает ту же дозу и не переписывает автора:
+        // повторный тап должен открывать замок, а не ставить отметку.
+        #expect(first?.givenBy == "Аня")
+        #expect(second?.givenBy == "Аня")
+        #expect(medication.doses.filter(\.isGiven).count == 1)
+    }
+
+    @Test("Снять отметку можно — замок не ловушка")
+    func lockIsReversible() throws {
+        let container = try ModelContainer(
+            for: Dog.self,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+        )
+        let context = ModelContext(container)
+        let dog = Dog(name: "Бим", weightKg: 12)
+        context.insert(dog)
+        let medication = Medication(name: "Апоквел", doseText: "1 таблетка", times: [20 * 60])
+        medication.dog = dog
+        context.insert(medication)
+        try context.save()
+
+        let scheduled = Calendar.current.startOfDay(for: Date()).addingTimeInterval(20 * 3600)
+        _ = DoseScheduler.markGiven(medication, scheduledAt: scheduled, by: "Аня", context: context)
+        DoseScheduler.unmark(medication, scheduledAt: scheduled, context: context)
+
+        #expect(medication.doses.filter(\.isGiven).isEmpty)
     }
 }

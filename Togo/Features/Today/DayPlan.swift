@@ -38,6 +38,8 @@ struct DayPlanList: View {
     /// Вернуть пункт в невыполненные. Отметили не то — должно быть
     /// куда отступить.
     var onUndo: (DayPlanItem) -> Void = { _ in }
+    /// Открыть запись пункта: тап по тексту, а не по кругу.
+    var onOpen: (DayPlanItem) -> Void = { _ in }
     /// Сколько дел ухода ждут даты. Пока её нет, дело не станет сроком
     /// и не напомнит ни о чём — а выглядит заведённым.
     var awaitingDate: Int = 0
@@ -80,16 +82,11 @@ struct DayPlanList: View {
     private var header: some View {
         HStack {
             Text(pending.isEmpty
-                 ? "режим дня · всё сделано"
-                 : "режим дня · осталось \(pending.count) из \(items.count)")
+                 ? "план дня · всё сделано"
+                 : "план дня · осталось \(pending.count) из \(items.count)")
                 .textStyle(AppFont.micro)
                 .foregroundStyle(Token.Ink.faint)
             Spacer(minLength: 0)
-            if !pending.isEmpty {
-                Text("свайп вправо = сделано")
-                    .textStyle(AppFont.micro)
-                    .foregroundStyle(Token.Ink.faint)
-            }
         }
     }
 
@@ -145,114 +142,30 @@ struct DayPlanList: View {
         .buttonStyle(.plain)
     }
 
+    /// Что стоит под названием: время и, у сделанного, кто и когда.
+    private func subtitle(for item: DayPlanItem, isDone: Bool) -> String? {
+        var parts: [String] = []
+        if item.showsTime { parts.append(Fmt.clock(item.time)) } else { parts.append("днём") }
+        if let hint = item.hint { parts.append(hint) }
+        return parts.joined(separator: " · ")
+    }
+
+    /// Просрочка желтеет — но только у того, у чего есть час.
+    private func isOverdue(_ item: DayPlanItem) -> Bool {
+        item.showsTime && !item.isDone && item.time < now
+    }
+
     private func rows(_ list: [DayPlanItem], isDone: Bool = false) -> some View {
         VStack(spacing: 0) {
             ForEach(list) { item in
-                if isDone {
-                    DonePlanRow(item: item) { onUndo(item) }
-                } else {
-                    SwipeToCompleteRow(item: item, now: now) { onComplete(item) }
-                }
+                TGCheckRow(title: item.title,
+                           subtitle: subtitle(for: item, isDone: isDone),
+                           isDone: isDone,
+                           subtitleTint: isOverdue(item) ? Token.Status.waitingText : nil,
+                           onCheck: { isDone ? onUndo(item) : onComplete(item) },
+                           onOpen: { onOpen(item) })
                 if item.id != list.last?.id { TGDivider(inset: 52) }
             }
         }
-    }
-}
-
-/// Сделанный пункт: тихо, но с возможностью передумать.
-private struct DonePlanRow: View {
-    let item: DayPlanItem
-    var onUndo: () -> Void
-
-    var body: some View {
-        HStack(spacing: Token.Space.s10) {
-            Image(systemName: "checkmark.circle.fill")
-                .font(.system(size: 15))
-                .foregroundStyle(Token.Action.done)
-                .accessibilityHidden(true)
-            VStack(alignment: .leading, spacing: 1) {
-                Text(item.title)
-                    .textStyle(AppFont.caption)
-                    .foregroundStyle(Token.Ink.secondary)
-                    .strikethrough(color: Token.Ink.faint)
-                Text(Fmt.clock(item.time))
-                    .textStyle(AppFont.micro)
-                    .foregroundStyle(Token.Ink.faint)
-            }
-            Spacer(minLength: 0)
-            Button("Вернуть", action: onUndo)
-                .textStyle(AppFont.micro)
-                .buttonStyle(.plain)
-                .foregroundStyle(Token.Ink.secondary)
-                .frame(minHeight: Token.Size.tapTarget)
-        }
-        .frame(minHeight: Token.Size.tapTarget)
-    }
-}
-
-struct SwipeToCompleteRow: View {
-    let item: DayPlanItem
-    let now: Date
-    var onComplete: () -> Void
-
-    @State private var offset: CGFloat = 0
-
-    /// Просрочено — только про то, у чего есть час. У ухода его нет:
-    /// зубы чистят «сегодня», и красная цифра тут была бы упрёком
-    /// на ровном месте.
-    private var isOverdue: Bool { item.showsTime && !item.isDone && item.time < now }
-
-    var body: some View {
-        ZStack(alignment: .leading) {
-            HStack(spacing: 6) {
-                Image(systemName: "checkmark")
-                Text("Готово")
-            }
-            .textStyle(AppFont.captionEmphasis)
-            .foregroundStyle(Token.Action.done)
-            .padding(.leading, 12)
-
-            HStack(alignment: .center, spacing: 12) {
-                Text(item.showsTime ? Fmt.clock(item.time) : "днём")
-                    .textStyle(AppFont.numeric(13, weight: .medium))
-                    .foregroundStyle(isOverdue ? Token.Status.overdueText : Token.Ink.secondary)
-                    .fixedSize()
-                    .frame(minWidth: 40, alignment: .leading)
-
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(item.title)
-                        .textStyle(AppFont.bodyEmphasis)
-                        .foregroundStyle(item.isDone ? Token.Ink.faint : Token.Ink.primary)
-                        .strikethrough(item.isDone, color: Token.Ink.faint)
-                    if let hint = item.hint {
-                        Text(hint).textStyle(AppFont.caption).foregroundStyle(Token.Ink.secondary)
-                    }
-                }
-                Spacer(minLength: 8)
-                Image(systemName: item.isDone ? "checkmark.circle.fill" : "chevron.right")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(item.isDone ? Token.Action.done : Token.Ink.faint)
-            }
-            .padding(.vertical, 12)
-            .background(Token.Surface.card)
-            .offset(x: offset)
-            .gesture(
-                DragGesture(minimumDistance: 12)
-                    .onChanged { value in
-                        guard !item.isDone else { return }
-                        offset = max(0, min(value.translation.width, 120))
-                    }
-                    .onEnded { _ in
-                        if offset > 80 {
-                            Haptics.success()
-                            onComplete()
-                        }
-                        withAnimation(.spring(duration: 0.28)) { offset = 0 }
-                    }
-            )
-        }
-        .accessibilityElement(children: .combine)
-        .accessibilityAddTraits(.isButton)
-        .accessibilityAction(named: "Отметить сделанным") { onComplete() }
     }
 }

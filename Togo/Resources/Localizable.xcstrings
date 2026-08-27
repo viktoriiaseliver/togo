@@ -469,6 +469,18 @@
       },
       "comment": "resultCard"
     },
+    "%@ отметила в %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ отметила в %@"
+          }
+        }
+      },
+      "comment": "body"
+    },
     "%@ просьб за неделю": {
       "extractionState": "manual",
       "localizations": {
@@ -1392,18 +1404,6 @@
       },
       "comment": "body"
     },
-    "Вернуть": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Вернуть"
-          }
-        }
-      },
-      "comment": "body"
-    },
     "Вернуть заготовки": {
       "extractionState": "manual",
       "localizations": {
@@ -2063,6 +2063,18 @@
         }
       },
       "comment": "episodeNotice"
+    },
+    "Вторую отметку приложение не поставит: две дозы порознь — это не путаница в дневнике, а передозировка.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вторую отметку приложение не поставит: две дозы порознь — это не путаница в дневнике, а передозировка."
+          }
+        }
+      },
+      "comment": "body"
     },
     "Выбери план": {
       "extractionState": "manual",
@@ -3144,6 +3156,18 @@
       },
       "comment": "Доза по часам"
     },
+    "Доза вернётся в план дня, окно натощак пересчитается.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Доза вернётся в план дня, окно натощак пересчитается."
+          }
+        }
+      },
+      "comment": "body"
+    },
     "Доза дана в %@ под наблюдением": {
       "extractionState": "manual",
       "localizations": {
@@ -3275,6 +3299,18 @@
         }
       },
       "comment": "detail"
+    },
+    "Другая доза? Записать отдельно": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Другая доза? Записать отдельно"
+          }
+        }
+      },
+      "comment": "body"
     },
     "Другая собака": {
       "extractionState": "manual",
@@ -7127,6 +7163,18 @@
       },
       "comment": "TimeIndoorsIntent"
     },
+    "Отдельная запись со своим временем. Первая останется на месте.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отдельная запись со своим временем. Первая останется на месте."
+          }
+        }
+      },
+      "comment": "body"
+    },
     "Отказ от корма, за который он обычно работает, значит, что сейчас он учиться не может. Это не упрямство. Вернись к задаче попроще завтра.": {
       "extractionState": "manual",
       "localizations": {
@@ -7194,6 +7242,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Открыть"
+          }
+        }
+      },
+      "comment": "body"
+    },
+    "Открыть запись": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Открыть запись"
           }
         }
       },
@@ -7307,6 +7367,18 @@
       },
       "comment": "body"
     },
+    "Отметить · %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отметить · %@"
+          }
+        }
+      },
+      "comment": "checkbox"
+    },
     "Отметить в %@, что пописал": {
       "extractionState": "manual",
       "localizations": {
@@ -7342,18 +7414,6 @@
         }
       },
       "comment": "WalkMarkIntent"
-    },
-    "Отметить сделанным": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Отметить сделанным"
-          }
-        }
-      },
-      "comment": "body"
     },
     "Отметить стул": {
       "extractionState": "manual",
@@ -10283,6 +10343,30 @@
       },
       "comment": "toggle"
     },
+    "Снять отметку": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Снять отметку"
+          }
+        }
+      },
+      "comment": "body"
+    },
+    "Снять отметку · %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Снять отметку · %@"
+          }
+        }
+      },
+      "comment": "checkbox"
+    },
     "Снять отметку: %@": {
       "extractionState": "manual",
       "localizations": {
@@ -11922,6 +12006,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Уже закончилась"
+          }
+        }
+      },
+      "comment": "body"
+    },
+    "Уже отмечено": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Уже отмечено"
           }
         }
       },
@@ -13905,7 +14001,7 @@
           }
         }
       },
-      "comment": "body"
+      "comment": "parts"
     },
     "днём между едой": {
       "extractionState": "manual",
@@ -14195,6 +14291,18 @@
       },
       "comment": "body"
     },
+    "если ошиблись": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "если ошиблись"
+          }
+        }
+      },
+      "comment": "body"
+    },
     "если потерялась": {
       "extractionState": "manual",
       "localizations": {
@@ -14202,6 +14310,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "если потерялась"
+          }
+        }
+      },
+      "comment": "body"
+    },
+    "если это не она": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "если это не она"
           }
         }
       },
@@ -15022,6 +15142,18 @@
         }
       },
       "comment": "handle"
+    },
+    "кто-то": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "кто-то"
+          }
+        }
+      },
+      "comment": "dose"
     },
     "куда положить": {
       "extractionState": "manual",
@@ -16355,6 +16487,30 @@
       },
       "comment": "iCloudCard"
     },
+    "план дня · всё сделано": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "план дня · всё сделано"
+          }
+        }
+      },
+      "comment": "header"
+    },
+    "план дня · осталось %@ из %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "план дня · осталось %@ из %@"
+          }
+        }
+      },
+      "comment": "header"
+    },
     "пн": {
       "extractionState": "manual",
       "localizations": {
@@ -17111,30 +17267,6 @@
       },
       "comment": "travel"
     },
-    "режим дня · всё сделано": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "режим дня · всё сделано"
-          }
-        }
-      },
-      "comment": "header"
-    },
-    "режим дня · осталось %@ из %@": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "режим дня · осталось %@ из %@"
-          }
-        }
-      },
-      "comment": "header"
-    },
     "режим на день по делам, в дороге или в гостях": {
       "extractionState": "manual",
       "localizations": {
@@ -17242,18 +17374,6 @@
         }
       },
       "comment": "weekdays"
-    },
-    "свайп вправо = сделано": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "свайп вправо = сделано"
-          }
-        }
-      },
-      "comment": "header"
     },
     "сделано · %@": {
       "extractionState": "manual",

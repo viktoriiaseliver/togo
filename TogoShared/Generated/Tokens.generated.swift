@@ -14,7 +14,7 @@ nonisolated enum Token {
     enum Surface {
         static let card = Color(hex: 0x1B1917)
         static let control = Color(hex: 0x33302B)
-        static let hairline = Color(hex: 0xFFFFFF12)
+        static let hairline = Color(hex: 0x58544EA6)
         static let pressed = Color(hex: 0x423E38)
         static let screen = Color(hex: 0x131211)
         static let sunken = Color(hex: 0x262320)
@@ -23,7 +23,7 @@ nonisolated enum Token {
     /// Текст. Слабый серый допустим только с 14pt.
     enum Ink {
         static let faint = Color(hex: 0xEBEBF54D)
-        static let onAccent = Color(hex: 0x00201A)
+        static let onAccent = Color(hex: 0x052018)
         static let primary = Color(hex: 0xFFFFFF)
         static let secondary = Color(hex: 0xEBEBF599)
         static let silhouette = Color(hex: 0xEBEBF599)
@@ -50,14 +50,14 @@ nonisolated enum Token {
 
     /// Отступы.
     enum Spacing {
-        static let cardPadding: CGFloat = 20
-        static let screenPadding: CGFloat = 14
-        static let stack: CGFloat = 14
+        static let cardPadding: CGFloat = 16
+        static let screenPadding: CGFloat = 18
+        static let stack: CGFloat = 12
     }
 
     /// Радиусы.
     enum Radius {
-        static let card: CGFloat = 26
+        static let card: CGFloat = 20
         static let control: CGFloat = 16
         static let sheet: CGFloat = 26
         static let small: CGFloat = 12
@@ -70,6 +70,7 @@ nonisolated enum Token {
         static let s12: CGFloat = 12
         static let s14: CGFloat = 14
         static let s16: CGFloat = 16
+        static let s18: CGFloat = 18
         static let s2: CGFloat = 2
         static let s20: CGFloat = 20
         static let s24: CGFloat = 24
@@ -154,7 +155,7 @@ nonisolated enum Token {
         }
         enum Banner {
             static let padding: CGFloat = 14
-            static let radius: CGFloat = 26
+            static let radius: CGFloat = 20
             /// 28px в макете было мелко — плашку натощак можно было проскроллить.
             static let titleSize: CGFloat = 20
         }
@@ -178,7 +179,7 @@ nonisolated enum Token {
             enum Primary {
                 static let background = Color(hex: 0x2FE0BE)
                 static let height: CGFloat = 52
-                static let label = Color(hex: 0x00201A)
+                static let label = Color(hex: 0x052018)
                 static let radius: CGFloat = 16
             }
             enum Secondary {
@@ -190,8 +191,8 @@ nonisolated enum Token {
         }
         enum Card {
             static let background = Color(hex: 0x1B1917)
-            static let padding: CGFloat = 20
-            static let radius: CGFloat = 26
+            static let padding: CGFloat = 16
+            static let radius: CGFloat = 20
         }
         enum Chip {
             static let alarmBackground = Color(hex: 0xFF453A24)
@@ -203,7 +204,7 @@ nonisolated enum Token {
         }
         enum Sheet {
             static let background = Color(hex: 0x131211)
-            static let handleColor = Color(hex: 0xFFFFFF12)
+            static let handleColor = Color(hex: 0x58544EA6)
             static let handleHeight: CGFloat = 4
             static let handleWidth: CGFloat = 36
             static let radius: CGFloat = 26
