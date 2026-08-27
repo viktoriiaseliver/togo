@@ -55,6 +55,16 @@ nonisolated enum Fmt {
         return rest == 0 ? "\(hours) ч" : "\(hours) ч \(rest) м"
     }
 
+    /// Порядковое числительное для строки «третий раз за шесть часов».
+    ///
+    /// Дальше десятого не идём: если рвота случилась одиннадцать раз,
+    /// человек уже в клинике, а не читает подпись.
+    static func ordinal(_ value: Int) -> String {
+        let words = ["", "первый", "второй", "третий", "четвёртый", "пятый",
+                     "шестой", "седьмой", "восьмой", "девятый", "десятый"]
+        return words.indices.contains(value) ? words[value] : "\(value)-й"
+    }
+
     static func gap(_ interval: TimeInterval) -> String {
         let minutes = max(0, Int(interval / 60))
         if minutes < 90 { return "\(minutes) мин" }

@@ -71,6 +71,35 @@ nonisolated enum DoseScheduler {
         return dose
     }
 
+    /// Отметить дозу пропущенной.
+    ///
+    /// Пропуск — это запись, а не пустота. Врач спрашивает именно про
+    /// него, а в истории иначе остаётся необъяснённая дыра: непонятно,
+    /// забыли отметить или правда не дали.
+    @MainActor
+    static func markSkipped(
+        _ medication: Medication,
+        scheduledAt scheduled: Date,
+        by person: String,
+        at now: Date = Date(),
+        context: ModelContext
+    ) {
+        let calendar = Calendar.current
+        let dose = medication.doses.first {
+            calendar.isDate($0.scheduledAt, equalTo: scheduled, toGranularity: .minute)
+        } ?? {
+            let new = DoseRecord(scheduledAt: scheduled)
+            new.medication = medication
+            context.insert(new)
+            return new
+        }()
+
+        guard dose.givenAt == nil else { return }
+        dose.skippedAt = now
+        dose.skippedBy = person
+        try? context.save()
+    }
+
     /// Снять отметку с дозы.
     ///
     /// Отметили не ту или не тот человек — снять отметку должно быть можно.
@@ -89,6 +118,8 @@ nonisolated enum DoseScheduler {
 
         dose.givenAt = nil
         dose.givenBy = nil
+        dose.skippedAt = nil
+        dose.skippedBy = nil
         // Заодно снимаем «беру на себя»: договорённость была про тот раз.
         dose.claimedBy = nil
         dose.claimedAt = nil

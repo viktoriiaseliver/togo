@@ -8,8 +8,10 @@ struct HealthScreen: View {
     @Query private var dogs: [Dog]
     @Query private var allMedications: [Medication]
 
+    @Environment(\.modelContext) private var context
     @State private var editing: Medication?
     @State private var isAdding = false
+    @State private var isFinishing = false
 
     private var dog: Dog? { appState.activeDog(from: dogs) }
 
@@ -40,6 +42,7 @@ struct HealthScreen: View {
                 }
 
                 sectionsGrid
+                finishCourse
                 disclaimer
             }
             .navigationTitle("Здоровье")
@@ -57,11 +60,48 @@ struct HealthScreen: View {
             .sheet(item: $editing) { medication in
                 MedicationEditorSheet(medication: medication, dog: dog)
             }
+            .sheet(isPresented: $isFinishing) {
+                if let dog {
+                    CourseFinishSheet(
+                        dog: dog,
+                        summary: TreatmentCourse.summary(dog),
+                        farewell: TreatmentCourse.farewell(dog),
+                        onFinish: { finish() },
+                        onScheduleCheckup: { days in
+                            TreatmentCourse.scheduleCheckup(for: dog, after: days, context: context)
+                        }
+                    )
+                }
+            }
         }
     }
 
     /// Схему меняет только владелец. Остальные видят её и отмечают приёмы.
     private var canEdit: Bool { appState.can(.editTreatment) }
+
+    /// Курс кончается здесь, а не тумблером в профиле, где его никто
+    /// не найдёт. Вместе с курсом уходит и вкладка — медицина не должна
+    /// занимать место у здоровой собаки.
+    @ViewBuilder
+    private var finishCourse: some View {
+        if canEdit, dog != nil {
+            Button { isFinishing = true } label: {
+                TGCard {
+                    TGListRow(title: "Курс завершён", value: "спрячет вкладку",
+                              systemImage: "checkmark.seal")
+                    TGExplainer(text: "Записи останутся в истории и в отчёте врачу. Вернуть курс можно в профиле.")
+                }
+            }
+            .buttonStyle(.plain)
+        }
+    }
+
+    private func finish() {
+        guard let dog else { return }
+        TreatmentCourse.finish(dog, by: appState.currentUserName, context: context)
+        appState.showUndo("Курс завершён")
+        Haptics.success()
+    }
 
     private var sectionsGrid: some View {
         TGCard(spacing: 0) {

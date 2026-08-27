@@ -197,6 +197,20 @@ final class Medication {
     var times: [Int] = []
     /// Окно натощак после дозы: еда внутри него мешает всасыванию.
     var fastingMinutes: Int = 0
+
+    /// Доза с условием: открывается через N минут после еды.
+    ///
+    /// Инсулин колют не по часам, а после того, как собака поела —
+    /// иначе сахар падает в пустой желудок. Такая доза стоит в плане дня
+    /// замком: отметить её раньше нельзя, а таймер стартует сам от
+    /// отметки еды. Не поела — укол не открывается вовсе, и это не сбой,
+    /// а вопрос к врачу.
+    ///
+    /// Ноль — обычная доза по часам.
+    var minutesAfterMeal: Int = 0
+
+    /// Есть ли у дозы условие по еде.
+    var dependsOnMeal: Bool { minutesAfterMeal > 0 }
     var isPaused: Bool = false
     var prescriber: String?
     var cancelledAt: Date?
@@ -235,6 +249,13 @@ final class DoseRecord {
     /// Отмена дозы оставляет запись об отмене, а не стирает её.
     var cancelledAt: Date?
     var cancelReason: String?
+    /// Дозу решили пропустить.
+    ///
+    /// Пропуск — это запись, а не пустота: врач спрашивает именно про
+    /// него, а иначе в истории непонятно, забыли отметить или правда
+    /// не дали.
+    var skippedAt: Date?
+    var skippedBy: String?
 
     var medication: Medication?
 
@@ -245,6 +266,7 @@ final class DoseRecord {
     static let claimTTL: TimeInterval = 45 * 60
 
     var isGiven: Bool { givenAt != nil }
+    var isSkipped: Bool { skippedAt != nil }
 
     func claimIsActive(at date: Date = Date()) -> Bool {
         guard let claimedAt else { return false }

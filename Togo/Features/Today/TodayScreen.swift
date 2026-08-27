@@ -26,6 +26,24 @@ struct TodayScreen: View {
     /// возвращало именно туда, а не обнуляло срок.
     @State private var lastCareDone: [UUID: Date?] = [:]
     @State private var lockedDose: LockedDose?
+    @State private var missedDose: MissedDoseTarget?
+    @State private var gatedDose: GatedDose?
+    @State private var alarm: AlarmThreshold?
+
+    /// Просроченная доза, по которой открыт разбор.
+    struct MissedDoseTarget: Identifiable {
+        let item: DayPlanItem
+        let medication: Medication
+        let missed: MissedDose
+        var id: String { item.id }
+    }
+
+    /// Доза, которая ждёт таймера от еды.
+    struct GatedDose: Identifiable {
+        let item: DayPlanItem
+        let medication: Medication
+        var id: String { item.id }
+    }
 
     /// Доза, по которой открыт замок.
     struct LockedDose: Identifiable {
@@ -76,6 +94,19 @@ struct TodayScreen: View {
                                   now: now,
                                   rhythm: WalkRhythmAnalyzer.rhythm(events: events, now: now),
                                   outingsToday: outingsToday)
+
+                        // Порог тревоги: счёт дошёл сам, и человек должен
+                        // увидеть это до того, как начнёт гадать в три часа
+                        // ночи, «уже пора или ещё нет».
+                        if let threshold = AlarmThresholdAnalyzer.evaluate(events: events, now: now) {
+                            Button { alarm = threshold } label: {
+                                TGBanner(tone: .alarm,
+                                         title: "Похоже, пора звонить",
+                                         subtitle: threshold.headline + " · есть готовый текст врачу",
+                                         systemImage: "phone.badge.waveform")
+                            }
+                            .buttonStyle(.plain)
+                        }
 
                         if let fasting = fastingWindow {
                             TGBanner(
@@ -184,6 +215,29 @@ struct TodayScreen: View {
             }
             .sheet(item: $finishingDayOut) { day in
                 DayOutSummarySheet(day: day)
+            }
+            .sheet(item: $missedDose) { target in
+                MissedDoseSheet(medication: target.medication, missed: target.missed, now: now) {
+                    complete(target.item)
+                } onSkip: {
+                    // Пропуск — тоже запись: иначе в истории останется
+                    // дыра, а врач спросит именно про неё.
+                    skipDose(target)
+                }
+            }
+            .sheet(item: $gatedDose) { gated in
+                DoseGateSheet(medication: gated.medication,
+                              state: gated.item.gate, now: now)
+            }
+            .sheet(item: $alarm) { threshold in
+                // Полоса тревоги без собаки не появляется вовсе — заводить
+                // ради заглушки пустую модель незачем.
+                if let dog {
+                    AlarmThresholdScreen(threshold: threshold, dog: dog,
+                                         medications: dog.medications, events: events) {
+                        Task { await ReminderScheduler.remindToWatch(at: now.addingTimeInterval(3600)) }
+                    }
+                }
             }
             .sheet(item: $lockedDose) { locked in
                 DoseLockSheet(title: locked.item.title,
@@ -338,11 +392,14 @@ struct TodayScreen: View {
                 for minute in medication.times.sorted() {
                     let at = startOfDay.addingTimeInterval(Double(minute) * 60)
                     let done = medication.doses.contains { $0.isGiven && cal.isDate($0.scheduledAt, equalTo: at, toGranularity: .minute) }
-                    items.append(DayPlanItem(id: "dose-\(medication.id)-\(minute)", time: at,
-                                             title: "\(medication.name) · \(medication.doseText)",
-                                             hint: medication.fastingMinutes > 0 ? "натощак \(medication.fastingMinutes) мин" : nil,
-                                             kind: .dose, isDone: done,
-                                             medication: medication))
+                    items.append(DayPlanItem(
+                        id: "dose-\(medication.id)-\(minute)", time: at,
+                        title: "\(medication.name) · \(medication.doseText)",
+                        hint: medication.fastingMinutes > 0 ? "натощак \(medication.fastingMinutes) мин" : nil,
+                        kind: .dose, isDone: done,
+                        medication: medication,
+                        gate: DoseGate.state(for: medication, events: events,
+                                             scheduledAt: at, now: now)))
                 }
             }
         }
@@ -428,6 +485,21 @@ struct TodayScreen: View {
     /// Повторный тап по **кругу** уже закрытой дозы открывает замок —
     /// он объясняет, кто дал и когда, вместо второй отметки.
     private func open(_ item: DayPlanItem) {
+        // Доза ждёт таймера от еды — объясняем, чего ждём.
+        if item.kind == .dose, !item.gate.isOpen, let medication = item.medication {
+            gatedDose = GatedDose(item: item, medication: medication)
+            return
+        }
+
+        // Доза просрочена и не отмечена — предлагаем три выхода
+        // без единого упрёка.
+        if item.kind == .dose, !item.isDone, let medication = item.medication,
+           let missed = MissedDoseAdvisor.evaluate(medication: medication,
+                                                   scheduledAt: item.time, now: now) {
+            missedDose = MissedDoseTarget(item: item, medication: medication, missed: missed)
+            return
+        }
+
         guard item.isDone else { return }
         if item.kind == .dose, let medication = item.medication,
            let dose = medication.doses.first(where: {
@@ -443,6 +515,17 @@ struct TodayScreen: View {
             .min(by: { abs($0.date.timeIntervalSince(item.time)) < abs($1.date.timeIntervalSince(item.time)) }) {
             route = .edit(event.id)
         }
+    }
+
+    /// Отметить дозу пропущенной.
+    ///
+    /// Пропуск записывается, а не просто исчезает: врач спросит именно
+    /// про него, а в истории иначе останется необъяснённая дыра.
+    private func skipDose(_ target: MissedDoseTarget) {
+        DoseScheduler.markSkipped(target.medication, scheduledAt: target.item.time,
+                                  by: appState.currentUserName, context: context)
+        Haptics.warning()
+        appState.showUndo("Доза отмечена пропущенной")
     }
 
     private func complete(_ item: DayPlanItem) {

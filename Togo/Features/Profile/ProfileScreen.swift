@@ -143,7 +143,20 @@ struct ProfileScreen: View {
 
     private func treatment(_ dog: Dog) -> some View {
         TGCard {
-            Toggle(isOn: Binding(get: { dog.isOnTreatment }, set: { dog.isOnTreatment = $0 })) {
+            // Тумблер не просто пишет флаг: включение возвращает
+            // отменённые препараты, выключение закрывает курс так же,
+            // как кнопка «Курс завершён». Иначе схема оживала наполовину —
+            // вкладка есть, а все препараты в ней отменены.
+            Toggle(isOn: Binding(
+                get: { dog.isOnTreatment },
+                set: { isOn in
+                    if isOn {
+                        TreatmentCourse.resume(dog, context: context)
+                    } else {
+                        TreatmentCourse.finish(dog, by: appState.currentUserName, context: context)
+                    }
+                }
+            )) {
                 VStack(alignment: .leading, spacing: Token.Space.s2) {
                     Text("Собака на лечении").textStyle(AppFont.body)
                     Text("даёт вкладку «Здоровье», дозы, окно натощак и отчёты").textStyle(AppFont.caption)

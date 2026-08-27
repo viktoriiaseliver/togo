@@ -13,6 +13,20 @@ import UserNotifications
 /// доза, окно натощак и лестница эскалации.** Всё остальное ждёт брифа.
 @MainActor
 enum ReminderScheduler {
+    /// Напомнить вернуться к наблюдению.
+    ///
+    /// Отказ от звонка не должен быть тупиком: человек решил подождать,
+    /// и приложение обязано вернуться к разговору само.
+    static func remindToWatch(at date: Date) async {
+        guard await isAllowed() else { return }
+        await NotificationCenterService.scheduleDose(
+            id: "watch-\(Int(date.timeIntervalSince1970))",
+            at: date,
+            title: "Как он сейчас?",
+            body: "Час назад было три эпизода подряд. Если повторилось — стоит позвонить."
+        )
+    }
+
     /// Пересобрать все напоминания заново.
     ///
     /// Дешевле и надёжнее, чем следить за отдельными изменениями: их мало,

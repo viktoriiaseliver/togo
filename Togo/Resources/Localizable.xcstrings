@@ -13,6 +13,18 @@
       },
       "comment": "weight"
     },
+    " · есть готовый текст врачу": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": " · есть готовый текст врачу"
+          }
+        }
+      },
+      "comment": "body"
+    },
     " · откладывали %@ раза": {
       "extractionState": "manual",
       "localizations": {
@@ -37,6 +49,30 @@
       },
       "comment": "body"
     },
+    " · сейчас %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": " · сейчас %@"
+          }
+        }
+      },
+      "comment": "body"
+    },
+    " в %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": " в %@"
+          }
+        }
+      },
+      "comment": "body"
+    },
     " и ": {
       "extractionState": "manual",
       "localizations": {
@@ -48,6 +84,18 @@
         }
       },
       "comment": "clock"
+    },
+    " назад": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": " назад"
+          }
+        }
+      },
+      "comment": "episodesCard"
     },
     "%.0f %@ по %d г": {
       "extractionState": "manual",
@@ -121,6 +169,30 @@
       },
       "comment": "Доза по часам"
     },
+    "%@ %@: пропущена доза ": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ %@: пропущена доза "
+          }
+        }
+      },
+      "comment": "text"
+    },
+    "%@ %@: собака не ела, доза по условию не открывается. Что делать?": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ %@: собака не ела, доза по условию не открывается. Что делать?"
+          }
+        }
+      },
+      "comment": "noMeal"
+    },
     "%@ \\(stock.kind.unitName(count: Double(packs))) по %@": {
       "extractionState": "manual",
       "localizations": {
@@ -180,6 +252,18 @@
         }
       },
       "comment": "confirmation"
+    },
+    "%@ · %@ раз за \\(Fmt.plural(hours, ": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · %@ раз за \\(Fmt.plural(hours, "
+          }
+        }
+      },
+      "comment": "hours"
     },
     "%@ · %@-й раз": {
       "extractionState": "manual",
@@ -361,6 +445,18 @@
       },
       "comment": "statusText"
     },
+    "%@ доза пропущена": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ доза пропущена"
+          }
+        }
+      },
+      "comment": "body"
+    },
     "%@ дома %@ с прошлого выхода.": {
       "extractionState": "manual",
       "localizations": {
@@ -480,6 +576,18 @@
         }
       },
       "comment": "body"
+    },
+    "%@ позади": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ позади"
+          }
+        }
+      },
+      "comment": "weeks"
     },
     "%@ просьб за неделю": {
       "extractionState": "manual",
@@ -613,6 +721,18 @@
       },
       "comment": "summary"
     },
+    "%@, \\(Int((share * 100).rounded()))% вовремя": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, \\(Int((share * 100).rounded()))% вовремя"
+          }
+        }
+      },
+      "comment": "doses"
+    },
     "%@, ещё раз. Одно удачное занятие — не навык; нужно второе, чтобы идти дальше.": {
       "extractionState": "manual",
       "localizations": {
@@ -625,6 +745,18 @@
       },
       "comment": "nextStepText"
     },
+    "%@, сейчас %@. Что делать?": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, сейчас %@. Что делать?"
+          }
+        }
+      },
+      "comment": "text"
+    },
     "%@-е": {
       "extractionState": "manual",
       "localizations": {
@@ -636,6 +768,18 @@
         }
       },
       "comment": "count"
+    },
+    "%@-й": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@-й"
+          }
+        }
+      },
+      "comment": "words"
     },
     "%@. Из матрицы переноса он тоже уйдёт. Занятия, которые уже прошли, останутся.": {
       "extractionState": "manual",
@@ -793,6 +937,30 @@
       },
       "comment": "usual"
     },
+    ")) позади": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": ")) позади"
+          }
+        }
+      },
+      "comment": "weeks"
+    },
+    ")) уйдут из плана дня, вкладка «Здоровье» спрячется. %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": ")) уйдут из плана дня, вкладка «Здоровье» спрячется. %@"
+          }
+        }
+      },
+      "comment": "tail"
+    },
     ")), где она была с тобой дольше %@ часов": {
       "extractionState": "manual",
       "localizations": {
@@ -804,6 +972,18 @@
         }
       },
       "comment": "trace"
+    },
+    ", последняя доза в %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": ", последняя доза в %@"
+          }
+        }
+      },
+      "comment": "line"
     },
     "25 августа 2026": {
       "extractionState": "manual",
@@ -996,6 +1176,18 @@
         }
       },
       "comment": "body"
+    },
+    "«%@» уйдёт из плана дня, вкладка «Здоровье» спрячется. %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«%@» уйдёт из плана дня, вкладка «Здоровье» спрячется. %@"
+          }
+        }
+      },
+      "comment": "tail"
     },
     "«Как всегда» появляется, только если последние четыре записи совпали.": {
       "extractionState": "manual",
@@ -1416,6 +1608,18 @@
       },
       "comment": "body"
     },
+    "Вернуть — один тап": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вернуть — один тап"
+          }
+        }
+      },
+      "comment": "consequences"
+    },
     "Вернуться к дневнику": {
       "extractionState": "manual",
       "localizations": {
@@ -1536,6 +1740,18 @@
       },
       "comment": "parts"
     },
+    "Вечерняя": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вечерняя"
+          }
+        }
+      },
+      "comment": "hour"
+    },
     "Вечерняя порция уже уменьшена на %@ г — корм на занятия берётся из еды, а не сверх неё.": {
       "extractionState": "manual",
       "localizations": {
@@ -1620,13 +1836,25 @@
       },
       "comment": "detail"
     },
-    "Вкладка появляется, только когда в профиле включено лечение. У здоровой собаки медицины на главном нет вовсе.": {
+    "Вкладка «Здоровье» спрячется. %@": {
       "extractionState": "manual",
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Вкладка появляется, только когда в профиле включено лечение. У здоровой собаки медицины на главном нет вовсе."
+            "value": "Вкладка «Здоровье» спрячется. %@"
+          }
+        }
+      },
+      "comment": "tail"
+    },
+    "Вкладка приходит с курсом и уходит по «Курс завершён». У здоровой собаки медицины на главном нет вовсе.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вкладка приходит с курсом и уходит по «Курс завершён». У здоровой собаки медицины на главном нет вовсе."
           }
         }
       },
@@ -1703,6 +1931,18 @@
         }
       },
       "comment": "body"
+    },
+    "Вовремя": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вовремя"
+          }
+        }
+      },
+      "comment": "numbers"
     },
     "Вода": {
       "extractionState": "manual",
@@ -1811,6 +2051,30 @@
         }
       },
       "comment": "title"
+    },
+    "Врач обычно смотрит результат через две недели.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Врач обычно смотрит результат через две недели."
+          }
+        }
+      },
+      "comment": "next"
+    },
+    "Врач продлил — продолжить курс": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Врач продлил — продолжить курс"
+          }
+        }
+      },
+      "comment": "body"
     },
     "Врач читает много и не пишет; ребёнок пишет бытовое и не видит медицинского. Дежурный получает напоминания — и только он.": {
       "extractionState": "manual",
@@ -2460,6 +2724,18 @@
       },
       "comment": "body"
     },
+    "Готовое сообщение: название, доза и время пропуска.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Готовое сообщение: название, доза и время пропуска."
+          }
+        }
+      },
+      "comment": "text"
+    },
     "Грамм за раз": {
       "extractionState": "manual",
       "localizations": {
@@ -2664,6 +2940,18 @@
       },
       "comment": "task"
     },
+    "Дать сейчас": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Дать сейчас"
+          }
+        }
+      },
+      "comment": "body"
+    },
     "Два занятия хуже 3 из 5 — приложение само предложит вернуться на шаг назад. Это не откат прогресса, а нормальный ход обучения.": {
       "extractionState": "manual",
       "localizations": {
@@ -2844,6 +3132,18 @@
       },
       "comment": "marker"
     },
+    "Дневная": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Дневная"
+          }
+        }
+      },
+      "comment": "hour"
+    },
     "Дневник": {
       "extractionState": "manual",
       "localizations": {
@@ -2963,6 +3263,18 @@
         }
       },
       "comment": "chartCard"
+    },
+    "До следующей дозы %@. Что делаем сейчас?": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "До следующей дозы %@. Что делаем сейчас?"
+          }
+        }
+      },
+      "comment": "body"
     },
     "Добавить": {
       "extractionState": "manual",
@@ -3192,6 +3504,30 @@
       },
       "comment": "claim"
     },
+    "Доза открыта — можно отмечать.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Доза открыта — можно отмечать."
+          }
+        }
+      },
+      "comment": "body"
+    },
+    "Доза отмечена пропущенной": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Доза отмечена пропущенной"
+          }
+        }
+      },
+      "comment": "skipDose"
+    },
     "Доза по часам": {
       "extractionState": "manual",
       "localizations": {
@@ -3215,6 +3551,18 @@
         }
       },
       "comment": "allowed"
+    },
+    "Дозы отмечены": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Дозы отмечены"
+          }
+        }
+      },
+      "comment": "numbers"
     },
     "Документы": {
       "extractionState": "manual",
@@ -3383,6 +3731,18 @@
         }
       },
       "comment": "body"
+    },
+    "Ел в %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ел в %@"
+          }
+        }
+      },
+      "comment": "waiting"
     },
     "Ел последний раз": {
       "extractionState": "manual",
@@ -3631,6 +3991,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Заведи её — и приложению будет что считать."
+          }
+        }
+      },
+      "comment": "body"
+    },
+    "Завершить эпизод": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Завершить эпизод"
           }
         }
       },
@@ -4188,6 +4560,30 @@
       },
       "comment": "body"
     },
+    "Записи останутся в истории и в отчёте врачу.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Записи останутся в истории и в отчёте врачу."
+          }
+        }
+      },
+      "comment": "tail"
+    },
+    "Записи останутся в истории и в отчёте врачу. Вернуть курс можно в профиле.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Записи останутся в истории и в отчёте врачу. Вернуть курс можно в профиле."
+          }
+        }
+      },
+      "comment": "finishCourse"
+    },
     "Записи останутся в истории. Вердикт «просится» снова начнёт считаться по обычным промежуткам — во время эпизода он не считается совсем.": {
       "extractionState": "manual",
       "localizations": {
@@ -4200,6 +4596,18 @@
       },
       "comment": "body"
     },
+    "Записи остаются, вкладка прячется.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Записи остаются, вкладка прячется."
+          }
+        }
+      },
+      "comment": "praise"
+    },
     "Записи сейчас не сохраняются": {
       "extractionState": "manual",
       "localizations": {
@@ -4211,6 +4619,18 @@
         }
       },
       "comment": "body"
+    },
+    "Записи уйдут в архив": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Записи уйдут в архив"
+          }
+        }
+      },
+      "comment": "consequences"
     },
     "Записи, занятия, история и схемы лечения останутся на месте. Закроется только часть экранов — и откроется обратно, если снова включить подписку.": {
       "extractionState": "manual",
@@ -4728,6 +5148,18 @@
       },
       "comment": "body"
     },
+    "История, вес и отчёт врачу остаются на месте.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "История, вес и отчёт врачу остаются на месте."
+          }
+        }
+      },
+      "comment": "consequences"
+    },
     "Как в системе": {
       "extractionState": "manual",
       "localizations": {
@@ -4787,6 +5219,18 @@
         }
       },
       "comment": "header"
+    },
+    "Как он сейчас?": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Как он сейчас?"
+          }
+        }
+      },
+      "comment": "ReminderScheduler"
     },
     "Как отменить": {
       "extractionState": "manual",
@@ -5147,6 +5591,30 @@
       },
       "comment": "kindExplainer"
     },
+    "Контрольный приём": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Контрольный приём"
+          }
+        }
+      },
+      "comment": "next"
+    },
+    "Контрольный приём %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Контрольный приём %@"
+          }
+        }
+      },
+      "comment": "next"
+    },
     "Коридор": {
       "extractionState": "manual",
       "localizations": {
@@ -5458,6 +5926,41 @@
         }
       },
       "comment": "task"
+    },
+    "Курс завершён": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Курс завершён"
+          }
+        }
+      },
+      "comment": "finishCourse"
+    },
+    "Курс завершён %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Курс завершён %@"
+          }
+        }
+      }
+    },
+    "Курс закончен": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Курс закончен"
+          }
+        }
+      },
+      "comment": "weeks"
     },
     "Лает": {
       "extractionState": "manual",
@@ -6035,6 +6538,18 @@
       },
       "comment": "items"
     },
+    "Наблюдать дальше · напомнить через час": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Наблюдать дальше · напомнить через час"
+          }
+        }
+      },
+      "comment": "body"
+    },
     "Навык не «выучен» или «не выучен». «Ко мне» дома и «ко мне» на улице рядом с другой собакой — два разных навыка.": {
       "extractionState": "manual",
       "localizations": {
@@ -6179,6 +6694,18 @@
       },
       "comment": "behaviourCard"
     },
+    "Напомним за три дня. Дату поменяешь в уходе.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Напомним за три дня. Дату поменяешь в уходе."
+          }
+        }
+      },
+      "comment": "next"
+    },
     "Напомнить за": {
       "extractionState": "manual",
       "localizations": {
@@ -6190,6 +6717,18 @@
         }
       },
       "comment": "body"
+    },
+    "Напомнить через две недели": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Напомнить через две недели"
+          }
+        }
+      },
+      "comment": "next"
     },
     "Настроить режим вручную": {
       "extractionState": "manual",
@@ -6522,6 +7061,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Неиспользованная часть бесплатного пробного периода сгорает при покупке подписки."
+          }
+        }
+      },
+      "comment": "body"
+    },
+    "Некуда звонить · вписать телефон": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Некуда звонить · вписать телефон"
           }
         }
       },
@@ -7067,13 +7618,13 @@
       },
       "comment": "markerPad"
     },
-    "Она появляется, когда в профиле включено лечение. У здоровой собаки медицины на главном нет вовсе.": {
+    "Она приходит вместе с курсом лечения и уходит вместе с ним: внизу «Здоровья» есть «Курс завершён». Записи при этом остаются в истории и в отчёте врачу.": {
       "extractionState": "manual",
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Она появляется, когда в профиле включено лечение. У здоровой собаки медицины на главном нет вовсе."
+            "value": "Она приходит вместе с курсом лечения и уходит вместе с ним: внизу «Здоровья» есть «Курс завершён». Записи при этом остаются в истории и в отчёте врачу."
           }
         }
       },
@@ -7583,6 +8134,18 @@
       },
       "comment": "body"
     },
+    "Отправить": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отправить"
+          }
+        }
+      },
+      "comment": "vetTextCard"
+    },
     "Отправить ссылку": {
       "extractionState": "manual",
       "localizations": {
@@ -7606,6 +8169,18 @@
         }
       },
       "comment": "vetBriefCard"
+    },
+    "Отсчёт пошёл с этой отметки, а не с расписания: покормили позже — укол сдвинулся ровно на столько же.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отсчёт пошёл с этой отметки, а не с расписания: покормили позже — укол сдвинулся ровно на столько же."
+          }
+        }
+      },
+      "comment": "waiting"
     },
     "Отчёт": {
       "extractionState": "manual",
@@ -8195,6 +8770,18 @@
       },
       "comment": "body"
     },
+    "Позвонить": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Позвонить"
+          }
+        }
+      },
+      "comment": "body"
+    },
     "Позвонить: %@": {
       "extractionState": "manual",
       "localizations": {
@@ -8519,6 +9106,18 @@
       },
       "comment": "title"
     },
+    "Понятно": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Понятно"
+          }
+        }
+      },
+      "comment": "body"
+    },
     "Попадёт в карточку для передержки и в напоминание перед поездкой. Сколько и во сколько собака ест — на экране «Питание».": {
       "extractionState": "manual",
       "localizations": {
@@ -8610,6 +9209,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Пора предложить воду"
+          }
+        }
+      },
+      "comment": "body"
+    },
+    "Порог задаёт счёт, а не догадка: %@ эпизода за %@ часов. Приложение не ставит диагнозов — решение всегда за врачом.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Порог задаёт счёт, а не догадка: %@ эпизода за %@ часов. Приложение не ставит диагнозов — решение всегда за врачом."
           }
         }
       },
@@ -8710,6 +9321,18 @@
         }
       },
       "comment": "outingsCard"
+    },
+    "После курса — врач смотрит результат": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "После курса — врач смотрит результат"
+          }
+        }
+      },
+      "comment": "task"
     },
     "После лужи оно показывает час предыстории — воду, одиночество, последний выход — и говорит прямо: не наказывай. Тыкать носом не учит чистоплотности, а учит прятаться.": {
       "extractionState": "manual",
@@ -8850,6 +9473,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Похоже, вы оба отметили одно и то же. Одна из записей пришла позже — вероятно, автор был без сети."
+          }
+        }
+      },
+      "comment": "body"
+    },
+    "Похоже, пора звонить": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Похоже, пора звонить"
           }
         }
       },
@@ -9491,6 +10126,18 @@
       },
       "comment": "plan"
     },
+    "Пропуск — тоже запись: врач спросит именно про него.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пропуск — тоже запись: врач спросит именно про него."
+          }
+        }
+      },
+      "comment": "numbers"
+    },
     "Пропустить": {
       "extractionState": "manual",
       "localizations": {
@@ -9502,6 +10149,30 @@
         }
       },
       "comment": "body"
+    },
+    "Пропустить эту": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пропустить эту"
+          }
+        }
+      },
+      "comment": "body"
+    },
+    "Пропущено осознанно": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пропущено осознанно"
+          }
+        }
+      },
+      "comment": "numbers"
     },
     "Просится": {
       "extractionState": "manual",
@@ -9646,6 +10317,18 @@
         }
       },
       "comment": "body"
+    },
+    "Раньше времени отметить нельзя. Так задумано: %@ минут — это условие из назначения.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Раньше времени отметить нельзя. Так задумано: %@ минут — это условие из назначения."
+          }
+        }
+      },
+      "comment": "waiting"
     },
     "Расписание спорит с лечением": {
       "extractionState": "manual",
@@ -10019,6 +10702,18 @@
       },
       "comment": "blocks"
     },
+    "Сегодня ещё не ели": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сегодня ещё не ели"
+          }
+        }
+      },
+      "comment": "noMeal"
+    },
     "Сейчас %@": {
       "extractionState": "manual",
       "localizations": {
@@ -10187,6 +10882,18 @@
       },
       "comment": "chartExplainer"
     },
+    "Скопировать": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Скопировать"
+          }
+        }
+      },
+      "comment": "vetTextCard"
+    },
     "Скорее внимания": {
       "extractionState": "manual",
       "localizations": {
@@ -10234,6 +10941,42 @@
         }
       },
       "comment": "result"
+    },
+    "Следующая сдвинется на %@ — интервал %@.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Следующая сдвинется на %@ — интервал %@."
+          }
+        }
+      },
+      "comment": "shiftDetail"
+    },
+    "Следующая — по расписанию. Без двойной дозы.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Следующая — по расписанию. Без двойной дозы."
+          }
+        }
+      },
+      "comment": "body"
+    },
+    "Следующая — по расписанию: приём один в день.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Следующая — по расписанию: приём один в день."
+          }
+        }
+      },
+      "comment": "shiftDetail"
     },
     "Следующее занятие": {
       "extractionState": "manual",
@@ -10703,6 +11446,18 @@
       },
       "comment": "body"
     },
+    "Спросить врача": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Спросить врача"
+          }
+        }
+      },
+      "comment": "noMeal"
+    },
     "Средний промежуток пересчитается без неё.": {
       "extractionState": "manual",
       "localizations": {
@@ -11086,6 +11841,18 @@
         }
       },
       "comment": "title"
+    },
+    "Таймер запускает отметка еды. Пока её нет, доза не откроется.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Таймер запускает отметка еды. Пока её нет, доза не откроется."
+          }
+        }
+      },
+      "comment": "noMeal"
     },
     "Так экран выглядит у человека с ролью «помощник».": {
       "extractionState": "manual",
@@ -11494,6 +12261,18 @@
         }
       },
       "comment": "clock"
+    },
+    "Тумблер «Собака на лечении» в профиле %@ оживит схему обратно.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тумблер «Собака на лечении» в профиле %@ оживит схему обратно."
+          }
+        }
+      },
+      "comment": "consequences"
     },
     "Ты можешь перестать пользоваться приложением в любой момент. Мы можем прекратить поддержку версии, предупредив об этом в разделе «Что нового».": {
       "extractionState": "manual",
@@ -12095,6 +12874,18 @@
       },
       "comment": "plan"
     },
+    "Утренняя": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Утренняя"
+          }
+        }
+      },
+      "comment": "hour"
+    },
     "Ухаживающий": {
       "extractionState": "manual",
       "localizations": {
@@ -12322,6 +13113,18 @@
         }
       },
       "comment": "settings"
+    },
+    "Час назад было три эпизода подряд. Если повторилось — стоит позвонить.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Час назад было три эпизода подряд. Если повторилось — стоит позвонить."
+          }
+        }
+      },
+      "comment": "ReminderScheduler"
     },
     "Частая причина панкреатита после праздников.": {
       "extractionState": "manual",
@@ -12611,6 +13414,18 @@
       },
       "comment": "advice"
     },
+    "Что делать с пропуском, пишут в инструкции к препарату. Приложение только считает время — решение за тобой и врачом.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Что делать с пропуском, пишут в инструкции к препарату. Приложение только считает время — решение за тобой и врачом."
+          }
+        }
+      },
+      "comment": "body"
+    },
     "Что можно отметить по дороге": {
       "extractionState": "manual",
       "localizations": {
@@ -12862,6 +13677,18 @@
         }
       },
       "comment": "body"
+    },
+    "Это вопрос к врачу, а не к приложению: колоть в пустой желудок нельзя, а пропускать назначение — решение врача.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Это вопрос к врачу, а не к приложению: колоть в пустой желудок нельзя, а пропускать назначение — решение врача."
+          }
+        }
+      },
+      "comment": "noMeal"
     },
     "Это всё": {
       "extractionState": "manual",
@@ -13187,6 +14014,18 @@
       },
       "comment": "body"
     },
+    "без подробностей": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "без подробностей"
+          }
+        }
+      },
+      "comment": "episodesCard"
+    },
     "без результата": {
       "extractionState": "manual",
       "localizations": {
@@ -13511,6 +14350,18 @@
       },
       "comment": "importCard"
     },
+    "восьмой": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "восьмой"
+          }
+        }
+      },
+      "comment": "words"
+    },
     "врач спросит это первым — тут всё уже собрано": {
       "extractionState": "manual",
       "localizations": {
@@ -13582,6 +14433,18 @@
         }
       },
       "comment": "body"
+    },
+    "второй": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "второй"
+          }
+        }
+      },
+      "comment": "words"
     },
     "вывел %@": {
       "extractionState": "manual",
@@ -13883,6 +14746,18 @@
       },
       "comment": "bars"
     },
+    "девятый": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "девятый"
+          }
+        }
+      },
+      "comment": "words"
+    },
     "день": {
       "extractionState": "manual",
       "localizations": {
@@ -13918,6 +14793,18 @@
         }
       },
       "comment": "dayCard"
+    },
+    "десятый": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "десятый"
+          }
+        }
+      },
+      "comment": "words"
     },
     "дистанция — главная ручка: что рвёт в двух метрах, часто спокойно проходится в двадцати": {
       "extractionState": "manual",
@@ -14051,6 +14938,30 @@
       },
       "comment": "body"
     },
+    "доз": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "доз"
+          }
+        }
+      },
+      "comment": "doses"
+    },
+    "доза": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "доза"
+          }
+        }
+      },
+      "comment": "doses"
+    },
     "доза \\(dog?.medications.first?.doseText ?? ": {
       "extractionState": "manual",
       "localizations": {
@@ -14098,6 +15009,18 @@
         }
       },
       "comment": "permissionSummary"
+    },
+    "дозы": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "дозы"
+          }
+        }
+      },
+      "comment": "doses"
     },
     "долго": {
       "extractionState": "manual",
@@ -14267,6 +15190,18 @@
       },
       "comment": "cal"
     },
+    "ел в %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ел в %@"
+          }
+        }
+      },
+      "comment": "line"
+    },
     "если дозу не отметили — сначала дежурному, потом остальным": {
       "extractionState": "manual",
       "localizations": {
@@ -14315,6 +15250,18 @@
       },
       "comment": "body"
     },
+    "если собака не ест": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "если собака не ест"
+          }
+        }
+      },
+      "comment": "noMeal"
+    },
     "если это не она": {
       "extractionState": "manual",
       "localizations": {
@@ -14362,6 +15309,18 @@
         }
       },
       "comment": "body"
+    },
+    "ждёт кормления": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ждёт кормления"
+          }
+        }
+      },
+      "comment": "opens"
     },
     "желчью": {
       "extractionState": "manual",
@@ -14494,6 +15453,18 @@
         }
       },
       "comment": "stockCard"
+    },
+    "записала, но одной записи мало": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "записала, но одной записи мало"
+          }
+        }
+      },
+      "comment": "body"
     },
     "записано · дальше только если хочешь": {
       "extractionState": "manual",
@@ -15503,6 +16474,18 @@
       },
       "comment": "dog"
     },
+    "на %@ %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "на %@ %@"
+          }
+        }
+      },
+      "comment": "line"
+    },
     "на ногах": {
       "extractionState": "manual",
       "localizations": {
@@ -16127,6 +17110,18 @@
       },
       "comment": "merge"
     },
+    "обычно так": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "обычно так"
+          }
+        }
+      },
+      "comment": "option"
+    },
     "один раз": {
       "extractionState": "manual",
       "localizations": {
@@ -16170,6 +17165,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "одной строкой, если есть что запомнить"
+          }
+        }
+      },
+      "comment": "body"
+    },
+    "окно закрылось в %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "окно закрылось в %@"
           }
         }
       },
@@ -16319,6 +17326,30 @@
       },
       "comment": "body"
     },
+    "откроется в %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "откроется в %@"
+          }
+        }
+      },
+      "comment": "waiting"
+    },
+    "откроется через ": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "откроется через "
+          }
+        }
+      },
+      "comment": "opens"
+    },
     "открываю хранилище": {
       "extractionState": "manual",
       "localizations": {
@@ -16414,6 +17445,18 @@
         }
       },
       "comment": "body"
+    },
+    "первый": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "первый"
+          }
+        }
+      },
+      "comment": "words"
     },
     "перебор на %@ г": {
       "extractionState": "manual",
@@ -17123,6 +18166,18 @@
       },
       "comment": "weekdays"
     },
+    "пятый": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "пятый"
+          }
+        }
+      },
+      "comment": "words"
+    },
     "раз в %@": {
       "extractionState": "manual",
       "localizations": {
@@ -17339,6 +18394,18 @@
       },
       "comment": "body"
     },
+    "с %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "с %@"
+          }
+        }
+      },
+      "comment": "parts"
+    },
     "с кровью": {
       "extractionState": "manual",
       "localizations": {
@@ -17422,6 +18489,18 @@
         }
       },
       "comment": "statusText"
+    },
+    "седьмой": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "седьмой"
+          }
+        }
+      },
+      "comment": "words"
     },
     "сейчас": {
       "extractionState": "manual",
@@ -17603,6 +18682,18 @@
       },
       "comment": "dogSection"
     },
+    "собрано из того, что уже записано": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "собрано из того, что уже записано"
+          }
+        }
+      },
+      "comment": "vetTextCard"
+    },
     "сорвался": {
       "extractionState": "manual",
       "localizations": {
@@ -17662,6 +18753,18 @@
         }
       },
       "comment": "body"
+    },
+    "спрячет вкладку": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "спрячет вкладку"
+          }
+        }
+      },
+      "comment": "finishCourse"
     },
     "ср": {
       "extractionState": "manual",
@@ -18058,6 +19161,18 @@
         }
       },
       "comment": "body"
+    },
+    "третий": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "третий"
+          }
+        }
+      },
+      "comment": "words"
     },
     "три минуты прошли — заканчивай на удачном повторе": {
       "extractionState": "manual",
@@ -18491,6 +19606,18 @@
       },
       "comment": "statusText"
     },
+    "четвёртый": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "четвёртый"
+          }
+        }
+      },
+      "comment": "words"
+    },
     "чистить каждый день — налёт твердеет за сутки": {
       "extractionState": "manual",
       "localizations": {
@@ -18587,6 +19714,18 @@
       },
       "comment": "body"
     },
+    "что дальше": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "что дальше"
+          }
+        }
+      },
+      "comment": "next"
+    },
     "что за заметка": {
       "extractionState": "manual",
       "localizations": {
@@ -18633,7 +19772,7 @@
           }
         }
       },
-      "comment": "behaviourCard"
+      "comment": "consequences"
     },
     "что нужно сделать": {
       "extractionState": "manual",
@@ -18707,6 +19846,18 @@
       },
       "comment": "vetBriefCard"
     },
+    "что сказать врачу": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "что сказать врачу"
+          }
+        }
+      },
+      "comment": "vetTextCard"
+    },
     "что-то заметила": {
       "extractionState": "manual",
       "localizations": {
@@ -18766,6 +19917,18 @@
         }
       },
       "comment": "stepsCard"
+    },
+    "шестой": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "шестой"
+          }
+        }
+      },
+      "comment": "words"
     },
     "щелчок языком": {
       "extractionState": "manual",

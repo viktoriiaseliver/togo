@@ -24,6 +24,8 @@ struct DayPlanItem: Identifiable, Equatable {
     var careTask: CareTask?
     /// У ухода часа нет: зубы чистят не в 19:40, а «сегодня».
     var showsTime: Bool = true
+    /// Доза ждёт таймера от еды — отметить её раньше нельзя.
+    var gate: DoseGate.State = .open
 
     static func == (lhs: DayPlanItem, rhs: DayPlanItem) -> Bool {
         lhs.id == rhs.id && lhs.isDone == rhs.isDone && lhs.time == rhs.time
@@ -144,10 +146,19 @@ struct DayPlanList: View {
 
     /// Что стоит под названием: время и, у сделанного, кто и когда.
     private func subtitle(for item: DayPlanItem, isDone: Bool) -> String? {
+        // Замок говорит сам за себя: время дозы, которая ещё не открылась,
+        // человеку ничего не даёт.
+        if let waiting = DoseGate.caption(item.gate, now: now) { return waiting }
         var parts: [String] = []
         if item.showsTime { parts.append(Fmt.clock(item.time)) } else { parts.append("днём") }
         if let hint = item.hint { parts.append(hint) }
         return parts.joined(separator: " · ")
+    }
+
+    /// Чем красить подпись: ожидание — мятой, просрочка — жёлтым.
+    private func tint(for item: DayPlanItem) -> Color? {
+        if !item.gate.isOpen { return Token.Status.doneText }
+        return isOverdue(item) ? Token.Status.waitingText : nil
     }
 
     /// Просрочка желтеет — но только у того, у чего есть час.
@@ -161,8 +172,14 @@ struct DayPlanList: View {
                 TGCheckRow(title: item.title,
                            subtitle: subtitle(for: item, isDone: isDone),
                            isDone: isDone,
-                           subtitleTint: isOverdue(item) ? Token.Status.waitingText : nil,
-                           onCheck: { isDone ? onUndo(item) : onComplete(item) },
+                           isLocked: !item.gate.isOpen,
+                           subtitleTint: tint(for: item),
+                           onCheck: {
+                               // Закрытую дозу нажатие не отмечает —
+                               // оно объясняет, чего ждём.
+                               if !item.gate.isOpen { onOpen(item) }
+                               else if isDone { onUndo(item) } else { onComplete(item) }
+                           },
                            onOpen: { onOpen(item) })
                 if item.id != list.last?.id { TGDivider(inset: 52) }
             }

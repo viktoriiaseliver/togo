@@ -53,6 +53,12 @@ struct RootView: View {
         .overlay(alignment: .bottom) {
             UndoToastView().padding(.bottom, toastInset)
         }
+        // Курс завершили, стоя на «Здоровье»: вкладка исчезает вместе
+        // с выбором, и TabView остаётся на пустом месте. Возвращаем
+        // человека на «Сегодня» сами.
+        .onChange(of: dog?.isOnTreatment ?? false) { _, isOnTreatment in
+            if !isOnTreatment, selection == .health { selection = .today }
+        }
         .onOpenURL(perform: handle)
     }
 
