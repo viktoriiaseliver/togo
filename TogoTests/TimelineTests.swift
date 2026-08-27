@@ -342,3 +342,88 @@ struct TimeIndoorsTests {
         #expect(TimelineBuilder.timeIndoorsNow(blocks, now: at(18, 30), threshold: 3600) == nil)
     }
 }
+
+@Suite("Лента · отметки внутри прогулки")
+@MainActor
+struct MarkGroupingTests {
+
+    private func at(_ hour: Int, _ minute: Int, _ second: Int = 0) -> Date {
+        Calendar.current.startOfDay(for: Date().addingTimeInterval(-86_400))
+            .addingTimeInterval(Double(hour * 3600 + minute * 60 + second))
+    }
+
+    /// Ровно то, что стояло в живом дневнике 27 августа.
+    private func утренняяПрогулка() -> (LogEvent, [LogEvent]) {
+        let walk = LogEvent(kind: .walk, date: at(6, 34, 31), authorName: "Виктория")
+        walk.durationSeconds = 2608
+
+        let marks = [
+            LogEvent(kind: .outing, date: at(6, 34, 34), authorName: "Виктория"),
+            LogEvent(kind: .outing, date: at(6, 38, 33), authorName: "Виктория"),
+            LogEvent(kind: .outing, date: at(6, 39, 56), authorName: "Виктория"),
+            LogEvent(kind: .stool, date: at(6, 42, 9), authorName: "Виктория"),
+        ]
+        for mark in marks { mark.walkEventID = walk.id }
+        return (walk, marks)
+    }
+
+    @Test("Три «пописал» — одна строка со счётом, а не три")
+    func repeatedMarksCollapse() {
+        let (walk, marks) = утренняяПрогулка()
+        let block = TimelineBuilder.blocks([walk] + marks)[0]
+
+        #expect(block.marks.count == 4)
+        // Три мочи и стул сводятся в две строки.
+        #expect(block.markGroups.count == 2)
+
+        let urine = block.markGroups[0]
+        #expect(urine.kind == .outing)
+        #expect(urine.count == 3)
+    }
+
+    @Test("Порядок групп — по первому появлению")
+    func groupsKeepOrder() {
+        let (walk, marks) = утренняяПрогулка()
+        let block = TimelineBuilder.blocks([walk] + marks)[0]
+        #expect(block.markGroups.map(\.kind) == [.outing, .stool])
+    }
+
+    @Test("Единственная отметка сохраняет подробность")
+    func singleMarkKeepsDetail() {
+        let walk = LogEvent(kind: .walk, date: at(18, 12), authorName: "Виктория")
+        walk.durationSeconds = 33 * 60
+        let stool = LogEvent(kind: .stool, date: at(18, 45), authorName: "Виктория")
+        stool.stoolForm = .sausage
+        stool.walkEventID = walk.id
+
+        let group = TimelineBuilder.blocks([walk, stool])[0].markGroups[0]
+        #expect(group.count == 1)
+        #expect(group.detail != nil)
+    }
+
+    @Test("У группы подробности нет — она была бы от первой попавшейся")
+    func groupHasNoDetail() {
+        let walk = LogEvent(kind: .walk, date: at(18, 12), authorName: "Виктория")
+        walk.durationSeconds = 33 * 60
+        let marks = [StoolForm.sausage, .soft].map { form -> LogEvent in
+            let event = LogEvent(kind: .stool, date: at(18, 20), authorName: "Виктория")
+            event.stoolForm = form
+            event.walkEventID = walk.id
+            return event
+        }
+
+        let group = TimelineBuilder.blocks([walk] + marks)[0].markGroups[0]
+        #expect(group.count == 2)
+        #expect(group.detail == nil)
+    }
+
+    @Test("Отметки называются своими словами, а не именем вида записи")
+    func marksSpeakHuman() {
+        let (walk, marks) = утренняяПрогулка()
+        let groups = TimelineBuilder.blocks([walk] + marks)[0].markGroups
+
+        // «Выход» внутри прогулки означал бы совсем другое событие.
+        #expect(groups[0].title == "пописал")
+        #expect(groups[1].title == "сходил по-большому")
+    }
+}

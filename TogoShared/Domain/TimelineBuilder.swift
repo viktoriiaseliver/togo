@@ -53,6 +53,68 @@ struct TimelineBlock: Identifiable {
 
     /// Собаку выводили на улицу. Прогулка и выход по нужде — оба.
     var isOuting: Bool { event.kind == .walk || event.kind == .outing }
+
+    /// Отметки, сведённые по виду.
+    ///
+    /// Три «пописал» подряд — это не три события, а одно наблюдение
+    /// с числом. В живом дневнике внутри одной прогулки на сорок три
+    /// минуты стояли отметки в 06:34, 06:38 и 06:39: три почти одинаковых
+    /// времени, из которых человек не узнаёт ничего, чего не знал бы
+    /// из «пописал ×3».
+    var markGroups: [MarkGroup] {
+        var order: [LogKind] = []
+        var byKind: [LogKind: [LogEvent]] = [:]
+        for mark in marks {
+            if byKind[mark.kind] == nil { order.append(mark.kind) }
+            byKind[mark.kind, default: []].append(mark)
+        }
+        return order.compactMap { kind in
+            guard let events = byKind[kind], let first = events.first else { return nil }
+            return MarkGroup(kind: kind, events: events, representative: first)
+        }
+    }
+}
+
+/// Отметки одного вида внутри одной прогулки.
+struct MarkGroup: Identifiable {
+    let kind: LogKind
+    let events: [LogEvent]
+    /// Первая по времени — на неё и открывается запись, если она одна.
+    let representative: LogEvent
+
+    var id: UUID { representative.id }
+    var count: Int { events.count }
+    var raisesAlarm: Bool { events.contains(where: \.raisesAlarm) }
+
+    /// Что произошло — своими словами, а не именем вида записи.
+    ///
+    /// «Пописал», а не «Выход»: внутри прогулки это отметка, и общее
+    /// имя вида здесь означало бы совсем другое событие.
+    var title: String {
+        switch kind {
+        case .outing: "пописал"
+        case .stool: "сходил по-большому"
+        case .water: "попил"
+        case .treat: "лакомство"
+        case .training: "занятие"
+        case .reaction: "сорвался"
+        case .incident: "инцидент"
+        case .note: representative.note ?? "заметка"
+        default: kind.title.lowercased()
+        }
+    }
+
+    /// Подробность — только у единственной отметки: у трёх она была бы
+    /// от первой попавшейся.
+    var detail: String? {
+        guard count == 1 else { return nil }
+        switch kind {
+        case .stool: return representative.stoolForm.map { "· " + $0.title.lowercased() }
+        case .reaction:
+            return representative.reactionDistance.map { "· " + $0.title.lowercased() }
+        default: return nil
+        }
+    }
 }
 
 enum TimelineBuilder {

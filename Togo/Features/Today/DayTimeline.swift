@@ -62,9 +62,15 @@ struct DayTimeline: View {
                         // Отметки внутри прогулки — своими строками, но
                         // под ней и с её же рельса: это части одного
                         // события, а не соседние события.
-                        ForEach(block.marks) { mark in
-                            Button { onTap(mark) } label: {
-                                TimelineMarkRow(event: mark)
+                        ForEach(block.markGroups) { group in
+                            Button {
+                                // Одна отметка открывается сама. У группы
+                                // «какая из трёх» — вопрос без смысла,
+                                // ровно по той же причине, по которой у неё
+                                // нет и времени: открываем прогулку.
+                                onTap(group.count == 1 ? group.representative : block.event)
+                            } label: {
+                                TimelineMarkRow(group: group)
                             }
                             .buttonStyle(TimelineRowButtonStyle())
                         }
@@ -212,16 +218,19 @@ struct TimelineRow: View {
 /// «Выход». Раньше отметка внутри прогулки называлась ровно так же, как
 /// самостоятельный выход по нужде, — одно слово на два разных события.
 struct TimelineMarkRow: View {
-    let event: LogEvent
+    let group: MarkGroup
 
     var body: some View {
         HStack(alignment: .top, spacing: Token.Space.s6) {
-            Text(Fmt.clock(event.date))
-                .textStyle(AppFont.numeric(12))
-                .foregroundStyle(Token.Ink.faint)
-                .fixedSize()
-                .frame(width: TimelineRail.timeWidth, alignment: .leading)
-                .padding(.top, 2)
+            // Времени здесь нет намеренно.
+            //
+            // Внутри прогулки его уже задаёт сама прогулка: «18:12 — 18:45».
+            // Мелкая метка у отметки не добавляла ничего — в живом дневнике
+            // три «пописал» стояли в 06:34, 06:38 и 06:39, и человек
+            // не узнавал из этих цифр ничего, чего не знал бы из «×3».
+            // Точное время осталось в самой записи: тап её открывает.
+            Color.clear
+                .frame(width: TimelineRail.timeWidth, height: 1)
 
             // Рельс продолжается, но кружка на нём нет: событие одно.
             Rectangle()
@@ -230,12 +239,12 @@ struct TimelineMarkRow: View {
                 .frame(width: TimelineRail.markerSize)
 
             HStack(spacing: Token.Space.s6) {
-                Image(systemName: event.kind.symbol)
-                    .font(.system(size: 10, weight: .semibold))
-                    .foregroundStyle(event.raisesAlarm ? Token.Status.overdueText : Token.Ink.faint)
-                Text(markTitle)
+                Image(systemName: group.kind.symbol)
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(tint)
+                Text(label)
                     .textStyle(AppFont.caption)
-                    .foregroundStyle(event.raisesAlarm ? Token.Status.overdueText : Token.Ink.secondary)
+                    .foregroundStyle(tint)
                     .wraps()
                 Spacer(minLength: 0)
             }
@@ -243,20 +252,19 @@ struct TimelineMarkRow: View {
             .padding(.bottom, Token.Space.s6)
         }
         .accessibilityElement(children: .combine)
+        .accessibilityLabel(label)
     }
 
-    private var markTitle: String {
-        switch event.kind {
-        case .outing: "пописал"
-        case .stool: "сходил по-большому"
-        case .water: "попил"
-        case .treat: "лакомство"
-        case .training: "занятие"
-        case .reaction: "сорвался"
-        case .incident: "инцидент"
-        case .note: event.note ?? "заметка"
-        default: event.kind.title.lowercased()
-        }
+    private var tint: Color {
+        group.raisesAlarm ? Token.Status.overdueText : Token.Ink.secondary
+    }
+
+    /// «пописал ×3» вместо трёх одинаковых строк.
+    private var label: String {
+        var text = group.title
+        if group.count > 1 { text += " ×\(group.count)" }
+        if let detail = group.detail { text += " " + detail }
+        return text
     }
 }
 

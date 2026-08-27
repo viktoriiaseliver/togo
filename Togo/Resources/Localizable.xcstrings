@@ -14301,7 +14301,7 @@
           }
         }
       },
-      "comment": "markTitle"
+      "comment": "header"
     },
     "заметки с прогулки": {
       "extractionState": "manual",
@@ -14325,7 +14325,7 @@
           }
         }
       },
-      "comment": "markTitle"
+      "comment": "count"
     },
     "занятий": {
       "extractionState": "manual",
@@ -14649,7 +14649,7 @@
           }
         }
       },
-      "comment": "markTitle"
+      "comment": "header"
     },
     "истекло": {
       "extractionState": "manual",
@@ -15093,7 +15093,7 @@
           }
         }
       },
-      "comment": "markTitle"
+      "comment": "title"
     },
     "легко, можно сложнее": {
       "extractionState": "manual",
@@ -16593,7 +16593,7 @@
           }
         }
       },
-      "comment": "markTitle"
+      "comment": "title"
     },
     "пописал": {
       "extractionState": "manual",
@@ -16605,7 +16605,7 @@
           }
         }
       },
-      "comment": "markTitle"
+      "comment": "title"
     },
     "попробовать": {
       "extractionState": "manual",
@@ -17493,7 +17493,7 @@
           }
         }
       },
-      "comment": "markTitle"
+      "comment": "title"
     },
     "сохранить файл": {
       "extractionState": "manual",
@@ -17733,7 +17733,7 @@
           }
         }
       },
-      "comment": "markTitle"
+      "comment": "title"
     },
     "считаю…": {
       "extractionState": "manual",
