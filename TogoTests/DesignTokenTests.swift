@@ -79,13 +79,17 @@ struct DesignTokenTests {
         #expect(Token.Component.Button.Primary.label == Token.Ink.onAccent)
     }
 
-    @Test("Текст состояний читается на своей плашке")
+    @Test("Сигнал читается на поверхности, а подпись плашки — белая")
     func statusContrast() {
-        // Плашка — тинт четырнадцати процентов поверх карточки, поэтому
-        // и считаем по наложенному цвету, а не по самому тинту.
+        // Так это и меряет аудит: сигнальный цвет живёт на угле,
+        // а не на собственном тинте. На своей плашке он проваливается
+        // ниже порога, поэтому подписи там белые, а цвет — у иконки.
+        #expect(contrast(Token.Status.waitingText, Token.Surface.card) > 4.5)
+        #expect(contrast(Token.Status.overdueText, Token.Surface.card) > 4.5)
+
         func onCard(_ tint: Color) -> Color { over(tint, on: Token.Surface.card) }
-        #expect(contrast(Token.Status.waitingText, onCard(Token.Status.waitingBg)) > 4.5)
-        #expect(contrast(Token.Status.overdueText, onCard(Token.Status.overdueBg)) > 4.5)
+        #expect(contrast(Token.Ink.primary, onCard(Token.Status.overdueBg)) > 4.5)
+        #expect(contrast(Token.Ink.primary, onCard(Token.Status.waitingBg)) > 4.5)
         #expect(contrast(Token.Status.doneText, onCard(Token.Status.doneBg)) > 4.5)
     }
 
@@ -154,11 +158,32 @@ struct BrandRoleTests {
         #expect(contrast(Token.Ink.onAccent, Token.Action.primary) >= 4.5)
     }
 
-    @Test("Мята держит и действие, и «сделано»")
-    func mintCarriesBoth() {
-        // «Три сигнала, а не четыре»: синий ушёл, потому что ничего
-        // здесь не значил, а мята забрала обе роли — на один цвет меньше.
-        #expect(Token.Action.primary == Token.Action.done)
+    @Test("Полная мята — только интерактив")
+    func mintIsInteractiveOnly() {
+        // Аудит цвета поймал двойную роль: на одном экране кнопка
+        // и галочка выполненного читались одинаково активными.
+        // «Сделано» — плашка с белой галочкой, а не заливка.
+        #expect(Token.Action.primary != Token.Action.done)
+        #expect(Token.Status.doneText == Token.Ink.primary)
+    }
+
+    @Test("Одно значение на роль")
+    func oneValuePerRole() {
+        // Находка аудита: сто тридцать восемь значений цвета на файл,
+        // из них три разные мяты. Системе хватает двадцати токенов,
+        // остальное — дрейф: одна роль, записанная чуть по-разному.
+        let signals = [Token.Action.primary, Token.Status.waitingText,
+                       Token.Status.overdueText]
+        #expect(Set(signals.map(String.init(describing:))).count == signals.count)
+    }
+
+    @Test("Радиусы лежат на шкале 12 · 16 · 20 · 26")
+    func radiiOnScale() {
+        let scale: Set<CGFloat> = [12, 16, 20, 26]
+        for radius in [Token.Radius.small, Token.Radius.control,
+                       Token.Radius.tile, Token.Radius.card] {
+            #expect(scale.contains(radius))
+        }
     }
 
     @Test("Сигналов ровно три, и они не совпадают")

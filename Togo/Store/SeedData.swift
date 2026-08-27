@@ -38,6 +38,29 @@ enum SeedData {
         }
     }
 
+    /// Завести выбранные дела ухода.
+    ///
+    /// Один и тот же цикл стоял и в онбординге, и на экране ухода —
+    /// вместе с деталью, о которой легко забыть: у дела «по дате»
+    /// без даты нет срока, и оно не напомнит ни о чём. Забыть её в одной
+    /// из копий значило бы завести напоминание, которое молчит.
+    @MainActor
+    @discardableResult
+    static func addCare(_ chosen: Set<String>, to dog: Dog, context: ModelContext) -> Int {
+        var added = 0
+        for suggestion in careSuggestions where chosen.contains(suggestion.id) {
+            let task = suggestion.makeTask()
+            if task.kind == .dated {
+                task.scheduledDate = Calendar.current.date(byAdding: .day, value: 30, to: .now)
+            }
+            task.dog = dog
+            context.insert(task)
+            added += 1
+        }
+        if added > 0 { try? context.save() }
+        return added
+    }
+
     static let careSuggestions: [CareSuggestion] = [
         // Каждый день
         CareSuggestion(title: "Зубы", detail: "чистить каждый день — налёт твердеет за сутки",

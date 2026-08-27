@@ -165,9 +165,13 @@ struct TGAvatar: View {
         .accessibilityHidden(true)
     }
 
-    private var foreground: Color {
-        tint == Token.Action.doneQuiet || tint == Token.Action.primaryQuiet ? Token.Ink.primary : .white
-    }
+    /// Подпись на аватаре.
+    ///
+    /// Раньше цвет выбирался сравнением тинта с двумя конкретными
+    /// токенами: поменяешь тинт — и подпись молча станет нечитаемой.
+    /// В тёмном наборе все аватарные фоны тёмные, поэтому подпись
+    /// всегда основным цветом текста.
+    private var foreground: Color { Token.Ink.primary }
 }
 
 /// Figma: `Author`. Кто записал.

@@ -392,15 +392,7 @@ struct CareSuggestionsSheet: View {
     }
 
     private func add() {
-        for suggestion in SeedData.careSuggestions where chosen.contains(suggestion.id) {
-            let task = suggestion.makeTask()
-            if task.kind == .dated {
-                task.scheduledDate = Calendar.current.date(byAdding: .day, value: 30, to: .now)
-            }
-            task.dog = dog
-            context.insert(task)
-        }
-        try? context.save()
+        if let dog { SeedData.addCare(chosen, to: dog, context: context) }
         if !chosen.isEmpty { Haptics.success() }
         dismiss()
     }

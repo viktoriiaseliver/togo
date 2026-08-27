@@ -214,15 +214,7 @@ struct CareStep: View {
 
     private func save() {
         guard let dog = dogs.first else { return }
-        for suggestion in SeedData.careSuggestions where chosen.contains(suggestion.id) {
-            let task = suggestion.makeTask()
-            if task.kind == .dated {
-                task.scheduledDate = Calendar.current.date(byAdding: .day, value: 30, to: .now)
-            }
-            task.dog = dog
-            context.insert(task)
-        }
-        try? context.save()
+        SeedData.addCare(chosen, to: dog, context: context)
     }
 }
 

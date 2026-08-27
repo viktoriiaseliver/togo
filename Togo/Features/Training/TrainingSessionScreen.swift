@@ -175,7 +175,7 @@ struct TrainingSessionScreen: View {
                 .textStyle(AppFont.numeric(20))
             HStack(spacing: Token.Space.s4) {
                 ForEach(Array(session.delaysMs.suffix(12).enumerated()), id: \.offset) { _, ms in
-                    RoundedRectangle(cornerRadius: 2)
+                    Capsule()
                         .fill(MarkAccuracy.from(delayMilliseconds: ms).color)
                         .frame(height: CGFloat(min(48, max(6, ms / 25))))
                         .frame(maxWidth: .infinity)
