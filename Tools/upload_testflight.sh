@@ -102,14 +102,9 @@ xcodebuild -exportArchive \
     -allowProvisioningUpdates \
     "${AUTH[@]}"
 
-cat <<DONE
+cat <<'DONE'
 
 Готово. Сборка $VERSION ($BUILD) уехала в App Store Connect.
-
-Если здесь было `missingApp` — значит, записи приложения ещё нет.
-Создаётся она только руками: App Store Connect → My Apps → «+» →
-New App, тот же bundle id `app.togo.diary`, основной язык русский.
-Через API её завести нельзя, Apple такую операцию не отдаёт.
 
 Дальше — там:
   1. Обработка занимает 5–30 минут, потом сборка появится в TestFlight.
