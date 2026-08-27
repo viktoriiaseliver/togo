@@ -161,7 +161,8 @@ struct TodayScreen: View {
                             )
                         }
 
-                        DayTimeline(events: Diary.onDayWithTraces(events, now), now: now,
+                        DayTimeline(events: Diary.onDayWithTraces(events, now, tracing: undoableDeletions),
+                                    now: now,
                                     showsAuthor: members.count > 1) { event in
                             route = .edit(event.id)
                         }
@@ -294,6 +295,15 @@ struct TodayScreen: View {
     /// не отдельные выходы.
     private var outingsToday: Int {
         TimelineBuilder.blocks(Diary.onDay(events, now)).filter(\.isOuting).count
+    }
+
+    /// Какие удалённые записи ещё можно вернуть.
+    ///
+    /// Зачёркнутая строка в ленте — это не память об удалении, а вторая
+    /// половина кнопки «Отменить». Уехал тост — ушла и строка.
+    private var undoableDeletions: Set<UUID> {
+        if case .restoreDeleted(let ids) = appState.undo?.action { return Set(ids) }
+        return []
     }
 
     private var summaryStrip: some View {

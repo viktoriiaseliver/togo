@@ -167,6 +167,13 @@ struct TogoShortcuts: AppShortcutsProvider {
             systemImageName: "fork.knife"
         )
         AppShortcut(
+            intent: WalkTagIntent(),
+            phrases: ["\(.applicationName): прогулка",
+                      "Прогулка в \(.applicationName)"],
+            shortTitle: "Прогулка",
+            systemImageName: "figure.walk"
+        )
+        AppShortcut(
             intent: TimeIndoorsIntent(),
             phrases: ["Давно ли гуляли в \(.applicationName)",
                       "\(.applicationName): давно ли гуляли"],

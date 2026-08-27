@@ -344,6 +344,14 @@ struct EventEditSheet: View {
                             .frame(minHeight: Token.Size.tapTarget)
                         }
 
+                        // Значение записи. Без него правка была
+                        // декоративной: время и заметку поменять можно,
+                        // а те самые граммы, ради которых запись и делали, —
+                        // нет. В живом дневнике это видно дважды за день:
+                        // человек записывал 65 г, хотел 75, не находил где
+                        // поправить и удалял запись, чтобы записать заново.
+                        value(of: event)
+
                         TGDivider()
                         HStack {
                             Text("Заметка").textStyle(AppFont.body)
@@ -375,6 +383,64 @@ struct EventEditSheet: View {
         .presentationDetents([.medium, .large])
     }
 
+    /// Что именно записали: граммы, миллилитры, форма стула, что случилось.
+    ///
+    /// У каждого вида записи своя главная величина, и править надо
+    /// именно её — а не только час и подпись.
+    @ViewBuilder
+    private func value(of event: LogEvent) -> some View {
+        switch event.kind {
+        case .meal, .treat:
+            TGDivider()
+            HStack {
+                Text(event.kind == .meal ? "Съел" : "Лакомство").textStyle(AppFont.body)
+                Spacer()
+                TGStepper(value: Binding(get: { event.grams ?? 0 },
+                                         set: { event.grams = $0 }),
+                          unit: "г",
+                          step: event.kind == .meal ? 5 : 1,
+                          range: 0...600,
+                          compact: true)
+            }
+            .frame(minHeight: Token.Size.tapTarget)
+
+        case .water:
+            TGDivider()
+            HStack {
+                Text("Выпил").textStyle(AppFont.body)
+                Spacer()
+                TGStepper(value: Binding(get: { event.milliliters ?? 0 },
+                                         set: { event.milliliters = $0 }),
+                          unit: "мл", step: 50, range: 0...2000, compact: true)
+            }
+            .frame(minHeight: Token.Size.tapTarget)
+
+        case .stool:
+            TGDivider()
+            Picker("Форма", selection: Binding(get: { event.stoolForm ?? .sausage },
+                                               set: { event.stoolForm = $0 })) {
+                ForEach(StoolForm.allCases, id: \.self) { Text($0.title).tag($0) }
+            }
+            .textStyle(AppFont.body)
+            .frame(minHeight: Token.Size.tapTarget)
+
+        case .incident:
+            TGDivider()
+            Picker("Что случилось", selection: Binding(get: { event.incidentKind ?? .other },
+                                                      set: { event.incidentKind = $0 })) {
+                ForEach(IncidentKind.allCases, id: \.self) { Text($0.title).tag($0) }
+            }
+            .textStyle(AppFont.body)
+            .frame(minHeight: Token.Size.tapTarget)
+
+        case .weight:
+            EmptyView()
+
+        default:
+            EmptyView()
+        }
+    }
+
     /// Отметки, сделанные внутри этой прогулки.
     private func marks(of event: LogEvent) -> [LogEvent] {
         guard event.kind == .walk else { return [] }
@@ -388,7 +454,7 @@ struct EventEditSheet: View {
 
     private func deleteExplainer(for event: LogEvent) -> String {
         marks(of: event).isEmpty
-            ? "Удаление можно отменить 5 секунд. В истории останется след, что запись была и кто её убрал."
+            ? "Удаление можно отменить 5 секунд — потом запись уйдёт из ленты совсем. Чтобы поправить, а не убрать, меняй значения выше: они сохраняются сразу."
             : "Прогулка удалится вместе с тем, что в ней отмечено: это одно событие, а не несколько записей. Отменить можно 5 секунд."
     }
 

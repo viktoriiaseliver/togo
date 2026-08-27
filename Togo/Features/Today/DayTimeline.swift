@@ -106,6 +106,25 @@ enum TimelineRail {
     static let topStub: CGFloat = 4
 }
 
+/// По чему выравнивается строка ленты.
+///
+/// Раньше время, кружок и заголовок разъезжались по вертикали: у каждого
+/// стоял свой отступ сверху, подобранный на глаз под один размер шрифта.
+/// Стоило системному шрифту стать крупнее — и кружок уезжал ниже
+/// собственной подписи.
+///
+/// Теперь все трое объявляют одну и ту же точку — свой вертикальный
+/// центр, — и стек считает отступы сам, при любом размере текста.
+extension VerticalAlignment {
+    private enum TimelineMarkerID: AlignmentID {
+        static func defaultValue(in dimensions: ViewDimensions) -> CGFloat {
+            dimensions[VerticalAlignment.top]
+        }
+    }
+
+    static let timelineMarker = VerticalAlignment(TimelineMarkerID.self)
+}
+
 struct TimelineRow: View {
     let block: TimelineBlock
     var isFirst: Bool = false
@@ -114,12 +133,12 @@ struct TimelineRow: View {
 
     private var event: LogEvent { block.event }
 
-    /// Запись удалили, но след остался: тост уезжает через пять секунд,
-    /// и без строки человек оставался без ответа на «я точно это убрала?».
+    /// Запись удаляется — и пока висит тост, строка стоит зачёркнутой:
+    /// это вторая половина кнопки «Отменить». Уехал тост — ушла и строка.
     private var isCancelled: Bool { event.deletedAt != nil }
 
     var body: some View {
-        HStack(alignment: .top, spacing: Token.Space.s6) {
+        HStack(alignment: .timelineMarker, spacing: Token.Space.s6) {
             time
             marker
 
@@ -129,6 +148,7 @@ struct TimelineRow: View {
                         .textStyle(AppFont.bodyEmphasis)
                         .foregroundStyle(isCancelled ? Token.Ink.faint : event.titleColor)
                         .strikethrough(isCancelled, color: Token.Ink.faint)
+                        .alignmentGuide(.timelineMarker) { $0[VerticalAlignment.center] }
                     Spacer(minLength: 0)
                     if showsAuthor {
                         TGAuthorMark(author: event.authorName)
@@ -141,7 +161,6 @@ struct TimelineRow: View {
                         .wraps()
                 }
             }
-            .padding(.top, 3)
             .padding(.bottom, block.hasMarks ? Token.Space.s4 : Token.Space.s10)
         }
         .accessibilityElement(children: .combine)
@@ -155,6 +174,7 @@ struct TimelineRow: View {
             Text(Fmt.clock(block.startedAt))
                 .textStyle(AppFont.numeric(13, weight: .medium))
                 .foregroundStyle(Token.Ink.secondary)
+                .alignmentGuide(.timelineMarker) { $0[VerticalAlignment.center] }
             if block.isSpan {
                 Text(Fmt.clock(block.endedAt))
                     .textStyle(AppFont.numeric(13, weight: .medium))
@@ -163,7 +183,6 @@ struct TimelineRow: View {
         }
         .fixedSize()
         .frame(width: TimelineRail.timeWidth, alignment: .leading)
-        .padding(.top, 5)
     }
 
     /// Что писать под названием.
@@ -199,6 +218,7 @@ struct TimelineRow: View {
                     Circle().fill(isCancelled ? Token.Surface.sunken
                                   : (event.raisesAlarm ? Token.Status.overdueBg : Token.Surface.control))
                 )
+                .alignmentGuide(.timelineMarker) { $0[VerticalAlignment.center] }
 
             Rectangle()
                 .fill(Token.Surface.hairline)
@@ -233,10 +253,14 @@ struct TimelineMarkRow: View {
                 .frame(width: TimelineRail.timeWidth, height: 1)
 
             // Рельс продолжается, но кружка на нём нет: событие одно.
+            //
+            // Ширина — та же, что у колонки маркера. С `markerSize`
+            // линия под каждой прогулкой уезжала на три точки влево,
+            // и рельс шёл ступеньками.
             Rectangle()
                 .fill(Token.Surface.hairline)
                 .frame(width: TimelineRail.lineWidth)
-                .frame(width: TimelineRail.markerSize)
+                .frame(width: TimelineRail.railWidth)
 
             HStack(spacing: Token.Space.s6) {
                 Image(systemName: group.kind.symbol)
@@ -301,11 +325,14 @@ struct TimelineGap: View {
 
     var body: some View {
         HStack(alignment: .center, spacing: Token.Space.s6) {
+            // По левому краю — как все часы в этой колонке. С выравниванием
+            // вправо промежуток стоял не под временем, а сам по себе,
+            // и колонка выглядела рваной.
             Text(Fmt.gap(interval))
                 .textStyle(AppFont.micro)
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)
-                .frame(width: TimelineRail.timeWidth, alignment: .trailing)
+                .frame(width: TimelineRail.timeWidth, alignment: .leading)
 
             Rectangle()
                 .fill(Token.Surface.hairline)

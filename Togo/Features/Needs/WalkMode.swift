@@ -318,21 +318,7 @@ struct WalkModeScreen: View {
         for entry in finished.marks {
             log.record(entry.kind.logKind, dog: dog, at: entry.at,
                        confirmation: nil, haptic: .none) { event in
-                // Настоящая связь, а не подпись словами: по ней лента
-                // собирает прогулку обратно в одно событие.
-                event.walkEventID = walkEvent?.id
-                switch entry.kind {
-                case .urine: event.outcome = .urine
-                case .stool: event.stoolForm = Diary.usualStool(dog.events)
-                case .treat:
-                    event.grams = 5
-                    // Без этого пять граммов исчезали из подсчёта питания:
-                    // сводка считает лакомствами только то, что взято
-                    // из дневной порции.
-                    event.fromPortion = dog.trainingFoodFromPortion
-                default: break
-                }
-                event.note = "на прогулке"
+                WalkRecorder.apply(entry, to: event, dog: dog, walkID: walkEvent?.id)
             }
         }
 

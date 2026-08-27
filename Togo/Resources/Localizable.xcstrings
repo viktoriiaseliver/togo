@@ -841,6 +841,18 @@
       },
       "comment": "TogoShortcuts"
     },
+    "%@: прогулка": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: прогулка"
+          }
+        }
+      },
+      "comment": "TogoShortcuts"
+    },
     "%@: спокойно %@, лай %@": {
       "extractionState": "manual",
       "localizations": {
@@ -1248,6 +1260,18 @@
         }
       },
       "comment": "handle"
+    },
+    "«Того: прогулка» — Siri поймёт и на часах.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "«Того: прогулка» — Siri поймёт и на часах."
+          }
+        }
+      },
+      "comment": "body"
     },
     "Аккаунта нет, серверов у нас нет. Записи хранятся в базе приложения и в общем хранилище с виджетами.": {
       "extractionState": "manual",
@@ -2340,6 +2364,18 @@
       },
       "comment": "body"
     },
+    "Выбери NFC и отсканируй метку": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выбери NFC и отсканируй метку"
+          }
+        }
+      },
+      "comment": "steps"
+    },
     "Выбери план": {
       "extractionState": "manual",
       "localizations": {
@@ -2507,6 +2543,18 @@
         }
       },
       "comment": "treatment"
+    },
+    "Выпил": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выпил"
+          }
+        }
+      },
+      "comment": "value"
     },
     "Вырвал": {
       "extractionState": "manual",
@@ -2711,6 +2759,18 @@
         }
       },
       "comment": "task"
+    },
+    "Голосом": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Голосом"
+          }
+        }
+      },
+      "comment": "body"
     },
     "Готово": {
       "extractionState": "manual",
@@ -3396,6 +3456,18 @@
       },
       "comment": "count"
     },
+    "Добавь действие «Прогулка по метке»": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добавь действие «Прогулка по метке»"
+          }
+        }
+      },
+      "comment": "steps"
+    },
     "Добавь препарат — приложение начнёт напоминать про дозу, держать окно натощак и защищать от двойной дозы. Это бесплатно и работает всегда.": {
       "extractionState": "manual",
       "localizations": {
@@ -4068,6 +4140,18 @@
       },
       "comment": "sessionSheet"
     },
+    "Закончить прогулку": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Закончить прогулку"
+          }
+        }
+      },
+      "comment": "FinishWalkIntent"
+    },
     "Закройте и откройте приложение": {
       "extractionState": "manual",
       "localizations": {
@@ -4307,6 +4391,18 @@
         }
       },
       "comment": "event"
+    },
+    "Записала · прогулка \\(Fmt.plural(minutes, ": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Записала · прогулка \\(Fmt.plural(minutes, "
+          }
+        }
+      },
+      "comment": "tail"
     },
     "Записано · %@": {
       "extractionState": "manual",
@@ -4799,6 +4895,18 @@
         }
       },
       "comment": "travel"
+    },
+    "Запускает таймер прогулки, не открывая приложение. Отметки можно ставить с экрана блокировки.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Запускает таймер прогулки, не открывая приложение. Отметки можно ставить с экрана блокировки."
+          }
+        }
+      },
+      "comment": "StartWalkIntent"
     },
     "Зачем это": {
       "extractionState": "manual",
@@ -5395,6 +5503,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Кнопка «Вывожу» стоит первой во всех четырёх случаях. Приложение не знает лучше вас и не мешает вывести собаку."
+          }
+        }
+      },
+      "comment": "body"
+    },
+    "Кнопка «Действие»": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Кнопка «Действие»"
           }
         }
       },
@@ -6334,6 +6454,30 @@
       },
       "comment": "title"
     },
+    "Метка не знает о тебе ничего: в ней записан только номер, по которому «Команды» узнают наклейку. Геопозицию Того не спрашивает вовсе.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Метка не знает о тебе ничего: в ней записан только номер, по которому «Команды» узнают наклейку. Геопозицию Того не спрашивает вовсе."
+          }
+        }
+      },
+      "comment": "body"
+    },
+    "Метка у двери": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Метка у двери"
+          }
+        }
+      },
+      "comment": "body"
+    },
     "Метров пять": {
       "extractionState": "manual",
       "localizations": {
@@ -6441,6 +6585,18 @@
         }
       },
       "comment": "title"
+    },
+    "На iPhone 15 Pro и новее — нажатие сбоку, не доставая телефон из кармана.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "На iPhone 15 Pro и новее — нажатие сбоку, не доставая телефон из кармана."
+          }
+        }
+      },
+      "comment": "body"
     },
     "На паузе, %@": {
       "extractionState": "manual",
@@ -6646,6 +6802,30 @@
       },
       "comment": "body"
     },
+    "Найди в списке Того. Выключи «Спрашивать до запуска» — иначе смысл теряется: придётся подтверждать.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Найди в списке Того. Выключи «Спрашивать до запуска» — иначе смысл теряется: придётся подтверждать."
+          }
+        }
+      },
+      "comment": "steps"
+    },
+    "Наклей метку у двери": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Наклей метку у двери"
+          }
+        }
+      },
+      "comment": "steps"
+    },
     "Написать в поддержку": {
       "extractionState": "manual",
       "localizations": {
@@ -6789,6 +6969,18 @@
         }
       },
       "comment": "sessionSheet"
+    },
+    "Начать прогулку": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Начать прогулку"
+          }
+        }
+      },
+      "comment": "StartWalkIntent"
     },
     "Не заменяет визит к ветеринару. Вердикт «просится» — это статистика по твоим же записям, а не заключение.": {
       "extractionState": "manual",
@@ -7510,6 +7702,30 @@
       },
       "comment": "body"
     },
+    "Одно действие на обе стороны: прогулка ещё не идёт — начинает, идёт — заканчивает и записывает.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Одно действие на обе стороны: прогулка ещё не идёт — начинает, идёт — заканчивает и записывает."
+          }
+        }
+      },
+      "comment": "WalkTagIntent"
+    },
+    "Одно и то же касание работает в обе стороны: прогулка не идёт — начнётся, идёт — закончится и запишется. У двери не надо вспоминать, какое действие сейчас нужное.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Одно и то же касание работает в обе стороны: прогулка не идёт — начнётся, идёт — закончится и запишется. У двери не надо вспоминать, какое действие сейчас нужное."
+          }
+        }
+      },
+      "comment": "body"
+    },
     "Окна натощак перед перелётом — общая практика, а не назначение. Если собака на терапии, приложение сведёт их с приёмами и покажет, где конфликт.": {
       "extractionState": "manual",
       "localizations": {
@@ -7654,6 +7870,18 @@
       },
       "comment": "amountCard"
     },
+    "Останавливает таймер и записывает прогулку в дневник.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Останавливает таймер и записывает прогулку в дневник."
+          }
+        }
+      },
+      "comment": "FinishWalkIntent"
+    },
     "Остановка": {
       "extractionState": "manual",
       "localizations": {
@@ -7761,6 +7989,18 @@
         }
       },
       "comment": "body"
+    },
+    "Открой «Команды» → «Автоматизация»": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Открой «Команды» → «Автоматизация»"
+          }
+        }
+      },
+      "comment": "steps"
     },
     "Открытый код": {
       "extractionState": "manual",
@@ -8625,6 +8865,18 @@
         }
       },
       "comment": "body"
+    },
+    "Подойдёт любая NFC-наклейка (NTAG213 и новее). Приклей на косяк или на крючок с поводком — туда, где рука и так проходит.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подойдёт любая NFC-наклейка (NTAG213 и новее). Приклей на косяк или на крючок с поводком — туда, где рука и так проходит."
+          }
+        }
+      },
+      "comment": "steps"
     },
     "Подошёл, смотрит": {
       "extractionState": "manual",
@@ -9514,6 +9766,18 @@
       },
       "comment": "startSheet"
     },
+    "Пошли. Таймер идёт.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пошли. Таймер идёт."
+          }
+        }
+      },
+      "comment": "minutes"
+    },
     "Пояснение": {
       "extractionState": "manual",
       "localizations": {
@@ -9766,6 +10030,18 @@
       },
       "comment": "body"
     },
+    "Приложение «Команды» стоит на телефоне с завода. Внизу — вкладка «Автоматизация», кнопка «+».": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Приложение «Команды» стоит на телефоне с завода. Внизу — вкладка «Автоматизация», кнопка «+»."
+          }
+        }
+      },
+      "comment": "steps"
+    },
     "Приложение готово синхронизировать, но на устройстве не выполнен вход в Apple ID. Пока дневник только здесь — сохрани файл.": {
       "extractionState": "manual",
       "localizations": {
@@ -9910,6 +10186,18 @@
       },
       "comment": "legalSection"
     },
+    "Приложил — пошли": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Приложил — пошли"
+          }
+        }
+      },
+      "comment": "body"
+    },
     "Примерно на": {
       "extractionState": "manual",
       "localizations": {
@@ -10030,6 +10318,18 @@
       },
       "comment": "plan"
     },
+    "Прогулка в %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Прогулка в %@"
+          }
+        }
+      },
+      "comment": "TogoShortcuts"
+    },
     "Прогулка на паузе": {
       "extractionState": "manual",
       "localizations": {
@@ -10054,6 +10354,18 @@
       },
       "comment": "localizedStringResource"
     },
+    "Прогулка по метке": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Прогулка по метке"
+          }
+        }
+      },
+      "comment": "WalkTagIntent"
+    },
     "Прогулка удалится вместе с тем, что в ней отмечено: это одно событие, а не несколько записей. Отменить можно 5 секунд.": {
       "extractionState": "manual",
       "localizations": {
@@ -10065,6 +10377,18 @@
         }
       },
       "comment": "deleteExplainer"
+    },
+    "Прогулка уже идёт — \\(Fmt.plural(minutes, ": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Прогулка уже идёт — \\(Fmt.plural(minutes, "
+          }
+        }
+      },
+      "comment": "minutes"
     },
     "Продолжает подниматься в желудке и выделяет спирт.": {
       "extractionState": "manual",
@@ -10253,6 +10577,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Процедуры"
+          }
+        }
+      },
+      "comment": "body"
+    },
+    "Пункт управления": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пункт управления"
           }
         }
       },
@@ -10593,6 +10929,18 @@
         }
       },
       "comment": "sessionSheet"
+    },
+    "Свайп и тап с заблокированного экрана.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Свайп и тап с заблокированного экрана."
+          }
+        }
+      },
+      "comment": "body"
     },
     "Свернуть": {
       "extractionState": "manual",
@@ -11842,6 +12190,18 @@
       },
       "comment": "title"
     },
+    "Съел": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Съел"
+          }
+        }
+      },
+      "comment": "value"
+    },
     "Таймер запускает отметка еды. Пока её нет, доза не откроется.": {
       "extractionState": "manual",
       "localizations": {
@@ -11925,6 +12285,18 @@
         }
       },
       "comment": "body"
+    },
+    "Телефон предложит поднести метку и попросит её назвать — например «дверь».": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Телефон предложит поднести метку и попросит её назвать — например «дверь»."
+          }
+        }
+      },
+      "comment": "steps"
     },
     "Телефонов пока нет. Впиши их в профиле собаки — тогда в нужный момент не придётся их искать.": {
       "extractionState": "manual",
@@ -12490,13 +12862,13 @@
       },
       "comment": "settings"
     },
-    "Удаление можно отменить 5 секунд. В истории останется след, что запись была и кто её убрал.": {
+    "Удаление можно отменить 5 секунд — потом запись уйдёт из ленты совсем. Чтобы поправить, а не убрать, меняй значения выше: они сохраняются сразу.": {
       "extractionState": "manual",
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Удаление можно отменить 5 секунд. В истории останется след, что запись была и кто её убрал."
+            "value": "Удаление можно отменить 5 секунд — потом запись уйдёт из ленты совсем. Чтобы поправить, а не убрать, меняй значения выше: они сохраняются сразу."
           }
         }
       },
@@ -13030,6 +13402,18 @@
       },
       "comment": "body"
     },
+    "Форма": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Форма"
+          }
+        }
+      },
+      "comment": "value"
+    },
     "Формат версии %@. Файл, сделанный более новой версией приложения, старая читать не станет и честно об этом скажет.": {
       "extractionState": "manual",
       "localizations": {
@@ -13532,7 +13916,7 @@
           }
         }
       },
-      "comment": "pickerStep"
+      "comment": "value"
     },
     "Что уходит наружу": {
       "extractionState": "manual",
@@ -14001,6 +14385,18 @@
         }
       },
       "comment": "unitName"
+    },
+    "без метки — то же самое": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "без метки — то же самое"
+          }
+        }
+      },
+      "comment": "body"
     },
     "без подписки": {
       "extractionState": "manual",
@@ -14553,6 +14949,18 @@
         }
       },
       "comment": "detail"
+    },
+    "г": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "г"
+          }
+        }
+      },
+      "comment": "value"
     },
     "где": {
       "extractionState": "manual",
@@ -16414,6 +16822,18 @@
       },
       "comment": "minutes"
     },
+    "мл": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "мл"
+          }
+        }
+      },
+      "comment": "value"
+    },
     "можно пропустить": {
       "extractionState": "manual",
       "localizations": {
@@ -16520,7 +16940,7 @@
           }
         }
       },
-      "comment": "walkEvent"
+      "comment": "WalkLinkMigration"
     },
     "на случай, когда спросят": {
       "extractionState": "manual",
@@ -16665,6 +17085,18 @@
         }
       },
       "comment": "distanceCard"
+    },
+    "настроить один раз": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "настроить один раз"
+          }
+        }
+      },
+      "comment": "body"
     },
     "натощак %@ мин": {
       "extractionState": "manual",

@@ -135,6 +135,7 @@ struct SettingsScreen: View {
     private var aboutSection: some View {
         Section {
             NavigationLink("Как это работает") { HowItWorksScreen() }
+            NavigationLink("Метка у двери") { DoorTagScreen() }
             Button("Пройти онбординг заново") { replayOnboarding() }
             NavigationLink("Что нового") { WhatsNewScreen() }
             NavigationLink("Поддержка") { SupportScreen() }

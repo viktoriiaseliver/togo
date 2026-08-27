@@ -152,8 +152,15 @@ struct TGStepper: View {
     let unit: String
     var step: Int = 1
     var range: ClosedRange<Int> = 0...999
+    /// Внутри строки, а не на весь экран: в правке записи шаговик стоит
+    /// справа от подписи и не имеет права быть крупнее самой строки.
+    var compact: Bool = false
 
     var body: some View {
+        if compact { inline } else { full }
+    }
+
+    private var full: some View {
         HStack(spacing: Token.Space.s20) {
             TGStepButton(symbol: "minus") { adjust(-step) }
             VStack(spacing: 0) {
@@ -166,6 +173,18 @@ struct TGStepper: View {
             TGStepButton(symbol: "plus") { adjust(step) }
         }
         .frame(maxWidth: .infinity)
+    }
+
+    private var inline: some View {
+        HStack(spacing: Token.Space.s12) {
+            TGStepButton(symbol: "minus") { adjust(-step) }
+            Text("\(value) \(unit)")
+                .textStyle(AppFont.numeric(17))
+                .frame(minWidth: 64)
+                .accessibilityElement(children: .combine)
+                .accessibilityValue("\(value) \(unit)")
+            TGStepButton(symbol: "plus") { adjust(step) }
+        }
     }
 
     private func adjust(_ delta: Int) {
