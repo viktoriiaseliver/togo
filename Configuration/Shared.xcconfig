@@ -8,8 +8,12 @@ APP_BUNDLE_ID = app.togo.diary
 DEVELOPMENT_TEAM = L7CPH7W5QW
 
 // Версия для App Store и номер сборки.
+//
+// Номер здесь — только для сборок на свой телефон. В TestFlight его
+// задаёт Tools/upload_testflight.sh числом коммитов: руками его забывают
+// поднять, а Apple не принимает второй раз тот же номер.
 MARKETING_VERSION = 1.0.0
-BUILD_NUMBER = 26
+BUILD_NUMBER = 1
 
 // App Group — общее хранилище приложения, виджетов и Live Activity.
 APP_GROUP_ID = group.app.togo.diary
