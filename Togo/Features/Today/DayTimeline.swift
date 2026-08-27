@@ -404,6 +404,10 @@ struct DayPlanList: View {
     /// Вернуть пункт в невыполненные. Отметили не то — должно быть
     /// куда отступить.
     var onUndo: (DayPlanItem) -> Void = { _ in }
+    /// Сколько дел ухода ждут даты. Пока её нет, дело не станет сроком
+    /// и не напомнит ни о чём — а выглядит заведённым.
+    var awaitingDate: Int = 0
+    var onOpenCare: () -> Void = {}
 
     /// Показывать ли сделанное. По умолчанию свёрнуто.
     @State private var showsDone = false
@@ -427,6 +431,11 @@ struct DayPlanList: View {
                     TGDivider()
                     doneToggle
                     if showsDone { rows(done, isDone: true) }
+                }
+
+                if awaitingDate > 0 {
+                    TGDivider()
+                    awaitingDateRow
                 }
             }
         }
@@ -472,6 +481,34 @@ struct DayPlanList: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel(showsDone ? "Скрыть сделанное" : "Показать сделанное, \(done.count)")
+    }
+
+    /// Дела, которые заведены, но молчат.
+    ///
+    /// Напоминание без даты никогда не станет сроком: у «раз в 28 дней»
+    /// нет точки отсчёта, у прививки нет дня. Такие дела выглядят
+    /// заведёнными и не напоминают ни о чём — а узнать об этом можно
+    /// было, только зайдя в уход и увидев их там отдельной группой.
+    private var awaitingDateRow: some View {
+        Button(action: onOpenCare) {
+            HStack(spacing: Token.Space.s8) {
+                Image(systemName: "calendar.badge.exclamationmark")
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(Token.Status.waitingText)
+                    .accessibilityHidden(true)
+                Text("\(awaitingDate) \(Fmt.plural(awaitingDate, "напоминание ждёт", "напоминания ждут", "напоминаний ждут")) даты")
+                    .textStyle(AppFont.caption)
+                    .foregroundStyle(Token.Ink.secondary)
+                    .wraps()
+                Spacer(minLength: 0)
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(Token.Ink.faint)
+            }
+            .frame(minHeight: Token.Size.tapTarget)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
     }
 
     private func rows(_ list: [DayPlanItem], isDone: Bool = false) -> some View {

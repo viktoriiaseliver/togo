@@ -193,3 +193,105 @@ struct WalkRhythmTests {
         #expect(!rhythm.isReliable)
     }
 }
+
+@Suite("Сколько прошло с прогулки")
+@MainActor
+struct SinceWalkTests {
+
+    private func at(_ hour: Int, _ minute: Int = 0) -> Date {
+        Calendar.current.startOfDay(for: Date())
+            .addingTimeInterval(Double(hour * 60 + minute) * 60)
+    }
+
+    @Test("Считается от конца прогулки, а не от начала")
+    func countsFromEnd() {
+        let walk = LogEvent(kind: .walk, date: at(6, 34), authorName: "Виктория")
+        walk.durationSeconds = 43 * 60          // как в живом дневнике
+
+        let blocks = TimelineBuilder.blocks([walk])
+        let indoors = try! #require(
+            TimelineBuilder.timeIndoorsNow(blocks, now: at(9, 17), threshold: 0)
+        )
+        // С 07:17 до 09:17 — два часа, а не два сорок три от начала.
+        #expect(indoors == 2 * 3600)
+    }
+
+    @Test("Кормление между прогулками счётчик не сбивает")
+    func mealDoesNotReset() {
+        // Раньше «сейчас» считалось от последней записи любого вида,
+        // и ужин обнулял цифру: «прошло десять минут» при трёх часах.
+        let walk = LogEvent(kind: .walk, date: at(6, 34), authorName: "Виктория")
+        walk.durationSeconds = 43 * 60
+        let meal = LogEvent(kind: .meal, date: at(8, 49), authorName: "Виктория")
+
+        let blocks = TimelineBuilder.blocks([walk, meal])
+        let indoors = try! #require(
+            TimelineBuilder.timeIndoorsNow(blocks, now: at(9, 17), threshold: 0)
+        )
+        #expect(indoors == 2 * 3600)
+    }
+
+    @Test("Отметки внутри прогулки не считаются выходами")
+    func marksAreNotOutings() {
+        let walk = LogEvent(kind: .walk, date: at(6, 34), authorName: "Виктория")
+        walk.durationSeconds = 43 * 60
+        let mark = LogEvent(kind: .outing, date: at(6, 42), authorName: "Виктория")
+        mark.walkEventID = walk.id
+
+        let blocks = TimelineBuilder.blocks([walk, mark])
+        let indoors = try! #require(
+            TimelineBuilder.timeIndoorsNow(blocks, now: at(9, 17), threshold: 0)
+        )
+        // От конца прогулки в 07:17, а не от отметки в 06:42.
+        #expect(indoors == 2 * 3600)
+    }
+
+    @Test("Без выходов сегодня цифры нет")
+    func noOutingsNoNumber() {
+        let meal = LogEvent(kind: .meal, date: at(8, 49), authorName: "Виктория")
+        let blocks = TimelineBuilder.blocks([meal])
+        #expect(TimelineBuilder.timeIndoorsNow(blocks, now: at(9, 17), threshold: 0) == nil)
+    }
+}
+
+@Suite("Молчащие напоминания ухода")
+@MainActor
+struct SilentCareTests {
+
+    @Test("Дело без точки отсчёта не становится сроком — и это видно")
+    func periodicWithoutLastDone() {
+        // В живом дневнике таких дел оказалось шесть из девяти: заведены,
+        // выглядят настроенными и не напоминают ни о чём.
+        let task = CareTask(title: "Капли от клещей", detail: "",
+                            kind: .periodic, intervalDays: 28, category: .medical)
+        #expect(task.needsDate)
+        #expect(task.dueDate == nil)
+        #expect(!task.isDue())
+    }
+
+    @Test("Прививка без даты тоже молчит")
+    func datedWithoutDate() {
+        let task = CareTask(title: "Бешенство", detail: "",
+                            kind: .dated, intervalDays: 365, category: .medical)
+        #expect(task.needsDate)
+        #expect(!task.isDue())
+    }
+
+    @Test("Ежедневное работает без даты — у него точка отсчёта каждый день")
+    func dailyNeedsNothing() {
+        let task = CareTask(title: "Зубы", detail: "", kind: .daily,
+                            intervalDays: 1, category: .grooming)
+        #expect(!task.needsDate)
+        #expect(task.isDue())
+    }
+
+    @Test("Поставили дату — дело ожило")
+    func dateMakesItLive() {
+        let task = CareTask(title: "Уши", detail: "", kind: .periodic,
+                            intervalDays: 7, category: .grooming)
+        task.lastDone = Calendar.current.date(byAdding: .day, value: -8, to: Date())
+
+        #expect(!task.needsDate)
+        #expect(task.isDue())
+    }
+}

@@ -74,7 +74,6 @@ nonisolated enum Diary {
     struct DaySummary {
         var eatenGrams: Int
         var dailyGrams: Int
-        var drankMl: Int
         var outings: Int
         var walkMinutes: Int
         var trainingGrams: Int
@@ -91,7 +90,6 @@ nonisolated enum Diary {
                 .compactMap(\.grams)
                 .reduce(0, +),
             dailyGrams: dog?.dailyGrams ?? 0,
-            drankMl: today.filter { $0.kind == .water }.compactMap(\.milliliters).reduce(0, +),
             outings: today.filter { $0.kind == .outing }.count,
             walkMinutes: today.filter { $0.kind == .walk }.compactMap(\.durationSeconds).reduce(0, +) / 60,
             trainingGrams: today.filter { $0.kind == .training }.compactMap(\.grams).reduce(0, +)

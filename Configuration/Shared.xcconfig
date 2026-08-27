@@ -5,7 +5,7 @@
 APP_BUNDLE_ID = app.togo.diary
 
 // Team ID из App Store Connect. Пусто — сборка только в симуляторе.
-DEVELOPMENT_TEAM =
+DEVELOPMENT_TEAM = L7CPH7W5QW
 
 // Версия для App Store и номер сборки.
 MARKETING_VERSION = 1.0.0

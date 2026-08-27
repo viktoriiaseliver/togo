@@ -120,15 +120,42 @@
 
 ### Что положить в окружение
 
+Team ID скрипт берёт из `Configuration/Shared.xcconfig`, ключ — из
+`~/.appstoreconnect/private_keys/`, Key ID — из имени файла. Руками
+остаётся один Issuer ID: вывести его неоткуда, его показывает только
+App Store Connect.
+
 ```sh
-export TEAM=XXXXXXXXXX                  # Membership → Team ID
-export ASC_KEY_ID=XXXXXXXXXX            # из имени файла ключа
-export ASC_ISSUER=xxxxxxxx-xxxx-xxxx-…  # Issuer ID
-export ASC_KEY=~/keys/AuthKey_XXXXXXXX.p8
+export ASC_ISSUER=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 ```
 
 Ключ API, а не пароль приложения: пароль требует ввода руками и умирает
 при смене пароля Apple ID, а ключ работает молча и отзывается кнопкой.
+
+### Сначала — возможности у App ID
+
+Пока они не включены, подпись падает ещё до загрузки:
+
+```
+Provisioning profile … doesn't match the entitlements file's values for
+the com.apple.developer.icloud-container-identifiers and
+com.apple.security.application-groups entitlements.
+```
+
+Идентификатор `app.togo.diary` заводился под бесплатной командой, где
+этих возможностей не выдают. Включить в Certificates, Identifiers
+& Profiles → Identifiers → `app.togo.diary` → Capabilities:
+
+* **App Groups** → создать `group.app.togo.diary`, отметить;
+* **iCloud** (CloudKit) → создать контейнер `iCloud.app.togo.diary`;
+* **Push Notifications** — нужен самому CloudKit, своих пушей нет;
+* **Live Activities** — уже используется.
+
+То же для `app.togo.diary.widgets`: там нужна только App Groups.
+
+Без iCloud и App Groups приложение работает целиком, только локально —
+это проверено и предусмотрено. Если тестировать надо прямо сейчас,
+можно собрать без них: `ENTITLEMENTS_VARIANT=-Personal`.
 
 ### Отправка
 
@@ -153,3 +180,25 @@ Tools/upload_testflight.sh
 * Ответы на App Privacy: **Data Not Collected**.
 * Возрастной рейтинг 4+.
 * Ссылки на политику конфиденциальности и условия — на живой домен.
+
+## Чтобы тестировали друзья
+
+Друзья — это **внешние** тестировщики: они не в команде разработчика.
+Порядок отличается от внутреннего теста.
+
+1. **Внутренний тест** — до 100 человек из команды, сборка доступна
+   сразу после обработки, проверки нет. Годится, чтобы убедиться, что
+   сборка вообще ставится.
+2. **Внешний тест** — до 10 000 человек. Первая сборка проходит **Beta
+   App Review**: обычно сутки, отдельно от ревью самого приложения.
+   До неё нужно заполнить в TestFlight → Test Information:
+   * что тестировать (пара фраз, на что смотреть);
+   * почтовый ящик для обратной связи — живой, его увидят тестировщики;
+   * контакт для ревьюера.
+3. **Как позвать.** Либо по почте поимённо, либо публичной ссылкой
+   (Public Link) — её можно просто отправить в мессенджер, и человеку
+   не нужен ни аккаунт разработчика, ни приглашение на конкретный адрес.
+
+Демо-доступ ревьюеру не нужен: аккаунта в приложении нет вовсе.
+В заметке стоит написать, что вкладка «Здоровье» появляется после
+включения лечения в профиле собаки — иначе её не найдут.

@@ -1,6 +1,18 @@
 {
   "sourceLanguage": "ru",
   "strings": {
+    " · гуляли %@ назад": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": " · гуляли %@ назад"
+          }
+        }
+      },
+      "comment": "blocks"
+    },
     " · откладывали %@ раза": {
       "extractionState": "manual",
       "localizations": {
@@ -12,6 +24,18 @@
         }
       },
       "comment": "snoozed"
+    },
+    " · сегодня ещё не выходили": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": " · сегодня ещё не выходили"
+          }
+        }
+      },
+      "comment": "blocks"
     },
     " и ": {
       "extractionState": "manual",
@@ -323,7 +347,7 @@
           }
         }
       },
-      "comment": "summary"
+      "comment": "indoors"
     },
     "%@ дней подряд": {
       "extractionState": "manual",
@@ -431,7 +455,7 @@
           }
         }
       },
-      "comment": "summary"
+      "comment": "parts"
     },
     "%@ мс": {
       "extractionState": "manual",
@@ -696,6 +720,18 @@
         }
       },
       "comment": "body"
+    },
+    ")) даты": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": ")) даты"
+          }
+        }
+      },
+      "comment": "awaitingDateRow"
     },
     ")) и запас": {
       "extractionState": "manual",
@@ -13379,18 +13415,6 @@
       },
       "comment": "body"
     },
-    "выпил": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "выпил"
-          }
-        }
-      },
-      "comment": "summary"
-    },
     "выход": {
       "extractionState": "manual",
       "localizations": {
@@ -13425,7 +13449,7 @@
           }
         }
       },
-      "comment": "pausedTitle"
+      "comment": "weight"
     },
     "выход, еда, прогулка": {
       "extractionState": "manual",
@@ -13558,6 +13582,18 @@
         }
       },
       "comment": "runningTitle"
+    },
+    "гуляете сейчас": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "гуляете сейчас"
+          }
+        }
+      },
+      "comment": "weight"
     },
     "гулял \\(Fmt.duration(now.timeIntervalSince($0))) назад": {
       "extractionState": "manual",
@@ -14445,7 +14481,7 @@
           }
         }
       },
-      "comment": "summary"
+      "comment": "indoors"
     },
     "из них складывается матрица переноса": {
       "extractionState": "manual",
@@ -17039,6 +17075,18 @@
       },
       "comment": "title"
     },
+    "с прогулки": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "с прогулки"
+          }
+        }
+      },
+      "comment": "indoors"
+    },
     "самолёт": {
       "extractionState": "manual",
       "localizations": {
@@ -17565,7 +17613,7 @@
           }
         }
       },
-      "comment": "summary"
+      "comment": "indoors"
     },
     "съел всё": {
       "extractionState": "manual",

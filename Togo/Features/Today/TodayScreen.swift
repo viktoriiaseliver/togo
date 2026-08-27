@@ -127,11 +127,11 @@ struct TodayScreen: View {
                         // сигналов набралось достаточно.
                         AskSignalCard(events: events, dogName: dog?.name ?? "Он", now: now)
 
-                        DayPlanList(items: planItems, now: now) { item in
-                            complete(item)
-                        } onUndo: { item in
-                            uncomplete(item)
-                        }
+                        DayPlanList(items: planItems, now: now,
+                                    onComplete: { complete($0) },
+                                    onUndo: { uncomplete($0) },
+                                    awaitingDate: careAwaitingDate,
+                                    onOpenCare: onOpenDog)
                     }
                     .padding(.horizontal, Token.Spacing.screenPadding)
                     .padding(.bottom, 24)
@@ -179,9 +179,13 @@ struct TodayScreen: View {
             DogAvatar(dog: dog)
             VStack(alignment: .leading, spacing: 2) {
                 Text(dog?.name ?? "Собака").textStyle(AppFont.cardTitle).foregroundStyle(Token.Ink.primary)
-                Text(dog.map { Fmt.weight($0.weightKg) } ?? "—")
+                // Самый частый вопрос — «давно ли гуляли». Раньше ответ
+                // лежал внизу ленты, под всеми записями дня: чтобы его
+                // увидеть, надо было прокрутить экран целиком.
+                Text(sinceWalkLine)
                     .textStyle(AppFont.caption)
                     .foregroundStyle(Token.Ink.secondary)
+                    .wraps()
             }
             Spacer()
             if let duty = dutyMember {
@@ -194,13 +198,31 @@ struct TodayScreen: View {
         .padding(.top, 4)
     }
 
+    /// Сколько прошло с последнего выхода — или что он идёт прямо сейчас.
+    private var sinceWalkLine: String {
+        let weight = dog.map { Fmt.weight($0.weightKg) } ?? "—"
+        if let session = appState.session {
+            return weight + " · " + (session.isPaused ? "выход на паузе" : "гуляете сейчас")
+        }
+        let blocks = TimelineBuilder.blocks(Diary.active(events))
+        guard let indoors = TimelineBuilder.timeIndoorsNow(blocks, now: now, threshold: 0) else {
+            return weight + " · сегодня ещё не выходили"
+        }
+        return weight + " · гуляли \(Fmt.gap(indoors)) назад"
+    }
+
     private var summaryStrip: some View {
         let summary = Diary.summary(events, day: now, dog: dog)
+        let blocks = TimelineBuilder.blocks(Diary.active(events))
+        let indoors = TimelineBuilder.timeIndoorsNow(blocks, now: now, threshold: 0)
         return TGCard {
             HStack(alignment: .top, spacing: 0) {
                 TGStat(value: "\(summary.eatenGrams) г",
                             caption: summary.dailyGrams > 0 ? "из \(summary.dailyGrams) съел" : "съел")
-                TGStat(value: "\(summary.drankMl) мл", caption: "выпил")
+                // Здесь стояло «выпил N мл». Ввод воды убран — записывать
+                // миллилитры было нечем, — и показатель навсегда застыл
+                // на нуле. На его месте то, ради чего в сводку и смотрят.
+                TGStat(value: indoors.map(Fmt.gap) ?? "—", caption: "с прогулки")
                 TGStat(value: "\(summary.outings)", caption: Fmt.outings(summary.outings).replacingOccurrences(of: "\(summary.outings) ", with: ""))
             }
             if summary.trainingGrams > 0 {
@@ -238,6 +260,11 @@ struct TodayScreen: View {
     /// Груминг и вес живут в профиле и всплывают на главном только когда подошёл срок.
     /// На главном показываем только то, что правда просится сегодня.
     /// «Через 30 дней» — это не дело на сегодня, это шум.
+    /// Сколько дел ухода заведено, но не может напомнить.
+    private var careAwaitingDate: Int {
+        dog?.careTasks.filter(\.needsDate).count ?? 0
+    }
+
     private var planItems: [DayPlanItem] {
         guard let dog else { return [] }
         var items: [DayPlanItem] = []
