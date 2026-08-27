@@ -273,6 +273,7 @@ struct EventEditSheet: View {
     @Query private var careTasks: [CareTask]
     @Query private var medications: [Medication]
     @Query private var trainingSessions: [TrainingSession]
+    @State private var asking = false
 
     private var event: LogEvent? { events.first { $0.id == eventID } }
 
@@ -370,6 +371,7 @@ struct EventEditSheet: View {
                 .disabled(!canEdit)
 
                 originCard
+                askOwner(about: event)
 
                 if canEdit {
                 TGButton(title: deleteTitle(for: event), variant: .destructive,
@@ -381,6 +383,34 @@ struct EventEditSheet: View {
             }
         }
         .presentationDetents([.medium, .large])
+    }
+
+    /// Спросить хозяйку прямо из записи.
+    ///
+    /// Ситтер не сочиняет сообщение — выбирает готовый вопрос, контекст
+    /// едет вложением. Сочинять текст в чужом доме, когда собака не доела,
+    /// человек стесняется и потому молчит; а молчание здесь дороже всего.
+    @ViewBuilder
+    private func askOwner(about event: LogEvent) -> some View {
+        if !appState.can(.manageFamily) {
+            Button { asking = true } label: {
+                TGCard {
+                    TGListRow(title: "Спросить хозяйку", systemImage: "bubble.left.and.text.bubble.right",
+                              accessory: .none)
+                    TGExplainer(text: "Запись прикрепится к вопросу сама.")
+                }
+            }
+            .buttonStyle(.plain)
+            .sheet(isPresented: $asking) {
+                AskOwnerSheet(event: event, ownerName: ownerName)
+            }
+        }
+    }
+
+    /// Кому писать. Владелец в семье один, и искать его руками незачем.
+    private var ownerName: String {
+        (try? context.fetch(FetchDescriptor<FamilyMember>()))?
+            .first { $0.role == .owner }?.name ?? "хозяйку"
     }
 
     /// Что именно записали: граммы, миллилитры, форма стула, что случилось.

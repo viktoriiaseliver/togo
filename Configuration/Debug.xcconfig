@@ -2,3 +2,6 @@
 
 BUILD_NUMBER = 1
 SWIFT_ACTIVE_COMPILATION_CONDITIONS = $(inherited) DEBUG
+
+// Push для CloudKit. В отладке — песочница Apple.
+APS_ENVIRONMENT = development

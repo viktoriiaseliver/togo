@@ -12,6 +12,8 @@ struct HealthScreen: View {
     @State private var editing: Medication?
     @State private var isAdding = false
     @State private var isFinishing = false
+    @State private var changingSchedule: Medication?
+    @State private var countingPills: Medication?
 
     private var dog: Dog? { appState.activeDog(from: dogs) }
 
@@ -33,11 +35,15 @@ struct HealthScreen: View {
                     )
                 } else {
                     ForEach(medications) { medication in
-                        Button { if canEdit { editing = medication } } label: {
-                            MedicationCard(medication: medication, canEdit: canEdit)
+                        VStack(spacing: Token.Space.s8) {
+                            Button { if canEdit { editing = medication } } label: {
+                                MedicationCard(medication: medication, canEdit: canEdit)
+                            }
+                            .buttonStyle(.plain)
+                            .disabled(!canEdit)
+
+                            if canEdit { medicationActions(medication) }
                         }
-                        .buttonStyle(.plain)
-                        .disabled(!canEdit)
                     }
                 }
 
@@ -60,6 +66,12 @@ struct HealthScreen: View {
             .sheet(item: $editing) { medication in
                 MedicationEditorSheet(medication: medication, dog: dog)
             }
+            .sheet(item: $changingSchedule) { medication in
+                ScheduleChangeSheet(medication: medication)
+            }
+            .sheet(item: $countingPills) { medication in
+                PillSupplyScreen(medication: medication)
+            }
             .sheet(isPresented: $isFinishing) {
                 if let dog {
                     CourseFinishSheet(
@@ -78,6 +90,42 @@ struct HealthScreen: View {
 
     /// Схему меняет только владелец. Остальные видят её и отмечают приёмы.
     private var canEdit: Bool { appState.can(.editTreatment) }
+
+    /// Два действия, ради которых чаще всего и открывают препарат:
+    /// врач поменял схему и таблетки кончаются. Оба лежали глубоко
+    /// в форме правки — то есть их не было.
+    @ViewBuilder
+    private func medicationActions(_ medication: Medication) -> some View {
+        HStack(spacing: Token.Space.s8) {
+            Button { changingSchedule = medication } label: {
+                TGCard { TGListRow(title: "Врач изменил дозу",
+                                   systemImage: "arrow.triangle.swap", accessory: .none) }
+            }
+            .buttonStyle(.plain)
+
+            Button { countingPills = medication } label: {
+                TGCard {
+                    TGListRow(title: "Запас",
+                              value: supplyValue(medication),
+                              systemImage: "shippingbox",
+                              accessory: .none,
+                              tone: PillSupplyAdvisor.needsWarning(supply(medication))
+                                  ? Token.Status.waitingText : Token.Ink.primary)
+                }
+            }
+            .buttonStyle(.plain)
+        }
+    }
+
+    private func supply(_ medication: Medication) -> PillSupply? {
+        PillSupplyAdvisor.supply(left: medication.stockLeft, total: medication.stockTotal,
+                                 timesPerDay: max(1, medication.times.count))
+    }
+
+    private func supplyValue(_ medication: Medication) -> String {
+        guard let supply = supply(medication) else { return "не считаем" }
+        return "на \(Fmt.days(supply.days))"
+    }
 
     /// Курс кончается здесь, а не тумблером в профиле, где его никто
     /// не найдёт. Вместе с курсом уходит и вкладка — медицина не должна
@@ -111,7 +159,9 @@ struct HealthScreen: View {
             TGDivider()
                         TGLink(title: "Прививки и визиты", systemImage: "syringe") { CareScreen(dog: dog) }
             TGDivider()
-                        TGLink(title: "Отчёт врачу", systemImage: "doc.text") { VetReportScreen(dog: dog) }
+                        TGLink(title: "Сводка врачу", value: "разворот за минуту", systemImage: "doc.text") { VetSummaryScreen(dog: dog) }
+            TGDivider()
+                        TGLink(title: "Выгрузка записей", systemImage: "tablecells") { VetReportScreen(dog: dog) }
             TGDivider()
                         TGLink(title: "Подготовка к процедурам", systemImage: "hand.raised") { ProcedurePrepScreen() }
         }

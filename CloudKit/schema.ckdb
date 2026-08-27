@@ -1,0 +1,48 @@
+DEFINE SCHEMA
+
+    RECORD TYPE LogEvent (
+        authorName    STRING,
+        careTaskID    STRING,
+        changedAt     TIMESTAMP,
+        date          TIMESTAMP,
+        deletedAt     TIMESTAMP,
+        deletedBy     STRING,
+        dogID         STRING,
+        durationSeconds INT64,
+        fromPortion   INT64,
+        grams         INT64,
+        incidentDetail STRING,
+        incidentKind  STRING,
+        kind          STRING,
+        medicationID  STRING,
+        milliliters   INT64,
+        note          STRING,
+        outcome       STRING,
+        stoolFlags    LIST<STRING>,
+        stoolForm     STRING,
+        walkEventID   STRING,
+        createdTimestamp TIMESTAMP,
+        modifiedTimestamp TIMESTAMP,
+        GRANT WRITE TO "_creator",
+        GRANT CREATE TO "_icloud",
+        GRANT READ TO "_world"
+    );
+
+    RECORD TYPE DoseRecord (
+        cancelReason  STRING,
+        cancelledAt   TIMESTAMP,
+        changedAt     TIMESTAMP,
+        claimedAt     TIMESTAMP,
+        claimedBy     STRING,
+        givenAt       TIMESTAMP,
+        givenBy       STRING,
+        medicationID  STRING,
+        scheduledAt   TIMESTAMP,
+        skippedAt     TIMESTAMP,
+        skippedBy     STRING,
+        createdTimestamp TIMESTAMP,
+        modifiedTimestamp TIMESTAMP,
+        GRANT WRITE TO "_creator",
+        GRANT CREATE TO "_icloud",
+        GRANT READ TO "_world"
+    );

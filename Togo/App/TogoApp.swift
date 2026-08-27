@@ -1,8 +1,35 @@
 import SwiftUI
 import SwiftData
+import CloudKit
+
+/// Приём приглашения в общий дневник.
+///
+/// Ссылку открывает система, а не приложение: человек нажимает её
+/// в мессенджере, iOS проверяет, что он тот, кого звали, и отдаёт нам
+/// уже готовое приглашение. Своего кода проверки здесь нет и быть
+/// не должно — за это отвечает iCloud.
+final class ShareAcceptDelegate: NSObject, UIApplicationDelegate {
+    func application(_ application: UIApplication,
+                     userDidAcceptCloudKitShareWith metadata: CKShare.Metadata) {
+        Task { @MainActor in
+            do {
+                try await FamilyShare.accept(metadata)
+                SharedDiarySettings.isOn = true
+                NotificationCenter.default.post(name: .familyShareAccepted, object: nil)
+            } catch {
+                log.notice("Приглашение не принялось: \(error.localizedDescription)")
+            }
+        }
+    }
+}
+
+extension Notification.Name {
+    static let familyShareAccepted = Notification.Name("familyShareAccepted")
+}
 
 @main
 struct TogoApp: App {
+    @UIApplicationDelegateAdaptor(ShareAcceptDelegate.self) private var shareDelegate
     @Environment(\.scenePhase) private var scenePhase
     @State private var appState = AppState()
     @State private var settings = Settings()
@@ -31,6 +58,16 @@ struct TogoApp: App {
         Persistence.shared = container
     }
 
+    /// Обмен поднимается, только если его включили руками. Пока он
+    /// выключен, приложение ведёт себя ровно так же, как до него.
+    @State private var sync: FamilySync?
+
+    private func startSyncIfOn() async {
+        guard SharedDiarySettings.isOn, let container else { return }
+        if sync == nil { sync = FamilySync(modelContainer: container) }
+        await sync?.start()
+    }
+
     var body: some Scene {
         WindowGroup {
             Group {
@@ -39,6 +76,7 @@ struct TogoApp: App {
                         .environment(appState)
                         .environment(settings)
                         .environment(subscriptions)
+                        .environment(\.familySync, sync)
                         .modelContainer(container)
                 } else {
                     StorageFailureScreen()
@@ -57,7 +95,17 @@ struct TogoApp: App {
             // кнопкой на живой активности. Перечитываем прогулку,
             // иначе первое же изменение затёрло бы такую отметку.
             .onChange(of: scenePhase) { _, phase in
-                if phase == .active { appState.reloadSession() }
+                if phase == .active {
+                    appState.reloadSession()
+                    // Пока телефон лежал в кармане, второй человек мог
+                    // что-то отметить. Спрашиваем сразу, а не ждём push:
+                    // он может и не дойти.
+                    Task { await sync?.fetchNow() }
+                }
+            }
+            .task { await startSyncIfOn() }
+            .onReceive(NotificationCenter.default.publisher(for: .familyShareAccepted)) { _ in
+                Task { await startSyncIfOn() }
             }
         }
     }

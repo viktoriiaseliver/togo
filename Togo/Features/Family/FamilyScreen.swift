@@ -12,6 +12,8 @@ struct FamilyScreen: View {
     @Query private var dogs: [Dog]
 
     @State private var showInvite = false
+    @State private var handingOver: FamilyMember?
+    @State private var editingBriefing = false
     @State private var showPaywall = false
 
     private var dog: Dog? { appState.activeDog(from: dogs) }
@@ -34,6 +36,8 @@ struct FamilyScreen: View {
                 }
                 if let duty { dutyCard(duty) }
                 membersCard
+                sharedDiaryLink
+                sitterBriefingLink
                 rolesExplainer
             } bottom: {
                 TGButton(title: "Пригласить человека", systemImage: "person.badge.plus") {
@@ -44,6 +48,13 @@ struct FamilyScreen: View {
             .navigationBarTitleDisplayMode(.large)
             .toolbar { SettingsToolbarItem() }
             .sheet(isPresented: $showInvite) { InviteSheet() }
+            .sheet(isPresented: $editingBriefing) { SitterBriefingEditor(dog: dog) }
+            .sheet(item: $handingOver) { member in
+                ShiftHandoverSheet(summary: summary(for: member),
+                                   successor: successor(after: member)?.name) {
+                    passDuty(from: member)
+                }
+            }
             .sheet(isPresented: $showPaywall) { NavigationStack { PaywallScreen() } }
         }
     }
@@ -60,16 +71,36 @@ struct FamilyScreen: View {
                         .textStyle(AppFont.caption)
                 }
                 Spacer(minLength: Token.Space.s8)
-                Button("передать") { passDuty(from: member) }
+                Button("передать") { handingOver = member }
                     .textStyle(AppFont.captionEmphasis.color(Token.Action.done))
             }
         }
     }
 
-    /// Передача дежурства — одно действие, а не форма.
+    /// Итог смены собирается из режима дня, а не из своего учёта:
+    /// свой разошёлся бы с дневником на второй же день.
+    private func summary(for member: FamilyMember) -> ShiftSummary {
+        let calendar = Calendar.current
+        let start = calendar.date(bySettingHour: 7, minute: 0, second: 0, of: .now) ?? .now
+        let end = member.dutyUntil
+            ?? calendar.date(bySettingHour: 19, minute: 0, second: 0, of: .now) ?? .now
+        let shift = Shift(person: member.name, from: start, to: end)
+
+        let plan = DayPlanBuilder.items(dog: dog, events: dog?.events ?? [], now: .now)
+            .map { (id: $0.id, title: $0.title, due: $0.time, isDone: $0.isDone) }
+
+        return ShiftReport.build(shift: shift, plan: plan, events: dog?.events ?? [])
+    }
+
+    /// Кому перейдёт открытое.
+    private func successor(after current: FamilyMember) -> FamilyMember? {
+        members.first { $0.can(.giveDose) && $0.id != current.id }
+    }
+
+    /// Передача дежурства — одно действие, а не форма. Но с явным
+    /// «принять»: незакрытое не должно повиснуть ничьим.
     private func passDuty(from current: FamilyMember) {
-        let candidates = members.filter { $0.can(.giveDose) && $0.id != current.id }
-        guard let next = candidates.first else { return }
+        guard let next = successor(after: current) else { return }
         current.isOnDuty = false
         next.isOnDuty = true
         next.dutyUntil = Calendar.current.date(bySettingHour: 22, minute: 0, second: 0, of: .now)
@@ -89,6 +120,54 @@ struct FamilyScreen: View {
                 if member.id != members.last?.id { TGDivider(inset: 38) }
             }
         }
+    }
+
+    /// Общий дневник стоит первым делом после списка участников:
+    /// участник без обмена — это имя в поле «автор», и только.
+    private var sharedDiaryLink: some View {
+        NavigationLink { SharedDiaryScreen() } label: {
+            TGCard {
+                TGListRow(title: "Общий дневник",
+                          value: SharedDiarySettings.isOn ? "включён" : "выключен",
+                          systemImage: "arrow.triangle.2.circlepath")
+                TGExplainer(text: SharedDiarySettings.isOn
+                            ? "Записи с обоих телефонов сходятся в одну ленту."
+                            : "Пока выключен, участник — это только имя в поле «автор»: отмечать он может лишь с этого телефона.")
+            }
+        }
+        .buttonStyle(.plain)
+    }
+
+    /// Инструкция: хозяйка пишет, ситтер читает. Одна и та же строка —
+    /// потому что это одно и то же место, а не два разных экрана
+    /// в разных концах приложения.
+    @ViewBuilder
+    private var sitterBriefingLink: some View {
+        if appState.can(.manageFamily) {
+            Button { editingBriefing = true } label: {
+                TGCard {
+                    TGListRow(title: "Инструкция ситтеру",
+                              value: hasBriefing ? "написана" : "не написана",
+                              systemImage: "list.bullet.rectangle")
+                    TGExplainer(text: "Пять строк, которые он прочтёт за минуту: еда, доза, прогулки, запреты, эскалация.")
+                }
+            }
+            .buttonStyle(.plain)
+        } else {
+            NavigationLink { SitterBriefingScreen(dog: dog) } label: {
+                TGCard {
+                    TGListRow(title: "Инструкция", systemImage: "list.bullet.rectangle")
+                    TGExplainer(text: "Что важно знать про эту собаку. Написала хозяйка.")
+                }
+            }
+            .buttonStyle(.plain)
+        }
+    }
+
+    private var hasBriefing: Bool {
+        guard let dog else { return false }
+        return !dog.sitterFood.isEmpty || !dog.sitterDose.isEmpty || !dog.sitterWalks.isEmpty
+            || !dog.sitterForbidden.isEmpty || !dog.sitterEscalation.isEmpty
     }
 
     private var rolesExplainer: some View {
@@ -269,9 +348,9 @@ struct InviteSheet: View {
                 ) { role = $0 }
             }
             TGCard {
-                TGSectionHeader(title: "пока только на этом телефоне")
-                TGExplainer(text: "Обмена между устройствами ещё нет, и приглашение по ссылке появится вместе с ним. Сейчас участник заводится здесь: имя подставляется в автора записи, а права решают, что ему можно.")
-                TGExplainer(text: "Это уже работает, если телефон один на семью или его передают из рук в руки — а так чаще всего и бывает.")
+                TGSectionHeader(title: "и ещё один шаг")
+                TGExplainer(text: "Здесь заводится сам участник: имя подставляется в автора записи, а права решают, что ему можно. Это уже работает, если телефон один на семью или его передают из рук в руки.")
+                TGExplainer(text: "Чтобы он отмечал со своего телефона, включи «Общий дневник» и отправь ему ссылку — она в списке семьи.")
             }
         } footer: {
             TGButton(title: "Добавить", isEnabled: !name.trimmingCharacters(in: .whitespaces).isEmpty) {

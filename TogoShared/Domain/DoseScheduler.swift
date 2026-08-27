@@ -67,6 +67,13 @@ nonisolated enum DoseScheduler {
 
         dose.givenAt = now
         dose.givenBy = person
+
+        // Счёт таблеток живёт на отметках: отдельного учёта не нужно,
+        // минус одна с каждой. Ноль — просто «не считаем».
+        if medication.stockTotal > 0, medication.stockLeft > 0 {
+            medication.stockLeft -= 1
+        }
+
         try? context.save()
         return dose
     }
@@ -115,6 +122,12 @@ nonisolated enum DoseScheduler {
         guard let dose = medication.doses.first(where: {
             calendar.isDate($0.scheduledAt, equalTo: scheduled, toGranularity: .minute)
         }) else { return }
+
+        // Отметку сняли — таблетка возвращается в пачку. Иначе счётчик
+        // уезжал бы вниз на каждом промахе пальцем.
+        if dose.givenAt != nil, medication.stockTotal > 0 {
+            medication.stockLeft = min(medication.stockTotal, medication.stockLeft + 1)
+        }
 
         dose.givenAt = nil
         dose.givenBy = nil

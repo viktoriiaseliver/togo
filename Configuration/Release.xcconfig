@@ -3,3 +3,9 @@
 // В CI номер сборки подставляется из переменной окружения:
 //   xcodebuild BUILD_NUMBER=$GITHUB_RUN_NUMBER
 BUILD_NUMBER = 1
+
+// Push для CloudKit. TestFlight и App Store подписываются
+// дистрибутивным профилем, и «development» там просто не работает:
+// зеркалирование узнавало бы об изменениях с других устройств
+// только при запуске приложения.
+APS_ENVIRONMENT = production

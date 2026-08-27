@@ -63,6 +63,14 @@ final class LogEvent {
     var deletedAt: Date?
     var deletedBy: String?
 
+    /// Когда этот телефон в последний раз трогал запись.
+    ///
+    /// Ставится сама при сохранении — не руками на каждом экране, иначе
+    /// её забудут ровно там, где она нужнее всего. Нужна общему дневнику:
+    /// когда два телефона спорят об одних граммах, выигрывает тот,
+    /// кто правил позже.
+    var changedAt: Date = Date()
+
     var dog: Dog?
 
     init(kind: LogKind, date: Date = Date(), authorName: String) {
