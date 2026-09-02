@@ -268,7 +268,25 @@ CloudKit в отладке заводит типы записей сам, при
 
 1. <https://icloud.developer.apple.com/dashboard> → Settings → Tokens
 2. Create Management Token, скопировать
-3. `xcrun cktool save-token --type management`
+3. `xcrun cktool save-token --type management` — токен ляжет в связку
+   ключей, и дальше `cktool` о нём не спрашивает.
 
-Потом `Tools/deploy_cloudkit_schema.sh` — он импортирует схему
-в development и переносит её в production.
+Потом `Tools/deploy_cloudkit_schema.sh`. Он импортирует схему
+в development и проверяет production.
+
+**Последний шаг делается руками, и это не забывчивость.** Раньше здесь
+было написано, что скрипт «переносит схему в production», а внутри
+стояло `cktool deploy-schema-changes` — такой команды у `cktool` нет
+вовсе, и скрипт падал ровно на том шаге, ради которого писался. Прямой
+импорт в production CloudKit тоже запрещает: `endpoint not applicable
+in the environment 'production'`. Перенос development → production
+делается только кнопкой:
+
+1. <https://icloud.developer.apple.com/dashboard>
+2. Контейнер `iCloud.app.togo.diary` → Schema
+3. **Deploy Schema Changes…** → Deploy
+
+После этого запустить скрипт ещё раз: он сверяет production и говорит,
+есть ли там `LogEvent` и `DoseRecord`. Состояние на 2 сентября 2026:
+в development схема есть, **в production только служебный `Users`** —
+то есть общий дневник в TestFlight пока молчит.
