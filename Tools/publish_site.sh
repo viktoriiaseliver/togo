@@ -1,5 +1,5 @@
 #!/bin/bash
-# Публикует страницы политики и поддержки на GitHub Pages.
+# Кладёт страницы Того в общий сайт приложений и публикует его.
 #
 #   Tools/publish_site.sh
 #
@@ -7,32 +7,54 @@
 # в TestFlight, и для App Review. Ссылка обязана открываться: мёртвая —
 # это отказ по 5.1.1, а не придирка.
 #
-# Один раз нужно завести публичный репозиторий сайта:
+# Сайт общий на все приложения и живёт отдельным репозиторием
+# (`~/Projects/site`): у каждого приложения своя папка, стиль один.
+# Того занимает `togo/`, соседние папки не трогаются.
 #
-#   github.com/new → имя ровно `viktoriiaseliver.github.io`,
-#   Public, без README. Больше ничего делать не надо:
-#   у репозитория с таким именем Pages включаются сами.
+# Чтобы страницы стали публичными, репозиторий должен уехать на GitHub:
 #
-# Дальше эта команда собирает страницы из исходников приложения
-# и кладёт их в папку `togo/` того репозитория. Соседние папки
-# (например `timer/`) не трогаются — у каждого приложения своя.
+#   github.com/new → имя ровно `viktoriiaseliver.github.io`, Public,
+#   без README. У репозитория с таким именем Pages включаются сами.
+#
+# Скрипт сам добавит remote и запушит, когда репозиторий появится.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
-SITE_REPO="${SITE_REPO:-git@github.com:viktoriiaseliver/viktoriiaseliver.github.io.git}"
+SITE="${SITE:-$HOME/Projects/site}"
 SLUG="${SLUG:-togo}"
-WORK="build/site-repo"
+REMOTE="${SITE_REMOTE:-git@github.com:viktoriiaseliver/viktoriiaseliver.github.io.git}"
+
+[ -d "$SITE/.git" ] || { echo "✗ нет репозитория сайта: $SITE"; exit 1; }
 
 echo "── собираю страницы"
 python3 Tools/build_site.py
 
-echo "── забираю репозиторий сайта"
-rm -rf "$WORK"
-if ! git clone --depth 1 "$SITE_REPO" "$WORK" 2>/dev/null; then
+echo "── кладу в $SITE/$SLUG"
+mkdir -p "$SITE/$SLUG"
+cp site/*.html "$SITE/$SLUG/"
+
+cd "$SITE"
+if [ -n "$(git status --porcelain)" ]; then
+    git add -A
+    git commit -q -m "Того: политика, условия и поддержка"
+    echo "── записано в историю сайта"
+else
+    echo "── страницы не менялись"
+fi
+
+if ! git remote get-url origin >/dev/null 2>&1; then
+    git remote add origin "$REMOTE"
+    echo "── remote добавлен"
+fi
+
+if git push -q origin HEAD 2>/dev/null; then
+    echo "── опубликовано"
+else
     cat <<NOTE
-✗ Репозитория сайта нет: $SITE_REPO
+
+✗ Запушить не удалось — скорее всего репозитория ещё нет.
 
 Заведи его один раз:
   1. github.com/new
@@ -45,28 +67,12 @@ NOTE
     exit 1
 fi
 
-echo "── обновляю $SLUG/"
-rm -rf "${WORK:?}/$SLUG"
-mkdir -p "$WORK/$SLUG"
-cp site/*.html "$WORK/$SLUG/"
-
-cd "$WORK"
-if git diff --quiet && git diff --cached --quiet && [ -z "$(git status --porcelain)" ]; then
-    echo "Страницы не менялись."
-else
-    git add -A
-    git commit -q -m "Того: политика, условия и поддержка"
-    git push -q origin HEAD
-    echo "── опубликовано"
-fi
-
-BASE="https://viktoriiaseliver.github.io/$SLUG"
 cat <<NOTE
 
 Страницы:
-  $BASE/
-  $BASE/privacy.html
-  $BASE/terms.html
+  https://viktoriiaseliver.github.io/$SLUG/privacy.html
+  https://viktoriiaseliver.github.io/$SLUG/support.html
+  https://viktoriiaseliver.github.io/$SLUG/terms.html
 
 Первая публикация поднимается пару минут. Когда откроются — впиши их
 в fastlane/metadata/ru/privacy_url.txt и support_url.txt и выполни

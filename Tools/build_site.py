@@ -74,97 +74,109 @@ def extract(screen):
             "intro": field("intro"), "sections": sections}
 
 
-PAGE = """<!DOCTYPE html>
+PAGE = """<!doctype html>
 <html lang="ru">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{title} · Того</title>
-<style>
-  :root {{ color-scheme: light dark; }}
-  body {{
-    margin: 0 auto; padding: 32px 20px 64px; max-width: 40rem;
-    font: 17px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    color: #1c1c1e; background: #fff;
-  }}
-  @media (prefers-color-scheme: dark) {{
-    body {{ color: #f2f2f7; background: #111; }}
-    a {{ color: #6fd6c0; }}
-  }}
-  h1 {{ font-size: 30px; line-height: 1.2; margin: 0 0 4px; }}
-  h2 {{ font-size: 19px; margin: 32px 0 8px; }}
-  .updated {{ font-size: 13px; opacity: .6; margin: 0 0 28px; }}
-  .intro {{ font-size: 18px; }}
-  p {{ margin: 0 0 12px; }}
-  footer {{ margin-top: 48px; font-size: 14px; opacity: .6; }}
-  a {{ color: #1f5a51; }}
-</style>
+<title>{title} — Того</title>
+<link rel="stylesheet" href="../_style.css">
 </head>
 <body>
-<h1>{title}</h1>
-<p class="updated">обновлено {updated}</p>
+<main>
+<header>
+  <div class="name">Того</div>
+  <h1>{title}</h1>
+  <p class="updated">Обновлено {updated}.</p>
+</header>
 {body}
-<footer><p>Того — дневник собаки. <a href="index.html">О приложении</a></p></footer>
+<footer>
+  <p>Связь: <a href="mailto:{support}">{support}</a> · <a href="../index.html">другие приложения</a></p>
+</footer>
+</main>
 </body>
 </html>
 """
 
-INDEX = """<!DOCTYPE html>
+SUPPORT_PAGE = """<!doctype html>
 <html lang="ru">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Того — дневник собаки</title>
-<style>
-  :root {{ color-scheme: light dark; }}
-  body {{
-    margin: 0 auto; padding: 48px 20px; max-width: 34rem;
-    font: 17px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    color: #1c1c1e; background: #fff;
-  }}
-  @media (prefers-color-scheme: dark) {{
-    body {{ color: #f2f2f7; background: #111; }}
-    a {{ color: #6fd6c0; }}
-  }}
-  h1 {{ font-size: 34px; margin: 0 0 8px; }}
-  p {{ margin: 0 0 16px; }}
-  ul {{ padding-left: 20px; }}
-  a {{ color: #1f5a51; }}
-</style>
+<title>Поддержка — Того</title>
+<link rel="stylesheet" href="../_style.css">
 </head>
 <body>
-<h1>Того</h1>
-<p>Дневник собаки: когда выводили, когда кормили, каким был стул.
-Два тапа — и вечером никто ничего не выясняет.</p>
-<p>Всё считается на телефоне. Аккаунт не нужен.</p>
-<h2>Поддержка</h2>
-<p>Пишите на <a href="mailto:{support}">{support}</a> — отвечает человек,
-обычно в течение двух рабочих дней. Если что-то в приложении мешает
-ухаживать за собакой, пишите сразу: это важнее новых возможностей.</p>
-<h2>Документы</h2>
-<ul>
-  <li><a href="privacy.html">Политика конфиденциальности</a></li>
-  <li><a href="terms.html">Условия использования</a></li>
-</ul>
+<main>
+<header>
+  <div class="name">Того</div>
+  <h1>Поддержка</h1>
+  <p class="updated">Отвечает человек, обычно в течение двух рабочих дней.</p>
+</header>
+
+<div class="card">
+  <h2>Написать</h2>
+  <p><a href="mailto:{support}?subject=Того">{support}</a></p>
+  <p>Если пишете про ошибку, приложите версию и сборку — они в «Настройки →
+  Версия», их можно выделить и скопировать. И модель телефона с версией iOS.</p>
+  <p>Если что-то в приложении мешает ухаживать за собакой — пишите сразу.
+  Это важнее новых возможностей.</p>
+</div>
+
+<h2>Частые вопросы</h2>
+
+<h3>Почему вердикт говорит «непонятно»?</h3>
+<p>Ему нужно 3–4 дня записей, чтобы выучить интервалы. До этого он честно
+признаётся, что не знает, и не выдумывает. Кнопка «Вывожу» при этом остаётся
+первой во всех исходах: приложение не знает лучше вас.</p>
+
+<h3>Где вкладка «Здоровье»?</h3>
+<p>Она приходит вместе с курсом лечения и уходит вместе с ним: включается
+в профиле собаки, выключается кнопкой «Курс завершён» внизу «Здоровья».
+Записи при этом остаются в истории и в отчёте врачу.</p>
+
+<h3>Две записи об одном событии</h3>
+<p>Если два человека отметили одно и то же в пределах 20 минут, приложение
+покажет карточку слияния обоим. Чужое оно молча не перезаписывает.</p>
+
+<h3>Как забрать свои записи</h3>
+<p>«Настройки → Данные и приватность» — выгрузка в CSV и удаление всего,
+без писем и ожидания. CSV открывается в Numbers и Excel.</p>
+
+<h2>Приложение — не медицинское устройство</h2>
+<p>Того не ставит диагнозов и не назначает дозировок. Решения о здоровье
+собаки принимаете вы и ваш ветеринар; приложение показывает то, что вы сами
+в него записали.</p>
+
+<footer>
+  <p><a href="privacy.html">Политика приватности</a> ·
+     <a href="terms.html">Условия использования</a> ·
+     <a href="../index.html">другие приложения</a></p>
+</footer>
+</main>
 </body>
 </html>
 """
+
+def linkify(text):
+    """Адрес почты в тексте — ссылка: на странице по нему пишут."""
+    for address in (PRIVACY, SUPPORT):
+        text = text.replace(address, f'<a href="mailto:{address}">{address}</a>')
+    return text
 
 
 def render(doc):
     parts = []
     if doc["intro"]:
-        parts.append('<p class="intro">%s</p>' % html.escape(doc["intro"]))
+        parts.append('<div class="card">\n  <h2>Коротко</h2>\n  <p>%s</p>\n</div>'
+                     % linkify(html.escape(doc["intro"])))
     for title, paragraphs in doc["sections"]:
         parts.append("<h2>%s</h2>" % html.escape(title))
         for paragraph in paragraphs:
-            text = html.escape(paragraph)
-            # Адрес почты делаем ссылкой: на странице поддержки её нажимают.
-            for address in (PRIVACY, SUPPORT):
-                text = text.replace(address, f'<a href="mailto:{address}">{address}</a>')
-            parts.append("<p>%s</p>" % text)
+            parts.append("<p>%s</p>" % linkify(html.escape(paragraph)))
     return PAGE.format(title=html.escape(doc["title"]),
                        updated=html.escape(doc["updated"]),
+                       support=SUPPORT,
                        body="\n".join(parts))
 
 
@@ -176,6 +188,6 @@ for screen, name in (("PrivacyPolicyScreen", "privacy.html"),
     open(os.path.join(OUT, name), "w", encoding="utf-8").write(render(doc))
     print(f"→ site/{name}  ({len(doc['sections'])} разделов)")
 
-open(os.path.join(OUT, "index.html"), "w", encoding="utf-8").write(
-    INDEX.format(support=SUPPORT))
-print("→ site/index.html")
+open(os.path.join(OUT, "support.html"), "w", encoding="utf-8").write(
+    SUPPORT_PAGE.format(support=SUPPORT))
+print("→ site/support.html")
