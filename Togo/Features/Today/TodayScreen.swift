@@ -156,8 +156,8 @@ struct TodayScreen: View {
                             ActiveSessionCard(
                                 session: session,
                                 now: now,
-                                onOpen: { route = session.kind == .walk ? .walk : .walkResult },
-                                onFinish: { route = .walkResult }
+                                onOpen: { session.kind == .walk ? (route = .walk) : endOuting() },
+                                onFinish: { endOuting() }
                             )
                         }
 
@@ -193,6 +193,7 @@ struct TodayScreen: View {
                 ) { route = $0 }
             }
             .navigationBarTitleDisplayMode(.inline)
+            .usageScreen(.today)
             .toolbar { SettingsToolbarItem() }
             .onReceive(tick) { date in
                 now = date
@@ -400,6 +401,23 @@ struct TodayScreen: View {
         case .dose: .dose
         case .care: .care
         }
+    }
+
+    /// Закрыть выход.
+    ///
+    /// В тихие часы результат не спрашиваем — это обещание из настроек,
+    /// и до сих пор оно не выполнялось: шторка «Как сходил?» открывалась
+    /// в три часа ночи наравне с днём. Выход закрывается молча, запись
+    /// остаётся без результата, а день соберёт утренний бриф.
+    private func endOuting() {
+        guard !settings.isQuietHour(now) else {
+            // В журнале это должно быть видно отдельно от «пропустил»:
+            // человек ничего не пропускал, его просто не спросили.
+            UsageLog.note(.record, "outcome", outcome: .empty)
+            OutingFinisher.finish(outcome: nil, dog: dog, appState: appState)
+            return
+        }
+        route = .walkResult
     }
 
     private func uncomplete(_ item: DayPlanItem) {

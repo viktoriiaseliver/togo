@@ -48,6 +48,7 @@ struct NeedsSheet: View {
             TGButton(title: verdict.alternativeAction, variant: .secondary, size: .medium) { dismiss() }
         }
         .presentationDetents([.medium, .large])
+        .usageScreen(.needs)
         .task { evaluate() }
         .sheet(isPresented: $askSignal) {
             HowAskedSheet(dog: dog) { dismiss() }

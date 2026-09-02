@@ -74,7 +74,11 @@ nonisolated struct CSVFile: Transferable {
 
     static var transferRepresentation: some TransferRepresentation {
         FileRepresentation(exportedContentType: .commaSeparatedText) { file in
-            SentTransferredFile(try Exporter.writeTemporary(file.text, named: file.name))
+            // Отмечаем здесь, а не у кнопки: `ShareLink` не даёт действия,
+            // а сюда управление приходит ровно тогда, когда файл правда
+            // ушёл в «Поделиться».
+            UsageLog.note(.export, "csv")
+            return SentTransferredFile(try Exporter.writeTemporary(file.text, named: file.name))
         }
     }
 }

@@ -48,6 +48,7 @@ struct VetSummaryScreen: View {
             shareCard
         }
         .navigationTitle("Сводка")
+        .usageScreen(.vetSummary)
         .navigationBarTitleDisplayMode(.large)
         .fullScreenCover(isPresented: $isPresenting) {
             VetSummaryPresentation(summary: summary, delta: deltaLines, dog: dog)

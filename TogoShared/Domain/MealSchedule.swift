@@ -142,7 +142,8 @@ extension MealSchedule {
         startOfDay: Date
     ) -> [Bool] {
         var done = [Bool](repeating: false, count: planned.count)
-        let slots = planned.map { startOfDay.addingTimeInterval(Double($0) * 60) }
+        let calendar = Calendar.current
+        let slots = planned.map { calendar.date(minuteOfDay: $0, on: startOfDay) }
 
         // Сначала самые «уверенные» пары: у кого расстояние меньше, тот
         // и занимает пункт. Иначе первая по времени запись могла бы забрать

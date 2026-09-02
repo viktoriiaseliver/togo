@@ -45,6 +45,7 @@ struct FamilyScreen: View {
                 }
             }
             .navigationTitle("Семья")
+            .usageScreen(.family)
             .navigationBarTitleDisplayMode(.large)
             .toolbar { SettingsToolbarItem() }
             .sheet(isPresented: $showInvite) { InviteSheet() }

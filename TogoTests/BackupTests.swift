@@ -7,7 +7,7 @@ import SwiftData
 @MainActor
 struct BackupTests {
     private func контекст() -> ModelContext {
-        ModelContext(Persistence.container(inMemory: true))
+        ModelContext(Persistence.container())
     }
 
     private func завестиСтича(в context: ModelContext) -> Dog {

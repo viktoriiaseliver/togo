@@ -21,6 +21,7 @@ struct IncidentSheet: View {
             }
         }
         .presentationDetents([.large])
+        .usageScreen(.incident)
     }
 
     private var pickerStep: some View {

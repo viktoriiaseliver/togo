@@ -79,6 +79,10 @@ tokens-check: ## Проверить, что сгенерированные то�
 journal: ## Завести запись в журнале проекта за сегодня
 	@bash Tools/new_journal.sh
 
+.PHONY: usage
+usage: ## Забрать с телефона журнал действий (что нажимали и чем кончилось)
+	@bash Tools/pull_usage_log.sh
+
 .PHONY: clean
 clean: ## Убрать артефакты сборки
 	@rm -rf build

@@ -38,6 +38,7 @@ struct DayOutStartSheet: View {
             TGButton(title: "Поехали", systemImage: "figure.walk.motion") { start() }
         }
         .presentationDetents([.large])
+        .usageScreen(.dayOut)
     }
 
     private func packingCard(_ packing: DayOutPlan.Packing) -> some View {

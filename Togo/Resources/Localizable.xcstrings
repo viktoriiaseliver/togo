@@ -1,6 +1,18 @@
 {
   "sourceLanguage": "ru",
   "strings": {
+    "  где: \\(item.screens.joined(separator: ": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "  где: \\(item.screens.joined(separator: "
+          }
+        }
+      },
+      "comment": "lines"
+    },
     " · дежурит ": {
       "extractionState": "manual",
       "localizations": {
@@ -457,6 +469,18 @@
       },
       "comment": "indoors"
     },
+    "%@ действий": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ действий"
+          }
+        }
+      },
+      "comment": "parts"
+    },
     "%@ дней подряд": {
       "extractionState": "manual",
       "localizations": {
@@ -504,6 +528,30 @@
         }
       },
       "comment": "planSubtitle"
+    },
+    "%@ записей": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ записей"
+          }
+        }
+      },
+      "comment": "parts"
+    },
+    "%@ и больше одинаковых действий за полминуты — обычно значит, что результат не виден на экране.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ и больше одинаковых действий за полминуты — обычно значит, что результат не виден на экране."
+          }
+        }
+      },
+      "comment": "insistent"
     },
     "%@ из %@": {
       "extractionState": "manual",
@@ -637,6 +685,18 @@
       },
       "comment": "weeks"
     },
+    "%@ пользования": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ пользования"
+          }
+        }
+      },
+      "comment": "summary"
+    },
     "%@ просьб за неделю": {
       "extractionState": "manual",
       "localizations": {
@@ -660,6 +720,18 @@
         }
       },
       "comment": "markLabel"
+    },
+    "%@ сеансов подряд без единой записи — приложение открывали не чтобы записать, а чтобы что-то посмотреть. Стоит понять, что именно.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ сеансов подряд без единой записи — приложение открывали не чтобы записать, а чтобы что-то посмотреть. Стоит понять, что именно."
+          }
+        }
+      },
+      "comment": "idle"
     },
     "%@ сегодня": {
       "extractionState": "manual",
@@ -1296,6 +1368,18 @@
         }
       },
       "comment": "body"
+    },
+    "\\(Fmt.decimal((report.recordsPerDay * 10).rounded() / 10)) записей в день": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "\\(Fmt.decimal((report.recordsPerDay * 10).rounded() / 10)) записей в день"
+          }
+        }
+      },
+      "comment": "parts"
     },
     "\\(Int((share * 100).rounded()))% доз вовремя": {
       "extractionState": "manual",
@@ -2016,6 +2100,18 @@
       },
       "comment": "switchCard"
     },
+    "Вести журнал действий": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вести журнал действий"
+          }
+        }
+      },
+      "comment": "controls"
+    },
     "Весь дневник · CSV": {
       "extractionState": "manual",
       "localizations": {
@@ -2027,6 +2123,18 @@
         }
       },
       "comment": "body"
+    },
+    "Весь журнал · строка на действие": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Весь журнал · строка на действие"
+          }
+        }
+      },
+      "comment": "controls"
     },
     "Ветеринар": {
       "extractionState": "manual",
@@ -3540,6 +3648,18 @@
       },
       "comment": "body"
     },
+    "Действий: %@ · записей: %@ · сеансов: %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Действий: %@ · записей: %@ · сеансов: %@"
+          }
+        }
+      },
+      "comment": "lines"
+    },
     "День": {
       "extractionState": "manual",
       "localizations": {
@@ -3575,6 +3695,18 @@
         }
       },
       "comment": "body"
+    },
+    "День с собакой": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "День с собакой"
+          }
+        }
+      },
+      "comment": "title"
     },
     "Дети": {
       "extractionState": "manual",
@@ -4596,6 +4728,54 @@
       },
       "comment": "body"
     },
+    "Жали дважды по одной кнопке": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Жали дважды по одной кнопке"
+          }
+        }
+      },
+      "comment": "duplicates"
+    },
+    "Журнал выключен — приложение ничего не записывает о действиях.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Журнал выключен — приложение ничего не записывает о действиях."
+          }
+        }
+      },
+      "comment": "body"
+    },
+    "Журнал действий": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Журнал действий"
+          }
+        }
+      },
+      "comment": "dataSection"
+    },
+    "Журнал пока пуст": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Журнал пока пуст"
+          }
+        }
+      },
+      "comment": "body"
+    },
     "За смену не осталось ни одного открытого дела.": {
       "extractionState": "manual",
       "localizations": {
@@ -4956,6 +5136,18 @@
       },
       "comment": "medicationActions"
     },
+    "Запас корма": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Запас корма"
+          }
+        }
+      },
+      "comment": "title"
+    },
     "Запас таблеток": {
       "extractionState": "manual",
       "localizations": {
@@ -5015,6 +5207,18 @@
         }
       },
       "comment": "tail"
+    },
+    "Записали и через минуту стёрли — обычно значит, что записалось не то или не так, как ожидали.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Записали и через минуту стёрли — обычно значит, что записалось не то или не так, как ожидали."
+          }
+        }
+      },
+      "comment": "quickDeletes"
     },
     "Записано · %@": {
       "extractionState": "manual",
@@ -5196,6 +5400,18 @@
       },
       "comment": "body"
     },
+    "Записей в день: \\(Fmt.decimal((recordsPerDay * 10).rounded() / 10))": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Записей в день: \\(Fmt.decimal((recordsPerDay * 10).rounded() / 10))"
+          }
+        }
+      },
+      "comment": "lines"
+    },
     "Записей за последние часы нет — поэтому и сказать нечего. Через несколько дней здесь будет вода, одиночество и последний выход.": {
       "extractionState": "manual",
       "localizations": {
@@ -5251,6 +5467,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Записей пока нет"
+          }
+        }
+      },
+      "comment": "body"
+    },
+    "Записи дневника это не тронет — только историю нажатий.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Записи дневника это не тронет — только историю нажатий."
           }
         }
       },
@@ -5556,6 +5784,18 @@
       },
       "comment": "StartWalkIntent"
     },
+    "Заходили и ничего не записали": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Заходили и ничего не записали"
+          }
+        }
+      },
+      "comment": "idle"
+    },
     "Зачем это": {
       "extractionState": "manual",
       "localizations": {
@@ -5579,6 +5819,18 @@
         }
       },
       "comment": "handle"
+    },
+    "Защита от дубля сработала, но сам факт — про отклик: после тапа не видно, что он прошёл.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Защита от дубля сработала, но сам факт — про отклик: после тапа не видно, что он прошёл."
+          }
+        }
+      },
+      "comment": "duplicates"
     },
     "Звони врачу сейчас": {
       "extractionState": "manual",
@@ -7126,6 +7378,18 @@
       },
       "comment": "promises"
     },
+    "Между записью и «Отменить» меньше %@ секунд — это промах пальцем, а не решение. Смотри, что стоит рядом с этой кнопкой.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Между записью и «Отменить» меньше %@ секунд — это промах пальцем, а не решение. Смотри, что стоит рядом с этой кнопкой."
+          }
+        }
+      },
+      "comment": "misTaps"
+    },
     "Меньше": {
       "extractionState": "manual",
       "localizations": {
@@ -7137,6 +7401,18 @@
         }
       },
       "comment": "body"
+    },
+    "Меньше %@ секунды на экране — прочитать там нечего, а искали что-то другое.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Меньше %@ секунды на экране — прочитать там нечего, а искали что-то другое."
+          }
+        }
+      },
+      "comment": "glances"
     },
     "Меньше нормы": {
       "extractionState": "manual",
@@ -7354,6 +7630,18 @@
       },
       "comment": "title"
     },
+    "НЕ ОТКРЫВАЛИ НИ РАЗУ": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "НЕ ОТКРЫВАЛИ НИ РАЗУ"
+          }
+        }
+      },
+      "comment": "lines"
+    },
     "На iPhone 15 Pro и новее — нажатие сбоку, не доставая телефон из кармана.": {
       "extractionState": "manual",
       "localizations": {
@@ -7497,6 +7785,18 @@
         }
       },
       "comment": "body"
+    },
+    "Нажали то, что не разрешено": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нажали то, что не разрешено"
+          }
+        }
+      },
+      "comment": "blocked"
     },
     "Нажми «Просится», когда он подойдёт к двери. Через день здесь появится его режим, и приложение начнёт понимать, когда он действительно хочет на улицу.": {
       "extractionState": "manual",
@@ -7713,6 +8013,18 @@
         }
       },
       "comment": "body"
+    },
+    "Начали и не закончили": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Начали и не закончили"
+          }
+        }
+      },
+      "comment": "unfinished"
     },
     "Начало": {
       "extractionState": "manual",
@@ -8085,6 +8397,30 @@
         }
       },
       "comment": "body"
+    },
+    "Ни одного трения не нашлось": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ни одного трения не нашлось"
+          }
+        }
+      },
+      "comment": "frictions"
+    },
+    "Ни отмен сразу после записи, ни двойных тапов, ни сбоев. Это хорошо — но проверь, что журнал включён и данных набралось достаточно.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ни отмен сразу после записи, ни двойных тапов, ни сбоев. Это хорошо — но проверь, что журнал включён и данных набралось достаточно."
+          }
+        }
+      },
+      "comment": "frictions"
     },
     "Ниже — быстрее. До полусекунды собака связывает маркер со своим действием. После секунды она уже сделала что-то другое, и вы отмечаете именно это.": {
       "extractionState": "manual",
@@ -8638,6 +8974,18 @@
       },
       "comment": "body"
     },
+    "Он заполняется сам, пока приложением пользуются. Возвращайся через пару недель.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Он заполняется сам, пока приложением пользуются. Возвращайся через пару недель."
+          }
+        }
+      },
+      "comment": "body"
+    },
     "Он не брал еду — значит, задача была слишком сложной. Это не про собаку.": {
       "extractionState": "manual",
       "localizations": {
@@ -8673,6 +9021,18 @@
         }
       },
       "comment": "body"
+    },
+    "Онбординг": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Онбординг"
+          }
+        }
+      },
+      "comment": "title"
     },
     "Осмотр у врача": {
       "extractionState": "manual",
@@ -8842,6 +9202,18 @@
       },
       "comment": "inviteCard"
     },
+    "Открывали экран и сразу уходили": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Открывали экран и сразу уходили"
+          }
+        }
+      },
+      "comment": "glances"
+    },
     "Открыто: %@ до %@": {
       "extractionState": "manual",
       "localizations": {
@@ -8985,6 +9357,18 @@
         }
       },
       "comment": "body"
+    },
+    "Отменили сразу после записи": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отменили сразу после записи"
+          }
+        }
+      },
+      "comment": "misTaps"
     },
     "Отменить": {
       "extractionState": "manual",
@@ -9322,6 +9706,18 @@
       },
       "comment": "body"
     },
+    "Отчёт врачу": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отчёт врачу"
+          }
+        }
+      },
+      "comment": "title"
+    },
     "Отчёт врачу собирается из уже записанного — заполнять для него ничего не надо.": {
       "extractionState": "manual",
       "localizations": {
@@ -9345,6 +9741,18 @@
         }
       },
       "comment": "body"
+    },
+    "Отчёт словами · txt": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отчёт словами · txt"
+          }
+        }
+      },
+      "comment": "controls"
     },
     "Отчёты врачу без ограничений": {
       "extractionState": "manual",
@@ -9406,6 +9814,42 @@
       },
       "comment": "serving"
     },
+    "Очистить": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Очистить"
+          }
+        }
+      },
+      "comment": "body"
+    },
+    "Очистить журнал": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Очистить журнал"
+          }
+        }
+      },
+      "comment": "controls"
+    },
+    "Очистить журнал?": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Очистить журнал?"
+          }
+        }
+      },
+      "comment": "body"
+    },
     "Ошиблась — тапни по строке и удали.": {
       "extractionState": "manual",
       "localizations": {
@@ -9417,6 +9861,18 @@
         }
       },
       "comment": "history"
+    },
+    "ПО ДНЯМ": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ПО ДНЯМ"
+          }
+        }
+      },
+      "comment": "lines"
     },
     "Пакеты": {
       "extractionState": "manual",
@@ -9717,6 +10173,18 @@
         }
       },
       "comment": "nextStepText"
+    },
+    "Повторяли одно действие подряд": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Повторяли одно действие подряд"
+          }
+        }
+      },
+      "comment": "insistent"
     },
     "Повторять": {
       "extractionState": "manual",
@@ -11074,6 +11542,18 @@
       },
       "comment": "body"
     },
+    "Приложение не справилось": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Приложение не справилось"
+          }
+        }
+      },
+      "comment": "failures"
+    },
     "Приложение не ставит диагнозов. Оно умеет показать этот график врачу — вместе с датами еды и препаратов за те же дни.": {
       "extractionState": "manual",
       "localizations": {
@@ -11337,6 +11817,18 @@
         }
       },
       "comment": "TogoShortcuts"
+    },
+    "Прогулка или занятие остались открытыми — значит, кнопка «закончить» не там, где её ищут.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Прогулка или занятие остались открытыми — значит, кнопка «закончить» не там, где её ищут."
+          }
+        }
+      },
+      "comment": "unfinished"
     },
     "Прогулка на паузе": {
       "extractionState": "manual",
@@ -11650,6 +12142,18 @@
       },
       "comment": "behaviourCard"
     },
+    "Раздел, в который не зашли за две недели, — это либо лишний раздел, либо его не нашли. Второе чинится, первое убирается.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Раздел, в который не зашли за две недели, — это либо лишний раздел, либо его не нашли. Второе чинится, первое убирается."
+          }
+        }
+      },
+      "comment": "screens"
+    },
     "Разложить ровно": {
       "extractionState": "manual",
       "localizations": {
@@ -11914,6 +12418,18 @@
       },
       "comment": "body"
     },
+    "Роль не даёт этого делать, но кнопка была доступна. Правильнее её не показывать вовсе, чем отказывать после тапа.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Роль не даёт этого делать, но кнопка была доступна. Правильнее её не показывать вовсе, чем отказывать после тапа."
+          }
+        }
+      },
+      "comment": "blocked"
+    },
     "Русский": {
       "extractionState": "manual",
       "localizations": {
@@ -12130,6 +12646,18 @@
       },
       "comment": "body"
     },
+    "Сеанс в среднем: %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сеанс в среднем: %@"
+          }
+        }
+      },
+      "comment": "lines"
+    },
     "Сегодня": {
       "extractionState": "manual",
       "localizations": {
@@ -12297,6 +12825,18 @@
         }
       },
       "comment": "body"
+    },
+    "Ситтер": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ситтер"
+          }
+        }
+      },
+      "comment": "title"
     },
     "Скажи, сколько таблеток в пачке — дальше приложение будет вычитать по одной с каждой отметки и предупредит за три дня до конца.": {
       "extractionState": "manual",
@@ -13270,6 +13810,18 @@
       },
       "comment": "handle"
     },
+    "Строки со сбоем: ": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Строки со сбоем: "
+          }
+        }
+      },
+      "comment": "failures"
+    },
     "Стул": {
       "extractionState": "manual",
       "localizations": {
@@ -13377,6 +13929,18 @@
         }
       },
       "comment": "body"
+    },
+    "Схема не собирается: %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Схема не собирается: %@"
+          }
+        }
+      },
+      "comment": "container"
     },
     "Схему меняет владелец. Ты видишь её и отмечаешь приёмы.": {
       "extractionState": "manual",
@@ -13726,6 +14290,30 @@
       },
       "comment": "body"
     },
+    "Того · журнал действий": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Того · журнал действий"
+          }
+        }
+      },
+      "comment": "controls"
+    },
+    "Того · отчёт о действиях": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Того · отчёт о действиях"
+          }
+        }
+      },
+      "comment": "controls"
+    },
     "Того · просится": {
       "extractionState": "manual",
       "localizations": {
@@ -13821,6 +14409,18 @@
         }
       },
       "comment": "body"
+    },
+    "Только имена действий: «записал · еда · сделано». Ни граммов, ни заметок, ни клички, ни имён людей — по журналу нельзя восстановить ни одной записи дневника.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Только имена действий: «записал · еда · сделано». Ни граммов, ни заметок, ни клички, ни имён людей — по журналу нельзя восстановить ни одной записи дневника."
+          }
+        }
+      },
+      "comment": "privacy"
     },
     "Только три вещи: доза по часам, окно натощак и лестница эскалации по пропущенной дозе.": {
       "extractionState": "manual",
@@ -14254,6 +14854,18 @@
       },
       "comment": "removed"
     },
+    "Удалили почти сразу после записи": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Удалили почти сразу после записи"
+          }
+        }
+      },
+      "comment": "quickDeletes"
+    },
     "Удалить": {
       "extractionState": "manual",
       "localizations": {
@@ -14686,6 +15298,18 @@
       },
       "comment": "changed"
     },
+    "Файл лежит в папке приложения на этом телефоне и никуда не уходит. Старше \\(Fmt.days(Int(UsageLog.keepDays))) не хранится.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Файл лежит в папке приложения на этом телефоне и никуда не уходит. Старше \\(Fmt.days(Int(UsageLog.keepDays))) не хранится."
+          }
+        }
+      },
+      "comment": "privacy"
+    },
     "Файл можно положить в «Файлы», отправить себе в мессенджер или сохранить в iCloud Drive. Внутри обычный JSON — его видно глазами.": {
       "extractionState": "manual",
       "localizations": {
@@ -14841,6 +15465,42 @@
         }
       },
       "comment": "body"
+    },
+    "ЧАЩЕ ВСЕГО": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ЧАЩЕ ВСЕГО"
+          }
+        }
+      },
+      "comment": "lines"
+    },
+    "ЧТО ЗАПИСЫВАЛИ": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ЧТО ЗАПИСЫВАЛИ"
+          }
+        }
+      },
+      "comment": "lines"
+    },
+    "ЧТО ЧИНИТЬ": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ЧТО ЧИНИТЬ"
+          }
+        }
+      },
+      "comment": "lines"
     },
     "Час": {
       "extractionState": "manual",
@@ -15441,6 +16101,18 @@
         }
       },
       "comment": "age"
+    },
+    "ЭКРАНЫ": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ЭКРАНЫ"
+          }
+        }
+      },
+      "comment": "lines"
     },
     "Эпизод": {
       "extractionState": "manual",
@@ -16390,6 +17062,18 @@
       },
       "comment": "body"
     },
+    "выгрузил": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "выгрузил"
+          }
+        }
+      },
+      "comment": "title"
+    },
     "выгрузить": {
       "extractionState": "manual",
       "localizations": {
@@ -16521,6 +17205,18 @@
         }
       },
       "comment": "body"
+    },
+    "где: ": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "где: "
+          }
+        }
+      },
+      "comment": "frictions"
     },
     "год": {
       "extractionState": "manual",
@@ -16726,6 +17422,18 @@
       },
       "comment": "bars"
     },
+    "двойной тап": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "двойной тап"
+          }
+        }
+      },
+      "comment": "title"
+    },
     "девятый": {
       "extractionState": "manual",
       "localizations": {
@@ -16737,6 +17445,18 @@
         }
       },
       "comment": "words"
+    },
+    "действий": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "действий"
+          }
+        }
+      },
+      "comment": "summary"
     },
     "день": {
       "extractionState": "manual",
@@ -17338,6 +18058,18 @@
       },
       "comment": "title"
     },
+    "журнал": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "журнал"
+          }
+        }
+      },
+      "comment": "controls"
+    },
     "за две недели": {
       "extractionState": "manual",
       "localizations": {
@@ -17373,6 +18105,18 @@
         }
       },
       "comment": "statusText"
+    },
+    "закончил": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "закончил"
+          }
+        }
+      },
+      "comment": "title"
     },
     "закрыто · %@": {
       "extractionState": "manual",
@@ -17469,6 +18213,18 @@
         }
       },
       "comment": "stockCard"
+    },
+    "записал": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "записал"
+          }
+        }
+      },
+      "comment": "title"
     },
     "записала, но одной записи мало": {
       "extractionState": "manual",
@@ -18814,6 +19570,18 @@
       },
       "comment": "body"
     },
+    "настройка": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "настройка"
+          }
+        }
+      },
+      "comment": "title"
+    },
     "натощак %@ мин": {
       "extractionState": "manual",
       "localizations": {
@@ -18825,6 +19593,18 @@
         }
       },
       "comment": "done"
+    },
+    "начал": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "начал"
+          }
+        }
+      },
+      "comment": "title"
     },
     "не брал еду": {
       "extractionState": "manual",
@@ -18873,6 +19653,18 @@
         }
       },
       "comment": "toxicCard"
+    },
+    "не дали прав": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "не дали прав"
+          }
+        }
+      },
+      "comment": "title"
     },
     "не заполнены": {
       "extractionState": "manual",
@@ -18934,6 +19726,18 @@
       },
       "comment": "body"
     },
+    "не открывали ни разу": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "не открывали ни разу"
+          }
+        }
+      },
+      "comment": "screens"
+    },
     "не открылось ничего: %@": {
       "extractionState": "manual",
       "localizations": {
@@ -18957,6 +19761,18 @@
         }
       },
       "comment": "markLabel"
+    },
+    "не получилось": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "не получилось"
+          }
+        }
+      },
+      "comment": "title"
     },
     "не понадобится — кормления в это окно не попадают": {
       "extractionState": "manual",
@@ -19149,6 +19965,18 @@
         }
       },
       "comment": "addCard"
+    },
+    "новый начинается после четверти часа молчания": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "новый начинается после четверти часа молчания"
+          }
+        }
+      },
+      "comment": "sessions"
     },
     "номера": {
       "extractionState": "manual",
@@ -19570,6 +20398,18 @@
       },
       "comment": "profile"
     },
+    "открыл экран": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "открыл экран"
+          }
+        }
+      },
+      "comment": "title"
+    },
     "открыта сейчас": {
       "extractionState": "manual",
       "localizations": {
@@ -19593,6 +20433,30 @@
         }
       },
       "comment": "originCard"
+    },
+    "отменил": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "отменил"
+          }
+        }
+      },
+      "comment": "title"
+    },
+    "отметил на ходу": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "отметил на ходу"
+          }
+        }
+      },
+      "comment": "title"
     },
     "отметку поставили на ходу — допиши словами": {
       "extractionState": "manual",
@@ -19702,6 +20566,18 @@
       },
       "comment": "dutyCard"
     },
+    "передумал": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "передумал"
+          }
+        }
+      },
+      "comment": "title"
+    },
     "переключатель наверху главного": {
       "extractionState": "manual",
       "localizations": {
@@ -19713,6 +20589,30 @@
         }
       },
       "comment": "handle"
+    },
+    "переключил вкладку": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "переключил вкладку"
+          }
+        }
+      },
+      "comment": "title"
+    },
+    "перенос": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "перенос"
+          }
+        }
+      },
+      "comment": "title"
     },
     "перестанет работать": {
       "extractionState": "manual",
@@ -19821,6 +20721,18 @@
         }
       },
       "comment": "title"
+    },
+    "по дням": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "по дням"
+          }
+        }
+      },
+      "comment": "days"
     },
     "по показаниям": {
       "extractionState": "manual",
@@ -20038,6 +20950,18 @@
       },
       "comment": "title"
     },
+    "поправил": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "поправил"
+          }
+        }
+      },
+      "comment": "title"
+    },
     "попробовать": {
       "extractionState": "manual",
       "localizations": {
@@ -20169,6 +21093,18 @@
         }
       },
       "comment": "stateTitle"
+    },
+    "поставил на паузу": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "поставил на паузу"
+          }
+        }
+      },
+      "comment": "title"
     },
     "поставь руку один раз — потом маркер уйдёт на кнопку громкости": {
       "extractionState": "manual",
@@ -20374,6 +21310,18 @@
       },
       "comment": "body"
     },
+    "продолжил": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "продолжил"
+          }
+        }
+      },
+      "comment": "title"
+    },
     "просрочено": {
       "extractionState": "manual",
       "localizations": {
@@ -20422,6 +21370,18 @@
       },
       "comment": "task"
     },
+    "прочее": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "прочее"
+          }
+        }
+      },
+      "comment": "title"
+    },
     "прошлые отметки останутся как были — меняется только план вперёд": {
       "extractionState": "manual",
       "localizations": {
@@ -20445,6 +21405,18 @@
         }
       },
       "comment": "weekdays"
+    },
+    "пусто": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "пусто"
+          }
+        }
+      },
+      "comment": "title"
     },
     "пятый": {
       "extractionState": "manual",
@@ -20565,6 +21537,18 @@
         }
       },
       "comment": "readableStatus"
+    },
+    "ранжировано по тому, сколько раз это случилось": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ранжировано по тому, сколько раз это случилось"
+          }
+        }
+      },
+      "comment": "frictions"
     },
     "расставлено вручную": {
       "extractionState": "manual",
@@ -20722,6 +21706,30 @@
       },
       "comment": "parts"
     },
+    "с %@ по %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "с %@ по %@"
+          }
+        }
+      },
+      "comment": "summary"
+    },
+    "с %@ по %@ · %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "с %@ по %@ · %@"
+          }
+        }
+      },
+      "comment": "lines"
+    },
     "с какого момента": {
       "extractionState": "manual",
       "localizations": {
@@ -20770,6 +21778,30 @@
       },
       "comment": "weekdays"
     },
+    "сбой": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "сбой"
+          }
+        }
+      },
+      "comment": "title"
+    },
+    "сделано": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "сделано"
+          }
+        }
+      },
+      "comment": "title"
+    },
     "сделано · %@": {
       "extractionState": "manual",
       "localizations": {
@@ -20781,6 +21813,42 @@
         }
       },
       "comment": "doneToggle"
+    },
+    "сеанс в среднем %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "сеанс в среднем %@"
+          }
+        }
+      },
+      "comment": "parts"
+    },
+    "сеансов": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "сеансов"
+          }
+        }
+      },
+      "comment": "summary"
+    },
+    "сеансы": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "сеансы"
+          }
+        }
+      },
+      "comment": "sessions"
     },
     "сегодня": {
       "extractionState": "manual",
@@ -21586,6 +22654,18 @@
       },
       "comment": "body"
     },
+    "удалил": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "удалил"
+          }
+        }
+      },
+      "comment": "title"
+    },
     "удалить": {
       "extractionState": "manual",
       "localizations": {
@@ -21645,6 +22725,18 @@
         }
       },
       "comment": "when"
+    },
+    "уход": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "уход"
+          }
+        }
+      },
+      "comment": "title"
     },
     "уход починен: %@": {
       "extractionState": "manual",
@@ -21922,6 +23014,18 @@
       },
       "comment": "word"
     },
+    "чаще всего": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "чаще всего"
+          }
+        }
+      },
+      "comment": "topActions"
+    },
     "чаще, чем раз в месяц, обычно не надо": {
       "extractionState": "manual",
       "localizations": {
@@ -22078,6 +23182,18 @@
       },
       "comment": "rows"
     },
+    "что в нём лежит": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "что в нём лежит"
+          }
+        }
+      },
+      "comment": "privacy"
+    },
     "что важно знать": {
       "extractionState": "manual",
       "localizations": {
@@ -22185,6 +23301,18 @@
         }
       },
       "comment": "body"
+    },
+    "что записывали": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "что записывали"
+          }
+        }
+      },
+      "comment": "recordKinds"
     },
     "что изменилось с прошлого приёма": {
       "extractionState": "manual",
@@ -22306,6 +23434,18 @@
       },
       "comment": "vetTextCard"
     },
+    "что чинить": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "что чинить"
+          }
+        }
+      },
+      "comment": "frictions"
+    },
     "что-то заметила": {
       "extractionState": "manual",
       "localizations": {
@@ -22413,6 +23553,18 @@
         }
       },
       "comment": "title"
+    },
+    "экраны": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "экраны"
+          }
+        }
+      },
+      "comment": "screens"
     },
     "эпизод": {
       "extractionState": "manual",

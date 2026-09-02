@@ -68,6 +68,7 @@ struct DataPrivacyScreen: View {
             }
         }
         .navigationTitle("Данные")
+        .usageScreen(.dataPrivacy)
         .navigationBarTitleDisplayMode(.large)
         .confirmationDialog("Удалить все данные?", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
             Button("Удалить всё", role: .destructive) { deleteEverything() }

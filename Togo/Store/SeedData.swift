@@ -152,7 +152,7 @@ enum SeedData {
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: .now)
         func at(_ hour: Int, _ minute: Int) -> Date {
-            startOfDay.addingTimeInterval(Double(hour * 60 + minute) * 60)
+            calendar.date(minuteOfDay: hour * 60 + minute, on: startOfDay)
         }
 
         let morning = LogEvent(kind: .outing, date: at(7, 2), authorName: "Виктория")

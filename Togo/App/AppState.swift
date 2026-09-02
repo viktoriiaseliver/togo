@@ -142,15 +142,18 @@ final class AppState {
 
     func startOuting(by name: String, at date: Date = Date()) {
         session = ActiveSession(kind: .outing, startedAt: date, startedBy: name)
+        UsageLog.note(.start, ActiveSession.Kind.outing.rawValue)
     }
 
     func startWalk(by name: String, at date: Date = Date()) {
         session = ActiveSession(kind: .walk, startedAt: date, startedBy: name)
+        UsageLog.note(.start, ActiveSession.Kind.walk.rawValue)
     }
 
     /// Отметить, что собака что-то сделала прямо сейчас.
     func mark(_ kind: ActiveSession.Mark.Kind, at date: Date = Date()) {
         session?.marks.append(ActiveSession.Mark(kind: kind, at: date))
+        UsageLog.note(.mark, kind.rawValue)
     }
 
     /// Перечитать прогулку с диска.
@@ -170,26 +173,35 @@ final class AppState {
     /// за прогулку: повторный тап по ним — это «нет, всё-таки не было».
     func removeMarks(of kind: ActiveSession.Mark.Kind) {
         session?.marks.removeAll { $0.kind == kind }
+        UsageLog.note(.mark, kind.rawValue, outcome: .cancelled)
     }
 
     func pauseSession() {
         session?.pause()
+        UsageLog.note(.pause)
     }
 
     func resumeSession() {
         session?.resume()
+        UsageLog.note(.resume)
     }
 
     /// Убрать последнюю отметку: на морозе одной рукой промахнуться легко.
     @discardableResult
     func undoLastMark() -> ActiveSession.Mark? {
         guard session?.marks.isEmpty == false else { return nil }
-        return session?.marks.removeLast()
+        let removed = session?.marks.removeLast()
+        UsageLog.note(.mark, removed?.kind.rawValue, outcome: .cancelled)
+        return removed
     }
 
     @discardableResult
     func finishSession() -> ActiveSession? {
         defer { session = nil }
+        // Закрывать нечего — и отмечать нечего: пустой «закончил» в журнале
+        // выглядел бы прогулкой, которой не было.
+        guard let session else { return nil }
+        UsageLog.note(.finish, session.kind.rawValue)
         return session
     }
 
@@ -224,7 +236,10 @@ final class AppState {
 final class Settings {
     /// Один пуш в выбранный час. Прерывают только доза и окно натощак.
     var briefHour: Int {
-        didSet { UserDefaults.standard.set(briefHour, forKey: Keys.briefHour) }
+        didSet {
+            UserDefaults.standard.set(briefHour, forKey: Keys.briefHour)
+            UsageLog.note(.setting, "briefHour", on: .settings)
+        }
     }
     var onboardingCompleted: Bool {
         didSet { UserDefaults.standard.set(onboardingCompleted, forKey: Keys.onboardingCompleted) }
@@ -236,13 +251,22 @@ final class Settings {
         didSet { UserDefaults.standard.set(notificationsAsked, forKey: Keys.notificationsAsked) }
     }
     var quietHoursStart: Int {
-        didSet { UserDefaults.standard.set(quietHoursStart, forKey: Keys.quietHoursStart) }
+        didSet {
+            UserDefaults.standard.set(quietHoursStart, forKey: Keys.quietHoursStart)
+            UsageLog.note(.setting, "quietHoursStart", on: .settings)
+        }
     }
     var quietHoursEnd: Int {
-        didSet { UserDefaults.standard.set(quietHoursEnd, forKey: Keys.quietHoursEnd) }
+        didSet {
+            UserDefaults.standard.set(quietHoursEnd, forKey: Keys.quietHoursEnd)
+            UsageLog.note(.setting, "quietHoursEnd", on: .settings)
+        }
     }
     var haptics: Bool {
-        didSet { UserDefaults.standard.set(haptics, forKey: Keys.haptics) }
+        didSet {
+            UserDefaults.standard.set(haptics, forKey: Keys.haptics)
+            UsageLog.note(.setting, "haptics", on: .settings)
+        }
     }
     /// Язык интерфейса. Пусто — как в системе.
     ///

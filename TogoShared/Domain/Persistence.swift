@@ -6,7 +6,6 @@ import OSLog
 nonisolated enum AppIdentifiers {
     static let appGroup = "group.app.togo.diary"
     static let bundlePrefix = "app.togo.diary"
-    static let morningBriefTask = "app.togo.diary.morning-brief"
     static let cloudContainer = "iCloud.app.togo.diary"
     static let urlScheme = "togo"
 }
@@ -128,9 +127,6 @@ nonisolated enum Persistence {
         return profile["Entitlements"] as? [String: Any]
     }
 
-    /// Хранилище для приложения. Никогда не падает: если открыть не вышло,
-    /// возвращает nil, и приложение показывает человеку экран с объяснением,
-    /// а не исчезает с экрана без единого слова.
     /// Хранилище для тех, кто приходит не через экраны.
     ///
     /// Сценарии, Siri, кнопка «Действие» и кнопки на живой активности
@@ -139,6 +135,9 @@ nonisolated enum Persistence {
     /// два контейнера на одну базу — это две правды.
     nonisolated(unsafe) static var shared: ModelContainer?
 
+    /// Хранилище для приложения. Никогда не падает: если открыть не вышло,
+    /// возвращает nil, и приложение показывает человеку экран с объяснением,
+    /// а не исчезает с экрана без единого слова.
     static func appContainer() -> ModelContainer? {
         StartupLog.note("открываю хранилище")
 
@@ -194,11 +193,21 @@ nonisolated enum Persistence {
     }
 
     /// Хранилище в памяти — для превью и тестов.
-    static func container(inMemory: Bool = true) -> ModelContainer {
-        try! ModelContainer(
-            for: schema,
-            configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
-        )
+    ///
+    /// Аргумент `inMemory` здесь был всегда, но ни на что не влиял:
+    /// хранилище получалось в памяти и при `false`. Обещание, которое
+    /// не выполняется, хуже отсутствующего — поэтому его больше нет.
+    static func container() -> ModelContainer {
+        do {
+            return try ModelContainer(
+                for: schema,
+                configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
+            )
+        } catch {
+            // Хранилище в памяти не открывается только если сломана схема,
+            // а это ошибка сборки, а не устройства: падать здесь правильно.
+            fatalError("Схема не собирается: \(error)")
+        }
     }
 
     /// Хранилище настроено на iCloud — это ещё не значит, что синхронизация

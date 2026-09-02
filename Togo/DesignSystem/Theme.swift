@@ -69,8 +69,4 @@ extension View {
     func themeSurface(_ surface: Theme.Surface) -> some View {
         transformEnvironment(\.theme) { $0.surface = surface }
     }
-
-    func themeDensity(_ density: Theme.Density) -> some View {
-        transformEnvironment(\.theme) { $0.density = density }
-    }
 }

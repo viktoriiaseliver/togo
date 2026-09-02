@@ -51,6 +51,7 @@ struct PaywallScreen: View {
             .textStyle(AppFont.caption)
             .frame(maxWidth: .infinity)
         }
+        .usageScreen(.paywall)
         .task {
             await store.load()
             selected = store.products.last

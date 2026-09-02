@@ -8,7 +8,7 @@ import SwiftData
 struct DiaryTests {
     /// Каждый тест получает свою базу в памяти — они не мешают друг другу.
     private func makeContext() -> ModelContext {
-        ModelContext(Persistence.container(inMemory: true))
+        ModelContext(Persistence.container())
     }
 
     private func event(_ kind: LogKind, minutesAgo: Int, author: String = "Виктория") -> LogEvent {

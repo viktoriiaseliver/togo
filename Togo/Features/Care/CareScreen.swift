@@ -38,6 +38,7 @@ struct CareScreen: View {
             }
         }
         .navigationTitle("Уход")
+        .usageScreen(.care)
         .navigationBarTitleDisplayMode(.large)
         .toolbar {
             if dog != nil {
@@ -82,6 +83,9 @@ struct CareScreen: View {
                 ForEach(sorted(group)) { task in
                     CareTaskRow(task: task, now: now,
                                 onToggle: { toggle(task) },
+                                // Ежедневное не откладывают — его просто
+                                // не делают сегодня, и «Потом» у него нет.
+                                onSnooze: kind == .daily ? nil : { snooze(task) },
                                 onEdit: { editing = task })
                     if task.id != sorted(group).last?.id { TGDivider() }
                 }
@@ -198,6 +202,7 @@ struct CareScreen: View {
             task.lastDone = nil
             task.streak = max(0, task.streak - 1)
             Haptics.warning()
+            UsageLog.note(.care, "undone")
             appState.showUndo("Снято · \(task.title)")
             return
         }
@@ -216,7 +221,7 @@ struct CareScreen: View {
         let calendar = Calendar.current
         switch task.kind {
         case .daily:
-            // Ежедневное не откладывают — его просто не делают сегодня.
+            // Ежедневное не откладывают: строка «Потом» ему и не выдаётся.
             return
         case .periodic:
             task.lastDone = calendar.date(byAdding: .day,
@@ -228,6 +233,7 @@ struct CareScreen: View {
         }
         task.snoozeCount += 1
         try? context.save()
+        UsageLog.note(.care, "snooze")
         Haptics.tap()
         appState.showUndo("\(task.title) · до завтра")
     }
@@ -306,7 +312,13 @@ private struct CareTaskRow: View {
                 Button("Потом", action: onSnooze).tint(Token.Status.waitingText)
             }
         }
-        .accessibilityAction(named: "Отложить до завтра") { onSnooze?() }
+        // Действие предлагается, только если строку правда можно отложить:
+        // пункт в ротере, который ничего не делает, хуже отсутствующего.
+        .accessibilityActions {
+            if let onSnooze {
+                Button("Отложить до завтра", action: onSnooze)
+            }
+        }
     }
 
     private var statusColor: Color {

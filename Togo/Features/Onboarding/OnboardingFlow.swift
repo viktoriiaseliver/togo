@@ -88,6 +88,13 @@ struct OnboardingFlow: View {
                     }
                 }
             }
+            .usageScreen(.onboarding)
+            // Где человек застревает в онбординге, видно только по шагам:
+            // «дошёл до режима дня и вышел» — это претензия к шагу,
+            // а не к приложению целиком.
+            .onChange(of: step) { _, next in
+                UsageLog.note(.open, String(describing: next), on: .onboarding)
+            }
         }
     }
 

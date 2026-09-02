@@ -67,8 +67,11 @@ final class SubscriptionStore {
             let result = try await product.purchase()
             switch result {
             case .success(let verification):
+                UsageLog.note(.purchase, "bought", on: .paywall)
                 await handle(verification)
-            case .userCancelled, .pending:
+            case .userCancelled:
+                UsageLog.note(.purchase, "bought", on: .paywall, outcome: .cancelled)
+            case .pending:
                 break
             @unknown default:
                 break
@@ -76,6 +79,7 @@ final class SubscriptionStore {
         } catch {
             lastError = "Покупка не прошла. Попробуй ещё раз."
             log.error("Покупка: \(error.localizedDescription)")
+            UsageLog.note(.purchase, "bought", on: .paywall, outcome: .failed)
         }
     }
 
@@ -84,8 +88,10 @@ final class SubscriptionStore {
         do {
             try await AppStore.sync()
             await refreshEntitlements()
+            UsageLog.note(.purchase, "restored", on: .paywall)
         } catch {
             lastError = "Не удалось восстановить покупки."
+            UsageLog.note(.purchase, "restored", on: .paywall, outcome: .failed)
         }
     }
 

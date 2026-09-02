@@ -23,7 +23,7 @@ nonisolated enum DayPlanBuilder {
         let mealDone = MealSchedule.matchDone(planned: mealMinutes, logged: doneMealTimes,
                                               startOfDay: startOfDay)
         for (index, minute) in mealMinutes.enumerated() {
-            let at = startOfDay.addingTimeInterval(Double(minute) * 60)
+            let at = cal.date(minuteOfDay: minute, on: startOfDay)
             items.append(DayPlanItem(id: "meal-\(minute)", time: at,
                                      title: "Еда · \(dog.servingGrams) г",
                                      hint: dog.foodBrand, kind: .meal, isDone: mealDone[index]))
@@ -37,7 +37,7 @@ nonisolated enum DayPlanBuilder {
                 id: "care-\(task.id)",
                 // Уход ставим в конец дня: у него нет часа, и он не должен
                 // мешаться между кормлениями.
-                time: startOfDay.addingTimeInterval(Double(dog.sleepMinuteOfDay) * 60),
+                time: cal.date(minuteOfDay: dog.sleepMinuteOfDay, on: startOfDay),
                 title: task.title,
                 hint: task.detail.isEmpty ? nil : task.detail,
                 kind: .care,
@@ -50,7 +50,7 @@ nonisolated enum DayPlanBuilder {
         if dog.isOnTreatment, seesMedical {
             for medication in dog.medications where !medication.isPaused {
                 for minute in medication.times.sorted() {
-                    let at = startOfDay.addingTimeInterval(Double(minute) * 60)
+                    let at = cal.date(minuteOfDay: minute, on: startOfDay)
                     let done = medication.doses.contains { $0.isGiven && cal.isDate($0.scheduledAt, equalTo: at, toGranularity: .minute) }
                     items.append(DayPlanItem(
                         id: "dose-\(medication.id)-\(minute)", time: at,

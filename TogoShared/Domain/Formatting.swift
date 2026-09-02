@@ -1,8 +1,6 @@
 import Foundation
 
 nonisolated enum Fmt {
-    static let time: Date.FormatStyle = .dateTime.hour().minute()
-
     static func clock(_ date: Date) -> String {
         date.formatted(.dateTime.hour(.twoDigits(amPM: .omitted)).minute(.twoDigits))
     }
@@ -29,12 +27,6 @@ nonisolated enum Fmt {
         return "\(hours) ч \(minutes) мин"
     }
 
-    /// Промежуток для ленты: коротко и без ложной точности.
-    ///
-    /// «4 ч 58 мин» между записями — это точность, которой там неоткуда
-    /// взяться и которая никому не нужна: промежуток читают глазами,
-    /// чтобы понять порядок величины. Округляем до получаса, а после двух
-    /// часов минуты выбрасываем совсем.
     /// Число с одним знаком после запятой — и без него, если знак нулевой.
     /// «4 раза в день» читается, «4,0 раза» выглядит отчётом.
     static func decimal(_ value: Double) -> String {
@@ -65,6 +57,12 @@ nonisolated enum Fmt {
         return words.indices.contains(value) ? words[value] : "\(value)-й"
     }
 
+    /// Промежуток для ленты: коротко и без ложной точности.
+    ///
+    /// «4 ч 58 мин» между записями — это точность, которой там неоткуда
+    /// взяться и которая никому не нужна: промежуток читают глазами,
+    /// чтобы понять порядок величины. Округляем до получаса, а после двух
+    /// часов минуты выбрасываем совсем.
     static func gap(_ interval: TimeInterval) -> String {
         let minutes = max(0, Int(interval / 60))
         if minutes < 90 { return "\(minutes) мин" }

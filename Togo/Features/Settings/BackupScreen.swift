@@ -38,6 +38,7 @@ struct BackupScreen: View {
             formatCard
         }
         .navigationTitle("Перенос")
+        .usageScreen(.backup)
         .navigationBarTitleDisplayMode(.large)
         .task {
             rebuild()
@@ -186,10 +187,12 @@ struct BackupScreen: View {
             } catch {
                 message = Message(tone: .alarm, title: "Файл не подошёл",
                                   detail: error.localizedDescription)
+                UsageLog.note(.backup, "open", outcome: .failed)
             }
         case .failure(let error):
             message = Message(tone: .alarm, title: "Не удалось открыть файл",
                               detail: error.localizedDescription)
+            UsageLog.note(.backup, "open", outcome: .failed)
         }
     }
 
@@ -205,9 +208,11 @@ struct BackupScreen: View {
                     : "Добавлено новых записей: \(count). То, что уже было, осталось на месте."
             )
             Haptics.success()
+            UsageLog.note(.backup, strategy == .replace ? "replace" : "merge")
         } catch {
             message = Message(tone: .alarm, title: "Не получилось восстановить",
                               detail: error.localizedDescription)
+            UsageLog.note(.backup, "restore", outcome: .failed)
         }
         self.pendingArchive = nil
         rebuild()

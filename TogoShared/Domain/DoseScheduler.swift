@@ -24,7 +24,7 @@ nonisolated enum DoseScheduler {
 
         for medication in dog.medications where !medication.isPaused {
             for minute in medication.times.sorted() {
-                let scheduled = startOfDay.addingTimeInterval(Double(minute) * 60)
+                let scheduled = calendar.date(minuteOfDay: minute, on: startOfDay)
                 let exists = medication.doses.contains {
                     calendar.isDate($0.scheduledAt, equalTo: scheduled, toGranularity: .minute)
                 }
@@ -63,10 +63,14 @@ nonisolated enum DoseScheduler {
         }()
 
         // Дважды одну дозу не отмечаем: это и есть защита от двойной дозы.
-        guard dose.givenAt == nil else { return dose }
+        guard dose.givenAt == nil else {
+            UsageLog.note(.dose, "given", outcome: .duplicate)
+            return dose
+        }
 
         dose.givenAt = now
         dose.givenBy = person
+        UsageLog.note(.dose, "given")
 
         // Счёт таблеток живёт на отметках: отдельного учёта не нужно,
         // минус одна с каждой. Ноль — просто «не считаем».
@@ -101,9 +105,13 @@ nonisolated enum DoseScheduler {
             return new
         }()
 
-        guard dose.givenAt == nil else { return }
+        guard dose.givenAt == nil else {
+            UsageLog.note(.dose, "skipped", outcome: .blocked)
+            return
+        }
         dose.skippedAt = now
         dose.skippedBy = person
+        UsageLog.note(.dose, "skipped")
         try? context.save()
     }
 
@@ -136,6 +144,7 @@ nonisolated enum DoseScheduler {
         // Заодно снимаем «беру на себя»: договорённость была про тот раз.
         dose.claimedBy = nil
         dose.claimedAt = nil
+        UsageLog.note(.dose, "unmarked")
         try? context.save()
     }
 

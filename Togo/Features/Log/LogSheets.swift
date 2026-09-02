@@ -274,8 +274,27 @@ struct EventEditSheet: View {
     @Query private var medications: [Medication]
     @Query private var trainingSessions: [TrainingSession]
     @State private var asking = false
+    /// Слепок записи на момент открытия — по нему видно, правили её или
+    /// просто открыли посмотреть. В журнал действий уходит только факт
+    /// правки; ни граммов, ни текста заметки в слепке нет.
+    @State private var openedAs: String?
 
     private var event: LogEvent? { events.first { $0.id == eventID } }
+
+    /// Что в записи может измениться. Числа и текст не пишем — только то,
+    /// заполнены они или нет, и на сколько.
+    private func fingerprint(_ event: LogEvent) -> String {
+        var parts: [String] = []
+        parts.append(String(Int(event.date.timeIntervalSince1970)))
+        parts.append(event.outcomeRaw ?? "-")
+        parts.append(event.stoolFormRaw ?? "-")
+        parts.append(event.stoolFlagsRaw.sorted().joined(separator: ","))
+        parts.append(event.grams.map(String.init) ?? "-")
+        parts.append(event.milliliters.map(String.init) ?? "-")
+        parts.append(event.durationSeconds.map(String.init) ?? "-")
+        parts.append(String(event.note?.count ?? 0))
+        return parts.joined(separator: "|")
+    }
 
     /// Свои записи ведут все, кому это разрешено; править и удалять
     /// уже записанное — отдельное право.
@@ -383,6 +402,14 @@ struct EventEditSheet: View {
             }
         }
         .presentationDetents([.medium, .large])
+        .onAppear { openedAs = event.map(fingerprint) }
+        .onDisappear {
+            // Правка сохраняется прямо через привязки полей, отдельной
+            // кнопки «Готово» нет. Поэтому факт правки виден только так:
+            // сравнением того, с чем открыли, и того, с чем ушли.
+            guard let event, let openedAs, fingerprint(event) != openedAs else { return }
+            UsageLog.note(.edit, event.kind.rawValue)
+        }
     }
 
     /// Спросить хозяйку прямо из записи.
@@ -502,6 +529,7 @@ struct EventEditSheet: View {
         }
         try? context.save()
         Haptics.warning()
+        UsageLog.note(.delete, event.kind.rawValue)
         appState.showUndoRestore("Удалено · \(event.kind.title)",
                                  eventIDs: removed.map(\.id))
         dismiss()

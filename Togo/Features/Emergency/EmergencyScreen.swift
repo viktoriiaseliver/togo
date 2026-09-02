@@ -21,6 +21,7 @@ struct EmergencyScreen: View {
             vetBriefCard
         }
         .navigationTitle("Если что-то случилось")
+        .usageScreen(.emergency)
         .navigationBarTitleDisplayMode(.large)
     }
 

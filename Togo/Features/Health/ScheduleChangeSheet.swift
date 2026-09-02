@@ -153,7 +153,7 @@ struct ScheduleChangeSheet: View {
     }
 
     private func dateFrom(_ minute: Int) -> Date {
-        Calendar.current.startOfDay(for: Date()).addingTimeInterval(Double(minute) * 60)
+        Calendar.current.date(minuteOfDay: minute, on: Date())
     }
 
     private func minuteOf(_ date: Date) -> Int {

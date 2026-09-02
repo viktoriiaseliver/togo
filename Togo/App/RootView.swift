@@ -59,7 +59,22 @@ struct RootView: View {
         .onChange(of: dog?.isOnTreatment ?? false) { _, isOnTreatment in
             if !isOnTreatment, selection == .health { selection = .today }
         }
+        .onChange(of: selection) { _, tab in
+            UsageLog.note(.tab, String(describing: tab), on: screen(for: tab))
+        }
         .onOpenURL(perform: handle)
+    }
+
+    /// Вкладка — это и есть экран: журнал действий не должен считать
+    /// переключение вкладки действием на предыдущей.
+    private func screen(for tab: Tab) -> UsageLog.Screen {
+        switch tab {
+        case .today: .today
+        case .dog: .profile
+        case .history: .history
+        case .health: .health
+        case .family: .family
+        }
     }
 
     /// togo://join/<token> — приглашение в семью из мессенджера.
@@ -110,8 +125,12 @@ struct UndoToastView: View {
     private func undo(_ toast: AppState.UndoToast) {
         switch toast.action {
         case .removeCreated(let id):
-            if let event = event(id) { context.delete(event) }
+            if let event = event(id) {
+                UsageLog.note(.undo, event.kind.rawValue)
+                context.delete(event)
+            }
         case .restoreDeleted(let ids):
+            UsageLog.note(.undo, "restore")
             // Прогулка возвращается вместе с отметками — тем же составом,
             // каким уходила.
             for id in ids {

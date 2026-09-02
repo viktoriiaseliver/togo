@@ -98,11 +98,11 @@ nonisolated enum MissedDoseAdvisor {
         // всего.
         let startOfDay = calendar.startOfDay(for: scheduled)
         let times = medication.times.sorted()
-        let today = times.map { startOfDay.addingTimeInterval(Double($0) * 60) }
+        let today = times.map { calendar.date(minuteOfDay: $0, on: startOfDay) }
         let upcoming = today.first { $0 > scheduled }
-            ?? times.first.flatMap {
-                calendar.date(byAdding: .day, value: 1, to: startOfDay)?
-                    .addingTimeInterval(Double($0) * 60)
+            ?? times.first.flatMap { minute in
+                calendar.date(byAdding: .day, value: 1, to: startOfDay)
+                    .map { calendar.date(minuteOfDay: minute, on: $0) }
             }
 
         // Интервал между приёмами — из расписания самого препарата.

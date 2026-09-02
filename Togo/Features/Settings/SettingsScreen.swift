@@ -26,6 +26,7 @@ struct SettingsScreen: View {
         .scrollContentBackground(.hidden)
         .background(Token.Surface.screen)
         .navigationTitle("Настройки")
+        .usageScreen(.settings)
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showPaywall) {
             NavigationStack { PaywallScreen() }
@@ -112,6 +113,7 @@ struct SettingsScreen: View {
         Section {
             NavigationLink("Перенос и восстановление") { BackupScreen() }
             NavigationLink("Данные и приватность") { DataPrivacyScreen() }
+            NavigationLink("Журнал действий") { UsageLogScreen() }
         } header: {
             Text("данные")
         } footer: {

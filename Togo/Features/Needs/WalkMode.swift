@@ -35,6 +35,7 @@ struct WalkModeScreen: View {
             }
         }
         .presentationDetents([.large])
+        .usageScreen(.walk)
         .onReceive(tick) { now = $0 }
     }
 

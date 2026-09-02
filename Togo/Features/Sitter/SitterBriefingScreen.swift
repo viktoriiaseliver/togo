@@ -52,6 +52,7 @@ struct SitterBriefingScreen: View {
             TGExplainer(text: "Это всё, что нужно знать. Диагнозов и истории болезни здесь нет — они хозяйке, не тебе.")
         }
         .navigationTitle("Инструкция")
+        .usageScreen(.sitter)
         .navigationBarTitleDisplayMode(.inline)
         .safeAreaInset(edge: .bottom) {
             TGButton(title: "Понятно, открыть «Сегодня»") {

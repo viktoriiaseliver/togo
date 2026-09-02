@@ -52,6 +52,7 @@ struct HealthScreen: View {
                 disclaimer
             }
             .navigationTitle("Здоровье")
+            .usageScreen(.health)
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 SettingsToolbarItem()

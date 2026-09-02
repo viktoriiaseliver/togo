@@ -15,12 +15,6 @@ struct EventLog {
     let context: ModelContext
     let appState: AppState
 
-    /// Записать событие.
-    ///
-    /// - Parameters:
-    ///   - confirmation: что показать в тосте. Пусто — тост не показываем
-    ///     (например, когда экран сам скажет о результате крупнее).
-    ///   - configure: заполнение полей, специфичных для вида записи.
     /// Насколько близко две одинаковые записи считаются одним тапом.
     ///
     /// Не выдумано: в живом дневнике нашлись три записи еды по 65 г
@@ -29,6 +23,12 @@ struct EventLog {
     /// палец соскакивает, и кнопку жмут дважды.
     static let duplicateWindow: TimeInterval = 90
 
+    /// Записать событие.
+    ///
+    /// - Parameters:
+    ///   - confirmation: что показать в тосте. Пусто — тост не показываем
+    ///     (например, когда экран сам скажет о результате крупнее).
+    ///   - configure: заполнение полей, специфичных для вида записи.
     @discardableResult
     func record(
         _ kind: LogKind,
@@ -48,6 +48,7 @@ struct EventLog {
         guard appState.can(kind.requiredPermission) else {
             appState.showUndo("Это записывает тот, кому разрешено")
             Haptics.warning()
+            UsageLog.note(.record, kind.rawValue, outcome: .blocked)
             return nil
         }
 
@@ -60,6 +61,7 @@ struct EventLog {
            let recent = recentDuplicate(of: kind, dog: dog, at: date, like: event) {
             appState.showUndo(duplicateMessage(kind, at: recent.date))
             Haptics.warning()
+            UsageLog.note(.record, kind.rawValue, outcome: .duplicate)
             return nil
         }
 
@@ -68,7 +70,17 @@ struct EventLog {
 
         // Сохраняем сразу: у SwiftData связи применяются не мгновенно,
         // и экран, который читает их запросом, иначе покажет старое.
-        try? context.save()
+        //
+        // Сбой сохранения не проглатываем: «нажала, и ничего не произошло»
+        // — ровно то, из-за чего человек жмёт кнопку второй раз. В журнале
+        // действий это видно строкой, а не тишиной.
+        do {
+            try context.save()
+            UsageLog.note(.record, kind.rawValue)
+        } catch {
+            log.notice("Запись не сохранилась: \(error.localizedDescription)")
+            UsageLog.note(.record, kind.rawValue, outcome: .failed)
+        }
 
         haptic.play()
         if let confirmation {

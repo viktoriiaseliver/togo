@@ -76,6 +76,7 @@ struct FeedingScreen: View {
             }
         }
         .navigationTitle("Питание")
+        .usageScreen(.feeding)
         .navigationBarTitleDisplayMode(.large)
         .task {
             now = Date()

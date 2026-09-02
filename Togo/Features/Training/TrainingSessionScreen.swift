@@ -56,6 +56,7 @@ struct TrainingSessionScreen: View {
             }
         }
         .presentationDetents([.large])
+        .usageScreen(.training)
         .task { ensureFirstStep() }
         .onReceive(tick) { now = $0 }
         .confirmationDialog("Занятие не сохранится", isPresented: $isConfirmingExit, titleVisibility: .visible) {

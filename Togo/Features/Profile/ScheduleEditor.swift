@@ -68,8 +68,6 @@ struct ScheduleDraft: Equatable {
         )
     }
 
-    var intervalBetweenMeals: Int? { effectivePlan.dayInterval }
-
     static func from(_ dog: Dog) -> ScheduleDraft {
         var draft = ScheduleDraft()
         draft.mealsPerDay = dog.mealsPerDay

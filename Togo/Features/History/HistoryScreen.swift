@@ -42,6 +42,7 @@ struct HistoryScreen: View {
                 }
             }
             .navigationTitle("История")
+            .usageScreen(.history)
             .navigationBarTitleDisplayMode(.large)
             .toolbar { SettingsToolbarItem() }
             .sheet(item: Binding(get: { selectedDay.map(DayRef.init) },

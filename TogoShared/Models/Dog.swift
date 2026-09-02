@@ -275,11 +275,6 @@ final class Dog {
         mealPlan(count: count).times
     }
 
-    /// Ночной перерыв при том расписании, которое стоит сейчас.
-    var nightGapMinutes: Int {
-        MealSchedule.nightGap(mealTimes.sorted())
-    }
-
     var isWeightInRange: Bool {
         guard let low = targetWeightLow, let high = targetWeightHigh else { return true }
         return weightKg >= low && weightKg <= high

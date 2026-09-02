@@ -40,6 +40,7 @@ struct DogTab: View {
                 }
             }
             .navigationTitle(dog?.name ?? "Собака")
+            .usageScreen(.profile)
             .navigationBarTitleDisplayMode(.large)
             .toolbar { SettingsToolbarItem() }
         }
