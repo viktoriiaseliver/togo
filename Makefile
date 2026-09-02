@@ -58,9 +58,9 @@ unit: ## Только модульные тесты — быстрая обра�
 		| grep -E "Test run|✘|error:"
 
 .PHONY: device
-device: ## Поставить на подключённый iPhone: make device TEAM=XXXXXXXXXX
+device: ## Поставить на подключённый iPhone: make device TEAM=XXXXXXXXXX [PERSONAL=1]
 	@test -n "$(TEAM)" || (echo "Укажи TEAM=... — id команды из Xcode → Settings → Accounts" && exit 1)
-	@bash Tools/install_device.sh "$(TEAM)"
+	@PERSONAL="$(PERSONAL)" bash Tools/install_device.sh "$(TEAM)"
 
 .PHONY: archive
 archive: ## Собрать архив для App Store Connect
@@ -78,6 +78,11 @@ tokens-check: ## Проверить, что сгенерированные то�
 .PHONY: journal
 journal: ## Завести запись в журнале проекта за сегодня
 	@bash Tools/new_journal.sh
+
+.PHONY: beta
+beta: ## Отдать последнюю сборку тестировщикам: тексты и раздача своим
+	@test -n "$(ASC_ISSUER)" || (echo "Укажи ASC_ISSUER=... — Issuer ID из App Store Connect" && exit 1)
+	@bash Tools/publish_beta.sh
 
 .PHONY: usage
 usage: ## Забрать с телефона журнал действий (что нажимали и чем кончилось)
