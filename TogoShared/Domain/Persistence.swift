@@ -20,9 +20,14 @@ nonisolated enum AppIdentifiers {
 /// в пяти файлах, и поменять его, ничего не забыв, было нельзя.
 nonisolated enum Contacts {
     /// Общая поддержка. Этот же адрес указывается в App Store Connect.
-    static let support = "support@togo.app"
+    ///
+    /// Живой ящик, а не домен: `togo.app` нам не принадлежит, письмо ревьюера
+    /// на него отскочило бы. Заменено 02.09.2026.
+    static let support = "viktoriia.seliver@gmail.com"
     /// Вопросы о данных — по закону нужен отдельный.
-    static let privacy = "privacy@togo.app"
+    ///
+    /// Пока адрес тот же: отдельный ящик заводится вместе с доменом.
+    static let privacy = "viktoriia.seliver@gmail.com"
 
     static func mail(_ address: String, subject: String) -> URL? {
         var components = URLComponents(string: "mailto:\(address)")
