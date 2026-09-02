@@ -76,5 +76,5 @@ cat <<NOTE
 
 Первая публикация поднимается пару минут. Когда откроются — впиши их
 в fastlane/metadata/ru/privacy_url.txt и support_url.txt и выполни
-`make beta`: он проставит политику в TestFlight.
+make beta — он проставит политику в TestFlight.
 NOTE
