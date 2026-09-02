@@ -72,10 +72,23 @@ app = next(a for a in call("apps")["data"]
 # «Что тестировать» у приложения целиком.
 loc = next(l for l in call(f"apps/{app}/betaAppLocalizations")["data"]
            if l["attributes"]["locale"] == "ru")
+# Политика конфиденциальности — обязательное поле для внешнего теста.
+# Пустое поле ревьюер возвращает с «missing privacy policy», а ссылка
+# на несуществующий домен — с 5.1.1. Поэтому мёртвую сюда не пишем:
+# лучше пусто и честно, чем ссылка, которая не открывается.
+privacy = text("privacy_url.txt")
+attributes = {"description": text("testflight_description.txt")}
+if privacy.startswith("http") and "togo.app" not in privacy:
+    attributes["privacyPolicyUrl"] = privacy
+else:
+    print(f"⚠︎ политика не проставлена: {privacy} — страницы нет. "
+          "Сначала Tools/publish_site.sh")
+
 call(f"betaAppLocalizations/{loc['id']}", "PATCH", {"data": {
     "type": "betaAppLocalizations", "id": loc["id"],
-    "attributes": {"description": text("testflight_description.txt")}}})
-print("«что тестировать» обновлено")
+    "attributes": attributes}})
+print("«что тестировать» обновлено"
+      + (f", политика: {privacy}" if "privacyPolicyUrl" in attributes else ""))
 
 # Заметки к последней сборке. Связь приложения сборок не отдаёт —
 # спрашиваем фильтром.

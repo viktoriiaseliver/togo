@@ -22,7 +22,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
 python3 - "$PHONE" <<'PY'
-import json, sys, time, urllib.request, subprocess, os, glob
+import json, sys, time, urllib.request, urllib.error, os, glob
 
 phone = sys.argv[1]
 key_path = glob.glob(os.path.expanduser("~/.appstoreconnect/private_keys/AuthKey_*.p8"))[0]
@@ -48,9 +48,19 @@ def call(path, method="GET", body=None):
     req.add_header("Authorization", "Bearer " + token())
     if data:
         req.add_header("Content-Type", "application/json")
-    with urllib.request.urlopen(req) as r:
-        raw = r.read()
-        return json.loads(raw) if raw else {}
+    try:
+        with urllib.request.urlopen(req) as r:
+            raw = r.read()
+            return json.loads(raw) if raw else {}
+    except urllib.error.HTTPError as e:
+        # Apple объясняет отказ в теле ответа, а не в коде. Без этого
+        # «HTTP Error 422» — это стек питона вместо причины.
+        try:
+            for err in json.loads(e.read())["errors"]:
+                print(f"✗ {err.get('title')}: {err.get('detail')}", file=sys.stderr)
+        except Exception:
+            print(f"✗ HTTP {e.code}", file=sys.stderr)
+        sys.exit(1)
 
 app = next(a for a in call("apps")["data"]
            if a["attributes"]["bundleId"] == "app.togo.diary")["id"]
@@ -65,9 +75,13 @@ call(f"betaAppReviewDetails/{app}", "PATCH", {"data": {
         "contactLastName": os.environ["CONTACT_LAST"],
         "contactEmail": os.environ["CONTACT_EMAIL"],
         "contactPhone": phone,
+        # Аккаунта в приложении нет вовсе — ревьюеру нечего давать,
+        # и сказать об этом надо явно, иначе он ждёт демо-доступ.
         "demoAccountRequired": False,
+        "notes": open("fastlane/metadata/ru/review_notes.txt",
+                      encoding="utf-8").read().strip(),
     }}})
-print("контактное лицо записано")
+print("контактное лицо и заметка для ревьюера записаны")
 
 # Сборки спрашиваем фильтром, а не связью приложения: связь отдаёт
 # пустой список, и скрипт падал на выборе первой сборки.

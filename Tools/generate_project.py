@@ -498,6 +498,12 @@ SCHEME = '''<?xml version="1.0" encoding="UTF-8"?>
             <BuildableReference BuildableIdentifier="primary" BlueprintIdentifier="{UITESTS}" BuildableName="TogoUITests.xctest" BlueprintName="TogoUITests" ReferencedContainer="container:Togo.xcodeproj"/>
          </TestableReference>
       </Testables>
+      <!-- Тот же файл, что и у запуска: тесты, идущие из Xcode, видят
+           цены, а не пустой экран «Цены не загрузились».
+           Проверено: `xcodebuild test` этот файл не подхватывает —
+           UI-тест поднимает приложение сам, мимо схемы. Снимок «Того Pro»
+           с настоящими ценами снимается только из Xcode. -->
+      <StoreKitConfigurationFileReference identifier="../../../Configuration/Togo.storekit"/>
    </TestAction>
    <LaunchAction buildConfiguration="Debug" selectedDebuggerIdentifier="Xcode.DebuggerFoundation.Debugger.LLDB" selectedLauncherIdentifier="Xcode.DebuggerFoundation.Launcher.LLDB" launchStyle="0" useCustomWorkingDirectory="NO" ignoresPersistentStateOnLaunch="NO" debugDocumentVersioning="YES" debugServiceExtension="internal" allowLocationSimulation="YES">
       <BuildableProductRunnable runnableDebuggingMode="0">

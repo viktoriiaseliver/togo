@@ -84,6 +84,15 @@ beta: ## Отдать последнюю сборку тестировщикам
 	@test -n "$(ASC_ISSUER)" || (echo "Укажи ASC_ISSUER=... — Issuer ID из App Store Connect" && exit 1)
 	@bash Tools/publish_beta.sh
 
+.PHONY: site
+site: ## Собрать и опубликовать страницы политики и поддержки
+	@bash Tools/publish_site.sh
+
+.PHONY: subs
+subs: ## Настроить подписки в App Store Connect из subscriptions.json
+	@test -n "$(ASC_ISSUER)" || (echo "Укажи ASC_ISSUER=... — Issuer ID из App Store Connect" && exit 1)
+	@bash Tools/setup_subscriptions.sh
+
 .PHONY: usage
 usage: ## Забрать с телефона журнал действий (что нажимали и чем кончилось)
 	@bash Tools/pull_usage_log.sh
