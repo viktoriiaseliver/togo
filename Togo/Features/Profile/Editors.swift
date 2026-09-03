@@ -142,7 +142,7 @@ struct CareTaskEditorSheet: View {
     var body: some View {
         TGSheet(
             title: isNew ? "Новое напоминание" : title,
-            subtitle: "попадёт в утренний бриф, а не в отдельный пуш",
+            subtitle: "придёт утром вместе с остальным, а не отдельно",
             closeTitle: isNew ? "Отмена" : "Закрыть",
             hasUnsavedChanges: isNew && !title.trimmingCharacters(in: .whitespaces).isEmpty
         ) {
@@ -274,7 +274,7 @@ struct CareTaskEditorSheet: View {
             }
             Button("Отмена", role: .cancel) {}
         } message: {
-            Text("Напоминание перестанет приходить в бриф. Записи о том, что уже сделано, останутся в истории.")
+            Text("Напоминание перестанет приходить по утрам. Записи о том, что уже сделано, останутся в истории.")
         }
     }
 

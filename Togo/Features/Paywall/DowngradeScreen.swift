@@ -40,7 +40,7 @@ struct DowngradeScreen: View {
 
             TGCard {
                 Text("Как отменить").textStyle(AppFont.cardTitle)
-                Text("Отмена живёт у Apple, а не у нас: App Store → ваш Apple ID → Подписки. Подписка доработает до конца оплаченного периода.")
+                Text("Отмена живёт у Apple, а не у нас: App Store → твой Apple ID → Подписки. Подписка доработает до конца оплаченного периода.")
                     .textStyle(AppFont.caption)
                 TGButton(title: "Открыть подписки в App Store", variant: .secondary, size: .medium,
                          systemImage: "arrow.up.right.square") {

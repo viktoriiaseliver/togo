@@ -40,6 +40,23 @@ SUPPORT = contact("support")
 PRIVACY = contact("privacy")
 
 
+def base_url():
+    """Адрес сайта берётся из того же файла, что уходит в App Store Connect.
+
+    Иначе он живёт двумя копиями: одна в витрине, другая в `<link rel=canonical>`,
+    и однажды они разойдутся — а расхождение канонической ссылки поисковик
+    молча трактует как дубль.
+    """
+    path = os.path.join(ROOT, "fastlane/metadata/ru/privacy_url.txt")
+    url = open(path, encoding="utf-8").read().strip()
+    if not url.startswith("http"):
+        sys.exit(f"в {path} не адрес: {url!r}")
+    return url.rsplit("/", 1)[0]
+
+
+BASE = base_url()
+
+
 def substitute(text):
     """Свифтовая интерполяция в тексте — только про адреса."""
     return (text.replace("\\(Contacts.privacy)", PRIVACY)
@@ -80,6 +97,8 @@ PAGE = """<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{title} — Того</title>
+<meta name="description" content="{description}">
+<link rel="canonical" href="{base}/{file}">
 <link rel="stylesheet" href="../style.css">
 </head>
 <body>
@@ -103,7 +122,9 @@ SUPPORT_PAGE = """<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Поддержка — Того</title>
+<title>Поддержка — Того, дневник собаки</title>
+<meta name="description" content="Как связаться с автором Того и ответы на частые вопросы: почему вердикт говорит «непонятно», где вкладка «Здоровье», как забрать свои записи.">
+<link rel="canonical" href="{base}/support.html">
 <link rel="stylesheet" href="../style.css">
 </head>
 <body>
@@ -131,11 +152,11 @@ SUPPORT_PAGE = """<!doctype html>
 первой во всех исходах: приложение не знает лучше вас.</p>
 
 <h3>Где вкладка «Здоровье»?</h3>
-<p>Она приходит вместе с курсом лечения и уходит вместе с ним: включается
-в профиле собаки, выключается кнопкой «Курс завершён» внизу «Здоровья».
-Записи при этом остаются в истории и в отчёте врачу.</p>
+<p>Она приходит с курсом лечения и уходит с ним: включается в профиле
+собаки, выключается кнопкой «Курс завершён» внизу «Здоровья». Записи
+остаются в истории и в отчёте врачу.</p>
 
-<h3>Две записи об одном событии</h3>
+<h3>Два человека отметили одно и то же</h3>
 <p>Если два человека отметили одно и то же в пределах 20 минут, приложение
 покажет карточку слияния обоим. Чужое оно молча не перезаписывает.</p>
 
@@ -165,7 +186,19 @@ def linkify(text):
     return text
 
 
-def render(doc):
+def summary(doc):
+    """Строка для поисковой выдачи: то же «коротко», обрезанное по слову.
+
+    Больше 160 символов поисковик всё равно обрубит, причём на середине
+    слова — лучше обрубить самим и по-человечески.
+    """
+    text = doc["intro"] or doc["sections"][0][1][0]
+    if len(text) <= 160:
+        return text
+    return text[:157].rsplit(" ", 1)[0] + "…"
+
+
+def render(doc, name):
     parts = []
     if doc["intro"]:
         parts.append('<div class="card">\n  <h2>Коротко</h2>\n  <p>%s</p>\n</div>'
@@ -176,6 +209,8 @@ def render(doc):
             parts.append("<p>%s</p>" % linkify(html.escape(paragraph)))
     return PAGE.format(title=html.escape(doc["title"]),
                        updated=html.escape(doc["updated"]),
+                       description=html.escape(summary(doc), quote=True),
+                       base=BASE, file=name,
                        support=SUPPORT,
                        body="\n".join(parts))
 
@@ -185,9 +220,9 @@ os.makedirs(OUT, exist_ok=True)
 for screen, name in (("PrivacyPolicyScreen", "privacy.html"),
                      ("TermsScreen", "terms.html")):
     doc = extract(screen)
-    open(os.path.join(OUT, name), "w", encoding="utf-8").write(render(doc))
+    open(os.path.join(OUT, name), "w", encoding="utf-8").write(render(doc, name))
     print(f"→ site/{name}  ({len(doc['sections'])} разделов)")
 
 open(os.path.join(OUT, "support.html"), "w", encoding="utf-8").write(
-    SUPPORT_PAGE.format(support=SUPPORT))
+    SUPPORT_PAGE.format(support=SUPPORT, base=BASE))
 print("→ site/support.html")

@@ -406,7 +406,7 @@ struct EmptyDayState: View {
                 .padding(.bottom, 2)
                 .accessibilityHidden(true)
             Text("Пока пусто").textStyle(AppFont.cardTitle).foregroundStyle(Token.Ink.primary)
-            Text("Нажми «Просится», когда он подойдёт к двери. Через день здесь появится его режим, и приложение начнёт понимать, когда он действительно хочет на улицу.")
+            Text("Нажми «Просится», когда он подойдёт к двери. Через день здесь появится его режим — и станет видно, когда он правда хочет на улицу.")
                 .textStyle(AppFont.caption)
                 .foregroundStyle(Token.Ink.secondary)
             Text("Ничего заполнять заранее не надо.")

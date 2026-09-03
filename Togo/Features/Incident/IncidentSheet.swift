@@ -160,7 +160,7 @@ private struct IncidentDetailStep: View {
         VStack(alignment: .leading, spacing: Token.Spacing.stack) {
             TGCard {
                 Text("Не наказывай").textStyle(AppFont.cardTitle)
-                Text("Тыкать носом и ругать не учит чистоплотности — учит прятаться и делать лужи там, где не видно. Собака не связывает выговор с тем, что было десять минут назад.")
+                Text("Тыкать носом и ругать учит не чистоплотности, а прятаться и делать лужи там, где не видно. Собака не связывает выговор с тем, что было десять минут назад.")
                     .textStyle(AppFont.caption)
             }
             historyBefore

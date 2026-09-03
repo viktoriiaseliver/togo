@@ -141,7 +141,7 @@ struct ScheduleStep: View {
 
     var body: some View {
         TGScreen(title: "Режим дня") {
-            TGExplainer(text: "Приблизительно — приложение потом сверит это с тем, как вы кормите на самом деле, и поправит.")
+            TGExplainer(text: "Приблизительно — приложение сверит это с тем, как ты кормишь на самом деле, и поправит.")
             ScheduleEditor(draft: $draft, isVerbose: true)
         } bottom: {
             TGButton(title: "Дальше", action: onNext)
@@ -164,7 +164,7 @@ struct CareStep: View {
 
     var body: some View {
         TGScreen(title: "Что делаешь для ухода") {
-            TGExplainer(text: "Отмечено то, что нужно почти всем. Зубы — потому что налёт твердеет за сутки, их чистят каждый день. Остальное у каждой собаки своё, и это можно поменять когда угодно.")
+            TGExplainer(text: "Отмечено то, что нужно почти всем. Зубы — каждый день: налёт твердеет за сутки. Остальное у каждой собаки своё и меняется когда угодно.")
 
             ForEach(CareKind.allCases, id: \.self) { kind in
                 let group = SeedData.careSuggestions.filter { $0.kind == kind }
@@ -310,7 +310,7 @@ struct NotificationsPrimingStep: View {
 
     var body: some View {
         TGScreen(title: "Что будет прерывать") {
-            TGExplainer(text: "Прерывают ровно три вещи. Всё остальное ждёт утреннего брифа — это единственный способ не превратить дневник в источник тревоги.")
+            TGExplainer(text: "Прерывают ровно три вещи. Всё остальное ждёт утра — это единственный способ не превратить дневник в источник тревоги.")
 
             VStack(spacing: Token.Space.s8) {
                 InterruptRow(symbol: "pills", title: "Доза по часам",
@@ -322,8 +322,8 @@ struct NotificationsPrimingStep: View {
             }
 
             TGCard {
-                Text("Один пуш в \(Fmt.clock(minuteOfDay: settings.briefHour * 60))").textStyle(AppFont.cardTitle)
-                Text("Груминг, антипаразитарка, прививки, взвешивание — не восемь пушей, а один бриф в выбранный час. Час можно сдвинуть в настройках.")
+                Text("Одно напоминание в \(Fmt.clock(minuteOfDay: settings.briefHour * 60))").textStyle(AppFont.cardTitle)
+                Text("Груминг, антипаразитарка, прививки, взвешивание — не восемь напоминаний, а одно в выбранный час. Час можно сдвинуть в настройках.")
                     .textStyle(AppFont.caption)
             }
         } bottom: {

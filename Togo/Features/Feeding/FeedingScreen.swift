@@ -129,7 +129,7 @@ struct FeedingScreen: View {
                 )
 
                 if stocks.isEmpty {
-                    TGExplainer(text: "Впиши, чем кормишь и в какой фасовке — приложение посчитает, на сколько хватит, и напомнит за неделю до конца. Сухой считается мешками, влажный — банками.")
+                    TGExplainer(text: "Впиши, чем кормишь и в какой фасовке — приложение посчитает, на сколько хватит, и напомнит за неделю до конца.")
                 } else {
                     ForEach(stocks) { stock in
                         StockRow(stock: stock, now: now)
