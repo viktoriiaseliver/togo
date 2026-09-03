@@ -64,9 +64,18 @@ device: ## Поставить на подключённый iPhone: make device 
 
 .PHONY: archive
 archive: ## Собрать архив для App Store Connect
+	@# Номер сборки — количество коммитов, как в Tools/upload_testflight.sh.
+	@# Без него архив получал BUILD_NUMBER = 1 из xcconfig: собирался
+	@# успешно и был непригоден, потому что номер обязан расти от загрузки
+	@# к загрузке. Узнать об этом на шаге загрузки — потерять сборку зря.
 	@xcodebuild -project $(PROJECT) -scheme $(SCHEME) -configuration Release \
 		-destination 'generic/platform=iOS' \
-		-archivePath build/Togo.xcarchive archive
+		-archivePath build/Togo.xcarchive \
+		-allowProvisioningUpdates \
+		BUILD_NUMBER="$$(git rev-list --count HEAD)" \
+		archive
+	@echo "Собрано: $(SCHEME) $$(plutil -extract ApplicationProperties.CFBundleShortVersionString raw build/Togo.xcarchive/Info.plist) ($$(plutil -extract ApplicationProperties.CFBundleVersion raw build/Togo.xcarchive/Info.plist))"
+	@echo "Загружает в TestFlight Tools/upload_testflight.sh — он архивирует сам."
 
 .PHONY: tokens-check
 tokens-check: ## Проверить, что сгенерированные токены не расходятся с tokens.json
