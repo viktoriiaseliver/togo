@@ -14338,13 +14338,13 @@
       },
       "comment": "body"
     },
-    "Того · утренний бриф": {
+    "Того · утренняя сводка": {
       "extractionState": "manual",
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Того · утренний бриф"
+            "value": "Того · утренняя сводка"
           }
         }
       },
@@ -15202,18 +15202,6 @@
       },
       "comment": "body"
     },
-    "Утренний бриф": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Утренний бриф"
-          }
-        }
-      },
-      "comment": "settings"
-    },
     "Утренний выход": {
       "extractionState": "manual",
       "localizations": {
@@ -15237,6 +15225,18 @@
         }
       },
       "comment": "hour"
+    },
+    "Утренняя сводка": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Утренняя сводка"
+          }
+        }
+      },
+      "comment": "settings"
     },
     "Ухаживающий": {
       "extractionState": "manual",
@@ -15526,18 +15526,6 @@
       },
       "comment": "body"
     },
-    "Час брифа": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Час брифа"
-          }
-        }
-      },
-      "comment": "settings"
-    },
     "Час назад было три эпизода подряд. Если повторилось — стоит позвонить.": {
       "extractionState": "manual",
       "localizations": {
@@ -15549,6 +15537,18 @@
         }
       },
       "comment": "ReminderScheduler"
+    },
+    "Час сводки": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Час сводки"
+          }
+        }
+      },
+      "comment": "settings"
     },
     "Частая причина панкреатита после праздников.": {
       "extractionState": "manual",
@@ -22702,13 +22702,13 @@
       },
       "comment": "title"
     },
-    "утренний бриф": {
+    "утренняя сводка": {
       "extractionState": "manual",
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "утренний бриф"
+            "value": "утренняя сводка"
           }
         }
       },

@@ -1,7 +1,7 @@
 import Foundation
 import UserNotifications
 
-/// Всё повторяющееся собирается в один бриф в выбранный час.
+/// Всё повторяющееся собирается в одну сводку в выбранный час.
 /// Прерывают только доза по расписанию, окно натощак и лестница эскалации.
 enum NotificationCenterService {
     enum Category: String {
@@ -32,7 +32,7 @@ enum NotificationCenterService {
         guard !lines.isEmpty else { return }
 
         let content = UNMutableNotificationContent()
-        content.title = "Того · утренний бриф"
+        content.title = "Того · утренняя сводка"
         content.body = lines.prefix(4).joined(separator: "\n")
         content.sound = .default
         content.interruptionLevel = .active

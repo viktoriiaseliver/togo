@@ -68,7 +68,7 @@ struct SettingsScreen: View {
             NavigationLink {
                 NotificationSettingsScreen()
             } label: {
-                LabeledContent("Утренний бриф", value: Fmt.clock(minuteOfDay: settings.briefHour * 60))
+                LabeledContent("Утренняя сводка", value: Fmt.clock(minuteOfDay: settings.briefHour * 60))
             }
             LabeledContent("Тихие часы") {
                 Text("\(Fmt.clock(minuteOfDay: settings.quietHoursStart * 60)) — \(Fmt.clock(minuteOfDay: settings.quietHoursEnd * 60))")
@@ -167,7 +167,7 @@ struct SettingsScreen: View {
     }
 }
 
-/// Час брифа и тихие часы — единственные ручки, которые человек реально крутит.
+/// Час сводки и тихие часы — единственные ручки, которые человек реально крутит.
 struct NotificationSettingsScreen: View {
     @Environment(Settings.self) private var settings
     @Environment(AppState.self) private var appState
@@ -179,7 +179,7 @@ struct NotificationSettingsScreen: View {
 
         List {
             Section {
-                Picker("Час брифа", selection: $settings.briefHour) {
+                Picker("Час сводки", selection: $settings.briefHour) {
                     ForEach(5...12, id: \.self) { hour in
                         Text(Fmt.clock(minuteOfDay: hour * 60)).tag(hour)
                     }
@@ -189,7 +189,7 @@ struct NotificationSettingsScreen: View {
                     Task { await ReminderScheduler.scheduleBrief(dog: appState.activeDog(from: dogs), settings: settings) }
                 }
             } header: {
-                Text("утренний бриф")
+                Text("утренняя сводка")
             } footer: {
                 Text("Груминг, антипаразитарка, прививки и взвешивание приходят одним сообщением в этот час. Отложенное дважды в нём подсвечивается, но в тревогу не переходит.")
             }

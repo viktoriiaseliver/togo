@@ -180,10 +180,23 @@ SUPPORT_PAGE = """<!doctype html>
 """
 
 def linkify(text):
-    """Адрес почты в тексте — ссылка: на странице по нему пишут."""
-    for address in (PRIVACY, SUPPORT):
-        text = text.replace(address, f'<a href="mailto:{address}">{address}</a>')
-    return text
+    """Адрес почты в тексте — ссылка: на странице по нему пишут.
+
+    Одним проходом и сразу по всем адресам. Раньше здесь стоял цикл
+    с `str.replace` на каждый адрес — а `Contacts.privacy`
+    и `Contacts.support` это один и тот же ящик. Второй проход находил
+    адрес внутри ссылки, собранной первым, и подставлял ссылку в ссылку:
+
+        <a href="mailto:<a href="mailto:…">…</a>">…</a>
+
+    На живой странице политики это была единственная строка, по которой
+    ревьюер может кликнуть, и она не открывалась. `re.sub` идёт слева
+    направо и свой же результат не перечитывает, поэтому вложиться
+    ссылке больше некуда — сколько бы адресов ни совпало.
+    """
+    addresses = sorted({PRIVACY, SUPPORT}, key=len, reverse=True)
+    return re.sub("|".join(re.escape(a) for a in addresses),
+                  lambda m: f'<a href="mailto:{m[0]}">{m[0]}</a>', text)
 
 
 def summary(doc):
@@ -226,3 +239,20 @@ for screen, name in (("PrivacyPolicyScreen", "privacy.html"),
 open(os.path.join(OUT, "support.html"), "w", encoding="utf-8").write(
     SUPPORT_PAGE.format(support=SUPPORT, base=BASE))
 print("→ site/support.html")
+
+
+# Проверка того, что уже написано на диск, а не того, что мы собирались
+# написать. Ссылку на почту ревьюер обязан открыть — битая почта это
+# отказ по 5.1.1, и однажды она сюда уже уехала: адрес подставился
+# внутрь адреса, а по коду 200 это было незаметно.
+for name in ("privacy.html", "terms.html", "support.html"):
+    page = open(os.path.join(OUT, name), encoding="utf-8").read()
+    for broken, what in (('mailto:<', "адрес внутри адреса"),
+                         ('href="mailto:"', "пустой mailto"),
+                         ('<a href="mailto:' + SUPPORT + '">' + SUPPORT
+                          + '</a></a>', "лишний закрывающий тег")):
+        if broken in page:
+            sys.exit(f"site/{name}: сломанная почта — {what}")
+    if "mailto:" not in page:
+        sys.exit(f"site/{name}: почты нет вовсе — ревьюеру некуда написать")
+print("почта на всех трёх страницах кликабельна")

@@ -15,9 +15,9 @@ struct DeadLogicTests {
         ModelContext(Persistence.container())
     }
 
-    // MARK: Утренний бриф
+    // MARK: Утренняя сводка
 
-    @Test("В бриф попадают дела на завтра, а не пустота")
+    @Test("В сводку попадают дела на завтра, а не пустота")
     func briefHasLines() {
         let context = контекст()
         let dog = Dog(name: "Стич", weightKg: 4.73)
@@ -33,7 +33,7 @@ struct DeadLogicTests {
         #expect(строки[0].contains("Когти"))
     }
 
-    @Test("Отложенное дважды подсвечивается в брифе, но не становится тревогой")
+    @Test("Отложенное дважды подсвечивается в сводке, но не становится тревогой")
     func snoozedIsMarked() {
         let context = контекст()
         let dog = Dog(name: "Стич", weightKg: 4.73)
@@ -48,7 +48,7 @@ struct DeadLogicTests {
         #expect(ReminderScheduler.briefLines(dog: dog)[0].contains("откладывали"))
     }
 
-    @Test("Ежедневное в бриф не сыплется каждый день без причины")
+    @Test("Ежедневное в сводку не сыплется каждый день без причины")
     func briefIsShort() {
         let context = контекст()
         let dog = Dog(name: "Стич", weightKg: 4.73)
@@ -65,7 +65,7 @@ struct DeadLogicTests {
                 "один пуш, а не список из девяти строк")
     }
 
-    @Test("Без собаки бриф пустой и ничего не шлёт")
+    @Test("Без собаки сводка пустая и ничего не шлёт")
     func briefWithoutDog() {
         #expect(ReminderScheduler.briefLines(dog: nil).isEmpty)
     }

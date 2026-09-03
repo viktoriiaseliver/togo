@@ -216,7 +216,7 @@ struct CareScreen: View {
     }
 
     /// Отложить на завтра. Счётчик нужен не для укора: отложенное дважды
-    /// подсвечивается в брифе, но в тревогу не переходит.
+    /// подсвечивается в сводке, но в тревогу не переходит.
     private func snooze(_ task: CareTask) {
         let calendar = Calendar.current
         switch task.kind {
