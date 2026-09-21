@@ -59,12 +59,24 @@ nonisolated enum WalkRhythmAnalyzer {
         let byDay = Dictionary(grouping: recent) { calendar.startOfDay(for: $0.date) }
         let days = byDay.count
 
+        // Дозапись знает ДЕНЬ и не знает часа: у неё `date` — полночь.
+        //
+        // Для счёта «сколько выходов в день» она годится: человек помнит,
+        // что в тот день гуляли, и это правда. Для всего, что считается
+        // ПО ЧАСАМ, — нет: промежуток между двумя полуночами не промежуток,
+        // а «обычно выходите в 00:00» — прямая ложь, собранная из
+        // отсутствующих данных.
+        //
+        // Поэтому дальше два набора: `recent` для дней и `precise` для часов.
+        let precise = recent.filter { !$0.isDayOnly }
+        let byPreciseDay = Dictionary(grouping: precise) { calendar.startOfDay(for: $0.date) }
+
         // Промежутки считаются от конца выхода: пока гуляли, собака
         // не была дома.
         var gaps: [TimeInterval] = []
-        for (index, outing) in recent.enumerated() where index + 1 < recent.count {
+        for (index, outing) in precise.enumerated() where index + 1 < precise.count {
             let ended = outing.date.addingTimeInterval(Double(outing.durationSeconds ?? 0))
-            let gap = recent[index + 1].date.timeIntervalSince(ended)
+            let gap = precise[index + 1].date.timeIntervalSince(ended)
             guard gap > 0, gap < nightThreshold else { continue }
             gaps.append(gap)
         }
@@ -74,8 +86,9 @@ nonisolated enum WalkRhythmAnalyzer {
             outingsPerDay: Double(recent.count) / Double(max(1, days)),
             averageIndoors: gaps.isEmpty ? 0 : gaps.reduce(0, +) / Double(gaps.count),
             longestIndoors: gaps.max() ?? 0,
+            // «Обычное время» — только по записям, у которых час есть.
             usualTimes: FeedingAnalyzer.mealTimeClusters(
-                days: byDay.map { day, items in
+                days: byPreciseDay.map { day, items in
                     FeedingReport.Day(
                         date: day,
                         grams: 0,

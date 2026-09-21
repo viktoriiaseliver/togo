@@ -22,6 +22,8 @@ nonisolated enum DoseScheduler {
         let startOfDay = calendar.startOfDay(for: day)
         var created = 0
 
+        var removed = 0
+
         for medication in dog.medications where !medication.isPaused {
             for minute in medication.times.sorted() {
                 let scheduled = calendar.date(minuteOfDay: minute, on: startOfDay)
@@ -35,10 +37,49 @@ nonisolated enum DoseScheduler {
                 context.insert(dose)
                 created += 1
             }
+
+            removed += removeOrphans(of: medication, on: startOfDay,
+                                     calendar: calendar, context: context)
         }
 
-        if created > 0 { try? context.save() }
+        if created > 0 || removed > 0 { try? context.save() }
         return created
+    }
+
+    /// Убрать отметки на час, которого в расписании больше нет.
+    ///
+    /// **Зачем.** Время приёма правят: завели 13:00, передумали, поставили
+    /// 21:30. Отметка на 13:00 при этом оставалась — ничья, никем
+    /// не отмечаемая, — и через час после своего часа становилась
+    /// просроченной навсегда. 21.09.2026 это выглядело на телефоне как
+    /// красное «Доза 21:30 не отмечена» в 14:05: тревога о дозе, до
+    /// которой семь часов. Формула эскалации при этом считала верно —
+    /// врали данные.
+    ///
+    /// Красный у Того несёт лекарства, и ложная тревога обесценивает его
+    /// весь — поэтому сироту убираем, а не прячем.
+    ///
+    /// **Трогаем только нетронутые.** Отмеченная, пропущенная, отменённая
+    /// или взятая на себя доза — это история и чужое решение; её удаление
+    /// было бы куда хуже лишнего баннера.
+    @MainActor
+    private static func removeOrphans(
+        of medication: Medication, on startOfDay: Date,
+        calendar: Calendar, context: ModelContext
+    ) -> Int {
+        let расписание = Set(medication.times)
+        var removed = 0
+        for dose in medication.doses
+        where calendar.isDate(dose.scheduledAt, inSameDayAs: startOfDay) {
+            guard dose.givenAt == nil, dose.skippedAt == nil,
+                  dose.cancelledAt == nil, dose.claimedAt == nil else { continue }
+            let minute = calendar.component(.hour, from: dose.scheduledAt) * 60
+                + calendar.component(.minute, from: dose.scheduledAt)
+            guard !расписание.contains(minute) else { continue }
+            context.delete(dose)
+            removed += 1
+        }
+        return removed
     }
 
     /// Отметить приём. Возвращает отметку, чтобы экран мог показать,

@@ -129,7 +129,9 @@ struct DayPlanList: View {
                     .font(.system(size: 13, weight: .medium))
                     .foregroundStyle(Token.Status.waitingText)
                     .accessibilityHidden(true)
-                Text("\(awaitingDate) \(Fmt.plural(awaitingDate, "напоминание ждёт", "напоминания ждут", "напоминаний ждут")) даты")
+                // `Fmt.plural` возвращает число ВМЕСТЕ со словом. Число
+                // перед ним печаталось второй раз: «5 5 напоминаний».
+                Text("\(Fmt.plural(awaitingDate, "напоминание ждёт", "напоминания ждут", "напоминаний ждут")) даты")
                     .textStyle(AppFont.caption)
                     .foregroundStyle(Token.Ink.secondary)
                     .wraps()

@@ -11,6 +11,7 @@ struct TodayScreen: View {
     @Environment(AppState.self) private var appState
     @Environment(Settings.self) private var settings
     @Environment(\.modelContext) private var context
+    @Environment(\.scenePhase) private var scenePhase
     @Query private var dogs: [Dog]
     @Query private var members: [FamilyMember]
     @Query private var trips: [Trip]
@@ -90,6 +91,7 @@ struct TodayScreen: View {
                         }
 
                         TodayHero(indoors: timeIndoors,
+                                  lastOutingEndedAt: lastOutingEndedAt,
                                   session: appState.session,
                                   now: now,
                                   rhythm: WalkRhythmAnalyzer.rhythm(events: events, now: now),
@@ -209,6 +211,15 @@ struct TodayScreen: View {
                 // а разойтись они могут молча.
                 await ReminderScheduler.refresh(dog: dog, settings: settings, at: now)
             }
+            // `Timer.publish` в фоне не тикает: вернувшись в приложение,
+            // человек до следующего тика видит вчерашнее «сейчас».
+            // 21.09.2026 это выглядело как метка «сейчас · 14:03»,
+            // стоящая ПОСЛЕ записей 14:04, — и читалось как сломанная
+            // сортировка ленты, хотя лента была в порядке.
+            .onChange(of: scenePhase) { _, phase in
+                guard phase == .active else { return }
+                now = Date()
+            }
             .onChange(of: episodes.count) { _, _ in
                 appState.refreshEpisode(from: episodes, at: now)
             }
@@ -290,6 +301,13 @@ struct TodayScreen: View {
     private var timeIndoors: TimeInterval? {
         TimelineBuilder.timeIndoorsNow(TimelineBuilder.blocks(Diary.active(events)),
                                        now: now, threshold: 0)
+    }
+
+    /// Конец последнего записанного выхода. Герою нужен, чтобы за потолком
+    /// тишины сказать «записей нет с такого-то», а не печатать число часов,
+    /// которое отвечает уже не на тот вопрос.
+    private var lastOutingEndedAt: Date? {
+        TimelineBuilder.blocks(Diary.active(events)).last(where: \.isOuting)?.endedAt
     }
 
     /// Сколько раз сегодня выходили. Отметки внутри прогулки —
@@ -518,9 +536,19 @@ struct TodayScreen: View {
                               : "Записывать может тот, кому это разрешено")
             return
         }
+        // Один поступок — один момент. Раньше их было два: лента писалась
+        // свежим `.now` внутри `EventLog.record`, а отметка приёма —
+        // экранным `now`, который тикает раз в 30 секунд и в фоне
+        // не тикает вовсе. На границе минуты это расходилось на минуту:
+        // 21.09.2026 баннер сказал «после Эутирокс в 14:03», а лента
+        // в той же секунде — «Доза 14:04». Экранное `now` годится,
+        // чтобы показывать, и не годится, чтобы записывать.
+        let момент = Date()
+
         EventLog(context: context, appState: appState)
             .record(logKind(of: item),
                     dog: dog,
+                    at: момент,
                     confirmation: "Записано · \(item.title)") { event in
                 switch item.kind {
                 case .meal:
@@ -543,7 +571,7 @@ struct TodayScreen: View {
         // когда дело понадобится в следующий раз.
         if item.kind == .care, let task = item.careTask {
             lastCareDone[task.id] = task.lastDone
-            task.markDone(at: now)
+            task.markDone(at: момент)
             try? context.save()
         }
 
@@ -551,12 +579,12 @@ struct TodayScreen: View {
         // считается окно натощак и на неё смотрит защита от двойной дозы.
         if item.kind == .dose, let medication = item.medication {
             if let dose = DoseScheduler.markGiven(medication, scheduledAt: item.time,
-                                                  by: appState.currentUserName, at: now,
+                                                  by: appState.currentUserName, at: момент,
                                                   context: context) {
                 // Отметили — значит, догонять уже не надо.
                 ReminderScheduler.cancelDose(dose)
             }
-            Task { await ReminderScheduler.refresh(dog: dog, settings: settings, at: now) }
+            Task { await ReminderScheduler.refresh(dog: dog, settings: settings, at: момент) }
         }
     }
 }

@@ -127,6 +127,43 @@ struct TreatmentCourseTests {
         #expect(created == 0)
     }
 
+    /// **Правка времени приёма не должна оставлять сироту.**
+    ///
+    /// 21.09.2026 на телефоне красным горело «Доза 21:30 не отмечена»
+    /// в 14:05 — за семь часов ДО дозы. По формуле так быть не может:
+    /// `escalationStage` для будущей дозы даёт 0. Значит дело в данных,
+    /// и вот откуда они берутся: `ensureDoses` заводит отметки по
+    /// текущему `medication.times`, а при правке времени **старая
+    /// отметка остаётся** — ничья, никем не отмечаемая, и через час
+    /// после своего часа она просрочена навсегда.
+    ///
+    /// Цена высокая не в часах, а в доверии: красный у Того несёт
+    /// лекарства, и ложная тревога обесценивает его весь.
+    @Test("Правка времени приёма не оставляет просроченную сироту")
+    func editingScheduleLeavesNoOrphanDose() throws {
+        let (context, dog, medication) = try setup()
+        let calendar = Calendar.current
+        let день = calendar.startOfDay(for: Date())
+
+        medication.times = [13 * 60]
+        try context.save()
+        #expect(DoseScheduler.ensureDoses(for: dog, on: день, context: context) == 1)
+
+        // Человек передумал: приём не в 13:00, а в 21:30.
+        medication.times = [21 * 60 + 30]
+        try context.save()
+        DoseScheduler.ensureDoses(for: dog, on: день, context: context)
+
+        let времена = medication.doses
+            .filter { calendar.isDate($0.scheduledAt, inSameDayAs: день) }
+            .map { calendar.component(.hour, from: $0.scheduledAt) }
+            .sorted()
+        #expect(
+            времена == [21],
+            "осталась отметка на час, которого в расписании больше нет: \(времена) — через час она станет «не отмечена» и будет гореть красным вечно"
+        )
+    }
+
     @Test("Завершение не трогает вес и историю собаки")
     func historySurvives() throws {
         let (context, dog, _) = try setup()
