@@ -5,7 +5,11 @@
 
 SCHEME      ?= Togo
 PROJECT     ?= Togo.xcodeproj
-DESTINATION ?= platform=iOS Simulator,name=iPhone 17 Pro
+# Имя симулятора прибивать нельзя: обновление Xcode их переименовывает,
+# и документированная команда сборки умирает молча. Xcode 27 унёс
+# «iPhone 17 Pro» — ровно так это и случилось. UDID ищется в момент
+# прогона тем же скриптом, которым уже пользуется CI (ci.yml).
+DESTINATION ?= platform=iOS Simulator,id=$$(python3 Tools/ci_simulator.py)
 CONFIG      ?= Debug
 
 .DEFAULT_GOAL := help
@@ -44,17 +48,17 @@ bootstrap: tokens project ## Собрать проект с нуля после 
 .PHONY: build
 build: ## Собрать приложение под симулятор
 	@xcodebuild -project $(PROJECT) -scheme $(SCHEME) -configuration $(CONFIG) \
-		-destination '$(DESTINATION)' build | tail -5
+		-destination "$(DESTINATION)" build | tail -5
 
 .PHONY: test
 test: ## Прогнать модульные и UI-тесты
 	@xcodebuild -project $(PROJECT) -scheme $(SCHEME) -configuration $(CONFIG) \
-		-destination '$(DESTINATION)' test | grep -E "Test run|Executed|error:|\*\* TEST"
+		-destination "$(DESTINATION)" test | grep -E "Test run|Executed|error:|\*\* TEST"
 
 .PHONY: unit
 unit: ## Только модульные тесты — быстрая обратная связь
 	@xcodebuild -project $(PROJECT) -scheme $(SCHEME) -configuration $(CONFIG) \
-		-destination '$(DESTINATION)' test -only-testing:TogoTests \
+		-destination "$(DESTINATION)" test -only-testing:TogoTests \
 		| grep -E "Test run|✘|error:"
 
 .PHONY: device

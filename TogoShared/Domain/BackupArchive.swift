@@ -122,6 +122,12 @@ nonisolated struct BackupArchive: Codable, Sendable {
         var doseText: String
         var times: [Int]
         var fastingMinutes: Int
+        /// Окно натощак ПЕРЕД дозой. Необязательное: архивы, снятые
+        /// до появления поля, читаются как прежде, и при восстановлении
+        /// окно «до» берётся симметричным — так же, как у схемы,
+        /// которая его не заполняла. Терять половину правила молча
+        /// нельзя: это лечение.
+        var fastingBeforeMinutes: Int?
         var isPaused: Bool
         var prescriber: String?
         var cancelledAt: Date?

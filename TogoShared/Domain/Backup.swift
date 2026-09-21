@@ -107,7 +107,9 @@ nonisolated enum BackupService {
             medications: dog.medications.map { medication in
                 BackupArchive.MedicationSnapshot(
                     name: medication.name, doseText: medication.doseText, times: medication.times,
-                    fastingMinutes: medication.fastingMinutes, isPaused: medication.isPaused,
+                    fastingMinutes: medication.fastingMinutes,
+                    fastingBeforeMinutes: medication.fastingBeforeMinutes,
+                    isPaused: medication.isPaused,
                     prescriber: medication.prescriber, cancelledAt: medication.cancelledAt,
                     cancelledNote: medication.cancelledNote,
                     doses: medication.doses.map {
@@ -365,6 +367,7 @@ nonisolated enum BackupService {
                                         doseText: medicationSnapshot.doseText,
                                         times: medicationSnapshot.times,
                                         fastingMinutes: medicationSnapshot.fastingMinutes)
+            medication.fastingBeforeMinutes = medicationSnapshot.fastingBeforeMinutes ?? 0
             medication.isPaused = medicationSnapshot.isPaused
             medication.prescriber = medicationSnapshot.prescriber
             medication.cancelledAt = medicationSnapshot.cancelledAt

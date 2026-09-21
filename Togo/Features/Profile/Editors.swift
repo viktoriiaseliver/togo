@@ -344,6 +344,7 @@ struct MedicationEditorSheet: View {
     @State private var doseText = ""
     @State private var times: [Int] = [7 * 60]
     @State private var fastingMinutes = 0
+    @State private var fastingBeforeMinutes = 0
     @State private var prescriber = ""
     @State private var loaded = false
     @State private var isConfirmingDelete = false
@@ -409,9 +410,23 @@ struct MedicationEditorSheet: View {
             }
 
             TGCard {
+                // Два окна, а не одно. «Натощак» — это про пустой желудок,
+                // а пустым он бывает ДО таблетки; раньше здесь стояла
+                // только половина правила, и схема «еда в 20:55, доза
+                // в 21:00» проходила проверку целиком.
+                Stepper(value: $fastingBeforeMinutes, in: 0...180, step: 15) {
+                    HStack {
+                        Text("Не кормить до приёма").textStyle(AppFont.body)
+                        Spacer()
+                        Text(fastingBeforeMinutes == 0 ? "не нужно" : "\(fastingBeforeMinutes) мин")
+                            .textStyle(AppFont.numeric(15))
+                    }
+                }
+                .frame(minHeight: Token.Size.tapTarget)
+                TGDivider()
                 Stepper(value: $fastingMinutes, in: 0...180, step: 15) {
                     HStack {
-                        Text("Окно натощак").textStyle(AppFont.body)
+                        Text("Не кормить после приёма").textStyle(AppFont.body)
                         Spacer()
                         Text(fastingMinutes == 0 ? "не нужно" : "\(fastingMinutes) мин")
                             .textStyle(AppFont.numeric(15))
@@ -460,6 +475,9 @@ struct MedicationEditorSheet: View {
         doseText = medication.doseText
         times = medication.times.isEmpty ? [7 * 60] : medication.times
         fastingMinutes = medication.fastingMinutes
+        // У схемы, заведённой до появления поля, окно «до» читается
+        // симметрично — показываем то же, что и применяем.
+        fastingBeforeMinutes = medication.fastingBefore
         prescriber = medication.prescriber ?? ""
         loaded = true
     }
@@ -470,6 +488,7 @@ struct MedicationEditorSheet: View {
         target.doseText = doseText
         target.times = times.sorted()
         target.fastingMinutes = fastingMinutes
+        target.fastingBeforeMinutes = fastingBeforeMinutes
         target.prescriber = prescriber.isEmpty ? nil : prescriber
         if medication == nil {
             target.dog = dog

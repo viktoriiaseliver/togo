@@ -1,0 +1,76 @@
+{
+  "sourceLanguage" : "ru",
+  "strings" : {
+    "${applicationName}: прогулка" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ru" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "${applicationName}: прогулка",
+              "Прогулка в ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Давно ли гуляли в ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ru" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Давно ли гуляли в ${applicationName}",
+              "${applicationName}: давно ли гуляли"
+            ]
+          }
+        }
+      }
+    },
+    "Записать кормление в ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ru" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Записать кормление в ${applicationName}",
+              "${applicationName}: покормила"
+            ]
+          }
+        }
+      }
+    },
+    "Отметить в ${applicationName}, что пописал" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ru" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Отметить в ${applicationName}, что пописал",
+              "${applicationName}: пописал"
+            ]
+          }
+        }
+      }
+    },
+    "Отметить стул в ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ru" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Отметить стул в ${applicationName}",
+              "${applicationName}: стул"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.2"
+}

@@ -38,15 +38,29 @@ struct FeedingScreen: View {
 
     /// Окна натощак берутся из активных схем: у собаки на лечении
     /// расписание кормления обязано с ними считаться.
+    ///
+    /// Окно **двустороннее**. Раньше здесь была только половина — от
+    /// дозы вперёд, — и расписание «кормить в 20:55, таблетка в 21:00»
+    /// считалось безупречным, хотя таблетка при этом уходит в полный
+    /// желудок. См. `FeedingGate`.
     private var fastingWindows: [(start: Int, end: Int)] {
         guard let dog, dog.isOnTreatment else { return [] }
+        let сутки = 24 * 60
         return dog.medications
-            .filter { $0.fastingMinutes > 0 && !$0.isPaused }
+            .filter { !$0.isPaused && ($0.fastingMinutes > 0 || $0.fastingBefore > 0) }
             .flatMap { medication in
-                medication.times.map { start in
-                    (start: start, end: (start + medication.fastingMinutes) % (24 * 60))
+                medication.times.map { time in
+                    let начало = (time - medication.fastingBefore + сутки) % сутки
+                    return (start: начало,
+                            end: (time + medication.fastingMinutes) % сутки)
                 }
             }
+    }
+
+    /// Почему кормить нельзя прямо сейчас. `nil` — можно.
+    private var fastingBlock: FeedingGate.Block? {
+        guard let dog, dog.isOnTreatment else { return nil }
+        return FeedingGate.block(for: dog.medications, now: now)
     }
 
     var body: some View {
@@ -65,6 +79,7 @@ struct FeedingScreen: View {
                 // потом запас и разбор, и только в конце длинные графики.
                 // Норма стояла последней, под графиками: самый частый
                 // вопрос был спрятан глубже всего.
+                if let блок = fastingBlock { fastingCard(блок) }
                 todayCard
                 amountCard
                 stockCard
@@ -307,6 +322,32 @@ struct FeedingScreen: View {
     }
 
     // MARK: Конфликты
+
+    /// «Сейчас кормить нельзя» — с причиной и со временем, когда можно.
+    ///
+    /// Причина названа словами, а не значком: запрет без причины человек
+    /// выполнит один раз, а на второй обойдёт — особенно когда собака
+    /// просит еду и выглядит голодной.
+    private func fastingCard(_ block: FeedingGate.Block) -> some View {
+        TGCard {
+            TGBanner(
+                tone: .alarm,
+                title: "Сейчас кормить нельзя",
+                subtitle: {
+                    switch block {
+                    case .before(let лекарство, let доза):
+                        return "\(лекарство) дают натощак в \(Fmt.clock(доза)) — "
+                             + "к этому времени желудок должен быть пустым. "
+                             + "Покормить можно после приёма."
+                    case .after(let лекарство, let дано, let до):
+                        return "\(лекарство) дали в \(Fmt.clock(дано)). "
+                             + "Еда сейчас помешает всасыванию — можно с \(Fmt.clock(до))."
+                    }
+                }(),
+                systemImage: "fork.knife.circle"
+            )
+        }
+    }
 
     private var conflictsCard: some View {
         TGCard {
