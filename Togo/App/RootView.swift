@@ -94,7 +94,7 @@ struct UndoToastView: View {
         if let toast = appState.undo {
             HStack(spacing: 12) {
                 Image(systemName: "checkmark.circle.fill")
-                    .foregroundStyle(Token.Action.done)
+                    .foregroundStyle(Token.Action.doneText)
                     .accessibilityHidden(true)
                 // Подпись вешаем на текст, а не на всю плашку: иначе она
                 // перекрывает собственное имя кнопки «Отменить», и до неё

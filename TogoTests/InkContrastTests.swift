@@ -43,15 +43,53 @@ struct InkContrastTests {
     ///
     /// Проверка лексическая, и это сознательно: цвет применяется в вёрстке,
     /// а не в токене, поэтому поймать его можно только там, где он написан.
-    @Test("Faint не применяется как цвет переднего плана")
-    func faintIsNeverAForegroundColour() throws {
-        let запрещённые = [
-            "foregroundStyle(Token.Ink.faint)",
-            "color(Token.Ink.faint)",
-            "stroke(Token.Ink.faint",
-            "fill(Token.Ink.faint",
-            "return Token.Ink.faint",
+    /// **Ни один токен, проваливающий порог, не красит передний план.**
+    ///
+    /// Список запрещённых НЕ написан руками — он вычисляется замером.
+    /// Прежняя редакция запрещала `Ink.faint` поимённо, и этого хватило
+    /// ровно на одну ошибку: рядом жил `Action.done` — мятный ТИНТ 14 %,
+    /// которым красили живой текст в двадцати местах, включая «в норме»
+    /// на экране здоровья. Он даёт **1,3:1** — вдвое хуже запрещённого
+    /// faint, и запрет по имени его не видел.
+    ///
+    /// Корень один и тот же: **заливочный токен, применённый как
+    /// чернила**. Ловить его надо по свойству, а не по имени, иначе
+    /// сторож будет всегда на одну ошибку позади.
+    @Test("Токен, не берущий порог, не красит передний план")
+    func failingTokensAreNeverForegroundColours() throws {
+        // Имя токена в коде → его цвет. Список закрытый и потому честный:
+        // новый токен придётся добавить сюда руками, и это правильно —
+        // иначе он приедет непроверенным.
+        let токены: [(String, Color)] = [
+            ("Ink.faint", Token.Ink.faint),
+            ("Ink.secondary", Token.Ink.secondary),
+            ("Ink.silhouette", Token.Ink.silhouette),
+            ("Action.done", Token.Action.done),
+            ("Action.doneQuiet", Token.Action.doneQuiet),
+            ("Action.doneText", Token.Action.doneText),
+            ("Action.primary", Token.Action.primary),
+            ("Action.primaryQuiet", Token.Action.primaryQuiet),
+            ("Action.secondary", Token.Action.secondary),
+            ("Status.waitingText", Token.Status.waitingText),
+            ("Status.overdueText", Token.Status.overdueText),
         ]
+
+        // Проваливает порог хоть на одной поверхности — значит текстом
+        // не красится нигде: человек не выбирает, на какой поверхности
+        // окажется строка.
+        //
+        // `Ink.onAccent` в список не входит и не должен: он и описан как
+        // «текст на мятной ЗАЛИВКЕ», то есть его фон — не поверхность
+        // экрана, и мерить его здешними поверхностями значит спрашивать
+        // не про то место.
+        let запрещённые = токены
+            .filter { имя, цвет in
+                имя != "Ink.onAccent"
+                    && Self.surfaces.contains { Contrast.ratio(цвет, on: $0.1) < 4.5 }
+            }
+            .map(\.0)
+
+        #expect(!запрещённые.isEmpty, "замер перестал находить слабые токены — проверь формулу")
 
         var найдено: [String] = []
         for корень in ["Togo", "TogoWidgets"] {
@@ -66,9 +104,10 @@ struct InkContrastTests {
                 guard файл.lastPathComponent != "ComponentGallery.swift" else { continue }
                 guard let текст = try? String(contentsOf: файл, encoding: .utf8) else { continue }
 
-                for (номер, строка) in текст.split(separator: "\n", omittingEmptySubsequences: false).enumerated()
-                where запрещённые.contains(where: строка.contains) {
-                    найдено.append("\(файл.lastPathComponent):\(номер + 1) — \(строка.trimmingCharacters(in: .whitespaces))")
+                for вызов in Self.foregroundCalls(in: текст) {
+                    for имя in запрещённые where Self.mentions("Token.\(имя)", in: вызов.аргумент) {
+                        найдено.append("\(файл.lastPathComponent):\(вызов.строка) — \(имя) — \(вызов.аргумент.prefix(80))")
+                    }
                 }
             }
         }
@@ -76,7 +115,8 @@ struct InkContrastTests {
         #expect(
             найдено.isEmpty,
             """
-            Ink.faint даёт 2,5:1 и передним планом не красится:
+            передним планом красит токен, не берущий 4,5:1 \
+            (проваливают: \(запрещённые.joined(separator: ", "))):
             \(найдено.joined(separator: "\n"))
             """
         )
@@ -94,6 +134,67 @@ struct InkContrastTests {
                 "faint на «\(имя)» взял \(ratio.formatted(.number.precision(.fractionLength(2)))):1 — запрет пора пересмотреть"
             )
         }
+    }
+
+    /// Упоминается ли токен ЦЕЛИКОМ, а не как начало другого имени.
+    ///
+    /// Первый прогон этого сторожа дал тридцать ложных тревог, и все
+    /// тридцать — из-за подстроки: `Token.Action.done` — начало
+    /// `Token.Action.doneText`, то есть запрещённым оказывался ровно тот
+    /// токен, которым дефект и починили. Имя обязано кончаться там, где
+    /// кончается: следом должна идти не буква.
+    nonisolated static func mentions(_ имя: String, in текст: String) -> Bool {
+        var срез = текст[текст.startIndex...]
+        while let найдено = срез.range(of: имя) {
+            let следующий = найдено.upperBound
+            let буква = следующий < срез.endIndex
+                && (срез[следующий].isLetter || срез[следующий].isNumber)
+            if !буква { return true }
+            срез = срез[следующий...]
+        }
+        return false
+    }
+
+    /// Аргументы вызовов, красящих ПЕРЕДНИЙ ПЛАН, — со скобочным разбором.
+    ///
+    /// Первая редакция сторожа искала запрещённый токен по строке, и это
+    /// была та же ошибка, что она ловит, только зеркальная: она проверяла
+    /// ВЕЛИЧИНУ, не глядя на МЕСТО. Десять ложных тревог подряд — заливки
+    /// `.fill(…)`, `.background(…)` и тинты аватарки, где бледный цвет
+    /// как раз и нужен. Ложная тревога не лучше ложного спокойствия:
+    /// сторож, который кричит зря, выключают.
+    ///
+    /// Поэтому берётся аргумент вызова целиком, со счётом скобок: так
+    /// тройной оператор внутри `foregroundStyle` виден, даже если он
+    /// разложен на три строки, а соседний `.fill` — не виден вовсе.
+    ///
+    /// Чего приём не покрывает и врать про это нельзя: цвет, положенный
+    /// в переменную и применённый строкой ниже. Такие места ловит только
+    /// чтение глазами.
+    nonisolated static func foregroundCalls(in текст: String) -> [(строка: Int, аргумент: String)] {
+        let символы = Array(текст)
+        var результат: [(Int, String)] = []
+        for приём in ["foregroundStyle(", ".color("] {
+            let образец = Array(приём)
+            var i = 0
+            while i + образец.count < символы.count {
+                guard Array(символы[i..<(i + образец.count)]) == образец else { i += 1; continue }
+                var глубина = 1
+                var j = i + образец.count
+                var аргумент = ""
+                while j < символы.count && глубина > 0 {
+                    let c = символы[j]
+                    if c == "(" { глубина += 1 }
+                    if c == ")" { глубина -= 1; if глубина == 0 { break } }
+                    аргумент.append(c)
+                    j += 1
+                }
+                let номер = символы[0..<i].filter { $0 == "\n" }.count + 1
+                результат.append((номер, аргумент.replacingOccurrences(of: "\n", with: " ")))
+                i = j
+            }
+        }
+        return результат
     }
 
     /// Корень репозитория от файла теста: путь до исходников не зависит

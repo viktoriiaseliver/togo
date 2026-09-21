@@ -363,6 +363,14 @@ private struct DayCell: View {
     let month: Date
     let marker: DayMarker
 
+    /// Значок маркера растёт вместе с системным кеглем.
+    ///
+    /// Прибитый `size: 8` был бы новым экземпляром того же дефекта,
+    /// ради которого в проекте открыт пункт про Dynamic Type — и завела
+    /// бы его правка ПРО доступность. `@ScaledMetric` чинит одну точку,
+    /// а не весь каталог стилей, но эту точку чинит по-настоящему.
+    @ScaledMetric(relativeTo: .caption2) private var markerSize: CGFloat = 8
+
     private var isInMonth: Bool { Calendar.current.isDate(day, equalTo: month, toGranularity: .month) }
     private var isToday: Bool { Calendar.current.isDateInToday(day) }
 
@@ -375,13 +383,13 @@ private struct DayCell: View {
             Group {
                 if let symbol = marker.symbol {
                     Image(systemName: symbol)
-                        .font(.system(size: 8, weight: .bold))
+                        .font(.system(size: markerSize, weight: .bold))
                         .foregroundStyle(color)
                 } else {
                     Color.clear
                 }
             }
-            .frame(height: 10)
+            .frame(height: markerSize + 2)
             .accessibilityHidden(true)
         }
         // Ячейку календаря нажимают пальцем — значит, не меньше 44.
@@ -395,12 +403,16 @@ private struct DayCell: View {
         .accessibilityLabel(
             [Fmt.shortDay(day), marker.spoken].compactMap { $0 }.joined(separator: ", ")
         )
+        // День открывается нажатием, и сказать об этом должен трейт:
+        // `onTapGesture` снаружи ячейки озвучке не виден, и VoiceOver
+        // читал «13 сентября, тревога», умалчивая, что сюда можно зайти.
+        .accessibilityAddTraits(.isButton)
     }
 
     private var color: Color {
         switch marker {
         case .none: .clear
-        case .ordinary: Token.Action.done
+        case .ordinary: Token.Action.doneText
         case .alarm: Token.Status.overdueText
         case .medical: Token.Ink.silhouette
         }

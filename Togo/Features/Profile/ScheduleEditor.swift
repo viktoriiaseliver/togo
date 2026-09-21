@@ -207,7 +207,7 @@ struct ScheduleEditor: View {
                         draft.mealTimes = draft.evenMealTimes
                         Haptics.tap()
                     }
-                    .textStyle(AppFont.captionEmphasis.color(Token.Action.done))
+                    .textStyle(AppFont.captionEmphasis.color(Token.Action.doneText))
                 }
             }
 

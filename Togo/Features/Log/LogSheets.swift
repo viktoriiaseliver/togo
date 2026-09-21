@@ -25,7 +25,7 @@ struct StoolSheet: View {
                         Image(systemName: usual.symbol).foregroundStyle(Token.Ink.silhouette)
                         Text("Как всегда · \(usual.title.lowercased())").textStyle(AppFont.cardTitle)
                         Spacer()
-                        Image(systemName: "checkmark.circle").foregroundStyle(Token.Action.done)
+                        Image(systemName: "checkmark.circle").foregroundStyle(Token.Action.doneText)
                     }
                     .foregroundStyle(Token.Ink.primary)
                     .padding(.horizontal, 16)

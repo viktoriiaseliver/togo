@@ -49,7 +49,7 @@ struct EmergencyScreen: View {
                         HStack(spacing: Token.Space.s12) {
                             Image(systemName: "phone.fill")
                                 .font(.system(size: Token.Size.iconMd, weight: .semibold))
-                                .foregroundStyle(Token.Action.done)
+                                .foregroundStyle(Token.Action.doneText)
                                 .accessibilityHidden(true)
                             VStack(alignment: .leading, spacing: Token.Space.s2) {
                                 Text(name).textStyle(AppFont.bodyEmphasis)

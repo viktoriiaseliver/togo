@@ -36,7 +36,7 @@ struct ShiftHandoverSheet: View {
             ForEach(summary.done) { item in
                 HStack(spacing: Token.Space.s12) {
                     Image(systemName: "checkmark.circle.fill")
-                        .foregroundStyle(Token.Action.done)
+                        .foregroundStyle(Token.Action.doneText)
                     Text(item.title).textStyle(AppFont.body)
                     Spacer(minLength: 0)
                     if let by = item.by {

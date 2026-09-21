@@ -72,7 +72,7 @@ struct BackupScreen: View {
                 HStack(alignment: .top, spacing: Token.Space.s12) {
                     Image(systemName: cloud.isGood ? "checkmark.icloud" : "icloud.slash")
                         .font(.system(size: Token.Size.iconLg, weight: .medium))
-                        .foregroundStyle(cloud.isGood ? Token.Action.done : Token.Ink.secondary)
+                        .foregroundStyle(cloud.isGood ? Token.Action.doneText : Token.Ink.secondary)
                         .accessibilityHidden(true)
                     VStack(alignment: .leading, spacing: Token.Space.s2) {
                         Text(cloud.title).textStyle(AppFont.bodyEmphasis)

@@ -143,7 +143,7 @@ struct FoodStockScreen: View {
                          ? "хватает"
                          : "\(packs) \(stock.kind.unitName(count: Double(packs))) по \(stock.kind.packLabel(stock.packGrams))")
                         .textStyle(AppFont.captionEmphasis.color(
-                            packs == 0 ? Token.Action.done : Token.Ink.primary
+                            packs == 0 ? Token.Action.doneText : Token.Ink.primary
                         ))
                         .multilineTextAlignment(.trailing)
                 }
@@ -281,7 +281,7 @@ struct FoodStockEditorSheet: View {
             Text("Из \(dog.dailyGrams) г в день").textStyle(AppFont.caption)
             Spacer(minLength: Token.Space.s8)
             Text(splitStatus)
-                .textStyle(AppFont.caption.color(unassignedGrams == 0 ? Token.Action.done : Token.Status.waitingText))
+                .textStyle(AppFont.caption.color(unassignedGrams == 0 ? Token.Action.doneText : Token.Status.waitingText))
                 .multilineTextAlignment(.trailing)
         }
         .frame(minHeight: Token.Size.tapTarget)

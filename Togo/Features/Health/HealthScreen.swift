@@ -175,7 +175,7 @@ struct HealthScreen: View {
             TGCard {
                 Text("Приложение помогает вести записи и не является медицинским устройством. Диагнозов не ставит, дозировок не назначает.")
                     .textStyle(AppFont.caption)
-                Text("Подробнее").textStyle(AppFont.captionEmphasis.color(Token.Action.done))
+                Text("Подробнее").textStyle(AppFont.captionEmphasis.color(Token.Action.doneText))
             }
         }
         .buttonStyle(.plain)
@@ -294,7 +294,7 @@ private struct ProtocolRow: View {
             }
             Spacer(minLength: Token.Space.s8)
             Image(systemName: isDone ? "checkmark.circle.fill" : "circle")
-                .foregroundStyle(isDone ? Token.Action.done : Token.Ink.secondary)
+                .foregroundStyle(isDone ? Token.Action.doneText : Token.Ink.secondary)
         }
         .padding(.vertical, Token.Space.s10)
     }
@@ -384,7 +384,7 @@ struct WeightScreen: View {
                     if let dog, !dog.isWeightInRange {
                         Text("вне коридора").textStyle(AppFont.caption.color(Token.Status.waitingText))
                     } else {
-                        Text("в норме").textStyle(AppFont.caption.color(Token.Action.done))
+                        Text("в норме").textStyle(AppFont.caption.color(Token.Action.doneText))
                     }
                 }
                 if let low = dog?.targetWeightLow, let high = dog?.targetWeightHigh {

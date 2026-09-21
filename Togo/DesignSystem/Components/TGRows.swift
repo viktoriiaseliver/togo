@@ -109,7 +109,7 @@ struct TGListRow: View {
         case .checkmark:
             Image(systemName: "checkmark.circle.fill")
                 .font(.system(size: Token.Size.iconMd, weight: .semibold))
-                .foregroundStyle(Token.Action.done)
+                .foregroundStyle(Token.Action.doneText)
                 .accessibilityHidden(true)
         case .none:
             EmptyView()

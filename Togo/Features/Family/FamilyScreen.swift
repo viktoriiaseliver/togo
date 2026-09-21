@@ -73,7 +73,7 @@ struct FamilyScreen: View {
                 }
                 Spacer(minLength: Token.Space.s8)
                 Button("передать") { handingOver = member }
-                    .textStyle(AppFont.captionEmphasis.color(Token.Action.done))
+                    .textStyle(AppFont.captionEmphasis.color(Token.Action.doneText))
             }
         }
     }
@@ -177,7 +177,7 @@ struct FamilyScreen: View {
             Text("Врач читает много и не пишет; ребёнок пишет бытовое и не видит медицинского. Дежурный получает напоминания — и только он.")
                 .textStyle(AppFont.caption)
             NavigationLink("Как выглядит вид ситтера") { SitterPreviewScreen(dog: dog) }
-                .textStyle(AppFont.captionEmphasis.color(Token.Action.done))
+                .textStyle(AppFont.captionEmphasis.color(Token.Action.doneText))
         }
     }
 
@@ -257,7 +257,7 @@ struct MemberScreen: View {
                             member.resetPermissions()
                             Haptics.tap()
                         }
-                        .textStyle(AppFont.captionEmphasis.color(Token.Action.done))
+                        .textStyle(AppFont.captionEmphasis.color(Token.Action.doneText))
                     }
                 }
                 ForEach(Permission.allCases, id: \.self) { permission in

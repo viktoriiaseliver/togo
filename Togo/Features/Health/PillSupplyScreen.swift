@@ -55,7 +55,7 @@ struct PillSupplyScreen: View {
                 }
             }
             ProgressView(value: Double(supply.left), total: Double(max(supply.total, supply.left)))
-                .tint(PillSupplyAdvisor.needsWarning(supply) ? Token.Status.waitingText : Token.Action.done)
+                .tint(PillSupplyAdvisor.needsWarning(supply) ? Token.Status.waitingText : Token.Action.doneText)
         }
     }
 

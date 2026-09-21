@@ -94,12 +94,12 @@ struct HowAskedSheet: View {
                         HStack(spacing: 12) {
                             Image(systemName: signal.symbol)
                                 .font(.system(size: 16, weight: .medium))
-                                .foregroundStyle(signal.isCalm ? Token.Action.done : Token.Ink.silhouette)
+                                .foregroundStyle(signal.isCalm ? Token.Action.doneText : Token.Ink.silhouette)
                                 .frame(width: 24)
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(signal.title).textStyle(AppFont.body).foregroundStyle(Token.Ink.primary)
                                 if signal == .satAtDoor {
-                                    Text("то, что учим").textStyle(AppFont.micro).foregroundStyle(Token.Action.done)
+                                    Text("то, что учим").textStyle(AppFont.micro).foregroundStyle(Token.Action.doneText)
                                 }
                             }
                             Spacer(minLength: 0)

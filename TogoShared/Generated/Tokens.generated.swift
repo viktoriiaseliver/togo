@@ -33,6 +33,8 @@ nonisolated enum Token {
     enum Action {
         static let done = Color(hex: 0x22D3B024)
         static let doneQuiet = Color(hex: 0x22D3B024)
+        /// «Сделано» СЛОВАМИ. Отдельный токен, потому что done — это тинт 14 %: как чернила он даёт 1,3:1, вдвое хуже уже запрещённого faint. Та же пара, что waitingText и overdueText.
+        static let doneText = Color(hex: 0x2FE0BE)
         static let primary = Color(hex: 0x2FE0BE)
         static let primaryQuiet = Color(hex: 0x22D3B024)
         static let secondary = Color(hex: 0x33302B)

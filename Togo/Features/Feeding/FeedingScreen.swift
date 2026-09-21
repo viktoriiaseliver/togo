@@ -222,11 +222,11 @@ struct FeedingScreen: View {
                 }
                 if report.normGramsPerDay > 0 {
                     RuleMark(y: .value("Норма", report.normGramsPerDay))
-                        .foregroundStyle(Token.Action.done)
+                        .foregroundStyle(Token.Action.doneText)
                         .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 3]))
                         .annotation(position: .top, alignment: .leading) {
                             Text("норма \(report.normGramsPerDay) г")
-                                .textStyle(AppFont.micro.color(Token.Action.done))
+                                .textStyle(AppFont.micro.color(Token.Action.doneText))
                         }
                 }
             }
@@ -256,7 +256,7 @@ struct FeedingScreen: View {
                             .accessibilityHidden(true)
                         Spacer()
                         Text(paddedSuggested[index].map { Fmt.clock(minuteOfDay: $0) } ?? "—")
-                            .textStyle(AppFont.numeric(17).color(Token.Action.done))
+                            .textStyle(AppFont.numeric(17).color(Token.Action.doneText))
                     }
                     .frame(minHeight: Token.Size.tapTarget)
                 }

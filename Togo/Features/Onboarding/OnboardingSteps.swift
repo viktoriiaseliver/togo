@@ -33,7 +33,7 @@ struct WelcomeStep: View {
                         HStack(spacing: Token.Space.s12) {
                             Image(systemName: symbol)
                                 .font(.system(size: Token.Size.iconMd, weight: .medium))
-                                .foregroundStyle(Token.Action.done)
+                                .foregroundStyle(Token.Action.doneText)
                                 .frame(width: Token.Space.s24)
                             Text(text).textStyle(AppFont.body)
                             Spacer(minLength: 0)
@@ -177,7 +177,7 @@ struct CareStep: View {
                                       ? "checkmark.circle.fill" : "circle")
                                     .font(.system(size: 22))
                                     .foregroundStyle(chosen.contains(suggestion.id)
-                                                     ? Token.Action.done : Token.Ink.secondary)
+                                                     ? Token.Action.doneText : Token.Ink.secondary)
                                 VStack(alignment: .leading, spacing: Token.Space.s2) {
                                     Text(suggestion.title).textStyle(AppFont.body)
                                     Text(suggestion.detail)

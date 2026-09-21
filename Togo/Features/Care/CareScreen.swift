@@ -262,7 +262,7 @@ private struct CareTaskRow: View {
                 Button(action: onToggle) {
                     Image(systemName: isDoneToday ? "checkmark.circle.fill" : "circle")
                         .font(.system(size: 24, weight: .regular))
-                        .foregroundStyle(isDoneToday ? Token.Action.done : Token.Ink.secondary)
+                        .foregroundStyle(isDoneToday ? Token.Action.doneText : Token.Ink.secondary)
                         .frame(width: Token.Size.tapTarget, height: Token.Size.tapTarget)
                         .contentShape(Rectangle())
                 }
@@ -296,7 +296,7 @@ private struct CareTaskRow: View {
             if task.kind != .daily {
                 Button(action: onToggle) {
                     Text("Сделали")
-                        .textStyle(AppFont.captionEmphasis.color(Token.Action.done))
+                        .textStyle(AppFont.captionEmphasis.color(Token.Action.doneText))
                         .frame(minHeight: Token.Size.tapTarget)
                         .contentShape(Rectangle())
                 }
@@ -387,7 +387,7 @@ struct CareSuggestionsSheet: View {
                                           : (chosen.contains(suggestion.id) ? "checkmark.circle.fill" : "circle"))
                     .font(.system(size: 22))
                     .foregroundStyle(already ? Token.Ink.secondary
-                                             : (chosen.contains(suggestion.id) ? Token.Action.done : Token.Ink.secondary))
+                                             : (chosen.contains(suggestion.id) ? Token.Action.doneText : Token.Ink.secondary))
                 VStack(alignment: .leading, spacing: Token.Space.s2) {
                     Text(suggestion.title).textStyle(AppFont.body)
                     Text(already ? "уже заведено" : suggestion.detail)

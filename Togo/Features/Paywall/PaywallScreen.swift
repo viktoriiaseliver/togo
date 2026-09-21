@@ -80,7 +80,7 @@ struct PaywallScreen: View {
                 HStack(spacing: Token.Space.s8) {
                     Image(systemName: "checkmark")
                         .font(.system(size: Token.Size.iconSm, weight: .bold))
-                        .foregroundStyle(Token.Action.done)
+                        .foregroundStyle(Token.Action.doneText)
                     Text(line).textStyle(AppFont.body)
                     Spacer(minLength: 0)
                 }

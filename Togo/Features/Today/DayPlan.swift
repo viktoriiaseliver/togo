@@ -108,7 +108,7 @@ struct DayPlanList: View {
                     .textStyle(AppFont.captionEmphasis)
                 Spacer(minLength: 0)
             }
-            .foregroundStyle(Token.Action.done)
+            .foregroundStyle(Token.Action.doneText)
             .frame(minHeight: Token.Size.tapTarget)
             .contentShape(Rectangle())
         }

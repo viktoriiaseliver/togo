@@ -19,7 +19,7 @@ extension SkillStatus {
         switch self {
         case .notStarted: Token.Ink.secondary
         case .learning: Token.Status.waitingText
-        case .works: Token.Action.done
+        case .works: Token.Action.doneText
         }
     }
 }
@@ -27,7 +27,7 @@ extension SkillStatus {
 extension MarkAccuracy {
     var color: Color {
         switch self {
-        case .onTime: Token.Action.done
+        case .onTime: Token.Action.doneText
         case .almost: Token.Status.waitingText
         case .late: Token.Status.overdueText
         }

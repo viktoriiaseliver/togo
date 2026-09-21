@@ -47,7 +47,7 @@ struct AskSignalCard: View {
         HStack(spacing: Token.Space.s10) {
             Image(systemName: isDisplacing ? "exclamationmark.bubble" : "checkmark.bubble")
                 .font(.system(size: Token.Size.iconMd, weight: .medium))
-                .foregroundStyle(isDisplacing ? Token.Status.waitingText : Token.Action.done)
+                .foregroundStyle(isDisplacing ? Token.Status.waitingText : Token.Action.doneText)
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: Token.Space.s2) {
                 Text(isDisplacing ? "Лай вытесняет спокойный сигнал" : "Как он просит")

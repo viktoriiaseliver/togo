@@ -58,7 +58,7 @@ private struct DogChip: View {
             Capsule().fill(isActive ? Token.Action.doneQuiet : Token.Surface.card)
         )
         .overlay(
-            Capsule().stroke(isActive ? Token.Action.done : Token.Surface.hairline,
+            Capsule().stroke(isActive ? Token.Action.doneText : Token.Surface.hairline,
                              lineWidth: isActive ? 1.5 : 1)
         )
         .contentShape(Capsule())
