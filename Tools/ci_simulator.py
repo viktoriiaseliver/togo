@@ -74,12 +74,21 @@ def завести():
 
     типы = [t for t in simctl("devicetypes")["devicetypes"]
             if "iPhone" in t.get("name", "")]
-    подходящие = [t for t in типы
-                  if t["identifier"] in среда.get("supportedDeviceTypes", [{}]) or True]
-    # `supportedDeviceTypes` есть не во всех версиях simctl — если его нет,
-    # пробуем типы по очереди от новых к старым и берём первый, который
-    # согласится создаться. Перебор дешевле, чем угадывание формата.
-    for тип in sorted(подходящие, key=lambda t: t["name"], reverse=True):
+    # Фильтр по `supportedDeviceTypes` был мёртвым: `… or True` истинно
+    # всегда, и условие слева не значило ничего. Оставлен честный перебор
+    # всех типов iPhone — `supportedDeviceTypes` есть не во всех версиях
+    # simctl, и создание само скажет, подходит тип или нет.
+    подходящие = типы
+
+    # Сортировка по ИМЕНИ ставила «iPhone Xʀ» выше «iPhone 17 Pro», потому
+    # что лексикографически «X» больше «1»: запасной путь заводил старое
+    # устройство, а кадры приёмки сняты на 17 Pro. Сортируем по числу
+    # в имени, а слова — на своих местах.
+    def новизна(t):
+        цифры = [int(ч) for ч in re.findall(r"\d+", t["name"])]
+        return (max(цифры) if цифры else 0, t["name"])
+
+    for тип in sorted(подходящие, key=новизна, reverse=True):
         try:
             udid = subprocess.check_output(
                 ["xcrun", "simctl", "create", "ci-iphone",
