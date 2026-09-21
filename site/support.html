@@ -1,59 +1,38 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Поддержка — Того, дневник собаки</title>
-<meta name="description" content="Как связаться с автором Того и ответы на частые вопросы: почему вердикт говорит «непонятно», где вкладка «Здоровье», как забрать свои записи.">
-<link rel="canonical" href="https://viktoriiaseliver.github.io/togo/support.html">
+<title>Support · Поддержка — Togo · Того</title>
+<link rel="alternate" hreflang="en" href="https://viktoriiaseliver.github.io/togo/en/support.html">
+<link rel="alternate" hreflang="ru" href="https://viktoriiaseliver.github.io/togo/ru/support.html">
+<link rel="alternate" hreflang="x-default" href="https://viktoriiaseliver.github.io/togo/en/support.html">
 <link rel="stylesheet" href="../style.css">
+<script>
+(function () {
+  var wanted = navigator.languages || [navigator.language || "en"];
+  for (var i = 0; i < wanted.length; i++) {
+    var tag = String(wanted[i]).toLowerCase();
+    if (tag.indexOf("ru") === 0) { location.replace("ru/support.html"); return; }
+    if (tag.indexOf("en") === 0) { location.replace("en/support.html"); return; }
+  }
+  location.replace("en/support.html");
+})();
+</script>
 </head>
 <body>
 <main>
 <header>
-  <div class="name">Того</div>
-  <h1>Поддержка</h1>
-  <p class="updated">Отвечает человек, обычно в течение двух рабочих дней.</p>
+  <div class="name">Togo · Того</div>
+  <h1>Support</h1>
+  <p class="updated">Choose a language. Выберите язык.</p>
 </header>
 
-<div class="card">
-  <h2>Написать</h2>
-  <p><a href="mailto:viktoriia.seliver@gmail.com?subject=Того">viktoriia.seliver@gmail.com</a></p>
-  <p>Если пишете про ошибку, приложите версию и сборку — они в «Настройки →
-  Версия», их можно выделить и скопировать. И модель телефона с версией iOS.</p>
-  <p>Если что-то в приложении мешает ухаживать за собакой — пишите сразу.
-  Это важнее новых возможностей.</p>
-</div>
-
-<h2>Частые вопросы</h2>
-
-<h3>Почему вердикт говорит «непонятно»?</h3>
-<p>Ему нужно 3–4 дня записей, чтобы выучить интервалы. До этого он честно
-признаётся, что не знает, и не выдумывает. Кнопка «Вывожу» при этом остаётся
-первой во всех исходах: приложение не знает лучше вас.</p>
-
-<h3>Где вкладка «Здоровье»?</h3>
-<p>Она приходит с курсом лечения и уходит с ним: включается в профиле
-собаки, выключается кнопкой «Курс завершён» внизу «Здоровья». Записи
-остаются в истории и в отчёте врачу.</p>
-
-<h3>Два человека отметили одно и то же</h3>
-<p>Если два человека отметили одно и то же в пределах 20 минут, приложение
-покажет карточку слияния обоим. Чужое оно молча не перезаписывает.</p>
-
-<h3>Как забрать свои записи</h3>
-<p>«Настройки → Данные и приватность» — выгрузка в CSV и удаление всего,
-без писем и ожидания. CSV открывается в Numbers и Excel.</p>
-
-<h2>Приложение — не медицинское устройство</h2>
-<p>Того не ставит диагнозов и не назначает дозировок. Решения о здоровье
-собаки принимаете вы и ваш ветеринар; приложение показывает то, что вы сами
-в него записали.</p>
+<p class="lang"><a href="en/support.html">Support — in English</a></p>
+<p class="lang"><a href="ru/support.html">Поддержка — по-русски</a></p>
 
 <footer>
-  <p><a href="privacy.html">Политика приватности</a> ·
-     <a href="terms.html">Условия использования</a> ·
-     <a href="../index.html">другие приложения</a></p>
+  <p><a href="mailto:viktoriia.seliver@gmail.com">viktoriia.seliver@gmail.com</a></p>
 </footer>
 </main>
 </body>

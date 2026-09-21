@@ -33,7 +33,12 @@ python3 Tools/build_site.py
 
 echo "── кладу в $SITE/$SLUG"
 mkdir -p "$SITE/$SLUG"
-cp site/*.html "$SITE/$SLUG/"
+# Рекурсивно: с тех пор как страницы стали двуязычными, у них есть
+# подпапки `ru/` и `en/`, а `cp site/*.html` брал только корень —
+# наружу уезжала развилка без самих страниц, и по коду 200 это было
+# незаметно. Соседние папки приложений не трогаются: копируется
+# только содержимое site/ в site/$SLUG/.
+cp -R site/. "$SITE/$SLUG/"
 
 cd "$SITE"
 if [ -n "$(git status --porcelain)" ]; then
@@ -69,10 +74,13 @@ fi
 
 cat <<NOTE
 
-Страницы:
+Страницы (адрес без языка сам уводит на язык браузера):
   https://viktoriiaseliver.github.io/$SLUG/privacy.html
   https://viktoriiaseliver.github.io/$SLUG/support.html
   https://viktoriiaseliver.github.io/$SLUG/terms.html
+
+  https://viktoriiaseliver.github.io/$SLUG/en/privacy.html
+  https://viktoriiaseliver.github.io/$SLUG/ru/privacy.html
 
 Первая публикация поднимается пару минут. Когда откроются — впиши их
 в fastlane/metadata/ru/privacy_url.txt и support_url.txt и выполни
