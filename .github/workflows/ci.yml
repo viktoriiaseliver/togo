@@ -52,10 +52,22 @@ jobs:
       - name: Проверить, что проект не разошёлся
         run: git diff --quiet -- Togo.xcodeproj || (echo "Запусти make project и закоммить" && exit 1)
 
+      # Устройство ищется, а не называется. Имя в назначении — вторая
+      # ловушка того же рода, что путь к Xcode: прогоны #44 и #45
+      # выбрали ОДИН И ТОТ ЖЕ Xcode 26.3 (17C529), но на машине #45
+      # симулятора «iPhone 17 Pro» не оказалось вовсе — в списке
+      # остались только заглушки «Any iOS Simulator Device». Красный
+      # при этом выглядел как «сломал тот, кто последним пушил».
+      # Скрипт берёт готовый симулятор, а если готовых нет — заводит;
+      # не вышло и это — падает со списком всего, что видно.
+      - name: Найти симулятор
+        id: sim
+        run: echo "udid=$(python3 Tools/ci_simulator.py)" >> "$GITHUB_OUTPUT"
+
       - name: Тесты
         run: |
           xcodebuild -project Togo.xcodeproj -scheme Togo -configuration Debug \
-            -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
+            -destination 'platform=iOS Simulator,id=${{ steps.sim.outputs.udid }}' \
             -resultBundlePath build/Togo.xcresult \
             test
 
