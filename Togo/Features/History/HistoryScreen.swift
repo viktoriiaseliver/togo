@@ -328,6 +328,34 @@ struct MonthCalendar: View {
 
 nonisolated enum DayMarker: Sendable {
     case none, ordinary, alarm, medical
+
+    /// Значок, а не только цвет.
+    ///
+    /// Три вида дня отличались ТОЛЬКО оттенком точки в пять пунктов.
+    /// Для человека, который не различает красный и зелёный, календарь
+    /// был одинаковым насквозь: «найди день, когда была кровь» на нём
+    /// не решается вовсе. Форма отвечает на тот же вопрос, не спрашивая
+    /// про цвет.
+    var symbol: String? {
+        switch self {
+        case .none: nil
+        case .ordinary: "circle.fill"
+        case .alarm: "exclamationmark.triangle.fill"
+        case .medical: "cross.fill"
+        }
+    }
+
+    /// Чем день кончился — словами. Идёт в метку озвучки: до этого
+    /// метка была датой и только датой, то есть незрячему календарь
+    /// не сообщал ничего, кроме чисел месяца.
+    var spoken: String? {
+        switch self {
+        case .none: nil
+        case .ordinary: "записи есть"
+        case .alarm: "тревога"
+        case .medical: "лечение"
+        }
+    }
 }
 
 private struct DayCell: View {
@@ -342,17 +370,31 @@ private struct DayCell: View {
         VStack(spacing: Token.Space.s2) {
             Text("\(Calendar.current.component(.day, from: day))")
                 .textStyle(AppFont.captionEmphasis.color(isInMonth ? Token.Ink.primary : Token.Ink.secondary))
-            Circle()
-                .fill(color)
-                .frame(width: 5, height: 5)
-                .opacity(marker == .none ? 0 : 1)
+            // 8 пунктов вместо пяти: на пяти форма неразличима,
+            // и значок выродился бы обратно в цветную точку.
+            Group {
+                if let symbol = marker.symbol {
+                    Image(systemName: symbol)
+                        .font(.system(size: 8, weight: .bold))
+                        .foregroundStyle(color)
+                } else {
+                    Color.clear
+                }
+            }
+            .frame(height: 10)
+            .accessibilityHidden(true)
         }
         // Ячейку календаря нажимают пальцем — значит, не меньше 44.
         .frame(maxWidth: .infinity, minHeight: Token.Size.tapTarget)
         .background(isToday ? Token.Action.doneQuiet : .clear,
                     in: RoundedRectangle(cornerRadius: Token.Radius.small, style: .continuous))
         .contentShape(Rectangle())
-        .accessibilityLabel(Fmt.shortDay(day))
+        // Маркер ВХОДИТ в метку. Раньше метка была датой и только датой,
+        // и весь смысл дня — тревога, лечение, обычные записи — до озвучки
+        // не доезжал: экран «найди день, когда была кровь» был пуст.
+        .accessibilityLabel(
+            [Fmt.shortDay(day), marker.spoken].compactMap { $0 }.joined(separator: ", ")
+        )
     }
 
     private var color: Color {
