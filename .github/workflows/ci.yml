@@ -16,8 +16,30 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Путь выбирается, а не пишется константой. Раньше здесь стояло
+      # /Applications/Xcode_26.app — такого пути на образе macos-15 нет
+      # вовсе: есть Xcode_26.3.app, Xcode_26.2.app, Xcode_26.1.1.app,
+      # Xcode_26.0.1.app. Шаг падал за шесть секунд, и падал на каждом
+      # пуше с тех пор, как образ обновился. Красный CI, на который никто
+      # не смотрит, — это тот же дефект, против которого заведён журнал:
+      # работа есть, сигнала нет.
+      #
+      # Пин на 26.3 сломался бы точно так же со следующим образом,
+      # поэтому берём самый новый Xcode 26.x, какой есть, и печатаем
+      # выбор. Не нашлось ни одного — падаем со списком, а не с «No such
+      # file or directory».
       - name: Выбрать Xcode
-        run: sudo xcode-select -s /Applications/Xcode_26.app
+        run: |
+          set -euo pipefail
+          latest=$(ls -d /Applications/Xcode_26*.app 2>/dev/null | sort -V | tail -1)
+          if [ -z "$latest" ]; then
+            echo "::error::Xcode 26 на раннере нет. Что установлено:"
+            ls -d /Applications/Xcode*.app
+            exit 1
+          fi
+          echo "Выбран $latest"
+          sudo xcode-select -s "$latest"
+          xcodebuild -version
 
       # Проект и токены генерируются скриптами: если сгенерированное
       # разошлось с источником — это ошибка сборки, а не сюрприз в ревью.
@@ -44,3 +66,7 @@ jobs:
           name: xcresult
           path: build/Togo.xcresult
           retention-days: 7
+          # Упав до тестов, шаг оставлял вторую претензию поверх первой —
+          # «no files found» — и в письме их становилось три вместо одной.
+          # Причину искать надо в первой.
+          if-no-files-found: ignore
