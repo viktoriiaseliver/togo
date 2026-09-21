@@ -290,8 +290,15 @@ final class DoseRecord {
     }
 
     /// Лестница эскалации: т−10 дежурному, т+30 со-владельцам, т+60 всем и запись «пропуск».
+    ///
+    /// **Пропуск снимает лестницу так же, как приём.** Раньше здесь
+    /// не было `isSkipped`, и «пропустить» не гасило тревогу: человек
+    /// принимал решение, записывал его — а красное «не отмечена»
+    /// оставалось и через сутки, и через неделю. Лестница существует
+    /// ровно для того случая, когда решения ещё НЕТ; пропуск — это
+    /// решение и запись, врач спрашивает именно про него.
     func escalationStage(at date: Date = Date()) -> Int {
-        if isGiven || cancelledAt != nil { return 0 }
+        if isGiven || isSkipped || cancelledAt != nil { return 0 }
         let minutes = date.timeIntervalSince(scheduledAt) / 60
         if minutes >= 60 { return 3 }
         if minutes >= 30 { return 2 }

@@ -79,7 +79,13 @@ enum ReminderScheduler {
         guard let dog, dog.isOnTreatment else { return }
 
         for medication in dog.medications where !medication.isPaused {
-            for dose in medication.doses where !dose.isGiven && dose.cancelledAt == nil {
+            // Пропущенная доза уведомлений не заводит — по той же причине,
+            // по которой она не поднимает лестницу эскалации
+            // (`DoseRecord.escalationStage`): пропуск это решение и запись,
+            // а не пустота. Без этой оговорки человек нажимал
+            // «пропустить» и всё равно получал пуш «Доза 21:30 не отмечена».
+            for dose in medication.doses
+            where !dose.isGiven && dose.skippedAt == nil && dose.cancelledAt == nil {
                 guard dose.scheduledAt > now else { continue }
 
                 // За десять минут — дежурному.

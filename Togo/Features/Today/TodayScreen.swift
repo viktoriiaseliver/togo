@@ -364,12 +364,14 @@ struct TodayScreen: View {
                              doseAt: window.givenAt)
     }
 
+    /// Выбор вынесен в `DoseScheduler.overdue` — здесь остались только
+    /// права и наличие курса. Пока он жил тут, проверить его было нечем:
+    /// приватное свойство вью тестом не достать, и баннер «Доза 21:30
+    /// не отмечена» вставал насовсем, потому что перебирались дозы всех
+    /// прошлых дней.
     private var overdueDose: DoseRecord? {
         guard let dog, dog.isOnTreatment, appState.can(.seeMedical) else { return nil }
-        return dog.medications
-            .flatMap(\.doses)
-            .filter { $0.escalationStage(at: now) >= 2 }
-            .min { $0.scheduledAt < $1.scheduledAt }
+        return DoseScheduler.alarmingDose(among: dog.medications, now: now)
     }
 
     /// Груминг и вес живут в профиле и всплывают на главном только когда подошёл срок.

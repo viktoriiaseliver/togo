@@ -164,6 +164,75 @@ struct TreatmentCourseTests {
         )
     }
 
+    /// **Красное «не отмечена» не должно гореть вечно.**
+    ///
+    /// 21.09.2026, уже ПОСЛЕ починки сироты выше, на телефоне снова
+    /// висело «Доза 21:30 не отмечена». Причина другая и лежала в двух
+    /// местах сразу:
+    ///
+    /// 1. Выбор дозы перебирал `dog.medications.flatMap(\.doses)` без
+    ///    ограничения по дню. Неотмеченная доза любого прошлого дня даёт
+    ///    третью стадию навсегда и выигрывает как самая ранняя.
+    /// 2. `Fmt.clock` печатает только часы и минуты. Позавчерашние 21:30
+    ///    читаются как сегодняшние — и в 18:25 это выглядит тревогой
+    ///    о дозе, до которой ещё три часа.
+    ///
+    /// Вместе это значило: один раз не отметил — и красный больше
+    /// не погаснет никогда.
+    @Test("Неотмеченная доза прошлого дня не тревожит сегодня")
+    func yesterdaysDoseDoesNotAlarmToday() throws {
+        let (context, dog, medication) = try setup()
+        let calendar = Calendar.current
+        let сейчас = calendar.date(minuteOfDay: 18 * 60 + 25,
+                                   on: calendar.startOfDay(for: Date()))
+        let вчера = calendar.date(byAdding: .day, value: -1, to: сейчас)!
+
+        // Вчерашняя доза на 21:30, которую никто не отметил.
+        let старая = DoseRecord(scheduledAt: calendar.date(
+            minuteOfDay: 21 * 60 + 30, on: calendar.startOfDay(for: вчера)))
+        старая.medication = medication
+        context.insert(старая)
+        try context.save()
+
+        #expect(старая.escalationStage(at: сейчас) == 3,
+                "сама по себе она просрочена — это верно и не оспаривается")
+        #expect(
+            DoseScheduler.alarmingDose(among: dog.medications, now: сейчас) == nil,
+            "вчерашняя доза подняла тревогу на сегодня: это история и отчёт врачу, а не тревога сейчас"
+        )
+    }
+
+    /// **Пропуск — это решение, и он обязан гасить тревогу.**
+    ///
+    /// `escalationStage` обнуляла лестницу для принятой и отменённой
+    /// дозы, но не для пропущенной. То есть человек нажимал
+    /// «пропустить», запись о решении появлялась — а красное
+    /// «не отмечена» продолжало гореть. Лестница нужна ровно там, где
+    /// решения ещё нет.
+    @Test("Пропущенная доза не считается непринятой")
+    func skippedDoseStopsEscalating() throws {
+        let (context, dog, medication) = try setup()
+        let calendar = Calendar.current
+        let день = calendar.startOfDay(for: Date())
+        let сейчас = calendar.date(minuteOfDay: 23 * 60, on: день)
+
+        let доза = DoseRecord(scheduledAt: calendar.date(minuteOfDay: 9 * 60, on: день))
+        доза.medication = medication
+        context.insert(доза)
+        try context.save()
+
+        #expect(доза.escalationStage(at: сейчас) == 3, "до пропуска она просрочена")
+
+        доза.skippedAt = сейчас
+        доза.skippedBy = "Вика"
+        try context.save()
+
+        #expect(доза.escalationStage(at: сейчас) == 0,
+                "пропуск не погасил лестницу: решение принято и записано, тревожиться больше не о чем")
+        #expect(DoseScheduler.alarmingDose(among: dog.medications, now: сейчас) == nil,
+                "баннер остался после пропуска")
+    }
+
     @Test("Завершение не трогает вес и историю собаки")
     func historySurvives() throws {
         let (context, dog, _) = try setup()
