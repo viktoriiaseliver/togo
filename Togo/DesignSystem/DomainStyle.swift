@@ -17,7 +17,7 @@ extension SkillStatus {
 
     var color: Color {
         switch self {
-        case .notStarted: Token.Ink.faint
+        case .notStarted: Token.Ink.secondary
         case .learning: Token.Status.waitingText
         case .works: Token.Action.done
         }

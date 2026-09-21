@@ -91,7 +91,7 @@ struct ProfileScreen: View {
                     Text(Fmt.weight(dog.weightKg)).textStyle(AppFont.numeric(22))
                     Image(systemName: "chevron.right")
                         .font(.system(size: Token.Size.iconSm, weight: .semibold))
-                        .foregroundStyle(Token.Ink.faint)
+                        .foregroundStyle(Token.Ink.secondary)
                 }
             }
         }

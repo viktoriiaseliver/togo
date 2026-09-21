@@ -54,7 +54,7 @@ struct SessionSummarySheet: View {
                 HStack(spacing: Token.Space.s8) {
                     Image(systemName: "circle.fill")
                         .font(.system(size: 5))
-                        .foregroundStyle(observation.stopsSession ? Token.Status.overdueText : Token.Ink.faint)
+                        .foregroundStyle(observation.stopsSession ? Token.Status.overdueText : Token.Ink.secondary)
                     Text(observation.title).textStyle(AppFont.caption)
                     Spacer(minLength: 0)
                 }

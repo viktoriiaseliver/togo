@@ -33,7 +33,7 @@ struct TGCheckRow<Trailing: View>: View {
                     Text(title)
                         .textStyle(AppFont.bodyEmphasis)
                         .foregroundStyle(isDone ? Token.Ink.secondary : Token.Ink.primary)
-                        .strikethrough(isDone, color: Token.Ink.faint)
+                        .strikethrough(isDone, color: Token.Ink.secondary)
                         .wraps()
                     if let subtitle {
                         Text(subtitle)
@@ -73,7 +73,7 @@ struct TGCheckRow<Trailing: View>: View {
             // читаться местом для галочки, а не кнопкой-действием.
             .overlay {
                 if !isDone && !isLocked {
-                    Circle().stroke(Token.Ink.faint, lineWidth: 1.5)
+                    Circle().stroke(Token.Ink.secondary, lineWidth: 1.5)
                         .frame(width: Token.Size.tapTarget, height: Token.Size.tapTarget)
                 }
             }

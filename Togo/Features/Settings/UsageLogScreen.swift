@@ -189,7 +189,7 @@ struct UsageLogScreen: View {
                             Text(sessionValue(session)).textStyle(AppFont.micro)
                             Image(systemName: expanded == session.id ? "chevron.up" : "chevron.down")
                                 .font(.system(size: 11, weight: .semibold))
-                                .foregroundStyle(Token.Ink.faint)
+                                .foregroundStyle(Token.Ink.secondary)
                         }
                         .frame(minHeight: Token.Size.tapTarget)
                         .contentShape(Rectangle())

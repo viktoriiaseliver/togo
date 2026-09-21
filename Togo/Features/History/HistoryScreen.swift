@@ -341,7 +341,7 @@ private struct DayCell: View {
     var body: some View {
         VStack(spacing: Token.Space.s2) {
             Text("\(Calendar.current.component(.day, from: day))")
-                .textStyle(AppFont.captionEmphasis.color(isInMonth ? Token.Ink.primary : Token.Ink.faint))
+                .textStyle(AppFont.captionEmphasis.color(isInMonth ? Token.Ink.primary : Token.Ink.secondary))
             Circle()
                 .fill(color)
                 .frame(width: 5, height: 5)

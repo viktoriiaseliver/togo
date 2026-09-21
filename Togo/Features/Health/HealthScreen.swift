@@ -294,7 +294,7 @@ private struct ProtocolRow: View {
             }
             Spacer(minLength: Token.Space.s8)
             Image(systemName: isDone ? "checkmark.circle.fill" : "circle")
-                .foregroundStyle(isDone ? Token.Action.done : Token.Ink.faint)
+                .foregroundStyle(isDone ? Token.Action.done : Token.Ink.secondary)
         }
         .padding(.vertical, Token.Space.s10)
     }

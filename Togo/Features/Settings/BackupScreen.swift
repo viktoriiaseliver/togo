@@ -72,7 +72,7 @@ struct BackupScreen: View {
                 HStack(alignment: .top, spacing: Token.Space.s12) {
                     Image(systemName: cloud.isGood ? "checkmark.icloud" : "icloud.slash")
                         .font(.system(size: Token.Size.iconLg, weight: .medium))
-                        .foregroundStyle(cloud.isGood ? Token.Action.done : Token.Ink.faint)
+                        .foregroundStyle(cloud.isGood ? Token.Action.done : Token.Ink.secondary)
                         .accessibilityHidden(true)
                     VStack(alignment: .leading, spacing: Token.Space.s2) {
                         Text(cloud.title).textStyle(AppFont.bodyEmphasis)
@@ -143,7 +143,7 @@ struct BackupScreen: View {
                 HStack(alignment: .top, spacing: Token.Space.s8) {
                     Image(systemName: "circle.fill")
                         .font(.system(size: 5))
-                        .foregroundStyle(Token.Ink.faint)
+                        .foregroundStyle(Token.Ink.secondary)
                         .padding(.top, 7)
                         .accessibilityHidden(true)
                     Text(line).textStyle(AppFont.caption).wraps()

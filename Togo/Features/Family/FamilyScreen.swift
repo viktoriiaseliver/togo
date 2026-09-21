@@ -205,11 +205,11 @@ private struct MemberRow: View {
             Spacer(minLength: Token.Space.s8)
             if member.isInvitePending {
                 Text(member.inviteIsValid() ? "ждёт" : "истекло")
-                    .textStyle(AppFont.micro.color(member.inviteIsValid() ? Token.Status.waitingText : Token.Ink.faint))
+                    .textStyle(AppFont.micro.color(member.inviteIsValid() ? Token.Status.waitingText : Token.Ink.secondary))
             }
             Image(systemName: "chevron.right")
                 .font(.system(size: Token.Size.iconSm, weight: .semibold))
-                .foregroundStyle(Token.Ink.faint)
+                .foregroundStyle(Token.Ink.secondary)
         }
         .frame(minHeight: 54)
         .contentShape(Rectangle())
@@ -397,7 +397,7 @@ struct SitterPreviewScreen: View {
                         Spacer(minLength: 0)
                         Image(systemName: "chevron.right")
                             .font(.system(size: Token.Size.iconSm, weight: .semibold))
-                            .foregroundStyle(Token.Ink.faint)
+                            .foregroundStyle(Token.Ink.secondary)
                     }
                     .frame(minHeight: Token.Size.tapTarget)
                 }

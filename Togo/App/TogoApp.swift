@@ -182,7 +182,7 @@ struct StorageFailureScreen: View {
                     HStack(alignment: .top, spacing: Token.Space.s8) {
                         Image(systemName: "circle.fill")
                             .font(.system(size: 5))
-                            .foregroundStyle(Token.Ink.faint)
+                            .foregroundStyle(Token.Ink.secondary)
                             .padding(.top, 7)
                             .accessibilityHidden(true)
                         Text(step)

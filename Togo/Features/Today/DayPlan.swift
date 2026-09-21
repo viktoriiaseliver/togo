@@ -87,7 +87,7 @@ struct DayPlanList: View {
                  ? "план дня · всё сделано"
                  : "план дня · осталось \(pending.count) из \(items.count)")
                 .textStyle(AppFont.micro)
-                .foregroundStyle(Token.Ink.faint)
+                .foregroundStyle(Token.Ink.secondary)
             Spacer(minLength: 0)
         }
     }
@@ -138,7 +138,7 @@ struct DayPlanList: View {
                 Spacer(minLength: 0)
                 Image(systemName: "chevron.right")
                     .font(.system(size: 11, weight: .semibold))
-                    .foregroundStyle(Token.Ink.faint)
+                    .foregroundStyle(Token.Ink.secondary)
             }
             .frame(minHeight: Token.Size.tapTarget)
             .contentShape(Rectangle())

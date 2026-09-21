@@ -99,7 +99,7 @@ struct TrainingLibraryScreen: View {
                     row(title: "\(session.cue) · \(Fmt.shortDay(session.startedAt))",
                         detail: detail(of: session),
                         badge: session.countsTowardProgress ? nil : "не в счёт",
-                        tone: Token.Ink.faint) {
+                        tone: Token.Ink.secondary) {
                         if canEdit { removingSession = session }
                     }
                     if session.id != sessions.prefix(20).last?.id { TGDivider() }

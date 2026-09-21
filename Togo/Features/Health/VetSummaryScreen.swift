@@ -87,7 +87,7 @@ struct VetSummaryScreen: View {
                             .replacingOccurrences(of: "\(summary.incidentTotal) ", with: ""))
                         .textStyle(AppFont.caption)
                     if let detail = summary.incidentDetail {
-                        Text(detail).textStyle(AppFont.caption.color(Token.Ink.faint))
+                        Text(detail).textStyle(AppFont.caption.color(Token.Ink.secondary))
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -205,7 +205,7 @@ struct WeightBars: View {
                         .fill(Token.Action.doneQuiet)
                         .frame(height: height(point.kg))
                     Text(Fmt.shortDay(point.date))
-                        .textStyle(AppFont.micro.color(Token.Ink.faint))
+                        .textStyle(AppFont.micro.color(Token.Ink.secondary))
                         .lineLimit(1)
                         .minimumScaleFactor(0.7)
                 }

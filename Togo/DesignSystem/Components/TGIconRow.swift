@@ -41,13 +41,13 @@ extension View {
         chartYAxis {
             AxisMarks(position: .leading) { _ in
                 AxisGridLine().foregroundStyle(Token.Surface.hairline)
-                AxisValueLabel().foregroundStyle(Token.Ink.faint)
+                AxisValueLabel().foregroundStyle(Token.Ink.secondary)
             }
         }
         .chartXAxis {
             AxisMarks(values: .stride(by: .day, count: xStrideDays)) { _ in
                 AxisValueLabel(format: .dateTime.day().month(.abbreviated))
-                    .foregroundStyle(Token.Ink.faint)
+                    .foregroundStyle(Token.Ink.secondary)
             }
         }
     }

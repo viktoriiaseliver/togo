@@ -177,7 +177,7 @@ struct CareStep: View {
                                       ? "checkmark.circle.fill" : "circle")
                                     .font(.system(size: 22))
                                     .foregroundStyle(chosen.contains(suggestion.id)
-                                                     ? Token.Action.done : Token.Ink.faint)
+                                                     ? Token.Action.done : Token.Ink.secondary)
                                 VStack(alignment: .leading, spacing: Token.Space.s2) {
                                     Text(suggestion.title).textStyle(AppFont.body)
                                     Text(suggestion.detail)

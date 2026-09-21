@@ -110,7 +110,7 @@ struct SmallAction: View {
                 if let subtitle {
                     Text(subtitle)
                         .font(.system(size: 10, weight: .regular))
-                        .foregroundStyle(Token.Ink.faint)
+                        .foregroundStyle(Token.Ink.secondary)
                         .lineLimit(1)
                         .minimumScaleFactor(0.7)
                 }

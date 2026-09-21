@@ -20,7 +20,7 @@ nonisolated enum Token {
         static let sunken = Color(hex: 0x262320)
     }
 
-    /// Текст. Слабый серый допустим только с 14pt.
+    /// Текст. `faint` — 2,5:1, текстом и значками НЕ красится ни в каком кегле: разрешение «только с 14pt» было неверным и развело его по двадцати четырём файлам.
     enum Ink {
         static let faint = Color(hex: 0xEBEBF54D)
         static let onAccent = Color(hex: 0x052018)

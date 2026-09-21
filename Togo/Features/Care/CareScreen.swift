@@ -262,7 +262,7 @@ private struct CareTaskRow: View {
                 Button(action: onToggle) {
                     Image(systemName: isDoneToday ? "checkmark.circle.fill" : "circle")
                         .font(.system(size: 24, weight: .regular))
-                        .foregroundStyle(isDoneToday ? Token.Action.done : Token.Ink.faint)
+                        .foregroundStyle(isDoneToday ? Token.Action.done : Token.Ink.secondary)
                         .frame(width: Token.Size.tapTarget, height: Token.Size.tapTarget)
                         .contentShape(Rectangle())
                 }
@@ -273,9 +273,9 @@ private struct CareTaskRow: View {
             VStack(alignment: .leading, spacing: Token.Space.s2) {
                 Text(task.title)
                     .textStyle(AppFont.bodyEmphasis.color(
-                        isDoneToday && task.kind == .daily ? Token.Ink.faint : Token.Ink.primary
+                        isDoneToday && task.kind == .daily ? Token.Ink.secondary : Token.Ink.primary
                     ))
-                    .strikethrough(isDoneToday && task.kind == .daily, color: Token.Ink.faint)
+                    .strikethrough(isDoneToday && task.kind == .daily, color: Token.Ink.secondary)
                 Text(task.detail)
                     .textStyle(AppFont.caption)
                     .wraps()
@@ -322,9 +322,9 @@ private struct CareTaskRow: View {
     }
 
     private var statusColor: Color {
-        if !task.isInSeason(on: now) { return Token.Ink.faint }
+        if !task.isInSeason(on: now) { return Token.Ink.secondary }
         if task.isOverdue(on: now) { return Token.Status.overdueText }
-        if task.isNeverDone { return Token.Ink.faint }
+        if task.isNeverDone { return Token.Ink.secondary }
         if task.isDue(on: now) { return Token.Status.waitingText }
         return Token.Ink.secondary
     }
@@ -386,8 +386,8 @@ struct CareSuggestionsSheet: View {
                 Image(systemName: already ? "checkmark.circle.fill"
                                           : (chosen.contains(suggestion.id) ? "checkmark.circle.fill" : "circle"))
                     .font(.system(size: 22))
-                    .foregroundStyle(already ? Token.Ink.faint
-                                             : (chosen.contains(suggestion.id) ? Token.Action.done : Token.Ink.faint))
+                    .foregroundStyle(already ? Token.Ink.secondary
+                                             : (chosen.contains(suggestion.id) ? Token.Action.done : Token.Ink.secondary))
                 VStack(alignment: .leading, spacing: Token.Space.s2) {
                     Text(suggestion.title).textStyle(AppFont.body)
                     Text(already ? "уже заведено" : suggestion.detail)

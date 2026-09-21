@@ -56,11 +56,11 @@ struct ScheduleChangeSheet: View {
                 VStack(alignment: .leading, spacing: Token.Space.s2) {
                     TGSectionHeader(title: "было")
                     Text(medication.doseText)
-                        .textStyle(AppFont.cardTitle.color(Token.Ink.faint))
-                        .strikethrough(isChanged, color: Token.Ink.faint)
+                        .textStyle(AppFont.cardTitle.color(Token.Ink.secondary))
+                        .strikethrough(isChanged, color: Token.Ink.secondary)
                     Text(ScheduleChange.summary(medication.times))
-                        .textStyle(AppFont.caption.color(Token.Ink.faint))
-                        .strikethrough(isChanged, color: Token.Ink.faint)
+                        .textStyle(AppFont.caption.color(Token.Ink.secondary))
+                        .strikethrough(isChanged, color: Token.Ink.secondary)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
 

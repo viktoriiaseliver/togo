@@ -31,7 +31,7 @@ struct DayTimeline: View {
             Text(Fmt.dayTitle(now))
                 .textStyle(AppFont.micro)
                 .textCase(.lowercase)
-                .foregroundStyle(Token.Ink.faint)
+                .foregroundStyle(Token.Ink.secondary)
                 .accessibilityAddTraits(.isHeader)
 
             if blocks.isEmpty {
@@ -146,8 +146,8 @@ struct TimelineRow: View {
                 HStack(spacing: Token.Space.s8) {
                     Text(isCancelled ? event.kind.title + " · отменено" : event.kind.title)
                         .textStyle(AppFont.bodyEmphasis)
-                        .foregroundStyle(isCancelled ? Token.Ink.faint : event.titleColor)
-                        .strikethrough(isCancelled, color: Token.Ink.faint)
+                        .foregroundStyle(isCancelled ? Token.Ink.secondary : event.titleColor)
+                        .strikethrough(isCancelled, color: Token.Ink.secondary)
                         .alignmentGuide(.timelineMarker) { $0[VerticalAlignment.center] }
                     Spacer(minLength: 0)
                     if showsAuthor {
@@ -178,7 +178,7 @@ struct TimelineRow: View {
             if block.isSpan {
                 Text(Fmt.clock(block.endedAt))
                     .textStyle(AppFont.numeric(13, weight: .medium))
-                    .foregroundStyle(Token.Ink.faint)
+                    .foregroundStyle(Token.Ink.secondary)
             }
         }
         .fixedSize()
@@ -198,7 +198,7 @@ struct TimelineRow: View {
     }
 
     private var markerTint: Color {
-        if isCancelled { return Token.Ink.faint }
+        if isCancelled { return Token.Ink.secondary }
         return event.raisesAlarm ? Token.Status.overdueText : Token.Ink.primary
     }
 
@@ -411,7 +411,7 @@ struct EmptyDayState: View {
                 .foregroundStyle(Token.Ink.secondary)
             Text("Ничего заполнять заранее не надо.")
                 .textStyle(AppFont.caption)
-                .foregroundStyle(Token.Ink.faint)
+                .foregroundStyle(Token.Ink.secondary)
         }
         .padding(.vertical, 8)
     }

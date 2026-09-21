@@ -64,7 +64,7 @@ struct DogTab: View {
                     Spacer(minLength: Token.Space.s8)
                     Image(systemName: "chevron.right")
                         .font(.system(size: Token.Size.iconSm, weight: .semibold))
-                        .foregroundStyle(Token.Ink.faint)
+                        .foregroundStyle(Token.Ink.secondary)
                         .accessibilityHidden(true)
                 }
             }

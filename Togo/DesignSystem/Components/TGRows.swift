@@ -104,7 +104,7 @@ struct TGListRow: View {
         case .chevron:
             Image(systemName: "chevron.right")
                 .font(.system(size: Token.Size.iconSm, weight: .semibold))
-                .foregroundStyle(Token.Ink.faint)
+                .foregroundStyle(Token.Ink.secondary)
                 .accessibilityHidden(true)
         case .checkmark:
             Image(systemName: "checkmark.circle.fill")

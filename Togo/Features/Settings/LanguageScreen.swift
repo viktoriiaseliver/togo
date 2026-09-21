@@ -74,7 +74,7 @@ struct LanguageScreen: View {
             HStack {
                 VStack(alignment: .leading, spacing: Token.Space.s2) {
                     Text(title)
-                        .textStyle(AppFont.body.color(isTranslated ? Token.Ink.primary : Token.Ink.faint))
+                        .textStyle(AppFont.body.color(isTranslated ? Token.Ink.primary : Token.Ink.secondary))
                     if let detail {
                         Text(detail).textStyle(AppFont.caption)
                     }

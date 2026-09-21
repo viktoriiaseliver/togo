@@ -252,7 +252,7 @@ struct FeedingScreen: View {
                         Spacer()
                         Image(systemName: "arrow.right")
                             .font(.system(size: 12, weight: .semibold))
-                            .foregroundStyle(Token.Ink.faint)
+                            .foregroundStyle(Token.Ink.secondary)
                             .accessibilityHidden(true)
                         Spacer()
                         Text(paddedSuggested[index].map { Fmt.clock(minuteOfDay: $0) } ?? "—")
