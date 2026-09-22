@@ -32,7 +32,7 @@ enum NotificationCenterService {
         guard !lines.isEmpty else { return }
 
         let content = UNMutableNotificationContent()
-        content.title = "Того · утренняя сводка"
+        content.title = "Togo · утренняя сводка"
         content.body = lines.prefix(4).joined(separator: "\n")
         content.sound = .default
         content.interruptionLevel = .active

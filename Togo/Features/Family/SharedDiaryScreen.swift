@@ -1,5 +1,7 @@
 import SwiftUI
 import SwiftData
+import CloudKit
+import CoreTransferable
 
 /// Общий дневник: пригласить второго человека и видеть, что обмен живой.
 ///
@@ -13,7 +15,7 @@ struct SharedDiaryScreen: View {
     @Query private var dogs: [Dog]
 
     @State private var isOn = SharedDiarySettings.isOn
-    @State private var inviteURL: URL?
+    @State private var invite: DiaryInvite?
     @State private var participants: [String] = []
     @State private var failure: String?
     @State private var isWorking = false
@@ -94,15 +96,19 @@ struct SharedDiaryScreen: View {
     private var inviteCard: some View {
         TGCard {
             TGSectionHeader(title: "пригласить")
-            if let inviteURL {
-                ShareLink(item: inviteURL,
-                          subject: Text("Дневник \(dog?.name ?? "собаки")"),
-                          message: Text("Открой ссылку — и сможешь отмечать вместе со мной.")) {
-                    TGListRow(title: "Отправить ссылку", systemImage: "square.and.arrow.up",
+            if let invite {
+                // Лист «Поделиться» в режиме совместной работы: там выбирают
+                // человека из контактов, и CloudKit записывает его в участники.
+                // Голая ссылка текстом при `publicPermission = .none` не
+                // открылась бы ни у кого.
+                ShareLink(item: invite,
+                          preview: SharePreview("Дневник · \(dog?.name ?? "собаки")",
+                                                image: Image(systemName: "pawprint.fill"))) {
+                    TGListRow(title: "Пригласить человека", systemImage: "person.badge.plus",
                               accessory: .none)
                 }
                 .buttonStyle(.plain)
-                TGExplainer(text: "Ссылка именная: открыть её сможет только тот, кому ты её отправишь, и только со своим iCloud.")
+                TGExplainer(text: "Выбери, кого пригласить, — маму, мужа, ситтера. Откроет только он, со своего iCloud, и ему нужен Togo на телефоне. Кто уже в дневнике, видно выше.")
                 Button("Перестать делиться", role: .destructive) { isStoppingShare = true }
                     .textStyle(AppFont.captionEmphasis.color(Token.Status.overdueText))
             } else {
@@ -132,9 +138,9 @@ struct SharedDiaryScreen: View {
     private var explainerCard: some View {
         TGCard {
             Text("Пока дневник только на этом телефоне").textStyle(AppFont.cardTitle)
-            Text("Включи — и второй человек будет отмечать со своего телефона: выход, кормление, дозу. Записи сойдутся в одну ленту, у каждой виден автор. Обмениваются отметки, а не настройки: профиль собаки каждый заводит у себя.")
+            Text("Включи — и второй человек будет отмечать со своего телефона. Записи сойдутся в одну ленту, у каждой виден автор. Уезжают отметки, а не настройки: профиль собаки каждый заводит у себя.")
                 .textStyle(AppFont.caption)
-            TGExplainer(text: "Нужен iCloud на обоих телефонах. Аккаунт в Того по-прежнему не нужен — обмен идёт через личный iCloud, а не через чужой сервер.")
+            TGExplainer(text: "Нужен iCloud на обоих телефонах. Аккаунт в Togo по-прежнему не нужен — обмен идёт через личный iCloud, а не через чужой сервер.")
         }
     }
 
@@ -171,7 +177,8 @@ struct SharedDiaryScreen: View {
         isWorking = true
         defer { isWorking = false }
         do {
-            inviteURL = try await FamilyShare.inviteURL(dogName: dog?.name ?? "собаки")
+            let share = try await FamilyShare.invite(dogName: dog?.name ?? "собаки")
+            invite = DiaryInvite(share: share)
             participants = await FamilyShare.participants()
         } catch {
             failure = error.localizedDescription
@@ -181,7 +188,7 @@ struct SharedDiaryScreen: View {
     private func stopSharing() async {
         do {
             try await FamilyShare.stopSharing()
-            inviteURL = nil
+            invite = nil
             participants = []
         } catch {
             failure = error.localizedDescription
@@ -191,5 +198,25 @@ struct SharedDiaryScreen: View {
     private func refresh() async {
         guard isOn, canInvite else { return }
         participants = await FamilyShare.participants()
+    }
+}
+
+/// Что уходит в лист «Поделиться»: сам `CKShare` и контейнер, в котором он
+/// живёт. `CKShareTransferRepresentation` включает в листе режим совместной
+/// работы — выбор людей, права, отправка через Сообщения или Почту.
+/// По умолчанию — только названным людям, на запись: приглашают затем,
+/// чтобы второй человек отмечал.
+struct DiaryInvite: Transferable {
+    let share: CKShare
+    var container: CKContainer { CKContainer(identifier: AppIdentifiers.cloudContainer) }
+
+    static var transferRepresentation: some TransferRepresentation {
+        CKShareTransferRepresentation { invite in
+            .existing(invite.share,
+                      container: invite.container,
+                      allowedSharingOptions: CKAllowedSharingOptions(
+                          allowedParticipantPermissionOptions: .readWrite,
+                          allowedParticipantAccessOptions: .specifiedRecipientsOnly))
+        }
     }
 }

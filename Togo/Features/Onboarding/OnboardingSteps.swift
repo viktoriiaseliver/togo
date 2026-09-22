@@ -219,8 +219,15 @@ struct CareStep: View {
 }
 
 /// Строка «подпись — поле». Вынесена, потому что повторяется на трёх экранах.
+///
+/// Подпись отдаётся полю и как accessibility-имя: без этого VoiceOver
+/// называет поле плейсхолдером («Стич», «4,1», «+33…»), а два телефона
+/// подряд на экране «Если что-то случилось» звучат одинаково.
+/// `spokenLabel` — для случаев, когда видимая подпись коротка нарочно
+/// («Телефон» под заголовком «Ветеринар»), а вслух нужна полная.
 struct LabeledField<Content: View>: View {
     let label: String
+    var spokenLabel: String? = nil
     @ViewBuilder var content: Content
 
     var body: some View {
@@ -231,6 +238,7 @@ struct LabeledField<Content: View>: View {
                 content
                     .multilineTextAlignment(.trailing)
                     .textStyle(AppFont.body)
+                    .accessibilityLabel(spokenLabel ?? label)
             }
             // При крупном шрифте подпись и поле перестают помещаться рядом —
             // тогда поле уезжает под подпись, а не сжимается в щель.
@@ -239,6 +247,7 @@ struct LabeledField<Content: View>: View {
                 content
                     .multilineTextAlignment(.leading)
                     .textStyle(AppFont.body)
+                    .accessibilityLabel(spokenLabel ?? label)
             }
         }
         .frame(minHeight: Token.Size.tapTarget)
@@ -368,7 +377,7 @@ struct HowItWorksReplayEnd: View {
         TGScreen(title: "Это всё") {
             TGCard {
                 Text("Инструкция всегда под рукой").textStyle(AppFont.cardTitle)
-                Text("«Настройки → Как это работает» открывает тот же текст в любой момент. Отдельной справки в приложении нет: объяснения стоят там, где возникает вопрос.")
+                Text("Тот же текст всегда есть в «Настройки → Как это работает». Отдельной справки нет: объяснения стоят там, где возникает вопрос.")
                     .textStyle(AppFont.caption)
             }
         } bottom: {

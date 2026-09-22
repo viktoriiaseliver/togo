@@ -38,12 +38,12 @@ struct SettingsScreen: View {
     private var subscriptionSection: some View {
         Section {
             if store.isPro {
-                LabeledContent("Того Pro", value: "активна")
+                LabeledContent("Togo Pro", value: "активна")
                 NavigationLink("Что будет, если отключить") { DowngradeScreen() }
                 Button("Управлять подпиской") { openSubscriptionSettings() }
             } else {
                 Button { showPaywall = true } label: {
-                    TGListRow(title: "Того Pro", value: "попробовать", systemImage: "sparkles")
+                    TGListRow(title: "Togo Pro", value: "попробовать", systemImage: "sparkles")
                 }
                 Button("Восстановить покупки") { Task { await store.restore() } }
             }
@@ -102,7 +102,7 @@ struct SettingsScreen: View {
             Text(dogs.count > 1 ? "собаки" : "собака")
         } footer: {
             Text(dogs.isEmpty
-                 ? "Без собаки приложению нечего считать — начните с неё."
+                 ? "Без собаки приложению нечего считать — начни с неё."
                  : "Удалить собаку можно в её профиле, внизу.")
         }
     }
@@ -117,7 +117,7 @@ struct SettingsScreen: View {
         } header: {
             Text("данные")
         } footer: {
-            Text("Всё считается на телефоне. Аккаунт не нужен, записи не уходят на наши серверы. Переустановку дневник переживает через iCloud или через файл.")
+            Text("Всё считается на телефоне. Аккаунт не нужен, серверов у нас нет. Переустановку дневник переживает через iCloud или файл.")
         }
     }
 

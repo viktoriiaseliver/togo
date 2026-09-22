@@ -95,4 +95,8 @@ nonisolated enum Fmt {
 
     static func days(_ n: Int) -> String { plural(n, "день", "дня", "дней") }
     static func outings(_ n: Int) -> String { plural(n, "выход", "выхода", "выходов") }
+    static func minutes(_ n: Int) -> String { plural(n, "минута", "минуты", "минут") }
+    static func times(_ n: Int) -> String { plural(n, "раз", "раза", "раз") }
+    static func records(_ n: Int) -> String { plural(n, "запись", "записи", "записей") }
+    static func actions(_ n: Int) -> String { plural(n, "действие", "действия", "действий") }
 }

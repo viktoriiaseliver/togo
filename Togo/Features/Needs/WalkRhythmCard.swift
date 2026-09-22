@@ -34,7 +34,7 @@ struct WalkRhythmCard: View {
                     TGDivider()
                     TGExplainer(text: "Это не норма, а зеркало: сколько получается у тебя. Сравнивать стоит не с чужой собакой, а с собой месяц назад.")
                 } else {
-                    TGExplainer(text: "Нужно хотя бы \(WalkRhythm.minimumDays) дня с записями — пока их \(rhythm.days). Просто продолжай отмечать выходы.")
+                    TGExplainer(text: "Нужно хотя бы \(Fmt.days(WalkRhythm.minimumDays)) с записями — пока их \(rhythm.days). Просто продолжай отмечать выходы.")
                 }
             }
         }

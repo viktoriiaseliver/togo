@@ -52,7 +52,7 @@ struct MoreSheet: View {
                 VStack(spacing: 0) {
                     row("Лакомство", "sparkles") { next = .treat }
                     TGDivider()
-                    row("Занятие · \(dog?.sessionLengthMinutes ?? 3) минуты", "target") { next = .training }
+                    row("Занятие · \(Fmt.minutes(dog?.sessionLengthMinutes ?? 3))", "target") { next = .training }
                     TGDivider()
                     row("Заметка", "text.alignleft") { next = .note }
                     TGDivider()

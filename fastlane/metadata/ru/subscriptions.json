@@ -1,15 +1,15 @@
 {
   "_комментарий": "Тексты и цены подписки. Отсюда их забирает Tools/setup_subscriptions.sh — в App Store Connect руками ничего не вводится. Ограничения Apple: имя ≤ 30 знаков, описание ≤ 45.",
   "baseTerritory": "FRA",
-  "groupName": "Того Pro",
+  "groupName": "Togo Pro",
   "products": {
     "app.togo.diary.pro.monthly": {
-      "name": "Того Pro · месяц",
+      "name": "Togo Pro · месяц",
       "description": "Вторая собака, семья, матрица навыка",
       "price": "2.99"
     },
     "app.togo.diary.pro.yearly": {
-      "name": "Того Pro · год",
+      "name": "Togo Pro · год",
       "description": "Вторая собака, семья, матрица навыка",
       "price": "19.99"
     }

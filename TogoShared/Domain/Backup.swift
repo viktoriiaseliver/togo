@@ -12,9 +12,9 @@ nonisolated enum BackupError: LocalizedError, Sendable {
     var errorDescription: String? {
         switch self {
         case .unreadable:
-            "Файл не похож на копию из Того. Нужен файл .json, который приложение сохранило само."
+            "Файл не похож на копию из Togo. Нужен файл .json, который приложение сохранило само."
         case .futureFormat(let version):
-            "Файл сделан более новой версией приложения (формат \(version)). Обнови Того — и он его прочитает."
+            "Файл сделан более новой версией приложения (формат \(version)). Обнови Togo — и он его прочитает."
         }
     }
 }

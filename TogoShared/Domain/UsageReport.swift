@@ -287,7 +287,7 @@ nonisolated struct UsageReport: Sendable {
             found.append(Friction(
                 id: "idle-session",
                 title: "Заходили и ничего не записали",
-                detail: "\(idle.count) сеансов подряд без единой записи — приложение открывали не чтобы записать, а чтобы что-то посмотреть. Стоит понять, что именно.",
+                detail: "\(idle.count) сеансов подряд без единой записи — открывали не записать, а посмотреть. Стоит понять, что именно.",
                 count: idle.count,
                 screens: []
             ))
@@ -379,7 +379,7 @@ nonisolated struct UsageReport: Sendable {
     /// Текст для выгрузки и для письма: то же, что на экране, но одним куском.
     var text: String {
         var lines: [String] = []
-        lines.append("Того · журнал действий")
+        lines.append("Togo · журнал действий")
         lines.append("с \(Fmt.shortDay(from)) по \(Fmt.shortDay(to)) · \(Fmt.days(days))")
         lines.append("")
         lines.append("Действий: \(total) · записей: \(records) · сеансов: \(sessions.count)")

@@ -101,13 +101,13 @@ nonisolated struct DayOutTrace: Equatable, Sendable {
         guard isReliable else { return [] }
         var lines: [String] = []
         if followedByLooseStool * 2 >= longDays {
-            lines.append("После долгих дней стул на следующий день бывал жиже — \(followedByLooseStool) раз из \(longDays).")
+            lines.append("После долгих дней стул на следующий день бывал жиже — \(Fmt.times(followedByLooseStool)) из \(longDays).")
         }
         if followedByPoorAppetite * 2 >= longDays {
-            lines.append("После долгих дней она ела заметно меньше обычного — \(followedByPoorAppetite) раз из \(longDays).")
+            lines.append("После долгих дней она ела заметно меньше обычного — \(Fmt.times(followedByPoorAppetite)) из \(longDays).")
         }
         if followedByIncident * 2 >= longDays {
-            lines.append("После долгих дней случались инциденты — \(followedByIncident) раз из \(longDays).")
+            lines.append("После долгих дней случались инциденты — \(Fmt.times(followedByIncident)) из \(longDays).")
         }
         return lines
     }

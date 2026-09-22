@@ -90,7 +90,7 @@ struct TrainingSessionScreen: View {
                      systemImage: "checkmark") { finish() }
                 TGButton(title: "Сбросить отметки", variant: .quiet, size: .medium) { session.reset() }
             } else {
-                TGButton(title: "Начать занятие · \(dog?.sessionLengthMinutes ?? 3) минуты", systemImage: "play.fill") {
+                TGButton(title: "Начать занятие · \(Fmt.minutes(dog?.sessionLengthMinutes ?? 3))", systemImage: "play.fill") {
                     session.start()
                     Haptics.tap()
                 }

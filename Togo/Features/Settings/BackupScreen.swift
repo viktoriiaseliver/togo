@@ -99,7 +99,7 @@ struct BackupScreen: View {
             } else if let fileData, archive != nil {
                 ShareLink(
                     item: BackupFile(name: BackupService.fileName(), data: fileData),
-                    preview: SharePreview("Дневник Того")
+                    preview: SharePreview("Дневник Togo")
                 ) {
                     TGListRow(title: "Сохранить дневник в файл",
                               value: sizeText(fileData),
@@ -150,7 +150,7 @@ struct BackupScreen: View {
                     Spacer(minLength: 0)
                 }
             }
-            TGExplainer(text: "Формат версии \(BackupService.currentFormatVersion). Файл, сделанный более новой версией приложения, старая читать не станет и честно об этом скажет.")
+            TGExplainer(text: "Формат версии \(BackupService.currentFormatVersion). Файл из более новой версии приложения старая не прочитает и скажет об этом.")
         }
     }
 

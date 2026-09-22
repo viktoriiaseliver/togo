@@ -98,7 +98,7 @@ struct UsageLogScreen: View {
     private var frictions: some View {
         if report.frictions.isEmpty {
             TGBanner(tone: .done, title: "Ни одного трения не нашлось",
-                     subtitle: "Ни отмен сразу после записи, ни двойных тапов, ни сбоев. Это хорошо — но проверь, что журнал включён и данных набралось достаточно.",
+                     subtitle: "Ни отмен сразу после записи, ни двойных тапов, ни сбоев. Это хорошо — но проверь, что журнал включён и записей набралось достаточно.",
                      systemImage: "checkmark.seal")
         } else {
             TGCard {
@@ -215,8 +215,8 @@ struct UsageLogScreen: View {
     }
 
     private func sessionValue(_ session: UsageReport.Session) -> String {
-        var parts = ["\(session.actions) действий"]
-        if session.records > 0 { parts.append("\(session.records) записей") }
+        var parts = [Fmt.actions(session.actions)]
+        if session.records > 0 { parts.append(Fmt.records(session.records)) }
         if session.length >= 60 { parts.append(Fmt.duration(session.length)) }
         return parts.joined(separator: " · ")
     }
@@ -245,7 +245,7 @@ struct UsageLogScreen: View {
             TGDivider()
             ShareLink(
                 item: TextFile(name: "togo-otchet.txt", text: report.text),
-                preview: SharePreview("Того · отчёт о действиях")
+                preview: SharePreview("Togo · отчёт о действиях")
             ) {
                 TGListRow(title: "Отчёт словами · txt", systemImage: "square.and.arrow.up")
             }
@@ -253,7 +253,7 @@ struct UsageLogScreen: View {
             TGDivider()
             ShareLink(
                 item: TextFile(name: UsageLog.fileName, text: raw),
-                preview: SharePreview("Того · журнал действий")
+                preview: SharePreview("Togo · журнал действий")
             ) {
                 TGListRow(title: "Весь журнал · строка на действие", systemImage: "doc.text")
             }

@@ -62,8 +62,8 @@ enum QuickLogError: Error, CustomLocalizedStringResourceConvertible {
 
     var localizedStringResource: LocalizedStringResource {
         switch self {
-        case .noDog: "Собака ещё не заведена — открой Того и добавь её."
-        case .storageUnavailable: "Дневник сейчас недоступен. Открой Того."
+        case .noDog: "Собака ещё не заведена — открой Togo и добавь её."
+        case .storageUnavailable: "Дневник сейчас недоступен. Открой Togo."
         case .noWalk: "Прогулка не идёт."
         }
     }
@@ -73,7 +73,7 @@ enum QuickLogError: Error, CustomLocalizedStringResourceConvertible {
 
 struct MarkPeeIntent: AppIntent {
     static let title: LocalizedStringResource = "Отметить, что пописал"
-    static let description = IntentDescription("Записывает выход по нужде в дневник Того.")
+    static let description = IntentDescription("Записывает выход по нужде в дневник Togo.")
     /// Приложение не открывается: смысл в том, чтобы не доставать телефон.
     static let openAppWhenRun = false
 
@@ -86,7 +86,7 @@ struct MarkPeeIntent: AppIntent {
 
 struct MarkStoolIntent: AppIntent {
     static let title: LocalizedStringResource = "Отметить стул"
-    static let description = IntentDescription("Записывает стул в дневник Того. Форму можно уточнить потом.")
+    static let description = IntentDescription("Записывает стул в дневник Togo. Форму можно уточнить потом.")
     static let openAppWhenRun = false
 
     @MainActor

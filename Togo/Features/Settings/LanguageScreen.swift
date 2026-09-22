@@ -34,7 +34,7 @@ struct LanguageScreen: View {
 
             if needsRestart {
                 Section {
-                    Label("Закройте и откройте приложение", systemImage: "arrow.clockwise")
+                    Label("Закрой и открой приложение", systemImage: "arrow.clockwise")
                         .foregroundStyle(Token.Status.waitingText)
                 }
             }

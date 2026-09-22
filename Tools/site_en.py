@@ -21,7 +21,7 @@
 # Отпечаток русского текста, к которому сделан этот перевод.
 # Не сходится — `build_site.py` скажет, какой раздел поменялся, и напечатает
 # новое значение: перечитать перевод, поправить и вписать сюда.
-SOURCE_FINGERPRINT = "4d271e6eb4005e89"
+SOURCE_FINGERPRINT = "64fccca9879f1a00"
 
 # Подписи вокруг текста: в шаблоне страницы их два языка.
 LABELS = {
@@ -42,7 +42,7 @@ DOCUMENTS = {
         "sections": [
             ("What is stored, and where", [
                 "Your dog’s records — walks, food, water, stools, incidents, training, weight, treatment schedules — are kept in a database on the device and in the storage shared by the app and its widgets.",
-                "If iCloud sync is on, a copy of that database sits in your own private iCloud library. Only you can reach it, along with anyone you have given access to your Apple ID.",
+                "If iCloud is on, a copy of that database sits in your own private iCloud library. Only you can reach it, along with anyone you have given access to your Apple ID.",
             ]),
             ("What we do not collect", [
                 "We collect no advertising identifiers, we use no trackers, and we include no third-party analytics SDKs.",

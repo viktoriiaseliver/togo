@@ -67,7 +67,7 @@ enum ReminderScheduler {
             .prefix(4)
             .map { task in
                 let status = task.statusText(on: tomorrow)
-                let snoozed = task.snoozeCount >= 2 ? " · откладывали \(task.snoozeCount) раза" : ""
+                let snoozed = task.snoozeCount >= 2 ? " · откладывали \(Fmt.times(task.snoozeCount))" : ""
                 return "\(task.title) — \(status)\(snoozed)"
             }
     }

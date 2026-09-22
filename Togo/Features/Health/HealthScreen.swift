@@ -248,7 +248,7 @@ struct ProtocolScreen: View {
                 }
                 TGCard {
                     Text("Интервал посчитаем сами").textStyle(AppFont.cardTitle)
-                    Text("В отчёте будет строка «доза → забор: \(Fmt.duration(now.timeIntervalSince(givenAt)))». Именно её отсутствие дважды приводило к неверному чтению анализов.")
+                    Text("В отчёте будет строка «доза → забор: \(Fmt.duration(now.timeIntervalSince(givenAt)))». Без этой строки анализы уже дважды читали неверно.")
                         .textStyle(AppFont.caption)
                 }
                 TGButton(title: "Отметить забор крови", systemImage: "cross.vial") {
@@ -344,7 +344,7 @@ struct VetReportScreen: View {
 
             ShareLink(
                 item: CSVFile(name: "togo-otchet.csv", text: Exporter.csv(events: events)),
-                preview: SharePreview("Отчёт Того · CSV")
+                preview: SharePreview("Отчёт Togo · CSV")
             ) {
                 TGCard {
                     TGListRow(title: "Выгрузить CSV", value: "без подписки", systemImage: "square.and.arrow.up")

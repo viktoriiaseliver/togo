@@ -31,7 +31,7 @@ struct EmergencyScreen: View {
         TGBanner(
             tone: .alarm,
             title: "Решает врач, не приложение",
-            subtitle: "Того не ставит диагнозов и не лечит. Здесь только телефоны и данные, которые трудно вспомнить, когда страшно.",
+            subtitle: "Togo не ставит диагнозов и не лечит. Здесь только телефоны и данные, которые трудно вспомнить, когда страшно.",
             systemImage: "cross.case"
         )
     }
@@ -218,7 +218,7 @@ struct DocumentsScreen: View {
                     TextField("имя", text: binding(\.vetName))
                 }
                 TGDivider()
-                LabeledField(label: "Телефон") {
+                LabeledField(label: "Телефон", spokenLabel: "Телефон ветеринара") {
                     TextField("+33…", text: binding(\.vetPhone)).keyboardType(.phonePad)
                 }
                 TGDivider()
@@ -226,7 +226,7 @@ struct DocumentsScreen: View {
                     TextField("название", text: binding(\.clinicName))
                 }
                 TGDivider()
-                LabeledField(label: "Телефон") {
+                LabeledField(label: "Телефон", spokenLabel: "Телефон клиники") {
                     TextField("+33…", text: binding(\.clinicPhone)).keyboardType(.phonePad)
                 }
             }

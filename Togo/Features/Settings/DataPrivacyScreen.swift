@@ -38,7 +38,7 @@ struct DataPrivacyScreen: View {
                 TGSectionHeader(title: "выгрузить")
                 ShareLink(
                     item: CSVFile(name: "togo-dnevnik.csv", text: Exporter.csv(events: activeEvents)),
-                    preview: SharePreview("Дневник Того · CSV")
+                    preview: SharePreview("Дневник Togo · CSV")
                 ) {
                     TGListRow(title: "Весь дневник · CSV", systemImage: "square.and.arrow.up")
                 }
@@ -58,7 +58,7 @@ struct DataPrivacyScreen: View {
                 TGButton(title: "Удалить все данные", variant: .destructive, size: .medium, systemImage: "trash") {
                     isConfirmingDelete = true
                 }
-                TGExplainer(text: "Стирает записи, собак, схемы лечения и семью на этом устройстве. Отменить это будет нельзя — сначала выгрузи CSV, если он может пригодиться.")
+                TGExplainer(text: "Стирает записи, собак, схемы лечения и семью на этом устройстве. Отменить будет нельзя — сначала выгрузи CSV, если может пригодиться.")
             }
 
             if deleted {
@@ -145,7 +145,7 @@ struct SupportScreen: View {
     }
 
     private func openMail() {
-        let subject = "Того \(settings.appVersion) — вопрос"
+        let subject = "Togo \(settings.appVersion) — вопрос"
         let body = "\n\n---\n" + diagnostics
         var components = URLComponents(string: "mailto:\(Contacts.support)")
         components?.queryItems = [
@@ -182,7 +182,7 @@ struct AboutScreen: View {
                 Image(systemName: "pawprint.fill")
                     .font(.system(size: 44))
                     .foregroundStyle(Token.Status.doneText)
-                Text("Того").textStyle(AppFont.screenTitle)
+                Text("Togo").textStyle(AppFont.screenTitle)
                 Text("версия \(settings.appVersion) (\(settings.buildNumber))").textStyle(AppFont.caption)
             }
             .frame(maxWidth: .infinity)

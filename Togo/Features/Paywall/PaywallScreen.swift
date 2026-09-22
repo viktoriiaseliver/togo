@@ -10,8 +10,16 @@ struct PaywallScreen: View {
 
     @State private var selected: Product?
 
+    /// Право на пробный период спрашивается у StoreKit, а не пишется в текст.
+    /// У того, кто уже подписывался, пробной недели нет; в App Store Connect
+    /// её ещё надо завести руками (в `.storekit` она есть, в `subscriptions.json`
+    /// — нет). Пока StoreKit не подтвердил оффер и право на него, кнопка
+    /// называет цену и ничего не обещает: обещание, которого нет в чеке, —
+    /// отказ по 3.1.2 и 2.3.1.
+    @State private var trialEligible: [String: Bool] = [:]
+
     var body: some View {
-        TGScreen(title: "Того Pro") {
+        TGScreen(title: "Togo Pro") {
             if store.isPro {
                 TGBanner(tone: .done, title: "Подписка активна",
                          subtitle: "Спасибо. Управлять ей можно в настройках App Store.",
@@ -55,12 +63,19 @@ struct PaywallScreen: View {
         .task {
             await store.load()
             selected = store.products.last
+            for product in store.products {
+                trialEligible[product.id] = await product.subscription?.isEligibleForIntroOffer ?? false
+            }
         }
     }
 
     private var buyTitle: String {
-        guard let selected else { return "Выбери план" }
-        return "Попробовать неделю бесплатно · дальше \(selected.displayPrice)"
+        guard let selected, let period = selected.subscription?.subscriptionPeriod else { return "Выбери план" }
+        let price = "\(selected.displayPrice) \(Self.billing(period))"
+        if let trial = trialLength(selected) {
+            return "\(trial) бесплатно · дальше \(price)"
+        }
+        return "Подписаться · \(price)"
     }
 
     private var featureList: some View {
@@ -92,6 +107,8 @@ struct PaywallScreen: View {
         VStack(spacing: Token.Space.s8) {
             ForEach(store.products, id: \.id) { product in
                 Button { selected = product } label: {
+                    // Выбор передан кольцом и заливкой; VoiceOver узнаёт о нём
+                    // только из трейта — иначе человек не слышит, что покупает.
                     TGTile(isSelected: selected?.id == product.id, minHeight: 68) {
                         HStack(spacing: Token.Space.s12) {
                             Image(systemName: selected?.id == product.id ? "largecircle.fill.circle" : "circle")
@@ -107,13 +124,14 @@ struct PaywallScreen: View {
                     }
                 }
                 .buttonStyle(.plain)
+                .accessibilityAddTraits(selected?.id == product.id ? .isSelected : [])
             }
         }
     }
 
     private var legalText: some View {
         VStack(alignment: .leading, spacing: Token.Space.s8) {
-            Text("Подписка продлевается автоматически, пока её не отменить не позже чем за 24 часа до конца периода. Оплата спишется с Apple ID при подтверждении покупки. Отменить можно в настройках App Store.")
+            Text("Подписка продлевается сама, пока её не отменить — не позже чем за 24 часа до конца периода. Оплата спишется с Apple ID при подтверждении покупки. Отменить можно в настройках App Store.")
                 .textStyle(AppFont.micro.color(Token.Ink.secondary))
             HStack(spacing: Token.Space.s16) {
                 NavigationLink("Условия использования") { TermsScreen() }
@@ -125,15 +143,44 @@ struct PaywallScreen: View {
 
     private func subscriptionCaption(_ product: Product) -> String {
         guard let period = product.subscription?.subscriptionPeriod else { return "" }
-        let unit: String
-        switch period.unit {
-        case .day: unit = Fmt.days(period.value)
-        case .week: unit = Fmt.plural(period.value, "неделя", "недели", "недель")
-        case .month: unit = Fmt.plural(period.value, "месяц", "месяца", "месяцев")
-        case .year: unit = Fmt.plural(period.value, "год", "года", "лет")
-        @unknown default: unit = ""
+        if let trial = trialLength(product) {
+            return "\(Self.billing(period)) · сначала \(trial) бесплатно"
         }
-        return "каждые \(unit) · неделя бесплатно"
+        return Self.billing(period)
+    }
+
+    /// «неделя», «2 недели», «месяц» — длина пробного периода, если он есть
+    /// у продукта и человек имеет на него право. Иначе `nil`, и текст молчит.
+    private func trialLength(_ product: Product) -> String? {
+        guard let offer = product.subscription?.introductoryOffer,
+              offer.paymentMode == .freeTrial,
+              trialEligible[product.id] == true else { return nil }
+        return Self.length(offer.period)
+    }
+
+    /// «в месяц», «в год», «каждые 3 месяца» — как часто списывается цена.
+    /// Раньше строка складывалась как «каждые 1 месяц».
+    static func billing(_ period: Product.SubscriptionPeriod) -> String {
+        switch (period.unit, period.value) {
+        case (.day, 1): return "в день"
+        case (.week, 1): return "в неделю"
+        case (.month, 1): return "в месяц"
+        case (.year, 1): return "в год"
+        default: return "каждые \(length(period))"
+        }
+    }
+
+    static func length(_ period: Product.SubscriptionPeriod) -> String {
+        switch (period.unit, period.value) {
+        case (.week, 1): return "неделя"
+        case (.month, 1): return "месяц"
+        case (.year, 1): return "год"
+        case (.day, let n): return Fmt.days(n)
+        case (.week, let n): return Fmt.plural(n, "неделя", "недели", "недель")
+        case (.month, let n): return Fmt.plural(n, "месяц", "месяца", "месяцев")
+        case (.year, let n): return Fmt.plural(n, "год", "года", "лет")
+        default: return ""
+        }
     }
 
     private func buy() async {

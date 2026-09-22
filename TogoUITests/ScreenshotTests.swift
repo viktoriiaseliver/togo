@@ -106,7 +106,7 @@ nonisolated final class ScreenshotTests: XCTestCase {
 
     func test07Подписка() {
         app.buttons["Настройки"].tap()
-        let pro = app.descendants(matching: .any).matching(identifier: "Того Pro").firstMatch
+        let pro = app.descendants(matching: .any).matching(identifier: "Togo Pro").firstMatch
         guard pro.waitForExistence(timeout: 5) else { return }
         pro.tap()
         _ = app.staticTexts["что открывает"].waitForExistence(timeout: 5)

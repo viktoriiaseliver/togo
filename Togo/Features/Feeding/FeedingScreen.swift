@@ -187,7 +187,7 @@ struct FeedingScreen: View {
             case .notEnoughData(let days):
                 TGCard {
                     Text(report.status.title).textStyle(AppFont.cardTitle)
-                    Text("Полных дней с записями: \(days). Нужно хотя бы \(FeedingAnalyzer.minimumCompleteDays), иначе среднее врёт. Просто продолжай отмечать еду — считать приложение начнёт само.")
+                    Text("Полных дней с записями: \(days), нужно хотя бы \(FeedingAnalyzer.minimumCompleteDays) — иначе среднее врёт. Продолжай отмечать еду, дальше приложение посчитает само.")
                         .textStyle(AppFont.caption)
                 }
             case .onNorm:
@@ -200,7 +200,7 @@ struct FeedingScreen: View {
                          systemImage: "arrow.up.right")
             case .underNorm:
                 TGBanner(tone: .waiting, title: report.status.title,
-                         subtitle: "В среднем \(Int(report.averageGramsPerDay)) г в день — на \(abs(report.deviationPercent))% меньше нормы. Если он при этом бодр и вес держится, это не беда; если вес падает — к врачу.",
+                         subtitle: "В среднем \(Int(report.averageGramsPerDay)) г в день — на \(abs(report.deviationPercent))% меньше нормы. Бодр и вес держится — не беда; вес падает — к врачу.",
                          systemImage: "arrow.down.right")
             }
         }

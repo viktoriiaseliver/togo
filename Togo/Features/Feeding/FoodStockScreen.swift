@@ -65,7 +65,7 @@ struct FoodStockScreen: View {
                 EmptyStateCard(
                     systemImage: "shippingbox",
                     title: "Корм пока не записан",
-                    message: "Добавь то, чем кормишь: сухой считается мешками, влажный — банками. Даёшь и то и другое — добавь оба и укажи, сколько граммов в день приходится на каждый.",
+                    message: "Добавь то, чем кормишь: сухой считается мешками, влажный — банками. Даёшь оба — добавь оба и укажи граммы в день на каждый.",
                     actionTitle: canEdit ? "Добавить корм" : nil,
                     action: canEdit ? { isAdding = true } : nil
                 )
@@ -117,7 +117,7 @@ struct FoodStockScreen: View {
                         TGBanner(
                             tone: .waiting,
                             title: total > dog.dailyGrams ? "Больше нормы" : "Меньше нормы",
-                            subtitle: "Норма — \(dog.dailyGrams) г в день, по кормам выходит \(total) г. Это не ошибка: поправить можно или раскладку здесь, или саму норму на «Питании».",
+                            subtitle: "Норма — \(dog.dailyGrams) г в день, по кормам выходит \(total) г. Так бывает: поправь или раскладку здесь, или саму норму на «Питании».",
                             systemImage: "arrow.left.arrow.right"
                         )
                     }

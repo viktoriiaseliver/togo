@@ -172,7 +172,7 @@ struct VetSummaryScreen: View {
                 item: CSVFile(name: "togo-svodka.csv",
                               text: Exporter.csv(events: Diary.active(dog?.events ?? [])
                                   .filter { $0.date >= from && $0.date <= to })),
-                preview: SharePreview("Сводка Того · CSV")
+                preview: SharePreview("Сводка Togo · CSV")
             ) {
                 TGListRow(title: "Выгрузить CSV", value: "без подписки",
                           systemImage: "tablecells", accessory: .none)

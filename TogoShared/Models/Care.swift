@@ -134,8 +134,8 @@ final class CareTask {
         guard isInSeason(on: date) else { return "вне сезона" }
         switch kind {
         case .daily:
-            if isDoneToday(on: date) { return streak > 1 ? "\(streak) дней подряд" : "сегодня сделали" }
-            return streak > 1 ? "серия \(streak) дней" : "сегодня"
+            if isDoneToday(on: date) { return streak > 1 ? "\(Fmt.days(streak)) подряд" : "сегодня сделали" }
+            return streak > 1 ? "серия \(Fmt.days(streak))" : "сегодня"
         case .periodic:
             guard let days = daysUntilDue(from: date) else { return "когда делали?" }
             if days < 0 { return "просрочено на \(Fmt.days(-days))" }

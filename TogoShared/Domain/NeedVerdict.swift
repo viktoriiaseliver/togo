@@ -160,7 +160,7 @@ nonisolated enum VerdictEngine {
             let since = s.sinceUrine.map(Fmt.duration) ?? "долго"
             return "Не писал \(since) — дольше, чем обычно."
         case .unknown(.notEnoughData(let days)):
-            return "Приложение пока не знает его интервалов. Выведи, если сомневаешься: данных \(Fmt.days(days)), это мало."
+            return "Приложение пока не знает его интервалов. Выведи, если сомневаешься: записей всего за \(Fmt.days(days)) — это мало."
         case .unknown(.ambiguous):
             let since = s.sinceUrine.map(Fmt.duration) ?? "недавно"
             return "Писал \(since) назад. Может, скучно — а может, живот. Выведи, если сомневаешься: приложение не знает лучше тебя."

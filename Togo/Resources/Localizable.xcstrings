@@ -52,18 +52,6 @@
         }
       }
     },
-    " · откладывали %@ раза" : {
-      "comment" : "snoozed",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " · откладывали %@ раза"
-          }
-        }
-      }
-    },
     " · отменено" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -256,18 +244,6 @@
         }
       }
     },
-    "«Настройки → Как это работает» открывает тот же текст в любой момент. Отдельной справки в приложении нет: объяснения стоят там, где возникает вопрос." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "«Настройки → Как это работает» открывает тот же текст в любой момент. Отдельной справки в приложении нет: объяснения стоят там, где возникает вопрос."
-          }
-        }
-      }
-    },
     "«Настройки → собака → Питание и режим». Приложение сравнит это с тем, как ты кормишь на самом деле, и скажет, если Стич переедает." : {
       "comment" : "explainerCard",
       "extractionState" : "manual",
@@ -300,18 +276,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "«Принять смену» — явное действие, а не тишина: незакрытое не должно повиснуть ничьим."
-          }
-        }
-      }
-    },
-    "«Того: прогулка» — Siri поймёт и на часах." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "«Того: прогулка» — Siri поймёт и на часах."
           }
         }
       }
@@ -854,30 +818,6 @@
     "%@ даты" : {
 
     },
-    "%@ действий" : {
-      "comment" : "parts",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ действий"
-          }
-        }
-      }
-    },
-    "%@ дней подряд" : {
-      "comment" : "statusText",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ дней подряд"
-          }
-        }
-      }
-    },
     "%@ доза пропущена" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -922,18 +862,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ закончится %@"
-          }
-        }
-      }
-    },
-    "%@ записей" : {
-      "comment" : "parts",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ записей"
           }
         }
       }
@@ -1102,30 +1030,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ просьб за неделю"
-          }
-        }
-      }
-    },
-    "%@ раза" : {
-      "comment" : "markLabel",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ раза"
-          }
-        }
-      }
-    },
-    "%@ сеансов подряд без единой записи — приложение открывали не чтобы записать, а чтобы что-то посмотреть. Стоит понять, что именно." : {
-      "comment" : "idle",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ сеансов подряд без единой записи — приложение открывали не чтобы записать, а чтобы что-то посмотреть. Стоит понять, что именно."
           }
         }
       }
@@ -2042,18 +1946,6 @@
         }
       }
     },
-    "Без собаки приложению нечего считать — начните с неё." : {
-      "comment" : "dogSection",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Без собаки приложению нечего считать — начните с неё."
-          }
-        }
-      }
-    },
     "Без этих вещей приложение молча вредит собаке, поэтому они не продаются и после отмены никуда не денутся." : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -2317,18 +2209,6 @@
         }
       }
     },
-    "В отчёте будет строка «доза → забор: \\(Fmt.duration(now.timeIntervalSince(givenAt)))». Именно её отсутствие дважды приводило к неверному чтению анализов." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "В отчёте будет строка «доза → забор: \\(Fmt.duration(now.timeIntervalSince(givenAt)))». Именно её отсутствие дважды приводило к неверному чтению анализов."
-          }
-        }
-      }
-    },
     "В отчёте будет строка «доза → забор: %@». Именно её отсутствие дважды приводило к неверному чтению анализов." : {
 
     },
@@ -2364,18 +2244,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "В среднем %@ г в день — на %@% больше нормы. Это не срочно, но за две недели складывается в лишний вес."
-          }
-        }
-      }
-    },
-    "В среднем %@ г в день — на %@% меньше нормы. Если он при этом бодр и вес держится, это не беда; если вес падает — к врачу." : {
-      "comment" : "statusCard",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "В среднем %@ г в день — на %@% меньше нормы. Если он при этом бодр и вес держится, это не беда; если вес падает — к врачу."
           }
         }
       }
@@ -2980,18 +2848,6 @@
         }
       }
     },
-    "Включи — и второй человек будет отмечать со своего телефона: выход, кормление, дозу. Записи сойдутся в одну ленту, у каждой виден автор. Обмениваются отметки, а не настройки: профиль собаки каждый заводит у себя." : {
-      "comment" : "explainerCard",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Включи — и второй человек будет отмечать со своего телефона: выход, кормление, дозу. Записи сойдутся в одну ленту, у каждой виден автор. Обмениваются отметки, а не настройки: профиль собаки каждый заводит у себя."
-          }
-        }
-      }
-    },
     "включи счёт — предупредим заранее" : {
       "comment" : "subtitle",
       "extractionState" : "manual",
@@ -3588,18 +3444,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Всё про собаку"
-          }
-        }
-      }
-    },
-    "Всё считается на телефоне. Аккаунт не нужен, записи не уходят на наши серверы. Переустановку дневник переживает через iCloud или через файл." : {
-      "comment" : "dataSection",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Всё считается на телефоне. Аккаунт не нужен, записи не уходят на наши серверы. Переустановку дневник переживает через iCloud или через файл."
           }
         }
       }
@@ -4421,7 +4265,7 @@
       }
     },
     "год" : {
-      "comment" : "unit",
+      "comment" : "trialLength",
       "extractionState" : "manual",
       "localizations" : {
         "ru" : {
@@ -4433,7 +4277,7 @@
       }
     },
     "года" : {
-      "comment" : "unit",
+      "comment" : "trialLength",
       "extractionState" : "manual",
       "localizations" : {
         "ru" : {
@@ -5354,18 +5198,6 @@
         }
       }
     },
-    "Дневник \\(dog?.name ?? " : {
-      "comment" : "inviteCard",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Дневник \\(dog?.name ?? "
-          }
-        }
-      }
-    },
     "Дневник %@" : {
 
     },
@@ -5437,42 +5269,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Дневник работает целиком и без уведомлений: они нужны только дозе, окну натощак и эскалации."
-          }
-        }
-      }
-    },
-    "Дневник сейчас недоступен. Открой Того." : {
-      "comment" : "localizedStringResource",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Дневник сейчас недоступен. Открой Того."
-          }
-        }
-      }
-    },
-    "Дневник Того" : {
-      "comment" : "exportCard",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Дневник Того"
-          }
-        }
-      }
-    },
-    "Дневник Того · CSV" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Дневник Того · CSV"
           }
         }
       }
@@ -5773,18 +5569,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Добавь собаку — и приложение начнёт считать, сколько она ест и во сколько."
-          }
-        }
-      }
-    },
-    "Добавь то, чем кормишь: сухой считается мешками, влажный — банками. Даёшь и то и другое — добавь оба и укажи, сколько граммов в день приходится на каждый." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Добавь то, чем кормишь: сухой считается мешками, влажный — банками. Даёшь и то и другое — добавь оба и укажи, сколько граммов в день приходится на каждый."
           }
         }
       }
@@ -6461,18 +6245,6 @@
         }
       }
     },
-    "Если включена синхронизация iCloud, копия базы лежит в твоей приватной библиотеке iCloud. Доступ к ней есть только у тебя и у тех, кому ты дал доступ к своему Apple ID." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Если включена синхронизация iCloud, копия базы лежит в твоей приватной библиотеке iCloud. Доступ к ней есть только у тебя и у тех, кому ты дал доступ к своему Apple ID."
-          }
-        }
-      }
-    },
     "Если два человека отметили одно и то же в пределах 20 минут, приложение покажет карточку слияния обоим. Чужое оно молча не перезаписывает." : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -6505,18 +6277,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "если дозу не отметили — сначала дежурному, потом остальным"
-          }
-        }
-      }
-    },
-    "Если лай начнёт вытеснять спокойный сигнал, приложение это покажет и объяснит, что делать: подождать одну-две секунды тишины и открыть тогда." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Если лай начнёт вытеснять спокойный сигнал, приложение это покажет и объяснит, что делать: подождать одну-две секунды тишины и открыть тогда."
           }
         }
       }
@@ -7097,18 +6857,6 @@
         }
       }
     },
-    "Закройте и откройте приложение" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Закройте и откройте приложение"
-          }
-        }
-      }
-    },
     "закрыто · %@" : {
       "comment" : "doneCard",
       "extractionState" : "manual",
@@ -7261,18 +7009,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Занятие · \\(Fmt.duration(Double(session.durationSeconds)))"
-          }
-        }
-      }
-    },
-    "Занятие · %@ минуты" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Занятие · %@ минуты"
           }
         }
       }
@@ -8033,18 +7769,6 @@
         }
       }
     },
-    "Записывает выход по нужде в дневник Того." : {
-      "comment" : "MarkPeeIntent",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Записывает выход по нужде в дневник Того."
-          }
-        }
-      }
-    },
     "Записывает еду. Граммы берутся из режима питания." : {
       "comment" : "LogMealIntent",
       "extractionState" : "manual",
@@ -8053,30 +7777,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Записывает еду. Граммы берутся из режима питания."
-          }
-        }
-      }
-    },
-    "Записывает стул в дневник Того. Форму можно уточнить потом." : {
-      "comment" : "MarkStoolIntent",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Записывает стул в дневник Того. Форму можно уточнить потом."
-          }
-        }
-      }
-    },
-    "Записывает то, что ты отметил, и считает интервалы между событиями." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Записывает то, что ты отметил, и считает интервалы между событиями."
           }
         }
       }
@@ -8281,18 +7981,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Звук"
-          }
-        }
-      }
-    },
-    "Здесь заводится сам участник: имя подставляется в автора записи, права решают, что ему можно. Работает уже сейчас, если телефон в семье один и его передают из рук в руки." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Здесь заводится сам участник: имя подставляется в автора записи, права решают, что ему можно. Работает уже сейчас, если телефон в семье один и его передают из рук в руки."
           }
         }
       }
@@ -8959,18 +8647,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "их записи сохранятся и вернутся при возобновлении"
-          }
-        }
-      }
-    },
-    "каждые %@ · неделя бесплатно" : {
-      "comment" : "unit",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "каждые %@ · неделя бесплатно"
           }
         }
       }
@@ -10378,7 +10054,7 @@
       }
     },
     "лет" : {
-      "comment" : "unit",
+      "comment" : "trialLength",
       "extractionState" : "manual",
       "localizations" : {
         "ru" : {
@@ -10810,7 +10486,7 @@
       }
     },
     "месяц" : {
-      "comment" : "unit",
+      "comment" : "trialLength",
       "extractionState" : "manual",
       "localizations" : {
         "ru" : {
@@ -10834,7 +10510,7 @@
       }
     },
     "месяца" : {
-      "comment" : "unit",
+      "comment" : "trialLength",
       "extractionState" : "manual",
       "localizations" : {
         "ru" : {
@@ -10846,25 +10522,13 @@
       }
     },
     "месяцев" : {
-      "comment" : "unit",
+      "comment" : "trialLength",
       "extractionState" : "manual",
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "месяцев"
-          }
-        }
-      }
-    },
-    "Метка не знает о тебе ничего: в ней записан только номер, по которому «Команды» узнают наклейку. Геопозицию Того не спрашивает вовсе." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Метка не знает о тебе ничего: в ней записан только номер, по которому «Команды» узнают наклейку. Геопозицию Того не спрашивает вовсе."
           }
         }
       }
@@ -11349,18 +11013,6 @@
         }
       }
     },
-    "На экране «Питание и режим» видно, сколько собака ест на самом деле и во сколько. Выходит больше нормы — приложение предложит новую порцию, сразу для всех кормлений: порция одна на день." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "На экране «Питание и режим» видно, сколько собака ест на самом деле и во сколько. Выходит больше нормы — приложение предложит новую порцию, сразу для всех кормлений: порция одна на день."
-          }
-        }
-      }
-    },
     "Наблюдай и позвони при симптомах" : {
       "comment" : "title",
       "extractionState" : "manual",
@@ -11549,18 +11201,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Назначил"
-          }
-        }
-      }
-    },
-    "Найди в списке Того. Выключи «Спрашивать до запуска» — иначе смысл теряется: придётся подтверждать." : {
-      "comment" : "steps",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Найди в списке Того. Выключи «Спрашивать до запуска» — иначе смысл теряется: придётся подтверждать."
           }
         }
       }
@@ -11829,18 +11469,6 @@
         }
       }
     },
-    "Начать занятие · %@ минуты" : {
-      "comment" : "sessionSheet",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Начать занятие · %@ минуты"
-          }
-        }
-      }
-    },
     "Начать прогулку" : {
       "comment" : "StartWalkIntent",
       "extractionState" : "manual",
@@ -11974,10 +11602,28 @@
       }
     },
     "Не кормить до приёма" : {
-
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не кормить до приёма"
+          }
+        }
+      }
     },
     "Не кормить после приёма" : {
-
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не кормить после приёма"
+          }
+        }
+      }
     },
     "Не медицинское устройство" : {
       "comment" : "body",
@@ -12376,7 +12022,7 @@
       }
     },
     "недели" : {
-      "comment" : "unit",
+      "comment" : "trialLength",
       "extractionState" : "manual",
       "localizations" : {
         "ru" : {
@@ -12388,7 +12034,7 @@
       }
     },
     "недель" : {
-      "comment" : "unit",
+      "comment" : "trialLength",
       "extractionState" : "manual",
       "localizations" : {
         "ru" : {
@@ -12412,7 +12058,7 @@
       }
     },
     "неделя" : {
-      "comment" : "unit",
+      "comment" : "trialLength",
       "extractionState" : "manual",
       "localizations" : {
         "ru" : {
@@ -12563,18 +12209,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ни одного трения не нашлось"
-          }
-        }
-      }
-    },
-    "Ни отмен сразу после записи, ни двойных тапов, ни сбоев. Это хорошо — но проверь, что журнал включён и данных набралось достаточно." : {
-      "comment" : "frictions",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ни отмен сразу после записи, ни двойных тапов, ни сбоев. Это хорошо — но проверь, что журнал включён и данных набралось достаточно."
           }
         }
       }
@@ -12783,18 +12417,6 @@
         }
       }
     },
-    "Норма — %@ г в день, по кормам выходит %@ г. Это не ошибка: поправить можно или раскладку здесь, или саму норму на «Питании»." : {
-      "comment" : "balanceCard",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Норма — %@ г в день, по кормам выходит %@ г. Это не ошибка: поправить можно или раскладку здесь, или саму норму на «Питании»."
-          }
-        }
-      }
-    },
     "норма %@ г" : {
       "comment" : "chartCard",
       "extractionState" : "manual",
@@ -12933,18 +12555,6 @@
         }
       }
     },
-    "Нужен iCloud на обоих телефонах. Аккаунт в Того по-прежнему не нужен — обмен идёт через личный iCloud, а не через чужой сервер." : {
-      "comment" : "explainerCard",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Нужен iCloud на обоих телефонах. Аккаунт в Того по-прежнему не нужен — обмен идёт через личный iCloud, а не через чужой сервер."
-          }
-        }
-      }
-    },
     "нужна дата" : {
       "comment" : "needsDateCard",
       "extractionState" : "manual",
@@ -12965,18 +12575,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "нужно к поездке"
-          }
-        }
-      }
-    },
-    "Нужно хотя бы %@ дня с записями — пока их %@. Просто продолжай отмечать выходы." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Нужно хотя бы %@ дня с записями — пока их %@. Просто продолжай отмечать выходы."
           }
         }
       }
@@ -13725,18 +13323,6 @@
         }
       }
     },
-    "откладывали %@ раза" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "откладывали %@ раза"
-          }
-        }
-      }
-    },
     "откладывали %lld раза" : {
 
     },
@@ -13796,18 +13382,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Открой «Команды» → «Автоматизация»"
-          }
-        }
-      }
-    },
-    "Открой ссылку — и сможешь отмечать вместе со мной." : {
-      "comment" : "inviteCard",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Открой ссылку — и сможешь отмечать вместе со мной."
           }
         }
       }
@@ -14160,18 +13734,6 @@
         }
       }
     },
-    "Отметишь особенность — появится кнопка подтверждения: такая запись уходит в медицинскую часть и в отчёт врачу. Кровь — единственная отметка, которая поднимает запись в терракот." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Отметишь особенность — появится кнопка подтверждения: такая запись уходит в медицинскую часть и в отчёт врачу. Кровь — единственная отметка, которая поднимает запись в терракот."
-          }
-        }
-      }
-    },
     "Отметка" : {
       "comment" : "stool",
       "extractionState" : "manual",
@@ -14383,7 +13945,7 @@
       }
     },
     "Отправить ссылку" : {
-      "comment" : "inviteCard",
+      "comment" : "body",
       "extractionState" : "manual",
       "localizations" : {
         "ru" : {
@@ -14486,18 +14048,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Отчёт словами · txt"
-          }
-        }
-      }
-    },
-    "Отчёт Того · CSV" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Отчёт Того · CSV"
           }
         }
       }
@@ -14798,18 +14348,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "передумал"
-          }
-        }
-      }
-    },
-    "переключатель наверху главного" : {
-      "comment" : "handle",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "переключатель наверху главного"
           }
         }
       }
@@ -15388,18 +14926,6 @@
         }
       }
     },
-    "Подписка продлевается автоматически, пока её не отменить не позже чем за 24 часа до конца периода. Оплата спишется с Apple ID при подтверждении покупки. Отменить можно в настройках App Store." : {
-      "comment" : "legalText",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Подписка продлевается автоматически, пока её не отменить не позже чем за 24 часа до конца периода. Оплата спишется с Apple ID при подтверждении покупки. Отменить можно в настройках App Store."
-          }
-        }
-      }
-    },
     "Подробнее" : {
       "comment" : "disclaimer",
       "extractionState" : "manual",
@@ -15588,18 +15114,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "поздно"
-          }
-        }
-      }
-    },
-    "Позовите тех, кто тоже за ней ходит: со-владельца, ситтера, ребёнка или врача. Роль выбирается заранее, ссылка живёт сутки, а принявший роль поменять не сможет." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Позовите тех, кто тоже за ней ходит: со-владельца, ситтера, ребёнка или врача. Роль выбирается заранее, ссылка живёт сутки, а принявший роль поменять не сможет."
           }
         }
       }
@@ -15820,18 +15334,6 @@
         }
       }
     },
-    "Пока это не расчёт, а ориентир: у взрослой собаки течка бывает примерно раз в полгода. После второй записи приложение посчитает промежуток по её собственным датам." : {
-      "comment" : "forecastCard",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Пока это не расчёт, а ориентир: у взрослой собаки течка бывает примерно раз в полгода. После второй записи приложение посчитает промежуток по её собственным датам."
-          }
-        }
-      }
-    },
     "Показаны последние двадцать из %@." : {
       "comment" : "sessionsCard",
       "extractionState" : "manual",
@@ -15955,18 +15457,6 @@
         }
       }
     },
-    "Полных дней с записями: %@. Нужно хотя бы %@, иначе среднее врёт. Просто продолжай отмечать еду — считать приложение начнёт само." : {
-      "comment" : "statusCard",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Полных дней с записями: %@. Нужно хотя бы %@, иначе среднее врёт. Просто продолжай отмечать еду — считать приложение начнёт само."
-          }
-        }
-      }
-    },
     "Полных дней с записями: %lld. Нужно хотя бы %lld, иначе среднее врёт. Просто продолжай отмечать еду — считать приложение начнёт само." : {
       "localizations" : {
         "ru" : {
@@ -15997,18 +15487,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "получилось · шаг почти закрыт"
-          }
-        }
-      }
-    },
-    "Пользуясь Того, ты соглашаешься с этими условиями. Если что-то в них не подходит — приложение можно удалить, данные останутся при тебе." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Пользуясь Того, ты соглашаешься с этими условиями. Если что-то в них не подходит — приложение можно удалить, данные останутся при тебе."
           }
         }
       }
@@ -16169,18 +15647,6 @@
         }
       }
     },
-    "Попробовать неделю бесплатно · дальше %@" : {
-      "comment" : "buyTitle",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Попробовать неделю бесплатно · дальше %@"
-          }
-        }
-      }
-    },
     "Попробовать снова" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -16265,18 +15731,6 @@
         }
       }
     },
-    "Порция — это норма, делённая на кормления. Добавишь кормление — дневная еда не изменится, изменится только порция. Норму называет врач или упаковка, приложение её не выдумывает. У влажного корма граммы другие: он на три четверти вода." : {
-      "comment" : "mealsCard",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Порция — это норма, делённая на кормления. Добавишь кормление — дневная еда не изменится, изменится только порция. Норму называет врач или упаковка, приложение её не выдумывает. У влажного корма граммы другие: он на три четверти вода."
-          }
-        }
-      }
-    },
     "Порция из профиля подставляется в кнопку «Еда» — жать нужно один раз." : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -16345,42 +15799,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "после долгих дней"
-          }
-        }
-      }
-    },
-    "После долгих дней она ела заметно меньше обычного — %@ раз из %@." : {
-      "comment" : "lines",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "После долгих дней она ела заметно меньше обычного — %@ раз из %@."
-          }
-        }
-      }
-    },
-    "После долгих дней случались инциденты — %@ раз из %@." : {
-      "comment" : "lines",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "После долгих дней случались инциденты — %@ раз из %@."
-          }
-        }
-      }
-    },
-    "После долгих дней стул на следующий день бывал жиже — %@ раз из %@." : {
-      "comment" : "lines",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "После долгих дней стул на следующий день бывал жиже — %@ раз из %@."
           }
         }
       }
@@ -17234,18 +16652,6 @@
         }
       }
     },
-    "Приложение запомнит этот день и посмотрит, что было на следующий. Если после таких дней у неё регулярно жиже стул или пропадает аппетит — скажет об этом в истории." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Приложение запомнит этот день и посмотрит, что было на следующий. Если после таких дней у неё регулярно жиже стул или пропадает аппетит — скажет об этом в истории."
-          }
-        }
-      }
-    },
     "Приложение меряет задержку между «он сделал» и маркером. До полусекунды — «в момент»; после секунды собака уже сделала что-то другое." : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -17302,18 +16708,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Приложение не ставит диагнозов. Оно умеет показать этот график врачу — вместе с датами еды и препаратов за те же дни."
-          }
-        }
-      }
-    },
-    "Приложение пока не знает его интервалов. Выведи, если сомневаешься: данных %@, это мало." : {
-      "comment" : "since",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Приложение пока не знает его интервалов. Выведи, если сомневаешься: данных %@, это мало."
           }
         }
       }
@@ -17590,18 +16984,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Прогулка по метке"
-          }
-        }
-      }
-    },
-    "Прогулка удалится вместе с тем, что в ней отмечено: это одно событие, а не несколько записей. Отменить можно 5 секунд." : {
-      "comment" : "deleteExplainer",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Прогулка удалится вместе с тем, что в ней отмечено: это одно событие, а не несколько записей. Отменить можно 5 секунд."
           }
         }
       }
@@ -17982,7 +17364,7 @@
       }
     },
     "раз" : {
-      "comment" : "digits",
+      "comment" : "mod10",
       "extractionState" : "manual",
       "localizations" : {
         "ru" : {
@@ -18169,18 +17551,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ранжировано по тому, сколько раз это случилось"
-          }
-        }
-      }
-    },
-    "Раньше времени отметить нельзя. Так задумано: %@ минут — это условие из назначения." : {
-      "comment" : "waiting",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Раньше времени отметить нельзя. Так задумано: %@ минут — это условие из назначения."
           }
         }
       }
@@ -18484,18 +17854,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ровный интервал между кормлениями важнее точного часа: собака привыкает к промежутку, а не к цифре на часах. Ночь считается так же, как день."
-          }
-        }
-      }
-    },
-    "Ровный шаг по суткам не влезает в окно бодрствования: кормления разложены поровну между первым и последним, а ночь выходит длиннее. Выровнять можно только одним — вставать раньше или ложиться позже." : {
-      "comment" : "plan",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ровный шаг по суткам не влезает в окно бодрствования: кормления разложены поровну между первым и последним, а ночь выходит длиннее. Выровнять можно только одним — вставать раньше или ложиться позже."
           }
         }
       }
@@ -18808,18 +18166,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Сводка врачу"
-          }
-        }
-      }
-    },
-    "Сводка Того · CSV" : {
-      "comment" : "shareCard",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Сводка Того · CSV"
           }
         }
       }
@@ -19183,18 +18529,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Семья: имена, роли и выданные права"
-          }
-        }
-      }
-    },
-    "серия %@ дней" : {
-      "comment" : "statusText",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "серия %@ дней"
           }
         }
       }
@@ -19727,18 +19061,6 @@
         }
       }
     },
-    "Собака ещё не заведена — открой Того и добавь её." : {
-      "comment" : "localizedStringResource",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Собака ещё не заведена — открой Того и добавь её."
-          }
-        }
-      }
-    },
     "Собака на лечении" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -19915,18 +19237,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Солёное, копчёное, жирное"
-          }
-        }
-      }
-    },
-    "Сорвавшаяся собака в этот момент не может учиться, ругать её бессмысленно. Полезно другое: отойти дальше, дать выдохнуть, а в следующий раз пройти на той дистанции, где она справляется." : {
-      "comment" : "reactionCard",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Сорвавшаяся собака в этот момент не может учиться, ругать её бессмысленно. Полезно другое: отойти дальше, дать выдохнуть, а в следующий раз пройти на той дистанции, где она справляется."
           }
         }
       }
@@ -20388,18 +19698,6 @@
         }
       }
     },
-    "Ссылка именная: открыть её сможет только тот, кому ты её отправишь, и только со своим iCloud." : {
-      "comment" : "inviteCard",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ссылка именная: открыть её сможет только тот, кому ты её отправишь, и только со своим iCloud."
-          }
-        }
-      }
-    },
     "Ссылка ситтера гаснет по дате сама — отзывать её руками не нужно." : {
       "comment" : "next",
       "extractionState" : "manual",
@@ -20480,18 +19778,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Стерилизована"
-          }
-        }
-      }
-    },
-    "Стирает записи, собак, схемы лечения и семью на этом устройстве. Отменить это будет нельзя — сначала выгрузи CSV, если он может пригодиться." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Стирает записи, собак, схемы лечения и семью на этом устройстве. Отменить это будет нельзя — сначала выгрузи CSV, если он может пригодиться."
           }
         }
       }
@@ -21084,18 +20370,6 @@
         }
       }
     },
-    "Твоя роль позволяет записывать своё, но не править уже записанное. Права выдаёт владелец в разделе «Семья»." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Твоя роль позволяет записывать своё, но не править уже записанное. Права выдаёт владелец в разделе «Семья»."
-          }
-        }
-      }
-    },
     "Телефон" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -21300,162 +20574,6 @@
         }
       }
     },
-    "Того" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Того"
-          }
-        }
-      }
-    },
-    "Того — дневник ухода за собакой. Он записывает, считает интервалы и напоминает." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Того — дневник ухода за собакой. Он записывает, считает интервалы и напоминает."
-          }
-        }
-      }
-    },
-    "Того · журнал действий" : {
-      "comment" : "controls",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Того · журнал действий"
-          }
-        }
-      }
-    },
-    "Того · отчёт о действиях" : {
-      "comment" : "controls",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Того · отчёт о действиях"
-          }
-        }
-      }
-    },
-    "Того · просится" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Того · просится"
-          }
-        }
-      }
-    },
-    "Того · утренняя сводка" : {
-      "comment" : "content",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Того · утренняя сводка"
-          }
-        }
-      }
-    },
-    "Того %@ — вопрос" : {
-      "comment" : "subject",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Того %@ — вопрос"
-          }
-        }
-      }
-    },
-    "Того Pro" : {
-      "comment" : "subscriptionSection",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Того Pro"
-          }
-        }
-      }
-    },
-    "Того Pro — автопродляемая подписка на месяц или год. Оплата списывается с Apple ID при подтверждении покупки." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Того Pro — автопродляемая подписка на месяц или год. Оплата списывается с Apple ID при подтверждении покупки."
-          }
-        }
-      }
-    },
-    "Того не ставит диагнозов и не лечит. Здесь только телефоны и данные, которые трудно вспомнить, когда страшно." : {
-      "comment" : "disclaimer",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Того не ставит диагнозов и не лечит. Здесь только телефоны и данные, которые трудно вспомнить, когда страшно."
-          }
-        }
-      }
-    },
-    "Того не ставит диагнозов, не назначает дозировок и не является медицинским устройством." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Того не ставит диагнозов, не назначает дозировок и не является медицинским устройством."
-          }
-        }
-      }
-    },
-    "Того помогает вести записи. Он не ставит диагнозов и не назначает лечение." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Того помогает вести записи. Он не ставит диагнозов и не назначает лечение."
-          }
-        }
-      }
-    },
-    "Того собран на системных фреймворках Apple без сторонних зависимостей: SwiftUI, SwiftData, StoreKit 2, WidgetKit, ActivityKit, UserNotifications, Charts." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Того собран на системных фреймворках Apple без сторонних зависимостей: SwiftUI, SwiftData, StoreKit 2, WidgetKit, ActivityKit, UserNotifications, Charts."
-          }
-        }
-      }
-    },
     "Только в сезон" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -21524,18 +20642,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Точность маркера"
-          }
-        }
-      }
-    },
-    "Точность не нужна: цифра нужна, чтобы посчитать еду и не напоминать про воду каждые десять минут. Задержитесь — режим просто продолжит идти." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Точность не нужна: цифра нужна, чтобы посчитать еду и не напоминать про воду каждые десять минут. Задержитесь — режим просто продолжит идти."
           }
         }
       }
@@ -22660,30 +21766,6 @@
         }
       }
     },
-    "Файл не похож на копию из Того. Нужен файл .json, который приложение сохранило само." : {
-      "comment" : "errorDescription",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Файл не похож на копию из Того. Нужен файл .json, который приложение сохранило само."
-          }
-        }
-      }
-    },
-    "Файл сделан более новой версией приложения (формат %@). Обнови Того — и он его прочитает." : {
-      "comment" : "errorDescription",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Файл сделан более новой версией приложения (формат %@). Обнови Того — и он его прочитает."
-          }
-        }
-      }
-    },
     "фасовка" : {
       "comment" : "packCard",
       "extractionState" : "manual",
@@ -22764,18 +21846,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "форма стула"
-          }
-        }
-      }
-    },
-    "Формат версии %@. Файл, сделанный более новой версией приложения, старая читать не станет и честно об этом скажет." : {
-      "comment" : "formatCard",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Формат версии %@. Файл, сделанный более новой версией приложения, старая читать не станет и честно об этом скажет."
           }
         }
       }
@@ -23328,18 +22398,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Чип: %@"
-          }
-        }
-      }
-    },
-    "Числа посчитаны из его данных, не из общих таблиц. Дозировки и всё медицинское сверь с врачом — приложение только считает и напоминает." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Числа посчитаны из его данных, не из общих таблиц. Дозировки и всё медицинское сверь с врачом — приложение только считает и напоминает."
           }
         }
       }
@@ -24576,6 +23634,1134 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Язык применится при следующем запуске: перерисовать всё приложение на лету iOS не умеет, и притворяться, что умеет, мы не будем."
+          }
+        }
+      }
+    },
+    "Дневник Togo" : {
+      "comment" : "exportCard",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дневник Togo"
+          }
+        }
+      }
+    },
+    "Дневник Togo · CSV" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дневник Togo · CSV"
+          }
+        }
+      }
+    },
+    "Togo %@ — вопрос" : {
+      "comment" : "subject",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Togo %@ — вопрос"
+          }
+        }
+      }
+    },
+    "Найди в списке Togo. Выключи «Спрашивать до запуска» — иначе смысл теряется: придётся подтверждать." : {
+      "comment" : "steps",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Найди в списке Togo. Выключи «Спрашивать до запуска» — иначе смысл теряется: придётся подтверждать."
+          }
+        }
+      }
+    },
+    "«Togo: прогулка» — Siri поймёт и на часах." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«Togo: прогулка» — Siri поймёт и на часах."
+          }
+        }
+      }
+    },
+    "Метка не знает о тебе ничего: в ней записан только номер, по которому «Команды» узнают наклейку. Геопозицию Togo не спрашивает вовсе." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Метка не знает о тебе ничего: в ней записан только номер, по которому «Команды» узнают наклейку. Геопозицию Togo не спрашивает вовсе."
+          }
+        }
+      }
+    },
+    "Пользуясь Togo, ты соглашаешься с этими условиями. Если что-то в них не подходит — приложение можно удалить, данные останутся при тебе." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пользуясь Togo, ты соглашаешься с этими условиями. Если что-то в них не подходит — приложение можно удалить, данные останутся при тебе."
+          }
+        }
+      }
+    },
+    "Togo — дневник ухода за собакой. Он записывает, считает интервалы и напоминает." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Togo — дневник ухода за собакой. Он записывает, считает интервалы и напоминает."
+          }
+        }
+      }
+    },
+    "Togo не ставит диагнозов, не назначает дозировок и не является медицинским устройством." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Togo не ставит диагнозов, не назначает дозировок и не является медицинским устройством."
+          }
+        }
+      }
+    },
+    "Togo Pro — автопродляемая подписка на месяц или год. Оплата списывается с Apple ID при подтверждении покупки." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Togo Pro — автопродляемая подписка на месяц или год. Оплата списывается с Apple ID при подтверждении покупки."
+          }
+        }
+      }
+    },
+    "Togo помогает вести записи. Он не ставит диагнозов и не назначает лечение." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Togo помогает вести записи. Он не ставит диагнозов и не назначает лечение."
+          }
+        }
+      }
+    },
+    "Togo собран на системных фреймворках Apple без сторонних зависимостей: SwiftUI, SwiftData, StoreKit 2, WidgetKit, ActivityKit, UserNotifications, Charts." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Togo собран на системных фреймворках Apple без сторонних зависимостей: SwiftUI, SwiftData, StoreKit 2, WidgetKit, ActivityKit, UserNotifications, Charts."
+          }
+        }
+      }
+    },
+    "Togo · отчёт о действиях" : {
+      "comment" : "controls",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Togo · отчёт о действиях"
+          }
+        }
+      }
+    },
+    "Togo · журнал действий" : {
+      "comment" : "controls",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Togo · журнал действий"
+          }
+        }
+      }
+    },
+    "Отчёт Togo · CSV" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отчёт Togo · CSV"
+          }
+        }
+      }
+    },
+    "Сводка Togo · CSV" : {
+      "comment" : "shareCard",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сводка Togo · CSV"
+          }
+        }
+      }
+    },
+    "Дневник · \\(dog?.name ?? " : {
+      "comment" : "inviteCard",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дневник · \\(dog?.name ?? "
+          }
+        }
+      }
+    },
+    "Выбери, кого пригласить, — маму, мужа, ситтера. Откроет только он, со своего iCloud, и ему нужен Togo на телефоне. Кто уже в дневнике, видно выше." : {
+      "comment" : "inviteCard",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выбери, кого пригласить, — маму, мужа, ситтера. Откроет только он, со своего iCloud, и ему нужен Togo на телефоне. Кто уже в дневнике, видно выше."
+          }
+        }
+      }
+    },
+    "Нужен iCloud на обоих телефонах. Аккаунт в Togo по-прежнему не нужен — обмен идёт через личный iCloud, а не через чужой сервер." : {
+      "comment" : "explainerCard",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нужен iCloud на обоих телефонах. Аккаунт в Togo по-прежнему не нужен — обмен идёт через личный iCloud, а не через чужой сервер."
+          }
+        }
+      }
+    },
+    "Togo не ставит диагнозов и не лечит. Здесь только телефоны и данные, которые трудно вспомнить, когда страшно." : {
+      "comment" : "disclaimer",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Togo не ставит диагнозов и не лечит. Здесь только телефоны и данные, которые трудно вспомнить, когда страшно."
+          }
+        }
+      }
+    },
+    "Телефон ветеринара" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Телефон ветеринара"
+          }
+        }
+      }
+    },
+    "Телефон клиники" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Телефон клиники"
+          }
+        }
+      }
+    },
+    "Сейчас кормить нельзя" : {
+      "comment" : "fastingCard",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сейчас кормить нельзя"
+          }
+        }
+      }
+    },
+    "%@ дают натощак в %@ — " : {
+      "comment" : "fastingCard",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ дают натощак в %@ — "
+          }
+        }
+      }
+    },
+    "к этому времени желудок должен быть пустым. " : {
+      "comment" : "fastingCard",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "к этому времени желудок должен быть пустым. "
+          }
+        }
+      }
+    },
+    "Покормить можно после приёма." : {
+      "comment" : "fastingCard",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Покормить можно после приёма."
+          }
+        }
+      }
+    },
+    "%@ дали в %@. " : {
+      "comment" : "fastingCard",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ дали в %@. "
+          }
+        }
+      }
+    },
+    "Еда сейчас помешает всасыванию — можно с %@." : {
+      "comment" : "fastingCard",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Еда сейчас помешает всасыванию — можно с %@."
+          }
+        }
+      }
+    },
+    "записи есть" : {
+      "comment" : "spoken",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "записи есть"
+          }
+        }
+      }
+    },
+    "тревога" : {
+      "comment" : "spoken",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "тревога"
+          }
+        }
+      }
+    },
+    "лечение" : {
+      "comment" : "spoken",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "лечение"
+          }
+        }
+      }
+    },
+    "%@ бесплатно · дальше %@" : {
+      "comment" : "price",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ бесплатно · дальше %@"
+          }
+        }
+      }
+    },
+    "Подписаться · %@" : {
+      "comment" : "price",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Подписаться · %@"
+          }
+        }
+      }
+    },
+    "%@ · сначала %@ бесплатно" : {
+      "comment" : "subscriptionCaption",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · сначала %@ бесплатно"
+          }
+        }
+      }
+    },
+    "в день" : {
+      "comment" : "trialLength",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "в день"
+          }
+        }
+      }
+    },
+    "в неделю" : {
+      "comment" : "trialLength",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "в неделю"
+          }
+        }
+      }
+    },
+    "в месяц" : {
+      "comment" : "trialLength",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "в месяц"
+          }
+        }
+      }
+    },
+    "в год" : {
+      "comment" : "trialLength",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "в год"
+          }
+        }
+      }
+    },
+    "каждые %@" : {
+      "comment" : "trialLength",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "каждые %@"
+          }
+        }
+      }
+    },
+    "Собака ещё не заведена — открой Togo и добавь её." : {
+      "comment" : "localizedStringResource",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Собака ещё не заведена — открой Togo и добавь её."
+          }
+        }
+      }
+    },
+    "Дневник сейчас недоступен. Открой Togo." : {
+      "comment" : "localizedStringResource",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дневник сейчас недоступен. Открой Togo."
+          }
+        }
+      }
+    },
+    "Записывает выход по нужде в дневник Togo." : {
+      "comment" : "MarkPeeIntent",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Записывает выход по нужде в дневник Togo."
+          }
+        }
+      }
+    },
+    "Записывает стул в дневник Togo. Форму можно уточнить потом." : {
+      "comment" : "MarkStoolIntent",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Записывает стул в дневник Togo. Форму можно уточнить потом."
+          }
+        }
+      }
+    },
+    "Togo · утренняя сводка" : {
+      "comment" : "content",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Togo · утренняя сводка"
+          }
+        }
+      }
+    },
+    "переключатель на вкладке «Собака»" : {
+      "comment" : "handle",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "переключатель на вкладке «Собака»"
+          }
+        }
+      }
+    },
+    "Файл не похож на копию из Togo. Нужен файл .json, который приложение сохранило само." : {
+      "comment" : "errorDescription",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Файл не похож на копию из Togo. Нужен файл .json, который приложение сохранило само."
+          }
+        }
+      }
+    },
+    "Файл сделан более новой версией приложения (формат %@). Обнови Togo — и он его прочитает." : {
+      "comment" : "errorDescription",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Файл сделан более новой версией приложения (формат %@). Обнови Togo — и он его прочитает."
+          }
+        }
+      }
+    },
+    "Togo · просится" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Togo · просится"
+          }
+        }
+      }
+    },
+    "Закрой и открой приложение" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закрой и открой приложение"
+          }
+        }
+      }
+    },
+    "Если включён iCloud, копия базы лежит в твоей приватной библиотеке iCloud. Доступ к ней есть только у тебя и у тех, кому ты дал доступ к своему Apple ID." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Если включён iCloud, копия базы лежит в твоей приватной библиотеке iCloud. Доступ к ней есть только у тебя и у тех, кому ты дал доступ к своему Apple ID."
+          }
+        }
+      }
+    },
+    "Записывает то, что ты отметил, и считает интервалы между записями." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Записывает то, что ты отметил, и считает интервалы между записями."
+          }
+        }
+      }
+    },
+    "Без собаки приложению нечего считать — начни с неё." : {
+      "comment" : "dogSection",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Без собаки приложению нечего считать — начни с неё."
+          }
+        }
+      }
+    },
+    "откладывали %@" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "откладывали %@"
+          }
+        }
+      }
+    },
+    "Занятие · %@" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Занятие · %@"
+          }
+        }
+      }
+    },
+    "Нужно хотя бы %@ с записями — пока их %@. Просто продолжай отмечать выходы." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нужно хотя бы %@ с записями — пока их %@. Просто продолжай отмечать выходы."
+          }
+        }
+      }
+    },
+    "Начать занятие · %@" : {
+      "comment" : "sessionSheet",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Начать занятие · %@"
+          }
+        }
+      }
+    },
+    "Раньше времени отметить нельзя. Так задумано: %@ — это условие из назначения." : {
+      "comment" : "waiting",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Раньше времени отметить нельзя. Так задумано: %@ — это условие из назначения."
+          }
+        }
+      }
+    },
+    "Норма — %@ г в день, по кормам выходит %@ г. Так бывает: поправь или раскладку здесь, или саму норму на «Питании»." : {
+      "comment" : "balanceCard",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Норма — %@ г в день, по кормам выходит %@ г. Так бывает: поправь или раскладку здесь, или саму норму на «Питании»."
+          }
+        }
+      }
+    },
+    "С твоей ролью можно записывать своё, но не править уже записанное. Права выдаёт владелец в разделе «Семья»." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "С твоей ролью можно записывать своё, но не править уже записанное. Права выдаёт владелец в разделе «Семья»."
+          }
+        }
+      }
+    },
+    "Прогулка удалится вместе с тем, что в ней отмечено: они записаны как одно целое. Отменить можно 5 секунд." : {
+      "comment" : "deleteExplainer",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прогулка удалится вместе с тем, что в ней отмечено: они записаны как одно целое. Отменить можно 5 секунд."
+          }
+        }
+      }
+    },
+    "Точность не нужна: цифра нужна, чтобы посчитать еду и не напоминать про воду каждые десять минут. Задержишься — режим просто продолжит идти." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Точность не нужна: цифра нужна, чтобы посчитать еду и не напоминать про воду каждые десять минут. Задержишься — режим просто продолжит идти."
+          }
+        }
+      }
+    },
+    " · откладывали %@" : {
+      "comment" : "snoozed",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " · откладывали %@"
+          }
+        }
+      }
+    },
+    "%@ подряд" : {
+      "comment" : "statusText",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ подряд"
+          }
+        }
+      }
+    },
+    "серия %@" : {
+      "comment" : "statusText",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "серия %@"
+          }
+        }
+      }
+    },
+    "После долгих дней стул на следующий день бывал жиже — %@ из %@." : {
+      "comment" : "lines",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "После долгих дней стул на следующий день бывал жиже — %@ из %@."
+          }
+        }
+      }
+    },
+    "После долгих дней она ела заметно меньше обычного — %@ из %@." : {
+      "comment" : "lines",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "После долгих дней она ела заметно меньше обычного — %@ из %@."
+          }
+        }
+      }
+    },
+    "После долгих дней случались инциденты — %@ из %@." : {
+      "comment" : "lines",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "После долгих дней случались инциденты — %@ из %@."
+          }
+        }
+      }
+    },
+    "раза" : {
+      "comment" : "mod10",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "раза"
+          }
+        }
+      }
+    },
+    "действие" : {
+      "comment" : "mod10",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "действие"
+          }
+        }
+      }
+    },
+    "действия" : {
+      "comment" : "mod10",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "действия"
+          }
+        }
+      }
+    },
+    "Приложение пока не знает его интервалов. Выведи, если сомневаешься: записей всего за %@ — это мало." : {
+      "comment" : "since",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Приложение пока не знает его интервалов. Выведи, если сомневаешься: записей всего за %@ — это мало."
+          }
+        }
+      }
+    },
+    "Формат версии %@. Файл из более новой версии приложения старая не прочитает и скажет об этом." : {
+      "comment" : "formatCard",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Формат версии %@. Файл из более новой версии приложения старая не прочитает и скажет об этом."
+          }
+        }
+      }
+    },
+    "Стирает записи, собак, схемы лечения и семью на этом устройстве. Отменить будет нельзя — сначала выгрузи CSV, если может пригодиться." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Стирает записи, собак, схемы лечения и семью на этом устройстве. Отменить будет нельзя — сначала выгрузи CSV, если может пригодиться."
+          }
+        }
+      }
+    },
+    "Если лай начнёт вытеснять спокойный сигнал, приложение покажет это и подскажет: подождать секунду-две тишины и открыть тогда." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Если лай начнёт вытеснять спокойный сигнал, приложение покажет это и подскажет: подождать секунду-две тишины и открыть тогда."
+          }
+        }
+      }
+    },
+    "Отметишь особенность — появится подтверждение: такая запись уходит в медицинскую часть и в отчёт врачу. Кровь — единственное, что приложение красит в тревожный цвет." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отметишь особенность — появится подтверждение: такая запись уходит в медицинскую часть и в отчёт врачу. Кровь — единственное, что приложение красит в тревожный цвет."
+          }
+        }
+      }
+    },
+    "«Питание и режим» показывает, сколько собака ест на самом деле и во сколько. Выходит больше нормы — приложение предложит новую порцию сразу для всех кормлений: порция одна на день." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«Питание и режим» показывает, сколько собака ест на самом деле и во сколько. Выходит больше нормы — приложение предложит новую порцию сразу для всех кормлений: порция одна на день."
+          }
+        }
+      }
+    },
+    "Всё считается на телефоне. Аккаунт не нужен, серверов у нас нет. Переустановку дневник переживает через iCloud или файл." : {
+      "comment" : "dataSection",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Всё считается на телефоне. Аккаунт не нужен, серверов у нас нет. Переустановку дневник переживает через iCloud или файл."
+          }
+        }
+      }
+    },
+    "Ни отмен сразу после записи, ни двойных тапов, ни сбоев. Это хорошо — но проверь, что журнал включён и записей набралось достаточно." : {
+      "comment" : "frictions",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ни отмен сразу после записи, ни двойных тапов, ни сбоев. Это хорошо — но проверь, что журнал включён и записей набралось достаточно."
+          }
+        }
+      }
+    },
+    "Сорвавшаяся собака учиться сейчас не может, ругать её бессмысленно. Отойди дальше, дай выдохнуть, а в следующий раз держи дистанцию, на которой она справляется." : {
+      "comment" : "reactionCard",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сорвавшаяся собака учиться сейчас не может, ругать её бессмысленно. Отойди дальше, дай выдохнуть, а в следующий раз держи дистанцию, на которой она справляется."
+          }
+        }
+      }
+    },
+    "В отчёте будет строка «доза → забор: \\(Fmt.duration(now.timeIntervalSince(givenAt)))». Без этой строки анализы уже дважды читали неверно." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В отчёте будет строка «доза → забор: \\(Fmt.duration(now.timeIntervalSince(givenAt)))». Без этой строки анализы уже дважды читали неверно."
+          }
+        }
+      }
+    },
+    "Позови тех, кто тоже за ней ходит: совладельца, ситтера, ребёнка или врача. Роль выбираешь заранее, ссылка живёт сутки, принявший поменять роль не сможет." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Позови тех, кто тоже за ней ходит: совладельца, ситтера, ребёнка или врача. Роль выбираешь заранее, ссылка живёт сутки, принявший поменять роль не сможет."
+          }
+        }
+      }
+    },
+    "Здесь заводится участник: имя станет автором записей, права решат, что ему можно. Работает и с одним телефоном на семью, если передавать его из рук в руки." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Здесь заводится участник: имя станет автором записей, права решат, что ему можно. Работает и с одним телефоном на семью, если передавать его из рук в руки."
+          }
+        }
+      }
+    },
+    "Включи — и второй человек будет отмечать со своего телефона. Записи сойдутся в одну ленту, у каждой виден автор. Уезжают отметки, а не настройки: профиль собаки каждый заводит у себя." : {
+      "comment" : "explainerCard",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Включи — и второй человек будет отмечать со своего телефона. Записи сойдутся в одну ленту, у каждой виден автор. Уезжают отметки, а не настройки: профиль собаки каждый заводит у себя."
+          }
+        }
+      }
+    },
+    "Полных дней с записями: %@, нужно хотя бы %@ — иначе среднее врёт. Продолжай отмечать еду, дальше приложение посчитает само." : {
+      "comment" : "statusCard",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Полных дней с записями: %@, нужно хотя бы %@ — иначе среднее врёт. Продолжай отмечать еду, дальше приложение посчитает само."
+          }
+        }
+      }
+    },
+    "В среднем %@ г в день — на %@% меньше нормы. Бодр и вес держится — не беда; вес падает — к врачу." : {
+      "comment" : "statusCard",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В среднем %@ г в день — на %@% меньше нормы. Бодр и вес держится — не беда; вес падает — к врачу."
+          }
+        }
+      }
+    },
+    "Добавь то, чем кормишь: сухой считается мешками, влажный — банками. Даёшь оба — добавь оба и укажи граммы в день на каждый." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавь то, чем кормишь: сухой считается мешками, влажный — банками. Даёшь оба — добавь оба и укажи граммы в день на каждый."
+          }
+        }
+      }
+    },
+    "Пока это ориентир, а не расчёт: у взрослой собаки течка примерно раз в полгода. После второй записи приложение посчитает промежуток по её датам." : {
+      "comment" : "forecastCard",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пока это ориентир, а не расчёт: у взрослой собаки течка примерно раз в полгода. После второй записи приложение посчитает промежуток по её датам."
+          }
+        }
+      }
+    },
+    "Порция — норма, делённая на кормления: добавишь кормление — уменьшится порция, а не дневная еда. Норму называет врач или упаковка, приложение её не выдумывает. У влажного корма граммы другие: он на три четверти вода." : {
+      "comment" : "mealsCard",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Порция — норма, делённая на кормления: добавишь кормление — уменьшится порция, а не дневная еда. Норму называет врач или упаковка, приложение её не выдумывает. У влажного корма граммы другие: он на три четверти вода."
+          }
+        }
+      }
+    },
+    "Кормления разложены поровну между первым и последним, а ночь выходит длиннее: ровный шаг в сутки не влезает. Выровнять можно одним — вставать раньше или ложиться позже." : {
+      "comment" : "plan",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кормления разложены поровну между первым и последним, а ночь выходит длиннее: ровный шаг в сутки не влезает. Выровнять можно одним — вставать раньше или ложиться позже."
+          }
+        }
+      }
+    },
+    "Числа посчитаны по нему, а не по общим таблицам. Дозировки и всё медицинское сверь с врачом — приложение только считает и напоминает." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Числа посчитаны по нему, а не по общим таблицам. Дозировки и всё медицинское сверь с врачом — приложение только считает и напоминает."
+          }
+        }
+      }
+    },
+    "Приложение запомнит этот день и посмотрит на следующий. Если после таких дней у неё регулярно жиже стул или пропадает аппетит — скажет в истории." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Приложение запомнит этот день и посмотрит на следующий. Если после таких дней у неё регулярно жиже стул или пропадает аппетит — скажет в истории."
+          }
+        }
+      }
+    },
+    "Подписка продлевается сама, пока её не отменить — не позже чем за 24 часа до конца периода. Оплата спишется с Apple ID при подтверждении покупки. Отменить можно в настройках App Store." : {
+      "comment" : "legalText",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Подписка продлевается сама, пока её не отменить — не позже чем за 24 часа до конца периода. Оплата спишется с Apple ID при подтверждении покупки. Отменить можно в настройках App Store."
+          }
+        }
+      }
+    },
+    "Тот же текст всегда есть в «Настройки → Как это работает». Отдельной справки нет: объяснения стоят там, где возникает вопрос." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тот же текст всегда есть в «Настройки → Как это работает». Отдельной справки нет: объяснения стоят там, где возникает вопрос."
+          }
+        }
+      }
+    },
+    "%@ сеансов подряд без единой записи — открывали не записать, а посмотреть. Стоит понять, что именно." : {
+      "comment" : "idle",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ сеансов подряд без единой записи — открывали не записать, а посмотреть. Стоит понять, что именно."
           }
         }
       }

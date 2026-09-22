@@ -212,7 +212,7 @@ struct WalkModeScreen: View {
                 .accessibilityHidden(true)
             Text(kind.title).textStyle(AppFont.cardTitle.color(Token.Ink.primary))
             if count > 0 {
-                Text(count == 1 ? "отмечено" : "\(count) раза")
+                Text(count == 1 ? "отмечено" : Fmt.times(count))
                     .textStyle(AppFont.micro)
             }
         }
@@ -439,7 +439,7 @@ struct WalkSummarySheet: View {
             TGDivider()
             Text("Срыв — это порог, а не проступок")
                 .textStyle(AppFont.bodyEmphasis)
-            Text("Сорвавшаяся собака в этот момент не может учиться, ругать её бессмысленно. Полезно другое: отойти дальше, дать выдохнуть, а в следующий раз пройти на той дистанции, где она справляется.")
+            Text("Сорвавшаяся собака учиться сейчас не может, ругать её бессмысленно. Отойди дальше, дай выдохнуть, а в следующий раз держи дистанцию, на которой она справляется.")
                 .textStyle(AppFont.caption)
         }
     }

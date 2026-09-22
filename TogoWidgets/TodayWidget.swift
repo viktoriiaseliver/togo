@@ -9,7 +9,7 @@ struct TodayWidget: Widget {
             TodayWidgetView(snapshot: entry.snapshot)
                 .containerBackground(Token.Surface.screen, for: .widget)
         }
-        .configurationDisplayName("Того · просится")
+        .configurationDisplayName("Togo · просится")
         .description("Сколько он не писал и что было утром — не открывая приложение.")
         .supportedFamilies([.systemSmall, .systemMedium, .accessoryRectangular, .accessoryInline])
     }

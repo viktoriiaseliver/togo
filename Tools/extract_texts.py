@@ -237,11 +237,22 @@ BUNDLED_LANGUAGES = ("ru",)
 
 
 def catalog(collected):
-    """String Catalog: русский — источник."""
-    strings = {}
+    """String Catalog: русский — источник.
+
+    Каталог не перезаписывается, а сливается с тем, что лежит в
+    репозитории. Xcode при сборке дописывает в него ключи, которых этот
+    скрипт не видит (`%lld мс`, строки с форматом, плейсхолдеры полей), и
+    переставляет записи по-своему. Перезапись целиком теряла 56 таких
+    ключей и давала диф в 36 000 строк на правку одной фразы. Поэтому:
+    свои («manual») ключи скрипт обновляет и убирает, если их больше нет
+    в коде; чужие оставляет как есть; порядок существующих записей и
+    формат Xcode (`"ключ" : {`, поля по алфавиту) сохраняет — тогда диф
+    показывает только то, что изменилось на самом деле.
+    """
+    fresh = {}
     for _path, items in collected:
         for text, context, _number in items:
-            entry = strings.setdefault(text, {"extractionState": "manual", "localizations": {}})
+            entry = fresh.setdefault(text, {"extractionState": "manual", "localizations": {}})
             if context and "comment" not in entry:
                 entry["comment"] = context
             entry["localizations"]["ru"] = {
@@ -253,11 +264,44 @@ def catalog(collected):
                 entry["localizations"].setdefault(language, {
                     "stringUnit": {"state": "new", "value": ""}
                 })
-    return json.dumps(
-        {"sourceLanguage": "ru", "strings": dict(sorted(strings.items())), "version": "1.0"},
-        ensure_ascii=False,
-        indent=2,
-    ) + "\n"
+
+    existing = {}
+    if os.path.exists(CATALOG_OUT):
+        try:
+            existing = json.load(open(CATALOG_OUT, encoding="utf-8")).get("strings", {})
+        except ValueError:
+            existing = {}
+
+    merged = {}
+    for key, entry in existing.items():
+        ours = entry.get("extractionState") == "manual"
+        if ours and key not in fresh:
+            continue  # фраза ушла из кода — ключ-сирота
+        if key in fresh:
+            # Переводы, которые уже вписали в каталог, не затираем.
+            kept = {lang: unit for lang, unit in entry.get("localizations", {}).items()
+                    if lang != "ru" and unit.get("stringUnit", {}).get("value")}
+            merged[key] = fresh[key]
+            merged[key]["localizations"].update(kept)
+        else:
+            merged[key] = entry
+    for key, entry in fresh.items():
+        merged.setdefault(key, entry)
+
+    def sort_deep(value):
+        if isinstance(value, dict):
+            return {k: sort_deep(value[k]) for k in sorted(value)}
+        return value
+
+    payload = {
+        "sourceLanguage": "ru",
+        "strings": {k: sort_deep(v) for k, v in merged.items()},
+        "version": "1.0",
+    }
+    text = json.dumps(payload, ensure_ascii=False, indent=2, separators=(",", " : "))
+    # Xcode пишет пустую запись в три строки; повторяем, чтобы не дрожал диф.
+    text = re.sub(r'" : \{\},\n', '" : {\n\n    },\n', text)
+    return text + "\n"
 
 
 def main():
@@ -267,8 +311,11 @@ def main():
 
     os.makedirs(os.path.dirname(MD_OUT), exist_ok=True)
     os.makedirs(os.path.dirname(CATALOG_OUT), exist_ok=True)
+    # Сначала собрать текст, потом открывать файл на запись: `open(..., "w")`
+    # обнуляет каталог раньше, чем `catalog()` успеет его прочитать для слияния.
+    catalog_text = catalog(collected)
     open(MD_OUT, "w", encoding="utf-8").write(markdown(collected))
-    open(CATALOG_OUT, "w", encoding="utf-8").write(catalog(collected))
+    open(CATALOG_OUT, "w", encoding="utf-8").write(catalog_text)
 
     total = sum(len(items) for _, items in collected)
     print("→ %s" % os.path.relpath(MD_OUT, ROOT))
