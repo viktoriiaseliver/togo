@@ -24,7 +24,7 @@ struct TGBanner: View {
                     .wraps()
                 if let subtitle {
                     Text(subtitle)
-                        .textStyle(AppFont.caption.color(tone.foreground.opacity(0.85)))
+                        .textStyle(AppFont.caption.color(tone.foreground))  // без .opacity(0.85): подпись «Кровь — это к врачу» падала до 3,6:1
                         .wraps()
                 }
             }

@@ -168,7 +168,15 @@ struct SharedDiaryScreen: View {
         SharedDiarySettings.isOn = on
         failure = nil
         Task {
-            if on { await sync?.start() } else { sync?.stop() }
+            if on {
+                // Движок обмена создаётся в TogoApp по .familyShareAccepted;
+                // до перезапуска здесь его нет, и тумблер молча не работал.
+                if let sync { await sync.start() } else {
+                    NotificationCenter.default.post(name: .familyShareAccepted, object: nil)
+                }
+            } else {
+                sync?.stop()
+            }
             await refresh()
         }
     }
@@ -206,7 +214,7 @@ struct SharedDiaryScreen: View {
 /// работы — выбор людей, права, отправка через Сообщения или Почту.
 /// По умолчанию — только названным людям, на запись: приглашают затем,
 /// чтобы второй человек отмечал.
-struct DiaryInvite: Transferable {
+nonisolated struct DiaryInvite: Transferable {
     let share: CKShare
     var container: CKContainer { CKContainer(identifier: AppIdentifiers.cloudContainer) }
 

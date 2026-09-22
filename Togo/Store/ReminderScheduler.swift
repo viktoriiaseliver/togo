@@ -109,7 +109,7 @@ enum ReminderScheduler {
                     id: doseID(dose, stage: "t+60"),
                     at: dose.scheduledAt.addingTimeInterval(60 * 60),
                     title: "Доза \(Fmt.clock(dose.scheduledAt)) пропущена",
-                    body: "Записано в ленту. Если дали — поправьте время записи."
+                    body: "Отметь в Togo: дали или пропустили."
                 )
             }
         }

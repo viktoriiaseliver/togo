@@ -1634,18 +1634,6 @@
         }
       }
     },
-    "CSV остаётся бесплатным" : {
-      "comment" : "handle",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "CSV остаётся бесплатным"
-          }
-        }
-      }
-    },
     "CSV открывается в Numbers и Excel. Бристольская шкала есть только здесь — в интерфейсе её цифр нет." : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -7381,18 +7369,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Записано · Стул · %@"
-          }
-        }
-      }
-    },
-    "Записано в ленту. Если дали — поправьте время записи." : {
-      "comment" : "Доза по часам",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Записано в ленту. Если дали — поправьте время записи."
           }
         }
       }
@@ -14048,18 +14024,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Отчёт словами · txt"
-          }
-        }
-      }
-    },
-    "Отчёты врачу без ограничений" : {
-      "comment" : "handle",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Отчёты врачу без ограничений"
           }
         }
       }
@@ -24762,6 +24726,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ сеансов подряд без единой записи — открывали не записать, а посмотреть. Стоит понять, что именно."
+          }
+        }
+      }
+    },
+    "Отметь в Togo: дали или пропустили." : {
+      "comment" : "Доза по часам",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отметь в Togo: дали или пропустили."
           }
         }
       }

@@ -103,7 +103,10 @@ nonisolated enum FeedingGate {
         return [today, tomorrow]
             .flatMap { day in
                 medication.times.compactMap { minutes in
-                    calendar.date(byAdding: .minute, value: minutes, to: day)
+                    // Минуты от полуночи — это час на часах, а не отрезок:
+                    // сложением секунд доза 21:00 в день перевода часов
+                    // становилась 20:00 (см. DayTime).
+                    calendar.date(minuteOfDay: minutes, on: day)
                 }
             }
             .filter { $0 > now }
