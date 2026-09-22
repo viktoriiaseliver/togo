@@ -123,9 +123,10 @@ nonisolated enum DoseScheduler {
         context: ModelContext
     ) -> DoseRecord? {
         let calendar = Calendar.current
-        let dose = medication.doses.first {
+        let существующая = medication.doses.first {
             calendar.isDate($0.scheduledAt, equalTo: scheduled, toGranularity: .minute)
-        } ?? {
+        }
+        let dose = существующая ?? {
             let new = DoseRecord(scheduledAt: scheduled)
             new.medication = medication
             context.insert(new)
@@ -138,9 +139,9 @@ nonisolated enum DoseScheduler {
             return dose
         }
 
+        let остаток = medication.stockLeft
         dose.givenAt = now
         dose.givenBy = person
-        UsageLog.note(.dose, "given")
 
         // Счёт таблеток живёт на отметках: отдельного учёта не нужно,
         // минус одна с каждой. Ноль — просто «не считаем».
@@ -148,8 +149,63 @@ nonisolated enum DoseScheduler {
             medication.stockLeft -= 1
         }
 
-        try? context.save()
+        // Здесь `try?` стоил бы второй дозы. Экран, получив отметку,
+        // снимает догоняющие напоминания на t+30 и t+60. Если сохранение
+        // не прошло, а приложение выгрузили, доза снова «не отмечена» —
+        // но напоминаний уже нет, и человек не узнает, что отметка
+        // потерялась. Он даст лекарство второй раз.
+        //
+        // Пустой ответ — это сигнал экрану: напоминания не снимать.
+        guard persist(context, otherwise: {
+            dose.givenAt = nil
+            dose.givenBy = nil
+            medication.stockLeft = остаток
+            if существующая == nil { отцепить(dose, from: context) }
+        }) else {
+            UsageLog.note(.dose, "given", outcome: .failed)
+            return nil
+        }
+        UsageLog.note(.dose, "given")
         return dose
+    }
+
+    /// Сохранить — или вернуть всё как было и честно сказать «нет».
+    ///
+    /// Один приём на три метода отметок.
+    ///
+    /// **Почему возврат руками, а не `context.rollback()`.** Проверено
+    /// на iOS 26 (тест «Запертое хранилище действительно роняет save»
+    /// и соседние): штатный откат снимает признак изменений, но **не
+    /// возвращает значения**. Правленое поле остаётся правленым,
+    /// вставленный объект остаётся в связи — а сохранить их потом уже
+    /// нельзя, потому что контекст считает себя чистым. То есть
+    /// `rollback()` делает ровно то, от чего мы уходим: расхождение
+    /// экрана с хранилищем, о котором не узнаёт никто. Поэтому
+    /// возвращаем ровно те поля, что трогали.
+    ///
+    /// В самом хранилище при этом ничего не портится: неудавшееся
+    /// сохранение не доходит до файла, и прежнее значение там остаётся.
+    @MainActor
+    private static func persist(_ context: ModelContext,
+                                otherwise вернуть: () -> Void) -> Bool {
+        do {
+            try context.save()
+            return true
+        } catch {
+            вернуть()
+            return false
+        }
+    }
+
+    /// Убрать вновь созданную отметку, которая так и не легла в хранилище.
+    ///
+    /// Связь снимаем отдельно: `context.delete` до удачного сохранения
+    /// из `medication.doses` не убирает, и доза-призрак осталась бы
+    /// видна экрану.
+    @MainActor
+    private static func отцепить(_ dose: DoseRecord, from context: ModelContext) {
+        dose.medication = nil
+        context.delete(dose)
     }
 
     /// Отметить дозу пропущенной.
@@ -157,18 +213,24 @@ nonisolated enum DoseScheduler {
     /// Пропуск — это запись, а не пустота. Врач спрашивает именно про
     /// него, а в истории иначе остаётся необъяснённая дыра: непонятно,
     /// забыли отметить или правда не дали.
+    ///
+    /// Возвращает отметку — или пусто, если записать не вышло. Пустой
+    /// ответ экран обязан показать: «пропущено» без записи в истории —
+    /// это та самая необъяснённая дыра, ради которой пропуск и заводили.
     @MainActor
+    @discardableResult
     static func markSkipped(
         _ medication: Medication,
         scheduledAt scheduled: Date,
         by person: String,
         at now: Date = Date(),
         context: ModelContext
-    ) {
+    ) -> DoseRecord? {
         let calendar = Calendar.current
-        let dose = medication.doses.first {
+        let существующая = medication.doses.first {
             calendar.isDate($0.scheduledAt, equalTo: scheduled, toGranularity: .minute)
-        } ?? {
+        }
+        let dose = существующая ?? {
             let new = DoseRecord(scheduledAt: scheduled)
             new.medication = medication
             context.insert(new)
@@ -177,12 +239,20 @@ nonisolated enum DoseScheduler {
 
         guard dose.givenAt == nil else {
             UsageLog.note(.dose, "skipped", outcome: .blocked)
-            return
+            return nil
         }
         dose.skippedAt = now
         dose.skippedBy = person
+        guard persist(context, otherwise: {
+            dose.skippedAt = nil
+            dose.skippedBy = nil
+            if существующая == nil { отцепить(dose, from: context) }
+        }) else {
+            UsageLog.note(.dose, "skipped", outcome: .failed)
+            return nil
+        }
         UsageLog.note(.dose, "skipped")
-        try? context.save()
+        return dose
     }
 
     /// Снять отметку с дозы.
@@ -190,16 +260,26 @@ nonisolated enum DoseScheduler {
     /// Отметили не ту или не тот человек — снять отметку должно быть можно.
     /// Иначе защита от двойной дозы работает против человека: она навсегда
     /// считает, что лекарство дано, и окно натощак отсчитывается от ошибки.
+    ///
+    /// Возвращает `false`, если снять не вышло: экран не должен говорить
+    /// «снова в списке», пока доза в хранилище всё ещё отмечена. Иначе
+    /// защита от двойной дозы молча остаётся включённой — человек уверен,
+    /// что отметку снял, а лекарство второй раз дать нельзя.
     @MainActor
+    @discardableResult
     static func unmark(
         _ medication: Medication,
         scheduledAt scheduled: Date,
         context: ModelContext
-    ) {
+    ) -> Bool {
         let calendar = Calendar.current
         guard let dose = medication.doses.first(where: {
             calendar.isDate($0.scheduledAt, equalTo: scheduled, toGranularity: .minute)
-        }) else { return }
+        // Отметки нет — снимать нечего, и это не отказ: цель достигнута.
+        }) else { return true }
+
+        let было = (dose.givenAt, dose.givenBy, dose.skippedAt, dose.skippedBy,
+                    dose.claimedBy, dose.claimedAt, medication.stockLeft)
 
         // Отметку сняли — таблетка возвращается в пачку. Иначе счётчик
         // уезжал бы вниз на каждом промахе пальцем.
@@ -214,8 +294,15 @@ nonisolated enum DoseScheduler {
         // Заодно снимаем «беру на себя»: договорённость была про тот раз.
         dose.claimedBy = nil
         dose.claimedAt = nil
+        guard persist(context, otherwise: {
+            (dose.givenAt, dose.givenBy, dose.skippedAt, dose.skippedBy,
+             dose.claimedBy, dose.claimedAt, medication.stockLeft) = было
+        }) else {
+            UsageLog.note(.dose, "unmarked", outcome: .failed)
+            return false
+        }
         UsageLog.note(.dose, "unmarked")
-        try? context.save()
+        return true
     }
 
     /// Окно натощак: когда снова можно кормить.
