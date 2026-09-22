@@ -3,7 +3,21 @@ name: CI
 on:
   push:
     branches: [main]
+    # Минуты macOS считаются ×10 против лимита 2000 в месяц: в сентябре
+    # 2026 лимит кончился к 22-му. Правки документов и метаданных сборку
+    # не запускают — только код, проект, каталоги строк и сам CI.
+    paths:
+      - '**.swift'
+      - '**.xcstrings'
+      - '**.xcodeproj/**'
+      - '**.entitlements'
+      - '**/Info.plist'
+      - 'DesignTokens/**'
+      - 'Tools/**'
+      - 'Makefile'
+      - '.github/workflows/ci.yml'
   pull_request:
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -13,6 +27,8 @@ jobs:
   test:
     name: Сборка и тесты
     runs-on: macos-15
+    # Зависший прогон на macOS съедает лимит за час; штатный укладывается быстрее.
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
 
