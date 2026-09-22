@@ -9,13 +9,24 @@ nonisolated enum Exporter {
     static func csv(events: [LogEvent]) -> String {
         let header = [
             "дата", "время", "тип", "результат", "форма стула", "особенности",
-            "граммы", "миллилитры", "минуты", "как попросил", "инцидент", "автор", "заметка",
+            "граммы", "миллилитры", "минуты", "как попросил", "инцидент",
+            "прогулка", "автор", "заметка",
         ]
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withFullDate]
 
+        let active = Diary.active(events)
+        // Связь отметки с прогулкой живёт в `walkEventID`; подпись
+        // «на прогулке» — только слово, и словами эту связь уже пробовали
+        // (см. комментарий в `LogEvent`). В выгрузке до сих пор были одни
+        // слова: по ней нельзя было сказать, к какой прогулке относится
+        // отметка, — а именно это и спрашивают, глядя на две отметки
+        // «на прогулке» в стороне от единственной прогулки дня.
+        let walkStart = Dictionary(active.filter { $0.kind == .walk }.map { ($0.id, $0.date) },
+                                   uniquingKeysWith: { first, _ in first })
+
         var rows = [header.joined(separator: ";")]
-        for event in Diary.active(events).sorted(by: { $0.date < $1.date }) {
+        for event in active.sorted(by: { $0.date < $1.date }) {
             let fields: [String] = [
                 formatter.string(from: event.date),
                 Fmt.clock(event.date),
@@ -28,6 +39,7 @@ nonisolated enum Exporter {
                 event.durationSeconds.map { String($0 / 60) } ?? "",
                 event.askSignal?.title ?? "",
                 event.incidentKind?.title ?? "",
+                event.walkEventID.flatMap { walkStart[$0] }.map(Fmt.clock) ?? "",
                 event.authorName,
                 event.note ?? "",
             ]
