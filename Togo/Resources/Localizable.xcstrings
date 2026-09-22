@@ -22757,24 +22757,6 @@
         }
       }
     },
-    "Пока переведён только русский. Машинный перевод в приложении про здоровье собаки хуже, чем один честно сделанный язык." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pour l'instant, seul le russe est traduit. Dans une application sur la santé d'un chien, une traduction automatique vaut moins qu'une seule langue faite honnêtement."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Пока переведён только русский. Машинный перевод в приложении про здоровье собаки хуже, чем один честно сделанный язык."
-          }
-        }
-      }
-    },
     "Пока поровну. Смотреть надо не на отдельную неделю, а на то, куда идёт соотношение." : {
       "comment" : "advice",
       "extractionState" : "manual",
@@ -37271,6 +37253,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Чтобы он отмечал со своего телефона, включи общий дневник и отправь приглашение — «позвать в дневник» в списке семьи."
+          }
+        }
+      }
+    },
+    "Переведены русский и французский. Языков мало намеренно: машинный перевод в приложении про здоровье собаки хуже, чем язык, сделанный целиком." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Переведены русский и французский. Языков мало намеренно: машинный перевод в приложении про здоровье собаки хуже, чем язык, сделанный целиком."
           }
         }
       }

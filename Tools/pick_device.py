@@ -25,9 +25,16 @@ def main():
 
     for device in devices:
         hardware = device.get("hardwareProperties", {})
+        connection = device.get("connectionProperties", {})
         if hardware.get("platform") != "iOS":
             continue
-        if device.get("connectionProperties", {}).get("pairingState") != "paired":
+        if connection.get("pairingState") != "paired":
+            continue
+        # Симуляторы тоже «iOS» и тоже «paired»: без этой строки скрипт
+        # выбирал «Gamut SE» и падал на «Transfer Files is not supported
+        # by this device». Телефон приходит по сети или по проводу,
+        # симулятор — всегда с этой же машины.
+        if connection.get("transportType") == "sameMachine":
             continue
         print(device["identifier"],
               hardware.get("udid", ""),
