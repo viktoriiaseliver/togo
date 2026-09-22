@@ -42,24 +42,12 @@ nonisolated let log = Logger(subsystem: AppIdentifiers.bundlePrefix, category: "
 /// онбординга, и хранилище устроено так же: локальный файл в общей группе,
 /// чтобы виджеты и Live Activity читали те же записи.
 nonisolated enum Persistence {
-    static let schema = Schema([
-        Dog.self,
-        DogDocument.self,
-        DayOut.self,
-        HeatRecord.self,
-        FoodStock.self,
-        LogEvent.self,
-        CareTask.self,
-        Medication.self,
-        DoseRecord.self,
-        WeightEntry.self,
-        TrainingStep.self,
-        TrainingSession.self,
-        ProcedureSkill.self,
-        FamilyMember.self,
-        Episode.self,
-        Trip.self,
-    ])
+    /// Нынешняя форма хранилища — она же `TogoSchemaV3`.
+    ///
+    /// Список моделей переехал в `SchemaVersions.swift` и живёт теперь
+    /// в одном месте с прежними версиями: две копии списка разошлись бы,
+    /// и план миграции начал бы врать о том, из чего состоит база.
+    static let schema = Schema(versionedSchema: TogoSchemaV3.self)
 
     /// Удалось ли открыть хранилище в iCloud. Экран переноса показывает
     /// это человеку: обещать синхронизацию, которой нет, нельзя.
@@ -159,7 +147,9 @@ nonisolated enum Persistence {
                 url: storeURL,
                 cloudKitDatabase: .private(AppIdentifiers.cloudContainer)
             )
-            if let container = try? ModelContainer(for: schema, configurations: cloud) {
+            if let container = try? ModelContainer(for: schema,
+                                                   migrationPlan: TogoMigrationPlan.self,
+                                                   configurations: cloud) {
                 isUsingCloud = true
                 StartupLog.note("хранилище: iCloud")
                 return container
@@ -173,7 +163,9 @@ nonisolated enum Persistence {
         let local = storeURL.map { ModelConfiguration(schema: schema, url: $0) }
             ?? ModelConfiguration(schema: schema)
         do {
-            let container = try ModelContainer(for: schema, configurations: local)
+            let container = try ModelContainer(for: schema,
+                                               migrationPlan: TogoMigrationPlan.self,
+                                               configurations: local)
             isEphemeral = false
             StartupLog.note("хранилище: локальное")
             return container
@@ -186,6 +178,7 @@ nonisolated enum Persistence {
         do {
             let container = try ModelContainer(
                 for: schema,
+                migrationPlan: TogoMigrationPlan.self,
                 configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
             )
             isEphemeral = true
@@ -206,6 +199,7 @@ nonisolated enum Persistence {
         do {
             return try ModelContainer(
                 for: schema,
+                migrationPlan: TogoMigrationPlan.self,
                 configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
             )
         } catch {

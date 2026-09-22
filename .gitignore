@@ -27,3 +27,7 @@ fastlane/test_output
 
 # Промежуточные материалы из Claude Design
 .design-source/
+
+# Питоновский кэш инструментов — сгенерированное, не исходник
+Tools/__pycache__/
+*.pyc
