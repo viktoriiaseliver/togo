@@ -73,141 +73,191 @@ struct TodayScreen: View {
     private var isDogAlongside: Bool { activeDayOut != nil || activeTrip != nil }
     private var dutyMember: FamilyMember? { members.first(where: \.isOnDuty) }
 
+    /// Экран читается сверху вниз одним взглядом: что случилось, что идёт
+    /// прямо сейчас, что было за день, что осталось сделать. Раньше здесь
+    /// лежала двести одна строка, внутри которой всё это перемешано
+    /// с шестью шторками и закрытием дня, — порядок был, но увидеть его
+    /// можно было только прочитав всё.
     var body: some View {
         NavigationStack {
-            ZStack {
-                Token.Surface.screen.ignoresSafeArea()
-                ScrollView {
-                    VStack(alignment: .leading, spacing: Token.Spacing.stack) {
-                        header
-
-                        if Persistence.isEphemeral {
-                            TGBanner(
-                                tone: .alarm,
-                                title: "Записи сейчас не сохраняются",
-                                subtitle: "Дневник не смог открыть хранилище — записанное сейчас пропадёт при перезапуске. Перезапусти приложение; не поможет — напиши в поддержку, старые записи целы.",
-                                systemImage: "externaldrive.badge.exclamationmark"
-                            )
+            соШторками(сЧасами(
+                ZStack {
+                    Token.Surface.screen.ignoresSafeArea()
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: Token.Spacing.stack) {
+                            header
+                            тревоги
+                            происходящее
+                            деньПозади
+                            планНаОстаток
                         }
-
-                        TodayHero(indoors: timeIndoors,
-                                  lastOutingEndedAt: lastOutingEndedAt,
-                                  session: appState.session,
-                                  now: now,
-                                  rhythm: WalkRhythmAnalyzer.rhythm(events: events, now: now),
-                                  outingsToday: outingsToday)
-
-                        // Порог тревоги: счёт дошёл сам, и человек должен
-                        // увидеть это до того, как начнёт гадать в три часа
-                        // ночи, «уже пора или ещё нет».
-                        if let threshold = AlarmThresholdAnalyzer.evaluate(events: events, now: now) {
-                            Button { alarm = threshold } label: {
-                                TGBanner(tone: .alarm,
-                                         title: "Похоже, пора звонить",
-                                         subtitle: threshold.headline + " · есть готовый текст врачу",
-                                         systemImage: "phone.badge.waveform")
-                            }
-                            .buttonStyle(.plain)
-                        }
-
-                        if let fasting = fastingWindow {
-                            TGBanner(
-                                tone: .waiting,
-                                title: "Не кормить \(Fmt.duration(fasting.remaining))",
-                                subtitle: "после \(fasting.medication) в \(Fmt.clock(fasting.doseAt)) · видят все",
-                                systemImage: "clock.badge.exclamationmark"
-                            )
-                        }
-
-                        if let overdue = overdueDose {
-                            VStack(alignment: .leading, spacing: Token.Space.s8) {
-                                TGBanner(
-                                    tone: .alarm,
-                                    title: "Доза \(Fmt.clock(overdue.scheduledAt)) не отмечена",
-                                    subtitle: claimSubtitle(overdue),
-                                    systemImage: "exclamationmark.triangle"
-                                )
-                                if !overdue.claimIsActive(at: now) {
-                                    TGButton(title: "Беру на себя", variant: .secondary,
-                                             size: .medium, systemImage: "hand.raised") {
-                                        claim(overdue)
-                                    }
-                                }
-                            }
-                        }
-
-                        if let trip = activeTrip {
-                            TripTodayBlock(trip: trip, dog: dog, now: now)
-                            summaryStrip
-                        }
-
-                        if let day = activeDayOut {
-                            DayOutCard(day: day, now: now, lastWater: lastWaterOffer) {
-                                lastWaterOffer = Date()
-                                Haptics.tap()
-                            } onFinish: {
-                                // День закрываем сразу: иначе итог считался бы
-                                // от «сейчас» и рос, пока человек его читает.
-                                //
-                                // Итоговая шторка открывается только после
-                                // удачи: раньше под `try?` она показывала итог
-                                // дня, который в хранилище остался незакрытым,
-                                // и назавтра день продолжал идти.
-                                let былКонец = day.endedAt
-                                day.endedAt = Date()
-                                guard context.persist(otherwise: { day.endedAt = былКонец })
-                                else {
-                                    Haptics.warning()
-                                    appState.showUndo("День не закрылся · нажми ещё раз")
-                                    return
-                                }
-                                finishingDayOut = day
-                            }
-                        }
-
-                        if let session = appState.session {
-                            ActiveSessionCard(
-                                session: session,
-                                now: now,
-                                onOpen: { session.kind == .walk ? (route = .walk) : endOuting() },
-                                onFinish: { endOuting() }
-                            )
-                        }
-
-                        DayTimeline(events: Diary.onDayWithTraces(events, now, tracing: undoableDeletions),
-                                    now: now,
-                                    showsAuthor: members.count > 1) { event in
-                            route = .edit(event.id)
-                        }
-
-                        if activeTrip == nil { summaryStrip }
-
-                        // Единственная запись, которая меняет поведение,
-                        // а не фиксирует его. Показывается, только когда
-                        // сигналов набралось достаточно.
-                        AskSignalCard(events: events, dogName: dog?.name ?? "Он", now: now)
-
-                        DayPlanList(items: planItems, now: now,
-                                    onComplete: { complete($0) },
-                                    onUndo: { uncomplete($0) },
-                                    onOpen: { open($0) },
-                                    awaitingDate: careAwaitingDate,
-                                    onOpenCare: onOpenDog)
+                        .padding(.horizontal, Token.Spacing.screenPadding)
+                        .padding(.bottom, 24)
                     }
-                    .padding(.horizontal, Token.Spacing.screenPadding)
-                    .padding(.bottom, 24)
+                }
+                .safeAreaInset(edge: .bottom) {
+                    ActionGrid(
+                        portionGrams: dog?.servingGrams ?? 0,
+                        isTravelling: isDogAlongside,
+                        canWriteMedical: appState.can(.seeMedical)
+                    ) { route = $0 }
+                }
+                .navigationBarTitleDisplayMode(.inline)
+                .usageScreen(.today)
+                .toolbar { SettingsToolbarItem() }
+            ))
+        }
+    }
+
+    // MARK: Что случилось — то, из-за чего экран открыли
+
+    /// Порядок внутри не случайный: сначала то, что мешает самому дневнику
+    /// работать, потом здоровье, потом расписание. Человек читает сверху.
+    @ViewBuilder
+    private var тревоги: some View {
+        if Persistence.isEphemeral {
+            TGBanner(
+                tone: .alarm,
+                title: "Записи сейчас не сохраняются",
+                subtitle: "Дневник не смог открыть хранилище — записанное сейчас пропадёт при перезапуске. Перезапусти приложение; не поможет — напиши в поддержку, старые записи целы.",
+                systemImage: "externaldrive.badge.exclamationmark"
+            )
+        }
+
+        TodayHero(indoors: timeIndoors,
+                  lastOutingEndedAt: lastOutingEndedAt,
+                  session: appState.session,
+                  now: now,
+                  rhythm: WalkRhythmAnalyzer.rhythm(events: events, now: now),
+                  outingsToday: outingsToday)
+
+        // Порог тревоги: счёт дошёл сам, и человек должен увидеть это
+        // до того, как начнёт гадать в три часа ночи, «уже пора или ещё нет».
+        if let threshold = AlarmThresholdAnalyzer.evaluate(events: events, now: now) {
+            Button { alarm = threshold } label: {
+                TGBanner(tone: .alarm,
+                         title: "Похоже, пора звонить",
+                         subtitle: threshold.headline + " · есть готовый текст врачу",
+                         systemImage: "phone.badge.waveform")
+            }
+            .buttonStyle(.plain)
+        }
+
+        if let fasting = fastingWindow {
+            TGBanner(
+                tone: .waiting,
+                title: "Не кормить \(Fmt.duration(fasting.remaining))",
+                subtitle: "после \(fasting.medication) в \(Fmt.clock(fasting.doseAt)) · видят все",
+                systemImage: "clock.badge.exclamationmark"
+            )
+        }
+
+        if let overdue = overdueDose {
+            VStack(alignment: .leading, spacing: Token.Space.s8) {
+                TGBanner(
+                    tone: .alarm,
+                    title: "Доза \(Fmt.clock(overdue.scheduledAt)) не отмечена",
+                    subtitle: claimSubtitle(overdue),
+                    systemImage: "exclamationmark.triangle"
+                )
+                if !overdue.claimIsActive(at: now) {
+                    TGButton(title: "Беру на себя", variant: .secondary,
+                             size: .medium, systemImage: "hand.raised") {
+                        claim(overdue)
+                    }
                 }
             }
-            .safeAreaInset(edge: .bottom) {
-                ActionGrid(
-                    portionGrams: dog?.servingGrams ?? 0,
-                    isTravelling: isDogAlongside,
-                    canWriteMedical: appState.can(.seeMedical)
-                ) { route = $0 }
+        }
+    }
+
+    // MARK: Что идёт прямо сейчас
+
+    /// Поездка, выездной день и начатая прогулка. Всё это — состояния,
+    /// у которых есть конец, и каждое даёт свою кнопку «закончить».
+    @ViewBuilder
+    private var происходящее: some View {
+        if let trip = activeTrip {
+            TripTodayBlock(trip: trip, dog: dog, now: now)
+            summaryStrip
+        }
+
+        if let day = activeDayOut {
+            DayOutCard(day: day, now: now, lastWater: lastWaterOffer) {
+                lastWaterOffer = Date()
+                Haptics.tap()
+            } onFinish: {
+                закрытьДень(day)
             }
-            .navigationBarTitleDisplayMode(.inline)
-            .usageScreen(.today)
-            .toolbar { SettingsToolbarItem() }
+        }
+
+        if let session = appState.session {
+            ActiveSessionCard(
+                session: session,
+                now: now,
+                onOpen: { session.kind == .walk ? (route = .walk) : endOuting() },
+                onFinish: { endOuting() }
+            )
+        }
+    }
+
+    // MARK: Что было за день и что осталось
+
+    @ViewBuilder
+    private var деньПозади: some View {
+        DayTimeline(events: Diary.onDayWithTraces(events, now, tracing: undoableDeletions),
+                    now: now,
+                    showsAuthor: members.count > 1) { event in
+            route = .edit(event.id)
+        }
+
+        // В поездке сводка уже показана выше, рядом с блоком поездки.
+        if activeTrip == nil { summaryStrip }
+
+        // Единственная запись, которая меняет поведение, а не фиксирует
+        // его. Показывается, только когда сигналов набралось достаточно.
+        AskSignalCard(events: events, dogName: dog?.name ?? "Он", now: now)
+    }
+
+    private var планНаОстаток: some View {
+        DayPlanList(items: planItems, now: now,
+                    onComplete: { complete($0) },
+                    onUndo: { uncomplete($0) },
+                    onOpen: { open($0) },
+                    awaitingDate: careAwaitingDate,
+                    onOpenCare: onOpenDog)
+    }
+
+    /// Закрыть выездной день.
+    ///
+    /// Вынесено из замыкания карточки: там это была единственная бизнес-логика
+    /// внутри `body`, и её нельзя было ни прочитать рядом с остальными
+    /// действиями экрана, ни позвать откуда-то ещё.
+    ///
+    /// День закрываем сразу: иначе итог считался бы от «сейчас» и рос,
+    /// пока человек его читает. Итоговая шторка открывается только после
+    /// удачи — под `try?` она показывала итог дня, который в хранилище
+    /// остался незакрытым, и назавтра день продолжал идти.
+    private func закрытьДень(_ day: DayOut) {
+        let былКонец = day.endedAt
+        day.endedAt = Date()
+        guard context.persist(otherwise: { day.endedAt = былКонец }) else {
+            Haptics.warning()
+            appState.showUndo("День не закрылся · нажми ещё раз")
+            return
+        }
+        finishingDayOut = day
+    }
+
+    // MARK: Время экрана
+
+    /// Всё, что экран делает со временем: тик, возвращение из фона,
+    /// пересборка напоминаний. Одна тема — одно место; раньше эти строки
+    /// стояли вперемешку с показом шторок.
+    ///
+    /// Метод, а не отдельный `ViewModifier`: состояние экрана объявлено
+    /// `@State private`, и чужой тип в этом же файле до него не дотянется.
+    private func сЧасами(_ содержимое: some View) -> some View {
+        содержимое
             .onReceive(tick) { date in
                 now = date
                 LiveActivityController.publishSnapshot(dog: dog, appState: appState, now: date)
@@ -224,9 +274,9 @@ struct TodayScreen: View {
             }
             // `Timer.publish` в фоне не тикает: вернувшись в приложение,
             // человек до следующего тика видит вчерашнее «сейчас».
-            // 21.09.2026 это выглядело как метка «сейчас · 14:03»,
-            // стоящая ПОСЛЕ записей 14:04, — и читалось как сломанная
-            // сортировка ленты, хотя лента была в порядке.
+            // 21.09.2026 это выглядело как метка «сейчас · 14:03», стоящая
+            // ПОСЛЕ записей 14:04, — и читалось как сломанная сортировка
+            // ленты, хотя лента была в порядке.
             .onChange(of: scenePhase) { _, phase in
                 guard phase == .active else { return }
                 now = Date()
@@ -234,6 +284,14 @@ struct TodayScreen: View {
             .onChange(of: episodes.count) { _, _ in
                 appState.refreshEpisode(from: episodes, at: now)
             }
+    }
+
+    // MARK: Шторки
+
+    /// Шесть отдельных разговоров, которые экран заводит по своим поводам.
+    /// В `body` они занимали больше места, чем сам экран.
+    private func соШторками(_ содержимое: some View) -> some View {
+        содержимое
             .sheet(item: $route) { route in
                 TodayRouter(route: route, dog: dog, now: now, onOpenDog: onOpenDog)
             }
@@ -244,8 +302,8 @@ struct TodayScreen: View {
                 MissedDoseSheet(medication: target.medication, missed: target.missed, now: now) {
                     complete(target.item)
                 } onSkip: {
-                    // Пропуск — тоже запись: иначе в истории останется
-                    // дыра, а врач спросит именно про неё.
+                    // Пропуск — тоже запись: иначе в истории останется дыра,
+                    // а врач спросит именно про неё.
                     skipDose(target)
                 }
             }
@@ -273,7 +331,6 @@ struct TodayScreen: View {
                     uncomplete(locked.item)
                 }
             }
-        }
     }
 
     // MARK: Шапка
