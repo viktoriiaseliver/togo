@@ -67,8 +67,17 @@ struct IncidentSheet: View {
 
         // Ещё один инцидент — не новый эпизод, а продолжение старого.
         if let running = appState.activeEpisode, running.isActive() {
+            let былоПоследним = running.lastIncidentAt
+            let былКонец = running.endedAt
             running.extend()
-            try? context.save()
+            guard context.persist(otherwise: {
+                running.lastIncidentAt = былоПоследним
+                running.endedAt = былКонец
+            }) else {
+                Haptics.warning()
+                appState.showUndo("Эпизод не продлился · отметь ещё раз")
+                return
+            }
             return
         }
 
@@ -79,7 +88,17 @@ struct IncidentSheet: View {
         )
         episode.extend()
         context.insert(episode)
-        try? context.save()
+
+        // `appState.activeEpisode` ставится только после удачного сохранения.
+        // Раньше здесь стоял `try?`, и эпизод открывался на экране, не
+        // существуя в хранилище: вердикты «просится» гасли, объяснения
+        // этому в дневнике не было, а после перезапуска эпизод исчезал
+        // вместе с причиной, по которой приложение замолчало.
+        guard context.persist(otherwise: { context.delete(episode) }) else {
+            Haptics.warning()
+            appState.showUndo("Эпизод не завёлся · отметь ещё раз")
+            return
+        }
         appState.activeEpisode = episode
     }
 }

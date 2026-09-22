@@ -335,3 +335,141 @@ struct EventLogSilentFailureTests {
         #expect(Diary.active(dog.events).count == 1)
     }
 }
+
+/// Один приём сохранения на весь проект — и места, где его не было.
+///
+/// **Почему набор появился.** `persist(_:otherwise:)` был написан для
+/// отметок доз, где цена молчания — вторая таблетка, но лежал `private`
+/// внутри `DoseScheduler`. Ровно там, где он нужен — восстановление
+/// из файла, редакторы, эпизоды, результат прогулки, — стояли `try?`
+/// или не было сохранения вовсе. Приём, запертый в одном классе,
+/// не мешает написать пятую копию того же молчания.
+@Suite("Молчаливые сбои · один приём на всех", .serialized)
+@MainActor
+struct PersistIdiomTests {
+
+    @Test("persist возвращает «нет» и откатывает ровно то, что тронули")
+    func возвращаетИОткатывает() throws {
+        let context = try НеЗаписывающееХранилище.контекст { пишущий in
+            пишущий.insert(Dog(name: "Стич", weightKg: 4.1))
+        }
+        let собака = try #require(try context.fetch(FetchDescriptor<Dog>()).first)
+
+        собака.name = "Тео"
+        let получилось = context.persist(otherwise: { собака.name = "Стич" })
+
+        #expect(получилось == false, "запертое хранилище обязано ответить «нет»")
+        #expect(собака.name == "Стич", "возврат вернул значение, которого rollback не возвращает")
+    }
+
+    @Test("persist отвечает «да», когда хранилище пишет")
+    func отвечаетДа() throws {
+        let context = ModelContext(Persistence.container())
+        context.insert(Dog(name: "Стич", weightKg: 4.1))
+        #expect(context.persist(otherwise: { Issue.record("возврат не должен был позваться") }))
+    }
+
+    /// Восстановление обещает строкой в коде, что переживёт закрытие
+    /// приложения. До этого под обещанием стоял `try?`: при отказе метод
+    /// возвращал число восстановленных записей, экран показывал
+    /// «Восстановлено», а в хранилище не было ничего.
+    @Test("Восстановление из файла не может молча не восстановить")
+    func восстановлениеНеМолчит() throws {
+        let пишущий = ModelContext(Persistence.container())
+        пишущий.insert(Dog(name: "Стич", weightKg: 4.1))
+        try пишущий.save()
+        let архив = try BackupService.archive(context: пишущий, appVersion: "1.0.0")
+
+        let запертый = try НеЗаписывающееХранилище.контекст()
+        #expect(throws: (any Error).self) {
+            _ = try BackupService.restore(архив, into: запертый, strategy: .replace)
+        }
+    }
+
+    /// Сторож на приём, а не на случай: точечный тест чинит одно место,
+    /// а `try?` рядом с `save()` заводится заново в следующем экране.
+    ///
+    /// **Почему список, а не ноль.** На 22.09.2026 молчаливых сохранений
+    /// в приложении двадцать девять. Требовать ноль значит держать набор
+    /// красным и приучить себя его не читать; убрать сторож совсем — значит
+    /// разрешить тридцатое. Поэтому список с числами: **в перечисленных
+    /// файлах число не должно расти, в остальных обязан быть ноль.**
+    /// Чинится место — число уменьшается здесь же, и сторож становится
+    /// строже сам собой.
+    ///
+    /// Файлов, уже проведённых через `ModelContext.persist(otherwise:)`,
+    /// в списке нет: `Backup`, `DoseScheduler`, `Editors`, `IncidentSheet`,
+    /// `WalkSheets`, `TodayScreen`. Вернётся туда `try?` — покраснеет сразу.
+    @Test("Молчаливых `try? context.save()` не становится больше")
+    func молчаливыхСохраненийНеБольше() throws {
+        /// Долг на 22.09.2026. Числа обязаны уменьшаться и не обязаны расти.
+        let долг: [String: Int] = [
+            "CareMigration.swift": 1,
+            "CareScreen.swift": 2,
+            "DayOutScreens.swift": 2,
+            "DocumentPhotos.swift": 2,
+            "DogTab.swift": 1,
+            "DoseScheduler.swift": 1,
+            "FamilyScreen.swift": 1,
+            "FamilySync.swift": 1,
+            "FeedingMigration.swift": 2,
+            "FeedingScreen.swift": 1,
+            "FoodStockScreen.swift": 1,
+            "HealthScreen.swift": 2,
+            "HeatScreen.swift": 1,
+            "HistoryScreen.swift": 1,
+            "LogSheets.swift": 1,
+            "PillSupplyScreen.swift": 1,
+            "RecallWriter.swift": 1,
+            "RootView.swift": 1,
+            "ScheduleChange.swift": 1,
+            "SeedData.swift": 1,
+            "SharedDiaryPayloads.swift": 5,
+            "SitterBriefingScreen.swift": 1,
+            "TrainingLibraryScreen.swift": 2,
+            "TrainingScreens.swift": 2,
+            "TrainingSessionScreen.swift": 2,
+            "TreatmentCourse.swift": 4,
+            "WalkMode.swift": 1,
+            "WalkRecorder.swift": 1,
+        ]
+
+        let корень = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+
+        var посчитано: [String: [Int]] = [:]
+        for каталог in ["Togo", "TogoShared", "TogoWidgets"] {
+            guard let обход = FileManager.default.enumerator(
+                at: корень.appendingPathComponent(каталог), includingPropertiesForKeys: nil
+            ) else { continue }
+            for случай in обход {
+                guard let url = случай as? URL, url.pathExtension == "swift",
+                      let текст = try? String(contentsOf: url, encoding: .utf8) else { continue }
+                for (номер, строка) in текст.components(separatedBy: .newlines).enumerated()
+                where строка.contains("try? context.save()") || строка.contains("try? ctx.save()") {
+                    посчитано[url.lastPathComponent, default: []].append(номер + 1)
+                }
+            }
+        }
+
+        for (файл, строки) in посчитано.sorted(by: { $0.key < $1.key }) {
+            let разрешено = долг[файл] ?? 0
+            #expect(строки.count <= разрешено, """
+                \(файл): молчаливых сохранений \(строки.count) при разрешённых \(разрешено) \
+                — строки \(строки.map(String.init).joined(separator: ", ")). \
+                Сохранение обязано отвечать «да» или «нет»: context.persist(otherwise:).
+                """)
+        }
+
+        // Список обязан худеть вместе с кодом: починили файл — вычеркнули.
+        for (файл, разрешено) in долг.sorted(by: { $0.key < $1.key })
+        where (посчитано[файл]?.count ?? 0) < разрешено {
+            Issue.record("""
+                \(файл): молчаливых сохранений уже \(посчитано[файл]?.count ?? 0), \
+                а в списке долга \(разрешено). Поправь число в тесте — иначе \
+                сторож разрешает вернуть то, что убрали.
+                """)
+        }
+    }
+}

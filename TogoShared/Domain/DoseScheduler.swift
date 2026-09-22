@@ -156,7 +156,7 @@ nonisolated enum DoseScheduler {
         // потерялась. Он даст лекарство второй раз.
         //
         // Пустой ответ — это сигнал экрану: напоминания не снимать.
-        guard persist(context, otherwise: {
+        guard context.persist(otherwise: {
             dose.givenAt = nil
             dose.givenBy = nil
             medication.stockLeft = остаток
@@ -167,34 +167,6 @@ nonisolated enum DoseScheduler {
         }
         UsageLog.note(.dose, "given")
         return dose
-    }
-
-    /// Сохранить — или вернуть всё как было и честно сказать «нет».
-    ///
-    /// Один приём на три метода отметок.
-    ///
-    /// **Почему возврат руками, а не `context.rollback()`.** Проверено
-    /// на iOS 26 (тест «Запертое хранилище действительно роняет save»
-    /// и соседние): штатный откат снимает признак изменений, но **не
-    /// возвращает значения**. Правленое поле остаётся правленым,
-    /// вставленный объект остаётся в связи — а сохранить их потом уже
-    /// нельзя, потому что контекст считает себя чистым. То есть
-    /// `rollback()` делает ровно то, от чего мы уходим: расхождение
-    /// экрана с хранилищем, о котором не узнаёт никто. Поэтому
-    /// возвращаем ровно те поля, что трогали.
-    ///
-    /// В самом хранилище при этом ничего не портится: неудавшееся
-    /// сохранение не доходит до файла, и прежнее значение там остаётся.
-    @MainActor
-    private static func persist(_ context: ModelContext,
-                                otherwise вернуть: () -> Void) -> Bool {
-        do {
-            try context.save()
-            return true
-        } catch {
-            вернуть()
-            return false
-        }
     }
 
     /// Убрать вновь созданную отметку, которая так и не легла в хранилище.
@@ -243,7 +215,7 @@ nonisolated enum DoseScheduler {
         }
         dose.skippedAt = now
         dose.skippedBy = person
-        guard persist(context, otherwise: {
+        guard context.persist(otherwise: {
             dose.skippedAt = nil
             dose.skippedBy = nil
             if существующая == nil { отцепить(dose, from: context) }
@@ -294,7 +266,7 @@ nonisolated enum DoseScheduler {
         // Заодно снимаем «беру на себя»: договорённость была про тот раз.
         dose.claimedBy = nil
         dose.claimedAt = nil
-        guard persist(context, otherwise: {
+        guard context.persist(otherwise: {
             (dose.givenAt, dose.givenBy, dose.skippedAt, dose.skippedBy,
              dose.claimedBy, dose.claimedAt, medication.stockLeft) = было
         }) else {

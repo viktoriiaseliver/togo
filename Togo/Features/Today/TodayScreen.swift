@@ -148,8 +148,19 @@ struct TodayScreen: View {
                             } onFinish: {
                                 // День закрываем сразу: иначе итог считался бы
                                 // от «сейчас» и рос, пока человек его читает.
+                                //
+                                // Итоговая шторка открывается только после
+                                // удачи: раньше под `try?` она показывала итог
+                                // дня, который в хранилище остался незакрытым,
+                                // и назавтра день продолжал идти.
+                                let былКонец = day.endedAt
                                 day.endedAt = Date()
-                                try? context.save()
+                                guard context.persist(otherwise: { day.endedAt = былКонец })
+                                else {
+                                    Haptics.warning()
+                                    appState.showUndo("День не закрылся · нажми ещё раз")
+                                    return
+                                }
                                 finishingDayOut = day
                             }
                         }
@@ -445,7 +456,7 @@ struct TodayScreen: View {
             // В журнале это должно быть видно отдельно от «пропустил»:
             // человек ничего не пропускал, его просто не спросили.
             UsageLog.note(.record, "outcome", outcome: .empty)
-            OutingFinisher.finish(outcome: nil, dog: dog, appState: appState)
+            OutingFinisher.finish(outcome: nil, dog: dog, appState: appState, context: context)
             return
         }
         route = .walkResult

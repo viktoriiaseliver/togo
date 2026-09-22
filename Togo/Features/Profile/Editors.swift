@@ -83,22 +83,45 @@ struct DogEditorScreen: View {
 
     private func save() {
         if let dog {
+            let былоИмя = dog.name
+            let былВес = dog.weightKg
+            let былаПорода = dog.breed
+            let былоЛечение = dog.isOnTreatment
             dog.name = draft.name
             dog.weightKg = draft.weightValue ?? dog.weightKg
             dog.breed = draft.breed.isEmpty ? nil : draft.breed
             dog.isOnTreatment = draft.isOnTreatment
+            guard context.persist(otherwise: {
+                dog.name = былоИмя
+                dog.weightKg = былВес
+                dog.breed = былаПорода
+                dog.isOnTreatment = былоЛечение
+            }) else { return неСохранилось() }
         } else {
             let new = draft.makeDog()
             context.insert(new)
             SeedData.attachStarterCare(to: new, context: context)
             // Сохраняем сразу и сразу открываем: заводят вторую собаку,
             // чтобы на неё смотреть, а не чтобы она лежала в списке.
-            try? context.save()
+            //
+            // Выбор ставится только после удачи: `appState.select` звался
+            // после `try?`, и приложение могло открыть собаку, которой
+            // нет в хранилище.
+            guard context.persist(otherwise: { context.delete(new) }) else {
+                return неСохранилось()
+            }
             appState.select(new)
         }
-        try? context.save()
         Haptics.success()
         dismiss()
+    }
+
+    /// Экран остаётся открытым: закрыть его значило бы сказать «готово»
+    /// о том, чего в дневнике нет. Введённое никуда не делось — человек
+    /// нажимает «Готово» ещё раз.
+    private func неСохранилось() {
+        Haptics.warning()
+        appState.showUndo("Не сохранилось · нажми «Готово» ещё раз")
     }
 
     /// Удалить собаку.
@@ -107,9 +130,17 @@ struct DogEditorScreen: View {
     /// вернёт первую из оставшихся, а не будет держаться за пустоту.
     private func delete() {
         guard let dog else { return }
+        let былВыбран = appState.activeDogID
         if appState.activeDogID == dog.id { appState.activeDogID = nil }
         context.delete(dog)
-        try? context.save()
+        // Снятый выбор возвращаем: иначе при неудавшемся удалении собака
+        // осталась бы в дневнике, но перестала быть открытой — и человек
+        // решил бы, что удаление прошло.
+        guard context.persist(otherwise: { appState.activeDogID = былВыбран }) else {
+            Haptics.warning()
+            appState.showUndo("Не удалилось · нажми ещё раз")
+            return
+        }
         Haptics.warning()
         dismiss()
     }
@@ -122,6 +153,7 @@ struct CareTaskEditorSheet: View {
 
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
+    @Environment(AppState.self) private var appState
 
     @State private var title = ""
     @State private var detail = ""
@@ -312,6 +344,21 @@ struct CareTaskEditorSheet: View {
     private func save() {
         let target = task ?? CareTask(title: title, detail: detail, kind: kind,
                                       intervalDays: intervalDays, category: category)
+        // Снимок до правки: при отказе сохранения поля обязаны вернуться,
+        // иначе экран закроется, а изменённое напоминание останется висеть
+        // в памяти, не существуя в хранилище. `rollback()` для этого
+        // не годится — измерено, см. `SilentFailureTests`.
+        let былоНазвание = target.title
+        let былоОписание = target.detail
+        let былВид = target.kind
+        let былИнтервал = target.intervalDays
+        let былаКатегория = target.category
+        let былоСделано = target.lastDone
+        let былаДата = target.scheduledDate
+        let былоЗаранее = target.remindDaysBefore
+        let былоНачалоСезона = target.seasonStartMonth
+        let былКонецСезона = target.seasonEndMonth
+
         target.title = title
         target.detail = detail
         target.kind = kind
@@ -322,11 +369,33 @@ struct CareTaskEditorSheet: View {
         target.remindDaysBefore = remindDaysBefore
         target.seasonStartMonth = (isSeasonal && kind != .daily) ? seasonStart : nil
         target.seasonEndMonth = (isSeasonal && kind != .daily) ? seasonEnd : nil
-        if task == nil {
+        let новое = task == nil
+        if новое {
             target.dog = dog
             context.insert(target)
         }
-        try? context.save()
+
+        guard context.persist(otherwise: {
+            if новое {
+                target.dog = nil
+                context.delete(target)
+            } else {
+                target.title = былоНазвание
+                target.detail = былоОписание
+                target.kind = былВид
+                target.intervalDays = былИнтервал
+                target.category = былаКатегория
+                target.lastDone = былоСделано
+                target.scheduledDate = былаДата
+                target.remindDaysBefore = былоЗаранее
+                target.seasonStartMonth = былоНачалоСезона
+                target.seasonEndMonth = былКонецСезона
+            }
+        }) else {
+            Haptics.warning()
+            appState.showUndo("Не сохранилось · нажми «Готово» ещё раз")
+            return
+        }
         Haptics.success()
         dismiss()
     }
@@ -339,6 +408,7 @@ struct MedicationEditorSheet: View {
 
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
+    @Environment(AppState.self) private var appState
 
     @State private var name = ""
     @State private var doseText = ""
@@ -484,17 +554,47 @@ struct MedicationEditorSheet: View {
 
     private func save() {
         let target = medication ?? Medication(name: name, doseText: doseText, times: times, fastingMinutes: fastingMinutes)
+        // Снимок до правки. Здесь цена молчания выше, чем у остальных
+        // редакторов: часы приёма и окно натощак — это расписание доз
+        // и напоминаний. Экран, закрывшийся с «получилось» после
+        // несохранённой правки, обещает лечение по новому расписанию,
+        // а телефон продолжает напоминать по старому.
+        let былоИмя = target.name
+        let былаДоза = target.doseText
+        let былиЧасы = target.times
+        let былоНатощак = target.fastingMinutes
+        let былоНатощакДо = target.fastingBeforeMinutes
+        let былВрач = target.prescriber
+
         target.name = name
         target.doseText = doseText
         target.times = times.sorted()
         target.fastingMinutes = fastingMinutes
         target.fastingBeforeMinutes = fastingBeforeMinutes
         target.prescriber = prescriber.isEmpty ? nil : prescriber
-        if medication == nil {
+        let новое = medication == nil
+        if новое {
             target.dog = dog
             context.insert(target)
         }
-        try? context.save()
+
+        guard context.persist(otherwise: {
+            if новое {
+                target.dog = nil
+                context.delete(target)
+            } else {
+                target.name = былоИмя
+                target.doseText = былаДоза
+                target.times = былиЧасы
+                target.fastingMinutes = былоНатощак
+                target.fastingBeforeMinutes = былоНатощакДо
+                target.prescriber = былВрач
+            }
+        }) else {
+            Haptics.warning()
+            appState.showUndo("Не сохранилось · нажми «Готово» ещё раз")
+            return
+        }
         Haptics.success()
         dismiss()
     }
