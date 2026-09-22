@@ -102,7 +102,7 @@ struct SupportScreen: View {
 
     private var diagnostics: String {
         """
-        Того \(settings.appVersion) (\(settings.buildNumber))
+        Togo \(settings.appVersion) (\(settings.buildNumber))
         iOS \(UIDevice.current.systemVersion)
         Устройство: \(UIDevice.current.model)
         """

@@ -12,7 +12,7 @@
     {
       "id" : "21500001",
       "localizations" : [],
-      "name" : "Того Pro",
+      "name" : "Togo Pro",
       "subscriptions" : [
         {
           "adHocOffers" : [],
@@ -28,8 +28,8 @@
           },
           "localizations" : [
             {
-              "description" : "Матрица переноса навыка, вторая и следующие собаки, семья больше двух человек, отчёты врачу без ограничений.",
-              "displayName" : "Того Pro · месяц",
+              "description" : "Матрица переноса навыка, вторая и следующие собаки, семья больше двух человек.",
+              "displayName" : "Togo Pro · месяц",
               "locale" : "ru_RU"
             }
           ],
@@ -55,7 +55,7 @@
           "localizations" : [
             {
               "description" : "То же самое, оплата раз в год.",
-              "displayName" : "Того Pro · год",
+              "displayName" : "Togo Pro · год",
               "locale" : "ru_RU"
             }
           ],
