@@ -45,8 +45,8 @@ make usage                     # забрать с телефона журнал
   помощника — производные; расходятся с git — правятся под git. Notion
   для проектов не ведётся.
 - **Состояние в App Store Connect** — только через API, не по памяти
-  и не по `docs/APP-STORE.md`: этот файл правился 3 сентября и с тех
-  пор разошёлся с ASC.
+  и не по `docs/APP-STORE.md`: файл сверялся с ASC 21.09 и стареет
+  с каждым днём без сверки.
   `GET /v1/builds?filter[app]=6805876636&include=buildBetaDetail`
 - **Токены** — `DesignTokens/tokens.json`; сгенерированное не править
   руками, `make tokens-check` валит расхождение.
