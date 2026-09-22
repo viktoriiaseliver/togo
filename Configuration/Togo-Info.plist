@@ -12,24 +12,16 @@
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>ru</string>
+	</array>
 	<key>CFBundleName</key>
 	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
-	<key>CFBundleVersion</key>
-	<string>$(CURRENT_PROJECT_VERSION)</string>
-	<!--
-	  Пока только русский. Ключи для английского и французского собраны
-	  (docs/TEXTS.md), но перевода ещё нет: заявить язык, которого в
-	  интерфейсе нет, — значит показать в App Store поддержку, которой
-	  не существует, и получить единицу в отзыве.
-	-->
-	<key>CFBundleLocalizations</key>
-	<array>
-		<string>ru</string>
-	</array>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -43,17 +35,27 @@
 			</array>
 		</dict>
 	</array>
-
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>CKSharingSupported</key>
+	<true/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
-
 	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
+	<key>NSSupportsLiveActivitiesFrequentUpdates</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
 		<false/>
 	</dict>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIColorName</key>
@@ -67,69 +69,7 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
-	<!--
-	  Тема тёмная и единственная. Макет собран на чёрном: пять уровней
-	  поверхности разделяет шаг светлоты, а не линия, и в светлой гамме
-	  эта конструкция не работает — её пришлось бы придумывать заново.
-	-->
 	<key>UIUserInterfaceStyle</key>
 	<string>Dark</string>
-
-	<key>NSSupportsLiveActivities</key>
-	<true/>
-	<key>NSSupportsLiveActivitiesFrequentUpdates</key>
-	<true/>
-
-	<!--
-	  Без этого ключа ссылку-приглашение получить нельзя, и дело не
-	  в коде: `FamilyShare.inviteURL` умеет завести `CKShare` и отдать
-	  `share.url`, а `TogoApp` умеет принять приглашение
-	  (`userDidAcceptCloudKitShareWith`). Но iOS отдаёт приглашение
-	  приложению ТОЛЬКО если оно объявило, что умеет их принимать.
-	  Не объявило — ссылка открывается мимо приложения, и человек,
-	  которого позвали в дневник собаки, в него не попадает.
-
-	  Ключа не было с самого начала, и это не было видно ни по одному
-	  тесту: код на месте, кнопка на месте, а система молча уводит
-	  ссылку в сторону. Проверялось дважды — в plist и в собранном
-	  .app, оба раза «Does Not Exist».
-
-	  Одного ключа мало: сборке из TestFlight и App Store нужна схема
-	  CloudKit, выложенная в production. Это кнопка в дашборде Apple,
-	  из кода её не нажать.
-	-->
-	<key>CKSharingSupported</key>
-	<true/>
-
-	<!--
-	  Единственный фоновый режим — приём тихих уведомлений CloudKit.
-	  Он не для наших пушей: своих уведомлений через сервер приложение
-	  не шлёт. Без него зеркалирование узнаёт об изменениях с других
-	  устройств только при запуске, и обмен превращается в «иногда
-	  подтягивается».
-	-->
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>remote-notification</string>
-	</array>
-
-	<!--
-	  Фоновый режим `processing` отсюда убран. `BGTaskScheduler`
-	  в приложении не вызывается ни разу: утренний бриф — это обычное
-	  локальное уведомление по расписанию, фон ему не нужен.
-	  А объявленный и неиспользуемый фоновый режим — это Guideline 2.5.4
-	  и отклонение на ревью.
-	-->
-
-	<!--
-	  Строк-разрешений здесь больше нет, и это не забывчивость.
-	  Снимки документов выбираются системным `PhotosPicker`: он работает
-	  в отдельном процессе, отдаёт приложению ровно один выбранный кадр
-	  и доступа к библиотеке не требует вовсе.
-
-	  Камеры, Face ID и отслеживания в приложении нет. Объявлять строки
-	  под них — значит обещать ревьюеру функции, которых не существует,
-	  и получить вопрос, на который нечего ответить.
-	-->
 </dict>
 </plist>
