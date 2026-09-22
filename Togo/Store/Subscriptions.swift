@@ -102,7 +102,19 @@ final class SubscriptionStore {
     private(set) var lastRestore: Restore?
 
     /// Кнопка обязательна по правилам App Store и просто по-человечески нужна.
+    ///
+    /// Экран в журнал не передаём: `UsageLog` подставит текущий сам.
+    /// Раньше здесь стоял жёсткий `.paywall`, и восстановление из настроек
+    /// записывалось как пейволл — журнал врал о том, где человек стоял.
     func restore() async {
+        // 22.09 журнал действий поймал шесть «restored» в одну секунду,
+        // все с отказом: кнопка ничего не показывала, и человек жал ещё.
+        // Второй заход отмечаем и не начинаем — иначе шесть обращений
+        // к магазину вместо одного.
+        guard !isRestoring else {
+            UsageLog.note(.purchase, "restored", outcome: .duplicate)
+            return
+        }
         isRestoring = true
         lastRestore = nil
         lastError = nil
@@ -111,13 +123,12 @@ final class SubscriptionStore {
             try await AppStore.sync()
             await refreshEntitlements()
             lastRestore = entitled ? .restored : .nothingFound
-            UsageLog.note(.purchase, "restored", on: .paywall,
-                          outcome: entitled ? .done : .empty)
+            UsageLog.note(.purchase, "restored", outcome: entitled ? .done : .empty)
         } catch {
             lastError = "Не удалось восстановить покупки. Проверь связь и попробуй ещё раз."
             lastRestore = .failed
             log.error("Восстановление: \(error.localizedDescription)")
-            UsageLog.note(.purchase, "restored", on: .paywall, outcome: .failed)
+            UsageLog.note(.purchase, "restored", outcome: .failed)
         }
     }
 

@@ -53,7 +53,21 @@ struct PaywallScreen: View {
                 Task { await buy() }
             }
             HStack(spacing: Token.Space.s16) {
-                Button("Восстановить покупки") { Task { await store.restore() } }
+                // Шесть нажатий в одну секунду 22.09 — все с отказом.
+                // Пока идёт запрос, кнопка занята и это видно.
+                Button {
+                    Task { await store.restore() }
+                } label: {
+                    if store.isRestoring {
+                        HStack(spacing: Token.Space.s8) {
+                            ProgressView()
+                            Text("Спрашиваю магазин…")
+                        }
+                    } else {
+                        Text("Восстановить покупки")
+                    }
+                }
+                .disabled(store.isRestoring)
                 Button("Закрыть") { dismiss() }
             }
             .textStyle(AppFont.caption)

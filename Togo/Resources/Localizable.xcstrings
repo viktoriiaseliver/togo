@@ -37268,6 +37268,18 @@
           }
         }
       }
+    },
+    "Спрашиваю магазин…" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Спрашиваю магазин…"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

@@ -440,6 +440,11 @@ struct InviteSheet: View {
         member.inviteExpiresAt = Date().addingTimeInterval(24 * 3600)
         context.insert(member)
         try? context.save()
+        // Без этой строки самое спорное действие экрана не оставляло следа:
+        // 22.09 человек написал «человека создала, а пригласить не могу»,
+        // а в журнале за ту сессию не было ни одной записи о создании —
+        // только три открытия «Семьи» подряд за двадцать две секунды.
+        UsageLog.note(.record, "familyMember", outcome: .done)
         Haptics.success()
     }
 }
