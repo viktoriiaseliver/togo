@@ -17,6 +17,11 @@ on:
       - 'Makefile'
       - '.github/workflows/ci.yml'
   pull_request:
+  # UI-набор идёт ~15 минут на macOS, то есть ~150 минут лимита за прогон —
+  # на каждый пуш его не хватит. Он идёт по расписанию раз в неделю и по
+  # ручному запуску; на пуш — только модульные тесты.
+  schedule:
+    - cron: '0 3 * * 0'   # воскресенье, 05:00 по Ницце летом
   workflow_dispatch:
 
 concurrency:
@@ -95,19 +100,34 @@ jobs:
           test -n "$udid"
           echo "udid=$udid" >> "$GITHUB_OUTPUT"
 
-      - name: Тесты
+      - name: Модульные тесты
         run: |
           xcodebuild -project Togo.xcodeproj -scheme Togo -configuration Debug \
             -destination 'platform=iOS Simulator,id=${{ steps.sim.outputs.udid }}' \
             -resultBundlePath build/Togo.xcresult \
-            test
+            test -only-testing:TogoTests
+
+      # Ворота на пуш — модульные тесты. UI-набор мигает
+      # (FoodStockUITests, недостижимость «Сухой»: a2be5a8 упал, 73bae79
+      # прошёл, 20d84ea упал — экран не менялся) и красил каждый коммит,
+      # не говоря о нём ничего. Пока не починен, он не ворота: идёт по
+      # расписанию и по кнопке, результат — в артефакте.
+      - name: UI-тесты
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: |
+          xcodebuild -project Togo.xcodeproj -scheme Togo -configuration Debug \
+            -destination 'platform=iOS Simulator,id=${{ steps.sim.outputs.udid }}' \
+            -resultBundlePath build/TogoUI.xcresult \
+            test -only-testing:TogoUITests
 
       - name: Сохранить результаты
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: xcresult
-          path: build/Togo.xcresult
+          path: |
+            build/Togo.xcresult
+            build/TogoUI.xcresult
           retention-days: 7
           # Упав до тестов, шаг оставлял вторую претензию поверх первой —
           # «no files found» — и в письме их становилось три вместо одной.
