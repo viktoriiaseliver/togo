@@ -25,6 +25,24 @@ nonisolated enum SharedDiaryRecords {
         return record
     }
 
+    /// Запись для отправки — поверх серверной версии, если она известна.
+    ///
+    /// Новый `CKRecord` каждый раз означал бы отправку без
+    /// `recordChangeTag`, а такую правку сервер отбивает
+    /// `serverRecordChanged`. Поэтому вторая и все следующие отправки
+    /// идут на том самом объекте, который пришёл с сервера: тег на нём
+    /// уже стоит. Заодно здесь же разрешается спор — чужую версию
+    /// нельзя просто затереть своей, иначе отметка «дано» с того
+    /// телефона пропала бы при первой же нашей правке.
+    static func record(_ payload: EventPayload, base: CKRecord?, in zone: CKRecordZone.ID) -> CKRecord {
+        guard let base, base.recordID == recordID(payload.id, in: zone) else {
+            return record(payload, in: zone)
+        }
+        let merged = eventPayload(base).map { SharedDiaryMerge.resolve(local: payload, remote: $0) } ?? payload
+        apply(merged, to: base)
+        return base
+    }
+
     static func apply(_ payload: EventPayload, to record: CKRecord) {
         record["dogID"] = payload.dogID?.uuidString
         record["kind"] = payload.kind
@@ -89,8 +107,22 @@ nonisolated enum SharedDiaryRecords {
         return record
     }
 
+    /// То же, что и у записи дневника: вторая отправка идёт поверх
+    /// серверной версии, иначе её отбивает `serverRecordChanged`.
+    /// Для дозы это дороже всего: именно её второе сохранение —
+    /// отметка «дано».
+    static func record(_ payload: DosePayload, base: CKRecord?, in zone: CKRecordZone.ID) -> CKRecord {
+        guard let base, base.recordID == recordID(payload.id, in: zone) else {
+            return record(payload, in: zone)
+        }
+        let merged = dosePayload(base).map { SharedDiaryMerge.resolve(local: payload, remote: $0) } ?? payload
+        apply(merged, to: base)
+        return base
+    }
+
     static func apply(_ payload: DosePayload, to record: CKRecord) {
         record["medicationID"] = payload.medicationID?.uuidString
+        record["medicationName"] = payload.medicationName
         record["scheduledAt"] = payload.scheduledAt
         record["givenAt"] = payload.givenAt
         record["givenBy"] = payload.givenBy
@@ -112,6 +144,7 @@ nonisolated enum SharedDiaryRecords {
         return DosePayload(
             id: id,
             medicationID: (record["medicationID"] as? String).flatMap(UUID.init),
+            medicationName: record["medicationName"] as? String,
             scheduledAt: scheduledAt,
             givenAt: record["givenAt"] as? Date,
             givenBy: record["givenBy"] as? String,

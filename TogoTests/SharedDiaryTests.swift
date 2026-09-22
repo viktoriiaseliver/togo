@@ -36,7 +36,7 @@ struct SharedDiaryMergeTests {
         claimedBy: String? = nil,
         changedAt: Date
     ) -> DosePayload {
-        DosePayload(id: id, medicationID: nil, scheduledAt: Date(),
+        DosePayload(id: id, medicationID: nil, medicationName: nil, scheduledAt: Date(),
                     givenAt: givenAt, givenBy: givenBy,
                     skippedAt: skippedAt, skippedBy: skippedAt == nil ? nil : "Наталья",
                     claimedBy: claimedBy, claimedAt: claimedAt,

@@ -52,7 +52,7 @@ import SwiftData
 // То, что прямо сейчас стоит у тестировщиков.
 
 nonisolated enum TogoSchemaV1: VersionedSchema {
-    nonisolated(unsafe) static let versionIdentifier = Schema.Version(1, 0, 0)
+    static let versionIdentifier = Schema.Version(1, 0, 0)
 
     static var models: [any PersistentModel.Type] {
         [CareTask.self, Medication.self, DoseRecord.self, WeightEntry.self, DayOut.self, Dog.self, DogDocument.self, FamilyMember.self, Episode.self, Trip.self, FoodStock.self, HeatRecord.self, LogEvent.self, TrainingStep.self, TrainingSession.self, ProcedureSkill.self]
@@ -380,7 +380,7 @@ nonisolated enum TogoSchemaV1: VersionedSchema {
 // где её ставили.
 
 nonisolated enum TogoSchemaV2: VersionedSchema {
-    nonisolated(unsafe) static let versionIdentifier = Schema.Version(2, 0, 0)
+    static let versionIdentifier = Schema.Version(2, 0, 0)
 
     static var models: [any PersistentModel.Type] {
         [CareTask.self, Medication.self, DoseRecord.self, WeightEntry.self, DayOut.self, Dog.self, DogDocument.self, FamilyMember.self, Episode.self, Trip.self, FoodStock.self, HeatRecord.self, LogEvent.self, TrainingStep.self, TrainingSession.self, ProcedureSkill.self]

@@ -8,23 +8,47 @@ import CloudKit
 /// в мессенджере, iOS проверяет, что он тот, кого звали, и отдаёт нам
 /// уже готовое приглашение. Своего кода проверки здесь нет и быть
 /// не должно — за это отвечает iCloud.
+///
+/// **Приглашение приходит на делегат СЦЕНЫ, а не приложения.** У
+/// приложения со сценами — а SwiftUI-приложение со сценами всегда —
+/// UIKit зовёт `windowScene(_:userDidAcceptCloudKitShareWith:)`.
+/// Одноимённый метод `UIApplicationDelegate` не зовётся вовсе, и пока
+/// обработчик стоял на нём, гость нажимал ссылку, а не происходило
+/// ничего: без принятого приглашения не работало и всё остальное.
+///
+/// Делегат сцены подключается единственным способом, который у
+/// SwiftUI есть, — `configurationForConnecting`. Своего окна он
+/// не заводит: окно по-прежнему строит `WindowGroup`.
 final class ShareAcceptDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication,
-                     userDidAcceptCloudKitShareWith metadata: CKShare.Metadata) {
-        Task { @MainActor in
-            do {
-                try await FamilyShare.accept(metadata)
-                SharedDiarySettings.isOn = true
-                NotificationCenter.default.post(name: .familyShareAccepted, object: nil)
-            } catch {
-                log.notice("Приглашение не принялось: \(error.localizedDescription)")
-            }
-        }
+                     configurationForConnecting connectingSceneSession: UISceneSession,
+                     options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+        let configuration = UISceneConfiguration(name: nil,
+                                                 sessionRole: connectingSceneSession.role)
+        configuration.delegateClass = ShareAcceptSceneDelegate.self
+        return configuration
     }
 }
 
-extension Notification.Name {
-    static let familyShareAccepted = Notification.Name("familyShareAccepted")
+/// Та самая дверь, в которую стучится система с принятым приглашением.
+///
+/// Дверей две, и обе нужны. Приложение уже открыто — приходит
+/// `windowScene(_:userDidAcceptCloudKitShareWith:)`. Приложение
+/// запускает сама ссылка — приглашение лежит в `ConnectionOptions`
+/// первой сцены, и метод выше в этом случае может не прийти вовсе.
+/// Повторный приём безвреден: `ShareAcceptance` помнит, что уже принял.
+final class ShareAcceptSceneDelegate: NSObject, UIWindowSceneDelegate {
+    func windowScene(_ windowScene: UIWindowScene,
+                     userDidAcceptCloudKitShareWith metadata: CKShare.Metadata) {
+        ShareAcceptance.accept(metadata)
+    }
+
+    func scene(_ scene: UIScene, willConnectTo session: UISceneSession,
+               options connectionOptions: UIScene.ConnectionOptions) {
+        if let metadata = connectionOptions.cloudKitShareMetadata {
+            ShareAcceptance.accept(metadata)
+        }
+    }
 }
 
 @main

@@ -39,9 +39,28 @@ final class FamilySync: NSObject {
 
     private let container: CKContainer
     private let modelContainer: ModelContainer
-    private var engines: [CKSyncEngine] = []
+    /// Своя зона в личной базе — она же та, которой делятся.
+    private var privateEngine: CKSyncEngine?
+    /// Чужая зона в общей базе — если нас пригласили.
+    private var sharedEngine: CKSyncEngine?
+    private var engines: [CKSyncEngine] { [privateEngine, sharedEngine].compactMap { $0 } }
     /// Не отправлять обратно то, что только что приняли.
     private var applying = false
+    /// Серверные версии отправленного: без них второе сохранение любой
+    /// записи падает на `serverRecordChanged`.
+    private let outbox = SharedDiaryOutbox()
+
+    /// Зона общего дневника: своя или того, кто позвал.
+    private var zone: CKRecordZone.ID { SharedZoneRouting.zone(owner: SharedZoneOwner.name) }
+
+    /// Куда класть своё.
+    ///
+    /// Гость пишет в зону владельца через общую базу. Пока здесь стоял
+    /// «первый движок», он писал в свою личную — и отметки гостя
+    /// не уезжали никуда.
+    private var outgoingEngine: CKSyncEngine? {
+        SharedZoneRouting.scope(owner: SharedZoneOwner.name) == .shared ? sharedEngine : privateEngine
+    }
 
     /// Главный контекст, а не свой новый на каждый вызов: чужая запись
     /// должна появиться на экране сразу, а не после следующего запроса.
@@ -69,16 +88,19 @@ final class FamilySync: NSObject {
         }
 
         state = .starting
-        engines = []
 
         // Своя зона в личной базе — она же то, чем делятся.
-        engines.append(makeEngine(database: container.privateCloudDatabase,
-                                  key: SyncStateStore.privateKey))
+        privateEngine = makeEngine(database: container.privateCloudDatabase,
+                                   key: SyncStateStore.privateKey)
         // Чужая зона, если нас пригласили.
-        engines.append(makeEngine(database: container.sharedCloudDatabase,
-                                  key: SyncStateStore.sharedKey))
+        sharedEngine = makeEngine(database: container.sharedCloudDatabase,
+                                  key: SyncStateStore.sharedKey)
 
         state = .idle(lastSync: SyncStateStore.lastSync)
+        // Обмен поднимают из трёх мест — с экрана, по приходу
+        // приглашения и на запуске. Подписка ставится заново, иначе
+        // на каждое сохранение набирается по слушателю.
+        NotificationCenter.default.removeObserver(self, name: ModelContext.didSave, object: nil)
         NotificationCenter.default.addObserver(
             self, selector: #selector(localSaveHappened),
             name: ModelContext.didSave, object: nil
@@ -88,7 +110,9 @@ final class FamilySync: NSObject {
 
     func stop() {
         NotificationCenter.default.removeObserver(self, name: ModelContext.didSave, object: nil)
-        engines = []
+        privateEngine = nil
+        sharedEngine = nil
+        outbox.forgetAll()
         state = .off
     }
 
@@ -130,7 +154,7 @@ final class FamilySync: NSObject {
     }
 
     private func enqueueLocalChanges(_ notification: Notification) async {
-        let zone = SharedDiaryRecords.zoneID()
+        let zone = self.zone
         let ctx = context
         var changes: [CKSyncEngine.PendingRecordZoneChange] = []
         var stamped = false
@@ -165,7 +189,7 @@ final class FamilySync: NSObject {
         // на входе стоит тот же замок, что и у приёма чужого.
         if stamped { try? ctx.save() }
 
-        guard !changes.isEmpty, let engine = engines.first else { return }
+        guard !changes.isEmpty, let engine = outgoingEngine else { return }
         engine.state.add(pendingRecordZoneChanges: changes)
         pending = engine.state.pendingRecordZoneChanges.count
     }
@@ -190,8 +214,29 @@ extension FamilySync: CKSyncEngineDelegate {
 
         case .sentRecordZoneChanges(let sent):
             await MainActor.run {
+                // Подтверждённые записи несут свежий `recordChangeTag` —
+                // без него следующая правка той же записи не пройдёт.
+                self.outbox.remember(sent.savedRecords)
+
+                let failures = sent.failedRecordSaves.map {
+                    (id: $0.record.recordID, error: $0.error as Error)
+                }
+                let again = self.outbox.retries(after: failures)
+                if !again.isEmpty {
+                    // Спор о версии — не отказ. Ставим в очередь заново:
+                    // на второй попытке запись уйдёт поверх серверной.
+                    syncEngine.state.add(
+                        pendingRecordZoneChanges: again.map { .saveRecord($0) }
+                    )
+                }
+
                 self.pending = syncEngine.state.pendingRecordZoneChanges.count
-                if let failure = sent.failedRecordSaves.first {
+
+                // В журнал — только то, что мы повторить не умеем.
+                // Прежде сюда писался и обычный спор версий, и он был
+                // единственным следом навсегда потерянной отметки.
+                for failure in sent.failedRecordSaves
+                where !again.contains(failure.record.recordID) {
                     log.notice("Общий дневник: отправка не прошла — \(failure.error.localizedDescription)")
                 }
             }
@@ -224,15 +269,19 @@ extension FamilySync: CKSyncEngineDelegate {
         guard let id = UUID(uuidString: recordID.recordName) else { return nil }
         let ctx = context
 
+        // Серверная версия, если она у нас есть: на ней стоит
+        // `recordChangeTag`, без которого сервер отбивает правку.
+        let base = outbox.base(for: recordID)
+
         if let event = try? ctx.fetch(
             FetchDescriptor<LogEvent>(predicate: #Predicate { $0.id == id })
         ).first {
-            return SharedDiaryRecords.record(event.payload, in: recordID.zoneID)
+            return SharedDiaryRecords.record(event.payload, base: base, in: recordID.zoneID)
         }
         if let dose = try? ctx.fetch(
             FetchDescriptor<DoseRecord>(predicate: #Predicate { $0.id == id })
         ).first {
-            return SharedDiaryRecords.record(dose.payload, in: recordID.zoneID)
+            return SharedDiaryRecords.record(dose.payload, base: base, in: recordID.zoneID)
         }
         return nil
     }
@@ -248,19 +297,24 @@ extension FamilySync: CKSyncEngineDelegate {
 
             for modification in changes.modifications {
                 let record = modification.record
+                // Пришедшее с сервера — тоже источник `recordChangeTag`:
+                // свою правку этой записи мы пошлём уже поверх неё.
+                outbox.remember(record)
+
                 switch SharedDiary.RecordType(rawValue: record.recordType) {
                 case .event:
                     guard let payload = SharedDiaryRecords.eventPayload(record) else { continue }
                     SharedDiaryInbox.accept(payload, dog: dog, context: ctx)
                 case .dose:
                     guard let payload = SharedDiaryRecords.dosePayload(record) else { continue }
-                    let medicationID = payload.medicationID
-                    let medication = medicationID.flatMap { id in
-                        try? ctx.fetch(
-                            FetchDescriptor<Medication>(predicate: #Predicate { $0.id == id })
-                        ).first
-                    }
-                    SharedDiaryInbox.accept(payload, medication: medication, context: ctx)
+                    // Препарат ищется по id, а при промахе — по имени:
+                    // схемы лечения не обмениваются, и у второго
+                    // человека тот же препарат заведён с другим UUID.
+                    SharedDiaryInbox.accept(
+                        payload,
+                        medication: SharedDiaryInbox.medication(for: payload, context: ctx),
+                        context: ctx
+                    )
                 default:
                     continue
                 }

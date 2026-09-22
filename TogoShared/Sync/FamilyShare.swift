@@ -120,3 +120,53 @@ enum FamilyShare {
         _ = try await container.accept(metadata)
     }
 }
+
+extension Notification.Name {
+    static let familyShareAccepted = Notification.Name("familyShareAccepted")
+}
+
+/// Что происходит после того, как приглашение принято.
+///
+/// Отдельно от делегата сцены намеренно: делегат — только дверь, его
+/// в тест не поставить, а решения проверять надо. Решений здесь два,
+/// и оба нельзя забыть. Первое — **запомнить владельца зоны**: без его
+/// имени гость пишет отметки в свою личную базу, где их никто
+/// не увидит. Второе — поднять обмен, не дожидаясь перезапуска.
+@MainActor
+enum ShareAcceptance {
+
+    /// Приглашения, которые уже приняли в этом запуске.
+    ///
+    /// Система стучится дважды — методом сцены и через
+    /// `ConnectionOptions` при холодном старте. Второй приём безвреден,
+    /// но писать в журнал ошибку о нём незачем.
+    private static var handled: Set<String> = []
+
+    static func accept(_ metadata: CKShare.Metadata) {
+        let owner = metadata.share.recordID.zoneID.ownerName
+        let key = metadata.share.recordID.recordName + "@" + owner
+        guard !handled.contains(key) else { return }
+        handled.insert(key)
+
+        Task { @MainActor in
+            do {
+                try await FamilyShare.accept(metadata)
+                accepted(ownerName: owner)
+            } catch {
+                handled.remove(key)
+                log.notice("Приглашение не принялось: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    /// Приглашение принято: чей это дневник, включён ли обмен, и кому
+    /// об этом сказать.
+    ///
+    /// Отдельной функцией от `accept` — у неё на входе обычная строка,
+    /// а не `CKShare.Metadata`, которую в тесте не собрать.
+    static func accepted(ownerName: String) {
+        SharedZoneOwner.name = ownerName
+        SharedDiarySettings.isOn = true
+        NotificationCenter.default.post(name: .familyShareAccepted, object: nil)
+    }
+}

@@ -127,7 +127,17 @@ struct UndoToastView: View {
         case .removeCreated(let id):
             if let event = event(id) {
                 UsageLog.note(.undo, event.kind.rawValue)
-                context.delete(event)
+                // Мягко, тем же способом, что и остальные четыре места
+                // в проекте: удаление оставляет след.
+                //
+                // Жёсткое `context.delete` до второго телефона не
+                // доезжало вовсе — обмен слушает `inserted`/`updated`,
+                // и удалённой строки в этих списках нет. Запись успевала
+                // уехать, а отмена — нет: у второго человека «покормила»
+                // оставалось в ленте навсегда. Мягкое удаление приходит
+                // к нему обычной правкой.
+                event.deletedAt = Date()
+                event.deletedBy = appState.currentUserName
             }
         case .restoreDeleted(let ids):
             UsageLog.note(.undo, "restore")

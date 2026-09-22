@@ -84,6 +84,18 @@ nonisolated struct EventPayload: Equatable, Sendable, Codable {
 nonisolated struct DosePayload: Equatable, Sendable, Codable {
     var id: UUID
     var medicationID: UUID?
+
+    /// Как препарат называется — на случай, когда id не подошёл.
+    ///
+    /// Схемы лечения не обмениваются (`RecordType` выше: ездят только
+    /// `event` и `dose`), и это не недоделка, а решение: схему заводит
+    /// владелец, у второго человека тот же препарат заведён своей рукой
+    /// и с другим UUID. Значит, промах по id — обычное дело, а не сбой.
+    /// Пока связи по имени не было, чужая отметка «дано» ложилась
+    /// на дозу без препарата и на экране не появлялась: мама отмечала
+    /// приём, муж видел открытую дозу — и давал вторую таблетку.
+    var medicationName: String?
+
     var scheduledAt: Date
     var givenAt: Date?
     var givenBy: String?
@@ -145,6 +157,13 @@ nonisolated enum SharedDiaryMerge {
         precondition(local.id == remote.id)
 
         var winner = local.changedAt >= remote.changedAt ? local : remote
+
+        // Чем доза привязана к препарату — не теряется ни одной
+        // стороной: по имени чужая отметка находит схему, когда id
+        // не подошёл, а пустая привязка оставила бы дозу висеть
+        // ни на чём.
+        winner.medicationID = winner.medicationID ?? local.medicationID ?? remote.medicationID
+        winner.medicationName = winner.medicationName ?? local.medicationName ?? remote.medicationName
 
         // Отметка «дано» не теряется ни при каких обстоятельствах.
         let givenSides = [local, remote].filter { $0.givenAt != nil }

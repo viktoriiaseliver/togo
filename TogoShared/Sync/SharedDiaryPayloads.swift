@@ -63,6 +63,7 @@ extension DoseRecord {
         DosePayload(
             id: id,
             medicationID: medication?.id,
+            medicationName: medication?.name,
             scheduledAt: scheduledAt,
             givenAt: givenAt,
             givenBy: givenBy,
@@ -128,6 +129,43 @@ enum SharedDiaryInbox {
         return changed
     }
 
+    /// К какому препарату относится чужая отметка дозы.
+    ///
+    /// **Промах по id здесь — норма, а не сбой.** Схемы лечения
+    /// не обмениваются: у второго человека тот же препарат заведён
+    /// своей рукой и с другим UUID. Пока искали только по id, чужая
+    /// отметка «дано» приходила с препаратом `nil`, доза оставалась
+    /// ни на чём — и второй человек видел её открытой. Это ровно тот
+    /// случай, ради которого у дозы вообще заведены свои правила:
+    /// не путаница в дневнике, а вторая таблетка.
+    static func medication(for payload: DosePayload, context: ModelContext) -> Medication? {
+        if let id = payload.medicationID,
+           let byID = try? context.fetch(
+               FetchDescriptor<Medication>(predicate: #Predicate { $0.id == id })
+           ).first {
+            return byID
+        }
+        guard let name = payload.medicationName else { return nil }
+        let all = (try? context.fetch(FetchDescriptor<Medication>())) ?? []
+        return match(name, among: all)
+    }
+
+    /// Имя сравнивается без регистра, без диакритики и без лишних
+    /// пробелов: «Ветмедин», «ветмедин » и «Вётмедин» — одна схема,
+    /// набранная двумя руками. Живая схема предпочитается отменённой
+    /// и приостановленной — отметка приходит о той, которую дают.
+    static func match(_ name: String, among all: [Medication]) -> Medication? {
+        let wanted = folded(name)
+        guard !wanted.isEmpty else { return nil }
+        let same = all.filter { folded($0.name) == wanted }
+        return same.first { $0.cancelledAt == nil && !$0.isPaused } ?? same.first
+    }
+
+    private static func folded(_ name: String) -> String {
+        name.trimmingCharacters(in: .whitespacesAndNewlines)
+            .folding(options: [.caseInsensitive, .diacriticInsensitive], locale: nil)
+    }
+
     /// Принять отметку дозы.
     @discardableResult
     static func accept(_ payload: DosePayload, medication: Medication?, context: ModelContext) -> Bool {
@@ -148,8 +186,19 @@ enum SharedDiaryInbox {
 
         let merged = SharedDiaryMerge.resolve(local: local.payload, remote: payload)
         let changed = merged != payload
+        // Доза могла приехать раньше, чем нашёлся препарат, — например
+        // до того, как второй человек завёл у себя эту схему. Связываем
+        // при первой же возможности: висящая ни на чём доза на экране
+        // не показывается вовсе.
+        var linked = false
+        if local.medication == nil, let medication {
+            local.medication = medication
+            linked = true
+        }
         if merged != local.payload {
             local.apply(merged)
+            try? context.save()
+        } else if linked {
             try? context.save()
         }
         return changed
