@@ -29,34 +29,31 @@ struct PersistenceTests {
     /// TestFlight писал «права на iCloud нет — только локально».
     /// Общий дневник не мог заработать ни у кого, типы `CD_*` в контейнере
     /// CloudKit не появились ни разу.
-    @Test("TestFlight: профиля нет, но есть чек — право есть")
+    @Test("На устройстве профиля нет только у сборки из App Store — право есть")
     func testFlightBuildHasCloud() {
+        // Сборка 80 сказала четверым «У этой сборки нет права на iCloud»,
+        // потому что различать App Store и тестовый бандл я пробовала
+        // по чеку покупки. `appStoreReceiptURL` устарел, файла на новых
+        // iOS нет, признак всегда ложный. Симулятор отсекается отдельной
+        // веткой в `hasCloudEntitlement`, и здесь гадать больше не о чем.
         #expect(Persistence.cloudEntitlementGranted(profileExists: false,
-                                                    receiptExists: true,
                                                     entitlements: nil))
-    }
-
-    @Test("Тестовый бандл: ни профиля, ни чека — в CloudKit не лезем")
-    func testBundleStaysLocal() {
-        #expect(!Persistence.cloudEntitlementGranted(profileExists: false,
-                                                     receiptExists: false,
-                                                     entitlements: nil))
     }
 
     @Test("Бесплатная команда: профиль есть, контейнеров iCloud в нём нет")
     func freeTeamHasProfileWithoutCloud() {
         #expect(!Persistence.cloudEntitlementGranted(
-            profileExists: true, receiptExists: false,
+            profileExists: true,
             entitlements: ["application-identifier": "ABCDE12345.app.togo.diary"]))
         #expect(!Persistence.cloudEntitlementGranted(
-            profileExists: true, receiptExists: false,
+            profileExists: true,
             entitlements: ["com.apple.developer.icloud-container-identifiers": [String]()]))
     }
 
     @Test("Платная команда: контейнер назван в профиле — право есть")
     func paidTeamHasCloud() {
         #expect(Persistence.cloudEntitlementGranted(
-            profileExists: true, receiptExists: false,
+            profileExists: true,
             entitlements: ["com.apple.developer.icloud-container-identifiers":
                             ["iCloud.app.togo.diary"]]))
     }
@@ -64,7 +61,6 @@ struct PersistenceTests {
     @Test("Профиль есть, но не прочитался — синхронизацию не обещаем")
     func unreadableProfileIsRefused() {
         #expect(!Persistence.cloudEntitlementGranted(profileExists: true,
-                                                     receiptExists: true,
                                                      entitlements: nil))
     }
 

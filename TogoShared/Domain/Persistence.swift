@@ -71,20 +71,16 @@ nonisolated enum Persistence {
     /// plist лежит внутри открытым текстом.
     static var hasCloudEntitlement: Bool {
         #if targetEnvironment(simulator)
-        // Симулятор сборкой из App Store не бывает, а чек песочницы в нём
-        // создаёт конфигурация StoreKit — судить по нему нельзя. Решает
-        // профиль, как и раньше. Без этой ветки прогон тестов уходил
-        // в бесконечное восстановление CloudKit без аккаунта
-        // («Illegal attempt to register a second handler») и вис.
+        // Симулятор сборкой из App Store не бывает: профиля в нём нет
+        // никогда, и без этой ветки прогон тестов уходил в бесконечное
+        // восстановление CloudKit без аккаунта («Illegal attempt to
+        // register a second handler») и вис.
         return cloudEntitlementGranted(profileExists: true,
-                                       receiptExists: false,
                                        entitlements: provisioningEntitlements())
         #else
-        let receipt = Bundle.main.appStoreReceiptURL
         return cloudEntitlementGranted(
             profileExists: Bundle.main.url(forResource: "embedded",
                                            withExtension: "mobileprovision") != nil,
-            receiptExists: receipt.map { FileManager.default.fileExists(atPath: $0.path) } ?? false,
             entitlements: provisioningEntitlements())
         #endif
     }
@@ -106,14 +102,18 @@ nonisolated enum Persistence {
     /// Бесплатная команда разработчика при этом по-прежнему отсекается:
     /// у её сборок профиль **есть**, просто без контейнеров iCloud.
     ///
-    /// Отсутствие профиля само по себе ничего не значит — его нет и
-    /// у тестового бандла. Различает их чек покупки: у App Store и
-    /// TestFlight он лежит рядом (`sandboxReceipt` у второго), у тестового
-    /// хоста его нет. Без этого различения тесты полезли бы в CloudKit.
+    /// Симулятор отсекается не здесь, а в `hasCloudEntitlement`: на устройстве
+    /// отсутствие профиля значит ровно одно — сборка пришла из App Store
+    /// или TestFlight.
+    ///
+    /// Различать их по чеку покупки (`appStoreReceiptURL`) я пробовала
+    /// 22.09 — не работает: свойство устарело, файла на новых iOS нет,
+    /// и сборка 80 сказала четверым «У этой сборки нет права на iCloud»
+    /// ровно поэтому. Признак, который нельзя проверить на устройстве
+    /// до раздачи, проверять и не стоит.
     static func cloudEntitlementGranted(profileExists: Bool,
-                                        receiptExists: Bool,
                                         entitlements: [String: Any]?) -> Bool {
-        guard profileExists else { return receiptExists }
+        guard profileExists else { return true }
         guard let entitlements else { return false }
         let containers = entitlements["com.apple.developer.icloud-container-identifiers"] as? [String]
         return (containers ?? []).isEmpty == false
@@ -216,7 +216,14 @@ nonisolated enum Persistence {
             }
             StartupLog.note("iCloud не открылся, откатываюсь на локальное")
         } else {
-            StartupLog.note("права на iCloud нет — только локально")
+            // Почему нет — половина ответа. 22.09 сборка 80 сказала это
+            // четверым, и выяснять причину пришлось догадками. Теперь
+            // ветка видна сразу: профиль есть и в нём нет контейнеров —
+            // это бесплатная команда; профиля нет — сюда попадать вообще
+            // не должно, и если попали, врёт разбор, а не мир.
+            let профиль = Bundle.main.url(forResource: "embedded",
+                                          withExtension: "mobileprovision") != nil
+            StartupLog.note("права на iCloud нет — только локально (профиль: \(профиль ? "есть" : "нет"))")
         }
 
         isUsingCloud = false

@@ -24099,24 +24099,6 @@
         }
       }
     },
-    "права на iCloud нет — только локально" : {
-      "comment" : "cloud",
-      "extractionState" : "manual",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "pas de droit iCloud — local seulement"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "права на iCloud нет — только локально"
-          }
-        }
-      }
-    },
     "правила, которые мы себе поставили" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -37331,6 +37313,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "роли, дежурство, инструкция ситтеру"
+          }
+        }
+      }
+    },
+    "права на iCloud нет — только локально (профиль: \\(профиль ? " : {
+      "comment" : "cloud",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "права на iCloud нет — только локально (профиль: \\(профиль ? "
           }
         }
       }
