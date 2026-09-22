@@ -30,12 +30,20 @@ TEAM="${TEAM:-L7CPH7W5QW}"
 
 echo "Контейнер: $CONTAINER"
 
-echo "→ импорт схемы в development"
-xcrun cktool import-schema \
+# Раньше здесь стоял `import-schema`, и до 22.09 он работал. После того
+# как зеркало SwiftData завело в контейнере типы `CD_*`, импорт стал
+# невозможен: файл их не описывает, а импорт заменяет схему целиком —
+# CloudKit отвечает «invalid attempt to delete cloudkit managed record
+# type» и падает. Описывать `CD_*` в файле нельзя тоже: их форму задаёт
+# модель, и рукописная копия разошлась бы с ней молча.
+#
+# Поэтому проверка, а не запись. В development CloudKit заводит типы
+# и поля сам при первой отправке, так что толкать их туда не нужно.
+echo "→ проверяю файл схемы"
+xcrun cktool validate-schema \
     --team-id "$TEAM" \
     --container-id "$CONTAINER" \
     --environment development \
-    --validate \
     --file CloudKit/schema.ckdb
 
 echo "→ проверяю production"
