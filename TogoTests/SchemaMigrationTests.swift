@@ -350,4 +350,107 @@ struct SchemaMigrationTests {
         #expect(Persistence.schema.version == TogoSchemaV3.versionIdentifier,
                 "приложение открывает хранилище последней версией плана")
     }
+
+    // MARK: Форма, которой в плане нет
+
+    /// **Случай, которого не может быть ни в одном тесте выше.** Там база
+    /// заводится из V1 или V2 — обе в плане, обе открываются. Форма, которой
+    /// в плане нет, из такой базы не возникает никогда, поэтому зелёный
+    /// прогон миграции не говорил о ней ничего.
+    ///
+    /// А встречается она чаще всех остальных: номер сборки — это число
+    /// коммитов, и любая дневная сборка через `make device` с промежуточного
+    /// коммита оставляет на телефоне форму, которой в плане нет по построению.
+    /// Снимка в плане три — сборки 36, 46 и нынешняя.
+    ///
+    /// Важно не то, что такую базу нельзя открыть: это законно и неизбежно.
+    /// Важно, **что приложение делает дальше.** Лестница отката в
+    /// `openContainer` доходит до хранилища в памяти, а оно открывается
+    /// всегда — мигрировать в нём нечего. Человек получает не сообщение,
+    /// а пустой дневник, и его собственный, целый, лежит рядом на диске.
+    @Test("Хранилище формы, которой нет в плане, не подменяется пустым дневником")
+    func неизвестнаяФорма() throws {
+        let url = try заводимПапку()
+        defer { убираем(url) }
+
+        // 1. База «дневной сборки» — и в ней запись, которую нельзя потерять.
+        do {
+            let схема = Schema(versionedSchema: TogoSchemaDev.self)
+            let контейнер = try ModelContainer(for: схема,
+                                               configurations: конфигурация(схема, url))
+            let context = ModelContext(контейнер)
+            let собака = TogoSchemaDev.Dog()
+            собака.name = "Стич"
+            собака.weightKg = 4.1
+            context.insert(собака)
+            try context.save()
+        }
+
+        // 2. Исходное условие: нынешняя схема такую базу открыть не может.
+        //    Если этот #expect однажды перестанет срабатывать, значит
+        //    SwiftData научилась опознавать чужую форму — и проверка ниже
+        //    потеряла смысл, а не «просто позеленела».
+        #expect(throws: (any Error).self) { try открываемНынешней(url) }
+
+        // 3. Ради чего всё: приложение обязано сказать «дневник не открылся»
+        //    и дать восстановление, а не нарисовать пустой.
+        let контейнер = Persistence.openContainer(storeURL: url, allowCloud: false)
+        #expect(контейнер == nil,
+                "нужен StorageFailureScreen, а он показывается только когда контейнер nil")
+        #expect(Persistence.isEphemeral == false,
+                "хранилище в памяти поверх непустого файла — это подмена дневника пустым")
+
+        // 4. И файл обязан остаться на месте: восстанавливать будет нечего,
+        //    если приложение его тронет.
+        #expect(FileManager.default.fileExists(atPath: url.path(percentEncoded: false)),
+                "файл дневника не трогаем — из него человек и будет восстанавливаться")
+    }
+}
+
+/// Снимок «дневной сборки»: форма хранилища, которой нет ни в одной версии
+/// плана. Живёт только в тестах — в приложение такая схема не уезжает.
+///
+/// Отличается от сборки 46 одной лишней сущностью. Способ выбран самый
+/// дешёвый из честных: набор сущностей входит в форму хранилища, поэтому
+/// такая база заведомо не совпадает ни с V1, ни с V2, ни с V3 — то есть
+/// воспроизводит состояние телефона, на котором стояла сборка
+/// с промежуточного коммита.
+enum TogoSchemaDev: VersionedSchema {
+    static let versionIdentifier = Schema.Version(2, 5, 0)
+
+    typealias CareTask = TogoSchemaV2.CareTask
+    typealias Medication = TogoSchemaV2.Medication
+    typealias DoseRecord = TogoSchemaV2.DoseRecord
+    typealias WeightEntry = TogoSchemaV2.WeightEntry
+    typealias DayOut = TogoSchemaV2.DayOut
+    typealias Dog = TogoSchemaV2.Dog
+    typealias DogDocument = TogoSchemaV2.DogDocument
+    typealias FamilyMember = TogoSchemaV2.FamilyMember
+    typealias Episode = TogoSchemaV2.Episode
+    typealias Trip = TogoSchemaV2.Trip
+    typealias FoodStock = TogoSchemaV2.FoodStock
+    typealias HeatRecord = TogoSchemaV2.HeatRecord
+    typealias LogEvent = TogoSchemaV2.LogEvent
+    typealias TrainingStep = TogoSchemaV2.TrainingStep
+    typealias TrainingSession = TogoSchemaV2.TrainingSession
+    typealias ProcedureSkill = TogoSchemaV2.ProcedureSkill
+
+    static var models: [any PersistentModel.Type] {
+        [CareTask.self, Medication.self, DoseRecord.self, WeightEntry.self, DayOut.self,
+         Dog.self, DogDocument.self, FamilyMember.self, Episode.self, Trip.self,
+         FoodStock.self, HeatRecord.self, LogEvent.self, TrainingStep.self,
+         TrainingSession.self, ProcedureSkill.self, DevBuildNote.self]
+    }
+
+    /// Имя латиницей, в отличие от имён тестов вокруг, и это не вкусовщина:
+    /// CoreData делает из имени класса имя сущности, а кириллическое имя
+    /// роняет `NSKnownKeysDictionary` необработанным `NSUnknownKeyException` —
+    /// падает не тест, а весь процесс, и прогон показывает «0 tests passed».
+    @Model
+    final class DevBuildNote {
+        var id: UUID = UUID()
+        var text: String = ""
+
+        init() {}
+    }
 }
