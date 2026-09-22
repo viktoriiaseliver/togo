@@ -73,6 +73,18 @@ struct TodayScreen: View {
     private var isDogAlongside: Bool { activeDayOut != nil || activeTrip != nil }
     private var dutyMember: FamilyMember? { members.first(where: \.isOnDuty) }
 
+    /// Собаку пропустили на онбординге. Говорим об этом прямо: пустой день
+    /// без объяснения читается как сломанное приложение, а не как выбор.
+    private var нетСобаки: some View {
+        EmptyStateCard(
+            systemImage: "pawprint",
+            title: "Собака пока не заведена",
+            message: "Отмечать некого: еда, выходы и дозы считаются по собаке. Заведи её — нужны только кличка и вес.",
+            actionTitle: "Завести собаку",
+            action: onOpenDog
+        )
+    }
+
     /// Экран читается сверху вниз одним взглядом: что случилось, что идёт
     /// прямо сейчас, что было за день, что осталось сделать. Раньше здесь
     /// лежала двести одна строка, внутри которой всё это перемешано
@@ -85,6 +97,7 @@ struct TodayScreen: View {
                     Token.Surface.screen.ignoresSafeArea()
                     ScrollView {
                         VStack(alignment: .leading, spacing: Token.Spacing.stack) {
+                            if dog == nil { нетСобаки }
                             header
                             тревоги
                             происходящее

@@ -104,12 +104,27 @@ nonisolated final class ScreenshotTests: XCTestCase {
         capture("11-language")
     }
 
-    func test07Подписка() {
+    func test07Подписка() throws {
         app.buttons["Настройки"].tap()
         let pro = app.descendants(matching: .any).matching(identifier: "Togo Pro").firstMatch
         guard pro.waitForExistence(timeout: 5) else { return }
         pro.tap()
         _ = app.staticTexts["что открывает"].waitForExistence(timeout: 5)
+        // Цены приходят из StoreKit не мгновенно. Без этого ожидания
+        // в кадр попадало пустое состояние «Цены не загрузились» —
+        // и именно такой снимок чуть не уехал в App Review.
+        let price = app.staticTexts.containing(
+            NSPredicate(format: "label CONTAINS '2,99' OR label CONTAINS '2.99'")
+        ).firstMatch
+        guard price.waitForExistence(timeout: 20) else {
+            throw XCTSkip("""
+                Цены не пришли, снимать нечего. Две причины разом: продукты \
+                в App Store Connect стоят MISSING_METADATA и StoreKit их \
+                не отдаёт даже в песочнице, а конфигурация Togo.storekit \
+                в прогоне через xcodebuild не подхватывается. Пейволл \
+                с надписью «Цены не загрузились» в витрину не годится.
+                """)
+        }
         capture("07-paywall")
     }
 }

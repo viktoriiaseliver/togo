@@ -70,12 +70,23 @@ nonisolated enum Persistence {
     /// недоступен, поэтому читаем профиль: он обёрнут в CMS, но нужный
     /// plist лежит внутри открытым текстом.
     static var hasCloudEntitlement: Bool {
+        #if targetEnvironment(simulator)
+        // Симулятор сборкой из App Store не бывает, а чек песочницы в нём
+        // создаёт конфигурация StoreKit — судить по нему нельзя. Решает
+        // профиль, как и раньше. Без этой ветки прогон тестов уходил
+        // в бесконечное восстановление CloudKit без аккаунта
+        // («Illegal attempt to register a second handler») и вис.
+        return cloudEntitlementGranted(profileExists: true,
+                                       receiptExists: false,
+                                       entitlements: provisioningEntitlements())
+        #else
         let receipt = Bundle.main.appStoreReceiptURL
         return cloudEntitlementGranted(
             profileExists: Bundle.main.url(forResource: "embedded",
                                            withExtension: "mobileprovision") != nil,
             receiptExists: receipt.map { FileManager.default.fileExists(atPath: $0.path) } ?? false,
             entitlements: provisioningEntitlements())
+        #endif
     }
 
     /// Решение отдельно от чтения бандла: `Bundle.main` в тест не подставить,

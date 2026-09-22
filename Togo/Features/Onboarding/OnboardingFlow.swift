@@ -11,6 +11,8 @@ struct OnboardingFlow: View {
     @State private var step: Step = .welcome
     @State private var draft = DogDraft()
     @State private var schedule = ScheduleDraft()
+    /// Собаку пропустили: создавать её на выходе нельзя.
+    @State private var skippedDog = false
 
     /// Онбординг можно пройти заново из настроек. Тогда собака уже есть,
     /// и шаги, которые её создают, надо пропустить — иначе получится вторая.
@@ -40,7 +42,7 @@ struct OnboardingFlow: View {
                                     .background(.regularMaterial)
                             }
                     } else {
-                        DogStep(draft: $draft) { advance() }
+                        DogStep(draft: $draft, onNext: { advance() }, onSkip: { skipDog() })
                     }
                 case .schedule:
                     if isReplay {
@@ -98,9 +100,24 @@ struct OnboardingFlow: View {
         }
     }
 
+    /// Пропустить собаку.
+    ///
+    /// Два шага следом — режим дня и уход — настраивают именно её, поэтому
+    /// пропускаются вместе с ней: спрашивать, во сколько ест собака,
+    /// которой нет, бессмысленно. Человек попадает сразу к уведомлениям
+    /// и дальше в приложение; завести собаку можно в любой момент
+    /// («Настройки → Добавить собаку»).
+    private func skipDog() {
+        skippedDog = true
+        UsageLog.note(.open, "dogSkipped", on: .onboarding)
+        withAnimation(.easeInOut(duration: Token.Duration.quick)) {
+            step = .notifications
+        }
+    }
+
     private func advance() {
         // Повторное прохождение ничего не создаёт: это чтение, а не установка.
-        if step == .schedule, !isReplay { saveDog() }
+        if step == .schedule, !isReplay, !skippedDog { saveDog() }
         withAnimation(.easeInOut(duration: Token.Duration.quick)) {
             step = Step(rawValue: step.rawValue + 1) ?? .notifications
         }

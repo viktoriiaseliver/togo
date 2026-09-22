@@ -58,6 +58,9 @@ struct WelcomeStep: View {
 struct DogStep: View {
     @Binding var draft: DogDraft
     var onNext: () -> Void
+    /// Пропустить собаку. Есть не всегда: при повторном прохождении
+    /// пропускать нечего — собака уже заведена.
+    var onSkip: (() -> Void)?
 
     var body: some View {
         TGScreen(title: "Кто у тебя живёт") {
@@ -126,6 +129,11 @@ struct DogStep: View {
             }
         } bottom: {
             TGButton(title: "Дальше", isEnabled: draft.isValid, action: onNext)
+            if let onSkip {
+                Button("Пока без собаки", action: onSkip)
+                    .textStyle(AppFont.caption)
+                    .frame(maxWidth: .infinity, minHeight: Token.Size.tapTarget)
+            }
         }
     }
 }

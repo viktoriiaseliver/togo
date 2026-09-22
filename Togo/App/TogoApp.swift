@@ -156,7 +156,13 @@ struct AppRoot: View {
     @State private var showsWhatsNew = false
 
     var body: some View {
-        if TogoApp.isUITesting || (settings.onboardingCompleted && dogs.first != nil) {
+        // Собаки может не быть намеренно: на шаге «Кто у тебя живёт» есть
+        // «Пока без собаки». Раньше здесь стояло `&& dogs.first != nil`,
+        // и пропуск не удержался бы — приложение вернуло бы в онбординг.
+        // Предохранителем от пустого хранилища это условие тоже больше
+        // не служит: сломанную базу ловит `Persistence.openContainer`
+        // и показывает «Дневник не открылся».
+        if TogoApp.isUITesting || settings.onboardingCompleted {
             RootView()
                 // «Что нового» показывается один раз после обновления —
                 // и никогда поверх работы на первом запуске.

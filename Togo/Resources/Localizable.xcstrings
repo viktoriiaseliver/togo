@@ -26649,24 +26649,6 @@
         }
       }
     },
-    "роли, дежурство, ссылка ситтера" : {
-      "comment" : "handle",
-      "extractionState" : "manual",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "rôles, garde, lien pet-sitter"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "роли, дежурство, ссылка ситтера"
-          }
-        }
-      }
-    },
     "роль" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -37277,6 +37259,78 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Спрашиваю магазин…"
+          }
+        }
+      }
+    },
+    "Собака пока не заведена" : {
+      "comment" : "dutyMember",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Собака пока не заведена"
+          }
+        }
+      }
+    },
+    "Отмечать некого: еда, выходы и дозы считаются по собаке. Заведи её — нужны только кличка и вес." : {
+      "comment" : "dutyMember",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отмечать некого: еда, выходы и дозы считаются по собаке. Заведи её — нужны только кличка и вес."
+          }
+        }
+      }
+    },
+    "Завести собаку" : {
+      "comment" : "dutyMember",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завести собаку"
+          }
+        }
+      }
+    },
+    "Пока без собаки" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пока без собаки"
+          }
+        }
+      }
+    },
+    "прогулка" : {
+      "comment" : "header",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "прогулка"
+          }
+        }
+      }
+    },
+    "роли, дежурство, инструкция ситтеру" : {
+      "comment" : "handle",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "роли, дежурство, инструкция ситтеру"
           }
         }
       }
