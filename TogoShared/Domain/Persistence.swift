@@ -70,7 +70,40 @@ nonisolated enum Persistence {
     /// недоступен, поэтому читаем профиль: он обёрнут в CMS, но нужный
     /// plist лежит внутри открытым текстом.
     static var hasCloudEntitlement: Bool {
-        guard let entitlements = provisioningEntitlements() else { return false }
+        let receipt = Bundle.main.appStoreReceiptURL
+        return cloudEntitlementGranted(
+            profileExists: Bundle.main.url(forResource: "embedded",
+                                           withExtension: "mobileprovision") != nil,
+            receiptExists: receipt.map { FileManager.default.fileExists(atPath: $0.path) } ?? false,
+            entitlements: provisioningEntitlements())
+    }
+
+    /// Решение отдельно от чтения бандла: `Bundle.main` в тест не подставить,
+    /// а проверять надо именно решение — оно выключало iCloud у всех, кто
+    /// ставил приложение из TestFlight.
+    ///
+    /// **Профиля нет — это не «права нет».** `embedded.mobileprovision`
+    /// лежит только в сборках для разработки и ad hoc. У сборок из App Store
+    /// и TestFlight Apple снимает его при обработке, а права остаются
+    /// в подписи кода, прочитать которую с iOS нечем. Прежняя проверка
+    /// читала отсутствие профиля как отсутствие права и выключала iCloud
+    /// ровно там, где он нужен: журнал запуска с телефона 22.09 на всех
+    /// трёх запусках TestFlight писал «права на iCloud нет — только
+    /// локально», хотя в профиле архива стоит `iCloud.app.togo.diary`,
+    /// а на App ID возможность ICLOUD включена.
+    ///
+    /// Бесплатная команда разработчика при этом по-прежнему отсекается:
+    /// у её сборок профиль **есть**, просто без контейнеров iCloud.
+    ///
+    /// Отсутствие профиля само по себе ничего не значит — его нет и
+    /// у тестового бандла. Различает их чек покупки: у App Store и
+    /// TestFlight он лежит рядом (`sandboxReceipt` у второго), у тестового
+    /// хоста его нет. Без этого различения тесты полезли бы в CloudKit.
+    static func cloudEntitlementGranted(profileExists: Bool,
+                                        receiptExists: Bool,
+                                        entitlements: [String: Any]?) -> Bool {
+        guard profileExists else { return receiptExists }
+        guard let entitlements else { return false }
         let containers = entitlements["com.apple.developer.icloud-container-identifiers"] as? [String]
         return (containers ?? []).isEmpty == false
     }
