@@ -6,6 +6,7 @@ import SwiftData
 struct OnboardingFlow: View {
     @Environment(\.modelContext) private var context
     @Environment(Settings.self) private var settings
+    @Environment(AppState.self) private var appState
     @Query private var dogs: [Dog]
 
     @State private var step: Step = .welcome
@@ -136,6 +137,9 @@ struct OnboardingFlow: View {
         SeedData.attachStarterCare(to: dog, context: context)
         let me = FamilyMember(name: draft.ownerName, role: .owner, isMe: true)
         context.insert(me)
+        // Своя карточка запоминается на телефоне: `isMe` уезжает в общий
+        // дневник и на втором устройстве указывает не на того.
+        appState.myMemberID = me.id
     }
 
     private func finish() {

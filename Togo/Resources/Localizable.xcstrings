@@ -4156,7 +4156,7 @@
       }
     },
     "Виктория" : {
-      "comment" : "currentUserName",
+      "comment" : "me",
       "extractionState" : "manual",
       "localizations" : {
         "fr" : {
@@ -35080,7 +35080,7 @@
       }
     },
     "Я" : {
-      "comment" : "ownerName",
+      "comment" : "currentUserName",
       "extractionState" : "manual",
       "localizations" : {
         "fr" : {
@@ -37325,6 +37325,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "права на iCloud нет — только локально (профиль: \\(профиль ? "
+          }
+        }
+      }
+    },
+    "это я" : {
+      "comment" : "next",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "это я"
+          }
+        }
+      }
+    },
+    "на этом телефоне" : {
+      "comment" : "next",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "на этом телефоне"
+          }
+        }
+      }
+    },
+    "Записи с этого телефона будут подписаны этим именем, а права возьмутся из этой карточки." : {
+      "comment" : "next",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Записи с этого телефона будут подписаны этим именем, а права возьмутся из этой карточки."
+          }
+        }
+      }
+    },
+    "Это я" : {
+      "comment" : "next",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Это я"
           }
         }
       }

@@ -85,6 +85,49 @@ struct PermissionTests {
         #expect(state.permissions == FamilyRole.caregiver.defaultPermissions)
     }
 
+    /// Мама получила «со-владельца», а на её телефоне половины
+    /// функционала не оказалось. Причина не в роли: `isMe` хранится
+    /// в модели и уезжает в общий дневник, поэтому на втором телефоне
+    /// «я» — это карточка владельца. Плюс `adopt` звали только при
+    /// ручной правке карточки, так что до неё действовал владелец
+    /// по умолчанию.
+    @Test("На втором телефоне я — не тот, у кого стоит isMe")
+    func secondPhoneDoesNotTrustIsMe() {
+        let хозяйка = FamilyMember(name: "Виктория", role: .owner, isMe: true)
+        let мама = FamilyMember(name: "Мама", role: .coOwner)
+
+        let state = AppState()
+        state.myMemberID = мама.id
+        state.adoptMe(from: [хозяйка, мама])
+
+        #expect(state.role == .coOwner, "взяли свою карточку, а не чужую с isMe")
+        #expect(state.currentUserName == "Мама")
+        #expect(!state.can(.editTreatment), "схему лечения меняет владелец")
+        #expect(state.can(.giveDose))
+        #expect(state.can(.manageFamily))
+    }
+
+    @Test("Себя не опознали — чужую роль не берём")
+    func unknownMemberKeepsRole() {
+        let хозяйка = FamilyMember(name: "Виктория", role: .owner, isMe: true)
+        let мама = FamilyMember(name: "Мама", role: .coOwner)
+
+        let state = AppState()
+        state.role = .helper
+        state.adoptMe(from: [хозяйка, мама])
+
+        #expect(state.role == .helper, "выдать чужие права молча хуже, чем не выдать никаких")
+    }
+
+    @Test("Один участник — это я, даже без запомненной карточки")
+    func singleMemberIsMe() {
+        let одна = FamilyMember(name: "Виктория", role: .owner, isMe: true)
+        let state = AppState()
+        state.adoptMe(from: [одна])
+        #expect(state.role == .owner)
+        #expect(state.myMemberID == одна.id, "запомнили на будущее")
+    }
+
     @Test("Состояние приложения подхватывает права участника")
     func appStateAdoptsMember() {
         let ситтер = FamilyMember(name: "Ситтер", role: .helper)

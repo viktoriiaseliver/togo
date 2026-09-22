@@ -19,6 +19,33 @@ final class AppState {
 
     func can(_ permission: Permission) -> Bool { permissions.contains(permission) }
 
+    /// Кто из участников — я, на **этом** телефоне.
+    ///
+    /// Поле `FamilyMember.isMe` для этого не годится и никогда не годилось:
+    /// оно хранится в модели, а значит уезжает в общий дневник вместе
+    /// с остальным. На втором телефоне «я» оказывалась карточка владельца,
+    /// и человек видел чужую роль вместо своей.
+    var myMemberID: UUID? {
+        didSet { UserDefaults.standard.set(myMemberID?.uuidString, forKey: Keys.myMember) }
+    }
+
+    /// Взять свою роль и права из списка семьи.
+    ///
+    /// Зовётся при запуске. Раньше `adopt` вызывался ровно в одном месте —
+    /// при ручной правке карточки, — поэтому на любом телефоне, где
+    /// карточку не открывали, роль оставалась `.owner` по умолчанию:
+    /// выданные права не применялись нигде.
+    ///
+    /// Если себя опознать не удалось, роль не трогаем вовсе: выдать
+    /// чужие права молча хуже, чем не выдать никаких.
+    func adoptMe(from members: [FamilyMember]) {
+        let мой = members.first { $0.id == myMemberID }
+            ?? (members.count == 1 ? members.first { $0.isMe } : nil)
+        guard let мой else { return }
+        myMemberID = мой.id
+        adopt(мой)
+    }
+
     /// Подтянуть права текущего человека из карточки участника.
     func adopt(_ member: FamilyMember) {
         role = member.role
@@ -37,8 +64,12 @@ final class AppState {
     }
 
     /// Имя для тех, кто пишет в дневник без экранов.
+    ///
+    /// По умолчанию — «Я», а не имя владелицы: зашитая «Виктория»
+    /// подписывала её именем записи, сделанные на чужом телефоне,
+    /// и «кто дал дозу» переставало быть вопросом с ответом.
     static var storedUserName: String {
-        UserDefaults.standard.string(forKey: Keys.userName) ?? "Виктория"
+        UserDefaults.standard.string(forKey: Keys.userName) ?? "Я"
     }
 
     /// Активный эпизод: 2+ инцидента за 24 часа.
@@ -66,6 +97,7 @@ final class AppState {
 
     init() {
         activeDogID = UserDefaults.standard.string(forKey: Keys.activeDog).flatMap(UUID.init)
+        myMemberID = UserDefaults.standard.string(forKey: Keys.myMember).flatMap(UUID.init)
         session = ActiveSessionStore.load()
         // Прогулку могли забыть: приложение сняли из многозадачности,
         // сессия протухла через восемь часов — а на экране блокировки
@@ -111,6 +143,9 @@ final class AppState {
     enum Keys {
         static let activeDog = "active.dog"
         static let userName = "current.user"
+        /// Своя карточка участника. Лежит на телефоне, а не в модели:
+        /// в модели она уехала бы в общий дневник ко всем сразу.
+        static let myMember = "family.me"
     }
 
     struct UndoToast: Identifiable, Equatable {

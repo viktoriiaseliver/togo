@@ -336,7 +336,7 @@ struct MemberScreen: View {
                         var next = member.permissions
                         if granted { next.insert(permission) } else { next.remove(permission) }
                         member.permissions = next
-                        if member.isMe { appState.adopt(member) }
+                        if appState.myMemberID == member.id { appState.adopt(member) }
                         Haptics.tap()
                     }
                     if permission != Permission.allCases.last { TGDivider() }
@@ -354,7 +354,23 @@ struct MemberScreen: View {
                          systemImage: "clock")
             }
 
-            if !member.isMe {
+            // Второй телефон должен уметь сказать, кто за ним сидит.
+            // Без этого гость видел роль владельца: `isMe` приезжает
+            // из общего дневника и указывает на того, кто заводил семью.
+            if appState.myMemberID != member.id {
+                TGCard {
+                    TGSectionHeader(title: "это я", subtitle: "на этом телефоне")
+                    TGExplainer(text: "Записи с этого телефона будут подписаны этим именем, а права возьмутся из этой карточки.")
+                    TGButton(title: "Это я", systemImage: "person.crop.circle.badge.checkmark") {
+                        appState.myMemberID = member.id
+                        appState.adopt(member)
+                        Haptics.success()
+                        dismiss()
+                    }
+                }
+            }
+
+            if appState.myMemberID != member.id {
                 TGButton(title: "Убрать из семьи", variant: .destructive, size: .medium, systemImage: "person.badge.minus") {
                     context.delete(member)
                     dismiss()

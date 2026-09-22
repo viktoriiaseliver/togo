@@ -151,8 +151,10 @@ struct TogoApp: App {
 /// вкладок нет вовсе: показывать пустую навигацию новому человеку не за чем.
 struct AppRoot: View {
     @Environment(Settings.self) private var settings
+    @Environment(AppState.self) private var appState
     @Environment(\.modelContext) private var context
     @Query private var dogs: [Dog]
+    @Query private var members: [FamilyMember]
     @State private var showsWhatsNew = false
 
     var body: some View {
@@ -171,6 +173,12 @@ struct AppRoot: View {
                 }
                 .task {
                     checkVersion()
+                    // Роль и права берутся из своей карточки при каждом
+                    // запуске. Без этого выданная роль не применялась
+                    // нигде: `adopt` звали только при ручной правке
+                    // карточки, а до тех пор на телефоне действовал
+                    // владелец по умолчанию.
+                    appState.adoptMe(from: members)
                     // Уход у тех, кто ставил приложение до переделки, чинится
                     // один раз и молча: человек не должен ничего править руками.
                     let fixed = CareMigration.run(context: context)
