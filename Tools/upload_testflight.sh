@@ -57,9 +57,23 @@ ARCHIVE="build/Togo.xcarchive"
 rm -rf "$ARCHIVE" build/export
 
 echo "── тесты"
+# Симулятор берётся по UDID тем же подборщиком, что у `make unit`, а не
+# по имени. `name=iPhone 17 Pro` без версии разрешается в `OS:latest`:
+# стоит рядом появиться рантайму новее того, на котором заведён этот
+# симулятор (27.0 при устройстве на 26.5), и xcodebuild отвечает
+# «устройство не найдено» — при том, что оно есть и видно в `simctl list`.
+# Выгрузка падала на шаге тестов, не дойдя до архива.
+#
+# Имя переменной латиницей, в отличие от остального: имена переменных
+# в shell обязаны быть из ASCII, и `СИМУЛЯТОР=...` bash принимает
+# за команду — «command not found».
+#
+# `tail -1` обязателен: подборщик печатает в stdout сначала строку
+# «Беру готовый: …», и только последняя строка — UDID.
+SIM="$(python3 Tools/ci_simulator.py | tail -1)"
 xcodebuild test \
     -project Togo.xcodeproj -scheme Togo \
-    -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
+    -destination "platform=iOS Simulator,id=${SIM}" \
     -only-testing:TogoTests \
     -quiet
 
