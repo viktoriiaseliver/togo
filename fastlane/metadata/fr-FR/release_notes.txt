@@ -1,0 +1,8 @@
+Première version.
+
+• « Envie de sortir ? » avec cinq réponses honnêtes au lieu d'un seul chiffre
+• « Comment il a demandé » — une touche qui montre si l'aboiement prend la place du signal calme
+• Des séances avec un marqueur mesuré à la milliseconde et une limite de trois minutes
+• Rôles, garde et journal partagé avec la famille
+• Mode voyage avec des bagages calculés d'après le poids et la ration
+• Carnet de santé, fenêtre à jeun et compte rendu pour le vétérinaire — seulement si le chien est sous traitement
