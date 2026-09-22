@@ -21,7 +21,7 @@
 # Отпечаток русского текста, к которому сделан этот перевод.
 # Не сходится — `build_site.py` скажет, какой раздел поменялся, и напечатает
 # новое значение: перечитать перевод, поправить и вписать сюда.
-SOURCE_FINGERPRINT = "64fccca9879f1a00"
+SOURCE_FINGERPRINT = "b6aa9b6603acda01"
 
 # Подписи вокруг текста: в шаблоне страницы их два языка.
 LABELS = {
@@ -53,8 +53,8 @@ DOCUMENTS = {
                 "The vet report, the CSV export and the family invitation go out only when you tap Share yourself, and only to whoever you picked in the system dialog.",
             ]),
             ("Invitations and roles", [
-                "An invitation link lives for 24 hours and contains nothing but a random token. The role is fixed before the invitation is accepted, and whoever accepts it cannot change it.",
-                "A sitter’s link expires on its own, by date.",
+                "An invitation to the shared diary is an iCloud share. Only the person you named in the system Share dialog can open it: nobody who is merely forwarded the address gets in.",
+                "The owner sees who is in the diary and can remove anyone. Records already received stay on that person’s phone — iCloud cannot take back what it has shown.",
             ]),
             ("Your rights", [
                 "You can export everything to CSV and delete all of your data in Settings → Data and privacy, with no emails and no waiting.",

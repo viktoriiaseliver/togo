@@ -44,22 +44,58 @@ PRODUCTION="$(xcrun cktool export-schema \
     --container-id "$CONTAINER" \
     --environment production)"
 
-MISSING=()
-for TYPE in LogEvent DoseRecord; do
-    grep -q "RECORD TYPE $TYPE " <<<"$PRODUCTION" || MISSING+=("$TYPE")
-done
+# Сверяем не только типы, но и поля.
+#
+# Раньше здесь проверялось наличие LogEvent и DoseRecord — и скрипт
+# говорил «работает», когда в production не было поля medicationName.
+# Отметка дозы при этом валила отправку целиком, а тут было написано,
+# что всё хорошо. Проверка, которая не краснеет на сломанном, не
+# проверяет ничего.
+PROD_FILE="$(mktemp)"
+printf '%s\n' "$PRODUCTION" > "$PROD_FILE"
+MISSING="$(python3 - "$PROD_FILE" CloudKit/schema.ckdb <<'PY'
+import re, sys
 
-if [ ${#MISSING[@]} -eq 0 ]; then
+def parse(path):
+    types = {}
+    for name, body in re.findall(r'RECORD TYPE (\w+) \((.*?)\)\s*;',
+                                 open(path).read(), re.S):
+        fields = set()
+        for line in body.splitlines():
+            line = line.strip().rstrip(',')
+            if not line or line.startswith('GRANT'):
+                continue
+            field = line.split()[0].strip('"')
+            if not field.startswith('___'):
+                fields.add(field)
+        types[name] = fields
+    return types
+
+prod, want = parse(sys.argv[1]), parse(sys.argv[2])
+gaps = []
+for name, fields in sorted(want.items()):
+    if name not in prod:
+        gaps.append(f"{name} — типа нет вовсе")
+        continue
+    gaps += [f"{name}.{f}" for f in sorted(fields - prod[name])]
+print("\n".join(gaps))
+PY
+)"
+rm -f "$PROD_FILE"
+
+if [ -z "$MISSING" ]; then
     echo
-    echo "Готово. В production есть LogEvent и DoseRecord —"
+    echo "Готово. В production есть все типы и поля из schema.ckdb —"
     echo "общий дневник в TestFlight работает."
     exit 0
 fi
 
 cat <<NOTE
 
-Схема в development обновлена, но в production её ещё нет:
-не хватает ${MISSING[*]}.
+Схема в development обновлена, но в production её ещё нет.
+Не хватает:
+
+$MISSING
 
 Перенести development → production умеет только дашборд — у cktool
 такой команды нет, а прямой импорт в production CloudKit запрещает.

@@ -83,14 +83,40 @@ final class SubscriptionStore {
         }
     }
 
+    /// Чем кончилось восстановление.
+    ///
+    /// Нужно ровно затем, чтобы кнопка не молчала. Раньше успех и «покупок
+    /// нет» выглядели одинаково — никак: `entitled` оставался `false`,
+    /// экран не менялся, и человек читал это как «кнопка не нажимается».
+    /// Именно так и написал тестер 22.09.
+    enum Restore: Equatable {
+        /// Подписка нашлась и включена.
+        case restored
+        /// Магазин ответил, покупок на этом Apple ID нет.
+        case nothingFound
+        /// Спросить не вышло — текст в `lastError`.
+        case failed
+    }
+
+    private(set) var isRestoring = false
+    private(set) var lastRestore: Restore?
+
     /// Кнопка обязательна по правилам App Store и просто по-человечески нужна.
     func restore() async {
+        isRestoring = true
+        lastRestore = nil
+        lastError = nil
+        defer { isRestoring = false }
         do {
             try await AppStore.sync()
             await refreshEntitlements()
-            UsageLog.note(.purchase, "restored", on: .paywall)
+            lastRestore = entitled ? .restored : .nothingFound
+            UsageLog.note(.purchase, "restored", on: .paywall,
+                          outcome: entitled ? .done : .empty)
         } catch {
-            lastError = "Не удалось восстановить покупки."
+            lastError = "Не удалось восстановить покупки. Проверь связь и попробуй ещё раз."
+            lastRestore = .failed
+            log.error("Восстановление: \(error.localizedDescription)")
             UsageLog.note(.purchase, "restored", on: .paywall, outcome: .failed)
         }
     }

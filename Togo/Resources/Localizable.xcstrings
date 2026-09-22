@@ -53,7 +53,7 @@
       }
     },
     " · есть готовый текст врачу" : {
-      "comment" : "body",
+      "comment" : "Что случилось — то, из-за чего экран открыли",
       "extractionState" : "manual",
       "localizations" : {
         "fr" : {
@@ -2617,7 +2617,7 @@
       }
     },
     "Аккаунт iCloud сменился — включи общий дневник заново" : {
-      "comment" : "FamilySync",
+      "comment" : "again",
       "extractionState" : "manual",
       "localizations" : {
         "fr" : {
@@ -2959,7 +2959,7 @@
       }
     },
     "Беру на себя" : {
-      "comment" : "body",
+      "comment" : "Что случилось — то, из-за чего экран открыли",
       "extractionState" : "manual",
       "localizations" : {
         "fr" : {
@@ -7860,7 +7860,7 @@
       }
     },
     "Дневник не смог открыть хранилище — записанное сейчас пропадёт при перезапуске. Перезапусти приложение; не поможет — напиши в поддержку, старые записи целы." : {
-      "comment" : "body",
+      "comment" : "Что случилось — то, из-за чего экран открыли",
       "extractionState" : "manual",
       "localizations" : {
         "fr" : {
@@ -8454,7 +8454,7 @@
       }
     },
     "Доза %@ не отмечена" : {
-      "comment" : "body",
+      "comment" : "Что случилось — то, из-за чего экран открыли",
       "extractionState" : "manual",
       "localizations" : {
         "fr" : {
@@ -9823,24 +9823,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ждём примерно"
-          }
-        }
-      }
-    },
-    "ждёт" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "en attente"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ждёт"
           }
         }
       }
@@ -11466,7 +11448,7 @@
       }
     },
     "Записи сейчас не сохраняются" : {
-      "comment" : "body",
+      "comment" : "Что случилось — то, из-за чего экран открыли",
       "extractionState" : "manual",
       "localizations" : {
         "fr" : {
@@ -12073,24 +12055,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "и выдавать права"
-          }
-        }
-      }
-    },
-    "и ещё один шаг" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "et une étape de plus"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "и ещё один шаг"
           }
         }
       }
@@ -12795,24 +12759,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Инциденты: %@"
-          }
-        }
-      }
-    },
-    "истекло" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "expirée"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "истекло"
           }
         }
       }
@@ -17298,7 +17244,7 @@
       }
     },
     "Не кормить %@" : {
-      "comment" : "body",
+      "comment" : "Что случилось — то, из-за чего экран открыли",
       "extractionState" : "manual",
       "localizations" : {
         "fr" : {
@@ -17622,7 +17568,7 @@
       }
     },
     "Не получилось" : {
-      "comment" : "markerPad",
+      "comment" : "restoreBanner",
       "extractionState" : "manual",
       "localizations" : {
         "fr" : {
@@ -17797,24 +17743,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "не считаем"
-          }
-        }
-      }
-    },
-    "Не удалось восстановить покупки." : {
-      "comment" : "restore",
-      "extractionState" : "manual",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Impossible de restaurer les achats."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Не удалось восстановить покупки."
           }
         }
       }
@@ -18896,7 +18824,7 @@
       }
     },
     "общая группа есть" : {
-      "comment" : "storeURL",
+      "comment" : "groupURL",
       "extractionState" : "manual",
       "localizations" : {
         "fr" : {
@@ -18914,7 +18842,7 @@
       }
     },
     "общей группы нет — локально" : {
-      "comment" : "storeURL",
+      "comment" : "groupURL",
       "extractionState" : "manual",
       "localizations" : {
         "fr" : {
@@ -19436,7 +19364,7 @@
       }
     },
     "Он" : {
-      "comment" : "body",
+      "comment" : "Что было за день и что осталось",
       "extractionState" : "manual",
       "localizations" : {
         "fr" : {
@@ -20040,7 +19968,7 @@
       }
     },
     "открываю хранилище" : {
-      "comment" : "profile",
+      "comment" : "groupURL",
       "extractionState" : "manual",
       "localizations" : {
         "fr" : {
@@ -21003,24 +20931,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Отчёт врачу собирается из уже записанного — заполнять для него ничего не надо."
-          }
-        }
-      }
-    },
-    "Отчёт врачу, CSV и приглашение в семью уходят только тогда, когда ты сам нажимаешь «поделиться», и только тому, кого ты выбрал в системном окне." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Le compte rendu pour le vétérinaire, le CSV et l'invitation à la famille ne partent que lorsque tu appuies toi-même sur « Partager », et uniquement vers la personne que tu as choisie dans la fenêtre système."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Отчёт врачу, CSV и приглашение в семью уходят только тогда, когда ты сам нажимаешь «поделиться», и только тому, кого ты выбрал в системном окне."
           }
         }
       }
@@ -23594,7 +23504,7 @@
       }
     },
     "после %@ в %@ · видят все" : {
-      "comment" : "body",
+      "comment" : "Что случилось — то, из-за чего экран открыли",
       "extractionState" : "manual",
       "localizations" : {
         "fr" : {
@@ -24082,7 +23992,7 @@
       }
     },
     "Похоже, пора звонить" : {
-      "comment" : "body",
+      "comment" : "Что случилось — то, из-за чего экран открыли",
       "extractionState" : "manual",
       "localizations" : {
         "fr" : {
@@ -24298,7 +24208,7 @@
       }
     },
     "право на iCloud есть, пробую" : {
-      "comment" : "storeURL",
+      "comment" : "groupURL",
       "extractionState" : "manual",
       "localizations" : {
         "fr" : {
@@ -24639,26 +24549,8 @@
         }
       }
     },
-    "Пригласить" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inviter"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Пригласить"
-          }
-        }
-      }
-    },
     "Пригласить человека" : {
-      "comment" : "body",
+      "comment" : "inviteCard",
       "extractionState" : "manual",
       "localizations" : {
         "fr" : {
@@ -29457,24 +29349,6 @@
         }
       }
     },
-    "ссылка живёт 24 часа" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "le lien est valable 24 heures"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ссылка живёт 24 часа"
-          }
-        }
-      }
-    },
     "Ссылка живёт 24 часа. Роль выбираешь заранее — принявший не сможет её поменять." : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -29511,24 +29385,6 @@
         }
       }
     },
-    "Ссылка ситтера гаснет по дате сама." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Le lien du pet-sitter expire de lui-même à la date prévue."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ссылка ситтера гаснет по дате сама."
-          }
-        }
-      }
-    },
     "ссылка-приглашение" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -29543,24 +29399,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ссылка-приглашение"
-          }
-        }
-      }
-    },
-    "Ссылка-приглашение живёт 24 часа и содержит только случайный токен. Роль фиксируется до принятия, и принявший не может её поменять." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Le lien d'invitation est valable 24 heures et ne contient qu'un jeton aléatoire. Le rôle est fixé avant l'acceptation, et la personne qui accepte ne peut pas le changer."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ссылка-приглашение живёт 24 часа и содержит только случайный токен. Роль фиксируется до принятия, и принявший не может её поменять."
           }
         }
       }
@@ -34539,24 +34377,6 @@
         }
       }
     },
-    "Чтобы он отмечал со своего телефона, включи «Общий дневник» и отправь ему ссылку — она в списке семьи." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pour qu'il note depuis son propre téléphone, active « Journal partagé » et envoie-lui le lien : il est dans la liste de la famille."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Чтобы он отмечал со своего телефона, включи «Общий дневник» и отправь ему ссылку — она в списке семьи."
-          }
-        }
-      }
-    },
     "чтобы потом найти не листая" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -36831,24 +36651,6 @@
         }
       }
     },
-    "Позови тех, кто тоже за ней ходит: совладельца, ситтера, ребёнка или врача. Роль выбираешь заранее, ссылка живёт сутки, принявший поменять роль не сможет." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Invite ceux qui s'en occupent aussi : copropriétaire, pet-sitter, enfant ou vétérinaire. Tu choisis le rôle à l'avance, le lien est valable 24 heures, et la personne qui accepte ne pourra pas changer de rôle."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Позови тех, кто тоже за ней ходит: совладельца, ситтера, ребёнка или врача. Роль выбираешь заранее, ссылка живёт сутки, принявший поменять роль не сможет."
-          }
-        }
-      }
-    },
     "Здесь заводится участник: имя станет автором записей, права решат, что ему можно. Работает и с одним телефоном на семью, если передавать его из рук в руки." : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -37097,6 +36899,378 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Отметь в Togo: дали или пропустили."
+          }
+        }
+      }
+    },
+    "Подписка вернулась" : {
+      "comment" : "restoreBanner",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Подписка вернулась"
+          }
+        }
+      }
+    },
+    "Покупок не нашлось" : {
+      "comment" : "restoreBanner",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Покупок не нашлось"
+          }
+        }
+      }
+    },
+    "На этом Apple ID подписки Togo нет. Если покупка была с другого — войди в него в App Store." : {
+      "comment" : "restoreBanner",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "На этом Apple ID подписки Togo нет. Если покупка была с другого — войди в него в App Store."
+          }
+        }
+      }
+    },
+    "День не закрылся · нажми ещё раз" : {
+      "comment" : "Что было за день и что осталось",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "День не закрылся · нажми ещё раз"
+          }
+        }
+      }
+    },
+    "Не получилось взять на себя · нажми ещё раз" : {
+      "comment" : "claim",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не получилось взять на себя · нажми ещё раз"
+          }
+        }
+      }
+    },
+    "Не снялось · нажми ещё раз" : {
+      "comment" : "candidates",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не снялось · нажми ещё раз"
+          }
+        }
+      }
+    },
+    "Не записалось · нажми ещё раз" : {
+      "comment" : "skipDose",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не записалось · нажми ещё раз"
+          }
+        }
+      }
+    },
+    "Доза не отметилась · нажми ещё раз" : {
+      "comment" : "allowed",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Доза не отметилась · нажми ещё раз"
+          }
+        }
+      }
+    },
+    "Срок не пересчитался · нажми ещё раз" : {
+      "comment" : "allowed",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Срок не пересчитался · нажми ещё раз"
+          }
+        }
+      }
+    },
+    "Ответ не записался · отметь ещё раз" : {
+      "comment" : "duration",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ответ не записался · отметь ещё раз"
+          }
+        }
+      }
+    },
+    "Не сохранилось · нажми «Готово» ещё раз" : {
+      "comment" : "new",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не сохранилось · нажми «Готово» ещё раз"
+          }
+        }
+      }
+    },
+    "Не удалилось · нажми ещё раз" : {
+      "comment" : "delete",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалилось · нажми ещё раз"
+          }
+        }
+      }
+    },
+    "Эпизод не продлился · отметь ещё раз" : {
+      "comment" : "recent",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Эпизод не продлился · отметь ещё раз"
+          }
+        }
+      }
+    },
+    "Эпизод не завёлся · отметь ещё раз" : {
+      "comment" : "episode",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Эпизод не завёлся · отметь ещё раз"
+          }
+        }
+      }
+    },
+    "Не удалось восстановить покупки. Проверь связь и попробуй ещё раз." : {
+      "comment" : "restore",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось восстановить покупки. Проверь связь и попробуй ещё раз."
+          }
+        }
+      }
+    },
+    "файл дневника есть, но не открылся — «Дневник не открылся»" : {
+      "comment" : "container",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "файл дневника есть, но не открылся — «Дневник не открылся»"
+          }
+        }
+      }
+    },
+    "Заведи тех, кто тоже за ней ходит: совладельца, ситтера, ребёнка или врача. Роль и права выбираешь ты — сам он их не поменяет." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Заведи тех, кто тоже за ней ходит: совладельца, ситтера, ребёнка или врача. Роль и права выбираешь ты — сам он их не поменяет."
+          }
+        }
+      }
+    },
+    "Добавить человека" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавить человека"
+          }
+        }
+      }
+    },
+    "только здесь" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "только здесь"
+          }
+        }
+      }
+    },
+    "Новый участник" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Новый участник"
+          }
+        }
+      }
+    },
+    "имя, роль и права" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "имя, роль и права"
+          }
+        }
+      }
+    },
+    "что это даёт" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "что это даёт"
+          }
+        }
+      }
+    },
+    "Отчёт врачу, CSV и приглашение в общий дневник уходят только тогда, когда ты сам нажимаешь «поделиться», и только тому, кого ты выбрал в системном окне." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отчёт врачу, CSV и приглашение в общий дневник уходят только тогда, когда ты сам нажимаешь «поделиться», и только тому, кого ты выбрал в системном окне."
+          }
+        }
+      }
+    },
+    "Приглашение в общий дневник — это общий доступ iCloud. Открыть его может только тот, кого ты назвал в системном окне «Поделиться»: по пересланному адресу не войдёт никто посторонний." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Приглашение в общий дневник — это общий доступ iCloud. Открыть его может только тот, кого ты назвал в системном окне «Поделиться»: по пересланному адресу не войдёт никто посторонний."
+          }
+        }
+      }
+    },
+    "Кто в дневнике — видно владельцу, и он может убрать любого. Уже полученные записи останутся у того, кто их получил: забрать показанное iCloud не умеет." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кто в дневнике — видно владельцу, и он может убрать любого. Уже полученные записи останутся у того, кто их получил: забрать показанное iCloud не умеет."
+          }
+        }
+      }
+    },
+    "позвать в дневник" : {
+      "comment" : "inviteCard",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "позвать в дневник"
+          }
+        }
+      }
+    },
+    "Приглашение уходит через общий дневник — пока он выключен, отправлять нечего." : {
+      "comment" : "inviteCard",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Приглашение уходит через общий дневник — пока он выключен, отправлять нечего."
+          }
+        }
+      }
+    },
+    "Включить общий дневник" : {
+      "comment" : "inviteCard",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Включить общий дневник"
+          }
+        }
+      }
+    },
+    "Отправить приглашение" : {
+      "comment" : "inviteCard",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отправить приглашение"
+          }
+        }
+      }
+    },
+    "Выбери, кому: маме, мужу, ситтеру. Откроет только он, со своего iCloud, и ему нужен Togo на телефоне." : {
+      "comment" : "inviteCard",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выбери, кому: маме, мужу, ситтеру. Откроет только он, со своего iCloud, и ему нужен Togo на телефоне."
+          }
+        }
+      }
+    },
+    "Чтобы он отмечал со своего телефона, включи общий дневник и отправь приглашение — «позвать в дневник» в списке семьи." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Чтобы он отмечал со своего телефона, включи общий дневник и отправь приглашение — «позвать в дневник» в списке семьи."
           }
         }
       }

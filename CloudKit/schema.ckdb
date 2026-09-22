@@ -37,6 +37,7 @@ DEFINE SCHEMA
         givenAt       TIMESTAMP,
         givenBy       STRING,
         medicationID  STRING,
+        medicationName STRING,
         scheduledAt   TIMESTAMP,
         skippedAt     TIMESTAMP,
         skippedBy     STRING,

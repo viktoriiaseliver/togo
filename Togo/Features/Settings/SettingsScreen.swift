@@ -45,7 +45,23 @@ struct SettingsScreen: View {
                 Button { showPaywall = true } label: {
                     TGListRow(title: "Togo Pro", value: "попробовать", systemImage: "sparkles")
                 }
-                Button("Восстановить покупки") { Task { await store.restore() } }
+                Button {
+                    Task { await store.restore() }
+                } label: {
+                    HStack {
+                        Text("Восстановить покупки")
+                        if store.isRestoring {
+                            Spacer()
+                            ProgressView()
+                        }
+                    }
+                }
+                .disabled(store.isRestoring)
+            }
+            // Показывать исход обязательно: без этого «покупок нет»
+            // и «всё получилось» выглядят одинаково — никак.
+            if let outcome = store.lastRestore {
+                restoreBanner(outcome)
             }
             #if DEBUG
             Toggle("Отладка · включить Pro", isOn: Binding(
@@ -57,6 +73,27 @@ struct SettingsScreen: View {
             Text("подписка")
         } footer: {
             Text("Окно натощак, защита от двойной дозы, «как попросил» и строка про наказание бесплатны навсегда и в подписку не входят.")
+        }
+    }
+
+    /// Итог восстановления человеческими словами.
+    ///
+    /// «Покупок не нашлось» — не сбой, поэтому тон спокойный: чаще всего
+    /// человек просто не покупал или вошёл под другим Apple ID.
+    @ViewBuilder
+    private func restoreBanner(_ outcome: SubscriptionStore.Restore) -> some View {
+        switch outcome {
+        case .restored:
+            TGBanner(tone: .done, title: "Подписка вернулась",
+                     systemImage: "checkmark.circle")
+        case .nothingFound:
+            TGBanner(tone: .neutral, title: "Покупок не нашлось",
+                     subtitle: "На этом Apple ID подписки Togo нет. Если покупка была с другого — войди в него в App Store.",
+                     systemImage: "magnifyingglass")
+        case .failed:
+            TGBanner(tone: .alarm, title: "Не получилось",
+                     subtitle: store.lastError,
+                     systemImage: "exclamationmark.triangle")
         }
     }
 
