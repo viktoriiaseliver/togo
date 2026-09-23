@@ -96,6 +96,28 @@ DOCUMENTS = {
             ]),
         ],
     },
+    "MedicalDisclaimerScreen": {
+        "file": "medical.html",
+        "title": "Not a medical device",
+        "updated": "25 August 2026",
+        "intro": "Togo helps you keep records. It does not diagnose and it does not prescribe treatment.",
+        "sections": [
+            ("What the app does", [
+                "It records what you marked down, and works out the intervals between entries.",
+                "It reminds you about a dose on schedule and shows the fasting window.",
+                "It builds the vet report out of what you have already noted — without a single “fill this in for the vet” field.",
+            ]),
+            ("What the app does not do", [
+                "It does not interpret test results, does not pick medicines and does not adjust doses.",
+                "It does not replace a visit to the vet. The “needs to go out” verdict is a statistic drawn from your own entries, not a conclusion.",
+            ]),
+            ("When to go to the vet rather than to the app", [
+                "Blood in the stool or in vomit. Repeated vomiting. Refusing water.",
+                "Barking or restlessness at the door that has appeared suddenly — that may not be behaviour but discomfort.",
+                "Any situation where you are unsure. The app does not know better than you and your vet.",
+            ]),
+        ],
+    },
 }
 
 # Страница поддержки не выводится из приложения: в интерфейсе такого экрана

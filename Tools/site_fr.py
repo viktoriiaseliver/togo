@@ -118,6 +118,28 @@ DOCUMENTS = {
             ]),
         ],
     },
+    "MedicalDisclaimerScreen": {
+        "file": "medical.html",
+        "title": "Pas un dispositif médical",
+        "updated": "25 août 2026",
+        "intro": "Togo aide à tenir des notes. Il ne pose pas de diagnostic et ne prescrit pas de traitement.",
+        "sections": [
+            ("Ce que l'app fait", [
+                "Elle note ce que tu as coché et calcule les intervalles entre les entrées.",
+                "Elle rappelle la dose selon l'horaire et montre la fenêtre à jeun.",
+                "Elle assemble le compte rendu pour le vétérinaire à partir de ce qui est déjà noté — sans un seul champ « à remplir pour le vétérinaire ».",
+            ]),
+            ("Ce que l'app ne fait pas", [
+                "Elle n'interprète pas les analyses, ne choisit pas les médicaments et n'ajuste pas les doses.",
+                "Elle ne remplace pas une visite chez le vétérinaire. Le verdict « envie de sortir » est une statistique sur tes propres entrées, pas une conclusion.",
+            ]),
+            ("Quand aller chez le vétérinaire plutôt que dans l'app", [
+                "Du sang dans les selles ou les vomissements. Des vomissements répétés. Un refus de boire.",
+                "Un aboiement ou une agitation devant la porte apparus brutalement — ce n'est peut-être pas du comportement, mais de l'inconfort.",
+                "Toute situation où tu as un doute. L'app ne sait pas mieux que toi et ton vétérinaire.",
+            ]),
+        ],
+    },
 }
 
 # Страница поддержки не выводится из приложения: в интерфейсе такого экрана
