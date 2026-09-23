@@ -62,7 +62,7 @@ struct WalkSessionTests {
 
     @Test("Последнюю отметку можно снять: промахнуться одной рукой легко")
     func undoLastMark() {
-        let state = AppState()
+        let state = AppState.наСвоёмТелефоне()
         state.startWalk(by: "Виктория")
         state.mark(.urine)
         state.mark(.stool)
@@ -78,7 +78,7 @@ struct WalkSessionTests {
 
     @Test("Выход и прогулка — разные режимы, но одновременно идёт что-то одно")
     func oneSessionAtATime() {
-        let state = AppState()
+        let state = AppState.наСвоёмТелефоне()
         state.startOuting(by: "Виктория")
         #expect(state.session?.kind == .outing)
         #expect(!state.isWalking)
@@ -91,7 +91,7 @@ struct WalkSessionTests {
 
     @Test("Завершение отдаёт сессию и очищает состояние")
     func finishReturnsSession() {
-        let state = AppState()
+        let state = AppState.наСвоёмТелефоне()
         state.startWalk(by: "Виктория")
         state.mark(.urine)
 
@@ -159,13 +159,13 @@ struct SessionPersistenceTests {
         let начало = Date().addingTimeInterval(-900)
 
         // Первый запуск: пошли гулять и отметили пару вещей.
-        let первый = AppState()
+        let первый = AppState.наСвоёмТелефоне()
         первый.startWalk(by: "Виктория", at: начало)
         первый.mark(.urine)
         первый.mark(.reaction)
 
         // Приложение выгрузили. Второй запуск — новое состояние.
-        let второй = AppState()
+        let второй = AppState.наСвоёмТелефоне()
 
         #expect(второй.session != nil, "прогулка не должна пропадать")
         #expect(второй.session?.startedAt == начало, "и таймер продолжается с того же места")
@@ -177,11 +177,11 @@ struct SessionPersistenceTests {
     @Test("Завершённая прогулка не воскресает")
     func finishedSessionDoesNotReturn() {
         чистое()
-        let первый = AppState()
+        let первый = AppState.наСвоёмТелефоне()
         первый.startWalk(by: "Виктория")
         первый.finishSession()
 
-        #expect(AppState().session == nil)
+        #expect(AppState.наСвоёмТелефоне().session == nil)
         чистое()
     }
 
@@ -195,18 +195,18 @@ struct SessionPersistenceTests {
 
         #expect(ActiveSessionStore.load() == nil,
                 "таймер на двадцать часов хуже, чем никакого")
-        #expect(AppState().session == nil)
+        #expect(AppState.наСвоёмТелефоне().session == nil)
         чистое()
     }
 
     @Test("Пауза тоже переживает перезапуск")
     func pauseSurvives() {
         чистое()
-        let первый = AppState()
+        let первый = AppState.наСвоёмТелефоне()
         первый.startWalk(by: "Виктория", at: Date().addingTimeInterval(-600))
         первый.pauseSession()
 
-        let второй = AppState()
+        let второй = AppState.наСвоёмТелефоне()
         #expect(второй.session?.isPaused == true)
         чистое()
     }

@@ -272,7 +272,7 @@ struct DoseSilentFailureTests {
 struct EventLogSilentFailureTests {
 
     private func состояние() -> AppState {
-        let appState = AppState()
+        let appState = AppState.наСвоёмТелефоне()
         appState.role = .owner
         appState.customPermissions = nil
         return appState

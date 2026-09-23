@@ -30,7 +30,7 @@ struct RealUsageTests {
     func doubleTapDoesNotDuplicate() throws {
         let context = контекст()
         let dog = стич(в: context)
-        let log = EventLog(context: context, appState: AppState())
+        let log = EventLog(context: context, appState: AppState.наСвоёмТелефоне())
 
         // Ровно то, что случилось: 00:20:10, :12, :14, все по 65 г.
         let первая = log.record(.meal, dog: dog, confirmation: "Еда") { $0.grams = 65 }
@@ -49,7 +49,7 @@ struct RealUsageTests {
     func duplicateExplainsItself() throws {
         let context = контекст()
         let dog = стич(в: context)
-        let state = AppState()
+        let state = AppState.наСвоёмТелефоне()
         let log = EventLog(context: context, appState: state)
 
         log.record(.meal, dog: dog, confirmation: "Еда") { $0.grams = 65 }
@@ -62,7 +62,7 @@ struct RealUsageTests {
     func laterMealIsReal() throws {
         let context = контекст()
         let dog = стич(в: context)
-        let log = EventLog(context: context, appState: AppState())
+        let log = EventLog(context: context, appState: AppState.наСвоёмТелефоне())
 
         log.record(.meal, dog: dog, confirmation: nil) { $0.grams = 65 }
         log.record(.meal, dog: dog, at: .now.addingTimeInterval(90 * 60), confirmation: nil) { $0.grams = 65 }
@@ -74,7 +74,7 @@ struct RealUsageTests {
     func repeatableKindsAreNotDeduplicated() throws {
         let context = контекст()
         let dog = стич(в: context)
-        let log = EventLog(context: context, appState: AppState())
+        let log = EventLog(context: context, appState: AppState.наСвоёмТелефоне())
 
         for _ in 0..<3 {
             log.record(.outing, dog: dog, confirmation: nil)
@@ -501,7 +501,7 @@ struct TreatmentAndEpisodeTests {
                              startedAt: Date().addingTimeInterval(-10 * 24 * 3600))
         старый.lastIncidentAt = Date().addingTimeInterval(-10 * 24 * 3600)
 
-        let state = AppState()
+        let state = AppState.наСвоёмТелефоне()
         state.refreshEpisode(from: [старый, свежий])
 
         #expect(state.activeEpisode === свежий)

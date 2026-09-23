@@ -18,7 +18,7 @@ import Foundation
 struct MedicalAccessTests {
 
     private func состояние(_ роль: FamilyRole) -> AppState {
-        let состояние = AppState()
+        let состояние = AppState.наСвоёмТелефоне()
         состояние.role = роль
         return состояние
     }

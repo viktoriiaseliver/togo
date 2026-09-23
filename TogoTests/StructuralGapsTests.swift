@@ -22,7 +22,7 @@ struct PermissionGapTests {
         let context = ModelContext(container)
         let dog = Dog(name: "Стич", weightKg: 12)
         context.insert(dog)
-        return (context, dog, AppState())
+        return (context, dog, AppState.наСвоёмТелефоне())
     }
 
     @Test("Каждому виду записи сопоставлено право")
@@ -351,7 +351,7 @@ struct MultipleDogsTests {
         context.insert(stitch)
         context.insert(bagheera)
         try context.save()
-        return (context, stitch, bagheera, AppState())
+        return (context, stitch, bagheera, AppState.наСвоёмТелефоне())
     }
 
     @Test("Без выбора открыта первая — экран не остаётся пустым")
@@ -445,7 +445,7 @@ struct HandsFreeTests {
         startWalk()
         defer { ActiveSessionStore.save(nil) }
 
-        let appState = AppState()
+        let appState = AppState.наСвоёмТелефоне()
         #expect(appState.session?.marks.isEmpty == true)
 
         // Пока экран был заблокирован, нажали кнопку на живой активности.
