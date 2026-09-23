@@ -9,12 +9,20 @@ import XCTest
 nonisolated final class ScreenshotTests: XCTestCase {
     private var app: XCUIApplication!
 
+    /// Подписи на языке прогона. Русский остаётся русским, французский
+    /// берётся из каталога приложения — см. `Подписи`.
+    private let т = Подписи()
+
     override func setUp() {
         continueAfterFailure = false
         app = XCUIApplication()
         app.launchArguments = ["-UITesting"]
         app.launch()
-        _ = app.staticTexts["Стич"].waitForExistence(timeout: 10)
+        // «Стич» не переводится: это кличка из демо-данных, а не подпись
+        // интерфейса. В каталоге она есть (генератор строк вынимает любую
+        // кириллицу подряд), но приложение показывает литерал из SeedData.
+        XCTAssertTrue(app.staticTexts["Стич"].waitForExistence(timeout: 10),
+                      "приложение не поднялось на языке «\(т.язык)»")
     }
 
     private func capture(_ name: String) {
@@ -29,78 +37,80 @@ nonisolated final class ScreenshotTests: XCTestCase {
     }
 
     func test02Просится() {
-        app.buttons["Просится"].firstMatch.tap()
-        _ = app.buttons["Вывожу"].waitForExistence(timeout: 5)
+        app.buttons[т("Просится")].firstMatch.tap()
+        _ = app.buttons[т("Вывожу")].waitForExistence(timeout: 5)
         capture("02-needs-verdict")
     }
 
     func test03Стул() {
-        app.buttons["Стул"].firstMatch.tap()
-        _ = app.staticTexts["Колбаска"].waitForExistence(timeout: 5)
+        app.buttons[т("Стул")].firstMatch.tap()
+        _ = app.staticTexts[т("Колбаска")].waitForExistence(timeout: 5)
         capture("03-stool")
     }
 
     func test04Занятие() {
-        app.buttons["Ещё"].firstMatch.tap()
-        let занятие = app.buttons.containing(NSPredicate(format: "label BEGINSWITH 'Занятие'")).firstMatch
+        app.buttons[т("Ещё")].firstMatch.tap()
+        let занятие = app.buttons.containing(
+            NSPredicate(format: "label BEGINSWITH %@", т("Занятие"))
+        ).firstMatch
         guard занятие.waitForExistence(timeout: 5) else { return }
         занятие.tap()
-        _ = app.staticTexts["Он сделал"].waitForExistence(timeout: 5)
+        _ = app.staticTexts[т("Он сделал")].waitForExistence(timeout: 5)
         capture("04-training")
     }
 
     func test05История() {
-        app.tabBars.buttons["История"].tap()
-        _ = app.navigationBars["История"].waitForExistence(timeout: 5)
+        app.tabBars.buttons[т("История")].tap()
+        _ = app.navigationBars[т("История")].waitForExistence(timeout: 5)
         capture("05-history")
     }
 
     func test06Семья() {
-        app.tabBars.buttons["Семья"].tap()
-        _ = app.navigationBars["Семья"].waitForExistence(timeout: 5)
+        app.tabBars.buttons[т("Семья")].tap()
+        _ = app.navigationBars[т("Семья")].waitForExistence(timeout: 5)
         capture("06-family")
     }
 
 
     func test12Прогулка() {
-        app.buttons["Гулять"].firstMatch.tap()
-        let пошли = app.buttons["Пошли"].firstMatch
+        app.buttons[т("Гулять")].firstMatch.tap()
+        let пошли = app.buttons[т("Пошли")].firstMatch
         XCTAssertTrue(пошли.waitForExistence(timeout: 5))
         пошли.tap()
 
-        let пописал = app.buttons["Пописал"].firstMatch
+        let пописал = app.buttons[т("Пописал")].firstMatch
         XCTAssertTrue(пописал.waitForExistence(timeout: 5), "таймер должен пойти сразу")
         пописал.tap()
         пописал.tap()
-        app.buttons["Стул"].firstMatch.tap()
+        app.buttons[т("Стул")].firstMatch.tap()
         capture("12-walk-mode")
     }
 
     func test08Питание() {
         app.tabBars.buttons["Стич"].tap()
-        найти("Питание и режим", в: app).tap()
-        _ = app.navigationBars["Питание"].waitForExistence(timeout: 5)
+        найти(т("Питание и режим"), в: app).tap()
+        _ = app.navigationBars[т("Питание")].waitForExistence(timeout: 5)
         capture("08-feeding")
     }
 
     func test09Права() {
-        app.tabBars.buttons["Семья"].tap()
-        найти("Мама", в: app).tap()
-        _ = app.staticTexts["ЧТО РАЗРЕШЕНО"].waitForExistence(timeout: 5)
+        app.tabBars.buttons[т("Семья")].tap()
+        найти(т("Мама"), в: app).tap()
+        _ = app.staticTexts[т.прописными("что разрешено")].waitForExistence(timeout: 5)
         capture("09-permissions")
     }
 
     func test10Перенос() {
-        app.buttons["Настройки"].tap()
-        найти("Перенос и восстановление", в: app).tap()
-        _ = app.navigationBars["Перенос"].waitForExistence(timeout: 5)
+        app.buttons[т("Настройки")].tap()
+        найти(т("Перенос и восстановление"), в: app).tap()
+        _ = app.navigationBars[т("Перенос")].waitForExistence(timeout: 5)
         capture("10-backup")
     }
 
     func test11Язык() {
-        app.buttons["Настройки"].tap()
-        найти("Язык", в: app).tap()
-        _ = app.navigationBars["Язык"].waitForExistence(timeout: 5)
+        app.buttons[т("Настройки")].tap()
+        найти(т("Язык"), в: app).tap()
+        _ = app.navigationBars[т("Язык")].waitForExistence(timeout: 5)
         capture("11-language")
     }
 
@@ -133,11 +143,11 @@ nonisolated final class ScreenshotTests: XCTestCase {
     /// его из командной строки не нашлось. Неисключённое объяснение одно:
     /// формат `.storekit` version 4.0 против Xcode 27.
     func test07Подписка() {
-        app.buttons["Настройки"].tap()
+        app.buttons[т("Настройки")].tap()
         let pro = app.descendants(matching: .any).matching(identifier: "Togo Pro").firstMatch
         XCTAssertTrue(pro.waitForExistence(timeout: 5), "в настройках нет входа в «Togo Pro»")
         pro.tap()
-        XCTAssertTrue(app.staticTexts["что открывает"].waitForExistence(timeout: 5),
+        XCTAssertTrue(app.staticTexts[т("что открывает")].waitForExistence(timeout: 5),
                       "пейволл не открылся")
 
         // Цены приходят из StoreKit не мгновенно. Без этого ожидания
