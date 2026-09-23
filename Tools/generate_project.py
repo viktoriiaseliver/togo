@@ -30,6 +30,10 @@ CONFIG_GROUP   = uid()
 
 SYNC_APP    = uid(); SYNC_WIDGET = uid(); SYNC_TESTS = uid(); SYNC_UITESTS = uid()
 SYNC_SHARED = uid()
+# Имена нужны для комментариев /* Togo */ в ссылках: без них файл читается
+# хуже, и — важнее — расходится с тем, что пишет Xcode.
+SYNC_NAMES = {SYNC_APP: 'Togo', SYNC_WIDGET: 'TogoWidgets', SYNC_TESTS: 'TogoTests',
+              SYNC_UITESTS: 'TogoUITests', SYNC_SHARED: 'TogoShared'}
 
 PROD_APP    = uid(); PROD_WIDGET = uid(); PROD_TESTS = uid(); PROD_UITESTS = uid()
 
@@ -57,6 +61,8 @@ BC_UIT_D=uid();  BC_UIT_R=uid()
 
 # xcconfig / plist file refs
 FR_SHARED=uid(); FR_DEBUG=uid(); FR_RELEASE=uid()
+XCCONFIG_NAMES = {FR_SHARED: 'Shared.xcconfig', FR_DEBUG: 'Debug.xcconfig',
+                  FR_RELEASE: 'Release.xcconfig'}
 FR_APP_PLIST=uid(); FR_WID_PLIST=uid()
 FR_APP_ENT=uid(); FR_WID_ENT=uid()
 FR_APP_ENT_P=uid(); FR_WID_ENT_P=uid()
@@ -74,7 +80,10 @@ a('\tarchiveVersion = 1;')
 a('\tclasses = {')
 a('\t};')
 a('\tobjectVersion = 77;')
-a('\trootObject = %s /* Project object */;' % PROJECT)
+# `rootObject` пишется в самом конце, после закрытия objects: так его
+# ставит Xcode, и так лежит в репозитории. Порядок ключей в plist
+# значения не имеет, но CI сравнивает файлы ТЕКСТОМ (ci.yml:78-79),
+# и разный текст одного смысла красит сборку впустую.
 a('\tobjects = {')
 
 # PBXBuildFile
@@ -136,8 +145,15 @@ a('/* End PBXFileReference section */')
 # PBXFileSystemSynchronizedRootGroup
 a('')
 a('/* Begin PBXFileSystemSynchronizedRootGroup section */')
-for gid, path in ((SYNC_SHARED,'TogoShared'), (SYNC_APP,'Togo'), (SYNC_WIDGET,'TogoWidgets'), (SYNC_TESTS,'TogoTests'), (SYNC_UITESTS,'TogoUITests')):
-    a('\t\t%s /* %s */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = %s; sourceTree = "<group>"; };' % (gid, path, path))
+# Форма и порядок — те, в которых пишет Xcode: он переписывает файл при
+# каждом открытии проекта, и однострочная запись с explicitFileTypes
+# превращалась у него в эту. Смысл один и тот же, а CI сравнивает текст.
+for gid, path in ((SYNC_APP,'Togo'), (SYNC_WIDGET,'TogoWidgets'), (SYNC_TESTS,'TogoTests'), (SYNC_UITESTS,'TogoUITests'), (SYNC_SHARED,'TogoShared')):
+    a('\t\t%s /* %s */ = {' % (gid, path))
+    a('\t\t\tisa = PBXFileSystemSynchronizedRootGroup;')
+    a('\t\t\tpath = %s;' % path)
+    a('\t\t\tsourceTree = "<group>";')
+    a('\t\t};')
 a('/* End PBXFileSystemSynchronizedRootGroup section */')
 
 # PBXFrameworksBuildPhase
@@ -214,7 +230,7 @@ def native(tid, name, cl, phases, sync, deps, prod, prodname, ptype):
     a('\t\t\t);')
     a('\t\t\tfileSystemSynchronizedGroups = (')
     for gid in syncs:
-        a('\t\t\t\t%s,' % gid)
+        a('\t\t\t\t%s /* %s */,' % (gid, SYNC_NAMES[gid]))
     a('\t\t\t);')
     a('\t\t\tname = %s;' % name)
     a('\t\t\tpackageProductDependencies = (')
@@ -226,10 +242,10 @@ def native(tid, name, cl, phases, sync, deps, prod, prodname, ptype):
 
 native(T_APP, 'Togo', CL_APP,
        [(SRC_APP,'Sources'), (FRM_APP,'Frameworks'), (RES_APP,'Resources'), (EMB_APP,'Embed Foundation Extensions')],
-       [SYNC_SHARED, SYNC_APP], [DEP_WIDGET], PROD_APP, 'Togo.app', 'com.apple.product-type.application')
+       [SYNC_APP, SYNC_SHARED], [DEP_WIDGET], PROD_APP, 'Togo.app', 'com.apple.product-type.application')
 native(T_WIDGET, 'TogoWidgetsExtension', CL_WID,
        [(SRC_WID,'Sources'), (FRM_WID,'Frameworks'), (RES_WID,'Resources')],
-       [SYNC_SHARED, SYNC_WIDGET], [], PROD_WIDGET, 'TogoWidgetsExtension.appex', 'com.apple.product-type.app-extension')
+       [SYNC_WIDGET, SYNC_SHARED], [], PROD_WIDGET, 'TogoWidgetsExtension.appex', 'com.apple.product-type.app-extension')
 native(T_TESTS, 'TogoTests', CL_TST,
        [(SRC_TST,'Sources'), (FRM_TST,'Frameworks'), (RES_TST,'Resources')],
        SYNC_TESTS, [DEP_TESTS], PROD_TESTS, 'TogoTests.xctest', 'com.apple.product-type.bundle.unit-test')
@@ -333,10 +349,18 @@ def cfg(cid, name, base, settings):
     a('\t\t%s /* %s */ = {' % (cid, name))
     a('\t\t\tisa = XCBuildConfiguration;')
     if base:
-        a('\t\t\tbaseConfigurationReference = %s;' % base)
+        a('\t\t\tbaseConfigurationReference = %s /* %s */;' % (base, XCCONFIG_NAMES[base]))
     a('\t\t\tbuildSettings = {')
     for k in sorted(settings):
-        a('\t\t\t\t%s = %s;' % (k, qv(settings[k])))
+        v = settings[k]
+        # Список пишется в скобках, по значению на строку — так пишет Xcode.
+        if isinstance(v, (list, tuple)):
+            a('\t\t\t\t%s = (' % k)
+            for item in v:
+                a('\t\t\t\t\t%s,' % qv(item))
+            a('\t\t\t\t);')
+            continue
+        a('\t\t\t\t%s = %s;' % (k, qv(v)))
     a('\t\t\t};')
     a('\t\t\tname = %s;' % name)
     a('\t\t};')
@@ -370,7 +394,7 @@ d = dict(PROJ_COMMON); d.update({
     'ENABLE_TESTABILITY': 'YES',
     'GCC_DYNAMIC_NO_PIC': 'NO',
     'GCC_OPTIMIZATION_LEVEL': '0',
-    'GCC_PREPROCESSOR_DEFINITIONS': '"DEBUG=1 $(inherited)"',
+    'GCC_PREPROCESSOR_DEFINITIONS': ['"DEBUG=1"', '"$(inherited)"'],
     'MTL_ENABLE_DEBUG_INFO': 'INCLUDE_SOURCE',
     'ONLY_ACTIVE_ARCH': 'YES',
     'SWIFT_ACTIVE_COMPILATION_CONDITIONS': '"DEBUG $(inherited)"',
@@ -478,6 +502,7 @@ for clid, name, dbg, rel, kind in ((CL_PROJECT, 'Togo', BC_PROJ_D, BC_PROJ_R, 'P
 a('/* End XCConfigurationList section */')
 
 a('\t};')
+a('\trootObject = %s /* Project object */;' % PROJECT)
 a('}')
 
 SCHEME = '''<?xml version="1.0" encoding="UTF-8"?>

@@ -50,16 +50,28 @@ build: ## Собрать приложение под симулятор
 	@xcodebuild -project $(PROJECT) -scheme $(SCHEME) -configuration $(CONFIG) \
 		-destination "$(DESTINATION)" build | tail -5
 
+# Код возврата берётся у самого xcodebuild, а не у хвоста конвейера.
+# Раньше здесь стоял `xcodebuild … | grep …`, и наружу уходил код grep:
+# прогон падал, а команда отвечала нулём. На этом сгорели дважды за день.
+#
+# Читать в выводе нужно строку «✔ Test run with N tests in M suites passed»:
+# тесты написаны на Swift Testing, и xcodebuild в конце честно печатает
+# «Executed 0 tests» — XCTest-ов в наборе нет. Эту строку читать нельзя.
 .PHONY: test
 test: ## Прогнать модульные и UI-тесты
+	@mkdir -p build
 	@xcodebuild -project $(PROJECT) -scheme $(SCHEME) -configuration $(CONFIG) \
-		-destination "$(DESTINATION)" test | grep -E "Test run|Executed|error:|\*\* TEST"
+		-destination "$(DESTINATION)" test > build/test.log 2>&1; rc=$$?; \
+		grep -E "Test run|error:|\*\* TEST|Restarting after unexpected exit" build/test.log || true; \
+		echo "xcodebuild: код возврата $$rc (полный лог — build/test.log)"; exit $$rc
 
 .PHONY: unit
 unit: ## Только модульные тесты — быстрая обратная связь
+	@mkdir -p build
 	@xcodebuild -project $(PROJECT) -scheme $(SCHEME) -configuration $(CONFIG) \
-		-destination "$(DESTINATION)" test -only-testing:TogoTests \
-		| grep -E "Test run|✘|error:"
+		-destination "$(DESTINATION)" test -only-testing:TogoTests > build/unit.log 2>&1; rc=$$?; \
+		grep -E "Test run|✘|error:|\*\* TEST" build/unit.log || true; \
+		echo "xcodebuild: код возврата $$rc (полный лог — build/unit.log)"; exit $$rc
 
 .PHONY: device
 device: ## Поставить на подключённый iPhone: make device TEAM=XXXXXXXXXX [PERSONAL=1]
