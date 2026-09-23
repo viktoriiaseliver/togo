@@ -43,13 +43,45 @@ struct LocalizationCoverageTests {
         let состояния: [String: String]
     }
 
-    private func каталог() throws -> [Запись] {
-        let url = URL(fileURLWithPath: #filePath)
+    /// Все живые каталоги проекта, а не один.
+    ///
+    /// **Замер 23.09.2026, и он про два приложения из трёх.** Фразы Siri
+    /// лежат в своём каталоге `AppShortcuts.xcstrings`, и там были
+    /// только русские ключи — при отгруженных французском и украинском.
+    /// Француз видел в «Командах» русские фразы и не мог позвать голосом
+    /// ничего. У Gamut тем же заходом нашлось, что доступ к фотоплёнке
+    /// просится по-русски: у него свой `InfoPlist.xcstrings`.
+    ///
+    /// Причина одна на оба: **счёт по `Localizable` говорит «язык
+    /// покрыт», когда язык не покрыт.** Этот сторож сам был тому
+    /// примером — читал один файл и молчал про второй.
+    ///
+    /// Выгруженные `.xcloc` пропускаются: это снимки для переводчика,
+    /// а не источник.
+    private func каталоги() throws -> [URL] {
+        let корень = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent().deletingLastPathComponent()
-            .appendingPathComponent("Togo/Resources/Localizable.xcstrings")
-        let корень = try JSONSerialization.jsonObject(with: Data(contentsOf: url))
-            as? [String: Any]
-        let строки = корень?["strings"] as? [String: Any] ?? [:]
+        var найдено: [URL] = []
+        for место in ["Togo", "TogoShared", "TogoWidgets"] {
+            let обход = FileManager.default.enumerator(
+                at: корень.appendingPathComponent(место), includingPropertiesForKeys: nil)
+            while let элемент = обход?.nextObject() as? URL {
+                guard элемент.pathExtension == "xcstrings" else { continue }
+                найдено.append(элемент)
+            }
+        }
+        return найдено.sorted { $0.path < $1.path }
+    }
+
+    private func каталог() throws -> [Запись] {
+        var строки: [String: Any] = [:]
+        for файл in try каталоги() {
+            let корень = try JSONSerialization.jsonObject(with: Data(contentsOf: файл))
+                as? [String: Any]
+            for (ключ, запись) in корень?["strings"] as? [String: Any] ?? [:] {
+                строки[ключ] = запись
+            }
+        }
 
         return строки.map { ключ, запись in
             let локализации = (запись as? [String: Any])?["localizations"] as? [String: Any] ?? [:]
@@ -212,6 +244,74 @@ struct LocalizationCoverageTests {
     /// Пустая строка проходит проверку на существование и не проходит
     /// проверку глазами. Такой перевод хуже пробела: пробел видно,
     /// а пустоту — нет.
+    /// Проект и каталоги согласны о том, какие языки есть.
+    ///
+    /// **Сверка в обе стороны, и каждая сторона ловит своё:**
+    ///
+    /// - язык есть в каталогах и не объявлен в `knownRegions` —
+    ///   он **живёт без охраны**. Сторож полноты, берущий языки
+    ///   у проекта (а брать их надо именно там: копия списка в тесте
+    ///   однажды отстанет), спросит про объявленные и промолчит про
+    ///   этот. Плюс `xcodebuild -exportLocalizations` берёт языки
+    ///   оттуда же — каталог не выгрузить носителю стандартным путём;
+    /// - язык объявлен и его нет в каталогах — обещан язык, которого
+    ///   не существует.
+    ///
+    /// Замер 23.09.2026: у Togo `knownRegions` знал `en fr ru`,
+    /// а каталоги — `fr ru uk`. Украинский собирался в бандл
+    /// (`uk.lproj` на месте, язык не терялся) и при этом не охранялся
+    /// ничем. Доказано подделкой у Gamut, не рассуждением: убрали `uk`
+    /// из списка — покрытие прошло зелёным, согласие упало.
+    @Test("Языки проекта и каталогов сходятся")
+    func языкиСходятся() throws {
+        let корень = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent().deletingLastPathComponent()
+        let проект = try String(
+            contentsOf: корень.appendingPathComponent("Togo.xcodeproj/project.pbxproj"),
+            encoding: .utf8)
+
+        let блок = try #require(
+            проект.range(of: "knownRegions = \\(([^)]+)\\)", options: .regularExpression)
+                .map { String(проект[$0]) },
+            "в проекте нет knownRegions — разбор не состоялся")
+        let объявленные = Set(блок
+            .components(separatedBy: .newlines)
+            .map { $0.trimmingCharacters(in: CharacterSet(charactersIn: " \t,")) }
+            .filter { !$0.isEmpty && $0 != "knownRegions = (" && $0 != ")" && $0 != "Base" })
+
+        // Русский добавляется вручную, и это не натяжка: **ключ
+        // каталога и есть русская строка**, поэтому записи `ru` у него
+        // может не быть вовсе — `языки()` его поэтому и вычитает.
+        // Без этой строки сторож объявил бы «обещан язык, которого
+        // не существует» про язык, на котором написано приложение.
+        let вКаталогах = языки(try каталог()).union(["ru"])
+
+        #expect(объявленные.count >= 3, """
+            языков в проекте разобрано \(объявленные.sorted()) — разбор
+            не состоялся.
+            """)
+
+        let безОхраны = вКаталогах.subtracting(объявленные).sorted()
+        #expect(безОхраны.isEmpty, """
+            язык есть в каталогах и не объявлен в knownRegions:
+            \(безОхраны).
+
+            Он собирается в бандл и при этом не охраняется ничем:
+            сторож спросит про объявленные и промолчит про него,
+            а `-exportLocalizations` не выгрузит его носителю.
+            Объявляется в `Tools/generate_project.py`, а не в pbxproj:
+            файл проекта генерируется.
+            """)
+
+        // `en` объявлен и каталогов не имеет намеренно: английского
+        // в приложении нет вовсе, а `Base` — не язык.
+        let обещаныИНет = объявленные.subtracting(вКаталогах).subtracting(["en"]).sorted()
+        #expect(обещаныИНет.isEmpty, """
+            язык объявлен в проекте, а переводов нет: \(обещаныИНет).
+            Обещан язык, которого не существует.
+            """)
+    }
+
     @Test("Переводы не пустые")
     func переводыНеПустые() throws {
         let пустые = try каталог()
@@ -259,7 +359,12 @@ struct LocalizationCoverageTests {
     // «L-тироксин» по-украински. Оба перевода написаны не носителем
     // и ждут вычитки; оставить как было значило бы оставить чужую
     // страну в подсказке.
-    private static let долг: [String: Int] = ["uk": 2042, "fr": 99, "ru": 13]
+    //
+    // 23.09, вечер: числа выросли ещё раз, и снова не потому, что стало
+    // хуже. Сторож начал читать **все** каталоги, а не один: фразы Siri
+    // лежат в своём `AppShortcuts.xcstrings`, и двадцать их переводов
+    // сторож прежде не видел вовсе.
+    private static let долг: [String: Int] = ["uk": 2052, "fr": 109, "ru": 13]
 
     @Test("Непроверенных переводов не становится больше")
     func непроверенныхНеБольше() throws {
