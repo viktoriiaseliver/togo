@@ -16869,26 +16869,26 @@
         }
       }
     },
-    "Кнопка «Написать владельцу» ведёт сразу в мессенджер — переписки внутри приложения нет и не будет." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Le bouton « Écrire au propriétaire » ouvre directement la messagerie : il n'y a pas de discussion dans l'app, et il n'y en aura pas."
+    "Переписки внутри приложения нет и не будет. Что делать, если что-то пошло не так, хозяин пишет сам — в брифинге, в строке «Если что».": {
+      "comment": "body",
+      "extractionState": "manual",
+      "localizations": {
+        "fr": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Il n'y a pas et n'y aura pas de messagerie dans l'app. Ce qu'il faut faire si quelque chose ne va pas, le maître l'écrit lui-même — dans le briefing, à la ligne « En cas de souci »."
           }
         },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Кнопка «Написать владельцу» ведёт сразу в мессенджер — переписки внутри приложения нет и не будет."
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Переписки внутри приложения нет и не будет. Что делать, если что-то пошло не так, хозяин пишет сам — в брифинге, в строке «Если что»."
           }
         },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Кнопка «Написати власнику» веде одразу в месенджер — листування всередині застосунку немає і не буде."
+        "uk": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Листування всередині застосунку немає і не буде. Що робити, якщо щось пішло не так, господар пише сам — у брифінгу, у рядку «Якщо що»."
           }
         }
       }
