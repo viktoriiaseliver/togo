@@ -37,7 +37,13 @@ struct RootView: View {
                 .tabItem { Label("История", systemImage: "calendar") }
                 .tag(Tab.history)
 
-            if dog?.isOnTreatment == true {
+            // Вкладка открывается лечением И правом. Права здесь не было
+            // вовсе: `seeMedical` спрашивался в трёх местах, и все три —
+            // на «Сегодня». Медицинское пряталось от помощника только тем,
+            // что собака не уезжает в общий дневник, — случайностью,
+            // которую снимет первый же спринт про общий дневник.
+            // Разбор по всем пяти ролям — docs/матрица-ролей.md.
+            if dog?.isOnTreatment == true, appState.can(.seeMedical) {
                 HealthScreen()
                     .tabItem { Label("Здоровье", systemImage: "cross.case") }
                     .tag(Tab.health)
