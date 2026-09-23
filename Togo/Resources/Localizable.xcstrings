@@ -10316,7 +10316,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ajoute l'action «Promenade par étiquette»"
+            "value" : "Ajoute l'action «Promenade par l'étiquette»"
           }
         },
         "ru" : {
@@ -27355,7 +27355,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Repas, soins, documents et «s'il s'est passé quelque chose» vivent dans l'onglet Chien — deux taps depuis n'importe quel écran."
+            "value" : "Repas, soins, documents et «En cas de problème» vivent dans l'onglet Chien — deux taps depuis n'importe quel écran."
           }
         },
         "ru" : {
@@ -29263,7 +29263,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ira dans la fiche de garde et dans le rappel avant le voyage. Combien et à quelle heure le chien mange : sur l'écran « Alimentation »."
+            "value" : "Ira dans la fiche de garde et dans le rappel avant le voyage. Combien et à quelle heure le chien mange : sur l'écran « Repas »."
           }
         },
         "ru" : {
@@ -31366,7 +31366,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L'app mesure le délai entre «il l'a fait» et le marqueur. Moins d'une demi-seconde, c'est «au bon moment» ; après une seconde, le chien a déjà fait autre chose."
+            "value" : "L'app mesure le délai entre «il l'a fait» et le marqueur. Moins d'une demi-seconde, c'est «pile au moment» ; après une seconde, le chien a déjà fait autre chose."
           }
         },
         "ru" : {
@@ -46076,7 +46076,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La ration est de %@ g par jour, les aliments donnent %@ g. Ça arrive : corrige la répartition ici, ou la ration elle-même dans «Alimentation»."
+            "value" : "La ration est de %@ g par jour, les aliments donnent %@ g. Ça arrive : corrige la répartition ici, ou la ration elle-même dans «Repas»."
           }
         },
         "ru" : {
@@ -47108,7 +47108,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Pas enregistré · appuie encore sur « Terminé »"
+            "value" : "Pas enregistré · appuie encore sur « OK »"
           }
         },
         "ru" : {
@@ -47228,7 +47228,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "le fichier du carnet existe mais ne s'ouvre pas — « Carnet illisible »"
+            "value" : "le fichier du carnet existe mais ne s'ouvre pas — « Le journal ne s'est pas ouvert »"
           }
         },
         "ru" : {
