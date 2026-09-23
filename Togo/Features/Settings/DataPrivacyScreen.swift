@@ -100,6 +100,15 @@ struct SupportScreen: View {
     @Environment(Settings.self) private var settings
     @Environment(\.openURL) private var openURL
 
+    /// Что сказать, когда письмо открыть нечем.
+    ///
+    /// Отзыв: «Так же не работает ссылка. Аллерт». `mailto:` на телефоне
+    /// без настроенной почты не открывается ничем, и человек видит
+    /// системный алерт «Нет учётной записи» — приложение при этом молчит,
+    /// потому что `openURL` без обработчика не знает, открылось ли.
+    /// Тупик: адрес написан внутри ссылки, которую нельзя открыть.
+    @State private var копияАдреса: String?
+
     private var diagnostics: String {
         """
         Togo \(settings.appVersion) (\(settings.buildNumber))
@@ -116,6 +125,11 @@ struct SupportScreen: View {
                     .textStyle(AppFont.caption)
                 TGButton(title: "Написать в поддержку", size: .medium, systemImage: "envelope") {
                     openMail()
+                }
+                if let копияАдреса {
+                    TGBanner(tone: .alarm, title: "Почта на телефоне не настроена",
+                             subtitle: .готовая("Адрес скопирован: \(копияАдреса). Напиши с любого другого устройства — и приложи три строки ниже."),
+                             systemImage: "envelope.badge.shield.half.filled")
                 }
             }
 
@@ -152,7 +166,20 @@ struct SupportScreen: View {
             URLQueryItem(name: "subject", value: subject),
             URLQueryItem(name: "body", value: body),
         ]
-        if let url = components?.url { openURL(url) }
+        guard let url = components?.url else { return }
+        // Обработчик обязателен: без него «не открылось» неотличимо
+        // от «открылось», и единственным ответом человеку остаётся
+        // системный алерт, за которым ничего нет.
+        openURL(url) { открылось in
+            guard !открылось else {
+                UsageLog.note(.open, "support-mail", on: .dataPrivacy)
+                return
+            }
+            UIPasteboard.general.string = "\(Contacts.support)\n\n\(diagnostics)"
+            копияАдреса = Contacts.support
+            Haptics.warning()
+            UsageLog.note(.open, "support-mail", on: .dataPrivacy, outcome: .failed)
+        }
     }
 }
 

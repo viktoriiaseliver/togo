@@ -210,8 +210,17 @@ struct AppRoot: View {
 
 /// Хранилище не открылось. Экран вместо молчаливого падения: человек
 /// должен понимать, что случилось, и иметь что нажать.
+///
+/// Письмо здесь — последняя дверь: дневник не открылся, и больше
+/// в приложении делать нечего. `mailto:` на телефоне без настроенной
+/// почты не открывается ничем — человек получает системный алерт,
+/// а за ним пусто. Поэтому «не открылось» обрабатывается, а адрес
+/// уходит в буфер: та же починка, что на экране поддержки, и по тому же
+/// правилу — правка, меняющая читаемое, применяется ко всем поверхностям,
+/// где та же строка живёт.
 struct StorageFailureScreen: View {
     @Environment(\.openURL) private var openURL
+    @State private var копияАдреса: String?
 
     var body: some View {
         TGScreen(title: "Дневник не открылся") {
@@ -246,9 +255,20 @@ struct StorageFailureScreen: View {
 
             TGButton(title: "Написать в поддержку", variant: .secondary,
                      size: .medium, systemImage: "envelope") {
-                if let url = Contacts.mail(Contacts.support, subject: "Дневник не открылся") {
-                    openURL(url)
+                guard let url = Contacts.mail(Contacts.support,
+                                              subject: "Дневник не открылся") else { return }
+                openURL(url) { открылось in
+                    guard !открылось else { return }
+                    UIPasteboard.general.string =
+                        "\(Contacts.support)\n\n\(StartupLog.read())"
+                    копияАдреса = Contacts.support
+                    Haptics.warning()
                 }
+            }
+            if let копияАдреса {
+                TGBanner(tone: .alarm, title: "Почта на телефоне не настроена",
+                         subtitle: .готовая("Адрес и строки запуска скопированы: \(копияАдреса). Напиши с другого устройства."),
+                         systemImage: "envelope.badge.shield.half.filled")
             }
         }
     }
