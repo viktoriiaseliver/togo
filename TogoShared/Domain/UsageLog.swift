@@ -48,7 +48,7 @@ nonisolated enum UsageLog {
     /// в журнал кличку собаки, а этого здесь быть не должно.
     enum Screen: String, Sendable, CaseIterable {
         case today, needs, walk, feeding, foodStock, health, vetSummary, care
-        case history, training, family, sitter, trip, dayOut, emergency
+        case history, training, family, sharedDiary, sitter, trip, dayOut, emergency
         case incident, profile, schedule, onboarding, paywall
         case settings, backup, dataPrivacy, usageLog, other
 
@@ -65,6 +65,7 @@ nonisolated enum UsageLog {
             case .history: "История"
             case .training: "Занятия"
             case .family: "Семья"
+            case .sharedDiary: "Общий дневник"
             case .sitter: "Ситтер"
             case .trip: "Поездка"
             case .dayOut: "День с собакой"

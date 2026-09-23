@@ -83,6 +83,42 @@ enum FamilyShare {
         return created
     }
 
+    /// Уже созданное приглашение, если оно есть, — ничего не создавая.
+    ///
+    /// Зачем отдельно от `invite`. Экраны держат приглашение в `@State`,
+    /// а `@State` живёт ровно столько, сколько открыт экран. Человек
+    /// создавал ссылку, уходил, возвращался — и видел прежнюю кнопку
+    /// «Создать приглашение», будто ничего не произошло. Замер 23.09.2026:
+    /// сорок четыре захода на «Семью» за девять сессий и ни одного
+    /// отправленного приглашения. Путь существовал и не доводился
+    /// до конца: каждый заход начинался с нуля.
+    ///
+    /// Создавать здесь нельзя: экран открывают и те, кто приглашать
+    /// не собирался, а `invite` пишет в облако.
+    static func existing(
+        container: CKContainer = CKContainer(identifier: AppIdentifiers.cloudContainer)
+    ) async -> CKShare? {
+        guard Persistence.hasCloudEntitlement,
+              (try? await container.accountStatus()) == .available else { return nil }
+        let zoneID = SharedDiaryRecords.zoneID()
+        let shareID = CKRecord.ID(recordName: CKRecordNameZoneWideShare, zoneID: zoneID)
+        return try? await container.privateCloudDatabase.record(for: shareID) as? CKShare
+    }
+
+    /// Короткое имя отказа для журнала действий.
+    ///
+    /// В журнал не уходит `localizedDescription`: там бывают имя
+    /// контейнера, адрес почты участника и кличка собаки — та же красная
+    /// линия, что у крошек запуска. Уходит только вид отказа.
+    static func причина(_ error: Error) -> String {
+        switch error {
+        case ShareError.noAccount: "noAccount"
+        case ShareError.noEntitlement: "noEntitlement"
+        case ShareError.notOwner: "notOwner"
+        default: (error as? CKError).map { "ck\($0.errorCode)" } ?? "unknown"
+        }
+    }
+
     /// Кто уже в дневнике.
     static func participants(
         container: CKContainer = CKContainer(identifier: AppIdentifiers.cloudContainer)

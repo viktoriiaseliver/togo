@@ -50,11 +50,18 @@ struct FamilyScreen: View {
                 rolesExplainer
             } bottom: {
                 TGButton(title: "Добавить человека", systemImage: "person.badge.plus") {
+                    UsageLog.note(.open, "addMember", on: .family)
                     if store.isPro || members.count < 2 { showInvite = true } else { showPaywall = true }
                 }
             }
             .navigationTitle("Семья")
             .usageScreen(.family)
+            // Приглашение живёт в облаке, а не в `@State`: без этой
+            // строки человек, уже создавший ссылку, возвращался
+            // на экран и снова видел «Создать приглашение».
+            .task { if invite == nil, canManageFamily, SharedDiarySettings.isOn {
+                invite = await FamilyShare.existing().map(DiaryInvite.init)
+            } }
             .navigationBarTitleDisplayMode(.large)
             .toolbar { SettingsToolbarItem() }
             .sheet(isPresented: $showInvite) { InviteSheet() }
@@ -183,8 +190,16 @@ struct FamilyScreen: View {
         do {
             let share = try await FamilyShare.invite(dogName: dog?.name ?? "собаки")
             invite = DiaryInvite(share: share)
+            UsageLog.note(.record, "invite", on: .family)
         } catch {
             inviteFailure = error.localizedDescription
+            // Без этой строки журнал молчит о пути целиком: 44 захода
+            // на «Семью» за девять сессий и ни одного события
+            // приглашения — и нельзя было понять, не нашли его
+            // или он отказал. Вид отказа — в названии события:
+            // «не получилось» без причины лечить так же нечем.
+            UsageLog.note(.record, "invite:\(FamilyShare.причина(error))",
+                          on: .family, outcome: .failed)
         }
     }
 

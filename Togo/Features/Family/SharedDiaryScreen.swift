@@ -37,6 +37,7 @@ struct SharedDiaryScreen: View {
         }
         .navigationTitle("Общий дневник")
         .navigationBarTitleDisplayMode(.large)
+        .usageScreen(.sharedDiary)
         .task { await refresh() }
     }
 
@@ -188,8 +189,11 @@ struct SharedDiaryScreen: View {
             let share = try await FamilyShare.invite(dogName: dog?.name ?? "собаки")
             invite = DiaryInvite(share: share)
             participants = await FamilyShare.participants()
+            UsageLog.note(.record, "invite", on: .sharedDiary)
         } catch {
             failure = error.localizedDescription
+            UsageLog.note(.record, "invite:\(FamilyShare.причина(error))",
+                          on: .sharedDiary, outcome: .failed)
         }
     }
 
@@ -205,6 +209,10 @@ struct SharedDiaryScreen: View {
 
     private func refresh() async {
         guard isOn, canInvite else { return }
+        // Сначала ссылка, потом участники: пока приглашение не найдено,
+        // экран предлагает создать уже созданное, и путь начинается
+        // с нуля при каждом заходе.
+        if invite == nil { invite = await FamilyShare.existing().map(DiaryInvite.init) }
         participants = await FamilyShare.participants()
     }
 }
