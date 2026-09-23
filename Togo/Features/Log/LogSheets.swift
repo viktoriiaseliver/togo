@@ -101,7 +101,7 @@ struct StoolSheet: View {
         form = candidate
         Haptics.tap()
         // Форма пишется сразу: отменить можно тостом, «Сохранить» здесь лишний шаг.
-        let event = ensureEvent()
+        guard let event = ensureEvent() else { return }
         event.stoolForm = candidate
         if flags.isEmpty {
             appState.showUndo("Записано · Стул · \(candidate.title.lowercased())", eventID: event.id)
@@ -110,7 +110,7 @@ struct StoolSheet: View {
     }
 
     private func confirm() {
-        let event = ensureEvent()
+        guard let event = ensureEvent() else { return }
         event.stoolForm = form
         event.stoolFlags = flags
         Haptics.success()
@@ -118,13 +118,19 @@ struct StoolSheet: View {
         dismiss()
     }
 
-    private func ensureEvent() -> LogEvent {
+    /// Запись заводится один раз и потом дополняется: форма выбирается
+    /// первой, особенности — после.
+    ///
+    /// **Через `EventLog`, и возвращает `nil`, когда записывать нельзя.**
+    /// Прежде здесь стоял `context.insert` напрямую, то есть мимо
+    /// проверки права: гость-наблюдатель получал отказ на главном экране
+    /// и записывал стул отсюда. Тост и отклик даёт вызывающий — он знает,
+    /// дополнили запись или только начали.
+    private func ensureEvent() -> LogEvent? {
         if let created { return created }
-        let event = LogEvent(kind: .stool, authorName: appState.currentUserName)
-        event.dog = dog
-        context.insert(event)
-        created = event
-        return event
+        created = EventLog(context: context, appState: appState)
+            .record(.stool, dog: dog, confirmation: nil, haptic: .none)
+        return created
     }
 }
 

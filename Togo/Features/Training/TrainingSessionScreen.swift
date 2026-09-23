@@ -298,14 +298,15 @@ struct TrainingSessionScreen: View {
             }
         }
 
-        let event = LogEvent(kind: .training, authorName: appState.currentUserName)
-        event.grams = record.gramsUsed
-        event.note = record.cue
-        event.trainingSessionID = record.id
-        event.dog = dog
-        context.insert(event)
+        // Через `EventLog` — там право, сторож дубля и ответ человеку,
+        // если сохранить не вышло. Прежде этот путь шёл мимо всех трёх.
+        EventLog(context: context, appState: appState)
+            .record(.training, dog: dog, confirmation: nil) {
+                $0.grams = record.gramsUsed
+                $0.note = record.cue
+                $0.trainingSessionID = record.id
+            }
 
-        Haptics.success()
         summary = record
     }
 }

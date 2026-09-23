@@ -49,12 +49,23 @@ struct IncidentSheet: View {
 
     private func record(_ kind: IncidentKind) {
         guard let dog else { return }
-        let event = LogEvent(kind: .incident, authorName: appState.currentUserName)
-        event.incidentKind = kind
-        event.toldFamily = kind.notifiesFamilyByDefault
-        event.dog = dog
-        context.insert(event)
-        Haptics.warning()
+        // Через `EventLog`, а не мимо. До 23.09.2026 этот экран собирал
+        // запись руками и звал `context.insert` — то есть проходил мимо
+        // проверки права, сторожа дубля и честного сообщения о том, что
+        // сохранить не вышло. Пока роль по умолчанию была «владелец»,
+        // разницы не было: дверь стояла открытая, и ходить мимо неё
+        // было незачем. Как только у прав появились зубы, обход стал
+        // дырой: гость-наблюдатель получал отказ на главном пути
+        // и записывал инцидент здесь.
+        //
+        // Тоста нет намеренно: экран сам показывает записанное
+        // и предлагает уточнить.
+        guard let event = EventLog(context: context, appState: appState)
+            .record(.incident, dog: dog, confirmation: nil, haptic: .warning, configure: {
+                $0.incidentKind = kind
+                $0.toldFamily = kind.notifiesFamilyByDefault
+            })
+        else { return }
         raiseEpisodeIfNeeded(for: dog)
         recorded = event
     }

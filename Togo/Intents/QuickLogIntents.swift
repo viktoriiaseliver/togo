@@ -37,6 +37,10 @@ enum QuickLog {
             throw QuickLogError.noDog
         }
 
+        guard можно(kind, in: context) else {
+            throw QuickLogError.noPermission
+        }
+
         let event = LogEvent(kind: kind, date: Date(), authorName: AppState.storedUserName)
         configure(event)
 
@@ -64,6 +68,38 @@ enum QuickLog {
         return "Записала · \(kind.title.lowercased()) · \(dog.name)"
     }
 
+    /// Можно ли этому телефону записывать голосом и кнопкой «Действие».
+    ///
+    /// **Почему не через `AppState`.** Интент живёт в своём процессе,
+    /// `AppState` там нет, и роль в него не восстановить: она вообще
+    /// не хранится на диске — при запуске её вычисляет `adoptMe`
+    /// из списка семьи. Поэтому здесь тот же путь, только короче:
+    /// своя карточка ищется по `family.me`, а права берутся у неё.
+    ///
+    /// **Своей карточки нет — значит нельзя**, и это не осторожность
+    /// ради осторожности. Пока роль по умолчанию была «владелец»,
+    /// проверка прав вообще ничего не меняла и её отсутствие здесь
+    /// было незаметно. С 23.09.2026 отказ закрывает — и голосовой путь
+    /// остался бы единственной открытой дверью у гостя-наблюдателя.
+    /// Хуже прочего было бы с дозой: её пишут тем же путём, и «дал
+    /// голосом» у того, кому не разрешено, — это вторая таблетка.
+    ///
+    /// Единственный случай, когда карточки нет и записывать всё же
+    /// можно, — дневник заведён одним человеком и семьи в нём нет
+    /// вовсе. Он и разрешён отдельно.
+    static func можно(_ kind: LogKind, in context: ModelContext) -> Bool {
+        let семья = (try? context.fetch(FetchDescriptor<FamilyMember>())) ?? []
+        guard !семья.isEmpty else { return true }
+
+        let мой = UserDefaults.standard.string(forKey: AppState.Keys.myMember)
+            .flatMap(UUID.init)
+        guard let карточка = семья.first(where: { $0.id == мой })
+            ?? (семья.count == 1 ? семья.first : nil)
+        else { return false }
+
+        return карточка.permissions.contains(kind.requiredPermission)
+    }
+
     /// Та собака, что открыта в приложении. Дневники разных собак
     /// не смешиваются, и голосовая отметка не должна их путать.
     static func activeDog(in context: ModelContext) throws -> Dog? {
@@ -77,12 +113,14 @@ enum QuickLogError: Error, CustomLocalizedStringResourceConvertible {
     case noDog
     case storageUnavailable
     case noWalk
+    case noPermission
 
     var localizedStringResource: LocalizedStringResource {
         switch self {
         case .noDog: "Собака ещё не заведена — открой Togo и добавь её."
         case .storageUnavailable: "Дневник сейчас недоступен. Открой Togo."
         case .noWalk: "Прогулка не идёт."
+        case .noPermission: "Записывать в этот дневник тебе не разрешено. Спроси того, кто им делится."
         }
     }
 }

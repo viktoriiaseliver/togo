@@ -40,6 +40,14 @@ enum WalkControl {
         guard let container = Persistence.shared else { throw QuickLogError.storageUnavailable }
         let context = ModelContext(container)
         guard let dog = try QuickLog.activeDog(in: context) else { throw QuickLogError.noDog }
+        // Право — тем же путём, что у остальных голосовых записей:
+        // у интента нет `AppState`, роль берётся из своей карточки.
+        // Экранная прогулка спрашивает его через `EventLog`; здесь
+        // запись собирает `WalkRecorder`, и без этой строки голосовой
+        // путь оставался бы открытым у того, кому писать нельзя.
+        guard QuickLog.можно(.walk, in: context) else {
+            throw QuickLogError.noPermission
+        }
 
         _ = WalkRecorder.record(session, dog: dog,
                             author: AppState.storedUserName, context: context)
