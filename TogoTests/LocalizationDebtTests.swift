@@ -41,7 +41,7 @@ struct LocalizationDebtTests {
         "DayOutPlan.swift": 5, "Dog.swift": 12, "DogDocument.swift": 22,
         "DoseGate.swift": 2, "Enums+Care.swift": 3, "FamilyShare.swift": 5,
         "FamilySync.swift": 4, "Feeding.swift": 5, "FoodStock.swift": 15,
-        "Formatting.swift": 40, "LogEvent.swift": 3, "NeedVerdict.swift": 29,
+        "Formatting.swift": 30, "LogEvent.swift": 3, "NeedVerdict.swift": 29,
         "PillSupply.swift": 2, "RecallWriter.swift": 4, "RecordOrigin.swift": 4,
         "ScheduleChange.swift": 11, "Shift.swift": 4, "TimelineBuilder.swift": 9,
         "Training.swift": 2, "TreatmentCourse.swift": 12, "VetSummary.swift": 10,

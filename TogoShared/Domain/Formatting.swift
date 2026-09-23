@@ -18,13 +18,21 @@ nonisolated enum Fmt {
     }
 
     /// «5 ч 20 мин» — так же, как в макете, без «5:20:00».
+    ///
+    /// Единицы печатает система, а не мы. Раньше «ч» и «мин» были
+    /// склеены литералами, и у француза выходило «5 ч 20 мин» при
+    /// французском интерфейсе. Замер 23.09: системный вывод по-русски
+    /// совпадает с прежним посимвольно — «25 мин», «2 ч», «5 ч 20 мин».
     static func duration(_ interval: TimeInterval) -> String {
-        let total = max(0, Int(interval))
-        let hours = total / 3600
-        let minutes = (total % 3600) / 60
-        if hours == 0 { return "\(minutes) мин" }
-        if minutes == 0 { return "\(hours) ч" }
-        return "\(hours) ч \(minutes) мин"
+        часыМинуты(секунд: max(0, Int(interval)))
+    }
+
+    /// Часы и минуты средствами системы: ноль-единицы прячем, чтобы
+    /// «2 ч» не превращалось в «2 ч 0 мин».
+    private static func часыМинуты(секунд: Int) -> String {
+        Duration.seconds(секунд).formatted(
+            .units(allowed: [.hours, .minutes], width: .abbreviated,
+                   maximumUnitCount: 2, zeroValueUnits: .hide))
     }
 
     /// Число с одним знаком после запятой — и без него, если знак нулевой.
@@ -35,16 +43,16 @@ nonisolated enum Fmt {
             : String(format: "%.1f", value).replacingOccurrences(of: ".", with: ",")
     }
 
-    /// Часы и минуты для героя: «2 ч 12 м».
+    /// Часы и минуты для героя.
     ///
     /// Секундомер здесь не годится — он считает минуты и секунды,
     /// и два с половиной часа превращались в «165:16».
+    ///
+    /// Раньше здесь стояло сокращение «м» вместо «мин» — решение
+    /// макета. Оно стоило локализации: собрать «2 ч 12 м» на любом
+    /// языке, кроме русского, нечем. Единицы печатает система.
     static func hoursMinutes(_ interval: TimeInterval) -> String {
-        let minutes = max(0, Int(interval) / 60)
-        let hours = minutes / 60
-        guard hours > 0 else { return "\(minutes) мин" }
-        let rest = minutes % 60
-        return rest == 0 ? "\(hours) ч" : "\(hours) ч \(rest) м"
+        часыМинуты(секунд: max(0, Int(interval) / 60) * 60)
     }
 
     /// Порядковое числительное для строки «третий раз за шесть часов».
@@ -68,12 +76,12 @@ nonisolated enum Fmt {
         if minutes < 90 { return "\(minutes) мин" }
 
         let hours = Double(minutes) / 60
-        if minutes >= 120 { return "\(Int(hours.rounded())) ч" }
+        if minutes >= 120 { return часыМинуты(секунд: Int(hours.rounded()) * 3600) }
 
+        // Округление осталось прежним, сменилась только печать: считаем
+        // получасами, а единицы называет система.
         let half = (Double(minutes) / 30).rounded() * 30
-        let wholeHours = Int(half) / 60
-        let rest = Int(half) % 60
-        return rest == 0 ? "\(wholeHours) ч" : "\(wholeHours) ч \(rest) мин"
+        return часыМинуты(секунд: Int(half) * 60)
     }
 
     static func stopwatch(_ interval: TimeInterval) -> String {
@@ -81,8 +89,14 @@ nonisolated enum Fmt {
         return String(format: "%d:%02d", total / 60, total % 60)
     }
 
+    /// Вес: единицу и разделитель дробной части выбирает система.
+    /// Было `String(format: "%.1f кг")` с ручной заменой точки на запятую —
+    /// и «кг» намертво по-русски.
     static func weight(_ kg: Double) -> String {
-        String(format: "%.1f кг", kg).replacingOccurrences(of: ".", with: ",")
+        Measurement(value: kg, unit: UnitMass.kilograms)
+            .formatted(.measurement(width: .abbreviated,
+                                    usage: .personWeight,
+                                    numberFormatStyle: .number.precision(.fractionLength(1))))
     }
 
     /// Русские окончания там, где число видно человеку.
