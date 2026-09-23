@@ -49,15 +49,60 @@ final class SubscriptionStore {
         }
     }
 
+    /// Что ответил магазин в последний раз. Нужно затем, что «пусто»
+    /// и «ошибка» — разные ответы, а выглядели одинаково.
+    ///
+    /// 23.09 тестировщик написал «Цен нет». Экран показывал «Цены
+    /// не загрузились · обычно это связь» — и это была догадка
+    /// приложения, а не то, что случилось: `Product.products` вернул
+    /// пустой список БЕЗ ошибки, то есть связь была, а продуктов магазин
+    /// не дал. Сорок четвёртое молчание того же рода, что сорок три
+    /// сохранения.
+    enum Ответ: Equatable, Sendable {
+        case неСпрашивали
+        case пусто
+        case частично(получено: Int, просили: Int)
+        case всё
+        case ошибка(String)
+    }
+
+    private(set) var ответМагазина: Ответ = .неСпрашивали
+
     func load() async {
         isLoading = true
         defer { isLoading = false }
         do {
             let loaded = try await Product.products(for: ProductID.all)
             products = loaded.sorted { $0.price < $1.price }
+            if loaded.isEmpty {
+                ответМагазина = .пусто
+                // Не ошибка связи: магазин ответил и не дал ничего.
+                //
+                // Замер 23.09: причина оказалась одна и вне кода — у Виктории
+                // не подписано Соглашение о платных приложениях («Новое»
+                // в ASC → Бизнес → Соглашения). Пока оно не подписано,
+                // `Product.products` возвращает пустой список ВСЕГДА, при
+                // любом состоянии продуктов и в любой сборке. Один
+                // неподписанный документ держал покупки в трёх приложениях,
+                // а искали его в коде весь день.
+                lastError = nil
+                log.error("StoreKit: магазин ответил пустым списком на \(ProductID.all.count) идентификатора")
+                UsageLog.note(.open, "paywall-empty", on: .paywall, outcome: .failed)
+            } else if loaded.count < ProductID.all.count {
+                ответМагазина = .частично(получено: loaded.count, просили: ProductID.all.count)
+                let пришли = Set(loaded.map(\.id))
+                let нет = ProductID.all.filter { !пришли.contains($0) }
+                log.error("StoreKit: не пришли продукты \(нет.joined(separator: ", "))")
+                UsageLog.note(.open, "paywall-partial", on: .paywall, outcome: .failed)
+            } else {
+                ответМагазина = .всё
+                lastError = nil
+            }
         } catch {
+            ответМагазина = .ошибка(error.localizedDescription)
             lastError = "Не удалось загрузить подписки. Проверь соединение."
             log.error("StoreKit: \(error.localizedDescription)")
+            UsageLog.note(.open, "paywall-error", on: .paywall, outcome: .failed)
         }
         await refreshEntitlements()
     }
