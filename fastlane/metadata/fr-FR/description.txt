@@ -9,8 +9,8 @@ La porte s'ouvre — ce que le chien a fait juste avant est renforcé. Togo dema
 DES SÉANCES SANS CONTRAINTE
 Le chien n'apprend pas au nombre de friandises, mais au marqueur qui arrive en une demi-seconde. Togo mesure le délai et répond d'un mot : à temps, presque, tard. Après trois minutes, il propose d'arrêter — ensuite le chien devine au lieu d'apprendre. Les friandises sont prises sur la ration du jour, donc pas de limite.
 
-TOUTE LA FAMILLE COMPTE LA MÊME CHOSE
-Les rôles ne sont pas une hiérarchie : le pet-sitter note les sorties et les repas mais ne voit pas le médical ; le vétérinaire lit tout mais n'écrit rien. Les rappels arrivent à la personne de garde, et changer de garde tient en un geste. Deux entrées pour la même chose ne s'écrasent pas : Togo propose de les fusionner.
+LE CARNET PARTAGÉ
+La personne que tu invites voit les entrées du jour et les doses notées : sorties, repas, selles, « envie de sortir ». Deux entrées pour la même chose ne s'écrasent pas : Togo propose de les fusionner. Le soir, personne ne cherche qui a sorti le chien.
 
 LE MÉDICAL EST UN MODE, PAS UNE RUBRIQUE
 L'onglet « Santé » n'apparaît que lorsque le chien est sous traitement. Fenêtre à jeun, protection contre la double dose, protocole « dose → prise de sang » et compte rendu pour le vétérinaire — construit à partir de ce qui est déjà noté.
