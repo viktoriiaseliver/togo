@@ -2072,6 +2072,36 @@
               }
             }
           }
+        },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld прохання за тиждень"
+                }
+              },
+              "few" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld прохання за тиждень"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld прохань за тиждень"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld прохань за тиждень"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -2104,6 +2134,36 @@
               }
             }
           }
+        },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld зі зсувом"
+                }
+              },
+              "few" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld зі зсувом"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld зі зсувом"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld зі зсувом"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -2131,6 +2191,36 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "%1$lld со сдвигом · пропущено %2$lld"
+          }
+        },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld зі зсувом · пропущено %lld"
+                }
+              },
+              "few" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld зі зсувом · пропущено %lld"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld зі зсувом · пропущено %lld"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld зі зсувом · пропущено %lld"
+                }
+              }
+            }
           }
         }
       }
@@ -20576,6 +20666,36 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "Déjà %lld marqueurs. Tu peux les enregistrer — la progression compte si la séance a tenu en trois minutes."
+                }
+              }
+            }
+          }
+        },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Уже %lld позначка. Її можна записати — прогрес порахується, якщо заняття вклалося у три хвилини."
+                }
+              },
+              "few" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Уже %lld позначки. Їх можна записати — прогрес порахується, якщо заняття вклалося у три хвилини."
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Уже %lld позначок. Їх можна записати — прогрес порахується, якщо заняття вклалося у три хвилини."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Уже %lld позначок. Їх можна записати — прогрес порахується, якщо заняття вклалося у три хвилини."
                 }
               }
             }
