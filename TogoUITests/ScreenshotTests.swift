@@ -104,27 +104,58 @@ nonisolated final class ScreenshotTests: XCTestCase {
         capture("11-language")
     }
 
-    func test07Подписка() throws {
+    /// Кадр пейволла для App Review — и сторож на то, что цены вообще есть.
+    ///
+    /// Пропуска здесь больше нет, и это главное. Раньше тест, не дождавшись
+    /// цен, бросал `XCTSkip` — и прогон отвечал `** TEST SUCCEEDED **`
+    /// с кодом возврата 0. Сторож стоял ровно на том, что держит релиз,
+    /// и молчал: кадр с надписью «Цены не загрузились» уехал в App Store
+    /// Connect именно так.
+    ///
+    /// Под `xcodebuild` тест сегодня красный, и красный по делу — цен
+    /// в пейволле нет. Замеры 23.09, чтобы следующий не искал заново:
+    ///
+    /// - ссылка на `Configuration/Togo.storekit` в схеме есть (`TestAction`
+    ///   и `LaunchAction`), путь резолвится — до приложения не доезжает;
+    /// - `SKTestSession` из теста тоже не помогает: файл она читает
+    ///   (2355 байт; несуществующий путь честно отвергает,
+    ///   `SKTestErrorDomain Code=4`), но `Product.products` отдаёт пусто —
+    ///   и в процессе раннера, и внутри процесса приложения (проверено
+    ///   модульным тестом, он идёт в `Togo.app` через `TEST_HOST`);
+    /// - план тестов со `storeKitConfigurationFileReference` на чистом
+    ///   симуляторе — тот же пустой результат.
+    ///
+    /// Пусто — это ответ, а не «не успело»: пейволл показывает «Цены
+    /// не загрузились» только когда загрузка кончилась (`TGStateful`
+    /// с `isLoading: false`), и баннера ошибки при этом нет.
+    ///
+    /// Из Xcode цены приходят — там кадр и снимается, пока способа снять
+    /// его из командной строки не нашлось. Неисключённое объяснение одно:
+    /// формат `.storekit` version 4.0 против Xcode 27.
+    func test07Подписка() {
         app.buttons["Настройки"].tap()
         let pro = app.descendants(matching: .any).matching(identifier: "Togo Pro").firstMatch
-        guard pro.waitForExistence(timeout: 5) else { return }
+        XCTAssertTrue(pro.waitForExistence(timeout: 5), "в настройках нет входа в «Togo Pro»")
         pro.tap()
-        _ = app.staticTexts["что открывает"].waitForExistence(timeout: 5)
+        XCTAssertTrue(app.staticTexts["что открывает"].waitForExistence(timeout: 5),
+                      "пейволл не открылся")
+
         // Цены приходят из StoreKit не мгновенно. Без этого ожидания
         // в кадр попадало пустое состояние «Цены не загрузились» —
         // и именно такой снимок чуть не уехал в App Review.
-        let price = app.staticTexts.containing(
+        let month = app.staticTexts.containing(
             NSPredicate(format: "label CONTAINS '2,99' OR label CONTAINS '2.99'")
         ).firstMatch
-        guard price.waitForExistence(timeout: 20) else {
-            throw XCTSkip("""
-                Цены не пришли, снимать нечего. Две причины разом: продукты \
-                в App Store Connect стоят MISSING_METADATA и StoreKit их \
-                не отдаёт даже в песочнице, а конфигурация Togo.storekit \
-                в прогоне через xcodebuild не подхватывается. Пейволл \
-                с надписью «Цены не загрузились» в витрину не годится.
-                """)
-        }
+        XCTAssertTrue(month.waitForExistence(timeout: 20), """
+            Пейволл не показал месячную цену 2,99 из Configuration/Togo.storekit. \
+            В кадре либо «Цены не загрузились», либо «Спрашиваю цены у App Store…» — \
+            в App Review такой кадр не годится.
+            """)
+        let year = app.staticTexts.containing(
+            NSPredicate(format: "label CONTAINS '19,99' OR label CONTAINS '19.99'")
+        ).firstMatch
+        XCTAssertTrue(year.exists, "пейволл показал месяц, но не год — планов в кадре должно быть два")
+
         capture("07-paywall")
     }
 }
