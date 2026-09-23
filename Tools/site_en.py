@@ -118,6 +118,24 @@ DOCUMENTS = {
             ]),
         ],
     },
+    "AcknowledgementsScreen": {
+        "file": "built-with.html",
+        "title": "What it’s built from",
+        "updated": "25 August 2026",
+        "intro": "Togo is built on Apple’s own frameworks, with no third-party dependencies at all: SwiftUI, SwiftData, StoreKit 2, WidgetKit, ActivityKit, UserNotifications, Charts.",
+        "sections": [
+            ("Icons", [
+                "Every interface icon is an SF Symbol, Apple’s system library. The app carries no bitmap icons of its own.",
+            ]),
+            ("Typeface", [
+                "San Francisco, the system typeface. It is already on the device, it handles Dynamic Type, and it needs no licence.",
+            ]),
+            ("Thank you", [
+                "To the dog trainers who took the mock-up apart and explained why counting treats gets in the way of learning.",
+                "To Stitch, for putting up with every version of this app.",
+            ]),
+        ],
+    },
 }
 
 # Страница поддержки не выводится из приложения: в интерфейсе такого экрана

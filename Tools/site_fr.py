@@ -140,6 +140,24 @@ DOCUMENTS = {
             ]),
         ],
     },
+    "AcknowledgementsScreen": {
+        "file": "built-with.html",
+        "title": "Ce qui le compose",
+        "updated": "25 août 2026",
+        "intro": "Togo est construit sur les frameworks d’Apple, sans aucune dépendance tierce : SwiftUI, SwiftData, StoreKit 2, WidgetKit, ActivityKit, UserNotifications, Charts.",
+        "sections": [
+            ("Icônes", [
+                "Toutes les icônes de l’interface sont des SF Symbols, la bibliothèque système d’Apple. L’app ne contient aucune icône matricielle qui lui soit propre.",
+            ]),
+            ("Police", [
+                "San Francisco, la police système. Elle est déjà sur l’appareil, gère le Dynamic Type et ne demande aucune licence.",
+            ]),
+            ("Merci", [
+                "Aux éducateurs canins qui ont décortiqué la maquette et expliqué pourquoi compter les friandises nuit à l’apprentissage.",
+                "À Stitch, qui a supporté toutes les versions de cette application.",
+            ]),
+        ],
+    },
 }
 
 # Страница поддержки не выводится из приложения: в интерфейсе такого экрана
