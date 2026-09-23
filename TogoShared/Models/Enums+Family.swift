@@ -20,27 +20,27 @@ nonisolated enum Permission: String, Codable, CaseIterable, Sendable {
 
     var title: String {
         switch self {
-        case .logBasics: "Записывать бытовое"
-        case .editRecords: "Править и удалять записи"
-        case .seeMedical: "Видеть медицинское"
-        case .giveDose: "Отмечать дозы"
-        case .editTreatment: "Менять схему лечения"
-        case .editProfile: "Менять профиль и уход"
-        case .manageFamily: "Приглашать и менять роли"
-        case .exportData: "Выгружать данные и отчёты"
+        case .logBasics: String(localized: "Записывать бытовое")
+        case .editRecords: String(localized: "Править и удалять записи")
+        case .seeMedical: String(localized: "Видеть медицинское")
+        case .giveDose: String(localized: "Отмечать дозы")
+        case .editTreatment: String(localized: "Менять схему лечения")
+        case .editProfile: String(localized: "Менять профиль и уход")
+        case .manageFamily: String(localized: "Приглашать и менять роли")
+        case .exportData: String(localized: "Выгружать данные и отчёты")
         }
     }
 
     var detail: String {
         switch self {
-        case .logBasics: "выходы, еда, вода, прогулки, стул"
-        case .editRecords: "чужие записи тоже"
-        case .seeMedical: "схемы, дозы, анализы, отчёты"
-        case .giveDose: "и брать дозу на себя"
-        case .editTreatment: "препараты, часы, окно натощак"
-        case .editProfile: "порция, вес, напоминания, занятия"
-        case .manageFamily: "и выдавать права"
-        case .exportData: "CSV и отчёт врачу"
+        case .logBasics: String(localized: "выходы, еда, вода, прогулки, стул")
+        case .editRecords: String(localized: "чужие записи тоже")
+        case .seeMedical: String(localized: "схемы, дозы, анализы, отчёты")
+        case .giveDose: String(localized: "и брать дозу на себя")
+        case .editTreatment: String(localized: "препараты, часы, окно натощак")
+        case .editProfile: String(localized: "порция, вес, напоминания, занятия")
+        case .manageFamily: String(localized: "и выдавать права")
+        case .exportData: String(localized: "CSV и отчёт врачу")
         }
     }
 
@@ -56,21 +56,21 @@ nonisolated enum FamilyRole: String, Codable, CaseIterable, Sendable {
 
     var title: String {
         switch self {
-        case .owner: "Владелец"
-        case .coOwner: "Со-владелец"
-        case .caregiver: "Ухаживающий"
-        case .helper: "Помощник"
-        case .observer: "Наблюдатель"
+        case .owner: String(localized: "Владелец")
+        case .coOwner: String(localized: "Со-владелец")
+        case .caregiver: String(localized: "Ухаживающий")
+        case .helper: String(localized: "Помощник")
+        case .observer: String(localized: "Наблюдатель")
         }
     }
 
     var permissionSummary: String {
         switch self {
-        case .owner: "всё"
-        case .coOwner: "доза, правка, приглашения"
-        case .caregiver: "доза, правка 24 ч"
-        case .helper: "выход, еда, прогулка"
-        case .observer: "читает всё, не пишет"
+        case .owner: String(localized: "всё")
+        case .coOwner: String(localized: "доза, правка, приглашения")
+        case .caregiver: String(localized: "доза, правка 24 ч")
+        case .helper: String(localized: "выход, еда, прогулка")
+        case .observer: String(localized: "читает всё, не пишет")
         }
     }
 

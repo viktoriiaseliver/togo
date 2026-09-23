@@ -7,9 +7,9 @@ nonisolated enum TransportKind: String, Codable, CaseIterable, Sendable {
 
     var title: String {
         switch self {
-        case .car: "машина"
-        case .plane: "самолёт"
-        case .train: "поезд"
+        case .car: String(localized: "машина")
+        case .plane: String(localized: "самолёт")
+        case .train: String(localized: "поезд")
         }
     }
 
@@ -29,8 +29,8 @@ nonisolated enum CareCategory: String, Codable, CaseIterable, Sendable {
 
     var title: String {
         switch self {
-        case .grooming: "груминг"
-        case .medical: "уколы, таблетки, прививки"
+        case .grooming: String(localized: "груминг")
+        case .medical: String(localized: "уколы, таблетки, прививки")
         }
     }
 }
@@ -40,9 +40,9 @@ nonisolated enum DogSex: String, Codable, CaseIterable, Sendable {
 
     var title: String {
         switch self {
-        case .female: "Девочка"
-        case .male: "Мальчик"
-        case .unknown: "Не указан"
+        case .female: String(localized: "Девочка")
+        case .male: String(localized: "Мальчик")
+        case .unknown: String(localized: "Не указан")
         }
     }
 }
@@ -65,9 +65,9 @@ nonisolated enum CareKind: String, Codable, CaseIterable, Sendable {
 
     var title: String {
         switch self {
-        case .daily: "каждый день"
-        case .periodic: "регулярно"
-        case .dated: "по дате"
+        case .daily: String(localized: "каждый день")
+        case .periodic: String(localized: "регулярно")
+        case .dated: String(localized: "по дате")
         }
     }
 

@@ -95,7 +95,10 @@ nonisolated final class ScreenshotTests: XCTestCase {
 
     func test09Права() {
         app.tabBars.buttons[т("Семья")].tap()
-        найти(т("Мама"), в: app).tap()
+        // «Мама» — имя участника из демо-данных, такая же данность, как
+        // кличка. В каталоге оно есть и «переведено» как Maman, но
+        // приложение показывает литерал из SeedData.
+        найти("Мама", в: app).tap()
         _ = app.staticTexts[т.прописными("что разрешено")].waitForExistence(timeout: 5)
         capture("09-permissions")
     }

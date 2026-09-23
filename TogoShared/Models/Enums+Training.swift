@@ -8,9 +8,9 @@ nonisolated enum SkillStatus: String, Codable, CaseIterable, Sendable {
 
     var title: String {
         switch self {
-        case .notStarted: "не начинали"
-        case .learning: "учится"
-        case .works: "получается"
+        case .notStarted: String(localized: "не начинали")
+        case .learning: String(localized: "учится")
+        case .works: String(localized: "получается")
         }
     }
 
@@ -22,10 +22,10 @@ nonisolated enum SessionObservation: String, Codable, CaseIterable, Sendable {
 
     var title: String {
         switch self {
-        case .easy: "легко, можно сложнее"
-        case .distracted: "отвлекался"
-        case .yawned: "зевал, отворачивался"
-        case .refusedFood: "не брал еду"
+        case .easy: String(localized: "легко, можно сложнее")
+        case .distracted: String(localized: "отвлекался")
+        case .yawned: String(localized: "зевал, отворачивался")
+        case .refusedFood: String(localized: "не брал еду")
         }
     }
 
@@ -40,9 +40,9 @@ nonisolated enum MarkerKind: String, Codable, CaseIterable, Sendable {
 
     var title: String {
         switch self {
-        case .clicker: "кликер"
-        case .wordYes: "слово «да»"
-        case .tongueClick: "щелчок языком"
+        case .clicker: String(localized: "кликер")
+        case .wordYes: String(localized: "слово «да»")
+        case .tongueClick: String(localized: "щелчок языком")
         }
     }
 }
@@ -61,9 +61,9 @@ nonisolated enum MarkAccuracy: String, Sendable {
 
     var title: String {
         switch self {
-        case .onTime: "в момент"
-        case .almost: "почти"
-        case .late: "поздно"
+        case .onTime: String(localized: "в момент")
+        case .almost: String(localized: "почти")
+        case .late: String(localized: "поздно")
         }
     }
 

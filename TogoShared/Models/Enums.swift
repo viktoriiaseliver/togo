@@ -49,20 +49,20 @@ nonisolated enum LogKind: String, Codable, CaseIterable, Sendable {
 
     var title: String {
         switch self {
-        case .outing: "Выход"
-        case .walk: "Прогулка"
-        case .meal: "Еда"
-        case .water: "Вода"
-        case .stool: "Стул"
-        case .treat: "Лакомство"
-        case .incident: "Инцидент"
-        case .dose: "Доза"
-        case .training: "Занятие"
-        case .reaction: "Срыв"
-        case .weight: "Взвешивание"
-        case .care: "Уход"
-        case .travelStop: "Остановка"
-        case .note: "Заметка"
+        case .outing: String(localized: "Выход")
+        case .walk: String(localized: "Прогулка")
+        case .meal: String(localized: "Еда")
+        case .water: String(localized: "Вода")
+        case .stool: String(localized: "Стул")
+        case .treat: String(localized: "Лакомство")
+        case .incident: String(localized: "Инцидент")
+        case .dose: String(localized: "Доза")
+        case .training: String(localized: "Занятие")
+        case .reaction: String(localized: "Срыв")
+        case .weight: String(localized: "Взвешивание")
+        case .care: String(localized: "Уход")
+        case .travelStop: String(localized: "Остановка")
+        case .note: String(localized: "Заметка")
         }
     }
 
@@ -97,19 +97,19 @@ nonisolated enum OutingOutcome: String, Codable, CaseIterable, Sendable {
 
     var title: String {
         switch self {
-        case .urine: "Пописал"
-        case .stool: "Стул"
-        case .both: "И то и другое"
-        case .none: "Не сходил"
+        case .urine: String(localized: "Пописал")
+        case .stool: String(localized: "Стул")
+        case .both: String(localized: "И то и другое")
+        case .none: String(localized: "Не сходил")
         }
     }
 
     var shortTitle: String {
         switch self {
-        case .urine: "моча"
-        case .stool: "стул"
-        case .both: "моча и стул"
-        case .none: "без результата"
+        case .urine: String(localized: "моча")
+        case .stool: String(localized: "стул")
+        case .both: String(localized: "моча и стул")
+        case .none: String(localized: "без результата")
         }
     }
 }
@@ -120,11 +120,11 @@ nonisolated enum AskSignal: String, Codable, CaseIterable, Sendable {
 
     var title: String {
         switch self {
-        case .satAtDoor: "Сел у двери"
-        case .cameAndLooked: "Подошёл, смотрит"
-        case .barked: "Лает"
-        case .scratchedDoor: "Царапает дверь"
-        case .ownerNoticed: "Я сама заметила, он не просил"
+        case .satAtDoor: String(localized: "Сел у двери")
+        case .cameAndLooked: String(localized: "Подошёл, смотрит")
+        case .barked: String(localized: "Лает")
+        case .scratchedDoor: String(localized: "Царапает дверь")
+        case .ownerNoticed: String(localized: "Я сама заметила, он не просил")
         }
     }
 
@@ -150,11 +150,11 @@ nonisolated enum StoolForm: String, Codable, CaseIterable, Sendable {
 
     var title: String {
         switch self {
-        case .hard: "Твёрдый"
-        case .sausage: "Колбаска"
-        case .soft: "Мягкий"
-        case .mushy: "Кашица"
-        case .liquid: "Лужа"
+        case .hard: String(localized: "Твёрдый")
+        case .sausage: String(localized: "Колбаска")
+        case .soft: String(localized: "Мягкий")
+        case .mushy: String(localized: "Кашица")
+        case .liquid: String(localized: "Лужа")
         }
     }
 
@@ -185,11 +185,11 @@ nonisolated enum StoolFlag: String, Codable, CaseIterable, Sendable {
 
     var title: String {
         switch self {
-        case .mucus: "Слизь"
-        case .blood: "Кровь"
-        case .undigested: "Непереваренное"
-        case .foreign: "Инородное"
-        case .wormLike: "Похоже на глистов"
+        case .mucus: String(localized: "Слизь")
+        case .blood: String(localized: "Кровь")
+        case .undigested: String(localized: "Непереваренное")
+        case .foreign: String(localized: "Инородное")
+        case .wormLike: String(localized: "Похоже на глистов")
         }
     }
 
@@ -201,11 +201,11 @@ nonisolated enum IncidentKind: String, Codable, CaseIterable, Sendable {
 
     var title: String {
         switch self {
-        case .vomit: "Вырвал"
-        case .puddle: "Лужа в доме"
-        case .stoolIndoors: "Стул в доме"
-        case .reaction: "Сорвался"
-        case .other: "Другое"
+        case .vomit: String(localized: "Вырвал")
+        case .puddle: String(localized: "Лужа в доме")
+        case .stoolIndoors: String(localized: "Стул в доме")
+        case .reaction: String(localized: "Сорвался")
+        case .other: String(localized: "Другое")
         }
     }
 
@@ -235,11 +235,11 @@ nonisolated enum VomitDetail: String, Codable, CaseIterable, Sendable {
 
     var title: String {
         switch self {
-        case .food: "едой"
-        case .bile: "желчью"
-        case .grass: "травой"
-        case .blood: "с кровью"
-        case .unclear: "не разобрала"
+        case .food: String(localized: "едой")
+        case .bile: String(localized: "желчью")
+        case .grass: String(localized: "травой")
+        case .blood: String(localized: "с кровью")
+        case .unclear: String(localized: "не разобрала")
         }
     }
 
@@ -258,14 +258,14 @@ nonisolated enum ReactionTrigger: String, Codable, CaseIterable, Sendable {
 
     var title: String {
         switch self {
-        case .dog: "Другая собака"
-        case .person: "Человек"
-        case .child: "Ребёнок"
-        case .bike: "Велосипед, самокат"
-        case .car: "Машина"
-        case .cat: "Кошка"
-        case .sound: "Звук"
-        case .unclear: "Не поняла"
+        case .dog: String(localized: "Другая собака")
+        case .person: String(localized: "Человек")
+        case .child: String(localized: "Ребёнок")
+        case .bike: String(localized: "Велосипед, самокат")
+        case .car: String(localized: "Машина")
+        case .cat: String(localized: "Кошка")
+        case .sound: String(localized: "Звук")
+        case .unclear: String(localized: "Не поняла")
         }
     }
 
@@ -291,9 +291,9 @@ nonisolated enum ReactionDistance: String, Codable, CaseIterable, Sendable {
 
     var title: String {
         switch self {
-        case .close: "Вплотную"
-        case .medium: "Метров пять"
-        case .far: "Далеко"
+        case .close: String(localized: "Вплотную")
+        case .medium: String(localized: "Метров пять")
+        case .far: String(localized: "Далеко")
         }
     }
 }
