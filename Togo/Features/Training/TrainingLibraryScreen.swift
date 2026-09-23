@@ -142,18 +142,29 @@ struct TrainingLibraryScreen: View {
         .disabled(!canEdit)
     }
 
+    /// Отказ хранилища виден человеку: список уже перерисовался,
+    /// а в хранилище осталось прежнее.
+    private func неСохранилось(_ текст: String) {
+        Haptics.warning()
+        appState.showUndo(текст)
+    }
+
     // MARK: Удаление
 
     private func delete(_ step: TrainingStep) {
         context.delete(step)
-        try? context.save()
+        guard context.persist(otherwise: {}) else {
+            return неСохранилось("Шаг не удалился · попробуй ещё раз")
+        }
         Haptics.warning()
         removingStep = nil
     }
 
     private func delete(_ session: TrainingSession) {
         context.delete(session)
-        try? context.save()
+        guard context.persist(otherwise: {}) else {
+            return неСохранилось("Занятие не удалилось · попробуй ещё раз")
+        }
         Haptics.warning()
         removingSession = nil
     }

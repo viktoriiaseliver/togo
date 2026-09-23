@@ -159,8 +159,8 @@ struct TodayScreen: View {
         if let fasting = fastingWindow {
             TGBanner(
                 tone: .waiting,
-                title: "Не кормить \(Fmt.duration(fasting.remaining))",
-                subtitle: "после \(fasting.medication) в \(Fmt.clock(fasting.doseAt)) · видят все",
+                title: .готовая(String(localized: "Не кормить до \(Fmt.clock(fasting.freeAt))")),
+                subtitle: .готовая(подписьОкна(fasting)),
                 systemImage: "clock.badge.exclamationmark"
             )
         }
@@ -430,19 +430,19 @@ struct TodayScreen: View {
 
     // MARK: Данные экрана
 
-    private struct FastingWindow {
-        var remaining: TimeInterval
-        var medication: String
-        var doseAt: Date
-    }
-
     /// Окно натощак — единственное, что имеет право стоять выше всего
-    /// на экране. Считается от фактической отметки приёма.
-    private var fastingWindow: FastingWindow? {
-        guard let dog, let window = DoseScheduler.fastingEnds(for: dog, at: now) else { return nil }
-        return FastingWindow(remaining: window.until.timeIntervalSince(now),
-                             medication: window.medication,
-                             doseAt: window.givenAt)
+    /// на экране.
+    ///
+    /// Считается тем же `FeedingGate`, что и на экране питания. Раньше
+    /// здесь был свой расчёт, `DoseScheduler.fastingEnds`, и он знал
+    /// только окно ПОСЛЕ отметки приёма. Значит окно ДО дозы — то самое,
+    /// ради которого эутирокс и дают натощак, — на главном экране
+    /// не показывалось вовсе, и сдвиг часа приёма на нём ничего не менял.
+    /// Два расчёта одного правила расходятся молча: проверять один
+    /// наблюдениями за другим нельзя.
+    private var fastingWindow: FeedingGate.Block? {
+        guard let dog, dog.isOnTreatment else { return nil }
+        return FeedingGate.block(for: dog.medications, now: now)
     }
 
     /// Выбор вынесен в `DoseScheduler.overdue` — здесь остались только
@@ -453,6 +453,17 @@ struct TodayScreen: View {
     private var overdueDose: DoseRecord? {
         guard let dog, dog.isOnTreatment, appState.can(.seeMedical) else { return nil }
         return DoseScheduler.alarmingDose(among: dog.medications, now: now)
+    }
+
+    /// Почему нельзя — словами. «Нельзя» без причины человек выполнит
+    /// один раз, а на второй обойдёт.
+    private func подписьОкна(_ block: FeedingGate.Block) -> String {
+        switch block {
+        case .before(let лекарство, let doseAt):
+            String(localized: "\(лекарство) в \(Fmt.clock(doseAt)) — натощак · видят все")
+        case .after(let лекарство, let givenAt, _):
+            String(localized: "после \(лекарство) в \(Fmt.clock(givenAt)) · видят все")
+        }
     }
 
     /// Груминг и вес живут в профиле и всплывают на главном только когда подошёл срок.

@@ -162,7 +162,11 @@ struct ScheduleChangeSheet: View {
     }
 
     private func save() {
-        let removed = ScheduleChangeApplier.apply(change, to: medication, now: now, context: context)
+        guard let removed = ScheduleChangeApplier.apply(change, to: medication,
+                                                        now: now, context: context) else {
+            Haptics.warning()
+            return
+        }
         Haptics.success()
         _ = removed
         dismiss()

@@ -463,7 +463,13 @@ struct WalkSummarySheet: View {
                 event.note = text
             }
         }
-        try? context.save()
+        // Заметка к прогулке — то, ради чего её и писали. Молчать
+        // о непопавшей в хранилище нельзя: у этой шторки своего тоста
+        // нет, поэтому отказ виден откликом и остаётся в журнале.
+        if !context.persist(otherwise: {}) {
+            Haptics.warning()
+            UsageLog.note(.edit, "walk-note", on: .walk, outcome: .failed)
+        }
     }
 }
 

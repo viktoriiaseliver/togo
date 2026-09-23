@@ -39,7 +39,7 @@ struct LocalizationDebtTests {
         "ActiveSession.swift": 1, "AlarmThreshold.swift": 5, "Backup.swift": 6,
         "Care.swift": 15, "CareMigration.swift": 14, "DayOutPlan.swift": 5,
         "Dog.swift": 3, "DogDocument.swift": 22, "DoseGate.swift": 2,
-        "Enums+Care.swift": 3, "FamilyShare.swift": 5, "FamilySync.swift": 4,
+        "Enums+Care.swift": 3, "FamilyShare.swift": 4, "FamilySync.swift": 3,
         "Feeding.swift": 5, "FoodStock.swift": 9, "Formatting.swift": 12,
         "LogEvent.swift": 3, "NeedVerdict.swift": 29, "PillSupply.swift": 2,
         "RecallWriter.swift": 1, "RecordOrigin.swift": 4, "ScheduleChange.swift": 9,
@@ -65,6 +65,13 @@ struct LocalizationDebtTests {
             var n = 0
             for строка in текст.components(separatedBy: .newlines) {
                 let код = строка.components(separatedBy: "//")[0]
+                // Строка в журнал разработчика — не подпись. Её читает тот,
+                // кто чинит, а не хозяин собаки; переводить её значит
+                // превращать диагностику в текст для человека.
+                // Тот же признак, что и у Tools/extract_texts.py.
+                if код.contains("log.error(") || код.contains("log.notice(")
+                    || код.contains("log.debug(") || код.contains("log.info(")
+                    || код.contains("log.warning(") { continue }
                 n += Self.русскиеЛитералы(в: код)
             }
             if n > 0 { посчитано[имя] = n }

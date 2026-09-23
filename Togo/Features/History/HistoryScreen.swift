@@ -166,8 +166,12 @@ extension HistoryScreen {
     }
 
     func close(_ episode: Episode) {
+        let былЗакрыт = episode.endedAt
         episode.close()
-        try? context.save()
+        guard context.persist(otherwise: { episode.endedAt = былЗакрыт }) else {
+            Haptics.warning()
+            return
+        }
         Haptics.success()
         closing = nil
     }

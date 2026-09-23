@@ -157,8 +157,18 @@ struct UndoToastView: View {
         case nil:
             break
         }
-        try? context.save()
-        appState.undo = nil
+        // Отмена — это действие человека, и если она не записалась,
+        // он обязан узнать: на экране запись вернулась, в хранилище нет.
+        // Возврат здесь не пишем: состояние до отмены восстановит
+        // следующая загрузка из хранилища, а молчание не восстановит
+        // ничего.
+        if context.persist(otherwise: {}) {
+            appState.undo = nil
+        } else {
+            Haptics.warning()
+            appState.undo = AppState.UndoToast(message: "Отмена не сохранилась · попробуй ещё раз",
+                                               action: toast.action)
+        }
     }
 
     private func event(_ id: UUID) -> LogEvent? {

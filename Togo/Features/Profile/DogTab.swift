@@ -201,7 +201,7 @@ struct TripScreen: View {
         .confirmationDialog("Убрать поездку?", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
             Button("Убрать", role: .destructive) {
                 context.delete(trip)
-                try? context.save()
+                _ = context.persist(otherwise: {})
                 Haptics.warning()
                 dismiss()
             }

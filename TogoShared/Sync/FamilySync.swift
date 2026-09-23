@@ -187,7 +187,13 @@ final class FamilySync: NSObject {
 
         // Сохранение отметки времени не уйдёт по второму кругу:
         // на входе стоит тот же замок, что и у приёма чужого.
-        if stamped { try? ctx.save() }
+        // Отметка времени не записалась — отправлять нечего: иначе
+        // уедет то, о чём хранилище не знает, и следующий круг увидит
+        // расхождение вместо записи.
+        if stamped, !ctx.persist(otherwise: {}) {
+            log.error("общий дневник: отметка времени не записалась")
+            return
+        }
 
         guard !changes.isEmpty, let engine = outgoingEngine else { return }
         engine.state.add(pendingRecordZoneChanges: changes)

@@ -40,7 +40,8 @@ nonisolated enum RecallWriter {
         context: ModelContext
     ) -> Outcome {
         let calendar = Calendar.current
-        var written = 0, skipped = 0
+        var written = 0
+        var вставленные: [LogEvent] = [], skipped = 0
         var duplicates: [Date] = []
 
         for draft in drafts {
@@ -71,10 +72,15 @@ nonisolated enum RecallWriter {
             event.note = draft.note
             if let seconds = draft.durationSeconds { event.durationSeconds = seconds }
             context.insert(event)
+            вставленные.append(event)
             written += 1
         }
 
-        if written > 0 { try? context.save() }
+        // Не записалось — отвечаем честным нулём: человек дописывал
+        // день и должен увидеть «не вышло», а не «внесено пять».
+        if written > 0, !context.persist(otherwise: { вставленные.forEach(context.delete) }) {
+            return Outcome(written: 0, skipped: skipped, duplicates: duplicates)
+        }
         return Outcome(written: written, skipped: skipped, duplicates: duplicates)
     }
 

@@ -194,11 +194,17 @@ struct HeatEditorSheet: View {
         target.startedAt = startedAt
         target.endedAt = hasEnded ? endedAt : nil
         target.note = note.isEmpty ? nil : note
-        if record == nil {
+        let новая = record == nil
+        if новая {
             target.dog = dog
             context.insert(target)
         }
-        try? context.save()
+        guard context.persist(otherwise: {
+            if новая { context.delete(target) }
+        }) else {
+            Haptics.warning()
+            return
+        }
         Haptics.success()
         dismiss()
     }

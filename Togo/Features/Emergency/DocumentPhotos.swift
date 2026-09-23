@@ -88,16 +88,27 @@ struct DocumentPhotosCard: View {
         context.insert(document)
         // Сохраняем сразу: обратная связь применяется не мгновенно,
         // и список остался бы прежним.
-        try? context.save()
+        guard context.persist(otherwise: { context.delete(document) }) else {
+            return неСохранилось("Снимок не сохранился · попробуй ещё раз")
+        }
         pendingImage = nil
         Haptics.success()
     }
 
     private func delete(_ document: DogDocument) {
         context.delete(document)
-        try? context.save()
+        guard context.persist(otherwise: {}) else {
+            return неСохранилось("Снимок не удалился · попробуй ещё раз")
+        }
         viewing = nil
         Haptics.warning()
+    }
+
+    /// Отказ виден человеку: снимок документа — то, что ищут в спешке,
+    /// и «кажется, сохранил» здесь дороже обычного.
+    private func неСохранилось(_ текст: String) {
+        Haptics.warning()
+        appState.showUndo(текст)
     }
 }
 

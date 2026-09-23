@@ -404,9 +404,17 @@ struct FeedingScreen: View {
         // Через `setMealsPerDay`, а не присваиванием: дневная норма должна
         // остаться прежней, а порция — пересчитаться. Прямое присваивание
         // молча меняло то, сколько собака ест за сутки.
+        let былоКормлений = dog.mealsPerDay
+        let былиЧасы = dog.mealTimes
         dog.setMealsPerDay(report.suggestedMealTimes.count)
         dog.syncSingleFoodShare()
-        try? context.save()
+        guard context.persist(otherwise: {
+            dog.mealsPerDay = былоКормлений
+            dog.mealTimes = былиЧасы
+        }) else {
+            Haptics.warning()
+            return
+        }
         Haptics.success()
     }
 }

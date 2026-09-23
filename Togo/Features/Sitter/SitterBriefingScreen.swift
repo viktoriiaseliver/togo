@@ -100,7 +100,10 @@ struct SitterBriefingEditor: View {
             }
         } footer: {
             TGButton(title: "Сохранить") {
-                try? context.save()
+                guard context.persist(otherwise: {}) else {
+                    Haptics.warning()
+                    return
+                }
                 Haptics.success()
                 dismiss()
             }

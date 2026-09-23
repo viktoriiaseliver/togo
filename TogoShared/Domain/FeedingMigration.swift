@@ -46,7 +46,12 @@ nonisolated enum FeedingMigration {
             if (dog.dailyNormGrams, dog.portionGrams, dog.foodBrand) != before { changed += 1 }
         }
 
-        if changed > 0 { try? context.save() }
+        // Миграция, которая не записалась, повторится при следующем
+        // запуске — но если молчать, она будет повторяться вечно.
+        if changed > 0, !context.persist(otherwise: {}) {
+            log.error("миграция не записалась")
+            return 0
+        }
         return changed
     }
 
@@ -70,7 +75,10 @@ enum WalkLinkStartup {
     static func run(context: ModelContext) -> Int {
         guard let events = try? context.fetch(FetchDescriptor<LogEvent>()) else { return 0 }
         let linked = WalkLinkMigration.link(events)
-        if linked > 0 { try? context.save() }
+        if linked > 0, !context.persist(otherwise: {}) {
+            log.error("связывание прогулок не записалось")
+            return 0
+        }
         return linked
     }
 }

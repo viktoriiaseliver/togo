@@ -450,11 +450,15 @@ struct WeightScreen: View {
         // Текущий вес показывается по всему приложению — если удалили
         // последнее взвешивание, он обязан откатиться, а не остаться
         // от только что стёртой записи.
+        let былВес = dog.weightKg
         let rest = dog.weights.filter { $0.persistentModelID != entry.persistentModelID }
         if let latest = rest.max(by: { $0.date < $1.date }) {
             dog.weightKg = latest.kg
         }
-        try? context.save()
+        guard context.persist(otherwise: { dog.weightKg = былВес }) else {
+            Haptics.warning()
+            return appState.showUndo("Взвешивание не удалилось · попробуй ещё раз")
+        }
         Haptics.warning()
         removing = nil
     }
@@ -475,11 +479,17 @@ struct WeightScreen: View {
 
         // Взвесили — значит, напоминание «Взвесить» отработало. Просить
         // человека отметить то же самое второй раз незачем.
-        if let task = dog.careTasks.first(where: { $0.title == "Взвесить" }) {
-            task.markDone()
-        }
+        let задача = dog.careTasks.first { $0.title == "Взвесить" }
+        let былоСделано = задача?.lastDone
+        задача?.markDone()
 
-        try? context.save()
+        guard context.persist(otherwise: {
+            context.delete(entry)
+            задача?.lastDone = былоСделано
+        }) else {
+            Haptics.warning()
+            return appState.showUndo("Вес не записался · попробуй ещё раз")
+        }
         newWeight = ""
         Haptics.success()
     }

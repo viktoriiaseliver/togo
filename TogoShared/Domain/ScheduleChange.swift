@@ -85,14 +85,21 @@ nonisolated enum ScheduleChangeApplier {
         now: Date = Date(),
         calendar: Calendar = .current,
         context: ModelContext
-    ) -> Int {
+    ) -> Int? {
         let doomed = change.doomedDoses(medication.doses, now: now, calendar: calendar)
         for dose in doomed { context.delete(dose) }
 
         // Прошлое остаётся как было: меняется только план вперёд.
+        let былДоза = medication.doseText
+        let былиЧасы = medication.times
         medication.doseText = change.newDoseText
         medication.times = change.newTimes.sorted()
-        try? context.save()
+        // Схема лечения — место, где молчание стоит дозы: экран покажет
+        // новые часы, а напоминания придут по старым.
+        guard context.persist(otherwise: {
+            medication.doseText = былДоза
+            medication.times = былиЧасы
+        }) else { return nil }
         return doomed.count
     }
 }

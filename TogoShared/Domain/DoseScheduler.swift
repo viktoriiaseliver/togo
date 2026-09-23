@@ -42,7 +42,10 @@ nonisolated enum DoseScheduler {
                                      calendar: calendar, context: context)
         }
 
-        if created > 0 || removed > 0 { try? context.save() }
+        if created > 0 || removed > 0, !context.persist(otherwise: {}) {
+            log.error("расписание доз не записалось")
+            return 0
+        }
         return created
     }
 

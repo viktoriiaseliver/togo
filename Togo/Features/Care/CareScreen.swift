@@ -162,14 +162,26 @@ struct CareScreen: View {
 
     private func setDate(_ guess: DateGuess, for task: CareTask) {
         guard let date = guess.date(from: now) else { return }
+        let былаДата = task.scheduledDate
+        let былоСделано = task.lastDone
         if task.kind == .dated {
             task.scheduledDate = date
         } else {
             task.lastDone = date
         }
-        try? context.save()
+        guard context.persist(otherwise: {
+            task.scheduledDate = былаДата
+            task.lastDone = былоСделано
+        }) else { return неСохранилось() }
         Haptics.tap()
         appState.showUndo("\(task.title) · \(guess.title.lowercased())")
+    }
+
+    /// Отказ хранилища виден человеку: экран уже показал бы «отложено»,
+    /// а напоминание пришло бы в прежний срок.
+    private func неСохранилось() {
+        Haptics.warning()
+        appState.showUndo("Не сохранилось · попробуй ещё раз")
     }
 
     private func subtitle(for kind: CareKind, group: [CareTask]) -> String? {
@@ -219,6 +231,8 @@ struct CareScreen: View {
     /// подсвечивается в сводке, но в тревогу не переходит.
     private func snooze(_ task: CareTask) {
         let calendar = Calendar.current
+        let былоСделано = task.lastDone
+        let былаДата = task.scheduledDate
         switch task.kind {
         case .daily:
             // Ежедневное не откладывают: строка «Потом» ему и не выдаётся.
@@ -232,7 +246,11 @@ struct CareScreen: View {
                                                to: task.scheduledDate ?? now)
         }
         task.snoozeCount += 1
-        try? context.save()
+        guard context.persist(otherwise: {
+            task.lastDone = былоСделано
+            task.scheduledDate = былаДата
+            task.snoozeCount -= 1
+        }) else { return неСохранилось() }
         UsageLog.note(.care, "snooze")
         Haptics.tap()
         appState.showUndo("\(task.title) · до завтра")

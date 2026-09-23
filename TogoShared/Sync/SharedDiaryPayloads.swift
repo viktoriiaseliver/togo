@@ -116,15 +116,23 @@ enum SharedDiaryInbox {
             event.apply(payload)
             event.dog = dog
             context.insert(event)
-            try? context.save()
+            // Приехавшая запись, которую не записали, вернётся следующим
+            // кругом обмена — но круг станет вечным, если об этом молчать.
+            guard context.persist(otherwise: { context.delete(event) }) else {
+                log.error("общий дневник: запись не записалась")
+                return false
+            }
             return false
         }
 
         let merged = SharedDiaryMerge.resolve(local: local.payload, remote: payload)
         let changed = merged != payload
         if merged != local.payload {
+            let былПрежний = local.payload
             local.apply(merged)
-            try? context.save()
+            if !context.persist(otherwise: { local.apply(былПрежний) }) {
+                log.error("общий дневник: слияние записи не записалось")
+            }
         }
         return changed
     }
@@ -180,7 +188,10 @@ enum SharedDiaryInbox {
             dose.apply(payload)
             dose.medication = medication
             context.insert(dose)
-            try? context.save()
+            guard context.persist(otherwise: { context.delete(dose) }) else {
+                log.error("общий дневник: доза не записалась")
+                return false
+            }
             return false
         }
 
@@ -196,10 +207,15 @@ enum SharedDiaryInbox {
             linked = true
         }
         if merged != local.payload {
+            let былПрежний = local.payload
             local.apply(merged)
-            try? context.save()
+            if !context.persist(otherwise: { local.apply(былПрежний) }) {
+                log.error("общий дневник: слияние дозы не записалось")
+            }
         } else if linked {
-            try? context.save()
+            if !context.persist(otherwise: { local.medication = nil }) {
+                log.error("общий дневник: связь дозы с препаратом не записалась")
+            }
         }
         return changed
     }

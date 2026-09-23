@@ -97,7 +97,11 @@ struct WalkTagTests {
         let started = Date().addingTimeInterval(-30 * 60)
         let session = ActiveSession(kind: .walk, startedAt: started, startedBy: "Вика")
 
-        let walk = WalkRecorder.record(session, dog: dog, author: "Вика", context: context)
+        // Запись теперь может и не состояться — хранилище отвечает.
+        // В тесте это `#require`: не записалось значит тест упал,
+        // а не «прошёл с пустым результатом».
+        let walk = try #require(WalkRecorder.record(session, dog: dog,
+                                                    author: "Вика", context: context))
 
         #expect(walk.kind == .walk)
         #expect(walk.date == started)
@@ -115,9 +119,10 @@ struct WalkTagTests {
             .init(kind: .stool, at: started.addingTimeInterval(300)),
         ]
 
-        let walk = WalkRecorder.record(session, dog: dog, author: "Вика", context: context)
-
-        let marks = dog.events.filter { $0.walkEventID == walk.id }
+        let walk = try #require(WalkRecorder.record(session, dog: dog,
+                                                    author: "Вика", context: context))
+        let walkID = walk.id
+        let marks = dog.events.filter { $0.walkEventID == walkID }
         #expect(marks.count == 2)
         #expect(marks.contains { $0.kind == .outing && $0.outcome == .urine })
         #expect(marks.allSatisfy { $0.note == "на прогулке" })
@@ -131,7 +136,7 @@ struct WalkTagTests {
                                     startedBy: "Вика")
         session.marks = [.init(kind: .treat, at: Date().addingTimeInterval(-300))]
 
-        WalkRecorder.record(session, dog: dog, author: "Вика", context: context)
+        _ = WalkRecorder.record(session, dog: dog, author: "Вика", context: context)
 
         let treat = try #require(dog.events.first { $0.kind == .treat })
         #expect(treat.grams == 5)
@@ -144,7 +149,8 @@ struct WalkTagTests {
         let session = ActiveSession(kind: .walk, startedAt: Date().addingTimeInterval(-900),
                                     startedBy: "Вика")
 
-        let walk = WalkRecorder.record(session, dog: dog, author: "Вика", context: context)
+        let walk = try #require(WalkRecorder.record(session, dog: dog,
+                                                    author: "Вика", context: context))
         #expect(walk.note == nil)
     }
 
@@ -155,7 +161,8 @@ struct WalkTagTests {
         var session = ActiveSession(kind: .walk, startedAt: started, startedBy: "Вика")
         session.pausedTotal = 10 * 60
 
-        let walk = WalkRecorder.record(session, dog: dog, author: "Вика", context: context)
+        let walk = try #require(WalkRecorder.record(session, dog: dog,
+                                                    author: "Вика", context: context))
         let minutes = (walk.durationSeconds ?? 0) / 60
         #expect(minutes >= 19 && minutes <= 20)
     }

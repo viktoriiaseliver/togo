@@ -416,7 +416,10 @@ struct FoodStockEditorSheet: View {
         // Сохраняем сразу: иначе связь применяется не мгновенно,
         // и человек возвращается на экран, где ничего не изменилось.
         syncBrand()
-        try? context.save()
+        guard context.persist(otherwise: {}) else {
+            Haptics.warning()
+            return
+        }
         Haptics.success()
         dismiss()
     }

@@ -58,7 +58,12 @@ nonisolated enum CareMigration {
             }
         }
 
-        if changed > 0 { try? context.save() }
+        // Миграция, которая не записалась, повторится при следующем
+        // запуске — но если молчать, она будет повторяться вечно.
+        if changed > 0, !context.persist(otherwise: {}) {
+            log.error("миграция не записалась")
+            return 0
+        }
         return changed
     }
 }

@@ -86,7 +86,10 @@ struct DayOutStartSheet: View {
         let day = DayOut(plannedHours: hours)
         day.dog = dog
         context.insert(day)
-        try? context.save()
+        guard context.persist(otherwise: { context.delete(day) }) else {
+            Haptics.warning()
+            return
+        }
         Haptics.success()
         appState.showUndo("Режим включён · собака с тобой")
         dismiss()
@@ -136,8 +139,12 @@ struct DayOutSummarySheet: View {
     }
 
     private func save() {
+        let былаЗаметка = day.note
         day.note = note.isEmpty ? nil : note
-        try? context.save()
+        guard context.persist(otherwise: { day.note = былаЗаметка }) else {
+            Haptics.warning()
+            return
+        }
         Haptics.success()
         dismiss()
     }

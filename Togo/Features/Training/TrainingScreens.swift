@@ -270,14 +270,19 @@ struct ProcedurePrepScreen: View {
     }
 
     private func seed() {
-        SeedData.procedureSkills().forEach(context.insert)
-        try? context.save()
-        seeded = true
+        let заведённые = SeedData.procedureSkills()
+        заведённые.forEach(context.insert)
+        // Не сохранилось — не помечаем засеянным: иначе список пуст,
+        // а приложение считает, что уже всё завело.
+        seeded = context.persist(otherwise: { заведённые.forEach(context.delete) })
     }
 
     private func delete(_ skill: ProcedureSkill) {
         context.delete(skill)
-        try? context.save()
+        guard context.persist(otherwise: {}) else {
+            Haptics.warning()
+            return
+        }
         Haptics.warning()
         removing = nil
     }

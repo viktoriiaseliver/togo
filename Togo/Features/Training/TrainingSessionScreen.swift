@@ -44,7 +44,10 @@ struct TrainingSessionScreen: View {
         step.status = .learning
         step.dog = dog
         context.insert(step)
-        try? context.save()
+        if !context.persist(otherwise: { context.delete(step) }) {
+            Haptics.warning()
+            appState.showUndo("Шаг не завёлся · попробуй ещё раз")
+        }
     }
 
     var body: some View {
@@ -257,7 +260,10 @@ struct TrainingSessionScreen: View {
         next.status = .notStarted
         next.dog = dog
         context.insert(next)
-        try? context.save()
+        if !context.persist(otherwise: { context.delete(next) }) {
+            Haptics.warning()
+            appState.showUndo("Следующий шаг не завёлся · попробуй ещё раз")
+        }
     }
 
     // MARK: Итог

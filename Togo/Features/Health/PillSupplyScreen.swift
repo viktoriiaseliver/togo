@@ -92,5 +92,9 @@ struct PillSupplyScreen: View {
         Haptics.success()
     }
 
-    private func save() { try? context.save() }
+    /// Запас таблеток: «сохранилось» без записи — это человек, который
+    /// думает, что таблетки посчитаны, и пропускает докупку.
+    private func save() {
+        if !context.persist(otherwise: {}) { Haptics.warning() }
+    }
 }

@@ -41,7 +41,7 @@ enum WalkControl {
         let context = ModelContext(container)
         guard let dog = try QuickLog.activeDog(in: context) else { throw QuickLogError.noDog }
 
-        WalkRecorder.record(session, dog: dog,
+        _ = WalkRecorder.record(session, dog: dog,
                             author: AppState.storedUserName, context: context)
         ActiveSessionStore.save(nil)
 

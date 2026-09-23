@@ -458,7 +458,13 @@ struct InviteSheet: View {
         member.inviteToken = token
         member.inviteExpiresAt = Date().addingTimeInterval(24 * 3600)
         context.insert(member)
-        try? context.save()
+        // Тоста у этой шторки нет, поэтому отказ виден откликом
+        // и остаётся в журнале действий — там же, где и сама попытка.
+        guard context.persist(otherwise: { context.delete(member) }) else {
+            Haptics.warning()
+            UsageLog.note(.record, "member", on: .family, outcome: .failed)
+            return
+        }
         // Без этой строки самое спорное действие экрана не оставляло следа:
         // 22.09 человек написал «человека создала, а пригласить не могу»,
         // а в журнале за ту сессию не было ни одной записи о создании —

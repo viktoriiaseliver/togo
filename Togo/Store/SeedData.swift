@@ -57,7 +57,9 @@ enum SeedData {
             context.insert(task)
             added += 1
         }
-        if added > 0 { try? context.save() }
+        // Не записалось — отвечаем нулём: иначе экран покажет
+        // заведённые дела, которых в хранилище нет.
+        if added > 0, !context.persist(otherwise: {}) { return 0 }
         return added
     }
 

@@ -403,36 +403,10 @@ struct PersistIdiomTests {
     @Test("Молчаливых `try? context.save()` не становится больше")
     func молчаливыхСохраненийНеБольше() throws {
         /// Долг на 22.09.2026. Числа обязаны уменьшаться и не обязаны расти.
-        let долг: [String: Int] = [
-            "CareMigration.swift": 1,
-            "CareScreen.swift": 2,
-            "DayOutScreens.swift": 2,
-            "DocumentPhotos.swift": 2,
-            "DogTab.swift": 1,
-            "DoseScheduler.swift": 1,
-            "FamilyScreen.swift": 1,
-            "FamilySync.swift": 1,
-            "FeedingMigration.swift": 2,
-            "FeedingScreen.swift": 1,
-            "FoodStockScreen.swift": 1,
-            "HealthScreen.swift": 2,
-            "HeatScreen.swift": 1,
-            "HistoryScreen.swift": 1,
-            "LogSheets.swift": 1,
-            "PillSupplyScreen.swift": 1,
-            "RecallWriter.swift": 1,
-            "RootView.swift": 1,
-            "ScheduleChange.swift": 1,
-            "SeedData.swift": 1,
-            "SharedDiaryPayloads.swift": 5,
-            "SitterBriefingScreen.swift": 1,
-            "TrainingLibraryScreen.swift": 2,
-            "TrainingScreens.swift": 2,
-            "TrainingSessionScreen.swift": 2,
-            "TreatmentCourse.swift": 4,
-            "WalkMode.swift": 1,
-            "WalkRecorder.swift": 1,
-        ]
+        // Список пуст: молчаливых сохранений в коде не осталось
+        // ни одного. Пустой словарь означает «в любом файле обязан быть
+        // ноль» — строже и не бывает.
+        let долг: [String: Int] = [:]
 
         let корень = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent()

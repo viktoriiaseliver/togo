@@ -56,7 +56,10 @@ nonisolated enum TreatmentCourse {
         }
 
         dog.isOnTreatment = false
-        try? context.save()
+        // Курс закончен — вкладка «Здоровье» исчезнет. Если это
+        // не записалось, она вернётся при следующем запуске, и человек
+        // решит, что приложение её «не отпускает».
+        _ = context.persist(otherwise: { dog.isOnTreatment = true })
     }
 
     /// Контрольный приём — единственное, что переживает курс.
@@ -78,8 +81,13 @@ nonisolated enum TreatmentCourse {
         // Второй раз то же дело не заводим: экран прощания можно открыть
         // и закрыть несколько раз подряд.
         if let existing = dog.careTasks.first(where: { $0.title == checkupTitle && $0.lastDone == nil }) {
+            let былаДата = existing.scheduledDate
             existing.scheduledDate = date
-            try? context.save()
+            // Не записалось — не отдаём дело наружу: экран покажет
+            // «врач через 10 дней», а напоминания не будет.
+            guard context.persist(otherwise: { existing.scheduledDate = былаДата }) else {
+                return nil
+            }
             return existing
         }
 
@@ -91,7 +99,7 @@ nonisolated enum TreatmentCourse {
         task.remindDaysBefore = 3
         task.dog = dog
         context.insert(task)
-        try? context.save()
+        guard context.persist(otherwise: { context.delete(task) }) else { return nil }
         return task
     }
 
@@ -107,7 +115,9 @@ nonisolated enum TreatmentCourse {
             medication.isPaused = false
         }
         dog.isOnTreatment = true
-        try? context.save()
+        // Возврат курса — отмена решения, и она обязана быть надёжной:
+        // иначе вкладка «Здоровье» исчезнет при следующем запуске.
+        _ = context.persist(otherwise: { dog.isOnTreatment = false })
     }
 
     /// Итог курса: сколько шло, сколько доз и какая доля вовремя.

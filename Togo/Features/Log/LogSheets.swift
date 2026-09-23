@@ -528,7 +528,15 @@ struct EventEditSheet: View {
             target.deletedAt = now
             target.deletedBy = who
         }
-        try? context.save()
+        guard context.persist(otherwise: {
+            for target in removed {
+                target.deletedAt = nil
+                target.deletedBy = nil
+            }
+        }) else {
+            Haptics.warning()
+            return appState.showUndo("Удаление не сохранилось · попробуй ещё раз")
+        }
         Haptics.warning()
         UsageLog.note(.delete, event.kind.rawValue)
         appState.showUndoRestore("Удалено · \(event.kind.title)",

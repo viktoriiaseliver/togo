@@ -39,21 +39,29 @@ nonisolated enum WalkRecorder {
         dog: Dog,
         author: String,
         context: ModelContext
-    ) -> LogEvent {
+    ) -> LogEvent? {
+        var вставленные: [LogEvent] = []
         let walk = LogEvent(kind: .walk, date: session.startedAt, authorName: author)
         walk.durationSeconds = Int(session.duration())
         walk.note = session.marks.isEmpty ? nil : session.tally
         walk.dog = dog
         context.insert(walk)
+        вставленные.append(walk)
 
         for mark in session.marks {
             let event = LogEvent(kind: mark.kind.logKind, date: mark.at, authorName: author)
             apply(mark, to: event, dog: dog, walkID: walk.id)
             event.dog = dog
             context.insert(event)
+            вставленные.append(event)
         }
 
-        try? context.save()
+        // Прогулка с отметками — самая дорогая запись дня: человек
+        // отмечал её двадцать минут. Не сохранилось — возвращаем
+        // вставленное и отвечаем `nil`, чтобы экран не показал успех.
+        guard context.persist(otherwise: { вставленные.forEach(context.delete) }) else {
+            return nil
+        }
         return walk
     }
 }
