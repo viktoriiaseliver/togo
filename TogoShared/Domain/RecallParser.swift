@@ -104,15 +104,18 @@ nonisolated enum RecallParser {
     }
 
     static func line(from raw: String, today: Date) -> Line {
-        let text = raw.lowercased()
-        guard let kind = kind(in: text) else { return .notUnderstood(raw) }
+        let text = RecallDictionary.нормализовать(raw)
+        let словарь = RecallDictionary.текущий
+        guard let kind = kind(in: text, словарь: словарь) else { return .notUnderstood(raw) }
 
-        if let (from, to) = range(in: text, today: today) {
+        if let (from, to) = range(in: text, today: today, словарь: словарь) {
             return .period(Period(kind: kind, from: from, to: to,
                                   timesPerDay: timesPerDay(in: text),
                                   durationSeconds: duration(in: text)))
         }
-        guard let at = day(in: text, today: today) else { return .notUnderstood(raw) }
+        guard let at = day(in: text, today: today, словарь: словарь) else {
+            return .notUnderstood(raw)
+        }
         return .moment(Moment(kind: kind, at: at,
                               grams: grams(in: text),
                               stool: stool(in: text),
@@ -123,22 +126,18 @@ nonisolated enum RecallParser {
 
     /// Слова подобраны по тому, как пишут в переписке, а не по названиям
     /// в интерфейсе: «был понос», а не «стул, форма: лужа».
-    static let words: [(LogKind, [String])] = [
-        (.stool,  ["понос", "стул", "какал", "покакал", "диаре"]),
-        (.meal,   ["кормил", "корми", "поел", "ел ", "еда", "покормил"]),
-        (.dose,   ["таблет", "дал", "дали", "доза", "препарат", "лекарств"]),
-        (.walk,   ["гулял", "гуляли", "прогул", "выгул"]),
-        (.outing, ["выходил", "выходили", "пописал", "по делам"]),
-        (.incident, ["рвот", "вырвал", "тошнил", "лужа"]),
-        (.weight, ["весит", "взвесил", "вес "]),
-    ]
+    /// Оставлено ради тестов и старых вызовов: словарь теперь живёт
+    /// в `RecallDictionary`, по языкам.
+    static var words: [(LogKind, [String])] { RecallDictionary.русский.основы }
 
-    static func kind(in text: String) -> LogKind? {
+    static func kind(in text: String, словарь: RecallDictionary = .текущий) -> LogKind? {
         // Порядок важен: «понос» встречается раньше «дал», и строка
         // «13.09 дали таблетку, был понос» — про две разные вещи.
         // Пока берём первую найденную и честно признаём ограничение:
         // две записи в одной строке не разбираются.
-        for (kind, stems) in words where stems.contains(where: text.contains) {
+        let текст = RecallDictionary.нормализовать(text)
+        for (kind, stems) in словарь.основы
+        where stems.contains(where: { текст.contains(RecallDictionary.нормализовать($0)) }) {
             return kind
         }
         return nil
@@ -151,24 +150,36 @@ nonisolated enum RecallParser {
     )
 
     /// Одна дата: «13.09.26», «13.09», «вчера», «сегодня», «позавчера».
-    static func day(in text: String, today: Date) -> Date? {
+    static func day(in text: String, today: Date,
+                    словарь: RecallDictionary = .текущий) -> Date? {
         let calendar = Calendar.current
-        if text.contains("позавчера") {
+        let текст = RecallDictionary.нормализовать(text)
+        func есть(_ слова: [String]) -> Bool {
+            слова.contains { текст.contains(RecallDictionary.нормализовать($0)) }
+        }
+        // Порядок важен: «позавчера» содержит «вчера».
+        if есть(словарь.позавчера) {
             return calendar.date(byAdding: .day, value: -2, to: calendar.startOfDay(for: today))
         }
-        if text.contains("вчера") {
+        if есть(словарь.вчера) {
             return calendar.date(byAdding: .day, value: -1, to: calendar.startOfDay(for: today))
         }
-        if text.contains("сегодня") { return calendar.startOfDay(for: today) }
+        if есть(словарь.сегодня) { return calendar.startOfDay(for: today) }
         return dates(in: text, today: today).first
     }
 
     /// Диапазон «с 04.09 по 20.09». Нужны обе даты и слово-связка:
     /// две даты подряд без «с … по» — это две записи, а не период.
-    static func range(in text: String, today: Date) -> (Date, Date)? {
-        guard text.contains(" с ") || text.hasPrefix("с ") else { return nil }
-        guard text.contains(" по ") || text.contains("–") || text.contains("—")
-                || text.contains(" до ") else { return nil }
+    static func range(in text: String, today: Date,
+                      словарь: RecallDictionary = .текущий) -> (Date, Date)? {
+        let текст = RecallDictionary.нормализовать(text)
+        func есть(_ слова: [String]) -> Bool {
+            слова.contains { слово in
+                let с = RecallDictionary.нормализовать(слово)
+                return текст.contains(с) || текст.hasPrefix(с.trimmingCharacters(in: .whitespaces) + " ")
+            }
+        }
+        guard есть(словарь.началоПериода), есть(словарь.конецПериода) else { return nil }
         let found = dates(in: text, today: today)
         guard found.count >= 2 else { return nil }
         let sorted = found.sorted()
