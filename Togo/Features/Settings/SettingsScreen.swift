@@ -107,10 +107,13 @@ struct SettingsScreen: View {
                 }
             }
             Button("Отладка · сколько служебных записей осталось") {
-                let n = CloudKitSchemaWarmup.сколькоОсталось(in: context)
-                warmupResult = n == 0
+                let остатки = CloudKitSchemaWarmup.остатки(in: context)
+                let всего = остатки.values.reduce(0, +)
+                warmupResult = всего == 0
                     ? "Служебных записей прогрева не осталось: 0. Это замер, а не «вроде бы»."
-                    : "Служебных записей осталось: \(n). Нажми «убрать прогрев» ещё раз."
+                    : "Осталось \(всего): "
+                        + остатки.sorted { $0.key < $1.key }
+                            .map { "\($0.key) × \($0.value)" }.joined(separator: ", ")
             }
             if let warmupResult {
                 Text(warmupResult).textStyle(AppFont.caption)
