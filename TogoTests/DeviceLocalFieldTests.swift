@@ -58,6 +58,32 @@ struct DeviceLocalFieldTests {
         "FamilyMember.isOnDuty", "FamilyMember.dutyUntil",
         "FamilyMember.inviteToken", "FamilyMember.inviteExpiresAt",
         "FamilyMember.accessExpiresAt", "FamilyMember.acceptedAt",
+
+        // Лента. Всё здесь — факты о том, что случилось с собакой:
+        // на другом телефоне они значат ровно то же самое.
+        "LogEvent.id", "LogEvent.date", "LogEvent.kindRaw",
+        // Кто записал. Имя, а не «я»: именно поэтому оно и ездит —
+        // «кто дал дозу» перестаёт быть вопросом с ответом, если
+        // подписывать записи местоимением.
+        "LogEvent.authorName", "LogEvent.note",
+        // Когда записали, в отличие от `date` — когда случилось.
+        // Факт о записи, а не о телефоне: «отметили вечером за утро»
+        // одинаково верно у обоих.
+        "LogEvent.enteredAt",
+        // Чем записали: экран, голос, виджет. Соблазн счесть это
+        // «про телефон» есть, и он ошибочный — это свойство записи,
+        // и второму человеку оно говорит, насколько ей доверять.
+        "LogEvent.originRaw",
+        "LogEvent.isDayOnly", "LogEvent.outcomeRaw", "LogEvent.askSignalRaw",
+        "LogEvent.durationSeconds", "LogEvent.stoolFormRaw",
+        "LogEvent.stoolFlagsRaw", "LogEvent.grams", "LogEvent.milliliters",
+        "LogEvent.fromPortion", "LogEvent.reactionTriggerRaw",
+        "LogEvent.reactionDistanceRaw", "LogEvent.incidentKindRaw",
+        "LogEvent.incidentDetailRaw", "LogEvent.toldFamily",
+        "LogEvent.trainingSessionID", "LogEvent.medicationID",
+        "LogEvent.careTaskID", "LogEvent.walkEventID",
+        "LogEvent.deletedAt", "LogEvent.deletedBy", "LogEvent.changedAt",
+        "LogEvent.dog",
     ]
 
     /// Модели, поля которых ещё не разобраны.
@@ -105,7 +131,12 @@ struct DeviceLocalFieldTests {
                 var j = i + 1
                 while j < строки.count {
                     let строка = строки[j]
-                    let член = глубина == 0 && строка.firstMatch(#"^    \S"#) != nil
+                    // Уровень тела класса — **единица**, а не ноль:
+                    // строка `final class X {` уже открыла скобку.
+                    // Первая редакция сравнивала с нулём, не находила
+                    // ни одного поля и была зелёной при любом новом —
+                    // поймала подделка, а не чтение.
+                    let член = глубина == 1 && строка.firstMatch(#"^    \S"#) != nil
                     глубина += строка.filter { $0 == "{" }.count
                     глубина -= строка.filter { $0 == "}" }.count
                     if j > i + 1, глубина == 0 { break }
@@ -133,6 +164,22 @@ struct DeviceLocalFieldTests {
             моделей разобрано \(модели.count) — разбор не состоялся.
             Набор, которому нечего проверять, молчит так же, как набор,
             у которого всё хорошо.
+            """)
+
+        // **Счёт полей, а не только моделей.** Первая редакция этой
+        // проверки считала модели и молчала: поля разбирались в пустой
+        // список, «без решения» получалось ноль, и сторож был зелёным
+        // при любом новом поле. Поймала подделка — дописанное
+        // `lastSeenOnThisPhone` прошло насквозь.
+        //
+        // Сканер, переставший что-либо находить, молчит так же, как
+        // тот, кому нечего сказать.
+        #expect(модели["FamilyMember"]?.count ?? 0 >= 10, """
+            у FamilyMember разобрано \(модели["FamilyMember"]?.count ?? 0) полей —
+            разбор полей не состоялся, и сторож зелен впустую.
+            """)
+        #expect(модели["LogEvent"]?.count ?? 0 >= 10, """
+            у LogEvent разобрано \(модели["LogEvent"]?.count ?? 0) полей.
             """)
 
         var безРешения: [String] = []

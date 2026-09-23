@@ -9,6 +9,18 @@
             "state": "translated",
             "value": "${applicationName}: давно ли гуляли"
           }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "${applicationName} : dernière promenade"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "${applicationName}: чи давно гуляли"
+          }
         }
       }
     },
@@ -19,6 +31,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "${applicationName}: покормила"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "${applicationName} : nourri"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "${applicationName}: погодувала"
           }
         }
       }
@@ -31,6 +55,18 @@
             "state": "translated",
             "value": "${applicationName}: пописал"
           }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "${applicationName} : pipi"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "${applicationName}: попісяв"
+          }
         }
       }
     },
@@ -41,6 +77,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "${applicationName}: прогулка"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "${applicationName} : promenade"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "${applicationName}: прогулянка"
           }
         }
       }
@@ -53,6 +101,18 @@
             "state": "translated",
             "value": "${applicationName}: стул"
           }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "${applicationName} : selles"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "${applicationName}: випорожнення"
+          }
         }
       }
     },
@@ -63,6 +123,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Давно ли гуляли в ${applicationName}"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Dernière promenade dans ${applicationName}"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Чи давно гуляли в ${applicationName}"
           }
         }
       }
@@ -75,6 +147,18 @@
             "state": "translated",
             "value": "Записать кормление в ${applicationName}"
           }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Noter le repas dans ${applicationName}"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Записати годування в ${applicationName}"
+          }
         }
       }
     },
@@ -85,6 +169,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Отметить в ${applicationName}, что пописал"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Noter un pipi dans ${applicationName}"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Записати в ${applicationName}, що попісяв"
           }
         }
       }
@@ -97,6 +193,18 @@
             "state": "translated",
             "value": "Отметить стул в ${applicationName}"
           }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Noter les selles dans ${applicationName}"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Записати випорожнення в ${applicationName}"
+          }
         }
       }
     },
@@ -107,6 +215,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Прогулка в ${applicationName}"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Promenade dans ${applicationName}"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Прогулянка в ${applicationName}"
           }
         }
       }
