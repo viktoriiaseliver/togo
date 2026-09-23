@@ -318,19 +318,29 @@ struct SchemaMigrationTests {
 
         let v1Записи = поля(TogoSchemaV1.self, "LogEvent")
         let v2Записи = поля(TogoSchemaV2.self, "LogEvent")
-        let v3Записи = поля(TogoSchemaV4.self, "LogEvent")
+        let v4Записи = поля(TogoSchemaV4.self, "LogEvent")
 
         // Ровно три поля появились в сборке 46 — коммит 4081a47.
         #expect(v2Записи.subtracting(v1Записи) == ["enteredAt", "originRaw", "isDayOnly"])
         #expect(v1Записи.subtracting(v2Записи).isEmpty, "в сборке 46 ничего не удалено")
-        #expect(v3Записи == v2Записи, "после сборки 46 лента не менялась")
+        #expect(v4Записи == v2Записи, "после сборки 46 лента не менялась")
 
+        // Ровно одно поле появилось в сборке 141 — коммит de07bda.
         let v2Лечение = поля(TogoSchemaV2.self, "Medication")
-        let v3Лечение = поля(TogoSchemaV4.self, "Medication")
-
-        // Ровно одно поле появилось после сборки 46 — коммит de07bda.
+        let v3Лечение = поля(TogoSchemaV3.self, "Medication")
         #expect(v3Лечение.subtracting(v2Лечение) == ["fastingBeforeMinutes"])
         #expect(v2Лечение.subtracting(v3Лечение).isEmpty, "ничего не удалено")
+
+        // И ровно одно — в нынешней, ради общего дневника: у спора
+        // двух телефонов о схеме должно быть чем разрешаться.
+        let v4Лечение = поля(TogoSchemaV4.self, "Medication")
+        #expect(v4Лечение.subtracting(v3Лечение) == ["changedAt"])
+        #expect(v3Лечение.subtracting(v4Лечение).isEmpty, "ничего не удалено")
+
+        // Доза помнит, чего ждёт, когда схема ещё не приехала.
+        let v4Доза = поля(TogoSchemaV4.self, "DoseRecord")
+        #expect(v4Доза.subtracting(поля(TogoSchemaV3.self, "DoseRecord"))
+                == ["awaitedMedicationID", "awaitedMedicationName"])
 
         // Набор сущностей тот же во всех трёх — значит ни одной модели
         // не завели и не убрали, и стадии правда лёгкие.

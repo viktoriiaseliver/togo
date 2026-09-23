@@ -181,6 +181,114 @@ nonisolated enum SharedDiaryRecords {
         )
     }
 
+    // MARK: Уход и лечение
+
+    static func record(_ payload: CarePayload, base: CKRecord?, in zone: CKRecordZone.ID) -> CKRecord {
+        let id = recordID(payload.id, in: zone)
+        guard let base, base.recordID == id else {
+            let record = CKRecord(recordType: SharedDiary.RecordType.care.rawValue, recordID: id)
+            apply(payload, to: record)
+            return record
+        }
+        let merged = carePayload(base).map { SharedDiaryMerge.resolve(local: payload, remote: $0) } ?? payload
+        apply(merged, to: base)
+        return base
+    }
+
+    static func apply(_ payload: CarePayload, to record: CKRecord) {
+        record["dogID"] = payload.dogID?.uuidString
+        record["title"] = payload.title
+        record["detail"] = payload.detail
+        record["kind"] = payload.kind
+        record["category"] = payload.category
+        record["intervalDays"] = payload.intervalDays
+        record["scheduledDate"] = payload.scheduledDate
+        record["remindDaysBefore"] = payload.remindDaysBefore
+        record["lastDone"] = payload.lastDone
+        record["streak"] = payload.streak
+        record["seasonStartMonth"] = payload.seasonStartMonth
+        record["seasonEndMonth"] = payload.seasonEndMonth
+        record["snoozeCount"] = payload.snoozeCount
+        record["changedAt"] = payload.changedAt
+    }
+
+    static func carePayload(_ record: CKRecord) -> CarePayload? {
+        guard let id = UUID(uuidString: record.recordID.recordName),
+              let title = record["title"] as? String,
+              let changedAt = record["changedAt"] as? Date
+        else { return nil }
+
+        return CarePayload(
+            id: id,
+            dogID: (record["dogID"] as? String).flatMap(UUID.init),
+            title: title,
+            detail: record["detail"] as? String ?? "",
+            kind: record["kind"] as? String ?? CareKind.periodic.rawValue,
+            category: record["category"] as? String ?? CareCategory.grooming.rawValue,
+            intervalDays: record["intervalDays"] as? Int ?? 30,
+            scheduledDate: record["scheduledDate"] as? Date,
+            remindDaysBefore: record["remindDaysBefore"] as? Int ?? 14,
+            lastDone: record["lastDone"] as? Date,
+            streak: record["streak"] as? Int ?? 0,
+            seasonStartMonth: record["seasonStartMonth"] as? Int,
+            seasonEndMonth: record["seasonEndMonth"] as? Int,
+            snoozeCount: record["snoozeCount"] as? Int ?? 0,
+            changedAt: changedAt
+        )
+    }
+
+    static func record(_ payload: MedicationPayload, base: CKRecord?, in zone: CKRecordZone.ID) -> CKRecord {
+        let id = recordID(payload.id, in: zone)
+        guard let base, base.recordID == id else {
+            let record = CKRecord(recordType: SharedDiary.RecordType.medication.rawValue, recordID: id)
+            apply(payload, to: record)
+            return record
+        }
+        let merged = medicationPayload(base).map { SharedDiaryMerge.resolve(local: payload, remote: $0) } ?? payload
+        apply(merged, to: base)
+        return base
+    }
+
+    static func apply(_ payload: MedicationPayload, to record: CKRecord) {
+        record["dogID"] = payload.dogID?.uuidString
+        record["name"] = payload.name
+        record["doseText"] = payload.doseText
+        record["times"] = payload.times
+        record["fastingMinutes"] = payload.fastingMinutes
+        record["fastingBeforeMinutes"] = payload.fastingBeforeMinutes
+        record["minutesAfterMeal"] = payload.minutesAfterMeal
+        record["isPaused"] = payload.isPaused ? 1 : 0
+        record["prescriber"] = payload.prescriber
+        record["cancelledAt"] = payload.cancelledAt
+        record["cancelledNote"] = payload.cancelledNote
+        record["changedAt"] = payload.changedAt
+    }
+
+    /// Имя обязательно: схема без названия — это приём, о котором
+    /// человек не знает, что даёт.
+    static func medicationPayload(_ record: CKRecord) -> MedicationPayload? {
+        guard let id = UUID(uuidString: record.recordID.recordName),
+              let name = record["name"] as? String,
+              let changedAt = record["changedAt"] as? Date
+        else { return nil }
+
+        return MedicationPayload(
+            id: id,
+            dogID: (record["dogID"] as? String).flatMap(UUID.init),
+            name: name,
+            doseText: record["doseText"] as? String ?? "",
+            times: record["times"] as? [Int] ?? [],
+            fastingMinutes: record["fastingMinutes"] as? Int ?? 0,
+            fastingBeforeMinutes: record["fastingBeforeMinutes"] as? Int ?? 0,
+            minutesAfterMeal: record["minutesAfterMeal"] as? Int ?? 0,
+            isPaused: (record["isPaused"] as? Int ?? 0) == 1,
+            prescriber: record["prescriber"] as? String,
+            cancelledAt: record["cancelledAt"] as? Date,
+            cancelledNote: record["cancelledNote"] as? String,
+            changedAt: changedAt
+        )
+    }
+
     // MARK: Дозы
 
     static func record(_ payload: DosePayload, in zone: CKRecordZone.ID) -> CKRecord {

@@ -121,6 +121,67 @@ extension Dog {
 }
 
 @MainActor
+extension CareTask {
+    var payload: CarePayload {
+        CarePayload(
+            id: id, dogID: dog?.id, title: title, detail: detail,
+            kind: kindRaw, category: categoryRaw,
+            intervalDays: intervalDays, scheduledDate: scheduledDate,
+            remindDaysBefore: remindDaysBefore, lastDone: lastDone,
+            streak: streak, seasonStartMonth: seasonStartMonth,
+            seasonEndMonth: seasonEndMonth, snoozeCount: snoozeCount,
+            changedAt: changedAt
+        )
+    }
+
+    func apply(_ payload: CarePayload) {
+        title = payload.title
+        detail = payload.detail
+        kindRaw = payload.kind
+        categoryRaw = payload.category
+        intervalDays = payload.intervalDays
+        scheduledDate = payload.scheduledDate
+        remindDaysBefore = payload.remindDaysBefore
+        lastDone = payload.lastDone
+        streak = payload.streak
+        seasonStartMonth = payload.seasonStartMonth
+        seasonEndMonth = payload.seasonEndMonth
+        snoozeCount = payload.snoozeCount
+        changedAt = payload.changedAt
+    }
+}
+
+@MainActor
+extension Medication {
+    var payload: MedicationPayload {
+        MedicationPayload(
+            id: id, dogID: dog?.id, name: name, doseText: doseText,
+            times: times, fastingMinutes: fastingMinutes,
+            fastingBeforeMinutes: fastingBeforeMinutes,
+            minutesAfterMeal: minutesAfterMeal, isPaused: isPaused,
+            prescriber: prescriber, cancelledAt: cancelledAt,
+            cancelledNote: cancelledNote, changedAt: changedAt
+        )
+    }
+
+    /// Запас таблеток не трогается: он про коробку, которая лежит
+    /// у кого-то дома, и у мамы она своя.
+    func apply(_ payload: MedicationPayload) {
+        name = payload.name
+        doseText = payload.doseText
+        times = payload.times
+        fastingMinutes = payload.fastingMinutes
+        fastingBeforeMinutes = payload.fastingBeforeMinutes
+        minutesAfterMeal = payload.minutesAfterMeal
+        isPaused = payload.isPaused
+        prescriber = payload.prescriber
+        cancelledAt = payload.cancelledAt
+        cancelledNote = payload.cancelledNote
+        changedAt = payload.changedAt
+    }
+}
+
+@MainActor
 extension DoseRecord {
     var payload: DosePayload {
         DosePayload(
@@ -245,6 +306,112 @@ enum SharedDiaryInbox {
         return changed
     }
 
+    /// Принять дело ухода.
+    @discardableResult
+    static func accept(_ payload: CarePayload, dog: Dog?, context: ModelContext) -> Bool {
+        let id = payload.id
+        let existing = try? context.fetch(
+            FetchDescriptor<CareTask>(predicate: #Predicate { $0.id == id })
+        ).first
+
+        guard let local = existing else {
+            let task = CareTask(title: payload.title, detail: payload.detail)
+            task.id = payload.id
+            task.apply(payload)
+            task.dog = dog
+            context.insert(task)
+            guard context.persist(otherwise: { context.delete(task) }) else {
+                log.error("общий дневник: дело ухода не записалось")
+                return false
+            }
+            return false
+        }
+
+        let merged = SharedDiaryMerge.resolve(local: local.payload, remote: payload)
+        let changed = merged != payload
+        if merged != local.payload {
+            let былПрежний = local.payload
+            local.apply(merged)
+            if !context.persist(otherwise: { local.apply(былПрежний) }) {
+                log.error("общий дневник: слияние дела ухода не записалось")
+            }
+        }
+        return changed
+    }
+
+    /// Принять схему лечения.
+    ///
+    /// **Связывание висящих доз.** Доза могла приехать раньше схемы —
+    /// так бывает всегда, когда обмен включают посреди курса. Висящая
+    /// ни на чём доза на экране не показывается вовсе, то есть второй
+    /// человек видит приём открытым и даёт вторую таблетку. Поэтому
+    /// приехавшая схема сразу забирает свои дозы.
+    @discardableResult
+    static func accept(_ payload: MedicationPayload, dog: Dog?, context: ModelContext) -> Bool {
+        let id = payload.id
+        let existing = try? context.fetch(
+            FetchDescriptor<Medication>(predicate: #Predicate { $0.id == id })
+        ).first
+
+        let схема: Medication
+        var changed = false
+        if let local = existing {
+            let merged = SharedDiaryMerge.resolve(local: local.payload, remote: payload)
+            changed = merged != payload
+            if merged != local.payload {
+                let былПрежний = local.payload
+                local.apply(merged)
+                if !context.persist(otherwise: { local.apply(былПрежний) }) {
+                    log.error("общий дневник: слияние схемы не записалось")
+                }
+            }
+            схема = local
+        } else {
+            let свежая = Medication(name: payload.name, doseText: payload.doseText,
+                                    times: payload.times)
+            свежая.id = payload.id
+            свежая.apply(payload)
+            свежая.dog = dog
+            context.insert(свежая)
+            guard context.persist(otherwise: { context.delete(свежая) }) else {
+                log.error("общий дневник: схема не записалась")
+                return false
+            }
+            схема = свежая
+        }
+
+        подобратьДозы(схемы: схема, context: context)
+        return changed
+    }
+
+    /// Дозы, приехавшие до схемы, привязываются к ней.
+    ///
+    /// Берём только те, что ждали **именно её** — по запомненному id
+    /// или по имени. Первая редакция этой функции цепляла к приехавшей
+    /// схеме все ничьи дозы подряд: условие в ней сравнивало схему
+    /// с самой собой и было истинным всегда. При двух курсах это
+    /// сложило бы приёмы разных препаратов в один — ровно та ошибка,
+    /// ради которой у дозы вообще заведены свои правила.
+    private static func подобратьДозы(схемы схема: Medication, context: ModelContext) {
+        let ничьи = ((try? context.fetch(FetchDescriptor<DoseRecord>())) ?? [])
+            .filter { $0.medication == nil }
+        guard !ничьи.isEmpty else { return }
+
+        let имя = folded(схема.name)
+        var связали: [DoseRecord] = []
+        for доза in ничьи {
+            let поID = доза.awaitedMedicationID == схема.id
+            let поИмени = доза.awaitedMedicationName.map { folded($0) == имя } ?? false
+            guard поID || поИмени else { continue }
+            доза.medication = схема
+            связали.append(доза)
+        }
+        guard !связали.isEmpty else { return }
+        if !context.persist(otherwise: { связали.forEach { $0.medication = nil } }) {
+            log.error("общий дневник: связь доз со схемой не записалась")
+        }
+    }
+
     /// К какой собаке относится приехавшая запись.
     ///
     /// **По id, а не «первая местная».** До 23.09.2026 здесь стояло
@@ -259,10 +426,15 @@ enum SharedDiaryInbox {
     /// запись ничьей, чем приписать её не тому животному. Ничью видно
     /// и можно починить, приписанную не туда — нет.
     static func dog(for payload: EventPayload, context: ModelContext) -> Dog? {
+        dog(forDogID: payload.dogID, context: context)
+    }
+
+    /// То же для ухода и схем: правило владельца одно на все типы.
+    /// Разойтись оно может только молча — и тогда лента будет у одной
+    /// собаки, а расписание у другой.
+    static func dog(forDogID id: UUID?, context: ModelContext) -> Dog? {
         let dogs = (try? context.fetch(FetchDescriptor<Dog>())) ?? []
-        if let id = payload.dogID, let свой = dogs.first(where: { $0.id == id }) {
-            return свой
-        }
+        if let id, let свой = dogs.first(where: { $0.id == id }) { return свой }
         return dogs.count == 1 ? dogs.first : nil
     }
 
@@ -316,6 +488,11 @@ enum SharedDiaryInbox {
             dose.id = payload.id
             dose.apply(payload)
             dose.medication = medication
+            if medication == nil {
+                // Схема ещё не приехала — запоминаем, чего доза ждёт.
+                dose.awaitedMedicationID = payload.medicationID
+                dose.awaitedMedicationName = payload.medicationName
+            }
             context.insert(dose)
             guard context.persist(otherwise: { context.delete(dose) }) else {
                 log.error("общий дневник: доза не записалась")

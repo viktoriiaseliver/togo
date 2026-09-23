@@ -181,6 +181,14 @@ final class FamilySync: NSObject {
                     dose.changedAt = now
                     stamped = true
                     changes.append(.saveRecord(SharedDiaryRecords.recordID(dose.id, in: zone)))
+                } else if let care = ctx.model(for: id) as? CareTask {
+                    care.changedAt = now
+                    stamped = true
+                    changes.append(.saveRecord(SharedDiaryRecords.recordID(care.id, in: zone)))
+                } else if let medication = ctx.model(for: id) as? Medication {
+                    medication.changedAt = now
+                    stamped = true
+                    changes.append(.saveRecord(SharedDiaryRecords.recordID(medication.id, in: zone)))
                 } else if let dog = ctx.model(for: id) as? Dog {
                     // Профиль ездит с 23.09: без него приглашение вело
                     // в пустую комнату — мама не видела ни собаки,
@@ -301,6 +309,16 @@ extension FamilySync: CKSyncEngineDelegate {
         ).first {
             return SharedDiaryRecords.record(dog.payload, base: base, in: recordID.zoneID)
         }
+        if let care = try? ctx.fetch(
+            FetchDescriptor<CareTask>(predicate: #Predicate { $0.id == id })
+        ).first {
+            return SharedDiaryRecords.record(care.payload, base: base, in: recordID.zoneID)
+        }
+        if let medication = try? ctx.fetch(
+            FetchDescriptor<Medication>(predicate: #Predicate { $0.id == id })
+        ).first {
+            return SharedDiaryRecords.record(medication.payload, base: base, in: recordID.zoneID)
+        }
         return nil
     }
 
@@ -334,6 +352,16 @@ extension FamilySync: CKSyncEngineDelegate {
                 case .dog:
                     guard let payload = SharedDiaryRecords.dogPayload(record) else { continue }
                     SharedDiaryInbox.accept(payload, context: ctx)
+                case .care:
+                    guard let payload = SharedDiaryRecords.carePayload(record) else { continue }
+                    SharedDiaryInbox.accept(
+                        payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
+                        context: ctx)
+                case .medication:
+                    guard let payload = SharedDiaryRecords.medicationPayload(record) else { continue }
+                    SharedDiaryInbox.accept(
+                        payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
+                        context: ctx)
                 case .event:
                     guard let payload = SharedDiaryRecords.eventPayload(record) else { continue }
                     // Собака берётся по id из самой записи. Раньше здесь

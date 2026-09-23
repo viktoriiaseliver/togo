@@ -23,15 +23,26 @@ nonisolated enum SharedDiary {
 
     /// Что синхронизируется.
     ///
-    /// Список намеренно короткий: то, что двое правда делают вдвоём —
-    /// отметки за день и приёмы препаратов. Профиль собаки, расписание
-    /// ухода и занятия каждый ведёт у себя: их не заполняют в четыре
-    /// руки, а фотографии сделали бы обмен тяжёлым ровно там, где он
-    /// должен быть мгновенным.
+    /// **До 23.09.2026 ездили два вида из семи** — `event` и `dose`, —
+    /// и это стоило отзыва: «мама не видит то же, что и я, и не видит
+    /// мою собаку». Приглашение работало и приводило в пустую комнату.
     ///
-    /// Виды ниже перечислены целиком, но обмениваются пока `event`
-    /// и `dose` — и на экране написано именно это. Обещать больше, чем
-    /// умеет обмен, дневнику с дозами нельзя.
+    /// Теперь ездят пять: собака, лента, уход, схемы лечения и приёмы.
+    /// Решение Виктории от 23.09 — все типы, а не минимальный набор.
+    ///
+    /// Не ездят двое, и каждый по своей причине:
+    /// - `weight` — взвешивания лежат в отдельной сущности и ждут
+    ///   очереди; вес из профиля при этом ездит;
+    /// - `member` — список семьи у каждого свой, и «я» на втором
+    ///   телефоне уже один раз оказалась карточкой владельца
+    ///   (`5c70324`). Возить его — значит повторить это.
+    ///
+    /// Фотографии не ездят вовсе: они сделали бы обмен тяжёлым ровно
+    /// там, где он должен быть мгновенным.
+    ///
+    /// **На экране написано то же самое.** Обещать больше, чем умеет
+    /// обмен, дневнику с дозами нельзя — и меньше тоже: тогда человек
+    /// не воспользуется тем, что есть.
     enum RecordType: String, CaseIterable, Sendable {
         case dog = "Dog"
         case event = "LogEvent"
@@ -134,6 +145,61 @@ nonisolated struct DogPayload: Equatable, Sendable, Codable {
     var changedAt: Date
 }
 
+/// Дело ухода: мытьё, когти, капли от клещей.
+///
+/// **Зачем ездит.** Без расписания «план дня» у гостя пуст: он видит
+/// ленту чужих отметок и ни одного дела, которое надо сделать. Мама,
+/// оставшаяся с собакой на выходные, узнавала о каплях от клещей
+/// из сообщения, а не из приложения.
+///
+/// `streak` и `snoozeCount` ездят намеренно: «делали пять дней подряд»
+/// — общий факт про собаку, а не заслуга телефона. Разъехавшись, они
+/// показали бы двоим разные числа про одно и то же.
+nonisolated struct CarePayload: Equatable, Sendable, Codable {
+    var id: UUID
+    var dogID: UUID?
+    var title: String
+    var detail: String
+    var kind: String
+    var category: String
+    var intervalDays: Int
+    var scheduledDate: Date?
+    var remindDaysBefore: Int
+    var lastDone: Date?
+    var streak: Int
+    var seasonStartMonth: Int?
+    var seasonEndMonth: Int?
+    var snoozeCount: Int
+    var changedAt: Date
+}
+
+/// Схема лечения.
+///
+/// **Зачем ездит.** Дозы ездили с самого начала, а препарат, к которому
+/// они относятся, — нет. У гостя приёмы приходили без названия, и
+/// `SharedDiaryInbox.medication(for:)` искал схему по имени, потому что
+/// «промах по id — норма, а не сбой». С 23.09.2026 схемы ездят, и промах
+/// по id станет тем, чем он и должен быть: редкостью.
+///
+/// **Запас таблеток не ездит.** `stockLeft` и `stockTotal` — это про
+/// коробку, которая лежит у кого-то дома. У мамы своя упаковка, и
+/// сложить два запаса в одно число значило бы сказать обоим неправду.
+nonisolated struct MedicationPayload: Equatable, Sendable, Codable {
+    var id: UUID
+    var dogID: UUID?
+    var name: String
+    var doseText: String
+    var times: [Int]
+    var fastingMinutes: Int
+    var fastingBeforeMinutes: Int
+    var minutesAfterMeal: Int
+    var isPaused: Bool
+    var prescriber: String?
+    var cancelledAt: Date?
+    var cancelledNote: String?
+    var changedAt: Date
+}
+
 /// Отметка приёма препарата.
 nonisolated struct DosePayload: Equatable, Sendable, Codable {
     var id: UUID
@@ -141,10 +207,13 @@ nonisolated struct DosePayload: Equatable, Sendable, Codable {
 
     /// Как препарат называется — на случай, когда id не подошёл.
     ///
-    /// Схемы лечения не обмениваются (`RecordType` выше: ездят только
-    /// `event` и `dose`), и это не недоделка, а решение: схему заводит
-    /// владелец, у второго человека тот же препарат заведён своей рукой
-    /// и с другим UUID. Значит, промах по id — обычное дело, а не сбой.
+    /// **Оставлено после того, как схемы поехали.** До 23.09.2026 они
+    /// не обменивались вовсе, у второго человека тот же препарат был
+    /// заведён своей рукой и с другим UUID, и промах по id был нормой.
+    /// Теперь схемы ездят — но промах остаётся возможным: доза приезжает
+    /// раньше схемы, схему завели до обмена, обмен включили посреди
+    /// курса. Связь по имени стоит дёшево, а без неё чужое «дано»
+    /// ложится на дозу без препарата и на экране не появляется.
     /// Пока связи по имени не было, чужая отметка «дано» ложилась
     /// на дозу без препарата и на экране не появлялась: мама отмечала
     /// приём, муж видел открытую дозу — и давал вторую таблетку.
@@ -214,6 +283,43 @@ nonisolated enum SharedDiaryMerge {
             return local.changedAt > remote.changedAt ? local : remote
         }
         return filledFields(local) >= filledFields(remote) ? local : remote
+    }
+
+    /// Спор о деле ухода и о схеме лечения.
+    ///
+    /// Правило то же, что у профиля: побеждает правка, что позже.
+    ///
+    /// **Отмена схемы — не то же, что удаление записи.** У ленты
+    /// «удаление сильнее правки», потому что вернуть удалённое стоит
+    /// один тап, а «я удалила, а оно вернулось» рушит доверие. У схемы
+    /// отмена это `cancelledAt`, обычное поле: оно едет вместе
+    /// с остальными и проигрывает более поздней правке — как и должно,
+    /// если врач отменил курс, а потом назначил снова.
+    static func resolve(local: CarePayload, remote: CarePayload) -> CarePayload {
+        precondition(local.id == remote.id)
+        if local.changedAt != remote.changedAt {
+            return local.changedAt > remote.changedAt ? local : remote
+        }
+        // При ничьей — тот, кто делал позже: `lastDone` это факт,
+        // а не мнение, и потерять его хуже, чем потерять правку названия.
+        return (local.lastDone ?? .distantPast) >= (remote.lastDone ?? .distantPast)
+            ? local : remote
+    }
+
+    static func resolve(local: MedicationPayload, remote: MedicationPayload) -> MedicationPayload {
+        precondition(local.id == remote.id)
+        if local.changedAt != remote.changedAt {
+            return local.changedAt > remote.changedAt ? local : remote
+        }
+        // При ничьей выигрывает пауза и отмена: не дать таблетку,
+        // которую отменили, безопаснее, чем дать отменённую.
+        // Это единственное место, где у схемы правило не «позже»,
+        // и цена ошибки здесь та же, что у дозы.
+        var winner = local
+        winner.isPaused = local.isPaused || remote.isPaused
+        winner.cancelledAt = local.cancelledAt ?? remote.cancelledAt
+        winner.cancelledNote = winner.cancelledNote ?? remote.cancelledNote
+        return winner
     }
 
     /// Спор об отметке дозы.
