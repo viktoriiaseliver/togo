@@ -310,12 +310,34 @@ nonisolated enum Persistence {
         case restricted
         case unavailable
 
+        /// Право на iCloud не выдано самой сборке.
+        ///
+        /// Отдельно от `unavailable`, и это не педантизм. `unavailable`
+        /// советовал «включи iCloud Drive в системных настройках» —
+        /// совет, который в этом случае не помогает ничем: настройка
+        /// у человека уже включена, а дело в подписи сборки. Мы знаем,
+        /// какой это случай (`hasCloudEntitlement`), и отвечать одним
+        /// текстом на три разные причины значит отправлять человека
+        /// чинить не то.
+        ///
+        /// 22.09.2026 сборка 80 сказала «iCloud недоступен» четверым,
+        /// и причину выясняли догадками.
+        case noEntitlement
+
+        /// Открыть хранилище с зеркалом iCloud не вышло, хотя право
+        /// есть и аккаунт на месте. Редкий случай, и до сих пор он
+        /// молчал целиком: `isUsingCloud` становился `false`, дневник
+        /// открывался локально, и человек считал, что записи уезжают.
+        case openFailed
+
         var title: String {
             switch self {
             case .syncing: "Дневник в iCloud"
             case .noAccount: "Войди в iCloud"
             case .restricted: "iCloud ограничен"
             case .unavailable: "iCloud недоступен"
+            case .noEntitlement: "Эта сборка без iCloud"
+            case .openFailed: "iCloud не открылся"
             }
         }
 
@@ -329,6 +351,10 @@ nonisolated enum Persistence {
                 "iCloud выключен ограничениями телефона. Дневник хранится только здесь — переносить придётся файлом."
             case .unavailable:
                 "Пока дневник хранится только на этом телефоне. Включи iCloud Drive в системных настройках — или пользуйся файлом ниже."
+            case .noEntitlement:
+                "Дело не в твоих настройках: права на iCloud нет у самой сборки. Записи целы и лежат на этом телефоне — сохрани файл, и они вернутся в следующей сборке."
+            case .openFailed:
+                "Право есть и вход в Apple ID есть, а библиотека не открылась — записи сейчас только на этом телефоне и в iCloud не уезжают. Перезапусти приложение; не поможет — сохрани файл и напиши в поддержку."
             }
         }
 
@@ -336,7 +362,21 @@ nonisolated enum Persistence {
     }
 
     static func cloudState() async -> CloudState {
-        guard isUsingCloud else { return .unavailable }
+        // Разбор «почему не iCloud» идёт от того, что мы знаем точно,
+        // к тому, о чём догадываемся. Права нет — ответ известен, и
+        // спрашивать систему незачем. Право есть, аккаунт есть,
+        // а зеркала нет — единственный случай, который до 23.09.2026
+        // не говорил о себе ничего.
+        guard isUsingCloud else {
+            guard hasCloudEntitlement else { return .noEntitlement }
+            switch try? await CKContainer(identifier: AppIdentifiers.cloudContainer)
+                .accountStatus() {
+            case .some(.available): return .openFailed
+            case .some(.noAccount): return .noAccount
+            case .some(.restricted): return .restricted
+            default: return .unavailable
+            }
+        }
         do {
             switch try await CKContainer(identifier: AppIdentifiers.cloudContainer).accountStatus() {
             case .available: return .syncing

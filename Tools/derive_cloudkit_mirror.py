@@ -11,7 +11,7 @@
 побайтно. Пять живых зеркал, 75 полей, ноль расхождений.
 
 Отсюда этот файл: он строит описание `CD_*` для всех моделей
-`TogoSchemaV3` по тому же правилу, и схему можно выложить импортом,
+последней версии схемы по тому же правилу, и схему можно выложить импортом,
 не запуская приложение.
 
     python3 Tools/derive_cloudkit_mirror.py                  # проверить правило
@@ -66,15 +66,29 @@ import pathlib
 
 
 def модели_схемы():
-    """Список моделей берётся из источника, а не из головы."""
+    """Список моделей — из ПОСЛЕДНЕЙ версии схемы, а не из первой.
+
+    Прежняя редакция брала `re.search` по всему файлу, то есть первое
+    вхождение `static var models` — а это `TogoSchemaV1`. В комментарии
+    при этом было написано «из TogoSchemaV3». Работало по случайности:
+    набор моделей во всех версиях один, и различие их списков ни на что
+    не влияло. Замечено 23.09.2026, когда версий стало четыре.
+
+    Ровно та же болезнь, что у сторожа, меряющего собственную копию
+    числа: инструмент утверждал не то, что читал, и не мог об этом
+    сказать.
+    """
     src = (КОРЕНЬ / 'TogoShared/Domain/SchemaVersions.swift').read_text(encoding='utf-8')
-    блок = re.search(r'static var models:\s*\[any PersistentModel\.Type\]\s*\{\s*\[(.*?)\]',
-                     src, re.S)
-    if not блок:
-        sys.exit('не нашёл список моделей в SchemaVersions.swift')
-    имена = re.findall(r'(\w+)\.self', блок.group(1))
+    версии = re.findall(
+        r'enum TogoSchemaV(\d+): VersionedSchema \{.*?'
+        r'static var models:\s*\[any PersistentModel\.Type\]\s*\{\s*\[(.*?)\]',
+        src, re.S)
+    if not версии:
+        sys.exit('не нашёл ни одной версии схемы в SchemaVersions.swift')
+    номер, блок = max(версии, key=lambda пара: int(пара[0]))
+    имена = re.findall(r'(\w+)\.self', блок)
     if len(имена) < 2:
-        sys.exit(f'список моделей прочитался как {имена} — проверка не состоялась')
+        sys.exit(f'список моделей V{номер} прочитался как {имена} — проверка не состоялась')
     return имена
 
 
@@ -158,6 +172,79 @@ def сверка(выгрузка):
     return расхождений, не_заведено_всего
 
 
+# ─── Типы общего дневника ───────────────────────────────────────────────
+#
+# `CD_*` заводит зеркало SwiftData. Типы общего дневника (`Dog`,
+# `LogEvent`, `CareTask`, `Medication`, `DoseRecord` в зоне `family`)
+# пишет наш собственный код через `CKRecord`, и у них своя форма:
+# ключ записи — это ключ, который ставит `SharedDiaryRecords.apply`.
+#
+# Выводятся они отсюда же и по той же причине, что и зеркало: список
+# полей, написанный руками, знает только то, что в него положили. Поле,
+# добавленное в снимок и забытое в схеме, молча не уедет в production —
+# и обнаружится тем, что у второго человека его просто нет.
+
+СНИМКИ = {'Dog': 'DogPayload', 'CareTask': 'CarePayload',
+          'Medication': 'MedicationPayload', 'DoseRecord': 'DosePayload',
+          'LogEvent': 'EventPayload'}
+
+ФОРМА_СНИМКА = {
+    'String': 'STRING', 'UUID': 'STRING', 'Date': 'TIMESTAMP',
+    'Int': 'INT64', 'Bool': 'INT64', 'Double': 'DOUBLE',
+    '[Int]': 'LIST<INT64>', '[String]': 'LIST<STRING>',
+}
+
+
+def поля_снимка(имя):
+    src = (КОРЕНЬ / 'TogoShared/Sync/SharedDiary.swift').read_text(encoding='utf-8')
+    тело = re.search(r'struct %s: Equatable, Sendable, Codable \{(.*?)\n\}' % имя, src, re.S)
+    if not тело:
+        sys.exit(f'снимок {имя} не найден в SharedDiary.swift')
+    поля = {m.group(1): m.group(2).strip()
+            for m in re.finditer(r'var (\w+): ([^\n=]+)', тело.group(1))}
+    if len(поля) < 3:
+        sys.exit(f'снимок {имя} прочитался как {поля} — разбор не состоялся')
+    return поля
+
+
+def запись_общего(тип, снимок):
+    src = (КОРЕНЬ / 'TogoShared/Sync/SharedDiaryRecords.swift').read_text(encoding='utf-8')
+    блок = re.search(r'static func apply\(_ payload: %s, to record: CKRecord\) \{(.*?)\n    \}'
+                     % снимок, src, re.S)
+    if not блок:
+        sys.exit(f'не нашёл apply для {снимок}')
+    ключи = re.findall(r'record\["(\w+)"\] = payload\.(\w+)', блок.group(1))
+    if not ключи:
+        sys.exit(f'у {снимок} не прочитался ни один ключ записи')
+    поля = поля_снимка(снимок)
+    строки = []
+    for ключ, свойство in ключи:
+        тип_swift = поля.get(свойство)
+        if тип_swift is None:
+            sys.exit(f'{тип}.{свойство} есть в записи и нет в снимке')
+        форма = ФОРМА_СНИМКА.get(тип_swift.rstrip('?'))
+        if форма is None:
+            sys.exit(f'{тип}.{свойство}: не знаю, как хранить {тип_swift} — угадывать нельзя')
+        строки.append((ключ, форма))
+    # Зеркало кладёт их само; у своих записей они тоже есть.
+    строки += [('createdTimestamp', 'TIMESTAMP'), ('modifiedTimestamp', 'TIMESTAMP')]
+
+    ширина = max(len(k) for k, _ in строки) + 2
+    ширина = max(ширина, len('"___modifiedBy"') + 2)
+    куски = [f'    RECORD TYPE {тип} (']
+    for имя, форма in [('"___createTime"', 'TIMESTAMP'), ('"___createdBy"', 'REFERENCE'),
+                       ('"___etag"', 'STRING'), ('"___modTime"', 'TIMESTAMP'),
+                       ('"___modifiedBy"', 'REFERENCE'), ('"___recordID"', 'REFERENCE')]:
+        куски.append(f'        {имя:<{ширина}} {форма},')
+    for имя, форма in sorted(строки):
+        куски.append(f'        {имя:<{ширина}} {форма},')
+    куски += ['        GRANT WRITE TO "_creator",',
+              '        GRANT CREATE TO "_icloud",',
+              '        GRANT READ TO "_world"',
+              '    );']
+    return '\n'.join(куски)
+
+
 if __name__ == '__main__':
     if '--schema' in sys.argv:
         модели = все_модели()
@@ -166,7 +253,7 @@ if __name__ == '__main__':
         for имя in модели_схемы():
             поля = модели.get(имя)
             if поля is None:
-                sys.exit(f'модель {имя} из TogoSchemaV3 не найдена в TogoShared/Models')
+                sys.exit(f'модель {имя} из последней версии схемы не найдена в TogoShared/Models')
             неизвестные += [f'{имя}.{п}' for п, т in поля
                             if т is None and not п.endswith('Storage')]
             куски.append(запись(имя, поля))
@@ -175,7 +262,9 @@ if __name__ == '__main__':
                   file=sys.stderr)
             for п in неизвестные:
                 print(f'#   {п}', file=sys.stderr)
-        print('\n'.join(куски))
+        for тип, снимок in sorted(СНИМКИ.items()):
+            куски.append(запись_общего(тип, снимок))
+        print('\n\n'.join(куски))
     else:
         выгрузка = sys.stdin.read() if not sys.stdin.isatty() else ''
         if not выгрузка:
