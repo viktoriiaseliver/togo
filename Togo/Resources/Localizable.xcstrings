@@ -599,6 +599,12 @@
             "state" : "translated",
             "value" : "%@ · %@ г"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ · %@ г"
+          }
         }
       }
     },
@@ -615,6 +621,12 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
+            "value" : "%@ · %@ м"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
             "value" : "%@ · %@ м"
           }
         }
@@ -1055,6 +1067,12 @@
             "state" : "translated",
             "value" : "%@ из %@"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ з %@"
+          }
         }
       }
     },
@@ -1264,6 +1282,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ позади"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ позаду"
           }
         }
       }
@@ -1523,6 +1547,12 @@
             "state" : "translated",
             "value" : "%@, %@ м"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@, %@ м"
+          }
         }
       }
     },
@@ -1701,6 +1731,12 @@
             "state" : "translated",
             "value" : "%@: стул"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@: випорожнення"
+          }
         }
       }
     },
@@ -1815,6 +1851,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld min"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld хв"
           }
         }
       }
@@ -2713,6 +2755,12 @@
             "state" : "translated",
             "value" : "Антифриз"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Антифриз"
+          }
         }
       }
     },
@@ -2988,6 +3036,12 @@
             "state" : "translated",
             "value" : "Бешенство"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Сказ"
+          }
         }
       }
     },
@@ -3168,6 +3222,12 @@
             "state" : "translated",
             "value" : "В дороге"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "У дорозі"
+          }
         }
       }
     },
@@ -3220,6 +3280,12 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
+            "value" : "в момент"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
             "value" : "в момент"
           }
         }
@@ -3459,6 +3525,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Вернулись"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Повернулися"
           }
         }
       }
@@ -3760,6 +3832,12 @@
             "state" : "translated",
             "value" : "Вес: %@."
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Вага: %@."
+          }
         }
       }
     },
@@ -3892,6 +3970,12 @@
             "state" : "translated",
             "value" : "ветеринар"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ветеринар"
+          }
         }
       }
     },
@@ -3908,6 +3992,12 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
+            "value" : "Ветеринар"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
             "value" : "Ветеринар"
           }
         }
@@ -3945,6 +4035,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Вечерняя"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Вечірня"
           }
         }
       }
@@ -4048,6 +4144,12 @@
             "state" : "translated",
             "value" : "Взвесить"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Зважити"
+          }
         }
       }
     },
@@ -4101,6 +4203,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "взрослая"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "доросла"
           }
         }
       }
@@ -4323,6 +4431,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Владелец"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Власник"
           }
         }
       }
@@ -4810,6 +4924,12 @@
             "state" : "translated",
             "value" : "Вплотную"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Впритул"
+          }
         }
       }
     },
@@ -5073,6 +5193,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "все — %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "усі — %@"
           }
         }
       }
@@ -5632,6 +5758,12 @@
             "state" : "translated",
             "value" : "вывел %@"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "вивів %@"
+          }
         }
       }
     },
@@ -5710,6 +5842,12 @@
             "state" : "translated",
             "value" : "выгрузил"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "вивантажив"
+          }
         }
       }
     },
@@ -5727,6 +5865,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "выгрузить"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "вивантажити"
           }
         }
       }
@@ -5859,6 +6003,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "выключен"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "вимкнено"
           }
         }
       }
@@ -6255,6 +6405,12 @@
             "state" : "translated",
             "value" : "Вычесать"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Вичесати"
+          }
         }
       }
     },
@@ -6423,6 +6579,12 @@
             "state" : "translated",
             "value" : "Где живём"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Де живемо"
+          }
         }
       }
     },
@@ -6577,6 +6739,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Готовлю…"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Готую…"
           }
         }
       }
@@ -7616,6 +7784,12 @@
             "state" : "translated",
             "value" : "действий"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "дій"
+          }
         }
       }
     },
@@ -8272,6 +8446,12 @@
             "state" : "translated",
             "value" : "до выезда"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "до виїзду"
+          }
         }
       }
     },
@@ -8308,6 +8488,12 @@
             "state" : "translated",
             "value" : "добавить"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "додати"
+          }
         }
       }
     },
@@ -8325,6 +8511,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Добавить"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Додати"
           }
         }
       }
@@ -8913,6 +9105,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Документы"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Документи"
           }
         }
       }
@@ -9766,6 +9964,12 @@
             "state" : "translated",
             "value" : "Если что"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Якщо що"
+          }
         }
       }
     },
@@ -9987,6 +10191,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ещё рано"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ще рано"
           }
         }
       }
@@ -10372,6 +10582,12 @@
             "state" : "translated",
             "value" : "закончил"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "закінчив"
+          }
         }
       }
     },
@@ -10407,6 +10623,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Закончить"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Завершити"
           }
         }
       }
@@ -11272,6 +11494,12 @@
             "state" : "translated",
             "value" : "Записать"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Записати"
+          }
         }
       }
     },
@@ -11950,6 +12178,12 @@
             "state" : "translated",
             "value" : "запрещены"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "заборонені"
+          }
         }
       }
     },
@@ -12003,6 +12237,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Зачем это"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Навіщо це"
           }
         }
       }
@@ -12135,6 +12375,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Здоровье"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Здоров'я"
           }
         }
       }
@@ -12702,6 +12948,12 @@
             "state" : "translated",
             "value" : "Инородное"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Стороннє"
+          }
         }
       }
     },
@@ -12828,6 +13080,12 @@
             "state" : "translated",
             "value" : "инцидент"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "інцидент"
+          }
         }
       }
     },
@@ -12846,6 +13104,12 @@
             "state" : "translated",
             "value" : "Инцидент"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Інцидент"
+          }
         }
       }
     },
@@ -12863,6 +13127,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Инциденты"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Інциденти"
           }
         }
       }
@@ -13170,6 +13440,12 @@
             "state" : "translated",
             "value" : "Как зовут"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Як звати"
+          }
         }
       }
     },
@@ -13349,6 +13625,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Как часто"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Як часто"
           }
         }
       }
@@ -14034,6 +14316,12 @@
             "state" : "translated",
             "value" : "Колбаска"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ковбаска"
+          }
         }
       }
     },
@@ -14199,6 +14487,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "кончится"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "закінчиться"
           }
         }
       }
@@ -14368,6 +14662,12 @@
             "state" : "translated",
             "value" : "Кормление"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Годування"
+          }
         }
       }
     },
@@ -14422,6 +14722,12 @@
             "state" : "translated",
             "value" : "кормлений"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "годувань"
+          }
         }
       }
     },
@@ -14439,6 +14745,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Кормлений"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Годувань"
           }
         }
       }
@@ -15039,6 +15351,12 @@
             "state" : "translated",
             "value" : "лакомство"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ласощі"
+          }
         }
       }
     },
@@ -15056,6 +15374,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Лакомство"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ласощі"
           }
         }
       }
@@ -16322,6 +16646,12 @@
             "state" : "translated",
             "value" : "на %@ %@"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "на %@ %@"
+          }
         }
       }
     },
@@ -16358,6 +16688,12 @@
             "state" : "translated",
             "value" : "на ногах"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "на ногах"
+          }
         }
       }
     },
@@ -16375,6 +16711,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "на паузе"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "на паузі"
           }
         }
       }
@@ -16465,6 +16807,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "на улице"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "надворі"
           }
         }
       }
@@ -16784,6 +17132,12 @@
             "state" : "translated",
             "value" : "название"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "назва"
+          }
         }
       }
     },
@@ -16801,6 +17155,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Название"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Назва"
           }
         }
       }
@@ -16856,6 +17216,12 @@
             "state" : "translated",
             "value" : "Назначил"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Призначив"
+          }
         }
       }
     },
@@ -16890,6 +17256,12 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
+            "value" : "написана"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
             "value" : "написана"
           }
         }
@@ -17221,6 +17593,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Началась"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Почалася"
           }
         }
       }
@@ -17587,6 +17965,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "не нужно"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "не потрібно"
           }
         }
       }
@@ -19246,6 +19630,12 @@
             "state" : "translated",
             "value" : "один раз"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "один раз"
+          }
         }
       }
     },
@@ -19719,6 +20109,12 @@
             "state" : "translated",
             "value" : "осталось"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "залишилось"
+          }
         }
       }
     },
@@ -19736,6 +20132,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Осталось"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Залишилось"
           }
         }
       }
@@ -20503,6 +20905,12 @@
             "state" : "translated",
             "value" : "Отменить"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Скасувати"
+          }
         }
       }
     },
@@ -20896,6 +21304,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "отмечено"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "позначено"
           }
         }
       }
@@ -21291,6 +21705,12 @@
             "state" : "translated",
             "value" : "Очистить"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Очистити"
+          }
         }
       }
     },
@@ -21644,6 +22064,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "передать"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "передати"
           }
         }
       }
@@ -22369,6 +22795,12 @@
             "state" : "translated",
             "value" : "Погуляли"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Погуляли"
+          }
         }
       }
     },
@@ -22477,6 +22909,12 @@
             "state" : "translated",
             "value" : "подписка"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "підписка"
+          }
         }
       }
     },
@@ -22494,6 +22932,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Подписка"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Підписка"
           }
         }
       }
@@ -23457,6 +23901,12 @@
             "state" : "translated",
             "value" : "Помощник"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Помічник"
+          }
         }
       }
     },
@@ -23654,6 +24104,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "поправил"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "виправив"
           }
         }
       }
@@ -24597,6 +25053,12 @@
             "state" : "translated",
             "value" : "правовое"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "правове"
+          }
         }
       }
     },
@@ -24836,6 +25298,12 @@
             "state" : "translated",
             "value" : "Прививки"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Щеплення"
+          }
         }
       }
     },
@@ -25051,6 +25519,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Приём %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Прийом %@"
           }
         }
       }
@@ -25554,6 +26028,12 @@
             "state" : "translated",
             "value" : "Прогулка"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Прогулянка"
+          }
         }
       }
     },
@@ -25896,6 +26376,12 @@
             "state" : "translated",
             "value" : "Просится"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Проситься"
+          }
         }
       }
     },
@@ -25966,6 +26452,12 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
+            "value" : "Протокол"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
             "value" : "Протокол"
           }
         }
@@ -26273,6 +26765,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "раз в %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "раз на %@"
           }
         }
       }
@@ -26603,6 +27101,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ребёнок"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Дитина"
           }
         }
       }
@@ -27036,6 +27540,12 @@
             "state" : "translated",
             "value" : "Русский"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Російська"
+          }
         }
       }
     },
@@ -27216,6 +27726,12 @@
             "state" : "translated",
             "value" : "с кровью"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "з кров'ю"
+          }
         }
       }
     },
@@ -27251,6 +27767,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "самолёт"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "літак"
           }
         }
       }
@@ -27353,6 +27875,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Свернуть"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Згорнути"
           }
         }
       }
@@ -27504,6 +28032,12 @@
             "state" : "translated",
             "value" : "Сделали"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Зробили"
+          }
         }
       }
     },
@@ -27521,6 +28055,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "сделано"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "зроблено"
           }
         }
       }
@@ -27604,6 +28144,12 @@
             "state" : "translated",
             "value" : "сеансов"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "сеансів"
+          }
         }
       }
     },
@@ -27669,6 +28215,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Сегодня"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Сьогодні"
           }
         }
       }
@@ -27813,6 +28365,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "седьмой"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "сьомий"
           }
         }
       }
@@ -27988,6 +28546,12 @@
             "state" : "translated",
             "value" : "Симптомы"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Симптоми"
+          }
         }
       }
     },
@@ -28083,6 +28647,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "сколько"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "скільки"
           }
         }
       }
@@ -28503,6 +29073,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "слияние"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "злиття"
           }
         }
       }
@@ -29080,6 +29656,12 @@
             "state" : "translated",
             "value" : "сорвался"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "зірвався"
+          }
         }
       }
     },
@@ -29097,6 +29679,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Сорвался"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Зірвався"
           }
         }
       }
@@ -29223,6 +29811,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Спасибо"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Дякую"
           }
         }
       }
@@ -30066,6 +30660,12 @@
             "state" : "translated",
             "value" : "стул %@"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "випорожнення %@"
+          }
         }
       }
     },
@@ -30432,6 +31032,12 @@
             "state" : "translated",
             "value" : "считаю…"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "рахую…"
+          }
         }
       }
     },
@@ -30696,6 +31302,12 @@
             "state" : "translated",
             "value" : "Твёрдый"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Твердий"
+          }
         }
       }
     },
@@ -30748,6 +31360,12 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
+            "value" : "Телефон"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
             "value" : "Телефон"
           }
         }
@@ -31942,6 +32560,12 @@
             "state" : "translated",
             "value" : "удалить"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "видалити"
+          }
         }
       }
     },
@@ -31959,6 +32583,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Удалить"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Видалити"
           }
         }
       }
@@ -32500,6 +33130,12 @@
             "state" : "translated",
             "value" : "Утренняя"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ранкова"
+          }
         }
       }
     },
@@ -32872,6 +33508,12 @@
             "state" : "translated",
             "value" : "фасовка"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "фасування"
+          }
         }
       }
     },
@@ -33034,6 +33676,12 @@
             "state" : "translated",
             "value" : "хватает"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "вистачає"
+          }
         }
       }
     },
@@ -33129,6 +33777,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "хозяйку"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "господиню"
           }
         }
       }
@@ -33532,6 +34186,12 @@
             "state" : "translated",
             "value" : "Человек"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Людина"
+          }
         }
       }
     },
@@ -33658,6 +34318,12 @@
             "state" : "translated",
             "value" : "через %@"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "через %@"
+          }
         }
       }
     },
@@ -33770,6 +34436,12 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
+            "value" : "Чип: %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
             "value" : "Чип: %@"
           }
         }
@@ -34696,6 +35368,12 @@
             "state" : "translated",
             "value" : "Что это"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Що це"
+          }
         }
       }
     },
@@ -34886,6 +35564,12 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
+            "value" : "Шоколад"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
             "value" : "Шоколад"
           }
         }
@@ -35110,6 +35794,12 @@
             "state" : "translated",
             "value" : "эпизоды"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "епізоди"
+          }
         }
       }
     },
@@ -35199,6 +35889,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Это всё"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Це все"
           }
         }
       }
@@ -36166,6 +36862,12 @@
             "state" : "translated",
             "value" : "тревога"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "тривога"
+          }
         }
       }
     },
@@ -36183,6 +36885,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "лечение"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "лікування"
           }
         }
       }
@@ -36280,6 +36988,12 @@
             "state" : "translated",
             "value" : "в неделю"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "на тиждень"
+          }
         }
       }
     },
@@ -36297,6 +37011,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "в месяц"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "на місяць"
           }
         }
       }
@@ -36789,6 +37509,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "серия %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "серія %@"
           }
         }
       }
@@ -37923,6 +38649,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "прогулка"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "прогулянка"
           }
         }
       }
@@ -39870,6 +40602,12 @@
             "state" : "translated",
             "value" : "Отметить"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Позначити"
+          }
         }
       }
     },
@@ -39922,6 +40660,12 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
+            "value" : "доза %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
             "value" : "доза %@"
           }
         }
