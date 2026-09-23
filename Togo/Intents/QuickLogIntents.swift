@@ -39,9 +39,27 @@ enum QuickLog {
 
         let event = LogEvent(kind: kind, date: Date(), authorName: AppState.storedUserName)
         configure(event)
+
+        // Правило дубля здесь такое же, как на экране, и по той же причине.
+        // До 23.09.2026 его тут не было вовсе: сказать «покорми» дважды
+        // подряд можно было без всякой защиты — а голосом и кнопкой
+        // «Действие» жмут как раз не глядя, то есть второй раз вероятнее,
+        // чем на экране. Отвечаем словами, а не молча: у интента нет тоста,
+        // и ответ — единственное, что человек услышит.
+        if let recent = DuplicateGuard.recent(of: kind, dog: dog, at: event.date,
+                                              like: event, in: context) {
+            UsageLog.note(.record, kind.rawValue, outcome: .duplicate)
+            return DuplicateGuard.message(kind, at: recent.date)
+        }
+
         event.dog = dog
         context.insert(event)
         try context.save()
+
+        // Без этой строки журнал не знает о записях голосом вовсе:
+        // в замере 23.09 их нет ни одной, и нельзя сказать, не пользуются
+        // ими или путь размечен не был.
+        UsageLog.note(.record, kind.rawValue, on: .other)
 
         return "Записала · \(kind.title.lowercased()) · \(dog.name)"
     }

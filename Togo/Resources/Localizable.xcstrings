@@ -412,20 +412,20 @@
         }
       }
     },
-    "«Настройки → собака → Питание и режим». Приложение сравнит это с тем, как ты кормишь на самом деле, и скажет, если Стич переедает." : {
+    "«Настройки → собака → Питание и режим». Приложение сравнит это с тем, как ты кормишь на самом деле, и скажет, если собака переедает." : {
       "comment" : "explainerCard",
       "extractionState" : "manual",
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "«Réglages → chien → Alimentation et routine». L'app comparera ça à ce que tu donnes vraiment et te dira si Stitch mange trop."
+            "value" : "«Réglages → chien → Alimentation et routine». L'app comparera ça à ce que tu donnes vraiment et te dira si le chien mange trop."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "«Настройки → собака → Питание и режим». Приложение сравнит это с тем, как ты кормишь на самом деле, и скажет, если Стич переедает."
+            "value" : "«Настройки → собака → Питание и режим». Приложение сравнит это с тем, как ты кормишь на самом деле, и скажет, если собака переедает."
           }
         }
       }
