@@ -27,16 +27,75 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SOURCES = ["Togo", "TogoShared", "TogoWidgets"]
 SKIP_DIRS = {"Generated"}
-SKIP_FILES = {"ComponentGallery.swift"}
+# SeedData — демо-собака и демо-семья. Это ДАННЫЕ, а не подписи:
+# «Стич» и «Мама» человек задаёт сам, и перевод превращает их
+# в «Stitch» и «Maman» у того, кто сам назвал собаку. До 23.09 они
+# уезжали в каталог наравне с надписями, и на этом трижды за день
+# спотыкались тесты кадров.
+SKIP_FILES = {"ComponentGallery.swift", "SeedData.swift"}
 
 MD_OUT = os.path.join(ROOT, "docs", "TEXTS.md")
 CATALOG_OUT = os.path.join(ROOT, "Togo", "Resources", "Localizable.xcstrings")
 
 CYRILLIC = re.compile(r"[А-Яа-яЁё]")
-LITERAL = re.compile(r'"((?:[^"\\\n]|\\.)*)"')
+# Литералы вынимаются сканером, а не регуляркой: внутри интерполяции
+# бывают свои кавычки — `"… \(Fmt.plural(n, "час", "часа"))"`. Регулярка
+# обрывала литерал на первой внутренней кавычке, и в каталог уезжал
+# обрубок «Записала · прогулка \(Fmt.plural(minutes, » — ключ, которого
+# приложение не спрашивает никогда.
+def literals(line):
+    """Строковые литералы строки кода, с учётом кавычек внутри `\\(…)`.
+
+    Порядок проверок важен: `\\(` — начало интерполяции, а не escape-пара.
+    Если сначала съесть его как escape, кавычки внутри выражения закроют
+    литерал, и в каталог уедет обрубок.
+    """
+    out, i, n = [], 0, len(line)
+    while i < n:
+        if line[i] != '"':
+            i += 1
+            continue
+        j, depth, текст = i + 1, 0, []
+        закрыт = False
+        while j < n:
+            пара = line[j:j + 2]
+            if пара == "\\(":
+                depth += 1
+                текст.append(пара)
+                j += 2
+                continue
+            c = line[j]
+            if c == "\\" and j + 1 < n:
+                текст.append(line[j:j + 2])
+                j += 2
+                continue
+            if depth:
+                if c == "(":
+                    depth += 1
+                elif c == ")":
+                    depth -= 1
+            elif c == '"':
+                out.append("".join(текст))
+                закрыт = True
+                break
+            текст.append(c)
+            j += 1
+        if not закрыт and depth:
+            # Литерал не закрылся на этой строке — многострочный или
+            # разорванный. Молча глотать его нельзя: так и появлялись
+            # обрубки. Пропускаем и идём дальше.
+            pass
+        i = j + 1
+    return out
+
+
 # Подстановки в переводе становятся плейсхолдерами: переводчик двигает их
 # по фразе, но не переписывает.
-INTERPOLATION = re.compile(r"\\\(([^()]*(?:\([^()]*\))?[^()]*)\)")
+# Интерполяция ищется со счётом скобок, а не регуляркой: выражение
+# внутри бывает с вложенными вызовами — `\(Fmt.decimal((n * 10).rounded()))`.
+# Регулярка обрывалась на первой закрывающей, и в каталог уезжал обрубок
+# вроде `\(Fmt.decimal((report.recordsPerDay * 10)` — ключ, который
+# в рантайме не спрашивается никогда.
 # Технические строки: в логи и в служебные ключи переводчику лезть незачем.
 TECHNICAL = re.compile(r"\blog\.(error|notice|debug|info|warning)\b")
 DECL = re.compile(r"^\s*(?:@\w+\s+)*(?:public\s+|private\s+|internal\s+|fileprivate\s+)?"
@@ -102,8 +161,36 @@ def key_id(text):
 
 
 def placeholders(text):
-    """\(dog.name) → %@. Что именно подставляется, видно в колонке «Где»."""
-    return INTERPOLATION.sub("%@", text)
+    """`\(dog.name)` → `%@`. Что подставляется, видно в колонке «Где».
+
+    Спецификатор всегда `%@`, и это известное упрощение: SwiftUI берёт
+    `%lld` для целых и `%lf` для дробных, так что ключ с числом внутри
+    может не совпасть с тем, который приложение спрашивает в рантайме.
+    Выводить тип из текста нельзя — это путь к ключу, который выглядит
+    правильным и молча не работает. Такие строки скрипт называет вслух
+    в конце работы, чтобы им завели явный ключ в коде.
+    """
+    out = []
+    i = 0
+    while i < len(text):
+        if text.startswith("\\(", i):
+            depth = 0
+            j = i + 1
+            while j < len(text):
+                if text[j] == "(":
+                    depth += 1
+                elif text[j] == ")":
+                    depth -= 1
+                    if depth == 0:
+                        break
+                j += 1
+            if j < len(text):
+                out.append("%@")
+                i = j + 1
+                continue
+        out.append(text[i])
+        i += 1
+    return "".join(out)
 
 
 def strip_comments(line):
@@ -133,7 +220,7 @@ def collect():
             line = strip_comments(raw)
             if TECHNICAL.search(line):
                 continue
-            for literal in LITERAL.findall(line):
+            for literal in literals(line):
                 if not CYRILLIC.search(literal):
                     continue
                 found.append((placeholders(literal), context, number))
