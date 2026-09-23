@@ -1,0 +1,116 @@
+{
+  "sourceLanguage": "ru",
+  "strings": {
+    "${applicationName}: давно ли гуляли": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "${applicationName}: давно ли гуляли"
+          }
+        }
+      }
+    },
+    "${applicationName}: покормила": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "${applicationName}: покормила"
+          }
+        }
+      }
+    },
+    "${applicationName}: пописал": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "${applicationName}: пописал"
+          }
+        }
+      }
+    },
+    "${applicationName}: прогулка": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "${applicationName}: прогулка"
+          }
+        }
+      }
+    },
+    "${applicationName}: стул": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "${applicationName}: стул"
+          }
+        }
+      }
+    },
+    "Давно ли гуляли в ${applicationName}": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Давно ли гуляли в ${applicationName}"
+          }
+        }
+      }
+    },
+    "Записать кормление в ${applicationName}": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Записать кормление в ${applicationName}"
+          }
+        }
+      }
+    },
+    "Отметить в ${applicationName}, что пописал": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отметить в ${applicationName}, что пописал"
+          }
+        }
+      }
+    },
+    "Отметить стул в ${applicationName}": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отметить стул в ${applicationName}"
+          }
+        }
+      }
+    },
+    "Прогулка в ${applicationName}": {
+      "extractionState": "manual",
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Прогулка в ${applicationName}"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}
