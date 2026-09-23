@@ -318,7 +318,7 @@ struct SchemaMigrationTests {
 
         let v1Записи = поля(TogoSchemaV1.self, "LogEvent")
         let v2Записи = поля(TogoSchemaV2.self, "LogEvent")
-        let v3Записи = поля(TogoSchemaV3.self, "LogEvent")
+        let v3Записи = поля(TogoSchemaV4.self, "LogEvent")
 
         // Ровно три поля появились в сборке 46 — коммит 4081a47.
         #expect(v2Записи.subtracting(v1Записи) == ["enteredAt", "originRaw", "isDayOnly"])
@@ -326,7 +326,7 @@ struct SchemaMigrationTests {
         #expect(v3Записи == v2Записи, "после сборки 46 лента не менялась")
 
         let v2Лечение = поля(TogoSchemaV2.self, "Medication")
-        let v3Лечение = поля(TogoSchemaV3.self, "Medication")
+        let v3Лечение = поля(TogoSchemaV4.self, "Medication")
 
         // Ровно одно поле появилось после сборки 46 — коммит de07bda.
         #expect(v3Лечение.subtracting(v2Лечение) == ["fastingBeforeMinutes"])
@@ -337,17 +337,22 @@ struct SchemaMigrationTests {
         let имена = { (версия: any VersionedSchema.Type) in
             Set(Schema(versionedSchema: версия).entitiesByName.keys)
         }
-        #expect(имена(TogoSchemaV1.self) == имена(TogoSchemaV3.self))
-        #expect(имена(TogoSchemaV2.self) == имена(TogoSchemaV3.self))
-        #expect(имена(TogoSchemaV3.self).count == 16)
+        #expect(имена(TogoSchemaV1.self) == имена(TogoSchemaV4.self))
+        #expect(имена(TogoSchemaV2.self) == имена(TogoSchemaV4.self))
+        #expect(имена(TogoSchemaV4.self).count == 16)
     }
 
     @Test("В плане перечислены все формы хранилища, что уехали из репозитория")
     func планПолон() {
-        #expect(TogoMigrationPlan.schemas.count == 3,
-                "сборка 36, сборка 46 и нынешняя — версию, которой в плане нет, открыть нечем")
-        #expect(TogoMigrationPlan.stages.count == 2)
-        #expect(Persistence.schema.version == TogoSchemaV3.versionIdentifier,
+        #expect(TogoMigrationPlan.schemas.count == 4, """
+            сборка 36 (V1), сборка 46 (V2), сборка 141 (V3) и нынешняя (V4)
+            — версию, которой в плане нет, открыть нечем.
+            V3 заморожена снимком 23.09: до этого она ссылалась на живые
+            классы, и первая же правка модели сменила её форму под
+            неизменным номером.
+            """)
+        #expect(TogoMigrationPlan.stages.count == 3)
+        #expect(Persistence.schema.version == TogoSchemaV4.versionIdentifier,
                 "приложение открывает хранилище последней версией плана")
     }
 

@@ -58,6 +58,69 @@ extension LogEvent {
 }
 
 @MainActor
+extension Dog {
+    var payload: DogPayload {
+        DogPayload(
+            id: id,
+            name: name,
+            breed: breed,
+            birthDate: birthDate,
+            sex: sexRaw,
+            isNeutered: isNeutered,
+            weightKg: weightKg,
+            targetWeightLow: targetWeightLow,
+            targetWeightHigh: targetWeightHigh,
+            foodBrand: foodBrand,
+            portionGrams: portionGrams,
+            mealsPerDay: mealsPerDay,
+            mealTimes: mealTimes,
+            dailyNormGrams: dailyNormGrams,
+            forbiddenFoods: forbiddenFoods,
+            wakeMinuteOfDay: wakeMinuteOfDay,
+            sleepMinuteOfDay: sleepMinuteOfDay,
+            isOnTreatment: isOnTreatment,
+            chipNumber: chipNumber,
+            vetName: vetName,
+            vetPhone: vetPhone,
+            clinicName: clinicName,
+            clinicPhone: clinicPhone,
+            distinctiveMarks: distinctiveMarks,
+            changedAt: changedAt
+        )
+    }
+
+    /// Фото здесь не трогается намеренно: оно не ездит, и затирать
+    /// своё чужой пустотой нельзя. Тот же случай, что у `medicationID`
+    /// дозы, — поле, которого в снимке нет, остаётся как было.
+    func apply(_ payload: DogPayload) {
+        name = payload.name
+        breed = payload.breed
+        birthDate = payload.birthDate
+        sexRaw = payload.sex
+        isNeutered = payload.isNeutered
+        weightKg = payload.weightKg
+        targetWeightLow = payload.targetWeightLow
+        targetWeightHigh = payload.targetWeightHigh
+        foodBrand = payload.foodBrand
+        portionGrams = payload.portionGrams
+        mealsPerDay = payload.mealsPerDay
+        mealTimes = payload.mealTimes
+        dailyNormGrams = payload.dailyNormGrams
+        forbiddenFoods = payload.forbiddenFoods
+        wakeMinuteOfDay = payload.wakeMinuteOfDay
+        sleepMinuteOfDay = payload.sleepMinuteOfDay
+        isOnTreatment = payload.isOnTreatment
+        chipNumber = payload.chipNumber
+        vetName = payload.vetName
+        vetPhone = payload.vetPhone
+        clinicName = payload.clinicName
+        clinicPhone = payload.clinicPhone
+        distinctiveMarks = payload.distinctiveMarks
+        changedAt = payload.changedAt
+    }
+}
+
+@MainActor
 extension DoseRecord {
     var payload: DosePayload {
         DosePayload(
@@ -135,6 +198,72 @@ enum SharedDiaryInbox {
             }
         }
         return changed
+    }
+
+    /// Принять профиль собаки с другого телефона.
+    ///
+    /// **Собака заводится, если её ещё нет.** Это и есть починка
+    /// «мама не видит мою собаку»: раньше приехавшие записи цеплялись
+    /// к ПЕРВОЙ местной собаке (`FamilySync.apply`), а если местной
+    /// не было ни одной — повисали ничьими.
+    ///
+    /// Решение Виктории от 23.09.2026: у гостя со своей собакой видны
+    /// **обе, переключателем**. Слияния по кличке быть не должно ни при
+    /// каких условиях — две «Стич» в одном доме это две собаки, и 23.09
+    /// живой дневник уже разошёлся пополам именно так.
+    @discardableResult
+    static func accept(_ payload: DogPayload, context: ModelContext) -> Bool {
+        let id = payload.id
+        let existing = try? context.fetch(
+            FetchDescriptor<Dog>(predicate: #Predicate { $0.id == id })
+        ).first
+
+        guard let local = existing else {
+            let dog = Dog(name: payload.name, weightKg: payload.weightKg)
+            dog.id = payload.id
+            dog.apply(payload)
+            context.insert(dog)
+            guard context.persist(otherwise: { context.delete(dog) }) else {
+                log.error("общий дневник: собака не записалась")
+                return false
+            }
+            // Крошка запуска уже умеет отличать приехавшую от заведённой
+            // здесь — здесь мы это знаем точно, а не по разнице составов.
+            StartupLog.note("собака \(payload.id.uuidString.prefix(8)) — приехала обменом")
+            return false
+        }
+
+        let merged = SharedDiaryMerge.resolve(local: local.payload, remote: payload)
+        let changed = merged != payload
+        if merged != local.payload {
+            let былПрежний = local.payload
+            local.apply(merged)
+            if !context.persist(otherwise: { local.apply(былПрежний) }) {
+                log.error("общий дневник: слияние профиля не записалось")
+            }
+        }
+        return changed
+    }
+
+    /// К какой собаке относится приехавшая запись.
+    ///
+    /// **По id, а не «первая местная».** До 23.09.2026 здесь стояло
+    /// `fetch(Dog.self).first`, и это давало две беды разом: у гостя
+    /// с собственной собакой чужие отметки ложились на неё, а у гостя
+    /// без собак — повисали ничьими и не показывались нигде.
+    ///
+    /// Запасной вариант — единственная местная собака — оставлен
+    /// намеренно: записи, уехавшие до того, как профиль научился
+    /// ездить, помнят `dogID`, которого на этом телефоне нет. Когда
+    /// собака одна, ошибиться невозможно; когда их две — лучше оставить
+    /// запись ничьей, чем приписать её не тому животному. Ничью видно
+    /// и можно починить, приписанную не туда — нет.
+    static func dog(for payload: EventPayload, context: ModelContext) -> Dog? {
+        let dogs = (try? context.fetch(FetchDescriptor<Dog>())) ?? []
+        if let id = payload.dogID, let свой = dogs.first(where: { $0.id == id }) {
+            return свой
+        }
+        return dogs.count == 1 ? dogs.first : nil
     }
 
     /// К какому препарату относится чужая отметка дозы.

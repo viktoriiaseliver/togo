@@ -80,6 +80,60 @@ nonisolated struct EventPayload: Equatable, Sendable, Codable {
     var changedAt: Date
 }
 
+/// Профиль собаки.
+///
+/// **Зачем он ездит.** Хозяйка пригласила маму со-владельцем и написала
+/// в тот же вечер дважды: «у неё нет половины функционала» и «мама
+/// не видит то же, что и я, и не видит мою собаку». Причина была одна:
+/// общая зона возила два типа записей из семи, и собаки среди них
+/// не было. Приглашение работало и приводило в пустую комнату.
+///
+/// **Чего здесь нет и почему.**
+///
+/// - `photo` — решение брифа 22.09: снимки сделали бы обмен тяжёлым
+///   ровно там, где он должен быть мгновенным. Фото каждый ставит у себя.
+/// - Заметки для ситтера (`sitterFood` и соседние) — их пишет тот, кто
+///   уезжает, под конкретную поездку; общими они не бывают.
+/// - `createdAt` — это факт про ЧУЖОЙ телефон, и на нашем он значил бы
+///   не то. Когда собака появилась здесь, помнит `DogOrigin`.
+nonisolated struct DogPayload: Equatable, Sendable, Codable {
+    var id: UUID
+    var name: String
+    var breed: String?
+    var birthDate: Date?
+    var sex: String
+    var isNeutered: Bool
+    var weightKg: Double
+    var targetWeightLow: Double?
+    var targetWeightHigh: Double?
+
+    var foodBrand: String
+    var portionGrams: Int
+    var mealsPerDay: Int
+    var mealTimes: [Int]
+    var dailyNormGrams: Int?
+    var forbiddenFoods: [String]
+
+    var wakeMinuteOfDay: Int
+    var sleepMinuteOfDay: Int
+
+    /// Лечение идёт — от этого зависит, видна ли вкладка «Здоровье».
+    /// Без него у гостя она скрыта, и приёмы, которые он же отмечает,
+    /// показывать негде.
+    var isOnTreatment: Bool
+
+    /// Документы и врач: то, что нужно второму человеку, когда он один
+    /// с собакой и что-то случилось.
+    var chipNumber: String?
+    var vetName: String?
+    var vetPhone: String?
+    var clinicName: String?
+    var clinicPhone: String?
+    var distinctiveMarks: String?
+
+    var changedAt: Date
+}
+
 /// Отметка приёма препарата.
 nonisolated struct DosePayload: Equatable, Sendable, Codable {
     var id: UUID
@@ -143,6 +197,25 @@ nonisolated enum SharedDiaryMerge {
         return filledFields(local) >= filledFields(remote) ? local : remote
     }
 
+    /// Спор о профиле собаки.
+    ///
+    /// Решение Виктории от 23.09.2026: **побеждает правка, что позже.**
+    /// У ленты правила сложнее («удаление сильнее правки», «дано»
+    /// побеждает всегда), и это оправдано ценой ошибки — там
+    /// передозировка. У профиля такой цены нет: вес и порция это факты,
+    /// которые уточняют, а не решения, которые отменяют друг друга.
+    ///
+    /// При ничьей по времени — та версия, где полей заполнено больше.
+    /// Часы двух телефонов расходятся на секунды, и разумнее взять ту,
+    /// где данных больше, чем ту, где их стёрли.
+    static func resolve(local: DogPayload, remote: DogPayload) -> DogPayload {
+        precondition(local.id == remote.id)
+        if local.changedAt != remote.changedAt {
+            return local.changedAt > remote.changedAt ? local : remote
+        }
+        return filledFields(local) >= filledFields(remote) ? local : remote
+    }
+
     /// Спор об отметке дозы.
     ///
     /// Здесь правило одно и оно сильнее всех остальных: **если хотя бы
@@ -192,6 +265,26 @@ nonisolated enum SharedDiaryMerge {
         }
 
         return winner
+    }
+
+    /// То же для профиля: считается только заполняемое руками.
+    /// Кличка и вес есть всегда — по ним стороны не различишь.
+    private static func filledFields(_ payload: DogPayload) -> Int {
+        var count = 0
+        if payload.breed?.isEmpty == false { count += 1 }
+        if payload.birthDate != nil { count += 1 }
+        if payload.targetWeightLow != nil { count += 1 }
+        if payload.targetWeightHigh != nil { count += 1 }
+        if !payload.foodBrand.isEmpty { count += 1 }
+        if payload.dailyNormGrams != nil { count += 1 }
+        if !payload.forbiddenFoods.isEmpty { count += 1 }
+        if payload.chipNumber?.isEmpty == false { count += 1 }
+        if payload.vetName?.isEmpty == false { count += 1 }
+        if payload.vetPhone?.isEmpty == false { count += 1 }
+        if payload.clinicName?.isEmpty == false { count += 1 }
+        if payload.clinicPhone?.isEmpty == false { count += 1 }
+        if payload.distinctiveMarks?.isEmpty == false { count += 1 }
+        return count
     }
 
     /// Насколько версия заполнена. Считается только то, что человек

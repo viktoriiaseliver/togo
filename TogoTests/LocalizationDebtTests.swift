@@ -75,9 +75,17 @@ struct LocalizationDebtTests {
                 // кто чинит, а не хозяин собаки; переводить её значит
                 // превращать диагностику в текст для человека.
                 // Тот же признак, что и у Tools/extract_texts.py.
+                // `StartupLog.note` здесь по той же причине, что и
+                // `log.*`: это крошки запуска. Их забирают с телефона
+                // скриптом, когда приложение не поднялось, и читает их
+                // тот, кто ищет причину. Файлы `StartupLog.swift`
+                // и `DogOrigin.swift` исключены целиком именно за это —
+                // а вызов из соседнего файла считался долгом, хотя
+                // строка та же и читатель тот же.
                 if код.contains("log.error(") || код.contains("log.notice(")
                     || код.contains("log.debug(") || код.contains("log.info(")
-                    || код.contains("log.warning(") { continue }
+                    || код.contains("log.warning(")
+                    || код.contains("StartupLog.note(") { continue }
                 n += Self.русскиеЛитералы(в: код)
             }
             if n > 0 { посчитано[имя] = n }

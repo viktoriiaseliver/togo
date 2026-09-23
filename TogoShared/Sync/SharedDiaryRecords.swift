@@ -98,6 +98,89 @@ nonisolated enum SharedDiaryRecords {
         )
     }
 
+    // MARK: Профиль собаки
+
+    static func record(_ payload: DogPayload, in zone: CKRecordZone.ID) -> CKRecord {
+        let record = CKRecord(recordType: SharedDiary.RecordType.dog.rawValue,
+                              recordID: recordID(payload.id, in: zone))
+        apply(payload, to: record)
+        return record
+    }
+
+    static func record(_ payload: DogPayload, base: CKRecord?, in zone: CKRecordZone.ID) -> CKRecord {
+        guard let base, base.recordID == recordID(payload.id, in: zone) else {
+            return record(payload, in: zone)
+        }
+        let merged = dogPayload(base).map { SharedDiaryMerge.resolve(local: payload, remote: $0) } ?? payload
+        apply(merged, to: base)
+        return base
+    }
+
+    static func apply(_ payload: DogPayload, to record: CKRecord) {
+        record["name"] = payload.name
+        record["breed"] = payload.breed
+        record["birthDate"] = payload.birthDate
+        record["sex"] = payload.sex
+        record["isNeutered"] = payload.isNeutered ? 1 : 0
+        record["weightKg"] = payload.weightKg
+        record["targetWeightLow"] = payload.targetWeightLow
+        record["targetWeightHigh"] = payload.targetWeightHigh
+        record["foodBrand"] = payload.foodBrand
+        record["portionGrams"] = payload.portionGrams
+        record["mealsPerDay"] = payload.mealsPerDay
+        record["mealTimes"] = payload.mealTimes
+        record["dailyNormGrams"] = payload.dailyNormGrams
+        record["forbiddenFoods"] = payload.forbiddenFoods
+        record["wakeMinuteOfDay"] = payload.wakeMinuteOfDay
+        record["sleepMinuteOfDay"] = payload.sleepMinuteOfDay
+        record["isOnTreatment"] = payload.isOnTreatment ? 1 : 0
+        record["chipNumber"] = payload.chipNumber
+        record["vetName"] = payload.vetName
+        record["vetPhone"] = payload.vetPhone
+        record["clinicName"] = payload.clinicName
+        record["clinicPhone"] = payload.clinicPhone
+        record["distinctiveMarks"] = payload.distinctiveMarks
+        record["changedAt"] = payload.changedAt
+    }
+
+    /// Кличка обязательна: собака без клички — это не «пустое имя»,
+    /// а запись, которую нечем показать в переключателе. Такую лучше
+    /// не заводить вовсе, чем завести безымянной.
+    static func dogPayload(_ record: CKRecord) -> DogPayload? {
+        guard let id = UUID(uuidString: record.recordID.recordName),
+              let name = record["name"] as? String,
+              let changedAt = record["changedAt"] as? Date
+        else { return nil }
+
+        return DogPayload(
+            id: id,
+            name: name,
+            breed: record["breed"] as? String,
+            birthDate: record["birthDate"] as? Date,
+            sex: record["sex"] as? String ?? DogSex.unknown.rawValue,
+            isNeutered: (record["isNeutered"] as? Int ?? 0) == 1,
+            weightKg: record["weightKg"] as? Double ?? 0,
+            targetWeightLow: record["targetWeightLow"] as? Double,
+            targetWeightHigh: record["targetWeightHigh"] as? Double,
+            foodBrand: record["foodBrand"] as? String ?? "",
+            portionGrams: record["portionGrams"] as? Int ?? 0,
+            mealsPerDay: record["mealsPerDay"] as? Int ?? 2,
+            mealTimes: record["mealTimes"] as? [Int] ?? [],
+            dailyNormGrams: record["dailyNormGrams"] as? Int,
+            forbiddenFoods: record["forbiddenFoods"] as? [String] ?? [],
+            wakeMinuteOfDay: record["wakeMinuteOfDay"] as? Int ?? 7 * 60,
+            sleepMinuteOfDay: record["sleepMinuteOfDay"] as? Int ?? 23 * 60,
+            isOnTreatment: (record["isOnTreatment"] as? Int ?? 0) == 1,
+            chipNumber: record["chipNumber"] as? String,
+            vetName: record["vetName"] as? String,
+            vetPhone: record["vetPhone"] as? String,
+            clinicName: record["clinicName"] as? String,
+            clinicPhone: record["clinicPhone"] as? String,
+            distinctiveMarks: record["distinctiveMarks"] as? String,
+            changedAt: changedAt
+        )
+    }
+
     // MARK: Дозы
 
     static func record(_ payload: DosePayload, in zone: CKRecordZone.ID) -> CKRecord {

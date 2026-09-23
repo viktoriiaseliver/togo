@@ -42,12 +42,12 @@ nonisolated let log = Logger(subsystem: AppIdentifiers.bundlePrefix, category: "
 /// онбординга, и хранилище устроено так же: локальный файл в общей группе,
 /// чтобы виджеты и Live Activity читали те же записи.
 nonisolated enum Persistence {
-    /// Нынешняя форма хранилища — она же `TogoSchemaV3`.
+    /// Нынешняя форма хранилища — она же `TogoSchemaV4`.
     ///
     /// Список моделей переехал в `SchemaVersions.swift` и живёт теперь
     /// в одном месте с прежними версиями: две копии списка разошлись бы,
     /// и план миграции начал бы врать о том, из чего состоит база.
-    static let schema = Schema(versionedSchema: TogoSchemaV3.self)
+    static let schema = Schema(versionedSchema: TogoSchemaV4.self)
 
     /// Удалось ли открыть хранилище в iCloud. Экран переноса показывает
     /// это человеку: обещать синхронизацию, которой нет, нельзя.

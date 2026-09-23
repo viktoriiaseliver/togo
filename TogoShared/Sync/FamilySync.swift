@@ -181,6 +181,13 @@ final class FamilySync: NSObject {
                     dose.changedAt = now
                     stamped = true
                     changes.append(.saveRecord(SharedDiaryRecords.recordID(dose.id, in: zone)))
+                } else if let dog = ctx.model(for: id) as? Dog {
+                    // Профиль ездит с 23.09: без него приглашение вело
+                    // в пустую комнату — мама не видела ни собаки,
+                    // ни веса, ни того, что идёт лечение.
+                    dog.changedAt = now
+                    stamped = true
+                    changes.append(.saveRecord(SharedDiaryRecords.recordID(dog.id, in: zone)))
                 }
             }
         }
@@ -289,6 +296,11 @@ extension FamilySync: CKSyncEngineDelegate {
         ).first {
             return SharedDiaryRecords.record(dose.payload, base: base, in: recordID.zoneID)
         }
+        if let dog = try? ctx.fetch(
+            FetchDescriptor<Dog>(predicate: #Predicate { $0.id == id })
+        ).first {
+            return SharedDiaryRecords.record(dog.payload, base: base, in: recordID.zoneID)
+        }
         return nil
     }
 
@@ -299,18 +311,39 @@ extension FamilySync: CKSyncEngineDelegate {
             defer { applying = false }
 
             let ctx = context
-            let dog = try? ctx.fetch(FetchDescriptor<Dog>()).first
 
-            for modification in changes.modifications {
+            // Собаки — первыми, и это не оптимизация.
+            //
+            // Записи приезжают пачкой в порядке сервера, и лента почти
+            // всегда идёт раньше профиля: её правят каждый день, а профиль
+            // раз в месяц. Пока собака не заведена, каждая запись пачки
+            // цеплялась к ПЕРВОЙ местной (а у гостя это его собственная
+            // собака) или повисала ничьей, если местной нет ни одной.
+            // Разобрать профили до ленты стоит один проход по массиву.
+            let modifications = changes.modifications.sorted { left, _ in
+                left.record.recordType == SharedDiary.RecordType.dog.rawValue
+            }
+
+            for modification in modifications {
                 let record = modification.record
                 // Пришедшее с сервера — тоже источник `recordChangeTag`:
                 // свою правку этой записи мы пошлём уже поверх неё.
                 outbox.remember(record)
 
                 switch SharedDiary.RecordType(rawValue: record.recordType) {
+                case .dog:
+                    guard let payload = SharedDiaryRecords.dogPayload(record) else { continue }
+                    SharedDiaryInbox.accept(payload, context: ctx)
                 case .event:
                     guard let payload = SharedDiaryRecords.eventPayload(record) else { continue }
-                    SharedDiaryInbox.accept(payload, dog: dog, context: ctx)
+                    // Собака берётся по id из самой записи. Раньше здесь
+                    // стояла первая местная — и у гостя с двумя собаками
+                    // чужие отметки ложились на его собственную.
+                    SharedDiaryInbox.accept(
+                        payload,
+                        dog: SharedDiaryInbox.dog(for: payload, context: ctx),
+                        context: ctx
+                    )
                 case .dose:
                     guard let payload = SharedDiaryRecords.dosePayload(record) else { continue }
                     // Препарат ищется по id, а при промахе — по имени:
