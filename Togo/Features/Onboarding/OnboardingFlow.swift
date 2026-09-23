@@ -132,6 +132,7 @@ struct OnboardingFlow: View {
 
     private func saveDog() {
         let dog = draft.makeDog()
+        DogOrigin.заведенаЗдесь(dog.id)
         schedule.apply(to: dog)
         context.insert(dog)
         SeedData.attachStarterCare(to: dog, context: context)

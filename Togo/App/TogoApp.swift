@@ -185,6 +185,11 @@ struct AppRoot: View {
                     FeedingMigration.run(context: context)
                     WalkLinkStartup.run(context: context)
                     if fixed > 0 { StartupLog.note("уход починен: \(fixed)") }
+                    // Откуда взялась собака — запись на будущее. 23.09
+                    // дубликат появился, а причину было нечем найти:
+                    // крошки за тот час затёрлись. Теперь прибавление
+                    // и пропажа называются в момент, когда случились.
+                    DogOrigin.проверить(in: context)
                     Persistence.removeLegacyStoreIfSafe(context: context)
                 }
         } else {

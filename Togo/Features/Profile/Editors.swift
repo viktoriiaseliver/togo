@@ -110,6 +110,7 @@ struct DogEditorScreen: View {
             guard context.persist(otherwise: { context.delete(new) }) else {
                 return неСохранилось()
             }
+            DogOrigin.заведенаЗдесь(new.id)
             appState.select(new)
         }
         Haptics.success()
