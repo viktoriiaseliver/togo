@@ -209,7 +209,21 @@ def collect():
         rel = os.path.relpath(path, ROOT)
         context = ""
         found = []
+        # Отладочные разделы переводчику не нужны: покупатель их не видит,
+        # а в каждом замере они всплывают как «без перевода». Первый такой
+        # случай — раздел прогрева зеркала CloudKit, семь строк шума.
+        debug_depth = 0
         for number, raw in enumerate(open(path, encoding="utf-8"), 1):
+            stripped = raw.strip()
+            if stripped.startswith("#if DEBUG"):
+                debug_depth += 1
+                continue
+            if debug_depth:
+                if stripped.startswith("#if"):
+                    debug_depth += 1
+                elif stripped.startswith("#endif"):
+                    debug_depth -= 1
+                continue
             mark = MARK.match(raw)
             if mark:
                 context = mark.group(1).strip()

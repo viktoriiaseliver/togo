@@ -2781,24 +2781,6 @@
         }
       }
     },
-    "Библиотека компонентов" : {
-      "comment" : "aboutSection",
-      "extractionState" : "manual",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bibliothèque de composants"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Библиотека компонентов"
-          }
-        }
-      }
-    },
     "Бодрствует" : {
       "comment" : "dayCard",
       "extractionState" : "manual",
@@ -19114,24 +19096,6 @@
         }
       }
     },
-    "Отладка · включить Pro" : {
-      "comment" : "subscriptionSection",
-      "extractionState" : "manual",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Débogage · activer Pro"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Отладка · включить Pro"
-          }
-        }
-      }
-    },
     "Отложить до завтра" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -35291,16 +35255,16 @@
       "comment" : "restoreBanner",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Подписка вернулась"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Abonnement restauré"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Подписка вернулась"
           }
         }
       }
@@ -35309,16 +35273,16 @@
       "comment" : "restoreBanner",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Покупок не нашлось"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Aucun achat trouvé"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Покупок не нашлось"
           }
         }
       }
@@ -35327,16 +35291,16 @@
       "comment" : "restoreBanner",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "На этом Apple ID подписки Togo нет. Если покупка была с другого — войди в него в App Store."
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Aucun abonnement Togo sur ce compte Apple. Si l'achat a été fait avec un autre, connecte-toi à celui-là dans l'App Store."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "На этом Apple ID подписки Togo нет. Если покупка была с другого — войди в него в App Store."
           }
         }
       }
@@ -35345,16 +35309,16 @@
       "comment" : "Что было за день и что осталось",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "День не закрылся · нажми ещё раз"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Journée pas clôturée · appuie encore"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "День не закрылся · нажми ещё раз"
           }
         }
       }
@@ -35363,16 +35327,16 @@
       "comment" : "claim",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Не получилось взять на себя · нажми ещё раз"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Impossible de prendre en charge · appuie encore"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не получилось взять на себя · нажми ещё раз"
           }
         }
       }
@@ -35381,16 +35345,16 @@
       "comment" : "candidates",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Не снялось · нажми ещё раз"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Pas décoché · appuie encore"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не снялось · нажми ещё раз"
           }
         }
       }
@@ -35399,16 +35363,16 @@
       "comment" : "skipDose",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Не записалось · нажми ещё раз"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Pas enregistré · appuie encore"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не записалось · нажми ещё раз"
           }
         }
       }
@@ -35417,16 +35381,16 @@
       "comment" : "allowed",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Доза не отметилась · нажми ещё раз"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Dose pas cochée · appuie encore"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Доза не отметилась · нажми ещё раз"
           }
         }
       }
@@ -35435,16 +35399,16 @@
       "comment" : "allowed",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Срок не пересчитался · нажми ещё раз"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Échéance pas recalculée · appuie encore"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Срок не пересчитался · нажми ещё раз"
           }
         }
       }
@@ -35453,16 +35417,16 @@
       "comment" : "duration",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ответ не записался · отметь ещё раз"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Réponse pas enregistrée · note encore"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ответ не записался · отметь ещё раз"
           }
         }
       }
@@ -35471,16 +35435,16 @@
       "comment" : "new",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Не сохранилось · нажми «Готово» ещё раз"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Pas enregistré · appuie encore sur « Terminé »"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не сохранилось · нажми «Готово» ещё раз"
           }
         }
       }
@@ -35489,16 +35453,16 @@
       "comment" : "delete",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Не удалилось · нажми ещё раз"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Pas supprimé · appuie encore"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалилось · нажми ещё раз"
           }
         }
       }
@@ -35507,16 +35471,16 @@
       "comment" : "recent",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Эпизод не продлился · отметь ещё раз"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Épisode pas prolongé · note encore"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Эпизод не продлился · отметь ещё раз"
           }
         }
       }
@@ -35525,16 +35489,16 @@
       "comment" : "episode",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Эпизод не завёлся · отметь ещё раз"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Épisode pas créé · note encore"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Эпизод не завёлся · отметь ещё раз"
           }
         }
       }
@@ -35543,16 +35507,16 @@
       "comment" : "restore",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Не удалось восстановить покупки. Проверь связь и попробуй ещё раз."
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Impossible de restaurer les achats. Vérifie la connexion et réessaie."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось восстановить покупки. Проверь связь и попробуй ещё раз."
           }
         }
       }
@@ -35561,16 +35525,16 @@
       "comment" : "container",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "файл дневника есть, но не открылся — «Дневник не открылся»"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "le fichier du carnet existe mais ne s'ouvre pas — « Carnet illisible »"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "файл дневника есть, но не открылся — «Дневник не открылся»"
           }
         }
       }
@@ -35579,16 +35543,16 @@
       "comment" : "body",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Заведи тех, кто тоже за ней ходит: совладельца, ситтера, ребёнка или врача. Роль и права выбираешь ты — сам он их не поменяет."
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Ajoute ceux qui s'en occupent aussi : co-propriétaire, pet-sitter, enfant ou vétérinaire. Le rôle et les droits, c'est toi qui les choisis — la personne ne peut pas les changer."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Заведи тех, кто тоже за ней ходит: совладельца, ситтера, ребёнка или врача. Роль и права выбираешь ты — сам он их не поменяет."
           }
         }
       }
@@ -35597,16 +35561,16 @@
       "comment" : "body",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Добавить человека"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Ajouter une personne"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавить человека"
           }
         }
       }
@@ -35615,16 +35579,16 @@
       "comment" : "body",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "только здесь"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "ici seulement"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "только здесь"
           }
         }
       }
@@ -35633,16 +35597,16 @@
       "comment" : "body",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Новый участник"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Nouveau membre"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Новый участник"
           }
         }
       }
@@ -35651,16 +35615,16 @@
       "comment" : "body",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "имя, роль и права"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "nom, rôle et droits"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "имя, роль и права"
           }
         }
       }
@@ -35669,16 +35633,16 @@
       "comment" : "body",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "что это даёт"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "ce que ça apporte"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "что это даёт"
           }
         }
       }
@@ -35687,16 +35651,16 @@
       "comment" : "body",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Отчёт врачу, CSV и приглашение в общий дневник уходят только тогда, когда ты сам нажимаешь «поделиться», и только тому, кого ты выбрал в системном окне."
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Le compte rendu pour le vétérinaire, l'export CSV et l'invitation au carnet partagé ne partent que lorsque tu appuies toi-même sur « Partager », et uniquement vers la personne choisie dans la fenêtre système."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отчёт врачу, CSV и приглашение в общий дневник уходят только тогда, когда ты сам нажимаешь «поделиться», и только тому, кого ты выбрал в системном окне."
           }
         }
       }
@@ -35705,16 +35669,16 @@
       "comment" : "body",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Приглашение в общий дневник — это общий доступ iCloud. Открыть его может только тот, кого ты назвал в системном окне «Поделиться»: по пересланному адресу не войдёт никто посторонний."
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Une invitation au carnet partagé est un partage iCloud. Seule la personne nommée dans la fenêtre système « Partager » peut l'ouvrir : personne ne peut entrer avec une adresse transférée."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Приглашение в общий дневник — это общий доступ iCloud. Открыть его может только тот, кого ты назвал в системном окне «Поделиться»: по пересланному адресу не войдёт никто посторонний."
           }
         }
       }
@@ -35723,16 +35687,16 @@
       "comment" : "body",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Кто в дневнике — видно владельцу, и он может убрать любого. Уже полученные записи останутся у того, кто их получил: забрать показанное iCloud не умеет."
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Le propriétaire voit qui est dans le carnet et peut retirer n'importe qui. Les entrées déjà reçues restent chez celui qui les a reçues : iCloud ne sait pas reprendre ce qu'il a montré."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кто в дневнике — видно владельцу, и он может убрать любого. Уже полученные записи останутся у того, кто их получил: забрать показанное iCloud не умеет."
           }
         }
       }
@@ -35741,16 +35705,16 @@
       "comment" : "inviteCard",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "позвать в дневник"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "inviter au carnet"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "позвать в дневник"
           }
         }
       }
@@ -35759,16 +35723,16 @@
       "comment" : "inviteCard",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Приглашение уходит через общий дневник — пока он выключен, отправлять нечего."
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "L'invitation passe par le carnet partagé — tant qu'il est désactivé, il n'y a rien à envoyer."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Приглашение уходит через общий дневник — пока он выключен, отправлять нечего."
           }
         }
       }
@@ -35777,16 +35741,16 @@
       "comment" : "inviteCard",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Включить общий дневник"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Activer le carnet partagé"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Включить общий дневник"
           }
         }
       }
@@ -35795,16 +35759,16 @@
       "comment" : "inviteCard",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Отправить приглашение"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Envoyer l'invitation"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отправить приглашение"
           }
         }
       }
@@ -35813,16 +35777,16 @@
       "comment" : "inviteCard",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Выбери, кому: маме, мужу, ситтеру. Откроет только он, со своего iCloud, и ему нужен Togo на телефоне."
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Choisis à qui : ta mère, ton conjoint, le pet-sitter. Seule cette personne pourra l'ouvrir, depuis son iCloud, et il lui faut Togo sur son téléphone."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выбери, кому: маме, мужу, ситтеру. Откроет только он, со своего iCloud, и ему нужен Togo на телефоне."
           }
         }
       }
@@ -35831,28 +35795,16 @@
       "comment" : "body",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Чтобы он отмечал со своего телефона, включи общий дневник и отправь приглашение — «позвать в дневник» в списке семьи."
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Pour qu'il note depuis son téléphone, active le carnet partagé et envoie l'invitation — « inviter au carnet » dans la liste de la famille."
           }
-        }
-      }
-    },
-    "Переведены русский и французский. Языков мало намеренно: машинный перевод в приложении про здоровье собаки хуже, чем язык, сделанный целиком." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Переведены русский и французский. Языков мало намеренно: машинный перевод в приложении про здоровье собаки хуже, чем язык, сделанный целиком."
+            "value" : "Чтобы он отмечал со своего телефона, включи общий дневник и отправь приглашение — «позвать в дневник» в списке семьи."
           }
         }
       }
@@ -35861,16 +35813,16 @@
       "comment" : "body",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Спрашиваю магазин…"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Je demande à l'App Store…"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Спрашиваю магазин…"
           }
         }
       }
@@ -35879,16 +35831,16 @@
       "comment" : "dutyMember",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Собака пока не заведена"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Aucun chien pour l'instant"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Собака пока не заведена"
           }
         }
       }
@@ -35897,16 +35849,16 @@
       "comment" : "dutyMember",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Отмечать некого: еда, выходы и дозы считаются по собаке. Заведи её — нужны только кличка и вес."
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Rien à noter : repas, sorties et doses se comptent par chien. Ajoute-le — il suffit du nom et du poids."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отмечать некого: еда, выходы и дозы считаются по собаке. Заведи её — нужны только кличка и вес."
           }
         }
       }
@@ -35915,16 +35867,16 @@
       "comment" : "dutyMember",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Завести собаку"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Ajouter un chien"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завести собаку"
           }
         }
       }
@@ -35933,16 +35885,16 @@
       "comment" : "body",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Пока без собаки"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Pas encore de chien"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пока без собаки"
           }
         }
       }
@@ -35951,16 +35903,16 @@
       "comment" : "header",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "прогулка"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "promenade"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "прогулка"
           }
         }
       }
@@ -35969,16 +35921,16 @@
       "comment" : "handle",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "роли, дежурство, инструкция ситтеру"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "rôles, tour de garde, consignes au pet-sitter"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "роли, дежурство, инструкция ситтеру"
           }
         }
       }
@@ -35987,16 +35939,16 @@
       "comment" : "next",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "это я"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "c'est moi"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "это я"
           }
         }
       }
@@ -36005,16 +35957,16 @@
       "comment" : "next",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "на этом телефоне"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "sur ce téléphone"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "на этом телефоне"
           }
         }
       }
@@ -36023,16 +35975,16 @@
       "comment" : "next",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Записи с этого телефона будут подписаны этим именем, а права возьмутся из этой карточки."
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Les entrées depuis ce téléphone porteront ce nom, et les droits viendront de cette fiche."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Записи с этого телефона будут подписаны этим именем, а права возьмутся из этой карточки."
           }
         }
       }
@@ -36041,16 +35993,16 @@
       "comment" : "next",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Это я"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "C'est moi"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Это я"
           }
         }
       }
@@ -36058,36 +36010,6 @@
     "%lld банок" : {
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "variations" : {
-            "plural" : {
-              "few" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld банки"
-                }
-              },
-              "many" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld банок"
-                }
-              },
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld банка"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld банок"
-                }
-              }
-            }
-          }
-        },
         "fr" : {
           "variations" : {
             "plural" : {
@@ -36106,15 +36028,39 @@
             }
           }
         },
-        "uk" : {
+        "ru" : {
           "variations" : {
             "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld банки"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld банок"
+                }
+              },
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
+                  "state" : "translated",
                   "value" : "%lld банка"
                 }
               },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld банок"
+                }
+              }
+            }
+          }
+        },
+        "uk" : {
+          "variations" : {
+            "plural" : {
               "few" : {
                 "stringUnit" : {
                   "state" : "needs_review",
@@ -36125,6 +36071,12 @@
                 "stringUnit" : {
                   "state" : "needs_review",
                   "value" : "%lld банок"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld банка"
                 }
               },
               "other" : {
@@ -36141,6 +36093,24 @@
     "%lld выходов" : {
       "extractionState" : "manual",
       "localizations" : {
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld sortie"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld sorties"
+                }
+              }
+            }
+          }
+        },
         "ru" : {
           "variations" : {
             "plural" : {
@@ -36171,33 +36141,9 @@
             }
           }
         },
-        "fr" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld sortie"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld sorties"
-                }
-              }
-            }
-          }
-        },
         "uk" : {
           "variations" : {
             "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld вихід"
-                }
-              },
               "few" : {
                 "stringUnit" : {
                   "state" : "needs_review",
@@ -36208,6 +36154,12 @@
                 "stringUnit" : {
                   "state" : "needs_review",
                   "value" : "%lld виходів"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld вихід"
                 }
               },
               "other" : {
@@ -36224,6 +36176,24 @@
     "%lld лет" : {
       "extractionState" : "manual",
       "localizations" : {
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld an"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld ans"
+                }
+              }
+            }
+          }
+        },
         "ru" : {
           "variations" : {
             "plural" : {
@@ -36254,33 +36224,9 @@
             }
           }
         },
-        "fr" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld an"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld ans"
-                }
-              }
-            }
-          }
-        },
         "uk" : {
           "variations" : {
             "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld рік"
-                }
-              },
               "few" : {
                 "stringUnit" : {
                   "state" : "needs_review",
@@ -36291,6 +36237,12 @@
                 "stringUnit" : {
                   "state" : "needs_review",
                   "value" : "%lld років"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld рік"
                 }
               },
               "other" : {
@@ -36307,6 +36259,24 @@
     "%lld действий" : {
       "extractionState" : "manual",
       "localizations" : {
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld action"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld actions"
+                }
+              }
+            }
+          }
+        },
         "ru" : {
           "variations" : {
             "plural" : {
@@ -36337,33 +36307,9 @@
             }
           }
         },
-        "fr" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld action"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld actions"
-                }
-              }
-            }
-          }
-        },
         "uk" : {
           "variations" : {
             "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld дія"
-                }
-              },
               "few" : {
                 "stringUnit" : {
                   "state" : "needs_review",
@@ -36374,6 +36320,12 @@
                 "stringUnit" : {
                   "state" : "needs_review",
                   "value" : "%lld дій"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld дія"
                 }
               },
               "other" : {
@@ -36390,6 +36342,24 @@
     "%lld дней" : {
       "extractionState" : "manual",
       "localizations" : {
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld jour"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld jours"
+                }
+              }
+            }
+          }
+        },
         "ru" : {
           "variations" : {
             "plural" : {
@@ -36420,6 +36390,41 @@
             }
           }
         },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld дні"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld днів"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld день"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld днів"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld дням" : {
+      "extractionState" : "manual",
+      "localizations" : {
         "fr" : {
           "variations" : {
             "plural" : {
@@ -36438,41 +36443,6 @@
             }
           }
         },
-        "uk" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld день"
-                }
-              },
-              "few" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld дні"
-                }
-              },
-              "many" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld днів"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld днів"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "%lld дням" : {
-      "extractionState" : "manual",
-      "localizations" : {
         "ru" : {
           "variations" : {
             "plural" : {
@@ -36503,33 +36473,9 @@
             }
           }
         },
-        "fr" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld jour"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld jours"
-                }
-              }
-            }
-          }
-        },
         "uk" : {
           "variations" : {
             "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld дню"
-                }
-              },
               "few" : {
                 "stringUnit" : {
                   "state" : "needs_review",
@@ -36540,6 +36486,12 @@
                 "stringUnit" : {
                   "state" : "needs_review",
                   "value" : "%lld дням"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld дню"
                 }
               },
               "other" : {
@@ -36556,6 +36508,24 @@
     "%lld доз" : {
       "extractionState" : "manual",
       "localizations" : {
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld dose"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld doses"
+                }
+              }
+            }
+          }
+        },
         "ru" : {
           "variations" : {
             "plural" : {
@@ -36586,33 +36556,9 @@
             }
           }
         },
-        "fr" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld dose"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld doses"
-                }
-              }
-            }
-          }
-        },
         "uk" : {
           "variations" : {
             "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld доза"
-                }
-              },
               "few" : {
                 "stringUnit" : {
                   "state" : "needs_review",
@@ -36623,6 +36569,12 @@
                 "stringUnit" : {
                   "state" : "needs_review",
                   "value" : "%lld доз"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld доза"
                 }
               },
               "other" : {
@@ -36639,6 +36591,24 @@
     "%lld занятий" : {
       "extractionState" : "manual",
       "localizations" : {
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld séance"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld séances"
+                }
+              }
+            }
+          }
+        },
         "ru" : {
           "variations" : {
             "plural" : {
@@ -36669,33 +36639,9 @@
             }
           }
         },
-        "fr" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld séance"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld séances"
-                }
-              }
-            }
-          }
-        },
         "uk" : {
           "variations" : {
             "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld заняття"
-                }
-              },
               "few" : {
                 "stringUnit" : {
                   "state" : "needs_review",
@@ -36706,6 +36652,12 @@
                 "stringUnit" : {
                   "state" : "needs_review",
                   "value" : "%lld занять"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld заняття"
                 }
               },
               "other" : {
@@ -36722,6 +36674,24 @@
     "%lld записей" : {
       "extractionState" : "manual",
       "localizations" : {
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld entrée"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld entrées"
+                }
+              }
+            }
+          }
+        },
         "ru" : {
           "variations" : {
             "plural" : {
@@ -36752,33 +36722,9 @@
             }
           }
         },
-        "fr" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld entrée"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld entrées"
-                }
-              }
-            }
-          }
-        },
         "uk" : {
           "variations" : {
             "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld запис"
-                }
-              },
               "few" : {
                 "stringUnit" : {
                   "state" : "needs_review",
@@ -36789,6 +36735,12 @@
                 "stringUnit" : {
                   "state" : "needs_review",
                   "value" : "%lld записів"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld запис"
                 }
               },
               "other" : {
@@ -36805,6 +36757,24 @@
     "%lld записей внесены" : {
       "extractionState" : "manual",
       "localizations" : {
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld entrée ajoutée"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld entrées ajoutées"
+                }
+              }
+            }
+          }
+        },
         "ru" : {
           "variations" : {
             "plural" : {
@@ -36835,33 +36805,9 @@
             }
           }
         },
-        "fr" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld entrée ajoutée"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld entrées ajoutées"
-                }
-              }
-            }
-          }
-        },
         "uk" : {
           "variations" : {
             "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld запис внесено"
-                }
-              },
               "few" : {
                 "stringUnit" : {
                   "state" : "needs_review",
@@ -36872,6 +36818,12 @@
                 "stringUnit" : {
                   "state" : "needs_review",
                   "value" : "%lld записів внесено"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld запис внесено"
                 }
               },
               "other" : {
@@ -36888,6 +36840,24 @@
     "%lld инцидентов" : {
       "extractionState" : "manual",
       "localizations" : {
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld incident"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld incidents"
+                }
+              }
+            }
+          }
+        },
         "ru" : {
           "variations" : {
             "plural" : {
@@ -36918,33 +36888,9 @@
             }
           }
         },
-        "fr" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld incident"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld incidents"
-                }
-              }
-            }
-          }
-        },
         "uk" : {
           "variations" : {
             "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld інцидент"
-                }
-              },
               "few" : {
                 "stringUnit" : {
                   "state" : "needs_review",
@@ -36955,6 +36901,12 @@
                 "stringUnit" : {
                   "state" : "needs_review",
                   "value" : "%lld інцидентів"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld інцидент"
                 }
               },
               "other" : {
@@ -36971,6 +36923,24 @@
     "%lld кормлений" : {
       "extractionState" : "manual",
       "localizations" : {
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld repas"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld repas"
+                }
+              }
+            }
+          }
+        },
         "ru" : {
           "variations" : {
             "plural" : {
@@ -37001,33 +36971,9 @@
             }
           }
         },
-        "fr" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld repas"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld repas"
-                }
-              }
-            }
-          }
-        },
         "uk" : {
           "variations" : {
             "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld годування"
-                }
-              },
               "few" : {
                 "stringUnit" : {
                   "state" : "needs_review",
@@ -37038,6 +36984,12 @@
                 "stringUnit" : {
                   "state" : "needs_review",
                   "value" : "%lld годувань"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld годування"
                 }
               },
               "other" : {
@@ -37054,6 +37006,24 @@
     "%lld месяцев" : {
       "extractionState" : "manual",
       "localizations" : {
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld mois"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld mois"
+                }
+              }
+            }
+          }
+        },
         "ru" : {
           "variations" : {
             "plural" : {
@@ -37084,33 +37054,9 @@
             }
           }
         },
-        "fr" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld mois"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld mois"
-                }
-              }
-            }
-          }
-        },
         "uk" : {
           "variations" : {
             "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld місяць"
-                }
-              },
               "few" : {
                 "stringUnit" : {
                   "state" : "needs_review",
@@ -37121,6 +37067,12 @@
                 "stringUnit" : {
                   "state" : "needs_review",
                   "value" : "%lld місяців"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld місяць"
                 }
               },
               "other" : {
@@ -37137,6 +37089,24 @@
     "%lld мешков" : {
       "extractionState" : "manual",
       "localizations" : {
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld sac"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld sacs"
+                }
+              }
+            }
+          }
+        },
         "ru" : {
           "variations" : {
             "plural" : {
@@ -37167,33 +37137,9 @@
             }
           }
         },
-        "fr" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld sac"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld sacs"
-                }
-              }
-            }
-          }
-        },
         "uk" : {
           "variations" : {
             "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld мішок"
-                }
-              },
               "few" : {
                 "stringUnit" : {
                   "state" : "needs_review",
@@ -37204,6 +37150,12 @@
                 "stringUnit" : {
                   "state" : "needs_review",
                   "value" : "%lld мішків"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld мішок"
                 }
               },
               "other" : {
@@ -37220,6 +37172,24 @@
     "%lld минут" : {
       "extractionState" : "manual",
       "localizations" : {
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld minute"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld minutes"
+                }
+              }
+            }
+          }
+        },
         "ru" : {
           "variations" : {
             "plural" : {
@@ -37250,33 +37220,9 @@
             }
           }
         },
-        "fr" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld minute"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld minutes"
-                }
-              }
-            }
-          }
-        },
         "uk" : {
           "variations" : {
             "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld хвилина"
-                }
-              },
               "few" : {
                 "stringUnit" : {
                   "state" : "needs_review",
@@ -37287,6 +37233,12 @@
                 "stringUnit" : {
                   "state" : "needs_review",
                   "value" : "%lld хвилин"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld хвилина"
                 }
               },
               "other" : {
@@ -37303,6 +37255,24 @@
     "%lld напоминаний ждут" : {
       "extractionState" : "manual",
       "localizations" : {
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld rappel en attente"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld rappels en attente"
+                }
+              }
+            }
+          }
+        },
         "ru" : {
           "variations" : {
             "plural" : {
@@ -37333,33 +37303,9 @@
             }
           }
         },
-        "fr" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld rappel en attente"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld rappels en attente"
-                }
-              }
-            }
-          }
-        },
         "uk" : {
           "variations" : {
             "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld нагадування чекає"
-                }
-              },
               "few" : {
                 "stringUnit" : {
                   "state" : "needs_review",
@@ -37370,6 +37316,12 @@
                 "stringUnit" : {
                   "state" : "needs_review",
                   "value" : "%lld нагадувань чекають"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld нагадування чекає"
                 }
               },
               "other" : {
@@ -37386,6 +37338,24 @@
     "%lld недель" : {
       "extractionState" : "manual",
       "localizations" : {
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld semaine"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld semaines"
+                }
+              }
+            }
+          }
+        },
         "ru" : {
           "variations" : {
             "plural" : {
@@ -37416,33 +37386,9 @@
             }
           }
         },
-        "fr" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld semaine"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld semaines"
-                }
-              }
-            }
-          }
-        },
         "uk" : {
           "variations" : {
             "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld тиждень"
-                }
-              },
               "few" : {
                 "stringUnit" : {
                   "state" : "needs_review",
@@ -37453,6 +37399,12 @@
                 "stringUnit" : {
                   "state" : "needs_review",
                   "value" : "%lld тижнів"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld тиждень"
                 }
               },
               "other" : {
@@ -37469,6 +37421,24 @@
     "%lld раз" : {
       "extractionState" : "manual",
       "localizations" : {
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld fois"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld fois"
+                }
+              }
+            }
+          }
+        },
         "ru" : {
           "variations" : {
             "plural" : {
@@ -37499,33 +37469,9 @@
             }
           }
         },
-        "fr" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld fois"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld fois"
-                }
-              }
-            }
-          }
-        },
         "uk" : {
           "variations" : {
             "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld раз"
-                }
-              },
               "few" : {
                 "stringUnit" : {
                   "state" : "needs_review",
@@ -37536,6 +37482,12 @@
                 "stringUnit" : {
                   "state" : "needs_review",
                   "value" : "%lld разів"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld раз"
                 }
               },
               "other" : {
@@ -37552,6 +37504,24 @@
     "%lld собак" : {
       "extractionState" : "manual",
       "localizations" : {
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld chien"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld chiens"
+                }
+              }
+            }
+          }
+        },
         "ru" : {
           "variations" : {
             "plural" : {
@@ -37582,33 +37552,9 @@
             }
           }
         },
-        "fr" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld chien"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld chiens"
-                }
-              }
-            }
-          }
-        },
         "uk" : {
           "variations" : {
             "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld собака"
-                }
-              },
               "few" : {
                 "stringUnit" : {
                   "state" : "needs_review",
@@ -37619,6 +37565,12 @@
                 "stringUnit" : {
                   "state" : "needs_review",
                   "value" : "%lld собак"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld собака"
                 }
               },
               "other" : {
@@ -37635,6 +37587,24 @@
     "%lld часов" : {
       "extractionState" : "manual",
       "localizations" : {
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld heure"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld heures"
+                }
+              }
+            }
+          }
+        },
         "ru" : {
           "variations" : {
             "plural" : {
@@ -37665,33 +37635,9 @@
             }
           }
         },
-        "fr" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld heure"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld heures"
-                }
-              }
-            }
-          }
-        },
         "uk" : {
           "variations" : {
             "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld година"
-                }
-              },
               "few" : {
                 "stringUnit" : {
                   "state" : "needs_review",
@@ -37702,6 +37648,12 @@
                 "stringUnit" : {
                   "state" : "needs_review",
                   "value" : "%lld годин"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld година"
                 }
               },
               "other" : {
@@ -37718,6 +37670,24 @@
     "%lld человек" : {
       "extractionState" : "manual",
       "localizations" : {
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld personne"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld personnes"
+                }
+              }
+            }
+          }
+        },
         "ru" : {
           "variations" : {
             "plural" : {
@@ -37748,33 +37718,9 @@
             }
           }
         },
-        "fr" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld personne"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld personnes"
-                }
-              }
-            }
-          }
-        },
         "uk" : {
           "variations" : {
             "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld людина"
-                }
-              },
               "few" : {
                 "stringUnit" : {
                   "state" : "needs_review",
@@ -37785,6 +37731,12 @@
                 "stringUnit" : {
                   "state" : "needs_review",
                   "value" : "%lld людей"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld людина"
                 }
               },
               "other" : {
@@ -37801,6 +37753,24 @@
     "из %lld кормлений" : {
       "extractionState" : "manual",
       "localizations" : {
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "sur %lld repas"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "sur %lld repas"
+                }
+              }
+            }
+          }
+        },
         "ru" : {
           "variations" : {
             "plural" : {
@@ -37831,33 +37801,9 @@
             }
           }
         },
-        "fr" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "sur %lld repas"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "sur %lld repas"
-                }
-              }
-            }
-          }
-        },
         "uk" : {
           "variations" : {
             "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "з %lld годування"
-                }
-              },
               "few" : {
                 "stringUnit" : {
                   "state" : "needs_review",
@@ -37868,6 +37814,12 @@
                 "stringUnit" : {
                   "state" : "needs_review",
                   "value" : "з %lld годувань"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "з %lld годування"
                 }
               },
               "other" : {
@@ -37885,124 +37837,16 @@
       "comment" : "checkbox",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Отметить"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Noter"
           }
-        }
-      }
-    },
-    "Отладка · завести зеркало в iCloud" : {
-      "comment" : "warmupSection",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Отладка · завести зеркало в iCloud"
-          }
-        }
-      }
-    },
-    "Создано объектов: %@. Подожди минуту при живой сети, потом сверь Tools/deploy_cloudkit_schema.sh." : {
-      "comment" : "n",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Создано объектов: %@. Подожди минуту при живой сети, потом сверь Tools/deploy_cloudkit_schema.sh."
-          }
-        }
-      }
-    },
-    "Не сохранилось: %@" : {
-      "comment" : "n",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Не сохранилось: %@"
-          }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Enregistrement impossible : %@"
-          }
-        }
-      }
-    },
-    "Отладка · убрать прогрев" : {
-      "comment" : "n",
-      "extractionState" : "manual",
-      "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Отладка · убрать прогрев"
-          }
-        }
-      }
-    },
-    "Удалено объектов: %@. Типы в схеме остаются — они и были целью." : {
-      "comment" : "n",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Удалено объектов: %@. Типы в схеме остаются — они и были целью."
-          }
-        }
-      }
-    },
-    "Не удалилось: %@" : {
-      "comment" : "n",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Не удалилось: %@"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Suppression impossible : %@"
-          }
-        }
-      }
-    },
-    "отладка" : {
-      "comment" : "n",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "отладка"
-          }
-        }
-      }
-    },
-    "Этого раздела нет в сборке для App Store. Он заводит по одному объекту каждого типа с датой 1 января 2001 года, чтобы CloudKit создал зеркала; потом их убирает." : {
-      "comment" : "n",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Этого раздела нет в сборке для App Store. Он заводит по одному объекту каждого типа с датой 1 января 2001 года, чтобы CloudKit создал зеркала; потом их убирает."
+            "value" : "Отметить"
           }
         }
       }
@@ -38011,16 +37855,16 @@
       "comment" : "parts",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ записей в день"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "%@ entrées par jour"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ записей в день"
           }
         }
       }
@@ -38029,16 +37873,16 @@
       "comment" : "doses",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@, %@% вовремя"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "%@, %@ % à l'heure"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, %@% вовремя"
           }
         }
       }
@@ -38047,16 +37891,16 @@
       "comment" : "body",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "доза %@"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "dose %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "доза %@"
           }
         }
       }
@@ -38065,16 +37909,16 @@
       "comment" : "body",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "В отчёте будет строка «доза → забор: %@». Без этой строки анализы уже дважды читали неверно."
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Le compte rendu aura la ligne « dose → prise de sang : %@ ». Sans elle, les analyses ont déjà été mal lues deux fois."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В отчёте будет строка «доза → забор: %@». Без этой строки анализы уже дважды читали неверно."
           }
         }
       }
@@ -38083,16 +37927,16 @@
       "comment" : "body",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@% доз вовремя"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "%@ % des doses à l'heure"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@% доз вовремя"
           }
         }
       }
@@ -38101,16 +37945,16 @@
       "comment" : "lines",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Доз вовремя: %@% из %@"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Doses à l'heure : %@ % sur %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Доз вовремя: %@% из %@"
           }
         }
       }
@@ -38119,16 +37963,16 @@
       "comment" : "body",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · ты помощник"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "%@ · tu es assistant"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · ты помощник"
           }
         }
       }
@@ -38137,16 +37981,16 @@
       "comment" : "parts",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Потерялась собака: %@, %@, %@"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Chien perdu : %@, %@, %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Потерялась собака: %@, %@, %@"
           }
         }
       }
@@ -38155,16 +37999,16 @@
       "comment" : "packs",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ %@ по %@"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "%@ %@ à %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ %@ по %@"
           }
         }
       }
@@ -38173,16 +38017,16 @@
       "comment" : "scheduleSubtitle",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ровно через %@"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "dans exactement %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ровно через %@"
           }
         }
       }
@@ -38191,16 +38035,16 @@
       "comment" : "plan",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ночь длиннее %@"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Nuit plus longue que %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ночь длиннее %@"
           }
         }
       }
@@ -38209,16 +38053,16 @@
       "comment" : "body",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Едем с %@"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "On part avec %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Едем с %@"
           }
         }
       }
@@ -38227,16 +38071,16 @@
       "comment" : "trace",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "по %@, где она была с тобой дольше %@ часов"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "sur %@, où il est resté avec toi plus de %@ heures"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "по %@, где она была с тобой дольше %@ часов"
           }
         }
       }
@@ -38245,16 +38089,16 @@
       "comment" : "packingCard",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ г · %@ и запас"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "%@ g · %@ et réserve"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ г · %@ и запас"
           }
         }
       }
@@ -38263,16 +38107,16 @@
       "comment" : "openCard",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "переходит%@ · %@"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "passe%@ · %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "переходит%@ · %@"
           }
         }
       }
@@ -38281,27 +38125,16 @@
       "comment" : "tail",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Записала · прогулка %@%@"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Noté · promenade %@%@"
           }
-        }
-      }
-    },
-    "ПРОГРЕВ СХЕМЫ" : {
-      "extractionState" : "manual",
-      "localizations" : {
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ПРОГРЕВ СХЕМЫ"
+            "value" : "Записала · прогулка %@%@"
           }
         }
       }
@@ -38310,16 +38143,16 @@
       "comment" : "snapshot",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "гулял %@ назад"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "sorti il y a %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "гулял %@ назад"
           }
         }
       }
@@ -38328,16 +38161,16 @@
       "comment" : "hours",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · %@ раз за %@"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "%@ · %@ fois en %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · %@ раз за %@"
           }
         }
       }
@@ -38358,16 +38191,16 @@
       "comment" : "cal",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ел %@ назад"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "a mangé il y a %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ел %@ назад"
           }
         }
       }
@@ -38376,16 +38209,16 @@
       "comment" : "cloud",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "права на iCloud нет — только локально (профиль: %@)"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "pas de droit iCloud — local uniquement (profil : %@)"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "права на iCloud нет — только локально (профиль: %@)"
           }
         }
       }
@@ -38394,16 +38227,16 @@
       "comment" : "when",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ в день"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "%@ par jour"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ в день"
           }
         }
       }
@@ -38412,16 +38245,16 @@
       "comment" : "tail",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ уйдут из плана дня, вкладка «Здоровье» спрячется. %@"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "%@ quitteront le plan du jour, l'onglet « Santé » se masquera. %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ уйдут из плана дня, вкладка «Здоровье» спрячется. %@"
           }
         }
       }
@@ -38430,16 +38263,16 @@
       "comment" : "lines",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Записей в день: %@"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Entrées par jour : %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Записей в день: %@"
           }
         }
       }
@@ -38448,16 +38281,16 @@
       "comment" : "lines",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "  где: %@"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "  où : %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "  где: %@"
           }
         }
       }
@@ -38466,16 +38299,16 @@
       "comment" : "sign",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@%@ кг за период"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "%@%@ kg sur la période"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@%@ кг за период"
           }
         }
       }
@@ -38484,16 +38317,28 @@
       "comment" : "delta",
       "extractionState" : "manual",
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Doses à l'heure %@ de %@ %."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Доз вовремя %@ на %@%."
           }
-        },
-        "fr" : {
+        }
+      }
+    },
+    "Языков мало намеренно: машинный перевод в приложении про здоровье собаки хуже, чем язык, сделанный целиком." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Doses à l'heure %@ de %@ %."
+            "state" : "translated",
+            "value" : "Языков мало намеренно: машинный перевод в приложении про здоровье собаки хуже, чем язык, сделанный целиком."
           }
         }
       }
