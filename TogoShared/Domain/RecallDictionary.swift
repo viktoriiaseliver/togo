@@ -90,6 +90,14 @@ nonisolated struct RecallDictionary: Sendable {
     /// «elle a mangé», «j'ai donné». Поэтому основы — причастия и корни
     /// глаголов, а не инфинитивы: в дневнике пишут о том, что уже было.
     ///
+    /// **«caca» голым ставить нельзя: оно внутри «cacahuète».** Тест
+    /// «il a mangé une cacahuète» ловился как стул, потому что stool
+    /// проверяется раньше meal. Русский список обходит то же самое
+    /// («какао») тем, что держит ГЛАГОЛЫ — «какал», «покакал». Во
+    /// французском глагола нет, поэтому две формы: «fait caca» —
+    /// обычное «il a fait caca», и «caca » с пробелом — «caca mou».
+    /// Ни одна не совпадает с «cacahuète».
+    ///
     /// **«sorti» стоит только в `outing`.** Оно годилось бы и для
     /// прогулки, но у русского и украинского списков то же разделение:
     /// «promen»/«balade» — прогулка, «sorti»/«dehors» — выход по делам.
@@ -97,7 +105,7 @@ nonisolated struct RecallDictionary: Sendable {
     /// и порядок решал бы за человека.
     static let французский = RecallDictionary(
         основы: [
-            (.stool,  ["diarrh", "selles", "caca", "molle"]),
+            (.stool,  ["diarrh", "selles", "fait caca", "caca ", "molle"]),
             (.meal,   ["mang", "nourri", "repas", "croquettes", "gamelle"]),
             (.dose,   ["comprim", "médicament", "cachet", "dose", "donn"]),
             (.walk,   ["promen", "balade"]),

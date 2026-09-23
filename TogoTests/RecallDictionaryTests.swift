@@ -58,7 +58,13 @@ struct RecallDictionaryTests {
             ("il pèse 12 kg", .weight),
             ("il n'a pas mangé", .meal),
             ("flaque dans le salon", .incident),
+            ("il a fait caca", .stool),
+            ("caca mou ce matin", .stool),
             ("promenade d'une heure", .walk),
+            // Столкновения основ с чужими словами — настоящим парсером.
+            ("il a mangé une cacahuète", .meal),   // «caca» внутри «cacahuète»
+            ("croquettes assorties", .meal),       // «sorti» внутри «assorti»
+            ("il boit beaucoup", nil),             // ничего из списка
         ]
         for (фраза, ждём) in ожидаем {
             #expect(RecallParser.kind(in: фраза, словарь: .французский) == ждём,
