@@ -10,7 +10,7 @@ struct TodayWidget: Widget {
                 .containerBackground(Token.Surface.screen, for: .widget)
         }
         .configurationDisplayName("Togo · просится")
-        .description("Сколько он не писал и что было утром — не открывая приложение.")
+        .description("Когда кормили и сколько он не писал — не открывая приложение.")
         .supportedFamilies([.systemSmall, .systemMedium, .accessoryRectangular, .accessoryInline])
     }
 }
@@ -50,9 +50,7 @@ struct TodayWidgetView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(snapshot.verdictTitle).font(.headline)
                 Text(sinceText).font(.caption)
-                if let stool = snapshot.lastStoolSummary {
-                    Text(stool).font(.caption2)
-                }
+                Text(едаСтрокой).font(.caption2)
             }
         default:
             VStack(alignment: .leading, spacing: 6) {
@@ -71,6 +69,9 @@ struct TodayWidgetView: View {
                     .font(.system(size: 17, weight: .bold))
                     .foregroundStyle(Token.Ink.primary)
                 Text(sinceText)
+                    .font(.system(size: 12))
+                    .foregroundStyle(Token.Ink.secondary)
+                Text(едаСтрокой)
                     .font(.system(size: 12))
                     .foregroundStyle(Token.Ink.secondary)
                 Spacer(minLength: 0)
@@ -96,8 +97,27 @@ struct TodayWidgetView: View {
     }
 
     private var sinceText: String {
-        guard let seconds = snapshot.sinceUrineSeconds else { return "записей пока нет" }
-        return "моча \(Fmt.duration(seconds)) назад"
+        guard let seconds = snapshot.sinceUrineSeconds else {
+            return String(localized: "записей пока нет")
+        }
+        return String(localized: "моча \(Fmt.duration(seconds)) назад")
+    }
+
+    /// Еда — первой строкой после вердикта, потому что ради неё
+    /// приложение и открывают. Порядок: сколько прошло, потом сколько
+    /// из скольких — «2 из 2» отвечает на вопрос «уже кормили?»,
+    /// а «3 ч назад» на вопрос «пора ли».
+    private var едаСтрокой: String {
+        guard let last = snapshot.lastMealAt else {
+            return snapshot.mealsPlanned > 0
+                ? String(localized: "ещё не ели")
+                : String(localized: "еды пока нет")
+        }
+        let прошло = Fmt.duration(Date().timeIntervalSince(last))
+        guard snapshot.mealsPlanned > 0 else {
+            return String(localized: "ел \(прошло) назад")
+        }
+        return String(localized: "ел \(прошло) назад · \(snapshot.mealsToday) из \(snapshot.mealsPlanned)")
     }
 
     private var inlineText: String {

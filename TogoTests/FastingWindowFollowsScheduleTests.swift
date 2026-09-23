@@ -93,8 +93,21 @@ struct FastingWindowSecondImplementationTests {
                 at: корень.appendingPathComponent(каталог), includingPropertiesForKeys: nil)
             while let элемент = обход?.nextObject() as? URL {
                 guard элемент.pathExtension == "swift",
-                      let текст = try? String(contentsOf: элемент, encoding: .utf8),
-                      текст.contains("fastingEnds(") else { continue }
+                      let текст = try? String(contentsOf: элемент, encoding: .utf8)
+                else { continue }
+                // Комментарии вычёркиваем. 23.09.2026 сторож покраснел
+                // на строке `fastingEnds(` внутри пояснения к починке —
+                // то есть на файле, который расчёт как раз перестал
+                // повторять. Тест, ищущий строку в исходнике, не
+                // отличает код от рассказа о коде, и красный без
+                // дефекта учит не верить красному.
+                let код = текст.components(separatedBy: .newlines)
+                    .map { строка -> String in
+                        let без = строка.components(separatedBy: "///")[0]
+                        return без.components(separatedBy: "//")[0]
+                    }
+                    .joined(separator: "\n")
+                guard код.contains("fastingEnds(") else { continue }
                 места.append(элемент.lastPathComponent)
             }
         }

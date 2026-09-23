@@ -85,21 +85,48 @@ enum LiveActivityController {
             walkStartedAt: appState.walkStartedAt,
             walkStartedBy: appState.walkStartedBy,
             fastingEndsAt: fastingEnd(for: dog, now: now),
+            lastMealAt: мяЕда(events, now: now).0,
+            mealsToday: мяЕда(events, now: now).1,
+            mealsPlanned: dog.mealsPerDay,
             updatedAt: now
         )
         WidgetBridge.publish(snapshot)
         WidgetCenter.shared.reloadAllTimelines()
     }
 
+    /// Окно «не кормить» — тем же правилом, что и главный экран.
+    ///
+    /// **Здесь лежала третья реализация**, и она знала только окно ПОСЛЕ
+    /// отметки приёма: перебирала лекарства руками и складывала
+    /// `givenAt + fastingMinutes`. Значит виджет молчал в двух случаях
+    /// из трёх — про окно ДО дозы (желудок должен быть пустым к приёму)
+    /// и про сдвиг часа приёма: передвинули таблетку с 7:00 на 9:00,
+    /// а на локскране по-прежнему «не кормить до 8:00».
+    ///
+    /// Сторож `FastingWindowSecondImplementationTests` этого не поймал:
+    /// он ищет вызовы `fastingEnds(`, а здесь расчёт был написан
+    /// вручную и ничего не звал. **Сторож на вызов ловит «не позвали»
+    /// и слеп к «посчитали сами».**
+    ///
+    /// Та же болезнь, что у Timer с подписью на «острове» и у Togo
+    /// с `Formatting`: правку сделали на одной поверхности из трёх.
     private static func fastingEnd(for dog: Dog, now: Date) -> Date? {
         guard dog.isOnTreatment else { return nil }
-        for medication in dog.medications where medication.fastingMinutes > 0 && !medication.isPaused {
-            guard let dose = medication.doses.filter({ $0.isGiven })
-                .max(by: { ($0.givenAt ?? .distantPast) < ($1.givenAt ?? .distantPast) }),
-                  let givenAt = dose.givenAt else { continue }
-            let ends = givenAt.addingTimeInterval(Double(medication.fastingMinutes) * 60)
-            if now < ends { return ends }
-        }
-        return nil
+        return FeedingGate.block(for: dog.medications, now: now)?.freeAt
     }
+
+    /// Когда кормили последний раз и сколько раз за сегодня.
+    ///
+    /// **Замер 23.09.2026 по журналу с телефона:** пять сессий из
+    /// четырнадцати начинаются с записи еды, и еда — самое частое
+    /// действие вообще (17 из 112). Приложение открывают, чтобы
+    /// покормить. Виджет при этом говорил про мочу, стул и прогулку —
+    /// и про еду не говорил ничего.
+    private static func мяЕда(_ events: [LogEvent], now: Date,
+                              calendar: Calendar = .current) -> (Date?, Int) {
+        let еда = events.filter { $0.kind == .meal && $0.deletedAt == nil }
+        let сегодня = еда.filter { calendar.isDate($0.date, inSameDayAs: now) }
+        return (еда.map(\.date).max(), сегодня.count)
+    }
+
 }

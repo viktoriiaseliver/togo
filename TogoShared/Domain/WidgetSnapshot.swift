@@ -17,6 +17,17 @@ nonisolated struct WidgetSnapshot: Codable, Equatable, Sendable {
     var walkStartedAt: Date?
     var walkStartedBy: String?
     var fastingEndsAt: Date?
+
+    /// Еда: когда в последний раз и сколько из запланированного.
+    ///
+    /// Замер 23.09.2026 по журналу с телефона: пять сессий из
+    /// четырнадцати начинаются с записи еды, и еда — самое частое
+    /// действие вообще. Приложение открывают, чтобы покормить,
+    /// а виджет об этом не говорил ничего.
+    var lastMealAt: Date?
+    var mealsToday: Int
+    var mealsPlanned: Int
+
     var updatedAt: Date
 
     static let empty = WidgetSnapshot(
@@ -30,6 +41,9 @@ nonisolated struct WidgetSnapshot: Codable, Equatable, Sendable {
         walkStartedAt: nil,
         walkStartedBy: nil,
         fastingEndsAt: nil,
+        lastMealAt: nil,
+        mealsToday: 0,
+        mealsPlanned: 0,
         updatedAt: .distantPast
     )
 }

@@ -50187,6 +50187,42 @@
         }
       }
     },
+    "ел %@ назад · %lld из %lld" : {
+      "comment" : "едаСтрокой",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ел %@ назад · %lld из %lld"
+          }
+        }
+      }
+    },
+    "еды пока нет" : {
+      "comment" : "едаСтрокой",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "еды пока нет"
+          }
+        }
+      }
+    },
+    "ещё не ели" : {
+      "comment" : "едаСтрокой",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ещё не ели"
+          }
+        }
+      }
+    },
     "права на iCloud нет — только локально (профиль: %@)" : {
       "comment" : "cloud",
       "extractionState" : "manual",
