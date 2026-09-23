@@ -35,10 +35,49 @@ import sys
 
 import site_en
 import site_fr
+import site_uk
 
 # Переводы: язык → модуль. Русский здесь не нужен — он источник,
 # его текст читается из LegalScreens.swift.
-TRANSLATIONS = {"en": site_en, "fr": site_fr}
+TRANSLATIONS = {"en": site_en, "fr": site_fr, "uk": site_uk}
+
+def проверить_языки():
+    """Язык заводится в ТРЁХ местах, и ни одно не знает об остальных.
+
+    `LANGS` решает, что собрать; `TRANSLATIONS` — чем переводить
+    и чей отпечаток сверять; `LANGUAGE_NAMES` — как назвать в
+    переключателе; `IN_LANGUAGE` — как подписать на развилке.
+    Пятое, `LABELS`, из списка убрано вовсе: оно собирается
+    из `TRANSLATIONS`, и забыть его больше негде.
+
+    Украинский 23.09 стоял в одном месте из пяти:
+    отпечаток совпадал с живым русским — и совпадал случайно, потому
+    что сторож его не читал вовсе.
+
+    Падаем до первой записи файла: собранный наполовину сайт хуже
+    несобранного, его видно как готовый.
+    """
+    переводимые = set(LANGS) - {"ru"}
+    без_перевода = переводимые - set(TRANSLATIONS)
+    без_имени = set(LANGS) - set(LANGUAGE_NAMES)
+    без_подписи = set(LANGS) - set(IN_LANGUAGE)
+    лишние = set(TRANSLATIONS) - переводимые
+    беды = []
+    if без_перевода:
+        беды.append(f"в LANGS есть, в TRANSLATIONS нет: {sorted(без_перевода)}"
+                    " — страницы соберутся, отпечаток проверять будет некому")
+    if без_имени:
+        беды.append(f"в LANGS есть, в LANGUAGE_NAMES нет: {sorted(без_имени)}"
+                    " — переключатель языков упадёт на KeyError")
+    if без_подписи:
+        беды.append(f"в LANGS есть, в IN_LANGUAGE нет: {sorted(без_подписи)}"
+                    " — развилка упадёт на KeyError")
+    if лишние:
+        беды.append(f"в TRANSLATIONS есть, в LANGS нет: {sorted(лишние)}"
+                    " — перевод написан и никуда не попадает")
+    if беды:
+        sys.exit("язык заведён не везде:\n  " + "\n  ".join(беды))
+
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SOURCE = os.path.join(ROOT, "Togo/Features/Settings/LegalScreens.swift")
@@ -52,7 +91,12 @@ PERSISTENCE = os.path.join(ROOT, "TogoShared/Domain/Persistence.swift")
 # `togo/fr/terms.html` отдавал 404, а французская карточка витрины
 # уже ссылалась на условия — для автопродляемой подписки ссылка обязана
 # работать и быть на языке витрины.
-LANGS = ("en", "fr", "ru")
+# Украинский подключён 23.09 вместе со сторожем отпечатка. Переводчица
+# замерила, что её отпечаток совпадает с живым русским, — но совпадал он
+# СЛУЧАЙНО: пока `site_uk` не стоит в `TRANSLATIONS`, сторож его не читает
+# вовсе. Полная копия без сторожа выглядит снаружи ровно как копия
+# под сторожем. Подключать оба места разом.
+LANGS = ("en", "fr", "ru", "uk")
 
 
 def contact(name):
@@ -128,9 +172,14 @@ LABELS = {
         "privacy": "Политика приватности",
         "terms": "Условия использования",
     },
-    "en": site_en.LABELS,
-    "fr": site_fr.LABELS,
 }
+
+# Подписи переводов берутся у самих модулей, а не перечисляются здесь.
+# Это было ПЯТОЕ место, где заводится язык, — и ровно того же рода,
+# что остальные четыре: список руками знает только то, что в него
+# положили, и молчит о том, чего в нём нет. Украинский 23.09 уронил
+# сборку на `LABELS[lang]` уже после того, как прошли три сторожа.
+LABELS.update({lang: module.LABELS for lang, module in TRANSLATIONS.items()})
 
 # Имя одно на обоих языках. «Того» держалось здесь после того, как приложение
 # и политика уже назывались Togo, и русские страницы сайта оставались
@@ -316,7 +365,8 @@ def switcher(lang, file, titles):
     return " · ".join(parts)
 
 
-LANGUAGE_NAMES = {"ru": "Русский", "en": "English", "fr": "Français"}
+LANGUAGE_NAMES = {"ru": "Русский", "en": "English", "fr": "Français",
+                  "uk": "Українська"}
 
 
 def linkify(text):
@@ -446,7 +496,8 @@ def render_support(lang):
 # «на языке» — подпись рядом со ссылкой на развилке. Пишется на том же
 # языке, на который ведёт: человек, не читающий двух других, должен
 # узнать свою строку.
-IN_LANGUAGE = {"en": "in English", "ru": "по-русски", "fr": "en français"}
+IN_LANGUAGE = {"en": "in English", "ru": "по-русски", "fr": "en français",
+               "uk": "українською"}
 
 
 def render_stub(file, titles):
@@ -471,6 +522,10 @@ def render_stub(file, titles):
 SCREENS = (("PrivacyPolicyScreen", "privacy.html"),
            ("TermsScreen", "terms.html"),
            ("MedicalDisclaimerScreen", "medical.html"))
+
+# Три места, где заводится язык, сверяются до первой записи файла:
+# собранный наполовину сайт хуже несобранного — его видно как готовый.
+проверить_языки()
 
 documents = {screen: extract(screen) for screen, _ in SCREENS}
 check_translation(documents)
