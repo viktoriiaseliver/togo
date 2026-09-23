@@ -3050,7 +3050,28 @@
       }
     },
     "Lévothyrox" : {
-
+      "comment" : "подсказка поля «Название» у препарата",
+      "extractionState" : "manual",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lévothyrox"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Эутирокс"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L-тироксин"
+          }
+        }
+      }
     },
     "Pro" : {
 
@@ -17225,6 +17246,30 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Кігті"
+          }
+        }
+      }
+    },
+    "врач или клиника" : {
+      "comment" : "подсказка поля «Назначил»",
+      "extractionState" : "manual",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "vétérinaire ou clinique"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "врач или клиника"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "лікар або клініка"
           }
         }
       }

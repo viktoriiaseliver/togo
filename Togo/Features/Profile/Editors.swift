@@ -440,7 +440,7 @@ struct MedicationEditorSheet: View {
                 }
                 TGDivider()
                 LabeledField(label: "Назначил") {
-                    TextField("Dr. Ferrand", text: $prescriber)
+                    TextField("врач или клиника", text: $prescriber)
                 }
             }
 
