@@ -3,18 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Privacy Policy · Политика конфиденциальности — Togo</title>
+<title>Privacy Policy · Politique de confidentialité · Политика конфиденциальности — Togo</title>
 <link rel="alternate" hreflang="en" href="https://viktoriiaseliver.github.io/togo/en/privacy.html">
+<link rel="alternate" hreflang="fr" href="https://viktoriiaseliver.github.io/togo/fr/privacy.html">
 <link rel="alternate" hreflang="ru" href="https://viktoriiaseliver.github.io/togo/ru/privacy.html">
 <link rel="alternate" hreflang="x-default" href="https://viktoriiaseliver.github.io/togo/en/privacy.html">
 <link rel="stylesheet" href="../style.css">
 <script>
 (function () {
   var wanted = navigator.languages || [navigator.language || "en"];
+  var known = ["en", "fr", "ru"];
   for (var i = 0; i < wanted.length; i++) {
     var tag = String(wanted[i]).toLowerCase();
-    if (tag.indexOf("ru") === 0) { location.replace("ru/privacy.html"); return; }
-    if (tag.indexOf("en") === 0) { location.replace("en/privacy.html"); return; }
+    for (var j = 0; j < known.length; j++) {
+      if (tag.indexOf(known[j]) === 0) {
+        location.replace(known[j] + "/privacy.html"); return;
+      }
+    }
   }
   location.replace("en/privacy.html");
 })();
@@ -29,6 +34,7 @@
 </header>
 
 <p class="lang"><a href="en/privacy.html">Privacy Policy — in English</a></p>
+<p class="lang"><a href="fr/privacy.html">Politique de confidentialité — en français</a></p>
 <p class="lang"><a href="ru/privacy.html">Политика конфиденциальности — по-русски</a></p>
 
 <footer>

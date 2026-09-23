@@ -34,6 +34,11 @@ import re
 import sys
 
 import site_en
+import site_fr
+
+# Переводы: язык → модуль. Русский здесь не нужен — он источник,
+# его текст читается из LegalScreens.swift.
+TRANSLATIONS = {"en": site_en, "fr": site_fr}
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SOURCE = os.path.join(ROOT, "Togo/Features/Settings/LegalScreens.swift")
@@ -43,8 +48,11 @@ OUT = os.path.join(ROOT, "site")
 PERSISTENCE = os.path.join(ROOT, "TogoShared/Domain/Persistence.swift")
 
 # Английский первым: он же x-default, к нему уходит браузер с любым
-# третьим языком.
-LANGS = ("en", "ru")
+# четвёртым языком. Французский добавлен 23.09: до этого
+# `togo/fr/terms.html` отдавал 404, а французская карточка витрины
+# уже ссылалась на условия — для автопродляемой подписки ссылка обязана
+# работать и быть на языке витрины.
+LANGS = ("en", "fr", "ru")
 
 
 def contact(name):
@@ -121,12 +129,13 @@ LABELS = {
         "terms": "Условия использования",
     },
     "en": site_en.LABELS,
+    "fr": site_fr.LABELS,
 }
 
 # Имя одно на обоих языках. «Того» держалось здесь после того, как приложение
 # и политика уже назывались Togo, и русские страницы сайта оставались
 # единственным местом, где жило старое имя.
-NAMES = {"ru": "Togo", "en": "Togo"}
+NAMES = {lang: "Togo" for lang in LANGS}
 
 
 def fingerprint(documents):
@@ -150,30 +159,41 @@ def fingerprint(documents):
 
 
 def check_translation(documents):
-    """Свериться с переводом: тот же набор разделов и тот же отпечаток."""
+    """Свериться с переводами: тот же набор разделов и тот же отпечаток.
+
+    Переводов два и будет больше, поэтому проверяются все: расхождение
+    одного языка не должно прятаться за совпадением другого.
+    """
     actual = fingerprint(documents)
-    if actual == site_en.SOURCE_FINGERPRINT:
+    расхождения = []
+    for lang, module in sorted(TRANSLATIONS.items()):
+        if module.SOURCE_FINGERPRINT == actual:
+            continue
+        lines = [f"  {lang}: отпечаток {module.SOURCE_FINGERPRINT}, "
+                 f"у русского текста {actual}"]
+        for screen in sorted(documents):
+            russian = documents[screen]["sections"]
+            translated = module.DOCUMENTS.get(screen, {}).get("sections", [])
+            if len(russian) != len(translated):
+                lines.append(f"    {screen}: разделов {len(russian)}, "
+                             f"в переводе {len(translated)}")
+                continue
+            for index, ((_, ru_body), (title, body)) in enumerate(
+                    zip(russian, translated), 1):
+                if len(ru_body) != len(body):
+                    lines.append(f"    {screen}, раздел {index} ({title}): "
+                                 f"абзацев {len(ru_body)}, в переводе {len(body)}")
+        расхождения += lines
+
+    if not расхождения:
         return
 
-    lines = ["Русский текст в LegalScreens.swift изменился, а перевод",
-             "в Tools/site_en.py — нет. Наружу уехала бы английская",
-             "страница, которая говорит не то же самое.", ""]
-    for screen in sorted(documents):
-        russian = documents[screen]["sections"]
-        english = site_en.DOCUMENTS.get(screen, {}).get("sections", [])
-        if len(russian) != len(english):
-            lines.append(f"  {screen}: разделов {len(russian)}, "
-                         f"в переводе {len(english)}")
-            continue
-        for index, ((_, ru_body), (en_title, en_body)) in enumerate(
-                zip(russian, english), 1):
-            if len(ru_body) != len(en_body):
-                lines.append(f"  {screen}, раздел {index} ({en_title}): "
-                             f"абзацев {len(ru_body)}, в переводе {len(en_body)}")
-    lines += ["",
-              "Перечитать перевод, поправить и вписать новый отпечаток:",
-              f'  SOURCE_FINGERPRINT = "{actual}"']
-    sys.exit("\n".join(lines))
+    sys.exit("\n".join(
+        ["Русский текст в LegalScreens.swift изменился, а перевод — нет.",
+         "Наружу уехала бы страница, которая говорит не то же самое.", ""]
+        + расхождения
+        + ["", "Перечитать перевод, поправить и вписать новый отпечаток:",
+           f'  SOURCE_FINGERPRINT = "{actual}"']))
 
 
 PAGE = """<!doctype html>
@@ -247,10 +267,14 @@ STUB_PAGE = """<!doctype html>
 <script>
 (function () {{
   var wanted = navigator.languages || [navigator.language || "en"];
+  var known = {known};
   for (var i = 0; i < wanted.length; i++) {{
     var tag = String(wanted[i]).toLowerCase();
-    if (tag.indexOf("ru") === 0) {{ location.replace("ru/{file}"); return; }}
-    if (tag.indexOf("en") === 0) {{ location.replace("en/{file}"); return; }}
+    for (var j = 0; j < known.length; j++) {{
+      if (tag.indexOf(known[j]) === 0) {{
+        location.replace(known[j] + "/{file}"); return;
+      }}
+    }}
   }}
   location.replace("en/{file}");
 }})();
@@ -264,8 +288,7 @@ STUB_PAGE = """<!doctype html>
   <p class="updated">Choose a language. Выберите язык.</p>
 </header>
 
-<p class="lang"><a href="en/{file}">{en_title} — in English</a></p>
-<p class="lang"><a href="ru/{file}">{ru_title} — по-русски</a></p>
+{links}
 
 <footer>
   <p><a href="mailto:{support}">{support}</a></p>
@@ -293,7 +316,7 @@ def switcher(lang, file, titles):
     return " · ".join(parts)
 
 
-LANGUAGE_NAMES = {"ru": "Русский", "en": "English"}
+LANGUAGE_NAMES = {"ru": "Русский", "en": "English", "fr": "Français"}
 
 
 def linkify(text):
@@ -402,7 +425,8 @@ RU_SUPPORT = {
 """,
 }
 
-SUPPORT_PAGES = {"ru": RU_SUPPORT, "en": site_en.SUPPORT}
+SUPPORT_PAGES = dict({"ru": RU_SUPPORT},
+                     **{lang: module.SUPPORT for lang, module in TRANSLATIONS.items()})
 
 
 def render_support(lang):
@@ -419,16 +443,34 @@ def render_support(lang):
         footer=page["footer"].strip("\n"))
 
 
+# «на языке» — подпись рядом со ссылкой на развилке. Пишется на том же
+# языке, на который ведёт: человек, не читающий двух других, должен
+# узнать свою строку.
+IN_LANGUAGE = {"en": "in English", "ru": "по-русски", "fr": "en français"}
+
+
 def render_stub(file, titles):
+    links = "\n".join(
+        '<p class="lang"><a href="%s/%s">%s — %s</a></p>'
+        % (lang, file, titles[lang], IN_LANGUAGE[lang]) for lang in LANGS)
     return STUB_PAGE.format(
         file=file, alternates=alternates(file),
         titles=" · ".join(titles[lang] for lang in LANGS),
-        en_title=titles["en"], ru_title=titles["ru"],
+        en_title=titles["en"], links=links,
+        known="[%s]" % ", ".join('"%s"' % lang for lang in LANGS),
         support=SUPPORT)
 
 
+# «Не медицинское устройство» публикуется с 23.09: приложение ведёт вес,
+# дозы, схемы лечения и течки, а дисклеймер жил только внутри него.
+# Человек, смотрящий в приложение вместо ветеринара, — ровно тот риск,
+# ради которого он и написан.
+#
+# «Из чего собрано» (AcknowledgementsScreen) пока не публикуется:
+# решение менеджера релиза, текст перечитывается.
 SCREENS = (("PrivacyPolicyScreen", "privacy.html"),
-           ("TermsScreen", "terms.html"))
+           ("TermsScreen", "terms.html"),
+           ("MedicalDisclaimerScreen", "medical.html"))
 
 documents = {screen: extract(screen) for screen, _ in SCREENS}
 check_translation(documents)
@@ -447,25 +489,29 @@ def write(path, text):
 
 for screen, file in SCREENS:
     russian = documents[screen]
-    english = site_en.DOCUMENTS[screen]
-    titles = {"ru": russian["title"], "en": english["title"]}
+    titles = {"ru": russian["title"]}
 
     write(f"ru/{file}", render(russian, "ru", file, LANGUAGE_NAMES))
-    write(f"en/{file}", render(
-        {"title": english["title"], "updated": english["updated"],
-         "intro": substitute(english["intro"]),
-         "sections": [(t, [substitute(p) for p in body])
-                      for t, body in english["sections"]]},
-        "en", file, LANGUAGE_NAMES))
+    for lang, module in TRANSLATIONS.items():
+        doc = module.DOCUMENTS[screen]
+        titles[lang] = doc["title"]
+        write(f"{lang}/{file}", render(
+            {"title": doc["title"], "updated": doc["updated"],
+             "intro": substitute(doc["intro"]),
+             "sections": [(заголовок, [substitute(p) for p in body])
+                          for заголовок, body in doc["sections"]]},
+            lang, file, LANGUAGE_NAMES))
     write(file, render_stub(file, titles))
-    print(f"→ {file}  ({len(russian['sections'])} разделов, ru + en)")
+    print(f"→ {file}  ({len(russian['sections'])} разделов, "
+          f"{' + '.join(LANGS)})")
 
 for lang in LANGS:
     write(f"{lang}/support.html", render_support(lang))
-write("support.html", render_stub("support.html",
-                                  {"ru": RU_SUPPORT["title"],
-                                   "en": site_en.SUPPORT["title"]}))
-print("→ support.html  (ru + en)")
+write("support.html", render_stub(
+    "support.html",
+    dict({"ru": RU_SUPPORT["title"]},
+         **{lang: page["title"] for lang, page in SUPPORT_PAGES.items()})))
+print(f"→ support.html  ({' + '.join(LANGS)})")
 
 
 # Проверка того, что уже написано на диск, а не того, что мы собирались
