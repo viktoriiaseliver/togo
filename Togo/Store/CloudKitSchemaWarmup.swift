@@ -32,6 +32,31 @@ nonisolated enum CloudKitSchemaWarmup {
     /// Метка для того, у чего есть название.
     static let markerTitle = "ПРОГРЕВ СХЕМЫ"
 
+    /// Идентификаторы созданного. Метка в поле — не опора: `LogEvent`
+    /// и `DoseRecord` ездят в общий дневник, и слияние переписывает им
+    /// `authorName` и `scheduledAt` из приехавшего payload
+    /// (`SharedDiaryPayloads:40` и `:81`). Замер 23.09: после «убрать
+    /// прогрев» остались ровно эти два типа — те самые, что
+    /// синхронизируются. Идентификатор не переписывает никто.
+    private static let ключИдентификаторов = "debug.warmup.ids"
+
+    /// Записи раньше 2002 года в дневнике собаки быть не может: приложению
+    /// меньше года. Это вторая сеть — для тех двух типов, что ездят
+    /// в общий дневник и возвращаются из облака с переписанными полями,
+    /// и для объектов, заведённых прошлой сборкой, чьих идентификаторов
+    /// мы не сохранили.
+    static let доПрограммы = Date(timeIntervalSinceReferenceDate: 365 * 24 * 3600)
+
+    private static var сохранённыеИдентификаторы: Set<UUID> {
+        get {
+            let строки = UserDefaults.standard.stringArray(forKey: ключИдентификаторов) ?? []
+            return Set(строки.compactMap(UUID.init(uuidString:)))
+        }
+        set {
+            UserDefaults.standard.set(newValue.map(\.uuidString), forKey: ключИдентификаторов)
+        }
+    }
+
     /// Завести по одному объекту каждого типа, которого зеркало ещё
     /// не видело, и по одному объекту типов, у которых не хватает полей.
     /// Возвращает, сколько объектов создано.
@@ -66,6 +91,7 @@ nonisolated enum CloudKitSchemaWarmup {
             записьСоВсемиПолями(),
         ]
         for object in objects { context.insert(object) }
+        сохранённыеИдентификаторы = сохранённыеИдентификаторы.union(objects.compactMap(идентификатор))
         // Сохранение здесь не молчит: прогрев ради того и делается, чтобы
         // записи ушли в зеркало. Не сохранилось — человек должен узнать
         // сразу, а не по пустой схеме через час.
@@ -120,21 +146,30 @@ nonisolated enum CloudKitSchemaWarmup {
     @discardableResult
     static func remove(in context: ModelContext) throws -> Int {
         var removed = 0
-        removed += delete(DayOut.self, in: context) { $0.startedAt == markerDate }
-        removed += delete(DogDocument.self, in: context) { $0.title == markerTitle }
-        removed += delete(DoseRecord.self, in: context) { $0.scheduledAt == markerDate }
-        removed += delete(Episode.self, in: context) { $0.title == markerTitle }
-        removed += delete(FoodStock.self, in: context) { $0.brand == markerTitle }
-        removed += delete(HeatRecord.self, in: context) { $0.startedAt == markerDate }
-        removed += delete(Medication.self, in: context) { $0.name == markerTitle }
-        removed += delete(ProcedureSkill.self, in: context) { $0.title == markerTitle }
-        removed += delete(TrainingSession.self, in: context) { $0.cue == markerTitle }
-        removed += delete(TrainingStep.self, in: context) { $0.cue == markerTitle }
-        removed += delete(Trip.self, in: context) { $0.destination == markerTitle }
-        removed += delete(Dog.self, in: context) { $0.name == markerTitle }
-        removed += delete(FamilyMember.self, in: context) { $0.name == markerTitle }
-        removed += delete(LogEvent.self, in: context) { $0.authorName == markerTitle }
+        let свои = сохранённыеИдентификаторы
+        removed += delete(DayOut.self, in: context) { $0.startedAt == markerDate || свои.contains($0.id) }
+        removed += delete(DogDocument.self, in: context) { $0.title == markerTitle || свои.contains($0.id) }
+        removed += delete(DoseRecord.self, in: context) {
+            $0.scheduledAt < доПрограммы || свои.contains($0.id)
+        }
+        removed += delete(Episode.self, in: context) { $0.title == markerTitle || свои.contains($0.id) }
+        removed += delete(FoodStock.self, in: context) { $0.brand == markerTitle || свои.contains($0.id) }
+        removed += delete(HeatRecord.self, in: context) { $0.startedAt == markerDate || свои.contains($0.id) }
+        removed += delete(Medication.self, in: context) { $0.name == markerTitle || свои.contains($0.id) }
+        removed += delete(ProcedureSkill.self, in: context) { $0.title == markerTitle || свои.contains($0.id) }
+        removed += delete(TrainingSession.self, in: context) { $0.cue == markerTitle || свои.contains($0.id) }
+        removed += delete(TrainingStep.self, in: context) { $0.cue == markerTitle || свои.contains($0.id) }
+        removed += delete(Trip.self, in: context) { $0.destination == markerTitle || свои.contains($0.id) }
+        removed += delete(Dog.self, in: context) { $0.name == markerTitle || свои.contains($0.id) }
+        removed += delete(FamilyMember.self, in: context) { $0.name == markerTitle || свои.contains($0.id) }
+        removed += delete(LogEvent.self, in: context) {
+            $0.authorName == markerTitle || $0.date < доПрограммы || свои.contains($0.id)
+        }
         try context.save()
+        // Список чистим только когда чистить больше нечего: иначе
+        // второе нажатие потеряет опору и промахнётся так же, как
+        // промахнулись метки в полях.
+        if остатки(in: context).isEmpty { сохранённыеИдентификаторы = [] }
         return removed
     }
 
@@ -152,26 +187,71 @@ nonisolated enum CloudKitSchemaWarmup {
 
     /// Что именно осталось, по типам. Число без имени типа не чинится:
     /// предикат удаления у каждого свой, и знать надо, который промахнулся.
+    /// Что лежит у каждой собаки. Нужно затем, что удаление собаки
+    /// уносит каскадом всё: записи, вес, уход, препараты, занятия,
+    /// поездки. Прежде чем трогать дубликат, надо знать, у какой
+    /// из них данные, — а не гадать по кличке.
+    @MainActor
+    static func собаки(in context: ModelContext) -> String {
+        let все = (try? context.fetch(FetchDescriptor<Dog>())) ?? []
+        guard !все.isEmpty else { return "собак нет" }
+        let формат = Date.FormatStyle(date: .numeric, time: .shortened)
+        return все.map { собака in
+            let записей = собака.eventsStorage?.count ?? 0
+            let вес = собака.weightsStorage?.count ?? 0
+            let уход = собака.careTasksStorage?.count ?? 0
+            let препараты = собака.medicationsStorage?.count ?? 0
+            return "«\(собака.name)» заведена \(собака.createdAt.formatted(формат)): "
+                + "записей \(записей), взвешиваний \(вес), дел ухода \(уход), препаратов \(препараты)"
+        }.joined(separator: "\n")
+    }
+
+    /// Идентификатор объекта прогрева, если он у типа есть.
+    private static func идентификатор(_ объект: any PersistentModel) -> UUID? {
+        switch объект {
+        case let x as DayOut: x.id
+        case let x as DogDocument: x.id
+        case let x as DoseRecord: x.id
+        case let x as Episode: x.id
+        case let x as FoodStock: x.id
+        case let x as HeatRecord: x.id
+        case let x as Medication: x.id
+        case let x as ProcedureSkill: x.id
+        case let x as TrainingSession: x.id
+        case let x as TrainingStep: x.id
+        case let x as Trip: x.id
+        case let x as Dog: x.id
+        case let x as FamilyMember: x.id
+        case let x as LogEvent: x.id
+        default: nil
+        }
+    }
+
     @MainActor
     static func остатки(in context: ModelContext) -> [String: Int] {
         var найдено: [String: Int] = [:]
+        let свои = сохранённыеИдентификаторы
         func учесть(_ имя: String, _ сколько: Int) {
             if сколько > 0 { найдено[имя] = сколько }
         }
-        учесть("DayOut", count(DayOut.self, in: context) { $0.startedAt == markerDate })
-        учесть("DogDocument", count(DogDocument.self, in: context) { $0.title == markerTitle })
-        учесть("DoseRecord", count(DoseRecord.self, in: context) { $0.scheduledAt == markerDate })
-        учесть("Episode", count(Episode.self, in: context) { $0.title == markerTitle })
-        учесть("FoodStock", count(FoodStock.self, in: context) { $0.brand == markerTitle })
-        учесть("HeatRecord", count(HeatRecord.self, in: context) { $0.startedAt == markerDate })
-        учесть("Medication", count(Medication.self, in: context) { $0.name == markerTitle })
-        учесть("ProcedureSkill", count(ProcedureSkill.self, in: context) { $0.title == markerTitle })
-        учесть("TrainingSession", count(TrainingSession.self, in: context) { $0.cue == markerTitle })
-        учесть("TrainingStep", count(TrainingStep.self, in: context) { $0.cue == markerTitle })
-        учесть("Trip", count(Trip.self, in: context) { $0.destination == markerTitle })
-        учесть("Dog", count(Dog.self, in: context) { $0.name == markerTitle })
-        учесть("FamilyMember", count(FamilyMember.self, in: context) { $0.name == markerTitle })
-        учесть("LogEvent", count(LogEvent.self, in: context) { $0.authorName == markerTitle })
+        учесть("DayOut", count(DayOut.self, in: context) { $0.startedAt == markerDate || свои.contains($0.id) })
+        учесть("DogDocument", count(DogDocument.self, in: context) { $0.title == markerTitle || свои.contains($0.id) })
+        учесть("DoseRecord", count(DoseRecord.self, in: context) {
+            $0.scheduledAt < доПрограммы || свои.contains($0.id)
+        })
+        учесть("Episode", count(Episode.self, in: context) { $0.title == markerTitle || свои.contains($0.id) })
+        учесть("FoodStock", count(FoodStock.self, in: context) { $0.brand == markerTitle || свои.contains($0.id) })
+        учесть("HeatRecord", count(HeatRecord.self, in: context) { $0.startedAt == markerDate || свои.contains($0.id) })
+        учесть("Medication", count(Medication.self, in: context) { $0.name == markerTitle || свои.contains($0.id) })
+        учесть("ProcedureSkill", count(ProcedureSkill.self, in: context) { $0.title == markerTitle || свои.contains($0.id) })
+        учесть("TrainingSession", count(TrainingSession.self, in: context) { $0.cue == markerTitle || свои.contains($0.id) })
+        учесть("TrainingStep", count(TrainingStep.self, in: context) { $0.cue == markerTitle || свои.contains($0.id) })
+        учесть("Trip", count(Trip.self, in: context) { $0.destination == markerTitle || свои.contains($0.id) })
+        учесть("Dog", count(Dog.self, in: context) { $0.name == markerTitle || свои.contains($0.id) })
+        учесть("FamilyMember", count(FamilyMember.self, in: context) { $0.name == markerTitle || свои.contains($0.id) })
+        учесть("LogEvent", count(LogEvent.self, in: context) {
+            $0.authorName == markerTitle || $0.date < доПрограммы || свои.contains($0.id)
+        })
         return найдено
     }
 

@@ -106,6 +106,16 @@ struct SettingsScreen: View {
                     warmupResult = "Не удалилось: \(error.localizedDescription)"
                 }
             }
+            Button("Отладка · что будет при слиянии дубликатов") {
+                warmupResult = DuplicateMerge.план(in: context)
+            }
+            Button("Отладка · слить дубликаты") {
+                do { warmupResult = try DuplicateMerge.слить(in: context) }
+                catch { warmupResult = "Не вышло: \(error.localizedDescription)" }
+            }
+            Button("Отладка · что лежит у каждой собаки") {
+                warmupResult = CloudKitSchemaWarmup.собаки(in: context)
+            }
             Button("Отладка · сколько служебных записей осталось") {
                 let остатки = CloudKitSchemaWarmup.остатки(in: context)
                 let всего = остатки.values.reduce(0, +)
