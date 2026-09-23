@@ -27,6 +27,40 @@ struct LocalizationTests {
         #expect(Bundle.main.localizations.contains("fr"))
     }
 
+    /// Ключей с сырой интерполяцией в каталоге быть не должно вовсе.
+    ///
+    /// `Tools/extract_texts.py` вынимает из кода строки с кириллицей как
+    /// есть — вместе с `\\(Fmt.decimal(...))` внутри. Но приложение в
+    /// рантайме спрашивает другой ключ: SwiftUI превращает интерполяцию
+    /// в спецификатор, и запрос идёт за `"%@ записей в день"`. Такого
+    /// ключа в каталоге нет, перевода нет — и француз читает русскую
+    /// строку формата.
+    ///
+    /// Замер 23.09 в собранном бандле: `"%@ ч"` → `"%@ h"`,
+    /// `"Просится"` → `"Envie de sortir ?"`, а `"%@ записей в день"`
+    /// не находится ни во французском бандле, ни через `Bundle.main`.
+    ///
+    /// Долг — 33 ключа. Починка в генераторе, а не здесь; храповик держит,
+    /// чтобы долг не рос, пока её делают.
+    @Test("Ключей с сырой интерполяцией не становится больше")
+    func сыраяИнтерполяция() throws {
+        let долг = 33
+        let url = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .appendingPathComponent("Togo/Resources/Localizable.xcstrings")
+        let data = try Data(contentsOf: url)
+        let каталог = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+        let строки = каталог?["strings"] as? [String: Any] ?? [:]
+        let сырые = строки.keys.filter { $0.contains("\\(") }.sorted()
+        #expect(сырые.count <= долг, """
+            ключей с сырой интерполяцией \(сырые.count) при долге \(долг). \
+            Такой ключ в рантайме не спрашивается никогда, перевода у него \
+            не будет, и человек увидит русскую строку формата. Первые: \
+            \(сырые.prefix(3).joined(separator: " | "))
+            """)
+    }
+
     @Test("Список для экрана языка идёт без повторов")
     func списокЭкранаБезПовторов() {
         let список = Settings().availableLanguages
