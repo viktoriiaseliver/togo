@@ -138,6 +138,40 @@ nonisolated enum CloudKitSchemaWarmup {
         return removed
     }
 
+    /// Сколько служебных записей прогрева осталось в хранилище.
+    ///
+    /// Нужно затем, что «вроде бы всё ушло» — не замер. Кнопка «убрать
+    /// прогрев» может сказать «удалено 14» и всё равно оставить объект,
+    /// который не попал в выборку: предикат у каждого типа свой, и
+    /// ошибиться в одном из четырнадцати легко. Число на экране — это
+    /// проверка того, что сделала кнопка, а не доверие к ней.
+    @MainActor
+    static func сколькоОсталось(in context: ModelContext) -> Int {
+        var осталось = 0
+        осталось += count(DayOut.self, in: context) { $0.startedAt == markerDate }
+        осталось += count(DogDocument.self, in: context) { $0.title == markerTitle }
+        осталось += count(DoseRecord.self, in: context) { $0.scheduledAt == markerDate }
+        осталось += count(Episode.self, in: context) { $0.title == markerTitle }
+        осталось += count(FoodStock.self, in: context) { $0.brand == markerTitle }
+        осталось += count(HeatRecord.self, in: context) { $0.startedAt == markerDate }
+        осталось += count(Medication.self, in: context) { $0.name == markerTitle }
+        осталось += count(ProcedureSkill.self, in: context) { $0.title == markerTitle }
+        осталось += count(TrainingSession.self, in: context) { $0.cue == markerTitle }
+        осталось += count(TrainingStep.self, in: context) { $0.cue == markerTitle }
+        осталось += count(Trip.self, in: context) { $0.destination == markerTitle }
+        осталось += count(Dog.self, in: context) { $0.name == markerTitle }
+        осталось += count(FamilyMember.self, in: context) { $0.name == markerTitle }
+        осталось += count(LogEvent.self, in: context) { $0.authorName == markerTitle }
+        return осталось
+    }
+
+    @MainActor
+    private static func count<T: PersistentModel>(
+        _ type: T.Type, in context: ModelContext, where matches: (T) -> Bool
+    ) -> Int {
+        ((try? context.fetch(FetchDescriptor<T>())) ?? []).filter(matches).count
+    }
+
     /// Выборка и удаление по признаку. Предикат обычный, а не
     /// `#Predicate`: он проверяет метку, которой нет у настоящих записей,
     /// и читаемость здесь важнее скорости — объектов единицы.

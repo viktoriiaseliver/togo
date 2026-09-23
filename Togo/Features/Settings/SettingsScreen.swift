@@ -106,6 +106,12 @@ struct SettingsScreen: View {
                     warmupResult = "Не удалилось: \(error.localizedDescription)"
                 }
             }
+            Button("Отладка · сколько служебных записей осталось") {
+                let n = CloudKitSchemaWarmup.сколькоОсталось(in: context)
+                warmupResult = n == 0
+                    ? "Служебных записей прогрева не осталось: 0. Это замер, а не «вроде бы»."
+                    : "Служебных записей осталось: \(n). Нажми «убрать прогрев» ещё раз."
+            }
             if let warmupResult {
                 Text(warmupResult).textStyle(AppFont.caption)
             }
