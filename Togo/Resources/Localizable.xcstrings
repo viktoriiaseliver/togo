@@ -50196,6 +50196,12 @@
             "state" : "translated",
             "value" : "ел %@ назад · %lld из %lld"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "їв %@ тому · %lld з %lld"
+          }
         }
       }
     },
@@ -50208,6 +50214,12 @@
             "state" : "translated",
             "value" : "еды пока нет"
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "їжі поки немає"
+          }
         }
       }
     },
@@ -50219,6 +50231,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ещё не ели"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ще не їли"
           }
         }
       }
