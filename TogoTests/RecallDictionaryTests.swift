@@ -44,10 +44,34 @@ struct RecallDictionaryTests {
                 == RecallDictionary.русский.основы.count)
     }
 
-    @Test("Французский заведён, но слов пока нет")
-    func французскийЖдётСлов() {
-        #expect(RecallDictionary.дляЯзыка("fr").пустой,
-                "появились французские основы — убери это ожидание и добавь разбор в тесты")
+    /// Французский заполнен 23.09; прежнее ожидание «пустой» снято
+    /// по его же указанию.
+    @Test("Французские фразы разбираются так, как их пишут")
+    func французскиеФразы() {
+        let ожидаем: [(String, LogKind?)] = [
+            ("il a vomi cette nuit", .incident),
+            ("selles molles ce matin", .stool),
+            ("je l'ai nourri à 7h", .meal),
+            ("donné le comprimé", .dose),
+            ("on a fait une balade", .walk),
+            ("sorti dix minutes", .outing),
+            ("il pèse 12 kg", .weight),
+            ("il n'a pas mangé", .meal),
+            ("flaque dans le salon", .incident),
+            ("promenade d'une heure", .walk),
+        ]
+        for (фраза, ждём) in ожидаем {
+            #expect(RecallParser.kind(in: фраза, словарь: .французский) == ждём,
+                    "«\(фраза)» разобралась не так")
+        }
+    }
+
+    @Test("Avant-hier не путается с hier")
+    func французскоеПозавчера() {
+        let сегодня = Calendar.current.startOfDay(for: Date())
+        let позавчера = RecallParser.day(in: "avant-hier il a vomi",
+                                         today: сегодня, словарь: .французский)
+        #expect(позавчера == Calendar.current.date(byAdding: .day, value: -2, to: сегодня))
     }
 
     /// Украинский заполнен 23.09; прежнее ожидание «пустой» снято по его же
@@ -146,8 +170,18 @@ struct RecallDictionaryTests {
         #expect(позавчера == Calendar.current.date(byAdding: .day, value: -2, to: сегодня))
     }
 
+    /// Проверяется ПУСТОЙ словарь, собранный здесь же.
+    ///
+    /// Раньше роль пустого играл французский — и тест сломался бы
+    /// в тот день, когда французский заполнят. Он и сломался: инвариант
+    /// «пустой не притворяется» не имеет отношения к тому, какой язык
+    /// сегодня пуст.
     @Test("Пустой словарь не разбирает чужой язык по-русски")
     func пустойНеПритворяется() {
-        #expect(RecallParser.kind(in: "il a vomi hier", словарь: .французский) == nil)
+        let пусто = RecallDictionary(основы: [], сегодня: [], вчера: [],
+                                     позавчера: [], началоПериода: [], конецПериода: [])
+        #expect(пусто.пустой)
+        #expect(RecallParser.kind(in: "il a vomi hier", словарь: пусто) == nil)
+        #expect(RecallParser.kind(in: "был понос", словарь: пусто) == nil)
     }
 }
