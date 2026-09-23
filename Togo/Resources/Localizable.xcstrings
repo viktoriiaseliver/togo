@@ -35296,6 +35296,12 @@
             "state" : "translated",
             "value" : "Подписка вернулась"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Abonnement restauré"
+          }
         }
       }
     },
@@ -35307,6 +35313,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Покупок не нашлось"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aucun achat trouvé"
           }
         }
       }
@@ -35320,6 +35332,12 @@
             "state" : "translated",
             "value" : "На этом Apple ID подписки Togo нет. Если покупка была с другого — войди в него в App Store."
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aucun abonnement Togo sur ce compte Apple. Si l'achat a été fait avec un autre, connecte-toi à celui-là dans l'App Store."
+          }
         }
       }
     },
@@ -35331,6 +35349,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "День не закрылся · нажми ещё раз"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Journée pas clôturée · appuie encore"
           }
         }
       }
@@ -35344,6 +35368,12 @@
             "state" : "translated",
             "value" : "Не получилось взять на себя · нажми ещё раз"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Impossible de prendre en charge · appuie encore"
+          }
         }
       }
     },
@@ -35355,6 +35385,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Не снялось · нажми ещё раз"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pas décoché · appuie encore"
           }
         }
       }
@@ -35368,6 +35404,12 @@
             "state" : "translated",
             "value" : "Не записалось · нажми ещё раз"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pas enregistré · appuie encore"
+          }
         }
       }
     },
@@ -35379,6 +35421,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Доза не отметилась · нажми ещё раз"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dose pas cochée · appuie encore"
           }
         }
       }
@@ -35392,6 +35440,12 @@
             "state" : "translated",
             "value" : "Срок не пересчитался · нажми ещё раз"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Échéance pas recalculée · appuie encore"
+          }
         }
       }
     },
@@ -35403,6 +35457,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ответ не записался · отметь ещё раз"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Réponse pas enregistrée · note encore"
           }
         }
       }
@@ -35416,6 +35476,12 @@
             "state" : "translated",
             "value" : "Не сохранилось · нажми «Готово» ещё раз"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pas enregistré · appuie encore sur « Terminé »"
+          }
         }
       }
     },
@@ -35427,6 +35493,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Не удалилось · нажми ещё раз"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pas supprimé · appuie encore"
           }
         }
       }
@@ -35440,6 +35512,12 @@
             "state" : "translated",
             "value" : "Эпизод не продлился · отметь ещё раз"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Épisode pas prolongé · note encore"
+          }
         }
       }
     },
@@ -35451,6 +35529,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Эпизод не завёлся · отметь ещё раз"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Épisode pas créé · note encore"
           }
         }
       }
@@ -35464,6 +35548,12 @@
             "state" : "translated",
             "value" : "Не удалось восстановить покупки. Проверь связь и попробуй ещё раз."
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Impossible de restaurer les achats. Vérifie la connexion et réessaie."
+          }
         }
       }
     },
@@ -35475,6 +35565,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "файл дневника есть, но не открылся — «Дневник не открылся»"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "le fichier du carnet existe mais ne s'ouvre pas — « Carnet illisible »"
           }
         }
       }
@@ -35488,6 +35584,12 @@
             "state" : "translated",
             "value" : "Заведи тех, кто тоже за ней ходит: совладельца, ситтера, ребёнка или врача. Роль и права выбираешь ты — сам он их не поменяет."
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ajoute ceux qui s'en occupent aussi : co-propriétaire, pet-sitter, enfant ou vétérinaire. Le rôle et les droits, c'est toi qui les choisis — la personne ne peut pas les changer."
+          }
         }
       }
     },
@@ -35499,6 +35601,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Добавить человека"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ajouter une personne"
           }
         }
       }
@@ -35512,6 +35620,12 @@
             "state" : "translated",
             "value" : "только здесь"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ici seulement"
+          }
         }
       }
     },
@@ -35523,6 +35637,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Новый участник"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nouveau membre"
           }
         }
       }
@@ -35536,6 +35656,12 @@
             "state" : "translated",
             "value" : "имя, роль и права"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "nom, rôle et droits"
+          }
         }
       }
     },
@@ -35547,6 +35673,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "что это даёт"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ce que ça apporte"
           }
         }
       }
@@ -35560,6 +35692,12 @@
             "state" : "translated",
             "value" : "Отчёт врачу, CSV и приглашение в общий дневник уходят только тогда, когда ты сам нажимаешь «поделиться», и только тому, кого ты выбрал в системном окне."
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le compte rendu pour le vétérinaire, l'export CSV et l'invitation au carnet partagé ne partent que lorsque tu appuies toi-même sur « Partager », et uniquement vers la personne choisie dans la fenêtre système."
+          }
         }
       }
     },
@@ -35571,6 +35709,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Приглашение в общий дневник — это общий доступ iCloud. Открыть его может только тот, кого ты назвал в системном окне «Поделиться»: по пересланному адресу не войдёт никто посторонний."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Une invitation au carnet partagé est un partage iCloud. Seule la personne nommée dans la fenêtre système « Partager » peut l'ouvrir : personne ne peut entrer avec une adresse transférée."
           }
         }
       }
@@ -35584,6 +35728,12 @@
             "state" : "translated",
             "value" : "Кто в дневнике — видно владельцу, и он может убрать любого. Уже полученные записи останутся у того, кто их получил: забрать показанное iCloud не умеет."
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le propriétaire voit qui est dans le carnet et peut retirer n'importe qui. Les entrées déjà reçues restent chez celui qui les a reçues : iCloud ne sait pas reprendre ce qu'il a montré."
+          }
         }
       }
     },
@@ -35595,6 +35745,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "позвать в дневник"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "inviter au carnet"
           }
         }
       }
@@ -35608,6 +35764,12 @@
             "state" : "translated",
             "value" : "Приглашение уходит через общий дневник — пока он выключен, отправлять нечего."
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L'invitation passe par le carnet partagé — tant qu'il est désactivé, il n'y a rien à envoyer."
+          }
         }
       }
     },
@@ -35619,6 +35781,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Включить общий дневник"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Activer le carnet partagé"
           }
         }
       }
@@ -35632,6 +35800,12 @@
             "state" : "translated",
             "value" : "Отправить приглашение"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Envoyer l'invitation"
+          }
         }
       }
     },
@@ -35644,6 +35818,12 @@
             "state" : "translated",
             "value" : "Выбери, кому: маме, мужу, ситтеру. Откроет только он, со своего iCloud, и ему нужен Togo на телефоне."
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Choisis à qui : ta mère, ton conjoint, le pet-sitter. Seule cette personne pourra l'ouvrir, depuis son iCloud, et il lui faut Togo sur son téléphone."
+          }
         }
       }
     },
@@ -35655,6 +35835,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Чтобы он отмечал со своего телефона, включи общий дневник и отправь приглашение — «позвать в дневник» в списке семьи."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pour qu'il note depuis son téléphone, active le carnet partagé et envoie l'invitation — « inviter au carnet » dans la liste de la famille."
           }
         }
       }
@@ -35680,6 +35866,12 @@
             "state" : "translated",
             "value" : "Спрашиваю магазин…"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Je demande à l'App Store…"
+          }
         }
       }
     },
@@ -35691,6 +35883,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Собака пока не заведена"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aucun chien pour l'instant"
           }
         }
       }
@@ -35704,6 +35902,12 @@
             "state" : "translated",
             "value" : "Отмечать некого: еда, выходы и дозы считаются по собаке. Заведи её — нужны только кличка и вес."
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Rien à noter : repas, sorties et doses se comptent par chien. Ajoute-le — il suffit du nom et du poids."
+          }
         }
       }
     },
@@ -35715,6 +35919,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Завести собаку"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ajouter un chien"
           }
         }
       }
@@ -35728,6 +35938,12 @@
             "state" : "translated",
             "value" : "Пока без собаки"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pas encore de chien"
+          }
         }
       }
     },
@@ -35739,6 +35955,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "прогулка"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "promenade"
           }
         }
       }
@@ -35752,6 +35974,12 @@
             "state" : "translated",
             "value" : "роли, дежурство, инструкция ситтеру"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "rôles, tour de garde, consignes au pet-sitter"
+          }
         }
       }
     },
@@ -35763,6 +35991,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "это я"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "c'est moi"
           }
         }
       }
@@ -35776,6 +36010,12 @@
             "state" : "translated",
             "value" : "на этом телефоне"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "sur ce téléphone"
+          }
         }
       }
     },
@@ -35788,6 +36028,12 @@
             "state" : "translated",
             "value" : "Записи с этого телефона будут подписаны этим именем, а права возьмутся из этой карточки."
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Les entrées depuis ce téléphone porteront ce nom, et les droits viendront de cette fiche."
+          }
         }
       }
     },
@@ -35799,6 +36045,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Это я"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "C'est moi"
           }
         }
       }
@@ -37638,6 +37890,12 @@
             "state" : "translated",
             "value" : "Отметить"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Noter"
+          }
         }
       }
     },
@@ -37673,6 +37931,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Не сохранилось: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Enregistrement impossible : %@"
           }
         }
       }
@@ -37710,6 +37974,12 @@
             "state" : "translated",
             "value" : "Не удалилось: %@"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Suppression impossible : %@"
+          }
         }
       }
     },
@@ -37746,6 +38016,12 @@
             "state" : "translated",
             "value" : "%@ записей в день"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ entrées par jour"
+          }
         }
       }
     },
@@ -37757,6 +38033,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@, %@% вовремя"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@, %@ % à l'heure"
           }
         }
       }
@@ -37770,6 +38052,12 @@
             "state" : "translated",
             "value" : "доза %@"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "dose %@"
+          }
         }
       }
     },
@@ -37781,6 +38069,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "В отчёте будет строка «доза → забор: %@». Без этой строки анализы уже дважды читали неверно."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le compte rendu aura la ligne « dose → prise de sang : %@ ». Sans elle, les analyses ont déjà été mal lues deux fois."
           }
         }
       }
@@ -37794,6 +38088,12 @@
             "state" : "translated",
             "value" : "%@% доз вовремя"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ % des doses à l'heure"
+          }
         }
       }
     },
@@ -37805,6 +38105,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Доз вовремя: %@% из %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Doses à l'heure : %@ % sur %@"
           }
         }
       }
@@ -37818,6 +38124,12 @@
             "state" : "translated",
             "value" : "%@ · ты помощник"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ · tu es assistant"
+          }
         }
       }
     },
@@ -37829,6 +38141,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Потерялась собака: %@, %@, %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Chien perdu : %@, %@, %@"
           }
         }
       }
@@ -37842,6 +38160,12 @@
             "state" : "translated",
             "value" : "%@ %@ по %@"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ %@ à %@"
+          }
         }
       }
     },
@@ -37853,6 +38177,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ровно через %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "dans exactement %@"
           }
         }
       }
@@ -37866,6 +38196,12 @@
             "state" : "translated",
             "value" : "Ночь длиннее %@"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nuit plus longue que %@"
+          }
         }
       }
     },
@@ -37877,6 +38213,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Едем с %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "On part avec %@"
           }
         }
       }
@@ -37890,6 +38232,12 @@
             "state" : "translated",
             "value" : "по %@, где она была с тобой дольше %@ часов"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "sur %@, où il est resté avec toi plus de %@ heures"
+          }
         }
       }
     },
@@ -37901,6 +38249,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ г · %@ и запас"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ g · %@ et réserve"
           }
         }
       }
@@ -37914,6 +38268,12 @@
             "state" : "translated",
             "value" : "переходит%@ · %@"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "passe%@ · %@"
+          }
         }
       }
     },
@@ -37925,6 +38285,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Записала · прогулка %@%@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Noté · promenade %@%@"
           }
         }
       }
@@ -37949,6 +38315,12 @@
             "state" : "translated",
             "value" : "гулял %@ назад"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "sorti il y a %@"
+          }
         }
       }
     },
@@ -37960,6 +38332,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ · %@ раз за %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ · %@ fois en %@"
           }
         }
       }
@@ -37985,6 +38363,12 @@
             "state" : "translated",
             "value" : "ел %@ назад"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "a mangé il y a %@"
+          }
         }
       }
     },
@@ -37996,6 +38380,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "права на iCloud нет — только локально (профиль: %@)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "pas de droit iCloud — local uniquement (profil : %@)"
           }
         }
       }
@@ -38009,6 +38399,12 @@
             "state" : "translated",
             "value" : "%@ в день"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ par jour"
+          }
         }
       }
     },
@@ -38020,6 +38416,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ уйдут из плана дня, вкладка «Здоровье» спрячется. %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ quitteront le plan du jour, l'onglet « Santé » se masquera. %@"
           }
         }
       }
@@ -38033,6 +38435,12 @@
             "state" : "translated",
             "value" : "Записей в день: %@"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Entrées par jour : %@"
+          }
         }
       }
     },
@@ -38044,6 +38452,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "  где: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "  où : %@"
           }
         }
       }
@@ -38057,6 +38471,12 @@
             "state" : "translated",
             "value" : "%@%@ кг за период"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@%@ kg sur la période"
+          }
         }
       }
     },
@@ -38068,6 +38488,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Доз вовремя %@ на %@%."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Doses à l'heure %@ de %@ %."
           }
         }
       }
