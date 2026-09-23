@@ -91,10 +91,85 @@ PY
 )"
 rm -f "$PROD_FILE"
 
+# Вторая проверка: зеркало SwiftData.
+#
+# Типы `CD_*` заводит не этот файл и не человек, а само зеркало —
+# при первой записи объекта, и только в development. Скрипт до 23.09
+# о них не знал вовсе и говорил «работает», когда из шестнадцати
+# моделей зеркалились пять: прогулки, дозы, занятия, поездки и
+# документы не уезжали в iCloud НИ У КОГО, а политика в приложении
+# обещала копию базы. Проверка, которая не краснеет на этом,
+# проверяет не то место.
+echo "→ проверяю зеркало SwiftData"
+DEV_FILE="$(mktemp)"
+xcrun cktool export-schema \
+    --team-id "$TEAM" \
+    --container-id "$CONTAINER" \
+    --environment development > "$DEV_FILE"
+PROD_FILE2="$(mktemp)"
+printf '%s\n' "$PRODUCTION" > "$PROD_FILE2"
+
+MIRRORS="$(python3 - "$DEV_FILE" "$PROD_FILE2" TogoShared/Domain/SchemaVersions.swift <<'PY'
+import re, sys
+
+dev, prod, source = sys.argv[1], sys.argv[2], sys.argv[3]
+
+def mirrors(path):
+    return {m for m in re.findall(r'RECORD TYPE (CD_\w+) \(', open(path).read())}
+
+# Список моделей берём из источника, а не из головы: добавят модель —
+# проверка узнает о ней сама.
+#
+# Скобки ищем ПОСЛЕ открывающей фигурной: первым `[...]` в этой строке
+# идёт тип возврата `[any PersistentModel.Type]`, и первая версия
+# проверки вычитывала из него ноль моделей — а значит молча говорила
+# «все зеркала на месте», когда их было пять из шестнадцати. Сторож,
+# не сумевший прочитать свой вход, обязан краснеть, а не радоваться.
+block = re.search(r'static var models:\s*\[any PersistentModel\.Type\]\s*\{\s*\[(.*?)\]',
+                  open(source).read(), re.S)
+models = re.findall(r'(\w+)\.self', block.group(1)) if block else []
+if len(models) < 2:
+    sys.exit(f"не удалось прочитать список моделей из {source} — "
+             f"нашлось {len(models)}; проверка зеркала не состоялась")
+
+have_dev, have_prod = mirrors(dev), mirrors(prod)
+lines = []
+for name in sorted(models):
+    t = f"CD_{name}"
+    where = []
+    if t not in have_dev:
+        where.append("development")
+    if t not in have_prod:
+        where.append("production")
+    if where:
+        lines.append(f"{t} — нет в {', '.join(where)}")
+print("\n".join(lines))
+PY
+)"
+rm -f "$DEV_FILE" "$PROD_FILE2"
+
+if [ -n "$MIRRORS" ]; then
+    cat <<MIRROR
+
+Зеркала SwiftData неполны — записи этих типов не уезжают в iCloud:
+
+$MIRRORS
+
+Файлом это не чинится. Тип заводит само зеркало при первой записи
+объекта, и только в development: нужен отладочный прогон с живым
+Apple ID, в котором создаётся по одному объекту каждого типа. После
+этого — та же кнопка «Deploy Schema Changes…» в дашборде.
+
+Пока зеркало неполно, «копия базы лежит в твоей приватной библиотеке
+iCloud» из политики — неправда для этих типов.
+MIRROR
+    exit 1
+fi
+
 if [ -z "$MISSING" ]; then
     echo
-    echo "Готово. В production есть все типы и поля из schema.ckdb —"
-    echo "общий дневник в TestFlight работает."
+    echo "Готово. В production есть все типы и поля из schema.ckdb,"
+    echo "и все шестнадцать зеркал SwiftData на месте в обеих средах."
     exit 0
 fi
 

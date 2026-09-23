@@ -12,6 +12,10 @@ struct SettingsScreen: View {
     @Query private var dogs: [Dog]
 
     @State private var showPaywall = false
+    #if DEBUG
+    @Environment(\.modelContext) private var context
+    @State private var warmupResult: String?
+    #endif
 
     var body: some View {
         List {
@@ -21,6 +25,9 @@ struct SettingsScreen: View {
             dataSection
             legalSection
             aboutSection
+            #if DEBUG
+            warmupSection
+            #endif
         }
         .listStyle(.insetGrouped)
         .scrollContentBackground(.hidden)
@@ -75,6 +82,40 @@ struct SettingsScreen: View {
             Text("Окно натощак, защита от двойной дозы, «как попросил» и строка про наказание бесплатны навсегда и в подписку не входят.")
         }
     }
+
+    #if DEBUG
+    /// Прогрев зеркала CloudKit. Только отладочная сборка и только руками:
+    /// типы `CD_*` заводит зеркало при первой записи, и без этого прогона
+    /// одиннадцать моделей из шестнадцати не уезжают в iCloud вовсе.
+    /// Подробности и порядок — в `CloudKitSchemaWarmup`.
+    private var warmupSection: some View {
+        Section {
+            Button("Отладка · завести зеркало в iCloud") {
+                do {
+                    let n = try CloudKitSchemaWarmup.create(in: context)
+                    warmupResult = "Создано объектов: \(n). Подожди минуту при живой сети, потом сверь Tools/deploy_cloudkit_schema.sh."
+                } catch {
+                    warmupResult = "Не сохранилось: \(error.localizedDescription)"
+                }
+            }
+            Button("Отладка · убрать прогрев") {
+                do {
+                    let n = try CloudKitSchemaWarmup.remove(in: context)
+                    warmupResult = "Удалено объектов: \(n). Типы в схеме остаются — они и были целью."
+                } catch {
+                    warmupResult = "Не удалилось: \(error.localizedDescription)"
+                }
+            }
+            if let warmupResult {
+                Text(warmupResult).textStyle(AppFont.caption)
+            }
+        } header: {
+            Text("отладка")
+        } footer: {
+            Text("Этого раздела нет в сборке для App Store. Он заводит по одному объекту каждого типа с датой 1 января 2001 года, чтобы CloudKit создал зеркала; потом их убирает.")
+        }
+    }
+    #endif
 
     /// Итог восстановления человеческими словами.
     ///
