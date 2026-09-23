@@ -219,7 +219,18 @@ struct DocumentsScreen: View {
                 }
                 TGDivider()
                 LabeledField(label: "Телефон", spokenLabel: "Телефон ветеринара") {
-                    TextField("+33…", text: binding(\.vetPhone)).keyboardType(.phonePad)
+                    // `+…`, а не `+33…`.
+                    //
+                    // Код страны в подсказке — не формат, а **предположение
+                    // о том, где человек живёт**. Украиноязычный в Ницце
+                    // набирает `+33`, француз в Киеве `+380`, и угадать
+                    // это нельзя: номер принадлежит стране, где ВЕТЕРИНАР,
+                    // а не где настроен телефон. Регион устройства был бы
+                    // догадкой получше, но всё равно догадкой.
+                    //
+                    // Формат — «начинается с плюса», и `+…` говорит ровно
+                    // его, не соврав никому.
+                    TextField("+…", text: binding(\.vetPhone)).keyboardType(.phonePad)
                 }
                 TGDivider()
                 LabeledField(label: "Клиника 24 ч") {
@@ -227,7 +238,7 @@ struct DocumentsScreen: View {
                 }
                 TGDivider()
                 LabeledField(label: "Телефон", spokenLabel: "Телефон клиники") {
-                    TextField("+33…", text: binding(\.clinicPhone)).keyboardType(.phonePad)
+                    TextField("+…", text: binding(\.clinicPhone)).keyboardType(.phonePad)
                 }
             }
             .disabled(!canEdit)

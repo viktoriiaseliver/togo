@@ -36,6 +36,16 @@ fi
 # Key ID — это часть имени файла, спрашивать её отдельно незачем.
 ASC_KEY_ID="${ASC_KEY_ID:-$(basename "$ASC_KEY" .p8 | sed 's/^AuthKey_//')}"
 
+# Имя переменной у нас и у соседних проектов разошлось: здесь ждали
+# `ASC_ISSUER`, а `Gamut/.env.asc` кладёт `ASC_ISSUER_ID`. 23.09.2026
+# выгрузка Виктории упала на этом и была обойдена руками — то есть
+# завтра наступили бы снова. Принимаем оба и говорим, какое нашлось:
+# «ключа нет» и «ключ назван иначе» — разные беды с разным лечением.
+if [ -z "${ASC_ISSUER:-}" ] && [ -n "${ASC_ISSUER_ID:-}" ]; then
+    ASC_ISSUER="$ASC_ISSUER_ID"
+    echo "── issuer взят из ASC_ISSUER_ID"
+fi
+
 if [ -z "${ASC_ISSUER:-}" ]; then
     fail "не задан ASC_ISSUER.
 
@@ -53,9 +63,79 @@ VERSION="$(grep '^MARKETING_VERSION' Configuration/Shared.xcconfig | sed 's/.*= 
 
 echo "── Того $VERSION ($BUILD) → TestFlight"
 
-ARCHIVE="build/Togo.xcarchive"
-rm -rf "$ARCHIVE" build/export
+# Что нас попросили сделать — решаем до проверок: у выгрузки готового
+# архива и у полного цикла разные требования к дереву.
+UPLOAD_ONLY=""
+DIRTY_ALLOWED="${DIRTY_OK:-}"
+for arg in "$@"; do
+    case "$arg" in
+        --только-выгрузка) UPLOAD_ONLY=1 ;;
+        --грязно) DIRTY_ALLOWED=1 ;;
+    esac
+done
 
+# Дерево обязано быть чистым, и это отказ, а не предупреждение.
+#
+# **`xcodebuild` архивирует диск, а не коммит.** 23.09.2026 это едва
+# не стоило поставки дважды за час: в дереве лежала незаконченная
+# правка, а в другой раз — намеренно испорченная строка, оставленная
+# после проверки сторожа подделкой. Оба раза спас чужой таймаут,
+# а не проверка.
+#
+# Сборка, собранная с грязного дерева, неотличима снаружи от честной:
+# номер тот же, подпись та же, «что тестировать» от коммита, которого
+# в бинарнике уже нет.
+#
+# `--грязно` оставлено намеренно: бывает нужно собрать с правкой
+# в руках. Но это должно быть сказано вслух, а не случиться само.
+#
+# Имена переменных здесь латиницей, как и всюду в файле: `bash`
+# кириллическое имя за имя не считает, присваивание молча падает
+# («command not found»), а следующая строка выполняется как ни в чём
+# не бывало. Один рабочий файл этим уже был испорчен — правило
+# записано в своде, и я нарушил его в этой же правке, прежде чем
+# заметить.
+#
+# При `--только-выгрузка` не проверяется вовсе, и это не послабление:
+# архив уже собран, дерево на него не влияет никак. Наоборот —
+# типичный случай в том, что после сборки легли коммиты журнала
+# и статуса, и требовать чистоты значило бы заставить пересобирать
+# ради ничего.
+if [ -z "$UPLOAD_ONLY" ] && [ -z "$DIRTY_ALLOWED" ]; then
+    DIRTY="$(git --no-optional-locks status --porcelain)"
+    if [ -n "$DIRTY" ]; then
+        fail "дерево не чистое — архив возьмёт диск, а не коммит:
+
+$DIRTY
+
+Закоммить своё или запусти с --грязно, если это намеренно."
+    fi
+fi
+
+ARCHIVE="build/Togo.xcarchive"
+
+# 3. Готовый архив не стираем молча.
+#
+# Скрипт делает свой полный цикл — тесты, архив, выгрузка — и раньше
+# начинался с `rm -rf` чужого архива. 23.09 так пропала собранная
+# и проверенная сборка 189: её паспорт (номер, путь, `sha256`) уже был
+# отправлен, а проверять стало нечего.
+#
+# Экспорт готового архива — минуты, полный цикл — полчаса. Поэтому
+# `--только-выгрузка` полезнее вопроса.
+if [ "${1:-}" = "--только-выгрузка" ] || [ "${2:-}" = "--только-выгрузка" ]; then
+    [ -d "$ARCHIVE" ] || fail "архива нет: $ARCHIVE. Собери его — make archive."
+    UPLOAD_ONLY=1
+    echo "── беру готовый архив $(plutil -extract ApplicationProperties.CFBundleVersion raw "$ARCHIVE/Info.plist")"
+else
+    UPLOAD_ONLY=""
+    if [ -d "$ARCHIVE" ]; then
+        echo "── стираю прежний архив $(plutil -extract ApplicationProperties.CFBundleVersion raw "$ARCHIVE/Info.plist" 2>/dev/null || echo '?') — он пересобирается"
+    fi
+    rm -rf "$ARCHIVE" build/export
+fi
+
+if [ -z "$UPLOAD_ONLY" ]; then
 echo "── тесты"
 # Симулятор берётся по UDID тем же подборщиком, что у `make unit`, а не
 # по имени. `name=iPhone 17 Pro` без версии разрешается в `OS:latest`:
@@ -103,6 +183,18 @@ xcodebuild archive \
     BUILD_NUMBER="$BUILD" \
     ENTITLEMENTS_VARIANT="$VARIANT" \
     -quiet
+else
+    # Номер берём из готового архива, а не из `git rev-list`: после
+    # сборки могли лечь коммиты — журнал, статус, — и тогда «номер»
+    # и «то, что в бинарнике» разошлись бы молча. Info.plist архива
+    # знает правду; git знает только текущее дерево.
+    BUILD="$(plutil -extract ApplicationProperties.CFBundleVersion raw "$ARCHIVE/Info.plist")"
+    VERSION="$(plutil -extract ApplicationProperties.CFBundleShortVersionString raw "$ARCHIVE/Info.plist")"
+    AUTH=(-authenticationKeyPath "$(cd "$(dirname "$ASC_KEY")" && pwd)/$(basename "$ASC_KEY")"
+          -authenticationKeyID "$ASC_KEY_ID"
+          -authenticationKeyIssuerID "$ASC_ISSUER")
+    echo "── выгружаю готовый архив $VERSION ($BUILD), не пересобирая"
+fi
 
 # Team ID подставляем в копию: сам файл в репозитории остаётся без него.
 OPTIONS="build/ExportOptions.plist"
