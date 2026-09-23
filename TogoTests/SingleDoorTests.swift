@@ -38,7 +38,7 @@ struct SingleDoorTests {
     private static let можно: [String: String] = [
         "EventLog.swift": "сама дверь",
         "SeedData.swift": "демо-данные, человек их не пишет",
-        "SharedDiaryPayloads.swift": "приём чужих записей из общего дневника",
+        "SharedDiaryPayloads.swift": "чужая запись, уже сделанная: отклонить её значило бы потерять данные",
         "CloudKitSchemaWarmup.swift": "отладочный прогрев схемы, только DEBUG",
         "Backup.swift": "восстановление своего архива: право спрашивать не у кого, а сторож дубля съел бы историю",
         "QuickLogIntents.swift": "голосовая дверь; спрашивает право и дубль сама — проверено ниже",

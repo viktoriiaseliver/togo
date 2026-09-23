@@ -59,8 +59,7 @@ final class AppState {
     /// «никаких прав», а **все**.
     func adoptMe(from members: [FamilyMember],
                  гость: Bool = SharedZoneOwner.isGuest) {
-        if let мой = members.first(where: { $0.id == myMemberID })
-            ?? (members.count == 1 ? members.first(where: { $0.isMe }) : nil) {
+        if let мой = FamilyResolver.меня(среди: members, запомненный: myMemberID, гость: гость) {
             myMemberID = мой.id
             adopt(мой)
             return
@@ -78,12 +77,10 @@ final class AppState {
         // Здесь неопознанность — это именно то, чем она выглядит:
         // мы не знаем, кто за телефоном, и выдавать всё нельзя.
         // Остаётся самое узкое: читать можно, писать нельзя.
-        guard гость else {
-            role = .owner
-            return
+        role = FamilyResolver.рольБезОпознания(гость: гость)
+        if гость {
+            StartupLog.note("себя в списке семьи не нашли — права наблюдателя")
         }
-        role = .observer
-        StartupLog.note("себя в списке семьи не нашли — права наблюдателя")
     }
 
     /// Состояние «человек на своём телефоне, семья ещё не заведена».
