@@ -18,7 +18,7 @@ struct DowngradeScreen: View {
             TGCard {
                 TGSectionHeader(title: "перестанет работать")
                 ForEach(SubscriptionStore.lostOnDowngrade, id: \.1) { symbol, title, detail in
-                    TGIconRow(symbol: symbol, title: title, detail: detail,
+                    TGIconRow(symbol: symbol, title: .готовая(title), detail: .готовая(detail),
                               tint: Token.Status.waitingText)
                 }
             }

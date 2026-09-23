@@ -52,7 +52,7 @@ struct SharedDiaryScreen: View {
                 }
             }
             if let failure {
-                TGBanner(tone: .alarm, title: "Не получилось", subtitle: failure,
+                TGBanner(tone: .alarm, title: "Не получилось", subtitle: .готовая(failure),
                          systemImage: "exclamationmark.triangle")
             }
         }
@@ -62,12 +62,12 @@ struct SharedDiaryScreen: View {
     private var statusCard: some View {
         TGCard(spacing: 0) {
             TGSectionHeader(title: "состояние")
-            TGListRow(title: "Обмен", value: stateTitle, accessory: .none)
+            TGListRow(title: "Обмен", value: .готовая(stateTitle), accessory: .none)
             TGDivider()
             TGListRow(title: "Своё не уехало", value: "\(sync?.pending ?? 0)", accessory: .none)
             if !participants.isEmpty {
                 TGDivider()
-                TGListRow(title: "В дневнике", value: participants.joined(separator: ", "),
+                TGListRow(title: "В дневнике", value: .готовая(participants.joined(separator: ", ")),
                           accessory: .none)
             }
             TGDivider()

@@ -43,7 +43,7 @@ struct SitterBriefingScreen: View {
                 TGCard(spacing: 0) {
                     ForEach(Array(lines.enumerated()), id: \.offset) { index, line in
                         if index > 0 { TGDivider() }
-                        TGIconRow(symbol: line.0, title: line.1, detail: line.2)
+                        TGIconRow(symbol: line.0, title: .готовая(line.1), detail: .готовая(line.2))
                             .padding(.vertical, Token.Space.s10)
                     }
                 }
@@ -110,7 +110,7 @@ struct SitterBriefingEditor: View {
 
     private func field(_ title: String, placeholder: String, text: Binding<String>) -> some View {
         TGCard {
-            TGSectionHeader(title: title.lowercased())
+            TGSectionHeader(title: .готовая(title.lowercased()))
             TextField(placeholder, text: text, axis: .vertical)
                 .lineLimit(2...5)
                 .textStyle(AppFont.body)

@@ -348,7 +348,7 @@ struct WalkSummarySheet: View {
         // Итог закрывается и крестиком, и свайпом — а ответы про срыв
         // сохранялись только по кнопке «Готово». Человек отвечал на два
         // вопроса, смахивал шторку и терял оба ответа молча.
-        TGSheet(title: "Погуляли", subtitle: Fmt.duration(session.duration()),
+        TGSheet(title: "Погуляли", subtitle: .готовая(Fmt.duration(session.duration())),
                 onClose: { save() }, hasUnsavedChanges: hasAnswers) {
             statsCard
             if session.reactions > 0 { reactionCard }

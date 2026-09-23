@@ -8,7 +8,7 @@ import SwiftUI
 /// Раньше эта пара «маленький кружок — маленькая цель» была скопирована
 /// в двух местах, и оба раза без запаса.
 struct TGCloseButton: View {
-    var title: String = "Закрыть"
+    var title: LocalizedStringKey = "Закрыть"
     let action: () -> Void
 
     var body: some View {
@@ -22,6 +22,6 @@ struct TGCloseButton: View {
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(title)
+        .accessibilityLabel(Text(title))
     }
 }

@@ -8,9 +8,13 @@ struct SessionSummarySheet: View {
     var onDone: () -> Void
 
     var body: some View {
-        TGSheet(
-            title: "Занятие · \(Fmt.duration(Double(session.durationSeconds)))",
-            subtitle: session.cue + " · " + session.place + " · " + session.person
+        // Куски вынесены в переменные не для красоты: со склейкой прямо
+        // в вызове компилятор не укладывается в отведённое ему время.
+        let длительность = Fmt.duration(Double(session.durationSeconds))
+        let подпись = session.cue + " · " + session.place + " · " + session.person
+        return TGSheet(
+            title: "Занятие · \(длительность)",
+            subtitle: .готовая(подпись)
         ) {
             resultCard
             if !session.observations.isEmpty { observationsCard }
@@ -133,7 +137,7 @@ struct TransferMatrixScreen: View {
 
     private func axisCard(title: String, values: [(String, SkillStatus)]) -> some View {
         TGCard {
-            TGSectionHeader(title: title)
+            TGSectionHeader(title: .готовая(title))
             if values.isEmpty {
                 TGExplainer(text: "Пока пусто. Ось заполнится сама, когда пройдёт первое занятие.")
             } else {

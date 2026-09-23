@@ -16,7 +16,7 @@ struct DoseGateSheet: View {
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        TGSheet(title: medication.name, subtitle: medication.doseText) {
+        TGSheet(title: .готовая(medication.name), subtitle: .готовая(medication.doseText)) {
             switch state {
             case .open:
                 TGExplainer(text: "Доза открыта — можно отмечать.")

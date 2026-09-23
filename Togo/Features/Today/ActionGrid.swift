@@ -60,7 +60,13 @@ struct ActionGrid: View {
 }
 
 struct BigAction: View {
-    let title: String
+    /// Надпись — ключ каталога, а не готовая строка.
+    ///
+    /// `Text` со значением типа `String` рисует текст дословно, мимо
+    /// каталога: 23.09 из-за этого французский кадр витрины показал
+    /// «Просится» и «Гулять» по-русски при живом переводе. Литерал,
+    /// приехавший через `String`, локализацию не проходит.
+    let title: LocalizedStringKey
     let systemImage: String
     let isPrimary: Bool
     let action: () -> Void
@@ -85,13 +91,13 @@ struct BigAction: View {
             )
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(title)
+        .accessibilityLabel(Text(title))
     }
 }
 
 struct SmallAction: View {
-    let title: String
-    var subtitle: String?
+    let title: LocalizedStringKey
+    var subtitle: LocalizedStringKey?
     let systemImage: String
     let action: () -> Void
 
@@ -125,8 +131,8 @@ struct SmallAction: View {
         .buttonStyle(.plain)
         // Подпись под кнопкой — часть оформления, а не имени: голосом
         // и в тестах кнопка называется ровно так, как её зовут люди.
-        .accessibilityLabel(title)
-        .accessibilityValue(subtitle ?? "")
+        .accessibilityLabel(Text(title))
+        .accessibilityValue(subtitle.map { Text($0) } ?? Text(""))
     }
 }
 

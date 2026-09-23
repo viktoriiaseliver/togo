@@ -430,7 +430,7 @@ struct DayReadingScreen: View {
     }
 
     var body: some View {
-        TGSheet(title: Fmt.dayTitle(day), subtitle: "режим чтения") {
+        TGSheet(title: .готовая(Fmt.dayTitle(day)), subtitle: "режим чтения") {
             if dayEvents.isEmpty {
                 TGCard { TGExplainer(text: "В этот день записей нет.") }
             } else {

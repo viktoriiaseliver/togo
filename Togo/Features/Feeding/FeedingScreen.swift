@@ -140,7 +140,7 @@ struct FeedingScreen: View {
             TGCard {
                 TGSectionHeader(
                     title: "запас корма",
-                    subtitle: stocks.isEmpty ? nil : planSubtitle
+                    subtitle: (stocks.isEmpty ? nil : planSubtitle).map { LocalizedStringKey.готовая($0) }
                 )
 
                 if stocks.isEmpty {
@@ -152,7 +152,7 @@ struct FeedingScreen: View {
                     }
                     if plan.needsRestock {
                         TGBanner(tone: .waiting, title: "Пора покупать",
-                                 subtitle: restockText(dog),
+                                 subtitle: .готовая(restockText(dog)),
                                  systemImage: "cart")
                     }
                 }
@@ -191,15 +191,15 @@ struct FeedingScreen: View {
                         .textStyle(AppFont.caption)
                 }
             case .onNorm:
-                TGBanner(tone: .done, title: report.status.title,
+                TGBanner(tone: .done, title: .готовая(report.status.title),
                          subtitle: "В среднем \(Int(report.averageGramsPerDay)) г в день при норме \(report.normGramsPerDay) г. Менять нечего.",
                          systemImage: "checkmark.seal")
             case .overNorm:
-                TGBanner(tone: .waiting, title: report.status.title,
+                TGBanner(tone: .waiting, title: .готовая(report.status.title),
                          subtitle: "В среднем \(Int(report.averageGramsPerDay)) г в день — на \(report.deviationPercent)% больше нормы. Это не срочно, но за две недели складывается в лишний вес.",
                          systemImage: "arrow.up.right")
             case .underNorm:
-                TGBanner(tone: .waiting, title: report.status.title,
+                TGBanner(tone: .waiting, title: .готовая(report.status.title),
                          subtitle: "В среднем \(Int(report.averageGramsPerDay)) г в день — на \(abs(report.deviationPercent))% меньше нормы. Бодр и вес держится — не беда; вес падает — к врачу.",
                          systemImage: "arrow.down.right")
             }
@@ -333,7 +333,7 @@ struct FeedingScreen: View {
             TGBanner(
                 tone: .alarm,
                 title: "Сейчас кормить нельзя",
-                subtitle: {
+                subtitle: .готовая({
                     switch block {
                     case .before(let лекарство, let доза):
                         return "\(лекарство) дают натощак в \(Fmt.clock(доза)) — "
@@ -343,7 +343,7 @@ struct FeedingScreen: View {
                         return "\(лекарство) дали в \(Fmt.clock(дано)). "
                              + "Еда сейчас помешает всасыванию — можно с \(Fmt.clock(до))."
                     }
-                }(),
+                }()),
                 systemImage: "fork.knife.circle"
             )
         }

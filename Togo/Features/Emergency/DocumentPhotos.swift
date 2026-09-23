@@ -195,7 +195,7 @@ struct DocumentViewerSheet: View {
     @State private var isConfirmingDelete = false
 
     var body: some View {
-        TGSheet(title: document.title, subtitle: Fmt.shortDay(document.addedAt)) {
+        TGSheet(title: .готовая(document.title), subtitle: .готовая(Fmt.shortDay(document.addedAt))) {
             if let data = document.image, let image = UIImage(data: data) {
                 Image(uiImage: image)
                     .resizable()

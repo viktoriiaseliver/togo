@@ -133,7 +133,7 @@ struct SettingsScreen: View {
                      systemImage: "magnifyingglass")
         case .failed:
             TGBanner(tone: .alarm, title: "Не получилось",
-                     subtitle: store.lastError,
+                     subtitle: store.lastError.map { .готовая($0) },
                      systemImage: "exclamationmark.triangle")
         }
     }

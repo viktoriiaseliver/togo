@@ -173,7 +173,7 @@ struct CareTaskEditorSheet: View {
 
     var body: some View {
         TGSheet(
-            title: isNew ? "Новое напоминание" : title,
+            title: isNew ? "Новое напоминание" : .готовая(title),
             subtitle: "придёт утром вместе с остальным, а не отдельно",
             closeTitle: isNew ? "Отмена" : "Закрыть",
             hasUnsavedChanges: isNew && !title.trimmingCharacters(in: .whitespaces).isEmpty
@@ -193,7 +193,7 @@ struct CareTaskEditorSheet: View {
                                 subtitle: "от этого зависит, как оно себя ведёт")
                 TGChipGroup(items: CareKind.allCases, title: \.title,
                             isSelected: { $0 == kind }) { kind = $0 }
-                TGExplainer(text: kindExplainer)
+                TGExplainer(text: .готовая(kindExplainer))
             }
 
             switch kind {
@@ -423,7 +423,7 @@ struct MedicationEditorSheet: View {
 
     var body: some View {
         TGSheet(
-            title: isNew ? "Новый препарат" : name,
+            title: isNew ? "Новый препарат" : .готовая(name),
             subtitle: "доза по часам — одна из трёх вещей, которым можно прерывать человека",
             closeTitle: isNew ? "Отмена" : "Закрыть",
             hasUnsavedChanges: isNew && !(name + doseText + prescriber)

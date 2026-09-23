@@ -8,8 +8,8 @@ import SwiftUI
 /// где-то забывался `.buttonStyle(.plain)`, и строка красилась в синий,
 /// ломая палитру, в которой синего нет вовсе.
 struct TGLink<Destination: View>: View {
-    let title: String
-    var value: String?
+    let title: LocalizedStringKey
+    var value: LocalizedStringKey?
     var systemImage: String?
     var tone: Color = Token.Ink.primary
     @ViewBuilder var destination: Destination

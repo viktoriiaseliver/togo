@@ -6,8 +6,8 @@ import SwiftUI
 /// Терракот — просрочка или кровь. Зелёного «молодец» в палитре нет.
 struct TGBanner: View {
     let tone: TGTone
-    let title: String
-    var subtitle: String?
+    let title: LocalizedStringKey
+    var subtitle: LocalizedStringKey?
     var systemImage: String = "clock"
 
     var body: some View {

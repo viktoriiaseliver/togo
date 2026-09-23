@@ -171,8 +171,8 @@ struct DayPlanList: View {
     private func rows(_ list: [DayPlanItem], isDone: Bool = false) -> some View {
         VStack(spacing: 0) {
             ForEach(list) { item in
-                TGCheckRow(title: item.title,
-                           subtitle: subtitle(for: item, isDone: isDone),
+                TGCheckRow(title: .готовая(item.title),
+                           subtitle: subtitle(for: item, isDone: isDone).map { .готовая($0) },
                            isDone: isDone,
                            isLocked: !item.gate.isOpen,
                            subtitleTint: tint(for: item),

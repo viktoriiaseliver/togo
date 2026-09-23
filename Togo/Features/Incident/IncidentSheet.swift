@@ -25,7 +25,7 @@ struct IncidentSheet: View {
     }
 
     private var pickerStep: some View {
-        TGSheet(title: "Что случилось", subtitle: Fmt.clock(Date())) {
+        TGSheet(title: "Что случилось", subtitle: .готовая(Fmt.clock(Date()))) {
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: Token.Space.s8), count: 2),
                       spacing: Token.Space.s8) {
                 ForEach(IncidentKind.allCases, id: \.self) { kind in

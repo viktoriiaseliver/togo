@@ -6,7 +6,7 @@ import SwiftUI
 /// читается почти так же: непонятно, чего ждать и сколько. Поэтому здесь
 /// всегда есть строка, которая говорит, что именно происходит.
 struct TGLoading: View {
-    let message: String
+    let message: LocalizedStringKey
     var isCompact: Bool = false
 
     var body: some View {
@@ -21,7 +21,7 @@ struct TGLoading: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .frame(minHeight: isCompact ? Token.Size.tapTarget : 72)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(message)
+        .accessibilityLabel(Text(message))
     }
 }
 
@@ -29,9 +29,9 @@ struct TGLoading: View {
 /// и что нажать. «Нет данных» без объяснения — это тупик.
 struct EmptyStateCard: View {
     let systemImage: String
-    let title: String
-    let message: String
-    var actionTitle: String?
+    let title: LocalizedStringKey
+    let message: LocalizedStringKey
+    var actionTitle: LocalizedStringKey?
     var action: (() -> Void)?
 
     var body: some View {
@@ -56,11 +56,11 @@ struct EmptyStateCard: View {
 struct TGStateful<Content: View>: View {
     let isLoading: Bool
     let isEmpty: Bool
-    var loadingMessage: String
+    var loadingMessage: LocalizedStringKey
     var emptyImage: String
-    var emptyTitle: String
-    var emptyMessage: String
-    var emptyActionTitle: String?
+    var emptyTitle: LocalizedStringKey
+    var emptyMessage: LocalizedStringKey
+    var emptyActionTitle: LocalizedStringKey?
     var emptyAction: (() -> Void)?
     @ViewBuilder var content: Content
 

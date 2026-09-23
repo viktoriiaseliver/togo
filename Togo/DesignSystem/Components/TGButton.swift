@@ -46,7 +46,7 @@ struct TGButton: View {
         }
     }
 
-    let title: String
+    let title: LocalizedStringKey
     var variant: Variant = .primary
     var size: Size = .large
     /// Иконка — имя SF Symbol. Своих растровых иконок в приложении нет.
@@ -149,7 +149,7 @@ struct TGStepButton: View {
 /// Figma: `Stepper`. Число с двумя круглыми кнопками — родитель для `StepButton`.
 struct TGStepper: View {
     @Binding var value: Int
-    let unit: String
+    let unit: LocalizedStringKey
     var step: Int = 1
     var range: ClosedRange<Int> = 0...999
     /// Внутри строки, а не на весь экран: в правке записи шаговик стоит
@@ -169,7 +169,7 @@ struct TGStepper: View {
             }
             .frame(maxWidth: .infinity)
             .accessibilityElement(children: .combine)
-            .accessibilityValue("\(value) \(unit)")
+            .accessibilityValue(Text("\(value) ") + Text(unit))
             TGStepButton(symbol: "plus") { adjust(step) }
         }
         .frame(maxWidth: .infinity)
@@ -178,11 +178,11 @@ struct TGStepper: View {
     private var inline: some View {
         HStack(spacing: Token.Space.s12) {
             TGStepButton(symbol: "minus") { adjust(-step) }
-            Text("\(value) \(unit)")
+            (Text(verbatim: "\(value) ") + Text(unit))
                 .textStyle(AppFont.numeric(17))
                 .frame(minWidth: 64)
                 .accessibilityElement(children: .combine)
-                .accessibilityValue("\(value) \(unit)")
+                .accessibilityValue(Text("\(value) ") + Text(unit))
             TGStepButton(symbol: "plus") { adjust(step) }
         }
     }

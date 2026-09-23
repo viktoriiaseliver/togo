@@ -150,7 +150,7 @@ struct TodayScreen: View {
             Button { alarm = threshold } label: {
                 TGBanner(tone: .alarm,
                          title: "Похоже, пора звонить",
-                         subtitle: threshold.headline + " · есть готовый текст врачу",
+                         subtitle: .готовая(threshold.headline + String(localized: " · есть готовый текст врачу")),
                          systemImage: "phone.badge.waveform")
             }
             .buttonStyle(.plain)
@@ -170,7 +170,7 @@ struct TodayScreen: View {
                 TGBanner(
                     tone: .alarm,
                     title: "Доза \(Fmt.clock(overdue.scheduledAt)) не отмечена",
-                    subtitle: claimSubtitle(overdue),
+                    subtitle: .готовая(claimSubtitle(overdue)),
                     systemImage: "exclamationmark.triangle"
                 )
                 if !overdue.claimIsActive(at: now) {
@@ -418,8 +418,8 @@ struct TodayScreen: View {
                 // герой вверху экрана крупной цифрой, и повторять его
                 // мелким шрифтом — ровно тот дубль, который аудит
                 // и просил вычистить.
-                TGStat(value: "\(summary.meals)", caption: Fmt.plural(summary.meals, "кормление", "кормления", "кормлений").replacingOccurrences(of: "\(summary.meals) ", with: ""))
-                TGStat(value: "\(summary.outings)", caption: Fmt.outings(summary.outings).replacingOccurrences(of: "\(summary.outings) ", with: ""))
+                TGStat(value: "\(summary.meals)", caption: .готовая(Fmt.plural(summary.meals, "кормление", "кормления", "кормлений").replacingOccurrences(of: "\(summary.meals) ", with: "")))
+                TGStat(value: "\(summary.outings)", caption: .готовая(Fmt.outings(summary.outings).replacingOccurrences(of: "\(summary.outings) ", with: "")))
             }
             if summary.trainingGrams > 0 {
                 TGDivider()

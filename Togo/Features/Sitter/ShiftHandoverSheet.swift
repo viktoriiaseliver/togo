@@ -120,7 +120,7 @@ struct AskOwnerSheet: View {
                 TGSectionHeader(title: "вопрос")
                 ForEach(options, id: \.self) { question in
                     ShareLink(item: "\(attachment)\n\n\(question)") {
-                        TGListRow(title: question, accessory: .none)
+                        TGListRow(title: .готовая(question), accessory: .none)
                     }
                     .buttonStyle(.plain)
                     TGDivider()

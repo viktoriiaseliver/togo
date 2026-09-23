@@ -25,7 +25,7 @@ struct CourseFinishSheet: View {
     @State private var checkupDate: Date?
 
     var body: some View {
-        TGSheet(title: summary.headline, subtitle: praise) {
+        TGSheet(title: .готовая(summary.headline), subtitle: .готовая(praise)) {
             if summary.dosesGiven > 0 { numbers }
             next
             consequences
@@ -97,7 +97,7 @@ struct CourseFinishSheet: View {
     private var consequences: some View {
         TGCard {
             TGSectionHeader(title: "что изменится")
-            TGExplainer(text: farewell)
+            TGExplainer(text: .готовая(farewell))
             TGIconRow(symbol: "tray.full",
                       title: "Записи уйдут в архив",
                       detail: "История, вес и отчёт врачу остаются на месте.")

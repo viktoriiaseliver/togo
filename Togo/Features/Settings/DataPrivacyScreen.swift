@@ -252,7 +252,7 @@ struct WhatsNewScreen: View {
                     }
                     TGDivider()
                     ForEach(release.items, id: \.1) { symbol, title, detail in
-                        TGIconRow(symbol: symbol, title: title, detail: detail)
+                        TGIconRow(symbol: symbol, title: .готовая(title), detail: .готовая(detail))
                     }
                 }
             }

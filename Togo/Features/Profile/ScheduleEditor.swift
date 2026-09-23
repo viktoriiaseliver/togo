@@ -199,7 +199,7 @@ struct ScheduleEditor: View {
             HStack {
                 TGSectionHeader(
                     title: "во сколько кормить",
-                    subtitle: draft.isManual ? "расставлено вручную" : scheduleSubtitle
+                    subtitle: draft.isManual ? "расставлено вручную" : .готовая(scheduleSubtitle)
                 )
                 if draft.isManual {
                     Button("Разложить ровно") {

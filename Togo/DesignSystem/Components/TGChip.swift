@@ -2,22 +2,49 @@ import SwiftUI
 
 /// Figma: `Chip`. Свойства — `label`, `sublabel`, `selected`, `tone`.
 struct TGChip: View {
-    let title: String
-    var subtitle: String?
+    /// Надпись хранится готовым `Text`, потому что приходит двумя путями.
+    ///
+    /// Литерал в коде — ключ каталога и переводится. А `TGChipGroup`
+    /// зовёт замыкание, которое отдаёт уже собранную строку: из
+    /// перечисления (там перевод берёт `String(localized:)`) или прямо
+    /// из данных — кличка, марка корма. Второе переводить нельзя,
+    /// поэтому для него отдельный вход, `verbatim:`.
+    private let заголовок: Text
+    private let подзаголовок: Text?
     var isSelected: Bool = false
     var tone: TGTone = .neutral
     let action: () -> Void
+
+    init(title: LocalizedStringKey, subtitle: LocalizedStringKey? = nil,
+         isSelected: Bool = false, tone: TGTone = .neutral,
+         action: @escaping () -> Void) {
+        self.заголовок = Text(title)
+        self.подзаголовок = subtitle.map { Text($0) }
+        self.isSelected = isSelected
+        self.tone = tone
+        self.action = action
+    }
+
+    init(verbatim title: String, subtitle: String? = nil,
+         isSelected: Bool = false, tone: TGTone = .neutral,
+         action: @escaping () -> Void) {
+        self.заголовок = Text(verbatim: title)
+        self.подзаголовок = subtitle.map { Text(verbatim: $0) }
+        self.isSelected = isSelected
+        self.tone = tone
+        self.action = action
+    }
 
     var body: some View {
         Button(action: action) {
             TGTile(isSelected: isSelected, tone: tone, minHeight: Token.Component.Chip.height) {
                 VStack(spacing: Token.Space.s2) {
-                    Text(title)
+                    заголовок
                         .textStyle(AppFont.captionEmphasis.color(foreground))
                         .multilineTextAlignment(.center)
                         .wraps()
-                    if let subtitle {
-                        Text(subtitle)
+                    if let подзаголовок {
+                        подзаголовок
                             .textStyle(AppFont.micro.color(Token.Ink.secondary))
                             .multilineTextAlignment(.center)
                             .wraps()
@@ -55,7 +82,10 @@ struct TGChipGroup<Item: Hashable>: View {
         ) {
             ForEach(items, id: \.self) { item in
                 TGChip(
-                    title: title(item),
+                    // Строка приезжает из замыкания уже собранной —
+                    // перечислением или данными, и переводить её второй раз
+                    // нельзя.
+                    verbatim: title(item),
                     subtitle: subtitle(item),
                     isSelected: isSelected(item),
                     tone: tone(item)

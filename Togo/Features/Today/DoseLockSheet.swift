@@ -23,7 +23,7 @@ struct DoseLockSheet: View {
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        TGSheet(title: "Уже отмечено", subtitle: title) {
+        TGSheet(title: "Уже отмечено", subtitle: .готовая(title)) {
             TGCard {
                 TGIconRow(symbol: "checkmark.circle",
                           title: "\(markedBy) отметила в \(Fmt.clock(markedAt))",

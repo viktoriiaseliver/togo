@@ -2,8 +2,8 @@ import SwiftUI
 
 /// Figma: `SectionHeader`. Заглавная микро-строка над группой.
 struct TGSectionHeader: View {
-    let title: String
-    var subtitle: String?
+    let title: LocalizedStringKey
+    var subtitle: LocalizedStringKey?
 
     var body: some View {
         VStack(alignment: .leading, spacing: Token.Space.s4) {
@@ -26,7 +26,7 @@ struct TGSectionHeader: View {
 /// Figma: `Explainer`. Объяснение стоит там, где возникает вопрос —
 /// отдельной справки в приложении нет и не нужно.
 struct TGExplainer: View {
-    let text: String
+    let text: LocalizedStringKey
 
     var body: some View {
         Text(text)
@@ -42,8 +42,8 @@ struct TGListRow: View {
 
     @Environment(\.theme) private var theme
 
-    let title: String
-    var value: String?
+    let title: LocalizedStringKey
+    var value: LocalizedStringKey?
     var systemImage: String?
     var accessory: Accessory = .chevron
     var tone: Color = Token.Ink.primary
@@ -120,7 +120,7 @@ struct TGListRow: View {
 /// Figma: `Stat`. Число и подпись. Счётчики не украшены иконками и не раскрашены.
 struct TGStat: View {
     let value: String
-    let caption: String
+    let caption: LocalizedStringKey
     var size: CGFloat = 22
 
     var body: some View {
@@ -191,6 +191,6 @@ struct TGAuthorMark: View {
         Text(String(author.prefix(1)))
             .font(.system(size: 11, weight: .bold))
             .foregroundStyle(Token.Ink.secondary)
-            .accessibilityLabel("Записала \(author)")
+            .accessibilityLabel(Text("Записала \(author)"))
     }
 }

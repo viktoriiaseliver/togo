@@ -43,13 +43,13 @@ struct PaywallScreen: View {
             }
 
             if let error = store.lastError {
-                TGBanner(tone: .alarm, title: "Не получилось", subtitle: error,
+                TGBanner(tone: .alarm, title: "Не получилось", subtitle: .готовая(error),
                          systemImage: "exclamationmark.triangle")
             }
 
             legalText
         } bottom: {
-            TGButton(title: buyTitle, isEnabled: selected != nil && !store.isPro) {
+            TGButton(title: .готовая(buyTitle), isEnabled: selected != nil && !store.isPro) {
                 Task { await buy() }
             }
             HStack(spacing: Token.Space.s16) {
@@ -96,7 +96,7 @@ struct PaywallScreen: View {
         TGCard {
             TGSectionHeader(title: "что открывает")
             ForEach(SubscriptionStore.proFeatures, id: \.1) { symbol, title, detail in
-                TGIconRow(symbol: symbol, title: title, detail: detail)
+                TGIconRow(symbol: symbol, title: .готовая(title), detail: .готовая(detail))
             }
         }
     }

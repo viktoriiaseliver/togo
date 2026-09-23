@@ -12,8 +12,8 @@ import SwiftUI
 /// известная беда: его не видно, ему нельзя научить голосом и его
 /// не находят те, ради кого это приложение и написано.
 struct TGCheckRow<Trailing: View>: View {
-    let title: String
-    var subtitle: String?
+    let title: LocalizedStringKey
+    var subtitle: LocalizedStringKey?
     /// Отмечено.
     var isDone: Bool
     /// Закрыто до времени: круг с часами вместо галочки, нажатие
@@ -80,7 +80,7 @@ struct TGCheckRow<Trailing: View>: View {
             .contentShape(Circle())
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(isDone ? "Снять отметку · \(title)" : "Отметить · \(title)")
+        .accessibilityLabel(Text(isDone ? "Снять отметку" : "Отметить") + Text(" · ") + Text(title))
         .accessibilityAddTraits(isDone ? [.isButton, .isSelected] : .isButton)
     }
 
@@ -91,7 +91,7 @@ struct TGCheckRow<Trailing: View>: View {
 }
 
 extension TGCheckRow where Trailing == EmptyView {
-    init(title: String, subtitle: String? = nil, isDone: Bool,
+    init(title: LocalizedStringKey, subtitle: LocalizedStringKey? = nil, isDone: Bool,
          isLocked: Bool = false, subtitleTint: Color? = nil,
          onCheck: @escaping () -> Void, onOpen: @escaping () -> Void) {
         self.init(title: title, subtitle: subtitle, isDone: isDone,

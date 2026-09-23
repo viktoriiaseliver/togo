@@ -136,7 +136,7 @@ struct HeatEditorSheet: View {
     private var isNew: Bool { record == nil }
 
     var body: some View {
-        TGSheet(title: isNew ? "Течка" : Fmt.shortDay(startedAt),
+        TGSheet(title: isNew ? "Течка" : .готовая(Fmt.shortDay(startedAt)),
                 subtitle: "даты можно поправить когда угодно",
                 closeTitle: isNew ? "Отмена" : "Закрыть",
                 hasUnsavedChanges: isNew && !note.trimmingCharacters(in: .whitespaces).isEmpty) {

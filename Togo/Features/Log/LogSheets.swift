@@ -18,7 +18,7 @@ struct StoolSheet: View {
     private var usual: StoolForm? { Diary.usualStool(dog?.events ?? []) }
 
     var body: some View {
-        TGSheet(title: "Стул", subtitle: Fmt.clock(Date())) {
+        TGSheet(title: "Стул", subtitle: .готовая(Fmt.clock(Date()))) {
             if let usual {
                 Button { pick(usual) } label: {
                     HStack(spacing: 10) {
@@ -130,12 +130,12 @@ struct StoolSheet: View {
 
 /// Универсальная шторка на числовую запись: еда, вода, лакомство.
 struct QuantitySheet: View {
-    let title: String
-    let subtitle: String?
-    let unit: String
+    let title: LocalizedStringKey
+    let subtitle: LocalizedStringKey?
+    let unit: LocalizedStringKey
     let step: Int
     let range: ClosedRange<Int>
-    var explainer: String?
+    var explainer: LocalizedStringKey?
     var onSave: (Int) -> Void
 
     /// Начальное значение приходит снаружи, но живёт как состояние.
@@ -147,13 +147,13 @@ struct QuantitySheet: View {
     @Environment(\.dismiss) private var dismiss
 
     init(
-        title: String,
-        subtitle: String?,
-        unit: String,
+        title: LocalizedStringKey,
+        subtitle: LocalizedStringKey?,
+        unit: LocalizedStringKey,
         step: Int,
         range: ClosedRange<Int>,
         amount: Int,
-        explainer: String? = nil,
+        explainer: LocalizedStringKey? = nil,
         onSave: @escaping (Int) -> Void
     ) {
         self.title = title
@@ -191,7 +191,7 @@ struct MealSheet: View {
     var body: some View {
         QuantitySheet(
             title: "Еда",
-            subtitle: dog?.foodBrand.isEmpty == false ? dog?.foodBrand : nil,
+            subtitle: (dog?.foodBrand.isEmpty == false ? dog?.foodBrand : nil).map { LocalizedStringKey.готовая($0) },
             unit: "граммов",
             step: 5,
             range: 0...600,
@@ -215,7 +215,8 @@ struct TreatSheet: View {
     var body: some View {
         QuantitySheet(
             title: "Лакомство",
-            subtitle: dog?.rewards.isEmpty == false ? dog?.rewards.joined(separator: " · ") : nil,
+            subtitle: (dog?.rewards.isEmpty == false ? dog?.rewards.joined(separator: " · ") : nil)
+                .map { LocalizedStringKey.готовая($0) },
             unit: "граммов",
             step: 1,
             range: 0...200,
@@ -301,7 +302,7 @@ struct EventEditSheet: View {
     private var canEdit: Bool { appState.can(.editRecords) }
 
     var body: some View {
-        TGSheet(title: event?.kind.title ?? "Запись",
+        TGSheet(title: event.map { .готовая($0.kind.title) } ?? "Запись",
                       // «синхронизировано» отсюда убрано вместе с галочкой:
                       // обмена между устройствами пока нет, и говорить о нём
                       // нельзя.
@@ -393,11 +394,11 @@ struct EventEditSheet: View {
                 askOwner(about: event)
 
                 if canEdit {
-                TGButton(title: deleteTitle(for: event), variant: .destructive,
+                TGButton(title: .готовая(deleteTitle(for: event)), variant: .destructive,
                          size: .medium, systemImage: "trash") {
                     delete(event)
                 }
-                TGExplainer(text: deleteExplainer(for: event))
+                TGExplainer(text: .готовая(deleteExplainer(for: event)))
                 }
             }
         }
@@ -570,9 +571,9 @@ struct EventEditSheet: View {
         if let origin {
             TGCard(spacing: 0) {
                 TGSectionHeader(title: "откуда эта запись")
-                TGListRow(title: origin.title, value: origin.detail,
+                TGListRow(title: .готовая(origin.title), value: origin.detail.map { .готовая($0) },
                           systemImage: origin.symbol, accessory: .none)
-                TGExplainer(text: origin.explainer)
+                TGExplainer(text: .готовая(origin.explainer))
             }
         }
     }

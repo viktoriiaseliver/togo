@@ -19,9 +19,10 @@ struct MissedDoseSheet: View {
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        TGSheet(title: "\(title) доза пропущена",
-                subtitle: "окно закрылось в \(Fmt.clock(missed.windowClosedAt))"
-                        + " · сейчас \(Fmt.clock(now))") {
+        TGSheet(title: .готовая(String(localized: "\(title) доза пропущена")),
+                subtitle: .готовая(
+                    String(localized: "окно закрылось в \(Fmt.clock(missed.windowClosedAt))")
+                    + String(localized: " · сейчас \(Fmt.clock(now))"))) {
             if let toNext = missed.timeToNext(from: now) {
                 TGCard {
                     Text("До следующей дозы \(Fmt.gap(toNext)). Что делаем сейчас?")

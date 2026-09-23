@@ -23,7 +23,7 @@ struct NeedsSheet: View {
     }
 
     var body: some View {
-        TGSheet(title: verdict.title, subtitle: verdict.badge) {
+        TGSheet(title: .готовая(verdict.title), subtitle: .готовая(verdict.badge)) {
             TGCard {
                 Text(VerdictEngine.explanation(verdict, signals))
                     .textStyle(AppFont.body)
@@ -45,7 +45,7 @@ struct NeedsSheet: View {
             // Главное действие закреплено внизу: до него дотягивается большой
             // палец, и оно не уезжает вместе с текстом вердикта.
             TGButton(title: "Вывожу", systemImage: "figure.walk.departure") { startOuting() }
-            TGButton(title: verdict.alternativeAction, variant: .secondary, size: .medium) { dismiss() }
+            TGButton(title: .готовая(verdict.alternativeAction), variant: .secondary, size: .medium) { dismiss() }
         }
         .presentationDetents([.medium, .large])
         .usageScreen(.needs)

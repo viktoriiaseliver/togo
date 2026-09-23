@@ -22,8 +22,8 @@ struct PillSupplyScreen: View {
     }
 
     var body: some View {
-        TGSheet(title: supply?.headline ?? "Запас таблеток",
-                subtitle: subtitle) {
+        TGSheet(title: supply.map { LocalizedStringKey.готовая($0.headline) } ?? "Запас таблеток",
+                subtitle: subtitle.map { .готовая($0) }) {
             if let supply {
                 countCard(supply)
             } else {

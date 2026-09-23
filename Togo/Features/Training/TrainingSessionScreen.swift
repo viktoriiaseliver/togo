@@ -71,7 +71,8 @@ struct TrainingSessionScreen: View {
     private var sessionSheet: some View {
         TGSheet(
             title: session.isRunning ? "Занятие идёт" : "Точность маркера",
-            subtitle: currentStep?.fullSummary ?? "поставь руку один раз — потом маркер уйдёт на кнопку громкости",
+            subtitle: currentStep.map { .готовая($0.fullSummary) }
+                ?? "поставь руку один раз — потом маркер уйдёт на кнопку громкости",
             closeTitle: session.isRunning ? "Прервать занятие" : "Закрыть",
             // Молча терять отметки нельзя: занятие уже прошло, даже если
             // человек передумал его сохранять.

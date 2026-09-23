@@ -123,7 +123,7 @@ struct FoodStockScreen: View {
                     }
                 }
                 if dog.stocks.contains(where: { $0.kind == .wet }) {
-                    TGExplainer(text: FoodKind.wet.caution ?? "")
+                    TGExplainer(text: .готовая(FoodKind.wet.caution ?? ""))
                 }
             }
         }
@@ -194,7 +194,7 @@ struct FoodStockEditorSheet: View {
     private var isNew: Bool { stock == nil }
 
     var body: some View {
-        TGSheet(title: isNew ? "Корм" : (brand.isEmpty ? kind.title : brand),
+        TGSheet(title: isNew ? "Корм" : .готовая(brand.isEmpty ? kind.title : brand),
                 subtitle: "фасовка и остаток считаются отдельно для каждого корма",
                 closeTitle: isNew ? "Отмена" : "Закрыть",
                 hasUnsavedChanges: isNew && !brand.trimmingCharacters(in: .whitespaces).isEmpty) {
@@ -202,7 +202,7 @@ struct FoodStockEditorSheet: View {
             packCard
             amountCard
             if let caution = kind.caution {
-                TGExplainer(text: caution)
+                TGExplainer(text: .готовая(caution))
             }
             if !isNew {
                 TGButton(title: "Убрать корм", variant: .destructive,

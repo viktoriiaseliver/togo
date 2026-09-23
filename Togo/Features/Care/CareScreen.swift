@@ -79,7 +79,7 @@ struct CareScreen: View {
         let group = tasks.filter { $0.kind == kind && !$0.needsDate }
         if !group.isEmpty {
             TGCard(spacing: 0) {
-                TGSectionHeader(title: kind.sectionTitle, subtitle: subtitle(for: kind, group: group))
+                TGSectionHeader(title: .готовая(kind.sectionTitle), subtitle: subtitle(for: kind, group: group).map { .готовая($0) })
                 ForEach(sorted(group)) { task in
                     CareTaskRow(task: task, now: now,
                                 onToggle: { toggle(task) },
@@ -353,7 +353,7 @@ struct CareSuggestionsSheet: View {
             ForEach(CareKind.allCases, id: \.self) { kind in
                 let group = SeedData.careSuggestions.filter { $0.kind == kind }
                 TGCard(spacing: 0) {
-                    TGSectionHeader(title: kind.sectionTitle)
+                    TGSectionHeader(title: .готовая(kind.sectionTitle))
                     ForEach(group) { suggestion in
                         row(suggestion)
                         if suggestion.id != group.last?.id { TGDivider() }

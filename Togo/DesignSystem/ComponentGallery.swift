@@ -111,7 +111,7 @@ struct ComponentGallery: View {
     @ViewBuilder
     private func group<Content: View>(_ title: String, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: Token.Space.s8) {
-            TGSectionHeader(title: title)
+            TGSectionHeader(title: .готовая(title))
             content()
         }
         .padding(.top, Token.Space.s8)

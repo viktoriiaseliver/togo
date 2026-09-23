@@ -33,7 +33,7 @@ struct AlarmThresholdScreen: View {
             TGExplainer(text: "Порог задаёт счёт, а не догадка: \(AlarmThresholdAnalyzer.minimumEpisodes) эпизода за \(Int(threshold.window / 3600)) часов. Приложение не ставит диагнозов — решение всегда за врачом.")
         } footer: {
             if let phone = dog.clinicPhone ?? dog.vetPhone, !phone.isEmpty {
-                TGButton(title: "Позвонить" + (dog.clinicName.map { " в \($0)" } ?? ""),
+                TGButton(title: .готовая(String(localized: "Позвонить") + (dog.clinicName.map { " в \($0)" } ?? "")),
                          systemImage: "phone.fill") {
                     call(phone)
                 }
@@ -52,7 +52,7 @@ struct AlarmThresholdScreen: View {
 
     private var episodesCard: some View {
         TGCard(spacing: 0) {
-            TGSectionHeader(title: threshold.headline)
+            TGSectionHeader(title: .готовая(threshold.headline))
             ForEach(threshold.episodes) { episode in
                 HStack(alignment: .top, spacing: Token.Space.s12) {
                     Text(Fmt.clock(episode.date))

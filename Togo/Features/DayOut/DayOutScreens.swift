@@ -105,7 +105,7 @@ struct DayOutSummarySheet: View {
 
     var body: some View {
         TGSheet(title: "День закончился",
-                subtitle: Fmt.duration(day.duration()),
+                subtitle: .готовая(Fmt.duration(day.duration())),
                 hasUnsavedChanges: !note.isEmpty) {
             TGCard {
                 HStack(spacing: 0) {
@@ -116,7 +116,7 @@ struct DayOutSummarySheet: View {
             }
 
             if let advice = DayOutPlan.restAdvice(hours: hours) {
-                TGBanner(tone: .waiting, title: "Про завтра", subtitle: advice,
+                TGBanner(tone: .waiting, title: "Про завтра", subtitle: .готовая(advice),
                          systemImage: "moon.zzz")
             }
 

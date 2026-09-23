@@ -92,13 +92,13 @@ struct DogTab: View {
             TGSectionHeader(title: "каждый день")
                         TGLink(title: "Питание и режим", value: "\(dog.dailyGrams) г в день", systemImage: "fork.knife") { FeedingScreen(dog: dog) }
             TGDivider()
-                        TGLink(title: "Уход", value: careSummary(dog), systemImage: "scissors") { CareScreen(dog: dog) }
+                        TGLink(title: "Уход", value: careSummary(dog).map { .готовая($0) }, systemImage: "scissors") { CareScreen(dog: dog) }
             TGDivider()
-                        TGLink(title: "Вес", value: Fmt.weight(dog.weightKg), systemImage: "scalemass") { WeightScreen(dog: dog) }
+                        TGLink(title: "Вес", value: .готовая(Fmt.weight(dog.weightKg)), systemImage: "scalemass") { WeightScreen(dog: dog) }
             TGDivider()
             TGLink(title: "Перенос навыка", systemImage: "square.grid.3x3") { TransferMatrixScreen(dog: dog) }
             TGDivider()
-            TGLink(title: "Занятия и шаги", value: trainingSummary(dog),
+            TGLink(title: "Занятия и шаги", value: trainingSummary(dog).map { .готовая($0) },
                    systemImage: "list.bullet") { TrainingLibraryScreen(dog: dog) }
             TGDivider()
             TGLink(title: dogs.count > 1 ? "Собаки" : "Завести ещё собаку",
@@ -126,7 +126,7 @@ struct DogTab: View {
                         TGLink(title: "Документы и контакты", value: dog.chipNumber == nil ? "не заполнены" : nil, systemImage: "doc.text.image") { DocumentsScreen(dog: dog) }
             if dog.tracksHeat {
                 TGDivider()
-                                TGLink(title: "Цикл", value: HeatCycle.forecast(dog.heats).expectedNext.map(Fmt.shortDay), systemImage: "calendar.badge.clock") { HeatScreen(dog: dog) }
+                                TGLink(title: "Цикл", value: HeatCycle.forecast(dog.heats).expectedNext.map { .готовая(Fmt.shortDay($0)) }, systemImage: "calendar.badge.clock") { HeatScreen(dog: dog) }
             }
         }
         .buttonStyle(.plain)
@@ -141,8 +141,8 @@ struct DogTab: View {
             TGSectionHeader(title: "поездки",
                             subtitle: мои.isEmpty ? "режим включится сам в день отъезда" : nil)
             ForEach(мои) { trip in
-                TGLink(title: trip.destination,
-                       value: trip.isActive() ? "идёт" : Fmt.shortDay(trip.startDate),
+                TGLink(title: .готовая(trip.destination),
+                       value: trip.isActive() ? "идёт" : .готовая(Fmt.shortDay(trip.startDate)),
                        systemImage: trip.transport.symbol) { TripScreen(trip: trip, dog: dog) }
                 TGDivider()
             }
@@ -188,7 +188,7 @@ struct TripScreen: View {
                         Text("идёт").textStyle(AppFont.micro.color(Token.Status.doneText))
                     }
                 }
-                TGExplainer(text: trip.transport.windowsExplainer)
+                TGExplainer(text: .готовая(trip.transport.windowsExplainer))
             }
 
             PackingListCard(dog: dog, days: trip.dayCount)

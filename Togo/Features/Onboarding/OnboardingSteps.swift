@@ -177,7 +177,7 @@ struct CareStep: View {
             ForEach(CareKind.allCases, id: \.self) { kind in
                 let group = SeedData.careSuggestions.filter { $0.kind == kind }
                 TGCard(spacing: 0) {
-                    TGSectionHeader(title: kind.sectionTitle)
+                    TGSectionHeader(title: .готовая(kind.sectionTitle))
                     ForEach(group) { suggestion in
                         Button { toggle(suggestion) } label: {
                             HStack(spacing: Token.Space.s12) {
@@ -370,7 +370,7 @@ struct InterruptRow: View {
 
     var body: some View {
         TGCard(padding: Token.Space.s14) {
-            TGIconRow(symbol: symbol, title: title, detail: detail,
+            TGIconRow(symbol: symbol, title: .готовая(title), detail: .готовая(detail),
                       tint: Token.Status.waitingText)
         }
     }

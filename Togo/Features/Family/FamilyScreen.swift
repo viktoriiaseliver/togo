@@ -165,7 +165,7 @@ struct FamilyScreen: View {
                 }
             }
             if let inviteFailure {
-                TGBanner(tone: .alarm, title: "Не получилось", subtitle: inviteFailure,
+                TGBanner(tone: .alarm, title: "Не получилось", subtitle: .готовая(inviteFailure),
                          systemImage: "exclamationmark.triangle")
             }
         }

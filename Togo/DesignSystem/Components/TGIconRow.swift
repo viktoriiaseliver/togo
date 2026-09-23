@@ -10,8 +10,8 @@ import Charts
 /// длинном тексте.
 struct TGIconRow: View {
     let symbol: String
-    let title: String
-    let detail: String
+    let title: LocalizedStringKey
+    let detail: LocalizedStringKey
     /// Иконка здесь всегда декоративная: смысл несёт заголовок рядом.
     var tint: Color = Token.Status.doneText
 

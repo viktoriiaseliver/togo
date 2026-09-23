@@ -22,11 +22,11 @@ struct TGSheetHandle: View {
 struct TGSheet<Content: View, Footer: View>: View {
     @Environment(\.dismiss) private var dismiss
 
-    let title: String
-    var subtitle: String?
+    let title: LocalizedStringKey
+    var subtitle: LocalizedStringKey?
     /// Подпись кнопки закрытия. Меняется там, где «Закрыть» звучит неверно —
     /// например «Отмена» в форме, которая что-то создаёт.
-    var closeTitle: String = "Закрыть"
+    var closeTitle: LocalizedStringKey = "Закрыть"
     /// Что делать при закрытии, если недостаточно просто убрать шторку.
     var onClose: (() -> Void)?
     /// Есть ли несохранённые правки.
@@ -110,9 +110,9 @@ struct TGSheet<Content: View, Footer: View>: View {
 
 extension TGSheet where Footer == EmptyView {
     init(
-        title: String,
-        subtitle: String? = nil,
-        closeTitle: String = "Закрыть",
+        title: LocalizedStringKey,
+        subtitle: LocalizedStringKey? = nil,
+        closeTitle: LocalizedStringKey = "Закрыть",
         onClose: (() -> Void)? = nil,
         @ViewBuilder content: () -> Content
     ) {
@@ -123,7 +123,7 @@ extension TGSheet where Footer == EmptyView {
 
 /// Figma: `Screen`. Тёплая бумага, единые отступы, слот под нижнюю панель.
 struct TGScreen<Content: View, Bottom: View>: View {
-    var title: String?
+    var title: LocalizedStringKey?
     @ViewBuilder var content: Content
     @ViewBuilder var bottom: Bottom
 
@@ -154,7 +154,7 @@ struct TGScreen<Content: View, Bottom: View>: View {
 }
 
 extension TGScreen where Bottom == EmptyView {
-    init(title: String? = nil, @ViewBuilder content: () -> Content) {
+    init(title: LocalizedStringKey? = nil, @ViewBuilder content: () -> Content) {
         self.init(title: title, content: content, bottom: { EmptyView() })
     }
 }

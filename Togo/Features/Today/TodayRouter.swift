@@ -67,7 +67,7 @@ struct MoreSheet: View {
             } label: {
                 TGCard(padding: Token.Space.s14) {
                     TGListRow(title: "Всё про собаку",
-                              value: dog?.name,
+                              value: dog.map { .готовая($0.name) },
                               systemImage: "pawprint")
                 }
             }
@@ -82,7 +82,7 @@ struct MoreSheet: View {
 
     private func row(_ title: String, _ symbol: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            TGListRow(title: title, systemImage: symbol, accessory: .none)
+            TGListRow(title: .готовая(title), systemImage: symbol, accessory: .none)
         }
         .buttonStyle(.plain)
     }

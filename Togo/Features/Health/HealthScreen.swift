@@ -107,7 +107,7 @@ struct HealthScreen: View {
             Button { countingPills = medication } label: {
                 TGCard {
                     TGListRow(title: "Запас",
-                              value: supplyValue(medication),
+                              value: .готовая(supplyValue(medication)),
                               systemImage: "shippingbox",
                               accessory: .none,
                               tone: PillSupplyAdvisor.needsWarning(supply(medication))
@@ -156,7 +156,7 @@ struct HealthScreen: View {
         TGCard(spacing: 0) {
                         TGLink(title: "Протокол контроля", value: "T0 / +4 / +6", systemImage: "timer") { ProtocolScreen(dog: dog) }
             TGDivider()
-                        TGLink(title: "Вес и симптомы", value: dog.map { Fmt.weight($0.weightKg) }, systemImage: "scalemass") { WeightScreen(dog: dog) }
+                        TGLink(title: "Вес и симптомы", value: dog.map { .готовая(Fmt.weight($0.weightKg)) }, systemImage: "scalemass") { WeightScreen(dog: dog) }
             TGDivider()
                         TGLink(title: "Прививки и визиты", systemImage: "syringe") { CareScreen(dog: dog) }
             TGDivider()

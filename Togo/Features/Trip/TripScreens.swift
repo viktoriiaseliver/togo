@@ -54,7 +54,7 @@ struct TripSetupScreen: View {
                     }
                     .frame(minHeight: Token.Size.tapTarget)
                 }
-                TGExplainer(text: transport.windowsExplainer)
+                TGExplainer(text: .готовая(transport.windowsExplainer))
             }
 
             if let dog { PackingListCard(dog: dog, days: dayCount) }

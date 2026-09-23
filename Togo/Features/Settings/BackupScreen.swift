@@ -93,7 +93,7 @@ struct BackupScreen: View {
     private var exportCard: some View {
         TGCard {
             TGSectionHeader(title: "сохранить файл",
-                            subtitle: archive.map(\.summary) ?? "считаю…")
+                            subtitle: archive.map { .готовая($0.summary) } ?? "считаю…")
             if isBuilding {
                 TGLoading(message: "Собираю файл из дневника…", isCompact: true)
             } else if let fileData, archive != nil {
@@ -102,7 +102,7 @@ struct BackupScreen: View {
                     preview: SharePreview("Дневник Togo")
                 ) {
                     TGListRow(title: "Сохранить дневник в файл",
-                              value: sizeText(fileData),
+                              value: .готовая(sizeText(fileData)),
                               systemImage: "square.and.arrow.up",
                               accessory: .none)
                 }
@@ -132,7 +132,7 @@ struct BackupScreen: View {
     }
 
     private func messageCard(_ message: Message) -> some View {
-        TGBanner(tone: message.tone, title: message.title, subtitle: message.detail,
+        TGBanner(tone: message.tone, title: .готовая(message.title), subtitle: .готовая(message.detail),
                  systemImage: message.tone == .alarm ? "exclamationmark.triangle" : "checkmark.seal")
     }
 
