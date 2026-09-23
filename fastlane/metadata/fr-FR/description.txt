@@ -1,4 +1,4 @@
-Togo — le carnet de ton chien. Quand il est sorti, quand il a mangé, comment étaient les selles : deux touches dans l'entrée, et le soir personne ne cherche.
+Togo — le carnet du chien, pour toute la famille. Qui l'a sorti, qui l'a nourri, comment étaient les selles : c'est noté, et le soir personne ne cherche qui a fait quoi.
 
 LE BOUTON PRINCIPAL — « ENVIE DE SORTIR ? »
 En trois ou quatre jours, l'app apprend ses intervalles et te dit si c'est un vrai besoin. Tant que les entrées manquent, elle répond honnêtement « pas clair » — et laisse quand même « Je le sors » en premier bouton. Elle ne sait pas mieux que le maître.
@@ -13,7 +13,7 @@ TOUTE LA FAMILLE COMPTE LA MÊME CHOSE
 Les rôles ne sont pas une hiérarchie : le pet-sitter note les sorties et les repas mais ne voit pas le médical ; le vétérinaire lit tout mais n'écrit rien. Les rappels arrivent à la personne de garde, et changer de garde tient en un geste. Deux entrées pour la même chose ne s'écrasent pas : Togo propose de les fusionner.
 
 LE MÉDICAL EST UN MODE, PAS UNE RUBRIQUE
-L'onglet « Santé » n'apparaît que lorsque le chien est sous traitement. Fenêtre à jeun, protection contre la double dose, et compte rendu pour le vétérinaire — construit à partir de ce qui est déjà noté.
+L'onglet « Santé » n'apparaît que lorsque le chien est sous traitement. Fenêtre à jeun, protection contre la double dose, protocole « dose → prise de sang » et compte rendu pour le vétérinaire — construit à partir de ce qui est déjà noté.
 
 VOYAGES
 Le mode s'active par une date et s'éteint tout seul. Les bagages se calculent d'après le poids et la ration, les fenêtres avant le vol d'après l'heure de départ.
