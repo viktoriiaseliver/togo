@@ -50370,6 +50370,12 @@
             "state" : "needs_review",
             "value" : "Мов мало навмисно: машинний переклад у застосунку про здоров'я собаки гірший, ніж мова, зроблена цілком."
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Peu de langues, et c'est voulu : dans une app sur la santé d'un chien, une traduction automatique vaut moins qu'une langue faite entièrement."
+          }
         }
       }
     }
