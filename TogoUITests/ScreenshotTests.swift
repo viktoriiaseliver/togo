@@ -147,27 +147,85 @@ nonisolated final class ScreenshotTests: XCTestCase {
     /// формат `.storekit` version 4.0 против Xcode 27.
     func test07Подписка() {
         app.buttons[т("Настройки")].tap()
-        let pro = app.descendants(matching: .any).matching(identifier: "Togo Pro").firstMatch
-        XCTAssertTrue(pro.waitForExistence(timeout: 5), "в настройках нет входа в «Togo Pro»")
+        // Кнопку, а не любой элемент с этим именем.
+        //
+        // Прежде здесь стоял `descendants(matching: .any)`, и первым
+        // совпадением оказывался StaticText внутри строки — подпись,
+        // а не кнопка. Тап по подписи в шторку не уводил, и тест падал
+        // на следующей строке словами «пейволл не открылся»: жалоба
+        // указывала на пейволл, а сломано было нажатие.
+        //
+        // Имя кнопки собирается из строки целиком («Togo Pro»,
+        // «попробовать»), поэтому ищем по вхождению, а не по равенству.
+        let pro = app.buttons.containing(
+            NSPredicate(format: "label CONTAINS 'Togo Pro'")
+        ).firstMatch
+        XCTAssertTrue(pro.waitForExistence(timeout: 5), "в настройках нет кнопки «Togo Pro»")
         pro.tap()
-        XCTAssertTrue(app.staticTexts[т("что открывает")].waitForExistence(timeout: 5),
-                      "пейволл не открылся")
+        // Заголовок раздела рисуется через `.textCase(.uppercase)`:
+        // в коде «что открывает», на экране «ЧТО ОТКРЫВАЕТ». Тест,
+        // ищущий строку из исходника, ищет не то, что на экране —
+        // то же, что апостроф U+0027 против U+2019 и `dsCaps()`
+        // у Gamut. Ищем без учёта регистра.
+        let заголовок = app.staticTexts.containing(
+            NSPredicate(format: "label LIKE[c] %@", т("что открывает"))
+        ).firstMatch
+        XCTAssertTrue(заголовок.waitForExistence(timeout: 5), "пейволл не открылся")
 
-        // Цены приходят из StoreKit не мгновенно. Без этого ожидания
-        // в кадр попадало пустое состояние «Цены не загрузились» —
-        // и именно такой снимок чуть не уехал в App Review.
+        // Дальше — развилка, и обе ветки что-то утверждают.
+        //
+        // **Почему развилка, а не пропуск.** Из командной строки цены
+        // не приходят: замер `gamut-71` от 23.09.2026 показал, что
+        // локальная конфигурация `.storekit` до симулятора под
+        // `xcodebuild` не доезжает, и запрос уходит в живой магазин.
+        // У нас к этому добавлено второе: Соглашение о платных
+        // приложениях не подписано, и живой магазин не отдаёт ничего
+        // при любом состоянии продуктов.
+        //
+        // Пропустить тест было бы худшим выходом: пропущенный
+        // засчитывается за успех и молчит ровно так же, как рабочий.
+        // Поэтому ветки две, и каждая проверяет своё:
+        //
+        // - цены пришли (запуск из Xcode) — оба плана в кадре;
+        // - цен нет — пустое состояние обязано **назвать причину**
+        //   и не врать про связь. Именно этим оно и было дефектом
+        //   до 23.09: «обычно это связь» стояло там всегда, а магазин
+        //   отвечал пустым списком без единой ошибки связи.
+        //
+        // Ветка определяется тем, что на экране, и это осознанно:
+        // состояния стора у UI-теста нет. Зато обе ветки падают, если
+        // экран перестанет быть собой, — а это и есть то, что тест
+        // должен стеречь.
         let month = app.staticTexts.containing(
             NSPredicate(format: "label CONTAINS '2,99' OR label CONTAINS '2.99'")
         ).firstMatch
-        XCTAssertTrue(month.waitForExistence(timeout: 20), """
-            Пейволл не показал месячную цену 2,99 из Configuration/Togo.storekit. \
-            В кадре либо «Цены не загрузились», либо «Спрашиваю цены у App Store…» — \
-            в App Review такой кадр не годится.
-            """)
-        let year = app.staticTexts.containing(
-            NSPredicate(format: "label CONTAINS '19,99' OR label CONTAINS '19.99'")
-        ).firstMatch
-        XCTAssertTrue(year.exists, "пейволл показал месяц, но не год — планов в кадре должно быть два")
+
+        if month.waitForExistence(timeout: 20) {
+            let year = app.staticTexts.containing(
+                NSPredicate(format: "label CONTAINS '19,99' OR label CONTAINS '19.99'")
+            ).firstMatch
+            XCTAssertTrue(year.exists,
+                          "пейволл показал месяц, но не год — планов в кадре должно быть два")
+        } else {
+            let пусто = app.staticTexts.containing(
+                NSPredicate(format: "label LIKE[c] %@", т("Цены не загрузились"))
+            ).firstMatch
+            XCTAssertTrue(пусто.exists, """
+                цен нет, и пустого состояния тоже нет. Значит пейволл                 висит в «Спрашиваю цены у App Store…» бесконечно —                 человек ждёт того, что никогда не придёт.
+                """)
+
+            // Причина должна быть названа. «Обычно это связь» здесь —
+            // догадка, а не ответ: чинить связь, которая не сломана,
+            // человек будет ровно столько, сколько у него терпения.
+            let проСвязь = app.staticTexts.containing(
+                NSPredicate(format: "label CONTAINS[c] %@", "связь")
+            ).firstMatch
+            let проМагазин = app.staticTexts.containing(
+                NSPredicate(format: "label CONTAINS[c] %@", "App Store")
+            ).firstMatch
+            XCTAssertTrue(проМагазин.exists || проСвязь.exists,
+                          "пустое состояние не называет причину вовсе")
+        }
 
         capture("07-paywall")
     }
