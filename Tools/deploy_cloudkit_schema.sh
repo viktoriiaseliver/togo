@@ -109,59 +109,33 @@ xcrun cktool export-schema \
 PROD_FILE2="$(mktemp)"
 printf '%s\n' "$PRODUCTION" > "$PROD_FILE2"
 
-MIRRORS="$(python3 - "$DEV_FILE" "$PROD_FILE2" TogoShared/Domain/SchemaVersions.swift <<'PY'
-import re, sys
-
-dev, prod, source = sys.argv[1], sys.argv[2], sys.argv[3]
-
-def mirrors(path):
-    return {m for m in re.findall(r'RECORD TYPE (CD_\w+) \(', open(path).read())}
-
-# Список моделей берём из источника, а не из головы: добавят модель —
-# проверка узнает о ней сама.
-#
-# Скобки ищем ПОСЛЕ открывающей фигурной: первым `[...]` в этой строке
-# идёт тип возврата `[any PersistentModel.Type]`, и первая версия
-# проверки вычитывала из него ноль моделей — а значит молча говорила
-# «все зеркала на месте», когда их было пять из шестнадцати. Сторож,
-# не сумевший прочитать свой вход, обязан краснеть, а не радоваться.
-block = re.search(r'static var models:\s*\[any PersistentModel\.Type\]\s*\{\s*\[(.*?)\]',
-                  open(source).read(), re.S)
-models = re.findall(r'(\w+)\.self', block.group(1)) if block else []
-if len(models) < 2:
-    sys.exit(f"не удалось прочитать список моделей из {source} — "
-             f"нашлось {len(models)}; проверка зеркала не состоялась")
-
-have_dev, have_prod = mirrors(dev), mirrors(prod)
-lines = []
-for name in sorted(models):
-    t = f"CD_{name}"
-    where = []
-    if t not in have_dev:
-        where.append("development")
-    if t not in have_prod:
-        where.append("production")
-    if where:
-        lines.append(f"{t} — нет в {', '.join(where)}")
-print("\n".join(lines))
-PY
-)"
+# Сверку ведёт Tools/derive_cloudkit_mirror.py: он знает правило, по
+# которому зеркало превращает поле модели в поле записи, и потому видит
+# не только отсутствующие типы, но и отсутствующие ПОЛЯ. Своя проверка
+# здесь считала только типы и говорила «все шестнадцать зеркал на
+# месте», когда у CD_Dog не хватало десяти полей.
+MIRRORS=""
+if ! python3 Tools/derive_cloudkit_mirror.py < "$DEV_FILE" > "$DEV_FILE.отчёт" 2>&1; then
+    MIRRORS="$(cat "$DEV_FILE.отчёт")"
+fi
+rm -f "$DEV_FILE.отчёт"
 rm -f "$DEV_FILE" "$PROD_FILE2"
 
 if [ -n "$MIRRORS" ]; then
     cat <<MIRROR
 
-Зеркала SwiftData неполны — записи этих типов не уезжают в iCloud:
+Зеркало SwiftData неполно — это не уезжает в iCloud:
 
 $MIRRORS
 
-Файлом это не чинится. Тип заводит само зеркало при первой записи
-объекта, и только в development: нужен отладочный прогон с живым
-Apple ID, в котором создаётся по одному объекту каждого типа. После
-этого — та же кнопка «Deploy Schema Changes…» в дашборде.
+Файлом это не чинится ни для типа, ни для поля: и то и другое заводит
+само зеркало при первой записи СО ЗНАЧЕНИЕМ, и только в development.
+Нужен отладочный прогон с живым Apple ID — «Настройки → Отладка ·
+завести зеркало в iCloud». После этого — кнопка «Deploy Schema
+Changes…» в дашборде.
 
 Пока зеркало неполно, «копия базы лежит в твоей приватной библиотеке
-iCloud» из политики — неправда для этих типов.
+iCloud» из политики — неправда для этих полей.
 MIRROR
     exit 1
 fi

@@ -33,7 +33,15 @@ nonisolated enum CloudKitSchemaWarmup {
     static let markerTitle = "ПРОГРЕВ СХЕМЫ"
 
     /// Завести по одному объекту каждого типа, которого зеркало ещё
-    /// не видело. Возвращает, сколько объектов создано.
+    /// не видело, и по одному объекту типов, у которых не хватает полей.
+    /// Возвращает, сколько объектов создано.
+    ///
+    /// Про поля пришлось дописывать отдельно, и это была моя ошибка
+    /// в первой редакции: зеркало заводит поле при первой записи
+    /// СО ЗНАЧЕНИЕМ, поэтому мало создать объект — надо заполнить
+    /// у него всё, что бывает пустым. Замер 23.09 после первого прогрева:
+    /// у `CD_Dog` не хватало десяти полей (номер чипа, телефон врача,
+    /// целевой вес), у `CD_LogEvent` пяти, у `CD_FamilyMember` пяти.
     @MainActor
     @discardableResult
     static func create(in context: ModelContext) throws -> Int {
@@ -53,6 +61,9 @@ nonisolated enum CloudKitSchemaWarmup {
                          distanceMeters: 0),
             Trip(destination: markerTitle, startDate: markerDate, endDate: markerDate,
                  transport: .car),
+            собакаСоВсемиПолями(),
+            участникСоВсемиПолями(),
+            записьСоВсемиПолями(),
         ]
         for object in objects { context.insert(object) }
         // Сохранение здесь не молчит: прогрев ради того и делается, чтобы
@@ -60,6 +71,47 @@ nonisolated enum CloudKitSchemaWarmup {
         // сразу, а не по пустой схеме через час.
         try context.save()
         return objects.count
+    }
+
+    /// Собака со всеми необязательными полями: иначе номер чипа,
+    /// телефон врача и целевой вес в iCloud не заведутся никогда.
+    @MainActor
+    private static func собакаСоВсемиПолями() -> Dog {
+        let собака = Dog(name: markerTitle, weightKg: 1)
+        собака.birthDate = markerDate
+        собака.chipNumber = markerTitle
+        собака.passportNumber = markerTitle
+        собака.insuranceNumber = markerTitle
+        собака.vetName = markerTitle
+        собака.vetPhone = markerTitle
+        собака.clinicName = markerTitle
+        собака.clinicPhone = markerTitle
+        собака.distinctiveMarks = markerTitle
+        собака.targetWeightLow = 1
+        собака.targetWeightHigh = 2
+        return собака
+    }
+
+    @MainActor
+    private static func участникСоВсемиПолями() -> FamilyMember {
+        let участник = FamilyMember(name: markerTitle, role: .observer)
+        участник.note = markerTitle
+        участник.customPermissionsRaw = [Permission.seeMedical.rawValue]
+        участник.dutyUntil = markerDate
+        участник.acceptedAt = markerDate
+        участник.accessExpiresAt = markerDate
+        return участник
+    }
+
+    @MainActor
+    private static func записьСоВсемиПолями() -> LogEvent {
+        let запись = LogEvent(kind: .note, date: markerDate, authorName: markerTitle)
+        запись.enteredAt = markerDate
+        запись.incidentDetailRaw = markerTitle
+        запись.milliliters = 1
+        запись.originRaw = markerTitle
+        запись.trainingSessionID = UUID()
+        return запись
     }
 
     /// Убрать прогрев. Тип в схеме остаётся — он и был целью; уходят
@@ -79,6 +131,9 @@ nonisolated enum CloudKitSchemaWarmup {
         removed += delete(TrainingSession.self, in: context) { $0.cue == markerTitle }
         removed += delete(TrainingStep.self, in: context) { $0.cue == markerTitle }
         removed += delete(Trip.self, in: context) { $0.destination == markerTitle }
+        removed += delete(Dog.self, in: context) { $0.name == markerTitle }
+        removed += delete(FamilyMember.self, in: context) { $0.name == markerTitle }
+        removed += delete(LogEvent.self, in: context) { $0.authorName == markerTitle }
         try context.save()
         return removed
     }
