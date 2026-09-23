@@ -93,6 +93,11 @@ archive: ## Собрать архив для App Store Connect
 	@echo "Собрано: $(SCHEME) $$(plutil -extract ApplicationProperties.CFBundleShortVersionString raw build/Togo.xcarchive/Info.plist) ($$(plutil -extract ApplicationProperties.CFBundleVersion raw build/Togo.xcarchive/Info.plist))"
 	@echo "Загружает в TestFlight Tools/upload_testflight.sh — он архивирует сам."
 
+.PHONY: guard
+guard: ## Проверить сторожа подделкой в отдельном дереве (ФАЙЛ, БЫЛО, СТАЛО, НАБОР)
+	@test -n "$(ФАЙЛ)" || (echo "Как звать: make guard ФАЙЛ=… БЫЛО=… СТАЛО=… НАБОР=TogoTests/XTests" && exit 1)
+	@python3 Tools/check_guard.py --файл "$(ФАЙЛ)" --было "$(БЫЛО)" --стало "$(СТАЛО)" --набор "$(НАБОР)"
+
 .PHONY: tokens-check
 tokens-check: ## Проверить, что сгенерированные токены не расходятся с tokens.json
 	@python3 Tools/generate_tokens.py >/dev/null
