@@ -50202,6 +50202,12 @@
             "state" : "needs_review",
             "value" : "їв %@ тому · %lld з %lld"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "a mangé il y a %@ · %lld sur %lld"
+          }
         }
       }
     },
@@ -50220,6 +50226,12 @@
             "state" : "needs_review",
             "value" : "їжі поки немає"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "pas encore de repas"
+          }
         }
       }
     },
@@ -50237,6 +50249,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "ще не їли"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "pas encore mangé"
           }
         }
       }
