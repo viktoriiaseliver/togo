@@ -14,9 +14,15 @@ nonisolated struct ActiveSession: Equatable, Sendable, Codable {
         case outing
         case walk
 
-        var title: String { self == .outing ? "Выход" : "Прогулка" }
-        var runningTitle: String { self == .outing ? "выход идёт" : "гуляем" }
-        var pausedTitle: String { self == .outing ? "выход на паузе" : "на паузе" }
+        var title: String {
+            self == .outing ? String(localized: "Выход") : String(localized: "Прогулка")
+        }
+        var runningTitle: String {
+            self == .outing ? String(localized: "выход идёт") : String(localized: "гуляем")
+        }
+        var pausedTitle: String {
+            self == .outing ? String(localized: "выход на паузе") : String(localized: "на паузе")
+        }
     }
 
     struct Mark: Equatable, Identifiable, Sendable, Codable {
@@ -25,14 +31,14 @@ nonisolated struct ActiveSession: Equatable, Sendable, Codable {
 
             var title: String {
                 switch self {
-                case .urine: "Пописал"
-                case .stool: "Стул"
-                case .water: "Попил"
-                case .treat: "Лакомство"
-                case .training: "Занятие"
-                case .reaction: "Сорвался"
-                case .incident: "Инцидент"
-                case .note: "Заметка"
+                case .urine: String(localized: "Пописал")
+                case .stool: String(localized: "Стул")
+                case .water: String(localized: "Попил")
+                case .treat: String(localized: "Лакомство")
+                case .training: String(localized: "Занятие")
+                case .reaction: String(localized: "Сорвался")
+                case .incident: String(localized: "Инцидент")
+                case .note: String(localized: "Заметка")
                 }
             }
 

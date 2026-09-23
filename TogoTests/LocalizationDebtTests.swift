@@ -36,7 +36,7 @@ struct LocalizationDebtTests {
     /// Сколько непереведённых строк осталось в каждом файле.
     /// Замер 23.09.2026. Число может только уменьшаться.
     private let долг: [String: Int] = [
-        "ActiveSession.swift": 15, "AlarmThreshold.swift": 10, "Backup.swift": 6,
+        "ActiveSession.swift": 1, "AlarmThreshold.swift": 10, "Backup.swift": 6,
         "BackupArchive.swift": 9, "Care.swift": 15, "CareMigration.swift": 14,
         "DayOutPlan.swift": 5, "Dog.swift": 12, "DogDocument.swift": 22,
         "DoseGate.swift": 2, "Enums+Care.swift": 3, "FamilyShare.swift": 5,
