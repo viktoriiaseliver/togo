@@ -27,6 +27,9 @@ struct FamilyScreen: View {
     var body: some View {
         NavigationStack {
             TGScreen {
+                // Дубликат собаки — первым: пока он есть, всё остальное
+                // на этом экране человек читает неправильно.
+                DuplicateDogCard()
                 if let conflict = mergeConflict {
                     MergeConflictCard(left: conflict.0, right: conflict.1)
                 }

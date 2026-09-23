@@ -33,6 +33,14 @@ struct SettingsScreen: View {
         .scrollContentBackground(.hidden)
         .background(Token.Surface.screen)
         .navigationTitle("Настройки")
+        // Панель вкладок на настройках не нужна и мешает.
+        //
+        // Настройки — не вкладка, а место, куда ушли с вкладки. Пока
+        // панель видна, у экрана два выхода: «назад» возвращает туда,
+        // откуда пришёл, а вкладка молча бросает начатое и уводит
+        // в другое место. Эвристика №3, свобода и контроль: путь назад
+        // должен быть один и понятный, а не два с разным смыслом.
+        .toolbar(.hidden, for: .tabBar)
         .usageScreen(.settings)
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showPaywall) {
