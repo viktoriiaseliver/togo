@@ -115,7 +115,7 @@ struct DogTab: View {
 
     private func trainingSummary(_ dog: Dog) -> String? {
         let count = dog.trainingSessions.count
-        return count == 0 ? nil : Fmt.plural(count, "занятие", "занятия", "занятий")
+        return count == 0 ? nil : String(localized: "\(count) занятий")
     }
 
     // MARK: Документы и цикл

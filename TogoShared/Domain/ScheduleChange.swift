@@ -40,7 +40,7 @@ nonisolated struct ScheduleChange: Equatable, Sendable {
             let when = hour < 12 ? "утром" : (hour < 17 ? "днём" : "вечером")
             return "один раз · \(when)"
         case 2: return "дважды в день"
-        default: return "\(Fmt.plural(sorted.count, "раз", "раза", "раз")) в день"
+        default: return "\(String(localized: "\(sorted.count) раз")) в день"
         }
     }
 

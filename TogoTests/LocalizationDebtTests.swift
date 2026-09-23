@@ -36,16 +36,16 @@ struct LocalizationDebtTests {
     /// Сколько непереведённых строк осталось в каждом файле.
     /// Замер 23.09.2026. Число может только уменьшаться.
     private let долг: [String: Int] = [
-        "ActiveSession.swift": 1, "AlarmThreshold.swift": 10, "Backup.swift": 6,
-        "BackupArchive.swift": 9, "Care.swift": 15, "CareMigration.swift": 14,
-        "DayOutPlan.swift": 5, "Dog.swift": 12, "DogDocument.swift": 22,
-        "DoseGate.swift": 2, "Enums+Care.swift": 3, "FamilyShare.swift": 5,
-        "FamilySync.swift": 4, "Feeding.swift": 5, "FoodStock.swift": 15,
-        "Formatting.swift": 30, "LogEvent.swift": 3, "NeedVerdict.swift": 29,
-        "PillSupply.swift": 2, "RecallWriter.swift": 4, "RecordOrigin.swift": 4,
-        "ScheduleChange.swift": 11, "Shift.swift": 4, "TimelineBuilder.swift": 9,
-        "Training.swift": 2, "TreatmentCourse.swift": 12, "VetSummary.swift": 10,
-        "WalkMarkIntent.swift": 8, "WalkRecorder.swift": 1, "WidgetSnapshot.swift": 3,
+        "ActiveSession.swift": 1, "AlarmThreshold.swift": 5, "Backup.swift": 6,
+        "Care.swift": 15, "CareMigration.swift": 14, "DayOutPlan.swift": 5,
+        "Dog.swift": 3, "DogDocument.swift": 22, "DoseGate.swift": 2,
+        "Enums+Care.swift": 3, "FamilyShare.swift": 5, "FamilySync.swift": 4,
+        "Feeding.swift": 5, "FoodStock.swift": 9, "Formatting.swift": 12,
+        "LogEvent.swift": 3, "NeedVerdict.swift": 29, "PillSupply.swift": 2,
+        "RecallWriter.swift": 1, "RecordOrigin.swift": 4, "ScheduleChange.swift": 9,
+        "Shift.swift": 4, "TimelineBuilder.swift": 9, "Training.swift": 2,
+        "TreatmentCourse.swift": 10, "VetSummary.swift": 10, "WalkMarkIntent.swift": 8,
+        "WalkRecorder.swift": 1, "WidgetSnapshot.swift": 3,
     ]
 
     @Test("Непереведённых строк в общем слое не становится больше")

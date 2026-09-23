@@ -190,9 +190,9 @@ struct PaywallScreen: View {
         case (.month, 1): return "месяц"
         case (.year, 1): return "год"
         case (.day, let n): return Fmt.days(n)
-        case (.week, let n): return Fmt.plural(n, "неделя", "недели", "недель")
-        case (.month, let n): return Fmt.plural(n, "месяц", "месяца", "месяцев")
-        case (.year, let n): return Fmt.plural(n, "год", "года", "лет")
+        case (.week, let n): return String(localized: "\(n) недель")
+        case (.month, let n): return String(localized: "\(n) месяцев")
+        case (.year, let n): return String(localized: "\(n) лет")
         default: return ""
         }
     }

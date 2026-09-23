@@ -23,7 +23,7 @@ struct AlarmThreshold: Equatable, Identifiable {
     /// Заголовок строкой: «Рвота · третий раз за 6 часов».
     var headline: String {
         let hours = Int(window / 3600)
-        return "\(kind.title) · \(Fmt.ordinal(count)) раз за \(Fmt.plural(hours, "час", "часа", "часов"))"
+        return "\(kind.title) · \(Fmt.ordinal(count)) раз за \(String(localized: "\(hours) часов"))"
     }
 }
 
@@ -73,7 +73,7 @@ enum AlarmThresholdAnalyzer {
 
         if let first = threshold.episodes.first {
             parts.append("\(threshold.kind.title.lowercased()) "
-                         + "\(Fmt.plural(threshold.count, "раз", "раза", "раз")) "
+                         + "\(String(localized: "\(threshold.count) раз")) "
                          + "с \(Fmt.clock(first.date))")
         }
 

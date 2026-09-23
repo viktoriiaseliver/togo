@@ -99,18 +99,11 @@ nonisolated enum Fmt {
                                     numberFormatStyle: .number.precision(.fractionLength(1))))
     }
 
-    /// Русские окончания там, где число видно человеку.
-    static func plural(_ n: Int, _ one: String, _ few: String, _ many: String) -> String {
-        let mod10 = n % 10, mod100 = n % 100
-        if mod10 == 1 && mod100 != 11 { return "\(n) \(one)" }
-        if (2...4).contains(mod10) && !(12...14).contains(mod100) { return "\(n) \(few)" }
-        return "\(n) \(many)"
-    }
 
-    static func days(_ n: Int) -> String { plural(n, "день", "дня", "дней") }
-    static func outings(_ n: Int) -> String { plural(n, "выход", "выхода", "выходов") }
-    static func minutes(_ n: Int) -> String { plural(n, "минута", "минуты", "минут") }
-    static func times(_ n: Int) -> String { plural(n, "раз", "раза", "раз") }
-    static func records(_ n: Int) -> String { plural(n, "запись", "записи", "записей") }
-    static func actions(_ n: Int) -> String { plural(n, "действие", "действия", "действий") }
+    static func days(_ n: Int) -> String { String(localized: "\(n) дней") }
+    static func outings(_ n: Int) -> String { String(localized: "\(n) выходов") }
+    static func minutes(_ n: Int) -> String { String(localized: "\(n) минут") }
+    static func times(_ n: Int) -> String { String(localized: "\(n) раз") }
+    static func records(_ n: Int) -> String { String(localized: "\(n) записей") }
+    static func actions(_ n: Int) -> String { String(localized: "\(n) действий") }
 }

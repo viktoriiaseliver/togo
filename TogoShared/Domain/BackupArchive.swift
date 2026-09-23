@@ -203,9 +203,9 @@ nonisolated struct BackupArchive: Codable, Sendable {
     var summary: String {
         let events = dogs.reduce(0) { $0 + $1.events.count }
         return [
-            Fmt.plural(dogs.count, "собака", "собаки", "собак"),
-            Fmt.plural(events, "запись", "записи", "записей"),
-            Fmt.plural(members.count, "человек", "человека", "человек"),
+            String(localized: "\(dogs.count) собак"),
+            String(localized: "\(events) записей"),
+            String(localized: "\(members.count) человек"),
         ].joined(separator: " · ")
     }
 }

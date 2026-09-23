@@ -91,7 +91,7 @@ nonisolated enum RecallWriter {
     static func footnote(for events: [LogEvent]) -> String? {
         let recalled = events.filter(\.isRecalled).count
         guard recalled > 0 else { return nil }
-        return "\(Fmt.plural(recalled, "запись внесена", "записи внесены", "записей внесены")) "
+        return "\(String(localized: "\(recalled) записей внесены")) "
             + "по памяти, из \(events.count)"
     }
 }

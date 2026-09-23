@@ -111,7 +111,9 @@ struct FeedingScreen: View {
                 TGStat(value: "\(report.todayGrams) г",
                        caption: report.normGramsPerDay > 0 ? "из \(report.normGramsPerDay)" : "съел")
                 TGStat(value: "\(report.todayMeals)",
-                       caption: report.normMealsPerDay > 0 ? "из \(report.normMealsPerDay) кормлений" : "кормлений")
+                       caption: report.normMealsPerDay > 0
+                           ? .готовая(String(localized: "из \(report.normMealsPerDay) кормлений"))
+                           : "кормлений")
                 TGStat(value: "\(report.remainingGramsToday) г", caption: "осталось")
             }
             if let next = nextMealTime {

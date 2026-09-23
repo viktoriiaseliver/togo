@@ -83,7 +83,7 @@ struct VetSummaryScreen: View {
 
                 VStack(alignment: .leading, spacing: Token.Space.s2) {
                     Text("\(summary.incidentTotal)").textStyle(AppFont.display)
-                    Text(Fmt.plural(summary.incidentTotal, "инцидент", "инцидента", "инцидентов")
+                    Text(String(localized: "\(summary.incidentTotal) инцидентов")
                             .replacingOccurrences(of: "\(summary.incidentTotal) ", with: ""))
                         .textStyle(AppFont.caption)
                     if let detail = summary.incidentDetail {
@@ -250,7 +250,7 @@ struct VetSummaryPresentation: View {
             }
 
             TGCard {
-                Text("\(summary.incidentTotal) \(Fmt.plural(summary.incidentTotal, "инцидент", "инцидента", "инцидентов").replacingOccurrences(of: "\(summary.incidentTotal) ", with: ""))")
+                Text("\(summary.incidentTotal) \(String(localized: "\(summary.incidentTotal) инцидентов").replacingOccurrences(of: "\(summary.incidentTotal) ", with: ""))")
                     .textStyle(AppFont.display)
                 if let detail = summary.incidentDetail {
                     Text(detail).textStyle(AppFont.body)

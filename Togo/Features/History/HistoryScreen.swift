@@ -76,7 +76,7 @@ struct HistoryScreen: View {
         if !trace.findings.isEmpty {
             TGCard {
                 TGSectionHeader(title: "после долгих дней",
-                                subtitle: "по \(Fmt.plural(trace.longDays, "дню", "дням", "дням")), где она была с тобой дольше \(Int(DayOut.longDayHours)) часов")
+                                subtitle: "по \(String(localized: "\(trace.longDays) дням")), где она была с тобой дольше \(Int(DayOut.longDayHours)) часов")
                 ForEach(trace.findings, id: \.self) { line in
                     Text("• " + line).textStyle(AppFont.caption).wraps()
                 }

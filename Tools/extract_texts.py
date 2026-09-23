@@ -223,6 +223,16 @@ def collect():
             for literal in literals(line):
                 if not CYRILLIC.search(literal):
                     continue
+                # `String(localized: "\(n) дней")` с подстановкой — ключ
+                # заведён руками и несёт формы числа. Скрипт его не выводит:
+                # он не знает типа подставляемого значения, а от типа зависит
+                # спецификатор (`%lld` у целого, `%@` у строки). Выведет —
+                # получится ключ, который выглядит правильным и молча
+                # не работает. Без подстановки (`String(localized: "Выход")`)
+                # ключ обычный, и его собирать надо: иначе он станет сиротой
+                # и уедет из каталога вместе с переводами.
+                if "\\(" in literal and "String(localized:" in line.split(literal)[0]:
+                    continue
                 found.append((placeholders(literal), context, number))
         if found:
             result.append((rel, found))
@@ -362,7 +372,12 @@ def catalog(collected):
     merged = {}
     for key, entry in existing.items():
         ours = entry.get("extractionState") == "manual"
-        if ours and key not in fresh:
+        # Ключи с формами числа заведены руками под `String(localized:)`
+        # и в коде как литерал не встречаются. Сиротами они не являются:
+        # снести их — значит вернуть «1 дней».
+        с_формами = any("variations" in unit
+                        for unit in entry.get("localizations", {}).values())
+        if ours and key not in fresh and not с_формами:
             continue  # фраза ушла из кода — ключ-сирота
         if key in fresh:
             # Переводы, которые уже вписали в каталог, не затираем.

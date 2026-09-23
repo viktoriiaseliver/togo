@@ -24,7 +24,7 @@ struct DayOutStartSheet: View {
                     HStack {
                         Text("Примерно на").textStyle(AppFont.body)
                         Spacer()
-                        Text(Fmt.plural(hours, "час", "часа", "часов"))
+                        Text(String(localized: "\(hours) часов"))
                             .textStyle(AppFont.numeric(17))
                     }
                 }
@@ -47,7 +47,7 @@ struct DayOutStartSheet: View {
                             subtitle: "посчитано по её расписанию, а не на глаз")
             row("Корм", packing.meals == 0
                 ? "не понадобится — кормления в это окно не попадают"
-                : "\(packing.totalGrams) г · \(Fmt.plural(packing.meals, "кормление", "кормления", "кормлений")) и запас")
+                : "\(packing.totalGrams) г · \(String(localized: "\(packing.meals) кормлений")) и запас")
             TGDivider()
             row("Вода", "предлагать каждые \(Fmt.duration(DayOutPlan.waterEvery))")
             TGDivider()
@@ -110,7 +110,7 @@ struct DayOutSummarySheet: View {
             TGCard {
                 HStack(spacing: 0) {
                     TGStat(value: Fmt.gap(day.duration()), caption: "на ногах", size: 20)
-                    TGStat(value: Fmt.plural(day.plannedHours, "час", "часа", "часов"),
+                    TGStat(value: String(localized: "\(day.plannedHours) часов"),
                            caption: "рассчитывали", size: 20)
                 }
             }
@@ -164,7 +164,7 @@ struct DayOutCard: View {
                         .textStyle(AppFont.micro.color(Token.Status.doneText))
                     Text(Fmt.duration(day.duration(at: now)))
                         .textStyle(AppFont.display)
-                    Text("рассчитывали на \(Fmt.plural(day.plannedHours, "час", "часа", "часов"))")
+                    Text("рассчитывали на \(String(localized: "\(day.plannedHours) часов"))")
                         .textStyle(AppFont.micro)
                 }
                 Spacer(minLength: 0)

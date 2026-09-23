@@ -177,11 +177,11 @@ final class Dog {
 
     var ageDescription: String? {
         guard let months = ageMonths else { return nil }
-        if months < 12 { return Fmt.plural(months, "месяц", "месяца", "месяцев") }
+        if months < 12 { return String(localized: "\(months) месяцев") }
         let years = months / 12
         let rest = months % 12
-        let base = Fmt.plural(years, "год", "года", "лет")
-        return rest == 0 ? base : base + " " + Fmt.plural(rest, "месяц", "месяца", "месяцев")
+        let base = String(localized: "\(years) лет")
+        return rest == 0 ? base : base + " " + String(localized: "\(rest) месяцев")
     }
 
     enum LifeStage: String, Sendable {

@@ -133,7 +133,7 @@ nonisolated enum TreatmentCourse {
             let days = Int(span / 86400)
             if days >= 14 {
                 let weeks = days / 7
-                return "\(Fmt.plural(weeks, "неделя", "недели", "недель")) позади"
+                return "\(String(localized: "\(weeks) недель")) позади"
             }
             if days >= 1 { return "\(Fmt.days(days)) позади" }
             return "Курс закончен"

@@ -418,7 +418,7 @@ struct TodayScreen: View {
                 // герой вверху экрана крупной цифрой, и повторять его
                 // мелким шрифтом — ровно тот дубль, который аудит
                 // и просил вычистить.
-                TGStat(value: "\(summary.meals)", caption: .готовая(Fmt.plural(summary.meals, "кормление", "кормления", "кормлений").replacingOccurrences(of: "\(summary.meals) ", with: "")))
+                TGStat(value: "\(summary.meals)", caption: .готовая(String(localized: "\(summary.meals) кормлений").replacingOccurrences(of: "\(summary.meals) ", with: "")))
                 TGStat(value: "\(summary.outings)", caption: .готовая(Fmt.outings(summary.outings).replacingOccurrences(of: "\(summary.outings) ", with: "")))
             }
             if summary.trainingGrams > 0 {

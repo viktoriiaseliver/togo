@@ -47,7 +47,7 @@ enum WalkControl {
 
         let minutes = Int(session.duration(at: now)) / 60
         let tail = session.marks.isEmpty ? "" : " · \(session.tally)"
-        return "Записала · прогулка \(Fmt.plural(minutes, "минута", "минуты", "минут"))\(tail)"
+        return "Записала · прогулка \(String(localized: "\(minutes) минут"))\(tail)"
     }
 }
 
@@ -62,7 +62,7 @@ struct StartWalkIntent: AppIntent {
     func perform() async throws -> some IntentResult & ProvidesDialog {
         if let running = ActiveSessionStore.load() {
             let minutes = Int(running.duration()) / 60
-            return .result(dialog: "Прогулка уже идёт — \(Fmt.plural(minutes, "минута", "минуты", "минут")).")
+            return .result(dialog: "Прогулка уже идёт — \(String(localized: "\(minutes) минут")).")
         }
         try WalkControl.startAndAnnounce()
         return .result(dialog: "Пошли. Таймер идёт.")

@@ -194,7 +194,7 @@ struct TimelineRow: View {
         if isCancelled { return "след остаётся" }
         guard block.isSpan else { return event.subtitle }
         let minutes = Int(block.endedAt.timeIntervalSince(block.startedAt)) / 60
-        return Fmt.plural(minutes, "минута", "минуты", "минут")
+        return String(localized: "\(minutes) минут")
     }
 
     private var markerTint: Color {

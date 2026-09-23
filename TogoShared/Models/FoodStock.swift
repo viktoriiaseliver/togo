@@ -143,9 +143,9 @@ nonisolated enum FoodKind: String, Codable, CaseIterable, Sendable {
     /// думает именно этими словами.
     func unitName(count: Double) -> String {
         switch self {
-        case .dry: return Fmt.plural(Int(count.rounded()), "мешок", "мешка", "мешков")
+        case .dry: return String(localized: "\(Int(count.rounded())) мешков")
                             .components(separatedBy: " ").last ?? "мешок"
-        case .wet: return Fmt.plural(Int(count.rounded()), "банка", "банки", "банок")
+        case .wet: return String(localized: "\(Int(count.rounded())) банок")
                             .components(separatedBy: " ").last ?? "банка"
         }
     }
