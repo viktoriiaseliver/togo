@@ -22,8 +22,18 @@ import Foundation
 @Suite("Каталог строк доезжает до бандла виджета")
 struct WidgetBundleCatalogTests {
 
+    /// `resolvingSymlinksInPath` обязателен, и это не перестраховка.
+    ///
+    /// Проверено подделкой в `git worktree` под `/tmp`: `#filePath` даёт
+    /// `/tmp/…`, а `FileManager` отвечает `/private/tmp/…`. Отрезание
+    /// префикса строкой не срабатывало, относительный путь выходил
+    /// «/privateTogo/Resources/…» — и сторож покраснел на каталоге,
+    /// который лежал правильно и стоял в исключениях. **Красный
+    /// не по той причине учит не верить красному**, а это дороже
+    /// пропущенного дефекта.
     private static let корень = URL(fileURLWithPath: #filePath)
         .deletingLastPathComponent().deletingLastPathComponent()
+        .resolvingSymlinksInPath()
 
     /// Каталоги, которым в бандле виджета делать нечего — поимённо
     /// и с причиной.
@@ -42,8 +52,20 @@ struct WidgetBundleCatalogTests {
                 at: Self.корень.appendingPathComponent(место), includingPropertiesForKeys: nil)
             while let элемент = обход?.nextObject() as? URL {
                 guard элемент.pathExtension == "xcstrings" else { continue }
-                найдено.append(
-                    элемент.path.replacingOccurrences(of: Self.корень.path + "/", with: ""))
+                let путь = элемент.resolvingSymlinksInPath().path
+                    .replacingOccurrences(of: Self.корень.path + "/", with: "")
+                // Не отрезался префикс — считать дальше нельзя: путь
+                // станет чужим, исключения не сойдутся и сторож
+                // закричит на здоровом каталоге.
+                guard !путь.hasPrefix("/") else {
+                    Issue.record("""
+                        не свёл путь \(элемент.path) к корню \(Self.корень.path) — \
+                        разбор сломался, и всё, что этот сторож скажет дальше, \
+                        про другое дерево.
+                        """)
+                    continue
+                }
+                найдено.append(путь)
             }
         }
         return найдено.sorted()
