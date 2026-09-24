@@ -82,12 +82,27 @@ struct BigAction: View {
                     .lineLimit(1)
                     .minimumScaleFactor(0.75)
             }
-            .foregroundStyle(Token.Ink.primary)
+            // Подпись берётся у компонентного токена, а не у Ink.primary.
+            // Прежде оба варианта красились одним светлым: на тёмной
+            // заливке это верно, на светлой — нет. Белый на мяте давал
+            // 1,68:1, светлый на синем «Льда» — 1,98:1. Главная кнопка
+            // приложения не была читаемой ни разу, и тест на токен всё
+            // это время был зелёным: он проверял, что onAccent правильный,
+            // а экран его не звал.
+            .foregroundStyle(isPrimary ? Token.Component.Button.Primary.label
+                                       : Token.Component.Button.Secondary.label)
             .padding(.horizontal, Token.Space.s8)
-            .frame(maxWidth: .infinity, minHeight: 54)
+            .frame(maxWidth: .infinity,
+                   minHeight: isPrimary ? Token.Component.Button.Primary.height
+                                        : Token.Component.Button.Secondary.height)
             .background(
-                RoundedRectangle(cornerRadius: Token.Radius.control, style: .continuous)
-                    .fill(isPrimary ? Token.Action.primary : Token.Surface.sunken)
+                RoundedRectangle(
+                    cornerRadius: isPrimary ? Token.Component.Button.Primary.radius
+                                            : Token.Component.Button.Secondary.radius,
+                    style: .continuous
+                )
+                .fill(isPrimary ? Token.Component.Button.Primary.background
+                                : Token.Component.Button.Secondary.background)
             )
         }
         .buttonStyle(.plain)
