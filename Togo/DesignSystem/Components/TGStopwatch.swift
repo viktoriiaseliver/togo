@@ -29,6 +29,12 @@ struct TGStopwatch: View {
         }
         .textStyle(style)
         .monospacedDigit()
+        // Секундомер не переносится: «1 ч 48 мин» героем шире экрана,
+        // и разрыв приходится на середину числа. То же место, что
+        // и у соседней ветки героя, — чиним обе, а не ту, о которой
+        // пришёл кадр.
+        .lineLimit(1)
+        .minimumScaleFactor(0.6)
         // Цифры не должны дёргать соседей при смене ширины.
         .contentTransition(.numericText())
         .accessibilityLabel(isPaused

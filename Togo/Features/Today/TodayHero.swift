@@ -60,8 +60,14 @@ struct TodayHero: View {
                 .textStyle(AppFont.sectionTitle)
         } else if let indoors {
             HStack(alignment: .firstTextBaseline, spacing: Token.Space.s8) {
+                // «14 ч 15 мин» героем не влезает в строку и переносится
+                // посередине числа: «14 ч» сверху, «15 мин» снизу, а «назад»
+                // остаётся у первой половины. Так это и приехало кадром
+                // от тестировщицы 24.09. Число ужимается, но не рвётся.
                 Text(Fmt.hoursMinutes(indoors))
                     .textStyle(AppFont.hero)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
                 Text("назад")
                     .textStyle(AppFont.sectionTitle.color(Token.Ink.secondary))
             }

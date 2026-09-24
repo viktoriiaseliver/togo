@@ -252,6 +252,38 @@ struct SinceWalkTests {
         let blocks = TimelineBuilder.blocks([meal])
         #expect(TimelineBuilder.timeIndoorsNow(blocks, now: at(9, 17), threshold: 0) == nil)
     }
+
+    /// От обратного: утверждение «выход был» обязано дожить до экрана.
+    /// «Не все выходы теряются» выполнялось бы и при потере каждого.
+    @Test("Только что вернувшаяся прогулка обязана дать число, а не nil")
+    func justReturnedStillCounts() {
+        // Ровно кадр тестировщицы 24.09: прогулка 14:13–16:01, а снимок
+        // `now` у экрана отстал на минуту — тик ходит раз в тридцать
+        // секунд. Конец выхода оказался в будущем, разность ушла в минус,
+        // и минус возвращался тем же `nil`, что и «выходов не было»:
+        // экран писал «Сегодня ещё не выходили» над лентой с двумя
+        // прогулками, Siri отвечала то же самое.
+        let walk = LogEvent(kind: .walk, date: at(14, 13), authorName: "Виктория")
+        walk.durationSeconds = 108 * 60          // до 16:01
+
+        let blocks = TimelineBuilder.blocks([walk])
+        let indoors = try! #require(
+            TimelineBuilder.timeIndoorsNow(blocks, now: at(16, 0), threshold: 0)
+        )
+        // Дома нисколько — только что вернулись. Не «не выходили».
+        #expect(indoors == 0)
+    }
+
+    @Test("Отставший снимок времени не рвёт промежуток в ленте")
+    func staleNowKeepsGapQuiet() {
+        // Оборотная сторона того же: у промежутка в ленте порог час,
+        // и ноль его не проходит — строки «0 ч дома» не появляется.
+        let walk = LogEvent(kind: .walk, date: at(14, 13), authorName: "Виктория")
+        walk.durationSeconds = 108 * 60
+
+        let blocks = TimelineBuilder.blocks([walk])
+        #expect(TimelineBuilder.timeIndoorsNow(blocks, now: at(16, 0), threshold: 3600) == nil)
+    }
 }
 
 @Suite("Молчащие напоминания ухода")

@@ -294,6 +294,14 @@ struct TodayScreen: View {
                 guard phase == .active else { return }
                 now = Date()
             }
+            // Запись приходит с настоящим временем, а `now` — с тика:
+            // между ними до тридцати секунд. В этот зазор метка «сейчас»
+            // встаёт ПЕРЕД только что записанной строкой, а конец
+            // прогулки оказывается в будущем. Кадр тестировщицы 24.09:
+            // прогулка до 16:01 и «сейчас · 16:00» под ней.
+            .onChange(of: events.count) { _, _ in
+                now = Date()
+            }
             .onChange(of: episodes.count) { _, _ in
                 appState.refreshEpisode(from: episodes, at: now)
             }
