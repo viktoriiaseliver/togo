@@ -114,8 +114,25 @@ enum SeedData {
     /// Демо-набор для превью и UI-тестов. В обычный запуск не попадает.
     private static let calendarNow = Calendar.current
 
+    /// Что лежит в демо-базе UI-тестов.
+    ///
+    /// Заведено 24.09.2026 ради одного состояния, которое **нечем было
+    /// снять**: выходов нет дольше суток, а записи за сегодня есть.
+    /// Именно его прислала кадром мама — шапка «Записей нет с 22 сент.»
+    /// стояла над едой в 15:23. Демо-набор сюда не попадал никогда:
+    /// в нём два выхода за сегодня, и ветка тишины не рисуется вовсе.
+    ///
+    /// Правило проекта: прежде чем проверять поверхность, проверь, что
+    /// её МОЖНО проверить. Непроверяемое лечится входом, а не взглядом.
+    enum Scenario: String {
+        /// Обычный день: два выхода и завтрак.
+        case today
+        /// Выходов нет двое суток, еда за сегодня записана.
+        case silence
+    }
+
     @MainActor
-    static func makePreviewContainer() -> ModelContainer {
+    static func makePreviewContainer(_ scenario: Scenario = .today) -> ModelContainer {
         let container = Persistence.container()
         let context = container.mainContext
 
@@ -157,14 +174,31 @@ enum SeedData {
             calendar.date(minuteOfDay: hour * 60 + minute, on: startOfDay)
         }
 
-        let morning = LogEvent(kind: .outing, date: at(7, 2), authorName: "Виктория")
-        morning.outcome = .urine
-        let breakfast = LogEvent(kind: .meal, date: at(7, 34), authorName: "Виктория")
-        breakfast.grams = 60
-        breakfast.note = "съел всё"
-        let second = LogEvent(kind: .outing, date: at(8, 15), authorName: "Тео")
-        second.outcome = .both
-        for event in [morning, breakfast, second] {
+        let события: [LogEvent]
+        switch scenario {
+        case .today:
+            let morning = LogEvent(kind: .outing, date: at(7, 2), authorName: "Виктория")
+            morning.outcome = .urine
+            let breakfast = LogEvent(kind: .meal, date: at(7, 34), authorName: "Виктория")
+            breakfast.grams = 60
+            breakfast.note = "съел всё"
+            let second = LogEvent(kind: .outing, date: at(8, 15), authorName: "Тео")
+            second.outcome = .both
+            события = [morning, breakfast, second]
+
+        case .silence:
+            // Последний выход — позавчера вечером: больше суток, значит
+            // герой уходит в ветку тишины. Еда — сегодня днём, ровно как
+            // на кадре: именно она и делает шапку «записей нет» ложной.
+            let позавчера = calendarNow.date(byAdding: .day, value: -2, to: at(18, 40)) ?? at(18, 40)
+            let выход = LogEvent(kind: .outing, date: позавчера, authorName: "Виктория")
+            выход.outcome = .both
+            let обед = LogEvent(kind: .meal, date: at(15, 23), authorName: "Мама")
+            обед.grams = 70
+            события = [выход, обед]
+        }
+
+        for event in события {
             event.dog = dog
             context.insert(event)
         }

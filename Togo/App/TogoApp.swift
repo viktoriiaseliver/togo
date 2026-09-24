@@ -61,7 +61,7 @@ struct TogoApp: App {
     /// Может быть nil: если хранилище не открылось, приложение показывает
     /// экран с объяснением, а не исчезает с экрана без единого слова.
     private let container: ModelContainer? = TogoApp.isUITesting
-        ? SeedData.makePreviewContainer()
+        ? SeedData.makePreviewContainer(TogoApp.uiTestingScenario)
         : Persistence.appContainer()
 
 
@@ -70,6 +70,22 @@ struct TogoApp: App {
     /// так тест не зависит от того, что человек уже записал на этом устройстве.
     static var isUITesting: Bool {
         ProcessInfo.processInfo.arguments.contains("-UITesting")
+    }
+
+    /// Какой демо-набор просит тест: `-Сценарий silence`.
+    ///
+    /// Без аргумента — обычный день, как было. Незнакомое имя **валит
+    /// запуск нарочно**: молча подставить обычный день значит дать тесту
+    /// снять не то состояние и назвать это успехом. Набор, которому нечего
+    /// проверять, молчит так же, как набор, у которого всё хорошо.
+    static var uiTestingScenario: SeedData.Scenario {
+        let args = ProcessInfo.processInfo.arguments
+        guard let место = args.firstIndex(of: "-Сценарий") else { return .today }
+        let имя = args.indices.contains(место + 1) ? args[место + 1] : ""
+        guard let сценарий = SeedData.Scenario(rawValue: имя) else {
+            fatalError("неизвестный сценарий демо-базы: «\(имя)»")
+        }
+        return сценарий
     }
 
     init() {

@@ -17430,26 +17430,26 @@
         }
       }
     },
-    "Записей нет с %@" : {
+    "Выходов нет с %@" : {
       "comment" : "headline",
       "extractionState" : "manual",
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aucune entrée depuis %@"
+            "value" : "Aucune sortie depuis %@"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Записей нет с %@"
+            "value" : "Выходов нет с %@"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Записів немає з %@"
+            "value" : "Виходів немає з %@"
           }
         }
       }
