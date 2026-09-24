@@ -91,6 +91,15 @@ nonisolated enum RecallParser {
         case period(Period)
         /// Разобрать не вышло. Текст возвращается как есть — человеку.
         case notUnderstood(String)
+        /// Язык заведён, а слов разбора для него ещё нет.
+        ///
+        /// Отдельно от `notUnderstood`, и это не педантизм.
+        /// `RecallDictionary.пустой` обещает: «человеку об этом надо
+        /// сказать **иначе**, чем „не понял"» — а разбор отвечал
+        /// одинаково. Разница для человека большая: «не понял»
+        /// значит «перепиши», а «этот язык ещё не разбираю» значит
+        /// «переписывать бесполезно, дело не в тебе».
+        case языкНеРазбирается(String)
     }
 
     // MARK: Разбор
@@ -106,20 +115,22 @@ nonisolated enum RecallParser {
     static func line(from raw: String, today: Date) -> Line {
         let text = RecallDictionary.нормализовать(raw)
         let словарь = RecallDictionary.текущий
+        // Сначала — есть ли чем разбирать вообще.
+        guard !словарь.пустой else { return .языкНеРазбирается(raw) }
         guard let kind = kind(in: text, словарь: словарь) else { return .notUnderstood(raw) }
 
         if let (from, to) = range(in: text, today: today, словарь: словарь) {
             return .period(Period(kind: kind, from: from, to: to,
-                                  timesPerDay: timesPerDay(in: text),
-                                  durationSeconds: duration(in: text)))
+                                  timesPerDay: timesPerDay(in: text, словарь: словарь),
+                                  durationSeconds: duration(in: text, словарь: словарь)))
         }
         guard let at = day(in: text, today: today, словарь: словарь) else {
             return .notUnderstood(raw)
         }
         return .moment(Moment(kind: kind, at: at,
-                              grams: grams(in: text),
-                              stool: stool(in: text),
-                              times: timesPerDay(in: text)))
+                              grams: grams(in: text, словарь: словарь),
+                              stool: stool(in: text, словарь: словарь),
+                              times: timesPerDay(in: text, словарь: словарь)))
     }
 
     // MARK: Вид записи
@@ -223,24 +234,40 @@ nonisolated enum RecallParser {
         return nil
     }
 
-    static func grams(in text: String) -> Int? { number(in: text, after: ["г\\b", "грамм"]) }
+    // Единицы и формы стула — из словаря, как и остальные основы.
+    //
+    // Зашитыми литералами они попали в каталог и были переведены:
+    // `г\\b` стал `g\\b`, «час» — «година». Перевод при этом
+    // не использовался ничем: разбор брал литералы. Та же форма, что
+    // у `Text(строка)`, — перевод существует, выглядит работающим
+    // и не значит ничего.
 
-    static func timesPerDay(in text: String) -> Int? { number(in: text, after: ["раз"]) }
+    static func grams(in text: String,
+                      словарь: RecallDictionary = .текущий) -> Int? {
+        number(in: text, after: словарь.граммы)
+    }
 
-    static func duration(in text: String) -> Int? {
-        if let hours = number(in: text, after: ["час"]) { return hours * 3600 }
-        if let minutes = number(in: text, after: ["мин"]) { return minutes * 60 }
+    static func timesPerDay(in text: String,
+                            словарь: RecallDictionary = .текущий) -> Int? {
+        number(in: text, after: словарь.разы)
+    }
+
+    static func duration(in text: String,
+                         словарь: RecallDictionary = .текущий) -> Int? {
+        if let hours = number(in: text, after: словарь.часы) { return hours * 3600 }
+        if let minutes = number(in: text, after: словарь.минуты) { return minutes * 60 }
         return nil
     }
 
     // MARK: Стул
 
-    static func stool(in text: String) -> StoolForm? {
-        if text.contains("понос") || text.contains("диаре") || text.contains("жидк") { return .liquid }
-        if text.contains("кашиц") { return .mushy }
-        if text.contains("мягк") { return .soft }
-        if text.contains("твёрд") || text.contains("тверд") { return .hard }
-        if text.contains("колбаск") || text.contains("норм") { return .sausage }
+    static func stool(in text: String,
+                      словарь: RecallDictionary = .текущий) -> StoolForm? {
+        let приведённый = RecallDictionary.нормализовать(text)
+        for (форма, основы) in словарь.формыСтула
+        where основы.contains(where: { приведённый.contains(RecallDictionary.нормализовать($0)) }) {
+            return форма
+        }
         return nil
     }
 }
