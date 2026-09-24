@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<style>html{background:#DDE4EA}body{margin:0;background:#DDE4EA;color:#0E1720;font-family:-apple-system,"SF Pro Text",system-ui,sans-serif;-webkit-font-smoothing:antialiased}a{color:#1D4E89;text-decoration:none}a:hover{color:#163D6C}</style>
+</helmet>
+<div style="padding:56px 48px 120px;display:flex;flex-direction:column;gap:80px;background:#DDE4EA;min-height:100vh;max-width:1480px">
+
+  <div style="display:flex;flex-direction:column;gap:12px;max-width:860px">
+    <div style="font-size:14px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#4B5864">Togo · архитектура продукта и системы</div>
+    <div style="font-family:ui-rounded,'SF Pro Rounded','Nunito',sans-serif;font-weight:900;font-size:48px;line-height:1.05;letter-spacing:-.02em">34 экрана, 7 шаблонов, 5 слоёв</div>
+    <div style="font-size:17px;line-height:1.5;color:#4B5864;text-wrap:pretty">v2 упростила экраны, потеряв продукт: лечение, роли, поездки, вердикт. Здесь обратный ход. Сначала раскладываем, из каких кусков состоит Togo, потом каждый кусок получает свой шаблон и свои правила плотности. Простота на экране появляется потому, что сложность разнесена по слоям, а не потому, что её убрали.</div>
+  </div>
+
+  <section data-screen-label="01 Оси" style="display:flex;flex-direction:column;gap:20px">
+    <div style="display:flex;align-items:baseline;gap:14px"><div style="font-family:ui-rounded,'SF Pro Rounded','Nunito',sans-serif;font-weight:900;font-size:28px">01 · Четыре оси</div><div style="font-size:15px;color:#4B5864">любой экран — точка на этих осях</div></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px">
+      <sc-for list="{{ axes }}" as="a" hint-placeholder-count="4">
+        <div style="background:#FFFFFF;border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;flex-direction:column;gap:2px"><div style="font-size:20px;font-weight:700">{{ a.name }}</div><div style="font-size:15px;color:#4B5864">{{ a.q }}</div></div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            <sc-for list="{{ a.values }}" as="v" hint-placeholder-count="4"><div style="height:32px;padding:0 12px;border-radius:999px;background:#EDF1F4;display:flex;align-items:center;font-size:15px;font-weight:600">{{ v }}</div></sc-for>
+          </div>
+          <div style="font-size:15px;line-height:1.45;text-wrap:pretty">{{ a.rule }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section data-screen-label="02 Дерево" style="display:flex;flex-direction:column;gap:20px">
+    <div style="display:flex;align-items:baseline;gap:14px"><div style="font-family:ui-rounded,'SF Pro Rounded','Nunito',sans-serif;font-weight:900;font-size:28px">02 · Дерево</div><div style="font-size:15px;color:#4B5864">вкладка → экран → форма, не глубже</div></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;align-items:start">
+      <sc-for list="{{ tree }}" as="t" hint-placeholder-count="6">
+        <div style="background:#FFFFFF;border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:12px;border:{{ t.border }}">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+            <div style="font-size:20px;font-weight:700">{{ t.tab }}</div>
+            <div style="font-size:14px;font-weight:600;color:{{ t.tagFg }};background:{{ t.tagBg }};border-radius:999px;padding:2px 10px">{{ t.tag }}</div>
+          </div>
+          <div style="font-size:14px;color:#4B5864;line-height:1.4">{{ t.job }}</div>
+          <div style="display:flex;flex-direction:column">
+            <sc-for list="{{ t.items }}" as="i" hint-placeholder-count="5">
+              <div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;min-height:34px;border-top:1px solid #E3E9EE">
+                <div style="font-size:15px">{{ i.n }}</div>
+                <div style="font-family:ui-monospace,Menlo,monospace;font-size:14px;font-weight:600;color:#1D4E89">{{ i.tpl }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section data-screen-label="03 Шаблоны" style="display:flex;flex-direction:column;gap:20px">
+    <div style="display:flex;align-items:baseline;gap:14px"><div style="font-family:ui-rounded,'SF Pro Rounded','Nunito',sans-serif;font-weight:900;font-size:28px">03 · Семь шаблонов</div><div style="font-size:15px;color:#4B5864">у каждого свой потолок плотности</div></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px;align-items:start">
+      <sc-for list="{{ templates }}" as="t" hint-placeholder-count="7">
+        <div style="background:#FFFFFF;border-radius:22px;padding:18px;display:grid;grid-template-columns:96px minmax(0,1fr);gap:16px">
+          <div style="height:170px;border-radius:16px;background:{{ t.dim }};border:1px solid #D3DCE3;display:flex;flex-direction:column;justify-content:{{ t.justify }};padding:6px;box-sizing:border-box;gap:4px;overflow:hidden">
+            <sc-for list="{{ t.wire }}" as="w" hint-placeholder-count="4"><div style="height:{{ w.h }};border-radius:6px;background:{{ w.c }};flex:none"></div></sc-for>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;min-width:0">
+            <div style="display:flex;gap:8px;align-items:baseline"><div style="font-family:ui-monospace,Menlo,monospace;font-size:15px;font-weight:700;color:#1D4E89">{{ t.id }}</div><div style="font-size:17px;font-weight:700">{{ t.name }}</div></div>
+            <div style="font-size:14px;color:#4B5864;line-height:1.4">{{ t.for }}</div>
+            <div style="display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 10px;font-size:14px;line-height:1.35">
+              <div style="color:#4B5864">главное</div><div>{{ t.primary }}</div>
+              <div style="color:#4B5864">потолок</div><div>{{ t.limit }}</div>
+              <div style="color:#4B5864">выход</div><div>{{ t.exit }}</div>
+            </div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section data-screen-label="04 Слои" style="display:flex;flex-direction:column;gap:20px">
+    <div style="display:flex;align-items:baseline;gap:14px"><div style="font-family:ui-rounded,'SF Pro Rounded','Nunito',sans-serif;font-weight:900;font-size:28px">04 · Пять слоёв системы</div><div style="font-size:15px;color:#4B5864">слой знает только о слое под собой</div></div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <sc-for list="{{ layers }}" as="l" hint-placeholder-count="5">
+        <div style="background:#FFFFFF;border-radius:22px;padding:18px 20px;display:grid;grid-template-columns:64px 220px minmax(0,1fr);gap:20px;align-items:start">
+          <div style="font-family:ui-rounded,'SF Pro Rounded','Nunito',sans-serif;font-weight:900;font-size:30px;color:#1D4E89">{{ l.id }}</div>
+          <div style="display:flex;flex-direction:column;gap:4px"><div style="font-size:17px;font-weight:700">{{ l.name }}</div><div style="font-size:14px;color:#4B5864;line-height:1.4">{{ l.rule }}</div></div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            <sc-for list="{{ l.items }}" as="i" hint-placeholder-count="8">
+              <div style="min-height:32px;padding:4px 12px;border-radius:10px;background:{{ i.bg }};border:{{ i.border }};display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;box-sizing:border-box">{{ i.n }}<span style="font-weight:400;color:#4B5864;unicode-bidi:isolate;white-space:nowrap">{{ i.note }}</span></div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:flex;gap:18px;font-size:14px;color:#4B5864;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:6px"><div style="width:14px;height:14px;border-radius:4px;background:#EDF1F4"></div>есть в коде</div>
+      <div style="display:flex;align-items:center;gap:6px"><div style="width:14px;height:14px;border-radius:4px;border:1.5px dashed #1D4E89;box-sizing:border-box"></div>нужно завести</div>
+      <div style="display:flex;align-items:center;gap:6px"><div style="width:14px;height:14px;border-radius:4px;background:#F4E2A1"></div>спорно: свести или переименовать</div>
+    </div>
+  </section>
+
+  <section data-screen-label="05 Плотность" style="display:flex;flex-direction:column;gap:20px">
+    <div style="display:flex;align-items:baseline;gap:14px"><div style="font-family:ui-rounded,'SF Pro Rounded','Nunito',sans-serif;font-weight:900;font-size:28px">05 · Три уровня раскрытия</div><div style="font-size:15px;color:#4B5864">ответ на «слишком много текста и кнопок»</div></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;align-items:start">
+      <sc-for list="{{ levels }}" as="l" hint-placeholder-count="3">
+        <div style="background:#FFFFFF;border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;align-items:baseline;gap:10px"><div style="font-family:ui-rounded,'SF Pro Rounded','Nunito',sans-serif;font-weight:900;font-size:26px;color:#1D4E89">{{ l.id }}</div><div style="font-size:17px;font-weight:700">{{ l.name }}</div></div>
+          <div style="font-size:15px;color:#4B5864;line-height:1.45">{{ l.when }}</div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <sc-for list="{{ l.what }}" as="w" hint-placeholder-count="4"><div style="font-size:15px;line-height:1.4;display:flex;gap:8px"><span style="color:#1D4E89">·</span>{{ w }}</div></sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section data-screen-label="06 Сигналы" style="display:flex;flex-direction:column;gap:20px">
+    <div style="display:flex;align-items:baseline;gap:14px"><div style="font-family:ui-rounded,'SF Pro Rounded','Nunito',sans-serif;font-weight:900;font-size:28px">06 · Грамматика сигналов</div><div style="font-size:15px;color:#4B5864">цвет + значок + слово, никогда цвет один</div></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;align-items:start">
+      <sc-for list="{{ tones }}" as="t" hint-placeholder-count="4">
+        <div style="background:#FFFFFF;border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:10px">
+          <div style="background:{{ t.bg }};border-radius:14px;padding:12px;display:flex;gap:10px;align-items:center"><div style="width:22px;height:22px;border-radius:{{ t.shape }};background:{{ t.c }};color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex:none">{{ t.glyph }}</div><div style="font-size:15px;font-weight:600">{{ t.sample }}</div></div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font-size:17px;font-weight:700">{{ t.name }}</div><div style="font-family:ui-monospace,Menlo,monospace;font-size:14px;color:#4B5864">{{ t.token }}</div></div>
+          <div style="font-size:14px;line-height:1.4">{{ t.when }}</div>
+          <div style="font-size:14px;line-height:1.4;color:#4B5864">{{ t.culture }}</div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="background:#FFFFFF;border-radius:22px;padding:18px 20px;display:flex;flex-direction:column;gap:6px;max-width:980px">
+      <div style="font-size:17px;font-weight:700">Прерывают только три вещи</div>
+      <div style="font-size:15px;line-height:1.45;color:#4B5864">Доза по часам, окно натощак, лестница эскалации. Всё остальное ждёт утреннего брифа. Значит, у тона alarm три источника, и новый появляется только решением, а не правкой цвета.</div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:16px;font-size:14px">
+      <sc-for list="{{ sources }}" as="s" hint-placeholder-count="4"><a href="{{ s.url }}" target="_blank">{{ s.n }}</a></sc-for>
+    </div>
+  </section>
+
+  <section data-screen-label="07 Адаптеры" style="display:flex;flex-direction:column;gap:20px">
+    <div style="display:flex;align-items:baseline;gap:14px"><div style="font-family:ui-rounded,'SF Pro Rounded','Nunito',sans-serif;font-weight:900;font-size:28px">07 · Адаптеры</div><div style="font-size:15px;color:#4B5864">вид и язык меняют слова и направление, но не компоненты</div></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(440px,1fr));gap:14px;align-items:start">
+      <div style="background:#FFFFFF;border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:10px">
+        <div style="font-size:20px;font-weight:700">Вид питомца</div>
+        <div style="display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) minmax(0,1fr);gap:0 12px;font-size:15px">
+          <div style="font-size:14px;color:#4B5864;padding-bottom:6px">слот</div><div style="font-size:14px;color:#4B5864;padding-bottom:6px">собака</div><div style="font-size:14px;color:#4B5864;padding-bottom:6px">кошка</div>
+          <sc-for list="{{ species }}" as="s" hint-placeholder-count="7">
+            <div style="display:contents">
+              <div style="font-family:ui-monospace,Menlo,monospace;font-size:14px;color:#1D4E89;padding:9px 0;border-top:1px solid #E3E9EE">{{ s.slot }}</div>
+              <div style="padding:8px 0;border-top:1px solid #E3E9EE">{{ s.dog }}</div>
+              <div style="padding:8px 0;border-top:1px solid #E3E9EE;color:{{ s.catFg }}">{{ s.cat }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="font-size:14px;color:#4B5864;line-height:1.4">Кошка — это не перевод слов, а новый вердикт и новый режим. Решение по объёму, а не по дизайну.</div>
+      </div>
+      <div style="background:#FFFFFF;border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:10px">
+        <div style="font-size:20px;font-weight:700">Письменность и регион</div>
+        <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) auto;gap:0 12px;font-size:15px">
+          <div style="font-size:14px;color:#4B5864;padding-bottom:6px">язык</div><div style="font-size:14px;color:#4B5864;padding-bottom:6px">шрифт iOS</div><div style="font-size:14px;color:#4B5864;padding-bottom:6px">образец</div>
+          <sc-for list="{{ scripts }}" as="s" hint-placeholder-count="6">
+            <div style="display:contents">
+              <div style="padding:9px 0;border-top:1px solid #E3E9EE">{{ s.lang }}</div>
+              <div style="padding:9px 0;border-top:1px solid #E3E9EE;color:#4B5864;font-size:14px">{{ s.font }}</div>
+              <div dir="{{ s.dir }}" style="padding:6px 0;border-top:1px solid #E3E9EE;font-size:20px;font-weight:800;font-variant-numeric:tabular-nums;text-align:end">{{ s.sample }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;padding-top:4px">
+          <sc-for list="{{ rtl }}" as="r" hint-placeholder-count="4"><div style="font-size:14px;line-height:1.4;display:flex;gap:8px"><span style="color:#1D4E89;font-weight:700">{{ r.k }}</span><span style="color:#4B5864">{{ r.v }}</span></div></sc-for>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-screen-label="08 Решения" style="display:flex;flex-direction:column;gap:20px">
+    <div style="font-family:ui-rounded,'SF Pro Rounded','Nunito',sans-serif;font-weight:900;font-size:28px">08 · Открытые решения</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;align-items:start">
+      <sc-for list="{{ open }}" as="o" hint-placeholder-count="5">
+        <div style="background:#FFFFFF;border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:8px">
+          <div style="font-size:17px;font-weight:700;line-height:1.3">{{ o.q }}</div>
+          <div style="font-size:14px;line-height:1.45;color:#4B5864">{{ o.why }}</div>
+          <div style="font-size:14px;line-height:1.45"><b>Предлагаю:</b> {{ o.rec }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const axes = [
+      { name:'Режим дня', q:'что сейчас происходит', values:['покой','прогулка','занятие','собака со мной'], rule:'Режим переживает уход с экрана и занимает главный экран целиком. В покое на экране одна цифра и одна кнопка.' },
+      { name:'Слой здоровья', q:'есть ли лечение', values:['здоров','курс идёт','пропуск дозы','эскалация'], rule:'Вкладка «Здоровье» появляется с курсом и уходит с ним. У здоровой собаки медицины на главном нет.' },
+      { name:'Роль', q:'кто держит телефон', values:['владелец','со-владелец','ухаживающий','помощник','ситтер','наблюдатель'], rule:'Роль не меняет вёрстку, она прячет действия. Кнопку, на которую нет права, не показываем серой, а убираем.' },
+      { name:'Контекст', q:'вид, язык, страна', values:['собака · кошка','LTR · RTL','0–9 · \u2068٠–٩\u2069','ru · en · fr · uk · ar · ja'], rule:'Адаптеры меняют слова, направление и цифры. Компоненты и токены одни на всех.' },
+    ];
+    const T = (tab, tag, job, items, cond) => ({ tab, tag, job, items: items.map(([n,tpl]) => ({n,tpl})), border: cond ? '1.5px dashed #9AA8B4' : 'none', tagBg: cond ? '#F4E2A1' : '#1D4E891F', tagFg: cond ? '#0E1720' : '#1D4E89' });
+    const tree = [
+      T('Сегодня','каждый день','Записать за два тапа и увидеть день.',[['лента дня','T1'],['Просится → вердикт','T4'],['Гулять','T6'],['Стул · Еда · Вода · Инцидент','T3'],['Ещё: лакомство, занятие, заметка','T3'],['правка строки ленты','T5']]),
+      T('Собака','раз в неделю','Всё про собаку, два тапа до любого экрана.',[['Если что-то случилось','T2'],['профиль','T5'],['Питание и режим','T2'],['Уход · Вес','T2'],['Занятия и шаги','T6'],['Перенос навыка · Pro','T2'],['Документы · Поездки · Цикл','T2']]),
+      T('История','когда спросят','Прочитать, не править.',[['фильтр: всё · стул · симптомы · срывы · вес','T1'],['день','T2'],['график · эпизоды','T2']]),
+      T('Здоровье','только при лечении','Схема и контроль, пока идёт курс.',[['схема лечения','T2'],['препарат','T5'],['пропущенная доза','T4'],['протокол · вес · прививки','T2'],['отчёт врачу','T2'],['курс завершён','T4']], true),
+      T('Семья','при смене людей','Кто дежурит и кто что может.',[['дежурство → передать','T4'],['участник: роль и 8 прав','T5'],['пригласить','T5'],['вид ситтера','T2']]),
+      T('Настройки','раз и забыть','С любой вкладки, шестерёнкой.',[['Togo Pro','T7'],['уведомления · язык','T2'],['перенос данных','T7'],['политика · поддержка','T2']]),
+    ];
+    const W = (...a) => a.map(([h,c]) => ({h,c}));
+    const ink='#0E1720', blue='#1D4E89', line='#D3DCE3', card='#FFFFFF', soft='#E3E9EE';
+    const templates = [
+      { id:'T1', name:'Вкладка', for:'Сегодня, История: состояние плюс лента.', primary:'одна цифра-герой и одна кнопка', limit:'герой · лента · док; без абзацев', exit:'вкладки', dim:'#EDF1F4', justify:'flex-start', wire:W(['10px',soft],['34px',ink],['60px',card],['22px',blue]) },
+      { id:'T2', name:'Раздел', for:'Питание, Уход, День истории, Отчёт.', primary:'итог сверху, ряды ниже', limit:'один итог, до трёх групп рядов', exit:'назад с именем', dim:'#EDF1F4', justify:'flex-start', wire:W(['10px',soft],['16px',ink],['40px',card],['50px',card]) },
+      { id:'T3', name:'Шторка-запись', for:'Стул, Еда, Инцидент, Ещё.', primary:'первый тап уже записал', limit:'одна строка выбора, без текста', exit:'свайп вниз, тост 5 с', dim:'#0E172040', justify:'flex-end', wire:W(['30px',card],['30px',card],['20px',blue]) },
+      { id:'T4', name:'Шторка-решение', for:'Вердикт, пропуск дозы, передать дежурство.', primary:'«Вывожу» всегда первая', limit:'заголовок · одна фраза · два факта · две кнопки', exit:'второе действие текстом', dim:'#0E172040', justify:'flex-end', wire:W(['18px',ink],['12px',soft],['20px',blue],['12px',soft]) },
+      { id:'T5', name:'Форма', for:'Профиль, препарат, участник, правка записи.', primary:'«Готово» в навбаре', limit:'поля с ярлыком и примером внутри', exit:'«Отмена», свайп спрашивает', dim:'#EDF1F4', justify:'flex-start', wire:W(['10px',soft],['24px',card],['24px',card],['24px',card]) },
+      { id:'T6', name:'Режим', for:'Прогулка, Занятие, Собака со мной.', primary:'таймер и одна большая отметка', limit:'одна рука, мороз, перчатка: цели от 60 pt', exit:'«Закончить» → итог', dim:'#EDF1F4', justify:'space-between', wire:W(['40px',ink],['46px',blue],['20px',card]) },
+      { id:'T7', name:'Системный', for:'Пейволл, перенос, загрузка, пусто.', primary:'что ждём и что потеряешь', limit:'спиннер всегда со словами', exit:'«Закрыть»', dim:'#EDF1F4', justify:'center', wire:W(['30px',soft],['12px',ink],['20px',blue]) },
+    ];
+    const has = n => ({ n, note:'', bg:'#EDF1F4', border:'none' });
+    const need = (n,note='') => ({ n, note, bg:'#FFFFFF', border:'1.5px dashed #1D4E89' });
+    const moot = (n,note) => ({ n, note, bg:'#F4E2A1', border:'none' });
+    const layers = [
+      { id:'L0', name:'Токены', rule:'Primitive → Semantic → Component. Экран не берёт Primitive.', items:[has('color'),has('space'),has('radius'),has('size'),has('duration'),need('font.script','шрифт по письменности'),need('numerals','0–9 / \u2068٠–٩\u2069'),need('direction','LTR / RTL'),need('tone','одна ось на всё')] },
+      { id:'L1', name:'Атомы', rule:'Не знают про собаку и про домен.', items:[has('Button'),has('Chip'),has('Avatar'),has('CloseButton'),has('Divider'),has('Loading'),has('Stepper'),has('StepButton'),has('SheetHandle'),moot('Stopwatch','→ частный случай Stat')] },
+      { id:'L2', name:'Ряды и поверхности', rule:'Наследуют поверхность и плотность от родителя.', items:[has('Card'),has('Tile'),has('ListRow'),has('IconRow'),has('NavigationRow'),has('CheckRow'),has('SectionHeader'),has('Stat'),has('Banner'),has('Explainer'),has('Author'),moot('Explainer + Banner','пересекаются')] },
+      { id:'L3', name:'Паттерны', rule:'Собраны из L2, знают домен через адаптер.', items:[need('DayTimeline','лента-расписание'),need('ActionDock','кнопка + «ещё»'),need('VerdictSheet'),need('RecordSheet'),need('ModeHUD','прогулка, занятие'),need('UndoToast'),need('EmptyState'),need('DoseCard'),need('DutyCard'),need('PermissionMatrix','8 прав')] },
+      { id:'L4', name:'Шаблоны', rule:'Семь каркасов, каждый экран — ровно один.', items:[has('Screen'),has('Sheet'),need('T1 Вкладка'),need('T2 Раздел'),need('T3 Шторка-запись'),need('T4 Шторка-решение'),need('T5 Форма'),need('T6 Режим'),need('T7 Системный')] },
+    ];
+    const levels = [
+      { id:'0', name:'В покое', when:'Телефон достали на секунду. Экран отвечает на один вопрос.', what:['кличка и дежурный','сколько прошло — одной цифрой','лента дня, одна строка на событие','одна главная кнопка и «+»','сигнал, только если он есть'] },
+      { id:'1', name:'По тапу', when:'Человек сам спросил. Шторка или раскрытая строка.', what:['вердикт с двумя фактами','кто записал, во сколько, правка','остальные действия из «+»','план дня под лентой'] },
+      { id:'2', name:'В разделе', when:'Человек пришёл разбираться. Можно объяснять.', what:['пояснения вроде «норму называет врач»','графики и календарь','настройки режима','пустые состояния с рассказом'] },
+    ];
+    const tones = [
+      { name:'neutral', token:'tone.neutral', sample:'Брифинг на утро', glyph:'i', shape:'999px', c:'#4B5864', bg:'#E3E9EE', when:'Информация без срока.', culture:'Серый нейтрален во всех регионах.' },
+      { name:'done', token:'tone.done', sample:'Доза дана в 06:50', glyph:'✓', shape:'999px', c:'#2F6B52', bg:'#2F6B521F', when:'Сделал человек или система.', culture:'Зелёный на Ближнем Востоке — цвет ислама, в Китае несёт смысл измены только в выражении про шляпу. Галочка обязательна.' },
+      { name:'waiting', token:'tone.waiting', sample:'Не кормить до 19:40', glyph:'◷', shape:'999px', c:'#A87A00', bg:'#F4E2A1', when:'Только окно натощак.', culture:'Жёлтый на Ближнем Востоке связан с трауром. Значок часов и слово несут смысл без цвета.' },
+      { name:'alarm', token:'tone.alarm', sample:'Доза пропущена', glyph:'!', shape:'5px', c:'#B8322A', bg:'#F5D3CD', when:'Пропуск дозы, кровь, удаление.', culture:'В Китае красный — удача и рост акций, но в медицинском контексте читается как срочность. Острый угол значка и слово обязательны.' },
+    ];
+    const sources = [
+      { n:'Цвета и контекст: ColorArchive', url:'https://colorarchive.org/guides/cultural-color-meanings-guide/' },
+      { n:'Белый, красный в Азии: Uxcel', url:'https://uxcel.com/lessons/cultural-differences-in-color-perception-986' },
+      { n:'Зелёный и оранжевый: Eriksen', url:'https://eriksen.com/marketing/color_culture/' },
+      { n:'Зрение кошек: PetMD', url:'https://www.petmd.com/cat/general-health/cat-vision' },
+    ];
+    const species = [
+      { slot:'event.out', dog:'Выход', cat:'Лоток' },
+      { slot:'action.primary', dog:'Просится', cat:'Покормить' },
+      { slot:'mode.walk', dog:'Прогулка', cat:'нет' },
+      { slot:'verdict', dog:'5 исходов', cat:'нужен свой' },
+      { slot:'skill.transfer', dog:'Перенос навыка', cat:'нет' },
+      { slot:'health.*', dog:'как есть', cat:'как есть' },
+      { slot:'family.*', dog:'как есть', cat:'как есть' },
+    ].map(s => ({ ...s, catFg: s.cat === 'нет' || s.cat === 'нужен свой' ? '#B8322A' : '#0E1720' }));
+    const scripts = [
+      { lang:'русский, английский, французский, украинский', font:'SF Pro · SF Pro Rounded', sample:'1:29', dir:'ltr' },
+      { lang:'арабский', font:'SF Arabic · SF Arabic Rounded', sample:'١:٢٩', dir:'rtl' },
+      { lang:'японский', font:'Hiragino Sans · Hiragino Maru Gothic', sample:'1時間29分', dir:'ltr' },
+      { lang:'китайский упр.', font:'PingFang SC', sample:'1小时29分', dir:'ltr' },
+      { lang:'корейский', font:'Apple SD Gothic Neo', sample:'1시간 29분', dir:'ltr' },
+      { lang:'иврит', font:'SF Hebrew', sample:'1:29', dir:'rtl' },
+    ];
+    const rtl = [
+      { k:'Зеркалим', v:'ленту дня и полосу времени, шевроны, «назад», порядок кнопок в доке.' },
+      { k:'Не зеркалим', v:'сами цифры и часы, таймер, значок галочки, медиа-кнопки.' },
+      { k:'Цифры', v:'по региону: арабский регион может получать ٠–٩. Табличные цифры в обоих наборах.' },
+      { k:'Длина', v:'французский и немецкий длиннее на треть: кнопки не фиксируем по ширине, строки не обрезаем.' },
+    ];
+    const open = [
+      { q:'Rubik Mono One уходит?', why:'В нём нет арабского, CJK и восточно-арабских цифр. На арабском экране герой перейдёт на другой шрифт посреди строки.', rec:'SF Pro Rounded Heavy для героя и имени. Характер даёт вес и размер, а не отдельный шрифт; Dynamic Type работает бесплатно.' },
+      { q:'Кошки в этом релизе?', why:'Слова меняются легко, но вердикта «просится» и прогулки у кошки нет. Это новый L3-паттерн и новый шаблон главного.', rec:'Заложить слот species в адаптер сейчас, выпустить кошек отдельным релизом.' },
+      { q:'Светлая или тёмная база?', why:'Документация закрепила тёмную единственной. Ледяная светлая — новая работа на все 34 экрана и тесты контраста.', rec:'Решить до переноса в Figma. Если светлая — делать обе, тёмная уже оплачена тестами.' },
+      { q:'Stopwatch — компонент?', why:'В описи без имени в Figma.', rec:'Частный случай Stat с живым значением: Stat/live.' },
+      { q:'Лента: план показывать?', why:'План дня полезен ухаживающему и ситтеру, владельцу в покое шумит.', rec:'По роли: ситтер и помощник видят план на уровне 0, владелец — на уровне 1.' },
+    ];
+    return { axes, tree, templates, layers, levels, tones, sources, species, scripts, rtl, open };
+  }
+}
+</script>
+</body>
+</html>

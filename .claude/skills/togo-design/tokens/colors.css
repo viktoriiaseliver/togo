@@ -1,0 +1,78 @@
+/* ВНИМАНИЕ. Источник правды по цвету — DesignTokens/tokens.json, не этот файл.
+ *
+ * Тёмная тема отсюда принята в приложение 24.09.2026 (коммит «Палитра „Лёд“»).
+ * Роли переименованы честно: mint → arctic (интерактив), заведён spruce
+ * («сделано»), тинты статусов стали непрозрачными. Сверять цвет приложения
+ * надо с DesignTokens/build/tokens.css — он порождается из tokens.json
+ * командой `make tokens`.
+ *
+ * СВЕТЛАЯ ТЕМА НЕ ПРИНЯТА. Приложение сегодня тёмное. Значения ниже
+ * в :root — предложение на будущее, а не то, что рисуется. Прежде чем
+ * их принимать, нужен пересчёт контраста на композите и каждый экран.
+ *
+ * Если правишь цвет приложения — правь tokens.json. Правка здесь
+ * не доедет никуда и разойдётся молча.
+ */
+
+/* Togo · Лёд. Light is default; dark via [data-theme="dark"] on any ancestor. Same role names in both. */
+:root {
+  /* primitives */
+  --ice-50: #F7F9FB; --ice-100: #EDF1F4; --ice-200: #E3E9EE; --ice-300: #D3DCE3; --ice-400: #9AA8B4;
+  --ink-900: #0E1720; --ink-600: #4B5864; --ink-400: #8794A0;
+  --night-900: #0B1016; --night-800: #121921; --night-700: #151C24; --night-600: #222B36; --night-500: #2D3844;
+  --arctic-700: #163D6C; --arctic-600: #1D4E89; --arctic-300: #7FB2FF; --arctic-200: #A8CCFF;
+  --spruce-700: #2A5F49; --spruce-600: #2F6B52; --spruce-400: #5FBF93; --spruce-300: #7FD3A8;
+  --amber-700: #A87A00; --amber-400: #FFD60A; --amber-100: #F4E2A1; --amber-900: #3A3112;
+  --clay-700: #B8322A; --clay-400: #FF6B5E; --clay-100: #F5D3CD; --clay-900: #3E1B19;
+  /* semantic · light */
+  --tg-screen: #EDF1F4;
+  --tg-sheet: #F7F9FB;
+  --tg-card: #FFFFFF;
+  --tg-sunken: #E3E9EE;
+  --tg-line: #D3DCE3;
+  --tg-ink: #0E1720;
+  --tg-ink-2: #4B5864;
+  --tg-faint: #8794A0;
+  --tg-handle: #9AA8B4;
+  --tg-action: #1D4E89;
+  --tg-action-pressed: #163D6C;
+  --tg-on-action: #FFFFFF;
+  --tg-action-tint: #1D4E891A;
+  --tg-done: #2F6B52;
+  --tg-done-text: #2A5F49;
+  --tg-done-tint: #2F6B521F;
+  --tg-waiting-bg: #F4E2A1;
+  --tg-waiting: #A87A00;
+  --tg-alarm-bg: #F5D3CD;
+  --tg-alarm: #B8322A;
+  --tg-glass: #FFFFFFC2;
+  --tg-glass-edge: #FFFFFFE6;
+  --tg-shadow: #0E17201A;
+  --tg-scrim: #0E172066;
+}
+[data-theme="dark"] {
+  --tg-screen: #0B1016;
+  --tg-sheet: #121921;
+  --tg-card: #151C24;
+  --tg-sunken: #222B36;
+  --tg-line: #2D3844;
+  --tg-ink: #F2F5F8;
+  --tg-ink-2: #9AA7B4;
+  --tg-faint: #6F7C89;
+  --tg-handle: #56626E;
+  --tg-action: #7FB2FF;
+  --tg-action-pressed: #A8CCFF;
+  --tg-on-action: #06142A;
+  --tg-action-tint: #7FB2FF26;
+  --tg-done: #5FBF93;
+  --tg-done-text: #7FD3A8;
+  --tg-done-tint: #5FBF9326;
+  --tg-waiting-bg: #3A3112;
+  --tg-waiting: #FFD60A;
+  --tg-alarm-bg: #3E1B19;
+  --tg-alarm: #FF6B5E;
+  --tg-glass: #1B2430C7;
+  --tg-glass-edge: #FFFFFF1A;
+  --tg-shadow: #00000066;
+  --tg-scrim: #000000A6;
+}

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="display:flex;flex-direction:column;width:100%">
+  <sc-for list="{{ rows }}" as="r" hint-placeholder-count="5">
+    <div style="display:flex;flex-direction:column">
+      <sc-if value="{{ r.isNow }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;align-items:center;gap:10px;height:32px">
+          <div style="width:48px;font-size:15px;font-weight:700;color:#1D4E89;font-variant-numeric:tabular-nums;flex:none">{{ r.t }}</div>
+          <div style="width:8px;height:8px;border-radius:999px;background:#1D4E89;flex:none"></div>
+          <div style="flex:1;height:2px;border-radius:2px;background:#1D4E89"></div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ r.isRow }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;align-items:center;gap:10px;min-height:40px">
+          <div style="width:48px;font-size:15px;font-weight:600;color:{{ r.tc }};font-variant-numeric:tabular-nums;flex:none">{{ r.t }}</div>
+          <span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;font-weight:normal;direction:ltr;width:20px;flex:none;transform:{{ r.flip }};color:{{ r.icc }};font-variation-settings:'FILL' {{ r.fill }},'wght' 400,'opsz' 20">{{ r.ic }}</span>
+          <div style="font-size:17px;font-weight:{{ r.lw }};color:{{ r.lc }};min-width:0">{{ r.label }}</div>
+          <sc-if value="{{ r.pill }}"><div style="font-size:14px;font-weight:600;color:#0E1720;background:{{ r.pillBg }};border-radius:999px;padding:2px 10px;white-space:nowrap">{{ r.pill }}</div></sc-if>
+        </div>
+      </sc-if>
+    </div>
+  </sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:350,&quot;height&quot;:240},&quot;rows&quot;:{&quot;editor&quot;:null,&quot;default&quot;:[{&quot;t&quot;:&quot;07:02&quot;,&quot;label&quot;:&quot;Выход&quot;,&quot;ic&quot;:&quot;directions_walk&quot;},{&quot;t&quot;:&quot;09:44&quot;,&quot;label&quot;:&quot;сейчас&quot;,&quot;k&quot;:&quot;now&quot;},{&quot;t&quot;:&quot;19:00&quot;,&quot;label&quot;:&quot;Доза&quot;,&quot;k&quot;:&quot;plan&quot;,&quot;ic&quot;:&quot;medication&quot;}],&quot;tsType&quot;:&quot;{t:string,label:string,ic?:string,k?:'done'|'plan'|'now'|'alarm',pill?:string,pillTone?:'waiting'|'alarm'}[]&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const rows = (this.props.rows || []).map(r => {
+      const plan = r.k === 'plan', now = r.k === 'now', alarm = r.k === 'alarm';
+      return {
+        isNow: now, isRow: !now, t: r.t, label: r.label, ic: r.ic || 'circle', pill: r.pill || '',
+        pillBg: r.pillTone === 'alarm' ? '#F5D3CD' : '#F4E2A1',
+        tc: plan ? '#8794A0' : '#0E1720', lc: plan ? '#4B5864' : '#0E1720', lw: plan ? 400 : 600,
+        flip: this.props.rtl && ['directions_walk','hiking','chevron_right','arrow_back_ios_new'].includes(r.ic) ? 'scaleX(-1)' : 'none',
+        icc: alarm ? '#B8322A' : plan ? '#9AA8B4' : '#2F6B52', fill: plan ? 0 : 1,
+      };
+    });
+    return { rows };
+  }
+}
+</script>
+</body>
+</html>

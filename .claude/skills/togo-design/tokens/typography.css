@@ -1,0 +1,16 @@
+:root {
+  --tg-font-display: ui-rounded, "SF Pro Rounded", "Nunito", "Hiragino Maru Gothic ProN", sans-serif;
+  --tg-font-display-arabic: ui-rounded, "SF Arabic Rounded", "Noto Sans Arabic", sans-serif;
+  --tg-font-text: -apple-system, "SF Pro Text", system-ui, "Noto Sans Arabic", sans-serif;
+  --tg-font-icon: "Material Symbols Rounded";
+  --tg-weight-display: 800;
+  --tg-size-hero: 76px;   /* главная цифра на «Сегодня» */
+  --tg-size-hero-mode: 96px; /* таймер прогулки */
+  --tg-size-screen: 34px; /* заголовок экрана */
+  --tg-size-dog: 24px;    /* кличка в шапке */
+  --tg-size-section: 20px;
+  --tg-size-body: 17px;
+  --tg-size-meta: 15px;
+  --tg-size-caption: 14px; /* минимум, ниже не бывает */
+  --tg-tracking-hero: -0.04em;
+}

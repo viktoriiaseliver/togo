@@ -1,0 +1,11 @@
+:root {
+  --tg-space-2: 2px; --tg-space-4: 4px; --tg-space-6: 6px; --tg-space-8: 8px; --tg-space-10: 10px; --tg-space-12: 12px;
+  --tg-space-16: 16px; --tg-space-20: 20px; --tg-space-24: 24px; --tg-space-32: 32px;
+  --tg-screen-padding: 20px;
+  --tg-radius-small: 10px; --tg-radius-tile: 18px; --tg-radius-card: 20px; --tg-radius-sheet: 40px; --tg-radius-device: 48px; --tg-radius-pill: 999px;
+  --tg-size-tap: 44px; --tg-size-control: 60px; --tg-size-mode-target: 104px;
+  --tg-blur-glass: blur(24px) saturate(1.6);
+  --tg-shadow-float: 0 6px 24px var(--tg-shadow);
+  --tg-shadow-sheet: 0 -8px 40px var(--tg-shadow);
+  --tg-duration-instant: 120ms; --tg-duration-quick: 180ms; --tg-duration-settle: 280ms;
+}
