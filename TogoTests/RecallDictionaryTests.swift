@@ -246,7 +246,7 @@ struct RecallDictionaryTests {
     func основыНеВКаталоге() throws {
         let каталог = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent().deletingLastPathComponent()
-            .appendingPathComponent("Togo/Resources/Localizable.xcstrings")
+            .appendingPathComponent("TogoShared/Resources/Localizable.xcstrings")
         let корень = try JSONSerialization.jsonObject(with: Data(contentsOf: каталог))
             as? [String: Any]
         let ключи = Set((корень?["strings"] as? [String: Any] ?? [:]).keys)

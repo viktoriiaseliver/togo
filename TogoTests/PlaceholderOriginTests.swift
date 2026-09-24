@@ -98,7 +98,7 @@ struct PlaceholderOriginTests {
     private func каталог() throws -> [String: [String: String]] {
         let url = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent().deletingLastPathComponent()
-            .appendingPathComponent("Togo/Resources/Localizable.xcstrings")
+            .appendingPathComponent("TogoShared/Resources/Localizable.xcstrings")
         let корень = try JSONSerialization.jsonObject(with: Data(contentsOf: url))
             as? [String: Any]
         let строки = корень?["strings"] as? [String: Any] ?? [:]

@@ -8,7 +8,7 @@
 что видит человек, — и складывает в два вида:
 
   docs/TEXTS.md                     таблица для переводчика: где, что, контекст
-  Togo/Resources/Localizable.xcstrings   каталог строк для Xcode
+  TogoShared/Resources/Localizable.xcstrings   каталог строк для Xcode
 
 Каталог строк лежит в git обычным JSON: перевод приезжает пул-реквестом
 и виден в диффе построчно. Для переводчика, который не работает с git,
@@ -35,7 +35,13 @@ SKIP_DIRS = {"Generated"}
 SKIP_FILES = {"ComponentGallery.swift", "SeedData.swift"}
 
 MD_OUT = os.path.join(ROOT, "docs", "TEXTS.md")
-CATALOG_OUT = os.path.join(ROOT, "Togo", "Resources", "Localizable.xcstrings")
+# Каталог живёт в TogoShared, а не в Togo: в бандле виджета
+# (`TogoWidgetsExtension.appex`) не было ни одной `.lproj`, пока он лежал
+# у приложения. Цель виджета собирается из TogoWidgets + TogoShared,
+# `String(localized:)` в нём читает бандл расширения — француз и украинец
+# видели русский на экране блокировки. Приёмка — не счёт ключей, а
+# `ls build/Togo.xcarchive/…/Togo.app/PlugIns/*.appex` с `.lproj` внутри.
+CATALOG_OUT = os.path.join(ROOT, "TogoShared", "Resources", "Localizable.xcstrings")
 
 CYRILLIC = re.compile(r"[А-Яа-яЁё]")
 # Литералы вынимаются сканером, а не регуляркой: внутри интерполяции
@@ -276,7 +282,7 @@ def markdown(collected):
         "Собрано скриптом `Tools/extract_texts.py` из исходников. Файл",
         "перегенерируется командой `make texts` — править его руками не нужно:",
         "правки потеряются. Менять текст надо в коде, а перевод — в",
-        "`Togo/Resources/Localizable.xcstrings`.",
+        "`TogoShared/Resources/Localizable.xcstrings`.",
         "",
         f"Строк всего: **{total}**, различных ключей: **{unique.__len__()}**.",
         "",
@@ -285,7 +291,7 @@ def markdown(collected):
         "* **ID** — короткий устойчивый идентификатор строки. Ссылайтесь на него",
         "  в вопросах и правках; он не меняется, пока не меняется русский текст.",
         "* **Русский · он же ключ** — то же значение, что стоит ключом в",
-        "  `Togo/Resources/Localizable.xcstrings`. Так устроены строковые каталоги",
+        "  `TogoShared/Resources/Localizable.xcstrings`. Так устроены строковые каталоги",
         "  Xcode: ключ — это исходная фраза, отдельных `screen.button.title` нет.",
         "* **Где** — имя функции или свойства в коде и номер строки: по нему видно,",
         "  в каком месте экрана фраза появляется.",

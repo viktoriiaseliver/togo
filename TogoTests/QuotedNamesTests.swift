@@ -40,7 +40,7 @@ struct QuotedNamesTests {
     private func каталог() throws -> Каталог {
         let url = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent().deletingLastPathComponent()
-            .appendingPathComponent("Togo/Resources/Localizable.xcstrings")
+            .appendingPathComponent("TogoShared/Resources/Localizable.xcstrings")
         let данные = try Data(contentsOf: url)
         let корень = try JSONSerialization.jsonObject(with: данные) as? [String: Any]
         let строки = корень?["strings"] as? [String: Any] ?? [:]

@@ -55,7 +55,7 @@ struct LocalizationTests {
         let url = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent()
             .deletingLastPathComponent()
-            .appendingPathComponent("Togo/Resources/Localizable.xcstrings")
+            .appendingPathComponent("TogoShared/Resources/Localizable.xcstrings")
         let data = try Data(contentsOf: url)
         let каталог = try JSONSerialization.jsonObject(with: data) as? [String: Any]
         let строки = каталог?["strings"] as? [String: Any] ?? [:]

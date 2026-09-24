@@ -124,7 +124,7 @@ struct AddressedQuotesTests {
 
         let каталог = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent().deletingLastPathComponent()
-            .appendingPathComponent("Togo/Resources/Localizable.xcstrings")
+            .appendingPathComponent("TogoShared/Resources/Localizable.xcstrings")
         let корень = try JSONSerialization.jsonObject(with: Data(contentsOf: каталог))
             as? [String: Any]
         let строки = корень?["strings"] as? [String: Any] ?? [:]
@@ -173,7 +173,7 @@ struct AddressedQuotesTests {
     func чужиеСуществуютВТекстах() throws {
         let каталог = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent().deletingLastPathComponent()
-            .appendingPathComponent("Togo/Resources/Localizable.xcstrings")
+            .appendingPathComponent("TogoShared/Resources/Localizable.xcstrings")
         let корень = try JSONSerialization.jsonObject(with: Data(contentsOf: каталог))
             as? [String: Any]
         let ключи = (корень?["strings"] as? [String: Any] ?? [:]).keys.joined(separator: "\n")

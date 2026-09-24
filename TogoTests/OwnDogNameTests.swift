@@ -35,7 +35,7 @@ struct OwnDogNameTests {
     func кличкаНеУтеклаВТекст() throws {
         let каталог = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent().deletingLastPathComponent()
-            .appendingPathComponent("Togo/Resources/Localizable.xcstrings")
+            .appendingPathComponent("TogoShared/Resources/Localizable.xcstrings")
         let данные = try Data(contentsOf: каталог)
         let разобранное = try JSONSerialization.jsonObject(with: данные) as? [String: Any]
         let строки = разобранное?["strings"] as? [String: Any] ?? [:]

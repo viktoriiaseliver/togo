@@ -83,7 +83,7 @@ fastlane/metadata/     тексты для App Store Connect
 
 ## Локализация: да, через git
 
-Строки живут в `Togo/Resources/Localizable.xcstrings` — это обычный JSON
+Строки живут в `TogoShared/Resources/Localizable.xcstrings` — это обычный JSON
 в репозитории. Перевод приезжает пул-реквестом и виден в диффе построчно;
 никакой отдельной панели переводов заводить не нужно.
 

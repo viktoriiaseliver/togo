@@ -90,6 +90,11 @@ archive: ## Собрать архив для App Store Connect
 		-allowProvisioningUpdates \
 		BUILD_NUMBER="$$(git rev-list --count HEAD)" \
 		archive
+	@# Языки считаются в КАЖДОМ бандле архива, включая PlugIns/*.appex.
+	@# Паспорт архива 216 говорил «fr ru uk внутри бандла» — считали
+	@# в Togo.app, а в бандле виджета не было ни одной .lproj. Проверка
+	@# стоит здесь, а не в тестах: последнее звено — то, что уедет.
+	@bash Tools/check_bundle_languages.sh build/Togo.xcarchive
 	@echo "Собрано: $(SCHEME) $$(plutil -extract ApplicationProperties.CFBundleShortVersionString raw build/Togo.xcarchive/Info.plist) ($$(plutil -extract ApplicationProperties.CFBundleVersion raw build/Togo.xcarchive/Info.plist))"
 	@echo "Загружает в TestFlight Tools/upload_testflight.sh — он архивирует сам."
 

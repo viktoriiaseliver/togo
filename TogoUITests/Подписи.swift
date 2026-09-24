@@ -7,7 +7,7 @@ import Foundation
 /// прогон падал бы на первом же нажатии. Вторую копию подписей в тесте
 /// заводить нельзя — разойдётся с приложением молча, и кадр уедет в витрину
 /// с чужим словом. Поэтому перевод берётся из того же каталога, который
-/// собирается в бандл: `Togo/Resources/Localizable.xcstrings`.
+/// собирается в бандл: `TogoShared/Resources/Localizable.xcstrings`.
 ///
 /// Путь к каталогу считается от исходника теста (`#filePath`), а не от
 /// бандла раннера: класть копию каталога в `TogoUITests/` значило бы
@@ -29,7 +29,7 @@ nonisolated struct Подписи {
         let url = URL(fileURLWithPath: #filePath)     // TogoUITests/Подписи.swift
             .deletingLastPathComponent()              // TogoUITests
             .deletingLastPathComponent()              // корень репозитория
-            .appendingPathComponent("Togo/Resources/Localizable.xcstrings")
+            .appendingPathComponent("TogoShared/Resources/Localizable.xcstrings")
 
         guard выбранный != "ru",
               let data = try? Data(contentsOf: url),
