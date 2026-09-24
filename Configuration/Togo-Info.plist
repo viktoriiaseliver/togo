@@ -12,13 +12,6 @@
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
-	<!-- CFBundleLocalizations здесь не нужен и вредил: языки бандл уже
-	     называет сам папками ru.lproj и fr.lproj, а ключ добавлял «ru»
-	     вторым. Bundle.main.localizations отдавал ["fr", "ru", "ru"], и
-	     экран языка рисовал «Русский» дважды — это и есть «несколько
-	     русских языков» из СТАТУС.md, замерено 23.09 на симуляторе.
-	     Заодно ключ называл только русский, пока в бандле лежит
-	     французский перевод на 2029 строк из 2123. -->
 	<key>CFBundleName</key>
 	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundlePackageType</key>
