@@ -77,8 +77,15 @@ struct BigAction: View {
                 Image(systemName: systemImage)
                     .font(.system(size: 16, weight: .semibold))
                     .accessibilityHidden(true)
+                // Цвет подписи задаётся здесь, а не наследуется: стиль
+                // несёт собственный Ink.primary и красит сам Text, то
+                // есть побеждает foregroundStyle предка. Внешний цвет
+                // стоял верный и молча перекрывался — подпись оставалась
+                // светлой на светлой заливке.
                 Text(title)
-                    .textStyle(AppFont.cardTitle)
+                    .textStyle(AppFont.cardTitle,
+                               color: isPrimary ? Token.Component.Button.Primary.label
+                                                : Token.Component.Button.Secondary.label)
                     .lineLimit(1)
                     .minimumScaleFactor(0.75)
             }

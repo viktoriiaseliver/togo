@@ -78,4 +78,18 @@ extension Text {
     func textStyle(_ style: TextStyleToken) -> Text {
         self.font(style.font).foregroundColor(style.color)
     }
+
+    /// Тот же стиль, но цвет задаёт вызывающий.
+    ///
+    /// Нужно там, где цвет текста определяет **заливка под ним**, а не
+    /// роль текста. `TextStyleToken` несёт свой `color`, и он красит сам
+    /// `Text` — то есть побеждает `.foregroundStyle` предка. Из-за этого
+    /// подпись главной кнопки оставалась светлой на светлой заливке:
+    /// внешний цвет был выставлен верно и молча перекрывался.
+    ///
+    /// Цвет подставляется ВМЕСТО стилевого, а не поверх него — иначе
+    /// порядок модификаторов снова решал бы исход.
+    func textStyle(_ style: TextStyleToken, color: Color) -> Text {
+        self.font(style.font).foregroundColor(color)
+    }
 }
