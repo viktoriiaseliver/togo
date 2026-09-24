@@ -58,13 +58,18 @@ struct DesignTokenTests {
 
     @Test("Слабый серый означает «выключено», а не тихий текст")
     func faintIsOffState() {
-        // В тёмной системе это тридцать процентов белого — по спецификации
-        // цвет выключенного контрола. Читать им ничего нельзя, и ни один
-        // текстовый стиль его по умолчанию не берёт: подписи идут
-        // вторичным, шестьдесят процентов.
+        // Цвет выключенного контрола. Читать им ничего нельзя, и ни один
+        // текстовый стиль его по умолчанию не берёт: подписи идут вторичным.
+        //
+        // Порог привязан к стандарту, а не к прежнему числу. Было `< 3` —
+        // при мятной системе faint давал 2,5:1. «Лёд» сделал его читаемее
+        // (4,47:1 на экране, 4,02:1 на карточке), и проверка «меньше трёх»
+        // покраснела бы на здоровой палитре. Правило же не изменилось:
+        // ниже 4,5 — значит текстом не красится. Стеречь надо правило,
+        // а не число, которым его когда-то обосновали.
         let faint = contrast(over(Token.Ink.faint, on: Token.Surface.screen),
                              Token.Surface.screen)
-        #expect(faint < 3)
+        #expect(faint < 4.5)
 
         for style in [AppFont.micro, AppFont.caption, AppFont.caps,
                       AppFont.body, AppFont.cardTitle] {
@@ -172,24 +177,35 @@ struct BrandRoleTests {
         // Находка аудита: сто тридцать восемь значений цвета на файл,
         // из них три разные мяты. Системе хватает двадцати токенов,
         // остальное — дрейф: одна роль, записанная чуть по-разному.
-        let signals = [Token.Action.primary, Token.Status.waitingText,
-                       Token.Status.overdueText]
+        let signals = [Token.Action.primary, Token.Action.doneText,
+                       Token.Status.waitingText, Token.Status.overdueText]
         #expect(Set(signals.map(String.init(describing:))).count == signals.count)
     }
 
-    @Test("Радиусы лежат на шкале 12 · 16 · 20 · 26")
+    @Test("Радиусы лежат на шкале 12 · 16 · 18 · 20 · 30 · 40")
     func radiiOnScale() {
-        let scale: Set<CGFloat> = [12, 16, 20, 26]
+        // «Лёд»: плитка съехала с 20 на 18, шторка с 26 на 40,
+        // и добавилась капсула 30 — половина главной кнопки в 60 pt.
+        let scale: Set<CGFloat> = [12, 16, 18, 20, 30, 40]
         for radius in [Token.Radius.small, Token.Radius.control,
-                       Token.Radius.tile, Token.Radius.card] {
+                       Token.Radius.tile, Token.Radius.card,
+                       Token.Radius.sheet] {
             #expect(scale.contains(radius))
         }
     }
 
-    @Test("Сигналов ровно три, и они не совпадают")
+    @Test("Сигналов ровно четыре, и они не совпадают")
     func threeSignals() {
-        // Мята — действие и норма. Жёлтый — подожди. Красный — плохое.
-        // Больше цветов система не выдаёт.
+        // «Лёд» развёл то, что мята держала вместе. Синий — интерактив
+        // и «сейчас». Хвойный — «сделано». Янтарь — подожди. Красный —
+        // плохое. Больше цветов система не выдаёт.
+        //
+        // Прежде сигналов было три, потому что «нажми» и «готово» сидели
+        // на одном мятном значении: одно и то же слово отвечало на два
+        // разных вопроса.
+        #expect(Token.Action.primary != Token.Action.doneText)
+        #expect(Token.Action.doneText != Token.Status.waitingText)
+        #expect(Token.Action.doneText != Token.Status.overdueText)
         #expect(Token.Action.primary != Token.Status.waitingText)
         #expect(Token.Action.primary != Token.Status.overdueText)
         #expect(Token.Status.waitingText != Token.Status.overdueText)

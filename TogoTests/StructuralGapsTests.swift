@@ -480,25 +480,31 @@ struct PrototypeV2Tests {
                           Int(parts[0] * 255 + 0.5), Int(parts[1] * 255 + 0.5),
                           Int(parts[2] * 255 + 0.5))
         }
-        #expect(hex(Token.Surface.screen) == "#131211")
-        #expect(hex(Token.Surface.card) == "#1B1917")
-        #expect(hex(Token.Surface.sunken) == "#262320")
-        #expect(hex(Token.Surface.control) == "#33302B")
-        #expect(hex(Token.Action.primary) == "#2FE0BE")
+        // Хендоф «Лёд», принят 24.09.2026. Прежний мятный набор
+        // (#131211 / #2FE0BE / #FF453A) заменён целиком: синий —
+        // интерактив и «сейчас», хвойный — «сделано», они больше не одно.
+        #expect(hex(Token.Surface.screen) == "#0B1016")
+        #expect(hex(Token.Surface.card) == "#151C24")
+        #expect(hex(Token.Surface.sunken) == "#222B36")
+        #expect(hex(Token.Surface.control) == "#2D3844")
+        #expect(hex(Token.Action.primary) == "#7FB2FF")
+        #expect(hex(Token.Action.doneText) == "#7FD3A8")
         #expect(hex(Token.Status.waitingText) == "#FFD60A")
-        #expect(hex(Token.Status.overdueText) == "#FF453A")
-        // Текст на мяте хендоф уточнил: было #00201A, стало #052018.
-        #expect(hex(Token.Ink.onAccent) == "#052018")
+        #expect(hex(Token.Status.overdueText) == "#FF6B5E")
+        // Подпись на синей заливке тёмная: белая на #7FB2FF не проходит 4,5:1.
+        #expect(hex(Token.Ink.onAccent) == "#06142A")
     }
 
     @Test("Радиусы и отступы по хендофу")
     func metricsMatchHandoff() {
-        // «12 контролы · 16 вложенные карточки, кнопки · 20 карточки ·
-        // 26 шторки · 999 пилюли. Экран 18.»
+        // «Лёд»: 12 контролы · 16 вложенные карточки, кнопки ·
+        // 18 плитки · 20 карточки · 40 шторки. Экран 18.
+        // Шторка выросла с 26: в системе она «парит» с отступом 8 от краёв.
         #expect(Token.Radius.small == 12)
         #expect(Token.Radius.control == 16)
+        #expect(Token.Radius.tile == 18)
         #expect(Token.Radius.card == 20)
-        #expect(Token.Radius.sheet == 26)
+        #expect(Token.Radius.sheet == 40)
         #expect(Token.Spacing.screenPadding == 18)
     }
 
