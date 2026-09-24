@@ -123,7 +123,26 @@ GROUPS = [
     ("primitive.duration", "Duration", "duration", "Длительности анимаций."),
 ]
 
-WEIGHT_MAP = {400: ".regular", 500: ".medium", 600: ".semibold", 700: ".bold"}
+WEIGHT_MAP = {400: ".regular", 500: ".medium", 600: ".semibold", 700: ".bold",
+              800: ".heavy", 900: ".black"}
+
+
+def swift_weight(value):
+    """Вес CSS → Font.Weight.
+
+    Неизвестный вес называет себя и говорит, что с ним делать. Прежде
+    здесь стоял прямой доступ к словарю: 800 из «Льда» дал `KeyError: 800`
+    посреди трассировки, и по ней не видно ни файла-источника, ни того,
+    что чинить — карту или токен.
+    """
+    n = int(value)
+    if n not in WEIGHT_MAP:
+        raise SystemExit(
+            "tokens.json: вес %s не имеет пары в SwiftUI. Известны: %s.\n"
+            "Добавь пару в WEIGHT_MAP или поправь вес в токенах."
+            % (n, ", ".join(str(k) for k in sorted(WEIGHT_MAP)))
+        )
+    return WEIGHT_MAP[n]
 
 
 def emit_swift(raw, flat):
@@ -159,7 +178,7 @@ def emit_swift(raw, flat):
             elif kind == "duration":
                 lines.append("        static let %s: Double = %g" % (swift_name(leaf), px(resolved) / 1000.0))
             elif kind == "fontWeight":
-                lines.append("        static let %s: Font.Weight = %s" % (swift_name(leaf), WEIGHT_MAP[int(resolved)]))
+                lines.append("        static let %s: Font.Weight = %s" % (swift_name(leaf), swift_weight(resolved)))
         lines.append("    }")
 
     # Тени

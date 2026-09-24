@@ -1,0 +1,1121 @@
+{
+  "$generatedBy": "Tools/generate_tokens.py",
+  "modes": [
+    "Light"
+  ],
+  "collections": [
+    {
+      "name": "Primitive",
+      "variables": [
+        {
+          "name": "color/amber",
+          "type": "COLOR",
+          "description": "«Ждём»: окно натощак, пауза. 9,14:1 на своей плашке",
+          "value": {
+            "r": 1.0,
+            "g": 0.8392156862745098,
+            "b": 0.0392156862745098,
+            "a": 1
+          }
+        },
+        {
+          "name": "color/amberBg",
+          "type": "COLOR",
+          "description": "«Ждём» — плашка. Непрозрачная",
+          "value": {
+            "r": 0.22745098039215686,
+            "g": 0.19215686274509805,
+            "b": 0.07058823529411765,
+            "a": 1
+          }
+        },
+        {
+          "name": "color/arctic",
+          "type": "COLOR",
+          "description": "Интерактив и «сейчас» — и только они. 8,83:1 на экране, 7,94:1 на карточке",
+          "value": {
+            "r": 0.4980392156862745,
+            "g": 0.6980392156862745,
+            "b": 1.0,
+            "a": 1
+          }
+        },
+        {
+          "name": "color/arcticInk",
+          "type": "COLOR",
+          "description": "Текст на синей заливке, 8,51:1. Белый на этом синем не проходит 4,5:1 — потому подпись тёмная",
+          "value": {
+            "r": 0.023529411764705882,
+            "g": 0.0784313725490196,
+            "b": 0.16470588235294117,
+            "a": 1
+          }
+        },
+        {
+          "name": "color/arcticPressed",
+          "type": "COLOR",
+          "description": "Нажатый интерактив: действие светлеет, без сжатия",
+          "value": {
+            "r": 0.6588235294117647,
+            "g": 0.8,
+            "b": 1.0,
+            "a": 1
+          }
+        },
+        {
+          "name": "color/arcticTint",
+          "type": "COLOR",
+          "description": "Интерактив — плашка. Над карточкой даёт #253245",
+          "value": {
+            "r": 0.4980392156862745,
+            "g": 0.6980392156862745,
+            "b": 1.0,
+            "a": 0.14901960784313725
+          }
+        },
+        {
+          "name": "color/clay",
+          "type": "COLOR",
+          "description": "Тревога: инцидент, срыв, просрочка. 5,46:1 на своей плашке",
+          "value": {
+            "r": 1.0,
+            "g": 0.4196078431372549,
+            "b": 0.3686274509803922,
+            "a": 1
+          }
+        },
+        {
+          "name": "color/clayBg",
+          "type": "COLOR",
+          "description": "Тревога — плашка. Непрозрачная",
+          "value": {
+            "r": 0.24313725490196078,
+            "g": 0.10588235294117647,
+            "b": 0.09803921568627451,
+            "a": 1
+          }
+        },
+        {
+          "name": "color/glass",
+          "type": "COLOR",
+          "description": "Стекло: таббар, круглые кнопки, пауза. Больше нигде",
+          "value": {
+            "r": 0.10588235294117647,
+            "g": 0.1411764705882353,
+            "b": 0.18823529411764706,
+            "a": 0.7803921568627451
+          }
+        },
+        {
+          "name": "color/glassEdge",
+          "type": "COLOR",
+          "description": "Внутренний край стекла, 1px",
+          "value": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0,
+            "a": 0.10196078431372549
+          }
+        },
+        {
+          "name": "color/hairline",
+          "type": "COLOR",
+          "description": "Линия только между строками списка",
+          "value": {
+            "r": 0.17647058823529413,
+            "g": 0.2196078431372549,
+            "b": 0.26666666666666666,
+            "a": 1
+          }
+        },
+        {
+          "name": "color/ink",
+          "type": "COLOR",
+          "description": "Основной текст. 17,45:1 на экране, 15,69:1 на карточке",
+          "value": {
+            "r": 0.9490196078431372,
+            "g": 0.9607843137254902,
+            "b": 0.9725490196078431,
+            "a": 1
+          }
+        },
+        {
+          "name": "color/inkFaint",
+          "type": "COLOR",
+          "description": "Только неактивное. 4,02:1 на карточке — ниже 4,5, поэтому текстом и значками НЕ красится ни в каком кегле. Разрешение «только с 14pt» было неверным и развело его по двадцати четырём файлам",
+          "value": {
+            "r": 0.43529411764705883,
+            "g": 0.48627450980392156,
+            "b": 0.5372549019607843,
+            "a": 1
+          }
+        },
+        {
+          "name": "color/inkMuted",
+          "type": "COLOR",
+          "description": "Вторичный текст. 7,0:1 на карточке. Непрозрачный намеренно: альфа съедает запас контраста",
+          "value": {
+            "r": 0.6039215686274509,
+            "g": 0.6549019607843137,
+            "b": 0.7058823529411765,
+            "a": 1
+          }
+        },
+        {
+          "name": "color/night1",
+          "type": "COLOR",
+          "description": "Фон экрана",
+          "value": {
+            "r": 0.043137254901960784,
+            "g": 0.06274509803921569,
+            "b": 0.08627450980392157,
+            "a": 1
+          }
+        },
+        {
+          "name": "color/night2",
+          "type": "COLOR",
+          "description": "Карточка",
+          "value": {
+            "r": 0.08235294117647059,
+            "g": 0.10980392156862745,
+            "b": 0.1411764705882353,
+            "a": 1
+          }
+        },
+        {
+          "name": "color/night3",
+          "type": "COLOR",
+          "description": "Приподнятая поверхность",
+          "value": {
+            "r": 0.13333333333333333,
+            "g": 0.16862745098039217,
+            "b": 0.21176470588235294,
+            "a": 1
+          }
+        },
+        {
+          "name": "color/night4",
+          "type": "COLOR",
+          "description": "Контрол",
+          "value": {
+            "r": 0.17647058823529413,
+            "g": 0.2196078431372549,
+            "b": 0.26666666666666666,
+            "a": 1
+          }
+        },
+        {
+          "name": "color/night5",
+          "type": "COLOR",
+          "description": "Нажатое и скелетон. Своего значения в «Льду» нет: продолжение ночной рампы тем же шагом, +11 +13 +14",
+          "value": {
+            "r": 0.2196078431372549,
+            "g": 0.27058823529411763,
+            "b": 0.3215686274509804,
+            "a": 1
+          }
+        },
+        {
+          "name": "color/scrim",
+          "type": "COLOR",
+          "description": "Затемнение под шторкой",
+          "value": {
+            "r": 0.0,
+            "g": 0.0,
+            "b": 0.0,
+            "a": 0.6509803921568628
+          }
+        },
+        {
+          "name": "color/spruce",
+          "type": "COLOR",
+          "description": "«Сделано»: заливка и галочка. 7,65:1 на карточке",
+          "value": {
+            "r": 0.37254901960784315,
+            "g": 0.7490196078431373,
+            "b": 0.5764705882352941,
+            "a": 1
+          }
+        },
+        {
+          "name": "color/spruceText",
+          "type": "COLOR",
+          "description": "«Сделано» словами. 9,63:1 на карточке",
+          "value": {
+            "r": 0.4980392156862745,
+            "g": 0.8274509803921568,
+            "b": 0.6588235294117647,
+            "a": 1
+          }
+        },
+        {
+          "name": "color/spruceTint",
+          "type": "COLOR",
+          "description": "«Сделано» — плашка. Над карточкой даёт #203435",
+          "value": {
+            "r": 0.37254901960784315,
+            "g": 0.7490196078431373,
+            "b": 0.5764705882352941,
+            "a": 0.14901960784313725
+          }
+        },
+        {
+          "name": "duration/instant",
+          "type": "FLOAT",
+          "description": "",
+          "value": 120.0
+        },
+        {
+          "name": "duration/quick",
+          "type": "FLOAT",
+          "description": "",
+          "value": 180.0
+        },
+        {
+          "name": "duration/settle",
+          "type": "FLOAT",
+          "description": "",
+          "value": 280.0
+        },
+        {
+          "name": "font/size/body",
+          "type": "FLOAT",
+          "description": "Строка списка",
+          "value": 17.0
+        },
+        {
+          "name": "font/size/caption",
+          "type": "FLOAT",
+          "description": "Капс: название секции, 600",
+          "value": 14.0
+        },
+        {
+          "name": "font/size/display",
+          "type": "FLOAT",
+          "description": "Крупная цифра карточки",
+          "value": 34.0
+        },
+        {
+          "name": "font/size/hero",
+          "type": "FLOAT",
+          "description": "Ответ на главный вопрос — один на экран",
+          "value": 56.0
+        },
+        {
+          "name": "font/size/meta",
+          "type": "FLOAT",
+          "description": "Мета: время, автор, подпись",
+          "value": 15.0
+        },
+        {
+          "name": "font/size/micro",
+          "type": "FLOAT",
+          "description": "Было 12. Ниже четырнадцати в системе не существует",
+          "value": 14.0
+        },
+        {
+          "name": "font/size/screen",
+          "type": "FLOAT",
+          "description": "Название экрана",
+          "value": 34.0
+        },
+        {
+          "name": "font/size/section",
+          "type": "FLOAT",
+          "description": "Заголовок карточки",
+          "value": 20.0
+        },
+        {
+          "name": "font/size/title",
+          "type": "FLOAT",
+          "description": "",
+          "value": 17.0
+        },
+        {
+          "name": "font/weight/bold",
+          "type": "FLOAT",
+          "description": "",
+          "value": 700.0
+        },
+        {
+          "name": "font/weight/heavy",
+          "type": "FLOAT",
+          "description": "Только SF Pro Rounded в главной цифре, кличке и заголовке экрана",
+          "value": 800.0
+        },
+        {
+          "name": "font/weight/medium",
+          "type": "FLOAT",
+          "description": "",
+          "value": 500.0
+        },
+        {
+          "name": "font/weight/regular",
+          "type": "FLOAT",
+          "description": "",
+          "value": 400.0
+        },
+        {
+          "name": "font/weight/semibold",
+          "type": "FLOAT",
+          "description": "",
+          "value": 600.0
+        },
+        {
+          "name": "radius/capsule",
+          "type": "FLOAT",
+          "description": "Половина капсулы 60 pt. Капсула — только у главного действия",
+          "value": 30.0
+        },
+        {
+          "name": "radius/card",
+          "type": "FLOAT",
+          "description": "",
+          "value": 20.0
+        },
+        {
+          "name": "radius/icon",
+          "type": "FLOAT",
+          "description": "",
+          "value": 12.0
+        },
+        {
+          "name": "radius/md",
+          "type": "FLOAT",
+          "description": "",
+          "value": 14.0
+        },
+        {
+          "name": "radius/none",
+          "type": "FLOAT",
+          "description": "",
+          "value": 0.0
+        },
+        {
+          "name": "radius/row",
+          "type": "FLOAT",
+          "description": "",
+          "value": 16.0
+        },
+        {
+          "name": "radius/sheet",
+          "type": "FLOAT",
+          "description": "",
+          "value": 40.0
+        },
+        {
+          "name": "radius/tile",
+          "type": "FLOAT",
+          "description": "",
+          "value": 18.0
+        },
+        {
+          "name": "size/avatarMd",
+          "type": "FLOAT",
+          "description": "",
+          "value": 40.0
+        },
+        {
+          "name": "size/avatarSm",
+          "type": "FLOAT",
+          "description": "",
+          "value": 26.0
+        },
+        {
+          "name": "size/capsule",
+          "type": "FLOAT",
+          "description": "Главное действие — капсула 60 pt. Только оно",
+          "value": 60.0
+        },
+        {
+          "name": "size/controlL",
+          "type": "FLOAT",
+          "description": "Плитка действия. Было общим с главной кнопкой: один номер держал две роли, и «капсула 60 pt» из «Льда» растила заодно плитки",
+          "value": 52.0
+        },
+        {
+          "name": "size/controlM",
+          "type": "FLOAT",
+          "description": "",
+          "value": 50.0
+        },
+        {
+          "name": "size/controlXL",
+          "type": "FLOAT",
+          "description": "",
+          "value": 54.0
+        },
+        {
+          "name": "size/hairline",
+          "type": "FLOAT",
+          "description": "",
+          "value": 1.0
+        },
+        {
+          "name": "size/handleH",
+          "type": "FLOAT",
+          "description": "",
+          "value": 4.0
+        },
+        {
+          "name": "size/handleW",
+          "type": "FLOAT",
+          "description": "",
+          "value": 36.0
+        },
+        {
+          "name": "size/iconLg",
+          "type": "FLOAT",
+          "description": "",
+          "value": 20.0
+        },
+        {
+          "name": "size/iconMd",
+          "type": "FLOAT",
+          "description": "",
+          "value": 16.0
+        },
+        {
+          "name": "size/iconSm",
+          "type": "FLOAT",
+          "description": "",
+          "value": 13.0
+        },
+        {
+          "name": "size/tapTarget",
+          "type": "FLOAT",
+          "description": "",
+          "value": 44.0
+        },
+        {
+          "name": "space/10",
+          "type": "FLOAT",
+          "description": "",
+          "value": 10.0
+        },
+        {
+          "name": "space/12",
+          "type": "FLOAT",
+          "description": "",
+          "value": 12.0
+        },
+        {
+          "name": "space/14",
+          "type": "FLOAT",
+          "description": "",
+          "value": 14.0
+        },
+        {
+          "name": "space/16",
+          "type": "FLOAT",
+          "description": "",
+          "value": 16.0
+        },
+        {
+          "name": "space/18",
+          "type": "FLOAT",
+          "description": "",
+          "value": 18.0
+        },
+        {
+          "name": "space/2",
+          "type": "FLOAT",
+          "description": "",
+          "value": 2.0
+        },
+        {
+          "name": "space/20",
+          "type": "FLOAT",
+          "description": "",
+          "value": 20.0
+        },
+        {
+          "name": "space/24",
+          "type": "FLOAT",
+          "description": "",
+          "value": 24.0
+        },
+        {
+          "name": "space/28",
+          "type": "FLOAT",
+          "description": "",
+          "value": 28.0
+        },
+        {
+          "name": "space/32",
+          "type": "FLOAT",
+          "description": "",
+          "value": 32.0
+        },
+        {
+          "name": "space/4",
+          "type": "FLOAT",
+          "description": "",
+          "value": 4.0
+        },
+        {
+          "name": "space/6",
+          "type": "FLOAT",
+          "description": "",
+          "value": 6.0
+        },
+        {
+          "name": "space/8",
+          "type": "FLOAT",
+          "description": "",
+          "value": 8.0
+        }
+      ]
+    },
+    {
+      "name": "Semantic",
+      "variables": [
+        {
+          "name": "action/done",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/spruceTint",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "action/doneQuiet",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/spruceTint",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "action/doneText",
+          "type": "COLOR",
+          "description": "«Сделано» СЛОВАМИ. Отдельный токен, потому что done — это тинт 15 %: как чернила он даёт 1,31:1 на карточке, вдвое хуже уже запрещённого faint. Та же пара, что waitingText и overdueText.",
+          "alias": "color/spruceText",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "action/primary",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/arctic",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "action/primaryPressed",
+          "type": "COLOR",
+          "description": "Нажатое главное действие",
+          "alias": "color/arcticPressed",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "action/primaryQuiet",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/arcticTint",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "action/secondary",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/night4",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "radius/card",
+          "type": "FLOAT",
+          "description": "",
+          "alias": "radius/card",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "radius/control",
+          "type": "FLOAT",
+          "description": "",
+          "alias": "radius/row",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "radius/sheet",
+          "type": "FLOAT",
+          "description": "",
+          "alias": "radius/sheet",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "radius/small",
+          "type": "FLOAT",
+          "description": "",
+          "alias": "radius/icon",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "radius/tile",
+          "type": "FLOAT",
+          "description": "",
+          "alias": "radius/tile",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "spacing/cardPadding",
+          "type": "FLOAT",
+          "description": "",
+          "alias": "space/16",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "spacing/screenPadding",
+          "type": "FLOAT",
+          "description": "",
+          "alias": "space/18",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "spacing/stack",
+          "type": "FLOAT",
+          "description": "",
+          "alias": "space/12",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "status/doneBg",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/spruceTint",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "status/doneText",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/ink",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "status/overdueBg",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/clayBg",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "status/overdueText",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/clay",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "status/waitingBg",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/amberBg",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "status/waitingText",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/amber",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "surface/card",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/night2",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "surface/control",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/night4",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "surface/glass",
+          "type": "COLOR",
+          "description": "Стекло таббара и круглых кнопок",
+          "alias": "color/glass",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "surface/glassEdge",
+          "type": "COLOR",
+          "description": "Внутренний край стекла",
+          "alias": "color/glassEdge",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "surface/hairline",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/hairline",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "surface/pressed",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/night5",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "surface/screen",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/night1",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "surface/scrim",
+          "type": "COLOR",
+          "description": "Затемнение под шторкой",
+          "alias": "color/scrim",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "surface/sunken",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/night3",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "text/faint",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/inkFaint",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "text/onAccent",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/arcticInk",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "text/primary",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/ink",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "text/secondary",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/inkMuted",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "text/silhouette",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/inkMuted",
+          "aliasCollection": "Primitive"
+        }
+      ]
+    },
+    {
+      "name": "Component",
+      "variables": [
+        {
+          "name": "actionTile/background",
+          "type": "COLOR",
+          "description": "",
+          "alias": "action/secondary",
+          "aliasCollection": "Semantic"
+        },
+        {
+          "name": "actionTile/minHeight",
+          "type": "FLOAT",
+          "description": "",
+          "alias": "size/controlL",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "actionTile/radius",
+          "type": "FLOAT",
+          "description": "",
+          "alias": "radius/tile",
+          "aliasCollection": "Semantic"
+        },
+        {
+          "name": "banner/padding",
+          "type": "FLOAT",
+          "description": "",
+          "alias": "space/14",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "banner/radius",
+          "type": "FLOAT",
+          "description": "",
+          "alias": "radius/card",
+          "aliasCollection": "Semantic"
+        },
+        {
+          "name": "banner/titleSize",
+          "type": "FLOAT",
+          "description": "28px в макете было мелко — плашку натощак можно было проскроллить.",
+          "alias": "font/size/section",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "button/destructive/background",
+          "type": "COLOR",
+          "description": "",
+          "alias": "status/overdueBg",
+          "aliasCollection": "Semantic"
+        },
+        {
+          "name": "button/destructive/height",
+          "type": "FLOAT",
+          "description": "",
+          "alias": "size/controlM",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "button/destructive/label",
+          "type": "COLOR",
+          "description": "",
+          "alias": "status/overdueText",
+          "aliasCollection": "Semantic"
+        },
+        {
+          "name": "button/destructive/radius",
+          "type": "FLOAT",
+          "description": "",
+          "alias": "radius/control",
+          "aliasCollection": "Semantic"
+        },
+        {
+          "name": "button/disabled/background",
+          "type": "COLOR",
+          "description": "",
+          "alias": "surface/control",
+          "aliasCollection": "Semantic"
+        },
+        {
+          "name": "button/disabled/label",
+          "type": "COLOR",
+          "description": "",
+          "alias": "text/faint",
+          "aliasCollection": "Semantic"
+        },
+        {
+          "name": "button/finish/background",
+          "type": "COLOR",
+          "description": "",
+          "alias": "action/primaryQuiet",
+          "aliasCollection": "Semantic"
+        },
+        {
+          "name": "button/finish/height",
+          "type": "FLOAT",
+          "description": "",
+          "alias": "size/controlM",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "button/finish/label",
+          "type": "COLOR",
+          "description": "",
+          "alias": "status/doneText",
+          "aliasCollection": "Semantic"
+        },
+        {
+          "name": "button/finish/radius",
+          "type": "FLOAT",
+          "description": "",
+          "alias": "radius/control",
+          "aliasCollection": "Semantic"
+        },
+        {
+          "name": "button/primary/background",
+          "type": "COLOR",
+          "description": "",
+          "alias": "action/primary",
+          "aliasCollection": "Semantic"
+        },
+        {
+          "name": "button/primary/height",
+          "type": "FLOAT",
+          "description": "",
+          "alias": "size/capsule",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "button/primary/label",
+          "type": "COLOR",
+          "description": "",
+          "alias": "text/onAccent",
+          "aliasCollection": "Semantic"
+        },
+        {
+          "name": "button/primary/radius",
+          "type": "FLOAT",
+          "description": "",
+          "alias": "radius/capsule",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "button/secondary/background",
+          "type": "COLOR",
+          "description": "",
+          "alias": "surface/control",
+          "aliasCollection": "Semantic"
+        },
+        {
+          "name": "button/secondary/height",
+          "type": "FLOAT",
+          "description": "",
+          "alias": "size/controlM",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "button/secondary/label",
+          "type": "COLOR",
+          "description": "",
+          "alias": "text/primary",
+          "aliasCollection": "Semantic"
+        },
+        {
+          "name": "button/secondary/radius",
+          "type": "FLOAT",
+          "description": "",
+          "alias": "radius/control",
+          "aliasCollection": "Semantic"
+        },
+        {
+          "name": "card/background",
+          "type": "COLOR",
+          "description": "",
+          "alias": "surface/card",
+          "aliasCollection": "Semantic"
+        },
+        {
+          "name": "card/padding",
+          "type": "FLOAT",
+          "description": "",
+          "alias": "spacing/cardPadding",
+          "aliasCollection": "Semantic"
+        },
+        {
+          "name": "card/radius",
+          "type": "FLOAT",
+          "description": "",
+          "alias": "radius/card",
+          "aliasCollection": "Semantic"
+        },
+        {
+          "name": "chip/alarmBackground",
+          "type": "COLOR",
+          "description": "",
+          "alias": "status/overdueBg",
+          "aliasCollection": "Semantic"
+        },
+        {
+          "name": "chip/alarmLabel",
+          "type": "COLOR",
+          "description": "",
+          "alias": "status/overdueText",
+          "aliasCollection": "Semantic"
+        },
+        {
+          "name": "chip/height",
+          "type": "FLOAT",
+          "description": "",
+          "alias": "size/tapTarget",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "chip/radius",
+          "type": "FLOAT",
+          "description": "",
+          "alias": "radius/tile",
+          "aliasCollection": "Semantic"
+        },
+        {
+          "name": "chip/restBackground",
+          "type": "COLOR",
+          "description": "",
+          "alias": "action/secondary",
+          "aliasCollection": "Semantic"
+        },
+        {
+          "name": "chip/selectedBackground",
+          "type": "COLOR",
+          "description": "",
+          "alias": "action/primaryQuiet",
+          "aliasCollection": "Semantic"
+        },
+        {
+          "name": "sheet/background",
+          "type": "COLOR",
+          "description": "",
+          "alias": "surface/screen",
+          "aliasCollection": "Semantic"
+        },
+        {
+          "name": "sheet/handleColor",
+          "type": "COLOR",
+          "description": "",
+          "alias": "surface/hairline",
+          "aliasCollection": "Semantic"
+        },
+        {
+          "name": "sheet/handleHeight",
+          "type": "FLOAT",
+          "description": "",
+          "alias": "size/handleH",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "sheet/handleWidth",
+          "type": "FLOAT",
+          "description": "",
+          "alias": "size/handleW",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "sheet/radius",
+          "type": "FLOAT",
+          "description": "",
+          "alias": "radius/sheet",
+          "aliasCollection": "Semantic"
+        },
+        {
+          "name": "timeline/alarmMark",
+          "type": "COLOR",
+          "description": "",
+          "alias": "status/overdueText",
+          "aliasCollection": "Semantic"
+        },
+        {
+          "name": "timeline/gutter",
+          "type": "FLOAT",
+          "description": "",
+          "alias": "space/12",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "timeline/nowMarker",
+          "type": "COLOR",
+          "description": "",
+          "alias": "action/primary",
+          "aliasCollection": "Semantic"
+        },
+        {
+          "name": "timeline/syncedMark",
+          "type": "COLOR",
+          "description": "",
+          "alias": "action/done",
+          "aliasCollection": "Semantic"
+        }
+      ]
+    }
+  ]
+}

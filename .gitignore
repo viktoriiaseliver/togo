@@ -1,5 +1,12 @@
 # Xcode
 build/
+# Исключение: `build/` ловил и DesignTokens/build — а `make tokens-check`
+# сравнивает именно этот путь. Половина проверки была невыполнима: git
+# не видит игнорируемого, значит diff по нему пуст всегда. Плюс
+# figma-variables.json существует ради того, чтобы его открыл человек,
+# и вне репозитория он никому не доступен.
+!DesignTokens/build/
+!DesignTokens/build/**
 DerivedData/
 *.xcuserstate
 xcuserdata/

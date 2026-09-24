@@ -12,41 +12,49 @@ nonisolated enum Token {
 
     /// Поверхности: бумага, карточка, утопленное, хайрлайн.
     enum Surface {
-        static let card = Color(hex: 0x1B1917)
-        static let control = Color(hex: 0x33302B)
-        static let hairline = Color(hex: 0x58544EA6)
-        static let pressed = Color(hex: 0x423E38)
-        static let screen = Color(hex: 0x131211)
-        static let sunken = Color(hex: 0x262320)
+        static let card = Color(hex: 0x151C24)
+        static let control = Color(hex: 0x2D3844)
+        /// Стекло таббара и круглых кнопок
+        static let glass = Color(hex: 0x1B2430C7)
+        /// Внутренний край стекла
+        static let glassEdge = Color(hex: 0xFFFFFF1A)
+        static let hairline = Color(hex: 0x2D3844)
+        static let pressed = Color(hex: 0x384552)
+        static let screen = Color(hex: 0x0B1016)
+        /// Затемнение под шторкой
+        static let scrim = Color(hex: 0x000000A6)
+        static let sunken = Color(hex: 0x222B36)
     }
 
     /// Текст. `faint` — 2,5:1, текстом и значками НЕ красится ни в каком кегле: разрешение «только с 14pt» было неверным и развело его по двадцати четырём файлам.
     enum Ink {
-        static let faint = Color(hex: 0xEBEBF54D)
-        static let onAccent = Color(hex: 0x052018)
-        static let primary = Color(hex: 0xFFFFFF)
-        static let secondary = Color(hex: 0xEBEBF599)
-        static let silhouette = Color(hex: 0xEBEBF599)
+        static let faint = Color(hex: 0x6F7C89)
+        static let onAccent = Color(hex: 0x06142A)
+        static let primary = Color(hex: 0xF2F5F8)
+        static let secondary = Color(hex: 0x9AA7B4)
+        static let silhouette = Color(hex: 0x9AA7B4)
     }
 
     /// Действия. Охряная кнопка строго одна на экран.
     enum Action {
-        static let done = Color(hex: 0x22D3B024)
-        static let doneQuiet = Color(hex: 0x22D3B024)
-        /// «Сделано» СЛОВАМИ. Отдельный токен, потому что done — это тинт 14 %: как чернила он даёт 1,3:1, вдвое хуже уже запрещённого faint. Та же пара, что waitingText и overdueText.
-        static let doneText = Color(hex: 0x2FE0BE)
-        static let primary = Color(hex: 0x2FE0BE)
-        static let primaryQuiet = Color(hex: 0x22D3B024)
-        static let secondary = Color(hex: 0x33302B)
+        static let done = Color(hex: 0x5FBF9326)
+        static let doneQuiet = Color(hex: 0x5FBF9326)
+        /// «Сделано» СЛОВАМИ. Отдельный токен, потому что done — это тинт 15 %: как чернила он даёт 1,31:1 на карточке, вдвое хуже уже запрещённого faint. Та же пара, что waitingText и overdueText.
+        static let doneText = Color(hex: 0x7FD3A8)
+        static let primary = Color(hex: 0x7FB2FF)
+        /// Нажатое главное действие
+        static let primaryPressed = Color(hex: 0xA8CCFF)
+        static let primaryQuiet = Color(hex: 0x7FB2FF26)
+        static let secondary = Color(hex: 0x2D3844)
     }
 
     /// Состояния: янтарь — «подожди», терракот — просрочка или кровь.
     enum Status {
-        static let doneBg = Color(hex: 0x22D3B024)
-        static let doneText = Color(hex: 0xFFFFFF)
-        static let overdueBg = Color(hex: 0xFF453A24)
-        static let overdueText = Color(hex: 0xFF453A)
-        static let waitingBg = Color(hex: 0xFFD60A24)
+        static let doneBg = Color(hex: 0x5FBF9326)
+        static let doneText = Color(hex: 0xF2F5F8)
+        static let overdueBg = Color(hex: 0x3E1B19)
+        static let overdueText = Color(hex: 0xFF6B5E)
+        static let waitingBg = Color(hex: 0x3A3112)
         static let waitingText = Color(hex: 0xFFD60A)
     }
 
@@ -61,9 +69,9 @@ nonisolated enum Token {
     enum Radius {
         static let card: CGFloat = 20
         static let control: CGFloat = 16
-        static let sheet: CGFloat = 26
+        static let sheet: CGFloat = 40
         static let small: CGFloat = 12
-        static let tile: CGFloat = 20
+        static let tile: CGFloat = 18
     }
 
     /// Шаг сетки. Прикладной код берёт Spacing, а не это.
@@ -87,6 +95,9 @@ nonisolated enum Token {
     enum Size {
         static let avatarMd: CGFloat = 40
         static let avatarSm: CGFloat = 26
+        /// Главное действие — капсула 60 pt. Только оно
+        static let capsule: CGFloat = 60
+        /// Плитка действия. Было общим с главной кнопкой: один номер держал две роли, и «капсула 60 pt» из «Льда» растила заодно плитки
         static let controlL: CGFloat = 52
         static let controlM: CGFloat = 50
         static let controlXL: CGFloat = 54
@@ -123,6 +134,8 @@ nonisolated enum Token {
     /// Начертания.
     enum FontWeight {
         static let bold: Font.Weight = .bold
+        /// Только SF Pro Rounded в главной цифре, кличке и заголовке экрана
+        static let heavy: Font.Weight = .heavy
         static let medium: Font.Weight = .medium
         static let regular: Font.Weight = .regular
         static let semibold: Font.Weight = .semibold
@@ -143,17 +156,17 @@ nonisolated enum Token {
             let x: CGFloat
             let y: CGFloat
         }
-        static let card = Shadow(color: Color(hex: 0x221E18).opacity(0.05), radius: 10, x: 0, y: 3)
-        static let float = Shadow(color: Color(hex: 0x221E18).opacity(0.12), radius: 14, x: 0, y: 4)
+        static let card = Shadow(color: Color(hex: 0x000000).opacity(0.05), radius: 10, x: 0, y: 3)
+        static let float = Shadow(color: Color(hex: 0x000000).opacity(0.12), radius: 14, x: 0, y: 4)
     }
 
     /// Слой компонентов — то, что в Figma лежит свойствами внутри самого
     /// компонента. Экран сюда не лезет: он выбирает вариант.
     enum Component {
         enum ActionTile {
-            static let background = Color(hex: 0x33302B)
+            static let background = Color(hex: 0x2D3844)
             static let minHeight: CGFloat = 52
-            static let radius: CGFloat = 20
+            static let radius: CGFloat = 18
         }
         enum Banner {
             static let padding: CGFloat = 14
@@ -163,59 +176,59 @@ nonisolated enum Token {
         }
         enum Button {
             enum Destructive {
-                static let background = Color(hex: 0xFF453A24)
+                static let background = Color(hex: 0x3E1B19)
                 static let height: CGFloat = 50
-                static let label = Color(hex: 0xFF453A)
+                static let label = Color(hex: 0xFF6B5E)
                 static let radius: CGFloat = 16
             }
             enum Disabled {
-                static let background = Color(hex: 0x33302B)
-                static let label = Color(hex: 0xEBEBF54D)
+                static let background = Color(hex: 0x2D3844)
+                static let label = Color(hex: 0x6F7C89)
             }
             enum Finish {
-                static let background = Color(hex: 0x22D3B024)
+                static let background = Color(hex: 0x7FB2FF26)
                 static let height: CGFloat = 50
-                static let label = Color(hex: 0xFFFFFF)
+                static let label = Color(hex: 0xF2F5F8)
                 static let radius: CGFloat = 16
             }
             enum Primary {
-                static let background = Color(hex: 0x2FE0BE)
-                static let height: CGFloat = 52
-                static let label = Color(hex: 0x052018)
-                static let radius: CGFloat = 16
+                static let background = Color(hex: 0x7FB2FF)
+                static let height: CGFloat = 60
+                static let label = Color(hex: 0x06142A)
+                static let radius: CGFloat = 30
             }
             enum Secondary {
-                static let background = Color(hex: 0x33302B)
+                static let background = Color(hex: 0x2D3844)
                 static let height: CGFloat = 50
-                static let label = Color(hex: 0xFFFFFF)
+                static let label = Color(hex: 0xF2F5F8)
                 static let radius: CGFloat = 16
             }
         }
         enum Card {
-            static let background = Color(hex: 0x1B1917)
+            static let background = Color(hex: 0x151C24)
             static let padding: CGFloat = 16
             static let radius: CGFloat = 20
         }
         enum Chip {
-            static let alarmBackground = Color(hex: 0xFF453A24)
-            static let alarmLabel = Color(hex: 0xFF453A)
+            static let alarmBackground = Color(hex: 0x3E1B19)
+            static let alarmLabel = Color(hex: 0xFF6B5E)
             static let height: CGFloat = 44
-            static let radius: CGFloat = 20
-            static let restBackground = Color(hex: 0x33302B)
-            static let selectedBackground = Color(hex: 0x22D3B024)
+            static let radius: CGFloat = 18
+            static let restBackground = Color(hex: 0x2D3844)
+            static let selectedBackground = Color(hex: 0x7FB2FF26)
         }
         enum Sheet {
-            static let background = Color(hex: 0x131211)
-            static let handleColor = Color(hex: 0x58544EA6)
+            static let background = Color(hex: 0x0B1016)
+            static let handleColor = Color(hex: 0x2D3844)
             static let handleHeight: CGFloat = 4
             static let handleWidth: CGFloat = 36
-            static let radius: CGFloat = 26
+            static let radius: CGFloat = 40
         }
         enum Timeline {
-            static let alarmMark = Color(hex: 0xFF453A)
+            static let alarmMark = Color(hex: 0xFF6B5E)
             static let gutter: CGFloat = 12
-            static let nowMarker = Color(hex: 0x2FE0BE)
-            static let syncedMark = Color(hex: 0x22D3B024)
+            static let nowMarker = Color(hex: 0x7FB2FF)
+            static let syncedMark = Color(hex: 0x5FBF9326)
         }
     }
 }
