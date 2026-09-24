@@ -42,7 +42,12 @@ struct TodayHero: View {
     /// не знало.
     ///
     /// Строка теперь называет ровно измеренное: «Выходов нет с …».
-    static let silenceCeiling: TimeInterval = 24 * 3600
+    ///
+    /// Само правило переехало в `OutingSilence`: 24.09 нашлось, что
+    /// Siri читает ту же величину мимо потолка и отвечает «дома 434 ч
+    /// с прошлого выхода». Одно правило на все поверхности, где живёт
+    /// та же величина.
+    static let silenceCeiling: TimeInterval = OutingSilence.ceiling
     /// Как часто выходят обычно — вторая строка, тише.
     let rhythm: WalkRhythm
     let outingsToday: Int
@@ -101,9 +106,7 @@ struct TodayHero: View {
     /// Живя приватным свойством вью, оно держалось бы на честном слове
     /// до первой правки — а правка тут стоит доверия ко всему экрану.
     static func silence(indoors: TimeInterval?, lastOutingEndedAt: Date?) -> Date? {
-        guard let indoors, indoors >= silenceCeiling,
-              let lastOutingEndedAt else { return nil }
-        return lastOutingEndedAt
+        OutingSilence.start(indoors: indoors, lastOutingEndedAt: lastOutingEndedAt)
     }
 
     /// Строка про режим. Появляется, только когда есть с чем сравнивать:

@@ -179,12 +179,39 @@ struct TimeIndoorsIntent: AppIntent {
         guard let dog = try QuickLog.activeDog(in: context) else { throw QuickLogError.noDog }
 
         let blocks = TimelineBuilder.blocks(Diary.active(dog.events))
-        guard let indoors = TimelineBuilder.timeIndoorsNow(blocks, now: Date(), threshold: 0) else {
-            return .result(dialog: "Сегодня ещё не выходили.")
+        let indoors = TimelineBuilder.timeIndoorsNow(blocks, now: Date(), threshold: 0)
+        guard let indoors else { return .result(dialog: "Сегодня ещё не выходили.") }
+
+        return .result(dialog: IntentDialog(stringLiteral: Self.ответ(
+            dogName: dog.name,
+            indoors: indoors,
+            lastOutingEndedAt: blocks.last(where: \.isOuting)?.endedAt
+        )))
+    }
+
+    /// Что Siri скажет вслух. Вынесено из `perform` нарочно: собрать
+    /// `IntentResult` в тесте нельзя, а проверять тут надо две вещи,
+    /// на которых приложение уже обжигалось.
+    ///
+    /// **Первая — потолок.** До 24.09 его здесь не было вовсе: на тех
+    /// же данных, на которых экран честно говорит «Выходов нет с 3 сент.»,
+    /// Siri отвечала «Стич дома 434 ч с прошлого выхода». Экран починили
+    /// 21.09, голос читал ту же величину мимо правила — починка на одной
+    /// поверхности из двух.
+    ///
+    /// **Вторая — перевод.** `IntentDialog(stringLiteral:)` берёт уже
+    /// собранную строку: интерполяция случилась раньше, и в каталог
+    /// за переводом никто не пойдёт. Перевод `%@ дома %@ с прошлого
+    /// выхода.` лежал в каталоге на французском и украинском и не мог
+    /// быть показан **ни разу** — полнота каталога тут не значит ничего.
+    /// Лечится `String(localized:)`: ключ собирается тот же самый.
+    static func ответ(dogName: String, indoors: TimeInterval,
+                      lastOutingEndedAt: Date?) -> String {
+        if let тишина = OutingSilence.start(indoors: indoors,
+                                            lastOutingEndedAt: lastOutingEndedAt) {
+            return String(localized: "Выходов нет с \(Fmt.shortDay(тишина))")
         }
-        return .result(dialog: IntentDialog(
-            stringLiteral: "\(dog.name) дома \(Fmt.duration(indoors)) с прошлого выхода."
-        ))
+        return String(localized: "\(dogName) дома \(Fmt.duration(indoors)) с прошлого выхода.")
     }
 }
 
