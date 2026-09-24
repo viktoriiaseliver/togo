@@ -17478,6 +17478,30 @@
         }
       }
     },
+    "Записи семьи не пришли: %@" : {
+      "comment" : "sync",
+      "extractionState" : "manual",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les notes de la famille ne sont pas arrivées : %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Записи семьи не пришли: %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Записи родини не надійшли: %@"
+          }
+        }
+      }
+    },
     "Записей о еде пока нет. Отметь пару кормлений — и приложение увидит его режим само." : {
       "comment" : "scheduleCard",
       "extractionState" : "manual",
