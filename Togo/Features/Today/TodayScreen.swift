@@ -372,34 +372,13 @@ struct TodayScreen: View {
 
     // MARK: Шапка
 
+    /// Шапка и полоса чисел живут в `TodayHeader` и `TodaySummaryStrip`.
+    /// Вынесены 28.09: обе — чистое представление с явным входом,
+    /// и обе собираются в превью, чего внутри этого экрана нельзя было
+    /// сделать никогда — для сборки требовались `@Query`, `AppState`
+    /// и хранилище.
     private var header: some View {
-        HStack(spacing: 12) {
-            DogAvatar(dog: dog)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(dog?.name ?? "Собака").textStyle(AppFont.cardTitle).foregroundStyle(Token.Ink.primary)
-                // В шапке — только то, что не меняется в течение дня.
-                // «Давно ли гуляли» переехало в героя: это ответ на главный
-                // вопрос, и мелкой строкой рядом с весом он не читался.
-                Text(identityLine)
-                    .textStyle(AppFont.caption)
-                    .foregroundStyle(Token.Ink.secondary)
-                    .lineLimit(1)
-            }
-            Spacer(minLength: Token.Space.s8)
-            // Имя дежурного стоит строкой слева: подпись справа
-            // повторяла его слово в слово.
-            if let duty = dutyMember {
-                TGAvatar(initial: duty.initial, tint: Token.Action.doneQuiet)
-            }
-        }
-        .padding(.top, 4)
-    }
-
-    /// Вес и дежурный: две вещи, которые за день не меняются.
-    private var identityLine: String {
-        let weight = dog.map { Fmt.weight($0.weightKg) } ?? "—"
-        guard let duty = dutyMember else { return weight }
-        return weight + " · дежурит " + duty.name
+        TodayHeader(dog: dog, duty: dutyMember)
     }
 
     /// Сколько собака дома прямо сейчас.
@@ -432,29 +411,8 @@ struct TodayScreen: View {
     }
 
     private var summaryStrip: some View {
-        let summary = Diary.summary(events, day: now, dog: dog)
-        let blocks = TimelineBuilder.blocks(Diary.active(events))
-        let indoors = TimelineBuilder.timeIndoorsNow(blocks, now: now, threshold: 0)
-        return TGCard {
-            HStack(alignment: .top, spacing: 0) {
-                TGStat(value: "\(summary.eatenGrams) г",
-                            caption: summary.dailyGrams > 0 ? "из \(summary.dailyGrams) съел" : "съел")
-                // «С прогулки» отсюда убрано: на этот вопрос отвечает
-                // герой вверху экрана крупной цифрой, и повторять его
-                // мелким шрифтом — ровно тот дубль, который аудит
-                // и просил вычистить.
-                TGStat(value: "\(summary.meals)", caption: .готовая(String(localized: "\(summary.meals) кормлений").replacingOccurrences(of: "\(summary.meals) ", with: "")))
-                // То же число, что в шапке. Стояло `summary.outings` —
-                // события, а не блоки, — и шапка с карточкой считали
-                // одно и то же по-разному: «2 выхода из 4 за день»
-                // над «3 выхода».
-                TGStat(value: "\(outingsToday)", caption: .готовая(Fmt.outings(outingsToday).replacingOccurrences(of: "\(outingsToday) ", with: "")))
-            }
-            if summary.trainingGrams > 0 {
-                TGDivider()
-                TGExplainer(text: "\(summary.trainingGrams) г ушло на занятие — вечерняя порция уже уменьшена.")
-            }
-        }
+        TodaySummaryStrip(summary: Diary.summary(events, day: now, dog: dog),
+                          outings: outingsToday)
     }
 
     // MARK: Данные экрана
@@ -805,16 +763,4 @@ struct TodayScreen: View {
 
 
 
-/// Аватар собаки — тот же `TGAvatar`, только крупнее и в тёплой заливке.
-struct DogAvatar: View {
-    let dog: Dog?
-
-    var body: some View {
-        TGAvatar(
-            initial: dog?.initial ?? "?",
-            image: dog?.photo,
-            size: Token.Size.avatarMd,
-            tint: Token.Action.doneQuiet
-        )
-    }
-}
+// `DogAvatar` переехал в `TodayHeader.swift` — туда, где его и рисуют.
