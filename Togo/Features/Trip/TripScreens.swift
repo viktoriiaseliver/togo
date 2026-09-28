@@ -91,6 +91,27 @@ nonisolated extension TransportKind {
         }
     }
 
+    /// Оговорка под окнами: «это общая практика, а не назначение».
+    ///
+    /// **Обязана называть тот транспорт, который на экране.** До 28.09
+    /// под окнами автомобильной поездки стоял литерал про перелёт:
+    /// значок машины, строка «Выход перед машиной» — и объяснение
+    /// «перед перелётом» между ними. Так это и приехало отзывом
+    /// «Странный экран и странный текст» 25.09.
+    ///
+    /// Три целых предложения, а не подстановка существительного
+    /// в общий шаблон: падеж и предлог в других языках так не собираются.
+    var windowsDisclaimer: String {
+        switch self {
+        case .car:
+            String(localized: "Окна натощак перед поездкой — общая практика, а не назначение. Если собака на терапии, приложение сведёт их с приёмами и покажет, где конфликт.")
+        case .plane:
+            String(localized: "Окна натощак перед перелётом — общая практика, а не назначение. Если собака на терапии, приложение сведёт их с приёмами и покажет, где конфликт.")
+        case .train:
+            String(localized: "Окна натощак перед поездом — общая практика, а не назначение. Если собака на терапии, приложение сведёт их с приёмами и покажет, где конфликт.")
+        }
+    }
+
     /// Окна перед дорогой считаются от времени выезда.
     func windows(before departure: Date) -> [(String, Date, String)] {
         switch self {
@@ -166,7 +187,14 @@ struct TripTodayBlock: View {
                 Spacer(minLength: 0)
             }
             TGDivider()
-            if trip.dayNumber(on: now) <= 1 {
+            // Список «до выезда» живёт до выезда, а не весь первый день.
+            //
+            // Стояло `dayNumber(on: now) <= 1`: условие считало ДНИ,
+            // а содержимое считает ВРЕМЯ ВЫЕЗДА. На кадре отзыва 25.09
+            // в 15:56 экран звал «−2 ч последняя еда 07:00» и «−20 м
+            // выход перед машиной 08:40» — семь часов после выезда,
+            // предлагая сделать то, чего уже не сделать.
+            if now < departure {
                 departureWindows
             } else {
                 onSiteAdvice
@@ -174,11 +202,15 @@ struct TripTodayBlock: View {
         }
     }
 
+    /// Момент выезда: начало дня отъезда плюс заданная минута.
+    private var departure: Date {
+        Calendar.current.startOfDay(for: trip.startDate)
+            .addingTimeInterval(Double(trip.departureMinuteOfDay) * 60)
+    }
+
     private var departureWindows: some View {
         VStack(alignment: .leading, spacing: Token.Space.s8) {
             TGSectionHeader(title: "до выезда")
-            let departure = Calendar.current.startOfDay(for: trip.startDate)
-                .addingTimeInterval(Double(trip.departureMinuteOfDay) * 60)
             ForEach(trip.transport.windows(before: departure), id: \.0) { offset, at, title in
                 HStack(spacing: Token.Space.s12) {
                     Text(offset)
@@ -191,7 +223,7 @@ struct TripTodayBlock: View {
                 }
                 .frame(minHeight: 38)
             }
-            TGExplainer(text: "Окна натощак перед перелётом — общая практика, а не назначение. Если собака на терапии, приложение сведёт их с приёмами и покажет, где конфликт.")
+            TGExplainer(text: .готовая(trip.transport.windowsDisclaimer))
         }
     }
 

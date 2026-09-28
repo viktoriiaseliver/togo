@@ -399,10 +399,11 @@ struct TodayScreen: View {
         TimelineBuilder.blocks(Diary.active(events)).last(where: \.isOuting)?.endedAt
     }
 
-    /// Сколько раз сегодня выходили. Отметки внутри прогулки —
-    /// не отдельные выходы.
+    /// Сколько раз сегодня выходили. Правило — в `Diary.outingsCount`:
+    /// вторая копия этого счёта стояла в сводке и давала на том же
+    /// экране другое число.
     private var outingsToday: Int {
-        TimelineBuilder.blocks(Diary.onDay(events, now)).filter(\.isOuting).count
+        Diary.outingsCount(events, on: now)
     }
 
     /// Какие удалённые записи ещё можно вернуть.
