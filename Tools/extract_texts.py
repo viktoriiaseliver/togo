@@ -400,6 +400,7 @@ def catalog(collected):
             existing = {}
 
     merged = {}
+    спасённые = []
     for key, entry in existing.items():
         ours = entry.get("extractionState") == "manual"
         # Ключи с формами числа заведены руками под `String(localized:)`
@@ -407,8 +408,35 @@ def catalog(collected):
         # снести их — значит вернуть «1 дней».
         с_формами = any("variations" in unit
                         for unit in entry.get("localizations", {}).values())
+        # КЛЮЧ С ПЕРЕВОДАМИ НЕ ВЫБРАСЫВАЕТСЯ НИКОГДА, И ВОТ ПОЧЕМУ.
+        #
+        # Скрипт не отличает «фразу убрали из кода» от «я её не распознал»:
+        # признак у него один на оба случая — `key not in fresh`. Замер
+        # 28.09 на чистом дереве показал цену этой неразличимости:
+        #
+        #     было   2097 ключей · fr 2038 · ru 2038 · uk 2038
+        #     стало  1900 ключей · fr 1754 · ru 1848 · uk 1754
+        #
+        # Один запуск уносил 197 ключей и 284 французских, 284 украинских,
+        # 190 русских переводов. Запись журнала за 24.09 называла «283
+        # украинских» — считали один язык из трёх, и беда выглядела втрое
+        # меньше себя.
+        #
+        # Цена двух ошибок несимметрична. Лишний ключ в каталоге стоит
+        # строки в дифе и находится грепом. Потерянный перевод стоит
+        # работы носителя и обнаруживается на французском экране
+        # у человека — то есть не обнаруживается вовсе.
+        есть_переводы = any(
+            unit.get("stringUnit", {}).get("value") or "variations" in unit
+            for lang, unit in entry.get("localizations", {}).items()
+            if lang != "ru"
+        )
+        if ours and key not in fresh and not с_формами and есть_переводы:
+            спасённые.append(key)
+            merged[key] = entry
+            continue
         if ours and key not in fresh and not с_формами:
-            continue  # фраза ушла из кода — ключ-сирота
+            continue  # фраза ушла из кода, и переводов при ней нет
         if key in fresh:
             # Переводы, которые уже вписали в каталог, не затираем.
             kept = {lang: unit for lang, unit in entry.get("localizations", {}).items()
@@ -419,6 +447,23 @@ def catalog(collected):
             merged[key] = entry
     for key, entry in fresh.items():
         merged.setdefault(key, entry)
+
+    # Спасённый ключ обязан КРИЧАТЬ. Тихо сохранённый — это тот же
+    # молчаливый пробел, только с другой стороны: каталог растёт
+    # мусором, никто не знает почему, и через месяц кто-нибудь
+    # «почистит» его обратно.
+    if спасённые:
+        print()
+        print("СИРОТЫ С ПЕРЕВОДАМИ — сохранены, НЕ выброшены: %d" % len(спасённые))
+        print("Каждая значит одно из двух, и различить их скрипт не может:")
+        print("  • фразу убрали из кода — тогда ключ и правда лишний;")
+        print("  • скрипт её не распознал — тогда выброс унёс бы перевод.")
+        print("Проверять по одной: `grep -rn \"<фраза>\" Togo TogoShared TogoWidgets`.")
+        for key in спасённые[:40]:
+            print("  · %s" % key.replace("\n", "\\n")[:90])
+        if len(спасённые) > 40:
+            print("  … и ещё %d" % (len(спасённые) - 40))
+        print()
 
     def sort_deep(value):
         if isinstance(value, dict):
