@@ -399,11 +399,11 @@ struct TodayScreen: View {
         TimelineBuilder.blocks(Diary.active(events)).last(where: \.isOuting)?.endedAt
     }
 
-    /// Сколько раз сегодня выходили. Правило — в `Diary.outingsCount`:
-    /// вторая копия этого счёта стояла в сводке и давала на том же
-    /// экране другое число.
+    /// Сколько раз сегодня выходили. Правило — в
+    /// `TimelineBuilder.outingsCount`: вторая копия этого счёта стояла
+    /// в карточке сводки и давала на том же экране другое число.
     private var outingsToday: Int {
-        Diary.outingsCount(events, on: now)
+        TimelineBuilder.outingsCount(events, on: now)
     }
 
     /// Какие удалённые записи ещё можно вернуть.
@@ -428,7 +428,11 @@ struct TodayScreen: View {
                 // мелким шрифтом — ровно тот дубль, который аудит
                 // и просил вычистить.
                 TGStat(value: "\(summary.meals)", caption: .готовая(String(localized: "\(summary.meals) кормлений").replacingOccurrences(of: "\(summary.meals) ", with: "")))
-                TGStat(value: "\(summary.outings)", caption: .готовая(Fmt.outings(summary.outings).replacingOccurrences(of: "\(summary.outings) ", with: "")))
+                // То же число, что в шапке. Стояло `summary.outings` —
+                // события, а не блоки, — и шапка с карточкой считали
+                // одно и то же по-разному: «2 выхода из 4 за день»
+                // над «3 выхода».
+                TGStat(value: "\(outingsToday)", caption: .готовая(Fmt.outings(outingsToday).replacingOccurrences(of: "\(outingsToday) ", with: "")))
             }
             if summary.trainingGrams > 0 {
                 TGDivider()

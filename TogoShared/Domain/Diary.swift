@@ -104,19 +104,6 @@ nonisolated enum Diary {
         var trainingGrams: Int
     }
 
-    /// Сколько раз выходили за день. Считаются **блоки** таймлайна,
-    /// а не события `.outing`: три отметки внутри одной прогулки — это
-    /// один выход, а не три.
-    ///
-    /// **Одна реализация нарочно.** До 28.09 их было две: экран считал
-    /// блоки, сводка считала события, и на одном кадре отзыва стояло
-    /// «2 выхода из 4 за день» над карточкой «3 выхода». Обе арифметики
-    /// верны, расходятся смыслы — тест такого не видит по устройству,
-    /// поймал кадр. Пока правило живёт в одном месте, разойтись нечему.
-    static func outingsCount(_ events: [LogEvent], on day: Date) -> Int {
-        TimelineBuilder.blocks(onDay(events, day)).filter(\.isOuting).count
-    }
-
     static func summary(_ events: [LogEvent], day: Date, dog: Dog?) -> DaySummary {
         let today = onDay(events, day)
         return DaySummary(
@@ -128,7 +115,13 @@ nonisolated enum Diary {
                 .compactMap(\.grams)
                 .reduce(0, +),
             dailyGrams: dog?.dailyGrams ?? 0,
-            outings: outingsCount(events, on: day),
+            // СОБЫТИЯ `.outing`, а не выходы человеческим счётом: три
+            // отметки внутри одной прогулки дадут три. Экрану это число
+            // не показывают — он берёт `TimelineBuilder.outingsCount`,
+            // который считает блоки. Разница видна глазом: 28.09 на кадре
+            // отзыва стояло «2 выхода из 4 за день» над карточкой
+            // «3 выхода», и оба числа были посчитаны верно.
+            outings: today.filter { $0.kind == .outing }.count,
             meals: today.filter { $0.kind == .meal }.count,
             walkMinutes: today.filter { $0.kind == .walk }.compactMap(\.durationSeconds).reduce(0, +) / 60,
             trainingGrams: today.filter { $0.kind == .training }.compactMap(\.grams).reduce(0, +)
