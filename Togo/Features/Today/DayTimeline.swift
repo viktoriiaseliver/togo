@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// Лента дня.
 ///
@@ -98,6 +99,13 @@ struct DayTimeline: View {
 /// и это видно.
 enum TimelineRail {
     static let timeWidth: CGFloat = 48
+
+    /// Та же колонка, умноженная на системную настройку размера текста.
+    /// Само время рисуется `AppFont.numeric`, то есть масштабируется, —
+    /// а ширина под ним оставалась прежней.
+    static var scaledTimeWidth: CGFloat {
+        UIFontMetrics(forTextStyle: .body).scaledValue(for: timeWidth)
+    }
     static let railWidth: CGFloat = 30
     static let markerSize: CGFloat = 24
     static let nowDotSize: CGFloat = 12
@@ -182,7 +190,11 @@ struct TimelineRow: View {
             }
         }
         .fixedSize()
-        .frame(width: TimelineRail.timeWidth, alignment: .leading)
+        // Колонка времени растёт вместе с кеглем. При фиксированных
+        // сорока восьми точках на крупной системной настройке «07:00»
+        // печаталось как «07:0» — кадр 28.09. Число, обрезанное
+        // на последней цифре, читается как другое число.
+        .frame(width: TimelineRail.scaledTimeWidth, alignment: .leading)
     }
 
     /// Что писать под названием.

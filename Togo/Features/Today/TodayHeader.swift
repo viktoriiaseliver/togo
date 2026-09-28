@@ -43,7 +43,11 @@ struct TodayHeader: View {
                 Text(identityLine)
                     .textStyle(AppFont.caption)
                     .foregroundStyle(Token.Ink.secondary)
-                    .lineLimit(1)
+                    // Две строки, а не одна: на крупном кегле строка
+                    // обрывалась на «4,1 кг · дежурит…» и прятала ровно
+                    // то, ради чего она есть, — ИМЯ дежурного. На обычном
+                    // кегле она всё равно в одну и так.
+                    .lineLimit(2)
             }
             Spacer(minLength: Token.Space.s8)
             // Имя дежурного стоит строкой слева: подпись справа

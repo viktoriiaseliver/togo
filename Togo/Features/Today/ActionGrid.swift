@@ -32,6 +32,25 @@ struct ActionGrid: View {
     let canWriteMedical: Bool
     var onSelect: (TodayRoute) -> Void
 
+    /// Настройка размера текста в iOS. Читается здесь, а не угадывается
+    /// по ширине экрана: ширина не меняется, когда человек увеличивает
+    /// шрифт, а раскладка обязана.
+    @Environment(\.dynamicTypeSize) private var размерТекста
+
+    private var стул: some View {
+        SmallAction(title: "Стул", systemImage: "leaf") { onSelect(.stool) }
+    }
+    private var еда: some View {
+        SmallAction(title: "Еда", subtitle: portionGrams > 0 ? "\(portionGrams) г" : nil,
+                    systemImage: "fork.knife") { onSelect(.meal) }
+    }
+    private var инцидент: some View {
+        SmallAction(title: "Инцидент", systemImage: "exclamationmark.triangle") { onSelect(.incident) }
+    }
+    private var ещё: some View {
+        SmallAction(title: "Ещё", systemImage: "ellipsis") { onSelect(.more) }
+    }
+
     var body: some View {
         VStack(spacing: 10) {
             HStack(spacing: 10) {
@@ -44,12 +63,24 @@ struct ActionGrid: View {
                     onSelect(.walk)
                 }
             }
-            HStack(spacing: 10) {
-                SmallAction(title: "Стул", systemImage: "leaf") { onSelect(.stool) }
-                SmallAction(title: "Еда", subtitle: portionGrams > 0 ? "\(portionGrams) г" : nil,
-                            systemImage: "fork.knife") { onSelect(.meal) }
-                SmallAction(title: "Инцидент", systemImage: "exclamationmark.triangle") { onSelect(.incident) }
-                SmallAction(title: "Ещё", systemImage: "ellipsis") { onSelect(.more) }
+            // Четыре плитки в ряд — пока подписи мельче доли ширины.
+            //
+            // `maxWidth: .infinity` делит поровну только до тех пор, пока
+            // идеальная ширина текста в долю влезает. На крупной системной
+            // настройке четыре подписи в строку не помещаются ПО УСТРОЙСТВУ,
+            // и кадр 28.09 показал ровно это: «Стул» и «Ещё» вылезли
+            // за свои плитки.
+            //
+            // Ужимать дальше некуда — это уже был бы шрифт, который человек
+            // и увеличивал. Поэтому на доступных размерах ряд становится
+            // сеткой два на два: места вдвое больше, порядок чтения тот же.
+            if размерТекста.isAccessibilitySize {
+                VStack(spacing: 10) {
+                    HStack(spacing: 10) { стул; еда }
+                    HStack(spacing: 10) { инцидент; ещё }
+                }
+            } else {
+                HStack(spacing: 10) { стул; еда; инцидент; ещё }
             }
         }
         .padding(.horizontal, Token.Spacing.screenPadding)
@@ -87,7 +118,11 @@ struct BigAction: View {
                                color: isPrimary ? Token.Component.Button.Primary.label
                                                 : Token.Component.Button.Secondary.label)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.75)
+                    // 0,75 хватало на обычном кегле и не хватило
+                    // на крупном: главная кнопка приложения печаталась
+                    // как «Просит…» — кадр 28.09. Обрезать подпись
+                    // главного действия нельзя ни при какой настройке.
+                    .minimumScaleFactor(0.45)
             }
             // Подпись берётся у компонентного токена, а не у Ink.primary.
             // Прежде оба варианта красились одним светлым: на тёмной
@@ -129,18 +164,23 @@ struct SmallAction: View {
                 Image(systemName: systemImage)
                     .font(.system(size: 15, weight: .medium))
                     .accessibilityHidden(true)
+                // По токену, а не голым `Font.system(size:)`: голый
+                // размер настройку iOS не спрашивает, и 28.09 на кадре
+                // при крупном шрифте эти подписи остались мелкими,
+                // пока весь экран вырос. Половина экрана масштабируется,
+                // половина нет — хуже, чем если бы не масштабировался
+                // никто: выглядит поломкой, а не ограничением.
                 Text(title)
-                    .font(.system(size: 11, weight: .medium))
+                    .textStyle(AppFont.micro, color: Token.Ink.primary)
                     .lineLimit(1)
                     // Пять плиток в ряд — колонка узкая. Чуть мельче лучше,
-                    // чем «Инциде…».
-                    .minimumScaleFactor(0.7)
+                    // чем «Инциде…». На крупной настройке запас глубже.
+                    .minimumScaleFactor(0.5)
                 if let subtitle {
                     Text(subtitle)
-                        .font(.system(size: 10, weight: .regular))
-                        .foregroundStyle(Token.Ink.secondary)
+                        .textStyle(AppFont.micro, color: Token.Ink.secondary)
                         .lineLimit(1)
-                        .minimumScaleFactor(0.7)
+                        .minimumScaleFactor(0.5)
                 }
             }
             .foregroundStyle(Token.Ink.primary)

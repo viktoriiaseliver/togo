@@ -84,7 +84,11 @@ struct TodayHero: View {
                 Text(Fmt.hoursMinutes(indoors))
                     .textStyle(AppFont.hero)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.6)
+                    // 0,6 хватало на обычном кегле и не хватило
+                    // на крупном: герой печатал «2 ч 9… назад» — кадр
+                    // 28.09. Это ответ на главный вопрос экрана,
+                    // и обрезать его нельзя ни при какой настройке.
+                    .minimumScaleFactor(0.35)
                 Text("назад")
                     .textStyle(AppFont.sectionTitle.color(Token.Ink.secondary))
             }

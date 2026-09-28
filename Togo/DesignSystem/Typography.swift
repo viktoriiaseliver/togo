@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// Текстовые стили. Один стиль — одна строка токенов, как текстовый стиль
 /// в Figma: кегль, начертание, цвет по умолчанию.
@@ -13,9 +14,36 @@ struct TextStyleToken: Equatable, Sendable {
     var color: Color
     var rounded: Bool = false
     var monospacedDigits: Bool = false
+    /// К какой системной ступени привязан кегль при масштабировании.
+    ///
+    /// Нужна не для красоты: `UIFontMetrics` растит разные ступени
+    /// по-разному. Заголовок на крупной настройке прибавляет меньше,
+    /// чем подпись, — иначе шапка выдавила бы всё остальное за экран.
+    var relativeTo: UIFont.TextStyle = .body
 
+    /// Кегль, **умноженный на настройку размера текста в iOS**.
+    ///
+    /// **До 28.09 здесь стоял голый `Font.system(size:)`, и это значило,
+    /// что Dynamic Type не работал НИГДЕ в приложении.** Человек,
+    /// увеличивший текст в настройках айфона, не видел разницы ни
+    /// на одном экране: `Font.system(size:)` берёт точки как есть
+    /// и настройку не спрашивает. Одна строка — весь продукт.
+    ///
+    /// Класс тот же, на котором Togo обжигался трижды: значение верное,
+    /// имя на месте, а от упоминания ничего не происходит. Только здесь
+    /// упоминания не было вовсе — был размер, который просто никто
+    /// не масштабировал.
+    ///
+    /// `UIFontMetrics` читает текущую ступень в момент вычисления.
+    /// Свойство вычисляется при построении тела вью, а смена настройки
+    /// перестраивает тела — поэтому значение приезжает новое. Названная
+    /// граница: это не подписка, а чтение в нужный момент; если когда-то
+    /// шрифт понадобится вне построения тела, масштаб там будет
+    /// от прошлой ступени.
     var font: Font {
-        var font = Font.system(size: size, weight: weight, design: rounded ? .rounded : .default)
+        let scaled = UIFontMetrics(forTextStyle: relativeTo).scaledValue(for: size)
+        var font = Font.system(size: scaled, weight: weight,
+                               design: rounded ? .rounded : .default)
         if monospacedDigits { font = font.monospacedDigit() }
         return font
     }
@@ -35,33 +63,43 @@ struct TextStyleToken: Equatable, Sendable {
 
 enum AppFont {
     /// Название экрана. 34/700 — как большой заголовок в iOS.
-    static let screenTitle = TextStyleToken(size: Token.FontSize.screen, weight: Token.FontWeight.bold, color: Token.Ink.primary)
+    static let screenTitle = TextStyleToken(size: Token.FontSize.screen, weight: Token.FontWeight.bold, color: Token.Ink.primary,
+                                            relativeTo: .largeTitle)
     /// Заголовок группы и карточки. 20/600 — в системе это одна ступень.
-    static let sectionTitle = TextStyleToken(size: Token.FontSize.section, weight: Token.FontWeight.semibold, color: Token.Ink.primary)
-    static let cardTitle = TextStyleToken(size: Token.FontSize.section, weight: Token.FontWeight.semibold, color: Token.Ink.primary)
+    static let sectionTitle = TextStyleToken(size: Token.FontSize.section, weight: Token.FontWeight.semibold, color: Token.Ink.primary,
+                                             relativeTo: .title3)
+    static let cardTitle = TextStyleToken(size: Token.FontSize.section, weight: Token.FontWeight.semibold, color: Token.Ink.primary,
+                                          relativeTo: .title3)
     /// Тело списка. 17/400.
     static let body = TextStyleToken(size: Token.FontSize.body, weight: Token.FontWeight.regular, color: Token.Ink.primary)
     static let bodyEmphasis = TextStyleToken(size: Token.FontSize.body, weight: Token.FontWeight.medium, color: Token.Ink.primary)
     /// Мета: время, автор, подпись. 15/400.
-    static let caption = TextStyleToken(size: Token.FontSize.meta, weight: Token.FontWeight.regular, color: Token.Ink.secondary)
-    static let captionEmphasis = TextStyleToken(size: Token.FontSize.meta, weight: Token.FontWeight.medium, color: Token.Ink.primary)
+    static let caption = TextStyleToken(size: Token.FontSize.meta, weight: Token.FontWeight.regular, color: Token.Ink.secondary,
+                                        relativeTo: .subheadline)
+    static let captionEmphasis = TextStyleToken(size: Token.FontSize.meta, weight: Token.FontWeight.medium, color: Token.Ink.primary,
+                                                relativeTo: .subheadline)
     /// Раньше здесь было двенадцать пунктов. Ниже четырнадцати
     /// в системе не существует, и мета сведена к пятнадцати.
-    static let micro = TextStyleToken(size: Token.FontSize.meta, weight: Token.FontWeight.regular, color: Token.Ink.secondary)
+    static let micro = TextStyleToken(size: Token.FontSize.meta, weight: Token.FontWeight.regular, color: Token.Ink.secondary,
+                                      relativeTo: .footnote)
     /// Капс: название секции. 14/600, в вёрстке — прописными.
-    static let caps = TextStyleToken(size: Token.FontSize.caption, weight: Token.FontWeight.semibold, color: Token.Ink.secondary)
+    static let caps = TextStyleToken(size: Token.FontSize.caption, weight: Token.FontWeight.semibold, color: Token.Ink.secondary,
+                                     relativeTo: .caption1)
 
     /// Числа в строках и на плитках.
     static func numeric(_ size: CGFloat, weight: Font.Weight = Token.FontWeight.semibold) -> TextStyleToken {
-        TextStyleToken(size: size, weight: weight, color: Token.Ink.primary, monospacedDigits: true)
+        TextStyleToken(size: size, weight: weight, color: Token.Ink.primary, monospacedDigits: true,
+                       relativeTo: .body)
     }
 
     /// Крупная цифра карточки.
     static let display = TextStyleToken(size: Token.FontSize.display, weight: Token.FontWeight.bold,
-                                        color: Token.Ink.primary, monospacedDigits: true)
+                                        color: Token.Ink.primary, monospacedDigits: true,
+                                        relativeTo: .title2)
     /// Герой: ответ на главный вопрос. Один на экран.
     static let hero = TextStyleToken(size: Token.FontSize.hero, weight: Token.FontWeight.bold,
-                                     color: Token.Ink.primary, monospacedDigits: true)
+                                     color: Token.Ink.primary, monospacedDigits: true,
+                                     relativeTo: .title2)
     static let wordmark = TextStyleToken(size: Token.FontSize.display, weight: Token.FontWeight.bold,
                                          color: Token.Ink.primary)
 }
