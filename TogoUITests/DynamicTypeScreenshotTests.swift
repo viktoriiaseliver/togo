@@ -97,6 +97,22 @@ nonisolated final class DynamicTypeScreenshotTests: XCTestCase {
         capture("xl-09-meal-sheet")
     }
 
+    /// Приёмка листалки дня: запись, сделанная на прошлом дне, обязана
+    /// лечь В ТОТ день и сказать об этом человеку.
+    ///
+    /// Снимается при обычном кегле — это не про размер текста, а про
+    /// то, куда попадает запись. Лежит здесь, потому что здесь уже
+    /// собрана оснастка кадров; переедет, когда их станет больше.
+    func testВчераЗапись() {
+        app.buttons["Предыдущий день"].firstMatch.tap()
+        _ = app.staticTexts["В сегодня"].waitForExistence(timeout: 3)
+        capture("вчера-01-экран")
+        app.buttons["Еда"].firstMatch.tap()
+        _ = app.buttons["Записать"].firstMatch.waitForExistence(timeout: 5)
+        app.buttons["Записать"].firstMatch.tap()
+        capture("вчера-02-подтверждение")
+    }
+
     func testXL04Семья() {
         app.tabBars.buttons["Семья"].tap()
         _ = app.navigationBars["Семья"].waitForExistence(timeout: 5)

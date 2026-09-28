@@ -108,16 +108,33 @@ struct TodayScreen: View {
                     }
                 }
                 .safeAreaInset(edge: .bottom) {
-                    if экранДень.этоСегодня {
+                    VStack(spacing: 0) {
+                        // Кнопки записи работают и на прошлом дне —
+                        // с 28.09 день доезжает до всех листов через
+                        // `AppState.деньЗаписи`, а не через десять
+                        // отдельных параметров.
+                        //
+                        // Фон — на ВСЕЙ полосе, а не только на сетке
+                        // кнопок. Своя `.regularMaterial` живёт внутри
+                        // `ActionGrid`, и строка над ним оставалась
+                        // прозрачной: на кадре 28.09 сквозь неё
+                        // просвечивал герой, и читались обе строки разом.
+                        if !экранДень.этоСегодня { пишемВоВчера }
                         ActionGrid(
                             portionGrams: dog?.servingGrams ?? 0,
                             isTravelling: isDogAlongside,
                             canWriteMedical: appState.can(.seeMedical)
                         ) { route = $0 }
-                    } else {
-                        возвратВСегодня
                     }
+                    .background(.regularMaterial)
                 }
+                // День записи ставится ровно тем, что показано, и
+                // снимается возвратом в сегодня. Снимать обязательно:
+                // иначе человек уйдёт с экрана и продолжит писать
+                // во вчера, сам того не зная.
+                .onChange(of: экранДень.начало) { _, _ in обновитьДеньЗаписи() }
+                .onAppear { обновитьДеньЗаписи() }
+                .onDisappear { appState.деньЗаписи = nil }
                 .navigationBarTitleDisplayMode(.inline)
                 .usageScreen(.today)
                 .toolbar { SettingsToolbarItem() }
@@ -125,34 +142,34 @@ struct TodayScreen: View {
         }
     }
 
-    /// Что стоит внизу вместо кнопок записи, когда показан прошлый день.
+    private func обновитьДеньЗаписи() {
+        appState.деньЗаписи = экранДень.этоСегодня ? nil : экранДень.начало
+    }
+
+    /// Полоса над кнопками на прошлом дне.
     ///
-    /// **Кнопки убраны нарочно, и это половина работы, а не решение.**
-    /// `TodayRouter` раздаёт листы записи, и ни один из них про
-    /// показываемый день не знает: каждый берёт `Date()` внутри себя.
-    /// Оставь я их — «Еда» во вчерашнем дне записала бы сегодняшнюю,
-    /// и человек увидел бы подтверждение, а запись легла бы не туда.
-    /// Это ровно тот класс, на котором Togo уже обжигался: подтверждение
-    /// есть, записи нет там, где её ждут.
-    ///
-    /// Отметить еду, дозу и уход за прошлый день **можно** — через план
-    /// дня выше: он знает назначенный час и пишет им.
-    ///
-    /// Чтобы кнопки писали во вчера, день надо провести до всех листов
-    /// записи. Это следующая работа, и она названа, а не забыта.
-    private var возвратВСегодня: some View {
-        VStack(spacing: Token.Space.s8) {
-            Text("Показан прошлый день. Отметить еду, дозу и уход за него можно в плане выше; остальное записывается только за сегодня.")
+    /// **Кнопки работают, и именно поэтому нужна полоса.** Молча
+    /// записать вчерашнюю еду опаснее, чем не записать: подтверждение
+    /// человек увидит, а куда оно легло — нет. Час подставляется тот же,
+    /// что сейчас, и это догадка — она названа и здесь, и в самом
+    /// подтверждении.
+    private var пишемВоВчера: some View {
+        HStack(spacing: Token.Space.s8) {
+            Image(systemName: "clock.arrow.circlepath")
+                .font(.system(size: Token.Size.iconSm))
+                .accessibilityHidden(true)
+            Text("Пишем в этот день")
                 .textStyle(AppFont.caption)
-                .foregroundStyle(Token.Ink.secondary)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            TGButton(title: "Вернуться в сегодня", variant: .primary, size: .medium,
-                     systemImage: "arrow.uturn.right") {
-                показанныйДень = now
-            }
+                .wraps()
+            Spacer(minLength: Token.Space.s8)
+            Button("В сегодня") { показанныйДень = now }
+                .textStyle(AppFont.captionEmphasis.color(Token.Action.doneText))
+                .fixedSize()
         }
+        .foregroundStyle(Token.Status.waitingText)
+        .frame(minHeight: Token.Size.tapTarget)
         .padding(.horizontal, Token.Spacing.screenPadding)
-        .padding(.bottom, Token.Space.s8)
+        .padding(.top, Token.Space.s8)
     }
 
     // MARK: Что случилось — то, из-за чего экран открыли

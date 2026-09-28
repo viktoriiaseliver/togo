@@ -26,17 +26,24 @@ struct EventLog {
     ///   - confirmation: что показать в тосте. Пусто — тост не показываем
     ///     (например, когда экран сам скажет о результате крупнее).
     ///   - configure: заполнение полей, специфичных для вида записи.
+    /// - Parameter at: момент записи. Пусто — берётся у `AppState`:
+    ///   сегодня это настоящие часы, а на прошлом дне — тот же час
+    ///   в том дне. Одна дорога вместо десяти: листы записи о выбранном
+    ///   дне не знают и знать не должны.
     @discardableResult
     func record(
         _ kind: LogKind,
         dog: Dog?,
-        at date: Date = .now,
+        at date: Date? = nil,
         confirmation: String?,
         haptic: Haptic = .success,
         allowDuplicate: Bool = false,
         configure: (LogEvent) -> Void = { _ in }
     ) -> LogEvent? {
         guard let dog else { return nil }
+
+        // Момент записи: переданный или взятый у состояния.
+        let date = date ?? appState.моментЗаписи
 
         // Права проверяются здесь, а не на каждом экране: это единственная
         // дверь, через которую в дневник попадает запись. Раньше `logBasics`
@@ -97,7 +104,16 @@ struct EventLog {
 
         haptic.play()
         if let confirmation {
-            appState.showUndo(confirmation, eventID: event.id)
+            // Записали не в сегодня — говорим об этом В подтверждении.
+            //
+            // Иначе человек, листавший вчера, увидит «Записано · Еда»
+            // и решит, что записал сегодняшнюю. Догадка о часе
+            // допустима только названной: у Togo уже записано, чем
+            // кончается подтверждение, которому нечем соответствовать.
+            let текст = appState.записьВПрошлое
+                ? confirmation + " · " + Fmt.shortDay(date) + ", " + Fmt.clock(date)
+                : confirmation
+            appState.showUndo(текст, eventID: event.id)
         }
         return event
     }

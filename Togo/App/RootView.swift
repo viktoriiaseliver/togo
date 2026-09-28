@@ -93,30 +93,60 @@ struct RootView: View {
 /// Каждая запись отменяется тостом; удаление обратимо 5 секунд.
 struct UndoToastView: View {
     @Environment(AppState.self) private var appState
+    /// Настройка размера текста: от неё зависит, строкой или столбцом
+    /// раскладывать плашку.
+    @Environment(\.dynamicTypeSize) private var размерТекста
     @Environment(\.modelContext) private var context
 
     var body: some View {
         @Bindable var appState = appState
         if let toast = appState.undo {
-            HStack(spacing: 12) {
-                Image(systemName: "checkmark.circle.fill")
-                    .foregroundStyle(Token.Action.doneText)
-                    .accessibilityHidden(true)
-                // Подпись вешаем на текст, а не на всю плашку: иначе она
-                // перекрывает собственное имя кнопки «Отменить», и до неё
-                // не добраться ни голосом, ни тестом.
-                Text(toast.message)
-                    .textStyle(AppFont.caption)
-                    .foregroundStyle(Token.Ink.primary)
-                    .wraps()
-                Spacer(minLength: 8)
-                Button("Отменить") { undo(toast) }
-                    .textStyle(AppFont.captionEmphasis)
-                    .foregroundStyle(Token.Status.overdueText)
+            // Подпись вешаем на текст, а не на всю плашку: иначе она
+            // перекрывает собственное имя кнопки «Отменить», и до неё
+            // не добраться ни голосом, ни тестом.
+            let текст = Text(toast.message)
+                .textStyle(AppFont.caption)
+                .foregroundStyle(Token.Ink.primary)
+                .wraps()
+            let отменить = Button("Отменить") { undo(toast) }
+                .textStyle(AppFont.captionEmphasis)
+                .foregroundStyle(Token.Status.overdueText)
+                .fixedSize()
+                .frame(minHeight: Token.Size.tapTarget)
+
+            // Строка — пока текст и кнопка делят ширину. На крупной
+            // системной настройке они её не делят: кадр 28.09 показал
+            // «Записан / о · Еда» и «Отмени / ть» — перенос ВНУТРИ слова,
+            // и в кнопке отмены тоже. Тогда столбцом: места вдвое
+            // больше, порядок чтения тот же. Четвёртый случай одного
+            // класса за день после плиток, дежурства и чипов ролей.
+            Group {
+                if размерТекста.isAccessibilitySize {
+                    VStack(alignment: .leading, spacing: Token.Space.s8) {
+                        HStack(spacing: 12) {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundStyle(Token.Action.doneText)
+                                .accessibilityHidden(true)
+                            текст
+                        }
+                        отменить
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                } else {
+                    HStack(spacing: 12) {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundStyle(Token.Action.doneText)
+                            .accessibilityHidden(true)
+                        текст
+                        Spacer(minLength: 8)
+                        отменить
+                    }
+                }
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 12)
-            .background(Token.Surface.card, in: Capsule())
+            .background(Token.Surface.card,
+                        in: RoundedRectangle(cornerRadius: Token.Radius.sheet, style: .continuous))
             .shadow(color: Token.Ink.primary.opacity(0.12), radius: 14, y: 4)
             .padding(.horizontal, Token.Spacing.screenPadding)
             .transition(.move(edge: .bottom).combined(with: .opacity))
