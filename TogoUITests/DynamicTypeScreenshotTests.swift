@@ -113,6 +113,31 @@ nonisolated final class DynamicTypeScreenshotTests: XCTestCase {
         capture("вчера-02-подтверждение")
     }
 
+    func testXL10Стул() {
+        app.buttons["Стул"].firstMatch.tap()
+        _ = app.staticTexts["форма"].firstMatch.waitForExistence(timeout: 5)
+        capture("xl-10-stool")
+        app.swipeUp()
+        capture("xl-10-stool-scrolled")
+    }
+
+    func testXL11Инцидент() {
+        app.buttons["Инцидент"].firstMatch.tap()
+        _ = app.staticTexts["что случилось"].firstMatch.waitForExistence(timeout: 5)
+        capture("xl-11-incident")
+    }
+
+    func testXL12Питание() {
+        app.tabBars.buttons["Стич"].tap()
+        let питание = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Питание")).firstMatch
+        _ = питание.waitForExistence(timeout: 5)
+        питание.tap()
+        _ = app.navigationBars.firstMatch.waitForExistence(timeout: 5)
+        capture("xl-12-feeding")
+        app.swipeUp()
+        capture("xl-12-feeding-scrolled")
+    }
+
     func testXL04Семья() {
         app.tabBars.buttons["Семья"].tap()
         _ = app.navigationBars["Семья"].waitForExistence(timeout: 5)

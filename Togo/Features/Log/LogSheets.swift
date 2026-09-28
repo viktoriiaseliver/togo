@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 import SwiftData
 
 /// Стул — самая частая запись. Один тап в норме, два — когда что-то не так.
@@ -36,7 +37,13 @@ struct StoolSheet: View {
             }
 
             TGSectionHeader(title: "форма")
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 5), spacing: 8) {
+            // Пять колонок — пока подписи в них помещаются. Ширина
+            // колонки растёт вместе с кеглем, и на доступных размерах
+            // сетка сама сходится к двум-трём: кадр 28.09 показал, что
+            // при пяти жёстких «Колбаска» и «Кашица» остаются мелкими,
+            // пока весь лист вырос.
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: UIFontMetrics(forTextStyle: .body)
+                                                       .scaledValue(for: 68)), spacing: 8)], spacing: 8) {
                 ForEach(StoolForm.allCases, id: \.self) { candidate in
                     Button { pick(candidate) } label: {
                         VStack(spacing: 6) {
@@ -45,8 +52,12 @@ struct StoolSheet: View {
                             Image(systemName: candidate.symbol)
                                 .font(.system(size: 20, weight: .regular))
                                 .foregroundStyle(Token.Ink.silhouette)
-                            Text(candidate.title).font(.system(size: 11, weight: .medium))
-                                .foregroundStyle(Token.Ink.primary)
+                            // По токену, а не голым `Font.system(size:)`:
+                            // голый размер настройку iOS не спрашивает.
+                            Text(candidate.title)
+                                .textStyle(AppFont.micro, color: Token.Ink.primary)
+                                .multilineTextAlignment(.center)
+                                .minimumScaleFactor(0.5)
                         }
                         .frame(maxWidth: .infinity, minHeight: 68)
                         .background(
