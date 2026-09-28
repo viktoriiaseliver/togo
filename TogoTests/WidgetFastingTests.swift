@@ -98,8 +98,18 @@ struct WidgetFastingTests {
     func снимокЗнаетПроЕду() throws {
         let корень = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent().deletingLastPathComponent()
+        // Строки виджета переехали в `TogoShared` 28.09: внутри
+        // `TogoWidgets` они были `private` и недостижимы для тестов.
+        // Сторож переехал следом — иначе он искал бы в файле, где
+        // предмета больше нет, и покраснел бы на переносе, а не
+        // на пропаже.
+        //
+        // И он остаётся ТЕКСТОВЫМ, то есть слабым: видит, что имя
+        // упомянуто, и не видит, что от упоминания происходит. Теперь,
+        // когда `SnapshotText.mealLine` достижим, его место — проверка
+        // поведения: снимок с едой обязан дать строку с числом.
         let виджет = try String(
-            contentsOf: корень.appendingPathComponent("TogoWidgets/TodayWidget.swift"),
+            contentsOf: корень.appendingPathComponent("TogoShared/Domain/SnapshotText.swift"),
             encoding: .utf8)
 
         #expect(виджет.contains("snapshot.lastMealAt"), """

@@ -96,44 +96,16 @@ struct TodayWidgetView: View {
         }
     }
 
-    private var sinceText: String {
-        // Тишина — первой: за потолком число отвечает не на тот вопрос,
-        // и на этой самой строке стояло «моча 434 ч назад». Правило
-        // приезжает решённым из `UrineSilence`, виджет его не считает.
-        if let тишина = snapshot.urineSilenceSince {
-            return String(localized: "отметок мочи нет с \(Fmt.shortDay(тишина))")
-        }
-        guard let seconds = snapshot.sinceUrineSeconds else {
-            return String(localized: "записей пока нет")
-        }
-        return String(localized: "моча \(Fmt.duration(seconds)) назад")
-    }
+    // Сами строки живут в `TogoShared/Domain/SnapshotText.swift`.
+    //
+    // Вынесены 28.09: здесь они были `private var` внутри `TogoWidgets`,
+    // а тесты живут на `@testable import Togo` — до них не достать
+    // ни при какой формулировке. Тестировщик напечатал это границей
+    // своего сторожа: из трёх поверхностей правила тишины сторожилась
+    // одна. Непроверяемое лечится входом, а не старанием.
+    private var sinceText: String { SnapshotText.sinceText(snapshot) }
 
-    /// Еда — первой строкой после вердикта, потому что ради неё
-    /// приложение и открывают. Порядок: сколько прошло, потом сколько
-    /// из скольких — «2 из 2» отвечает на вопрос «уже кормили?»,
-    /// а «3 ч назад» на вопрос «пора ли».
-    private var едаСтрокой: String {
-        guard let last = snapshot.lastMealAt else {
-            return snapshot.mealsPlanned > 0
-                ? String(localized: "ещё не ели")
-                : String(localized: "еды пока нет")
-        }
-        let прошло = Fmt.duration(Date().timeIntervalSince(last))
-        guard snapshot.mealsPlanned > 0 else {
-            return String(localized: "ел \(прошло) назад")
-        }
-        return String(localized: "ел \(прошло) назад · \(snapshot.mealsToday) из \(snapshot.mealsPlanned)")
-    }
+    private var едаСтрокой: String { SnapshotText.mealLine(snapshot, now: Date()) }
 
-    private var inlineText: String {
-        // Третья поверхность той же величины, и самая тесная: в строке
-        // «Стич · 434 ч» числу верят больше всего — оно стоит одно.
-        // Даты тут нет места, поэтому говорим короткое честное.
-        if snapshot.urineSilenceSince != nil {
-            return "\(snapshot.dogName) · \(String(localized: "нет отметок"))"
-        }
-        guard let seconds = snapshot.sinceUrineSeconds else { return snapshot.dogName }
-        return "\(snapshot.dogName) · \(Fmt.duration(seconds))"
-    }
+    private var inlineText: String { SnapshotText.inlineText(snapshot) }
 }

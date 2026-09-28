@@ -1,0 +1,70 @@
+import Foundation
+
+/// Строки, которые виджет и локскрин печатают из снимка.
+///
+/// **Вынесено из `TogoWidgets` 28.09, и не ради порядка.** Тестировщик
+/// закрыл правило тишины мочи сторожем и напечатал его границу:
+/// из трёх поверхностей правила сторожилась **одна**. `sinceText`
+/// и `inlineText` были `private var` внутри `TogoWidgets`, а `TogoTests`
+/// живёт на `@testable import Togo` — до них не достать ни при какой
+/// формулировке теста.
+///
+/// > Это не «непроверено», а **«непроверяемо»**, и лечится оно
+/// > переделкой входа, а не старанием. Тот же ход, что у Timer
+/// > с карточкой Live Activity: вместо системного контекста — обычные
+/// > значения, и поверхность становится досягаемой.
+///
+/// `now` приходит аргументом по той же причине. Внутри стояло `Date()`,
+/// и строку про еду нельзя было проверить вовсе: у теста нет способа
+/// сказать, который час.
+nonisolated enum SnapshotText {
+
+    /// Сколько прошло с последней отметки мочи — или что сказать
+    /// вместо числа.
+    ///
+    /// Тишина проверяется первой: за потолком число отвечает не на тот
+    /// вопрос, и на этой самой строке стояло «моча 434 ч назад» на
+    /// дневнике, который просто забросили. Решение приезжает готовым
+    /// в `snapshot.urineSilenceSince` — виджет его не считает, иначе
+    /// это была бы четвёртая реализация одного правила.
+    static func sinceText(_ snapshot: WidgetSnapshot) -> String {
+        if let тишина = snapshot.urineSilenceSince {
+            return String(localized: "отметок мочи нет с \(Fmt.shortDay(тишина))")
+        }
+        guard let seconds = snapshot.sinceUrineSeconds else {
+            return String(localized: "записей пока нет")
+        }
+        return String(localized: "моча \(Fmt.duration(seconds)) назад")
+    }
+
+    /// Еда — первой строкой после вердикта, потому что ради неё
+    /// приложение и открывают. Порядок: сколько прошло, потом сколько
+    /// из скольких — «2 из 2» отвечает на вопрос «уже кормили?»,
+    /// а «3 ч назад» на вопрос «пора ли».
+    static func mealLine(_ snapshot: WidgetSnapshot, now: Date) -> String {
+        guard let last = snapshot.lastMealAt else {
+            return snapshot.mealsPlanned > 0
+                ? String(localized: "ещё не ели")
+                : String(localized: "еды пока нет")
+        }
+        let прошло = Fmt.duration(now.timeIntervalSince(last))
+        guard snapshot.mealsPlanned > 0 else {
+            return String(localized: "ел \(прошло) назад")
+        }
+        return String(localized: "ел \(прошло) назад · \(snapshot.mealsToday) из \(snapshot.mealsPlanned)")
+    }
+
+    /// Самая тесная поверхность: строка в «острове», где всё помещается
+    /// в несколько знаков.
+    ///
+    /// Числу здесь верят больше всего — оно стоит одно, без подписи.
+    /// Даты тут нет места, поэтому за потолком тишины говорим короткое
+    /// честное, а не большее число.
+    static func inlineText(_ snapshot: WidgetSnapshot) -> String {
+        if snapshot.urineSilenceSince != nil {
+            return "\(snapshot.dogName) · \(String(localized: "нет отметок"))"
+        }
+        guard let seconds = snapshot.sinceUrineSeconds else { return snapshot.dogName }
+        return "\(snapshot.dogName) · \(Fmt.duration(seconds))"
+    }
+}
