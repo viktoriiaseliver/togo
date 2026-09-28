@@ -108,12 +108,12 @@ struct PaywallScreen: View {
     }
 
     private var buyTitle: String {
-        guard let selected, let period = selected.subscription?.subscriptionPeriod else { return "Выбери план" }
+        guard let selected, let period = selected.subscription?.subscriptionPeriod else { return String(localized: "Выбери план") }
         let price = "\(selected.displayPrice) \(Self.billing(period))"
         if let trial = trialLength(selected) {
-            return "\(trial) бесплатно · дальше \(price)"
+            return String(localized: "\(trial) бесплатно · дальше \(price)")
         }
-        return "Подписаться · \(price)"
+        return String(localized: "Подписаться · \(price)")
     }
 
     private var featureList: some View {
@@ -182,7 +182,7 @@ struct PaywallScreen: View {
     private func subscriptionCaption(_ product: Product) -> String {
         guard let period = product.subscription?.subscriptionPeriod else { return "" }
         if let trial = trialLength(product) {
-            return "\(Self.billing(period)) · сначала \(trial) бесплатно"
+            return String(localized: "\(Self.billing(period)) · сначала \(trial) бесплатно")
         }
         return Self.billing(period)
     }
@@ -200,19 +200,19 @@ struct PaywallScreen: View {
     /// Раньше строка складывалась как «каждые 1 месяц».
     static func billing(_ period: Product.SubscriptionPeriod) -> String {
         switch (period.unit, period.value) {
-        case (.day, 1): return "в день"
-        case (.week, 1): return "в неделю"
-        case (.month, 1): return "в месяц"
-        case (.year, 1): return "в год"
-        default: return "каждые \(length(period))"
+        case (.day, 1): return String(localized: "в день")
+        case (.week, 1): return String(localized: "в неделю")
+        case (.month, 1): return String(localized: "в месяц")
+        case (.year, 1): return String(localized: "в год")
+        default: return String(localized: "каждые \(length(period))")
         }
     }
 
     static func length(_ period: Product.SubscriptionPeriod) -> String {
         switch (period.unit, period.value) {
-        case (.week, 1): return "неделя"
-        case (.month, 1): return "месяц"
-        case (.year, 1): return "год"
+        case (.week, 1): return String(localized: "неделя")
+        case (.month, 1): return String(localized: "месяц")
+        case (.year, 1): return String(localized: "год")
         case (.day, let n): return Fmt.days(n)
         case (.week, let n): return String(localized: "\(n) недель")
         case (.month, let n): return String(localized: "\(n) месяцев")

@@ -12,9 +12,9 @@ nonisolated enum BackupError: LocalizedError, Sendable {
     var errorDescription: String? {
         switch self {
         case .unreadable:
-            "Файл не похож на копию из Togo. Нужен файл .json, который приложение сохранило само."
+            String(localized: "Файл не похож на копию из Togo. Нужен файл .json, который приложение сохранило само.")
         case .futureFormat(let version):
-            "Файл сделан более новой версией приложения (формат \(version)). Обнови Togo — и он его прочитает."
+            String(localized: "Файл сделан более новой версией приложения (формат \(version)). Обнови Togo — и он его прочитает.")
         }
     }
 }
@@ -204,15 +204,15 @@ nonisolated enum BackupService {
 
         var title: String {
             switch self {
-            case .replace: "Заменить всё"
-            case .merge: "Добавить недостающее"
+            case .replace: String(localized: "Заменить всё")
+            case .merge: String(localized: "Добавить недостающее")
             }
         }
 
         var detail: String {
             switch self {
-            case .replace: "то, что сейчас на телефоне, будет стёрто"
-            case .merge: "существующие записи останутся, повторы не задвоятся"
+            case .replace: String(localized: "то, что сейчас на телефоне, будет стёрто")
+            case .merge: String(localized: "существующие записи останутся, повторы не задвоятся")
             }
         }
     }

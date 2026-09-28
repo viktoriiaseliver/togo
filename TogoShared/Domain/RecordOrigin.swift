@@ -32,10 +32,10 @@ public enum RecordOrigin: String, Codable, CaseIterable, Sendable {
     /// Как назвать пользователю. Врач этих слов не видит.
     public var title: String {
         switch self {
-        case .logged: return "отмечено сразу"
-        case .recalled: return "внесено позже"
-        case .parsed: return "записано через чат"
-        case .period: return "период, по памяти"
+        case .logged: return String(localized: "отмечено сразу")
+        case .recalled: return String(localized: "внесено позже")
+        case .parsed: return String(localized: "записано через чат")
+        case .period: return String(localized: "период, по памяти")
         }
     }
 

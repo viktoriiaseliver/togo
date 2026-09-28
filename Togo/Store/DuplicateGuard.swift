@@ -75,6 +75,6 @@ enum DuplicateGuard {
 
     /// Что сказать человеку про найденный дубль.
     static func message(_ kind: LogKind, at date: Date) -> String {
-        "\(kind.title) уже записана в \(Fmt.clock(date))"
+        String(localized: "\(kind.title) уже записана в \(Fmt.clock(date))")
     }
 }

@@ -45,7 +45,7 @@ struct CourseFinishSheet: View {
 
     /// «82 дозы, 94% вовремя — вы справились вдвоём.»
     private var praise: String {
-        guard summary.dosesGiven > 0 else { return "Записи остаются, вкладка прячется." }
+        guard summary.dosesGiven > 0 else { return String(localized: "Записи остаются, вкладка прячется.") }
         let doses = String(localized: "\(summary.dosesGiven) доз")
         guard let share = summary.onTimeShare else { return doses }
         return "\(doses), \(Int((share * 100).rounded()))% вовремя"

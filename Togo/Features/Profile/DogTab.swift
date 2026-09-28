@@ -110,7 +110,7 @@ struct DogTab: View {
 
     private func careSummary(_ dog: Dog) -> String? {
         let due = dog.careTasks.filter { $0.isDue() }.count
-        return due > 0 ? "\(due) сегодня" : nil
+        return due > 0 ? String(localized: "\(due) сегодня") : nil
     }
 
     private func trainingSummary(_ dog: Dog) -> String? {

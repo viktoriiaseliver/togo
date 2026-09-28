@@ -28,10 +28,10 @@ nonisolated struct FeedingReport: Equatable, Sendable {
 
         var title: String {
             switch self {
-            case .notEnoughData: "Пока не с чем сравнивать"
-            case .underNorm: "Ест меньше нормы"
-            case .onNorm: "Ест по норме"
-            case .overNorm: "Ест больше нормы"
+            case .notEnoughData: String(localized: "Пока не с чем сравнивать")
+            case .underNorm: String(localized: "Ест меньше нормы")
+            case .onNorm: String(localized: "Ест по норме")
+            case .overNorm: String(localized: "Ест больше нормы")
             }
         }
     }

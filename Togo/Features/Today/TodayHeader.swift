@@ -127,7 +127,7 @@ struct TodayHeader: View {
     var identityLine: String {
         let weight = dog.map { Fmt.weight($0.weightKg) } ?? "—"
         guard let duty else { return weight }
-        return weight + " · дежурит " + duty.name
+        return weight + String(localized: " · дежурит ") + duty.name
     }
 }
 

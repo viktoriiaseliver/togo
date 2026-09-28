@@ -65,7 +65,7 @@ struct SitterBriefingScreen: View {
 
     private var untilText: String {
         guard let until else { return "" }
-        return " до \(Fmt.shortDay(until))"
+        return String(localized: " до \(Fmt.shortDay(until))")
     }
 
     private var rangeText: String {

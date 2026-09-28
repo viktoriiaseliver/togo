@@ -273,7 +273,7 @@ struct FamilyStep: View {
 
     /// Ссылки-приглашения пока нет: показывать её на онбординге —
     /// значит обещать обмен между телефонами, которого ещё не существует.
-    private var inviteLink: String { "участник заводится в «Семье»" }
+    private var inviteLink: String { String(localized: "участник заводится в «Семье»") }
 
     var body: some View {
         TGScreen(title: "Кто ещё за ним ходит") {

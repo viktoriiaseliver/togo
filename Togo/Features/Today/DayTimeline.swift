@@ -203,7 +203,7 @@ struct TimelineRow: View {
     /// («пописал · стул») здесь не повторяем: он и так стоит строками
     /// ниже, и раньше одно и то же было написано дважды.
     private var subtitle: String? {
-        if isCancelled { return "след остаётся" }
+        if isCancelled { return String(localized: "след остаётся") }
         guard block.isSpan else { return event.subtitle }
         let minutes = Int(block.endedAt.timeIntervalSince(block.startedAt)) / 60
         return String(localized: "\(minutes) минут")

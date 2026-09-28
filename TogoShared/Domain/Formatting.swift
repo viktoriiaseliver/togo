@@ -60,9 +60,9 @@ nonisolated enum Fmt {
     /// Дальше десятого не идём: если рвота случилась одиннадцать раз,
     /// человек уже в клинике, а не читает подпись.
     static func ordinal(_ value: Int) -> String {
-        let words = ["", "первый", "второй", "третий", "четвёртый", "пятый",
-                     "шестой", "седьмой", "восьмой", "девятый", "десятый"]
-        return words.indices.contains(value) ? words[value] : "\(value)-й"
+        let words = ["", String(localized: "первый"), String(localized: "второй"), String(localized: "третий"), String(localized: "четвёртый"), String(localized: "пятый"),
+                     String(localized: "шестой"), String(localized: "седьмой"), String(localized: "восьмой"), String(localized: "девятый"), String(localized: "десятый")]
+        return words.indices.contains(value) ? words[value] : String(localized: "\(value)-й")
     }
 
     /// Промежуток для ленты: коротко и без ложной точности.
@@ -73,7 +73,7 @@ nonisolated enum Fmt {
     /// часов минуты выбрасываем совсем.
     static func gap(_ interval: TimeInterval) -> String {
         let minutes = max(0, Int(interval / 60))
-        if minutes < 90 { return "\(minutes) мин" }
+        if minutes < 90 { return String(localized: "\(minutes) мин") }
 
         let hours = Double(minutes) / 60
         if minutes >= 120 { return часыМинуты(секунд: Int(hours.rounded()) * 3600) }

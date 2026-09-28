@@ -87,7 +87,7 @@ struct UsageLogScreen: View {
     private var summaryLine: String {
         var parts = ["\(Fmt.decimal((report.recordsPerDay * 10).rounded() / 10)) записей в день"]
         if report.averageSessionLength > 0 {
-            parts.append("сеанс в среднем \(Fmt.duration(report.averageSessionLength))")
+            parts.append(String(localized: "сеанс в среднем \(Fmt.duration(report.averageSessionLength))"))
         }
         return parts.joined(separator: " · ")
     }

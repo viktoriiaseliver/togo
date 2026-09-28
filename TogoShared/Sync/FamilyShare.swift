@@ -27,9 +27,9 @@ enum FamilyShare {
 
         var errorDescription: String? {
             switch self {
-            case .noAccount: "Войди в iCloud на телефоне — приглашение живёт там."
-            case .noEntitlement: "У этой сборки нет права на iCloud."
-            case .notOwner: "Приглашать может только владелец дневника."
+            case .noAccount: String(localized: "Войди в iCloud на телефоне — приглашение живёт там.")
+            case .noEntitlement: String(localized: "У этой сборки нет права на iCloud.")
+            case .notOwner: String(localized: "Приглашать может только владелец дневника.")
             }
         }
     }

@@ -43,10 +43,10 @@ final class MarkerSession {
     }
 
     func hint(at now: Date = Date()) -> String {
-        if !isRunning { return "коротко — это правильно" }
-        if isOvertime(at: now) { return "три минуты прошли — заканчивай на удачном повторе" }
-        if isWaitingForMark { return "маркируй прямо сейчас" }
-        return "норма 2–5 мин · дальше устаёт"
+        if !isRunning { return String(localized: "коротко — это правильно") }
+        if isOvertime(at: now) { return String(localized: "три минуты прошли — заканчивай на удачном повторе") }
+        if isWaitingForMark { return String(localized: "маркируй прямо сейчас") }
+        return String(localized: "норма 2–5 мин · дальше устаёт")
     }
 
     func start(at now: Date = Date()) {

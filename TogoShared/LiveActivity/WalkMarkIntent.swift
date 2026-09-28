@@ -98,6 +98,6 @@ nonisolated enum WalkMarkKind: String, AppEnum, CaseIterable {
         }
     }
 
-    var title: String { self == .urine ? "Пописал" : "Стул" }
+    var title: String { self == .urine ? String(localized: "Пописал") : String(localized: "Стул") }
     var symbol: String { self == .urine ? "drop" : "leaf" }
 }

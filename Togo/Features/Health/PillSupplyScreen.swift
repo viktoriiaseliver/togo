@@ -36,11 +36,11 @@ struct PillSupplyScreen: View {
     }
 
     private var subtitle: String? {
-        guard let supply else { return "включи счёт — предупредим заранее" }
+        guard let supply else { return String(localized: "включи счёт — предупредим заранее") }
         if let shortfall = supply.shortfallDays, let ends = courseEnds {
-            return "Курс идёт до \(Fmt.shortDay(ends)) — не хватит \(Fmt.days(shortfall)). Аптеки везут 2–3 дня."
+            return String(localized: "Курс идёт до \(Fmt.shortDay(ends)) — не хватит \(Fmt.days(shortfall)). Аптеки везут 2–3 дня.")
         }
-        return supply.lastDay.map { "хватит до \(Fmt.shortDay($0))" }
+        return supply.lastDay.map { String(localized: "хватит до \(Fmt.shortDay($0))") }
     }
 
     private func countCard(_ supply: PillSupply) -> some View {

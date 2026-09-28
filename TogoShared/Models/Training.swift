@@ -30,8 +30,8 @@ final class TrainingStep {
         set { statusRaw = newValue.rawValue }
     }
 
-    var summary: String { "\(place), \(distanceMeters) м" }
-    var fullSummary: String { "\(cue) · \(place) · \(person) · \(distanceMeters) метров" }
+    var summary: String { String(localized: "\(place), \(distanceMeters) м") }
+    var fullSummary: String { String(localized: "\(cue) · \(place) · \(person) · \(distanceMeters) метров") }
     var isClosed: Bool { consecutiveGoodSessions >= 2 }
 }
 

@@ -136,21 +136,21 @@ final class CareTask {
 
     /// Что написать в строке справа. Одна фраза на все три сорта ухода.
     func statusText(on date: Date = Date()) -> String {
-        guard isInSeason(on: date) else { return "вне сезона" }
+        guard isInSeason(on: date) else { return String(localized: "вне сезона") }
         switch kind {
         case .daily:
-            if isDoneToday(on: date) { return streak > 1 ? "\(Fmt.days(streak)) подряд" : "сегодня сделали" }
-            return streak > 1 ? "серия \(Fmt.days(streak))" : "сегодня"
+            if isDoneToday(on: date) { return streak > 1 ? String(localized: "\(Fmt.days(streak)) подряд") : String(localized: "сегодня сделали") }
+            return streak > 1 ? String(localized: "серия \(Fmt.days(streak))") : String(localized: "сегодня")
         case .periodic:
-            guard let days = daysUntilDue(from: date) else { return "когда делали?" }
-            if days < 0 { return "просрочено на \(Fmt.days(-days))" }
-            if days == 0 { return "сегодня" }
-            if days == 1 { return "завтра" }
-            return "через \(Fmt.days(days))"
+            guard let days = daysUntilDue(from: date) else { return String(localized: "когда делали?") }
+            if days < 0 { return String(localized: "просрочено на \(Fmt.days(-days))") }
+            if days == 0 { return String(localized: "сегодня") }
+            if days == 1 { return String(localized: "завтра") }
+            return String(localized: "через \(Fmt.days(days))")
         case .dated:
-            guard let days = daysUntilDue(from: date) else { return "когда делали?" }
-            if days < 0 { return "просрочено" }
-            if days == 0 { return "сегодня" }
+            guard let days = daysUntilDue(from: date) else { return String(localized: "когда делали?") }
+            if days < 0 { return String(localized: "просрочено") }
+            if days == 0 { return String(localized: "сегодня") }
             return Fmt.shortDay(dueDate ?? date)
         }
     }
@@ -279,8 +279,8 @@ final class Medication {
     var doses: [DoseRecord] { dosesStorage ?? [] }
 
     var scheduleSummary: String {
-        let clock = times.sorted().map { String(format: "%02d:%02d", $0 / 60, $0 % 60) }.joined(separator: " и ")
-        return fastingMinutes > 0 ? "\(clock) · натощак \(fastingMinutes) мин" : clock
+        let clock = times.sorted().map { String(format: "%02d:%02d", $0 / 60, $0 % 60) }.joined(separator: String(localized: " и "))
+        return fastingMinutes > 0 ? String(localized: "\(clock) · натощак \(fastingMinutes) мин") : clock
     }
 }
 

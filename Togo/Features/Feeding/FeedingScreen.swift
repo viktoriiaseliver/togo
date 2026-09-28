@@ -166,7 +166,7 @@ struct FeedingScreen: View {
 
     private var planSubtitle: String? {
         guard let out = plan.firstRunOut, let what = plan.whatRunsOutFirst else { return nil }
-        return "\(what) закончится \(Fmt.shortDay(out))"
+        return String(localized: "\(what) закончится \(Fmt.shortDay(out))")
     }
 
     private func restockText(_ dog: Dog) -> String {
@@ -176,7 +176,7 @@ struct FeedingScreen: View {
                 let packs = stock.packsNeeded(forDays: FoodPlanner.planningDays, at: now)
                 let unit = stock.kind.unitName(count: Double(packs))
                 let name = stock.brand.isEmpty ? stock.kind.title.lowercased() : stock.brand
-                return "\(name): \(packs) \(unit) на месяц"
+                return String(localized: "\(name): \(packs) \(unit) на месяц")
             }
         return нужно.joined(separator: " · ")
     }

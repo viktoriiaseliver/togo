@@ -277,10 +277,10 @@ struct DocumentsScreen: View {
 
     private var lostText: String? {
         var parts = ["Потерялась собака: \(dog.name), \(dog.breed ?? "метис"), \(Fmt.weight(dog.weightKg))"]
-        if let age = dog.ageDescription { parts.append("Возраст: \(age)") }
-        if let chip = dog.chipNumber, !chip.isEmpty { parts.append("Чип: \(chip)") }
-        if let marks = dog.distinctiveMarks, !marks.isEmpty { parts.append("Приметы: \(marks)") }
-        if let phone = dog.vetPhone, !phone.isEmpty { parts.append("Ветеринар: \(phone)") }
+        if let age = dog.ageDescription { parts.append(String(localized: "Возраст: \(age)")) }
+        if let chip = dog.chipNumber, !chip.isEmpty { parts.append(String(localized: "Чип: \(chip)")) }
+        if let marks = dog.distinctiveMarks, !marks.isEmpty { parts.append(String(localized: "Приметы: \(marks)")) }
+        if let phone = dog.vetPhone, !phone.isEmpty { parts.append(String(localized: "Ветеринар: \(phone)")) }
         return parts.count > 1 ? parts.joined(separator: "\n") : nil
     }
 }

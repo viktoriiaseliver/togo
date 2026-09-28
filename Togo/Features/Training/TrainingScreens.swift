@@ -45,10 +45,10 @@ struct SessionSummarySheet: View {
     }
 
     private var verdictLine: String {
-        if !session.countsTowardProgress { return "после трёх минут прогресс не пишем" }
-        if session.isGoodSession { return "получилось · шаг почти закрыт" }
-        if session.isPoorSession { return "тяжело — стоит вернуться на шаг назад" }
-        return "нормально · держим этот шаг"
+        if !session.countsTowardProgress { return String(localized: "после трёх минут прогресс не пишем") }
+        if session.isGoodSession { return String(localized: "получилось · шаг почти закрыт") }
+        if session.isPoorSession { return String(localized: "тяжело — стоит вернуться на шаг назад") }
+        return String(localized: "нормально · держим этот шаг")
     }
 
     private var observationsCard: some View {
@@ -78,11 +78,11 @@ struct SessionSummarySheet: View {
     }
 
     private var nextStepText: String {
-        guard let step else { return "Повтори то же самое ещё раз: одно удачное занятие — не навык." }
+        guard let step else { return String(localized: "Повтори то же самое ещё раз: одно удачное занятие — не навык.") }
         if step.isClosed {
-            return "Шаг закрыт. Меняй одно условие: место, человека или дистанцию — но только что-то одно за раз."
+            return String(localized: "Шаг закрыт. Меняй одно условие: место, человека или дистанцию — но только что-то одно за раз.")
         }
-        return "\(step.summary), ещё раз. Одно удачное занятие — не навык; нужно второе, чтобы идти дальше."
+        return String(localized: "\(step.summary), ещё раз. Одно удачное занятие — не навык; нужно второе, чтобы идти дальше.")
     }
 }
 

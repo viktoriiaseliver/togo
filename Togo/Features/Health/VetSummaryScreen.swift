@@ -283,18 +283,18 @@ nonisolated enum VetSummaryText {
     static func plain(_ summary: VetSummary, delta: [String], dog: Dog?) -> String {
         var lines: [String] = []
         if let dog { lines.append("\(dog.name), \(Fmt.weight(dog.weightKg))") }
-        lines.append("Период: \(Fmt.shortDay(summary.from)) — \(Fmt.shortDay(summary.to))")
+        lines.append(String(localized: "Период: \(Fmt.shortDay(summary.from)) — \(Fmt.shortDay(summary.to))"))
 
         if let share = summary.onTimeShare {
             lines.append("Доз вовремя: \(Int((share * 100).rounded()))% из \(summary.totalDoses)"
-                         + (summary.dosesShifted > 0 ? ", со сдвигом \(summary.dosesShifted)" : "")
-                         + (summary.dosesSkipped > 0 ? ", пропущено \(summary.dosesSkipped)" : ""))
+                         + (summary.dosesShifted > 0 ? String(localized: ", со сдвигом \(summary.dosesShifted)") : "")
+                         + (summary.dosesSkipped > 0 ? String(localized: ", пропущено \(summary.dosesSkipped)") : ""))
         }
         if summary.incidentTotal > 0 {
-            lines.append("Инциденты: \(summary.incidentTotal)"
+            lines.append(String(localized: "Инциденты: \(summary.incidentTotal)")
                          + (summary.incidentDetail.map { " (\($0))" } ?? ""))
         }
-        if let weight = summary.weightDelta { lines.append("Вес: \(weight)") }
+        if let weight = summary.weightDelta { lines.append(String(localized: "Вес: \(weight)")) }
         lines.append(contentsOf: delta)
         return lines.joined(separator: "\n")
     }

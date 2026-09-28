@@ -267,11 +267,11 @@ nonisolated enum HistoryFilter: String, CaseIterable, Sendable {
 
     var title: String {
         switch self {
-        case .all: "Всё"
-        case .stool: "Стул"
-        case .symptoms: "Симптомы"
-        case .reactions: "Срывы"
-        case .weight: "Вес"
+        case .all: String(localized: "Всё")
+        case .stool: String(localized: "Стул")
+        case .symptoms: String(localized: "Симптомы")
+        case .reactions: String(localized: "Срывы")
+        case .weight: String(localized: "Вес")
         }
     }
 
@@ -288,21 +288,21 @@ nonisolated enum HistoryFilter: String, CaseIterable, Sendable {
 
     var chartTitle: String {
         switch self {
-        case .all: "Выходы · 30 дней"
-        case .stool: "Стул · 30 дней"
-        case .symptoms: "Инциденты · 30 дней"
-        case .reactions: "Срывы · 30 дней"
-        case .weight: "Вес · 30 дней"
+        case .all: String(localized: "Выходы · 30 дней")
+        case .stool: String(localized: "Стул · 30 дней")
+        case .symptoms: String(localized: "Инциденты · 30 дней")
+        case .reactions: String(localized: "Срывы · 30 дней")
+        case .weight: String(localized: "Вес · 30 дней")
         }
     }
 
     var chartExplainer: String {
         switch self {
-        case .all: "Сколько раз в день выходили. Ровная линия — устоявшийся режим."
-        case .stool: "Выше — жиже. Терракотовые столбики — дни с кровью или слизью."
-        case .symptoms: "Столбик есть — был инцидент. Пусто — и хорошо."
-        case .reactions: "Сколько раз собака срывалась за день. Смотреть надо не на отдельный день, а на то, куда идёт линия за месяц."
-        case .weight: "Зелёная полоса — коридор, который назвал врач."
+        case .all: String(localized: "Сколько раз в день выходили. Ровная линия — устоявшийся режим.")
+        case .stool: String(localized: "Выше — жиже. Терракотовые столбики — дни с кровью или слизью.")
+        case .symptoms: String(localized: "Столбик есть — был инцидент. Пусто — и хорошо.")
+        case .reactions: String(localized: "Сколько раз собака срывалась за день. Смотреть надо не на отдельный день, а на то, куда идёт линия за месяц.")
+        case .weight: String(localized: "Зелёная полоса — коридор, который назвал врач.")
         }
     }
 
@@ -432,9 +432,9 @@ nonisolated enum DayMarker: Sendable {
     var spoken: String? {
         switch self {
         case .none: nil
-        case .ordinary: "записи есть"
-        case .alarm: "тревога"
-        case .medical: "лечение"
+        case .ordinary: String(localized: "записи есть")
+        case .alarm: String(localized: "тревога")
+        case .medical: String(localized: "лечение")
         }
     }
 }

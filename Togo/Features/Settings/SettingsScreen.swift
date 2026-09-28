@@ -332,10 +332,10 @@ struct NotificationSettingsScreen: View {
 
     private func readableStatus() async -> String {
         switch await NotificationCenterService.authorizationStatus() {
-        case .authorized, .provisional, .ephemeral: "разрешены"
-        case .denied: "запрещены"
-        case .notDetermined: "ещё не спрашивали"
-        @unknown default: "неизвестно"
+        case .authorized, .provisional, .ephemeral: String(localized: "разрешены")
+        case .denied: String(localized: "запрещены")
+        case .notDetermined: String(localized: "ещё не спрашивали")
+        @unknown default: String(localized: "неизвестно")
         }
     }
 

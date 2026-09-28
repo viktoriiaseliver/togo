@@ -84,14 +84,14 @@ struct MarkGroup: Identifiable {
     /// имя вида здесь означало бы совсем другое событие.
     var title: String {
         switch kind {
-        case .outing: "пописал"
-        case .stool: "сходил по-большому"
-        case .water: "попил"
-        case .treat: "лакомство"
-        case .training: "занятие"
-        case .reaction: "сорвался"
-        case .incident: "инцидент"
-        case .note: representative.note ?? "заметка"
+        case .outing: String(localized: "пописал")
+        case .stool: String(localized: "сходил по-большому")
+        case .water: String(localized: "попил")
+        case .treat: String(localized: "лакомство")
+        case .training: String(localized: "занятие")
+        case .reaction: String(localized: "сорвался")
+        case .incident: String(localized: "инцидент")
+        case .note: representative.note ?? String(localized: "заметка")
         default: kind.title.lowercased()
         }
     }

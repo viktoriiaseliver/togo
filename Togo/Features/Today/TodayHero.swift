@@ -125,17 +125,17 @@ struct TodayHero: View {
         // Тот же дефект жил в строке «5 5 напоминаний ждут даты».
         let выходы = String(localized: "\(outingsToday) выходов")
         if outingsToday < usual {
-            return "Обычно выходите чаще · \(выходы) из \(usual) за день"
+            return String(localized: "Обычно выходите чаще · \(выходы) из \(usual) за день")
         }
-        return "\(выходы) за день — как обычно"
+        return String(localized: "\(выходы) за день — как обычно")
     }
 
     private var voiceOver: String {
         if let session {
-            return session.isPaused ? "Выход на паузе" : "Идёт выход"
+            return session.isPaused ? String(localized: "Выход на паузе") : String(localized: "Идёт выход")
         }
-        if let silence { return "Выходов нет с \(Fmt.shortDay(silence))" }
-        guard let indoors else { return "Сегодня ещё не выходили" }
-        return "На улице были \(Fmt.duration(indoors)) назад. " + (support ?? "")
+        if let silence { return String(localized: "Выходов нет с \(Fmt.shortDay(silence))") }
+        guard let indoors else { return String(localized: "Сегодня ещё не выходили") }
+        return String(localized: "На улице были \(Fmt.duration(indoors)) назад. ") + (support ?? "")
     }
 }

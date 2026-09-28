@@ -145,8 +145,8 @@ nonisolated enum TreatmentCourse {
                 let weeks = days / 7
                 return "\(String(localized: "\(weeks) недель")) позади"
             }
-            if days >= 1 { return "\(Fmt.days(days)) позади" }
-            return "Курс закончен"
+            if days >= 1 { return String(localized: "\(Fmt.days(days)) позади") }
+            return String(localized: "Курс закончен")
         }
     }
 
@@ -174,10 +174,10 @@ nonisolated enum TreatmentCourse {
     @MainActor
     static func farewell(_ dog: Dog) -> String {
         let names = activeMedications(dog).map(\.name)
-        let tail = "Записи останутся в истории и в отчёте врачу."
+        let tail = String(localized: "Записи останутся в истории и в отчёте врачу.")
         switch names.count {
-        case 0: return "Вкладка «Здоровье» спрячется. \(tail)"
-        case 1: return "«\(names[0])» уйдёт из плана дня, вкладка «Здоровье» спрячется. \(tail)"
+        case 0: return String(localized: "Вкладка «Здоровье» спрячется. \(tail)")
+        case 1: return String(localized: "«\(names[0])» уйдёт из плана дня, вкладка «Здоровье» спрячется. \(tail)")
         default:
             return "\(names.joined(separator: ", ")) уйдут из плана дня, вкладка «Здоровье» спрячется. \(tail)"
         }

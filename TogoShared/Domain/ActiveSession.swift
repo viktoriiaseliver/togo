@@ -137,7 +137,7 @@ nonisolated struct ActiveSession: Equatable, Sendable, Codable {
             guard count > 0 else { return nil }
             return count > 1 ? "\(kind.title.lowercased()) ×\(count)" : kind.title.lowercased()
         }
-        return parts.isEmpty ? "пока ничего не отмечено" : parts.joined(separator: " · ")
+        return parts.isEmpty ? String(localized: "пока ничего не отмечено") : parts.joined(separator: " · ")
     }
 
     /// Результат выхода выводится из отметок — спрашивать лишний раз незачем.

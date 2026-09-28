@@ -18,8 +18,8 @@ nonisolated struct ScheduleChange: Equatable, Sendable {
 
         var title: String {
             switch self {
-            case .tomorrowMorning: "С завтрашнего утра"
-            case .tonight: "Сегодня вечером"
+            case .tomorrowMorning: String(localized: "С завтрашнего утра")
+            case .tonight: String(localized: "Сегодня вечером")
             }
         }
     }
@@ -34,12 +34,12 @@ nonisolated struct ScheduleChange: Equatable, Sendable {
     static func summary(_ times: [Int]) -> String {
         let sorted = times.sorted()
         switch sorted.count {
-        case 0: return "без расписания"
+        case 0: return String(localized: "без расписания")
         case 1:
             let hour = sorted[0] / 60
-            let when = hour < 12 ? "утром" : (hour < 17 ? "днём" : "вечером")
-            return "один раз · \(when)"
-        case 2: return "дважды в день"
+            let when = hour < 12 ? String(localized: "утром") : (hour < 17 ? String(localized: "днём") : String(localized: "вечером"))
+            return String(localized: "один раз · \(when)")
+        case 2: return String(localized: "дважды в день")
         default: return "\(String(localized: "\(sorted.count) раз")) в день"
         }
     }

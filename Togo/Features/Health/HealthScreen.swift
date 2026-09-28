@@ -124,8 +124,8 @@ struct HealthScreen: View {
     }
 
     private func supplyValue(_ medication: Medication) -> String {
-        guard let supply = supply(medication) else { return "не считаем" }
-        return "на \(Fmt.days(supply.days))"
+        guard let supply = supply(medication) else { return String(localized: "не считаем") }
+        return String(localized: "на \(Fmt.days(supply.days))")
     }
 
     /// Курс кончается здесь, а не тумблером в профиле, где его никто

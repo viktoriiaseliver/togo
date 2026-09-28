@@ -34,7 +34,7 @@ nonisolated struct VetSummary: Equatable, Sendable {
     /// «все — рвота» или «рвота и лужи».
     var incidentDetail: String? {
         guard !incidents.isEmpty else { return nil }
-        if incidents.count == 1 { return "все — \(incidents[0].kind.title.lowercased())" }
+        if incidents.count == 1 { return String(localized: "все — \(incidents[0].kind.title.lowercased())") }
         return incidents.map { "\($0.kind.title.lowercased()) \($0.count)" }.joined(separator: " · ")
     }
 
@@ -42,7 +42,7 @@ nonisolated struct VetSummary: Equatable, Sendable {
     var weightDelta: String? {
         guard let first = weights.first, let last = weights.last, weights.count > 1 else { return nil }
         let delta = last.kg - first.kg
-        guard abs(delta) >= 0.05 else { return "вес держится" }
+        guard abs(delta) >= 0.05 else { return String(localized: "вес держится") }
         let sign = delta > 0 ? "+" : "−"
         return "\(sign)\(Fmt.decimal(abs(delta))) кг за период"
     }

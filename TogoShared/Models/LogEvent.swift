@@ -183,9 +183,9 @@ final class LogEvent {
         if let outcome { parts.append(outcome.shortTitle) }
         if let stoolForm { parts.append(stoolForm.title.lowercased()) }
         if !stoolFlags.isEmpty { parts.append(stoolFlags.map { $0.title.lowercased() }.joined(separator: ", ")) }
-        if let grams { parts.append("\(grams) г") }
-        if let milliliters { parts.append("\(milliliters) мл") }
-        if let durationSeconds, durationSeconds > 0 { parts.append("\(durationSeconds / 60) мин") }
+        if let grams { parts.append(String(localized: "\(grams) г")) }
+        if let milliliters { parts.append(String(localized: "\(milliliters) мл")) }
+        if let durationSeconds, durationSeconds > 0 { parts.append(String(localized: "\(durationSeconds / 60) мин")) }
         if let reactionTrigger { parts.append(reactionTrigger.title.lowercased()) }
         if let reactionDistance { parts.append(reactionDistance.title.lowercased()) }
         if let incidentKind { parts.append(incidentKind.title.lowercased()) }

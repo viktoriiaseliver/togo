@@ -152,7 +152,7 @@ struct DayPlanList: View {
         // человеку ничего не даёт.
         if let waiting = DoseGate.caption(item.gate, now: now) { return waiting }
         var parts: [String] = []
-        if item.showsTime { parts.append(Fmt.clock(item.time)) } else { parts.append("днём") }
+        if item.showsTime { parts.append(Fmt.clock(item.time)) } else { parts.append(String(localized: "днём")) }
         if let hint = item.hint { parts.append(hint) }
         return parts.joined(separator: " · ")
     }

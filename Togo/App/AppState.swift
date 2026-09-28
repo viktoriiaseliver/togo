@@ -168,7 +168,7 @@ final class AppState {
     /// подписывала её именем записи, сделанные на чужом телефоне,
     /// и «кто дал дозу» переставало быть вопросом с ответом.
     static var storedUserName: String {
-        UserDefaults.standard.string(forKey: Keys.userName) ?? "Я"
+        UserDefaults.standard.string(forKey: Keys.userName) ?? String(localized: "Я")
     }
 
     /// Активный эпизод: 2+ инцидента за 24 часа.

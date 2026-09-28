@@ -49,7 +49,7 @@ struct WalkRhythmCard: View {
     }
 
     private var summary: String {
-        "Обычно выходите \(Fmt.decimal(rhythm.outingsPerDay)) раза в день, дома между выходами "
-            + "в среднем \(Fmt.gap(rhythm.averageIndoors))."
+        String(localized: "Обычно выходите \(Fmt.decimal(rhythm.outingsPerDay)) раза в день, дома между выходами ")
+            + String(localized: "в среднем \(Fmt.gap(rhythm.averageIndoors)).")
     }
 }

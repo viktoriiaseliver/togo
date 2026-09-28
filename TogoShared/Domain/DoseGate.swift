@@ -49,8 +49,8 @@ nonisolated enum DoseGate {
         switch state {
         case .open: return nil
         case .waiting(let until, _):
-            return "откроется через " + Fmt.stopwatch(max(0, until.timeIntervalSince(now)))
-        case .noMeal: return "ждёт кормления"
+            return String(localized: "откроется через ") + Fmt.stopwatch(max(0, until.timeIntervalSince(now)))
+        case .noMeal: return String(localized: "ждёт кормления")
         }
     }
 }

@@ -50,17 +50,17 @@ struct MissedDoseSheet: View {
     private var title: String {
         let hour = Calendar.current.component(.hour, from: missed.scheduledAt)
         switch hour {
-        case ..<12: return "Утренняя"
-        case ..<17: return "Дневная"
-        default: return "Вечерняя"
+        case ..<12: return String(localized: "Утренняя")
+        case ..<17: return String(localized: "Дневная")
+        default: return String(localized: "Вечерняя")
         }
     }
 
     private var shiftDetail: String {
         guard let shifted = missed.nextIfGivenNow, let interval = missed.intervalIfGivenNow else {
-            return "Следующая — по расписанию: приём один в день."
+            return String(localized: "Следующая — по расписанию: приём один в день.")
         }
-        return "Следующая сдвинется на \(Fmt.clock(shifted)) — интервал \(Fmt.gap(interval))."
+        return String(localized: "Следующая сдвинется на \(Fmt.clock(shifted)) — интервал \(Fmt.gap(interval)).")
     }
 
     private func option(title: String, detail: String,

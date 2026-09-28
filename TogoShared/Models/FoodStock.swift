@@ -115,9 +115,9 @@ final class FoodStock {
         let left = packsRemaining(at: now)
         let unit = kind.unitName(count: left)
         if kind == .dry {
-            return String(format: "%.1f %@ · %d г в день", left, unit, gramsPerDay)
+            return String(format: String(localized: "%.1f %@ · %d г в день"), left, unit, gramsPerDay)
         }
-        return String(format: "%.0f %@ по %d г", left.rounded(), unit, packGrams)
+        return String(format: String(localized: "%.0f %@ по %d г"), left.rounded(), unit, packGrams)
     }
 }
 
@@ -127,8 +127,8 @@ nonisolated enum FoodKind: String, Codable, CaseIterable, Sendable {
 
     var title: String {
         switch self {
-        case .dry: "Сухой"
-        case .wet: "Влажный"
+        case .dry: String(localized: "Сухой")
+        case .wet: String(localized: "Влажный")
         }
     }
 
@@ -144,9 +144,9 @@ nonisolated enum FoodKind: String, Codable, CaseIterable, Sendable {
     func unitName(count: Double) -> String {
         switch self {
         case .dry: return String(localized: "\(Int(count.rounded())) мешков")
-                            .components(separatedBy: " ").last ?? "мешок"
+                            .components(separatedBy: " ").last ?? String(localized: "мешок")
         case .wet: return String(localized: "\(Int(count.rounded())) банок")
-                            .components(separatedBy: " ").last ?? "банка"
+                            .components(separatedBy: " ").last ?? String(localized: "банка")
         }
     }
 
@@ -160,15 +160,15 @@ nonisolated enum FoodKind: String, Codable, CaseIterable, Sendable {
 
     func packLabel(_ grams: Int) -> String {
         grams >= 1000
-            ? String(format: "%.1f кг", Double(grams) / 1000).replacingOccurrences(of: ".0", with: "")
-            : "\(grams) г"
+            ? String(format: String(localized: "%.1f кг"), Double(grams) / 1000).replacingOccurrences(of: ".0", with: "")
+            : String(localized: "\(grams) г")
     }
 
     /// То, что нельзя не сказать при переходе на влажный.
     var caution: String? {
         switch self {
         case .wet:
-            "Влажный корм — это в основном вода: та же цифра на весах даёт заметно меньше еды, чем сухой. Норму бери с упаковки или у врача, а не переноси из сухого."
+            String(localized: "Влажный корм — это в основном вода: та же цифра на весах даёт заметно меньше еды, чем сухой. Норму бери с упаковки или у врача, а не переноси из сухого.")
         case .dry:
             nil
         }

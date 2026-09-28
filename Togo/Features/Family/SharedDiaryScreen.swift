@@ -83,11 +83,11 @@ struct SharedDiaryScreen: View {
 
     private var stateTitle: String {
         switch sync?.state {
-        case .none, .off: "выключен"
-        case .starting: "поднимается"
-        case .syncing: "идёт обмен"
+        case .none, .off: String(localized: "выключен")
+        case .starting: String(localized: "поднимается")
+        case .syncing: String(localized: "идёт обмен")
         case .idle(let last):
-            last.map { "последний раз \(Fmt.clock($0))" } ?? "готов"
+            last.map { String(localized: "последний раз \(Fmt.clock($0))") } ?? String(localized: "готов")
         case .failed(let reason): reason
         }
     }

@@ -78,7 +78,7 @@ nonisolated enum StartupLog {
 
     static func read() -> String {
         guard let url, let text = try? String(contentsOf: url, encoding: .utf8) else {
-            return "Записей нет."
+            return String(localized: "Записей нет.")
         }
         return text
     }

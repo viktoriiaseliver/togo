@@ -43,21 +43,21 @@ nonisolated struct ShiftSummary: Equatable, Sendable {
     var open: [ShiftItem] { items.filter { !$0.isDone } }
 
     /// «5 из 6 закрыто».
-    var headline: String { "\(done.count) из \(items.count) закрыто" }
+    var headline: String { String(localized: "\(done.count) из \(items.count) закрыто") }
 
     /// Строка для уведомления: сначала сделанное, потом открытое —
     /// человек читает её на локскрине за секунду.
     func notification(now: Date = Date()) -> String {
-        guard !items.isEmpty else { return "Записей за смену нет." }
+        guard !items.isEmpty else { return String(localized: "Записей за смену нет.") }
         var parts: [String] = []
 
         let doneTitles = done.map { $0.title.lowercased() }
         if !doneTitles.isEmpty {
             parts.append(doneTitles.joined(separator: ", ").prefix(1).uppercased()
-                         + doneTitles.joined(separator: ", ").dropFirst() + " — сделано")
+                         + doneTitles.joined(separator: ", ").dropFirst() + String(localized: " — сделано"))
         }
         if let next = open.min(by: { $0.due < $1.due }) {
-            parts.append("Открыто: \(next.title.lowercased()) до \(Fmt.clock(next.due))")
+            parts.append(String(localized: "Открыто: \(next.title.lowercased()) до \(Fmt.clock(next.due))"))
         }
         return parts.joined(separator: ". ") + "."
     }

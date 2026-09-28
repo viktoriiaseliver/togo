@@ -8,9 +8,9 @@ import CoreTransferable
 nonisolated enum Exporter {
     static func csv(events: [LogEvent]) -> String {
         let header = [
-            "дата", "время", "тип", "результат", "форма стула", "особенности",
-            "граммы", "миллилитры", "минуты", "как попросил", "инцидент",
-            "прогулка", "автор", "заметка",
+            String(localized: "дата"), String(localized: "время"), String(localized: "тип"), String(localized: "результат"), String(localized: "форма стула"), String(localized: "особенности"),
+            String(localized: "граммы"), String(localized: "миллилитры"), String(localized: "минуты"), String(localized: "как попросил"), String(localized: "инцидент"),
+            String(localized: "прогулка"), String(localized: "автор"), String(localized: "заметка"),
         ]
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withFullDate]
@@ -50,7 +50,7 @@ nonisolated enum Exporter {
 
     /// Бристольская шкала живёт только здесь — в базе и в выгрузке для врача.
     static func clinicalCSV(events: [LogEvent]) -> String {
-        var rows = ["дата;время;форма;бристоль;особенности;автор"]
+        var rows = [String(localized: "дата;время;форма;бристоль;особенности;автор")]
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withFullDate]
         for event in Diary.active(events).filter({ $0.kind == .stool }).sorted(by: { $0.date < $1.date }) {

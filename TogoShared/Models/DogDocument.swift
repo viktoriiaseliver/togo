@@ -36,8 +36,8 @@ nonisolated struct ToxicItem: Identifiable, Sendable {
 
         var title: String {
             switch self {
-            case .callNow: "Звони врачу сейчас"
-            case .watch: "Наблюдай и позвони при симптомах"
+            case .callNow: String(localized: "Звони врачу сейчас")
+            case .watch: String(localized: "Наблюдай и позвони при симптомах")
             }
         }
     }

@@ -73,9 +73,9 @@ nonisolated enum CareKind: String, Codable, CaseIterable, Sendable {
 
     var sectionTitle: String {
         switch self {
-        case .daily: "каждый день"
-        case .periodic: "регулярно"
-        case .dated: "прививки и визиты"
+        case .daily: String(localized: "каждый день")
+        case .periodic: String(localized: "регулярно")
+        case .dated: String(localized: "прививки и визиты")
         }
     }
 

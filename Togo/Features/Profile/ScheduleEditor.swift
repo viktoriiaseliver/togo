@@ -15,8 +15,8 @@ struct ScheduleDraft: Equatable {
 
         var title: String {
             switch self {
-            case .perServing: "Считаю за раз"
-            case .perDay: "Знаю дневную норму"
+            case .perServing: String(localized: "Считаю за раз")
+            case .perDay: String(localized: "Знаю дневную норму")
             }
         }
     }
@@ -228,7 +228,7 @@ struct ScheduleEditor: View {
     }
 
     private var scheduleSubtitle: String {
-        guard let interval = draft.effectivePlan.dayInterval else { return "одно кормление" }
+        guard let interval = draft.effectivePlan.dayInterval else { return String(localized: "одно кормление") }
         return "ровно через \(Fmt.duration(Double(interval) * 60))"
     }
 
@@ -264,10 +264,10 @@ struct ScheduleEditor: View {
 
     private func mealName(_ index: Int) -> String {
         let count = draft.effectiveMealTimes.count
-        if count == 1 { return "Кормление" }
-        if index == 0 { return "Первое" }
-        if index == count - 1 { return "Последнее" }
-        return "\(index + 1)-е"
+        if count == 1 { return String(localized: "Кормление") }
+        if index == 0 { return String(localized: "Первое") }
+        if index == count - 1 { return String(localized: "Последнее") }
+        return String(localized: "\(index + 1)-е")
     }
 
     private func setMealTime(_ minute: Int, at index: Int) {

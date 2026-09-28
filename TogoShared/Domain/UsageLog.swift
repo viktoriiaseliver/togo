@@ -54,32 +54,32 @@ nonisolated enum UsageLog {
 
         var title: String {
             switch self {
-            case .today: "Сегодня"
-            case .needs: "Просится"
-            case .walk: "Прогулка"
-            case .feeding: "Кормление"
-            case .foodStock: "Запас корма"
-            case .health: "Здоровье"
-            case .vetSummary: "Отчёт врачу"
-            case .care: "Уход"
-            case .history: "История"
-            case .training: "Занятия"
-            case .family: "Семья"
-            case .sharedDiary: "Общий дневник"
-            case .sitter: "Ситтер"
-            case .trip: "Поездка"
-            case .dayOut: "День с собакой"
-            case .emergency: "Если что-то случилось"
-            case .incident: "Инцидент"
-            case .profile: "Собака"
-            case .schedule: "Режим дня"
-            case .onboarding: "Онбординг"
-            case .paywall: "Подписка"
-            case .settings: "Настройки"
-            case .backup: "Перенос"
-            case .dataPrivacy: "Данные"
-            case .usageLog: "Журнал действий"
-            case .other: "прочее"
+            case .today: String(localized: "Сегодня")
+            case .needs: String(localized: "Просится")
+            case .walk: String(localized: "Прогулка")
+            case .feeding: String(localized: "Кормление")
+            case .foodStock: String(localized: "Запас корма")
+            case .health: String(localized: "Здоровье")
+            case .vetSummary: String(localized: "Отчёт врачу")
+            case .care: String(localized: "Уход")
+            case .history: String(localized: "История")
+            case .training: String(localized: "Занятия")
+            case .family: String(localized: "Семья")
+            case .sharedDiary: String(localized: "Общий дневник")
+            case .sitter: String(localized: "Ситтер")
+            case .trip: String(localized: "Поездка")
+            case .dayOut: String(localized: "День с собакой")
+            case .emergency: String(localized: "Если что-то случилось")
+            case .incident: String(localized: "Инцидент")
+            case .profile: String(localized: "Собака")
+            case .schedule: String(localized: "Режим дня")
+            case .onboarding: String(localized: "Онбординг")
+            case .paywall: String(localized: "Подписка")
+            case .settings: String(localized: "Настройки")
+            case .backup: String(localized: "Перенос")
+            case .dataPrivacy: String(localized: "Данные")
+            case .usageLog: String(localized: "Журнал действий")
+            case .other: String(localized: "прочее")
             }
         }
     }
@@ -124,24 +124,24 @@ nonisolated enum UsageLog {
 
         var title: String {
             switch self {
-            case .open: "открыл экран"
-            case .tab: "переключил вкладку"
-            case .record: "записал"
-            case .edit: "поправил"
-            case .delete: "удалил"
-            case .undo: "отменил"
-            case .start: "начал"
-            case .finish: "закончил"
-            case .pause: "поставил на паузу"
-            case .resume: "продолжил"
-            case .mark: "отметил на ходу"
-            case .dose: "доза"
-            case .care: "уход"
-            case .setting: "настройка"
-            case .export: "выгрузил"
-            case .backup: "перенос"
-            case .purchase: "подписка"
-            case .failure: "не получилось"
+            case .open: String(localized: "открыл экран")
+            case .tab: String(localized: "переключил вкладку")
+            case .record: String(localized: "записал")
+            case .edit: String(localized: "поправил")
+            case .delete: String(localized: "удалил")
+            case .undo: String(localized: "отменил")
+            case .start: String(localized: "начал")
+            case .finish: String(localized: "закончил")
+            case .pause: String(localized: "поставил на паузу")
+            case .resume: String(localized: "продолжил")
+            case .mark: String(localized: "отметил на ходу")
+            case .dose: String(localized: "доза")
+            case .care: String(localized: "уход")
+            case .setting: String(localized: "настройка")
+            case .export: String(localized: "выгрузил")
+            case .backup: String(localized: "перенос")
+            case .purchase: String(localized: "подписка")
+            case .failure: String(localized: "не получилось")
             }
         }
     }
@@ -164,12 +164,12 @@ nonisolated enum UsageLog {
 
         var title: String {
             switch self {
-            case .done: "сделано"
-            case .blocked: "не дали прав"
-            case .duplicate: "двойной тап"
-            case .cancelled: "передумал"
-            case .failed: "сбой"
-            case .empty: "пусто"
+            case .done: String(localized: "сделано")
+            case .blocked: String(localized: "не дали прав")
+            case .duplicate: String(localized: "двойной тап")
+            case .cancelled: String(localized: "передумал")
+            case .failed: String(localized: "сбой")
+            case .empty: String(localized: "пусто")
             }
         }
     }

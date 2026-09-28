@@ -332,10 +332,10 @@ nonisolated enum Persistence {
 
         var title: String {
             switch self {
-            case .syncing: "Дневник в iCloud"
-            case .noAccount: "Войди в iCloud"
-            case .restricted: "iCloud ограничен"
-            case .unavailable: "iCloud недоступен"
+            case .syncing: String(localized: "Дневник в iCloud")
+            case .noAccount: String(localized: "Войди в iCloud")
+            case .restricted: String(localized: "iCloud ограничен")
+            case .unavailable: String(localized: "iCloud недоступен")
             case .noEntitlement: "Эта сборка без iCloud"
             case .openFailed: "iCloud не открылся"
             }
@@ -344,13 +344,13 @@ nonisolated enum Persistence {
         var detail: String {
             switch self {
             case .syncing:
-                "Дневник лежит в твоей приватной библиотеке iCloud и вернётся сам после переустановки или на новом телефоне."
+                String(localized: "Дневник лежит в твоей приватной библиотеке iCloud и вернётся сам после переустановки или на новом телефоне.")
             case .noAccount:
-                "Приложение готово переносить записи, но на телефоне нет входа в Apple ID. Пока дневник только здесь — сохрани файл."
+                String(localized: "Приложение готово переносить записи, но на телефоне нет входа в Apple ID. Пока дневник только здесь — сохрани файл.")
             case .restricted:
-                "iCloud выключен ограничениями телефона. Дневник хранится только здесь — переносить придётся файлом."
+                String(localized: "iCloud выключен ограничениями телефона. Дневник хранится только здесь — переносить придётся файлом.")
             case .unavailable:
-                "Пока дневник хранится только на этом телефоне. Включи iCloud Drive в системных настройках — или пользуйся файлом ниже."
+                String(localized: "Пока дневник хранится только на этом телефоне. Включи iCloud Drive в системных настройках — или пользуйся файлом ниже.")
             case .noEntitlement:
                 "Дело не в твоих настройках: права на iCloud нет у самой сборки. Записи целы и лежат на этом телефоне — сохрани файл, и они вернутся в следующей сборке."
             case .openFailed:

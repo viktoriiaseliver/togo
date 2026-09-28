@@ -137,11 +137,11 @@ struct CareScreen: View {
 
         var title: String {
             switch self {
-            case .today: "Сегодня"
-            case .weekAgo: "Неделю назад"
-            case .monthAgo: "Месяц назад"
-            case .longAgo: "Давно"
-            case .soon: "Через месяц"
+            case .today: String(localized: "Сегодня")
+            case .weekAgo: String(localized: "Неделю назад")
+            case .monthAgo: String(localized: "Месяц назад")
+            case .longAgo: String(localized: "Давно")
+            case .soon: String(localized: "Через месяц")
             }
         }
 
@@ -188,12 +188,12 @@ struct CareScreen: View {
         switch kind {
         case .daily:
             let done = group.filter { $0.isDoneToday(on: now) }.count
-            return "сегодня \(done) из \(group.count)"
+            return String(localized: "сегодня \(done) из \(group.count)")
         case .periodic:
             let overdue = group.filter { $0.isOverdue(on: now) }.count
-            return overdue > 0 ? "просрочено: \(overdue)" : nil
+            return overdue > 0 ? String(localized: "просрочено: \(overdue)") : nil
         case .dated:
-            return "напомним заранее"
+            return String(localized: "напомним заранее")
         }
     }
 
@@ -258,9 +258,9 @@ struct CareScreen: View {
 
     private func confirmation(for task: CareTask) -> String {
         if task.kind == .daily, task.streak > 1 {
-            return "\(task.title) · \(Fmt.days(task.streak)) подряд"
+            return String(localized: "\(task.title) · \(Fmt.days(task.streak)) подряд")
         }
-        return "Записано · \(task.title)"
+        return String(localized: "Записано · \(task.title)")
     }
 }
 

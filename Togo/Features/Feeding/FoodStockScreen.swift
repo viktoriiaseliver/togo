@@ -289,9 +289,9 @@ struct FoodStockEditorSheet: View {
 
     private var splitStatus: String {
         switch unassignedGrams {
-        case 0: "норма разложена полностью"
-        case let left where left > 0: "осталось разложить \(left) г"
-        case let over: "перебор на \(-over) г"
+        case 0: String(localized: "норма разложена полностью")
+        case let left where left > 0: String(localized: "осталось разложить \(left) г")
+        case let over: String(localized: "перебор на \(-over) г")
         }
     }
 

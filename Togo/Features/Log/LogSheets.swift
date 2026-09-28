@@ -454,7 +454,7 @@ struct EventEditSheet: View {
     /// Кому писать. Владелец в семье один, и искать его руками незачем.
     private var ownerName: String {
         (try? context.fetch(FetchDescriptor<FamilyMember>()))?
-            .first { $0.role == .owner }?.name ?? "хозяйку"
+            .first { $0.role == .owner }?.name ?? String(localized: "хозяйку")
     }
 
     /// Что именно записали: граммы, миллилитры, форма стула, что случилось.
@@ -523,13 +523,13 @@ struct EventEditSheet: View {
 
     private func deleteTitle(for event: LogEvent) -> String {
         let count = marks(of: event).count
-        return count == 0 ? "Удалить запись" : "Удалить прогулку и \(count) отметки"
+        return count == 0 ? String(localized: "Удалить запись") : String(localized: "Удалить прогулку и \(count) отметки")
     }
 
     private func deleteExplainer(for event: LogEvent) -> String {
         marks(of: event).isEmpty
-            ? "Удаление можно отменить 5 секунд — потом запись уйдёт из ленты совсем. Чтобы поправить, а не убрать, меняй значения выше: они сохраняются сразу."
-            : "Прогулка удалится вместе с тем, что в ней отмечено: они записаны как одно целое. Отменить можно 5 секунд."
+            ? String(localized: "Удаление можно отменить 5 секунд — потом запись уйдёт из ленты совсем. Чтобы поправить, а не убрать, меняй значения выше: они сохраняются сразу.")
+            : String(localized: "Прогулка удалится вместе с тем, что в ней отмечено: они записаны как одно целое. Отменить можно 5 секунд.")
     }
 
     /// Удаление прогулки забирает с собой её отметки.

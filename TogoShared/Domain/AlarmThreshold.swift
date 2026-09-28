@@ -74,7 +74,7 @@ enum AlarmThresholdAnalyzer {
         if let first = threshold.episodes.first {
             parts.append("\(threshold.kind.title.lowercased()) "
                          + "\(String(localized: "\(threshold.count) раз")) "
-                         + "с \(Fmt.clock(first.date))")
+                         + String(localized: "с \(Fmt.clock(first.date))"))
         }
 
         // Детали эпизодов — то, что человек уже отметил и что в панике
@@ -85,16 +85,16 @@ enum AlarmThresholdAnalyzer {
         }
 
         if let medication = medications.first(where: { !$0.isPaused }) {
-            var line = "на \(medication.name.lowercased()) \(medication.doseText)"
+            var line = String(localized: "на \(medication.name.lowercased()) \(medication.doseText)")
             if let given = medication.doses.filter(\.isGiven)
                 .max(by: { ($0.givenAt ?? .distantPast) < ($1.givenAt ?? .distantPast) })?.givenAt {
-                line += ", последняя доза в \(Fmt.clock(given))"
+                line += String(localized: ", последняя доза в \(Fmt.clock(given))")
             }
             parts.append(line)
         }
 
         if let meal = Diary.last(events, kind: .meal, before: now) {
-            parts.append("ел в \(Fmt.clock(meal.date))")
+            parts.append(String(localized: "ел в \(Fmt.clock(meal.date))"))
         }
 
         let body = parts.joined(separator: ". ")

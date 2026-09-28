@@ -371,7 +371,7 @@ nonisolated struct UsageReport: Sendable {
 
     private static func shortList(_ values: [String]) -> String {
         let unique = tally(values).prefix(3).map(\.name)
-        return unique.isEmpty ? "без подробностей" : unique.joined(separator: ", ")
+        return unique.isEmpty ? String(localized: "без подробностей") : unique.joined(separator: ", ")
     }
 
     // MARK: Отчёт словами
@@ -379,18 +379,18 @@ nonisolated struct UsageReport: Sendable {
     /// Текст для выгрузки и для письма: то же, что на экране, но одним куском.
     var text: String {
         var lines: [String] = []
-        lines.append("Togo · журнал действий")
-        lines.append("с \(Fmt.shortDay(from)) по \(Fmt.shortDay(to)) · \(Fmt.days(days))")
+        lines.append(String(localized: "Togo · журнал действий"))
+        lines.append(String(localized: "с \(Fmt.shortDay(from)) по \(Fmt.shortDay(to)) · \(Fmt.days(days))"))
         lines.append("")
-        lines.append("Действий: \(total) · записей: \(records) · сеансов: \(sessions.count)")
+        lines.append(String(localized: "Действий: \(total) · записей: \(records) · сеансов: \(sessions.count)"))
         if averageSessionLength > 0 {
-            lines.append("Сеанс в среднем: \(Fmt.duration(averageSessionLength))")
+            lines.append(String(localized: "Сеанс в среднем: \(Fmt.duration(averageSessionLength))"))
         }
         lines.append("Записей в день: \(Fmt.decimal((recordsPerDay * 10).rounded() / 10))")
 
         if !frictions.isEmpty {
             lines.append("")
-            lines.append("ЧТО ЧИНИТЬ")
+            lines.append(String(localized: "ЧТО ЧИНИТЬ"))
             for item in frictions {
                 lines.append("• \(item.title) — \(item.count)")
                 lines.append("  \(item.detail)")
@@ -401,27 +401,27 @@ nonisolated struct UsageReport: Sendable {
         }
 
         lines.append("")
-        lines.append("ЧАЩЕ ВСЕГО")
+        lines.append(String(localized: "ЧАЩЕ ВСЕГО"))
         for item in byAction.prefix(10) { lines.append("• \(item.name) — \(item.count)") }
 
         if !byRecordKind.isEmpty {
             lines.append("")
-            lines.append("ЧТО ЗАПИСЫВАЛИ")
+            lines.append(String(localized: "ЧТО ЗАПИСЫВАЛИ"))
             for item in byRecordKind.prefix(10) { lines.append("• \(item.name) — \(item.count)") }
         }
 
         lines.append("")
-        lines.append("ЭКРАНЫ")
+        lines.append(String(localized: "ЭКРАНЫ"))
         for item in byScreen.prefix(15) { lines.append("• \(item.name) — \(item.count)") }
 
         if !untouchedScreens.isEmpty {
             lines.append("")
-            lines.append("НЕ ОТКРЫВАЛИ НИ РАЗУ")
+            lines.append(String(localized: "НЕ ОТКРЫВАЛИ НИ РАЗУ"))
             lines.append(untouchedScreens.joined(separator: ", "))
         }
 
         lines.append("")
-        lines.append("ПО ДНЯМ")
+        lines.append(String(localized: "ПО ДНЯМ"))
         for item in byDay { lines.append("• \(item.name) — \(item.count)") }
 
         return lines.joined(separator: "\n")

@@ -65,7 +65,7 @@ enum QuickLog {
         // ими или путь размечен не был.
         UsageLog.note(.record, kind.rawValue, on: .other)
 
-        return "Записала · \(kind.title.lowercased()) · \(dog.name)"
+        return String(localized: "Записала · \(kind.title.lowercased()) · \(dog.name)")
     }
 
     /// Можно ли этому телефону записывать голосом и кнопкой «Действие».

@@ -42,15 +42,10 @@ struct LocalizationDebtTests {
     /// Сколько непереведённых строк осталось в каждом файле.
     /// Замер 23.09.2026. Число может только уменьшаться.
     private let долг: [String: Int] = [
-        "ActiveSession.swift": 1, "AlarmThreshold.swift": 5, "Backup.swift": 6,
-        "Care.swift": 15, "CareMigration.swift": 14, "DayOutPlan.swift": 5,
-        "Dog.swift": 3, "DogDocument.swift": 22, "DoseGate.swift": 2,
-        "Enums+Care.swift": 3, "FamilyShare.swift": 4, "FamilySync.swift": 3,
-        "Feeding.swift": 5, "FoodStock.swift": 9, "Formatting.swift": 12,
-        "LogEvent.swift": 3, "PillSupply.swift": 2,
-        "RecallWriter.swift": 1, "RecordOrigin.swift": 4, "ScheduleChange.swift": 9,
-        "Shift.swift": 4, "TimelineBuilder.swift": 9, "Training.swift": 2,
-        "TreatmentCourse.swift": 10, "VetSummary.swift": 10, "WalkMarkIntent.swift": 8,
+        "AlarmThreshold.swift": 5, "CareMigration.swift": 14, "DayOutPlan.swift": 5,
+        "DogDocument.swift": 22, "FamilyShare.swift": 4, "FamilySync.swift": 3,
+        "Feeding.swift": 5, "ScheduleChange.swift": 9,
+        "TimelineBuilder.swift": 9, "TreatmentCourse.swift": 10, "VetSummary.swift": 10, "WalkMarkIntent.swift": 8,
         "WalkRecorder.swift": 1, "WidgetSnapshot.swift": 3,
     ]
 

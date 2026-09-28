@@ -32,8 +32,8 @@ nonisolated struct PillSupply: Equatable, Sendable {
 
     /// «Таблеток на 4 дня».
     var headline: String {
-        guard perDay > 0 else { return "Счёт таблеток не ведётся" }
-        return "Таблеток на \(Fmt.days(days))"
+        guard perDay > 0 else { return String(localized: "Счёт таблеток не ведётся") }
+        return String(localized: "Таблеток на \(Fmt.days(days))")
     }
 }
 

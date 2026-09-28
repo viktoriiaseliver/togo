@@ -201,9 +201,9 @@ final class Dog {
 
         var title: String {
             switch self {
-            case .puppy: "щенок"
-            case .adult: "взрослая"
-            case .senior: "пожилая"
+            case .puppy: String(localized: "щенок")
+            case .adult: String(localized: "взрослая")
+            case .senior: String(localized: "пожилая")
             }
         }
     }

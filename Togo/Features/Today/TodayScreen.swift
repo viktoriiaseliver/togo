@@ -526,9 +526,9 @@ struct TodayScreen: View {
     private func claimSubtitle(_ dose: DoseRecord) -> String {
         if dose.claimIsActive(at: now), let who = dose.claimedBy {
             let осталось = DoseRecord.claimTTL - now.timeIntervalSince(dose.claimedAt ?? now)
-            return "\(who) взяла на себя · \(Fmt.duration(осталось)) осталось"
+            return String(localized: "\(who) взяла на себя · \(Fmt.duration(осталось)) осталось")
         }
-        return dutyMember.map { "Сегодня дежурит \($0.name)" } ?? "Кто-то один — отметьте"
+        return dutyMember.map { String(localized: "Сегодня дежурит \($0.name)") } ?? String(localized: "Кто-то один — отметьте")
     }
 
     /// Вернуть пункт в невыполненные.

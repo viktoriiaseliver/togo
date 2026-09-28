@@ -112,8 +112,8 @@ struct TrainingLibraryScreen: View {
     }
 
     private func detail(of session: TrainingSession) -> String {
-        var parts = ["\(session.place) · \(session.distanceMeters) м"]
-        if session.attempts > 0 { parts.append("\(session.successes) из \(session.attempts)") }
+        var parts = [String(localized: "\(session.place) · \(session.distanceMeters) м")]
+        if session.attempts > 0 { parts.append(String(localized: "\(session.successes) из \(session.attempts)")) }
         if session.durationSeconds > 0 {
             parts.append(Fmt.duration(Double(session.durationSeconds)))
         }

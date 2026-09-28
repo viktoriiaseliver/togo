@@ -23,7 +23,7 @@ struct OnboardingFlow: View {
         case welcome, dog, schedule, care, family, notifications
 
         var index: Int { rawValue }
-        var progress: String? { self == .welcome ? nil : "\(rawValue) из 5" }
+        var progress: String? { self == .welcome ? nil : String(localized: "\(rawValue) из 5") }
     }
 
     var body: some View {

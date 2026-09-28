@@ -98,6 +98,6 @@ nonisolated enum RecallWriter {
         let recalled = events.filter(\.isRecalled).count
         guard recalled > 0 else { return nil }
         return "\(String(localized: "\(recalled) записей внесены")) "
-            + "по памяти, из \(events.count)"
+            + String(localized: "по памяти, из \(events.count)")
     }
 }
