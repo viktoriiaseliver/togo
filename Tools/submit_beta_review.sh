@@ -145,7 +145,39 @@ state = (after.get("data", {}).get("attributes", {})
          .get("externalBuildState", "не прочитано"))
 print("externalBuildState:", state)
 
+def версии(gid):
+    return [b["attributes"]["version"]
+            for b in call(f"betaGroups/{gid}/builds?limit=10")["data"]]
+
 if state == "IN_BETA_TESTING":
+    # `IN_BETA_TESTING` — ЭТО НЕ «РОЗДАНО».
+    #
+    # Состояние говорит, что бета-ревью пройдено и сборку МОЖНО дать
+    # внешним. В группу её при этом не кладёт никто: 28.09 на сборке
+    # 271 состояние было `IN_BETA_TESTING`, а в «Друзьях» лежала 258.
+    # Тем же днём это уже ловили руками на 248 — и чинили тоже руками,
+    # то есть в следующий раз поймали бы снова.
+    #
+    # Зеркало правила, которое у нас записано с 23.09 про код ответа:
+    # там `204` не значил «раздано», здесь `IN_BETA_TESTING` не значит
+    # «у людей». Приёмка одна и та же — перечитанный список группы.
+    внешние = [g for g in call(f"apps/{app}/betaGroups")["data"]
+               if not g["attributes"]["isInternalGroup"]]
+    не_доехало = []
+    for g in внешние:
+        имя = g["attributes"]["name"]
+        if build["attributes"]["version"] in версии(g["id"]):
+            print(f"внешняя «{имя}»: уже там · {версии(g['id'])}")
+            continue
+        call(f"betaGroups/{g['id']}/relationships/builds", "POST",
+             {"data": [{"type": "builds", "id": build["id"]}]})
+        стало = версии(g["id"])
+        print(f"внешняя «{имя}»: {стало}")
+        if build["attributes"]["version"] not in стало:
+            не_доехало.append(имя)
+    if не_доехало:
+        sys.exit("НЕ РАЗДАНО внешним после POST: " + ", ".join(не_доехало)
+                 + " — код ответа был успешным, а сборки в группе нет")
     print("внешние тестировщики видят сборку уже сейчас")
 elif state in ("WAITING_FOR_BETA_REVIEW", "IN_BETA_REVIEW"):
     print("на бета-ревью — этой версии оно нужно впервые, обычно сутки")
