@@ -114,19 +114,58 @@ print("заметки к сборке обновлены")
 
 # Раздача внутренней группе. Внешнюю не трогаем: добавление сборки
 # туда требует пройденного бета-ревью, и делается это отдельно.
-internal = [g for g in call(f"apps/{app}/betaGroups")["data"]
-            if g["attributes"]["isInternalGroup"]]
+#
+# ПРИЁМКА — ПЕРЕЧИТАННЫЙ СПИСОК ГРУППЫ, А НЕ КОД ОТВЕТА.
+#
+# До 28.09 здесь стояла форма «проверил ДО, напечатал ПОСЛЕ»: список
+# версий читался перед `POST`, а «сборка выдана» печаталось сразу
+# за ним, ничего не перечитывая. То есть скрипт сообщал о своём
+# намерении, а не о том, что случилось.
+#
+# Повод не умозрительный, и он двойной.
+#   1. 23.09 на Togo 141: `POST` ответил `204` на обеих группах,
+#      и внешняя всё равно не видела ничего — состояние осталось
+#      `READY_FOR_BETA_SUBMISSION`. Код ответа приёмкой не является.
+#   2. 28.09 на Togo 248: внешняя группа получила сборку, а внутренняя
+#      осталась на четырёхдневной 216 — и заметил это только тот,
+#      кто перечитал списки обеих групп поимённо.
+#
+# Поэтому ниже печатается СПИСОК ВЕРСИЙ, полученный после действия.
+# Напечатать «выдана», не перечитав, теперь нечем: строки такой нет.
+def версии_группы(gid):
+    return [b["attributes"]["version"]
+            for b in call(f"betaGroups/{gid}/builds?limit=10")["data"]]
+
+groups = call(f"apps/{app}/betaGroups")["data"]
+internal = [g for g in groups if g["attributes"]["isInternalGroup"]]
 if not internal:
     sys.exit("внутренней группы нет — заведи её в App Store Connect")
 
+нужная = build["attributes"]["version"]
+не_доехало = []
+
 for group in internal:
     name = group["attributes"]["name"]
-    have = {b["attributes"]["version"]
-            for b in call(f"betaGroups/{group['id']}/builds?limit=10")["data"]}
-    if build["attributes"]["version"] in have:
-        print(f"группа «{name}»: сборка уже там")
+    if нужная in версии_группы(group["id"]):
+        print(f"группа «{name}»: уже там · {версии_группы(group['id'])}")
         continue
     call(f"betaGroups/{group['id']}/relationships/builds", "POST", {"data": [
         {"type": "builds", "id": build["id"]}]})
-    print(f"группа «{name}»: сборка выдана")
+    стало = версии_группы(group["id"])
+    print(f"группа «{name}»: {стало}")
+    if нужная not in стало:
+        не_доехало.append(name)
+
+# Внешние группы только ПОКАЗЫВАЕМ. Их наполняет бета-ревью, и трогать
+# их отсюда нельзя, — но молчать о них тоже нельзя: 28.09 расхождение
+# между «свои» и «друзья» было видно только рядом.
+for group in groups:
+    if group["attributes"]["isInternalGroup"]:
+        continue
+    name = group["attributes"]["name"]
+    print(f"внешняя «{name}»: {версии_группы(group['id'])}  (наполняет бета-ревью)")
+
+if не_доехало:
+    sys.exit("НЕ РАЗДАНО после POST: " + ", ".join(не_доехало)
+             + " — код ответа был успешным, а сборки в группе нет")
 PY

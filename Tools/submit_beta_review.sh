@@ -97,5 +97,29 @@ if state != "VALID":
 call("betaAppReviewSubmissions", "POST", {"data": {
     "type": "betaAppReviewSubmissions",
     "relationships": {"build": {"data": {"type": "builds", "id": build["id"]}}}}})
-print("отправлено на бета-ревью — обычно сутки")
+
+# ПРИЁМКА — ПЕРЕЧИТАННОЕ `externalBuildState`, А НЕ КОД ОТВЕТА.
+#
+# Раньше здесь печаталось «отправлено на бета-ревью — обычно сутки»
+# сразу за `POST`. Это сообщение о намерении: тот же `POST` 23.09
+# на сборке 141 отвечал успехом, а внешняя группа не видела ничего.
+#
+# И «обычно сутки» — тоже не всегда правда: если версия бета-ревью
+# уже проходила, следующие сборки той же версии идут насквозь
+# и состояние становится `IN_BETA_TESTING` сразу. Печатать срок,
+# которого не знаешь, значит учить не верить сроку.
+after = call(f"builds/{build['id']}/buildBetaDetail")
+state = (after.get("data", {}).get("attributes", {})
+         .get("externalBuildState", "не прочитано"))
+print("externalBuildState:", state)
+
+if state == "IN_BETA_TESTING":
+    print("внешние тестировщики видят сборку уже сейчас")
+elif state in ("WAITING_FOR_BETA_REVIEW", "IN_BETA_REVIEW"):
+    print("на бета-ревью — этой версии оно нужно впервые, обычно сутки")
+else:
+    # Не падаем: состояние могло не успеть обновиться. Но и не говорим
+    # «отправлено» — говорим ровно то, что прочитали, и что делать.
+    print(f"состояние пока «{state}» — перечитай через минуту:", file=sys.stderr)
+    print(f"  GET builds/{build['id']}/buildBetaDetail", file=sys.stderr)
 PY
