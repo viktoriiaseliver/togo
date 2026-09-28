@@ -205,6 +205,8 @@ struct ProcedurePrepScreen: View {
     @AppStorage("procedureSkills.seeded") private var seeded = false
 
     @State private var removing: ProcedureSkill?
+    /// Навык, по которому записываем попытку.
+    @State private var открыт: ProcedureSkill?
 
     private var canEdit: Bool { appState.can(.editProfile) }
 
@@ -223,7 +225,13 @@ struct ProcedurePrepScreen: View {
             }
 
             ForEach(skills) { skill in
-                Button { if canEdit { removing = skill } } label: {
+                // Нажатие открывает запись попытки, а не удаление.
+                //
+                // До 28.09 тап по строке предлагал УБРАТЬ навык — то есть
+                // единственным действием экрана было разрушительное,
+                // и оно же было самым лёгким. Удаление переехало внутрь
+                // листа, где стоит отдельной кнопкой.
+                Button { if canEdit { открыт = skill } } label: {
                     TGCard {
                         HStack {
                             VStack(alignment: .leading, spacing: Token.Space.s2) {
@@ -233,8 +241,23 @@ struct ProcedurePrepScreen: View {
                             Spacer(minLength: Token.Space.s8)
                             Text(skill.status.title).textStyle(AppFont.caption.color(skill.status.color))
                         }
+                        // Строка счёта стояла под `attempts > 0`, и это
+                        // условие не бывало истинным никогда: попытки
+                        // не записывал никто. Теперь записывает — но
+                        // при нуле попыток честнее сказать, чего ждём,
+                        // чем не сказать ничего.
                         if skill.attempts > 0 {
-                            Text("\(skill.successes) из \(skill.attempts)").textStyle(AppFont.numeric(17))
+                            Text("\(skill.successes) из \(skill.attempts)")
+                                .textStyle(AppFont.numeric(17))
+                            let осталось = SkillProgress.attemptsUntilVerdict(attempts: skill.attempts)
+                            if осталось > 0 {
+                                Text("ещё \(осталось) попыток — и будет видно, получается ли")
+                                    .textStyle(AppFont.micro)
+                                    .wraps()
+                            }
+                        } else {
+                            Text("попыток пока нет")
+                                .textStyle(AppFont.micro)
                         }
                     }
                     .contentShape(Rectangle())
@@ -252,6 +275,12 @@ struct ProcedurePrepScreen: View {
         .navigationTitle("Процедуры")
         .navigationBarTitleDisplayMode(.large)
         .task { seedOnce() }
+        .sheet(item: $открыт) { skill in
+            SkillAttemptSheet(skill: skill) { удалить in
+                открыт = nil
+                if удалить { removing = skill }
+            }
+        }
         .confirmationDialog("Убрать навык?",
                             isPresented: Binding(get: { removing != nil },
                                                  set: { if !$0 { removing = nil } }),

@@ -13,6 +13,7 @@ import SwiftData
 /// Теперь это плоский список под своей вкладкой: до любого экрана
 /// два тапа вместо четырёх.
 struct DogTab: View {
+    @Query private var skills: [ProcedureSkill]
     @Environment(AppState.self) private var appState
     @Query private var dogs: [Dog]
     @Query private var trips: [Trip]
@@ -98,6 +99,20 @@ struct DogTab: View {
             TGDivider()
             TGLink(title: "Перенос навыка", systemImage: "square.grid.3x3") { TransferMatrixScreen(dog: dog) }
             TGDivider()
+            // Второй вход в «Процедуры», и он тут не для удобства.
+            //
+            // Единственный вход был с вкладки «Здоровье», а она есть,
+            // только когда собака НА ЛЕЧЕНИИ (`RootView:46`). То есть
+            // научить собаку спокойно давать лапу и залезать в переноску
+            // можно было лишь тогда, когда лечение уже идёт, — а учат
+            // этому заранее, ради того самого дня.
+            //
+            // Нашлось 28.09 кадром: тест записи попыток не смог дойти
+            // до экрана у здоровой собаки. Прежний вход не трогаю —
+            // с «Здоровья» он на месте.
+            TGLink(title: "Подготовка к процедурам",
+                   value: procedureSummary.map { .готовая($0) },
+                   systemImage: "hand.raised") { ProcedurePrepScreen() }
             TGLink(title: "Занятия и шаги", value: trainingSummary(dog).map { .готовая($0) },
                    systemImage: "list.bullet") { TrainingLibraryScreen(dog: dog) }
             TGDivider()
@@ -106,6 +121,15 @@ struct DogTab: View {
                    systemImage: "pawprint") { DogsScreen() }
         }
         .buttonStyle(.plain)
+    }
+
+    /// «2 из 3 получается» — чтобы ссылка говорила о состоянии,
+    /// а не была просто дверью. Пусто, пока ни одной попытки нет:
+    /// «0 из 3» читается упрёком, а не фактом.
+    private var procedureSummary: String? {
+        guard !skills.isEmpty, skills.contains(where: { $0.attempts > 0 }) else { return nil }
+        let получается = skills.filter { $0.status == .works }.count
+        return String(localized: "\(получается) из \(skills.count) получается")
     }
 
     private func careSummary(_ dog: Dog) -> String? {

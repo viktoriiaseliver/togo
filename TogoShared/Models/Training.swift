@@ -108,4 +108,26 @@ final class ProcedureSkill {
         get { SkillStatus(rawValue: statusRaw) ?? .notStarted }
         set { statusRaw = newValue.rawValue }
     }
+
+    /// Записать попытку.
+    ///
+    /// Статус **не выставляется руками, а пересчитывается** правилом
+    /// из `SkillProgress`: иначе он разойдётся со счётом при первой же
+    /// правке, и экран будет говорить «получается» при трёх неудачах
+    /// подряд. У Togo это уже случалось — величина и её подпись
+    /// расходятся там, где их двое.
+    func record(success: Bool) {
+        attempts += 1
+        if success { successes += 1 }
+        status = SkillProgress.status(successes: successes, attempts: attempts)
+    }
+
+    /// Отменить последнюю попытку. Нужна, потому что промахнуться
+    /// по кнопке — обычное дело, а иначе счёт правится только удалением
+    /// навыка вместе со всей историей.
+    func undoAttempt(wasSuccess: Bool) {
+        attempts = max(0, attempts - 1)
+        if wasSuccess { successes = max(0, successes - 1) }
+        status = SkillProgress.status(successes: successes, attempts: attempts)
+    }
 }

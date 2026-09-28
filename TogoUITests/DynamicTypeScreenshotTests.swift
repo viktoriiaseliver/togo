@@ -138,6 +138,32 @@ nonisolated final class DynamicTypeScreenshotTests: XCTestCase {
         capture("xl-12-feeding-scrolled")
     }
 
+    /// Приёмка записи попыток: счёт обязан вырасти, а не остаться нулём.
+    ///
+    /// До 28.09 `attempts` не увеличивал никто, и строка «N из M»
+    /// не появлялась ни разу. Тест снимает ДО и ПОСЛЕ — иначе «ноль»
+    /// и «не показали» неотличимы.
+    func testНавыкПопытка() {
+        app.tabBars.buttons["Стич"].tap()
+        let процедуры = app.buttons.matching(
+            NSPredicate(format: "label CONTAINS %@", "роцедур")).firstMatch
+        guard процедуры.waitForExistence(timeout: 5) else {
+            XCTFail("не нашла вход в «Процедуры» — проверь вкладку собаки")
+            return
+        }
+        процедуры.tap()
+        capture("навык-01-до")
+        let первый = app.staticTexts["Дать лапу и не забирать"]
+        _ = первый.waitForExistence(timeout: 5)
+        первый.tap()
+        _ = app.buttons["Получилось"].waitForExistence(timeout: 5)
+        app.buttons["Получилось"].tap()
+        app.buttons["Получилось"].tap()
+        capture("навык-02-лист")
+        app.buttons["Закрыть"].firstMatch.tap()
+        capture("навык-03-после")
+    }
+
     func testXL04Семья() {
         app.tabBars.buttons["Семья"].tap()
         _ = app.navigationBars["Семья"].waitForExistence(timeout: 5)
