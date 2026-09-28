@@ -34,28 +34,9 @@ struct TodayScreen: View {
     /// когда назначенный час уже прошёл дольше чем на `LateMarking.grace`.
     @State private var askingGivenAt: DayPlanItem?
 
-    /// Просроченная доза, по которой открыт разбор.
-    struct MissedDoseTarget: Identifiable {
-        let item: DayPlanItem
-        let medication: Medication
-        let missed: MissedDose
-        var id: String { item.id }
-    }
-
-    /// Доза, которая ждёт таймера от еды.
-    struct GatedDose: Identifiable {
-        let item: DayPlanItem
-        let medication: Medication
-        var id: String { item.id }
-    }
-
-    /// Доза, по которой открыт замок.
-    struct LockedDose: Identifiable {
-        let item: DayPlanItem
-        let givenBy: String
-        let givenAt: Date
-        var id: String { item.id }
-    }
+    // Три адресата шторок — `MissedDoseTarget`, `GatedDose`, `LockedDose` —
+    // переехали в `DayPlanActions.swift`. Это чистые данные, и вложенными
+    // в экран они были недостижимы для всего, что вне него.
 
     private let tick = Timer.publish(every: 30, on: .main, in: .common).autoconnect()
 
@@ -470,25 +451,7 @@ struct TodayScreen: View {
     ///
     /// Механика была написана в модели и не вызывалась ниоткуда: то есть
     /// защита между людьми не работала совсем.
-    private func claim(_ dose: DoseRecord) {
-        guard appState.can(.giveDose) else { return }
-        let было = (dose.claimedBy, dose.claimedAt)
-        dose.claimedBy = appState.currentUserName
-        dose.claimedAt = now
-        // Та же пара, что и у отметки приёма: договорённость видна только
-        // через хранилище. Не сохранилась — второй человек её не увидит
-        // и даст дозу, а первый уверен, что взял её на себя.
-        do {
-            try context.save()
-        } catch {
-            (dose.claimedBy, dose.claimedAt) = было
-            Haptics.warning()
-            appState.showUndo("Не получилось взять на себя · нажми ещё раз")
-            return
-        }
-        Haptics.tap()
-        appState.showUndo("Доза за тобой · 45 минут")
-    }
+    private func claim(_ dose: DoseRecord) { actions.claim(dose) }
 
     private func claimSubtitle(_ dose: DoseRecord) -> String {
         if dose.claimIsActive(at: now), let who = dose.claimedBy {
@@ -505,13 +468,16 @@ struct TodayScreen: View {
     /// найдя запись в ленте и удалив её оттуда — то есть догадавшись,
     /// что «сделано» в режиме дня и запись в ленте это одно и то же.
     /// Какой записью в ленте отмечается пункт плана.
-    private func logKind(of item: DayPlanItem) -> LogKind {
-        switch item.kind {
-        case .meal: .meal
-        case .dose: .dose
-        case .care: .care
-        }
+    /// Всё, что план дня делает с хранилищем, живёт в `DayPlanActions`.
+    /// Вынесено 28.09: внутри `View` эти двести пятьдесят строк нельзя
+    /// было позвать из теста вовсе — чтобы дойти до `complete`, надо
+    /// построить экран с `@Query`, `AppState` и хранилищем.
+    private var actions: DayPlanActions {
+        DayPlanActions(context: context, appState: appState, settings: settings,
+                       dog: dog, now: now, careUndo: $lastCareDone)
     }
+
+    private func logKind(of item: DayPlanItem) -> LogKind { actions.logKind(of: item) }
 
     /// Закрыть выход.
     ///
@@ -530,61 +496,7 @@ struct TodayScreen: View {
         route = .walkResult
     }
 
-    private func uncomplete(_ item: DayPlanItem) {
-        guard let dog else { return }
-
-        // Убираем ту запись, которая этот пункт и закрыла, — ближайшую
-        // к его времени.
-        let kind = logKind(of: item)
-        let candidates = Diary.onDay(events, now)
-            .filter { $0.kind == kind }
-            .sorted { abs($0.date.timeIntervalSince(item.time)) < abs($1.date.timeIntervalSince(item.time)) }
-
-        // Что вернуть, если сохранить не выйдет. `try?` здесь стоял ровно
-        // перед тостом «Снова в списке»: не сохранилось — а человек уже
-        // уверен, что отметку снял, и отмечает заново поверх.
-        var вернуть: [() -> Void] = []
-
-        // У ухода часа нет, и сверять с ним нечего: убираем сегодняшнюю
-        // запись про это же дело.
-        if item.kind == .care {
-            candidates.first { $0.careTaskID == item.careTask?.id }.map { event in
-                вернуть.append { event.deletedAt = nil; event.deletedBy = nil }
-                event.deletedAt = Date()
-                event.deletedBy = appState.currentUserName
-            }
-            if let task = item.careTask {
-                let было = (task.lastDone, task.streak, task.scheduledDate)
-                вернуть.append { (task.lastDone, task.streak, task.scheduledDate) = было }
-                task.undoDone(previousDone: lastCareDone[task.id] ?? nil)
-            }
-        } else if let event = candidates.first,
-                  abs(event.date.timeIntervalSince(item.time)) <= MealSchedule.doneTolerance {
-            вернуть.append { event.deletedAt = nil; event.deletedBy = nil }
-            event.deletedAt = Date()
-            event.deletedBy = appState.currentUserName
-        }
-
-        // Доза — не только запись в ленте: от неё считается окно натощак
-        // и защита от второй дозы. Сохранение у неё своё, внутри `unmark`.
-        let получилось: Bool
-        if item.kind == .dose, let medication = item.medication {
-            получилось = DoseScheduler.unmark(medication, scheduledAt: item.time, context: context)
-        } else {
-            do { try context.save(); получилось = true } catch { получилось = false }
-        }
-
-        guard получилось else {
-            вернуть.reversed().forEach { $0() }
-            Haptics.warning()
-            appState.showUndo("Не снялось · нажми ещё раз")
-            return
-        }
-
-        Haptics.warning()
-        appState.showUndo("Снова в списке · \(item.title)")
-        _ = dog
-    }
+    private func uncomplete(_ item: DayPlanItem) { actions.uncomplete(item) }
 
     /// Тап по тексту строки: открыть запись, а не отметить.
     ///
@@ -627,18 +539,7 @@ struct TodayScreen: View {
     ///
     /// Пропуск записывается, а не просто исчезает: врач спросит именно
     /// про него, а в истории иначе останется необъяснённая дыра.
-    private func skipDose(_ target: MissedDoseTarget) {
-        guard DoseScheduler.markSkipped(target.medication, scheduledAt: target.item.time,
-                                        by: appState.currentUserName, context: context) != nil else {
-            // Пропуск заводили ради врача: «отмечено» без записи
-            // в истории — та же необъяснённая дыра, только с алиби.
-            Haptics.warning()
-            appState.showUndo("Не записалось · нажми ещё раз")
-            return
-        }
-        Haptics.warning()
-        appState.showUndo("Доза отмечена пропущенной")
-    }
+    private func skipDose(_ target: MissedDoseTarget) { actions.skipDose(target) }
 
     /// Тап по пункту плана. Опоздали — спрашиваем, когда дали; успели —
     /// записываем в один тап, как было.
@@ -647,13 +548,7 @@ struct TodayScreen: View {
     /// и на «Записать» ответить «тебе не разрешено» — это заставить
     /// человека сделать работу, которую всё равно выбросят.
     private func complete(_ item: DayPlanItem) {
-        let allowed: Permission = item.kind == .dose ? .giveDose : .logBasics
-        guard appState.can(allowed) else {
-            appState.showUndo(item.kind == .dose
-                              ? "Дозы отмечает тот, кому это разрешено"
-                              : "Записывать может тот, кому это разрешено")
-            return
-        }
+        guard actions.checkPermission(for: item) else { return }
         guard item.kind != .care,
               LateMarking.asksWhenGiven(scheduled: item.time, now: Date(),
                                         hasTime: item.showsTime) else {
@@ -664,100 +559,7 @@ struct TodayScreen: View {
     }
 
     private func complete(_ item: DayPlanItem, givenAt момент: Date) {
-        guard let dog else { return }
-        // Права проверены в `complete(_:)` — до шторки выбора времени.
-        // Они существовали и не проверялись нигде: выданная роль «только
-        // смотреть» всё равно позволяла отмечать еду, а «нельзя давать
-        // препараты» — отмечать приёмы.
-        //
-        // Один поступок — один момент, и теперь он приходит аргументом.
-        // Раньше их было два: лента писалась свежим `.now` внутри
-        // `EventLog.record`, а отметка приёма — экранным `now`, который
-        // тикает раз в 30 секунд и в фоне не тикает вовсе. На границе
-        // минуты это расходилось: 21.09.2026 баннер сказал «после
-        // Эутирокс в 14:03», а лента в той же секунде — «Доза 14:04».
-        // Экранное `now` годится, чтобы показывать, и не годится,
-        // чтобы записывать.
-
-        // Отметка приёма — не то же самое, что запись в ленте: от неё
-        // считается окно натощак и на неё смотрит защита от двойной дозы.
-        //
-        // Она идёт **первой**, и это не косметика. Раньше порядок был
-        // обратный: лента писала «Записано · Эутирокс», а отметка приёма
-        // шла следом с `try?`. Если её сохранение не проходило, человек
-        // видел подтверждение, лента подтверждала его же, а доза
-        // оставалась неотмеченной — и напоминания на t+30 и t+60 уже
-        // были сняты. Приложение выгружают, и о потере не узнаёт никто.
-        // Вторая доза при этом даётся с полной уверенностью.
-        //
-        // Теперь пустой ответ останавливает всё: напоминания остаются,
-        // в ленте не появляется ничего, а человек слышит тревогу.
-        var отметка: DoseRecord?
-        if item.kind == .dose, let medication = item.medication {
-            guard let dose = DoseScheduler.markGiven(medication, scheduledAt: item.time,
-                                                     by: appState.currentUserName, at: момент,
-                                                     context: context) else {
-                Haptics.warning()
-                appState.showUndo("Доза не отметилась · нажми ещё раз")
-                return
-            }
-            отметка = dose
-        }
-
-        EventLog(context: context, appState: appState)
-            .record(logKind(of: item),
-                    dog: dog,
-                    at: момент,
-                    confirmation: "Записано · \(item.title)") { event in
-                switch item.kind {
-                case .meal:
-                    event.grams = dog.servingGrams
-                    event.note = dog.foodBrand.isEmpty ? nil : dog.foodBrand
-                case .care:
-                    event.note = item.title
-                    event.careTaskID = item.careTask?.id
-                case .dose:
-                    event.note = item.title
-                    // Связь с препаратом писать было некому: поле в модели
-                    // есть, а запись оставалась ничьей. Без неё из ленты
-                    // не видно, какой именно препарат отметили, если
-                    // название успели поменять.
-                    event.medicationID = item.medication?.id
-                }
-            }
-
-        // Уход — не только строка в ленте: от отметки считается,
-        // когда дело понадобится в следующий раз.
-        if item.kind == .care, let task = item.careTask {
-            let было = (task.lastDone, task.streak, task.scheduledDate)
-            lastCareDone[task.id] = task.lastDone
-            task.markDone(at: момент)
-            do {
-                try context.save()
-            } catch {
-                // Запись в ленте уже легла — она сохранилась своим
-                // сохранением выше. Не легло само «когда делали
-                // в последний раз», а от него считается следующий срок.
-                (task.lastDone, task.streak, task.scheduledDate) = было
-                lastCareDone[task.id] = nil
-                Haptics.warning()
-                appState.showUndo("Срок не пересчитался · нажми ещё раз")
-                return
-            }
-        }
-
-        if let доза = отметка {
-            // Отметка легла в хранилище — вот теперь догонять не надо.
-            // Снимать напоминания раньше сохранения было бы тем же самым,
-            // что и `try?`: уверенностью без основания.
-            ReminderScheduler.cancelDose(доза)
-            // Напоминания считаются от НАСТОЯЩЕГО сейчас, а не от момента
-            // записи: отметив дозу задним числом в 07:00, человек остаётся
-            // в девяти утра, и следующее напоминание надо ставить отсюда.
-            // `момент` годится, чтобы записать, и не годится, чтобы
-            // планировать будущее.
-            Task { await ReminderScheduler.refresh(dog: dog, settings: settings, at: Date()) }
-        }
+        actions.complete(item, givenAt: момент)
     }
 }
 
