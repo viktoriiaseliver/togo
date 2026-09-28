@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// Figma: `Chip`. Свойства — `label`, `sublabel`, `selected`, `tone`.
 struct TGChip: View {
@@ -74,9 +75,23 @@ struct TGChipGroup<Item: Hashable>: View {
     var minimumWidth: CGFloat = 120
     let onTap: (Item) -> Void
 
+    /// Колонка растёт вместе с кеглем.
+    ///
+    /// При прибитых ста двадцати точках на крупной системной настройке
+    /// чипы ломались посреди слова — кадр 28.09 на экране прав:
+    /// «Владеле / ц», «Ухажива / ющий», «Помощн / ик», «приглаш / ения».
+    /// Роль, разорванная пополам, не читается как роль.
+    ///
+    /// Масштабируем ШИРИНУ, а не ужимаем текст: на доступных размерах
+    /// сетка сама сойдётся к одной колонке, и это правильный исход —
+    /// два разорванных слова хуже одного целого столбца.
+    private var scaledMinimumWidth: CGFloat {
+        UIFontMetrics(forTextStyle: .body).scaledValue(for: minimumWidth)
+    }
+
     var body: some View {
         LazyVGrid(
-            columns: [GridItem(.adaptive(minimum: minimumWidth), spacing: Token.Space.s8)],
+            columns: [GridItem(.adaptive(minimum: scaledMinimumWidth), spacing: Token.Space.s8)],
             alignment: .leading,
             spacing: Token.Space.s8
         ) {

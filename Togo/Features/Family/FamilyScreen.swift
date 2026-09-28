@@ -9,6 +9,9 @@ struct FamilyScreen: View {
     @Environment(AppState.self) private var appState
     @Environment(SubscriptionStore.self) private var store
     @Environment(\.modelContext) private var context
+    /// Настройка размера текста в iOS: от неё зависит раскладка строк,
+    /// а не только кегль.
+    @Environment(\.dynamicTypeSize) private var размерТекста
     @Query private var members: [FamilyMember]
     @Query private var dogs: [Dog]
 
@@ -78,18 +81,45 @@ struct FamilyScreen: View {
 
     // MARK: Дежурство
 
+    /// Карточка дежурства.
+    ///
+    /// **На доступных размерах кнопка уезжает под текст, а не стоит
+    /// сбоку.** Три колонки в строке — аватар, текст, действие — делят
+    /// ширину, и на крупном системном шрифте средней не остаётся почти
+    /// ничего: кадр 28.09 показал «Сегод / ня дежу / рит Teo»
+    /// и «передат / ь». Перенос внутри слова хуже любого другого:
+    /// слово перестаёт узнаваться.
+    ///
+    /// Ужать было нечем — это уже шрифт, который человек и увеличивал.
+    /// Тот же ответ, что у ряда плиток на главном: не ужимать, а менять
+    /// раскладку.
     private func dutyCard(_ member: FamilyMember) -> some View {
         TGCard {
-            HStack(spacing: Token.Space.s12) {
-                TGAvatar(initial: member.initial, size: Token.Size.avatarMd)
-                VStack(alignment: .leading, spacing: Token.Space.s2) {
-                    Text("Сегодня дежурит \(member.name)").textStyle(AppFont.cardTitle)
-                    Text(member.dutyUntil.map { "до \(Fmt.clock($0)) · напоминания идут ему" } ?? "напоминания идут ему")
-                        .textStyle(AppFont.caption)
+            let текст = VStack(alignment: .leading, spacing: Token.Space.s2) {
+                Text("Сегодня дежурит \(member.name)").textStyle(AppFont.cardTitle)
+                Text(member.dutyUntil.map { "до \(Fmt.clock($0)) · напоминания идут ему" } ?? "напоминания идут ему")
+                    .textStyle(AppFont.caption)
+            }
+            let передать = Button("передать") { handingOver = member }
+                .textStyle(AppFont.captionEmphasis.color(Token.Action.doneText))
+                .frame(minHeight: Token.Size.tapTarget)
+
+            if размерТекста.isAccessibilitySize {
+                VStack(alignment: .leading, spacing: Token.Space.s8) {
+                    HStack(spacing: Token.Space.s12) {
+                        TGAvatar(initial: member.initial, size: Token.Size.avatarMd)
+                        текст
+                    }
+                    передать
                 }
-                Spacer(minLength: Token.Space.s8)
-                Button("передать") { handingOver = member }
-                    .textStyle(AppFont.captionEmphasis.color(Token.Action.doneText))
+                .frame(maxWidth: .infinity, alignment: .leading)
+            } else {
+                HStack(spacing: Token.Space.s12) {
+                    TGAvatar(initial: member.initial, size: Token.Size.avatarMd)
+                    текст
+                    Spacer(minLength: Token.Space.s8)
+                    передать
+                }
             }
         }
     }
