@@ -21,6 +21,10 @@ struct TodayScreen: View {
     @State private var route: TodayRoute?
     @State private var finishingDayOut: DayOut?
     @State private var now = Date()
+    /// Какой день показан. Не путать с `now`: `now` — который час,
+    /// это — за какой день считать. Пока показывают сегодня, они
+    /// совпадают, и разницы не видно; на «вчера» она решает всё.
+    @State private var показанныйДень = Date()
     /// Когда в последний раз предлагали воду в режиме «собака со мной».
     @State private var lastWaterOffer: Date?
     /// Когда дело ухода было сделано в прошлый раз — чтобы «вернуть»
@@ -39,6 +43,17 @@ struct TodayScreen: View {
     // в экран они были недостижимы для всего, что вне него.
 
     private let tick = Timer.publish(every: 30, on: .main, in: .common).autoconnect()
+
+    /// Показываемый день и настоящие часы — вместе, но не смешиваясь.
+    /// Правило «докуда можно листать» и «что считать отсчётом» живёт
+    /// в `ScreenDay`, а не в кнопке: кнопка — одна из поверхностей.
+    private var экранДень: ScreenDay {
+        ScreenDay(показать: показанныйДень, сейчас: now)
+    }
+
+    /// Момент, от которого считается всё «за этот день». Сегодня —
+    /// настоящие часы, во вчера — конец тех суток.
+    private var отсчёт: Date { экранДень.отсчёт }
 
     private var dog: Dog? { appState.activeDog(from: dogs) }
     private var events: [LogEvent] { dog?.events ?? [] }
@@ -93,17 +108,51 @@ struct TodayScreen: View {
                     }
                 }
                 .safeAreaInset(edge: .bottom) {
-                    ActionGrid(
-                        portionGrams: dog?.servingGrams ?? 0,
-                        isTravelling: isDogAlongside,
-                        canWriteMedical: appState.can(.seeMedical)
-                    ) { route = $0 }
+                    if экранДень.этоСегодня {
+                        ActionGrid(
+                            portionGrams: dog?.servingGrams ?? 0,
+                            isTravelling: isDogAlongside,
+                            canWriteMedical: appState.can(.seeMedical)
+                        ) { route = $0 }
+                    } else {
+                        возвратВСегодня
+                    }
                 }
                 .navigationBarTitleDisplayMode(.inline)
                 .usageScreen(.today)
                 .toolbar { SettingsToolbarItem() }
             ))
         }
+    }
+
+    /// Что стоит внизу вместо кнопок записи, когда показан прошлый день.
+    ///
+    /// **Кнопки убраны нарочно, и это половина работы, а не решение.**
+    /// `TodayRouter` раздаёт листы записи, и ни один из них про
+    /// показываемый день не знает: каждый берёт `Date()` внутри себя.
+    /// Оставь я их — «Еда» во вчерашнем дне записала бы сегодняшнюю,
+    /// и человек увидел бы подтверждение, а запись легла бы не туда.
+    /// Это ровно тот класс, на котором Togo уже обжигался: подтверждение
+    /// есть, записи нет там, где её ждут.
+    ///
+    /// Отметить еду, дозу и уход за прошлый день **можно** — через план
+    /// дня выше: он знает назначенный час и пишет им.
+    ///
+    /// Чтобы кнопки писали во вчера, день надо провести до всех листов
+    /// записи. Это следующая работа, и она названа, а не забыта.
+    private var возвратВСегодня: some View {
+        VStack(spacing: Token.Space.s8) {
+            Text("Показан прошлый день. Отметить еду, дозу и уход за него можно в плане выше; остальное записывается только за сегодня.")
+                .textStyle(AppFont.caption)
+                .foregroundStyle(Token.Ink.secondary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            TGButton(title: "Вернуться в сегодня", variant: .primary, size: .medium,
+                     systemImage: "arrow.uturn.right") {
+                показанныйДень = now
+            }
+        }
+        .padding(.horizontal, Token.Spacing.screenPadding)
+        .padding(.bottom, Token.Space.s8)
     }
 
     // MARK: Что случилось — то, из-за чего экран открыли
@@ -201,8 +250,8 @@ struct TodayScreen: View {
 
     @ViewBuilder
     private var деньПозади: some View {
-        DayTimeline(events: Diary.onDayWithTraces(events, now, tracing: undoableDeletions),
-                    now: now,
+        DayTimeline(events: Diary.onDayWithTraces(events, отсчёт, tracing: undoableDeletions),
+                    now: отсчёт,
                     showsAuthor: members.count > 1) { event in
             route = .edit(event.id)
         }
@@ -216,7 +265,7 @@ struct TodayScreen: View {
     }
 
     private var планНаОстаток: some View {
-        DayPlanList(items: planItems, now: now,
+        DayPlanList(items: planItems, now: отсчёт,
                     onComplete: { complete($0) },
                     onUndo: { uncomplete($0) },
                     onOpen: { open($0) },
@@ -307,7 +356,9 @@ struct TodayScreen: View {
                 // `Date()`, а не экранное `now`: оно тикает раз в тридцать
                 // секунд и в фоне стоит вовсе, а здесь «сейчас» попадёт
                 // в запись как есть.
-                GivenAtSheet(title: item.title, scheduled: item.time, now: Date()) { момент in
+                GivenAtSheet(title: item.title, scheduled: item.time,
+                             сейчас: экранДень.моментБыстройЗаписи,
+                             предел: отсчёт) { момент in
                     complete(item, givenAt: момент)
                 }
             }
@@ -359,7 +410,9 @@ struct TodayScreen: View {
     /// сделать никогда — для сборки требовались `@Query`, `AppState`
     /// и хранилище.
     private var header: some View {
-        TodayHeader(dog: dog, duty: dutyMember)
+        TodayHeader(dog: dog, duty: dutyMember, день: экранДень) { шаг in
+            показанныйДень = экранДень.сдвинуть(на: шаг).начало
+        }
     }
 
     /// Сколько собака дома прямо сейчас.
@@ -379,7 +432,7 @@ struct TodayScreen: View {
     /// `TimelineBuilder.outingsCount`: вторая копия этого счёта стояла
     /// в карточке сводки и давала на том же экране другое число.
     private var outingsToday: Int {
-        TimelineBuilder.outingsCount(events, on: now)
+        TimelineBuilder.outingsCount(events, on: отсчёт)
     }
 
     /// Какие удалённые записи ещё можно вернуть.
@@ -392,7 +445,7 @@ struct TodayScreen: View {
     }
 
     private var summaryStrip: some View {
-        TodaySummaryStrip(summary: Diary.summary(events, day: now, dog: dog),
+        TodaySummaryStrip(summary: Diary.summary(events, day: отсчёт, dog: dog),
                           outings: outingsToday)
     }
 
@@ -443,7 +496,7 @@ struct TodayScreen: View {
     }
 
     private var planItems: [DayPlanItem] {
-        DayPlanBuilder.items(dog: dog, events: events, now: now,
+        DayPlanBuilder.items(dog: dog, events: events, now: отсчёт,
                              seesMedical: appState.can(.seeMedical))
     }
 
@@ -474,7 +527,7 @@ struct TodayScreen: View {
     /// построить экран с `@Query`, `AppState` и хранилищем.
     private var actions: DayPlanActions {
         DayPlanActions(context: context, appState: appState, settings: settings,
-                       dog: dog, now: now, careUndo: $lastCareDone)
+                       dog: dog, день: отсчёт, сейчас: now, careUndo: $lastCareDone)
     }
 
     private func logKind(of item: DayPlanItem) -> LogKind { actions.logKind(of: item) }
@@ -528,7 +581,7 @@ struct TodayScreen: View {
             return
         }
         // Остальное открывается своей записью в ленте.
-        if let event = Diary.onDay(events, now)
+        if let event = Diary.onDay(events, отсчёт)
             .filter({ $0.kind == logKind(of: item) })
             .min(by: { abs($0.date.timeIntervalSince(item.time)) < abs($1.date.timeIntervalSince(item.time)) }) {
             route = .edit(event.id)
@@ -549,10 +602,14 @@ struct TodayScreen: View {
     /// человека сделать работу, которую всё равно выбросят.
     private func complete(_ item: DayPlanItem) {
         guard actions.checkPermission(for: item) else { return }
+        // В прошлом дне «сейчас» не существует, и записывать им нельзя:
+        // листая вчера, человек записал бы сегодняшний час во вчерашнюю
+        // еду. У ухода часа нет вовсе — он ложится концом показанных
+        // суток, и это честнее выдуманного времени.
         guard item.kind != .care,
-              LateMarking.asksWhenGiven(scheduled: item.time, now: Date(),
+              LateMarking.asksWhenGiven(scheduled: item.time, now: отсчёт,
                                         hasTime: item.showsTime) else {
-            complete(item, givenAt: Date())
+            complete(item, givenAt: экранДень.моментБыстройЗаписи ?? отсчёт)
             return
         }
         askingGivenAt = item

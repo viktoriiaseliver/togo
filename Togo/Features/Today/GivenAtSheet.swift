@@ -16,11 +16,22 @@ struct GivenAtSheet: View {
     let title: String
     /// Назначенный час пункта плана.
     let scheduled: Date
-    /// Момент открытия шторки. Передаётся снаружи и не тикает: иначе
-    /// выбранное «сейчас» и записанное «сейчас» разъедутся на границе
-    /// минуты — на этом Togo уже обжигался, баннер сказал «в 14:03»,
-    /// а лента в ту же секунду «14:04».
-    let now: Date
+    /// «Сейчас» — и **пусто, когда показывают прошлый день**.
+    ///
+    /// Это не мелочь: листая вчера, человек видит вчерашний план,
+    /// и строка «Сейчас, 09:30» записала бы сегодняшнее время
+    /// в позавчерашнюю еду. В прошлом дне «сейчас» не существует,
+    /// и предлагать его нельзя — можно только назвать час.
+    ///
+    /// Передаётся снаружи и не тикает: иначе выбранное «сейчас»
+    /// и записанное «сейчас» разъедутся на границе минуты — на этом
+    /// Togo уже обжигался, баннер сказал «в 14:03», а лента в ту же
+    /// секунду «14:04».
+    let сейчас: Date?
+    /// Позже этого записывать нельзя: конец показываемого дня, а сегодня —
+    /// текущий момент. Запись в будущем ломает всё, что считается
+    /// «от последнего раза».
+    let предел: Date
     var onPick: (Date) -> Void
 
     private enum Choice: Hashable { case scheduled, now, custom }
@@ -28,14 +39,16 @@ struct GivenAtSheet: View {
     @State private var choice: Choice = .scheduled
     @State private var custom: Date
 
-    init(title: String, scheduled: Date, now: Date, onPick: @escaping (Date) -> Void) {
+    init(title: String, scheduled: Date, сейчас: Date?, предел: Date,
+         onPick: @escaping (Date) -> Void) {
         self.title = title
         self.scheduled = scheduled
-        self.now = now
+        self.сейчас = сейчас
+        self.предел = предел
         self.onPick = onPick
         // Ползунок «другого времени» начинается от назначенного: от него
         // и отсчитывают, когда правят.
-        _custom = State(initialValue: scheduled)
+        _custom = State(initialValue: min(scheduled, предел))
     }
 
     var body: some View {
@@ -43,17 +56,19 @@ struct GivenAtSheet: View {
             TGCard(padding: 4) {
                 VStack(spacing: 0) {
                     row(.scheduled, text: "В \(Fmt.clock(scheduled)), как назначено")
-                    TGDivider()
-                    row(.now, text: "Сейчас, \(Fmt.clock(now))")
+                    if let сейчас {
+                        TGDivider()
+                        row(.now, text: "Сейчас, \(Fmt.clock(сейчас))")
+                    }
                     TGDivider()
                     row(.custom, text: String(localized: "Другое время"))
 
                     if choice == .custom {
                         TGDivider()
                         DatePicker("Время", selection: Binding(
-                            get: { min(custom, now) },
-                            set: { custom = min($0, now) }
-                        ), in: ...now, displayedComponents: .hourAndMinute)
+                            get: { min(custom, предел) },
+                            set: { custom = min($0, предел) }
+                        ), in: ...предел, displayedComponents: .hourAndMinute)
                         .textStyle(AppFont.body)
                         .frame(minHeight: Token.Size.tapTarget)
                     }
@@ -72,9 +87,12 @@ struct GivenAtSheet: View {
 
     private var picked: Date {
         switch choice {
-        case .scheduled: min(scheduled, now)
-        case .now: now
-        case .custom: min(custom, now)
+        case .scheduled: min(scheduled, предел)
+        // «Сейчас» выбрать нельзя, когда его нет: строки для него
+        // не нарисовано. Откат на назначенное, а не на `Date()`, —
+        // иначе прошлый день молча получил бы сегодняшний час.
+        case .now: сейчас ?? min(scheduled, предел)
+        case .custom: min(custom, предел)
         }
     }
 

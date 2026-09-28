@@ -325,10 +325,20 @@ struct EventEditSheet: View {
                         // от «последнего раза»: вердикт решит, что собака
                         // только что выходила. В живом дневнике такая
                         // запись уже появилась — время выставили вечером.
+                        // День правится наравне с часом (28.09). Раньше
+                        // стояло только `.hourAndMinute`, и запись,
+                        // сделанную не в тот день, нельзя было перенести
+                        // вовсе — её удаляли и заводили заново, теряя
+                        // и автора, и след правки.
+                        //
+                        // Верхняя граница прежняя: запись в будущем ломает
+                        // всё, что считается «от последнего раза», и такая
+                        // запись в живом дневнике уже появлялась — время
+                        // выставили вечером.
                         DatePicker(event.kind == .walk ? "Вышли" : "Время", selection: Binding(
                             get: { event.date },
                             set: { setStart(min($0, .now), on: event) }
-                        ), in: ...Date(), displayedComponents: .hourAndMinute)
+                        ), in: ...Date(), displayedComponents: [.date, .hourAndMinute])
                         .textStyle(AppFont.body)
                         .frame(minHeight: Token.Size.tapTarget)
 
