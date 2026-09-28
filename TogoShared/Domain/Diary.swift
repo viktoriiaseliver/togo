@@ -88,7 +88,8 @@ nonisolated enum Diary {
             urineIntervals: urineIntervals(events),
             daysOfData: daysOfData(events, now: now),
             episodeActive: episodeActive,
-            lastOutingHadResult: lastOuting?.outcome != nil && lastOuting?.outcome != OutingOutcome.none
+            lastOutingHadResult: lastOuting?.outcome != nil && lastOuting?.outcome != OutingOutcome.none,
+            lastOutingAt: lastOuting?.date
         )
     }
 

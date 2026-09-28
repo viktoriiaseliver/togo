@@ -17,12 +17,17 @@ nonisolated enum NeedVerdict: Equatable, Sendable {
     enum UnknownReason: Equatable, Sendable {
         case notEnoughData(days: Int)
         case ambiguous
+        /// Про мочу молчат дольше суток, и про выходы молчат тоже.
+        /// Считать тут нечего — правило и повод в `UrineSilence`.
+        case silence(since: Date)
     }
 
     var badge: String {
         switch self {
         case .urgent: "срочно"
         case .likelyNeed: "похоже на нужду"
+        // Тишину нельзя объявлять «неясной картиной»: картины нет вовсе.
+        case .unknown(.silence): String(localized: "отметок мочи нет")
         case .unknown: "неясно"
         case .probablyAttention: "не похоже · выход всё равно доступен"
         case .episode: "эпизод"
@@ -64,6 +69,11 @@ nonisolated struct NeedSignals: Sendable {
     var episodeActive: Bool
     /// Последний выход закончился результатом.
     var lastOutingHadResult: Bool
+    /// Когда последний раз отмечали выход — **любой**, с результатом
+    /// и без. Это и есть разделитель тишины: отсюда видно, ведут ли
+    /// дневник вообще. Отличается от `lastWalk`: прогулка и выход
+    /// у Togo разные события, а мочу приносит выход.
+    var lastOutingAt: Date?
 
     init(
         now: Date = Date(),
@@ -74,7 +84,8 @@ nonisolated struct NeedSignals: Sendable {
         urineIntervals: [TimeInterval] = [],
         daysOfData: Int = 0,
         episodeActive: Bool = false,
-        lastOutingHadResult: Bool = false
+        lastOutingHadResult: Bool = false,
+        lastOutingAt: Date? = nil
     ) {
         self.now = now
         self.lastUrine = lastUrine
@@ -85,9 +96,17 @@ nonisolated struct NeedSignals: Sendable {
         self.daysOfData = daysOfData
         self.episodeActive = episodeActive
         self.lastOutingHadResult = lastOutingHadResult
+        self.lastOutingAt = lastOutingAt
     }
 
     var sinceUrine: TimeInterval? { lastUrine.map { now.timeIntervalSince($0) } }
+
+    /// Дата, с которой про мочу нечего сказать. Живёт здесь, а не во вью:
+    /// величину читают три поверхности (лист вердикта, виджет, локскрин),
+    /// и своя арифметика в каждой — уже случившийся у Togo дефект.
+    var urineSilence: Date? {
+        UrineSilence.start(now: now, lastUrineAt: lastUrine, lastOutingAt: lastOutingAt)
+    }
 
     var typicalUrineInterval: TimeInterval? {
         guard !urineIntervals.isEmpty else { return nil }
@@ -112,6 +131,17 @@ nonisolated enum VerdictEngine {
 
         guard s.daysOfData >= minimumDaysOfData else {
             return .unknown(reason: .notEnoughData(days: max(1, s.daysOfData)))
+        }
+
+        // Тишина проверяется ДО интервалов нарочно. Стой она ниже —
+        // пара «моча 434 ч назад, медиана 6 ч» уходила бы в `.urgent`
+        // через `since > longest`, то есть приложение объявляло бы
+        // «дольше, чем он когда-либо терпел» из того, что дневник
+        // забросили. И выше `guard` про `typical` — иначе дневник
+        // без истории интервалов отвечал бы «картина неоднозначная»
+        // там, где картины нет вовсе.
+        if let тишина = s.urineSilence {
+            return .unknown(reason: .silence(since: тишина))
         }
 
         guard let since = s.sinceUrine, let typical = s.typicalUrineInterval, typical > 0 else {
@@ -161,6 +191,12 @@ nonisolated enum VerdictEngine {
             return "Не писал \(since) — дольше, чем обычно."
         case .unknown(.notEnoughData(let days)):
             return "Приложение пока не знает его интервалов. Выведи, если сомневаешься: записей всего за \(Fmt.days(days)) — это мало."
+        case .unknown(.silence(let since)):
+            // Называем ровно измеренное — и вслух говорим, чего не знаем.
+            // До 28.09 на этих же данных тут стояло «Не писал 434 ч. Это
+            // дольше, чем он когда-либо терпел»: утверждение о собаке,
+            // выведенное из отсутствия записи.
+            return String(localized: "Отметок мочи нет с \(Fmt.shortDay(since)). Приложение не знает, писал он или просто никто не отметил.")
         case .unknown(.ambiguous):
             let since = s.sinceUrine.map(Fmt.duration) ?? "недавно"
             return "Писал \(since) назад. Может, скучно — а может, живот. Выведи, если сомневаешься: приложение не знает лучше тебя."

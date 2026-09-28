@@ -97,6 +97,12 @@ struct TodayWidgetView: View {
     }
 
     private var sinceText: String {
+        // Тишина — первой: за потолком число отвечает не на тот вопрос,
+        // и на этой самой строке стояло «моча 434 ч назад». Правило
+        // приезжает решённым из `UrineSilence`, виджет его не считает.
+        if let тишина = snapshot.urineSilenceSince {
+            return String(localized: "отметок мочи нет с \(Fmt.shortDay(тишина))")
+        }
         guard let seconds = snapshot.sinceUrineSeconds else {
             return String(localized: "записей пока нет")
         }
@@ -121,6 +127,12 @@ struct TodayWidgetView: View {
     }
 
     private var inlineText: String {
+        // Третья поверхность той же величины, и самая тесная: в строке
+        // «Стич · 434 ч» числу верят больше всего — оно стоит одно.
+        // Даты тут нет места, поэтому говорим короткое честное.
+        if snapshot.urineSilenceSince != nil {
+            return "\(snapshot.dogName) · \(String(localized: "нет отметок"))"
+        }
         guard let seconds = snapshot.sinceUrineSeconds else { return snapshot.dogName }
         return "\(snapshot.dogName) · \(Fmt.duration(seconds))"
     }

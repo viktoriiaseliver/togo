@@ -80,6 +80,7 @@ enum LiveActivityController {
             verdictTitle: verdict.title,
             verdictBadge: verdict.badge,
             sinceUrineSeconds: signals.sinceUrine,
+            urineSilenceSince: signals.urineSilence,
             lastStoolSummary: signals.lastStool.map { "стул \(Fmt.clock($0))" },
             lastWalkSummary: signals.lastWalk.map { "гулял \(Fmt.duration(now.timeIntervalSince($0))) назад" },
             walkStartedAt: appState.walkStartedAt,

@@ -12,6 +12,17 @@ nonisolated struct WidgetSnapshot: Codable, Equatable, Sendable {
     var verdictTitle: String
     var verdictBadge: String
     var sinceUrineSeconds: Double?
+    /// Дата, с которой про мочу нечего сказать, — если `UrineSilence`
+    /// так решил. Не пусто ⇒ виджет печатает дату, а число не печатает
+    /// вовсе, каким бы оно ни было.
+    ///
+    /// **Решение приезжает готовым нарочно.** Виджету хватило бы
+    /// `sinceUrineSeconds`, чтобы сравнить с сутками самому, — и это
+    /// ровно тот дефект, на котором Togo уже обжигался: окно «не кормить»
+    /// виджет считал собственной арифметикой и молчал в двух случаях
+    /// из трёх, пока главный экран знал правило. Сторож на вызов такого
+    /// не видит: звать нечего.
+    var urineSilenceSince: Date?
     var lastStoolSummary: String?
     var lastWalkSummary: String?
     var walkStartedAt: Date?
@@ -36,6 +47,7 @@ nonisolated struct WidgetSnapshot: Codable, Equatable, Sendable {
         verdictTitle: "Просится",
         verdictBadge: "нет данных",
         sinceUrineSeconds: nil,
+        urineSilenceSince: nil,
         lastStoolSummary: nil,
         lastWalkSummary: nil,
         walkStartedAt: nil,
