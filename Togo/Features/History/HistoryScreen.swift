@@ -13,6 +13,9 @@ struct HistoryScreen: View {
 
     @Environment(\.modelContext) private var context
     @Environment(AppState.self) private var appState
+    /// Настройка размера текста: от неё зависит не только кегль,
+    /// но и то, каким органом управления показывать выбор.
+    @Environment(\.dynamicTypeSize) private var размерТекста
     @State private var closing: Episode?
     /// Эпизод, который человек собрался удалить.
     @State private var удаляемый: Episode?
@@ -105,11 +108,28 @@ struct HistoryScreen: View {
         events.filter(filter.matches)
     }
 
+    /// Фильтр. Сегменты — пока подписи в них помещаются.
+    ///
+    /// Сегментированный выбор делит ширину поровну и **обрезает**,
+    /// а не переносит: на крупной системной настройке кадр 28.09
+    /// показал «Симпто…». Обрезанное название фильтра не говорит,
+    /// что фильтр делает, — то есть орган управления перестаёт
+    /// сообщать о себе.
+    ///
+    /// На доступных размерах — выпадающий список: он показывает
+    /// выбранное целиком и даёт прочесть остальные, не угадывая.
+    @ViewBuilder
     private var filterPicker: some View {
-        Picker("Фильтр", selection: $filter) {
+        let выбор = Picker("Фильтр", selection: $filter) {
             ForEach(HistoryFilter.allCases, id: \.self) { Text($0.title).tag($0) }
         }
-        .pickerStyle(.segmented)
+        if размерТекста.isAccessibilitySize {
+            выбор.pickerStyle(.menu)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .frame(minHeight: Token.Size.tapTarget)
+        } else {
+            выбор.pickerStyle(.segmented)
+        }
     }
 
     // MARK: График

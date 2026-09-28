@@ -12,8 +12,40 @@
 #   CONTACT_FIRST, CONTACT_LAST, CONTACT_EMAIL — если надо иначе
 set -euo pipefail
 
-PHONE="${1:?укажи телефон контактного лица: Tools/submit_beta_review.sh \"+33 6 ...\"}"
-: "${ASC_ISSUER:?не задан ASC_ISSUER}"
+# Телефон контактного лица — из файла рядом с ключом, а не из аргумента.
+#
+# Аргумент означает, что его набирают руками каждый раз, и однажды
+# наберут неверный: ревьюер Apple звонит по нему, и ошибка вскроется
+# отказом, а не опечаткой. Файл лежит там же, где ключ, то есть
+# вне репозитория — персональные данные в git не едут.
+#
+# Аргумент остаётся и побеждает файл: разовая замена нужна.
+PHONE_FILE="${PHONE_FILE:-$HOME/.appstoreconnect/contact_phone.txt}"
+PHONE="${1:-}"
+if [ -z "$PHONE" ] && [ -f "$PHONE_FILE" ]; then
+    PHONE="$(tr -d '\r\n' < "$PHONE_FILE")"
+fi
+if [ -z "$PHONE" ]; then
+    echo "Нет телефона контактного лица." >&2
+    echo "Положи его в $PHONE_FILE или передай аргументом:" >&2
+    echo "  Tools/submit_beta_review.sh \"+33 6 12 34 56 78\"" >&2
+    exit 1
+fi
+# `ASC_ISSUER` против `ASC_ISSUER_ID` — расхождение имён между проектами.
+#
+# `Gamut/.env.asc` кладёт `ASC_ISSUER_ID`, этот скрипт ждал `ASC_ISSUER`
+# и выходил с «не задан». Оба файла верны по отдельности; вместе их
+# не запускал никто до 28.09, когда менеджер прогнал раздачу живьём
+# и упёрся.
+#
+# Мост стоял в `upload_testflight.sh` с 23.09 — и только там.
+# Починка на одной поверхности из трёх: тот же класс, что «перелёт»
+# на автомобильной поездке сегодня утром.
+if [ -z "${ASC_ISSUER:-}" ] && [ -n "${ASC_ISSUER_ID:-}" ]; then
+    ASC_ISSUER="$ASC_ISSUER_ID"
+    export ASC_ISSUER
+fi
+: "${ASC_ISSUER:?не задан ни ASC_ISSUER, ни ASC_ISSUER_ID}"
 export CONTACT_FIRST="${CONTACT_FIRST:-Viktoriia}"
 export CONTACT_LAST="${CONTACT_LAST:-Seliverstova}"
 export CONTACT_EMAIL="${CONTACT_EMAIL:-viktoriia.seliver@gmail.com}"

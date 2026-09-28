@@ -45,6 +45,58 @@ nonisolated final class DynamicTypeScreenshotTests: XCTestCase {
         capture("xl-03-settings")
     }
 
+    // Четыре экрана выше дали шесть дефектов за один час 28.09 —
+    // все шесть про раскладку, которой не хватает ширины. Экранов
+    // в приложении больше четырёх, и пока их не сняли, «не нашли»
+    // означает «не смотрели».
+    //
+    // Ниже — остальные вкладки и один лист записи. Лист важен отдельно:
+    // на главном экране всё крупное, а в шторках плотнее всего.
+
+    func testXL06История() {
+        app.tabBars.buttons["История"].tap()
+        _ = app.navigationBars["История"].waitForExistence(timeout: 5)
+        capture("xl-06-history")
+        app.swipeUp()
+        capture("xl-06-history-scrolled")
+    }
+
+    func testXL07Здоровье() throws {
+        // Вкладка условная: `RootView:46` показывает её только когда
+        // `dog?.isOnTreatment == true` И есть право `seeMedical`.
+        // В наборе UI-тестов собака не на лечении, поэтому вкладки нет.
+        //
+        // Пропуск ЯВНЫЙ, а не тихое «не нашли». Тест, который молча
+        // проходит, не найдя предмета, молчит так же, как тест,
+        // у которого всё хорошо, — и эту поверхность на крупном шрифте
+        // не увидит никто.
+        let вкладка = app.tabBars.buttons["Здоровье"]
+        try XCTSkipUnless(вкладка.waitForExistence(timeout: 3),
+                          "Вкладки «Здоровье» нет: собака в наборе не на лечении. "
+                          + "Экран на крупном шрифте НЕ ПРОВЕРЕН — нужен сценарий с лечением.")
+        вкладка.tap()
+        _ = app.navigationBars["Здоровье"].waitForExistence(timeout: 5)
+        capture("xl-07-health")
+        app.swipeUp()
+        capture("xl-07-health-scrolled")
+    }
+
+    func testXL08Собака() {
+        app.tabBars.buttons["Стич"].tap()
+        _ = app.staticTexts["Стич"].firstMatch.waitForExistence(timeout: 5)
+        capture("xl-08-dog")
+        app.swipeUp()
+        capture("xl-08-dog-scrolled")
+    }
+
+    func testXL09ЛистЕды() {
+        app.buttons["Еда"].firstMatch.tap()
+        // Шторка поднимается не мгновенно; ждём её содержимое,
+        // а не таймаут — иначе кадр снимется на анимации.
+        _ = app.buttons["Записать"].firstMatch.waitForExistence(timeout: 5)
+        capture("xl-09-meal-sheet")
+    }
+
     func testXL04Семья() {
         app.tabBars.buttons["Семья"].tap()
         _ = app.navigationBars["Семья"].waitForExistence(timeout: 5)
