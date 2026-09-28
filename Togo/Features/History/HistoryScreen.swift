@@ -14,6 +14,8 @@ struct HistoryScreen: View {
     @Environment(\.modelContext) private var context
     @Environment(AppState.self) private var appState
     @State private var closing: Episode?
+    /// Эпизод, который человек собрался удалить.
+    @State private var удаляемый: Episode?
     @State private var month: Date = Calendar.current.startOfMonth(for: .now)
     @State private var filter: HistoryFilter = .all
     @State private var selectedDay: Date?
@@ -59,6 +61,19 @@ struct HistoryScreen: View {
                 Button("Ещё рано", role: .cancel) { closing = nil }
             } message: { _ in
                 Text("Записи останутся в истории. Вердикт «просится» снова начнёт считаться по обычным промежуткам — во время эпизода он не считается совсем.")
+            }
+            .confirmationDialog("Удалить эпизод?",
+                                isPresented: Binding(get: { удаляемый != nil },
+                                                     set: { if !$0 { удаляемый = nil } }),
+                                titleVisibility: .visible,
+                                presenting: удаляемый) { episode in
+                Button("Удалить", role: .destructive) { удалить(episode) }
+                Button("Оставить", role: .cancel) { удаляемый = nil }
+            } message: { _ in
+                // Говорим ровно то, что случится, и ровно то, что НЕ
+                // случится. Человек боится потерять записи — а теряется
+                // только объединение их в эпизод.
+                Text("Сами записи — инциденты, стул, дозы — останутся: удаляется только объединение их в эпизод. Если инциденты повторятся, приложение поднимет эпизод заново.")
             }
         }
     }
@@ -137,6 +152,23 @@ struct HistoryScreen: View {
                             Text(episode.title).textStyle(AppFont.bodyEmphasis)
                             Spacer()
                             Text(Fmt.shortDay(episode.startedAt)).textStyle(AppFont.micro)
+                            // Эпизод поднимается САМ, по двум инцидентам
+                            // за сутки, — и человек не выбирал его заводить.
+                            // До 28.09 удалить его было нельзя ничем:
+                            // единственный `context.delete(episode)`
+                            // в дереве — откат при несохранении.
+                            // Заведённое приложением без спроса человек
+                            // обязан уметь убрать.
+                            Button { удаляемый = episode } label: {
+                                Image(systemName: "trash")
+                                    .font(.system(size: Token.Size.iconSm))
+                                    .frame(width: Token.Size.tapTarget,
+                                           height: Token.Size.tapTarget)
+                                    .contentShape(Rectangle())
+                            }
+                            .buttonStyle(.plain)
+                            .foregroundStyle(Token.Status.overdueText)
+                            .accessibilityLabel("Удалить эпизод \(episode.title)")
                         }
                         Text(episode.detail).textStyle(AppFont.caption).wraps()
                         if episode.isActive() { activeEpisodeFooter(episode) }
@@ -163,6 +195,31 @@ extension HistoryScreen {
                  systemImage: "checkmark") {
             closing = episode
         }
+    }
+
+    /// Убрать эпизод целиком.
+    ///
+    /// Записи не трогаем принципиально: эпизод — это ОБЪЕДИНЕНИЕ
+    /// инцидентов, а не они сами. Удалив его вместе с ними, приложение
+    /// стёрло бы то, ради чего дневник и ведут.
+    ///
+    /// `activeEpisode` снимается первым и возвращается при неудаче:
+    /// иначе вердикт «просится» остался бы выключенным ссылкой
+    /// на эпизод, которого уже нет.
+    func удалить(_ episode: Episode) {
+        let былоАктивным = appState.activeEpisode?.id == episode.id
+        if былоАктивным { appState.activeEpisode = nil }
+        context.delete(episode)
+        guard context.persist(otherwise: {
+            if былоАктивным { appState.activeEpisode = episode }
+        }) else {
+            Haptics.warning()
+            appState.showUndo("Не удалилось · нажми ещё раз")
+            return
+        }
+        Haptics.success()
+        appState.showUndo("Эпизод удалён · записи остались")
+        удаляемый = nil
     }
 
     func close(_ episode: Episode) {

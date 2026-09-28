@@ -102,7 +102,9 @@ struct DayOutSummarySheet: View {
 
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
+    @Environment(AppState.self) private var appState
     @State private var note = ""
+    @State private var удаляем = false
 
     private var hours: Double { day.duration() / 3600 }
 
@@ -133,9 +135,49 @@ struct DayOutSummarySheet: View {
             }
 
             TGExplainer(text: "Приложение запомнит этот день и посмотрит на следующий. Если после таких дней у неё регулярно жиже стул или пропадает аппетит — скажет в истории.")
+
+            // Удалить день было нельзя ничем: единственный
+            // `context.delete(day)` в дереве — откат при несохранении.
+            // А день с собакой заводят одним тапом с главного экрана,
+            // то есть заводят и по ошибке, и тогда он навсегда остаётся
+            // в выборке «после долгих дней» и тянет туда чужие выводы.
+            TGButton(title: "Удалить этот день", variant: .destructive, size: .medium,
+                     systemImage: "trash") {
+                удаляем = true
+            }
+            TGExplainer(text: "Записи дня — еда, выходы, дозы — останутся: удаляется только сам «день с собакой» и его след в наблюдениях истории.")
         } footer: {
             TGButton(title: "Готово", variant: .finish) { save() }
         }
+        .confirmationDialog("Удалить этот день?", isPresented: $удаляем,
+                            titleVisibility: .visible) {
+            Button("Удалить", role: .destructive) { удалить() }
+            Button("Оставить", role: .cancel) {}
+        } message: {
+            Text("Сами записи останутся. Пропадёт только пометка, что собака была с тобой весь день, — и наблюдения «после долгих дней» перестанут считать его.")
+        }
+    }
+
+    /// Убрать день целиком.
+    ///
+    /// Записи не трогаем: `DayOut` — это пометка «собака была со мной»,
+    /// а не контейнер для еды и выходов. Удалив их вместе с ним,
+    /// приложение стёрло бы дневник за целый день.
+    /// **Откат здесь невозможен, и это названо, а не замаскировано.**
+    /// После `context.delete` объект уже вынут из контекста; вернуть его
+    /// нечем — `rollback()` на iOS 26 снимает признак изменений и
+    /// не возвращает ни значений, ни вставок. Поэтому при неудаче
+    /// человеку говорится правда: «не удалилось, посмотри после
+    /// перезапуска», а не «удалено».
+    private func удалить() {
+        context.delete(day)
+        guard context.persistNothingToUndo() else {
+            Haptics.warning()
+            appState.showUndo("Не удалилось · проверь после перезапуска")
+            return
+        }
+        Haptics.success()
+        dismiss()
     }
 
     private func save() {
