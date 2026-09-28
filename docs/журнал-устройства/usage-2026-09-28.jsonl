@@ -415,3 +415,5 @@
 {"session":"f1f9ec","outcome":"done","detail":"stool","action":"record","at":"2026-09-27T18:07:16Z","screen":"walk"}
 {"action":"tab","at":"2026-09-28T05:27:36Z","session":"20320a","detail":"family","outcome":"done","screen":"family"}
 {"action":"open","at":"2026-09-28T05:27:36Z","session":"20320a","outcome":"done","screen":"family"}
+{"at":"2026-09-28T05:27:38Z","action":"open","screen":"settings","session":"20320a","outcome":"done"}
+{"screen":"usageLog","at":"2026-09-28T05:27:44Z","session":"20320a","outcome":"done","action":"open"}
