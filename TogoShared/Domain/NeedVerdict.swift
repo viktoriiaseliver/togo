@@ -24,33 +24,33 @@ nonisolated enum NeedVerdict: Equatable, Sendable {
 
     var badge: String {
         switch self {
-        case .urgent: "срочно"
-        case .likelyNeed: "похоже на нужду"
+        case .urgent: String(localized: "срочно")
+        case .likelyNeed: String(localized: "похоже на нужду")
         // Тишину нельзя объявлять «неясной картиной»: картины нет вовсе.
         case .unknown(.silence): String(localized: "отметок мочи нет")
-        case .unknown: "неясно"
-        case .probablyAttention: "не похоже · выход всё равно доступен"
-        case .episode: "эпизод"
+        case .unknown: String(localized: "неясно")
+        case .probablyAttention: String(localized: "не похоже · выход всё равно доступен")
+        case .episode: String(localized: "эпизод")
         }
     }
 
     var title: String {
         switch self {
-        case .urgent: "Выведи сейчас"
-        case .likelyNeed: "Выведи"
-        case .unknown: "Непонятно"
-        case .probablyAttention: "Скорее внимания"
-        case .episode: "Выводи по первому знаку"
+        case .urgent: String(localized: "Выведи сейчас")
+        case .likelyNeed: String(localized: "Выведи")
+        case .unknown: String(localized: "Непонятно")
+        case .probablyAttention: String(localized: "Скорее внимания")
+        case .episode: String(localized: "Выводи по первому знаку")
         }
     }
 
     /// Вторая кнопка. Первая всегда «Вывожу».
     var alternativeAction: String {
         switch self {
-        case .urgent, .likelyNeed: "Не сейчас"
-        case .unknown: "Играем, не пойдём"
-        case .probablyAttention: "Поиграю с ним"
-        case .episode: "Не сейчас"
+        case .urgent, .likelyNeed: String(localized: "Не сейчас")
+        case .unknown: String(localized: "Играем, не пойдём")
+        case .probablyAttention: String(localized: "Поиграю с ним")
+        case .episode: String(localized: "Не сейчас")
         }
     }
 }
@@ -166,16 +166,16 @@ nonisolated enum VerdictEngine {
         if let stool = s.lastStool {
             let cal = Calendar.current
             parts.append(cal.isDateInToday(stool)
-                ? "стул сегодня \(Fmt.clock(stool))"
-                : "стул \(Fmt.shortDay(stool))")
+                ? String(localized: "стул сегодня \(Fmt.clock(stool))")
+                : String(localized: "стул \(Fmt.shortDay(stool))"))
         } else {
-            parts.append("стула ещё не было")
+            parts.append(String(localized: "стула ещё не было"))
         }
         if let meal = s.lastMeal {
-            parts.append("ел \(Fmt.duration(s.now.timeIntervalSince(meal))) назад")
+            parts.append(String(localized: "ел \(Fmt.duration(s.now.timeIntervalSince(meal))) назад"))
         }
         if let walk = s.lastWalk {
-            parts.append("гулял \(Fmt.duration(s.now.timeIntervalSince(walk))) назад")
+            parts.append(String(localized: "гулял \(Fmt.duration(s.now.timeIntervalSince(walk))) назад"))
         }
         return parts.joined(separator: " · ")
     }
@@ -184,13 +184,13 @@ nonisolated enum VerdictEngine {
     static func explanation(_ verdict: NeedVerdict, _ s: NeedSignals) -> String {
         switch verdict {
         case .urgent:
-            let since = s.sinceUrine.map(Fmt.duration) ?? "долго"
-            return "Не писал \(since). Это дольше, чем он когда-либо терпел."
+            let since = s.sinceUrine.map(Fmt.duration) ?? String(localized: "долго")
+            return String(localized: "Не писал \(since). Это дольше, чем он когда-либо терпел.")
         case .likelyNeed:
-            let since = s.sinceUrine.map(Fmt.duration) ?? "долго"
-            return "Не писал \(since) — дольше, чем обычно."
+            let since = s.sinceUrine.map(Fmt.duration) ?? String(localized: "долго")
+            return String(localized: "Не писал \(since) — дольше, чем обычно.")
         case .unknown(.notEnoughData(let days)):
-            return "Приложение пока не знает его интервалов. Выведи, если сомневаешься: записей всего за \(Fmt.days(days)) — это мало."
+            return String(localized: "Приложение пока не знает его интервалов. Выведи, если сомневаешься: записей всего за \(Fmt.days(days)) — это мало.")
         case .unknown(.silence(let since)):
             // Называем ровно измеренное — и вслух говорим, чего не знаем.
             // До 28.09 на этих же данных тут стояло «Не писал 434 ч. Это
@@ -198,13 +198,13 @@ nonisolated enum VerdictEngine {
             // выведенное из отсутствия записи.
             return String(localized: "Отметок мочи нет с \(Fmt.shortDay(since)). Приложение не знает, писал он или просто никто не отметил.")
         case .unknown(.ambiguous):
-            let since = s.sinceUrine.map(Fmt.duration) ?? "недавно"
-            return "Писал \(since) назад. Может, скучно — а может, живот. Выведи, если сомневаешься: приложение не знает лучше тебя."
+            let since = s.sinceUrine.map(Fmt.duration) ?? String(localized: "недавно")
+            return String(localized: "Писал \(since) назад. Может, скучно — а может, живот. Выведи, если сомневаешься: приложение не знает лучше тебя.")
         case .probablyAttention:
-            let since = s.sinceUrine.map(Fmt.duration) ?? "недавно"
-            return "Вышли \(since) назад, и он сходил. Всё равно можно вывести — запись ляжет в дневник, и в следующий раз вердикт будет точнее."
+            let since = s.sinceUrine.map(Fmt.duration) ?? String(localized: "недавно")
+            return String(localized: "Вышли \(since) назад, и он сходил. Всё равно можно вывести — запись ляжет в дневник, и в следующий раз вердикт будет точнее.")
         case .episode:
-            return "Идёт эпизод: два инцидента за сутки. Пока он не закончится, приложение не считает вердикты — выводи по первому знаку."
+            return String(localized: "Идёт эпизод: два инцидента за сутки. Пока он не закончится, приложение не считает вердикты — выводи по первому знаку.")
         }
     }
 }
