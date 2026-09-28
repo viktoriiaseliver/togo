@@ -57,21 +57,38 @@ build: ## Собрать приложение под симулятор
 # Читать в выводе нужно строку «✔ Test run with N tests in M suites passed»:
 # тесты написаны на Swift Testing, и xcodebuild в конце честно печатает
 # «Executed 0 tests» — XCTest-ов в наборе нет. Эту строку читать нельзя.
+# Лог у каждого прогона свой, и путь печатается.
+#
+# Раньше здесь стоял фиксированный `build/unit.log`. Над одним деревом
+# работают несколько сессий сразу, и 28.09 в этом файле поймали два
+# разных PID `xcodebuild`: чужой `** TEST SUCCEEDED **` от прогона
+# в 07:31 лежал ровно там, где следующий начал искать свой. **Кто
+# прочтёт хвост, возьмёт чужой зелёный за свой** — а весь метод
+# проекта стоит на том, что зелёный указывает на коммит.
+#
+# DerivedData оставлена общей нарочно: своя на прогон — это полная
+# пересборка каждый раз. Разводить сессиям — через `DERIVED=…`.
+DERIVED ?= build/DerivedData
+
 .PHONY: test
 test: ## Прогнать модульные и UI-тесты
-	@mkdir -p build
-	@xcodebuild -project $(PROJECT) -scheme $(SCHEME) -configuration $(CONFIG) \
-		-destination "$(DESTINATION)" test > build/test.log 2>&1; rc=$$?; \
-		grep -E "Test run|error:|\*\* TEST|Restarting after unexpected exit" build/test.log || true; \
-		echo "xcodebuild: код возврата $$rc (полный лог — build/test.log)"; exit $$rc
+	@mkdir -p build/logs
+	@LOG=build/logs/test-$$(date +%Y%m%d-%H%M%S)-$$$$.log; \
+		xcodebuild -project $(PROJECT) -scheme $(SCHEME) -configuration $(CONFIG) \
+		-derivedDataPath "$(DERIVED)" \
+		-destination "$(DESTINATION)" test > $$LOG 2>&1; rc=$$?; \
+		grep -E "Test run|error:|\*\* TEST|Restarting after unexpected exit" $$LOG || true; \
+		echo "xcodebuild: код возврата $$rc (полный лог — $$LOG)"; exit $$rc
 
 .PHONY: unit
 unit: ## Только модульные тесты — быстрая обратная связь
-	@mkdir -p build
-	@xcodebuild -project $(PROJECT) -scheme $(SCHEME) -configuration $(CONFIG) \
-		-destination "$(DESTINATION)" test -only-testing:TogoTests > build/unit.log 2>&1; rc=$$?; \
-		grep -E "Test run|✘|error:|\*\* TEST" build/unit.log || true; \
-		echo "xcodebuild: код возврата $$rc (полный лог — build/unit.log)"; exit $$rc
+	@mkdir -p build/logs
+	@LOG=build/logs/unit-$$(date +%Y%m%d-%H%M%S)-$$$$.log; \
+		xcodebuild -project $(PROJECT) -scheme $(SCHEME) -configuration $(CONFIG) \
+		-derivedDataPath "$(DERIVED)" \
+		-destination "$(DESTINATION)" test -only-testing:TogoTests > $$LOG 2>&1; rc=$$?; \
+		grep -E "Test run|✘|error:|\*\* TEST|Restarting after unexpected exit" $$LOG || true; \
+		echo "xcodebuild: код возврата $$rc (полный лог — $$LOG)"; exit $$rc
 
 .PHONY: device
 device: ## Поставить на подключённый iPhone: make device TEAM=XXXXXXXXXX [PERSONAL=1]

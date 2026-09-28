@@ -30,6 +30,9 @@ struct TodayScreen: View {
     @State private var missedDose: MissedDoseTarget?
     @State private var gatedDose: GatedDose?
     @State private var alarm: AlarmThreshold?
+    /// Пункт плана, по которому спрашиваем «когда дали». Не пусто только
+    /// когда назначенный час уже прошёл дольше чем на `LateMarking.grace`.
+    @State private var askingGivenAt: DayPlanItem?
 
     /// Просроченная доза, по которой открыт разбор.
     struct MissedDoseTarget: Identifiable {
@@ -319,9 +322,22 @@ struct TodayScreen: View {
             .sheet(item: $finishingDayOut) { day in
                 DayOutSummarySheet(day: day)
             }
+            .sheet(item: $askingGivenAt) { item in
+                // `Date()`, а не экранное `now`: оно тикает раз в тридцать
+                // секунд и в фоне стоит вовсе, а здесь «сейчас» попадёт
+                // в запись как есть.
+                GivenAtSheet(title: item.title, scheduled: item.time, now: Date()) { момент in
+                    complete(item, givenAt: момент)
+                }
+            }
             .sheet(item: $missedDose) { target in
                 MissedDoseSheet(medication: target.medication, missed: target.missed, now: now) {
-                    complete(target.item)
+                    // Нарочно без вопроса «когда дали»: отсюда он открыл бы
+                    // шторку поверх закрывающейся, а проверить это кадром
+                    // я не могу — сценария пропущенной дозы в `SeedData` нет.
+                    // Известная дыра, а не решение: пропущенная доза — как
+                    // раз тот случай, где час важнее всего.
+                    complete(target.item, givenAt: Date())
                 } onSkip: {
                     // Пропуск — тоже запись: иначе в истории останется дыра,
                     // а врач спросит именно про неё.
@@ -666,11 +682,13 @@ struct TodayScreen: View {
         appState.showUndo("Доза отмечена пропущенной")
     }
 
+    /// Тап по пункту плана. Опоздали — спрашиваем, когда дали; успели —
+    /// записываем в один тап, как было.
+    ///
+    /// Права проверяются **до** шторки, а не после: спросить «когда дали»
+    /// и на «Записать» ответить «тебе не разрешено» — это заставить
+    /// человека сделать работу, которую всё равно выбросят.
     private func complete(_ item: DayPlanItem) {
-        guard let dog else { return }
-        // Права на бытовое и на дозы существовали, но не проверялись нигде:
-        // выданная роль «только смотреть» всё равно позволяла отмечать еду,
-        // а «нельзя давать препараты» — отмечать приёмы.
         let allowed: Permission = item.kind == .dose ? .giveDose : .logBasics
         guard appState.can(allowed) else {
             appState.showUndo(item.kind == .dose
@@ -678,14 +696,30 @@ struct TodayScreen: View {
                               : "Записывать может тот, кому это разрешено")
             return
         }
-        // Один поступок — один момент. Раньше их было два: лента писалась
-        // свежим `.now` внутри `EventLog.record`, а отметка приёма —
-        // экранным `now`, который тикает раз в 30 секунд и в фоне
-        // не тикает вовсе. На границе минуты это расходилось на минуту:
-        // 21.09.2026 баннер сказал «после Эутирокс в 14:03», а лента
-        // в той же секунде — «Доза 14:04». Экранное `now` годится,
-        // чтобы показывать, и не годится, чтобы записывать.
-        let момент = Date()
+        guard item.kind != .care,
+              LateMarking.asksWhenGiven(scheduled: item.time, now: Date(),
+                                        hasTime: item.showsTime) else {
+            complete(item, givenAt: Date())
+            return
+        }
+        askingGivenAt = item
+    }
+
+    private func complete(_ item: DayPlanItem, givenAt момент: Date) {
+        guard let dog else { return }
+        // Права проверены в `complete(_:)` — до шторки выбора времени.
+        // Они существовали и не проверялись нигде: выданная роль «только
+        // смотреть» всё равно позволяла отмечать еду, а «нельзя давать
+        // препараты» — отмечать приёмы.
+        //
+        // Один поступок — один момент, и теперь он приходит аргументом.
+        // Раньше их было два: лента писалась свежим `.now` внутри
+        // `EventLog.record`, а отметка приёма — экранным `now`, который
+        // тикает раз в 30 секунд и в фоне не тикает вовсе. На границе
+        // минуты это расходилось: 21.09.2026 баннер сказал «после
+        // Эутирокс в 14:03», а лента в той же секунде — «Доза 14:04».
+        // Экранное `now` годится, чтобы показывать, и не годится,
+        // чтобы записывать.
 
         // Отметка приёма — не то же самое, что запись в ленте: от неё
         // считается окно натощак и на неё смотрит защита от двойной дозы.
@@ -759,7 +793,12 @@ struct TodayScreen: View {
             // Снимать напоминания раньше сохранения было бы тем же самым,
             // что и `try?`: уверенностью без основания.
             ReminderScheduler.cancelDose(доза)
-            Task { await ReminderScheduler.refresh(dog: dog, settings: settings, at: момент) }
+            // Напоминания считаются от НАСТОЯЩЕГО сейчас, а не от момента
+            // записи: отметив дозу задним числом в 07:00, человек остаётся
+            // в девяти утра, и следующее напоминание надо ставить отсюда.
+            // `момент` годится, чтобы записать, и не годится, чтобы
+            // планировать будущее.
+            Task { await ReminderScheduler.refresh(dog: dog, settings: settings, at: Date()) }
         }
     }
 }
