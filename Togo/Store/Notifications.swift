@@ -50,14 +50,30 @@ enum NotificationCenterService {
         try? await center.add(request)
     }
 
-    /// Доза — единственное, что имеет право на time-sensitive.
+    /// Доза — первая из трёх, кому можно time-sensitive.
     static func scheduleDose(id: String, at date: Date, title: String, body: String) async {
+        await scheduleInterrupting(id: id, at: date, title: title, body: body, category: .dose)
+    }
+
+    /// Ступень лестницы эскалации: вернуться к наблюдению после инцидентов.
+    ///
+    /// Своя категория, а не дозы: прерывать это имеет право как ступень
+    /// эскалации, и в настройках уведомлений и в журнале оно не должно
+    /// выглядеть напоминанием о таблетке.
+    static func scheduleEscalation(id: String, at date: Date, title: String, body: String) async {
+        await scheduleInterrupting(id: id, at: date, title: title, body: body, category: .escalation)
+    }
+
+    /// Прерывающее уведомление на минуту. Только для доз и эскалации:
+    /// правило прерываний держится тем, что других вызовов нет.
+    private static func scheduleInterrupting(id: String, at date: Date, title: String,
+                                             body: String, category: Category) async {
         let content = UNMutableNotificationContent()
         content.title = title
         content.body = body
         content.sound = .default
         content.interruptionLevel = .timeSensitive
-        content.categoryIdentifier = Category.dose.rawValue
+        content.categoryIdentifier = category.rawValue
 
         let trigger = UNCalendarNotificationTrigger(
             dateMatching: Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: date),
@@ -82,6 +98,15 @@ enum NotificationCenterService {
         )
         try? await UNUserNotificationCenter.current()
             .add(UNNotificationRequest(identifier: id, content: content, trigger: trigger))
+    }
+
+    /// Что уже запланировано — только идентификаторы.
+    ///
+    /// Нужны пересборке: снять ступени дозы, по которой решение уже
+    /// есть, можно лишь зная, что стоит. Замыкание `@Sendable` нарочно:
+    /// система зовёт его не на главном потоке.
+    static func pendingIDs() async -> [String] {
+        await UNUserNotificationCenter.current().pendingNotificationRequests().map(\.identifier)
     }
 
     static func cancel(ids: [String]) {

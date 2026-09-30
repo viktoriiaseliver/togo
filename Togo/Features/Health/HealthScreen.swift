@@ -217,6 +217,8 @@ struct ProtocolScreen: View {
     @Environment(\.modelContext) private var context
     @Environment(AppState.self) private var appState
     @State private var now = Date()
+    /// Что ответила система на просьбу напомнить. Пусто — ещё не спрашивали.
+    @State private var reminder: ProtocolReminder.Outcome?
 
     private let tick = Timer.publish(every: 30, on: .main, in: .common).autoconnect()
 
@@ -226,25 +228,41 @@ struct ProtocolScreen: View {
             .max { ($0.givenAt ?? .distantPast) < ($1.givenAt ?? .distantPast) }
     }
 
+    /// Какие точки уже закрыты отмеченным забором.
+    ///
+    /// Раньше галочка ставилась по часам: прошло четыре часа — «забор
+    /// крови ✓», хотя крови никто не брал. Теперь — по записям о заборе
+    /// после этой дозы, каждая закрывает ближайшую к себе точку.
+    private func drawnPoints(after givenAt: Date) -> Set<Int> {
+        let draws = Diary.active(dog?.events ?? [])
+            .filter { Exporter.isDraw($0) && $0.date >= givenAt }
+        return Set(draws.map { ProtocolReminder.point(covering: $0.date, givenAt: givenAt) })
+    }
+
     var body: some View {
         TGScreen {
             if let dose = lastDose, let givenAt = dose.givenAt {
+                let drawn = drawnPoints(after: givenAt)
                 TGCard {
                     Text("T+\(Fmt.duration(now.timeIntervalSince(givenAt)))").textStyle(AppFont.display)
                     Text("Доза дана в \(Fmt.clock(givenAt)) под наблюдением").textStyle(AppFont.caption)
                 }
                 TGCard(spacing: 0) {
+                    // Препарат той дозы, от которой считаем, а не первый
+                    // в списке: на двух препаратах T0 подписывался чужой дозой.
                     ProtocolRow(label: "T0", time: givenAt,
-                                title: "доза \(dog?.medications.first?.doseText ?? "")",
-                                detail: "отмечено с точностью до минуты", isDone: true)
+                                title: String(localized: "доза \(doseTitle(dose))"),
+                                detail: String(localized: "отмечено с точностью до минуты"), isDone: true)
                     TGDivider()
                     ProtocolRow(label: "+4", time: givenAt.addingTimeInterval(4 * 3600),
-                                title: "забор крови", detail: "напомним за 30 минут",
-                                isDone: now > givenAt.addingTimeInterval(4 * 3600))
+                                title: String(localized: "забор крови"),
+                                detail: drawn.contains(4) ? String(localized: "забор отмечен") : reminderDetail(hours: 4, givenAt: givenAt),
+                                isDone: drawn.contains(4))
                     TGDivider()
                     ProtocolRow(label: "+6", time: givenAt.addingTimeInterval(6 * 3600),
-                                title: "забор крови", detail: "вторая точка, по назначению",
-                                isDone: now > givenAt.addingTimeInterval(6 * 3600))
+                                title: String(localized: "забор крови"),
+                                detail: drawn.contains(6) ? String(localized: "забор отмечен") : String(localized: "вторая точка, по назначению"),
+                                isDone: drawn.contains(6))
                 }
                 TGCard {
                     Text("Интервал посчитаем сами").textStyle(AppFont.cardTitle)
@@ -252,7 +270,7 @@ struct ProtocolScreen: View {
                         .textStyle(AppFont.caption)
                 }
                 TGButton(title: "Отметить забор крови", systemImage: "cross.vial") {
-                    recordDraw()
+                    recordDraw(dose: dose, givenAt: givenAt)
                 }
             } else {
                 TGCard {
@@ -265,13 +283,50 @@ struct ProtocolScreen: View {
         .navigationTitle("Протокол")
         .navigationBarTitleDisplayMode(.large)
         .onReceive(tick) { now = $0 }
+        // Открытый протокол и есть просьба напомнить: забор бывает
+        // не после каждой дозы, поэтому напоминание ставится отсюда,
+        // а не с каждой отметки приёма.
+        .task(id: lastDose?.id) { await scheduleReminder() }
     }
 
-    private func recordDraw() {
-        EventLog(context: context, appState: appState)
-            .record(.note, dog: dog, confirmation: "Записано · забор крови") { event in
-                event.note = "Забор крови"
+    private func doseTitle(_ dose: DoseRecord) -> String {
+        guard let medication = dose.medication else { return dose.awaitedMedicationName ?? "" }
+        return [medication.name, medication.doseText].filter { !$0.isEmpty }.joined(separator: " ")
+    }
+
+    /// Подпись под точкой +4 говорит, что правда будет, а не что обещали.
+    private func reminderDetail(hours: Int, givenAt: Date) -> String {
+        let fireAt = givenAt.addingTimeInterval(TimeInterval(hours) * 3600 - ProtocolReminder.lead)
+        switch reminder {
+        case .notAllowed:
+            return String(localized: "уведомления выключены — напоминания не будет")
+        case .failed:
+            return String(localized: "напоминание не встало — поглядывай на часы")
+        case .scheduled, .nothingAhead, nil:
+            return fireAt > now
+                ? String(localized: "напомним в \(Fmt.clock(fireAt)), за 30 минут")
+                : String(localized: "время подошло")
+        }
+    }
+
+    private func scheduleReminder() async {
+        guard let dose = lastDose, let givenAt = dose.givenAt else { return }
+        reminder = await ProtocolReminder.schedule(doseID: dose.id, givenAt: givenAt,
+                                                   skipping: drawnPoints(after: givenAt))
+    }
+
+    private func recordDraw(dose: DoseRecord, givenAt: Date) {
+        // Момент забора — настоящие часы, а не выбранный на «Сегодня» день:
+        // интервал считается от них и от них же ляжет в запись.
+        let drawnAt = Date()
+        let записано = EventLog(context: context, appState: appState)
+            .record(.note, dog: dog, at: drawnAt, confirmation: "Записано · забор крови") { event in
+                event.note = Exporter.drawNote(givenAt: givenAt, drawnAt: drawnAt)
             }
+        guard записано != nil else { return }
+        // Забор отмечен — напоминание его точки больше не нужно.
+        ProtocolReminder.cancel(doseID: dose.id,
+                                hours: ProtocolReminder.point(covering: drawnAt, givenAt: givenAt))
     }
 }
 
@@ -302,12 +357,15 @@ private struct ProtocolRow: View {
 
 /// Отчёт врачу собирается из уже записанного: нет ни одного поля
 /// «заполните для врача».
+///
+/// Выбор языка RU/FR/EN отсюда убран 30.09: он не влиял ни на что —
+/// заголовки CSV всегда шли на языке интерфейса. Переключатель, который
+/// ничего не переключает, хуже отсутствующего.
 struct VetReportScreen: View {
     let dog: Dog?
 
     @State private var from = Calendar.current.date(byAdding: .month, value: -1, to: .now) ?? .now
     @State private var to = Date()
-    @State private var language = "RU"
 
     private var events: [LogEvent] {
         Diary.active(dog?.events ?? []).filter { $0.date >= from && $0.date <= to }
@@ -321,12 +379,6 @@ struct VetReportScreen: View {
                 TGDivider()
                 DatePicker("По", selection: $to, in: from..., displayedComponents: .date)
                     .frame(minHeight: Token.Size.tapTarget)
-                TGDivider()
-                Picker("Язык", selection: $language) {
-                    ForEach(["RU", "FR", "EN"], id: \.self) { Text($0).tag($0) }
-                }
-                .pickerStyle(.segmented)
-                .padding(.vertical, Token.Space.s8)
             }
 
             TGCard {
@@ -347,10 +399,14 @@ struct VetReportScreen: View {
                 preview: SharePreview("Отчёт Togo · CSV")
             ) {
                 TGCard {
-                    TGListRow(title: "Выгрузить CSV", value: "без подписки", systemImage: "square.and.arrow.up")
+                    TGListRow(title: "Выгрузить CSV", value: "бесплатно", systemImage: "square.and.arrow.up")
                 }
             }
             .buttonStyle(.plain)
+
+            // «без подписки» читалось так, будто остальное с подпиской.
+            // Отчёты врачу и выгрузка бесплатны целиком — так и пишем.
+            TGExplainer(text: "Отчёт врачу и выгрузка бесплатны — всегда и без ограничений.")
         }
         .navigationTitle("Отчёт")
         .navigationBarTitleDisplayMode(.large)
@@ -362,6 +418,8 @@ struct VetReportScreen: View {
             ("Стул и симптомы", events.filter { $0.kind == .stool || $0.kind == .incident }.count),
             ("Вес и аппетит", events.filter { $0.kind == .weight || $0.kind == .meal }.count),
             ("Занятия", events.filter { $0.kind == .training }.count),
+            // Заборы крови лежат заметками со строкой «доза → забор».
+            ("Заметки и заборы крови", events.filter { $0.kind == .note }.count),
         ]
     }
 }

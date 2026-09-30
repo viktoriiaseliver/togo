@@ -50685,6 +50685,270 @@
           }
         }
       }
+    },
+    "Дни эпизода в график не входят: %@." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дни эпизода в график не входят: %@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les jours d'épisode ne comptent pas dans le graphique : %@."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Дні епізоду не входять у графік: %@."
+          }
+        }
+      },
+      "comment" : "История, подпись под графиком; %@ = Fmt.days"
+    },
+    "Поделиться с врачом" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поделиться с врачом"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Partager avec le vétérinaire"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Поділитися з лікарем"
+          }
+        }
+      },
+      "comment" : "История, кнопка выгрузки CSV врачу"
+    },
+    "История для врача · CSV" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "История для врача · CSV"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Historique pour le véto · CSV"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Історія для лікаря · CSV"
+          }
+        }
+      },
+      "comment" : "История, превью ShareLink"
+    },
+    "Точка — день, когда взвешивали." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Точка — день, когда взвешивали."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un point, c'est un jour de pesée."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Точка — день, коли зважували."
+          }
+        }
+      },
+      "comment" : "История, фильтр Вес без коридора"
+    },
+    "Точка — день, когда взвешивали. Зелёная полоса — коридор, который назвал врач." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Точка — день, когда взвешивали. Зелёная полоса — коридор, который назвал врач."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un point, c'est un jour de pesée. La bande verte, c'est la plage donnée par le vétérinaire."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Точка — день, коли зважували. Зелена смуга — коридор, який назвав лікар."
+          }
+        }
+      },
+      "comment" : "История, фильтр Вес с коридором"
+    },
+    "Пока ни одного. Эпизод поднимается сам: два инцидента за сутки или жидкий стул два дня подряд." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пока ни одного. Эпизод поднимается сам: два инцидента за сутки или жидкий стул два дня подряд."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun pour l'instant. Un épisode s'ouvre tout seul : deux incidents en 24 h ou des selles molles deux jours d'affilée."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Поки жодного. Епізод піднімається сам: два інциденти за добу або рідке випорожнення два дні поспіль."
+          }
+        }
+      },
+      "comment" : "История, пустой список эпизодов"
+    },
+    "С этим фильтром эпизодов нет." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "С этим фильтром эпизодов нет."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun épisode avec ce filtre."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "З цим фільтром епізодів немає."
+          }
+        }
+      },
+      "comment" : "История, список эпизодов пуст под фильтром"
+    },
+    "Жидкий стул два дня подряд. Вердикты «просится» на паузе, пока не станет понятно, что происходит." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жидкий стул два дня подряд. Вердикты «просится» на паузе, пока не станет понятно, что происходит."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selles molles deux jours d'affilée. Les verdicts «Envie de sortir ?» sont en pause tant qu'on ne comprend pas ce qui se passe."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Рідке випорожнення два дні поспіль. Вердикти «проситься» на паузі, доки не стане зрозуміло, що відбувається."
+          }
+        }
+      },
+      "comment" : "Подпись эпизода, поднятого стулом (StoolSheet)"
+    },
+    "съедено, г" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "съедено, г"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mangé, g"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "з'їдено, г"
+          }
+        }
+      },
+      "comment" : "CSV истории врачу, столбец"
+    },
+    "дозы" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "дозы"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "doses"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "дози"
+          }
+        }
+      },
+      "comment" : "CSV истории врачу, столбец"
+    },
+    "%@ · уже записано в %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · уже записано в %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · déjà noté à %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ · вже записано о %@"
+          }
+        }
+      },
+      "comment" : "DuplicateGuard: двойной тап пойман, вид записи и время прежней"
     }
   },
   "version" : "1.0"

@@ -48,6 +48,34 @@ nonisolated enum Exporter {
         return rows.joined(separator: "\n")
     }
 
+    // MARK: Забор крови
+
+    /// С чего начинается заметка о заборе крови. По этому началу протокол
+    /// узнаёт свои заборы среди заметок — отдельного вида записи для них
+    /// нет, а схему ради этого не трогаем.
+    static var drawHead: String { String(localized: "Забор крови") }
+
+    /// Строка «доза → забор: 4 ч 12 мин».
+    ///
+    /// Без неё анализы уже дважды читали неверно: T4 после дозы и T4
+    /// натощак — разные числа. Строка пишется в заметку записи, а заметка
+    /// идёт в выгрузку колонкой «заметка» — так она доезжает до врача
+    /// и в CSV, и в ленте, одной и той же фразой.
+    static func doseToDraw(givenAt: Date, drawnAt: Date) -> String {
+        String(localized: "доза → забор: \(Fmt.duration(drawnAt.timeIntervalSince(givenAt)))")
+    }
+
+    /// Заметка для записи о заборе. Без отмеченной дозы — просто
+    /// «Забор крови»: интервал, посчитанный от ничего, хуже пустого.
+    static func drawNote(givenAt: Date?, drawnAt: Date) -> String {
+        guard let givenAt, drawnAt >= givenAt else { return drawHead }
+        return drawHead + " · " + doseToDraw(givenAt: givenAt, drawnAt: drawnAt)
+    }
+
+    static func isDraw(_ event: LogEvent) -> Bool {
+        event.kind == .note && (event.note?.hasPrefix(drawHead) ?? false)
+    }
+
     /// Бристольская шкала живёт только здесь — в базе и в выгрузке для врача.
     static func clinicalCSV(events: [LogEvent]) -> String {
         var rows = [String(localized: "дата;время;форма;бристоль;особенности;автор")]

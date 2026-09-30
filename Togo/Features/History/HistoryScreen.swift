@@ -134,46 +134,162 @@ struct HistoryScreen: View {
 
     // MARK: График
 
-    /// График строится только по дням без активного эпизода.
+    /// Сколько дней в графике и в выгрузке врачу.
+    private static let chartDayCount = 30
+
+    /// График строится только по дням без эпизода: в дни расстройства
+    /// стул и выходы другие, и один такой день ломает всю линию месяца.
+    /// Сколько дней выпало — подписано под графиком.
     private var chartCard: some View {
         TGCard {
             Text(filter.chartTitle).textStyle(AppFont.cardTitle)
-            HistoryChart(points: chartPoints, filter: filter)
+            HistoryChart(points: chartPoints, filter: filter,
+                         days: chartRange, corridor: corridor)
                 .frame(height: 140)
-            Text(filter.chartExplainer).textStyle(AppFont.caption)
+            Text(chartExplainer).textStyle(AppFont.caption)
+            if excludedDayCount > 0 {
+                Text("Дни эпизода в график не входят: \(Fmt.days(excludedDayCount)).")
+                    .textStyle(AppFont.caption)
+            }
             TGDivider()
             Text("Приложение не ставит диагнозов. Оно умеет показать этот график врачу — вместе с датами еды и препаратов за те же дни.")
                 .textStyle(AppFont.caption)
+            // Отчёты врачу бесплатны: выгрузка не спрашивает подписку,
+            // только право «Выгружать данные и отчёты», как в «Данных».
+            if appState.can(.exportData) {
+                ShareLink(
+                    item: HistoryCSVFile(name: "togo-istoriya-vrachu.csv", text: doctorCSV),
+                    preview: SharePreview("История для врача · CSV")
+                ) {
+                    TGListRow(title: "Поделиться с врачом", systemImage: "cross.case")
+                }
+            }
         }
     }
 
-    private var chartPoints: [HistoryPoint] {
+    /// Дни графика: последние `chartDayCount`, по возрастанию.
+    private var chartDays: [Date] {
         let calendar = Calendar.current
-        let start = calendar.date(byAdding: .day, value: -29, to: calendar.startOfDay(for: .now)) ?? .now
-        return (0..<30).compactMap { offset in
-            guard let day = calendar.date(byAdding: .day, value: offset, to: start) else { return nil }
+        let today = calendar.startOfDay(for: .now)
+        return (0..<Self.chartDayCount).reversed().compactMap {
+            calendar.date(byAdding: .day, value: -$0, to: today)
+        }
+    }
+
+    /// Ось X прибита к периоду: пустые края (дни эпизода, дни
+    /// без взвешивания) не должны сжимать месяц до недели.
+    private var chartRange: ClosedRange<Date> {
+        let calendar = Calendar.current
+        let first = chartDays.first ?? calendar.startOfDay(for: .now)
+        let last = chartDays.last ?? first
+        return first...(calendar.date(byAdding: .day, value: 1, to: last) ?? last)
+    }
+
+    private var episodeWindows: [ClosedRange<Date>] {
+        episodes.map { EpisodeRules.window(of: $0) }
+    }
+
+    private var episodeDays: Set<Date> {
+        let windows = episodeWindows
+        return Set(chartDays.filter { EpisodeRules.isCovered($0, by: windows) })
+    }
+
+    private var excludedDayCount: Int { episodeDays.count }
+
+    /// Значение дня для графика. `nil` — точки нет: день без взвешивания
+    /// не «ноль килограммов».
+    private func value(on day: Date) -> Double? {
+        if filter == .weight { return weight(on: day) }
+        return filter.value(for: Diary.onDay(filtered, day))
+    }
+
+    /// Последнее взвешивание дня. Вес живёт в `WeightEntry`, а не в ленте:
+    /// до 30.09 график веса смотрел в ленту и рисовал ноль каждый день.
+    private func weight(on day: Date) -> Double? {
+        (dog?.weights ?? [])
+            .filter { Calendar.current.isDate($0.date, inSameDayAs: day) }
+            .max { $0.date < $1.date }?
+            .kg
+    }
+
+    /// Коридор веса от врача — только на фильтре «Вес» и только если задан.
+    private var corridor: ClosedRange<Double>? {
+        guard filter == .weight,
+              let low = dog?.targetWeightLow, let high = dog?.targetWeightHigh,
+              low <= high else { return nil }
+        return low...high
+    }
+
+    /// Про зелёную полосу говорим, только когда она нарисована.
+    private var chartExplainer: String {
+        if filter == .weight && corridor == nil {
+            return String(localized: "Точка — день, когда взвешивали.")
+        }
+        return filter.chartExplainer
+    }
+
+    private var chartPoints: [HistoryPoint] {
+        let covered = episodeDays
+        return chartDays.compactMap { day in
+            guard !covered.contains(day), let dayValue = value(on: day) else { return nil }
             let dayEvents = Diary.onDay(filtered, day)
-            return HistoryPoint(day: day, value: filter.value(for: dayEvents),
+            return HistoryPoint(day: day, value: dayValue,
                                 isAlarm: dayEvents.contains(where: \.raisesAlarm))
         }
     }
 
+    /// CSV для врача: тот же период и то же значение, что на графике,
+    /// плюс еда, дозы и эпизод по дням. Дни эпизода здесь не выкинуты,
+    /// а помечены: врачу нужны именно они.
+    private var doctorCSV: String {
+        var values: [Date: Double] = [:]
+        for day in chartDays {
+            if let dayValue = value(on: day) { values[day] = dayValue }
+        }
+        let doses = (dog?.medications ?? []).flatMap { medication in
+            medication.doses.compactMap { dose -> HistoryExport.Dose? in
+                guard let givenAt = dose.givenAt, dose.cancelledAt == nil else { return nil }
+                return HistoryExport.Dose(at: givenAt, name: medication.name)
+            }
+        }
+        return HistoryExport.csv(days: chartDays, valueTitle: filter.title,
+                                 values: values, events: events,
+                                 doses: doses, episodeDays: episodeDays)
+    }
+
     // MARK: Эпизоды
 
+    /// Эпизоды под фильтр. У эпизода нет своего вида — он хранит только
+    /// даты и подпись, — поэтому «Всё» показывает все, а остальные
+    /// фильтры — эпизоды, в промежутке которых есть записи этого фильтра
+    /// (на «Весе» — взвешивания).
+    private var visibleEpisodes: [Episode] {
+        let sorted = episodes.sorted { $0.startedAt > $1.startedAt }
+        guard filter != .all else { return sorted }
+        let dates = filter == .weight
+            ? (dog?.weights ?? []).map(\.date)
+            : filtered.map(\.date)
+        return sorted.filter { EpisodeRules.touches(EpisodeRules.window(of: $0), anyOf: dates) }
+    }
+
     private var episodesCard: some View {
-        TGCard {
+        let shown = visibleEpisodes
+        return TGCard {
             TGSectionHeader(title: "эпизоды")
             if episodes.isEmpty {
-                TGExplainer(text: "Пока ни одного. Эпизод поднимается сам: два инцидента за сутки или несколько дней подряд с жидким стулом.")
+                TGExplainer(text: "Пока ни одного. Эпизод поднимается сам: два инцидента за сутки или жидкий стул два дня подряд.")
+            } else if shown.isEmpty {
+                TGExplainer(text: "С этим фильтром эпизодов нет.")
             } else {
-                ForEach(episodes.sorted { $0.startedAt > $1.startedAt }) { episode in
+                ForEach(shown) { episode in
                     VStack(alignment: .leading, spacing: Token.Space.s2) {
                         HStack {
                             Text(episode.title).textStyle(AppFont.bodyEmphasis)
                             Spacer()
                             Text(Fmt.shortDay(episode.startedAt)).textStyle(AppFont.micro)
-                            // Эпизод поднимается САМ, по двум инцидентам
-                            // за сутки, — и человек не выбирал его заводить.
+                            // Эпизод поднимается САМ — по двум инцидентам
+                            // за сутки или по жидкому стулу два дня подряд
+                            // (`EpisodeRules`), — и человек не выбирал его заводить.
                             // До 28.09 удалить его было нельзя ничем:
                             // единственный `context.delete(episode)`
                             // в дереве — откат при несохранении.
@@ -194,7 +310,7 @@ struct HistoryScreen: View {
                         if episode.isActive() { activeEpisodeFooter(episode) }
                     }
                     .frame(minHeight: Token.Size.tapTarget)
-                    if episode.id != episodes.last?.id { TGDivider() }
+                    if episode.id != shown.last?.id { TGDivider() }
                 }
             }
         }
@@ -275,7 +391,10 @@ nonisolated enum HistoryFilter: String, CaseIterable, Sendable {
         }
     }
 
-    /// Фильтр меняет и календарь, и список эпизодов, и график — одно состояние на экран.
+    /// Фильтр меняет и календарь, и график, и список эпизодов — одно
+    /// состояние на экран. Эпизоды фильтруются по датам записей
+    /// (`HistoryScreen.visibleEpisodes`), вес — по `WeightEntry`:
+    /// в ленте взвешиваний нет.
     func matches(_ event: LogEvent) -> Bool {
         switch self {
         case .all: true
@@ -302,17 +421,21 @@ nonisolated enum HistoryFilter: String, CaseIterable, Sendable {
         case .stool: String(localized: "Выше — жиже. Терракотовые столбики — дни с кровью или слизью.")
         case .symptoms: String(localized: "Столбик есть — был инцидент. Пусто — и хорошо.")
         case .reactions: String(localized: "Сколько раз собака срывалась за день. Смотреть надо не на отдельный день, а на то, куда идёт линия за месяц.")
-        case .weight: String(localized: "Зелёная полоса — коридор, который назвал врач.")
+        case .weight: String(localized: "Точка — день, когда взвешивали. Зелёная полоса — коридор, который назвал врач.")
         }
     }
 
-    func value(for events: [LogEvent]) -> Double {
+    /// Значение дня по записям ленты. Для веса — `nil`: взвешивания
+    /// живут в `WeightEntry`, и значение дня берёт экран
+    /// (`HistoryScreen.weight(on:)`). Раньше здесь стоял ноль, и график
+    /// веса был ровной линией по нулю.
+    func value(for events: [LogEvent]) -> Double? {
         switch self {
-        case .all: Double(events.filter { $0.kind == .outing }.count)
-        case .stool: events.compactMap { $0.stoolForm?.bristolScore }.map(Double.init).max() ?? 0
-        case .symptoms: Double(events.filter { $0.kind == .incident }.count)
-        case .reactions: Double(events.filter { $0.kind == .reaction || $0.incidentKind == .reaction }.count)
-        case .weight: 0
+        case .all: return Double(events.filter { $0.kind == .outing }.count)
+        case .stool: return events.compactMap { $0.stoolForm?.bristolScore }.map(Double.init).max() ?? 0
+        case .symptoms: return Double(events.filter { $0.kind == .incident }.count)
+        case .reactions: return Double(events.filter { $0.kind == .reaction || $0.incidentKind == .reaction }.count)
+        case .weight: return nil
         }
     }
 }
@@ -324,20 +447,55 @@ nonisolated struct HistoryPoint: Identifiable, Sendable {
     var id: Date { day }
 }
 
-/// Столбиковый график на системном Charts — своей отрисовки не пишем.
+/// График на системном Charts — своей отрисовки не пишем.
+///
+/// Счётные фильтры — столбики. Вес — точки с линией: дней без
+/// взвешивания в `points` нет, и столбик нулевой высоты врал бы.
+/// Под весом — полоса коридора, если врач его назвал.
 struct HistoryChart: View {
     let points: [HistoryPoint]
     let filter: HistoryFilter
+    /// Период графика: ось прибита к нему, даже если края пустые.
+    let days: ClosedRange<Date>
+    var corridor: ClosedRange<Double>? = nil
 
     var body: some View {
-        Chart(points) { point in
-            BarMark(
-                x: .value("День", point.day, unit: .day),
-                y: .value(filter.title, point.value)
-            )
-            .foregroundStyle(point.isAlarm ? Token.Status.overdueText : Token.Ink.silhouette)
-            .cornerRadius(2)
+        Chart {
+            if let corridor {
+                RectangleMark(
+                    xStart: .value("День", days.lowerBound),
+                    xEnd: .value("День", days.upperBound),
+                    yStart: .value("Коридор", corridor.lowerBound),
+                    yEnd: .value("Коридор", corridor.upperBound)
+                )
+                .foregroundStyle(Token.Action.doneQuiet)
+            }
+            ForEach(points) { point in
+                if filter == .weight {
+                    LineMark(
+                        x: .value("День", point.day, unit: .day),
+                        y: .value(filter.title, point.value)
+                    )
+                    .foregroundStyle(Token.Ink.silhouette)
+                    PointMark(
+                        x: .value("День", point.day, unit: .day),
+                        y: .value(filter.title, point.value)
+                    )
+                    .foregroundStyle(Token.Ink.silhouette)
+                } else {
+                    BarMark(
+                        x: .value("День", point.day, unit: .day),
+                        y: .value(filter.title, point.value)
+                    )
+                    .foregroundStyle(point.isAlarm ? Token.Status.overdueText : Token.Ink.silhouette)
+                    .cornerRadius(2)
+                }
+            }
         }
+        .chartXScale(domain: days)
+        // Вес от нуля — это ровная полоса наверху: разницу в сто граммов
+        // не видно. Счётным фильтрам ноль нужен.
+        .chartYScale(domain: .automatic(includesZero: filter != .weight))
         .tgChartAxes()
     }
 }

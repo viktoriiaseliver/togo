@@ -44,6 +44,31 @@ nonisolated enum Permission: String, Codable, CaseIterable, Sendable {
         }
     }
 
+    /// Чего человек без этого права не увидит или не сможет.
+    ///
+    /// Для предпросмотра «как видит ситтер»: раньше там стоял зашитый
+    /// абзац про помощника, одинаковый для любой роли и любых поимённых
+    /// прав, — и обещал скрывать «историю за прошлые месяцы и контакты
+    /// семьи», чего в коде не скрывается нигде. Теперь список собирается
+    /// из прав, и соврать ему нечем.
+    var withoutIt: String {
+        switch self {
+        case .logBasics: String(localized: "не запишет выходы, еду, прогулки и стул")
+        case .editRecords: String(localized: "не поправит и не удалит записи в ленте")
+        case .seeMedical: String(localized: "не увидит медицинское: схемы, дозы, анализы, отчёты")
+        case .giveDose: String(localized: "не отметит дозу и не возьмёт её на себя")
+        case .editTreatment: String(localized: "не поменяет схему лечения")
+        case .editProfile: String(localized: "не поменяет профиль, порцию, уход и занятия")
+        case .manageFamily: String(localized: "не позовёт людей и не поменяет роли")
+        case .exportData: String(localized: "не выгрузит CSV и отчёт врачу")
+        }
+    }
+
+    /// Чего нет в наборе — в порядке `allCases`, как на экране прав.
+    static func missing(from granted: Set<Permission>) -> [Permission] {
+        allCases.filter { !granted.contains($0) }
+    }
+
     /// Право, без которого приложение перестаёт быть безопасным.
     /// Такие нельзя снять у владельца.
     var isOwnerOnlyByDefault: Bool { self == .manageFamily }
@@ -68,6 +93,8 @@ nonisolated enum FamilyRole: String, Codable, CaseIterable, Sendable {
         switch self {
         case .owner: String(localized: "всё")
         case .coOwner: String(localized: "доза, правка, приглашения")
+        // «правка 24 ч» — правда с 30.09: `editWindow` ниже. До этого
+        // сводка обещала срок, которого в коде не было нигде.
         case .caregiver: String(localized: "доза, правка 24 ч")
         case .helper: String(localized: "выход, еда, прогулка")
         case .observer: String(localized: "читает всё, не пишет")
@@ -89,6 +116,29 @@ nonisolated enum FamilyRole: String, Codable, CaseIterable, Sendable {
         case .observer:
             [.seeMedical, .exportData]
         }
+    }
+
+    /// Сколько после записи её ещё можно править и удалять. Пусто —
+    /// без срока.
+    ///
+    /// Ухаживающий правит только свежее: вчерашнюю опечатку он заметит
+    /// и поправит сам, а переписывать недельную историю — дело
+    /// владельца. Срок привязан к роли, а не к праву: право
+    /// «Править и удалять записи» выдаётся поимённо любому, и владелец,
+    /// выдавший его ухаживающему, выдаёт его в рамках роли.
+    var editWindow: TimeInterval? {
+        self == .caregiver ? 24 * 3600 : nil
+    }
+
+    /// Можно ли править запись, сделанную в `recordedAt`.
+    ///
+    /// Одна проверка на все места правки: право `editRecords` плюс срок
+    /// роли. Будущая запись (часы телефона разошлись) считается свежей.
+    func mayEdit(recordedAt: Date, with permissions: Set<Permission>,
+                 at now: Date = Date()) -> Bool {
+        guard permissions.contains(.editRecords) else { return false }
+        guard let editWindow else { return true }
+        return now.timeIntervalSince(recordedAt) < editWindow
     }
 
     var canWrite: Bool { defaultPermissions.contains(.logBasics) }

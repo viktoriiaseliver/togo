@@ -129,7 +129,7 @@ struct DayPlanActions {
             отметка = dose
         }
 
-        EventLog(context: context, appState: appState)
+        let запись = EventLog(context: context, appState: appState)
             .record(logKind(of: item),
                     dog: dog,
                     at: момент,
@@ -182,19 +182,44 @@ struct DayPlanActions {
             // планировать будущее.
             Task { await ReminderScheduler.refresh(dog: dog, settings: settings, at: Date()) }
         }
+
+        // «Отменить» на тосте должно значить то же, что повторный тап
+        // по кругу. Раньше тост знал только запись в ленте: строка
+        // уходила, а доза оставалась отмеченной, окно натощак живым,
+        // срок ухода сдвинутым — и повторить дозу было нельзя.
+        if let запись {
+            let id = запись.id
+            appState.откатыватьПунктом(запись: id) { [self] in
+                uncomplete(item, запись: id)
+            }
+        }
     }
 
     // MARK: Снять отметку
 
-    func uncomplete(_ item: DayPlanItem) {
-        guard dog != nil else { return }
+    /// - Parameter запись: какая запись в ленте закрыла пункт, если это
+    ///   известно точно — так бывает у «Отменить» на тосте отметки. Пусто —
+    ///   ищем ближайшую к часу пункта, как при повторном тапе по кругу.
+    func uncomplete(_ item: DayPlanItem, запись точная: UUID? = nil) {
+        guard let dog else { return }
 
         // Убираем ту запись, которая этот пункт и закрыла, — ближайшую
         // к его времени.
         let kind = logKind(of: item)
-        let candidates = Diary.onDay(events, день)
-            .filter { $0.kind == kind }
-            .sorted { abs($0.date.timeIntervalSince(item.time)) < abs($1.date.timeIntervalSince(item.time)) }
+        let candidates: [LogEvent]
+        if let точная {
+            // Отмечали задним числом через «когда дали» — запись может
+            // лежать дальше допуска от часа пункта; поиск по близости
+            // её бы не нашёл.
+            // Из хранилища, а не из связи `dog.events`: связь применяется
+            // не мгновенно, а запись создана секунды назад.
+            let descriptor = FetchDescriptor<LogEvent>(predicate: #Predicate { $0.id == точная })
+            candidates = ((try? context.fetch(descriptor)) ?? []).filter { $0.deletedAt == nil }
+        } else {
+            candidates = Diary.onDay(events, день)
+                .filter { $0.kind == kind }
+                .sorted { abs($0.date.timeIntervalSince(item.time)) < abs($1.date.timeIntervalSince(item.time)) }
+        }
 
         // Что вернуть, если сохранить не выйдет. `try?` здесь стоял ровно
         // перед тостом «Снова в списке»: не сохранилось — а человек уже
@@ -215,7 +240,7 @@ struct DayPlanActions {
                 task.undoDone(previousDone: careUndo.wrappedValue[task.id] ?? nil)
             }
         } else if let event = candidates.first,
-                  abs(event.date.timeIntervalSince(item.time)) <= MealSchedule.doneTolerance {
+                  точная != nil || abs(event.date.timeIntervalSince(item.time)) <= MealSchedule.doneTolerance {
             вернуть.append { event.deletedAt = nil; event.deletedBy = nil }
             event.deletedAt = Date()
             event.deletedBy = appState.currentUserName
@@ -235,6 +260,15 @@ struct DayPlanActions {
             Haptics.warning()
             appState.showUndo("Не снялось · нажми ещё раз")
             return
+        }
+
+        if item.kind == .dose {
+            // Доза снова не дана — значит «можно кормить» по её окну
+            // натощак уже неправда, а догоняющие t+30 и t+60 снова нужны:
+            // `complete` их снял. Пересборка делает и то и другое —
+            // по состоянию хранилища, а не по памяти о том, что ставили.
+            // Часы настоящие: снимают отметку сейчас, а не в листаемом дне.
+            Task { await ReminderScheduler.refresh(dog: dog, settings: settings, at: Date()) }
         }
 
         Haptics.warning()

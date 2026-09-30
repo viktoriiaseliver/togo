@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import Combine
 
 /// Главный экран. Порядок блоков: натощак → уход, если есть срок → таймлайн → режим дня.
 /// В поездке между натощак и таймлайном встаёт блок дороги, а сводка «ел и пил»
@@ -25,8 +26,14 @@ struct TodayScreen: View {
     /// это — за какой день считать. Пока показывают сегодня, они
     /// совпадают, и разницы не видно; на «вчера» она решает всё.
     @State private var показанныйДень = Date()
-    /// Когда в последний раз предлагали воду в режиме «собака со мной».
-    @State private var lastWaterOffer: Date?
+    /// Когда предлагали воду в режиме «собака со мной» — отметки этого
+    /// запуска. Истина лежит на телефоне (`DayOutWater`): до 30.09 время
+    /// жило только здесь и терялось с перезапуском, и «Пора предложить
+    /// воду» вставало сразу после только что предложенной.
+    @State private var lastWaterOffer: [UUID: Date] = [:]
+    /// Сколько раз с открытия экрана менялось то, от чего зависят
+    /// напоминания о дозах. Смена запускает пересборку — одну на серию.
+    @State private var напоминанияУстарели = 0
     /// Когда дело ухода было сделано в прошлый раз — чтобы «вернуть»
     /// возвращало именно туда, а не обнуляло срок.
     @State private var lastCareDone: [UUID: Date?] = [:]
@@ -245,8 +252,11 @@ struct TodayScreen: View {
         }
 
         if let day = activeDayOut {
-            DayOutCard(day: day, now: now, lastWater: lastWaterOffer) {
-                lastWaterOffer = Date()
+            DayOutCard(day: day, now: now,
+                       lastWater: lastWaterOffer[day.id] ?? DayOutWater.last(for: day)) {
+                let сейчас = Date()
+                lastWaterOffer[day.id] = сейчас
+                DayOutWater.offered(day, at: сейчас)
                 Haptics.tap()
             } onFinish: {
                 закрытьДень(day)
@@ -308,6 +318,7 @@ struct TodayScreen: View {
             appState.showUndo("День не закрылся · нажми ещё раз")
             return
         }
+        DayOutWater.forget(day)
         finishingDayOut = day
     }
 
@@ -333,7 +344,25 @@ struct TodayScreen: View {
                 appState.refreshEpisode(from: episodes, at: now)
                 // Напоминания пересобираются при каждом открытии: их мало,
                 // а разойтись они могут молча.
-                await ReminderScheduler.refresh(dog: dog, settings: settings, at: now)
+                await пересобратьНапоминания()
+            }
+            // Дозу отметили или сняли на другом телефоне, передали
+            // дежурство, поправили схему — запланированное на этом
+            // телефоне уже неправда. Обмен сохраняет приехавшее обычным
+            // сохранением контекста, поэтому слушаем сохранение, а не
+            // сам обмен: `ReminderScheduler` живёт в приложении, обмен —
+            // в общем слое и позвать его не может.
+            .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave)
+                .receive(on: DispatchQueue.main)) { notification in
+                if Self.касаетсяНапоминаний(notification) { напоминанияУстарели += 1 }
+            }
+            // Серия сохранений — одна пересборка: `task(id:)` снимает
+            // предыдущую, пока та ждёт.
+            .task(id: напоминанияУстарели) {
+                guard напоминанияУстарели > 0 else { return }
+                try? await Task.sleep(for: .seconds(1))
+                guard !Task.isCancelled else { return }
+                await пересобратьНапоминания()
             }
             // `Timer.publish` в фоне не тикает: вернувшись в приложение,
             // человек до следующего тика видит вчерашнее «сейчас».
@@ -343,6 +372,11 @@ struct TodayScreen: View {
             .onChange(of: scenePhase) { _, phase in
                 guard phase == .active else { return }
                 now = Date()
+                // `.task` выше срабатывает один раз на жизнь вкладки,
+                // а телефон возвращают в приложение назавтра: без этого
+                // отметки дня и напоминания оставались вчерашними.
+                if let dog { DoseScheduler.ensureDoses(for: dog, on: now, context: context) }
+                напоминанияУстарели += 1
             }
             // Запись приходит с настоящим временем, а `now` — с тика:
             // между ними до тридцати секунд. В этот зазор метка «сейчас»
@@ -531,9 +565,35 @@ struct TodayScreen: View {
         return dutyMember.map { String(localized: "Сегодня дежурит \($0.name)") } ?? String(localized: "Кто-то один — отметьте")
     }
 
+    /// Кому на этом телефоне звенеть лестницей доз — по своей карточке
+    /// и дежурству. Не опознали себя — всем, как раньше.
+    private var напоминанияКому: DoseReminderAudience {
+        let я = FamilyResolver.меня(среди: members, запомненный: appState.myMemberID,
+                                    гость: SharedZoneOwner.isGuest)
+        return DoseReminderAudience.по(я: я, дежурный: dutyMember,
+                                       даюДозу: appState.can(.giveDose))
+    }
+
+    /// Пересобрать напоминания с текущей аудиторией. Часы настоящие:
+    /// планируется будущее, а не листаемый день.
+    private func пересобратьНапоминания() async {
+        ReminderScheduler.audience = напоминанияКому
+        await ReminderScheduler.refresh(dog: dog, settings: settings, at: Date())
+    }
+
+    /// Сохранение затронуло дозы, схему, собаку или семью.
+    private static func касаетсяНапоминаний(_ notification: Notification) -> Bool {
+        let сущности: Set<String> = ["DoseRecord", "Medication", "Dog", "FamilyMember"]
+        for key in ["inserted", "updated", "deleted"] {
+            guard let ids = notification.userInfo?[key] as? [PersistentIdentifier] else { continue }
+            if ids.contains(where: { сущности.contains($0.entityName) }) { return true }
+        }
+        return false
+    }
+
     /// Вернуть пункт в невыполненные.
     ///
-    /// Отметить не то — обычное дело: сработал свайп, покормила не она,
+    /// Отметить не то — обычное дело: палец промахнулся, покормила не она,
     /// доза оказалась другой. Раньше отменить это можно было только
     /// найдя запись в ленте и удалив её оттуда — то есть догадавшись,
     /// что «сделано» в режиме дня и запись в ленте это одно и то же.

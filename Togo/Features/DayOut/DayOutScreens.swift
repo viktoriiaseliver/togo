@@ -242,3 +242,28 @@ struct DayOutCard: View {
         }
     }
 }
+
+/// Когда в выездной день предлагали воду — на этом телефоне, по id дня.
+///
+/// Жило в `@State` главного экрана и терялось с перезапуском: система
+/// выгружает приложение из кармана, и «Пора предложить воду» вставало
+/// сразу после предложенной. В модель не кладём (схема заморожена,
+/// и это память телефона, а не факт про собаку) — ключ с id дня
+/// в `UserDefaults`. Напоминать о воде уведомлением не будем: прерывать
+/// имеют право только доза, окно натощак и лестница эскалации.
+enum DayOutWater {
+    private static func key(_ day: DayOut) -> String { "dayout.water.\(day.id.uuidString)" }
+
+    static func last(for day: DayOut, defaults: UserDefaults = .standard) -> Date? {
+        defaults.object(forKey: key(day)) as? Date
+    }
+
+    static func offered(_ day: DayOut, at date: Date, defaults: UserDefaults = .standard) {
+        defaults.set(date, forKey: key(day))
+    }
+
+    /// День закрыт — память о воде ему больше не нужна.
+    static func forget(_ day: DayOut, defaults: UserDefaults = .standard) {
+        defaults.removeObject(forKey: key(day))
+    }
+}

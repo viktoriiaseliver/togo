@@ -48,7 +48,9 @@ la double dose», «Données et confidentialité», «Je le sors», «Pas clair�
 # отпечаток считается по НАБОРУ публикуемых документов, и рост набора
 # его сдвигает. Переводы дисклеймера были готовы заранее и сверены
 # построчно: разделов три, абзацев 3+2+3 в обоих языках.
-SOURCE_FINGERPRINT = "e07ecba5e1fe75a3"
+# Пересчитан 30.09: политика приватности сказала правду про зеркало
+# iCloud и общий дневник (+1 абзац в «где хранится», +1 в «права»).
+SOURCE_FINGERPRINT = "a6f86eea5b932141"
 
 # Подписи вокруг текста: в шаблоне страницы их два языка.
 LABELS = {
@@ -64,12 +66,13 @@ DOCUMENTS = {
     "PrivacyPolicyScreen": {
         "file": "privacy.html",
         "title": "Politique de confidentialité",
-        "updated": "25 août 2026",
-        "intro": "La version courte : le carnet vit sur ton téléphone. Nous ne créons pas de compte, nous ne collectons aucune statistique sur ce que tu notes, et nous ne transmettons rien à des tiers.",
+        "updated": "30 septembre 2026",
+        "intro": "La version courte : le carnet vit sur ton téléphone et dans ton iCloud. Nous n'avons pas de serveurs à nous, et rien ne nous est envoyé. Nous ne créons pas de compte, nous ne collectons aucune statistique, et nous ne transmettons rien à des tiers.",
         "sections": [
             ("Ce qui est conservé, et où", [
                 "Les entrées sur ton chien — sorties, repas, eau, selles, incidents, séances, poids, traitements — sont conservées dans une base sur l'appareil et dans le stockage partagé entre l'app et ses widgets.",
-                "Si iCloud est activé, une copie de cette base se trouve dans ta bibliothèque iCloud privée. Toi seul y as accès, ainsi que les personnes à qui tu as donné accès à ton compte Apple.",
+                "Si iCloud est activé sur ton téléphone, l'app garde elle-même une copie de cette base dans ta bibliothèque iCloud privée. Toi seul y as accès, ainsi que les personnes à qui tu as donné accès à ton compte Apple.",
+                "Si tu tiens le carnet à deux, la partie commune — le fil, les prises marquées, le profil du chien, les soins et les traitements — se trouve dans une zone à part de ton iCloud, que tu as partagée. Chez la personne invitée, ces entrées sont enregistrées sur son téléphone et dans son iCloud.",
             ]),
             ("Ce que nous ne collectons pas", [
                 "Nous ne collectons pas d'identifiants publicitaires, nous n'utilisons pas de traceurs et nous n'intégrons aucun SDK d'analyse tiers.",
@@ -77,7 +80,7 @@ DOCUMENTS = {
             ]),
             ("Ce qui sort de l'appareil", [
                 "L'achat de l'abonnement est traité par Apple. Tout ce que nous recevons d'Apple, c'est le fait qu'un abonnement est actif — jamais de données de paiement.",
-                "Le compte rendu pour le vétérinaire, l'export CSV et l'invitation au carnet partagé ne partent que lorsque tu appuies toi-même sur « Partager », et uniquement vers la personne que tu as choisie dans la fenêtre système.",
+                "Le compte rendu pour le vétérinaire, l'export CSV, le fichier du carnet et l'invitation au carnet partagé ne partent que lorsque tu appuies toi-même sur « Partager », et uniquement vers la personne que tu as choisie dans la fenêtre système. Une fois l'invitation acceptée, les nouvelles entrées du carnet partagé circulent seules entre vos iCloud — jusqu'à ce que le propriétaire arrête le partage.",
             ]),
             ("Invitations et rôles", [
                 "Une invitation au carnet partagé est un partage iCloud. Seule la personne que tu as nommée dans la fenêtre système « Partager » peut l'ouvrir : personne ne peut entrer avec une adresse transférée.",
@@ -85,7 +88,8 @@ DOCUMENTS = {
             ]),
             ("Tes droits", [
                 "Tu peux tout exporter en CSV et supprimer toutes tes données dans « Réglages → Données et confidentialité », sans courrier et sans attente.",
-                "La suppression efface la base sur l'appareil. La copie dans iCloud est supprimée par le système en même temps que les données de l'app.",
+                "« Supprimer toutes les données » efface le carnet sur ce téléphone et y désactive le carnet partagé. Si tu es le propriétaire, les personnes invitées ne reçoivent plus de nouvelles entrées, et ce qu'elles ont déjà reçu leur reste.",
+                "Tu peux effacer entièrement la copie dans ton iCloud dans les Réglages d'iOS : iCloud → Gérer le stockage → Togo. Supprimer l'app ne l'efface pas.",
             ]),
             ("Enfants", [
                 "L'app n'est pas destinée à un usage autonome par des enfants de moins de 13 ans. Le rôle « assistant » est prévu pour un enfant qui utilise le téléphone d'un adulte.",

@@ -493,10 +493,12 @@ struct InviteSheet: View {
         .presentationDetents([.large])
     }
 
-    /// Участник заводится сразу и целиком: приглашения по ссылке нет,
-    /// потому что нечему приходить — обмена между устройствами ещё нет.
-    /// Токен всё равно записываем: он понадобится, когда обмен появится,
-    /// и заводить его задним числом будет неоткуда.
+    /// Участник заводится сразу и целиком — карточкой на этом телефоне.
+    /// Приглашение на его собственный телефон — отдельное действие:
+    /// `CKShare` через «позвать в дневник» (`inviteCard`), а принятый
+    /// гость опознаёт себя в списке семьи кнопкой «Это я».
+    /// Токен и срок пишутся по старой схеме и нужны только для пометки
+    /// «только здесь» в списке (`isInvitePending`); по ним никто не входит.
     private func create() {
         let member = FamilyMember(name: name.trimmingCharacters(in: .whitespaces),
                                   role: role)
@@ -520,35 +522,129 @@ struct InviteSheet: View {
 }
 
 /// Что видит помощник или ситтер. Роль сама перечисляет, чего он не видит.
+///
+/// До 30.09 экран был картинкой: зашитый план «08:00 выход, 13:00
+/// прогулка» и один абзац для любой роли. Теперь план — настоящий план
+/// дня этой собаки, а «не увидит / не сможет» собирается из прав:
+/// пресета роли или прав, выданных человеку поимённо.
 struct SitterPreviewScreen: View {
     let dog: Dog?
 
+    @Query private var members: [FamilyMember]
+    @State private var subject: Subject = .role(.helper)
+
+    /// Чей вид смотрим: пресет роли или живого участника.
+    enum Subject: Hashable {
+        case role(FamilyRole)
+        case member(UUID)
+    }
+
+    /// Участники, кроме владельца, и роли-пресеты. Владелец может всё,
+    /// показывать ему «чего ты не видишь» незачем.
+    private var subjects: [Subject] {
+        members.filter { $0.role != .owner }.map { .member($0.id) }
+            + [FamilyRole.helper, .caregiver, .observer, .coOwner].map { .role($0) }
+    }
+
+    private func member(_ subject: Subject) -> FamilyMember? {
+        guard case .member(let id) = subject else { return nil }
+        return members.first { $0.id == id }
+    }
+
+    private func title(_ subject: Subject) -> String {
+        switch subject {
+        case .role(let role): role.title
+        case .member: member(subject)?.name ?? ""
+        }
+    }
+
+    private func subtitle(_ subject: Subject) -> String? {
+        guard let person = member(subject) else { return String(localized: "по роли") }
+        return person.hasCustomPermissions
+            ? String(localized: "\(person.role.title.lowercased()) · права изменены")
+            : person.role.title.lowercased()
+    }
+
+    private var role: FamilyRole {
+        switch subject {
+        case .role(let role): role
+        case .member: member(subject)?.role ?? .helper
+        }
+    }
+
+    /// Права того, чей вид смотрим: поимённые, если выданы, иначе роли.
+    private var permissions: Set<Permission> {
+        switch subject {
+        case .role(let role): role.defaultPermissions
+        case .member: member(subject)?.permissions ?? role.defaultPermissions
+        }
+    }
+
+    /// Что осталось на сегодня — тем же построителем, что главный экран.
+    private var plan: [DayPlanItem] {
+        DayPlanBuilder.items(dog: dog, events: dog?.events ?? [], now: .now,
+                             seesMedical: permissions.contains(.seeMedical))
+            .filter { !$0.isDone }
+    }
+
+    /// Чего не увидит и не сможет — строками из прав, плюс срок правки,
+    /// если роль его ставит.
+    private var limits: [String] {
+        var lines = Permission.missing(from: permissions).map(\.withoutIt)
+        if permissions.contains(.editRecords), role.editWindow != nil {
+            lines.append(String(localized: "править и удалять сможет только записи не старше суток"))
+        }
+        return lines
+    }
+
     var body: some View {
-        TGScreen(title: "\(dog?.name ?? "Собака") · ты помощник") {
-            TGExplainer(text: "Так экран выглядит у человека с ролью «помощник».")
+        TGScreen {
+            TGCard {
+                TGSectionHeader(title: "чей вид")
+                TGChipGroup(items: subjects,
+                            title: { title($0) },
+                            subtitle: { subtitle($0) },
+                            isSelected: { $0 == subject }) { subject = $0 }
+            }
 
             TGCard(spacing: 0) {
                 TGSectionHeader(title: "что нужно сделать")
-                ForEach(plan, id: \.0) { time, title in
-                    HStack(spacing: Token.Space.s12) {
-                        Text(time)
-                            .textStyle(AppFont.numeric(13, weight: .medium))
-                            .fixedSize()
-                            .frame(minWidth: 44, alignment: .leading)
-                        Text(title).textStyle(AppFont.body)
-                        Spacer(minLength: 0)
-                        Image(systemName: "chevron.right")
-                            .font(.system(size: Token.Size.iconSm, weight: .semibold))
-                            .foregroundStyle(Token.Ink.secondary)
+                if plan.isEmpty {
+                    TGExplainer(text: "На сегодня в плане ничего не осталось.")
+                } else {
+                    ForEach(plan) { item in
+                        HStack(spacing: Token.Space.s12) {
+                            Text(Fmt.clock(item.time))
+                                .textStyle(AppFont.numeric(13, weight: .medium))
+                                .fixedSize()
+                                .frame(minWidth: 44, alignment: .leading)
+                            Text(item.title).textStyle(AppFont.body)
+                            Spacer(minLength: 0)
+                        }
+                        .frame(minHeight: Token.Size.tapTarget)
                     }
-                    .frame(minHeight: Token.Size.tapTarget)
+                }
+                if !permissions.contains(.logBasics) {
+                    TGExplainer(text: "Отмечать пункты не сможет — только смотреть.")
                 }
             }
 
             TGCard {
-                Text("Чего ты не видишь").textStyle(AppFont.cardTitle)
-                Text("Медицинскую часть, историю за прошлые месяцы и контакты семьи. Записывать выходы, еду и прогулки можешь.")
-                    .textStyle(AppFont.caption)
+                Text("Чего не увидит и не сможет").textStyle(AppFont.cardTitle)
+                if limits.isEmpty {
+                    Text("Ничего — с этими правами можно всё.").textStyle(AppFont.caption)
+                } else {
+                    ForEach(limits, id: \.self) { line in
+                        HStack(alignment: .firstTextBaseline, spacing: Token.Space.s8) {
+                            Image(systemName: "minus.circle")
+                                .font(.system(size: Token.Size.iconSm, weight: .semibold))
+                                .foregroundStyle(Token.Ink.secondary)
+                                .accessibilityHidden(true)
+                            Text(line).textStyle(AppFont.caption).wraps()
+                            Spacer(minLength: 0)
+                        }
+                    }
+                }
             }
 
             TGCard {
@@ -559,13 +655,6 @@ struct SitterPreviewScreen: View {
         }
         .navigationTitle("Вид ситтера")
         .navigationBarTitleDisplayMode(.large)
-    }
-
-    private var plan: [(String, String)] {
-        [("08:00", "Утренний выход"),
-         ("08:30", "Еда · \(dog?.servingGrams ?? 60) г"),
-         ("13:00", "Прогулка 30 мин"),
-         ("18:30", "Еда · \(dog?.servingGrams ?? 60) г")]
     }
 }
 

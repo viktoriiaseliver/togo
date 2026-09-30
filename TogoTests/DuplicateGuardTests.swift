@@ -55,19 +55,58 @@ struct DuplicateGuardTests {
                                       like: вечер, in: context) == nil)
     }
 
-    @Test("Выход по нужде повторяется по смыслу и дублем не считается")
-    func повторяемоеНеЛовится() throws {
+    private func запись(_ kind: LogKind, _ context: ModelContext, _ dog: Dog,
+                        at date: Date, прогулка: UUID? = nil) throws -> LogEvent {
+        let event = LogEvent(kind: kind, date: date, authorName: "Я")
+        event.walkEventID = прогулка
+        event.dog = dog
+        context.insert(event)
+        try context.save()
+        return event
+    }
+
+    /// Карточка быстрой записи обещает ловить двойной тап по любой кнопке.
+    /// До 30.09 стул, лакомство и выход проходили дважды.
+    @Test("Стул, лакомство и выход через пять секунд — дубль", arguments: [LogKind.stool, .treat, .outing])
+    func кнопкиБыстройЗаписиЛовятся(_ kind: LogKind) throws {
         let (context, dog) = try собакаИКонтекст()
         let первый = Date()
-        let событие = LogEvent(kind: .outing, date: первый, authorName: "Я")
-        событие.dog = dog
-        context.insert(событие)
-        try context.save()
+        _ = try запись(kind, context, dog, at: первый)
 
-        let второй = LogEvent(kind: .outing, date: первый.addingTimeInterval(5), authorName: "Я")
+        let второй = LogEvent(kind: kind, date: первый.addingTimeInterval(5), authorName: "Я")
+        #expect(DuplicateGuard.recent(of: kind, dog: dog, at: второй.date,
+                                      like: второй, in: context) != nil,
+                "два тапа подряд по «\(kind.title)» — почти всегда промах")
+    }
+
+    @Test("Два инцидента подряд — не дубль: из них поднимается эпизод")
+    func инцидентНеЛовится() throws {
+        let (context, dog) = try собакаИКонтекст()
+        let первый = Date()
+        _ = try запись(.incident, context, dog, at: первый)
+
+        let второй = LogEvent(kind: .incident, date: первый.addingTimeInterval(5), authorName: "Я")
+        #expect(DuplicateGuard.recent(of: .incident, dog: dog, at: второй.date,
+                                      like: второй, in: context) == nil)
+    }
+
+    @Test("Отметки прогулки дублем не считаются: писал трижды за прогулку")
+    func отметкиПрогулкиНеЛовятся() throws {
+        let (context, dog) = try собакаИКонтекст()
+        let прогулка = UUID()
+        let первый = Date()
+        _ = try запись(.outing, context, dog, at: первый, прогулка: прогулка)
+
+        let второй = LogEvent(kind: .outing, date: первый.addingTimeInterval(20), authorName: "Я")
+        второй.walkEventID = прогулка
         #expect(DuplicateGuard.recent(of: .outing, dog: dog, at: второй.date,
                                       like: второй, in: context) == nil,
                 "собака и правда писает трижды за прогулку")
+
+        // И наоборот: отметка прогулки не делает дублем выход с кнопки.
+        let сКнопки = LogEvent(kind: .outing, date: первый.addingTimeInterval(30), authorName: "Я")
+        #expect(DuplicateGuard.recent(of: .outing, dog: dog, at: сКнопки.date,
+                                      like: сКнопки, in: context) == nil)
     }
 
     @Test("Удалённая запись дублем не считается")

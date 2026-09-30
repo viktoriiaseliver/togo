@@ -32,7 +32,8 @@ struct DayPlanItem: Identifiable, Equatable {
     }
 }
 
-/// Свайп вправо означает «сделано» — и в режиме дня, и у ситтера.
+/// Тап по кругу означает «сделано», повторный — «снова в списке».
+/// Свайп убран: тап по тексту строки открывает запись, а не отмечает.
 struct DayPlanList: View {
     let items: [DayPlanItem]
     let now: Date

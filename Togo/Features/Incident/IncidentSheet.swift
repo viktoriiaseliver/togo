@@ -72,6 +72,10 @@ struct IncidentSheet: View {
 
     /// Второй инцидент за сутки поднимает флаг эпизода: вердикты гаснут,
     /// пока не станет понятно, что происходит.
+    ///
+    /// Это один из двух путей. Второй — жидкий стул два календарных дня
+    /// подряд: правило в `EpisodeRules`, заводит `StoolSheet`. Эпизод,
+    /// поднятый стулом, здесь продлевается так же, как свой.
     private func raiseEpisodeIfNeeded(for dog: Dog) {
         let recent = Diary.incidentsInLast24h(dog.events)
         guard recent.count >= 2 else { return }

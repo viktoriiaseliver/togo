@@ -7,6 +7,7 @@ import StoreKit
 struct SettingsScreen: View {
     @Environment(Settings.self) private var settings
     @Environment(SubscriptionStore.self) private var store
+    @Environment(AppState.self) private var appState
     @Environment(\.openURL) private var openURL
     @Environment(\.requestReview) private var requestReview
     @Query private var dogs: [Dog]
@@ -192,13 +193,25 @@ struct SettingsScreen: View {
     private var dogSection: some View {
         Section {
             ForEach(dogs) { dog in
-                NavigationLink {
-                    ProfileScreen(dog: dog)
-                } label: {
-                    LabeledContent(dog.name, value: Fmt.weight(dog.weightKg))
+                // Без подписки вторая и следующие собаки закрыты
+                // (`AppState.закрыта`) — и здесь тоже, иначе профиль
+                // закрытой собаки открывался бы в обход замка.
+                if appState.закрыта(dog, среди: dogs) {
+                    Button { showPaywall = true } label: {
+                        LabeledContent(dog.name) {
+                            Image(systemName: "lock.fill").accessibilityLabel("в Pro")
+                        }
+                    }
+                } else {
+                    NavigationLink {
+                        ProfileScreen(dog: dog)
+                    } label: {
+                        LabeledContent(dog.name, value: Fmt.weight(dog.weightKg))
+                    }
                 }
             }
-            if dogs.isEmpty || store.isPro {
+            // Та же дверь, что в списке собак: `canAddDog`.
+            if store.canAddDog(existing: dogs.count) {
                 NavigationLink("Добавить собаку") { DogEditorScreen() }
             } else {
                 Button("Добавить вторую собаку") { showPaywall = true }

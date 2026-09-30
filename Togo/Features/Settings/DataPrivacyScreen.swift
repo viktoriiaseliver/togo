@@ -1,24 +1,43 @@
 import SwiftUI
 import SwiftData
+import CloudKit
 
 /// Данные и приватность. Выгрузить всё и удалить всё — два действия,
 /// оба без писем и ожидания.
+///
+/// Тексты здесь обязаны совпадать с тем, как устроено хранилище:
+/// база на телефоне зеркалится в личный iCloud (`Persistence.openContainer`,
+/// `cloudKitDatabase: .private`), а общий дневник — это зона `family`,
+/// которой владелец делится через `CKShare`. Прежняя шапка «Всё лежит
+/// на телефоне» была неправдой с тех пор, как появилось зеркало.
 struct DataPrivacyScreen: View {
     @Environment(\.modelContext) private var context
     @Environment(AppState.self) private var appState
+    @Environment(\.familySync) private var sync
     @Query private var dogs: [Dog]
     @Query private var events: [LogEvent]
 
     @State private var isConfirmingDelete = false
     @State private var deleted = false
+    /// Мы владелец общего дневника и приглашение существует: удаление
+    /// всего его закроет, и об этом надо сказать до кнопки, а не после.
+    @State private var ownsShare = false
+    /// Стирание не прошло — причина для плашки.
+    @State private var eraseFailure: String?
+    /// Дневник на телефоне стёрт, а приглашение закрыть не удалось.
+    @State private var shareFailure: String?
+
+    /// Мы в чужом дневнике. Читается при показе, а не держится
+    /// в состоянии: удаление его сбрасывает.
+    private var isGuest: Bool { SharedDiarySettings.isOn && SharedZoneOwner.isGuest }
 
     private var activeEvents: [LogEvent] { Diary.active(events) }
 
     var body: some View {
         TGScreen {
             TGCard {
-                Text("Всё лежит на телефоне").textStyle(AppFont.cardTitle)
-                Text("Аккаунта нет, серверов у нас нет. Записи хранятся в базе приложения и в общем хранилище с виджетами.")
+                Text("Где лежит дневник").textStyle(AppFont.cardTitle)
+                Text("На этом телефоне и в твоём iCloud, если он включён. Если ведёшь дневник вдвоём — ещё и у приглашённого: на его телефоне и в его iCloud. Своих серверов, аккаунта и аналитики у нас нет.")
                     .textStyle(AppFont.caption)
                 TGDivider()
                 HStack(spacing: 0) {
@@ -58,13 +77,26 @@ struct DataPrivacyScreen: View {
                 TGButton(title: "Удалить все данные", variant: .destructive, size: .medium, systemImage: "trash") {
                     isConfirmingDelete = true
                 }
-                TGExplainer(text: "Стирает записи, собак, схемы лечения и семью на этом устройстве. Отменить будет нельзя — сначала выгрузи CSV, если может пригодиться.")
+                TGExplainer(text: "Стирает записи, собак, схемы лечения и семью на этом телефоне и выключает здесь общий дневник. Отменить будет нельзя — сначала сохрани дневник в файл в «Перенос и восстановление», если может пригодиться.")
+                TGExplainer(text: "Копию в своём iCloud можно стереть целиком в настройках iOS: iCloud → Управление хранилищем → Togo.")
+            }
+
+            if let eraseFailure {
+                TGBanner(tone: .alarm, title: "Не получилось удалить",
+                         subtitle: "Записи остались на телефоне. Причина: \(eraseFailure)",
+                         systemImage: "exclamationmark.triangle")
             }
 
             if deleted {
                 TGBanner(tone: .done, title: "Всё удалено",
                          subtitle: "На устройстве не осталось ни одной записи.",
                          systemImage: "checkmark.seal")
+            }
+
+            if let shareFailure {
+                TGBanner(tone: .alarm, title: "Общий дневник не закрылся",
+                         subtitle: "Приглашённые пока получают записи. Закрой его вручную: «Семья» → «Общий дневник» → «Перестать делиться». Причина: \(shareFailure)",
+                         systemImage: "person.2.slash")
             }
         }
         .navigationTitle("Данные")
@@ -74,25 +106,64 @@ struct DataPrivacyScreen: View {
             Button("Удалить всё", role: .destructive) { deleteEverything() }
             Button("Отмена", role: .cancel) {}
         } message: {
-            Text("Записи, собаки, схемы лечения и семья будут стёрты с этого устройства.")
+            if ownsShare {
+                Text("Записи, собаки, схемы лечения и семья будут стёрты с этого телефона. Общий дневник закроется: приглашённые перестанут получать новые записи, а то, что уже получили, останется у них.")
+            } else if isGuest {
+                Text("Записи, собаки, схемы лечения и семья будут стёрты с этого телефона, общий дневник здесь выключится. У владельца он останется вместе с твоими прошлыми отметками — убрать тебя из участников может он.")
+            } else {
+                Text("Записи, собаки, схемы лечения и семья будут стёрты с этого телефона.")
+            }
         }
+        // Только читает: `existing` ничего не создаёт в облаке.
+        .task { ownsShare = await FamilyShare.existing() != nil }
     }
 
     private func deleteEverything() {
-        // Список полный намеренно: полагаться на каскад от собаки здесь
-        // нельзя. Запас корма, течки и снимки документов в нём не значились
-        // вовсе — то есть после «удалить все данные» фотография паспорта
-        // оставалась лежать на телефоне.
-        for model in [LogEvent.self, WeightEntry.self, DoseRecord.self, Medication.self,
-                      CareTask.self, TrainingSession.self, TrainingStep.self, ProcedureSkill.self,
-                      Trip.self, Episode.self, FamilyMember.self,
-                      FoodStock.self, HeatRecord.self, DogDocument.self, DayOut.self,
-                      Dog.self] as [any PersistentModel.Type] {
-            try? context.delete(model: model)
+        // Общий дневник — первым. Пока обмен идёт, он принёс бы чужие
+        // записи и профиль собаки обратно в только что стёртую базу.
+        // Слепок движка сбрасывается, чтобы включённый заново обмен
+        // забрал общий дневник целиком, а не с места, где остановился.
+        sync?.stop()
+        SharedDiarySettings.isOn = false
+        SyncStateStore.reset()
+        SharedZoneOwner.reset()
+
+        // Список моделей берётся из схемы (`BackupService.deletionOrder`):
+        // здесь был свой список руками, и каскад от собаки при пачечном
+        // удалении не срабатывает — без полного списка фото паспорта
+        // и дни с собакой оставались на телефоне. Прежде здесь же стоял
+        // `try?`: экран говорил «Всё удалено» при любом исходе.
+        do {
+            try BackupService.eraseEverything(in: context)
+            try context.save()
+        } catch {
+            eraseFailure = error.localizedDescription
+            deleted = false
+            UsageLog.note(.delete, "erase-all", on: .dataPrivacy, outcome: .failed)
+            return
         }
+        eraseFailure = nil
         NotificationCenterService.cancelAll()
         deleted = true
         Haptics.warning()
+        UsageLog.note(.delete, "erase-all", on: .dataPrivacy)
+
+        // Приглашение закрывается той же операцией, что «Перестать делиться»
+        // на экране общего дневника. Зона `family` с записями в iCloud
+        // владельца при этом остаётся — удалять её приложение пока не умеет.
+        if ownsShare { Task { await closeShare() } }
+    }
+
+    private func closeShare() async {
+        do {
+            try await FamilyShare.stopSharing()
+            ownsShare = false
+            shareFailure = nil
+        } catch {
+            shareFailure = error.localizedDescription
+            UsageLog.note(.delete, "stop-share:\(FamilyShare.причина(error))",
+                          on: .dataPrivacy, outcome: .failed)
+        }
     }
 }
 

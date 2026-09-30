@@ -156,6 +156,12 @@ struct TogoApp: App {
                 }
             }
             .task { await startSyncIfOn() }
+            // Подписка доезжает до выбора собаки одной дорогой: без Pro
+            // открыта только основная (`AppState.закрыта`). `initial` —
+            // чтобы значение стояло с первого кадра, а не с первой смены.
+            .onChange(of: subscriptions.isPro, initial: true) { _, pro in
+                appState.proАктивен = pro
+            }
             .onReceive(NotificationCenter.default.publisher(for: .familyShareAccepted)) { _ in
                 Task { await startSyncIfOn() }
             }

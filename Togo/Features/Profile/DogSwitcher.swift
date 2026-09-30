@@ -14,14 +14,21 @@ struct DogSwitcher: View {
     let active: Dog?
 
     @Environment(AppState.self) private var appState
+    @State private var showPaywall = false
 
     var body: some View {
         if dogs.count > 1 {
             ScrollView(.horizontal) {
                 HStack(spacing: Token.Space.s8) {
                     ForEach(dogs) { dog in
-                        Button { appState.select(dog) } label: {
-                            DogChip(dog: dog, isActive: dog.id == active?.id)
+                        // Закрытая без подписки собака видна — с замком —
+                        // и ведёт на пейволл, а не исчезает: её записи
+                        // целы, и человек должен видеть, где они.
+                        let закрыта = appState.закрыта(dog, среди: dogs)
+                        Button {
+                            if закрыта { showPaywall = true } else { appState.select(dog) }
+                        } label: {
+                            DogChip(dog: dog, isActive: dog.id == active?.id, isLocked: закрыта)
                         }
                         .buttonStyle(.plain)
                     }
@@ -34,6 +41,7 @@ struct DogSwitcher: View {
             // как «дальше ничего нет».
             .padding(.horizontal, -Token.Spacing.screenPadding)
             .accessibilityLabel("Кого смотрим")
+            .sheet(isPresented: $showPaywall) { NavigationStack { PaywallScreen() } }
         }
     }
 }
@@ -41,6 +49,7 @@ struct DogSwitcher: View {
 private struct DogChip: View {
     let dog: Dog
     let isActive: Bool
+    var isLocked = false
 
     var body: some View {
         HStack(spacing: Token.Space.s6) {
@@ -50,6 +59,12 @@ private struct DogChip: View {
             Text(dog.name)
                 .textStyle(isActive ? AppFont.captionEmphasis : AppFont.caption)
                 .foregroundStyle(isActive ? Token.Ink.primary : Token.Ink.secondary)
+            if isLocked {
+                Image(systemName: "lock.fill")
+                    .font(.system(size: Token.Size.iconSm, weight: .semibold))
+                    .foregroundStyle(Token.Ink.secondary)
+                    .accessibilityLabel("в Pro")
+            }
         }
         .padding(.leading, Token.Space.s4)
         .padding(.trailing, Token.Space.s12)
@@ -70,9 +85,16 @@ private struct DogChip: View {
 ///
 /// Живёт в настройках собаки, а не в общих: это про собак, а не про
 /// приложение. Заводится вторая ровно тем же экраном, что и первая.
+///
+/// Вторая и следующие собаки — Pro. До 30.09 отсюда в редактор вела
+/// ссылка без проверки, и вторую собаку заводили без подписки: гейт
+/// стоял только в настройках. Теперь оба пути спрашивают одно и то же —
+/// `SubscriptionStore.canAddDog`.
 struct DogsScreen: View {
     @Query(sort: \Dog.name) private var dogs: [Dog]
     @Environment(AppState.self) private var appState
+    @Environment(SubscriptionStore.self) private var store
+    @State private var showPaywall = false
 
     private var canEdit: Bool { appState.can(.editProfile) }
 
@@ -84,30 +106,47 @@ struct DogsScreen: View {
                                     ? "весь дневник, план дня и напоминания — про выбранную"
                                     : nil)
                 ForEach(dogs) { dog in
-                    Button { appState.select(dog) } label: {
-                        DogRow(dog: dog, isActive: dog.id == appState.activeDog(from: dogs)?.id)
+                    let закрыта = appState.закрыта(dog, среди: dogs)
+                    Button {
+                        if закрыта { showPaywall = true } else { appState.select(dog) }
+                    } label: {
+                        DogRow(dog: dog,
+                               isActive: dog.id == appState.activeDog(from: dogs)?.id,
+                               isLocked: закрыта)
                     }
                     .buttonStyle(.plain)
                     TGDivider()
                 }
                 if canEdit {
-                    NavigationLink { DogEditorScreen() } label: {
-                        TGListRow(title: "Завести ещё собаку", systemImage: "plus")
+                    if store.canAddDog(existing: dogs.count) {
+                        NavigationLink { DogEditorScreen() } label: {
+                            TGListRow(title: "Завести ещё собаку", systemImage: "plus")
+                        }
+                        .buttonStyle(.plain)
+                    } else {
+                        Button { showPaywall = true } label: {
+                            TGListRow(title: "Завести ещё собаку", value: "Pro", systemImage: "plus")
+                        }
+                        .buttonStyle(.plain)
                     }
-                    .buttonStyle(.plain)
                 }
             }
 
+            if dogs.contains(where: { appState.закрыта($0, среди: dogs) }) {
+                TGExplainer(text: "Без подписки открыта первая заведённая собака. Записи остальных никуда не делись — вернутся, как только снова включишь Pro.")
+            }
             TGExplainer(text: "У каждой собаки свой дневник, своё питание и свой уход — они не смешиваются. Права в семье выдаются один раз и действуют на всех.")
         }
         .navigationTitle("Собаки")
         .navigationBarTitleDisplayMode(.large)
+        .sheet(isPresented: $showPaywall) { NavigationStack { PaywallScreen() } }
     }
 }
 
 private struct DogRow: View {
     let dog: Dog
     let isActive: Bool
+    var isLocked = false
 
     var body: some View {
         HStack(spacing: Token.Space.s12) {
@@ -119,7 +158,12 @@ private struct DogRow: View {
                     .textStyle(AppFont.micro)
             }
             Spacer(minLength: 0)
-            if isActive {
+            if isLocked {
+                Image(systemName: "lock.fill")
+                    .font(.system(size: Token.Size.iconSm, weight: .semibold))
+                    .foregroundStyle(Token.Ink.secondary)
+                    .accessibilityLabel("в Pro")
+            } else if isActive {
                 Image(systemName: "checkmark")
                     .font(.system(size: 13, weight: .semibold))
                     .foregroundStyle(Token.Status.doneText)

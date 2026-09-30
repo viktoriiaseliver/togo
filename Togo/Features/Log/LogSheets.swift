@@ -15,6 +15,10 @@ struct StoolSheet: View {
     @State private var form: StoolForm?
     @State private var flags: Set<StoolFlag> = []
     @State private var created: LogEvent?
+    /// Эпизоды из базы, а не только `appState.activeEpisode`: тот
+    /// подтягивается при открытии экрана истории и может быть пуст,
+    /// пока эпизод идёт, — и тогда поверх идущего завёлся бы второй.
+    @Query private var episodes: [Episode]
 
     private var usual: StoolForm? { Diary.usualStool(dog?.events ?? []) }
 
@@ -116,6 +120,7 @@ struct StoolSheet: View {
         event.stoolForm = candidate
         if flags.isEmpty {
             appState.showUndo("Записано · Стул · \(candidate.title.lowercased())", eventID: event.id)
+            raiseEpisodeIfNeeded()
             dismiss()
         }
     }
@@ -126,7 +131,42 @@ struct StoolSheet: View {
         event.stoolFlags = flags
         Haptics.success()
         appState.showUndo("Записано · Стул", eventID: event.id)
+        raiseEpisodeIfNeeded()
         dismiss()
+    }
+
+    /// Жидкий стул второй календарный день подряд поднимает эпизод —
+    /// второй путь рядом с двумя инцидентами за сутки (`IncidentSheet`).
+    /// Правило — `EpisodeRules`; здесь только заведение, по образцу
+    /// `IncidentSheet.raiseEpisodeIfNeeded`.
+    ///
+    /// Зовётся, когда форма уже окончательная: при выборе без особенностей
+    /// и при подтверждении. Идущий эпизод не продлевается и второй
+    /// не заводится: продлевают эпизод инциденты.
+    private func raiseEpisodeIfNeeded() {
+        guard let dog else { return }
+        let идёт = appState.isEpisodeActive || episodes.contains { $0.isActive() }
+        guard EpisodeRules.shouldOpenForLooseStool(dog.events, hasActiveEpisode: идёт) else { return }
+
+        let серия = EpisodeRules.looseStoolStreak(dog.events)
+        let episode = Episode(
+            title: String(localized: "Эпизод"),
+            detail: String(localized: "Жидкий стул два дня подряд. Вердикты «просится» на паузе, пока не станет понятно, что происходит."),
+            startedAt: серия.map(\.date).min() ?? Date()
+        )
+        // Отсчёт тишины — от сегодняшнего стула, а не от первого жидкого:
+        // иначе эпизод, начатый вчера утром, закрылся бы завтра утром сам.
+        episode.extend()
+        context.insert(episode)
+
+        // Как в `IncidentSheet`: `activeEpisode` — только после удачного
+        // сохранения, иначе вердикты гаснут без эпизода в хранилище.
+        guard context.persist(otherwise: { context.delete(episode) }) else {
+            Haptics.warning()
+            appState.showUndo("Эпизод не завёлся · отметь ещё раз")
+            return
+        }
+        appState.activeEpisode = episode
     }
 
     /// Запись заводится один раз и потом дополняется: форма выбирается
@@ -316,7 +356,17 @@ struct EventEditSheet: View {
 
     /// Свои записи ведут все, кому это разрешено; править и удалять
     /// уже записанное — отдельное право.
-    private var canEdit: Bool { appState.can(.editRecords) }
+    ///
+    /// Право и срок роли — одной проверкой `AppState.canEdit`: ухаживающий
+    /// правит только записи не старше суток.
+    private var canEdit: Bool {
+        event.map { appState.canEdit($0) } ?? appState.can(.editRecords)
+    }
+
+    /// Право есть, а запись старше срока роли.
+    private var tooOldToEdit: Bool {
+        !canEdit && appState.can(.editRecords)
+    }
 
     var body: some View {
         TGSheet(title: event.map { .готовая($0.kind.title) } ?? "Запись",
@@ -326,7 +376,9 @@ struct EventEditSheet: View {
                       subtitle: event.map { "Записала \($0.authorName) в \(Fmt.clock($0.date))" }) {
             if !canEdit {
                 TGBanner(tone: .waiting, title: "Только чтение",
-                         subtitle: "С твоей ролью можно записывать своё, но не править уже записанное. Права выдаёт владелец в разделе «Семья».",
+                         subtitle: .готовая(tooOldToEdit
+                            ? String(localized: "Запись старше суток. С ролью «ухаживающий» править и удалять можно только свежие — эту поправит владелец или со-владелец.")
+                            : String(localized: "С твоей ролью можно записывать своё, но не править уже записанное. Права выдаёт владелец в разделе «Семья».")),
                          systemImage: "lock")
             }
             if let event {

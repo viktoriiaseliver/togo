@@ -55,7 +55,7 @@ struct RealUsageTests {
         log.record(.meal, dog: dog, confirmation: "Еда") { $0.grams = 65 }
         log.record(.meal, dog: dog, at: .now.addingTimeInterval(3), confirmation: "Еда") { $0.grams = 65 }
 
-        #expect(state.undo?.message.contains("уже записана") == true)
+        #expect(state.undo?.message.contains("уже записано") == true)
     }
 
     @Test("Через полтора часа то же кормление — настоящее, а не повтор")
@@ -70,7 +70,11 @@ struct RealUsageTests {
         #expect(try context.fetch(FetchDescriptor<LogEvent>()).count == 2)
     }
 
-    @Test("Выходы и вода не считаются повторами: собака писает и пьёт когда хочет")
+    /// До 30.09 выход стоял здесь же, рядом с водой. Но выход с кнопки —
+    /// это «Вывожу», и два за полторы минуты значат двойной тап, а не две
+    /// нужды; «писал трижды за прогулку» — отметки прогулки, у них своя
+    /// оговорка в `DuplicateGuard.refersToSameThing`.
+    @Test("Вода и инцидент не считаются повторами, а выход с кнопки — считается")
     func repeatableKindsAreNotDeduplicated() throws {
         let context = контекст()
         let dog = стич(в: context)
@@ -79,8 +83,14 @@ struct RealUsageTests {
         for _ in 0..<3 {
             log.record(.outing, dog: dog, confirmation: nil)
             log.record(.water, dog: dog, confirmation: nil) { $0.milliliters = 50 }
+            log.record(.incident, dog: dog, confirmation: nil)
         }
-        #expect(try context.fetch(FetchDescriptor<LogEvent>()).count == 6)
+        let записи = try context.fetch(FetchDescriptor<LogEvent>())
+        #expect(записи.filter { $0.kind == .water }.count == 3)
+        #expect(записи.filter { $0.kind == .incident }.count == 3,
+                "два инцидента подряд осмысленны: из них поднимается эпизод")
+        #expect(записи.filter { $0.kind == .outing }.count == 1,
+                "три «Вывожу» за секунды — один выход")
     }
 
     // MARK: Уход, который молчал
