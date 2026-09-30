@@ -50949,6 +50949,606 @@
         }
       },
       "comment" : "DuplicateGuard: двойной тап пойман, вид записи и время прежней"
+    },
+    "Где лежит дневник" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Где лежит дневник"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Où se trouve le carnet"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Де лежить щоденник"
+          }
+        }
+      },
+      "comment" : "Данные и приватность: заголовок карточки"
+    },
+    "На этом телефоне и в твоём iCloud, если он включён. Если ведёшь дневник вдвоём — ещё и у приглашённого: на его телефоне и в его iCloud. Своих серверов, аккаунта и аналитики у нас нет." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "На этом телефоне и в твоём iCloud, если он включён. Если ведёшь дневник вдвоём — ещё и у приглашённого: на его телефоне и в его iCloud. Своих серверов, аккаунта и аналитики у нас нет."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sur ce téléphone et dans ton iCloud, s'il est activé. Si tu tiens le carnet à deux, aussi chez la personne invitée : sur son téléphone et dans son iCloud. Nous n'avons ni serveurs à nous, ni compte, ni statistiques."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "На цьому телефоні й у твоєму iCloud, якщо він увімкнений. Якщо ведеш щоденник удвох — ще й у запрошеного: на його телефоні та в його iCloud. Власних серверів, акаунта й аналітики в нас немає."
+          }
+        }
+      },
+      "comment" : "Данные и приватность: где хранится"
+    },
+    "Стирает записи, собак, схемы лечения и семью на этом телефоне и выключает здесь общий дневник. Отменить будет нельзя — сначала сохрани дневник в файл в «Перенос и восстановление», если может пригодиться." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Стирает записи, собак, схемы лечения и семью на этом телефоне и выключает здесь общий дневник. Отменить будет нельзя — сначала сохрани дневник в файл в «Перенос и восстановление», если может пригодиться."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Efface les entrées, les chiens, les traitements et la famille sur ce téléphone et y désactive le carnet partagé. Impossible d'annuler : enregistre d'abord le carnet dans un fichier dans « Transfert et restauration », s'il peut servir."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Стирає записи, собак, схеми лікування і сім'ю на цьому телефоні та вимикає тут спільний щоденник. Скасувати буде не можна — спершу збережи щоденник у файл у «Перенесення і відновлення», якщо може знадобитися."
+          }
+        }
+      },
+      "comment" : "Данные и приватность: пояснение под «Удалить все данные»"
+    },
+    "Копию в своём iCloud можно стереть целиком в настройках iOS: iCloud → Управление хранилищем → Togo." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Копию в своём iCloud можно стереть целиком в настройках iOS: iCloud → Управление хранилищем → Togo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu peux effacer entièrement la copie dans ton iCloud dans les Réglages d'iOS : iCloud → Gérer le stockage → Togo."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Копію у своєму iCloud можна стерти повністю в налаштуваннях iOS: iCloud → Керування сховищем → Togo."
+          }
+        }
+      },
+      "comment" : "Данные и приватность: как стереть копию в iCloud"
+    },
+    "Не получилось удалить" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не получилось удалить"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La suppression n'a pas abouti"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Не вдалося видалити"
+          }
+        }
+      },
+      "comment" : "Данные и приватность: плашка, стирание не прошло"
+    },
+    "Записи остались на телефоне. Причина: %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Записи остались на телефоне. Причина: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les entrées sont restées sur le téléphone. Raison : %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Записи залишилися на телефоні. Причина: %@"
+          }
+        }
+      },
+      "comment" : "Данные и приватность: подпись плашки, %@ — системная причина"
+    },
+    "Общий дневник не закрылся" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Общий дневник не закрылся"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le carnet partagé ne s'est pas fermé"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Спільний щоденник не закрився"
+          }
+        }
+      },
+      "comment" : "Данные и приватность: приглашение не закрылось после удаления"
+    },
+    "Приглашённые пока получают записи. Закрой его вручную: «Семья» → «Общий дневник» → «Перестать делиться». Причина: %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Приглашённые пока получают записи. Закрой его вручную: «Семья» → «Общий дневник» → «Перестать делиться». Причина: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les personnes invitées reçoivent encore les entrées. Ferme-le à la main : « Famille » → « Carnet partagé » → « Arrêter le partage ». Raison : %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Запрошені поки отримують записи. Закрий його вручну: «Сім'я» → «Спільний щоденник» → «Перестати ділитися». Причина: %@"
+          }
+        }
+      },
+      "comment" : "Данные и приватность: подпись плашки, %@ — системная причина"
+    },
+    "Записи, собаки, схемы лечения и семья будут стёрты с этого телефона. Общий дневник закроется: приглашённые перестанут получать новые записи, а то, что уже получили, останется у них." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Записи, собаки, схемы лечения и семья будут стёрты с этого телефона. Общий дневник закроется: приглашённые перестанут получать новые записи, а то, что уже получили, останется у них."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les entrées, les chiens, les traitements et la famille seront effacés de ce téléphone. Le carnet partagé sera fermé : les personnes invitées ne recevront plus de nouvelles entrées, et ce qu'elles ont déjà reçu leur restera."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Записи, собаки, схеми лікування і сім'я будуть стерті з цього телефона. Спільний щоденник закриється: запрошені перестануть отримувати нові записи, а те, що вже отримали, залишиться в них."
+          }
+        }
+      },
+      "comment" : "Диалог «Удалить все данные?», владелец общего дневника"
+    },
+    "Записи, собаки, схемы лечения и семья будут стёрты с этого телефона, общий дневник здесь выключится. У владельца он останется вместе с твоими прошлыми отметками — убрать тебя из участников может он." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Записи, собаки, схемы лечения и семья будут стёрты с этого телефона, общий дневник здесь выключится. У владельца он останется вместе с твоими прошлыми отметками — убрать тебя из участников может он."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les entrées, les chiens, les traitements et la famille seront effacés de ce téléphone, et le carnet partagé y sera désactivé. Il restera chez le propriétaire avec tes marques passées — c'est lui qui peut te retirer des participants."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Записи, собаки, схеми лікування і сім'я будуть стерті з цього телефона, спільний щоденник тут вимкнеться. У власника він залишиться разом із твоїми минулими позначками — прибрати тебе з учасників може він."
+          }
+        }
+      },
+      "comment" : "Диалог «Удалить все данные?», гость в чужом дневнике"
+    },
+    "Записи, собаки, схемы лечения и семья будут стёрты с этого телефона." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Записи, собаки, схемы лечения и семья будут стёрты с этого телефона."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les entrées, les chiens, les traitements et la famille seront effacés de ce téléphone."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Записи, собаки, схеми лікування і сім'я будуть стерті з цього телефона."
+          }
+        }
+      },
+      "comment" : "Диалог «Удалить все данные?», без общего дневника"
+    },
+    "Запас корма, течки и снимки документов" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Запас корма, течки и снимки документов"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stock de nourriture, chaleurs et photos des documents"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Запас корму, тічки і знімки документів"
+          }
+        }
+      },
+      "comment" : "Перенос: что внутри файла"
+    },
+    "Занятия, шаги обучения, навыки процедур и накопленный прогресс" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Занятия, шаги обучения, навыки процедур и накопленный прогресс"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Séances, étapes d'apprentissage, préparation aux soins et progrès accumulés"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Заняття, кроки навчання, навички процедур і накопичений прогрес"
+          }
+        }
+      },
+      "comment" : "Перенос: что внутри файла"
+    },
+    "Поездки, дни с собакой и эпизоды" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поездки, дни с собакой и эпизоды"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voyages, journées avec le chien et épisodes"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Поїздки, дні з собакою та епізоди"
+          }
+        }
+      },
+      "comment" : "Перенос: что внутри файла"
+    },
+    "30 сентября 2026" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30 сентября 2026"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30 septembre 2026"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "30 вересня 2026"
+          }
+        }
+      },
+      "comment" : "Политика: дата обновления"
+    },
+    "Короткая версия: дневник живёт на твоём телефоне и в твоём iCloud. Своих серверов у нас нет, и к нам не уходит ничего. Мы не заводим аккаунт, не собираем аналитику и не передаём данные третьим лицам." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Короткая версия: дневник живёт на твоём телефоне и в твоём iCloud. Своих серверов у нас нет, и к нам не уходит ничего. Мы не заводим аккаунт, не собираем аналитику и не передаём данные третьим лицам."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La version courte : le carnet vit sur ton téléphone et dans ton iCloud. Nous n'avons pas de serveurs à nous, et rien ne nous est envoyé. Nous ne créons pas de compte, nous ne collectons aucune statistique, et nous ne transmettons rien à des tiers."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Коротка версія: щоденник живе на твоєму телефоні й у твоєму iCloud. Власних серверів у нас немає, і до нас не йде нічого. Ми не заводимо акаунт, не збираємо аналітики і не передаємо даних третім особам."
+          }
+        }
+      },
+      "comment" : "Политика: коротко"
+    },
+    "Если на телефоне включён iCloud, приложение само держит копию базы в твоей приватной библиотеке iCloud. Доступ к ней есть только у тебя и у тех, кому ты дал доступ к своему Apple ID." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Если на телефоне включён iCloud, приложение само держит копию базы в твоей приватной библиотеке iCloud. Доступ к ней есть только у тебя и у тех, кому ты дал доступ к своему Apple ID."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si iCloud est activé sur ton téléphone, l'app garde elle-même une copie de cette base dans ta bibliothèque iCloud privée. Toi seul y as accès, ainsi que les personnes à qui tu as donné accès à ton compte Apple."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Якщо на телефоні ввімкнено iCloud, застосунок сам тримає копію бази у твоїй приватній бібліотеці iCloud. Доступ до неї є тільки в тебе і в тих, кому ти дав доступ до свого Apple ID."
+          }
+        }
+      },
+      "comment" : "Политика: что хранится и где"
+    },
+    "Если ведёшь дневник вдвоём, общая часть — лента, отметки доз, профиль собаки, уход и схемы лечения — лежит в отдельной зоне твоего iCloud, которой ты поделился. У приглашённого эти записи сохраняются на его телефоне и в его iCloud." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Если ведёшь дневник вдвоём, общая часть — лента, отметки доз, профиль собаки, уход и схемы лечения — лежит в отдельной зоне твоего iCloud, которой ты поделился. У приглашённого эти записи сохраняются на его телефоне и в его iCloud."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si tu tiens le carnet à deux, la partie commune — le fil, les prises marquées, le profil du chien, les soins et les traitements — se trouve dans une zone à part de ton iCloud, que tu as partagée. Chez la personne invitée, ces entrées sont enregistrées sur son téléphone et dans son iCloud."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Якщо ведеш щоденник удвох, спільна частина — стрічка, позначки доз, профіль собаки, догляд і схеми лікування — лежить в окремій зоні твого iCloud, якою ти поділився. У запрошеного ці записи зберігаються на його телефоні та в його iCloud."
+          }
+        }
+      },
+      "comment" : "Политика: что хранится и где"
+    },
+    "Отчёт врачу, CSV, файл дневника и приглашение в общий дневник уходят только тогда, когда ты сам нажимаешь «поделиться», и только тому, кого ты выбрал в системном окне. Когда приглашение принято, новые записи общего дневника ездят между вашими iCloud сами — пока владелец не перестанет делиться." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отчёт врачу, CSV, файл дневника и приглашение в общий дневник уходят только тогда, когда ты сам нажимаешь «поделиться», и только тому, кого ты выбрал в системном окне. Когда приглашение принято, новые записи общего дневника ездят между вашими iCloud сами — пока владелец не перестанет делиться."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le compte rendu pour le vétérinaire, l'export CSV, le fichier du carnet et l'invitation au carnet partagé ne partent que lorsque tu appuies toi-même sur « Partager », et uniquement vers la personne que tu as choisie dans la fenêtre système. Une fois l'invitation acceptée, les nouvelles entrées du carnet partagé circulent seules entre vos iCloud — jusqu'à ce que le propriétaire arrête le partage."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Звіт лікарю, CSV, файл щоденника і запрошення до спільного щоденника йдуть тільки тоді, коли ти сам натискаєш «поділитися», і тільки тому, кого ти вибрав у системному вікні. Коли запрошення прийнято, нові записи спільного щоденника їздять між вашими iCloud самі — доки власник не перестане ділитися."
+          }
+        }
+      },
+      "comment" : "Политика: что уходит наружу"
+    },
+    "«Удалить все данные» стирает дневник на этом телефоне и выключает на нём общий дневник. Если ты владелец, приглашённые перестают получать новые записи, а уже полученное остаётся у них." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«Удалить все данные» стирает дневник на этом телефоне и выключает на нём общий дневник. Если ты владелец, приглашённые перестают получать новые записи, а уже полученное остаётся у них."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "« Supprimer toutes les données » efface le carnet sur ce téléphone et y désactive le carnet partagé. Si tu es le propriétaire, les personnes invitées ne reçoivent plus de nouvelles entrées, et ce qu'elles ont déjà reçu leur reste."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "«Видалити всі дані» стирає щоденник на цьому телефоні й вимикає на ньому спільний щоденник. Якщо ти власник, запрошені перестають отримувати нові записи, а вже отримане залишається в них."
+          }
+        }
+      },
+      "comment" : "Политика: твои права"
+    },
+    "Копию в своём iCloud можно стереть целиком в настройках iOS: iCloud → Управление хранилищем → Togo. Удаление приложения её не стирает." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Копию в своём iCloud можно стереть целиком в настройках iOS: iCloud → Управление хранилищем → Togo. Удаление приложения её не стирает."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu peux effacer entièrement la copie dans ton iCloud dans les Réglages d'iOS : iCloud → Gérer le stockage → Togo. Supprimer l'app ne l'efface pas."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Копію у своєму iCloud можна стерти повністю в налаштуваннях iOS: iCloud → Керування сховищем → Togo. Видалення застосунку її не стирає."
+          }
+        }
+      },
+      "comment" : "Политика: твои права"
+    },
+    "как позвать" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "как позвать"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "comment inviter"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "як покликати"
+          }
+        }
+      },
+      "comment" : "Онбординг, семья, заголовок карточки"
+    },
+    "Во вкладке «Семья» включи «Вести дневник вдвоём» и отправь приглашение. Откроет только тот, кому отправила, — со своего iCloud." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Во вкладке «Семья» включи «Вести дневник вдвоём» и отправь приглашение. Откроет только тот, кому отправила, — со своего iCloud."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dans l'onglet «Famille», active «Tenir le journal à deux» et envoie l'invitation. Seule la personne à qui tu l'as envoyée pourra l'ouvrir, depuis son iCloud."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "У вкладці «Сім'я» увімкни «Вести щоденник удвох» і надішли запрошення. Відкриє лише той, кому надіслала, — зі свого iCloud."
+          }
+        }
+      },
+      "comment" : "Онбординг, семья"
+    },
+    "Роль выбираешь там же: совладелец, ухаживающий или помощник. Права можно поменять в любой момент." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Роль выбираешь там же: совладелец, ухаживающий или помощник. Права можно поменять в любой момент."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le rôle se choisit au même endroit : copropriétaire, soignant ou assistant. Les droits se changent à tout moment."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Роль обираєш там само: співвласник, опікун або помічник. Права можна змінити будь-коли."
+          }
+        }
+      },
+      "comment" : "Онбординг, семья"
+    },
+    "Понятно, дальше" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Понятно, дальше"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compris, suivant"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Зрозуміло, далі"
+          }
+        }
+      },
+      "comment" : "Онбординг, семья, кнопка"
     }
   },
   "version" : "1.0"

@@ -35,7 +35,9 @@ struct DocumentPhotosCard: View {
                             subtitle: "паспорт и прививки спрашивают первыми — у врача, на границе и в гостинице")
 
             if documents.isEmpty {
-                TGExplainer(text: "Пока ничего не сфотографировано. Снимки лежат на телефоне и никуда не отправляются.")
+                // «никуда не отправляются» было неправдой: база зеркалится в личный
+                // iCloud (`Persistence`, `.private`). Наших серверов нет — это правда.
+                TGExplainer(text: "Пока ничего не сфотографировано. Снимки лежат на телефоне и в твоём iCloud, на наши серверы не уходят.")
             } else {
                 ForEach(documents) { document in
                     Button { viewing = document } label: {
@@ -217,7 +219,7 @@ struct DocumentViewerSheet: View {
             if let note = document.note, !note.isEmpty {
                 TGCard { Text(note).textStyle(AppFont.body).wraps() }
             }
-            TGExplainer(text: "Снимок лежит на телефоне. Он попадает в резервную копию вместе с дневником и больше никуда не уходит.")
+            TGExplainer(text: "Снимок лежит на телефоне и в твоём iCloud и попадает в резервную копию вместе с дневником. На наши серверы он не уходит.")
         } footer: {
             TGButton(title: "Удалить снимок", variant: .destructive,
                      size: .medium, systemImage: "trash") {

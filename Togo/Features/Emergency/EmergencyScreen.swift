@@ -17,6 +17,9 @@ struct EmergencyScreen: View {
         TGScreen {
             disclaimer
             contactsCard
+            // Потерялась — тоже «что-то случилось», и искать объявление
+            // в документах в этот момент некогда.
+            if let dog { LostPosterCard(dog: dog) }
             toxicCard
             vetBriefCard
         }
@@ -251,18 +254,14 @@ struct DocumentsScreen: View {
                     .frame(minHeight: 90)
                     .scrollContentBackground(.hidden)
                     .disabled(!canEdit)
-                if let text = lostText {
-                    ShareLink(item: text) {
-                        TGListRow(title: "Собрать объявление",
-                                  systemImage: "square.and.arrow.up", accessory: .none)
-                    }
-                    .buttonStyle(.plain)
-                }
             }
+            LostPosterCard(dog: dog)
 
             DocumentPhotosCard(dog: dog)
 
-            TGExplainer(text: "Всё это лежит на телефоне и никуда не отправляется само.")
+            // Было «никуда не отправляется само» — а база зеркалится в личный
+            // iCloud, и профиль собаки уезжает в общий дневник, если он включён.
+            TGExplainer(text: "Всё это лежит на телефоне и в твоём iCloud, на наши серверы не уходит. Номера и приметы видит семья, если включён общий дневник.")
         }
         .navigationTitle("Документы")
         .navigationBarTitleDisplayMode(.large)
@@ -273,14 +272,5 @@ struct DocumentsScreen: View {
             get: { dog[keyPath: keyPath] ?? "" },
             set: { dog[keyPath: keyPath] = $0.isEmpty ? nil : $0 }
         )
-    }
-
-    private var lostText: String? {
-        var parts = ["Потерялась собака: \(dog.name), \(dog.breed ?? "метис"), \(Fmt.weight(dog.weightKg))"]
-        if let age = dog.ageDescription { parts.append(String(localized: "Возраст: \(age)")) }
-        if let chip = dog.chipNumber, !chip.isEmpty { parts.append(String(localized: "Чип: \(chip)")) }
-        if let marks = dog.distinctiveMarks, !marks.isEmpty { parts.append(String(localized: "Приметы: \(marks)")) }
-        if let phone = dog.vetPhone, !phone.isEmpty { parts.append(String(localized: "Ветеринар: \(phone)")) }
-        return parts.count > 1 ? parts.joined(separator: "\n") : nil
     }
 }

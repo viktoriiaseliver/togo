@@ -47,8 +47,10 @@ nonisolated enum BackupService {
         // Дни «собака со мной» и навыки процедур в файл не попадали вовсе,
         // хотя карточка обещает «весь дневник». Здесь `try`, а не `try?`:
         // пустой список вместо отказа — та же тихая потеря.
-        let allDaysOut = try context.fetch(FetchDescriptor<DayOut>())
-        let skills = try context.fetch(FetchDescriptor<ProcedureSkill>())
+        let allDaysOut: [DayOut] = try holds(DayOut.self, context)
+            ? context.fetch(FetchDescriptor<DayOut>()) : []
+        let skills: [ProcedureSkill] = try holds(ProcedureSkill.self, context)
+            ? context.fetch(FetchDescriptor<ProcedureSkill>()) : []
         let members = try context.fetch(FetchDescriptor<FamilyMember>())
         let episodes = try context.fetch(FetchDescriptor<Episode>())
 
@@ -81,6 +83,18 @@ nonisolated enum BackupService {
                 )
             }
         )
+    }
+
+    /// Есть ли модель в схеме этого хранилища.
+    ///
+    /// Настоящее хранилище открыто по полной схеме, но тесты открывают
+    /// и контейнеры `for: Dog.self` — туда попадают только модели,
+    /// связанные с собакой. У навыка процедур связи с собакой нет,
+    /// и выборка по модели, которой нет в схеме, не пустая, а отказ.
+    @MainActor
+    private static func holds<T: PersistentModel>(_ model: T.Type, _ context: ModelContext) -> Bool {
+        let name = String(describing: model)
+        return context.container.schema.entities.contains { $0.name == name }
     }
 
     @MainActor
@@ -209,7 +223,9 @@ nonisolated enum BackupService {
     /// должны уйти одним сохранением.
     @MainActor
     static func eraseEverything(in context: ModelContext) throws {
-        for model in deletionOrder {
+        // Модели, которой нет в схеме хранилища, в нём нет и записей.
+        // Промах в самой проверке ловит `BackupTests.replaceErasesEveryModel`.
+        for model in deletionOrder where holds(model, context) {
             try context.delete(model: model)
         }
     }
@@ -286,10 +302,10 @@ nonisolated enum BackupService {
             : []
         // Дни с собакой и навыки сверяются по id, как записи ленты:
         // повторный импорт того же файла не должен их задваивать.
-        let existingDayOutIDs: Set<UUID> = strategy == .merge
+        let existingDayOutIDs: Set<UUID> = strategy == .merge && holds(DayOut.self, context)
             ? Set(try context.fetch(FetchDescriptor<DayOut>()).map(\.id))
             : []
-        let existingSkillIDs: Set<UUID> = strategy == .merge
+        let existingSkillIDs: Set<UUID> = strategy == .merge && holds(ProcedureSkill.self, context)
             ? Set(try context.fetch(FetchDescriptor<ProcedureSkill>()).map(\.id))
             : []
 

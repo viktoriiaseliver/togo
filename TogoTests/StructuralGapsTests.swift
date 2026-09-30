@@ -351,7 +351,12 @@ struct MultipleDogsTests {
         context.insert(stitch)
         context.insert(bagheera)
         try context.save()
-        return (context, stitch, bagheera, AppState.наСвоёмТелефоне())
+        // Вторая собака — Pro (`AppState.закрыта`). Здесь проверяется
+        // выбор, а не замок, поэтому подписка включена; замок —
+        // в `DogLockTests`.
+        let состояние = AppState.наСвоёмТелефоне()
+        состояние.proАктивен = true
+        return (context, stitch, bagheera, состояние)
     }
 
     @Test("Без выбора открыта первая — экран не остаётся пустым")
