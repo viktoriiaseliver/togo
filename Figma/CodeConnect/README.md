@@ -9,8 +9,10 @@
 
 ## Как подключить
 
-1. Создать библиотеку в Figma и вставить её ключ в `Figma/figma.config.json`
-   вместо `REPLACE_WITH_FILE_KEY`.
+1. Файл Figma проекта — [Togo](https://www.figma.com/design/LWhiHC48UJdXjKNVilhJ7x/Togo)
+   (ключ `LWhiHC48UJdXjKNVilhJ7x`, с 30.09 уже вписан в `Figma/figma.config.json`).
+   На 30.09 в нём одна страница «Основы» — переменные цвета, типографика,
+   чек-лист App Store и кадры экранов; **компонентов ещё нет**, связывать не с чем.
 2. В каждом `.figma.swift` заменить `NODE_ID` на id соответствующего
    компонента (правая кнопка на компоненте → Copy link to selection).
 3. Установить CLI и опубликовать:

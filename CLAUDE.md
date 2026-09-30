@@ -48,6 +48,9 @@ make usage                     # забрать с телефона журнал
   и не по `docs/APP-STORE.md`: файл сверялся с ASC 21.09 и стареет
   с каждым днём без сверки.
   `GET /v1/builds?filter[app]=6805876636&include=buildBetaDetail`
+- **Figma** — [Togo](https://www.figma.com/design/LWhiHC48UJdXjKNVilhJ7x/Togo),
+  все макеты и файлы дизайна лежат там (решение 30.09). Файл — производное
+  от `tokens.json` и кода: разошлись — правится Figma, а не код.
 - **Токены** — `DesignTokens/tokens.json`; сгенерированное не править
   руками, `make tokens-check` валит расхождение.
 - **Тексты витрины и интерфейса** — перед каждой отправкой сборки
