@@ -29,6 +29,17 @@ struct LockedDose: Identifiable {
     var id: String { item.id }
 }
 
+/// Доза, которую взял на себя другой человек, а отмечают на этом телефоне.
+struct ClaimedDose: Identifiable {
+    let item: DayPlanItem
+    /// Когда дали — ответ «когда дали» или час нажатия. Хранится, чтобы
+    /// после «Отметить всё равно» записать именно его, а не новое сейчас.
+    let givenAt: Date
+    let claimedBy: String
+    let until: Date
+    var id: String { item.id }
+}
+
 /// Что происходит с планом дня, когда человек нажимает: отметить, снять
 /// отметку, пропустить дозу, взять её на себя.
 ///
@@ -110,6 +121,33 @@ struct DayPlanActions {
 
     // MARK: Отметить
 
+    /// Чужая «беру на себя» по этому пункту — если она ещё действует.
+    ///
+    /// «Беру на себя» держит дозу 45 минут, чтобы двое не дали её дважды.
+    /// Но до 30.09 договорённость была видна только подписью под пунктом:
+    /// отметка на втором телефоне шла мимо неё, и если мама уже несла
+    /// таблетку, папа тапал по кругу — и доза отмечалась его. Теперь
+    /// перед отметкой спрашиваем. Своя бронь и уже данная доза не мешают.
+    ///
+    /// Смотрим все отметки на эту минуту, а не первую: у каждого телефона
+    /// своя отметка дня, и чужая бронь приезжает рядом с нашей, с другим id.
+    func claimedByOther(_ item: DayPlanItem, givenAt момент: Date) -> ClaimedDose? {
+        guard item.kind == .dose, let medication = item.medication else { return nil }
+        let наМинуту = medication.doses.filter {
+            Calendar.current.isDate($0.scheduledAt, equalTo: item.time, toGranularity: .minute)
+        }
+        // Уже дана — спрашивать не о чем: вторую отметку не даст `markGiven`.
+        guard !наМинуту.contains(where: { $0.givenAt != nil }) else { return nil }
+        let я = appState.currentUserName
+        guard let бронь = наМинуту.first(where: { dose in
+                  guard let кто = dose.claimedBy, !кто.isEmpty, кто != я else { return false }
+                  return dose.claimIsActive(at: сейчас)
+              }),
+              let кто = бронь.claimedBy, let взяла = бронь.claimedAt else { return nil }
+        return ClaimedDose(item: item, givenAt: момент, claimedBy: кто,
+                           until: взяла.addingTimeInterval(DoseRecord.claimTTL))
+    }
+
     func complete(_ item: DayPlanItem, givenAt момент: Date) {
         guard let dog else { return }
 
@@ -129,7 +167,7 @@ struct DayPlanActions {
             отметка = dose
         }
 
-        EventLog(context: context, appState: appState)
+        let запись = EventLog(context: context, appState: appState)
             .record(logKind(of: item),
                     dog: dog,
                     at: момент,
@@ -182,43 +220,89 @@ struct DayPlanActions {
             // планировать будущее.
             Task { await ReminderScheduler.refresh(dog: dog, settings: settings, at: Date()) }
         }
+
+        // «Отменить» на тосте должно значить то же, что повторный тап
+        // по кругу. Раньше тост знал только запись в ленте: строка
+        // уходила, а доза оставалась отмеченной, окно натощак живым,
+        // срок ухода сдвинутым — и повторить дозу было нельзя.
+        if let запись {
+            let id = запись.id
+            appState.откатыватьПунктом(запись: id) { [self] in
+                uncomplete(item, запись: id)
+            }
+        }
     }
 
     // MARK: Снять отметку
 
-    func uncomplete(_ item: DayPlanItem) {
-        guard dog != nil else { return }
+    /// - Parameter запись: какая запись в ленте закрыла пункт, если это
+    ///   известно точно — так бывает у «Отменить» на тосте отметки. Пусто —
+    ///   ищем ближайшую к часу пункта, как при повторном тапе по кругу.
+    func uncomplete(_ item: DayPlanItem, запись точная: UUID? = nil) {
+        guard let dog else { return }
 
         // Убираем ту запись, которая этот пункт и закрыла, — ближайшую
         // к его времени.
         let kind = logKind(of: item)
-        let candidates = Diary.onDay(events, день)
-            .filter { $0.kind == kind }
-            .sorted { abs($0.date.timeIntervalSince(item.time)) < abs($1.date.timeIntervalSince(item.time)) }
+        let candidates: [LogEvent]
+        if let точная {
+            // Отмечали задним числом через «когда дали» — запись может
+            // лежать дальше допуска от часа пункта; поиск по близости
+            // её бы не нашёл.
+            // Из хранилища, а не из связи `dog.events`: связь применяется
+            // не мгновенно, а запись создана секунды назад.
+            let descriptor = FetchDescriptor<LogEvent>(predicate: #Predicate { $0.id == точная })
+            candidates = ((try? context.fetch(descriptor)) ?? []).filter { $0.deletedAt == nil }
+        } else {
+            candidates = Diary.onDay(events, день)
+                .filter { $0.kind == kind }
+                .sorted { abs($0.date.timeIntervalSince(item.time)) < abs($1.date.timeIntervalSince(item.time)) }
+        }
+
+        // Какую запись в ленте снимаем. У ухода часа нет, и сверять с ним
+        // нечего: берём сегодняшнюю запись про это же дело.
+        let снимаем: LogEvent?
+        if item.kind == .care {
+            снимаем = candidates.first { $0.careTaskID == item.careTask?.id }
+        } else if let event = candidates.first,
+                  точная != nil || abs(event.date.timeIntervalSince(item.time)) <= MealSchedule.doneTolerance {
+            снимаем = event
+        } else {
+            снимаем = nil
+        }
+
+        // Снять отметку — это удалить запись, и право у него то же, что
+        // у удаления из ленты: `canEdit`, со сроком роли. До 30.09 повторный
+        // тап по кругу удалял запись любой давности и любого автора — мимо
+        // проверки, которую честно держал редактор записи.
+        //
+        // «Отменить» на тосте своей же отметки (`точная`) проходит всегда:
+        // человек отменяет то, что сделал секунду назад. Проверять его
+        // через `canEdit` нельзя дважды: у помощника права `editRecords`
+        // нет вовсе, а отметка задним числом через «когда дали» может
+        // оказаться старше суток ухаживающего.
+        if точная == nil, let снимаем, !appState.canEdit(снимаем, at: сейчас) {
+            Haptics.warning()
+            appState.showUndo(appState.can(.editRecords)
+                              ? "Отметка старше суток · снимет владелец или со-владелец"
+                              : "Снять отметку может тот, кому разрешено править записи")
+            return
+        }
 
         // Что вернуть, если сохранить не выйдет. `try?` здесь стоял ровно
         // перед тостом «Снова в списке»: не сохранилось — а человек уже
         // уверен, что отметку снял, и отмечает заново поверх.
         var вернуть: [() -> Void] = []
 
-        // У ухода часа нет, и сверять с ним нечего: убираем сегодняшнюю
-        // запись про это же дело.
-        if item.kind == .care {
-            candidates.first { $0.careTaskID == item.careTask?.id }.map { event in
-                вернуть.append { event.deletedAt = nil; event.deletedBy = nil }
-                event.deletedAt = Date()
-                event.deletedBy = appState.currentUserName
-            }
-            if let task = item.careTask {
-                let было = (task.lastDone, task.streak, task.scheduledDate)
-                вернуть.append { (task.lastDone, task.streak, task.scheduledDate) = было }
-                task.undoDone(previousDone: careUndo.wrappedValue[task.id] ?? nil)
-            }
-        } else if let event = candidates.first,
-                  abs(event.date.timeIntervalSince(item.time)) <= MealSchedule.doneTolerance {
+        if let event = снимаем {
             вернуть.append { event.deletedAt = nil; event.deletedBy = nil }
             event.deletedAt = Date()
             event.deletedBy = appState.currentUserName
+        }
+        if item.kind == .care, let task = item.careTask {
+            let было = (task.lastDone, task.streak, task.scheduledDate)
+            вернуть.append { (task.lastDone, task.streak, task.scheduledDate) = было }
+            task.undoDone(previousDone: careUndo.wrappedValue[task.id] ?? nil)
         }
 
         // Доза — не только запись в ленте: от неё считается окно натощак
@@ -235,6 +319,15 @@ struct DayPlanActions {
             Haptics.warning()
             appState.showUndo("Не снялось · нажми ещё раз")
             return
+        }
+
+        if item.kind == .dose {
+            // Доза снова не дана — значит «можно кормить» по её окну
+            // натощак уже неправда, а догоняющие t+30 и t+60 снова нужны:
+            // `complete` их снял. Пересборка делает и то и другое —
+            // по состоянию хранилища, а не по памяти о том, что ставили.
+            // Часы настоящие: снимают отметку сейчас, а не в листаемом дне.
+            Task { await ReminderScheduler.refresh(dog: dog, settings: settings, at: Date()) }
         }
 
         Haptics.warning()

@@ -18,6 +18,10 @@ nonisolated struct BackupArchive: Codable, Sendable {
     var dogs: [DogSnapshot]
     var members: [MemberSnapshot]
     var episodes: [EpisodeSnapshot]
+    /// Навыки процедур: лапа, осмотр, переноска — со счётом попыток.
+    /// Появилось позже — у старых файлов этого поля нет. К собаке навык
+    /// в модели не привязан, поэтому лежит на верхнем уровне.
+    var procedureSkills: [ProcedureSkillSnapshot]? = nil
 
     struct DogSnapshot: Codable, Sendable {
         var name: String
@@ -53,6 +57,30 @@ nonisolated struct BackupArchive: Codable, Sendable {
         /// Снимки документов. Тоже позже: экрана у них не было вовсе,
         /// а значит, и сохранять было нечего.
         var documents: [DocumentSnapshot]?
+        /// Дни «собака со мной». Тоже позже: до этого поля файл, который
+        /// обещал «весь дневник», их не увозил.
+        var daysOut: [DayOutSnapshot]?
+    }
+
+    /// День с собакой. Сверяется по `id`, чтобы слияние не задваивало.
+    struct DayOutSnapshot: Codable, Sendable {
+        var id: UUID
+        var startedAt: Date
+        var endedAt: Date?
+        var plannedHours: Int
+        var note: String?
+    }
+
+    /// Навык процедуры. Статус переносится как есть, а не пересчитывается:
+    /// файл — слепок, а не повод переоценить.
+    struct ProcedureSkillSnapshot: Codable, Sendable {
+        var id: UUID
+        var title: String
+        var detail: String
+        var statusRaw: String
+        var targetDate: Date?
+        var successes: Int
+        var attempts: Int
     }
 
     /// Фотография документа целиком: паспорт, потерянный вместе

@@ -6613,7 +6613,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Le compte rendu aura la ligne « dose → prise de sang : %@ ». Sans elle, les analyses ont déjà été mal lues deux fois."
+            "value" : "Le compte rendu aura la ligne « dose → prise de sang : %@ ». Sans elle, les analyses ont déjà été mal lues deux fois."
           }
         },
         "ru" : {
@@ -50685,6 +50685,2454 @@
           }
         }
       }
+    },
+    "Дни эпизода в график не входят: %@." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дни эпизода в график не входят: %@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les jours d'épisode ne comptent pas dans le graphique : %@."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Дні епізоду не входять у графік: %@."
+          }
+        }
+      },
+      "comment" : "История, подпись под графиком; %@ = Fmt.days"
+    },
+    "Поделиться с врачом" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поделиться с врачом"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Partager avec le vétérinaire"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Поділитися з лікарем"
+          }
+        }
+      },
+      "comment" : "История, кнопка выгрузки CSV врачу"
+    },
+    "История для врача · CSV" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "История для врача · CSV"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Historique pour le véto · CSV"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Історія для лікаря · CSV"
+          }
+        }
+      },
+      "comment" : "История, превью ShareLink"
+    },
+    "Точка — день, когда взвешивали." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Точка — день, когда взвешивали."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un point, c'est un jour de pesée."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Точка — день, коли зважували."
+          }
+        }
+      },
+      "comment" : "История, фильтр Вес без коридора"
+    },
+    "Точка — день, когда взвешивали. Зелёная полоса — коридор, который назвал врач." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Точка — день, когда взвешивали. Зелёная полоса — коридор, который назвал врач."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un point, c'est un jour de pesée. La bande verte, c'est la plage donnée par le vétérinaire."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Точка — день, коли зважували. Зелена смуга — коридор, який назвав лікар."
+          }
+        }
+      },
+      "comment" : "История, фильтр Вес с коридором"
+    },
+    "Пока ни одного. Эпизод поднимается сам: два инцидента за сутки или жидкий стул два дня подряд." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пока ни одного. Эпизод поднимается сам: два инцидента за сутки или жидкий стул два дня подряд."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun pour l'instant. Un épisode s'ouvre tout seul : deux incidents en 24 h ou des selles molles deux jours d'affilée."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Поки жодного. Епізод піднімається сам: два інциденти за добу або рідке випорожнення два дні поспіль."
+          }
+        }
+      },
+      "comment" : "История, пустой список эпизодов"
+    },
+    "С этим фильтром эпизодов нет." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "С этим фильтром эпизодов нет."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun épisode avec ce filtre."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "З цим фільтром епізодів немає."
+          }
+        }
+      },
+      "comment" : "История, список эпизодов пуст под фильтром"
+    },
+    "Жидкий стул два дня подряд. Вердикты «просится» на паузе, пока не станет понятно, что происходит." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жидкий стул два дня подряд. Вердикты «просится» на паузе, пока не станет понятно, что происходит."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selles molles deux jours d'affilée. Les verdicts «Envie de sortir ?» sont en pause tant qu'on ne comprend pas ce qui se passe."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Рідке випорожнення два дні поспіль. Вердикти «проситься» на паузі, доки не стане зрозуміло, що відбувається."
+          }
+        }
+      },
+      "comment" : "Подпись эпизода, поднятого стулом (StoolSheet)"
+    },
+    "съедено, г" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "съедено, г"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mangé, g"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "з'їдено, г"
+          }
+        }
+      },
+      "comment" : "CSV истории врачу, столбец"
+    },
+    "дозы" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "дозы"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "doses"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "дози"
+          }
+        }
+      },
+      "comment" : "CSV истории врачу, столбец"
+    },
+    "%@ · уже записано в %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · уже записано в %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · déjà noté à %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ · вже записано о %@"
+          }
+        }
+      },
+      "comment" : "DuplicateGuard: двойной тап пойман, вид записи и время прежней"
+    },
+    "Где лежит дневник" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Где лежит дневник"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Où se trouve le carnet"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Де лежить щоденник"
+          }
+        }
+      },
+      "comment" : "Данные и приватность: заголовок карточки"
+    },
+    "На этом телефоне и в твоём iCloud, если он включён. Если ведёшь дневник вдвоём — ещё и у приглашённого: на его телефоне и в его iCloud. Своих серверов, аккаунта и аналитики у нас нет." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "На этом телефоне и в твоём iCloud, если он включён. Если ведёшь дневник вдвоём — ещё и у приглашённого: на его телефоне и в его iCloud. Своих серверов, аккаунта и аналитики у нас нет."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sur ce téléphone et dans ton iCloud, s'il est activé. Si tu tiens le carnet à deux, aussi chez la personne invitée : sur son téléphone et dans son iCloud. Nous n'avons ni serveurs à nous, ni compte, ni statistiques."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "На цьому телефоні й у твоєму iCloud, якщо він увімкнений. Якщо ведеш щоденник удвох — ще й у запрошеного: на його телефоні та в його iCloud. Власних серверів, акаунта й аналітики в нас немає."
+          }
+        }
+      },
+      "comment" : "Данные и приватность: где хранится"
+    },
+    "Стирает записи, собак, схемы лечения и семью на этом телефоне и выключает здесь общий дневник. Отменить будет нельзя — сначала сохрани дневник в файл в «Перенос и восстановление», если может пригодиться." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Стирает записи, собак, схемы лечения и семью на этом телефоне и выключает здесь общий дневник. Отменить будет нельзя — сначала сохрани дневник в файл в «Перенос и восстановление», если может пригодиться."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Efface les entrées, les chiens, les traitements et la famille sur ce téléphone et y désactive le carnet partagé. Impossible d'annuler : enregistre d'abord le carnet dans un fichier dans « Transfert et restauration », s'il peut servir."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Стирає записи, собак, схеми лікування і сім'ю на цьому телефоні та вимикає тут спільний щоденник. Скасувати буде не можна — спершу збережи щоденник у файл у «Перенесення і відновлення», якщо може знадобитися."
+          }
+        }
+      },
+      "comment" : "Данные и приватность: пояснение под «Удалить все данные»"
+    },
+    "Копию в своём iCloud можно стереть целиком в настройках iOS: iCloud → Управление хранилищем → Togo." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Копию в своём iCloud можно стереть целиком в настройках iOS: iCloud → Управление хранилищем → Togo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu peux effacer entièrement la copie dans ton iCloud dans les Réglages d'iOS : iCloud → Gérer le stockage → Togo."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Копію у своєму iCloud можна стерти повністю в налаштуваннях iOS: iCloud → Керування сховищем → Togo."
+          }
+        }
+      },
+      "comment" : "Данные и приватность: как стереть копию в iCloud"
+    },
+    "Не получилось удалить" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не получилось удалить"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La suppression n'a pas abouti"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Не вдалося видалити"
+          }
+        }
+      },
+      "comment" : "Данные и приватность: плашка, стирание не прошло"
+    },
+    "Записи остались на телефоне. Причина: %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Записи остались на телефоне. Причина: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les entrées sont restées sur le téléphone. Raison : %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Записи залишилися на телефоні. Причина: %@"
+          }
+        }
+      },
+      "comment" : "Данные и приватность: подпись плашки, %@ — системная причина"
+    },
+    "Общий дневник не закрылся" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Общий дневник не закрылся"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le carnet partagé ne s'est pas fermé"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Спільний щоденник не закрився"
+          }
+        }
+      },
+      "comment" : "Данные и приватность: приглашение не закрылось после удаления"
+    },
+    "Приглашённые пока получают записи. Закрой его вручную: «Семья» → «Общий дневник» → «Перестать делиться». Причина: %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Приглашённые пока получают записи. Закрой его вручную: «Семья» → «Общий дневник» → «Перестать делиться». Причина: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les personnes invitées reçoivent encore les entrées. Ferme-le à la main : « Famille » → « Journal partagé » → « Arrêter de partager ». Raison : %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Запрошені поки отримують записи. Закрий його вручну: «Сім'я» → «Спільний щоденник» → «Перестати ділитися». Причина: %@"
+          }
+        }
+      },
+      "comment" : "Данные и приватность: подпись плашки, %@ — системная причина"
+    },
+    "Записи, собаки, схемы лечения и семья будут стёрты с этого телефона. Общий дневник закроется: приглашённые перестанут получать новые записи, а то, что уже получили, останется у них." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Записи, собаки, схемы лечения и семья будут стёрты с этого телефона. Общий дневник закроется: приглашённые перестанут получать новые записи, а то, что уже получили, останется у них."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les entrées, les chiens, les traitements et la famille seront effacés de ce téléphone. Le carnet partagé sera fermé : les personnes invitées ne recevront plus de nouvelles entrées, et ce qu'elles ont déjà reçu leur restera."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Записи, собаки, схеми лікування і сім'я будуть стерті з цього телефона. Спільний щоденник закриється: запрошені перестануть отримувати нові записи, а те, що вже отримали, залишиться в них."
+          }
+        }
+      },
+      "comment" : "Диалог «Удалить все данные?», владелец общего дневника"
+    },
+    "Записи, собаки, схемы лечения и семья будут стёрты с этого телефона, общий дневник здесь выключится. У владельца он останется вместе с твоими прошлыми отметками — убрать тебя из участников может он." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Записи, собаки, схемы лечения и семья будут стёрты с этого телефона, общий дневник здесь выключится. У владельца он останется вместе с твоими прошлыми отметками — убрать тебя из участников может он."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les entrées, les chiens, les traitements et la famille seront effacés de ce téléphone, et le carnet partagé y sera désactivé. Il restera chez le propriétaire avec tes marques passées — c'est lui qui peut te retirer des participants."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Записи, собаки, схеми лікування і сім'я будуть стерті з цього телефона, спільний щоденник тут вимкнеться. У власника він залишиться разом із твоїми минулими позначками — прибрати тебе з учасників може він."
+          }
+        }
+      },
+      "comment" : "Диалог «Удалить все данные?», гость в чужом дневнике"
+    },
+    "Записи, собаки, схемы лечения и семья будут стёрты с этого телефона." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Записи, собаки, схемы лечения и семья будут стёрты с этого телефона."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les entrées, les chiens, les traitements et la famille seront effacés de ce téléphone."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Записи, собаки, схеми лікування і сім'я будуть стерті з цього телефона."
+          }
+        }
+      },
+      "comment" : "Диалог «Удалить все данные?», без общего дневника"
+    },
+    "Запас корма, течки и снимки документов" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Запас корма, течки и снимки документов"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stock de nourriture, chaleurs et photos des documents"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Запас корму, тічки і знімки документів"
+          }
+        }
+      },
+      "comment" : "Перенос: что внутри файла"
+    },
+    "Занятия, шаги обучения, навыки процедур и накопленный прогресс" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Занятия, шаги обучения, навыки процедур и накопленный прогресс"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Séances, étapes d'apprentissage, préparation aux soins et progrès accumulés"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Заняття, кроки навчання, навички процедур і накопичений прогрес"
+          }
+        }
+      },
+      "comment" : "Перенос: что внутри файла"
+    },
+    "Поездки, дни с собакой и эпизоды" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поездки, дни с собакой и эпизоды"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voyages, journées avec le chien et épisodes"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Поїздки, дні з собакою та епізоди"
+          }
+        }
+      },
+      "comment" : "Перенос: что внутри файла"
+    },
+    "30 сентября 2026" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30 сентября 2026"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30 septembre 2026"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "30 вересня 2026"
+          }
+        }
+      },
+      "comment" : "Политика: дата обновления"
+    },
+    "Короткая версия: дневник живёт на твоём телефоне и в твоём iCloud. Своих серверов у нас нет, и к нам не уходит ничего. Мы не заводим аккаунт, не собираем аналитику и не передаём данные третьим лицам." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Короткая версия: дневник живёт на твоём телефоне и в твоём iCloud. Своих серверов у нас нет, и к нам не уходит ничего. Мы не заводим аккаунт, не собираем аналитику и не передаём данные третьим лицам."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La version courte : le carnet vit sur ton téléphone et dans ton iCloud. Nous n'avons pas de serveurs à nous, et rien ne nous est envoyé. Nous ne créons pas de compte, nous ne collectons aucune statistique, et nous ne transmettons rien à des tiers."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Коротка версія: щоденник живе на твоєму телефоні й у твоєму iCloud. Власних серверів у нас немає, і до нас не йде нічого. Ми не заводимо акаунт, не збираємо аналітики і не передаємо даних третім особам."
+          }
+        }
+      },
+      "comment" : "Политика: коротко"
+    },
+    "Если на телефоне включён iCloud, приложение само держит копию базы в твоей приватной библиотеке iCloud. Доступ к ней есть только у тебя и у тех, кому ты дал доступ к своему Apple ID." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Если на телефоне включён iCloud, приложение само держит копию базы в твоей приватной библиотеке iCloud. Доступ к ней есть только у тебя и у тех, кому ты дал доступ к своему Apple ID."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si iCloud est activé sur ton téléphone, l'app garde elle-même une copie de cette base dans ta bibliothèque iCloud privée. Toi seul y as accès, ainsi que les personnes à qui tu as donné accès à ton compte Apple."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Якщо на телефоні ввімкнено iCloud, застосунок сам тримає копію бази у твоїй приватній бібліотеці iCloud. Доступ до неї є тільки в тебе і в тих, кому ти дав доступ до свого Apple ID."
+          }
+        }
+      },
+      "comment" : "Политика: что хранится и где"
+    },
+    "Если ведёшь дневник вдвоём, общая часть — лента, отметки доз, профиль собаки, уход и схемы лечения — лежит в отдельной зоне твоего iCloud, которой ты поделился. У приглашённого эти записи сохраняются на его телефоне и в его iCloud." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Если ведёшь дневник вдвоём, общая часть — лента, отметки доз, профиль собаки, уход и схемы лечения — лежит в отдельной зоне твоего iCloud, которой ты поделился. У приглашённого эти записи сохраняются на его телефоне и в его iCloud."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si tu tiens le carnet à deux, la partie commune — le fil, les prises marquées, le profil du chien, les soins et les traitements — se trouve dans une zone à part de ton iCloud, que tu as partagée. Chez la personne invitée, ces entrées sont enregistrées sur son téléphone et dans son iCloud."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Якщо ведеш щоденник удвох, спільна частина — стрічка, позначки доз, профіль собаки, догляд і схеми лікування — лежить в окремій зоні твого iCloud, якою ти поділився. У запрошеного ці записи зберігаються на його телефоні та в його iCloud."
+          }
+        }
+      },
+      "comment" : "Политика: что хранится и где"
+    },
+    "Отчёт врачу, CSV, файл дневника и приглашение в общий дневник уходят только тогда, когда ты сам нажимаешь «поделиться», и только тому, кого ты выбрал в системном окне. Когда приглашение принято, новые записи общего дневника ездят между вашими iCloud сами — пока владелец не перестанет делиться." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отчёт врачу, CSV, файл дневника и приглашение в общий дневник уходят только тогда, когда ты сам нажимаешь «поделиться», и только тому, кого ты выбрал в системном окне. Когда приглашение принято, новые записи общего дневника ездят между вашими iCloud сами — пока владелец не перестанет делиться."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le compte rendu pour le vétérinaire, l'export CSV, le fichier du carnet et l'invitation au carnet partagé ne partent que lorsque tu appuies toi-même sur « Partager », et uniquement vers la personne que tu as choisie dans la fenêtre système. Une fois l'invitation acceptée, les nouvelles entrées du carnet partagé circulent seules entre vos iCloud — jusqu'à ce que le propriétaire arrête le partage."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Звіт лікарю, CSV, файл щоденника і запрошення до спільного щоденника йдуть тільки тоді, коли ти сам натискаєш «поділитися», і тільки тому, кого ти вибрав у системному вікні. Коли запрошення прийнято, нові записи спільного щоденника їздять між вашими iCloud самі — доки власник не перестане ділитися."
+          }
+        }
+      },
+      "comment" : "Политика: что уходит наружу"
+    },
+    "«Удалить все данные» стирает дневник на этом телефоне и выключает на нём общий дневник. Если ты владелец, приглашённые перестают получать новые записи, а уже полученное остаётся у них." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«Удалить все данные» стирает дневник на этом телефоне и выключает на нём общий дневник. Если ты владелец, приглашённые перестают получать новые записи, а уже полученное остаётся у них."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "« Supprimer toutes les données » efface le carnet sur ce téléphone et y désactive le carnet partagé. Si tu es le propriétaire, les personnes invitées ne reçoivent plus de nouvelles entrées, et ce qu'elles ont déjà reçu leur reste."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "«Видалити всі дані» стирає щоденник на цьому телефоні й вимикає на ньому спільний щоденник. Якщо ти власник, запрошені перестають отримувати нові записи, а вже отримане залишається в них."
+          }
+        }
+      },
+      "comment" : "Политика: твои права"
+    },
+    "Копию в своём iCloud можно стереть целиком в настройках iOS: iCloud → Управление хранилищем → Togo. Удаление приложения её не стирает." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Копию в своём iCloud можно стереть целиком в настройках iOS: iCloud → Управление хранилищем → Togo. Удаление приложения её не стирает."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu peux effacer entièrement la copie dans ton iCloud dans les Réglages d'iOS : iCloud → Gérer le stockage → Togo. Supprimer l'app ne l'efface pas."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Копію у своєму iCloud можна стерти повністю в налаштуваннях iOS: iCloud → Керування сховищем → Togo. Видалення застосунку її не стирає."
+          }
+        }
+      },
+      "comment" : "Политика: твои права"
+    },
+    "как позвать" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "как позвать"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "comment inviter"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "як покликати"
+          }
+        }
+      },
+      "comment" : "Онбординг, семья, заголовок карточки"
+    },
+    "Во вкладке «Семья» включи «Вести дневник вдвоём» и отправь приглашение. Откроет только тот, кому отправила, — со своего iCloud." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Во вкладке «Семья» включи «Вести дневник вдвоём» и отправь приглашение. Откроет только тот, кому отправила, — со своего iCloud."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dans l'onglet «Famille», active «Tenir le journal à deux» et envoie l'invitation. Seule la personne à qui tu l'as envoyée pourra l'ouvrir, depuis son iCloud."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "У вкладці «Сім'я» увімкни «Вести щоденник удвох» і надішли запрошення. Відкриє лише той, кому надіслала, — зі свого iCloud."
+          }
+        }
+      },
+      "comment" : "Онбординг, семья"
+    },
+    "Роль выбираешь там же: совладелец, ухаживающий или помощник. Права можно поменять в любой момент." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Роль выбираешь там же: совладелец, ухаживающий или помощник. Права можно поменять в любой момент."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le rôle se choisit au même endroit : copropriétaire, soignant ou assistant. Les droits se changent à tout moment."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Роль обираєш там само: співвласник, опікун або помічник. Права можна змінити будь-коли."
+          }
+        }
+      },
+      "comment" : "Онбординг, семья"
+    },
+    "Понятно, дальше" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Понятно, дальше"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compris, suivant"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Зрозуміло, далі"
+          }
+        }
+      },
+      "comment" : "Онбординг, семья, кнопка"
+    },
+    "оси «где» и «кто просит» останутся; закроется карточка «следующий шаг»" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "оси «где» и «кто просит» останутся; закроется карточка «следующий шаг»"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "les axes « où » et « qui demande » restent ; la carte « étape suivante » se ferme"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "осі «де» і «хто просить» залишаться; закриється картка «наступний крок»"
+          }
+        }
+      },
+      "comment" : "Экран отмены Pro: что закроется в матрице"
+    },
+    "открыта останется первая заведённая; записи остальных сохранятся и вернутся с подпиской" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "открыта останется первая заведённая; записи остальных сохранятся и вернутся с подпиской"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "seul le premier chien ajouté reste ouvert ; les notes des autres sont gardées et reviennent avec l'abonnement"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "відкритим лишиться перший доданий; записи інших збережуться й повернуться з підпискою"
+          }
+        }
+      },
+      "comment" : "Экран отмены Pro: вторая собака"
+    },
+    "третий и следующие участники" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "третий и следующие участники"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "le troisième membre et les suivants"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "третій і наступні учасники"
+          }
+        }
+      },
+      "comment" : "Пейволл: что даёт Pro для семьи"
+    },
+    "в Pro" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "в Pro"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "avec Pro"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "у Pro"
+          }
+        }
+      },
+      "comment" : "VoiceOver: замок на закрытой без подписки собаке"
+    },
+    "Без подписки открыта первая заведённая собака. Записи остальных никуда не делись — вернутся, как только снова включишь Pro." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Без подписки открыта первая заведённая собака. Записи остальных никуда не делись — вернутся, как только снова включишь Pro."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sans abonnement, seul le premier chien ajouté est ouvert. Les notes des autres sont toujours là : elles reviennent dès que tu réactives Pro."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Без підписки відкритий перший доданий собака. Записи інших нікуди не зникли — повернуться, щойно знову ввімкнеш Pro."
+          }
+        }
+      },
+      "comment" : "Список собак: пояснение к замку"
+    },
+    "не запишет выходы, еду, прогулки и стул" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "не запишет выходы, еду, прогулки и стул"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ne notera ni sorties, ni repas, ni promenades, ni selles"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "не запише виходи, їжу, прогулянки й випорожнення"
+          }
+        }
+      },
+      "comment" : "Вид ситтера: чего не может без права logBasics"
+    },
+    "не поправит и не удалит записи в ленте" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "не поправит и не удалит записи в ленте"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ne corrigera ni ne supprimera les notes du fil"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "не виправить і не видалить записи у стрічці"
+          }
+        }
+      },
+      "comment" : "Вид ситтера: без editRecords"
+    },
+    "не увидит медицинское: схемы, дозы, анализы, отчёты" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "не увидит медицинское: схемы, дозы, анализы, отчёты"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ne verra pas la partie médicale : traitements, doses, analyses, rapports"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "не побачить медичне: схеми, дози, аналізи, звіти"
+          }
+        }
+      },
+      "comment" : "Вид ситтера: без seeMedical"
+    },
+    "не отметит дозу и не возьмёт её на себя" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "не отметит дозу и не возьмёт её на себя"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ne notera pas de dose et ne pourra pas la prendre en charge"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "не позначить дозу й не візьме її на себе"
+          }
+        }
+      },
+      "comment" : "Вид ситтера: без giveDose"
+    },
+    "не поменяет схему лечения" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "не поменяет схему лечения"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ne modifiera pas le traitement"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "не змінить схему лікування"
+          }
+        }
+      },
+      "comment" : "Вид ситтера: без editTreatment"
+    },
+    "не поменяет профиль, порцию, уход и занятия" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "не поменяет профиль, порцию, уход и занятия"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ne modifiera ni le profil, ni la ration, ni les soins, ni les séances"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "не змінить профіль, порцію, догляд і заняття"
+          }
+        }
+      },
+      "comment" : "Вид ситтера: без editProfile"
+    },
+    "не позовёт людей и не поменяет роли" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "не позовёт людей и не поменяет роли"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "n'invitera personne et ne changera pas les rôles"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "не запросить людей і не змінить ролі"
+          }
+        }
+      },
+      "comment" : "Вид ситтера: без manageFamily"
+    },
+    "не выгрузит CSV и отчёт врачу" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "не выгрузит CSV и отчёт врачу"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "n'exportera ni le CSV ni le rapport pour le vétérinaire"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "не вивантажить CSV і звіт лікарю"
+          }
+        }
+      },
+      "comment" : "Вид ситтера: без exportData"
+    },
+    "Запись старше суток. С ролью «ухаживающий» править и удалять можно только свежие — эту поправит владелец или со-владелец." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Запись старше суток. С ролью «ухаживающий» править и удалять можно только свежие — эту поправит владелец или со-владелец."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cette note a plus de 24 h. Avec le rôle « soignant », on ne corrige et ne supprime que les notes récentes : celle-ci, c'est au propriétaire ou au copropriétaire."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Запис старший за добу. З роллю «доглядач» виправляти й видаляти можна лише свіжі — цей виправить власник або співвласник."
+          }
+        }
+      },
+      "comment" : "Правка записи: баннер для ухаживающего, запись старше 24 ч"
+    },
+    "Через 30 минут забор крови" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Через 30 минут забор крови"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prise de sang dans 30 minutes"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Через 30 хвилин забір крові"
+          }
+        }
+      },
+      "comment" : "Уведомление протокола контроля: заголовок"
+    },
+    "Точка +%lld ч от дозы в %@. Отметь забор в «Протоколе» — интервал посчитается сам." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Точка +%lld ч от дозы в %@. Отметь забор в «Протоколе» — интервал посчитается сам."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Point +%lld h après la dose de %@. Note la prise dans « Protocole » : l'intervalle se calcule tout seul."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Точка +%lld год від дози о %@. Познач забір у «Протоколі» — інтервал порахується сам."
+          }
+        }
+      },
+      "comment" : "Уведомление протокола: текст; %lld — часы, %@ — время дозы"
+    },
+    "доза → забор: %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "доза → забор: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "dose → prise de sang : %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "доза → забір: %@"
+          }
+        }
+      },
+      "comment" : "Строка интервала в заметке о заборе и в CSV; %@ — «4 ч 12 мин»"
+    },
+    "забор отмечен" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "забор отмечен"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "prise notée"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "забір позначено"
+          }
+        }
+      },
+      "comment" : "Протокол: точка закрыта забором"
+    },
+    "уведомления выключены — напоминания не будет" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "уведомления выключены — напоминания не будет"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "notifications désactivées : pas de rappel"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "сповіщення вимкнені — нагадування не буде"
+          }
+        }
+      },
+      "comment" : "Протокол: вместо «напомним»"
+    },
+    "напоминание не встало — поглядывай на часы" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "напоминание не встало — поглядывай на часы"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "le rappel n'a pas pu être programmé : garde un œil sur l'heure"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "нагадування не встало — поглядай на годинник"
+          }
+        }
+      },
+      "comment" : "Протокол: система не приняла уведомление"
+    },
+    "напомним в %@, за 30 минут" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "напомним в %@, за 30 минут"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "rappel à %@, 30 minutes avant"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "нагадаємо о %@, за 30 хвилин"
+          }
+        }
+      },
+      "comment" : "Протокол: когда придёт напоминание"
+    },
+    "время подошло" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "время подошло"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "c'est l'heure"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "час настав"
+          }
+        }
+      },
+      "comment" : "Протокол: момент напоминания прошёл"
+    },
+    "бесплатно" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "бесплатно"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "gratuit"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "безкоштовно"
+          }
+        }
+      },
+      "comment" : "Отчёт врачу / сводка: подпись у «Выгрузить CSV»"
+    },
+    "Отчёт врачу и выгрузка бесплатны — всегда и без ограничений." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отчёт врачу и выгрузка бесплатны — всегда и без ограничений."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le rapport pour le vétérinaire et l'export sont gratuits, toujours et sans limite."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Звіт лікарю й вивантаження безкоштовні — завжди й без обмежень."
+          }
+        }
+      },
+      "comment" : "Экран «Отчёт»"
+    },
+    "Заметки и заборы крови" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Заметки и заборы крови"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notes et prises de sang"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Нотатки й забори крові"
+          }
+        }
+      },
+      "comment" : "Экран «Отчёт»: что войдёт"
+    },
+    "чей вид" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "чей вид"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "vue de qui"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "чий вигляд"
+          }
+        }
+      },
+      "comment" : "Вид ситтера: выбор роли или участника"
+    },
+    "по роли" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "по роли"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "selon le rôle"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "за роллю"
+          }
+        }
+      },
+      "comment" : "Вид ситтера: подпись у пресета роли"
+    },
+    "править и удалять сможет только записи не старше суток" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "править и удалять сможет только записи не старше суток"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ne pourra corriger et supprimer que les notes de moins de 24 h"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "виправляти й видаляти зможе лише записи, не старші за добу"
+          }
+        }
+      },
+      "comment" : "Вид ситтера: срок правки ухаживающего"
+    },
+    "На сегодня в плане ничего не осталось." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "На сегодня в плане ничего не осталось."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plus rien au programme pour aujourd'hui."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "На сьогодні в плані нічого не лишилося."
+          }
+        }
+      },
+      "comment" : "Вид ситтера: пустой план"
+    },
+    "Отмечать пункты не сможет — только смотреть." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отмечать пункты не сможет — только смотреть."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ne pourra pas cocher les points, seulement les voir."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Позначати пункти не зможе — лише дивитися."
+          }
+        }
+      },
+      "comment" : "Вид ситтера: роль без logBasics"
+    },
+    "Чего не увидит и не сможет" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Чего не увидит и не сможет"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce qu'il ne verra pas et ne pourra pas faire"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Чого не побачить і не зможе"
+          }
+        }
+      },
+      "comment" : "Вид ситтера: заголовок карточки"
+    },
+    "Ничего — с этими правами можно всё." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ничего — с этими правами можно всё."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rien : avec ces droits, tout est possible."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Нічого — з цими правами можна все."
+          }
+        }
+      },
+      "comment" : "Вид ситтера: все права выданы"
+    },
+    "объявление, если потерялась" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "объявление, если потерялась"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "annonce, si elle s'est perdue"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "оголошення, якщо загубилася"
+          }
+        }
+      },
+      "comment" : "Карточка объявления о пропаже"
+    },
+    "фото, приметы, чип и твой телефон — картинкой и текстом" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "фото, приметы, чип и твой телефон — картинкой и текстом"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "photo, signes, puce et ton numéro : en image et en texte"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "фото, прикмети, чип і твій телефон — картинкою й текстом"
+          }
+        }
+      },
+      "comment" : "Карточка объявления: подзаголовок"
+    },
+    "Твой телефон" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Твой телефон"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ton numéro"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Твій телефон"
+          }
+        }
+      },
+      "comment" : "Поле телефона хозяина для объявления"
+    },
+    "Твой телефон для объявления" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Твой телефон для объявления"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ton numéro pour l'annonce"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Твій телефон для оголошення"
+          }
+        }
+      },
+      "comment" : "VoiceOver: поле телефона хозяина"
+    },
+    "Впиши свой номер: без него на объявление некому ответить. Он хранится только на этом телефоне." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Впиши свой номер: без него на объявление некому ответить. Он хранится только на этом телефоне."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indique ton numéro : sans lui, personne ne peut répondre à l'annonce. Il reste sur ce téléphone."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Впиши свій номер: без нього на оголошення нікому відповісти. Він зберігається лише на цьому телефоні."
+          }
+        }
+      },
+      "comment" : "Карточка объявления: телефон не введён"
+    },
+    "Номер хранится только на этом телефоне и попадает только в объявление." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Номер хранится только на этом телефоне и попадает только в объявление."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le numéro reste sur ce téléphone et n'apparaît que dans l'annonce."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Номер зберігається лише на цьому телефоні й потрапляє тільки в оголошення."
+          }
+        }
+      },
+      "comment" : "Карточка объявления: телефон введён"
+    },
+    "Фото собаки нет — объявление выйдет без него. Добавить можно в профиле." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фото собаки нет — объявление выйдет без него. Добавить можно в профиле."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pas de photo du chien : l'annonce sera sans. Tu peux en ajouter une dans le profil."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Фото собаки немає — оголошення вийде без нього. Додати можна в профілі."
+          }
+        }
+      },
+      "comment" : "Карточка объявления: нет фото"
+    },
+    "Потерялась собака" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Потерялась собака"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chien perdu"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Загубився собака"
+          }
+        }
+      },
+      "comment" : "Картинка объявления: шапка; тема письма"
+    },
+    "Потерялась собака: %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Потерялась собака: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chien perdu : %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Загубився собака: %@"
+          }
+        }
+      },
+      "comment" : "Объявление: первая строка, %@ — кличка"
+    },
+    "метис" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "метис"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "croisé"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "метис"
+          }
+        }
+      },
+      "comment" : "Объявление: порода не указана"
+    },
+    "Приметы" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Приметы"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signes distinctifs"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Прикмети"
+          }
+        }
+      },
+      "comment" : "Объявление: подпись"
+    },
+    "Видели её — позвоните" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Видели её — позвоните"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vous l'avez vue ? Appelez"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Бачили її — зателефонуйте"
+          }
+        }
+      },
+      "comment" : "Картинка объявления: над телефоном хозяина"
+    },
+    "Телефон: %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Телефон: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Téléphone : %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Телефон: %@"
+          }
+        }
+      },
+      "comment" : "Текст объявления: телефон хозяина"
+    },
+    "Пока ничего не сфотографировано. Снимки лежат на телефоне и в твоём iCloud, на наши серверы не уходят." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пока ничего не сфотографировано. Снимки лежат на телефоне и в твоём iCloud, на наши серверы не уходят."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rien n'est encore photographié. Les photos restent sur ton téléphone et dans ton iCloud, jamais sur nos serveurs."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Поки нічого не сфотографовано. Знімки лежать на телефоні й у твоєму iCloud, на наші сервери не йдуть."
+          }
+        }
+      },
+      "comment" : "Документы: пустой список снимков"
+    },
+    "Снимок лежит на телефоне и в твоём iCloud и попадает в резервную копию вместе с дневником. На наши серверы он не уходит." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Снимок лежит на телефоне и в твоём iCloud и попадает в резервную копию вместе с дневником. На наши серверы он не уходит."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La photo est sur ton téléphone et dans ton iCloud, et part dans la sauvegarde avec le journal. Elle ne va jamais sur nos serveurs."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Знімок лежить на телефоні й у твоєму iCloud і потрапляє в резервну копію разом зі щоденником. На наші сервери він не йде."
+          }
+        }
+      },
+      "comment" : "Просмотр снимка документа"
+    },
+    "Всё это лежит на телефоне и в твоём iCloud, на наши серверы не уходит. Номера и приметы видит семья, если включён общий дневник." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Всё это лежит на телефоне и в твоём iCloud, на наши серверы не уходит. Номера и приметы видит семья, если включён общий дневник."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tout cela reste sur ton téléphone et dans ton iCloud, jamais sur nos serveurs. Les numéros et les signes sont visibles par la famille si le journal partagé est activé."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Усе це лежить на телефоні й у твоєму iCloud, на наші сервери не йде. Номери й прикмети бачить родина, якщо ввімкнено спільний щоденник."
+          }
+        }
+      },
+      "comment" : "Документы: низ экрана"
+    },
+    "Что обменивается" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Что обменивается"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce qui est partagé"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Що передається"
+          }
+        }
+      },
+      "comment" : "Общий дневник: что важно знать"
+    },
+    "Лента, дозы и схемы лечения, расписание ухода и профиль собаки — питание, режим, чип и телефоны врача. У каждого своё: фото, инструкция ситтеру, история веса, занятия, поездки и запас корма." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Лента, дозы и схемы лечения, расписание ухода и профиль собаки — питание, режим, чип и телефоны врача. У каждого своё: фото, инструкция ситтеру, история веса, занятия, поездки и запас корма."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le fil, les doses et les traitements, le calendrier des soins et le profil du chien : repas, rythme, puce et numéros du vétérinaire. Restent propres à chacun : photos, consignes pour le pet-sitter, historique du poids, séances, voyages et stock de nourriture."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Стрічка, дози й схеми лікування, розклад догляду й профіль собаки — харчування, режим, чип і телефони лікаря. У кожного своє: фото, інструкція ситеру, історія ваги, заняття, поїздки й запас корму."
+          }
+        }
+      },
+      "comment" : "Общий дневник: что обменивается"
+    },
+    "Отметка старше суток · снимет владелец или со-владелец" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отметка старше суток · снимет владелец или со-владелец"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coche de plus d'un jour · le propriétaire ou le copropriétaire peut la retirer"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Позначці понад добу · зніме власник або співвласник"
+          }
+        }
+      },
+      "comment" : "Тост: ухаживающий снимает отметку пункта плана старше 24 ч"
+    },
+    "Снять отметку может тот, кому разрешено править записи" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Снять отметку может тот, кому разрешено править записи"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seule une personne autorisée à modifier les entrées peut retirer la coche"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Зняти позначку може той, кому дозволено правити записи"
+          }
+        }
+      },
+      "comment" : "Тост: снять отметку пункта плана без права правки"
+    },
+    "Доза за %@ до %@. Отметить всё равно?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Доза за %@ до %@. Отметить всё равно?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ s'occupe de la dose jusqu'à %2$@. La cocher quand même ?"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Доза за %1$@ до %2$@. Позначити все одно?"
+          }
+        }
+      },
+      "comment" : "Подтверждение: дозу взял на себя другой человек; имя, время конца брони"
+    },
+    "коридор от врача" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "коридор от врача"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "fourchette du vétérinaire"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "коридор від лікаря"
+          }
+        }
+      },
+      "comment" : "Экран «Вес»: заголовок карточки коридора веса"
+    },
+    "от" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "от"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "de"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "від"
+          }
+        }
+      },
+      "comment" : "Экран «Вес»: нижняя граница коридора, кг"
+    },
+    "до" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "до"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "à"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "до"
+          }
+        }
+      },
+      "comment" : "Экран «Вес»: верхняя граница коридора, кг"
+    },
+    "4,0" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4,0"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4,0"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "4,0"
+          }
+        }
+      },
+      "comment" : "Экран «Вес»: подсказка в поле нижней границы"
+    },
+    "4,3" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4,3"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4,3"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "4,3"
+          }
+        }
+      },
+      "comment" : "Экран «Вес»: подсказка в поле верхней границы"
+    },
+    "Оставь оба поля пустыми — коридора не будет, и приложение не станет говорить «вне коридора»." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оставь оба поля пустыми — коридора не будет, и приложение не станет говорить «вне коридора»."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laisse les deux champs vides : pas de plage, et l'app ne dira pas « hors plage »."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Залиш обидва поля порожніми — коридору не буде, і застосунок не казатиме «поза коридором»."
+          }
+        }
+      },
+      "comment" : "Экран «Вес»: пояснение под полями коридора"
+    },
+    "Нужны обе границы — или ни одной." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нужны обе границы — или ни одной."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il faut les deux limites, ou aucune."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Потрібні обидві межі — або жодної."
+          }
+        }
+      },
+      "comment" : "Экран «Вес»: заполнено одно поле коридора"
+    },
+    "Границы — числа в килограммах, больше нуля." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Границы — числа в килограммах, больше нуля."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les limites sont des nombres en kilos, supérieurs à zéro."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Межі — числа в кілограмах, більші за нуль."
+          }
+        }
+      },
+      "comment" : "Экран «Вес»: в поле коридора не число"
+    },
+    "«От» должно быть меньше, чем «до»." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«От» должно быть меньше, чем «до»."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "« De » doit être inférieur à « à »."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "«Від» має бути меншим, ніж «до»."
+          }
+        }
+      },
+      "comment" : "Экран «Вес»: нижняя граница не меньше верхней"
+    },
+    "Сохранить коридор" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сохранить коридор"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistrer la fourchette"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Зберегти коридор"
+          }
+        }
+      },
+      "comment" : "Экран «Вес»: кнопка"
+    },
+    "Коридор не сохранился · попробуй ещё раз" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Коридор не сохранился · попробуй ещё раз"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fourchette non enregistrée · réessaie"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Коридор не зберігся · спробуй ще раз"
+          }
+        }
+      },
+      "comment" : "Тост: сохранение коридора веса не удалось"
+    },
+    "Коридор убран" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Коридор убран"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fourchette retirée"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Коридор прибрано"
+          }
+        }
+      },
+      "comment" : "Тост: коридор веса очищен"
+    },
+    "Коридор сохранён" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Коридор сохранён"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fourchette enregistrée"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Коридор збережено"
+          }
+        }
+      },
+      "comment" : "Тост: коридор веса сохранён"
     }
   },
   "version" : "1.0"

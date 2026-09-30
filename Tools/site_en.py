@@ -26,7 +26,9 @@
 # отпечаток считается по НАБОРУ публикуемых документов, и рост набора
 # его сдвигает. Переводы дисклеймера были готовы заранее и сверены
 # построчно: разделов три, абзацев 3+2+3 в обоих языках.
-SOURCE_FINGERPRINT = "e07ecba5e1fe75a3"
+# Пересчитан 30.09: политика приватности сказала правду про зеркало
+# iCloud и общий дневник (+1 абзац в «где хранится», +1 в «права»).
+SOURCE_FINGERPRINT = "a6f86eea5b932141"
 
 # Подписи вокруг текста: в шаблоне страницы их два языка.
 LABELS = {
@@ -42,12 +44,13 @@ DOCUMENTS = {
     "PrivacyPolicyScreen": {
         "file": "privacy.html",
         "title": "Privacy Policy",
-        "updated": "25 August 2026",
-        "intro": "The short version: the diary lives on your phone. We create no account, we collect no analytics about what you write down, and we pass nothing on to third parties.",
+        "updated": "30 September 2026",
+        "intro": "The short version: the diary lives on your phone and in your iCloud. We run no servers of our own, and nothing is sent to us. We create no account, we collect no analytics, and we pass nothing on to third parties.",
         "sections": [
             ("What is stored, and where", [
                 "Your dog’s records — walks, food, water, stools, incidents, training, weight, treatment schedules — are kept in a database on the device and in the storage shared by the app and its widgets.",
-                "If iCloud is on, a copy of that database sits in your own private iCloud library. Only you can reach it, along with anyone you have given access to your Apple ID.",
+                "If iCloud is on for your phone, the app keeps a copy of that database in your own private iCloud library by itself. Only you can reach it, along with anyone you have given access to your Apple ID.",
+                "If you keep the diary together with someone, the shared part — the timeline, dose marks, the dog’s profile, care and treatment schedules — sits in a separate zone of your iCloud that you have shared. On the invited person’s side these records are saved on their phone and in their iCloud.",
             ]),
             ("What we do not collect", [
                 "We collect no advertising identifiers, we use no trackers, and we include no third-party analytics SDKs.",
@@ -55,7 +58,7 @@ DOCUMENTS = {
             ]),
             ("What leaves the device", [
                 "Subscription purchases are handled by Apple. All we receive from Apple is the fact that a subscription is active — never any payment details.",
-                "The vet report, the CSV export and the family invitation go out only when you tap Share yourself, and only to whoever you picked in the system dialog.",
+                "The vet report, the CSV export, the diary file and the family invitation go out only when you tap Share yourself, and only to whoever you picked in the system dialog. Once the invitation is accepted, new shared-diary records travel between your iCloud accounts on their own — until the owner stops sharing.",
             ]),
             ("Invitations and roles", [
                 "An invitation to the shared diary is an iCloud share. Only the person you named in the system Share dialog can open it: nobody who is merely forwarded the address gets in.",
@@ -63,7 +66,8 @@ DOCUMENTS = {
             ]),
             ("Your rights", [
                 "You can export everything to CSV and delete all of your data in Settings → Data and privacy, with no emails and no waiting.",
-                "Deleting erases the database on the device. The iCloud copy is removed by the system together with the app’s data.",
+                "“Delete all data” erases the diary on this phone and turns the shared diary off on it. If you are the owner, invited people stop receiving new records, and what they already received stays with them.",
+                "You can erase the copy in your own iCloud entirely in iOS Settings: iCloud → Manage Storage → Togo. Deleting the app does not erase it.",
             ]),
             ("Children", [
                 "The app is not meant for unsupervised use by children under 13. The “helper” role is designed for a child using an adult’s phone.",

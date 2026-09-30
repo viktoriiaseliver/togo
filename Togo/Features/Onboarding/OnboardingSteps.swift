@@ -268,29 +268,20 @@ struct FamilyStep: View {
     var onSkip: () -> Void
     var onInvite: () -> Void
 
-    @Environment(\.modelContext) private var context
-    @State private var role: FamilyRole = .coOwner
-
-    /// Ссылки-приглашения пока нет: показывать её на онбординге —
-    /// значит обещать обмен между телефонами, которого ещё не существует.
-    private var inviteLink: String { String(localized: "участник заводится в «Семье»") }
-
+    /// Приглашение — настоящее `CKShare` из вкладки «Семья» («Вести дневник
+    /// вдвоём» → «Отправить приглашение»). До 30.09.2026 здесь была кнопка
+    /// «Отправить ссылку», которая ничего не отправляла: заводила участника
+    /// «Приглашение» с токеном на 24 часа, которого не читал никто, и писала
+    /// «ссылка живёт 24 часа». Онбординг теперь только говорит, где позвать.
     var body: some View {
         TGScreen(title: "Кто ещё за ним ходит") {
             TGExplainer(text: "Можно пропустить и позвать позже.")
 
             TGCard {
-                TGSectionHeader(title: "ссылка-приглашение")
-                Text(inviteLink).textStyle(AppFont.numeric(17))
-                TGDivider()
-                TGSectionHeader(title: "роль")
-                TGChipGroup(
-                    items: [FamilyRole.coOwner, .caregiver, .helper],
-                    title: \.title,
-                    subtitle: { $0.permissionSummary },
-                    isSelected: { $0 == role }
-                ) { role = $0 }
-                TGExplainer(text: "Ссылка живёт 24 часа. Роль выбираешь заранее — принявший не сможет её поменять.")
+                TGSectionHeader(title: "как позвать")
+                Text("Во вкладке «Семья» включи «Вести дневник вдвоём» и отправь приглашение. Откроет только тот, кому отправила, — со своего iCloud.")
+                    .textStyle(AppFont.body)
+                TGExplainer(text: "Роль выбираешь там же: совладелец, ухаживающий или помощник. Права можно поменять в любой момент.")
             }
 
             TGCard {
@@ -299,19 +290,9 @@ struct FamilyStep: View {
                     .textStyle(AppFont.caption)
             }
         } bottom: {
-            TGButton(title: "Отправить ссылку", systemImage: "square.and.arrow.up") {
-                invite()
-                onInvite()
-            }
+            TGButton(title: "Понятно, дальше", systemImage: "arrow.right", action: onInvite)
             TGButton(title: "Пока сама", variant: .quiet, size: .medium, action: onSkip)
         }
-    }
-
-    private func invite() {
-        let member = FamilyMember(name: "Приглашение", role: role)
-        member.inviteToken = UUID().uuidString
-        member.inviteExpiresAt = Date().addingTimeInterval(24 * 3600)
-        context.insert(member)
     }
 }
 

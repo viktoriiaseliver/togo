@@ -98,7 +98,22 @@ enum QuickLog {
     static func activeDog(in context: ModelContext) throws -> Dog? {
         let dogs = try context.fetch(FetchDescriptor<Dog>())
         let selected = UserDefaults.standard.string(forKey: AppState.Keys.activeDog).flatMap(UUID.init)
-        return dogs.first { $0.id == selected } ?? dogs.first
+        return собака(из: dogs, выбранная: selected,
+                      pro: SubscriptionStore.proНаТелефоне, гость: SharedZoneOwner.isGuest)
+    }
+
+    /// Выбор собаки по тем же правилам, что `AppState.activeDog`.
+    ///
+    /// До 30.09 здесь брали выбранную как есть, а без выбора — первую
+    /// в массиве. Без Pro экран закрывал вторую собаку, а Siri и кнопка
+    /// «Действие» продолжали писать в неё: запись ложилась туда, куда
+    /// человек заглянуть не может. Теперь закрытая уступает основной.
+    static func собака(из dogs: [Dog], выбранная: UUID?, pro: Bool, гость: Bool) -> Dog? {
+        if let dog = dogs.first(where: { $0.id == выбранная }),
+           !AppState.закрыта(dog, среди: dogs, pro: pro, гость: гость) {
+            return dog
+        }
+        return AppState.основная(из: dogs)
     }
 }
 

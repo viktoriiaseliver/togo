@@ -174,7 +174,7 @@ struct VetSummaryScreen: View {
                                   .filter { $0.date >= from && $0.date <= to })),
                 preview: SharePreview("Сводка Togo · CSV")
             ) {
-                TGListRow(title: "Выгрузить CSV", value: "без подписки",
+                TGListRow(title: "Выгрузить CSV", value: "бесплатно",
                           systemImage: "tablecells", accessory: .none)
             }
             .buttonStyle(.plain)

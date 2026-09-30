@@ -193,6 +193,163 @@ struct BackupTests {
         #expect(корма.contains { $0.brand == "Только что" })
     }
 
+    // MARK: Все модели схемы
+
+    /// Сколько записей у модели — через открытие экзистенциала, чтобы
+    /// пройти все шестнадцать одним циклом.
+    private func сколько<T: PersistentModel>(_ model: T.Type, в context: ModelContext) throws -> Int {
+        try context.fetchCount(FetchDescriptor<T>())
+    }
+
+    /// Списки моделей руками дважды расходились со схемой: «Заменить всё»
+    /// не трогало пять моделей из шестнадцати. Теперь список один
+    /// и берётся из схемы — а этот тест краснеет, если новая модель
+    /// появилась в хранилище, а в стирание не попала.
+    @Test("Стирание знает каждую модель хранилища")
+    func eraseCoversSchema() {
+        let вСхеме = Set(Persistence.schema.entities.map(\.name))
+        let вСтирании = Set(BackupService.deletionOrder.map { String(describing: $0) })
+        #expect(вСхеме == вСтирании, "не стирается: \(вСхеме.subtracting(вСтирании).sorted())")
+        #expect(BackupService.deletionOrder.count == вСхеме.count, "модель в списке дважды")
+    }
+
+    @Test("«Заменить всё» не оставляет ни одной записи прежнего дневника")
+    func replaceErasesEveryModel() throws {
+        let context = контекст()
+        let стич = завестиСтича(в: context)
+        // Каждой модели — хотя бы по одной записи, включая те,
+        // что прежний список пропускал.
+        let вес = WeightEntry(date: Date(), kg: 4.1); вес.dog = стич; context.insert(вес)
+        let течка = HeatRecord(startedAt: Date(), endedAt: nil, note: nil); течка.dog = стич; context.insert(течка)
+        let паспорт = DogDocument(title: "Паспорт", image: nil, note: nil); паспорт.dog = стич; context.insert(паспорт)
+        let день = DayOut(startedAt: Date()); день.dog = стич; context.insert(день)
+        let шаг = TrainingStep(cue: "сидеть", place: "дом", person: "Виктория", distanceMeters: 0, order: 0)
+        шаг.dog = стич; context.insert(шаг)
+        let занятие = TrainingSession(cue: "сидеть", place: "дом", person: "Виктория", distanceMeters: 0)
+        занятие.dog = стич; context.insert(занятие)
+        let поездка = Trip(destination: "Лион", startDate: Date(), endDate: Date(), transport: .car)
+        поездка.dog = стич; context.insert(поездка)
+        context.insert(ProcedureSkill(title: "Дать лапу", detail: "для забора крови"))
+        context.insert(Episode(title: "Расстройство", detail: "", startedAt: Date()))
+        try context.save()
+
+        for model in BackupService.allModels {
+            #expect(try сколько(model, в: context) > 0, "\(model): тест не завёл ни одной записи")
+        }
+
+        let пустой = BackupArchive(createdAt: Date(), appVersion: "1.0.0",
+                                   dogs: [], members: [], episodes: [])
+        try BackupService.restore(пустой, into: context, strategy: .replace)
+
+        for model in BackupService.allModels {
+            #expect(try сколько(model, в: context) == 0, "\(model) пережил «Заменить всё»")
+        }
+    }
+
+    // MARK: Дни с собакой и навыки процедур
+
+    private func завестиДеньИНавык(к собаке: Dog, в context: ModelContext) -> (DayOut, ProcedureSkill) {
+        let день = DayOut(startedAt: Date().addingTimeInterval(-5 * 3600), plannedHours: 6)
+        день.endedAt = Date().addingTimeInterval(-3600)
+        день.note = "к ветеринару и в гости"
+        день.dog = собака
+        context.insert(день)
+
+        let навык = ProcedureSkill(title: "Стоять при осмотре", detail: "перед УЗИ",
+                                   targetDate: Date().addingTimeInterval(7 * 86_400))
+        навык.record(success: true)
+        навык.record(success: false)
+        context.insert(навык)
+        return (день, навык)
+    }
+
+    @Test("Дни с собакой и навыки процедур переезжают в файле")
+    func daysOutAndSkillsRoundTrip() throws {
+        let старый = контекст()
+        let стич = завестиСтича(в: старый)
+        let (день, навык) = завестиДеньИНавык(к: стич, в: старый)
+
+        let данные = try BackupService.encode(try BackupService.archive(context: старый, appVersion: "1.0.0"))
+        let новый = контекст()
+        try BackupService.restore(try BackupService.decode(данные), into: новый, strategy: .replace)
+
+        let дни = try новый.fetch(FetchDescriptor<DayOut>())
+        #expect(дни.count == 1)
+        #expect(дни.first?.id == день.id)
+        #expect(дни.first?.plannedHours == 6)
+        #expect(дни.first?.note == "к ветеринару и в гости")
+        #expect(дни.first?.endedAt != nil)
+        #expect(дни.first?.dog?.name == "Стич", "день приезжает к своей собаке")
+
+        let навыки = try новый.fetch(FetchDescriptor<ProcedureSkill>())
+        #expect(навыки.count == 1)
+        #expect(навыки.first?.id == навык.id)
+        #expect(навыки.first?.title == "Стоять при осмотре")
+        #expect(навыки.first?.attempts == 2)
+        #expect(навыки.first?.successes == 1)
+        #expect(навыки.first?.statusRaw == навык.statusRaw)
+        #expect(навыки.first?.targetDate != nil)
+    }
+
+    @Test("Слияние не задваивает дни с собакой и навыки")
+    func daysOutAndSkillsMergeIdempotent() throws {
+        let context = контекст()
+        let стич = завестиСтича(в: context)
+        _ = завестиДеньИНавык(к: стич, в: context)
+
+        let данные = try BackupService.encode(try BackupService.archive(context: context, appVersion: "1.0.0"))
+        try BackupService.restore(try BackupService.decode(данные), into: context, strategy: .merge)
+        try BackupService.restore(try BackupService.decode(данные), into: context, strategy: .merge)
+
+        #expect(try context.fetch(FetchDescriptor<DayOut>()).count == 1)
+        #expect(try context.fetch(FetchDescriptor<ProcedureSkill>()).count == 1)
+    }
+
+    @Test("Слияние доливает день и навык к уже заведённой собаке")
+    func mergeAddsDaysOutAndSkills() throws {
+        let источник = контекст()
+        let стич = завестиСтича(в: источник)
+        _ = завестиДеньИНавык(к: стич, в: источник)
+        let данные = try BackupService.encode(try BackupService.archive(context: источник, appVersion: "1.0.0"))
+
+        let телефон = контекст()
+        _ = завестиСтича(в: телефон)
+        try BackupService.restore(try BackupService.decode(данные), into: телефон, strategy: .merge)
+
+        let дни = try телефон.fetch(FetchDescriptor<DayOut>())
+        #expect(дни.count == 1)
+        #expect(дни.first?.dog?.name == "Стич")
+        #expect(try телефон.fetch(FetchDescriptor<ProcedureSkill>()).count == 1)
+        #expect(try телефон.fetch(FetchDescriptor<Dog>()).count == 1)
+    }
+
+    @Test("Старый файл без дней с собакой и навыков читается и восстанавливается")
+    func oldArchiveWithoutDaysOutAndSkills() throws {
+        let context = контекст()
+        let стич = завестиСтича(в: context)
+        _ = завестиДеньИНавык(к: стич, в: context)
+        let данные = try BackupService.encode(try BackupService.archive(context: context, appVersion: "1.0.0"))
+
+        // Файл, записанный до появления полей: вырезаем их из JSON,
+        // а не ставим nil в структуре — так проверяется именно чтение.
+        var json = try #require(try JSONSerialization.jsonObject(with: данные) as? [String: Any])
+        json.removeValue(forKey: "procedureSkills")
+        var собаки = try #require(json["dogs"] as? [[String: Any]])
+        for i in собаки.indices { собаки[i].removeValue(forKey: "daysOut") }
+        json["dogs"] = собаки
+        let старые = try JSONSerialization.data(withJSONObject: json)
+
+        let архив = try BackupService.decode(старые)
+        #expect(архив.procedureSkills == nil)
+        #expect(архив.dogs.first?.daysOut == nil)
+
+        let новый = контекст()
+        try BackupService.restore(архив, into: новый, strategy: .replace)
+        #expect(try новый.fetch(FetchDescriptor<Dog>()).count == 1)
+        #expect(try новый.fetch(FetchDescriptor<DayOut>()).isEmpty)
+        #expect(try новый.fetch(FetchDescriptor<ProcedureSkill>()).isEmpty)
+    }
+
     @Test("Чужой файл отвергается с внятным объяснением")
     func rejectsGarbage() {
         let мусор = Data("это не бэкап".utf8)

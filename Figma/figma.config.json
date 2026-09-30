@@ -3,7 +3,7 @@
     "parser": "swift",
     "include": ["Figma/CodeConnect/**/*.figma.swift"],
     "documentUrlSubstitutions": {
-      "<FIGMA_FILE>": "https://www.figma.com/design/REPLACE_WITH_FILE_KEY/Togo"
+      "<FIGMA_FILE>": "https://www.figma.com/design/LWhiHC48UJdXjKNVilhJ7x/Togo"
     }
   }
 }

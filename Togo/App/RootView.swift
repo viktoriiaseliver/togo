@@ -1,9 +1,9 @@
 import SwiftUI
 import SwiftData
 
-/// Четыре вкладки, и ни одной новой за всё, что добавилось в продукт.
-/// «Здоровье» появляется только при включённом лечении — у здоровой собаки
-/// медицины на главном нет вовсе.
+/// Четыре вкладки, пятая — «Здоровье» — только при включённом лечении
+/// и праве видеть медицинское: у здоровой собаки медицины на главном
+/// нет вовсе.
 struct RootView: View {
     @Environment(AppState.self) private var appState
     @Query private var dogs: [Dog]
@@ -161,20 +161,18 @@ struct UndoToastView: View {
     private func undo(_ toast: AppState.UndoToast) {
         switch toast.action {
         case .removeCreated(let id):
-            if let event = event(id) {
-                UsageLog.note(.undo, event.kind.rawValue)
-                // Мягко, тем же способом, что и остальные четыре места
-                // в проекте: удаление оставляет след.
-                //
-                // Жёсткое `context.delete` до второго телефона не
-                // доезжало вовсе — обмен слушает `inserted`/`updated`,
-                // и удалённой строки в этих списках нет. Запись успевала
-                // уехать, а отмена — нет: у второго человека «покормила»
-                // оставалось в ленте навсегда. Мягкое удаление приходит
-                // к нему обычной правкой.
-                event.deletedAt = Date()
-                event.deletedBy = appState.currentUserName
+            removeCreated(id)
+        case .revertPlanItem(let id):
+            // Пункт плана откатывается своим путём — `DayPlanActions.uncomplete`:
+            // он снимает и запись, и дозу, и срок ухода, сохраняет сам
+            // и сам отвечает тостом. Сохранять за него здесь нечего.
+            if let откат = appState.забратьОткатПункта(id) {
+                UsageLog.note(.undo, "planItem")
+                откат()
+                return
             }
+            // Отката нет (экран пересобрали) — хотя бы запись в ленте.
+            removeCreated(id)
         case .restoreDeleted(let ids):
             UsageLog.note(.undo, "restore")
             // Прогулка возвращается вместе с отметками — тем же составом,
@@ -199,6 +197,42 @@ struct UndoToastView: View {
             appState.undo = AppState.UndoToast(message: "Отмена не сохранилась · попробуй ещё раз",
                                                action: toast.action)
         }
+    }
+
+    /// Убрать только что созданную запись — вместе с тем, что к ней
+    /// привязано.
+    ///
+    /// Прогулка записывается строкой прогулки и строками отметок
+    /// (`walkEventID`). Тост показывает прогулку, и до 30.09 «Отменить»
+    /// убирало только её: отметки оставались в ленте сиротами —
+    /// «писал · на прогулке» без прогулки. Удаление из ленты уводит
+    /// их вместе (`.restoreDeleted` возвращает тем же составом), отмена
+    /// создания теперь тоже.
+    private func removeCreated(_ id: UUID) {
+        guard let event = event(id) else { return }
+        UsageLog.note(.undo, event.kind.rawValue)
+        let now = Date()
+        let who = appState.currentUserName
+        // Мягко, тем же способом, что и остальные четыре места
+        // в проекте: удаление оставляет след.
+        //
+        // Жёсткое `context.delete` до второго телефона не
+        // доезжало вовсе — обмен слушает `inserted`/`updated`,
+        // и удалённой строки в этих списках нет. Запись успевала
+        // уехать, а отмена — нет: у второго человека «покормила»
+        // оставалось в ленте навсегда. Мягкое удаление приходит
+        // к нему обычной правкой.
+        for target in [event] + marks(ofWalk: id) {
+            target.deletedAt = now
+            target.deletedBy = who
+        }
+    }
+
+    /// Отметки прогулки: строки, привязанные к ней `walkEventID`.
+    private func marks(ofWalk id: UUID) -> [LogEvent] {
+        let walkID: UUID? = id
+        let descriptor = FetchDescriptor<LogEvent>(predicate: #Predicate { $0.walkEventID == walkID })
+        return ((try? context.fetch(descriptor)) ?? []).filter { $0.deletedAt == nil }
     }
 
     private func event(_ id: UUID) -> LogEvent? {

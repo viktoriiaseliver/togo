@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import Combine
 
 /// Главный экран. Порядок блоков: натощак → уход, если есть срок → таймлайн → режим дня.
 /// В поездке между натощак и таймлайном встаёт блок дороги, а сводка «ел и пил»
@@ -25,8 +26,14 @@ struct TodayScreen: View {
     /// это — за какой день считать. Пока показывают сегодня, они
     /// совпадают, и разницы не видно; на «вчера» она решает всё.
     @State private var показанныйДень = Date()
-    /// Когда в последний раз предлагали воду в режиме «собака со мной».
-    @State private var lastWaterOffer: Date?
+    /// Когда предлагали воду в режиме «собака со мной» — отметки этого
+    /// запуска. Истина лежит на телефоне (`DayOutWater`): до 30.09 время
+    /// жило только здесь и терялось с перезапуском, и «Пора предложить
+    /// воду» вставало сразу после только что предложенной.
+    @State private var lastWaterOffer: [UUID: Date] = [:]
+    /// Сколько раз с открытия экрана менялось то, от чего зависят
+    /// напоминания о дозах. Смена запускает пересборку — одну на серию.
+    @State private var напоминанияУстарели = 0
     /// Когда дело ухода было сделано в прошлый раз — чтобы «вернуть»
     /// возвращало именно туда, а не обнуляло срок.
     @State private var lastCareDone: [UUID: Date?] = [:]
@@ -37,6 +44,11 @@ struct TodayScreen: View {
     /// Пункт плана, по которому спрашиваем «когда дали». Не пусто только
     /// когда назначенный час уже прошёл дольше чем на `LateMarking.grace`.
     @State private var askingGivenAt: DayPlanItem?
+    /// Дозу взял на себя другой человек — спрашиваем, отмечать ли всё равно.
+    @State private var claimedDose: ClaimedDose?
+    /// Тот же вопрос, но отметили из шторки. Ждёт, пока шторка закроется:
+    /// диалог, открытый поверх уходящей шторки, SwiftUI может не показать.
+    @State private var claimedAfterSheet: ClaimedDose?
 
     // Три адресата шторок — `MissedDoseTarget`, `GatedDose`, `LockedDose` —
     // переехали в `DayPlanActions.swift`. Это чистые данные, и вложенными
@@ -245,8 +257,11 @@ struct TodayScreen: View {
         }
 
         if let day = activeDayOut {
-            DayOutCard(day: day, now: now, lastWater: lastWaterOffer) {
-                lastWaterOffer = Date()
+            DayOutCard(day: day, now: now,
+                       lastWater: lastWaterOffer[day.id] ?? DayOutWater.last(for: day)) {
+                let сейчас = Date()
+                lastWaterOffer[day.id] = сейчас
+                DayOutWater.offered(day, at: сейчас)
                 Haptics.tap()
             } onFinish: {
                 закрытьДень(day)
@@ -308,6 +323,7 @@ struct TodayScreen: View {
             appState.showUndo("День не закрылся · нажми ещё раз")
             return
         }
+        DayOutWater.forget(day)
         finishingDayOut = day
     }
 
@@ -333,7 +349,30 @@ struct TodayScreen: View {
                 appState.refreshEpisode(from: episodes, at: now)
                 // Напоминания пересобираются при каждом открытии: их мало,
                 // а разойтись они могут молча.
-                await ReminderScheduler.refresh(dog: dog, settings: settings, at: now)
+                await пересобратьНапоминания()
+            }
+            // Дозу отметили или сняли на другом телефоне, передали
+            // дежурство, поправили схему — запланированное на этом
+            // телефоне уже неправда. Обмен сохраняет приехавшее обычным
+            // сохранением контекста, поэтому слушаем сохранение, а не
+            // сам обмен: `ReminderScheduler` живёт в приложении, обмен —
+            // в общем слое и позвать его не может.
+            //
+            // Отдельного сигнала «чужая доза» нет и не нужно (снят 30.09):
+            // `SharedDiaryInbox.accept` пишет через `persist`, то есть
+            // обычным `save()`, а `didSave` приходит от любого контекста.
+            // Сторож — `SeamsTests`: приём чужой дозы проходит этот фильтр.
+            .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave)
+                .receive(on: DispatchQueue.main)) { notification in
+                if Self.касаетсяНапоминаний(notification) { напоминанияУстарели += 1 }
+            }
+            // Серия сохранений — одна пересборка: `task(id:)` снимает
+            // предыдущую, пока та ждёт.
+            .task(id: напоминанияУстарели) {
+                guard напоминанияУстарели > 0 else { return }
+                try? await Task.sleep(for: .seconds(1))
+                guard !Task.isCancelled else { return }
+                await пересобратьНапоминания()
             }
             // `Timer.publish` в фоне не тикает: вернувшись в приложение,
             // человек до следующего тика видит вчерашнее «сейчас».
@@ -343,6 +382,11 @@ struct TodayScreen: View {
             .onChange(of: scenePhase) { _, phase in
                 guard phase == .active else { return }
                 now = Date()
+                // `.task` выше срабатывает один раз на жизнь вкладки,
+                // а телефон возвращают в приложение назавтра: без этого
+                // отметки дня и напоминания оставались вчерашними.
+                if let dog { DoseScheduler.ensureDoses(for: dog, on: now, context: context) }
+                напоминанияУстарели += 1
             }
             // Запись приходит с настоящим временем, а `now` — с тика:
             // между ними до тридцати секунд. В этот зазор метка «сейчас»
@@ -369,24 +413,24 @@ struct TodayScreen: View {
             .sheet(item: $finishingDayOut) { day in
                 DayOutSummarySheet(day: day)
             }
-            .sheet(item: $askingGivenAt) { item in
+            .sheet(item: $askingGivenAt, onDismiss: спроситьПослеШторки) { item in
                 // `Date()`, а не экранное `now`: оно тикает раз в тридцать
                 // секунд и в фоне стоит вовсе, а здесь «сейчас» попадёт
                 // в запись как есть.
                 GivenAtSheet(title: item.title, scheduled: item.time,
                              сейчас: экранДень.моментБыстройЗаписи,
                              предел: отсчёт) { момент in
-                    complete(item, givenAt: момент)
+                    complete(item, givenAt: момент, изШторки: true)
                 }
             }
-            .sheet(item: $missedDose) { target in
+            .sheet(item: $missedDose, onDismiss: спроситьПослеШторки) { target in
                 MissedDoseSheet(medication: target.medication, missed: target.missed, now: now) {
                     // Нарочно без вопроса «когда дали»: отсюда он открыл бы
                     // шторку поверх закрывающейся, а проверить это кадром
                     // я не могу — сценария пропущенной дозы в `SeedData` нет.
                     // Известная дыра, а не решение: пропущенная доза — как
                     // раз тот случай, где час важнее всего.
-                    complete(target.item, givenAt: Date())
+                    complete(target.item, givenAt: Date(), изШторки: true)
                 } onSkip: {
                     // Пропуск — тоже запись: иначе в истории останется дыра,
                     // а врач спросит именно про неё.
@@ -417,6 +461,26 @@ struct TodayScreen: View {
                     uncomplete(locked.item)
                 }
             }
+            .confirmationDialog(
+                claimedDose.map {
+                    String(localized: "Доза за \($0.claimedBy) до \(Fmt.clock($0.until)). Отметить всё равно?")
+                } ?? "",
+                isPresented: Binding(get: { claimedDose != nil },
+                                     set: { if !$0 { claimedDose = nil } }),
+                titleVisibility: .visible,
+                presenting: claimedDose
+            ) { чужая in
+                Button("Отметить") { actions.complete(чужая.item, givenAt: чужая.givenAt) }
+                Button("Отмена", role: .cancel) {}
+            }
+    }
+
+    /// Шторка «когда дали» или пропущенной дозы закрылась — теперь можно
+    /// спросить про чужую бронь.
+    private func спроситьПослеШторки() {
+        guard let отложенная = claimedAfterSheet else { return }
+        claimedAfterSheet = nil
+        claimedDose = отложенная
     }
 
     // MARK: Шапка
@@ -531,9 +595,40 @@ struct TodayScreen: View {
         return dutyMember.map { String(localized: "Сегодня дежурит \($0.name)") } ?? String(localized: "Кто-то один — отметьте")
     }
 
+    /// Кому на этом телефоне звенеть лестницей доз — по своей карточке
+    /// и дежурству. Не опознали себя — всем, как раньше.
+    private var напоминанияКому: DoseReminderAudience {
+        let я = FamilyResolver.меня(среди: members, запомненный: appState.myMemberID,
+                                    гость: SharedZoneOwner.isGuest)
+        return DoseReminderAudience.по(я: я, дежурный: dutyMember,
+                                       даюДозу: appState.can(.giveDose))
+    }
+
+    /// Пересобрать напоминания с текущей аудиторией. Часы настоящие:
+    /// планируется будущее, а не листаемый день.
+    private func пересобратьНапоминания() async {
+        ReminderScheduler.audience = напоминанияКому
+        await ReminderScheduler.refresh(dog: dog, settings: settings, at: Date())
+    }
+
+    /// Сохранение затронуло дозы, схему, собаку или семью.
+    ///
+    /// Не `private`: тест проверяет, что приём чужой дозы его проходит.
+    /// `nonisolated` — читает только само уведомление, а приходит оно
+    /// с того потока, где сохраняли.
+    nonisolated static func касаетсяНапоминаний(_ notification: Notification) -> Bool {
+        let сущности: Set<String> = ["DoseRecord", "Medication", "Dog", "FamilyMember"]
+        for key in [ModelContext.NotificationKey.insertedIdentifiers,
+                    .updatedIdentifiers, .deletedIdentifiers] {
+            guard let ids = notification.userInfo?[key.rawValue] as? [PersistentIdentifier] else { continue }
+            if ids.contains(where: { сущности.contains($0.entityName) }) { return true }
+        }
+        return false
+    }
+
     /// Вернуть пункт в невыполненные.
     ///
-    /// Отметить не то — обычное дело: сработал свайп, покормила не она,
+    /// Отметить не то — обычное дело: палец промахнулся, покормила не она,
     /// доза оказалась другой. Раньше отменить это можно было только
     /// найдя запись в ленте и удалив её оттуда — то есть догадавшись,
     /// что «сделано» в режиме дня и запись в ленте это одно и то же.
@@ -632,7 +727,14 @@ struct TodayScreen: View {
         askingGivenAt = item
     }
 
-    private func complete(_ item: DayPlanItem, givenAt момент: Date) {
+    /// Последний шаг перед отметкой: чужая «беру на себя» спрашивается
+    /// здесь, куда сходятся все пути — тап по кругу, «когда дали»
+    /// и пропущенная доза.
+    private func complete(_ item: DayPlanItem, givenAt момент: Date, изШторки: Bool = false) {
+        if let чужая = actions.claimedByOther(item, givenAt: момент) {
+            if изШторки { claimedAfterSheet = чужая } else { claimedDose = чужая }
+            return
+        }
         actions.complete(item, givenAt: момент)
     }
 }

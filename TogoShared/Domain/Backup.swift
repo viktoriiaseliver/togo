@@ -44,6 +44,13 @@ nonisolated enum BackupService {
         let allStocks = (try? context.fetch(FetchDescriptor<FoodStock>())) ?? []
         let allHeats = (try? context.fetch(FetchDescriptor<HeatRecord>())) ?? []
         let allDocuments = (try? context.fetch(FetchDescriptor<DogDocument>())) ?? []
+        // Дни «собака со мной» и навыки процедур в файл не попадали вовсе,
+        // хотя карточка обещает «весь дневник». Здесь `try`, а не `try?`:
+        // пустой список вместо отказа — та же тихая потеря.
+        let allDaysOut: [DayOut] = try holds(DayOut.self, context)
+            ? context.fetch(FetchDescriptor<DayOut>()) : []
+        let skills: [ProcedureSkill] = try holds(ProcedureSkill.self, context)
+            ? context.fetch(FetchDescriptor<ProcedureSkill>()) : []
         let members = try context.fetch(FetchDescriptor<FamilyMember>())
         let episodes = try context.fetch(FetchDescriptor<Episode>())
 
@@ -54,7 +61,8 @@ nonisolated enum BackupService {
                 snapshot(dog,
                          stocks: allStocks.filter { $0.dog?.persistentModelID == dog.persistentModelID },
                          heats: allHeats.filter { $0.dog?.persistentModelID == dog.persistentModelID },
-                         documents: allDocuments.filter { $0.dog?.persistentModelID == dog.persistentModelID })
+                         documents: allDocuments.filter { $0.dog?.persistentModelID == dog.persistentModelID },
+                         daysOut: allDaysOut.filter { $0.dog?.persistentModelID == dog.persistentModelID })
             },
             members: members.map { member in
                 BackupArchive.MemberSnapshot(
@@ -67,8 +75,26 @@ nonisolated enum BackupService {
             episodes: episodes.map {
                 BackupArchive.EpisodeSnapshot(startedAt: $0.startedAt, endedAt: $0.endedAt,
                                               title: $0.title, detail: $0.detail)
+            },
+            procedureSkills: skills.map {
+                BackupArchive.ProcedureSkillSnapshot(
+                    id: $0.id, title: $0.title, detail: $0.detail, statusRaw: $0.statusRaw,
+                    targetDate: $0.targetDate, successes: $0.successes, attempts: $0.attempts
+                )
             }
         )
+    }
+
+    /// Есть ли модель в схеме этого хранилища.
+    ///
+    /// Настоящее хранилище открыто по полной схеме, но тесты открывают
+    /// и контейнеры `for: Dog.self` — туда попадают только модели,
+    /// связанные с собакой. У навыка процедур связи с собакой нет,
+    /// и выборка по модели, которой нет в схеме, не пустая, а отказ.
+    @MainActor
+    private static func holds<T: PersistentModel>(_ model: T.Type, _ context: ModelContext) -> Bool {
+        let name = String(describing: model)
+        return context.container.schema.entities.contains { $0.name == name }
     }
 
     @MainActor
@@ -76,7 +102,8 @@ nonisolated enum BackupService {
         _ dog: Dog,
         stocks: [FoodStock] = [],
         heats: [HeatRecord] = [],
-        documents: [DogDocument] = []
+        documents: [DogDocument] = [],
+        daysOut: [DayOut] = []
     ) -> BackupArchive.DogSnapshot {
         BackupArchive.DogSnapshot(
             name: dog.name, photo: dog.photo, breed: dog.breed, birthDate: dog.birthDate,
@@ -159,8 +186,48 @@ nonisolated enum BackupService {
             documents: documents.map {
                 BackupArchive.DocumentSnapshot(title: $0.title, image: $0.image,
                                                addedAt: $0.addedAt, note: $0.note)
+            },
+            daysOut: daysOut.map {
+                BackupArchive.DayOutSnapshot(id: $0.id, startedAt: $0.startedAt, endedAt: $0.endedAt,
+                                             plannedHours: $0.plannedHours, note: $0.note)
             }
         )
+    }
+
+    // MARK: Стереть всё
+
+    /// Все модели хранилища — из нынешней версии схемы, а не списком руками.
+    ///
+    /// Списков руками было два (здесь и в «Удалить все данные»), и оба
+    /// разошлись со схемой: «Заменить всё» не трогало запас корма, течки,
+    /// снимки документов, навыки процедур и дни с собакой — после замены
+    /// на телефоне оставались записи прежнего дневника. Появится
+    /// `TogoSchemaV5` — поменять здесь; `BackupTests` краснеет, если
+    /// в `Persistence.schema` есть модель, которой нет в этом списке.
+    static var allModels: [any PersistentModel.Type] { TogoSchemaV4.models }
+
+    /// Порядок удаления: сначала дети, потом родители.
+    ///
+    /// `context.delete(model:)` удаляет пачкой, и каскад от собаки при этом
+    /// не срабатывает (замечено ещё в «Удалить все данные») — поэтому
+    /// удаляется каждая модель, а собака и схема лечения — последними,
+    /// как и в прежнем списке, который работал.
+    static var deletionOrder: [any PersistentModel.Type] {
+        let parents: [any PersistentModel.Type] = [Medication.self, Dog.self]
+        let parentIDs = Set(parents.map { ObjectIdentifier($0) })
+        return allModels.filter { !parentIDs.contains(ObjectIdentifier($0)) } + parents
+    }
+
+    /// Стереть из хранилища все записи всех моделей. Сохранение —
+    /// за вызывающим: при восстановлении стирание и новые записи
+    /// должны уйти одним сохранением.
+    @MainActor
+    static func eraseEverything(in context: ModelContext) throws {
+        // Модели, которой нет в схеме хранилища, в нём нет и записей.
+        // Промах в самой проверке ловит `BackupTests.replaceErasesEveryModel`.
+        for model in deletionOrder where holds(model, context) {
+            try context.delete(model: model)
+        }
     }
 
     // MARK: Файл
@@ -221,11 +288,7 @@ nonisolated enum BackupService {
     @discardableResult
     static func restore(_ archive: BackupArchive, into context: ModelContext, strategy: Strategy) throws -> Int {
         if strategy == .replace {
-            for model in [LogEvent.self, WeightEntry.self, DoseRecord.self, Medication.self,
-                          CareTask.self, TrainingSession.self, TrainingStep.self,
-                          Trip.self, Episode.self, FamilyMember.self, Dog.self] as [any PersistentModel.Type] {
-                try context.delete(model: model)
-            }
+            try eraseEverything(in: context)
         }
 
         let existingEventIDs: Set<UUID> = strategy == .merge
@@ -237,6 +300,14 @@ nonisolated enum BackupService {
         let existingMemberNames: Set<String> = strategy == .merge
             ? Set(try context.fetch(FetchDescriptor<FamilyMember>()).map(\.name))
             : []
+        // Дни с собакой и навыки сверяются по id, как записи ленты:
+        // повторный импорт того же файла не должен их задваивать.
+        let existingDayOutIDs: Set<UUID> = strategy == .merge && holds(DayOut.self, context)
+            ? Set(try context.fetch(FetchDescriptor<DayOut>()).map(\.id))
+            : []
+        let existingSkillIDs: Set<UUID> = strategy == .merge && holds(ProcedureSkill.self, context)
+            ? Set(try context.fetch(FetchDescriptor<ProcedureSkill>()).map(\.id))
+            : []
 
         var restored = 0
 
@@ -245,13 +316,30 @@ nonisolated enum BackupService {
                 // Собака уже есть — доливаем только новые записи к ней.
                 if let dog = try context.fetch(FetchDescriptor<Dog>()).first(where: { $0.name == snapshot.name }) {
                     restored += attachEvents(snapshot.events, to: dog, skipping: existingEventIDs, context: context)
+                    restored += attachDaysOut(snapshot.daysOut ?? [], to: dog,
+                                              skipping: existingDayOutIDs, context: context)
                 }
                 continue
             }
             let dog = makeDog(snapshot)
             context.insert(dog)
             restored += attachEvents(snapshot.events, to: dog, skipping: existingEventIDs, context: context)
+            restored += attachDaysOut(snapshot.daysOut ?? [], to: dog,
+                                      skipping: existingDayOutIDs, context: context)
             attachRest(snapshot, to: dog, context: context)
+        }
+
+        // Навыки процедур ни к какой собаке не привязаны — и в файле
+        // лежат отдельно от собак. У старых файлов поля нет вовсе.
+        for snapshot in archive.procedureSkills ?? [] where !existingSkillIDs.contains(snapshot.id) {
+            let skill = ProcedureSkill(title: snapshot.title, detail: snapshot.detail,
+                                       targetDate: snapshot.targetDate)
+            skill.id = snapshot.id
+            skill.statusRaw = snapshot.statusRaw
+            skill.successes = snapshot.successes
+            skill.attempts = snapshot.attempts
+            context.insert(skill)
+            restored += 1
         }
 
         for snapshot in archive.members where !(strategy == .merge && existingMemberNames.contains(snapshot.name)) {
@@ -348,6 +436,26 @@ nonisolated enum BackupService {
             event.deletedBy = snapshot.deletedBy
             event.dog = dog
             context.insert(event)
+            count += 1
+        }
+        return count
+    }
+
+    @MainActor
+    private static func attachDaysOut(
+        _ snapshots: [BackupArchive.DayOutSnapshot],
+        to dog: Dog,
+        skipping existing: Set<UUID>,
+        context: ModelContext
+    ) -> Int {
+        var count = 0
+        for snapshot in snapshots where !existing.contains(snapshot.id) {
+            let day = DayOut(startedAt: snapshot.startedAt, plannedHours: snapshot.plannedHours)
+            day.id = snapshot.id
+            day.endedAt = snapshot.endedAt
+            day.note = snapshot.note
+            day.dog = dog
+            context.insert(day)
             count += 1
         }
         return count
