@@ -29,6 +29,17 @@ struct LockedDose: Identifiable {
     var id: String { item.id }
 }
 
+/// Доза, которую взял на себя другой человек, а отмечают на этом телефоне.
+struct ClaimedDose: Identifiable {
+    let item: DayPlanItem
+    /// Когда дали — ответ «когда дали» или час нажатия. Хранится, чтобы
+    /// после «Отметить всё равно» записать именно его, а не новое сейчас.
+    let givenAt: Date
+    let claimedBy: String
+    let until: Date
+    var id: String { item.id }
+}
+
 /// Что происходит с планом дня, когда человек нажимает: отметить, снять
 /// отметку, пропустить дозу, взять её на себя.
 ///
@@ -109,6 +120,33 @@ struct DayPlanActions {
     }
 
     // MARK: Отметить
+
+    /// Чужая «беру на себя» по этому пункту — если она ещё действует.
+    ///
+    /// «Беру на себя» держит дозу 45 минут, чтобы двое не дали её дважды.
+    /// Но до 30.09 договорённость была видна только подписью под пунктом:
+    /// отметка на втором телефоне шла мимо неё, и если мама уже несла
+    /// таблетку, папа тапал по кругу — и доза отмечалась его. Теперь
+    /// перед отметкой спрашиваем. Своя бронь и уже данная доза не мешают.
+    ///
+    /// Смотрим все отметки на эту минуту, а не первую: у каждого телефона
+    /// своя отметка дня, и чужая бронь приезжает рядом с нашей, с другим id.
+    func claimedByOther(_ item: DayPlanItem, givenAt момент: Date) -> ClaimedDose? {
+        guard item.kind == .dose, let medication = item.medication else { return nil }
+        let наМинуту = medication.doses.filter {
+            Calendar.current.isDate($0.scheduledAt, equalTo: item.time, toGranularity: .minute)
+        }
+        // Уже дана — спрашивать не о чем: вторую отметку не даст `markGiven`.
+        guard !наМинуту.contains(where: { $0.givenAt != nil }) else { return nil }
+        let я = appState.currentUserName
+        guard let бронь = наМинуту.first(where: { dose in
+                  guard let кто = dose.claimedBy, !кто.isEmpty, кто != я else { return false }
+                  return dose.claimIsActive(at: сейчас)
+              }),
+              let кто = бронь.claimedBy, let взяла = бронь.claimedAt else { return nil }
+        return ClaimedDose(item: item, givenAt: момент, claimedBy: кто,
+                           until: взяла.addingTimeInterval(DoseRecord.claimTTL))
+    }
 
     func complete(_ item: DayPlanItem, givenAt момент: Date) {
         guard let dog else { return }
@@ -246,7 +284,7 @@ struct DayPlanActions {
         if точная == nil, let снимаем, !appState.canEdit(снимаем, at: сейчас) {
             Haptics.warning()
             appState.showUndo(appState.can(.editRecords)
-                              ? "Отметка старше суток · снять её может владелец"
+                              ? "Отметка старше суток · снимет владелец или со-владелец"
                               : "Снять отметку может тот, кому разрешено править записи")
             return
         }

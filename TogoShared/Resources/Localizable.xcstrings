@@ -52749,6 +52749,390 @@
         }
       },
       "comment" : "Общий дневник: что обменивается"
+    },
+    "Отметка старше суток · снимет владелец или со-владелец" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отметка старше суток · снимет владелец или со-владелец"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coche de plus d'un jour · le propriétaire ou le copropriétaire peut la retirer"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Позначці понад добу · зніме власник або співвласник"
+          }
+        }
+      },
+      "comment" : "Тост: ухаживающий снимает отметку пункта плана старше 24 ч"
+    },
+    "Снять отметку может тот, кому разрешено править записи" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Снять отметку может тот, кому разрешено править записи"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seule une personne autorisée à modifier les entrées peut retirer la coche"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Зняти позначку може той, кому дозволено правити записи"
+          }
+        }
+      },
+      "comment" : "Тост: снять отметку пункта плана без права правки"
+    },
+    "Доза за %@ до %@. Отметить всё равно?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Доза за %@ до %@. Отметить всё равно?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ s'occupe de la dose jusqu'à %2$@. La cocher quand même ?"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Доза за %1$@ до %2$@. Позначити все одно?"
+          }
+        }
+      },
+      "comment" : "Подтверждение: дозу взял на себя другой человек; имя, время конца брони"
+    },
+    "коридор от врача" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "коридор от врача"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "fourchette du vétérinaire"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "коридор від лікаря"
+          }
+        }
+      },
+      "comment" : "Экран «Вес»: заголовок карточки коридора веса"
+    },
+    "от" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "от"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "de"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "від"
+          }
+        }
+      },
+      "comment" : "Экран «Вес»: нижняя граница коридора, кг"
+    },
+    "до" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "до"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "à"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "до"
+          }
+        }
+      },
+      "comment" : "Экран «Вес»: верхняя граница коридора, кг"
+    },
+    "4,0" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4,0"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4,0"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "4,0"
+          }
+        }
+      },
+      "comment" : "Экран «Вес»: подсказка в поле нижней границы"
+    },
+    "4,3" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4,3"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4,3"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "4,3"
+          }
+        }
+      },
+      "comment" : "Экран «Вес»: подсказка в поле верхней границы"
+    },
+    "Оставь оба поля пустыми — коридора не будет, и приложение не станет говорить «вне коридора»." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оставь оба поля пустыми — коридора не будет, и приложение не станет говорить «вне коридора»."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laisse les deux champs vides : pas de fourchette, et l'app ne dira pas « hors fourchette »."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Залиш обидва поля порожніми — коридору не буде, і застосунок не казатиме «поза коридором»."
+          }
+        }
+      },
+      "comment" : "Экран «Вес»: пояснение под полями коридора"
+    },
+    "Нужны обе границы — или ни одной." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нужны обе границы — или ни одной."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il faut les deux limites, ou aucune."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Потрібні обидві межі — або жодної."
+          }
+        }
+      },
+      "comment" : "Экран «Вес»: заполнено одно поле коридора"
+    },
+    "Границы — числа в килограммах, больше нуля." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Границы — числа в килограммах, больше нуля."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les limites sont des nombres en kilos, supérieurs à zéro."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Межі — числа в кілограмах, більші за нуль."
+          }
+        }
+      },
+      "comment" : "Экран «Вес»: в поле коридора не число"
+    },
+    "«От» должно быть меньше, чем «до»." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "«От» должно быть меньше, чем «до»."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "« De » doit être inférieur à « à »."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "«Від» має бути меншим, ніж «до»."
+          }
+        }
+      },
+      "comment" : "Экран «Вес»: нижняя граница не меньше верхней"
+    },
+    "Сохранить коридор" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сохранить коридор"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistrer la fourchette"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Зберегти коридор"
+          }
+        }
+      },
+      "comment" : "Экран «Вес»: кнопка"
+    },
+    "Коридор не сохранился · попробуй ещё раз" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Коридор не сохранился · попробуй ещё раз"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fourchette non enregistrée · réessaie"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Коридор не зберігся · спробуй ще раз"
+          }
+        }
+      },
+      "comment" : "Тост: сохранение коридора веса не удалось"
+    },
+    "Коридор убран" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Коридор убран"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fourchette retirée"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Коридор прибрано"
+          }
+        }
+      },
+      "comment" : "Тост: коридор веса очищен"
+    },
+    "Коридор сохранён" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Коридор сохранён"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fourchette enregistrée"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Коридор збережено"
+          }
+        }
+      },
+      "comment" : "Тост: коридор веса сохранён"
     }
   },
   "version" : "1.0"

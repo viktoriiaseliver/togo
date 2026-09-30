@@ -456,6 +456,33 @@ struct TreatmentAndEpisodeTests {
         #expect(схема.doses.filter(\.isGiven).count == 1)
     }
 
+    @Test("Чужое «дано» на ту же минуту останавливает свою открытую отметку")
+    func foreignGivenBlocksOwnOpen() {
+        let context = контекст()
+        let dog = стич(на: true, в: context)
+        let схема = Medication(name: "Lévothyrox", doseText: "66 мкг", times: [7 * 60])
+        схема.dog = dog
+        context.insert(схема)
+
+        let время = Calendar.current.date(bySettingHour: 7, minute: 0, second: 0, of: .now)!
+        // Своя открытая отметка — первой в списке, чужая данная — второй:
+        // так они лежат, когда общий дневник привёз отметку мамы.
+        let своя = DoseRecord(scheduledAt: время)
+        своя.medication = схема
+        context.insert(своя)
+        let чужая = DoseRecord(scheduledAt: время)
+        чужая.medication = схема
+        чужая.givenAt = время
+        чужая.givenBy = "Мама"
+        context.insert(чужая)
+
+        let ответ = DoseScheduler.markGiven(схема, scheduledAt: время, by: "Виктория",
+                                            at: время.addingTimeInterval(600), context: context)
+
+        #expect(ответ?.givenBy == "Мама")
+        #expect(своя.givenAt == nil, "вторая доза не отмечается рядом с чужой данной")
+    }
+
     @Test("Окно натощак заканчивается, а не висит вечно")
     func fastingEnds() {
         let context = контекст()

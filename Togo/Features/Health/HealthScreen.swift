@@ -432,6 +432,12 @@ struct WeightScreen: View {
     @Environment(\.modelContext) private var context
     @Environment(AppState.self) private var appState
     @State private var newWeight = ""
+    /// Поля коридора от врача. Заполняются из собаки при открытии.
+    @State private var corridorLow = ""
+    @State private var corridorHigh = ""
+
+    /// Коридор — часть профиля собаки: правит тот, кто правит профиль.
+    private var canEditCorridor: Bool { appState.can(.editProfile) }
 
     var body: some View {
         TGScreen {
@@ -462,6 +468,8 @@ struct WeightScreen: View {
                 }
             }
 
+            if dog != nil, canEditCorridor { corridorCard }
+
             TGCard {
                 TGSectionHeader(title: "история")
                 let history = (dog?.weights ?? []).sorted { $0.date > $1.date }.prefix(12)
@@ -489,6 +497,7 @@ struct WeightScreen: View {
         }
         .navigationTitle("Вес")
         .navigationBarTitleDisplayMode(.large)
+        .onAppear { заполнитьКоридор() }
         .confirmationDialog("Удалить взвешивание?",
                             isPresented: Binding(get: { removing != nil },
                                                  set: { if !$0 { removing = nil } }),
@@ -499,6 +508,84 @@ struct WeightScreen: View {
         } message: { entry in
             Text("\(Fmt.shortDay(entry.date)) · \(Fmt.weight(entry.kg)). Из графика и из коридора веса запись тоже уйдёт.")
         }
+    }
+
+    // MARK: Коридор от врача
+
+    /// Коридор называет врач, и до 30.09 ввести его было негде: экран
+    /// показывал «цель … · поставил врач» только тем, у кого коридор
+    /// приехал примером данных или с другого телефона.
+    private var corridorCard: some View {
+        TGCard {
+            TGSectionHeader(title: "коридор от врача")
+            LabeledField(label: String(localized: "от")) {
+                HStack(spacing: Token.Space.s4) {
+                    TextField("4,0", text: $corridorLow).keyboardType(.decimalPad)
+                    Text("кг").textStyle(AppFont.caption)
+                }
+            }
+            TGDivider()
+            LabeledField(label: String(localized: "до")) {
+                HStack(spacing: Token.Space.s4) {
+                    TextField("4,3", text: $corridorHigh).keyboardType(.decimalPad)
+                    Text("кг").textStyle(AppFont.caption)
+                }
+            }
+            if let подсказка = corridorProblem {
+                Text(подсказка).textStyle(AppFont.caption.color(Token.Status.waitingText)).wraps()
+            } else {
+                TGExplainer(text: "Оставь оба поля пустыми — коридора не будет, и приложение не станет говорить «вне коридора».")
+            }
+            TGButton(title: "Сохранить коридор", size: .medium,
+                     isEnabled: corridorChanged) { saveCorridor() }
+        }
+    }
+
+    private var corridor: WeightCorridor {
+        WeightCorridor.parse(low: corridorLow, high: corridorHigh)
+    }
+
+    /// Почему сохранить нельзя — словами, а не серой кнопкой без причины.
+    private var corridorProblem: String? {
+        guard case .invalid(let reason) = corridor else { return nil }
+        switch reason {
+        case .oneEmpty: return String(localized: "Нужны обе границы — или ни одной.")
+        case .notNumber: return String(localized: "Границы — числа в килограммах, больше нуля.")
+        case .notAscending: return String(localized: "«От» должно быть меньше, чем «до».")
+        }
+    }
+
+    /// Есть что сохранить: ввод верный и отличается от того, что в собаке.
+    private var corridorChanged: Bool {
+        guard let dog, let bounds = corridor.bounds else { return false }
+        return bounds.low != dog.targetWeightLow || bounds.high != dog.targetWeightHigh
+    }
+
+    private func заполнитьКоридор() {
+        corridorLow = dog?.targetWeightLow.map(Self.corridorText) ?? ""
+        corridorHigh = dog?.targetWeightHigh.map(Self.corridorText) ?? ""
+    }
+
+    /// До двух знаков: врач пишет и «4,25», и округлять его границу
+    /// при следующем сохранении нельзя.
+    private static func corridorText(_ kg: Double) -> String {
+        kg.formatted(.number.precision(.fractionLength(0...2)).grouping(.never))
+    }
+
+    private func saveCorridor() {
+        guard let dog, canEditCorridor, let bounds = corridor.bounds else { return }
+        let было = (dog.targetWeightLow, dog.targetWeightHigh)
+        dog.targetWeightLow = bounds.low
+        dog.targetWeightHigh = bounds.high
+        guard context.persist(otherwise: {
+            dog.targetWeightLow = было.0
+            dog.targetWeightHigh = было.1
+        }) else {
+            Haptics.warning()
+            return appState.showUndo("Коридор не сохранился · попробуй ещё раз")
+        }
+        Haptics.success()
+        appState.showUndo(bounds.low == nil ? "Коридор убран" : "Коридор сохранён")
     }
 
     /// Удалить взвешивание, вернув текущий вес к предыдущему замеру.

@@ -638,6 +638,10 @@ struct EventEditSheet: View {
     /// У прогулки конец остаётся на месте: человек помнит, когда вернулся,
     /// и передвигать это за него нельзя. Меняется длительность.
     private func setStart(_ start: Date, on event: LogEvent) {
+        // Срок правки считается от момента записи, а не от `date`: иначе
+        // ухаживающий, передвинув вчерашнюю запись на «сейчас», сам
+        // продлевал бы себе окно в 24 часа — хоть каждый день.
+        event.закрепитьМоментЗаписи()
         guard event.kind == .walk, event.durationSeconds != nil else {
             event.date = start
             return

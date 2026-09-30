@@ -138,13 +138,16 @@ enum ReminderScheduler {
             for day in days {
                 for minute in Set(medication.times).sorted() {
                     let at = calendar.date(minuteOfDay: minute, on: day)
-                    let record = medication.doses.first {
+                    // Любая отметка на эту минуту, а не первая: у каждого
+                    // телефона своя отметка дня (`ensureDoses`), и чужое
+                    // «дано» приезжает рядом с нашей открытой, с другим id.
+                    // С `first` пересборка находила нашу открытую и снова
+                    // ставила «Доза не отмечена» про данную таблетку.
+                    let решена = medication.doses.contains {
                         calendar.isDate($0.scheduledAt, equalTo: at, toGranularity: .minute)
+                            && ($0.isGiven || $0.skippedAt != nil || $0.cancelledAt != nil)
                     }
-                    if let record,
-                       record.isGiven || record.skippedAt != nil || record.cancelledAt != nil {
-                        continue
-                    }
+                    if решена { continue }
                     planned.append((medication: medication, at: at))
                 }
             }

@@ -44,6 +44,11 @@ struct TodayScreen: View {
     /// Пункт плана, по которому спрашиваем «когда дали». Не пусто только
     /// когда назначенный час уже прошёл дольше чем на `LateMarking.grace`.
     @State private var askingGivenAt: DayPlanItem?
+    /// Дозу взял на себя другой человек — спрашиваем, отмечать ли всё равно.
+    @State private var claimedDose: ClaimedDose?
+    /// Тот же вопрос, но отметили из шторки. Ждёт, пока шторка закроется:
+    /// диалог, открытый поверх уходящей шторки, SwiftUI может не показать.
+    @State private var claimedAfterSheet: ClaimedDose?
 
     // Три адресата шторок — `MissedDoseTarget`, `GatedDose`, `LockedDose` —
     // переехали в `DayPlanActions.swift`. Это чистые данные, и вложенными
@@ -352,6 +357,11 @@ struct TodayScreen: View {
             // сохранением контекста, поэтому слушаем сохранение, а не
             // сам обмен: `ReminderScheduler` живёт в приложении, обмен —
             // в общем слое и позвать его не может.
+            //
+            // Отдельного сигнала «чужая доза» нет и не нужно (снят 30.09):
+            // `SharedDiaryInbox.accept` пишет через `persist`, то есть
+            // обычным `save()`, а `didSave` приходит от любого контекста.
+            // Сторож — `SeamsTests`: приём чужой дозы проходит этот фильтр.
             .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave)
                 .receive(on: DispatchQueue.main)) { notification in
                 if Self.касаетсяНапоминаний(notification) { напоминанияУстарели += 1 }
@@ -403,24 +413,24 @@ struct TodayScreen: View {
             .sheet(item: $finishingDayOut) { day in
                 DayOutSummarySheet(day: day)
             }
-            .sheet(item: $askingGivenAt) { item in
+            .sheet(item: $askingGivenAt, onDismiss: спроситьПослеШторки) { item in
                 // `Date()`, а не экранное `now`: оно тикает раз в тридцать
                 // секунд и в фоне стоит вовсе, а здесь «сейчас» попадёт
                 // в запись как есть.
                 GivenAtSheet(title: item.title, scheduled: item.time,
                              сейчас: экранДень.моментБыстройЗаписи,
                              предел: отсчёт) { момент in
-                    complete(item, givenAt: момент)
+                    complete(item, givenAt: момент, изШторки: true)
                 }
             }
-            .sheet(item: $missedDose) { target in
+            .sheet(item: $missedDose, onDismiss: спроситьПослеШторки) { target in
                 MissedDoseSheet(medication: target.medication, missed: target.missed, now: now) {
                     // Нарочно без вопроса «когда дали»: отсюда он открыл бы
                     // шторку поверх закрывающейся, а проверить это кадром
                     // я не могу — сценария пропущенной дозы в `SeedData` нет.
                     // Известная дыра, а не решение: пропущенная доза — как
                     // раз тот случай, где час важнее всего.
-                    complete(target.item, givenAt: Date())
+                    complete(target.item, givenAt: Date(), изШторки: true)
                 } onSkip: {
                     // Пропуск — тоже запись: иначе в истории останется дыра,
                     // а врач спросит именно про неё.
@@ -451,6 +461,26 @@ struct TodayScreen: View {
                     uncomplete(locked.item)
                 }
             }
+            .confirmationDialog(
+                claimedDose.map {
+                    String(localized: "Доза за \($0.claimedBy) до \(Fmt.clock($0.until)). Отметить всё равно?")
+                } ?? "",
+                isPresented: Binding(get: { claimedDose != nil },
+                                     set: { if !$0 { claimedDose = nil } }),
+                titleVisibility: .visible,
+                presenting: claimedDose
+            ) { чужая in
+                Button("Отметить") { actions.complete(чужая.item, givenAt: чужая.givenAt) }
+                Button("Отмена", role: .cancel) {}
+            }
+    }
+
+    /// Шторка «когда дали» или пропущенной дозы закрылась — теперь можно
+    /// спросить про чужую бронь.
+    private func спроситьПослеШторки() {
+        guard let отложенная = claimedAfterSheet else { return }
+        claimedAfterSheet = nil
+        claimedDose = отложенная
     }
 
     // MARK: Шапка
@@ -582,7 +612,11 @@ struct TodayScreen: View {
     }
 
     /// Сохранение затронуло дозы, схему, собаку или семью.
-    private static func касаетсяНапоминаний(_ notification: Notification) -> Bool {
+    ///
+    /// Не `private`: тест проверяет, что приём чужой дозы его проходит.
+    /// `nonisolated` — читает только само уведомление, а приходит оно
+    /// с того потока, где сохраняли.
+    nonisolated static func касаетсяНапоминаний(_ notification: Notification) -> Bool {
         let сущности: Set<String> = ["DoseRecord", "Medication", "Dog", "FamilyMember"]
         for key in ["inserted", "updated", "deleted"] {
             guard let ids = notification.userInfo?[key] as? [PersistentIdentifier] else { continue }
@@ -692,7 +726,14 @@ struct TodayScreen: View {
         askingGivenAt = item
     }
 
-    private func complete(_ item: DayPlanItem, givenAt момент: Date) {
+    /// Последний шаг перед отметкой: чужая «беру на себя» спрашивается
+    /// здесь, куда сходятся все пути — тап по кругу, «когда дали»
+    /// и пропущенная доза.
+    private func complete(_ item: DayPlanItem, givenAt момент: Date, изШторки: Bool = false) {
+        if let чужая = actions.claimedByOther(item, givenAt: момент) {
+            if изШторки { claimedAfterSheet = чужая } else { claimedDose = чужая }
+            return
+        }
         actions.complete(item, givenAt: момент)
     }
 }

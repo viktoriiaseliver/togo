@@ -498,7 +498,6 @@ enum SharedDiaryInbox {
                 log.error("общий дневник: доза не записалась")
                 return false
             }
-            RemoteDoseChange.post(dose)
             return false
         }
 
@@ -516,9 +515,7 @@ enum SharedDiaryInbox {
         if merged != local.payload {
             let былПрежний = local.payload
             local.apply(merged)
-            if context.persist(otherwise: { local.apply(былПрежний) }) {
-                RemoteDoseChange.post(local)
-            } else {
+            if !context.persist(otherwise: { local.apply(былПрежний) }) {
                 log.error("общий дневник: слияние дозы не записалось")
             }
         } else if linked {
@@ -527,46 +524,5 @@ enum SharedDiaryInbox {
             }
         }
         return changed
-    }
-}
-
-// MARK: - Чужая отметка дозы → напоминания
-
-extension Notification.Name {
-    /// Отметка дозы пришла с другого телефона и записалась в базу.
-    ///
-    /// Напоминания t-10/t+30/t+60 ставит `ReminderScheduler`, а он живёт
-    /// в цели приложения: `TogoShared` собирается и в виджеты, поэтому
-    /// позвать его отсюда нельзя. Без этого сигнала мама отмечала приём,
-    /// а у второго человека через полчаса всё равно звенело «Доза
-    /// не отмечена». Слушает цель приложения (см. `RemoteDoseChange`).
-    static let togoRemoteDoseChanged = Notification.Name("togoRemoteDoseChanged")
-}
-
-/// Что лежит в `userInfo` сигнала `.togoRemoteDoseChanged`.
-///
-/// Кроме id дозы — препарат и назначенное время: у каждого телефона
-/// дозы на день заводит свой `DoseScheduler.ensureDoses`, и у своей
-/// дозы на тот же час id другой. Напоминания висят на СВОЁМ id,
-/// поэтому слушателю нужно найти свою дозу того же препарата на ту же
-/// минуту, а не только чужую по id.
-nonisolated enum RemoteDoseChange {
-    static let doseIDKey = "doseID"
-    /// `UUID?` — препарат может ещё не приехать.
-    static let medicationIDKey = "medicationID"
-    static let scheduledAtKey = "scheduledAt"
-    /// Доза закрыта: дана, пропущена или отменена. Только тогда
-    /// напоминания надо снимать; открытую чужую дозу трогать незачем.
-    static let isClosedKey = "isClosed"
-
-    @MainActor
-    static func post(_ dose: DoseRecord) {
-        var info: [String: Any] = [
-            doseIDKey: dose.id,
-            scheduledAtKey: dose.scheduledAt,
-            isClosedKey: dose.givenAt != nil || dose.skippedAt != nil || dose.cancelledAt != nil,
-        ]
-        if let medicationID = dose.medication?.id { info[medicationIDKey] = medicationID }
-        NotificationCenter.default.post(name: .togoRemoteDoseChanged, object: nil, userInfo: info)
     }
 }

@@ -126,9 +126,13 @@ nonisolated enum DoseScheduler {
         context: ModelContext
     ) -> DoseRecord? {
         let calendar = Calendar.current
-        let существующая = medication.doses.first {
+        // На одну минуту бывает несколько отметок: у каждого телефона
+        // общего дневника своя, с другим id. Данная любым из них — главнее
+        // своей открытой, иначе чужое «дано» не остановило бы вторую дозу.
+        let наМинуту = medication.doses.filter {
             calendar.isDate($0.scheduledAt, equalTo: scheduled, toGranularity: .minute)
         }
+        let существующая = наМинуту.first { $0.givenAt != nil } ?? наМинуту.first
         let dose = существующая ?? {
             let new = DoseRecord(scheduledAt: scheduled)
             new.medication = medication
@@ -202,9 +206,13 @@ nonisolated enum DoseScheduler {
         context: ModelContext
     ) -> DoseRecord? {
         let calendar = Calendar.current
-        let существующая = medication.doses.first {
+        // На одну минуту бывает несколько отметок: у каждого телефона
+        // общего дневника своя, с другим id. Данная любым из них — главнее
+        // своей открытой, иначе чужое «дано» не остановило бы вторую дозу.
+        let наМинуту = medication.doses.filter {
             calendar.isDate($0.scheduledAt, equalTo: scheduled, toGranularity: .minute)
         }
+        let существующая = наМинуту.first { $0.givenAt != nil } ?? наМинуту.first
         let dose = существующая ?? {
             let new = DoseRecord(scheduledAt: scheduled)
             new.medication = medication
