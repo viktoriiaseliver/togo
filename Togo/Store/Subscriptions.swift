@@ -41,6 +41,7 @@ final class SubscriptionStore {
     init() {
         #if DEBUG
         debugOverride = UserDefaults.standard.object(forKey: "debug.pro") as? Bool
+        применитьОтладочныйИсходВосстановления()
         #endif
         updatesTask = Task { [weak self] in
             for await update in Transaction.updates {
@@ -281,6 +282,39 @@ final class SubscriptionStore {
             }
         }
     }
+
+    #if DEBUG
+    /// Поставить исход восстановления по аргументу запуска: `-Восстановление
+    /// storefront`. Только отладочная сборка.
+    ///
+    /// **Заведено потому, что иначе эту поверхность не снять кадром.**
+    /// Живого отказа магазина в симуляторе не добиться: локальная
+    /// конфигурация StoreKit под `xcodebuild` не подхватывается, симулятор
+    /// идёт в песочницу живого магазина. То есть тексты, которые человек
+    /// читает в худшую свою минуту, не видел глазами никто — ровно тот
+    /// случай, про который у нас записано: поверхность без кадра не
+    /// «непроверенная», а «непроверяемая», и лечится она входом,
+    /// а не старанием.
+    ///
+    /// Незнакомое имя **валит запуск нарочно**, как и у `-Сценарий`: молча
+    /// подставить «ничего не случилось» значит дать тесту снять не то
+    /// состояние и назвать это успехом.
+    private func применитьОтладочныйИсходВосстановления() {
+        let args = ProcessInfo.processInfo.arguments
+        guard let место = args.firstIndex(of: "-Восстановление") else { return }
+        let имя = args.indices.contains(место + 1) ? args[место + 1] : ""
+        if имя == "cancelled" {
+            lastRestore = .cancelled
+            lastError = nil
+            return
+        }
+        guard let причина = RestoreFailure(rawValue: имя) else {
+            fatalError("неизвестный исход восстановления: «\(имя)»")
+        }
+        lastRestore = .failed(причина)
+        lastError = причина.message
+    }
+    #endif
 
     func refreshEntitlements() async {
         var active = false
