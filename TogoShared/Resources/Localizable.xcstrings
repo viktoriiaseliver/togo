@@ -50685,6 +50685,78 @@
           }
         }
       }
+    },
+    "App Store не ответил. Попробуй ещё раз позже." : {
+      "comment" : "result",
+      "extractionState" : "manual",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L'App Store n'a pas répondu. Réessaie plus tard."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Store не ответил. Попробуй ещё раз позже."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "App Store не відповів. Спробуй ще раз пізніше."
+          }
+        }
+      }
+    },
+    "В App Store твоей страны подписки Togo нет. Дело не в твоём Apple ID." : {
+      "comment" : "result",
+      "extractionState" : "manual",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L'abonnement Togo n'existe pas sur l'App Store de ton pays. Ton identifiant Apple n'y est pour rien."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В App Store твоей страны подписки Togo нет. Дело не в твоём Apple ID."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "В App Store твоєї країни підписки Togo немає. Річ не в твоєму Apple ID."
+          }
+        }
+      }
+    },
+    "Дело не в твоих настройках: приложению не разрешено спрашивать App Store. Напиши нам." : {
+      "comment" : "result",
+      "extractionState" : "manual",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ce ne sont pas tes réglages : l'app n'a pas le droit d'interroger l'App Store. Écris-nous."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дело не в твоих настройках: приложению не разрешено спрашивать App Store. Напиши нам."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Річ не в твоїх налаштуваннях: застосунку не дозволено питати App Store. Напиши нам."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

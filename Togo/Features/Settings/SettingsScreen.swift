@@ -158,6 +158,12 @@ struct SettingsScreen: View {
             TGBanner(tone: .neutral, title: "Покупок не нашлось",
                      subtitle: "На этом Apple ID подписки Togo нет. Если покупка была с другого — войди в него в App Store.",
                      systemImage: "magnifyingglass")
+        case .cancelled:
+            // Человек сам закрыл окно входа в App Store. Красная плашка
+            // «не получилось» сказала бы ему о поломке там, где он принял
+            // решение; окно, которое ушло, — уже ответ. Так же молчит
+            // покупка на `.userCancelled`.
+            EmptyView()
         case .failed:
             TGBanner(tone: .alarm, title: "Не получилось",
                      subtitle: store.lastError.map { .готовая($0) },

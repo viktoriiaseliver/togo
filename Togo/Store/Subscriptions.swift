@@ -100,7 +100,12 @@ final class SubscriptionStore {
             }
         } catch {
             ответМагазина = .ошибка(error.localizedDescription)
-            lastError = "Не удалось загрузить подписки. Проверь соединение."
+            // `String(localized:)`, а не литерал: `lastError` объявлен
+            // `String?`, и присвоенный ему литерал рисуется дословно мимо
+            // каталога. Перевод этих трёх строк лежал в каталоге готовым
+            // и не доезжал до экрана ни разу — тот же класс, что 321
+            // строка, починенная 28.09 (`d701bd7`).
+            lastError = String(localized: "Не удалось загрузить подписки. Проверь соединение.")
             log.error("StoreKit: \(error.localizedDescription)")
             UsageLog.note(.open, "paywall-error", on: .paywall, outcome: .failed)
         }
@@ -122,7 +127,7 @@ final class SubscriptionStore {
                 break
             }
         } catch {
-            lastError = "Покупка не прошла. Попробуй ещё раз."
+            lastError = String(localized: "Покупка не прошла. Попробуй ещё раз.")
             log.error("Покупка: \(error.localizedDescription)")
             UsageLog.note(.purchase, "bought", on: .paywall, outcome: .failed)
         }
@@ -139,8 +144,94 @@ final class SubscriptionStore {
         case restored
         /// Магазин ответил, покупок на этом Apple ID нет.
         case nothingFound
-        /// Спросить не вышло — текст в `lastError`.
-        case failed
+        /// Человек закрыл окно входа в App Store. **Не отказ**, и потому
+        /// стоит отдельно от `failed`: см. `RestoreFailure`.
+        case cancelled
+        /// Спросить не вышло. Причина названа, текст в `lastError`.
+        case failed(RestoreFailure)
+    }
+
+    /// Почему `AppStore.sync()` не довёл восстановление до ответа.
+    ///
+    /// **Заведено 30.09 из одной записи журнала.** За девять дней на
+    /// телефонах случился ровно один `purchase · restored · failed`
+    /// (28.09, 13:49:56). Ответить по нему, сломана ли кнопка, оказалось
+    /// нельзя: `AppStore.sync()` бросает **восемь** разных `StoreKitError`
+    /// — `unknown`, `userCancelled`, `networkError`, `systemError`,
+    /// `notAvailableInStorefront`, `notEntitled`, `unsupported`,
+    /// `invalidPresentationContext` (прочитано в `iPhoneOS27.0.sdk`), —
+    /// а общий `catch` писал на все восемь одно слово `failed` и один
+    /// текст «проверь связь».
+    ///
+    /// **Среди восьми есть отмена человеком.** `sync()` показывает окно
+    /// входа в App Store, и закрывший его даёт ту же запись, что упавший
+    /// магазин. То есть журнал не различал «сломалось» и «передумал»,
+    /// а экран отвечал закрывшему окно, что у него проблемы со связью.
+    ///
+    /// Форма отказа у соседа другая, и потому у него это было верно
+    /// с самого начала: `product.purchase()` возвращает отмену **случаем
+    /// результата** (`purchase()` выше, `.userCancelled`), а `sync()`
+    /// сообщает о ней **броском**. Разница не в решении автора,
+    /// а в устройстве двух API.
+    ///
+    /// Причина уезжает в `detail` журнала, чтобы следующий такой отказ
+    /// отвечал на вопрос сам, а не требовал второго захода.
+    enum RestoreFailure: String, Equatable, Sendable, CaseIterable {
+        /// Связи не было.
+        case network
+        /// Подписки Togo нет в App Store его страны.
+        case storefront
+        /// Спрашивать магазин не вправе сама сборка — не человек.
+        case notEntitled
+        /// Всё остальное, включая случаи новее нашей цели развёртывания.
+        case system
+
+        /// Как причина называется в журнале действий.
+        ///
+        /// Словарь закрытый: свободный текст человека в `detail`
+        /// не попадает никогда (`UsageLog.note`).
+        var detail: String { "restored-" + rawValue }
+
+        /// Что сказать человеку.
+        ///
+        /// Совет здесь стоит только там, где он помогает. «Проверь связь»
+        /// верно для одной причины из четырёх, и раздать его всем — это
+        /// уже разобранный у нас класс: сообщение, покрывающее несколько
+        /// причин одним текстом, даёт совет, неверный для большинства.
+        /// Хуже молчания: молчание заставляет спросить, неверный совет —
+        /// попробовать и увериться.
+        var message: String {
+            switch self {
+            case .network:
+                String(localized: "Не удалось восстановить покупки. Проверь связь и попробуй ещё раз.")
+            case .storefront:
+                String(localized: "В App Store твоей страны подписки Togo нет. Дело не в твоём Apple ID.")
+            case .notEntitled:
+                String(localized: "Дело не в твоих настройках: приложению не разрешено спрашивать App Store. Напиши нам.")
+            case .system:
+                String(localized: "App Store не ответил. Попробуй ещё раз позже.")
+            }
+        }
+    }
+
+    /// Разбор броска в исход. Чистая функция: её можно спросить из теста,
+    /// не поднимая ни магазина, ни экрана.
+    ///
+    /// `default` здесь не лень, а цель развёртывания: `unsupported`
+    /// (iOS 18.4) и `invalidPresentationContext` (iOS 27) на iOS 17
+    /// не сматчить без `#available`, и оба честно ложатся в `system`.
+    /// Не `StoreKitError` — тоже `system`: своей ветки он не заслуживает,
+    /// сказать о нём человеку нечего.
+    static func outcome(for error: Error) -> Restore {
+        guard let storeKit = error as? StoreKitError else { return .failed(.system) }
+        switch storeKit {
+        case .userCancelled: return .cancelled
+        case .networkError: return .failed(.network)
+        case .notAvailableInStorefront: return .failed(.storefront)
+        case .notEntitled: return .failed(.notEntitled)
+        case .systemError, .unknown: return .failed(.system)
+        default: return .failed(.system)
+        }
     }
 
     private(set) var isRestoring = false
@@ -170,10 +261,24 @@ final class SubscriptionStore {
             lastRestore = entitled ? .restored : .nothingFound
             UsageLog.note(.purchase, "restored", outcome: entitled ? .done : .empty)
         } catch {
-            lastError = "Не удалось восстановить покупки. Проверь связь и попробуй ещё раз."
-            lastRestore = .failed
+            let исход = Self.outcome(for: error)
+            lastRestore = исход
             log.error("Восстановление: \(error.localizedDescription)")
-            UsageLog.note(.purchase, "restored", outcome: .failed)
+            switch исход {
+            case .cancelled:
+                // Окно закрыл человек. Экрану сказать нечего: он и так
+                // видел, как окно ушло, — ровно как у покупки выше.
+                lastError = nil
+                UsageLog.note(.purchase, "restored", outcome: .cancelled)
+            case .failed(let причина):
+                lastError = причина.message
+                UsageLog.note(.purchase, причина.detail, outcome: .failed)
+            case .restored, .nothingFound:
+                // `outcome(for:)` их не возвращает: они приходят из `do`,
+                // а не из броска. Ветка стоит, чтобы добавленный случай
+                // не прошёл молча.
+                break
+            }
         }
     }
 
