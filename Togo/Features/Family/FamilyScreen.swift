@@ -542,8 +542,9 @@ struct SitterPreviewScreen: View {
     /// Участники, кроме владельца, и роли-пресеты. Владелец может всё,
     /// показывать ему «чего ты не видишь» незачем.
     private var subjects: [Subject] {
-        members.filter { $0.role != .owner }.map { .member($0.id) }
-            + [FamilyRole.helper, .caregiver, .observer, .coOwner].map { .role($0) }
+        let люди = members.filter { $0.role != .owner }.map { Subject.member($0.id) }
+        let роли = [FamilyRole.helper, .caregiver, .observer, .coOwner].map { Subject.role($0) }
+        return люди + роли
     }
 
     private func member(_ subject: Subject) -> FamilyMember? {

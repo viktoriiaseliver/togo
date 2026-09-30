@@ -156,12 +156,6 @@ struct TogoApp: App {
                 }
             }
             .task { await startSyncIfOn() }
-            // Подписка доезжает до выбора собаки одной дорогой: без Pro
-            // открыта только основная (`AppState.закрыта`). `initial` —
-            // чтобы значение стояло с первого кадра, а не с первой смены.
-            .onChange(of: subscriptions.isPro, initial: true) { _, pro in
-                appState.proАктивен = pro
-            }
             .onReceive(NotificationCenter.default.publisher(for: .familyShareAccepted)) { _ in
                 Task { await startSyncIfOn() }
             }
@@ -174,6 +168,7 @@ struct TogoApp: App {
 struct AppRoot: View {
     @Environment(Settings.self) private var settings
     @Environment(AppState.self) private var appState
+    @Environment(SubscriptionStore.self) private var subscriptions
     @Environment(\.modelContext) private var context
     @Query private var dogs: [Dog]
     @Query private var members: [FamilyMember]
@@ -213,6 +208,13 @@ struct AppRoot: View {
                     // и пропажа называются в момент, когда случились.
                     DogOrigin.проверить(in: context)
                     Persistence.removeLegacyStoreIfSafe(context: context)
+                }
+                // Подписка доезжает до выбора собаки одной дорогой: без Pro
+                // открыта только основная (`AppState.закрыта`). Здесь, а не
+                // в сцене: наблюдение `@Observable` надёжно работает в теле
+                // вида. `initial` — чтобы значение стояло с первого кадра.
+                .onChange(of: subscriptions.isPro, initial: true) { _, pro in
+                    appState.proАктивен = pro
                 }
         } else {
             OnboardingFlow()

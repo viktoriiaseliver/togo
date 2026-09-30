@@ -256,8 +256,16 @@ final class AppState {
     /// из-за того, что Pro куплен не на её Apple ID, — не то, что продаётся.
     func закрыта(_ dog: Dog, среди dogs: [Dog],
                  гость: Bool = SharedZoneOwner.isGuest) -> Bool {
-        guard !proАктивен, !гость else { return false }
-        return dog.id != Self.основная(из: dogs)?.id
+        Self.закрыта(dog, среди: dogs, pro: proАктивен, гость: гость)
+    }
+
+    /// То же правило без `AppState` — для Siri и «Команд»: интент живёт
+    /// вне экранов, и Pro он узнаёт из `SubscriptionStore.proНаТелефоне`.
+    /// Правило одно на оба пути: интент со своей копией писал бы
+    /// в закрытую собаку, которую экран не открывает.
+    static func закрыта(_ dog: Dog, среди dogs: [Dog], pro: Bool, гость: Bool) -> Bool {
+        guard !pro, !гость else { return false }
+        return dog.id != основная(из: dogs)?.id
     }
 
     /// Кого показывать из тех, что есть.

@@ -221,29 +221,50 @@ struct DayPlanActions {
                 .sorted { abs($0.date.timeIntervalSince(item.time)) < abs($1.date.timeIntervalSince(item.time)) }
         }
 
+        // Какую запись в ленте снимаем. У ухода часа нет, и сверять с ним
+        // нечего: берём сегодняшнюю запись про это же дело.
+        let снимаем: LogEvent?
+        if item.kind == .care {
+            снимаем = candidates.first { $0.careTaskID == item.careTask?.id }
+        } else if let event = candidates.first,
+                  точная != nil || abs(event.date.timeIntervalSince(item.time)) <= MealSchedule.doneTolerance {
+            снимаем = event
+        } else {
+            снимаем = nil
+        }
+
+        // Снять отметку — это удалить запись, и право у него то же, что
+        // у удаления из ленты: `canEdit`, со сроком роли. До 30.09 повторный
+        // тап по кругу удалял запись любой давности и любого автора — мимо
+        // проверки, которую честно держал редактор записи.
+        //
+        // «Отменить» на тосте своей же отметки (`точная`) проходит всегда:
+        // человек отменяет то, что сделал секунду назад. Проверять его
+        // через `canEdit` нельзя дважды: у помощника права `editRecords`
+        // нет вовсе, а отметка задним числом через «когда дали» может
+        // оказаться старше суток ухаживающего.
+        if точная == nil, let снимаем, !appState.canEdit(снимаем, at: сейчас) {
+            Haptics.warning()
+            appState.showUndo(appState.can(.editRecords)
+                              ? "Отметка старше суток · снять её может владелец"
+                              : "Снять отметку может тот, кому разрешено править записи")
+            return
+        }
+
         // Что вернуть, если сохранить не выйдет. `try?` здесь стоял ровно
         // перед тостом «Снова в списке»: не сохранилось — а человек уже
         // уверен, что отметку снял, и отмечает заново поверх.
         var вернуть: [() -> Void] = []
 
-        // У ухода часа нет, и сверять с ним нечего: убираем сегодняшнюю
-        // запись про это же дело.
-        if item.kind == .care {
-            candidates.first { $0.careTaskID == item.careTask?.id }.map { event in
-                вернуть.append { event.deletedAt = nil; event.deletedBy = nil }
-                event.deletedAt = Date()
-                event.deletedBy = appState.currentUserName
-            }
-            if let task = item.careTask {
-                let было = (task.lastDone, task.streak, task.scheduledDate)
-                вернуть.append { (task.lastDone, task.streak, task.scheduledDate) = было }
-                task.undoDone(previousDone: careUndo.wrappedValue[task.id] ?? nil)
-            }
-        } else if let event = candidates.first,
-                  точная != nil || abs(event.date.timeIntervalSince(item.time)) <= MealSchedule.doneTolerance {
+        if let event = снимаем {
             вернуть.append { event.deletedAt = nil; event.deletedBy = nil }
             event.deletedAt = Date()
             event.deletedBy = appState.currentUserName
+        }
+        if item.kind == .care, let task = item.careTask {
+            let было = (task.lastDone, task.streak, task.scheduledDate)
+            вернуть.append { (task.lastDone, task.streak, task.scheduledDate) = было }
+            task.undoDone(previousDone: careUndo.wrappedValue[task.id] ?? nil)
         }
 
         // Доза — не только запись в ленте: от неё считается окно натощак

@@ -51549,6 +51549,1206 @@
         }
       },
       "comment" : "Онбординг, семья, кнопка"
+    },
+    "оси «где» и «кто просит» останутся; закроется карточка «следующий шаг»" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "оси «где» и «кто просит» останутся; закроется карточка «следующий шаг»"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "les axes « où » et « qui demande » restent ; la carte « étape suivante » se ferme"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "осі «де» і «хто просить» залишаться; закриється картка «наступний крок»"
+          }
+        }
+      },
+      "comment" : "Экран отмены Pro: что закроется в матрице"
+    },
+    "открыта останется первая заведённая; записи остальных сохранятся и вернутся с подпиской" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "открыта останется первая заведённая; записи остальных сохранятся и вернутся с подпиской"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "seul le premier chien ajouté reste ouvert ; les notes des autres sont gardées et reviennent avec l'abonnement"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "відкритим лишиться перший доданий; записи інших збережуться й повернуться з підпискою"
+          }
+        }
+      },
+      "comment" : "Экран отмены Pro: вторая собака"
+    },
+    "третий и следующие участники" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "третий и следующие участники"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "le troisième membre et les suivants"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "третій і наступні учасники"
+          }
+        }
+      },
+      "comment" : "Пейволл: что даёт Pro для семьи"
+    },
+    "в Pro" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "в Pro"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "avec Pro"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "у Pro"
+          }
+        }
+      },
+      "comment" : "VoiceOver: замок на закрытой без подписки собаке"
+    },
+    "Без подписки открыта первая заведённая собака. Записи остальных никуда не делись — вернутся, как только снова включишь Pro." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Без подписки открыта первая заведённая собака. Записи остальных никуда не делись — вернутся, как только снова включишь Pro."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sans abonnement, seul le premier chien ajouté est ouvert. Les notes des autres sont toujours là : elles reviennent dès que tu réactives Pro."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Без підписки відкритий перший доданий собака. Записи інших нікуди не зникли — повернуться, щойно знову ввімкнеш Pro."
+          }
+        }
+      },
+      "comment" : "Список собак: пояснение к замку"
+    },
+    "не запишет выходы, еду, прогулки и стул" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "не запишет выходы, еду, прогулки и стул"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ne notera ni sorties, ni repas, ni promenades, ni selles"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "не запише виходи, їжу, прогулянки й випорожнення"
+          }
+        }
+      },
+      "comment" : "Вид ситтера: чего не может без права logBasics"
+    },
+    "не поправит и не удалит записи в ленте" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "не поправит и не удалит записи в ленте"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ne corrigera ni ne supprimera les notes du fil"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "не виправить і не видалить записи у стрічці"
+          }
+        }
+      },
+      "comment" : "Вид ситтера: без editRecords"
+    },
+    "не увидит медицинское: схемы, дозы, анализы, отчёты" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "не увидит медицинское: схемы, дозы, анализы, отчёты"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ne verra pas la partie médicale : traitements, doses, analyses, rapports"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "не побачить медичне: схеми, дози, аналізи, звіти"
+          }
+        }
+      },
+      "comment" : "Вид ситтера: без seeMedical"
+    },
+    "не отметит дозу и не возьмёт её на себя" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "не отметит дозу и не возьмёт её на себя"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ne notera pas de dose et ne pourra pas la prendre en charge"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "не позначить дозу й не візьме її на себе"
+          }
+        }
+      },
+      "comment" : "Вид ситтера: без giveDose"
+    },
+    "не поменяет схему лечения" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "не поменяет схему лечения"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ne modifiera pas le traitement"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "не змінить схему лікування"
+          }
+        }
+      },
+      "comment" : "Вид ситтера: без editTreatment"
+    },
+    "не поменяет профиль, порцию, уход и занятия" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "не поменяет профиль, порцию, уход и занятия"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ne modifiera ni le profil, ni la ration, ni les soins, ni les séances"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "не змінить профіль, порцію, догляд і заняття"
+          }
+        }
+      },
+      "comment" : "Вид ситтера: без editProfile"
+    },
+    "не позовёт людей и не поменяет роли" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "не позовёт людей и не поменяет роли"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "n'invitera personne et ne changera pas les rôles"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "не запросить людей і не змінить ролі"
+          }
+        }
+      },
+      "comment" : "Вид ситтера: без manageFamily"
+    },
+    "не выгрузит CSV и отчёт врачу" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "не выгрузит CSV и отчёт врачу"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "n'exportera ni le CSV ni le rapport pour le vétérinaire"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "не вивантажить CSV і звіт лікарю"
+          }
+        }
+      },
+      "comment" : "Вид ситтера: без exportData"
+    },
+    "Запись старше суток. С ролью «ухаживающий» править и удалять можно только свежие — эту поправит владелец или со-владелец." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Запись старше суток. С ролью «ухаживающий» править и удалять можно только свежие — эту поправит владелец или со-владелец."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cette note a plus de 24 h. Avec le rôle « soignant », on ne corrige et ne supprime que les notes récentes : celle-ci, c'est au propriétaire ou au copropriétaire."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Запис старший за добу. З роллю «доглядач» виправляти й видаляти можна лише свіжі — цей виправить власник або співвласник."
+          }
+        }
+      },
+      "comment" : "Правка записи: баннер для ухаживающего, запись старше 24 ч"
+    },
+    "Через 30 минут забор крови" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Через 30 минут забор крови"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prise de sang dans 30 minutes"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Через 30 хвилин забір крові"
+          }
+        }
+      },
+      "comment" : "Уведомление протокола контроля: заголовок"
+    },
+    "Точка +%lld ч от дозы в %@. Отметь забор в «Протоколе» — интервал посчитается сам." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Точка +%lld ч от дозы в %@. Отметь забор в «Протоколе» — интервал посчитается сам."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Point +%lld h après la dose de %@. Note la prise dans « Protocole » : l'intervalle se calcule tout seul."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Точка +%lld год від дози о %@. Познач забір у «Протоколі» — інтервал порахується сам."
+          }
+        }
+      },
+      "comment" : "Уведомление протокола: текст; %lld — часы, %@ — время дозы"
+    },
+    "доза → забор: %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "доза → забор: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "dose → prise : %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "доза → забір: %@"
+          }
+        }
+      },
+      "comment" : "Строка интервала в заметке о заборе и в CSV; %@ — «4 ч 12 мин»"
+    },
+    "забор отмечен" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "забор отмечен"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "prise notée"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "забір позначено"
+          }
+        }
+      },
+      "comment" : "Протокол: точка закрыта забором"
+    },
+    "уведомления выключены — напоминания не будет" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "уведомления выключены — напоминания не будет"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "notifications désactivées : pas de rappel"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "сповіщення вимкнені — нагадування не буде"
+          }
+        }
+      },
+      "comment" : "Протокол: вместо «напомним»"
+    },
+    "напоминание не встало — поглядывай на часы" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "напоминание не встало — поглядывай на часы"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "le rappel n'a pas pu être programmé : garde un œil sur l'heure"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "нагадування не встало — поглядай на годинник"
+          }
+        }
+      },
+      "comment" : "Протокол: система не приняла уведомление"
+    },
+    "напомним в %@, за 30 минут" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "напомним в %@, за 30 минут"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "rappel à %@, 30 minutes avant"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "нагадаємо о %@, за 30 хвилин"
+          }
+        }
+      },
+      "comment" : "Протокол: когда придёт напоминание"
+    },
+    "время подошло" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "время подошло"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "c'est l'heure"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "час настав"
+          }
+        }
+      },
+      "comment" : "Протокол: момент напоминания прошёл"
+    },
+    "бесплатно" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "бесплатно"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "gratuit"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "безкоштовно"
+          }
+        }
+      },
+      "comment" : "Отчёт врачу / сводка: подпись у «Выгрузить CSV»"
+    },
+    "Отчёт врачу и выгрузка бесплатны — всегда и без ограничений." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отчёт врачу и выгрузка бесплатны — всегда и без ограничений."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le rapport pour le vétérinaire et l'export sont gratuits, toujours et sans limite."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Звіт лікарю й вивантаження безкоштовні — завжди й без обмежень."
+          }
+        }
+      },
+      "comment" : "Экран «Отчёт»"
+    },
+    "Заметки и заборы крови" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Заметки и заборы крови"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notes et prises de sang"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Нотатки й забори крові"
+          }
+        }
+      },
+      "comment" : "Экран «Отчёт»: что войдёт"
+    },
+    "чей вид" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "чей вид"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "vue de qui"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "чий вигляд"
+          }
+        }
+      },
+      "comment" : "Вид ситтера: выбор роли или участника"
+    },
+    "по роли" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "по роли"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "selon le rôle"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "за роллю"
+          }
+        }
+      },
+      "comment" : "Вид ситтера: подпись у пресета роли"
+    },
+    "править и удалять сможет только записи не старше суток" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "править и удалять сможет только записи не старше суток"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ne pourra corriger et supprimer que les notes de moins de 24 h"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "виправляти й видаляти зможе лише записи, не старші за добу"
+          }
+        }
+      },
+      "comment" : "Вид ситтера: срок правки ухаживающего"
+    },
+    "На сегодня в плане ничего не осталось." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "На сегодня в плане ничего не осталось."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plus rien au programme pour aujourd'hui."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "На сьогодні в плані нічого не лишилося."
+          }
+        }
+      },
+      "comment" : "Вид ситтера: пустой план"
+    },
+    "Отмечать пункты не сможет — только смотреть." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отмечать пункты не сможет — только смотреть."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ne pourra pas cocher les points, seulement les voir."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Позначати пункти не зможе — лише дивитися."
+          }
+        }
+      },
+      "comment" : "Вид ситтера: роль без logBasics"
+    },
+    "Чего не увидит и не сможет" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Чего не увидит и не сможет"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce qu'il ne verra pas et ne pourra pas faire"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Чого не побачить і не зможе"
+          }
+        }
+      },
+      "comment" : "Вид ситтера: заголовок карточки"
+    },
+    "Ничего — с этими правами можно всё." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ничего — с этими правами можно всё."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rien : avec ces droits, tout est possible."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Нічого — з цими правами можна все."
+          }
+        }
+      },
+      "comment" : "Вид ситтера: все права выданы"
+    },
+    "объявление, если потерялась" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "объявление, если потерялась"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "annonce, si elle s'est perdue"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "оголошення, якщо загубилася"
+          }
+        }
+      },
+      "comment" : "Карточка объявления о пропаже"
+    },
+    "фото, приметы, чип и твой телефон — картинкой и текстом" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "фото, приметы, чип и твой телефон — картинкой и текстом"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "photo, signes, puce et ton numéro : en image et en texte"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "фото, прикмети, чип і твій телефон — картинкою й текстом"
+          }
+        }
+      },
+      "comment" : "Карточка объявления: подзаголовок"
+    },
+    "Твой телефон" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Твой телефон"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ton numéro"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Твій телефон"
+          }
+        }
+      },
+      "comment" : "Поле телефона хозяина для объявления"
+    },
+    "Твой телефон для объявления" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Твой телефон для объявления"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ton numéro pour l'annonce"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Твій телефон для оголошення"
+          }
+        }
+      },
+      "comment" : "VoiceOver: поле телефона хозяина"
+    },
+    "Впиши свой номер: без него на объявление некому ответить. Он хранится только на этом телефоне." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Впиши свой номер: без него на объявление некому ответить. Он хранится только на этом телефоне."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indique ton numéro : sans lui, personne ne peut répondre à l'annonce. Il reste sur ce téléphone."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Впиши свій номер: без нього на оголошення нікому відповісти. Він зберігається лише на цьому телефоні."
+          }
+        }
+      },
+      "comment" : "Карточка объявления: телефон не введён"
+    },
+    "Номер хранится только на этом телефоне и попадает только в объявление." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Номер хранится только на этом телефоне и попадает только в объявление."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le numéro reste sur ce téléphone et n'apparaît que dans l'annonce."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Номер зберігається лише на цьому телефоні й потрапляє тільки в оголошення."
+          }
+        }
+      },
+      "comment" : "Карточка объявления: телефон введён"
+    },
+    "Фото собаки нет — объявление выйдет без него. Добавить можно в профиле." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фото собаки нет — объявление выйдет без него. Добавить можно в профиле."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pas de photo du chien : l'annonce sera sans. Tu peux en ajouter une dans le profil."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Фото собаки немає — оголошення вийде без нього. Додати можна в профілі."
+          }
+        }
+      },
+      "comment" : "Карточка объявления: нет фото"
+    },
+    "Потерялась собака" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Потерялась собака"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chien perdu"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Загубився собака"
+          }
+        }
+      },
+      "comment" : "Картинка объявления: шапка; тема письма"
+    },
+    "Потерялась собака: %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Потерялась собака: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chien perdu : %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Загубився собака: %@"
+          }
+        }
+      },
+      "comment" : "Объявление: первая строка, %@ — кличка"
+    },
+    "метис" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "метис"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "croisé"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "метис"
+          }
+        }
+      },
+      "comment" : "Объявление: порода не указана"
+    },
+    "Приметы" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Приметы"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signes distinctifs"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Прикмети"
+          }
+        }
+      },
+      "comment" : "Объявление: подпись"
+    },
+    "Видели её — позвоните" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Видели её — позвоните"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vous l'avez vue ? Appelez"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Бачили її — зателефонуйте"
+          }
+        }
+      },
+      "comment" : "Картинка объявления: над телефоном хозяина"
+    },
+    "Телефон: %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Телефон: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Téléphone : %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Телефон: %@"
+          }
+        }
+      },
+      "comment" : "Текст объявления: телефон хозяина"
+    },
+    "Пока ничего не сфотографировано. Снимки лежат на телефоне и в твоём iCloud, на наши серверы не уходят." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пока ничего не сфотографировано. Снимки лежат на телефоне и в твоём iCloud, на наши серверы не уходят."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rien n'est encore photographié. Les photos restent sur ton téléphone et dans ton iCloud, jamais sur nos serveurs."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Поки нічого не сфотографовано. Знімки лежать на телефоні й у твоєму iCloud, на наші сервери не йдуть."
+          }
+        }
+      },
+      "comment" : "Документы: пустой список снимков"
+    },
+    "Снимок лежит на телефоне и в твоём iCloud и попадает в резервную копию вместе с дневником. На наши серверы он не уходит." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Снимок лежит на телефоне и в твоём iCloud и попадает в резервную копию вместе с дневником. На наши серверы он не уходит."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La photo est sur ton téléphone et dans ton iCloud, et part dans la sauvegarde avec le journal. Elle ne va jamais sur nos serveurs."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Знімок лежить на телефоні й у твоєму iCloud і потрапляє в резервну копію разом зі щоденником. На наші сервери він не йде."
+          }
+        }
+      },
+      "comment" : "Просмотр снимка документа"
+    },
+    "Всё это лежит на телефоне и в твоём iCloud, на наши серверы не уходит. Номера и приметы видит семья, если включён общий дневник." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Всё это лежит на телефоне и в твоём iCloud, на наши серверы не уходит. Номера и приметы видит семья, если включён общий дневник."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tout cela reste sur ton téléphone et dans ton iCloud, jamais sur nos serveurs. Les numéros et les signes sont visibles par la famille si le journal partagé est activé."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Усе це лежить на телефоні й у твоєму iCloud, на наші сервери не йде. Номери й прикмети бачить родина, якщо ввімкнено спільний щоденник."
+          }
+        }
+      },
+      "comment" : "Документы: низ экрана"
+    },
+    "Что обменивается" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Что обменивается"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce qui est partagé"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Що передається"
+          }
+        }
+      },
+      "comment" : "Общий дневник: что важно знать"
+    },
+    "Лента, дозы и схемы лечения, расписание ухода и профиль собаки — питание, режим, чип и телефоны врача. У каждого своё: фото, инструкция ситтеру, история веса, занятия, поездки и запас корма." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Лента, дозы и схемы лечения, расписание ухода и профиль собаки — питание, режим, чип и телефоны врача. У каждого своё: фото, инструкция ситтеру, история веса, занятия, поездки и запас корма."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le fil, les doses et les traitements, le calendrier des soins et le profil du chien : repas, rythme, puce et numéros du vétérinaire. Restent propres à chacun : photos, consignes pour le pet-sitter, historique du poids, séances, voyages et stock de nourriture."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Стрічка, дози й схеми лікування, розклад догляду й профіль собаки — харчування, режим, чип і телефони лікаря. У кожного своє: фото, інструкція ситеру, історія ваги, заняття, поїздки й запас корму."
+          }
+        }
+      },
+      "comment" : "Общий дневник: что обменивается"
     }
   },
   "version" : "1.0"

@@ -16,13 +16,36 @@ final class SubscriptionStore {
     }
 
     private(set) var products: [Product] = []
-    private(set) var entitled = false
+    private(set) var entitled = false {
+        didSet { запомнитьPro() }
+    }
+
+    /// Ключ последнего известного `isPro` на этом телефоне.
+    static let proKey = "pro.cached"
+
+    /// Есть ли Pro — для тех, у кого нет магазина под рукой.
+    ///
+    /// Siri, «Команды» и кнопка «Действие» идут мимо `TogoApp`: магазина
+    /// там может не быть вовсе, а спросить StoreKit синхронно нельзя.
+    /// До 30.09 интент поэтому о подписке не знал и писал в выбранную
+    /// собаку, даже когда без Pro экран её закрывал. Пусто — `false`:
+    /// забытая проводка должна закрывать, а не открывать.
+    static var proНаТелефоне: Bool {
+        UserDefaults.standard.bool(forKey: proKey)
+    }
+
+    private func запомнитьPro() {
+        UserDefaults.standard.set(isPro, forKey: Self.proKey)
+    }
 
     #if DEBUG
     /// Проверять надо оба состояния — и с подпиской, и без. В отладочной
     /// сборке её можно включить и выключить руками, не покупая ничего.
     var debugOverride: Bool? {
-        didSet { UserDefaults.standard.set(debugOverride, forKey: "debug.pro") }
+        didSet {
+            UserDefaults.standard.set(debugOverride, forKey: "debug.pro")
+            запомнитьPro()
+        }
     }
 
     var isPro: Bool { debugOverride ?? entitled }
