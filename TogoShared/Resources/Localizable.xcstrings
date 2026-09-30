@@ -6613,7 +6613,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Le compte rendu aura la ligne « dose → prise de sang : %@ ». Sans elle, les analyses ont déjà été mal lues deux fois."
+            "value" : "Le compte rendu aura la ligne « dose → prise de sang : %@ ». Sans elle, les analyses ont déjà été mal lues deux fois."
           }
         },
         "ru" : {
@@ -51130,7 +51130,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les personnes invitées reçoivent encore les entrées. Ferme-le à la main : « Famille » → « Carnet partagé » → « Arrêter le partage ». Raison : %@"
+            "value" : "Les personnes invitées reçoivent encore les entrées. Ferme-le à la main : « Famille » → « Journal partagé » → « Arrêter de partager ». Raison : %@"
           }
         },
         "uk" : {
@@ -51946,7 +51946,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "dose → prise : %@"
+            "value" : "dose → prise de sang : %@"
           }
         },
         "uk" : {
@@ -52954,7 +52954,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Laisse les deux champs vides : pas de fourchette, et l'app ne dira pas « hors fourchette »."
+            "value" : "Laisse les deux champs vides : pas de plage, et l'app ne dira pas « hors plage »."
           }
         },
         "uk" : {

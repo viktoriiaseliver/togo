@@ -618,8 +618,9 @@ struct TodayScreen: View {
     /// с того потока, где сохраняли.
     nonisolated static func касаетсяНапоминаний(_ notification: Notification) -> Bool {
         let сущности: Set<String> = ["DoseRecord", "Medication", "Dog", "FamilyMember"]
-        for key in ["inserted", "updated", "deleted"] {
-            guard let ids = notification.userInfo?[key] as? [PersistentIdentifier] else { continue }
+        for key in [ModelContext.NotificationKey.insertedIdentifiers,
+                    .updatedIdentifiers, .deletedIdentifiers] {
+            guard let ids = notification.userInfo?[key.rawValue] as? [PersistentIdentifier] else { continue }
             if ids.contains(where: { сущности.contains($0.entityName) }) { return true }
         }
         return false
