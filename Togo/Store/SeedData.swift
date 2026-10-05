@@ -336,8 +336,7 @@ enum SeedData {
         левотироксин.dog = dog
         context.insert(левотироксин)
 
-        let доза = DoseRecord()
-        доза.scheduledAt = .now.addingTimeInterval(-20 * 60)
+        let доза = DoseRecord(scheduledAt: Date.now.addingTimeInterval(-20 * 60))
         доза.givenAt = доза.scheduledAt
         доза.givenBy = "Виктория"
         доза.medication = левотироксин
