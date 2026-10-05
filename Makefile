@@ -78,7 +78,7 @@ test: ## Прогнать модульные и UI-тесты
 		xcodebuild -project $(PROJECT) -scheme $(SCHEME) -configuration $(CONFIG) \
 		-derivedDataPath "$(DERIVED)" \
 		-destination "$(DESTINATION)" test > $$LOG 2>&1; rc=$$?; \
-		grep -E "Test run|error:|\*\* TEST|Restarting after unexpected exit" $$LOG || true; \
+		grep -E "Test run|error:|\*\* TEST|Restarting after unexpected exit|ВЫЧИТКА:" $$LOG || true; \
 		echo "xcodebuild: код возврата $$rc (полный лог — $$LOG)"; exit $$rc
 
 .PHONY: unit
@@ -88,7 +88,7 @@ unit: ## Только модульные тесты — быстрая обра�
 		xcodebuild -project $(PROJECT) -scheme $(SCHEME) -configuration $(CONFIG) \
 		-derivedDataPath "$(DERIVED)" \
 		-destination "$(DESTINATION)" test -only-testing:TogoTests > $$LOG 2>&1; rc=$$?; \
-		grep -E "Test run|✘|error:|\*\* TEST|Restarting after unexpected exit" $$LOG || true; \
+		grep -E "Test run|✘|error:|\*\* TEST|Restarting after unexpected exit|ВЫЧИТКА:" $$LOG || true; \
 		echo "xcodebuild: код возврата $$rc (полный лог — $$LOG)"; exit $$rc
 
 .PHONY: device

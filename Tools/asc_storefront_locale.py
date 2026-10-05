@@ -2,8 +2,9 @@
 """Завести или обновить локаль витрины в App Store Connect из fastlane/metadata.
 
     source ../Gamut/.env.asc
-    python3 Tools/asc_storefront_locale.py en-US --dry
-    python3 Tools/asc_storefront_locale.py en-US --write
+    python3 Tools/asc_storefront_locale.py en-US            # сверить файлы с ASC
+    python3 Tools/asc_storefront_locale.py --все            # сверить все локали
+    python3 Tools/asc_storefront_locale.py en-US --write    # записать
 
 Почему скриптом, а не руками в браузере: состояние витрины живёт вне git,
 и единственный способ сказать о нём правду — спросить API и напечатать
@@ -17,7 +18,17 @@
    раздачи) и Timer 219 (`422` при успехе).
 2. **Без `--write` ничего не отправляется.** Граница разрешений
    проходит через этот скрипт, поэтому за неё нельзя зайти случайно:
-   по умолчанию только читает и показывает длины полей.
+   по умолчанию только читает и сверяет.
+3. **Сверка побуквенная, а не по длине.** Первая редакция печатала
+   длины файлов и рядом первые 60 знаков того, что в ASC, — две разные
+   величины подряд, которые читаются как сравнение. 05.10.2026 соседняя
+   сессия так их и прочла: доложила «fr-FR — 5 полей, 0 расхождений»,
+   хотя у `ru` полей было 7. **Разница в числе полей значила не «меньше
+   полей», а «двух полей в ASC нет»** — пустые ссылки на политику
+   приватности и поддержку у французской и украинской витрины.
+   Длина — хеш с одним байтом энтропии: у Timer в тот же день нашлось
+   поле той же длины с другим текстом. Поэтому сравнение идёт по всем
+   знакам, и печатается первый расходящийся.
 
 Имена переменных только латиницей: `Д="файл"` в оболочке не заводится
 молча, и это уже стоило проекту рабочего файла.
@@ -95,7 +106,17 @@ def call(path, method="GET", body=None):
         return error.code, None
 
 
-def read_fields(locale, fields):
+
+def metadata_locales():
+    out = set()
+    for path in sorted(glob.glob(os.path.join(ROOT, "fastlane/metadata/*"))):
+        if os.path.isdir(path) and os.path.exists(
+                os.path.join(path, "description.txt")):
+            out.add(os.path.basename(path))
+    return out
+
+
+def read_fields(locale, fields, verbose=True):
     out = {}
     for key, (name, limit) in fields.items():
         path = os.path.join(ROOT, "fastlane", "metadata", locale, name)
@@ -105,8 +126,74 @@ def read_fields(locale, fields):
         if len(value) > limit:
             sys.exit(f"{locale}/{name}: {len(value)} знаков при лимите {limit}")
         out[key] = value
-        print(f"  {key:16} {len(value):4} / {limit}")
+        if verbose:
+            print(f"  {key:16} {len(value):4} / {limit}")
     return out
+
+
+def first_difference(want, got):
+    """Первый расходящийся знак — с номером и с тем, что стоит по обе
+    стороны. Без него «расходится» заставляет искать глазами."""
+    if got is None:
+        return "в ASC поля нет вовсе"
+    if got == "":
+        return "в ASC пусто"
+    for index, (a, b) in enumerate(zip(want, got)):
+        if a != b:
+            return (f"знак {index + 1}: в файле {a!r}, в ASC {b!r}"
+                    f"  …{want[max(0, index - 20):index + 10]!r}")
+    if len(want) != len(got):
+        longer, who = ((want, "файле") if len(want) > len(got)
+                       else (got, "ASC"))
+        return (f"совпали первые {min(len(want), len(got))} знаков, "
+                f"в {who} длиннее на {abs(len(want) - len(got))}: "
+                f"…{longer[min(len(want), len(got)):][:40]!r}")
+    return None
+
+
+def compare(locale):
+    """Сверить файлы локали с тем, что лежит в ASC. Только чтение.
+
+    Сравниваются ВСЕ поля обоих уровней: `appInfoLocalizations` держит
+    имя, подзаголовок и ссылку на политику, `appStoreVersionLocalizations`
+    — описание, ключевые слова, промо-текст и ссылку на поддержку.
+    Пропустить уровень значит не заметить пустое поле: ровно так
+    и вышло 05.10.2026.
+    """
+    _, infos = call(f"apps/{APP_ID}/appInfos")
+    _, versions = call(f"apps/{APP_ID}/appStoreVersions?limit=1")
+    if not infos or not versions:
+        sys.exit("не прочитать состояние витрины")
+    info_id, version_id = infos["data"][0]["id"], versions["data"][0]["id"]
+
+    live = {}
+    for kind, parent_type, parent_id in (
+            ("appInfoLocalizations", "appInfos", info_id),
+            ("appStoreVersionLocalizations", "appStoreVersions", version_id)):
+        _, got = call(f"{parent_type}/{parent_id}/{kind}")
+        for item in (got or {}).get("data", []):
+            if item["attributes"]["locale"] == locale:
+                live.update(item["attributes"])
+
+    want = {}
+    want.update(read_fields(locale, INFO_FIELDS, verbose=False))
+    want.update(read_fields(locale, VERSION_FIELDS, verbose=False))
+    if not want:
+        print(f"{locale}: текстов в fastlane/metadata нет — сверять нечего")
+        return 0
+
+    print(f"\n{locale}: полей в файлах {len(want)}")
+    bad = 0
+    for key in sorted(want):
+        diff = first_difference(want[key], live.get(key))
+        if diff is None:
+            print(f"  = {key:16} {len(want[key]):4} знаков")
+        else:
+            bad += 1
+            print(f"  ✘ {key:16} {diff}")
+    if bad:
+        print(f"  расхождений: {bad} из {len(want)}")
+    return bad
 
 
 def upsert(kind, parent_type, parent_id, locale, attributes, write):
@@ -132,10 +219,32 @@ def upsert(kind, parent_type, parent_id, locale, attributes, write):
 
 
 def main():
-    if len(sys.argv) < 2:
-        sys.exit(__doc__)
-    locale = sys.argv[1]
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
     write = "--write" in sys.argv
+
+    # Сверка — поведение по умолчанию: инструмент, который по умолчанию
+    # пишет, однажды запишут не туда.
+    if not write:
+        locales = args or sorted(metadata_locales())
+        if "--все" in sys.argv:
+            locales = sorted(metadata_locales())
+        if not locales:
+            sys.exit(__doc__)
+        bad = sum(compare(locale) for locale in locales)
+        print()
+        if bad:
+            print(f"✘ расхождений всего: {bad}. Файлы — источник; "
+                  f"в ASC пишет `--write`, и только по решению Виктории.")
+        else:
+            print("✔ ASC побуквенно совпадает с fastlane/metadata")
+        print("\nЧто эта сверка НЕ проверяет: смысл текстов, лимиты полей "
+              "на стороне\nApple (они могут быть мягче записанных у нас) "
+              "и кадры витрины.")
+        return 1 if bad else 0
+
+    if not args:
+        sys.exit(__doc__)
+    locale = args[0]
 
     status, infos = call(f"apps/{APP_ID}/appInfos")
     if infos is None:

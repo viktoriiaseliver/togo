@@ -119,6 +119,51 @@ def metadata_locales():
     return out
 
 
+
+def debt_report():
+    """Долг вычитки — рядом с зелёным, а не вместо него.
+
+    **Эти ворота — последнее место перед выгрузкой**, и именно здесь
+    человек решает отгружать. 05.10.2026 сторож полноты каталога впервые
+    напечатал ноль пробелов на всех языках — и ноль читается
+    «переведено», хотя значит только «у каждого ключа есть строка».
+    Английский в этот день лёг черновиком целиком: ни одной строки
+    не читал носитель.
+
+    У нас записано: «пустой результат докладывать так же подробно, как
+    находку, и называть, чего он НЕ значит». Напечатанное воротами
+    доезжает до того, кто решает; сказанное человеком в журнале
+    теряется при первой передаче.
+    """
+    states = {}
+    totals = {}
+    for name in ("TogoShared/Resources/Localizable.xcstrings",
+                 "Togo/Resources/AppShortcuts.xcstrings"):
+        path = os.path.join(ROOT, name)
+        if not os.path.exists(path):
+            continue
+        for body in json.load(open(path, encoding="utf-8"))["strings"].values():
+            for language, node in body.get("localizations", {}).items():
+                if "stringUnit" in node:
+                    marks = [node["stringUnit"].get("state")]
+                else:
+                    marks = [form.get("stringUnit", {}).get("state")
+                             for form in node.get("variations", {})
+                             .get("plural", {}).values()]
+                totals[language] = totals.get(language, 0) + 1
+                if any(m in ("needs_review", "new") for m in marks):
+                    states[language] = states.get(language, 0) + 1
+    if not states:
+        return
+    print("\nвычитка носителем:")
+    for language in sorted(states):
+        print(f"  {language}: непроверенных {states[language]} "
+              f"из {totals.get(language, 0)}")
+    print("  полнота каталога и вычитка — разные вещи: ноль пробелов "
+          "не значит,\n  что строку читал носитель или что её видели "
+          "на экране.")
+
+
 def main():
     app = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_APP
     if not os.path.isdir(app):
@@ -180,6 +225,8 @@ def main():
     elif os.path.exists(description):
         print("  цитаты не сверялись: английского в бандле нет "
               "(и это уже названо выше проблемой)")
+
+    debt_report()
 
     print()
     if problems:
