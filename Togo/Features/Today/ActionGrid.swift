@@ -160,35 +160,46 @@ struct SmallAction: View {
 
     var body: some View {
         Button(action: action) {
-            VStack(spacing: 3) {
-                Image(systemName: systemImage)
-                    .font(.system(size: 15, weight: .medium))
-                    .accessibilityHidden(true)
-                // По токену, а не голым `Font.system(size:)`: голый
-                // размер настройку iOS не спрашивает, и 28.09 на кадре
-                // при крупном шрифте эти подписи остались мелкими,
-                // пока весь экран вырос. Половина экрана масштабируется,
-                // половина нет — хуже, чем если бы не масштабировался
-                // никто: выглядит поломкой, а не ограничением.
-                Text(title)
-                    .textStyle(AppFont.micro, color: Token.Ink.primary)
-                    .lineLimit(1)
-                    // Пять плиток в ряд — колонка узкая. Чуть мельче лучше,
-                    // чем «Инциде…». На крупной настройке запас глубже.
-                    .minimumScaleFactor(0.5)
-                if let subtitle {
-                    Text(subtitle)
-                        .textStyle(AppFont.micro, color: Token.Ink.secondary)
+            // Плитка — `TGTile`, а не свой прямоугольник.
+            //
+            // До 05.10 здесь стоял `RoundedRectangle(Token.Radius.tile)
+            // .fill(Token.Surface.sunken)` — побайтно то же, что делает
+            // компонент, минус `.themeSurface(.sunken)`. Сегодня это
+            // не ломало ничего: `theme.surface` читают только `TGDivider`
+            // и `TGCard`, а внутри плитки их нет. **Чинится не дефект,
+            // а условие его появления:** положи сюда разделитель — он
+            // возьмёт цвет от родительской поверхности, и молча.
+            //
+            // Двадцатью строками выше, у главной кнопки, лежит след
+            // того же класса: кнопка давала 1,68:1 и не читалась ни разу
+            // при зелёном тесте — тест проверял, что токен `onAccent`
+            // верен, а экран его не звал, потому что собрал кнопку сам.
+            TGTile(minHeight: Token.Size.tapTarget + 8) {
+                VStack(spacing: 3) {
+                    Image(systemName: systemImage)
+                        .font(.system(size: 15, weight: .medium))
+                        .accessibilityHidden(true)
+                    // По токену, а не голым `Font.system(size:)`: голый
+                    // размер настройку iOS не спрашивает, и 28.09 на кадре
+                    // при крупном шрифте эти подписи остались мелкими,
+                    // пока весь экран вырос. Половина экрана масштабируется,
+                    // половина нет — хуже, чем если бы не масштабировался
+                    // никто: выглядит поломкой, а не ограничением.
+                    Text(title)
+                        .textStyle(AppFont.micro, color: Token.Ink.primary)
                         .lineLimit(1)
+                        // Пять плиток в ряд — колонка узкая. Чуть мельче лучше,
+                        // чем «Инциде…». На крупной настройке запас глубже.
                         .minimumScaleFactor(0.5)
+                    if let subtitle {
+                        Text(subtitle)
+                            .textStyle(AppFont.micro, color: Token.Ink.secondary)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
+                    }
                 }
+                .foregroundStyle(Token.Ink.primary)
             }
-            .foregroundStyle(Token.Ink.primary)
-            .frame(maxWidth: .infinity, minHeight: Token.Size.tapTarget + 8)
-            .background(
-                RoundedRectangle(cornerRadius: Token.Radius.tile, style: .continuous)
-                    .fill(Token.Surface.sunken)
-            )
         }
         .buttonStyle(.plain)
         // Подпись под кнопкой — часть оформления, а не имени: голосом

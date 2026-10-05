@@ -182,19 +182,26 @@ struct WalkModeScreen: View {
             HStack(spacing: Token.Space.s10) {
                 ForEach([ActiveSession.Mark.Kind.treat, .training, .incident, .note], id: \.self) { kind in
                     Button { mark(kind) } label: {
-                        VStack(spacing: Token.Space.s4) {
-                            Image(systemName: kind.symbol)
-                                .font(.system(size: 15, weight: .medium))
-                                .accessibilityHidden(true)
-                            Text(kind.title)
-                                .font(.system(size: 11, weight: .medium))
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.7)
+                        // `TGTile` вместо своего прямоугольника: при
+                        // `isSelected` и `tone: .alarm` компонент даёт
+                        // ровно `Token.Status.overdueBg`, иначе
+                        // `Token.Surface.sunken` — то же, что считала
+                        // здешняя тернарная пара, плюс `.themeSurface`,
+                        // которого у ручной копии не было.
+                        TGTile(isSelected: kind == .incident,
+                               tone: .alarm,
+                               minHeight: Token.Size.tapTarget + 8) {
+                            VStack(spacing: Token.Space.s4) {
+                                Image(systemName: kind.symbol)
+                                    .font(.system(size: 15, weight: .medium))
+                                    .accessibilityHidden(true)
+                                Text(kind.title)
+                                    .font(.system(size: 11, weight: .medium))
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.7)
+                            }
+                            .foregroundStyle(kind == .incident ? Token.Status.overdueText : Token.Ink.primary)
                         }
-                        .foregroundStyle(kind == .incident ? Token.Status.overdueText : Token.Ink.primary)
-                        .frame(maxWidth: .infinity, minHeight: Token.Size.tapTarget + 8)
-                        .background(kind == .incident ? Token.Status.overdueBg : Token.Surface.sunken,
-                                    in: RoundedRectangle(cornerRadius: Token.Radius.tile, style: .continuous))
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel(kind.title)
