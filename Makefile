@@ -113,6 +113,12 @@ archive: ## Собрать архив для App Store Connect
 	@# в Togo.app, а в бандле виджета не было ни одной .lproj. Проверка
 	@# стоит здесь, а не в тестах: последнее звено — то, что уедет.
 	@bash Tools/check_bundle_languages.sh build/Togo.xcarchive
+	@# Витрина обещает языки описаниями, а Apple берёт языки приложения
+	@# из бинарника: два списка, и расходятся они молча. 05.10.2026
+	@# локаль `en-US` заведена при нуле английских строк — поймать это
+	@# было нечем. Проверка стоит здесь же, на последнем звене.
+	@python3 Tools/check_storefront_languages.py \
+		build/Togo.xcarchive/Products/Applications/Togo.app
 	@echo "Собрано: $(SCHEME) $$(plutil -extract ApplicationProperties.CFBundleShortVersionString raw build/Togo.xcarchive/Info.plist) ($$(plutil -extract ApplicationProperties.CFBundleVersion raw build/Togo.xcarchive/Info.plist))"
 	@echo "Загружает в TestFlight Tools/upload_testflight.sh — он архивирует сам."
 
