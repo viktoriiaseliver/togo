@@ -93,6 +93,21 @@ enum FamilyShare {
         dogName: String,
         container: CKContainer = CKContainer(identifier: AppIdentifiers.cloudContainer)
     ) async throws -> CKShare {
+        // **Гость сюда заходить не должен, и до 05.10 заходил молча.**
+        // Экран «Семья» не спрашивал `isGuest` ни разу, а здесь стояла
+        // своя адресация — личная база и СВОЯ зона. Гость, нажавший
+        // «Пригласить», заводил в собственной базе ВТОРОЙ дневник, пустой,
+        // и делился им. На экране это выглядело как удачное приглашение.
+        //
+        // `notOwner` для этого и заведён — и ни разу отсюда не бросался.
+        //
+        // Стоит ПЕРВОЙ, раньше права и входа, и это не вкус: быть гостем
+        // не зависит ни от аккаунта, ни от профиля подписи, а проверка
+        // локальна. Значит её можно проверить тестом без облака —
+        // а проверку, которую нельзя проверить, мы уже называли
+        // непроверяемой поверхностью и чинили переделкой входа.
+        guard !SharedZoneOwner.isGuest else { throw ShareError.notOwner }
+
         guard Persistence.hasCloudEntitlement else { throw ShareError.noEntitlement }
         guard try await container.accountStatus() == .available else { throw ShareError.noAccount }
 
@@ -141,6 +156,31 @@ enum FamilyShare {
         }
     }
 
+    /// Где лежит запись общего доступа — у владельца и у гостя по-разному.
+    ///
+    /// **Заведено 05.10, и до него каждое из четырёх мест адресовало
+    /// облако само.** `SharedZoneRouting` существовал, был верен и
+    /// вызывался **из двух мест в `FamilySync`**; `FamilyShare` все
+    /// четыре раза писал `privateCloudDatabase` и `zoneID()` руками.
+    ///
+    /// Для владельца это верно, для гостя — нет: его зона лежит в ОБЩЕЙ
+    /// базе и под именем владельца. Гость спрашивал свою личную базу,
+    /// получал «ничего нет» и видел экран, на котором ничего не произошло.
+    ///
+    /// > Это ровно тот класс, что `replaceInPool` у Gamut: **функция
+    /// > верна, покрыта и не вызывается оттуда, где нужна.** Сторож
+    /// > на вызов её не поймал бы — вызовы есть, просто не все.
+    private static func адрес(
+        _ container: CKContainer
+    ) -> (database: CKDatabase, zoneID: CKRecord.ID) {
+        let owner = SharedZoneOwner.name
+        let zone = SharedZoneRouting.zone(owner: owner)
+        let database = SharedZoneRouting.scope(owner: owner) == .shared
+            ? container.sharedCloudDatabase
+            : container.privateCloudDatabase
+        return (database, CKRecord.ID(recordName: CKRecordNameZoneWideShare, zoneID: zone))
+    }
+
     /// Уже созданное приглашение, если оно есть, — ничего не создавая.
     ///
     /// Зачем отдельно от `invite`. Экраны держат приглашение в `@State`,
@@ -158,9 +198,8 @@ enum FamilyShare {
     ) async -> CKShare? {
         guard Persistence.hasCloudEntitlement,
               (try? await container.accountStatus()) == .available else { return nil }
-        let zoneID = SharedDiaryRecords.zoneID()
-        let shareID = CKRecord.ID(recordName: CKRecordNameZoneWideShare, zoneID: zoneID)
-        return try? await container.privateCloudDatabase.record(for: shareID) as? CKShare
+        let (database, shareID) = адрес(container)
+        return try? await database.record(for: shareID) as? CKShare
     }
 
     /// Короткое имя отказа для журнала действий.
@@ -183,9 +222,11 @@ enum FamilyShare {
     static func participants(
         container: CKContainer = CKContainer(identifier: AppIdentifiers.cloudContainer)
     ) async -> [String] {
-        let zoneID = SharedDiaryRecords.zoneID()
-        let shareID = CKRecord.ID(recordName: CKRecordNameZoneWideShare, zoneID: zoneID)
-        guard let share = try? await container.privateCloudDatabase.record(for: shareID) as? CKShare
+        // Гость тоже спрашивает — и до 05.10 спрашивал свою личную базу,
+        // получал пусто и видел «Семья» без единого человека. Экран при
+        // этом обещает «Все видят одно и то же».
+        let (database, shareID) = адрес(container)
+        guard let share = try? await database.record(for: shareID) as? CKShare
         else { return [] }
 
         return share.participants.compactMap { participant in
@@ -203,9 +244,18 @@ enum FamilyShare {
     static func stopSharing(
         container: CKContainer = CKContainer(identifier: AppIdentifiers.cloudContainer)
     ) async throws {
-        let zoneID = SharedDiaryRecords.zoneID()
-        let shareID = CKRecord.ID(recordName: CKRecordNameZoneWideShare, zoneID: zoneID)
-        _ = try await container.privateCloudDatabase.modifyRecords(saving: [], deleting: [shareID])
+        // **Гость этим не пользуется, и раньше пользовался молча.**
+        // Удаление записи общего доступа — право владельца. У гостя
+        // её в личной базе нет, и `modifyRecords` отвечал успехом,
+        // ничего не удалив: человек жал «Перестать делиться», получал
+        // подтверждение и оставался в чужом дневнике.
+        //
+        // Выход гостя — другая операция (`CKShare.Participant` уходит
+        // сам), и называть её тем же словом нельзя.
+        guard !SharedZoneOwner.isGuest else { throw ShareError.notOwner }
+
+        let (database, shareID) = адрес(container)
+        _ = try await database.modifyRecords(saving: [], deleting: [shareID])
     }
 
     /// Принять приглашение по ссылке.
