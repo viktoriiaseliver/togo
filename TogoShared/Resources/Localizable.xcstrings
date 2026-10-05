@@ -2,7 +2,9 @@
   "sourceLanguage" : "ru",
   "strings" : {
     "" : {
+      "localizations" : {
 
+      }
     },
     "  где: %@" : {
       "comment" : "lines",
@@ -153,7 +155,20 @@
       }
     },
     " · сейчас %@" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : " · maintenant %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : " · зараз %@"
+          }
+        }
+      }
     },
     " до " : {
       "comment" : "calendar",
@@ -347,6 +362,22 @@
         }
       }
     },
+    ", пропущено %lld" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ", %lld sautées"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : ", пропущено %lld"
+          }
+        }
+      }
+    },
     ", со сдвигом %@" : {
       "comment" : "lines",
       "extractionState" : "manual",
@@ -371,8 +402,37 @@
         }
       }
     },
+    ", со сдвигом %lld" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ", %lld décalées"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : ", зі зсувом %lld"
+          }
+        }
+      }
+    },
     "«%@» в дневнике дважды, и записи разошлись: часть в одной карточке, часть в другой." : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "«%@» est deux fois dans le journal, et les entrées se sont séparées : une partie sur une fiche, une partie sur l'autre."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "«%@» у щоденнику двічі, і записи розійшлися: частина в одній картці, частина в іншій."
+          }
+        }
+      }
     },
     "«%@» пропадёт вместе с накопленными попытками. Заготовки можно вернуть, когда список опустеет." : {
       "comment" : "body",
@@ -816,6 +876,28 @@
         }
       }
     },
+    "%@ · %@ · %@ · %lld метров" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · %@ · %@ · %lld mètres"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · %2$@ · %3$@ · %4$lld метров"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ · %@ · %@ · %lld метрів"
+          }
+        }
+      }
+    },
     "%@ · %@ г" : {
       "comment" : "message",
       "extractionState" : "manual",
@@ -984,6 +1066,28 @@
         }
       }
     },
+    "%@ · %lld м" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · %lld m"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · %2$lld м"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ · %lld м"
+          }
+        }
+      }
+    },
     "%@ · до завтра" : {
       "comment" : "calendar",
       "extractionState" : "manual",
@@ -1028,6 +1132,28 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "%@ · натщесерце %@ хв"
+          }
+        }
+      }
+    },
+    "%@ · натощак %lld мин" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · à jeun %lld min"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · натощак %2$lld мин"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ · натщесерце %lld хв"
           }
         }
       }
@@ -1262,10 +1388,22 @@
     },
     "%@ в %@ — натощак · видят все" : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ à %@ — à jeun · visible par tous"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "%1$@ в %2$@ — натощак · видят все"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ о %@ — натщесерце · бачать усі"
           }
         }
       }
@@ -1535,7 +1673,20 @@
       }
     },
     "%@ доза пропущена" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ : dose sautée"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@: пропущена доза"
+          }
+        }
+      }
     },
     "%@ дома %@ с прошлого выхода." : {
       "comment" : "blocks",
@@ -2329,6 +2480,28 @@
         }
       }
     },
+    "%@, %lld м" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, %lld m"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@, %2$lld м"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@, %lld м"
+          }
+        }
+      }
+    },
     "%@, ещё раз. Одно удачное занятие — не навык; нужно второе, чтобы идти дальше." : {
       "comment" : "nextStepText",
       "extractionState" : "manual",
@@ -2397,6 +2570,28 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "%@: %@ %@ на місяць"
+          }
+        }
+      }
+    },
+    "%@: %lld %@ на месяц" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ : %lld %@ par mois"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@: %2$lld %3$@ на месяц"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@: %lld %@ на місяць"
           }
         }
       }
@@ -2640,7 +2835,9 @@
       }
     },
     "%lld" : {
+      "localizations" : {
 
+      }
     },
     "%lld " : {
       "comment" : "число с пробелом: переводить нечего",
@@ -2861,10 +3058,36 @@
       }
     },
     "%lld г в день" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld g par jour"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld г на день"
+          }
+        }
+      }
     },
     "%lld г ушло на занятие — вечерняя порция уже уменьшена." : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld g sont partis en séance — la portion du soir est déjà réduite."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld г пішло на заняття — вечірню порцію вже зменшено."
+          }
+        }
+      }
     },
     "%lld действий" : {
       "extractionState" : "manual",
@@ -3491,6 +3714,66 @@
         }
       }
     },
+    "%lld из %lld закрыто" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld sur %lld réglés"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld из %2$lld закрыто"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld з %lld закрито"
+          }
+        }
+      }
+    },
+    "%lld из %lld получается" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld sur %lld marchent"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld из %2$lld получается"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld з %lld виходить"
+          }
+        }
+      }
+    },
+    "%lld из 5" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld sur 5"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld з 5"
+          }
+        }
+      }
+    },
     "%lld инцидентов" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4021,6 +4304,22 @@
         }
       }
     },
+    "%lld мл" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld ml"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld мл"
+          }
+        }
+      }
+    },
     "%lld мс" : {
       "localizations" : {
         "fr" : {
@@ -4451,6 +4750,22 @@
         }
       }
     },
+    "%lld сегодня" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld aujourd'hui"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld сьогодні"
+          }
+        }
+      }
+    },
     "%lld со сдвигом" : {
       "localizations" : {
         "fr" : {
@@ -4786,8 +5101,42 @@
         }
       }
     },
+    "%lld-е" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%llde"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld-е"
+          }
+        }
+      }
+    },
+    "%lld-й" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%llde"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld-й"
+          }
+        }
+      }
+    },
     "%lld%%" : {
+      "localizations" : {
 
+      }
     },
     "%lld%% доз вовремя" : {
       "localizations" : {
@@ -4830,10 +5179,25 @@
       }
     },
     "+ %lld шт" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+ %lld cp"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "+ %lld шт"
+          }
+        }
+      }
     },
     "+…" : {
+      "localizations" : {
 
+      }
     },
     "−1 ч" : {
       "comment" : "windows",
@@ -5028,7 +5392,9 @@
       }
     },
     "4,1" : {
+      "localizations" : {
 
+      }
     },
     "16 мг" : {
       "comment" : "comparison",
@@ -5122,6 +5488,30 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "120 г сухого з банки на кухні · 8:00 і 19:00. Нічого зі столу."
+          }
+        }
+      }
+    },
+    "App Store не ответил. Попробуй ещё раз позже." : {
+      "comment" : "result",
+      "extractionState" : "manual",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L'App Store n'a pas répondu. Réessaie plus tard."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Store не ответил. Попробуй ещё раз позже."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "App Store не відповів. Спробуй ще раз пізніше."
           }
         }
       }
@@ -5343,13 +5733,19 @@
       }
     },
     "Pro" : {
+      "localizations" : {
 
+      }
     },
     "T+%@" : {
+      "localizations" : {
 
+      }
     },
     "T0 / +4 / +6" : {
+      "localizations" : {
 
+      }
     },
     "Togo" : {
       "comment" : "название приложения",
@@ -6294,6 +6690,30 @@
         }
       }
     },
+    "В App Store твоей страны подписки Togo нет. Дело не в твоём Apple ID." : {
+      "comment" : "result",
+      "extractionState" : "manual",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L'abonnement Togo n'existe pas sur l'App Store de ton pays. Ton identifiant Apple n'y est pour rien."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В App Store твоей страны подписки Togo нет. Дело не в твоём Apple ID."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "В App Store твоєї країни підписки Togo немає. Річ не в твоєму Apple ID."
+          }
+        }
+      }
+    },
     "в год" : {
       "comment" : "trialLength",
       "extractionState" : "manual",
@@ -6671,6 +7091,22 @@
         }
       }
     },
+    "В сегодня" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aujourd'hui"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "У сьогодні"
+          }
+        }
+      }
+    },
     "В среднем %@ г в день — на %@% больше нормы. Это не срочно, но за две недели складывается в лишний вес." : {
       "comment" : "statusCard",
       "extractionState" : "manual",
@@ -6769,30 +7205,66 @@
     },
     "В среднем %lld г в день — на %lld%% больше нормы. Это не срочно, но за две недели складывается в лишний вес." : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En moyenne %lld g par jour, soit %lld %% de plus que la ration. Rien d'urgent, mais sur deux semaines ça finit en kilos en trop."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "В среднем %1$lld г в день — на %2$lld%% больше нормы. Это не срочно, но за две недели складывается в лишний вес."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "У середньому %lld г на день — на %lld%% більше норми. Це не терміново, але за два тижні складається в зайву вагу."
           }
         }
       }
     },
     "В среднем %lld г в день — на %lld%% меньше нормы. Бодр и вес держится — не беда; вес падает — к врачу." : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En moyenne %lld g par jour, soit %lld %% de moins que la ration. S'il est en forme et garde son poids, pas de souci ; s'il maigrit, direction le vétérinaire."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "В среднем %1$lld г в день — на %2$lld%% меньше нормы. Бодр и вес держится — не беда; вес падает — к врачу."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "У середньому %lld г на день — на %lld%% менше норми. Бадьорий і вага тримається — не біда; вага падає — до лікаря."
           }
         }
       }
     },
     "В среднем %lld г в день при норме %lld г. Менять нечего." : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En moyenne %lld g par jour pour une ration de %lld g. Rien à changer."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "В среднем %1$lld г в день при норме %2$lld г. Менять нечего."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "У середньому %lld г на день при нормі %lld г. Міняти нема чого."
           }
         }
       }
@@ -7566,7 +8038,20 @@
       }
     },
     "Вечерняя порция уже уменьшена на %lld г — корм на занятия берётся из еды, а не сверх неё." : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La portion du soir est déjà réduite de %lld g : les croquettes des séances viennent du repas, pas en plus."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Вечірню порцію вже зменшено на %lld г — корм на заняття беремо з їжі, а не понад неї."
+          }
+        }
+      }
     },
     "вечером" : {
       "comment" : "when",
@@ -10448,6 +10933,30 @@
         }
       }
     },
+    "Выходов нет с %@" : {
+      "comment" : "headline",
+      "extractionState" : "manual",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune sortie depuis %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выходов нет с %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Виходів немає з %@"
+          }
+        }
+      }
+    },
     "Выходы · 30 дней" : {
       "comment" : "chartTitle",
       "extractionState" : "manual",
@@ -11479,7 +11988,20 @@
       }
     },
     "Дальше · %lld" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suivant · %lld"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Далі · %lld"
+          }
+        }
+      }
     },
     "Дальше прогресс не пишем: после трёх минут собака угадывает, а не учится." : {
       "comment" : "clock",
@@ -12101,6 +12623,52 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Дій: %@ · записів: %@ · сеансів: %@"
+          }
+        }
+      }
+    },
+    "Действий: %lld · записей: %lld · сеансов: %lld" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actions : %lld · entrées : %lld · sessions : %lld"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Действий: %1$lld · записей: %2$lld · сеансов: %3$lld"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Дій: %lld · записів: %lld · сеансів: %lld"
+          }
+        }
+      }
+    },
+    "Дело не в твоих настройках: приложению не разрешено спрашивать App Store. Напиши нам." : {
+      "comment" : "result",
+      "extractionState" : "manual",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ce ne sont pas tes réglages : l'app n'a pas le droit d'interroger l'App Store. Écris-nous."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дело не в твоих настройках: приложению не разрешено спрашивать App Store. Напиши нам."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Річ не в твоїх налаштуваннях: застосунку не дозволено питати App Store. Напиши нам."
           }
         }
       }
@@ -13081,7 +13649,20 @@
       }
     },
     "Добавить · %lld" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter · %lld"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Додати · %lld"
+          }
+        }
+      }
     },
     "Добавить время" : {
       "comment" : "body",
@@ -14403,6 +14984,22 @@
         }
       }
     },
+    "Другое время" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Autre heure"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Інший час"
+          }
+        }
+      }
+    },
     "его норма ≈ %@ мл в день, в жару больше · складная поилка" : {
       "comment" : "water",
       "extractionState" : "manual",
@@ -15387,6 +15984,170 @@
         }
       }
     },
+    "ещё %lld попыток — и будет видно, получается ли" : {
+      "localizations" : {
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "encore %lld tentative et on verra si ça marche"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "encore %lld tentatives et on verra si ça marche"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "ещё %lld попытка — и будет видно, получается ли"
+                }
+              },
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "ещё %lld попытки — и будет видно, получается ли"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "ещё %lld попыток — и будет видно, получается ли"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "ещё %lld попытки — и будет видно, получается ли"
+                }
+              }
+            }
+          }
+        },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "ще %lld спроба — і буде видно, чи виходить"
+                }
+              },
+              "few" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "ще %lld спроби — і буде видно, чи виходить"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "ще %lld спроб — і буде видно, чи виходить"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "ще %lld спроби — і буде видно, чи виходить"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Ещё %lld попыток, и станет видно. Получается — это 4 раза из 5, как и у шага обучения." : {
+      "localizations" : {
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Encore %lld tentative et ce sera visible. «Ça marche», c'est 4 fois sur 5, comme pour une étape d'apprentissage."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Encore %lld tentatives et ce sera visible. «Ça marche», c'est 4 fois sur 5, comme pour une étape d'apprentissage."
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ещё %lld попытка, и станет видно. Получается — это 4 раза из 5, как и у шага обучения."
+                }
+              },
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ещё %lld попытки, и станет видно. Получается — это 4 раза из 5, как и у шага обучения."
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ещё %lld попыток, и станет видно. Получается — это 4 раза из 5, как и у шага обучения."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ещё %lld попытки, и станет видно. Получается — это 4 раза из 5, как и у шага обучения."
+                }
+              }
+            }
+          }
+        },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Ще %lld спроба, і стане видно. «Виходить» — це 4 рази з 5, як і в кроку навчання."
+                }
+              },
+              "few" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Ще %lld спроби, і стане видно. «Виходить» — це 4 рази з 5, як і в кроку навчання."
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Ще %lld спроб, і стане видно. «Виходить» — це 4 рази з 5, як і в кроку навчання."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Ще %lld спроби, і стане видно. «Виходить» — це 4 рази з 5, як і в кроку навчання."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "Ещё документ" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -16180,7 +16941,20 @@
       }
     },
     "закрыто · %lld" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "réglé · %lld"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "закрито · %lld"
+          }
+        }
+      }
     },
     "Закрыть" : {
       "comment" : "title",
@@ -17430,30 +18204,6 @@
         }
       }
     },
-    "Выходов нет с %@" : {
-      "comment" : "headline",
-      "extractionState" : "manual",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aucune sortie depuis %@"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Выходов нет с %@"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Виходів немає з %@"
-          }
-        }
-      }
-    },
     "Записей нет." : {
       "comment" : "lines",
       "extractionState" : "manual",
@@ -17474,30 +18224,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Записів немає."
-          }
-        }
-      }
-    },
-    "Записи семьи не пришли: %@" : {
-      "comment" : "sync",
-      "extractionState" : "manual",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Les notes de la famille ne sont pas arrivées : %@"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Записи семьи не пришли: %@"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Записи родини не надійшли: %@"
           }
         }
       }
@@ -17594,6 +18320,22 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Записів щоденника це не зачепить — тільки історію натискань."
+          }
+        }
+      }
+    },
+    "Записи дня — еда, выходы, дозы — останутся: удаляется только сам «день с собакой» и его след в наблюдениях истории." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Les entrées de la journée — repas, sorties, doses — resteront : seule la «journée avec le chien» disparaît, avec sa trace dans les observations de l'historique."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Записи дня — їжа, виходи, дози — залишаться: видаляється тільки сам «день із собакою» і його слід у спостереженнях історії."
           }
         }
       }
@@ -17862,6 +18604,30 @@
         }
       }
     },
+    "Записи семьи не пришли: %@" : {
+      "comment" : "sync",
+      "extractionState" : "manual",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les notes de la famille ne sont pas arrivées : %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Записи семьи не пришли: %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Записи родини не надійшли: %@"
+          }
+        }
+      }
+    },
     "Записи уйдут в архив" : {
       "comment" : "consequences",
       "extractionState" : "manual",
@@ -18103,7 +18869,20 @@
       }
     },
     "Записывать в этот дневник тебе не разрешено. Спроси того, кто им делится." : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tu n'as pas le droit de noter dans ce journal. Demande à la personne qui le partage."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Записувати в цей щоденник тобі не дозволено. Спитай того, хто ним ділиться."
+          }
+        }
+      }
     },
     "Записывать может тот, кому это разрешено" : {
       "comment" : "allowed",
@@ -18874,7 +19653,20 @@
       }
     },
     "Идёт · день %lld" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En cours · jour %lld"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Триває · день %lld"
+          }
+        }
+      }
     },
     "Идёт %@" : {
       "comment" : "body",
@@ -19208,7 +20000,20 @@
       }
     },
     "из %lld съел" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sur %lld mangés"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "з %lld з'їв"
+          }
+        }
+      }
     },
     "из них складывается матрица переноса" : {
       "comment" : "stepsCard",
@@ -19686,6 +20491,22 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Інциденти: %@"
+          }
+        }
+      }
+    },
+    "Инциденты: %lld" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Incidents : %lld"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Інциденти: %lld"
           }
         }
       }
@@ -20794,6 +21615,22 @@
         }
       }
     },
+    "Когда дали?" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Donné quand ?"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Коли дали?"
+          }
+        }
+      }
+    },
     "Когда делали последний раз?" : {
       "comment" : "needsDateCard",
       "extractionState" : "manual",
@@ -20862,6 +21699,22 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Коли йти до лікаря, а не в застосунок"
+          }
+        }
+      }
+    },
+    "Когда кормили и сколько он не писал — не открывая приложение." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Quand il a mangé et depuis combien de temps il n'a pas fait pipi — sans ouvrir l'app."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Коли годували і скільки він не пісяв — не відкриваючи застосунок."
           }
         }
       }
@@ -22784,16 +23637,41 @@
     },
     "Магазин дал %lld из %lld подписок. Показывать половину плана нечестно — покажем, когда придут обе." : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L'App Store a renvoyé %lld abonnements sur %lld. Montrer la moitié du plan ne serait pas honnête — on l'affichera quand les deux seront là."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Магазин дал %1$lld из %2$lld подписок. Показывать половину плана нечестно — покажем, когда придут обе."
           }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Магазин дав %lld із %lld підписок. Показувати половину плану нечесно — покажемо, коли прийдуть обидві."
+          }
         }
       }
     },
     "Магазин не отдаёт подписки. Это не связь и не твой телефон: покупки ещё не включены на стороне App Store. Всё, что важно для безопасности собаки, бесплатно навсегда." : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L'App Store ne donne pas les abonnements. Ce n'est ni la connexion ni ton téléphone : les achats ne sont pas encore activés du côté d'Apple. Tout ce qui compte pour la sécurité du chien est gratuit pour toujours."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Магазин не віддає підписок. Це не зв'язок і не твій телефон: покупки ще не ввімкнені на стороні App Store. Усе, що важливо для безпеки собаки, безкоштовно назавжди."
+          }
+        }
+      }
     },
     "Мальчик" : {
       "comment" : "title",
@@ -25364,7 +26242,20 @@
       }
     },
     "Не вышло свести: %@" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "La fusion n'a pas marché : %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Не вийшло об'єднати: %@"
+          }
+        }
+      }
     },
     "не дали прав" : {
       "comment" : "title",
@@ -25391,7 +26282,20 @@
       }
     },
     "Не дозвонились до магазина. Обычно это связь. Приложение работает и без подписки — всё, что важно для безопасности собаки, бесплатно навсегда." : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "On n'a pas réussi à joindre l'App Store. C'est souvent la connexion. L'app marche aussi sans abonnement : tout ce qui compte pour la sécurité du chien est gratuit pour toujours."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Не додзвонилися до магазину. Зазвичай це зв'язок. Застосунок працює і без підписки — усе, що важливо для безпеки собаки, безкоштовно назавжди."
+          }
+        }
+      }
     },
     "Не заменяет визит к ветеринару. Вердикт «просится» — это статистика по твоим же записям, а не заключение." : {
       "comment" : "body",
@@ -25538,7 +26442,20 @@
       }
     },
     "Не кормить до %@" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ne pas nourrir avant %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Не годувати до %@"
+          }
+        }
+      }
     },
     "Не кормить до приёма" : {
       "comment" : "body",
@@ -26740,6 +27657,22 @@
         }
       }
     },
+    "нет отметок" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "rien de coché"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "немає позначок"
+          }
+        }
+      }
+    },
     "Нет, было дважды" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -27294,10 +28227,22 @@
     },
     "Норма — %lld г в день, по кормам выходит %lld г. Так бывает: поправь или раскладку здесь, или саму норму на «Питании»." : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La ration est de %lld g par jour, les aliments donnent %lld g. Ça arrive : corrige la répartition ici, ou la ration elle-même dans «Repas»."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Норма — %1$lld г в день, по кормам выходит %2$lld г. Так бывает: поправь или раскладку здесь, или саму норму на «Питании»."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Норма — %lld г на день, за кормами виходить %lld г. Так буває: виправ або розкладку тут, або саму норму на «Харчуванні»."
           }
         }
       }
@@ -27672,10 +28617,22 @@
     },
     "Нужно хотя бы %@ с записями — пока их %lld. Просто продолжай отмечать выходы." : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il faut au moins %@ avec des entrées — pour l'instant %lld. Continue simplement à noter les sorties."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Нужно хотя бы %1$@ с записями — пока их %2$lld. Просто продолжай отмечать выходы."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Потрібно хоча б %@ із записами — поки їх %lld. Просто продовжуй позначати виходи."
           }
         }
       }
@@ -27992,6 +28949,28 @@
         }
       }
     },
+    "Обычно выходите чаще · %@ из %lld за день" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "D'habitude vous sortez plus souvent · %@ sur %lld par jour"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Обычно выходите чаще · %1$@ из %2$lld за день"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Зазвичай виходите частіше · %@ з %lld за день"
+          }
+        }
+      }
+    },
     "Обычно около %@. На прогулках сейчас внимательнее: кобели чувствуют за километр, и это не про воспитание." : {
       "comment" : "ongoingCard",
       "extractionState" : "manual",
@@ -28209,7 +29188,20 @@
       }
     },
     "одна собака записана дважды" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "un chien noté deux fois"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "одна собака записана двічі"
+          }
+        }
+      }
     },
     "одним тапом, если помнишь" : {
       "comment" : "reactionCard",
@@ -28379,8 +29371,53 @@
         }
       }
     },
+    "Окна натощак перед поездкой — общая практика, а не назначение. Если собака на терапии, приложение сведёт их с приёмами и покажет, где конфликт." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Les fenêtres à jeun avant un trajet sont une pratique courante, pas une prescription. Si le chien est sous traitement, l'app les croise avec les prises et montre où ça coince."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Вікна натщесерце перед поїздкою — загальна практика, а не призначення. Якщо собака на терапії, застосунок зведе їх із прийомами і покаже, де конфлікт."
+          }
+        }
+      }
+    },
+    "Окна натощак перед поездом — общая практика, а не назначение. Если собака на терапии, приложение сведёт их с приёмами и покажет, где конфликт." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Les fenêtres à jeun avant un trajet en train sont une pratique courante, pas une prescription. Si le chien est sous traitement, l'app les croise avec les prises et montre où ça coince."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Вікна натщесерце перед поїздом — загальна практика, а не призначення. Якщо собака на терапії, застосунок зведе їх із прийомами і покаже, де конфлікт."
+          }
+        }
+      }
+    },
     "окно закрылось в %@" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "la fenêtre s'est fermée à %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "вікно закрилося о %@"
+          }
+        }
+      }
     },
     "Окно натощак" : {
       "comment" : "body",
@@ -28741,6 +29778,22 @@
         }
       }
     },
+    "Оставить" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Garder"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Залишити"
+          }
+        }
+      }
+    },
     "осталось" : {
       "comment" : "todayCard",
       "extractionState" : "manual",
@@ -28809,6 +29862,22 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "залишилось розкласти %@ г"
+          }
+        }
+      }
+    },
+    "осталось разложить %lld г" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "reste %lld g à répartir"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "залишилось розкласти %lld г"
           }
         }
       }
@@ -28905,6 +29974,22 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Зупинки кожні 2 години: вода і п'ять хвилин походити. Застосунок нагадає і запише зупинку одним дотиком."
+          }
+        }
+      }
+    },
+    "От времени дозы считается окно натощак и защита от двойной дозы, от времени еды — «пора ли кормить». Поэтому спрашиваем, а не ставим час нажатия." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "C'est l'heure de la dose qui donne la fenêtre à jeun et la protection contre la double dose ; l'heure du repas, elle, donne le «faut-il nourrir». C'est pour ça qu'on demande, au lieu de prendre l'heure de l'appui."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Від часу дози рахується вікно натщесерце і захист від подвійної дози, від часу їжі — «чи пора годувати». Тому питаємо, а не ставимо годину натискання."
           }
         }
       }
@@ -29808,6 +30893,22 @@
         }
       }
     },
+    "Отменить последнюю" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Annuler la dernière"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Скасувати останню"
+          }
+        }
+      }
+    },
     "отметил на ходу" : {
       "comment" : "title",
       "extractionState" : "manual",
@@ -30116,6 +31217,57 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "позначку поставили на ходу — допиши словами"
+          }
+        }
+      }
+    },
+    "отметок мочи нет" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "aucun pipi coché"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "пісяння не позначали"
+          }
+        }
+      }
+    },
+    "отметок мочи нет с %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "aucun pipi coché depuis %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "пісяння не позначали з %@"
+          }
+        }
+      }
+    },
+    "Отметок мочи нет с %@. Приложение не знает, писал он или просто никто не отметил." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aucun pipi coché depuis %@. L'app ne sait pas s'il a fait pipi ou si personne ne l'a coché."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Пісяння не позначали з %@. Застосунок не знає, чи він пісяв, чи просто ніхто не позначив."
           }
         }
       }
@@ -31370,6 +32522,22 @@
         }
       }
     },
+    "перебор на %lld г" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld g de trop"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "перебір на %lld г"
+          }
+        }
+      }
+    },
     "перевод готовится" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -31491,7 +32659,20 @@
       }
     },
     "Перенесено записей: %lld. Дневник снова один." : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Entrées déplacées : %lld. Le journal est de nouveau unique."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Перенесено записів: %lld. Щоденник знову один."
+          }
+        }
+      }
     },
     "перенос" : {
       "comment" : "title",
@@ -31733,6 +32914,44 @@
         }
       }
     },
+    "переходит · %lld" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "passe · %lld"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "переходить · %lld"
+          }
+        }
+      }
+    },
+    "переходит к %@ · %lld" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "passe à %@ · %lld"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "переходит к %1$@ · %2$lld"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "переходить до %@ · %lld"
+          }
+        }
+      }
+    },
     "переходит%@ · %@" : {
       "comment" : "openCard",
       "extractionState" : "manual",
@@ -31753,16 +32972,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "переходить%@ · %@"
-          }
-        }
-      }
-    },
-    "переходит%@ · %lld" : {
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "переходит%1$@ · %2$lld"
           }
         }
       }
@@ -31959,6 +33168,22 @@
         }
       }
     },
+    "Пишем в этот день" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "On écrit dans cette journée"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Пишемо в цей день"
+          }
+        }
+      }
+    },
     "план дня · всё сделано" : {
       "comment" : "header",
       "extractionState" : "manual",
@@ -32103,10 +33328,22 @@
     },
     "по %@, где она была с тобой дольше %lld часов" : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "sur %@, où il est resté avec toi plus de %lld heures"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "по %1$@, где она была с тобой дольше %2$lld часов"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "по %@, де вона була з тобою довше %lld годин"
           }
         }
       }
@@ -32227,6 +33464,22 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "по пам'яті, з %@"
+          }
+        }
+      }
+    },
+    "по памяти, из %lld" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "de mémoire, depuis %lld"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "по пам'яті, з %lld"
           }
         }
       }
@@ -33600,7 +34853,20 @@
       }
     },
     "Показаны последние двадцать из %lld." : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les vingt dernières sur %lld sont affichées."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Показано останні двадцять з %lld."
+          }
+        }
+      }
     },
     "Показать с телефона" : {
       "comment" : "shareCard",
@@ -33908,10 +35174,22 @@
     },
     "Полных дней с записями: %lld, нужно хотя бы %lld — иначе среднее врёт. Продолжай отмечать еду, дальше приложение посчитает само." : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jours complets avec des entrées : %lld, il en faut au moins %lld, sinon la moyenne ment. Continue à noter les repas, l'app calculera le reste toute seule."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Полных дней с записями: %1$lld, нужно хотя бы %2$lld — иначе среднее врёт. Продолжай отмечать еду, дальше приложение посчитает само."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Повних днів із записами: %lld, потрібно хоча б %lld — інакше середнє бреше. Продовжуй позначати їжу, далі застосунок порахує сам."
           }
         }
       }
@@ -33959,6 +35237,38 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "виходить"
+          }
+        }
+      }
+    },
+    "получилось" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "réussies"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "вдалося"
+          }
+        }
+      }
+    },
+    "Получилось" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Réussi"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Вдалося"
           }
         }
       }
@@ -34347,6 +35657,54 @@
         }
       }
     },
+    "попыток" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "tentatives"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "спроб"
+          }
+        }
+      }
+    },
+    "попыток пока нет" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "aucune tentative pour l'instant"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "спроб поки немає"
+          }
+        }
+      }
+    },
+    "Попыток пока нет. Приложение скажет, получается ли, после %lld попыток — раньше это была бы догадка." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aucune tentative pour l'instant. L'app dira si ça marche après %lld tentatives — avant, ce serait une devinette."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Спроб поки немає. Застосунок скаже, чи виходить, після %lld спроб — раніше це був би здогад."
+          }
+        }
+      }
+    },
     "пора покупать" : {
       "comment" : "countCard",
       "extractionState" : "manual",
@@ -34445,10 +35803,22 @@
     },
     "Порог задаёт счёт, а не догадка: %lld эпизода за %lld часов. Приложение не ставит диагнозов — решение всегда за врачом." : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le seuil vient d'un compte, pas d'une intuition : %lld épisodes en %lld heures. L'app ne pose pas de diagnostic — la décision revient toujours au vétérinaire."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Порог задаёт счёт, а не догадка: %1$lld эпизода за %2$lld часов. Приложение не ставит диагнозов — решение всегда за врачом."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Поріг задає лік, а не здогад: %lld епізоди за %lld годин. Застосунок не ставить діагнозів — рішення завжди за лікарем."
           }
         }
       }
@@ -35175,10 +36545,22 @@
     },
     "посчитано из веса %@ и порции %lld г" : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "calculé d'après son poids (%@) et sa portion de %lld g"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "посчитано из веса %1$@ и порции %2$lld г"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "пораховано з ваги %@ і порції %lld г"
           }
         }
       }
@@ -35376,7 +36758,20 @@
       }
     },
     "Почта на телефоне не настроена" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aucune messagerie configurée sur ce téléphone"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Пошта на телефоні не налаштована"
+          }
+        }
+      }
     },
     "почти" : {
       "comment" : "title",
@@ -35710,6 +37105,22 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Запропонувала"
+          }
+        }
+      }
+    },
+    "Предыдущий день" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Jour précédent"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Попередній день"
           }
         }
       }
@@ -36906,7 +38317,86 @@
       }
     },
     "Принять смену и %lld дело" : {
-
+      "localizations" : {
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Prendre le relais et %lld tâche"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Prendre le relais et %lld tâches"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Принять смену и %lld дело"
+                }
+              },
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Принять смену и %lld дела"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Принять смену и %lld дел"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Принять смену и %lld дела"
+                }
+              }
+            }
+          }
+        },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Прийняти зміну і %lld справу"
+                }
+              },
+              "few" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Прийняти зміну і %lld справи"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Прийняти зміну і %lld справ"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Прийняти зміну і %lld справи"
+                }
+              }
+            }
+          }
+        }
+      }
     },
     "Про завтра" : {
       "comment" : "body",
@@ -37509,7 +38999,20 @@
       }
     },
     "Пропущено осознанно: %lld. Это записи, а не дыры — видно, кто и когда." : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sautées volontairement : %lld. Ce sont des entrées, pas des trous — on voit qui et quand."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Пропущено свідомо: %lld. Це записи, а не дірки — видно, хто і коли."
+          }
+        }
+      }
     },
     "Просится" : {
       "comment" : "probe",
@@ -37603,6 +39106,22 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "прострочено: %@"
+          }
+        }
+      }
+    },
+    "просрочено: %lld" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "en retard : %lld"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "прострочено: %lld"
           }
         }
       }
@@ -39263,6 +40782,38 @@
         }
       }
     },
+    "Сами записи — инциденты, стул, дозы — останутся: удаляется только объединение их в эпизод. Если инциденты повторятся, приложение поднимет эпизод заново." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Les entrées elles-mêmes — incidents, selles, doses — resteront : seul leur regroupement en épisode disparaît. Si les incidents reviennent, l'app rouvrira un épisode."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Самі записи — інциденти, випорожнення, дози — залишаться: видаляється тільки об'єднання їх в епізод. Якщо інциденти повторяться, застосунок підніме епізод заново."
+          }
+        }
+      }
+    },
+    "Сами записи останутся. Пропадёт только пометка, что собака была с тобой весь день, — и наблюдения «после долгих дней» перестанут считать его." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Les entrées elles-mêmes resteront. Seule la marque indiquant que le chien est resté avec toi toute la journée disparaîtra — et les observations «après de longues journées» cesseront de compter ce jour-là."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Самі записи залишаться. Зникне тільки позначка, що собака була з тобою весь день, — і спостереження «після довгих днів» перестануть його рахувати."
+          }
+        }
+      }
+    },
     "Самое ценное обучение для собаки с регулярными процедурами — не «место», а спокойно дать лапу, стоять при осмотре и самой залезать в переноску." : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -39409,10 +40960,22 @@
     },
     "Сведу в ту, что заведена %@, и перенесу в неё %lld записей. Ничего не удалится." : {
       "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Je fusionne vers celle créée le %@ et j'y déplace %lld entrées. Rien ne sera supprimé."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Сведу в ту, что заведена %1$@, и перенесу в неё %2$lld записей. Ничего не удалится."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Об'єднаю в ту, що створена %@, і перенесу в неї %lld записів. Нічого не видалиться."
           }
         }
       }
@@ -39442,7 +41005,20 @@
       }
     },
     "Свести в одну" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Fusionner en une seule"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Об'єднати в одну"
+          }
+        }
+      }
     },
     "Сводка" : {
       "comment" : "body",
@@ -39892,6 +41468,28 @@
         }
       }
     },
+    "сегодня %lld из %lld" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "aujourd'hui %lld sur %lld"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "сегодня %1$lld из %2$lld"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "сьогодні %lld з %lld"
+          }
+        }
+      }
+    },
     "Сегодня вечером" : {
       "comment" : "title",
       "extractionState" : "manual",
@@ -40152,6 +41750,22 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Зараз годувати не можна"
+          }
+        }
+      }
+    },
+    "Сейчас: %@. Получается — это 4 раза из 5." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pour l'instant : %@. «Ça marche», c'est 4 fois sur 5."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Зараз: %@. «Виходить» — це 4 рази з 5."
           }
         }
       }
@@ -40900,6 +42514,22 @@
         }
       }
     },
+    "Следующий день" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Jour suivant"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Наступний день"
+          }
+        }
+      }
+    },
     "Следующий месяц" : {
       "comment" : "header",
       "extractionState" : "manual",
@@ -41332,6 +42962,22 @@
         }
       }
     },
+    "Собака в любой момент может уйти. Ушла — значит, задача была слишком сложной, а не собака плохая. Это тоже попытка, и её стоит записать: по ней видно, что шаг надо упростить." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le chien peut partir à tout moment. S'il part, c'est que l'exercice était trop dur — pas que le chien est mauvais. C'est une tentative aussi, et elle vaut la peine d'être notée : elle montre qu'il faut simplifier l'étape."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Собака будь-коли може піти. Пішла — значить, завдання було занадто складним, а не собака погана. Це теж спроба, і її варто записати: по ній видно, що крок треба спростити."
+          }
+        }
+      }
+    },
     "Собака ещё не заведена — открой Togo и добавь её." : {
       "comment" : "localizedStringResource",
       "extractionState" : "manual",
@@ -41597,7 +43243,20 @@
       }
     },
     "Собаки слиты" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Chiens fusionnés"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Собак об'єднано"
+          }
+        }
+      }
     },
     "Собирает отчёт врачу из уже записанного — без единого поля «заполните для врача»." : {
       "comment" : "body",
@@ -45285,6 +46944,22 @@
         }
       }
     },
+    "Убрать навык" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Retirer la compétence"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Прибрати навичку"
+          }
+        }
+      }
+    },
     "Убрать навык?" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -45925,6 +47600,88 @@
         }
       }
     },
+    "Удалить прогулку и %lld отметки" : {
+      "localizations" : {
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Supprimer la promenade et %lld marque"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Supprimer la promenade et %lld marques"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Удалить прогулку и %lld отметку"
+                }
+              },
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Удалить прогулку и %lld отметки"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Удалить прогулку и %lld отметок"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Удалить прогулку и %lld отметки"
+                }
+              }
+            }
+          }
+        },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Видалити прогулянку і %lld позначку"
+                }
+              },
+              "few" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Видалити прогулянку і %lld позначки"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Видалити прогулянку і %lld позначок"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Видалити прогулянку і %lld позначки"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "Удалить снимок" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -46089,6 +47846,70 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Видалити крок?"
+          }
+        }
+      }
+    },
+    "Удалить эпизод %@" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Supprimer l'épisode %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Видалити епізод %@"
+          }
+        }
+      }
+    },
+    "Удалить эпизод?" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Supprimer l'épisode ?"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Видалити епізод?"
+          }
+        }
+      }
+    },
+    "Удалить этот день" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Supprimer cette journée"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Видалити цей день"
+          }
+        }
+      }
+    },
+    "Удалить этот день?" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Supprimer cette journée ?"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Видалити цей день?"
           }
         }
       }
@@ -46646,7 +48467,20 @@
       }
     },
     "участники · %lld" : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "membres · %lld"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "учасники · %lld"
+          }
+        }
+      }
     },
     "учится" : {
       "comment" : "title",
@@ -46888,6 +48722,22 @@
         }
       }
     },
+    "Файл сделан более новой версией приложения (формат %lld). Обнови Togo — и он его прочитает." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce fichier vient d'une version plus récente de l'app (format %lld). Mets Togo à jour et il pourra le lire."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Файл зроблено новішою версією застосунку (формат %lld). Онови Togo — і він його прочитає."
+          }
+        }
+      }
+    },
     "фасовка" : {
       "comment" : "packCard",
       "extractionState" : "manual",
@@ -47081,7 +48931,20 @@
       }
     },
     "Формат версии %lld. Файл из более новой версии приложения старая не прочитает и скажет об этом." : {
-
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Format version %lld. Une ancienne version de l'app ne lira pas un fichier plus récent, et elle le dira."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Формат версії %lld. Файл із новішої версії застосунку стара не прочитає і скаже про це."
+          }
+        }
+      }
     },
     "Фотография удалится с телефона. В галерее она останется, если снимали через камеру." : {
       "comment" : "body",
@@ -50631,129 +52494,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Мов мало навмисно: машинний переклад у застосунку про здоров'я собаки гірший, ніж мова, зроблена цілком."
-          }
-        }
-      }
-    },
-    "отметок мочи нет" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "aucun pipi coché"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "пісяння не позначали"
-          }
-        }
-      }
-    },
-    "отметок мочи нет с %@" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "aucun pipi coché depuis %@"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "пісяння не позначали з %@"
-          }
-        }
-      }
-    },
-    "Отметок мочи нет с %@. Приложение не знает, писал он или просто никто не отметил." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Aucun pipi coché depuis %@. L'app ne sait pas s'il a fait pipi ou si personne ne l'a coché."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Пісяння не позначали з %@. Застосунок не знає, чи він пісяв, чи просто ніхто не позначив."
-          }
-        }
-      }
-    },
-    "App Store не ответил. Попробуй ещё раз позже." : {
-      "comment" : "result",
-      "extractionState" : "manual",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "L'App Store n'a pas répondu. Réessaie plus tard."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "App Store не ответил. Попробуй ещё раз позже."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "App Store не відповів. Спробуй ще раз пізніше."
-          }
-        }
-      }
-    },
-    "В App Store твоей страны подписки Togo нет. Дело не в твоём Apple ID." : {
-      "comment" : "result",
-      "extractionState" : "manual",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "L'abonnement Togo n'existe pas sur l'App Store de ton pays. Ton identifiant Apple n'y est pour rien."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "В App Store твоей страны подписки Togo нет. Дело не в твоём Apple ID."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "В App Store твоєї країни підписки Togo немає. Річ не в твоєму Apple ID."
-          }
-        }
-      }
-    },
-    "Дело не в твоих настройках: приложению не разрешено спрашивать App Store. Напиши нам." : {
-      "comment" : "result",
-      "extractionState" : "manual",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Ce ne sont pas tes réglages : l'app n'a pas le droit d'interroger l'App Store. Écris-nous."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Дело не в твоих настройках: приложению не разрешено спрашивать App Store. Напиши нам."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Річ не в твоїх налаштуваннях: застосунку не дозволено питати App Store. Напиши нам."
           }
         }
       }

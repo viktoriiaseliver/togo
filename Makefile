@@ -34,7 +34,8 @@ texts: ## Пересобрать docs/TEXTS.md и каталог строк из
 .PHONY: loc-export
 loc-export: ## Выгрузить XLIFF для переводчика (build/loc/*.xcloc)
 	@xcodebuild -project $(PROJECT) -exportLocalizations \
-		-localizationPath build/loc -exportLanguage en -exportLanguage fr
+		-localizationPath build/loc \
+		-exportLanguage en -exportLanguage fr -exportLanguage uk
 	@echo "Отдай переводчику папки в build/loc — они открываются в любом CAT-редакторе"
 
 .PHONY: loc-import

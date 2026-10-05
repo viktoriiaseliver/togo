@@ -48,9 +48,29 @@ struct ShiftHandoverSheet: View {
         }
     }
 
+    /// Два ключа, а не один с подстановкой.
+    ///
+    /// Было: `"переходит\(successor.map { " к \($0)" } ?? "") · \(count)"`.
+    /// Предлог « к » склеивался обычной строкой ДО того, как
+    /// `LocalizedStringKey` шёл в каталог, — то есть приезжал
+    /// на экран русским при любом языке. Француз читал «passe к Marie»,
+    /// украинец «переходить к Марії». Ключ в каталоге был, перевод
+    /// у ключа был, и починить это переводом было нельзя: предлога
+    /// в ключе нет, на его месте `%@`.
+    ///
+    /// Теперь предлог внутри ключа, и переводчик ставит его там, где
+    /// требует язык: по-украински «до», по-французски «à».
+    private var заголовокОткрытого: LocalizedStringKey {
+        if let successor {
+            "переходит к \(successor) · \(summary.open.count)"
+        } else {
+            "переходит · \(summary.open.count)"
+        }
+    }
+
     private var openCard: some View {
         TGCard(spacing: 0) {
-            TGSectionHeader(title: "переходит\(successor.map { " к \($0)" } ?? "") · \(summary.open.count)")
+            TGSectionHeader(title: заголовокОткрытого)
             ForEach(summary.open) { item in
                 HStack(spacing: Token.Space.s12) {
                     Image(systemName: "circle")

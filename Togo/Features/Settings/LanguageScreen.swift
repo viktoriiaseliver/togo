@@ -9,21 +9,44 @@ struct LanguageScreen: View {
     @Environment(\.openURL) private var openURL
     @State private var needsRestart = false
 
-    private let names: [String: String] = [
+    /// Имя языка — на самом языке, а не на русском.
+    ///
+    /// **Список обязан покрывать весь бандл.** Ряд без имени не падает
+    /// и не пустует: он подписывается кодом в верхнем регистре. 05.10.2026
+    /// украинский так и стоял — «UK» между «Русский» и «Français», —
+    /// при 2044 переведённых строках. Отсутствие имени выглядит
+    /// не дырой, а решением: будто язык служебный.
+    ///
+    /// Сторож — `LocalizationCoverageTests.уЯзыковБандлаЕстьИмена`.
+    /// `en` здесь не нужен: английского в приложении нет, и список
+    /// берётся из бандла — ряд с ним не появится.
+    static let names: [String: String] = [
         "ru": "Русский",
-        "en": "English",
         "fr": "Français",
+        "uk": "Українська",
     ]
 
     var body: some View {
         List {
             Section {
-                row(code: "", title: "Как в системе",
-                    detail: systemLanguageName, isTranslated: true)
+                // Подпись ряда и имя языка — разные вещи, и разделены
+                // они здесь намеренно. «Как в системе» и «перевод
+                // готовится» — ключи каталога, и приходить на экран
+                // обязаны переведёнными; имя языка переводить нельзя
+                // вовсе, «Українська» остаётся собой на любом экране.
+                // `Text(строка)` со ЗНАЧЕНИЕМ типа `String` рисует
+                // текст дословно, мимо каталога, — поэтому `Text`
+                // строится здесь, а не внутри `row`, где тип подписи
+                // стёр бы разницу. Французский и украинский этих двух
+                // строк лежали в каталоге готовыми и до 05.10.2026
+                // не доезжали до экрана ни разу.
+                row(code: "", title: Text("Как в системе"),
+                    detail: systemLanguageName.map { Text(verbatim: $0) },
+                    isTranslated: true)
                 ForEach(settings.availableLanguages, id: \.self) { code in
                     row(code: code,
-                        title: names[code] ?? code.uppercased(),
-                        detail: settings.isTranslated(code) ? nil : "перевод готовится",
+                        title: Text(verbatim: Self.names[code] ?? code.uppercased()),
+                        detail: settings.isTranslated(code) ? nil : Text("перевод готовится"),
                         isTranslated: settings.isTranslated(code))
                 }
             } header: {
@@ -65,11 +88,11 @@ struct LanguageScreen: View {
 
     private var systemLanguageName: String? {
         guard let code = Locale.preferredLanguages.first?.prefix(2) else { return nil }
-        return names[String(code)]
+        return Self.names[String(code)]
     }
 
     @ViewBuilder
-    private func row(code: String, title: String, detail: String?, isTranslated: Bool) -> some View {
+    private func row(code: String, title: Text, detail: Text?, isTranslated: Bool) -> some View {
         Button {
             settings.preferredLanguage = code
             needsRestart = true
@@ -77,10 +100,10 @@ struct LanguageScreen: View {
         } label: {
             HStack {
                 VStack(alignment: .leading, spacing: Token.Space.s2) {
-                    Text(title)
+                    title
                         .textStyle(AppFont.body.color(isTranslated ? Token.Ink.primary : Token.Ink.secondary))
                     if let detail {
-                        Text(detail).textStyle(AppFont.caption)
+                        detail.textStyle(AppFont.caption)
                     }
                 }
                 Spacer(minLength: Token.Space.s8)
