@@ -39064,29 +39064,6 @@
         }
       }
     },
-    "Отметок мочи нет с %@. Приложение не знает, писал он или просто никто не отметил." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "No pee has been marked since %@. The app doesn't know whether she peed or whether nobody marked it."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Aucun pipi coché depuis %@. L'app ne sait pas s'il a fait pipi ou si personne ne l'a coché."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Пісяння не позначали з %@. Застосунок не знає, чи він пісяв, чи просто ніхто не позначив."
-          }
-        }
-      }
-    },
     "Отметок не было — записалась только прогулка. Это нормально: не каждый выход надо разбирать." : {
       "comment" : "body",
       "extractionState" : "manual",
