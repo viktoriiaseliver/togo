@@ -393,26 +393,26 @@
         {
           "name": "radius/capsule",
           "type": "FLOAT",
-          "description": "Половина капсулы 60 pt. Капсула — только у главного действия",
-          "value": 30.0
+          "description": "Пилюля. Ядро: --radius-pill 999. Было 30 с оговоркой «половина капсулы 60 pt» — то есть капсула держалась на ЗНАНИИ высоты, и при другой высоте скругление переставало быть пилюлей. GRAPHITE.md: «ниже 64 pt — пилюля или круг», и у пилюли радиус бесконечный, а не вычисленный",
+          "value": 999.0
         },
         {
           "name": "radius/card",
           "type": "FLOAT",
-          "description": "",
-          "value": 20.0
+          "description": "Карточка. Ядро: --radius-card 28. Было 20",
+          "value": 28.0
         },
         {
           "name": "radius/icon",
           "type": "FLOAT",
-          "description": "",
+          "description": "Вложенное в строку. Ядро не задаёт числом, а выводит: «вложенный = внешний − padding», строка 24 с полем 12 даёт 12. Значение совпало — оставлено",
           "value": 12.0
         },
         {
           "name": "radius/md",
           "type": "FLOAT",
-          "description": "",
-          "value": 14.0
+          "description": "Вложенная поверхность. Ядро Graphite: --radius-inner 16. Было 14 — числа, которого в ядре нет",
+          "value": 16.0
         },
         {
           "name": "radius/none",
@@ -423,20 +423,20 @@
         {
           "name": "radius/row",
           "type": "FLOAT",
-          "description": "",
-          "value": 16.0
+          "description": "Строка списка. Ядро: --radius-row 24. Было 16 — то есть строка была скруглена как вложенная, а вложенные теперь 16",
+          "value": 24.0
         },
         {
           "name": "radius/sheet",
           "type": "FLOAT",
-          "description": "",
-          "value": 40.0
+          "description": "Шторка. Ядро: --radius-sheet 36. Было 40. Плавающая шторка в ядре отдельная — 44 (--radius-sheet-floating); у нас такой нет, заводить без потребителя не стал",
+          "value": 36.0
         },
         {
           "name": "radius/tile",
           "type": "FLOAT",
-          "description": "",
-          "value": 18.0
+          "description": "Плитка внутри карточки — вложенная поверхность. Ядро: --radius-inner 16. Было 18",
+          "value": 16.0
         },
         {
           "name": "size/avatarMd",

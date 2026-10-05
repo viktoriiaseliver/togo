@@ -71,11 +71,11 @@ nonisolated enum Token {
 
     /// Радиусы.
     enum Radius {
-        static let card: CGFloat = 20
-        static let control: CGFloat = 16
-        static let sheet: CGFloat = 40
+        static let card: CGFloat = 28
+        static let control: CGFloat = 24
+        static let sheet: CGFloat = 36
         static let small: CGFloat = 12
-        static let tile: CGFloat = 18
+        static let tile: CGFloat = 16
     }
 
     /// Шаг сетки. Прикладной код берёт Spacing, а не это.
@@ -174,11 +174,11 @@ nonisolated enum Token {
         enum ActionTile {
             static let background = Color(hex: 0x2C2C2C)
             static let minHeight: CGFloat = 52
-            static let radius: CGFloat = 18
+            static let radius: CGFloat = 16
         }
         enum Banner {
             static let padding: CGFloat = 14
-            static let radius: CGFloat = 20
+            static let radius: CGFloat = 28
             /// 28px в макете было мелко — плашку натощак можно было проскроллить.
             static let titleSize: CGFloat = 20
         }
@@ -187,7 +187,7 @@ nonisolated enum Token {
                 static let background = Color(hex: 0x4D1F22)
                 static let height: CGFloat = 50
                 static let label = Color(hex: 0xFF7A66)
-                static let radius: CGFloat = 16
+                static let radius: CGFloat = 24
             }
             enum Disabled {
                 static let background = Color(hex: 0x2C2C2C)
@@ -197,31 +197,31 @@ nonisolated enum Token {
                 static let background = Color(hex: 0xD4F75F2E)
                 static let height: CGFloat = 50
                 static let label = Color(hex: 0xF4F4F2)
-                static let radius: CGFloat = 16
+                static let radius: CGFloat = 24
             }
             enum Primary {
                 static let background = Color(hex: 0xD4F75F)
                 static let height: CGFloat = 60
                 static let label = Color(hex: 0x111111)
-                static let radius: CGFloat = 30
+                static let radius: CGFloat = 999
             }
             enum Secondary {
                 static let background = Color(hex: 0x2C2C2C)
                 static let height: CGFloat = 50
                 static let label = Color(hex: 0xF4F4F2)
-                static let radius: CGFloat = 16
+                static let radius: CGFloat = 24
             }
         }
         enum Card {
             static let background = Color(hex: 0x181818)
             static let padding: CGFloat = 16
-            static let radius: CGFloat = 20
+            static let radius: CGFloat = 28
         }
         enum Chip {
             static let alarmBackground = Color(hex: 0x4D1F22)
             static let alarmLabel = Color(hex: 0xFF7A66)
             static let height: CGFloat = 44
-            static let radius: CGFloat = 18
+            static let radius: CGFloat = 16
             static let restBackground = Color(hex: 0x2C2C2C)
             static let selectedBackground = Color(hex: 0xD4F75F2E)
         }
@@ -230,7 +230,7 @@ nonisolated enum Token {
             static let handleColor = Color(hex: 0x3A3A3A)
             static let handleHeight: CGFloat = 4
             static let handleWidth: CGFloat = 36
-            static let radius: CGFloat = 40
+            static let radius: CGFloat = 36
         }
         enum Timeline {
             static let alarmMark = Color(hex: 0xFF7A66)
