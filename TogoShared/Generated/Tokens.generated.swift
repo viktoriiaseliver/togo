@@ -71,6 +71,8 @@ nonisolated enum Token {
 
     /// Радиусы.
     enum Radius {
+        /// Пилюля: главное действие, чип, тост, поле. Семантическое имя заведено 05.10 вечером ВТОРЫМ заходом — primitive.radius.capsule уже стоял 999, а Token.Radius.capsule не существовал, и сторож, написанный на него, уронил сборку. Тот же промах, что часом раньше со stockLow: генератор поднимает в Swift семантику, примитив без алиаса до слоя вида не доезжает
+        static let capsule: CGFloat = 999
         static let card: CGFloat = 28
         static let control: CGFloat = 24
         static let sheet: CGFloat = 36

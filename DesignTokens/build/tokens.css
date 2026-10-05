@@ -121,6 +121,7 @@
   --semantic-action-primaryPressed: #C1E348;
   --semantic-action-primaryQuiet: #D4F75F2E;
   --semantic-action-secondary: #2C2C2C;
+  --semantic-radius-capsule: 999px;
   --semantic-radius-card: 28px;
   --semantic-radius-control: 24px;
   --semantic-radius-sheet: 36px;
