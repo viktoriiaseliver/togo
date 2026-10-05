@@ -72,7 +72,16 @@ struct TripSetupScreen: View {
 
     private func save() {
         guard let dog else { return }
-        let trip = Trip(destination: destination, startDate: start, endDate: end, transport: transport)
+        // **Якорь в полдень, а не «как отдал пикер».** `DatePicker`
+        // с `displayedComponents: .date` сохраняет ВРЕМЯ СУТОК у
+        // привязанного значения, и в базу уезжает момент, нередко
+        // близкий к полуночи. У семьи западнее владельца такой момент
+        // попадает в предыдущие сутки, и первый день поездки читается
+        // как второй. Замер по поясам — в `CalendarDay`.
+        let trip = Trip(destination: destination,
+                        startDate: CalendarDay.anchored(start),
+                        endDate: CalendarDay.anchored(end),
+                        transport: transport)
         trip.travelHours = hours
         trip.lodging = lodging
         trip.dog = dog
@@ -182,7 +191,7 @@ struct TripTodayBlock: View {
                     .foregroundStyle(Token.Status.doneText)
                 VStack(alignment: .leading, spacing: Token.Space.s2) {
                     Text(trip.destination).textStyle(AppFont.cardTitle)
-                    Text("день \(trip.dayNumber(on: now)) из \(trip.dayCount)").textStyle(AppFont.caption)
+                    Text("день \(trip.dayNumber(on: now)) из \(trip.dayCount())").textStyle(AppFont.caption)
                 }
                 Spacer(minLength: 0)
             }

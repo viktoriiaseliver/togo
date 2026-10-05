@@ -95,7 +95,7 @@ struct HeatScreen: View {
                             Text(Fmt.shortDay(record.startedAt)).textStyle(AppFont.bodyEmphasis)
                             Text(record.isOngoing
                                  ? "идёт, день \(record.dayNumber())"
-                                 : record.dayCount.map { Fmt.days($0) } ?? "")
+                                 : record.dayCount().map { Fmt.days($0) } ?? "")
                                 .textStyle(AppFont.caption)
                         }
                         Spacer(minLength: Token.Space.s8)
@@ -190,9 +190,12 @@ struct HeatEditorSheet: View {
     }
 
     private func save() {
-        let target = record ?? HeatRecord(startedAt: startedAt)
-        target.startedAt = startedAt
-        target.endedAt = hasEnded ? endedAt : nil
+        // Начало и конец течки — ДНИ, а не моменты: на них стоит день
+        // цикла, а на нём «опасные дни». Якорь в полдень — чтобы у второго
+        // человека в другом поясе день не уехал на сутки. См. `CalendarDay`.
+        let target = record ?? HeatRecord(startedAt: CalendarDay.anchored(startedAt))
+        target.startedAt = CalendarDay.anchored(startedAt)
+        target.endedAt = hasEnded ? CalendarDay.anchored(endedAt) : nil
         target.note = note.isEmpty ? nil : note
         let новая = record == nil
         if новая {

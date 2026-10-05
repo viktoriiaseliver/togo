@@ -592,11 +592,11 @@ struct BagAndHeatTests {
         let запись = HeatRecord(startedAt: днейНазад(5))
         #expect(запись.isOngoing)
         #expect(запись.dayNumber() == 6)
-        #expect(запись.dayCount == nil)
+        #expect(запись.dayCount() == nil)
 
         запись.endedAt = Date()
         #expect(!запись.isOngoing)
-        #expect(запись.dayCount == 6)
+        #expect(запись.dayCount() == 6)
     }
 }
 

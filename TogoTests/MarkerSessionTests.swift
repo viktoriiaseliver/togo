@@ -171,7 +171,7 @@ struct CareAndDoseTests {
         let end = calendar.date(byAdding: .day, value: 5, to: start)!
         let trip = Trip(destination: "Лион", startDate: start, endDate: end, transport: .car)
 
-        #expect(trip.dayCount == 6)
+        #expect(trip.dayCount() == 6)
         #expect(trip.dayNumber(on: start) == 1)
         #expect(trip.isActive(on: calendar.date(byAdding: .day, value: 2, to: start)!))
     }

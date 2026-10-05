@@ -148,12 +148,19 @@ final class Trip {
         set { transportRaw = newValue.rawValue }
     }
 
-    var dayCount: Int {
-        max(1, (Calendar.current.dateComponents([.day], from: startDate, to: endDate).day ?? 0) + 1)
+    // **Календарь аргументом, а не `Calendar.current` внутри.** Он несёт
+    // пояс ЧИТАЮЩЕГО, и пока он брался внутри, проверить эти три функции
+    // по поясам было нечем: поверхность непроверяемая, а чинится такое
+    // переделкой входа, а не старанием. Замер 05.10 — в `CalendarDay`.
+    //
+    // Значение по умолчанию оставлено, чтобы ни один вызов не переписывать:
+    // дефект не в вызовах, а в том, что выбора не было.
+
+    func dayCount(calendar: Calendar = .current) -> Int {
+        max(1, CalendarDay.daysBetween(startDate, endDate, calendar: calendar) + 1)
     }
 
-    func isActive(on date: Date = Date()) -> Bool {
-        let calendar = Calendar.current
+    func isActive(on date: Date = Date(), calendar: Calendar = .current) -> Bool {
         let from = calendar.startOfDay(for: startDate)
         // Последний день поездки считается целиком: возвращаются вечером.
         guard let until = calendar.date(byAdding: .day, value: 1,
@@ -163,8 +170,7 @@ final class Trip {
         return date >= from && date <= until
     }
 
-    func dayNumber(on date: Date = Date()) -> Int {
-        (Calendar.current.dateComponents([.day], from: Calendar.current.startOfDay(for: startDate),
-                                         to: Calendar.current.startOfDay(for: date)).day ?? 0) + 1
+    func dayNumber(on date: Date = Date(), calendar: Calendar = .current) -> Int {
+        CalendarDay.daysBetween(startDate, date, calendar: calendar) + 1
     }
 }

@@ -204,7 +204,7 @@ struct TripScreen: View {
                 HStack {
                     VStack(alignment: .leading, spacing: Token.Space.s2) {
                         Text(trip.destination).textStyle(AppFont.cardTitle)
-                        Text("\(Fmt.shortDay(trip.startDate)) — \(Fmt.shortDay(trip.endDate)) · \(Fmt.days(trip.dayCount))")
+                        Text("\(Fmt.shortDay(trip.startDate)) — \(Fmt.shortDay(trip.endDate)) · \(Fmt.days(trip.dayCount()))")
                             .textStyle(AppFont.caption)
                     }
                     Spacer(minLength: Token.Space.s8)
@@ -215,7 +215,7 @@ struct TripScreen: View {
                 TGExplainer(text: .готовая(trip.transport.windowsExplainer))
             }
 
-            PackingListCard(dog: dog, days: trip.dayCount)
+            PackingListCard(dog: dog, days: trip.dayCount())
 
             TGButton(title: "Убрать поездку", variant: .destructive,
                      size: .medium, systemImage: "trash") { isConfirmingDelete = true }

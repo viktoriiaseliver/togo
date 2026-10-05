@@ -24,15 +24,18 @@ final class HeatRecord {
 
     var isOngoing: Bool { endedAt == nil }
 
-    var dayCount: Int? {
+    // Календарь аргументом — он несёт пояс читающего, и на нём стоят
+    // «опасные дни». Замер 05.10: у семьи западнее владельца день цикла
+    // смещался на сутки, и проверить это было нечем. Подробно —
+    // в `CalendarDay`.
+
+    func dayCount(calendar: Calendar = .current) -> Int? {
         guard let endedAt else { return nil }
-        return (Calendar.current.dateComponents([.day], from: startedAt, to: endedAt).day ?? 0) + 1
+        return CalendarDay.daysBetween(startedAt, endedAt, calendar: calendar) + 1
     }
 
-    func dayNumber(on date: Date = Date()) -> Int {
-        (Calendar.current.dateComponents([.day],
-                                         from: Calendar.current.startOfDay(for: startedAt),
-                                         to: Calendar.current.startOfDay(for: date)).day ?? 0) + 1
+    func dayNumber(on date: Date = Date(), calendar: Calendar = .current) -> Int {
+        CalendarDay.daysBetween(startedAt, date, calendar: calendar) + 1
     }
 }
 
