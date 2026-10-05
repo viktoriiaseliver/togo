@@ -142,14 +142,23 @@ nonisolated enum DoseScheduler {
             return dose
         }
 
-        let остаток = medication.stockLeft
+        let остаток = medication.remaining
         dose.givenAt = now
         dose.givenBy = person
 
         // Счёт таблеток живёт на отметках: отдельного учёта не нужно,
-        // минус одна с каждой. Ноль — просто «не считаем».
-        if medication.stockTotal > 0, medication.stockLeft > 0 {
-            medication.stockLeft -= 1
+        // минус доза с каждой. Ноль в упаковке — просто «не считаем».
+        //
+        // **Списывается доза из слота, а не единица.** Полтаблетки
+        // дважды в день — это одна таблетка в день, и `-= 1` отнимал бы
+        // вдвое: запас кончался бы на бумаге раньше, человек покупал
+        // лишнее и перестал бы верить числу. И писать надо через модель,
+        // а не в `stockLeft`: у препарата с дробным учётом правду
+        // говорит `remaining`, и отметка дозы в целое поле не изменила
+        // бы на экране ничего — человек отмечает дозу и видит, что запас
+        // не убывает. Поймал togo-9e 05.10.2026.
+        if medication.packSize > 0, medication.remaining > 0 {
+            medication.takeDose(medication.quantity(at: dose.scheduledAt))
         }
 
         // Здесь `try?` стоил бы второй дозы. Экран, получив отметку,
@@ -162,7 +171,7 @@ nonisolated enum DoseScheduler {
         guard context.persist(otherwise: {
             dose.givenAt = nil
             dose.givenBy = nil
-            medication.stockLeft = остаток
+            medication.setStock(остаток)
             if существующая == nil { отцепить(dose, from: context) }
         }) else {
             UsageLog.note(.dose, "given", outcome: .failed)
@@ -254,12 +263,17 @@ nonisolated enum DoseScheduler {
         }) else { return true }
 
         let было = (dose.givenAt, dose.givenBy, dose.skippedAt, dose.skippedBy,
-                    dose.claimedBy, dose.claimedAt, medication.stockLeft)
+                    dose.claimedBy, dose.claimedAt)
+        let былОстаток = medication.remaining
 
-        // Отметку сняли — таблетка возвращается в пачку. Иначе счётчик
+        // Отметку сняли — доза возвращается в пачку. Иначе счётчик
         // уезжал бы вниз на каждом промахе пальцем.
-        if dose.givenAt != nil, medication.stockTotal > 0 {
-            medication.stockLeft = min(medication.stockTotal, medication.stockLeft + 1)
+        //
+        // Возвращается столько же, сколько списалось, — доза из слота,
+        // а не единица. И через модель: потолок у дробного учёта берётся
+        // у `packSize`, а `stockTotal` там мёртв.
+        if dose.givenAt != nil, medication.packSize > 0 {
+            medication.returnDose(medication.quantity(at: dose.scheduledAt))
         }
 
         dose.givenAt = nil
@@ -271,7 +285,8 @@ nonisolated enum DoseScheduler {
         dose.claimedAt = nil
         guard context.persist(otherwise: {
             (dose.givenAt, dose.givenBy, dose.skippedAt, dose.skippedBy,
-             dose.claimedBy, dose.claimedAt, medication.stockLeft) = было
+             dose.claimedBy, dose.claimedAt) = было
+            medication.setStock(былОстаток)
         }) else {
             UsageLog.note(.dose, "unmarked", outcome: .failed)
             return false
