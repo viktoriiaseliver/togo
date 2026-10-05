@@ -1,0 +1,33 @@
+Togo — a dog diary for the whole family. Who took her out, who fed her, what the stool looked like — it's written down, and nobody has to work it out in the evening.
+
+THE MAIN BUTTON — “NEEDS TO GO OUT?”
+In three or four days the app learns your dog's intervals and tells you whether the need is real. While it has few entries it says “not sure” — honestly — and still puts “Taking her out” first. It doesn't know better than you do.
+
+ONE TAP THAT CHANGES BEHAVIOR
+The door opens, and whatever the dog did just before it gets reinforced. Togo asks how exactly she asked, and shows you if barking is crowding out the quiet signal.
+
+TRAINING WITHOUT PRESSURE
+A dog learns from a marker that lands within half a second, not from the number of treats. Togo measures the delay and answers in one word: on time, almost, late. After three minutes it asks you to stop — past that the dog is guessing, not learning. Training food comes out of the daily ration, so there's no treat limit to keep.
+
+A SHARED DIARY
+Whoever you invite sees the day's entries and dose marks: outings, meals, stools, “needs to go out”. Two entries about the same thing don't overwrite each other — the app offers to merge them. No working out in the evening who took her out.
+
+MEDICINE IS A MODE, NOT A SECTION
+The Health tab appears only when the dog is on treatment. Fasting window, double-dose protection, the “dose → blood draw” protocol, and a report for the vet — assembled from what's already written down.
+
+TRIPS
+The mode switches on by date and goes out by itself. Packing is calculated from weight and portion size, pre-flight fasting windows from the departure time.
+
+WHAT INTERRUPTS YOU
+Only a dose on the clock, a fasting window, and a missed dose. Grooming, vaccines and weigh-ins arrive in a single message at the hour you choose.
+
+FREE FOREVER
+The fasting window, double-dose protection, “how she asked”, “didn't take food”, and the warning about punishing a dog after an accident. Without them the app would quietly harm the dog, so they aren't for sale.
+
+TOGO PRO
+The skill generalization matrix, a second dog and more, a family larger than two people. Everything else — along with the fasting window and double-dose protection — is free forever.
+Togo Pro is an auto-renewable subscription, monthly or yearly. The App Store shows the price: it depends on your country and can change. The subscription renews itself until you cancel — no later than 24 hours before the period ends. Payment is charged to your Apple ID on purchase confirmation. You can cancel in App Store settings.
+Terms of use: https://viktoriiaseliver.github.io/togo/terms.html
+Privacy policy: https://viktoriiaseliver.github.io/togo/privacy.html
+
+We have no server of our own, and there's no account to create. The diary lives on your phone; if iCloud is on, a copy goes to your private library, in the same place as everything else of yours. The shared family diary is iCloud sharing: only the person you name yourself gets in.
