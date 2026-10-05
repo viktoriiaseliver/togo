@@ -59,7 +59,9 @@ struct BackupScreen: View {
             }
             Button("Отмена", role: .cancel) { pendingArchive = nil }
         } message: {
-            Text(pendingArchive.map { "В файле: \($0.summary). Сделан \(Fmt.shortDay($0.createdAt))." } ?? "")
+            Text(pendingArchive.map {
+                String(localized: "Файл сделан \(Fmt.shortDay($0.createdAt)), внутри: \($0.summary).")
+            } ?? "")
         }
     }
 
@@ -172,7 +174,7 @@ struct BackupScreen: View {
             archive = built
             fileData = try BackupService.encode(built)
         } catch {
-            message = Message(tone: .alarm, title: "Не удалось собрать файл",
+            message = Message(tone: .alarm, title: String(localized: "Не удалось собрать файл"),
                               detail: error.localizedDescription)
         }
     }
@@ -185,12 +187,12 @@ struct BackupScreen: View {
             do {
                 pendingArchive = try BackupService.decode(try Data(contentsOf: url))
             } catch {
-                message = Message(tone: .alarm, title: "Файл не подошёл",
+                message = Message(tone: .alarm, title: String(localized: "Файл не подошёл"),
                                   detail: error.localizedDescription)
                 UsageLog.note(.backup, "open", outcome: .failed)
             }
         case .failure(let error):
-            message = Message(tone: .alarm, title: "Не удалось открыть файл",
+            message = Message(tone: .alarm, title: String(localized: "Не удалось открыть файл"),
                               detail: error.localizedDescription)
             UsageLog.note(.backup, "open", outcome: .failed)
         }
@@ -202,15 +204,15 @@ struct BackupScreen: View {
             let count = try BackupService.restore(pendingArchive, into: context, strategy: strategy)
             message = Message(
                 tone: .done,
-                title: "Восстановлено",
+                title: String(localized: "Восстановлено"),
                 detail: strategy == .replace
-                    ? "Дневник заменён содержимым файла: \(pendingArchive.summary)."
-                    : "Добавлено новых записей: \(count). То, что уже было, осталось на месте."
+                    ? String(localized: "Дневник заменён содержимым файла: \(pendingArchive.summary).")
+                    : String(localized: "Добавлено новых записей: \(count). То, что уже было, осталось на месте.")
             )
             Haptics.success()
             UsageLog.note(.backup, strategy == .replace ? "replace" : "merge")
         } catch {
-            message = Message(tone: .alarm, title: "Не получилось восстановить",
+            message = Message(tone: .alarm, title: String(localized: "Не получилось восстановить"),
                               detail: error.localizedDescription)
             UsageLog.note(.backup, "restore", outcome: .failed)
         }

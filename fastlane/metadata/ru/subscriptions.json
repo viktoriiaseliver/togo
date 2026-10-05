@@ -1,17 +1,47 @@
 {
-  "_комментарий": "Тексты и цены подписки. Отсюда их забирает Tools/setup_subscriptions.sh — в App Store Connect руками ничего не вводится. Ограничения Apple: имя ≤ 30 знаков, описание ≤ 45.",
+  "_комментарий": "Тексты и цены подписки. Отсюда их забирает Tools/setup_subscriptions.sh — в App Store Connect руками ничего не вводится. Ограничения Apple: имя ≤ 30 знаков, описание ≤ 45. Длины проверяет Tools/check_subscription_texts.py, а не глаз: предел режет, а не переносит.",
+  "_локали": "Локали продукта обязаны покрывать локали витрины. Замер 05.10.2026: витрина заявляет ru · fr-FR · uk · en-US, у обеих подписок была одна ru — француз, украинец и англичанин видели русское название на листе оплаты. Заливает Tools/setup_subscriptions.sh (пока только ru) и сессия витрины.",
   "baseTerritory": "FRA",
   "groupName": "Togo Pro",
+  "_имяГруппы": "«Togo Pro» — название подписки, одно на все языки: имя, а не фраза.",
   "products": {
     "app.togo.diary.pro.monthly": {
       "name": "Togo Pro · месяц",
       "description": "Вторая собака, семья, матрица навыка",
-      "price": "2.99"
+      "price": "2.99",
+      "localizations": {
+        "fr-FR": {
+          "name": "Togo Pro · mensuel",
+          "description": "Deuxième chien, famille, matrice de transfert"
+        },
+        "uk": {
+          "name": "Togo Pro · місяць",
+          "description": "Друга собака, сім'я, матриця перенесення"
+        },
+        "en-US": {
+          "name": "Togo Pro · monthly",
+          "description": "Second dog, family, generalization matrix"
+        }
+      }
     },
     "app.togo.diary.pro.yearly": {
       "name": "Togo Pro · год",
       "description": "Вторая собака, семья, матрица навыка",
-      "price": "19.99"
+      "price": "19.99",
+      "localizations": {
+        "fr-FR": {
+          "name": "Togo Pro · annuel",
+          "description": "Deuxième chien, famille, matrice de transfert"
+        },
+        "uk": {
+          "name": "Togo Pro · рік",
+          "description": "Друга собака, сім'я, матриця перенесення"
+        },
+        "en-US": {
+          "name": "Togo Pro · yearly",
+          "description": "Second dog, family, generalization matrix"
+        }
+      }
     }
   }
 }
