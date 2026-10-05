@@ -97,7 +97,17 @@ enum AppFont {
                                         color: Token.Ink.primary, monospacedDigits: true,
                                         relativeTo: .title2)
     /// Герой: ответ на главный вопрос. Один на экран.
-    static let hero = TextStyleToken(size: Token.FontSize.hero, weight: Token.FontWeight.bold,
+    ///
+    /// Вес `light`, а не `bold`: поколение «финал» 05.10 задаёт крупные
+    /// цифры как SF Pro Rounded 300 (`--fw-number`). Прежний `bold` был
+    /// весом ПРОТИВОПОЛОЖНЫМ, и это самое заметное глазом расхождение
+    /// кода с макетом — заметнее смены палитры, потому что цифра
+    /// на экране одна и самая большая.
+    ///
+    /// Размер остался 56pt, а не 96pt макета: там он задан С ОСЬЮ
+    /// УСТРОЙСТВА (96 на iPhone 402, 80 на SE 375, 112 на iPad), а оси
+    /// в токенах нет. Плоские 96 переполнили бы узкий экран.
+    static let hero = TextStyleToken(size: Token.FontSize.hero, weight: Token.FontWeight.light,
                                      color: Token.Ink.primary, monospacedDigits: true,
                                      relativeTo: .title2)
     static let wordmark = TextStyleToken(size: Token.FontSize.display, weight: Token.FontWeight.bold,
