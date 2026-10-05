@@ -104,14 +104,14 @@ struct HealthScreen: View {
             }
             .buttonStyle(.plain)
 
+            let уровень = PillSupplyAdvisor.level(supply(medication))
             Button { countingPills = medication } label: {
                 TGCard {
                     TGListRow(title: "Запас",
                               value: .готовая(supplyValue(medication)),
                               systemImage: "shippingbox",
                               accessory: .none,
-                              tone: PillSupplyAdvisor.needsWarning(supply(medication))
-                                  ? Token.Status.waitingText : Token.Ink.primary)
+                              tone: уровень == .ok ? Token.Ink.primary : уровень.цветТекста)
                 }
             }
             .buttonStyle(.plain)

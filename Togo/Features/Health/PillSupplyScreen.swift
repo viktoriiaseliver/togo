@@ -45,7 +45,7 @@ struct PillSupplyScreen: View {
 
     /// Числа здесь целые нарочно, хотя запас уже дробный.
     ///
-    /// `«\(supply.left)»` и `«из \(supply.total)»` — ключи каталога
+    /// `«\(осталось)»` и `«из \(впачке)»` — ключи каталога
     /// с `%lld`. Подставить сюда `Double` значит завести **новые**
     /// ключи и в ту же секунду получить пробелы в `fr`, `uk` и `en`:
     /// пробел откатывается на русский, и француз увидел бы русскую
@@ -57,18 +57,19 @@ struct PillSupplyScreen: View {
         let осталось = Int(supply.remaining.rounded(.down))
         let впачке = Int(supply.packSize.rounded(.down))
         return TGCard {
+            let уровень = PillSupplyAdvisor.level(supply)
             HStack(alignment: .firstTextBaseline) {
                 Text("\(осталось)").textStyle(AppFont.display)
                 Text("из \(впачке)").textStyle(AppFont.caption)
                 Spacer()
-                if PillSupplyAdvisor.needsWarning(supply) {
+                if уровень != .ok {
                     Text("пора покупать")
-                        .textStyle(AppFont.caption.color(Token.Status.waitingText))
+                        .textStyle(AppFont.caption.color(уровень.цветТекста))
                 }
             }
             ProgressView(value: supply.remaining,
                          total: max(supply.packSize, supply.remaining))
-                .tint(PillSupplyAdvisor.needsWarning(supply) ? Token.Status.waitingText : Token.Action.doneText)
+                .tint(уровень.цветТекста)
         }
     }
 
@@ -135,5 +136,31 @@ struct PillSupplyScreen: View {
     /// думает, что таблетки посчитаны, и пропускает докупку.
     private func save() {
         if !context.persist(otherwise: {}) { Haptics.warning() }
+    }
+}
+
+/// Цвет уровня запаса — **одно место на всё приложение**.
+///
+/// Мест, где запас красится, уже два (шторка и строка в списке
+/// препаратов), а скоро будет больше: экран «Запас», виджет и
+/// уведомление «Купил» с кадров 30–33 и 46–48. Повтори это правило
+/// в каждом — и оно разойдётся молча, как уже расходилось «не кормить»
+/// в трёх реализациях, из которых две молчали.
+///
+/// Соответствие — с кадра 30, а не по вкусу: ≤ 3 дня терракотом,
+/// ≤ 7 оранжевым, дальше нейтрально. Четвёртый цвет (`stockLow`)
+/// завёл менеджер 05.10 вечером; до того уровень `.low` вычислялся,
+/// а покрасить его было нечем — примитив без семантического имени
+/// не доезжает до слоя вида.
+///
+/// Просится в `Togo/DesignSystem/` — это зона togo-5a; здесь лежит
+/// временно, чтобы правило было в одном месте, а не в двух.
+extension PillSupplyAdvisor.Level {
+    var цветТекста: Color {
+        switch self {
+        case .ok: Token.Action.doneText
+        case .low: Token.Status.stockLowText
+        case .urgent: Token.Status.overdueText
+        }
     }
 }
