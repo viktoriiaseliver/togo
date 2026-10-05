@@ -352,17 +352,76 @@ struct SchemaMigrationTests {
         #expect(имена(TogoSchemaV4.self).count == 16)
     }
 
+    /// Что именно заводит V5 — списком, а не числом.
+    ///
+    /// **Записано поимённо нарочно.** Число полей сходится и при
+    /// перепутанных местах: заведи «срок после вскрытия» вместо «годен
+    /// до» — счётчик промолчит, а человек с открытым флаконом увидит
+    /// не тот срок. Имя поля ловит это, число — нет.
+    @Test("V5 заводит тринадцать полей под экраны хендоффа и ни одного не удаляет")
+    func пятаяВерсияДобавляетПоля() {
+        func поля(_ версия: any VersionedSchema.Type, _ сущность: String) -> Set<String> {
+            let схема = Schema(versionedSchema: версия)
+            return Set((схема.entitiesByName[сущность]?.properties ?? []).map(\.name))
+        }
+
+        let лечение4 = поля(TogoSchemaV4.self, "Medication")
+        let лечение5 = поля(TogoSchemaV5.self, "Medication")
+        #expect(лечение5.subtracting(лечение4) == [
+            "unitRaw", "doseSlotsData", "stockLeftAmount", "packAmount",
+            "courseEnd", "expiry", "openedAt", "shelfAfterOpenDays",
+            "remindBeforeExpiry", "canGiveOutside",
+        ])
+        #expect(лечение4.subtracting(лечение5).isEmpty, """
+            из `Medication` что-то исчезло. Удаление поля — это НЕ та
+            миграция, которую CoreData выводит сам, и `.lightweight`
+            здесь соврёт: шесть розданных сборок несут V4.
+            """)
+
+        // Срок годности и срок после вскрытия — ДВА поля, и это главное
+        // в этой версии. Одним полем разница «годен до» против «вскрыт,
+        // дальше N дней» потерялась бы молча — у человека с открытым
+        // флаконом капель, то есть там, где ошибка измеряется дозой.
+        #expect(лечение5.isSuperset(of: ["expiry", "openedAt", "shelfAfterOpenDays"]))
+
+        let корм4 = поля(TogoSchemaV4.self, "FoodStock")
+        let корм5 = поля(TogoSchemaV5.self, "FoodStock")
+        #expect(корм5.subtracting(корм4) == ["expiry", "shelfAfterOpenDays"])
+        #expect(корм4.subtracting(корм5).isEmpty)
+
+        let лента4 = поля(TogoSchemaV4.self, "LogEvent")
+        let лента5 = поля(TogoSchemaV5.self, "LogEvent")
+        #expect(лента5.subtracting(лента4) == ["editedBy"])
+        #expect(лента4.subtracting(лента5).isEmpty)
+
+        // Тринадцать всего, и ни одной новой сущности: на наборе
+        // из шестнадцати стоит `.lightweight`.
+        let сущности = { (версия: any VersionedSchema.Type) in
+            Set(Schema(versionedSchema: версия).entitiesByName.keys)
+        }
+        #expect(сущности(TogoSchemaV5.self) == сущности(TogoSchemaV4.self))
+
+        // Остальные тринадцать моделей не тронуты вовсе — правка
+        // на одной поверхности из трёх у нас уже стоила дня.
+        for сущность in сущности(TogoSchemaV4.self)
+        where !["Medication", "FoodStock", "LogEvent"].contains(сущность) {
+            #expect(поля(TogoSchemaV5.self, сущность) == поля(TogoSchemaV4.self, сущность),
+                    "V5 тронула `\(сущность)`, хотя хендофф её не просил")
+        }
+    }
+
     @Test("В плане перечислены все формы хранилища, что уехали из репозитория")
     func планПолон() {
-        #expect(TogoMigrationPlan.schemas.count == 4, """
-            сборка 36 (V1), сборка 46 (V2), сборка 141 (V3) и нынешняя (V4)
-            — версию, которой в плане нет, открыть нечем.
-            V3 заморожена снимком 23.09: до этого она ссылалась на живые
-            классы, и первая же правка модели сменила её форму под
-            неизменным номером.
+        #expect(TogoMigrationPlan.schemas.count == 5, """
+            сборка 36 (V1), сборка 46 (V2), сборка 141 (V3), сборки
+            191–271 (V4) и нынешняя (V5) — версию, которой в плане нет,
+            открыть нечем.
+            V3 заморожена снимком 23.09, V4 — 05.10: до заморозки каждая
+            ссылалась на живые классы, и первая же правка модели меняла
+            её форму под неизменным номером.
             """)
-        #expect(TogoMigrationPlan.stages.count == 3)
-        #expect(Persistence.schema.version == TogoSchemaV4.versionIdentifier,
+        #expect(TogoMigrationPlan.stages.count == 4)
+        #expect(Persistence.schema.version == TogoSchemaV5.versionIdentifier,
                 "приложение открывает хранилище последней версией плана")
     }
 

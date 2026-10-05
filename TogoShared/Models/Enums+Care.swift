@@ -87,3 +87,47 @@ nonisolated enum CareKind: String, Codable, CaseIterable, Sendable {
         }
     }
 }
+
+/// В чём мерят препарат.
+///
+/// **Зачем вообще единица.** «Осталось 7» ничего не значит, пока
+/// неизвестно, чего семь: семь таблеток — это неделя, семь миллилитров
+/// — один приём капель. Экран запаса показывает уровень «хватит
+/// на N дней», и без единицы он врёт в разы.
+///
+/// `dose` — для назначений без счётной единицы: ингалятор, мазь,
+/// «один пакетик». Запас у них обычно не считают, и навязывать счёт
+/// незачем.
+nonisolated enum MedUnit: String, Codable, CaseIterable, Sendable {
+    case tab
+    case ml
+    case dose
+
+    var title: String {
+        switch self {
+        case .tab: String(localized: "таблетки")
+        case .ml: String(localized: "миллилитры")
+        case .dose: String(localized: "дозы")
+        }
+    }
+
+    /// Как подписать количество рядом с числом.
+    var shortName: String {
+        switch self {
+        case .tab: String(localized: "таб.")
+        case .ml: String(localized: "мл")
+        case .dose: String(localized: "дозы")
+        }
+    }
+
+    /// Бывают ли половинки. Таблетку делят, миллилитр — мера сам по себе.
+    var allowsHalves: Bool { self == .tab }
+
+    var symbol: String {
+        switch self {
+        case .tab: "pills"
+        case .ml: "drop"
+        case .dose: "cross.vial"
+        }
+    }
+}

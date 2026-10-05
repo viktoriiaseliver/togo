@@ -83,6 +83,12 @@ struct DeviceLocalFieldTests {
         "LogEvent.trainingSessionID", "LogEvent.medicationID",
         "LogEvent.careTaskID", "LogEvent.walkEventID",
         "LogEvent.deletedAt", "LogEvent.deletedBy", "LogEvent.changedAt",
+        // Кто поправил запись. Та же причина, что у `deletedBy`:
+        // это имя человека, а не свойство телефона, и на другом
+        // телефоне оно значит ровно то же. В дневнике на семью это
+        // и есть главный вопрос к исправленной записи — граммы
+        // поправил тот, кто кормил, или тот, кто решил, что было иначе.
+        "LogEvent.editedBy",
         "LogEvent.dog",
     ]
 
