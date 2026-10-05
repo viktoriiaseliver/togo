@@ -130,7 +130,14 @@ struct ComponentGallery: View {
                                 RoundedRectangle(cornerRadius: Token.Radius.small, style: .continuous)
                                     .stroke(Token.Surface.hairline)
                             )
-                        Text(name).font(.system(size: 9)).foregroundStyle(Token.Ink.faint)
+                        // Подпись названия токена — `secondary`, а не `faint`.
+                        // Замер 05.10: `faint` на карточке даёт 3,43:1, и это
+                        // единственное живое применение запрещённого токена
+                        // во всём коде — то есть запрет нарушал не продукт,
+                        // а сам инструмент, которым мы читаем имена цветов.
+                        // Образец `faint` в списке выше остаётся: там он
+                        // показывает себя заливкой, а не красит текст.
+                        Text(name).font(.system(size: 9)).foregroundStyle(Token.Ink.secondary)
                     }
                 }
             }
