@@ -39064,29 +39064,6 @@
         }
       }
     },
-    "отметок мочи нет с %@" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "no pee marked since %@"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "aucun pipi coché depuis %@"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "пісяння не позначали з %@"
-          }
-        }
-      }
-    },
     "Отметок мочи нет с %@. Приложение не знает, писал он или просто никто не отметил." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -50818,6 +50795,28 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "з %@"
+          }
+        }
+      }
+    },
+    "с %@ мочу не отмечали" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "pee not marked since %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "pipi non coché depuis le %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "з %@ сечу не позначали"
           }
         }
       }
