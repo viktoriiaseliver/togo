@@ -118,7 +118,7 @@ nonisolated enum Token {
         static let caption: CGFloat = 14
         /// Крупная цифра карточки
         static let display: CGFloat = 34
-        /// Ответ на главный вопрос — один на экран
+        /// Ответ на главный вопрос — один на экран. НЕ поднят до 96px поколения «финал» нарочно: макет задаёт эту цифру С ОСЬЮ УСТРОЙСТВА — 96 на iPhone 402, 80 на SE 375 и развороте, 112 на iPad, — а оси устройства в наших токенах нет вовсе. Плоские 96 переполнили бы SE, то есть «исполнение макета» сломало бы узкий экран. Нужна ось, и это отдельная работа, а не правка значения
         static let hero: CGFloat = 56
         /// Мета: время, автор, подпись
         static let meta: CGFloat = 15
@@ -136,6 +136,8 @@ nonisolated enum Token {
         static let bold: Font.Weight = .bold
         /// Только SF Pro Rounded в главной цифре, кличке и заголовке экрана
         static let heavy: Font.Weight = .heavy
+        /// Крупные цифры, и только они. Поколение «финал» 05.10: --fw-number 300, SF Pro Rounded. До этого главная цифра рисовалась bold 700 — вес противоположный, и это самое заметное глазом расхождение кода с макетом
+        static let light: Font.Weight = .light
         static let medium: Font.Weight = .medium
         static let regular: Font.Weight = .regular
         static let semibold: Font.Weight = .semibold
