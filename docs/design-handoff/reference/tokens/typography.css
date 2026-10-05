@@ -1,0 +1,36 @@
+/* Graphite · типографика. SF Pro (системный), размеры Dynamic Type «L» (по умолчанию iOS). */
+:root {
+  --font-text: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro", system-ui, "Segoe UI", sans-serif;
+  --font-rounded: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-icon: "Material Symbols Rounded";
+
+  --fs-large-title: 34px;
+  --fs-title-1: 28px;
+  --fs-title-2: 22px;
+  --fs-title-3: 20px;
+  --fs-headline: 17px;
+  --fs-body: 17px;
+  --fs-callout: 16px;
+  --fs-subheadline: 15px;
+  --fs-footnote: 13px;
+  --fs-caption-1: 13px;
+  --fs-caption-2: 13px;  /* минимум 13 — читаемость */
+
+  /* Крупные цифры: SF Pro Rounded 300, растут максимум до 150 % */
+  --fs-number-hero: 96px;      /* показание «Сегодня», iPhone 402; SE и разворот — xl 80; iPad — 112 */
+  --fs-number-hero-pad: 112px;
+  --fs-number-xl: 80px;
+  --fs-number-l: 56px;
+  --fs-number-m: 44px;
+  --fs-number-s: 30px;
+
+  --fw-regular: 400;
+  --fw-semibold: 600;
+  --fw-number: 300;
+  --lh-tight: 1.1;
+  --lh-body: 1.35;
+
+  --icon-size: 24px;
+  --icon-size-s: 20px;
+  --icon-weight: 300;
+}
