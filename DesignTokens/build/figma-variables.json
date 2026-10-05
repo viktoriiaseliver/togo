@@ -733,6 +733,20 @@
           "aliasCollection": "Primitive"
         },
         {
+          "name": "status/stockLowBg",
+          "type": "COLOR",
+          "description": "Запас кончается — плашка. ≤ 7 дней; ≤ 3 берёт overdue",
+          "alias": "color/stockLowBg",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "status/stockLowText",
+          "type": "COLOR",
+          "description": "Запас кончается — текст и значок. Заведён 05.10 вечером вторым шагом: примитив положили в tokens.json, а семантического имени не дали — и в Tokens.generated.swift его не оказалось ВОВСЕ. Генератор поднимает в Swift то, на что ссылается семантика; примитив без алиаса до слоя вида не доезжает. Нашёл togo-9e, искавший, чем покрасить уровень .low",
+          "alias": "color/stockLow",
+          "aliasCollection": "Primitive"
+        },
+        {
           "name": "status/waitingBg",
           "type": "COLOR",
           "description": "",

@@ -133,6 +133,8 @@
   --semantic-status-doneText: #F4F4F2;
   --semantic-status-overdueBg: #4D1F22;
   --semantic-status-overdueText: #FF7A66;
+  --semantic-status-stockLowBg: #4A2A10;
+  --semantic-status-stockLowText: #FFA15C;
   --semantic-status-waitingBg: #4A300A;
   --semantic-status-waitingText: #F7C75F;
   --semantic-surface-card: #181818;

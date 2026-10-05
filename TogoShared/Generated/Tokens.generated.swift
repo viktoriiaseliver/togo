@@ -54,6 +54,10 @@ nonisolated enum Token {
         static let doneText = Color(hex: 0xF4F4F2)
         static let overdueBg = Color(hex: 0x4D1F22)
         static let overdueText = Color(hex: 0xFF7A66)
+        /// Запас кончается — плашка. ≤ 7 дней; ≤ 3 берёт overdue
+        static let stockLowBg = Color(hex: 0x4A2A10)
+        /// Запас кончается — текст и значок. Заведён 05.10 вечером вторым шагом: примитив положили в tokens.json, а семантического имени не дали — и в Tokens.generated.swift его не оказалось ВОВСЕ. Генератор поднимает в Swift то, на что ссылается семантика; примитив без алиаса до слоя вида не доезжает. Нашёл togo-9e, искавший, чем покрасить уровень .low
+        static let stockLowText = Color(hex: 0xFFA15C)
         static let waitingBg = Color(hex: 0x4A300A)
         static let waitingText = Color(hex: 0xF7C75F)
     }
