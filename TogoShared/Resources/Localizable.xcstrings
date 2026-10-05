@@ -2,9 +2,7 @@
   "sourceLanguage" : "ru",
   "strings" : {
     "" : {
-      "localizations" : {
 
-      }
     },
     "  где: %@" : {
       "comment" : "lines",
@@ -2835,9 +2833,7 @@
       }
     },
     "%lld" : {
-      "localizations" : {
 
-      }
     },
     "%lld " : {
       "comment" : "число с пробелом: переводить нечего",
@@ -5134,9 +5130,7 @@
       }
     },
     "%lld%%" : {
-      "localizations" : {
 
-      }
     },
     "%lld%% доз вовремя" : {
       "localizations" : {
@@ -5195,9 +5189,7 @@
       }
     },
     "+…" : {
-      "localizations" : {
 
-      }
     },
     "−1 ч" : {
       "comment" : "windows",
@@ -5392,9 +5384,7 @@
       }
     },
     "4,1" : {
-      "localizations" : {
 
-      }
     },
     "16 мг" : {
       "comment" : "comparison",
@@ -5733,19 +5723,13 @@
       }
     },
     "Pro" : {
-      "localizations" : {
 
-      }
     },
     "T+%@" : {
-      "localizations" : {
 
-      }
     },
     "T0 / +4 / +6" : {
-      "localizations" : {
 
-      }
     },
     "Togo" : {
       "comment" : "название приложения",
@@ -7289,30 +7273,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "У тихі години застосунок не питає результат виходу — збере вранці однією карткою."
-          }
-        }
-      }
-    },
-    "В файле: %@. Сделан %@." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dans le fichier : %@. Créé %@."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "В файле: %@. Сделан %@."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "У файлі: %@. Зроблено %@."
           }
         }
       }
@@ -11651,6 +11611,22 @@
         }
       }
     },
+    "гулял %@" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "promené le %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "гуляв %@"
+          }
+        }
+      }
+    },
     "гулял %@ назад" : {
       "comment" : "snapshot",
       "extractionState" : "manual",
@@ -13880,26 +13856,18 @@
         }
       }
     },
-    "Добавлено новых записей: %@. То, что уже было, осталось на месте." : {
-      "comment" : "count",
-      "extractionState" : "manual",
+    "Добавлено новых записей: %lld. То, что уже было, осталось на месте." : {
       "localizations" : {
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nouvelles entrées ajoutées : %@. Ce qui était déjà là n'a pas bougé."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Добавлено новых записей: %@. То, что уже было, осталось на месте."
+            "value" : "Nouvelles entrées ajoutées : %lld. Ce qui était déjà là n'a pas bougé."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Додано нових записів: %@. Те, що вже було, залишилося на місці."
+            "value" : "Додано нових записів: %lld. Те, що вже було, залишилося на місці."
           }
         }
       }
@@ -15264,6 +15232,22 @@
         }
       }
     },
+    "ел %@" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "a mangé le %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "їв %@"
+          }
+        }
+      }
+    },
     "ел %@ назад" : {
       "comment" : "cal",
       "extractionState" : "manual",
@@ -16007,12 +15991,6 @@
         "ru" : {
           "variations" : {
             "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "ещё %lld попытка — и будет видно, получается ли"
-                }
-              },
               "few" : {
                 "stringUnit" : {
                   "state" : "translated",
@@ -16023,6 +16001,12 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "ещё %lld попыток — и будет видно, получается ли"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "ещё %lld попытка — и будет видно, получается ли"
                 }
               },
               "other" : {
@@ -16037,12 +16021,6 @@
         "uk" : {
           "variations" : {
             "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "ще %lld спроба — і буде видно, чи виходить"
-                }
-              },
               "few" : {
                 "stringUnit" : {
                   "state" : "needs_review",
@@ -16053,6 +16031,12 @@
                 "stringUnit" : {
                   "state" : "needs_review",
                   "value" : "ще %lld спроб — і буде видно, чи виходить"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "ще %lld спроба — і буде видно, чи виходить"
                 }
               },
               "other" : {
@@ -16089,12 +16073,6 @@
         "ru" : {
           "variations" : {
             "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Ещё %lld попытка, и станет видно. Получается — это 4 раза из 5, как и у шага обучения."
-                }
-              },
               "few" : {
                 "stringUnit" : {
                   "state" : "translated",
@@ -16105,6 +16083,12 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "Ещё %lld попыток, и станет видно. Получается — это 4 раза из 5, как и у шага обучения."
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ещё %lld попытка, и станет видно. Получается — это 4 раза из 5, как и у шага обучения."
                 }
               },
               "other" : {
@@ -16119,12 +16103,6 @@
         "uk" : {
           "variations" : {
             "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "Ще %lld спроба, і стане видно. «Виходить» — це 4 рази з 5, як і в кроку навчання."
-                }
-              },
               "few" : {
                 "stringUnit" : {
                   "state" : "needs_review",
@@ -16135,6 +16113,12 @@
                 "stringUnit" : {
                   "state" : "needs_review",
                   "value" : "Ще %lld спроб, і стане видно. «Виходить» — це 4 рази з 5, як і в кроку навчання."
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Ще %lld спроба, і стане видно. «Виходить» — це 4 рази з 5, як і в кроку навчання."
                 }
               },
               "other" : {
@@ -38339,12 +38323,6 @@
         "ru" : {
           "variations" : {
             "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Принять смену и %lld дело"
-                }
-              },
               "few" : {
                 "stringUnit" : {
                   "state" : "translated",
@@ -38355,6 +38333,12 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "Принять смену и %lld дел"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Принять смену и %lld дело"
                 }
               },
               "other" : {
@@ -38369,12 +38353,6 @@
         "uk" : {
           "variations" : {
             "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "Прийняти зміну і %lld справу"
-                }
-              },
               "few" : {
                 "stringUnit" : {
                   "state" : "needs_review",
@@ -38385,6 +38363,12 @@
                 "stringUnit" : {
                   "state" : "needs_review",
                   "value" : "Прийняти зміну і %lld справ"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Прийняти зміну і %lld справу"
                 }
               },
               "other" : {
@@ -40610,6 +40594,22 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "з %@"
+          }
+        }
+      }
+    },
+    "С %@ отметок мочи нет. Приложение не знает, писал он или просто никто не отметил." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Depuis le %@, aucun pipi coché. L'app ne sait pas s'il a fait pipi ou si personne ne l'a coché."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "З %@ пісяння не позначали. Застосунок не знає, чи він пісяв, чи просто ніхто не позначив."
           }
         }
       }
@@ -47623,12 +47623,6 @@
         "ru" : {
           "variations" : {
             "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Удалить прогулку и %lld отметку"
-                }
-              },
               "few" : {
                 "stringUnit" : {
                   "state" : "translated",
@@ -47639,6 +47633,12 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "Удалить прогулку и %lld отметок"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Удалить прогулку и %lld отметку"
                 }
               },
               "other" : {
@@ -47653,12 +47653,6 @@
         "uk" : {
           "variations" : {
             "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "Видалити прогулянку і %lld позначку"
-                }
-              },
               "few" : {
                 "stringUnit" : {
                   "state" : "needs_review",
@@ -47669,6 +47663,12 @@
                 "stringUnit" : {
                   "state" : "needs_review",
                   "value" : "Видалити прогулянку і %lld позначок"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Видалити прогулянку і %lld позначку"
                 }
               },
               "other" : {
@@ -48694,6 +48694,28 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Файл не схожий на копію з Togo. Потрібен файл .json, який застосунок зберіг сам."
+          }
+        }
+      }
+    },
+    "Файл сделан %@, внутри: %@." : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Fichier créé le %@, dedans : %@."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Файл сделан %1$@, внутри: %2$@."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Файл зроблено %@, усередині: %@."
           }
         }
       }
