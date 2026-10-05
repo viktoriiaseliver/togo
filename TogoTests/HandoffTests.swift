@@ -9,7 +9,7 @@ struct PillSupplyTests {
     @Test("Хватит ровно на столько дней, сколько доз влезает")
     func daysFromDoses() throws {
         let supply = try #require(
-            PillSupplyAdvisor.supply(left: 8, total: 60, timesPerDay: 2)
+            PillSupplyAdvisor.supply(remaining: 8, packSize: 60, perDay: 2)
         )
         #expect(supply.days == 4)
         #expect(supply.headline == "Таблеток на 4 дня")
@@ -17,7 +17,7 @@ struct PillSupplyTests {
 
     @Test("Пустая пачка означает «не считаем», а не ноль дней")
     func noCountingWithoutTotal() {
-        #expect(PillSupplyAdvisor.supply(left: 0, total: 0, timesPerDay: 2) == nil,
+        #expect(PillSupplyAdvisor.supply(remaining: 0, packSize: 0, perDay: 2) == nil,
                 "навязывать учёт тому, кто покупает коробку в год, незачем")
     }
 
@@ -26,7 +26,7 @@ struct PillSupplyTests {
         let now = Date()
         let ends = Calendar.current.date(byAdding: .day, value: 22, to: now)
         let supply = try #require(
-            PillSupplyAdvisor.supply(left: 8, total: 60, timesPerDay: 2,
+            PillSupplyAdvisor.supply(remaining: 8, packSize: 60, perDay: 2,
                                      courseEnds: ends, now: now)
         )
         let shortfall = try #require(supply.shortfallDays)
@@ -35,8 +35,8 @@ struct PillSupplyTests {
 
     @Test("Предупреждаем за срок доставки, а не когда кончились")
     func warnsBeforeEmpty() throws {
-        let three = try #require(PillSupplyAdvisor.supply(left: 6, total: 60, timesPerDay: 2))
-        let ten = try #require(PillSupplyAdvisor.supply(left: 20, total: 60, timesPerDay: 2))
+        let three = try #require(PillSupplyAdvisor.supply(remaining: 6, packSize: 60, perDay: 2))
+        let ten = try #require(PillSupplyAdvisor.supply(remaining: 20, packSize: 60, perDay: 2))
 
         #expect(PillSupplyAdvisor.needsWarning(three), "аптека везёт два-три дня")
         #expect(!PillSupplyAdvisor.needsWarning(ten))
@@ -46,7 +46,7 @@ struct PillSupplyTests {
     func shortfallWarnsEvenWithStock() throws {
         let ends = Calendar.current.date(byAdding: .day, value: 30, to: Date())
         let supply = try #require(
-            PillSupplyAdvisor.supply(left: 20, total: 60, timesPerDay: 2, courseEnds: ends)
+            PillSupplyAdvisor.supply(remaining: 20, packSize: 60, perDay: 2, courseEnds: ends)
         )
         #expect(PillSupplyAdvisor.needsWarning(supply))
     }

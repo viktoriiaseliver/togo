@@ -71,7 +71,7 @@ struct HealthScreen: View {
                 ScheduleChangeSheet(medication: medication)
             }
             .sheet(item: $countingPills) { medication in
-                PillSupplyScreen(medication: medication)
+                PillSupplyScreen(medication: medication, courseEnds: medication.courseEnd)
             }
             .sheet(isPresented: $isFinishing) {
                 if let dog {
@@ -118,9 +118,31 @@ struct HealthScreen: View {
         }
     }
 
+    /// Курс передаётся обоим местам, а не одному.
+    ///
+    /// `shortfallDays` считал верно и был покрыт тестами, но живьём
+    /// не срабатывал ни разу: тесты передавали дату аргументом сами,
+    /// а экран передать её не мог — поля у препарата не было. Строка
+    /// «Курс идёт до … — не хватит …» не показывалась никому.
+    ///
+    /// Расход — СУММА доз (`dailyUse`), а не число приёмов.
+    ///
+    /// Полтаблетки дважды в день уходят по одной таблетке в сутки,
+    /// а не по две. Прежний `max(1, times.count)` ошибался бы в сторону
+    /// «хватит дольше» — человек не купил бы вовремя, ровно тот случай,
+    /// ради которого счётчик и завели. Пока в `doseSlotsData` не писал
+    /// ни один экран, числа совпадали; первая записанная половинка
+    /// включила бы ошибку молча.
+    ///
+    /// **Отсюда же `nil` у препарата без расписания.** Пустое `schedule`
+    /// даёт нулевой расход, и запас честно отвечает «не считаем» вместо
+    /// прежней единицы в день. Выдумывать расход там, где схемы нет,
+    /// значит называть срок, которого никто не назначал.
     private func supply(_ medication: Medication) -> PillSupply? {
-        PillSupplyAdvisor.supply(left: medication.stockLeft, total: medication.stockTotal,
-                                 timesPerDay: max(1, medication.times.count))
+        PillSupplyAdvisor.supply(remaining: medication.remaining,
+                                 packSize: medication.packSize,
+                                 perDay: medication.dailyUse,
+                                 courseEnds: medication.courseEnd)
     }
 
     private func supplyValue(_ medication: Medication) -> String {

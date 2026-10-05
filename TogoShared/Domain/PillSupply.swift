@@ -6,22 +6,38 @@ import Foundation
 /// кончились в пятницу вечером, а аптека везёт два-три дня. Поэтому
 /// предупреждать надо не когда кончились, а когда до конца осталось
 /// меньше, чем идёт доставка.
+///
+/// **Величины дробные, и это не запас на будущее.** Половина таблетки
+/// дважды в день — обычное назначение, капли мерят миллилитрами;
+/// на эталонном кадре «Запас · список» (`docs/design-handoff/screenshots/30-screen.png`)
+/// два препарата из трёх дробные: «1,5 таб. в день» и «0,5 мл в день».
+/// Целочисленное деление здесь считало бы расход неверно в сторону
+/// «хватит дольше» — то есть человек не купил бы вовремя, ровно
+/// тот случай, ради которого счётчик и завели.
 nonisolated struct PillSupply: Equatable, Sendable {
     /// Сколько осталось.
-    var left: Int
-    /// Сколько было в пачке.
-    var total: Int
-    /// Сколько уходит в сутки.
-    var perDay: Int
+    var remaining: Double
+    /// Сколько было в упаковке или флаконе.
+    var packSize: Double
+    /// Сколько уходит в сутки — СУММА доз, а не их количество.
+    ///
+    /// Прежнее имя этого поля было `perDay`, а приходило в него
+    /// `times.count`, то есть **число приёмов**. Полтаблетки дважды
+    /// в день — это одна таблетка в сутки, а не две; имя не врёт теперь,
+    /// и передать сюда счёт приёмов, не заметив, больше нельзя.
+    var perDay: Double
     /// До какого дня хватит.
     var lastDay: Date?
     /// До какого дня идёт курс, если он назначен.
     var courseEnds: Date?
 
-    /// На сколько дней хватит.
+    /// На сколько полных дней хватит.
+    ///
+    /// Вниз, а не по правилам округления: полдня запаса — это день,
+    /// в который дозу дать нечем.
     var days: Int {
         guard perDay > 0 else { return 0 }
-        return left / perDay
+        return Int((remaining / perDay).rounded(.down))
     }
 
     /// Не хватит на столько дней курса.
@@ -30,7 +46,28 @@ nonisolated struct PillSupply: Equatable, Sendable {
         return Calendar.current.dateComponents([.day], from: lastDay, to: courseEnds).day
     }
 
+    /// Курс кончится раньше, чем кончится запас.
+    ///
+    /// **Правило записано от обратного нарочно.** `DECISIONS.md`: «Курс
+    /// короче запаса — о покупке не напоминаем», и на кадре 30 это
+    /// нарисовано текстом — у «Капель Вет» вместо кнопки «Купил» стоит
+    /// «Курс кончится раньше — не покупать».
+    ///
+    /// До этого свойства правило не исполнялось: `needsWarning` смотрел
+    /// только на то, мало ли осталось, и при курсе до завтра с запасом
+    /// на три дня говорил «пора покупать» препарат, который завтра
+    /// отменят.
+    var courseEndsFirst: Bool {
+        guard let courseEnds, let lastDay else { return false }
+        return courseEnds <= lastDay
+    }
+
     /// «Таблеток на 4 дня».
+    ///
+    /// Слово «таблеток» здесь верно не для всех единиц: у капель
+    /// это миллилитры (`MedUnit.ml`). Строка не правится вместе
+    /// с расчётом нарочно — новый ключ завёл бы пробелы в `fr`, `uk`
+    /// и `en` в ту же секунду, а переводить их сейчас некому.
     var headline: String {
         guard perDay > 0 else { return String(localized: "Счёт таблеток не ведётся") }
         return String(localized: "Таблеток на \(Fmt.days(days))")
@@ -38,34 +75,72 @@ nonisolated struct PillSupply: Equatable, Sendable {
 }
 
 nonisolated enum PillSupplyAdvisor {
-    /// За сколько дней предупреждать.
+    /// Сколько дней считается «скоро кончится» — оранжевый.
+    ///
+    /// Решение Виктории 05.10.2026, записано в
+    /// `docs/design-handoff/ЧЕГО-НЕТ-В-МАКЕТЕ.md`: «Оранжевый
+    /// `--stock-low` заводим четвёртым цветом системы. Оранжевый
+    /// ≤ 7 дней, терракот ≤ 3 дня».
+    static let lowDays = 7
+
+    /// Сколько дней считается «пора покупать» — терракот.
     ///
     /// Три дня — не круглое число, а срок доставки из аптеки: раньше
     /// предупреждать бессмысленно, позже — поздно.
     static let warningDays = 3
 
+    /// Насколько всё плохо с запасом.
+    enum Level: Equatable, Sendable {
+        /// Хватает — или покупать не нужно, потому что курс кончится раньше.
+        case ok
+        /// Скоро кончится: оранжевый, кнопка «Купил» появляется.
+        case low
+        /// Пора покупать: терракот.
+        case urgent
+    }
+
     static func supply(
-        left: Int,
-        total: Int,
-        timesPerDay: Int,
+        remaining: Double,
+        packSize: Double,
+        perDay: Double,
         courseEnds: Date? = nil,
         now: Date = Date(),
         calendar: Calendar = .current
     ) -> PillSupply? {
-        // Ноль в пачке значит «не считаем»: навязывать учёт тому, кто
+        // Ноль в упаковке значит «не считаем»: навязывать учёт тому, кто
         // покупает коробку в год, незачем.
-        guard total > 0, timesPerDay > 0 else { return nil }
+        guard packSize > 0, perDay > 0 else { return nil }
 
-        let days = left / timesPerDay
+        let days = Int((remaining / perDay).rounded(.down))
         let lastDay = calendar.date(byAdding: .day, value: days, to: calendar.startOfDay(for: now))
 
-        return PillSupply(left: left, total: total, perDay: timesPerDay,
+        return PillSupply(remaining: remaining, packSize: packSize, perDay: perDay,
                           lastDay: lastDay, courseEnds: courseEnds)
     }
 
+    /// Какого цвета запас.
+    ///
+    /// Порядок проверок важен: **курс снимает предупреждение целиком**,
+    /// и спрашивать про него надо раньше порогов, а не после. Поставь
+    /// эту проверку в конец — и она ничего не изменит, потому что
+    /// решение уже будет принято порогом.
+    static func level(_ supply: PillSupply?) -> Level {
+        guard let supply, supply.perDay > 0 else { return .ok }
+        if supply.courseEndsFirst { return .ok }
+
+        if supply.days <= warningDays { return .urgent }
+        if supply.days <= lowDays { return .low }
+        // Запаса больше недели, но до конца курса всё равно не хватит —
+        // сказать стоит, пугать нечем.
+        return supply.shortfallDays == nil ? .ok : .low
+    }
+
     /// Пора ли говорить об этом вслух.
+    ///
+    /// На кадре 30 кнопка «Купил» стоит у оранжевого и у терракота
+    /// и отсутствует у третьего препарата — то есть это один и тот же
+    /// вопрос, а не два.
     static func needsWarning(_ supply: PillSupply?) -> Bool {
-        guard let supply, supply.perDay > 0 else { return false }
-        return supply.days <= warningDays || supply.shortfallDays != nil
+        level(supply) != .ok
     }
 }

@@ -15,10 +15,10 @@ struct PillSupplyScreen: View {
     @Environment(\.dismiss) private var dismiss
 
     private var supply: PillSupply? {
-        PillSupplyAdvisor.supply(left: medication.stockLeft,
-                                 total: medication.stockTotal,
-                                 timesPerDay: max(1, medication.times.count),
-                                 courseEnds: courseEnds)
+        PillSupplyAdvisor.supply(remaining: medication.remaining,
+                                 packSize: medication.packSize,
+                                 perDay: medication.dailyUse,
+                                 courseEnds: courseEnds ?? medication.courseEnd)
     }
 
     var body: some View {
@@ -43,18 +43,31 @@ struct PillSupplyScreen: View {
         return supply.lastDay.map { String(localized: "хватит до \(Fmt.shortDay($0))") }
     }
 
+    /// Числа здесь целые нарочно, хотя запас уже дробный.
+    ///
+    /// `«\(supply.left)»` и `«из \(supply.total)»` — ключи каталога
+    /// с `%lld`. Подставить сюда `Double` значит завести **новые**
+    /// ключи и в ту же секунду получить пробелы в `fr`, `uk` и `en`:
+    /// пробел откатывается на русский, и француз увидел бы русскую
+    /// строку, а выглядело бы это намеренным выбором, а не пропуском.
+    /// Дробный показ («6,5 мл») приедет вместе с единицами и подписями
+    /// кадра 30, когда будет кому перевести; до тех пор капли округлятся
+    /// вниз — в ту же сторону, что и `days`.
     private func countCard(_ supply: PillSupply) -> some View {
-        TGCard {
+        let осталось = Int(supply.remaining.rounded(.down))
+        let впачке = Int(supply.packSize.rounded(.down))
+        return TGCard {
             HStack(alignment: .firstTextBaseline) {
-                Text("\(supply.left)").textStyle(AppFont.display)
-                Text("из \(supply.total)").textStyle(AppFont.caption)
+                Text("\(осталось)").textStyle(AppFont.display)
+                Text("из \(впачке)").textStyle(AppFont.caption)
                 Spacer()
                 if PillSupplyAdvisor.needsWarning(supply) {
                     Text("пора покупать")
                         .textStyle(AppFont.caption.color(Token.Status.waitingText))
                 }
             }
-            ProgressView(value: Double(supply.left), total: Double(max(supply.total, supply.left)))
+            ProgressView(value: supply.remaining,
+                         total: max(supply.packSize, supply.remaining))
                 .tint(PillSupplyAdvisor.needsWarning(supply) ? Token.Status.waitingText : Token.Action.doneText)
         }
     }
@@ -79,17 +92,43 @@ struct PillSupplyScreen: View {
                 }
                 Spacer(minLength: 0)
             }
-            TGStepper(value: Binding(get: { medication.stockLeft },
-                                     set: { medication.stockLeft = $0; save() }),
+            TGStepper(value: Binding(get: { Int(medication.remaining.rounded(.down)) },
+                                     set: { установить($0); save() }),
                       unit: "шт", step: 1, range: 0...500, compact: true)
         }
     }
 
     private func add(_ count: Int) {
-        medication.stockLeft += count
-        medication.stockTotal = max(medication.stockTotal, medication.stockLeft)
+        установить(Int(medication.remaining.rounded(.down)) + count)
         save()
         Haptics.success()
+    }
+
+    /// Запас пишется в ОБЕ формы, а не в ту, которую читает этот экран.
+    ///
+    /// `remaining` отдаёт `stockLeftAmount ?? Double(stockLeft)` — то есть
+    /// у препарата с дробным учётом целое поле становится мёртвым.
+    /// Пиши сюда один `stockLeft`, и у такого препарата кнопка «+ 30 шт»
+    /// нажималась бы, сохранялась бы и **не меняла число на экране**:
+    /// человек видит прежний остаток и жмёт снова.
+    ///
+    /// Сегодня `stockLeftAmount` не заполняет ни один экран, так что
+    /// расхождения ещё нет. Включит его первый, кто заведёт дробный
+    /// учёт, — и включит молча, поэтому обе формы двигаются здесь
+    /// вместе, а не «когда понадобится».
+    ///
+    /// Просится в `Medication` отдельным методом: писателей будет больше
+    /// одного (шторка «Купил» с кадра 33), а правило у них одно.
+    /// Модель — слой togo-45, заявка отправлена.
+    private func установить(_ остаток: Int) {
+        medication.stockLeft = остаток
+        medication.stockTotal = max(medication.stockTotal, остаток)
+        if medication.stockLeftAmount != nil {
+            medication.stockLeftAmount = Double(остаток)
+        }
+        if medication.packAmount != nil {
+            medication.packAmount = max(medication.packSize, Double(остаток))
+        }
     }
 
     /// Запас таблеток: «сохранилось» без записи — это человек, который
