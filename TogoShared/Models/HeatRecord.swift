@@ -29,12 +29,12 @@ final class HeatRecord {
     // смещался на сутки, и проверить это было нечем. Подробно —
     // в `CalendarDay`.
 
-    func dayCount(calendar: Calendar = .current) -> Int? {
+    func dayCount(calendar: Calendar = CalendarDay.дневниковыйКалендарь) -> Int? {
         guard let endedAt else { return nil }
         return CalendarDay.daysBetween(startedAt, endedAt, calendar: calendar) + 1
     }
 
-    func dayNumber(on date: Date = Date(), calendar: Calendar = .current) -> Int {
+    func dayNumber(on date: Date = Date(), calendar: Calendar = CalendarDay.дневниковыйКалендарь) -> Int {
         CalendarDay.daysBetween(startedAt, date, calendar: calendar) + 1
     }
 }

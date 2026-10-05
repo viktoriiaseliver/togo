@@ -153,14 +153,19 @@ final class Trip {
     // по поясам было нечем: поверхность непроверяемая, а чинится такое
     // переделкой входа, а не старанием. Замер 05.10 — в `CalendarDay`.
     //
-    // Значение по умолчанию оставлено, чтобы ни один вызов не переписывать:
-    // дефект не в вызовах, а в том, что выбора не было.
+    // По умолчанию — `CalendarDay.дневниковыйКалендарь`, а НЕ `.current`:
+    // день записи у общего дневника один на семью, иначе двое читают
+    // разные числа из одной строки. Для заякоренных записей выбор пояса
+    // не меняет ничего (полдень устойчив к ±12 часам); он решает только
+    // судьбу записей до 05.10, у которых якоря нет. Допущение, на котором
+    // это держится, названо в `CalendarDay.дневниковыйПояс` вместе с тем,
+    // что его снимет.
 
-    func dayCount(calendar: Calendar = .current) -> Int {
+    func dayCount(calendar: Calendar = CalendarDay.дневниковыйКалендарь) -> Int {
         max(1, CalendarDay.daysBetween(startDate, endDate, calendar: calendar) + 1)
     }
 
-    func isActive(on date: Date = Date(), calendar: Calendar = .current) -> Bool {
+    func isActive(on date: Date = Date(), calendar: Calendar = CalendarDay.дневниковыйКалендарь) -> Bool {
         let from = calendar.startOfDay(for: startDate)
         // Последний день поездки считается целиком: возвращаются вечером.
         guard let until = calendar.date(byAdding: .day, value: 1,
@@ -170,7 +175,7 @@ final class Trip {
         return date >= from && date <= until
     }
 
-    func dayNumber(on date: Date = Date(), calendar: Calendar = .current) -> Int {
+    func dayNumber(on date: Date = Date(), calendar: Calendar = CalendarDay.дневниковыйКалендарь) -> Int {
         CalendarDay.daysBetween(startDate, date, calendar: calendar) + 1
     }
 }
