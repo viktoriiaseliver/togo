@@ -260,6 +260,9 @@ struct SettingsScreen: View {
             }
             #if DEBUG
             NavigationLink("Библиотека компонентов") { ComponentGallery() }
+            // Единственное место, где строки виджета можно УВИДЕТЬ:
+            // сам виджет рисует SpringBoard, и кадром его не снять.
+            NavigationLink("Виджет") { WidgetGallery() }
             #endif
         } header: {
             Text("о приложении")
