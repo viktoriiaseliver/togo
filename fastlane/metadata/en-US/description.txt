@@ -13,7 +13,7 @@ A SHARED DIARY
 Whoever you invite sees the day's entries and dose marks: outings, meals, stools, “needs to go out”. Two entries about the same thing don't overwrite each other — the app offers to merge them. No working out in the evening who took her out.
 
 MEDICINE IS A MODE, NOT A SECTION
-The Health tab appears only when the dog is on treatment. Fasting window, double-dose protection, the “dose → blood draw” protocol, and a report for the vet — assembled from what's already written down.
+The Health tab appears only when the dog is on treatment. Fasting window, double-dose protection, the dose → blood draw protocol, and a report for the vet — assembled from what's already written down.
 
 TRIPS
 The mode switches on by date and goes out by itself. Packing is calculated from weight and portion size, pre-flight fasting windows from the departure time.

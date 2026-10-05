@@ -13,7 +13,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "  où : %@"
+            "value" : "  où : %@"
           }
         },
         "ru" : {
@@ -423,7 +423,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "«%@» est deux fois dans le journal, et les entrées se sont séparées : une partie sur une fiche, une partie sur l'autre."
+            "value" : "«%@» est deux fois dans le journal, et les entrées se sont séparées : une partie sur une fiche, une partie sur l'autre."
           }
         },
         "uk" : {
@@ -1677,7 +1677,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "%@ : dose sautée"
+            "value" : "%@ : dose sautée"
           }
         },
         "uk" : {
@@ -7033,7 +7033,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Le compte rendu aura la ligne « dose → prise de sang : %@ ». Sans elle, les analyses ont déjà été mal lues deux fois."
+            "value" : "Le compte rendu aura la ligne « dose → prise de sang : %@ ». Sans elle, les analyses ont déjà été mal lues deux fois."
           }
         },
         "ru" : {
@@ -10100,7 +10100,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Choisis à qui : ta mère, ton conjoint, le pet-sitter. Seule cette personne pourra l'ouvrir, depuis son iCloud, et il lui faut Togo sur son téléphone."
+            "value" : "Choisis à qui : ta mère, ton conjoint, le pet-sitter. Seule cette personne pourra l'ouvrir, depuis son iCloud, et il lui faut Togo sur son téléphone."
           }
         },
         "ru" : {
@@ -12656,7 +12656,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Ce ne sont pas tes réglages : l'app n'a pas le droit d'interroger l'App Store. Écris-nous."
+            "value" : "Ce ne sont pas tes réglages : l'app n'a pas le droit d'interroger l'App Store. Écris-nous."
           }
         },
         "ru" : {
@@ -14055,7 +14055,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Doses à l'heure : %@ % sur %@"
+            "value" : "Doses à l'heure : %@ % sur %@"
           }
         },
         "ru" : {
@@ -16635,7 +16635,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Ajoute ceux qui s'en occupent aussi : co-propriétaire, pet-sitter, enfant ou vétérinaire. Le rôle et les droits, c'est toi qui les choisis — la personne ne peut pas les changer."
+            "value" : "Ajoute ceux qui s'en occupent aussi : co-propriétaire, pet-sitter, enfant ou vétérinaire. Le rôle et les droits, c'est toi qui les choisis — la personne ne peut pas les changer."
           }
         },
         "ru" : {
@@ -18139,7 +18139,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Entrées par jour : %@"
+            "value" : "Entrées par jour : %@"
           }
         },
         "ru" : {
@@ -18329,7 +18329,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Les entrées de la journée — repas, sorties, doses — resteront : seule la «journée avec le chien» disparaît, avec sa trace dans les observations de l'historique."
+            "value" : "Les entrées de la journée — repas, sorties, doses — resteront : seule la «journée avec le chien» disparaît, avec sa trace dans les observations de l'historique."
           }
         },
         "uk" : {
@@ -18611,7 +18611,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les notes de la famille ne sont pas arrivées : %@"
+            "value" : "Les notes de la famille ne sont pas arrivées : %@"
           }
         },
         "ru" : {
@@ -21620,7 +21620,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Donné quand ?"
+            "value" : "Donné quand ?"
           }
         },
         "uk" : {
@@ -22684,7 +22684,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Le propriétaire voit qui est dans le carnet et peut retirer n'importe qui. Les entrées déjà reçues restent chez celui qui les a reçues : iCloud ne sait pas reprendre ce qu'il a montré."
+            "value" : "Le propriétaire voit qui est dans le carnet et peut retirer n'importe qui. Les entrées déjà reçues restent chez celui qui les a reçues : iCloud ne sait pas reprendre ce qu'il a montré."
           }
         },
         "ru" : {
@@ -23662,7 +23662,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "L'App Store ne donne pas les abonnements. Ce n'est ni la connexion ni ton téléphone : les achats ne sont pas encore activés du côté d'Apple. Tout ce qui compte pour la sécurité du chien est gratuit pour toujours."
+            "value" : "L'App Store ne donne pas les abonnements. Ce n'est ni la connexion ni ton téléphone : les achats ne sont pas encore activés du côté d'Apple. Tout ce qui compte pour la sécurité du chien est gratuit pour toujours."
           }
         },
         "uk" : {
@@ -26246,7 +26246,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "La fusion n'a pas marché : %@"
+            "value" : "La fusion n'a pas marché : %@"
           }
         },
         "uk" : {
@@ -26286,7 +26286,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "On n'a pas réussi à joindre l'App Store. C'est souvent la connexion. L'app marche aussi sans abonnement : tout ce qui compte pour la sécurité du chien est gratuit pour toujours."
+            "value" : "On n'a pas réussi à joindre l'App Store. C'est souvent la connexion. L'app marche aussi sans abonnement : tout ce qui compte pour la sécurité du chien est gratuit pour toujours."
           }
         },
         "uk" : {
@@ -29983,7 +29983,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "C'est l'heure de la dose qui donne la fenêtre à jeun et la protection contre la double dose ; l'heure du repas, elle, donne le «faut-il nourrir». C'est pour ça qu'on demande, au lieu de prendre l'heure de l'appui."
+            "value" : "C'est l'heure de la dose qui donne la fenêtre à jeun et la protection contre la double dose ; l'heure du repas, elle, donne le «faut-il nourrir». C'est pour ça qu'on demande, au lieu de prendre l'heure de l'appui."
           }
         },
         "uk" : {
@@ -31505,7 +31505,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Rien à noter : repas, sorties et doses se comptent par chien. Ajoute-le — il suffit du nom et du poids."
+            "value" : "Rien à noter : repas, sorties et doses se comptent par chien. Ajoute-le — il suffit du nom et du poids."
           }
         },
         "ru" : {
@@ -32663,7 +32663,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Entrées déplacées : %lld. Le journal est de nouveau unique."
+            "value" : "Entrées déplacées : %lld. Le journal est de nouveau unique."
           }
         },
         "uk" : {
@@ -36596,7 +36596,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Chien perdu : %@, %@, %@"
+            "value" : "Chien perdu : %@, %@, %@"
           }
         },
         "ru" : {
@@ -36900,7 +36900,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "pas de droit iCloud — local uniquement (profil : %@)"
+            "value" : "pas de droit iCloud — local uniquement (profil : %@)"
           }
         },
         "ru" : {
@@ -37611,7 +37611,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Une invitation au carnet partagé est un partage iCloud. Seule la personne nommée dans la fenêtre système « Partager » peut l'ouvrir : personne ne peut entrer avec une adresse transférée."
+            "value" : "Une invitation au carnet partagé est un partage iCloud. Seule la personne nommée dans la fenêtre système « Partager » peut l'ouvrir : personne ne peut entrer avec une adresse transférée."
           }
         },
         "ru" : {
@@ -40787,7 +40787,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Les entrées elles-mêmes — incidents, selles, doses — resteront : seul leur regroupement en épisode disparaît. Si les incidents reviennent, l'app rouvrira un épisode."
+            "value" : "Les entrées elles-mêmes — incidents, selles, doses — resteront : seul leur regroupement en épisode disparaît. Si les incidents reviennent, l'app rouvrira un épisode."
           }
         },
         "uk" : {
@@ -41759,7 +41759,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Pour l'instant : %@. «Ça marche», c'est 4 fois sur 5."
+            "value" : "Pour l'instant : %@. «Ça marche», c'est 4 fois sur 5."
           }
         },
         "uk" : {
@@ -42967,7 +42967,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Le chien peut partir à tout moment. S'il part, c'est que l'exercice était trop dur — pas que le chien est mauvais. C'est une tentative aussi, et elle vaut la peine d'être notée : elle montre qu'il faut simplifier l'étape."
+            "value" : "Le chien peut partir à tout moment. S'il part, c'est que l'exercice était trop dur — pas que le chien est mauvais. C'est une tentative aussi, et elle vaut la peine d'être notée : elle montre qu'il faut simplifier l'étape."
           }
         },
         "uk" : {
@@ -47871,7 +47871,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Supprimer l'épisode ?"
+            "value" : "Supprimer l'épisode ?"
           }
         },
         "uk" : {
@@ -47903,7 +47903,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Supprimer cette journée ?"
+            "value" : "Supprimer cette journée ?"
           }
         },
         "uk" : {
@@ -52481,7 +52481,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Peu de langues, et c'est voulu : dans une app sur la santé d'un chien, une traduction automatique vaut moins qu'une langue faite entièrement."
+            "value" : "Peu de langues, et c'est voulu : dans une app sur la santé d'un chien, une traduction automatique vaut moins qu'une langue faite entièrement."
           }
         },
         "ru" : {
