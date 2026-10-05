@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..500,0..1,0">
+<style>html{background:#0A0A0A}body{margin:0;background:#0A0A0A;color:#F4F4F2;font-family:var(--font-text);-webkit-font-smoothing:antialiased}a{color:#D4F75F}a:hover{color:#F4F4F2}</style>
+</helmet>
+<div style="display:flex;flex-direction:column;gap:64px;padding:72px;background:#0A0A0A;min-height:100vh">
+  <div style="display:flex;flex-direction:column;gap:12px;max-width:1000px">
+    <span style="font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#B2B2AE">Togo · Сегодня · разгрузка v3</span>
+    <h1 style="margin:0;font-family:var(--font-rounded);font-weight:300;font-size:56px;line-height:1;letter-spacing:-0.03em">Те же функции, меньше шума</h1>
+    <p style="margin:0;font-size:17px;line-height:1.55;color:#C8C8C4;text-wrap:pretty">В v3 на экране одновременно 9 видов плашек: капсулы времени, точки и линия таймлайна, теги, круги иконок, карточка, строка состояния, три кнопки, таб-бар. Ниже два способа оставить всё то же, но тише. Общее у обоих: 2 последние записи вместо 3 (как в CLAUDE.md), нет строки «сейчас» (время уже в статус-баре), иконки шапки без подложек, «дальше» поднят к показанию.</p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;font-size:15px"><a href="#A">A · Тихий список</a><span style="color:#5A5A58">·</span><a href="#B">B · Шкала до следующего</a><span style="color:#5A5A58">·</span><a href="#B-load">B · много записей</a></div>
+  </div>
+
+  <section id="B-load" style="display:flex;flex-direction:column;gap:20px">
+    <div style="display:flex;flex-direction:column;gap:8px;max-width:1000px">
+      <div style="display:flex;align-items:center;gap:12px"><span style="padding:4px 10px;border-radius:8px;background:#D4F75F;color:#0A0A0A;font-weight:700;font-size:15px">B</span><h2 style="margin:0;font-size:32px;letter-spacing:-0.02em">Нагрузка: много записей</h2></div>
+      <p style="margin:0;font-size:15px;line-height:1.55;color:#B2B2AE">Сколько бы ни было записей, на «Сегодня» видны 2 последние, остальное — в «Весь день · ещё N». Ниже: 16 записей, длинные имена и подробности, три рвоты с тревогой, и то же на SE.</p>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start">
+      <sc-for list="{{ framesS }}" as="s" hint-placeholder-count="5">
+        <div style="display:flex;flex-direction:column;gap:10px;width:{{ s.w }}">
+          <span style="font-size:14px;font-weight:700;color:#D4F75F">B · {{ s.label }}</span>
+          <div data-theme="{{ s.attr }}" data-screen-label="B нагрузка / {{ s.label }}" style="position:relative;width:{{ s.w }};height:{{ s.h }};border-radius:{{ s.r }};background:var(--bg-primary);color:var(--text-primary);overflow:hidden;box-shadow:0 0 0 10px #000,0 0 0 11px #3A3A3A;display:flex;flex-direction:column;font-family:var(--font-text)">
+            <sc-if value="{{ s.island }}" hint-placeholder-val="{{ true }}"><div style="position:absolute;left:50%;top:11px;transform:translateX(-50%);width:126px;height:37px;border-radius:var(--radius-pill);background:var(--system-island);z-index:3"></div></sc-if>
+            <div style="height:{{ s.sb }};flex-shrink:0;display:flex;justify-content:space-between;align-items:center;padding:0 {{ s.sbPad }};font-size:{{ s.sbFs }};font-weight:var(--fw-semibold)"><span>{{ s.clock }}</span><span style="font-family:var(--font-icon);font-size:16px">battery_full</span></div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:var(--space-12);padding:4px {{ s.pad }} 0;min-height:0">
+              <div style="display:flex;justify-content:space-between;align-items:center;min-height:var(--size-hit);flex-shrink:0">
+                <span style="display:flex;align-items:baseline;gap:var(--space-8)"><span style="font-family:var(--font-rounded);font-weight:var(--fw-number);font-size:{{ s.titleFs }};line-height:1">Стич</span><span style="font-size:var(--fs-footnote);color:var(--text-secondary)">{{ s.date }}</span></span>
+                <span style="display:flex;color:var(--text-secondary)"><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:24px;font-weight:300">notifications</span><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:24px;font-weight:300">settings</span></span>
+              </div>
+              <sc-if value="{{ s.hasStatus }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:var(--space-8);min-height:var(--size-hit);color:{{ s.stFg }};flex-shrink:0"><span style="font-family:var(--font-icon);font-size:20px;font-weight:300">{{ s.stIcon }}</span><span style="flex:1;font-size:{{ s.rowFs }};font-weight:var(--fw-semibold)">{{ s.stText }}</span><sc-if value="{{ s.hasA }}" hint-placeholder-val="{{ false }}"><span style="min-height:var(--size-hit);padding:0 var(--space-16) 0 var(--space-12);border-radius:var(--radius-pill);background:var(--fill-2);color:var(--text-primary);display:flex;align-items:center;gap:6px;font-size:var(--fs-subheadline);font-weight:var(--fw-semibold);white-space:nowrap"><span style="font-family:var(--font-icon);font-size:18px">{{ s.aIcon }}</span>{{ s.a }}</span></sc-if></div></sc-if>
+              <div style="display:flex;flex-direction:column;gap:var(--space-16);padding:var(--space-20) var(--space-20) var(--space-16);border-radius:var(--radius-card);background:{{ s.cardBg }};flex-shrink:0">
+                <div style="display:flex;flex-direction:column;gap:4px">
+                  <span style="display:flex;align-items:center;gap:6px;font-size:{{ s.labFs }};color:var(--text-secondary)"><span style="font-family:var(--font-icon);font-size:18px">{{ s.heroIcon }}</span>{{ s.heroLabel }}</span>
+                  <span style="display:flex;align-items:flex-start;gap:2px;line-height:1;color:{{ s.heroC }}"><span style="font-family:var(--font-rounded);font-weight:var(--fw-number);font-size:{{ s.heroFs }};letter-spacing:-0.035em;font-variant-numeric:tabular-nums">{{ s.h1 }}</span><span style="font-family:var(--font-rounded);font-size:{{ s.unitFs }};color:{{ s.unitC }};padding-top:8px">{{ s.u1 }}</span><span style="width:8px"></span><span style="font-family:var(--font-rounded);font-weight:var(--fw-number);font-size:{{ s.heroFs }};letter-spacing:-0.035em;font-variant-numeric:tabular-nums">{{ s.h2 }}</span><span style="font-family:var(--font-rounded);font-size:{{ s.unitFs }};color:{{ s.unitC }};padding-top:8px">{{ s.u2 }}</span></span>
+                </div>
+                <sc-if value="{{ s.hasBar }}" hint-placeholder-val="{{ true }}"><div style="display:flex;flex-direction:column;gap:6px">
+                  <div style="position:relative;height:8px;border-radius:var(--radius-pill);background:var(--fill-3);overflow:hidden"><div style="position:absolute;left:0;top:0;bottom:0;width:{{ s.barPos }};border-radius:var(--radius-pill);background:{{ s.barC }}"></div></div>
+                  <div style="display:flex;justify-content:space-between;font-size:var(--fs-footnote);color:var(--text-secondary)"><span>{{ s.barL }}</span><span>{{ s.barR }}</span></div>
+                </div></sc-if>
+                <div style="display:flex;align-items:center;gap:var(--space-12);padding-top:var(--space-12);border-top:1px solid var(--separator)">
+                  <span style="width:40px;height:40px;flex-shrink:0;border-radius:50%;background:{{ s.nBg }};color:{{ s.nFg }};display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:22px;font-weight:300">{{ s.nIcon }}</span>
+                  <span style="flex:1;display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:var(--fs-footnote);color:var(--text-secondary)">дальше</span><span style="font-size:{{ s.rowFs }};font-weight:var(--fw-semibold);color:{{ s.nT }}">{{ s.nTitle }}</span></span>
+                  <span style="font-family:var(--font-rounded);font-size:{{ s.whenFs }};color:var(--text-secondary);white-space:nowrap">{{ s.nWhen }}</span>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:2px;padding:0 var(--space-4);flex-shrink:0">
+                <sc-for list="{{ s.rows }}" as="e" hint-placeholder-count="2"><div style="display:flex;align-items:baseline;gap:var(--space-12);min-height:28px;font-size:var(--fs-subheadline)"><span style="width:40px;flex-shrink:0;color:var(--text-secondary);font-variant-numeric:tabular-nums">{{ e.time }}</span><span style="flex:1;min-width:0;color:{{ e.c }}">{{ e.t }} <span style="color:var(--text-secondary)">{{ e.dv }} {{ e.du }}</span></span><span style="font-size:var(--fs-footnote);color:var(--text-secondary);text-align:right">{{ e.who }}</span></div></sc-for>
+                <sc-if value="{{ s.hasMore }}" hint-placeholder-val="{{ false }}"><span style="display:flex;align-items:center;min-height:var(--size-hit);font-size:var(--fs-footnote);color:var(--accent-text)">Весь день · ещё {{ s.more }}<span style="font-family:var(--font-icon);font-size:16px">chevron_right</span></span></sc-if>
+              </div>
+              <div style="flex:1;min-height:0"></div>
+              <sc-if value="{{ s.readOnly }}" hint-placeholder-val="{{ false }}"><div style="min-height:{{ s.pH }};display:flex;align-items:center;justify-content:center;gap:var(--space-8);color:var(--text-secondary);font-size:var(--fs-subheadline);flex-shrink:0"><span style="font-family:var(--font-icon);font-size:20px;font-weight:300">visibility</span>Записывает Аня — у вас просмотр</div></sc-if>
+              <sc-if value="{{ s.hasPrimary }}" hint-placeholder-val="{{ true }}"><div style="min-height:{{ s.pH }};border-radius:var(--radius-pill);background:{{ s.pBg }};color:{{ s.pFg }};box-shadow:0 var(--edge-height) 0 {{ s.pEdge }};display:flex;align-items:center;justify-content:center;gap:var(--space-8);font-size:{{ s.pFs }};font-weight:var(--fw-semibold);flex-shrink:0"><span style="font-family:var(--font-icon);font-size:24px;font-weight:300">{{ s.pIcon }}</span>{{ s.primary }}</div></sc-if>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-12);flex-shrink:0;padding-bottom:var(--space-4)"><div style="min-height:{{ s.sH }};border-radius:var(--radius-pill);background:{{ s.s1Bg }};color:{{ s.s1Fg }};box-shadow:0 var(--edge-height-s) 0 {{ s.s1Edge }};display:flex;align-items:center;justify-content:center;gap:var(--space-8);font-size:{{ s.sFs }}"><span style="font-family:var(--font-icon);font-size:20px;font-weight:300">{{ s.s1i }}</span>{{ s.s1 }}</div><div style="min-height:{{ s.sH }};border-radius:var(--radius-pill);background:var(--fill-2);box-shadow:0 var(--edge-height-s) 0 var(--fill-edge);display:flex;align-items:center;justify-content:center;gap:var(--space-8);font-size:{{ s.sFs }}"><span style="font-family:var(--font-icon);font-size:20px;font-weight:300">{{ s.s2i }}</span>{{ s.s2 }}</div></div>
+            </div>
+            <sc-if value="{{ s.tabs }}" hint-placeholder-val="{{ true }}"><div style="margin:var(--space-12) {{ s.pad }} {{ s.tabB }};flex-shrink:0;min-height:{{ s.tabH }};border-radius:var(--radius-pill);background:var(--glass-regular);backdrop-filter:blur(var(--blur-glass)) saturate(var(--glass-saturate));-webkit-backdrop-filter:blur(var(--blur-glass)) saturate(var(--glass-saturate));box-shadow:var(--glass-shadow);display:flex;align-items:center;justify-content:space-between;padding:0 var(--space-8) 0 var(--space-4)"><span style="display:flex;align-items:center;min-height:48px;padding-right:{{ s.tabLp }};border-radius:var(--radius-pill);background:var(--glass-tint-accent);color:var(--accent-text);font-size:var(--fs-subheadline);font-weight:var(--fw-semibold)"><span style="width:52px;height:48px;display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:24px;font-variation-settings:'FILL' 1">today</span>{{ s.tabL }}</span><span style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:24px;font-weight:300">history</span><span style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:24px;font-weight:300">monitor_heart</span><span style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:24px;font-weight:300">pets</span></div></sc-if>
+          </div>
+          <span style="font-size:14px;line-height:1.5;color:#C8C8C4">{{ s.note }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section id="A" style="display:flex;flex-direction:column;gap:20px">
+    <div style="display:flex;flex-direction:column;gap:8px;max-width:1000px">
+      <div style="display:flex;align-items:center;gap:12px"><span style="padding:4px 10px;border-radius:8px;background:#D4F75F;color:#0A0A0A;font-weight:700;font-size:15px">A</span><h2 style="margin:0;font-size:32px;letter-spacing:-0.02em">Тихий список</h2></div>
+      <p style="margin:0;font-size:15px;line-height:1.55;color:#B2B2AE">Подложки только у кнопок и таб-бара. Записи — строки с тонкой линией, без иконок и капсул. «Дальше» — одна строка под цифрой. Строка состояния без фона, фон только у тревоги.</p>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start">
+      <sc-for list="{{ framesA }}" as="s" hint-placeholder-count="6">
+        <div style="display:flex;flex-direction:column;gap:10px;width:{{ s.w }}">
+          <span style="font-size:14px;font-weight:700;color:#D4F75F">A · {{ s.label }}</span>
+          <div data-theme="{{ s.attr }}" data-screen-label="A / {{ s.label }}" style="position:relative;width:{{ s.w }};height:{{ s.h }};border-radius:{{ s.r }};background:var(--bg-primary);color:var(--text-primary);overflow:hidden;box-shadow:0 0 0 10px #000,0 0 0 11px #3A3A3A;display:flex;flex-direction:column;font-family:var(--font-text)">
+            <sc-if value="{{ s.island }}" hint-placeholder-val="{{ true }}"><div style="position:absolute;left:50%;top:11px;transform:translateX(-50%);width:126px;height:37px;border-radius:var(--radius-pill);background:var(--system-island);z-index:3"></div></sc-if>
+            <div style="height:{{ s.sb }};flex-shrink:0;display:flex;justify-content:space-between;align-items:center;padding:0 {{ s.sbPad }};font-size:{{ s.sbFs }};font-weight:var(--fw-semibold)"><span>{{ s.clock }}</span><span style="font-family:var(--font-icon);font-size:16px">battery_full</span></div>
+            <div style="flex:1;display:flex;flex-direction:column;padding:4px {{ s.pad }} 0;min-height:0">
+              <div style="display:flex;justify-content:space-between;align-items:center;min-height:var(--size-hit);flex-shrink:0">
+                <span style="display:flex;align-items:baseline;gap:var(--space-8)"><span style="font-family:var(--font-rounded);font-weight:var(--fw-number);font-size:{{ s.titleFs }};line-height:1">Стич</span><span style="font-size:var(--fs-footnote);color:var(--text-secondary)">{{ s.date }}</span></span>
+                <span style="display:flex;color:var(--text-secondary)"><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:24px;font-weight:300">notifications</span><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:24px;font-weight:300">settings</span></span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:4px;padding-top:{{ s.heroTop }};flex-shrink:0">
+                <span style="display:flex;align-items:center;gap:6px;font-size:{{ s.labFs }};color:var(--text-secondary)"><span style="font-family:var(--font-icon);font-size:18px">{{ s.heroIcon }}</span>{{ s.heroLabel }}</span>
+                <span style="display:flex;align-items:flex-start;gap:2px;line-height:1;color:{{ s.heroC }}"><span style="font-family:var(--font-rounded);font-weight:var(--fw-number);font-size:{{ s.heroFs }};letter-spacing:-0.035em;font-variant-numeric:tabular-nums">{{ s.h1 }}</span><span style="font-family:var(--font-rounded);font-size:{{ s.unitFs }};color:{{ s.unitC }};padding-top:8px">{{ s.u1 }}</span><span style="width:8px"></span><span style="font-family:var(--font-rounded);font-weight:var(--fw-number);font-size:{{ s.heroFs }};letter-spacing:-0.035em;font-variant-numeric:tabular-nums">{{ s.h2 }}</span><span style="font-family:var(--font-rounded);font-size:{{ s.unitFs }};color:{{ s.unitC }};padding-top:8px">{{ s.u2 }}</span></span>
+              </div>
+              <div style="display:flex;align-items:center;gap:var(--space-12);min-height:var(--size-hit);padding-top:var(--space-8);flex-shrink:0">
+                <span style="width:12px;height:12px;flex-shrink:0;border-radius:50%;box-shadow:inset 0 0 0 2px {{ s.nC }}"></span>
+                <span style="flex:1;display:flex;flex-wrap:wrap;column-gap:var(--space-8);font-size:{{ s.rowFs }};line-height:1.3"><span style="font-weight:var(--fw-semibold);color:{{ s.nT }}">{{ s.nTitle }}</span><span style="color:var(--text-secondary)">{{ s.nWhen }}</span></span>
+              </div>
+              <sc-if value="{{ s.hasStatus }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:var(--space-12);min-height:var(--size-button);margin-top:var(--space-12);padding:0 {{ s.stPadR }} 0 {{ s.stPadL }};border-radius:var(--radius-row);background:{{ s.stBg }};color:{{ s.stFg }};flex-shrink:0"><span style="font-family:var(--font-icon);font-size:22px;font-weight:300">{{ s.stIcon }}</span><span style="flex:1;font-size:{{ s.rowFs }};line-height:1.3;padding:var(--space-8) 0">{{ s.stText }}</span><sc-if value="{{ s.hasA }}" hint-placeholder-val="{{ false }}"><span style="min-height:var(--size-hit);padding:0 var(--space-16) 0 var(--space-12);border-radius:var(--radius-pill);box-shadow:inset 0 0 0 1.5px currentColor;display:flex;align-items:center;gap:6px;font-size:var(--fs-subheadline);font-weight:var(--fw-semibold);white-space:nowrap"><span style="font-family:var(--font-icon);font-size:18px">{{ s.aIcon }}</span>{{ s.a }}</span></sc-if></div></sc-if>
+              <div style="flex:1;min-height:var(--space-16)"></div>
+              <div style="display:flex;flex-direction:column;flex-shrink:0;padding-bottom:var(--space-16)">
+                <div style="display:flex;justify-content:space-between;align-items:center;min-height:32px"><span style="font-size:var(--fs-footnote);color:var(--text-secondary)">{{ s.listTitle }}</span><sc-if value="{{ s.hasMore }}" hint-placeholder-val="{{ false }}"><span style="display:flex;align-items:center;min-height:var(--size-hit);font-size:var(--fs-footnote);color:var(--accent-text)">ещё {{ s.more }}<span style="font-family:var(--font-icon);font-size:16px">chevron_right</span></span></sc-if></div>
+                <sc-for list="{{ s.rows }}" as="e" hint-placeholder-count="2">
+                  <div style="display:grid;grid-template-columns:{{ s.timeCol }} minmax(0,1fr) auto;gap:var(--space-12);align-items:baseline;padding:var(--space-12) 0;border-top:1px solid var(--separator);font-size:{{ s.rowFs }}">
+                    <span style="color:var(--text-secondary);font-variant-numeric:tabular-nums">{{ e.time }}</span>
+                    <span style="min-width:0;color:{{ e.c }}">{{ e.t }} <span style="font-family:var(--font-rounded);color:var(--accent-text)">{{ e.dv }}</span> <span style="color:var(--text-secondary)">{{ e.du }}</span></span>
+                    <span style="font-size:var(--fs-footnote);color:var(--text-secondary)">{{ e.who }}</span>
+                  </div>
+                </sc-for>
+                <sc-if value="{{ s.empty }}" hint-placeholder-val="{{ false }}"><div style="padding:var(--space-12) 0;border-top:1px solid var(--separator);font-size:{{ s.rowFs }};color:var(--text-secondary)">Записей пока нет</div></sc-if>
+              </div>
+              <sc-if value="{{ s.readOnly }}" hint-placeholder-val="{{ false }}"><div style="min-height:{{ s.pH }};display:flex;align-items:center;justify-content:center;gap:var(--space-8);color:var(--text-secondary);font-size:var(--fs-subheadline);flex-shrink:0"><span style="font-family:var(--font-icon);font-size:20px;font-weight:300">visibility</span>Записывает Аня — у вас просмотр</div></sc-if>
+              <sc-if value="{{ s.hasPrimary }}" hint-placeholder-val="{{ true }}"><div style="min-height:{{ s.pH }};border-radius:var(--radius-pill);background:{{ s.pBg }};color:{{ s.pFg }};box-shadow:0 var(--edge-height) 0 {{ s.pEdge }};display:flex;align-items:center;justify-content:center;gap:var(--space-8);font-size:{{ s.pFs }};font-weight:var(--fw-semibold);flex-shrink:0"><span style="font-family:var(--font-icon);font-size:24px;font-weight:300">{{ s.pIcon }}</span>{{ s.primary }}</div></sc-if>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-12);padding-top:var(--space-12);flex-shrink:0"><div style="min-height:{{ s.sH }};border-radius:var(--radius-pill);background:{{ s.s1Bg }};color:{{ s.s1Fg }};box-shadow:0 var(--edge-height-s) 0 {{ s.s1Edge }};display:flex;align-items:center;justify-content:center;gap:var(--space-8);font-size:{{ s.sFs }}"><span style="font-family:var(--font-icon);font-size:20px;font-weight:300">{{ s.s1i }}</span>{{ s.s1 }}</div><div style="min-height:{{ s.sH }};border-radius:var(--radius-pill);background:var(--fill-2);box-shadow:0 var(--edge-height-s) 0 var(--fill-edge);display:flex;align-items:center;justify-content:center;gap:var(--space-8);font-size:{{ s.sFs }}"><span style="font-family:var(--font-icon);font-size:20px;font-weight:300">{{ s.s2i }}</span>{{ s.s2 }}</div></div>
+              <sc-if value="{{ s.slide }}" hint-placeholder-val="{{ false }}"><div style="min-height:var(--size-button-xl);margin:var(--space-12) 0 28px;border-radius:var(--radius-pill);background:var(--fill-2);display:flex;align-items:center;padding:4px;box-sizing:border-box;flex-shrink:0"><span style="width:56px;height:56px;border-radius:50%;background:var(--accent);color:var(--on-accent);display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:24px">home</span><span style="flex:1;text-align:center;font-size:var(--fs-headline);padding-right:56px">Потяните — домой</span></div></sc-if>
+            </div>
+            <sc-if value="{{ s.tabs }}" hint-placeholder-val="{{ true }}"><div style="margin:var(--space-16) {{ s.pad }} {{ s.tabB }};flex-shrink:0;min-height:{{ s.tabH }};border-radius:var(--radius-pill);background:var(--glass-regular);backdrop-filter:blur(var(--blur-glass)) saturate(var(--glass-saturate));-webkit-backdrop-filter:blur(var(--blur-glass)) saturate(var(--glass-saturate));box-shadow:var(--glass-shadow);display:flex;align-items:center;justify-content:space-between;padding:0 var(--space-8) 0 var(--space-4)"><span style="display:flex;align-items:center;min-height:48px;padding-right:{{ s.tabLp }};border-radius:var(--radius-pill);background:var(--glass-tint-accent);color:var(--accent-text);font-size:var(--fs-subheadline);font-weight:var(--fw-semibold)"><span style="width:52px;height:48px;display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:24px;font-variation-settings:'FILL' 1">today</span>{{ s.tabL }}</span><span style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:24px;font-weight:300">history</span><span style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:24px;font-weight:300">monitor_heart</span><span style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:24px;font-weight:300">pets</span></div></sc-if>
+          </div>
+          <span style="font-size:14px;line-height:1.5;color:#C8C8C4">{{ s.note }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section id="B" style="display:flex;flex-direction:column;gap:20px">
+    <div style="display:flex;flex-direction:column;gap:8px;max-width:1000px">
+      <div style="display:flex;align-items:center;gap:12px"><span style="padding:4px 10px;border-radius:8px;background:#D4F75F;color:#0A0A0A;font-weight:700;font-size:15px">B</span><h2 style="margin:0;font-size:32px;letter-spacing:-0.02em">Шкала до следующего</h2></div>
+      <p style="margin:0;font-size:15px;line-height:1.55;color:#B2B2AE">Одна карточка: показание, полоса «от последнего до следующего» и что дальше. Полоса заменяет слова «как обычно» и «через 1 ч 20 мин» — видно, сколько прошло. Две записи ниже — одной строкой каждая, мелко.</p>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start">
+      <sc-for list="{{ framesB }}" as="s" hint-placeholder-count="6">
+        <div style="display:flex;flex-direction:column;gap:10px;width:{{ s.w }}">
+          <span style="font-size:14px;font-weight:700;color:#D4F75F">B · {{ s.label }}</span>
+          <div data-theme="{{ s.attr }}" data-screen-label="B / {{ s.label }}" style="position:relative;width:{{ s.w }};height:{{ s.h }};border-radius:{{ s.r }};background:var(--bg-primary);color:var(--text-primary);overflow:hidden;box-shadow:0 0 0 10px #000,0 0 0 11px #3A3A3A;display:flex;flex-direction:column;font-family:var(--font-text)">
+            <sc-if value="{{ s.island }}" hint-placeholder-val="{{ true }}"><div style="position:absolute;left:50%;top:11px;transform:translateX(-50%);width:126px;height:37px;border-radius:var(--radius-pill);background:var(--system-island);z-index:3"></div></sc-if>
+            <div style="height:{{ s.sb }};flex-shrink:0;display:flex;justify-content:space-between;align-items:center;padding:0 {{ s.sbPad }};font-size:{{ s.sbFs }};font-weight:var(--fw-semibold)"><span>{{ s.clock }}</span><span style="font-family:var(--font-icon);font-size:16px">battery_full</span></div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:var(--space-12);padding:4px {{ s.pad }} 0;min-height:0">
+              <div style="display:flex;justify-content:space-between;align-items:center;min-height:var(--size-hit);flex-shrink:0">
+                <span style="display:flex;align-items:baseline;gap:var(--space-8)"><span style="font-family:var(--font-rounded);font-weight:var(--fw-number);font-size:{{ s.titleFs }};line-height:1">Стич</span><span style="font-size:var(--fs-footnote);color:var(--text-secondary)">{{ s.date }}</span></span>
+                <span style="display:flex;color:var(--text-secondary)"><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:24px;font-weight:300">notifications</span><span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:24px;font-weight:300">settings</span></span>
+              </div>
+              <sc-if value="{{ s.hasStatus }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:var(--space-8);min-height:var(--size-hit);color:{{ s.stFg }};flex-shrink:0"><span style="font-family:var(--font-icon);font-size:20px;font-weight:300">{{ s.stIcon }}</span><span style="flex:1;font-size:{{ s.rowFs }};font-weight:var(--fw-semibold)">{{ s.stText }}</span><sc-if value="{{ s.hasA }}" hint-placeholder-val="{{ false }}"><span style="min-height:var(--size-hit);padding:0 var(--space-16) 0 var(--space-12);border-radius:var(--radius-pill);background:var(--fill-2);color:var(--text-primary);display:flex;align-items:center;gap:6px;font-size:var(--fs-subheadline);font-weight:var(--fw-semibold);white-space:nowrap"><span style="font-family:var(--font-icon);font-size:18px">{{ s.aIcon }}</span>{{ s.a }}</span></sc-if></div></sc-if>
+              <div style="display:flex;flex-direction:column;gap:var(--space-16);padding:var(--space-20) var(--space-20) var(--space-16);border-radius:var(--radius-card);background:{{ s.cardBg }};flex-shrink:0">
+                <div style="display:flex;flex-direction:column;gap:4px">
+                  <span style="display:flex;align-items:center;gap:6px;font-size:{{ s.labFs }};color:var(--text-secondary)"><span style="font-family:var(--font-icon);font-size:18px">{{ s.heroIcon }}</span>{{ s.heroLabel }}</span>
+                  <span style="display:flex;align-items:flex-start;gap:2px;line-height:1;color:{{ s.heroC }}"><span style="font-family:var(--font-rounded);font-weight:var(--fw-number);font-size:{{ s.heroFs }};letter-spacing:-0.035em;font-variant-numeric:tabular-nums">{{ s.h1 }}</span><span style="font-family:var(--font-rounded);font-size:{{ s.unitFs }};color:{{ s.unitC }};padding-top:8px">{{ s.u1 }}</span><span style="width:8px"></span><span style="font-family:var(--font-rounded);font-weight:var(--fw-number);font-size:{{ s.heroFs }};letter-spacing:-0.035em;font-variant-numeric:tabular-nums">{{ s.h2 }}</span><span style="font-family:var(--font-rounded);font-size:{{ s.unitFs }};color:{{ s.unitC }};padding-top:8px">{{ s.u2 }}</span></span>
+                </div>
+                <sc-if value="{{ s.hasBar }}" hint-placeholder-val="{{ true }}"><div style="display:flex;flex-direction:column;gap:6px">
+                  <div style="position:relative;height:8px;border-radius:var(--radius-pill);background:var(--fill-3);overflow:hidden"><div style="position:absolute;left:0;top:0;bottom:0;width:{{ s.barPos }};border-radius:var(--radius-pill);background:{{ s.barC }}"></div></div>
+                  <div style="display:flex;justify-content:space-between;font-size:var(--fs-footnote);color:var(--text-secondary)"><span>{{ s.barL }}</span><span>{{ s.barR }}</span></div>
+                </div></sc-if>
+                <div style="display:flex;align-items:center;gap:var(--space-12);padding-top:var(--space-12);border-top:1px solid var(--separator)">
+                  <span style="width:40px;height:40px;flex-shrink:0;border-radius:50%;background:{{ s.nBg }};color:{{ s.nFg }};display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:22px;font-weight:300">{{ s.nIcon }}</span>
+                  <span style="flex:1;display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:var(--fs-footnote);color:var(--text-secondary)">дальше</span><span style="font-size:{{ s.rowFs }};font-weight:var(--fw-semibold);color:{{ s.nT }}">{{ s.nTitle }}</span></span>
+                  <span style="font-family:var(--font-rounded);font-size:{{ s.whenFs }};color:var(--text-secondary);white-space:nowrap">{{ s.nWhen }}</span>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:2px;padding:0 var(--space-4);flex-shrink:0">
+                <sc-for list="{{ s.rows }}" as="e" hint-placeholder-count="2"><div style="display:flex;align-items:baseline;gap:var(--space-12);min-height:28px;font-size:var(--fs-subheadline)"><span style="width:40px;color:var(--text-secondary);font-variant-numeric:tabular-nums">{{ e.time }}</span><span style="flex:1;min-width:0;color:{{ e.c }}">{{ e.t }} <span style="color:var(--text-secondary)">{{ e.dv }} {{ e.du }}</span></span><span style="font-size:var(--fs-footnote);color:var(--text-secondary)">{{ e.who }}</span></div></sc-for>
+                <sc-if value="{{ s.hasMore }}" hint-placeholder-val="{{ false }}"><span style="display:flex;align-items:center;min-height:var(--size-hit);font-size:var(--fs-footnote);color:var(--accent-text)">Весь день · ещё {{ s.more }}<span style="font-family:var(--font-icon);font-size:16px">chevron_right</span></span></sc-if>
+              </div>
+              <div style="flex:1;min-height:0"></div>
+              <sc-if value="{{ s.readOnly }}" hint-placeholder-val="{{ false }}"><div style="min-height:{{ s.pH }};display:flex;align-items:center;justify-content:center;gap:var(--space-8);color:var(--text-secondary);font-size:var(--fs-subheadline);flex-shrink:0"><span style="font-family:var(--font-icon);font-size:20px;font-weight:300">visibility</span>Записывает Аня — у вас просмотр</div></sc-if>
+              <sc-if value="{{ s.hasPrimary }}" hint-placeholder-val="{{ true }}"><div style="min-height:{{ s.pH }};border-radius:var(--radius-pill);background:{{ s.pBg }};color:{{ s.pFg }};box-shadow:0 var(--edge-height) 0 {{ s.pEdge }};display:flex;align-items:center;justify-content:center;gap:var(--space-8);font-size:{{ s.pFs }};font-weight:var(--fw-semibold);flex-shrink:0"><span style="font-family:var(--font-icon);font-size:24px;font-weight:300">{{ s.pIcon }}</span>{{ s.primary }}</div></sc-if>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-12);flex-shrink:0;padding-bottom:var(--space-4)"><div style="min-height:{{ s.sH }};border-radius:var(--radius-pill);background:{{ s.s1Bg }};color:{{ s.s1Fg }};box-shadow:0 var(--edge-height-s) 0 {{ s.s1Edge }};display:flex;align-items:center;justify-content:center;gap:var(--space-8);font-size:{{ s.sFs }}"><span style="font-family:var(--font-icon);font-size:20px;font-weight:300">{{ s.s1i }}</span>{{ s.s1 }}</div><div style="min-height:{{ s.sH }};border-radius:var(--radius-pill);background:var(--fill-2);box-shadow:0 var(--edge-height-s) 0 var(--fill-edge);display:flex;align-items:center;justify-content:center;gap:var(--space-8);font-size:{{ s.sFs }}"><span style="font-family:var(--font-icon);font-size:20px;font-weight:300">{{ s.s2i }}</span>{{ s.s2 }}</div></div>
+              <sc-if value="{{ s.slide }}" hint-placeholder-val="{{ false }}"><div style="min-height:var(--size-button-xl);margin-bottom:28px;border-radius:var(--radius-pill);background:var(--fill-2);display:flex;align-items:center;padding:4px;box-sizing:border-box;flex-shrink:0"><span style="width:56px;height:56px;border-radius:50%;background:var(--accent);color:var(--on-accent);display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:24px">home</span><span style="flex:1;text-align:center;font-size:var(--fs-headline);padding-right:56px">Потяните — домой</span></div></sc-if>
+            </div>
+            <sc-if value="{{ s.tabs }}" hint-placeholder-val="{{ true }}"><div style="margin:var(--space-12) {{ s.pad }} {{ s.tabB }};flex-shrink:0;min-height:{{ s.tabH }};border-radius:var(--radius-pill);background:var(--glass-regular);backdrop-filter:blur(var(--blur-glass)) saturate(var(--glass-saturate));-webkit-backdrop-filter:blur(var(--blur-glass)) saturate(var(--glass-saturate));box-shadow:var(--glass-shadow);display:flex;align-items:center;justify-content:space-between;padding:0 var(--space-8) 0 var(--space-4)"><span style="display:flex;align-items:center;min-height:48px;padding-right:{{ s.tabLp }};border-radius:var(--radius-pill);background:var(--glass-tint-accent);color:var(--accent-text);font-size:var(--fs-subheadline);font-weight:var(--fw-semibold)"><span style="width:52px;height:48px;display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:24px;font-variation-settings:'FILL' 1">today</span>{{ s.tabL }}</span><span style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:24px;font-weight:300">history</span><span style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:24px;font-weight:300">monitor_heart</span><span style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:24px;font-weight:300">pets</span></div></sc-if>
+          </div>
+          <span style="font-size:14px;line-height:1.5;color:#C8C8C4">{{ s.note }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  dev(k) {
+    return {
+      pro: { w: '402px', h: '874px', r: '56px', island: true, sb: '62px', sbPad: '34px 0 42px', sbFs: '17px', pad: '20px', titleFs: '28px', labFs: '15px', heroFs: '88px', heroFsB: '72px', unitFs: '20px', rowFs: '16px', timeCol: '44px', heroTop: '32px', whenFs: '17px', pH: '64px', pFs: '17px', sH: '52px', sFs: '17px', tabH: '64px', tabB: '28px', tabL: 'Сегодня', tabLp: '16px', dev: '17 Pro' },
+      se: { w: '375px', h: '667px', r: '0px', island: false, sb: '20px', sbPad: '8px', sbFs: '12px', pad: '16px', titleFs: '24px', labFs: '13px', heroFs: '64px', heroFsB: '56px', unitFs: '16px', rowFs: '15px', timeCol: '40px', heroTop: '12px', whenFs: '15px', pH: '60px', pFs: '17px', sH: '48px', sFs: '15px', tabH: '56px', tabB: '10px', tabL: '', tabLp: '0px', dev: 'SE' }
+    }[k];
+  }
+  stateData(key) {
+    const R = (time, t, dv, du, who, err) => ({ time, t, dv: dv || '', du: du || '', who: who || '', c: err ? 'var(--status-error)' : 'var(--text-primary)' });
+    const walk = (time, who, m) => R(time, 'Улица', m, 'мин · пописал', who);
+    const dose = (time, who) => R(time, 'Доза', '', '· натощак до ' + (time === '8:00' ? '8:30' : '20:30'), who);
+    const meal = (time, who) => R(time, 'Еда', '65', 'г · съел', who);
+    const ST = (tone, icon, text, a, aIcon) => ({ hasStatus: true, tone, stIcon: icon, stText: text, hasA: !!a, a: a || '', aIcon: aIcon || '' });
+    const base = { clock: '9:41', date: 'чт, 4 окт', heroIcon: 'directions_walk', heroLabel: 'С прогулки', h1: '2', u1: 'ч', h2: '10', u2: 'мин', heroTone: 'n', hasStatus: false, past: [walk('7:10', 'ты', '18'), dose('8:00', 'мама'), meal('8:31', 'мама')], nIcon: 'directions_walk', nTitle: 'Выход около 11:00', nWhen: 'через 1 ч 20 мин', nErr: false, bar: ['гулял в 7:28', 'обычно до 11:00', '62%', 'a'], hasPrimary: true, readOnly: false, pTone: 'a', pIcon: 'pets', primary: 'Просится', s1: 'Гулять', s1i: 'directions_walk', s1Tone: 'n', s2: 'Записать…', s2i: 'add', slide: false, tabs: true, listTitle: 'Сегодня' };
+    const S = {
+      '01': { name: '01 Обычно' },
+      '02': { name: '02 Натощак', clock: '8:11', h1: '1', h2: '01', ...ST('w', 'no_meals', 'Не кормить ещё 19 мин'), past: [walk('7:10', 'ты', '18'), dose('8:00', 'мама')], nIcon: 'restaurant', nTitle: 'Завтрак 65 г', nWhen: 'в 8:30', bar: ['доза в 8:00', 'еда в 8:30', '37%', 'w'] },
+      '03': { name: '03 Час дозы', clock: '20:02', h1: '1', h2: '35', ...ST('s', 'medication', 'Доза 20:00 · 0,1 мг', 'Беру на себя', 'back_hand'), past: [walk('12:22', 'ты', '19'), meal('13:05', 'мама'), walk('18:27', 'ты', '24')], nIcon: 'restaurant', nTitle: 'Ужин 65 г', nWhen: 'в 20:30', bar: ['доза в 20:00', 'ужин в 20:30', '7%', 'a'], pIcon: 'medication', primary: 'Дал дозу', s1: 'Просится', s1i: 'pets' },
+      '04': { name: '04 На улице', clock: '19:58', heroIcon: 'timer', heroLabel: 'На улице · с 19:45', h1: '13', u1: 'мин', h2: '04', u2: 'с', heroTone: 'a', ...ST('s', 'medication', 'Доза в 20:00. Таблетка с собой?', 'Дал', 'check'), listTitle: 'На прогулке', past: [R('19:49', 'Пописал')], nIcon: 'medication', nTitle: 'Доза', nWhen: 'через 2 мин', bar: null, pIcon: 'water_drop', primary: 'Пописал', s1: 'Срыв', s1i: 'bolt', s1Tone: 'w', s2: 'Ещё…', s2i: 'more_horiz', slide: true, tabs: false },
+      '05': { name: '05 Тревога', clock: '14:07', h1: '0', h2: '24', ...ST('e', 'emergency_home', 'Кровь в стуле — позвоните врачу'), past: [R('11:20', 'Вырвал', '', 'травой', 'ты', true), R('14:05', 'Стул с кровью', '', '', 'мама', true)], nIcon: 'local_hospital', nTitle: 'Вет+ · открыт до 20:00', nWhen: '+33 4 93…', nErr: true, bar: null, pTone: 'e', pIcon: 'call', primary: 'Позвонить врачу', s1: 'Что сказать', s1i: 'description', s2: 'Подожду час', s2i: 'schedule' },
+      '06': { name: '06 Первые дни', date: 'день 2 из 4', ...ST('s', 'auto_awesome', 'Изучаю ритм. Подсказки через 2 дня'), past: [walk('7:10', 'ты', '18'), dose('8:00', 'мама')], nIcon: 'medication', nTitle: 'Доза', nWhen: 'в 20:00', bar: ['ритм: день 2', 'из 4', '50%', 'a'] },
+      '07': { name: '07 Первый день', date: 'день 1', heroLabel: 'Сегодня ещё не гуляли', h1: '—', u1: '', h2: '', u2: '', heroTone: 'd', ...ST('s', 'auto_awesome', 'Нажмите «Гулять», когда выйдете'), past: [], nIcon: 'medication', nTitle: 'Доза', nWhen: 'в 20:00', bar: null, pIcon: 'directions_walk', primary: 'Гулять', s1: 'Просится', s1i: 'pets' },
+      '08': { name: '08 Ночь', clock: '2:40', date: 'ночь', heroLabel: 'Гулял в 22:15', h1: '4', h2: '25', heroTone: 'd', past: [R('20:01', 'Доза', '', '', 'ты'), walk('22:15', 'ты', '12')], nIcon: 'wb_twilight', nTitle: 'Утренний выход', nWhen: 'около 6:30', bar: ['гулял в 22:27', 'около 6:30', '52%', 'd'] },
+      '09': { name: '09 У ситтера', heroLabel: 'С прогулки с Аней', h1: '1', h2: '05', ...ST('s', 'luggage', 'Стич у Ани до вс 7 окт', 'Вернулся', 'home'), past: [R('8:00', 'Доза', '', '', 'Аня'), walk('8:35', 'Аня', '20')], nIcon: 'home', nTitle: 'Вернётся домой', nWhen: 'вс, вечером', bar: ['гулял в 8:55', 'обычно до 11:30', '40%', 'a'], hasPrimary: false, readOnly: true, s1: 'Написать Ане', s1i: 'chat', s2: 'Позвонить', s2i: 'call' },
+      '10': { name: '10 Нет сети', ...ST('n', 'cloud_off', 'Нет сети · 1 запись не ушла'), past: [walk('7:10', 'ты', '18'), dose('8:00', 'мама'), R('9:38', 'Стул', '', '· не отправлено', '')] },
+      'L1': { name: 'Нагрузка 1 · 16 записей', clock: '18:52', h1: '0', h2: '40', past: [walk('7:10', 'ты', '18'), dose('8:00', 'мама'), meal('8:31', 'мама'), R('9:15', 'Лакомство', '2', 'шт', 'ты'), walk('10:05', 'мама', '10'), R('10:40', 'Занятие', '', '· шаг 3', 'ты'), R('11:20', 'Вырвал', '', 'травой', 'ты', true), walk('12:22', 'ты', '19'), meal('13:05', 'мама'), R('13:30', 'Стул', '', '· норма', 'мама'), R('14:10', 'Заметка', '', '· фото', 'ты'), walk('15:00', 'мама', '12'), R('16:20', 'Лакомство', '3', 'шт', 'Аня'), walk('17:40', 'Аня', '25'), R('18:05', 'Лакомство', '1', 'шт · сыр', 'ты'), R('18:12', 'Занятие', '', '· у двери, 10 мин', 'ты')], nIcon: 'directions_walk', nTitle: 'Выход около 20:30', nWhen: 'через 1 ч 38 мин', bar: ['гулял в 18:05', 'обычно до 20:30', '27%', 'a'] },
+      'L2': { name: 'Нагрузка 2 · длинные тексты', clock: '13:41', date: 'чт, 4 окт', h1: '1', h2: '19', ...ST('s', 'medication', 'Капли Вет — после еды, 0,5 мл', 'Дал', 'check'), past: [walk('7:10', 'ты', '18'), dose('8:00', 'мама'), meal('8:31', 'мама'), walk('12:22', 'бабушка Валентина', '19'), R('13:05', 'Еда', '65', 'г · съел половину, остальное вечером', 'бабушка Валентина')], nIcon: 'water_drop', nTitle: 'Капли Вет, 0,5 мл после еды', nWhen: 'сейчас', bar: ['поел в 13:05', 'капли до 13:35', '80%', 'a'] },
+      'L3': { name: 'Нагрузка 3 · всё сразу', clock: '20:14', h1: '0', h2: '12', ...ST('e', 'emergency_home', 'Третья рвота за день — позвоните врачу'), past: [walk('7:10', 'ты', '18'), dose('8:00', 'мама'), R('11:20', 'Вырвал', '', 'травой', 'ты', true), meal('13:05', 'мама'), R('16:40', 'Вырвал', '', 'едой', 'мама', true), walk('19:30', 'ты', '20'), R('20:02', 'Вырвал', '', 'желчью', 'ты', true)], nIcon: 'local_hospital', nTitle: 'Вет+ · открыт до 20:00', nWhen: 'закрыт', nErr: true, bar: null, pTone: 'e', pIcon: 'call', primary: 'Позвонить врачу', s1: 'Что сказать', s1i: 'description', s2: 'Подожду час', s2i: 'schedule' }
+    };
+    return { ...base, ...S[key] };
+  }
+  build(dir, key, k, attr, note) {
+    const d = this.dev(k), s = { ...this.stateData(key), ...d, attr };
+    const shown = s.past.slice(-2);
+    s.rows = shown; s.hasMore = s.past.length > 2; s.more = s.past.length - 2; s.empty = s.past.length === 0;
+    s.heroC = s.heroTone === 'a' ? 'var(--accent-text)' : s.heroTone === 'd' ? 'var(--text-secondary)' : 'var(--text-primary)';
+    s.unitC = s.heroTone === 'n' ? 'var(--accent-text)' : 'var(--text-secondary)';
+    s.nC = s.nErr ? 'var(--status-error)' : 'var(--accent-text)';
+    s.nT = s.nErr ? 'var(--status-error)' : 'var(--text-primary)';
+    s.nBg = s.nErr ? 'var(--status-error)' : 'var(--accent)'; s.nFg = s.nErr ? 'var(--on-error)' : 'var(--on-accent)';
+    const fg = { s: 'var(--accent-text)', w: 'var(--status-warning)', e: 'var(--status-error)', n: 'var(--text-secondary)' };
+    s.stFg = fg[s.tone]; s.stBg = s.tone === 'e' ? 'var(--error-subtle)' : 'transparent';
+    s.stPadL = s.tone === 'e' ? 'var(--space-16)' : '0'; s.stPadR = s.tone === 'e' ? 'var(--space-4)' : '0';
+    const P = { a: ['var(--accent)', 'var(--on-accent)', 'var(--accent-edge)'], e: ['var(--status-error)', 'var(--on-error)', 'var(--error-edge)'] }[s.pTone];
+    s.pBg = P[0]; s.pFg = P[1]; s.pEdge = P[2];
+    const Q = s.s1Tone === 'w' ? ['var(--warning-subtle)', 'var(--status-warning)', 'var(--status-warning)'] : ['var(--fill-2)', 'var(--text-primary)', 'var(--fill-edge)'];
+    s.s1Bg = Q[0]; s.s1Fg = Q[1]; s.s1Edge = Q[2];
+    s.hasBar = !!s.bar;
+    if (s.bar) { s.barL = s.bar[0]; s.barR = s.bar[1]; s.barPos = s.bar[2]; s.barC = { a: 'var(--accent)', w: 'var(--status-warning)', d: 'var(--text-secondary)' }[s.bar[3]]; }
+    s.cardBg = s.tone === 'e' && s.hasStatus ? 'var(--error-subtle)' : 'var(--fill-1)';
+    if (dir === 'B') { s.heroFs = d.heroFsB; s.rows = s.rows.slice(-2); }
+    if (k === 'se' && dir === 'B' && s.hasStatus) s.hasBar = false;
+    s.label = s.name + ' · ' + d.dev + ' · ' + (attr === 'dark' ? 'Dark' : 'Light');
+    s.note = note || '';
+    return s;
+  }
+  renderVals() {
+    const ids = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10'];
+    const notesA = { '01': 'Шесть элементов вместо девяти. Глаз идёт сверху вниз: цифра → дальше → две записи → кнопка.', '04': 'На прогулке список — отметки этой прогулки.', '05': 'Фон только у тревоги, клиника — в строке «дальше».', '09': 'Вместо главной кнопки — тихая подпись «просмотр».' };
+    const notesB = { '01': 'Полоса — сколько прошло от прогулки до обычного выхода.', '02': 'Натощак: полоса янтарная, считает до еды.', '06': 'Первые дни: полоса показывает, сколько осталось учиться.', '05': 'Тревога: карточка красная, полосы нет.', '04': 'На улице полосы нет — таймер и так идёт.' };
+    const A = [...ids.map(i => this.build('A', i, 'pro', 'dark', notesA[i])), this.build('A', '01', 'pro', 'light'), this.build('A', '05', 'pro', 'light'), this.build('A', '01', 'se', 'dark', 'SE: цифра 64, те же две записи.'), this.build('A', '03', 'se', 'light')];
+    const B = [...ids.map(i => this.build('B', i, 'pro', 'dark', notesB[i])), this.build('B', '01', 'pro', 'light'), this.build('B', '05', 'pro', 'light'), this.build('B', '01', 'se', 'dark', 'SE: всё влезает, записи мелко.'), this.build('B', '03', 'se', 'light', 'SE со строкой состояния: полоса уходит.')];
+    const stress = [this.build('B', 'L1', 'pro', 'dark', '16 записей за день. На экране по-прежнему 2 последние, остальные 14 — одной ссылкой «Весь день».'), this.build('B', 'L2', 'pro', 'dark', 'Длинное имя и подробности переносятся на вторую строку, кнопки не съезжают.'), this.build('B', 'L3', 'pro', 'dark', 'Три рвоты, тревога, клиника закрыта: наверху строка тревоги, в списке 2 последние записи.'), this.build('B', 'L1', 'se', 'dark', 'SE, 16 записей: список не растёт.'), this.build('B', 'L3', 'se', 'light', 'SE, всё сразу: полосы нет, кнопки на месте.')];
+    return { framesA: A, framesB: B, framesS: stress };
+  }
+}
+</script>
+</body>
+</html>

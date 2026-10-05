@@ -1,0 +1,2 @@
+export interface HeroReadingProps { label?: string; value: string; sub?: string; variant?: "default" | "night" | "empty" | "timer"; size?: "phone" | "pad" | "compact"; style?: React.CSSProperties; }
+export declare function HeroReading(p: HeroReadingProps): JSX.Element;

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body{margin:0;background:#131211;color:#F2EEE8;font-family:-apple-system,"SF Pro Text",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#2FE0BE}
+a:hover{color:#7FF0DA}
+input,textarea,button{font-family:inherit}
+</style>
+</helmet>
+<div style="max-width:980px;margin:0 auto;padding:32px 16px 80px;display:flex;flex-direction:column;gap:22px">
+  <header style="display:flex;flex-direction:column;gap:12px">
+    <div style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#A9A39B">Togo · дневник собаки · 10 минут</div>
+    <h1 style="margin:0;font-size:30px;line-height:1.1;letter-spacing:-0.02em">Разложи по разделам, как тебе удобно</h1>
+    <p style="margin:0;font-size:15px;line-height:1.55;color:#C9C3BA;max-width:640px">Это приложение-дневник собаки. Ниже — то, что в нём можно делать. Нажми на карточку, потом на раздел, куда бы ты её положил(а). Правильных ответов нет. Не знаешь — клади в «Не знаю». Не хватает раздела — создай свой.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+      <input value="{{ name }}" onChange="{{ onName }}" placeholder="Имя или ник" style="flex:1;min-width:180px;padding:12px 14px;border-radius:12px;border:1px solid #3A3632;background:#1E1C1A;color:#F2EEE8;font-size:15px">
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        <sc-for list="{{ segments }}" as="s" hint-placeholder-count="3">
+          <button onClick="{{ s.onClick }}" style="appearance:none;cursor:pointer;padding:10px 12px;border-radius:99px;border:1px solid {{ s.border }};background:{{ s.bg }};color:{{ s.color }};font-size:13px">{{ s.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+  </header>
+
+  <section style="position:sticky;top:0;z-index:2;display:flex;flex-direction:column;gap:10px;padding:14px;border-radius:16px;background:#1E1C1A;border:1px solid #2C2926;box-shadow:0 8px 24px rgba(0,0,0,.4)">
+    <div style="display:flex;justify-content:space-between;gap:10px;font-size:13px;color:#A9A39B"><span>Осталось разложить: {{ left }}</span><span>{{ hint }}</span></div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;max-height:190px;overflow:auto">
+      <sc-for list="{{ pool }}" as="c" hint-placeholder-count="12">
+        <button onClick="{{ c.onClick }}" style="appearance:none;cursor:pointer;padding:9px 12px;border-radius:10px;border:1px solid {{ c.border }};background:{{ c.bg }};color:{{ c.color }};font-size:14px;text-align:left">{{ c.text }}</button>
+      </sc-for>
+    </div>
+  </section>
+
+  <section style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px">
+    <sc-for list="{{ groups }}" as="g" hint-placeholder-count="7">
+      <div onClick="{{ g.onClick }}" style="cursor:pointer;display:flex;flex-direction:column;gap:8px;min-height:120px;padding:14px;border-radius:16px;background:#191816;border:2px dashed {{ g.border }}">
+        <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:16px;font-weight:700">{{ g.title }}</span><span style="font-size:12px;color:#A9A39B">{{ g.hint }}</span></div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <sc-for list="{{ g.cards }}" as="c" hint-placeholder-count="0">
+            <button onClick="{{ c.onClick }}" style="appearance:none;cursor:pointer;padding:7px 10px;border-radius:9px;border:1px solid {{ c.border }};background:{{ c.bg }};color:{{ c.color }};font-size:13px;text-align:left">{{ c.text }}</button>
+          </sc-for>
+        </div>
+      </div>
+    </sc-for>
+  </section>
+
+  <section style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+    <input value="{{ newGroup }}" onChange="{{ onNewGroup }}" placeholder="Свой раздел, например «Обучение»" style="flex:1;min-width:220px;padding:12px 14px;border-radius:12px;border:1px solid #3A3632;background:#1E1C1A;color:#F2EEE8;font-size:15px">
+    <button onClick="{{ addGroup }}" style="appearance:none;cursor:pointer;padding:12px 16px;border-radius:12px;border:1px solid #3A3632;background:#2A2724;color:#F2EEE8;font-size:15px">Добавить раздел</button>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:10px;padding:18px;border-radius:16px;background:rgba(47,224,190,.07);border:1px solid rgba(47,224,190,.35)">
+    <div style="font-size:16px;font-weight:700">Что-то показалось странным?</div>
+    <textarea value="{{ comment }}" onChange="{{ onComment }}" placeholder="Например: не понял(а), что такое «перенос навыка»" style="min-height:70px;padding:12px 14px;border-radius:12px;border:1px solid #3A3632;background:#1E1C1A;color:#F2EEE8;font-size:15px"></textarea>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+      <button onClick="{{ copyResult }}" style="appearance:none;cursor:pointer;padding:13px 18px;border-radius:12px;border:0;background:#2FE0BE;color:#0E1412;font-size:15px;font-weight:700">Скопировать результат</button>
+      <button onClick="{{ reset }}" style="appearance:none;cursor:pointer;padding:13px 18px;border-radius:12px;border:1px solid #3A3632;background:transparent;color:#F2EEE8;font-size:15px">Начать заново</button>
+      <span style="font-size:13px;color:#A9A39B">{{ copyStatus }}</span>
+    </div>
+    <div style="font-size:13px;color:#A9A39B">Вставь скопированный текст в сообщение тому, кто прислал ссылку. Больше ничего никуда не отправляется.</div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:420,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  KEY = 'togo-cardsort-v1';
+  CARDS = [
+    'Отметить, что собака пописала', 'Записать еду', 'Записать стул', 'Начать прогулку',
+    'Понять, просится ли собака', 'Отметить, что вырвало', 'Лужа дома', 'Дать таблетку',
+    'Когда можно кормить после таблетки', 'Схема лечения', 'Сколько таблеток осталось', 'Отчёт для врача',
+    'Телефон врача', 'Что делать, если стало плохо', 'Вес собаки', 'Корм и норма в граммах',
+    'Корм заканчивается', 'Когти, груминг, от блох', 'Прививки', 'Документы и номер чипа',
+    'Течка у девочки', 'Поездка: что взять с собой', 'Занятие с кликером', 'Приучить давать лапу у врача',
+    'Как собака попросилась на улицу', 'Сорвался на другую собаку', 'Сколько раз гуляли за неделю', 'Как менялся стул за месяц',
+    'Прошлый курс лечения', 'Пригласить маму в дневник', 'Кто сегодня гуляет с собакой', 'Что видит ситтер',
+    'Уведомления', 'Подписка', 'Перенести на новый телефон', 'Добавить вторую собаку'
+  ];
+  BASE = [
+    ['today', 'Сегодня', 'главный экран, то, что делаю каждый день'],
+    ['dog', 'Собака', 'всё о собаке'],
+    ['history', 'История', 'что было раньше'],
+    ['health', 'Здоровье', 'появляется, когда собака лечится'],
+    ['family', 'Семья', 'другие люди, которые ухаживают'],
+    ['settings', 'Настройки', ''],
+    ['unknown', 'Не знаю', 'не понимаю, что это или куда']
+  ];
+  SEG = [['puppy', 'Щенок до года'], ['treat', 'Собака лечится'], ['shared', 'Ухаживаем вдвоём и больше'], ['other', 'Другое']];
+  state = { name: '', seg: null, placed: {}, custom: [], selected: null, newGroup: '', comment: '', copyStatus: '' };
+
+  componentDidMount() {
+    try { const s = JSON.parse(localStorage.getItem(this.KEY) || 'null'); if (s) this.setState({ ...s, selected: null, copyStatus: '' }); } catch (e) {}
+  }
+  upd(p) {
+    this.setState(p, () => {
+      const { name, seg, placed, custom, comment } = this.state;
+      try { localStorage.setItem(this.KEY, JSON.stringify({ name, seg, placed, custom, comment })); } catch (e) {}
+    });
+  }
+  allGroups() { return [...this.BASE, ...this.state.custom.map((t, i) => ['c' + i, t, 'свой раздел'])]; }
+  cardView(i) {
+    const sel = this.state.selected === i;
+    return {
+      text: this.CARDS[i],
+      bg: sel ? '#2FE0BE' : '#2A2724', color: sel ? '#0E1412' : '#F2EEE8', border: sel ? '#2FE0BE' : '#3A3632',
+      onClick: (e) => { e && e.stopPropagation && e.stopPropagation(); this.setState({ selected: sel ? null : i }); }
+    };
+  }
+  result() {
+    const { name, seg, placed, comment } = this.state;
+    const segLabel = (this.SEG.find(s => s[0] === seg) || [, '—'])[1];
+    const lines = [`Togo · сортировка · ${name || 'без имени'} · ${segLabel}`];
+    this.allGroups().forEach(([id, title]) => {
+      const items = this.CARDS.map((_, i) => i).filter(i => placed[i] === id).map(i => i + 1);
+      if (items.length) lines.push(`${title}: ${items.join(',')}`);
+    });
+    const left = this.CARDS.map((_, i) => i).filter(i => placed[i] == null).map(i => i + 1);
+    if (left.length) lines.push(`Не разложено: ${left.join(',')}`);
+    if (comment) lines.push(`Комментарий: ${comment}`);
+    return lines.join('\n');
+  }
+  renderVals() {
+    const { placed, selected, seg } = this.state;
+    const idx = this.CARDS.map((_, i) => i);
+    const pool = idx.filter(i => placed[i] == null).map(i => this.cardView(i));
+    const groups = this.allGroups().map(([id, title, hint]) => ({
+      title, hint,
+      border: selected != null ? '#2FE0BE' : '#3A3632',
+      cards: idx.filter(i => placed[i] === id).map(i => this.cardView(i)),
+      onClick: () => { if (this.state.selected == null) return; this.upd({ placed: { ...this.state.placed, [this.state.selected]: id }, selected: null }); }
+    }));
+    return {
+      name: this.state.name, newGroup: this.state.newGroup, comment: this.state.comment, copyStatus: this.state.copyStatus,
+      onName: e => this.upd({ name: e.target.value }),
+      onNewGroup: e => this.setState({ newGroup: e.target.value }),
+      onComment: e => this.upd({ comment: e.target.value }),
+      addGroup: () => { const t = this.state.newGroup.trim(); if (!t) return; this.upd({ custom: [...this.state.custom, t] }); this.setState({ newGroup: '' }); },
+      segments: this.SEG.map(([id, label]) => ({
+        label, bg: seg === id ? 'rgba(47,224,190,.16)' : 'transparent', color: seg === id ? '#2FE0BE' : '#F2EEE8',
+        border: seg === id ? '#2FE0BE' : '#3A3632', onClick: () => this.upd({ seg: id })
+      })),
+      pool, groups, left: pool.length,
+      hint: selected != null ? 'теперь нажми на раздел' : 'нажми на карточку',
+      copyResult: async () => {
+        const text = this.result();
+        try { await navigator.clipboard.writeText(text); this.setState({ copyStatus: 'Скопировано' }); }
+        catch (e) { window.prompt('Скопируй текст:', text); }
+      },
+      reset: () => this.upd({ placed: {}, custom: [], selected: null, comment: '' })
+    };
+  }
+}
+</script>
+</body>
+</html>

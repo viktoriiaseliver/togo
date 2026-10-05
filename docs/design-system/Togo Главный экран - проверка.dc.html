@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<style>html{background:#111}body{margin:0;background:#111;color:#F5F5F5;font-family:-apple-system,"SF Pro Text",system-ui,sans-serif}a{color:#D4F75F}a:hover{color:#F5F5F5}</style>
+</helmet>
+<div style="display:flex;flex-direction:column;gap:72px;padding:64px;background:#111111;color:#F5F5F5;min-height:100vh">
+
+<section data-screen-label="01 Вступление" style="display:flex;flex-direction:column;gap:18px;max-width:980px">
+  <div style="font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#A8A8A8">Togo · главный экран · проверка концепта</div>
+  <h1 style="margin:0;font-size:52px;line-height:1.05;letter-spacing:-0.03em">Выдержит ли каркас всё приложение</h1>
+  <p style="margin:0;font-size:18px;line-height:1.55;color:#C8C8C8;text-wrap:pretty">Концепт из <a href="Togo Главный экран - разбор.dc.html">разбора</a> прогнан через четыре проверки: покрытие всех функций из документов, конфликты состояний, масштаб (несколько собак, доз, людей, режимы, крупный шрифт, языки) и тест первого клика на шести персонах. Каркас выдержал; нашлись 8 дыр — для каждой ниже решение, которое не ломает правила.</p>
+  <div style="display:flex;flex-wrap:wrap;gap:8px;font-size:13px"><a href="#cover" style="padding:7px 12px;border-radius:8px;background:#1C1C1C;text-decoration:none">1 · Покрытие</a><a href="#stack" style="padding:7px 12px;border-radius:8px;background:#1C1C1C;text-decoration:none">2 · Приоритеты</a><a href="#scale" style="padding:7px 12px;border-radius:8px;background:#1C1C1C;text-decoration:none">3 · Масштаб</a><a href="#stock" style="padding:7px 12px;border-radius:8px;background:#1C1C1C;text-decoration:none">3b · Запас и таблетка с собой</a><a href="#test" style="padding:7px 12px;border-radius:8px;background:#1C1C1C;text-decoration:none">4 · Тест</a><a href="#gaps" style="padding:7px 12px;border-radius:8px;background:#1C1C1C;text-decoration:none">5 · Дыры и решения</a></div>
+</section>
+
+<section id="cover" data-screen-label="02 Покрытие" style="display:flex;flex-direction:column;gap:16px">
+  <h2 style="margin:0;font-size:32px;letter-spacing:-0.02em">1 · Покрытие функций</h2>
+  <p style="margin:0;max-width:900px;font-size:15px;line-height:1.55;color:#A8A8A8">Каждая функция из handoff и CHECKLIST — где живёт в новом каркасе и сколько тапов от «Сегодня». Правило документов — не больше трёх.</p>
+  <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:#A8A8A8"><span><b style="color:#D4F75F">{{ coverOk }}</b> покрыто</span><span><b style="color:#F7C75F">{{ coverFix }}</b> покрыто после правки</span><span>из {{ coverTotal }}</span></div>
+  <div style="display:flex;flex-direction:column;border-radius:16px;background:#1C1C1C;overflow:hidden;font-size:14px">
+    <div style="display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1.3fr) 56px minmax(0,.5fr);gap:14px;padding:12px 20px;color:#A8A8A8;font-size:12px;letter-spacing:.06em;text-transform:uppercase"><span>Функция</span><span>Где</span><span>Тапы</span><span>Статус</span></div>
+    <sc-for list="{{ coverage }}" as="r" hint-placeholder-count="20">
+      <div style="display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1.3fr) 56px minmax(0,.5fr);gap:14px;padding:10px 20px;border-top:1px solid #2C2C2C;line-height:1.4"><span>{{ r.f }}</span><span style="color:#A8A8A8">{{ r.where }}</span><span style="font-variant-numeric:tabular-nums">{{ r.taps }}</span><span style="color:{{ r.c }};font-weight:600">{{ r.s }}</span></div>
+    </sc-for>
+  </div>
+</section>
+
+<section id="stack" data-screen-label="03 Приоритеты" style="display:flex;flex-direction:column;gap:16px">
+  <h2 style="margin:0;font-size:32px;letter-spacing:-0.02em">2 · Когда совпадают два состояния</h2>
+  <p style="margin:0;max-width:900px;font-size:15px;line-height:1.55;color:#A8A8A8">На экране одна главная кнопка и одна строка, поэтому нужны два явных стека. Верхнее побеждает; проигравшее не теряется — уходит в «сегодня», уведомление или следующую позицию.</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px">
+    <div style="display:flex;flex-direction:column;gap:8px;padding:20px;border-radius:16px;background:#1C1C1C">
+      <span style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#A8A8A8">Главная кнопка</span>
+      <sc-for list="{{ stackPrimary }}" as="r" hint-placeholder-count="5"><div style="display:grid;grid-template-columns:24px 1fr;gap:10px;padding:8px 0;border-top:1px solid #2C2C2C;font-size:14px;line-height:1.4"><span style="color:#D4F75F;font-weight:700">{{ r.n }}</span><span><b>{{ r.t }}</b> <span style="color:#A8A8A8">— {{ r.d }}</span></span></div></sc-for>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;padding:20px;border-radius:16px;background:#1C1C1C">
+      <span style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#A8A8A8">Строка состояния</span>
+      <sc-for list="{{ stackStatus }}" as="r" hint-placeholder-count="8"><div style="display:grid;grid-template-columns:24px 1fr;gap:10px;padding:8px 0;border-top:1px solid #2C2C2C;font-size:14px;line-height:1.4"><span style="color:{{ r.c }};font-weight:700">{{ r.n }}</span><span><b>{{ r.t }}</b> <span style="color:#A8A8A8">— {{ r.d }}</span></span></div></sc-for>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:8px;padding:20px;border-radius:16px;background:#1C1C1C;max-width:980px">
+    <span style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#A8A8A8">Вторичный слот 1 — контекстный</span>
+    <span style="font-size:14px;line-height:1.55;color:#E0E0E0">Слот 2 всегда «Записать…» (на улице — «Домой»). Слот 1 — следующее по вероятности действие: обычно «Гулять»; в час еды по расписанию — «Покормил 65 г»; в режиме «пелёнка» — «Стул»; когда главная занята дозой или тревогой — вытесненное «Просится».</span>
+  </div>
+</section>
+
+<section id="scale" data-screen-label="04 Масштаб" style="display:flex;flex-direction:column;gap:20px">
+  <h2 style="margin:0;font-size:32px;letter-spacing:-0.02em">3 · Масштаб и крайние случаи</h2>
+  <p style="margin:0;max-width:900px;font-size:15px;line-height:1.55;color:#A8A8A8">Восемь ситуаций, которые ломали прошлые концепты. Каркас тот же — меняются только тексты в зонах.</p>
+  <div style="display:flex;flex-wrap:wrap;gap:28px">
+    <sc-for list="{{ edges }}" as="s" hint-placeholder-count="8">
+      <div style="display:flex;flex-direction:column;gap:12px;width:290px">
+        <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:13px;color:#D4F75F;font-weight:700">{{ s.n }} · {{ s.name }}</span><span style="font-size:13px;line-height:1.45;color:#A8A8A8">{{ s.when }}</span></div>
+        <div style="width:290px;height:600px;border-radius:40px;background:#181818;color:#F5F5F5;box-shadow:0 0 0 8px #000,0 0 0 9px #333;display:flex;flex-direction:column;padding:14px 18px 10px;box-sizing:border-box;font-variant-numeric:tabular-nums;overflow:hidden">
+          <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:600;padding:0 6px 10px"><span>{{ s.clock }}</span><span>●●● ▮</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="display:flex;align-items:center;gap:8px"><span style="width:28px;height:28px;border-radius:50%;background:#2D3802;color:#D4F75F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800">С</span><sc-if value="{{ s.twoDogs }}" hint-placeholder-val="{{ false }}"><span style="width:22px;height:22px;border-radius:50%;background:#2C2C2C;color:#A8A8A8;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;margin-left:-14px;box-shadow:0 0 0 2px #181818">Л</span></sc-if><span style="font-size:15px;font-weight:600">{{ s.dog }}</span></span><span style="font-size:13px;color:#A8A8A8">{{ s.date }}</span></div>
+          <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:4px;min-height:0">
+            <span style="font-size:{{ s.labelSize }};color:#A8A8A8">{{ s.heroLabel }}</span>
+            <span style="font-size:{{ s.heroSize }};font-weight:600;letter-spacing:-0.04em;line-height:1;white-space:nowrap">{{ s.hero }}</span>
+            <span style="font-size:{{ s.labelSize }};color:#A8A8A8">{{ s.heroSub }}</span>
+          </div>
+          <div style="display:flex;flex-direction:column;padding:2px 0 12px">
+            <span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#A8A8A8;padding-bottom:6px">{{ s.factsLabel }}</span>
+            <sc-for list="{{ s.facts }}" as="f" hint-placeholder-count="2">
+              <div style="display:grid;grid-template-columns:44px 1fr auto;gap:8px;padding:7px 0;border-top:1px solid #3A3A3A;font-size:{{ s.factSize }}"><span style="color:#A8A8A8">{{ f.time }}</span><span>{{ f.what }}</span><span style="color:#A8A8A8">{{ f.who }}</span></div>
+            </sc-for>
+          </div>
+          <sc-if value="{{ s.hasStatus }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;gap:10px;align-items:flex-start;padding:11px 13px;border-radius:12px;background:{{ s.statusBg }};color:{{ s.statusFg }};font-size:{{ s.factSize }};line-height:1.4;margin-bottom:12px"><span style="width:8px;height:8px;border-radius:50%;background:{{ s.statusFg }};margin-top:5px;flex-shrink:0"></span><span style="flex:1">{{ s.status }}</span><sc-if value="{{ s.hasInline }}" hint-placeholder-val="{{ false }}"><span style="font-weight:700;text-decoration:underline;white-space:nowrap">{{ s.inline }}</span></sc-if></div>
+          </sc-if>
+          <sc-if value="{{ s.hasActions }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="height:{{ s.pH }};border-radius:16px;background:{{ s.pBg }};color:{{ s.pFg }};box-shadow:0 4px 0 {{ s.pEdge }};display:flex;align-items:center;justify-content:center;font-size:{{ s.pSize }};font-weight:800;text-align:center;padding:0 12px">{{ s.primary }}</div>
+              <div style="display:grid;grid-template-columns:{{ s.secCols }};gap:10px">
+                <div style="height:{{ s.sH }};border-radius:14px;background:#2C2C2C;box-shadow:0 3px 0 #3A3A3A,inset 0 0 0 1px #3A3A3A;display:flex;align-items:center;justify-content:center;font-size:{{ s.sSize }};font-weight:600">{{ s.sec1 }}</div>
+                <div style="height:{{ s.sH }};border-radius:14px;background:#2C2C2C;box-shadow:0 3px 0 #3A3A3A,inset 0 0 0 1px #3A3A3A;display:flex;align-items:center;justify-content:center;font-size:{{ s.sSize }};font-weight:600">{{ s.sec2 }}</div>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ s.readOnly }}" hint-placeholder-val="{{ false }}">
+            <div style="height:64px;border-radius:16px;box-shadow:inset 0 0 0 1px #3A3A3A;display:flex;align-items:center;justify-content:center;font-size:14px;color:#A8A8A8">Только просмотр · доступ до 30 окт</div>
+          </sc-if>
+          <div style="display:flex;justify-content:space-around;padding:14px 0 2px;font-size:11px;color:#A8A8A8"><span style="color:#F5F5F5;font-weight:700">{{ s.tab1 }}</span><span>{{ s.tab2 }}</span><span>{{ s.tab3 }}</span><span>{{ s.tab4 }}</span></div>
+        </div>
+        <span style="font-size:13px;line-height:1.5;color:#C8C8C8">{{ s.note }}</span>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<section id="stock" data-screen-label="04b Запас и доза на прогулке" style="display:flex;flex-direction:column;gap:20px">
+  <h2 style="margin:0;font-size:32px;letter-spacing:-0.02em">3b · Запас и таблетка с собой</h2>
+  <p style="margin:0;max-width:900px;font-size:15px;line-height:1.55;color:#A8A8A8">Экраны E9–E11 выше. Здесь — шторка «Просится» с напоминанием и настройка запаса. Ни то ни другое не добавляет кнопок на главный экран: всё через строку состояния и уже существующие шторки.</p>
+  <div style="display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start">
+    <div style="display:flex;flex-direction:column;gap:12px;width:290px">
+      <span style="font-size:13px;color:#D4F75F;font-weight:700">S1 · «Просится» в 19:40</span>
+      <div style="width:290px;height:600px;border-radius:40px;background:#0C0C0C;box-shadow:0 0 0 8px #000,0 0 0 9px #333;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden">
+        <div style="background:#242424;border-radius:24px 24px 0 0;padding:10px 18px 22px;display:flex;flex-direction:column;gap:14px">
+          <span style="align-self:center;width:36px;height:5px;border-radius:3px;background:#4A4A4A"></span>
+          <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:22px;font-weight:700">Похоже, нужно</span><span style="font-size:13px;line-height:1.4;color:#A8A8A8">3 ч 10 мин с выхода — дольше обычного.</span></div>
+          <div style="display:flex;gap:10px;align-items:flex-start;padding:11px 13px;border-radius:12px;background:#2D3802;color:#D4F75F;font-size:13px;line-height:1.4"><span style="width:8px;height:8px;border-radius:50%;background:#D4F75F;margin-top:5px;flex-shrink:0"></span><span>Доза в 20:00 — возьмите таблетку с собой.</span></div>
+          <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#A8A8A8">Как попросил</span><div style="display:flex;flex-wrap:wrap;gap:6px;font-size:13px"><span style="padding:7px 11px;border-radius:10px;background:#333">у двери</span><span style="padding:7px 11px;border-radius:10px;background:#333">скулит</span><span style="padding:7px 11px;border-radius:10px;background:#333">смотрит</span><span style="padding:7px 11px;border-radius:10px;box-shadow:inset 0 0 0 1px #D4F75F;color:#D4F75F">Другое…</span></div></div>
+          <div style="height:64px;border-radius:16px;background:#D4F75F;color:#111;box-shadow:0 4px 0 #A9C74A;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:800">Вывожу</div>
+          <div style="height:48px;border-radius:14px;background:#2C2C2C;box-shadow:0 3px 0 #3A3A3A,inset 0 0 0 1px #3A3A3A;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600">Не сейчас</div>
+        </div>
+      </div>
+      <span style="font-size:13px;line-height:1.5;color:#C8C8C8">Строка встаёт между вердиктом и чипами. Тапов не прибавляется: человек читает её, пока надевает поводок.</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;width:290px">
+      <span style="font-size:13px;color:#D4F75F;font-weight:700">S2 · Собака → Лечение → Левотироксин</span>
+      <div style="width:290px;height:600px;border-radius:40px;background:#181818;box-shadow:0 0 0 8px #000,0 0 0 9px #333;display:flex;flex-direction:column;padding:44px 16px 16px;box-sizing:border-box;gap:14px;overflow:hidden;font-variant-numeric:tabular-nums">
+        <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:13px;color:#D4F75F">‹ Лечение</span><span style="font-size:24px;font-weight:700">Левотироксин</span><span style="font-size:13px;color:#A8A8A8">0,1 мг · 8:00 и 20:00 · натощак</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;padding:14px;border-radius:14px;background:#2C2C2C"><span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#A8A8A8">Запас</span><div style="display:flex;align-items:baseline;gap:8px"><span style="font-size:40px;font-weight:600;letter-spacing:-0.03em;line-height:1">9</span><span style="font-size:14px;color:#A8A8A8">таблеток · до пн 8 окт</span></div><div style="height:6px;border-radius:3px;background:#3A3A3A;overflow:hidden"><div style="width:18%;height:100%;background:#D4F75F"></div></div></div>
+        <div style="display:flex;flex-direction:column;border-radius:14px;background:#2C2C2C;font-size:14px">
+          <div style="display:flex;justify-content:space-between;padding:12px 14px"><span>В упаковке</span><span style="color:#A8A8A8">50 таб. ›</span></div>
+          <div style="display:flex;justify-content:space-between;padding:12px 14px;border-top:1px solid #3A3A3A"><span>За приём</span><span style="color:#A8A8A8">1 таб. ›</span></div>
+          <div style="display:flex;justify-content:space-between;padding:12px 14px;border-top:1px solid #3A3A3A"><span>Напомнить купить</span><span style="color:#A8A8A8">за 7 дней ›</span></div>
+          <div style="display:flex;justify-content:space-between;padding:12px 14px;border-top:1px solid #3A3A3A"><span>Можно дать на улице</span><span style="color:#A8A8A8">нет ›</span></div>
+        </div>
+        <div style="height:52px;border-radius:14px;background:#2C2C2C;box-shadow:0 3px 0 #3A3A3A,inset 0 0 0 1px #3A3A3A;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600">Купил упаковку</div>
+        <span style="font-size:12px;line-height:1.5;color:#A8A8A8">Купила мама 21 сент · +50. Запас общий для семьи.</span>
+      </div>
+      <span style="font-size:13px;line-height:1.5;color:#C8C8C8">У корма тот же блок в «Питании»: мешок в кг, норма в день. «Можно дать на улице: нет» — для натощак-препаратов строка на прогулке говорит «дома, после прогулки».</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;max-width:380px;padding:20px;border-radius:16px;background:#1C1C1C;font-size:14px;line-height:1.55;color:#E0E0E0">
+      <span style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#A8A8A8">Правила</span>
+      <span><b>Запас</b> списывается с каждой отметки «Дал» / «Покормил». Не отмечают еду — по суточной норме.</span>
+      <span><b>Когда покупать</b> = запас ÷ расход в день − «за N дней». Строка, тихое уведомление в 9:00 один раз, пункт в утренней сводке.</span>
+      <span><b>Пополнение</b> — «Купил» в строке или в карточке препарата; кнопка спрашивает количество, по умолчанию размер упаковки.</span>
+      <span><b>Таблетка с собой</b>: окно ±30 минут от дозы. В шторке «Просится» — строка; при «Гулять» — строка в режиме «На улице».</span>
+      <span><b>Доза на улице</b>: «Дал» в строке, если «можно на улице: да». Иначе — «дома, после прогулки», и после «Домой» главная — «Дал дозу».</span>
+      <span><b>Уведомление в час дозы во время прогулки</b>: «Доза 20:00 · вы на улице» с кнопками «Дал» и «После прогулки».</span>
+    </div>
+  </div>
+</section>
+
+<section id="test" data-screen-label="05 Тест" style="display:flex;flex-direction:column;gap:16px">
+  <h2 style="margin:0;font-size:32px;letter-spacing:-0.02em">4 · Тест первого клика · <span style="color:#F7C75F">симуляция</span></h2>
+  <p style="margin:0;max-width:900px;font-size:15px;line-height:1.55;color:#A8A8A8">Шесть персон из прошлых исследований × восемь задач. Это прогноз по моделям поведения, а не замер на людях: он показывает, где ждать ошибок, и задаёт сценарий для живого теста. Порог — 4 из 6 с первого клика.</p>
+  <div style="overflow-x:auto;border-radius:16px;background:#1C1C1C">
+    <div style="display:grid;grid-template-columns:minmax(260px,1.6fr) repeat(6,minmax(84px,.5fr)) minmax(70px,.4fr);font-size:13px;min-width:960px">
+      <span style="padding:12px 16px;color:#A8A8A8;font-size:12px;text-transform:uppercase;letter-spacing:.06em">Задача → верный тап</span>
+      <sc-for list="{{ personas }}" as="p" hint-placeholder-count="6"><span style="padding:12px 8px;color:#A8A8A8;font-size:12px;line-height:1.3">{{ p }}</span></sc-for>
+      <span style="padding:12px 8px;color:#A8A8A8;font-size:12px">Итог</span>
+      <sc-for list="{{ testRows }}" as="r" hint-placeholder-count="8">
+        <span style="padding:10px 16px;border-top:1px solid #2C2C2C;line-height:1.4">{{ r.task }} <span style="color:#A8A8A8">→ {{ r.answer }}</span></span>
+        <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="6"><span style="padding:10px 8px;border-top:1px solid #2C2C2C;color:{{ c.c }};font-weight:700">{{ c.v }}</span></sc-for>
+        <span style="padding:10px 8px;border-top:1px solid #2C2C2C;color:{{ r.sc }};font-weight:700">{{ r.score }}</span>
+      </sc-for>
+    </div>
+  </div>
+  <div style="display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:#A8A8A8"><span><b style="color:#D4F75F">✓</b> с первого клика</span><span><b style="color:#F7C75F">~</b> со второго</span><span><b style="color:#FF7A66">✕</b> не нашёл</span></div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px">
+    <sc-for list="{{ testFindings }}" as="r" hint-placeholder-count="4">
+      <div style="display:flex;flex-direction:column;gap:6px;padding:18px;border-radius:14px;background:#1C1C1C"><span style="font-size:15px;font-weight:600">{{ r.t }}</span><span style="font-size:14px;line-height:1.5;color:#A8A8A8">{{ r.d }}</span></div>
+    </sc-for>
+  </div>
+</section>
+
+<section id="gaps" data-screen-label="06 Дыры" style="display:flex;flex-direction:column;gap:16px">
+  <h2 style="margin:0;font-size:32px;letter-spacing:-0.02em">5 · Дыры и решения</h2>
+  <div style="display:flex;flex-direction:column;border-radius:16px;background:#1C1C1C;overflow:hidden;font-size:14px">
+    <sc-for list="{{ gaps }}" as="g" hint-placeholder-count="6">
+      <div style="display:grid;grid-template-columns:36px minmax(0,1fr) minmax(0,1.3fr);gap:16px;padding:14px 20px;border-top:1px solid #2C2C2C;line-height:1.5"><span style="color:#F7C75F;font-weight:700">{{ g.n }}</span><span><b>{{ g.t }}</b><br><span style="color:#A8A8A8">{{ g.p }}</span></span><span style="color:#E0E0E0">{{ g.s }}</span></div>
+    </sc-for>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:8px;padding:20px;border-radius:16px;background:#1C1C1C;max-width:980px">
+    <span style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#A8A8A8">Дальше</span>
+    <span style="font-size:15px;line-height:1.55;color:#E0E0E0">Кликабельный прототип со всеми состояниями и переключателем времени → живой тест первого клика на 5–8 людях по таблице из раздела 4 → обновить README и CHECKLIST в handoff под новый главный экран.</span>
+  </div>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const v = this.vals();
+    const order = ['1', '2', '3', '4', '5', '6', '7a', '8a'];
+    v.gaps = order.map(n => v._gapsRaw.find(x => x.n === n)).map(x => ({ ...x, n: x.n.replace('a', '') }));
+    v.edges = v.edges.map(e => ({ ...e, factsLabel: e.facts.length ? e.factsLabel : e.factsLabel + ' · пока ничего' }));
+    return v;
+  }
+  vals() {
+    const OK = { s: 'есть', c: '#D4F75F' }, FIX = { s: 'правка', c: '#F7C75F' };
+    const coverage = [
+      ['Вердикт «вывести сейчас?»', 'Главная «Просится» → шторка', '1', OK],
+      ['Как попросил (чипы + Другое…)', 'Внутри шторки «Просится»', '1', OK],
+      ['Режим «На улице»', '«Просится → Вывожу» или «Гулять»', '1–2', OK],
+      ['Отметки на улице: пописал, стул, срыв, инцидент, лакомство, заметка', 'Главная «Пописал» · «Ещё…»', '1–2', OK],
+      ['Итог прогулки / «Как сходил?»', 'После «Домой», тост или шторка', '0', OK],
+      ['Доза в её час', 'Главная «Дал дозу» + уведомление', '1', OK],
+      ['«Беру на себя» дозу', 'Ссылка в строке состояния дозы', '1', FIX],
+      ['Пропуск дозы', 'Строка состояния «не отмечена»', '1', OK],
+      ['Окно натощак', 'Янтарная строка', '0', OK],
+      ['Еда', '«Записать…» или слот 1 в час еды', '1–2', FIX],
+      ['Стул дома', '«Записать…» → Стул', '2', OK],
+      ['Инцидент дома (с видом, эпизод, кровь)', '«Записать…» → Инцидент', '2', OK],
+      ['Полоса тревоги и звонок врачу', 'Состояние «Тревога»', '1', OK],
+      ['Лакомство, занятие, заметка, «весь день со мной»', '«Записать…»', '2', OK],
+      ['Пелёнка (режим «переход»)', '«Записать…» → Пелёнка', '2', OK],
+      ['Учусь ритму (дни 1–4)', 'Строка состояния', '0', OK],
+      ['Привыкает к улице', 'Строка состояния', '0', OK],
+      ['Кто ещё кормит? (приглашение)', 'Строка состояния, 3-й день', '1', OK],
+      ['Сроки ухода и прививок', 'Строка состояния в день срока', '1', FIX],
+      ['Триггеры за день (режим поведения)', 'Подпись «Сегодня · 3 триггера»', '0', OK],
+      ['Кто что сделал в семье', 'Колонка «кто» в «сегодня»', '0', OK],
+      ['Отменить/изменить запись', 'Тап по строке «сегодня»', '1', OK],
+      ['Запас лекарств: сколько осталось, когда купить', 'Строка состояния за 7 дней · Собака → Лечение', '1', FIX],
+      ['Запас корма', 'Строка состояния · Собака → Питание', '1', FIX],
+      ['Взять таблетку на прогулку', 'Шторка «Просится» и строка на улице, ±30 мин', '0', FIX],
+      ['Отметить дозу на улице', '«Дал» в строке режима «На улице»', '1', FIX],
+      ['Несколько собак', 'Аватар → переключатель', '1', FIX],
+      ['Live Activity и виджет', 'Тот же каркас: показание + главная', '0', OK],
+      ['История, курсы, графики', 'Вкладка «История»', '1', OK],
+      ['Здоровье, вес, отчёт врачу', 'Вкладка «Здоровье»', '1–2', OK],
+      ['Профиль, режимы, документы, поездки', 'Вкладка «Собака»', '1–2', OK],
+      ['Уведомления и семья', 'Настройки, вкладка «Собака»', '2', OK],
+      ['Роль «врач» (только просмотр)', 'Кнопки заменены плашкой', '—', FIX],
+      ['Крупный шрифт, длинные языки', 'Правила раскладки', '—', FIX]
+    ].map(([f, where, taps, st]) => ({ f, where, taps, ...st }));
+    const g = (n, name, when, o) => Object.assign({ n, name, when, dog: 'Стич', date: 'чт, 4 окт', clock: '9:41', heroLabel: 'Гулял', hero: '2:10', heroSub: 'назад', factsLabel: 'Сегодня', facts: [{ time: '7:10', what: 'На улице 18 мин', who: '' }, { time: '8:00', what: 'Доза', who: 'мама' }], hasStatus: false, hasInline: false, hasActions: true, readOnly: false, twoDogs: false, primary: 'Просится', pBg: '#D4F75F', pFg: '#111111', pEdge: '#A9C74A', sec1: 'Гулять', sec2: 'Записать…', heroSize: '68px', labelSize: '14px', factSize: '13px', pH: '64px', pSize: '19px', sH: '48px', sSize: '15px', secCols: '1fr 1fr', tab1: 'Сегодня', tab2: 'История', tab3: 'Здоровье', tab4: 'Собака' }, o);
+    const amber = { hasStatus: true, statusBg: '#4A300A', statusFg: '#F7C75F' };
+    const lime = { hasStatus: true, statusBg: '#2D3802', statusFg: '#D4F75F' };
+    const red = { hasStatus: true, statusBg: '#4D1F22', statusFg: '#FF7A66' };
+    const edges = [
+      g('E1', 'Две собаки', 'У Стича всё спокойно, у Луны доза.', { twoDogs: true, ...lime, status: 'У Луны доза 20:00', hasInline: true, inline: 'Открыть', clock: '20:01', note: 'Срочное у другой собаки приходит строкой с её именем; тап переключает. Главная кнопка всегда про собаку на экране — без смешивания.' }),
+      g('E2', 'Три препарата в 8:00', 'Левотироксин, капли, витамин в одно время.', { clock: '8:00', ...lime, status: 'Доза 8:00 · 3 препарата', hasInline: true, inline: 'Состав', primary: 'Дал все три', sec1: 'Просится', note: 'Одно время — одна кнопка на все. Если дали не всё — «Состав» открывает список с галочками.' }),
+      g('E3', 'Доза во время прогулки', 'В 20:00 вы на улице.', { clock: '20:03', heroLabel: 'На улице', hero: '14:20', heroSub: 'таймер идёт', factsLabel: 'Отмечено', facts: [{ time: '19:52', what: 'Пописал', who: '' }], ...lime, status: 'Доза 20:00 — сейчас', hasInline: true, inline: 'Дал', primary: 'Пописал', sec1: 'Ещё…', sec2: 'Домой', note: 'Прогулка остаётся главной, но дозу можно отметить прямо здесь — «Дал» в строке. Не дал — после «Домой» главная становится «Дал дозу». Если препарат «только дома» (натощак, с едой) — строка «Доза 20:00 — дома, после прогулки» без «Дал».' }),
+      g('E4', 'Тревога + натощак', 'Вырвал в 8:10, доза дана в 8:00.', { clock: '8:12', facts: [{ time: '8:10', what: 'Вырвал', who: 'ты' }, { time: '8:00', what: 'Доза', who: 'мама' }], ...red, status: 'Вырвал через 10 мин после таблетки — доза могла выйти. Не давайте повторно без врача.', primary: 'Позвонить врачу', pBg: '#FF7A66', pFg: '#111111', pEdge: '#B8503F', sec1: 'Просится', sec2: 'Записать…', note: 'Тревога вытесняет натощак. Текст соединяет оба факта — это то, что спросит врач.' }),
+      g('E5', 'Режим «Пелёнка»', 'Щенок или мини-порода, туалет дома.', { heroLabel: 'Последний раз', heroSub: 'на пелёнке', facts: [{ time: '7:30', what: 'Пописал на пелёнку', who: '' }, { time: '8:00', what: 'Доза', who: 'мама' }], primary: 'Гулять', sec1: 'Стул', note: '«Просится» нет — по решению из подборки с форумов. Главная — «Гулять», слот 1 — стул; пелёнка не отмечается по умолчанию.' }),
+      g('E6', 'Врач с доступом', 'Роль «наблюдатель», только просмотр.', { hasActions: false, readOnly: true, note: 'Тот же экран, без кнопок. Срок доступа виден сразу — не надо искать в настройках.' }),
+      g('E7', 'Самый крупный шрифт', 'Dynamic Type AX3, мама 60+.', { heroSize: '56px', labelSize: '17px', factSize: '16px', facts: [{ time: '8:00', what: 'Доза', who: 'мама' }], pH: '76px', pSize: '24px', sH: '60px', sSize: '19px', secCols: '1fr', sec1: 'Гулять', sec2: 'Записать…', note: '«Сегодня» сжимается до одной строки, второстепенные встают друг под другом. Главная растёт первой.' }),
+      g('E8', 'Французский', 'Самые длинные строки из трёх языков.', { dog: 'Stitch', date: 'jeu. 4 oct.', heroLabel: 'Sorti il y a', heroSub: 'd’habitude toutes les 3–4 h', factsLabel: 'Aujourd’hui', facts: [{ time: '7:10', what: 'Dehors 18 min', who: '' }, { time: '8:00', what: 'Dose', who: 'maman' }], primary: 'Veut sortir', sec1: 'Promenade', sec2: 'Noter…', tab1: 'Aujourd’hui', tab2: 'Historique', tab3: 'Santé', tab4: 'Chien', note: 'Бюджет главной — 16 знаков, второстепенных — 12. «Il demande à sortir» не влезает; берём «Veut sortir». Проверить с носителем.' }),
+      g('E9', 'Гулять в 19:45', 'Нажали «Гулять» за 15 минут до дозы.', { clock: '19:45', heroLabel: 'На улице', hero: '0:08', heroSub: 'таймер идёт', factsLabel: 'Отмечено', facts: [], ...lime, status: 'Доза в 20:00. Таблетку взяли?', hasInline: true, inline: 'Дал', primary: 'Пописал', sec1: 'Ещё…', sec2: 'Домой', note: 'Напоминание без лишнего шага: таймер уже идёт, строка висит первые минуты и в час дозы. Окно — ±30 минут от дозы.' }),
+      g('E10', 'Таблетки кончаются', 'Осталось 9 — хватит на 4 дня.', { clock: '9:41', ...amber, statusBg: '#2D3802', statusFg: '#D4F75F', status: 'Левотироксин: 9 таб., хватит до пн 8 окт', hasInline: true, inline: 'Купил', note: 'Строка за 7 дней до конца (настраивается — сколько идёт доставка). «Купил» → «сколько?» → запас пополнен у всей семьи.' }),
+      g('E11', 'Корм кончается', 'Мешок 2 кг, 130 г в день.', { clock: '9:41', facts: [{ time: '8:31', what: 'Покормил 65 г', who: 'ты' }, { time: '8:00', what: 'Доза', who: 'мама' }], ...lime, status: 'Корм: ~600 г, хватит на 4–5 дней', hasInline: true, inline: 'Купил', note: 'Тот же механизм: запас уменьшается с каждой отметкой «Покормил». Не отмечаете еду — считается по суточной норме.' })
+    ];
+    const P = ['Виктория', 'Мама 60+', 'Ситтер', 'Новичок, щенок', 'Реактивная собака', 'Токио, пелёнка'];
+    const Y = { v: '✓', c: '#D4F75F' }, M = { v: '~', c: '#F7C75F' }, N = { v: '✕', c: '#FF7A66' };
+    const rows = [
+      ['Скулит у двери', 'Просится', [Y, Y, Y, Y, Y, { v: '—', c: '#A8A8A8' }]],
+      ['Мама уже дала таблетку?', 'строка «сегодня»', [Y, Y, M, Y, Y, Y]],
+      ['Можно покормить? (8:11)', 'янтарная строка', [Y, Y, Y, M, Y, Y]],
+      ['Отметьте вечернюю дозу', 'Дал дозу', [Y, Y, Y, Y, Y, Y]],
+      ['Покормите в 13:00 и отметьте', 'Записать… → Еда', [Y, M, M, M, Y, M]],
+      ['Его вырвало дома', 'Записать… → Инцидент', [Y, M, Y, M, Y, Y]],
+      ['На улице он сорвался на собаку', 'Ещё… → Срыв', [Y, M, M, M, Y, { v: '—', c: '#A8A8A8' }]],
+      ['Вы ошиблись — уберите запись', 'тап по строке «сегодня»', [Y, N, M, M, Y, M]]
+    ];
+    const testRows = rows.map(([task, answer, cells]) => { const valid = cells.filter(c => c.v !== '—'); const ok = valid.filter(c => c.v === '✓').length; return { task, answer, cells, score: ok + '/' + valid.length, sc: ok / valid.length >= 0.66 ? '#D4F75F' : '#F7C75F' }; });
+    return {
+      coverage, coverTotal: coverage.length, coverOk: coverage.filter(c => c.s === 'есть').length, coverFix: coverage.filter(c => c.s === 'правка').length,
+      stackPrimary: [
+        { n: '1', t: 'Пописал', d: 'идёт режим «На улице»' },
+        { n: '2', t: 'Позвонить врачу', d: 'активная тревога' },
+        { n: '3', t: 'Дал дозу', d: 'с часа дозы до отметки' },
+        { n: '4', t: 'Просится', d: 'по умолчанию (туалет «улица», «переход»)' },
+        { n: '4', t: 'Гулять', d: 'по умолчанию (туалет «пелёнка»)' }
+      ],
+      stackStatus: [
+        { n: '1', t: 'Тревога', d: 'кровь, 3 эпизода, 12 ч без мочи', c: '#FF7A66' },
+        { n: '2', t: 'Доза не отмечена', d: 'после +30 минут', c: '#FF7A66' },
+        { n: '3', t: 'Доза сейчас / у другой собаки', d: 'с «Беру на себя»', c: '#D4F75F' },
+        { n: '4', t: 'Натощак', d: '30 минут после дозы', c: '#F7C75F' },
+        { n: '5', t: 'Срок ухода сегодня', d: '«Капли от клещей — сегодня»', c: '#D4F75F' },
+        { n: '5', t: 'Запас кончается', d: 'лекарство или корм, за 7 дней · «Купил»', c: '#D4F75F' },
+        { n: '6', t: 'Учусь ритму', d: 'дни 1–4', c: '#D4F75F' },
+        { n: '7', t: 'Привыкает к улице', d: 'режим «переход»', c: '#D4F75F' },
+        { n: '8', t: 'Кто ещё кормит?', d: 'с 3-го дня, закрывается навсегда', c: '#D4F75F' }
+      ],
+      edges, personas: P, testRows,
+      testFindings: [
+        { t: 'Сильное: главная кнопка', d: 'Задачи на главную («Просится», «Дал дозу») проходят у всех персон. Одна кнопка на месте — главный выигрыш концепта.' },
+        { t: 'Слабое: еда за «Записать…»', d: 'Мама, ситтер и новичок ищут еду на экране. Решение — слот 1 становится «Покормил» в час еды по расписанию (дыра 2).' },
+        { t: 'Слабое: исправить запись', d: 'Строки «сегодня» не выглядят нажимаемыми. Мама не находит. Нужен шеврон › и тост «Отменить» 5 секунд после каждой записи (дыра 5).' },
+        { t: 'Слабое: «Ещё…» на улице', d: 'Срыв ищут на виду. В режиме поведения «Срыв» занимает слот 1 вместо «Ещё…», а «Ещё…» уходит в слот 2 рядом с «Домой» (дыра 6).' }
+      ],
+      gaps: undefined, _gapsRaw: [
+        { n: '1', t: '«Беру на себя» без места', p: 'Главная занята «Дал дозу», вторичные — другим.', s: 'Ссылка «Беру на себя» внутри строки дозы. После тапа строка у остальных: «Мама даёт, с 7:58».' },
+        { n: '2', t: 'Еда два раза в день — 2 тапа', p: 'Тест: три персоны из шести ищут еду на экране.', s: 'Слот 1 = «Покормил 65 г» за 30 минут до и 60 после времени еды по расписанию. Без расписания — в «Записать…».' },
+        { n: '3', t: 'Сроки ухода не видны', p: 'Раньше были в режиме дня, который ушёл в Историю.', s: 'Строка состояния в день срока, приоритет 5; тап → «Сделал» в шторке.' },
+        { n: '4', t: 'Несколько собак', p: 'Где переключатель и как не пропустить чужую дозу.', s: 'Стопка аватаров — переключатель; срочное другой собаки — строкой с её именем (E1).' },
+        { n: '5', t: 'Исправить запись не находят', p: 'Строки «сегодня» выглядят как текст.', s: 'Шеврон › у каждой строки; после любой записи тост «Записано · Отменить» 5 секунд.' },
+        { n: '7a', t: 'Лекарство и корм кончаются внезапно', p: 'Нет учёта запаса; узнают, когда пачка пуста.', s: 'Запас у препарата и корма: размер упаковки, сколько уходит за приём. Считается по отметкам. Строка за N дней (по умолчанию 7), тихое уведомление утром, «Купил» пополняет у всей семьи.' },
+        { n: '8a', t: 'Забыли таблетку дома', p: 'Вышли в 19:45, доза в 20:00.', s: 'Если до или после дозы ≤ 30 минут: в шторке «Просится» строка «Возьмите таблетку — доза в 20:00»; в режиме «На улице» строка с «Дал». Шагов не добавляется.' },
+        { n: '6', t: 'Срыв спрятан за «Ещё…»', p: 'Для реактивной собаки это самое частое на улице.', s: 'При режиме поведения на улице: главная «Пописал», слот 1 «Срыв», слот 2 «Домой»; «Ещё…» — третьей строкой мелко.' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

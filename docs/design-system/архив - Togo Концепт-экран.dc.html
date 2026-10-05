@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="width:300px;height:620px;border-radius:44px;padding:10px;box-sizing:border-box;background:#0A0A0A;box-shadow:0 20px 50px rgba(0,0,0,.35)">
+<div style="width:100%;height:100%;border-radius:36px;overflow:hidden;background:{{ t.bg }};color:{{ t.ink }};font-family:{{ t.font }};display:flex;flex-direction:column;position:relative">
+  <div style="display:flex;justify-content:space-between;padding:12px 22px 4px;font-size:12px;font-weight:600;font-family:-apple-system,system-ui,sans-serif"><span>9:41</span><span>●●● ▮</span></div>
+
+  <sc-if value="{{ isToday }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex;flex-direction:column;gap:8px;padding:6px 14px 0;flex:1;min-height:0">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;padding:0 4px"><span style="font-family:{{ t.titleFont }};font-size:{{ t.titleSize }};font-weight:{{ t.titleWeight }};letter-spacing:{{ t.titleTracking }}">Сегодня</span><span style="font-size:15px;color:{{ t.ink2 }}">⚙︎</span></div>
+
+      <div style="display:flex;flex-direction:column;gap:2px;padding:12px 14px;border-radius:{{ t.radius }};background:{{ t.card }};border:{{ t.cardBorder }};box-shadow:{{ t.shadow }}">
+        <div style="display:flex;align-items:baseline;flex-wrap:wrap;column-gap:6px"><span style="font-family:{{ t.numFont }};font-size:{{ t.heroSize }};font-weight:{{ t.heroWeight }};letter-spacing:-0.02em;line-height:1.05;white-space:nowrap">2 ч 10 мин</span><span style="font-size:13px;color:{{ t.ink2 }}">назад</span></div>
+        <span style="font-size:11px;color:{{ t.ink2 }}">на улице были · 3 из 5 за день — как обычно</span>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:6px;padding:10px 14px;border-radius:{{ t.radius }};background:{{ t.card }};border:{{ t.cardBorder }};box-shadow:{{ t.shadow }}">
+        <span style="font-size:12px;font-weight:600">Учусь ритму Стича</span>
+        <div style="display:flex;gap:4px"><div style="flex:1;height:5px;border-radius:3px;background:{{ t.accent }}"></div><div style="flex:1;height:5px;border-radius:3px;background:{{ t.accent }}"></div><div style="flex:1;height:5px;border-radius:3px;background:{{ t.track }}"></div><div style="flex:1;height:5px;border-radius:3px;background:{{ t.track }}"></div></div>
+        <span style="font-size:10px;color:{{ t.ink2 }}">2 дня из 4 · 9 выходов записано</span>
+      </div>
+
+      <div style="display:flex;flex-direction:column;border-radius:{{ t.radius }};background:{{ t.card }};border:{{ t.cardBorder }};box-shadow:{{ t.shadow }};padding:4px 14px">
+        <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid {{ t.line }};font-size:11px"><span style="font-family:{{ t.numFont }};width:34px;color:{{ t.ink2 }}">8:00</span><span style="flex:1">Доза · Левотироксин</span><span style="padding:3px 7px;border-radius:99px;background:{{ t.accentSubtle }};color:{{ t.accentSubtleText }};font-size:9px;font-weight:600">мама ✓</span></div>
+        <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid {{ t.line }};font-size:11px"><span style="font-family:{{ t.numFont }};width:34px;color:{{ t.ink2 }}">8:30</span><span style="flex:1">Еда · 65 г</span><span style="padding:3px 7px;border-radius:99px;background:{{ t.warnSubtle }};color:{{ t.warn }};font-size:9px;font-weight:600">натощак до 8:30</span></div>
+        <div style="display:flex;align-items:center;gap:8px;padding:7px 0;font-size:11px"><span style="font-family:{{ t.numFont }};width:34px;color:{{ t.ink2 }}">7:10</span><span style="flex:1">На улице · 18 мин<span style="color:{{ t.ink2 }}"> · пописал, стул</span></span></div>
+      </div>
+
+      <div style="flex:1"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;padding:10px 14px 6px;background:{{ t.dock }};border-top:1px solid {{ t.line }}">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+        <div style="height:46px;border-radius:{{ t.radiusSm }};background:{{ t.accent }};color:{{ t.onAccent }};display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700">Просится</div>
+        <div style="height:46px;border-radius:{{ t.radiusSm }};background:{{ t.sunken }};border:{{ t.cardBorder }};display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600">Гулять</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px">
+        <div style="height:40px;border-radius:{{ t.radiusSm }};background:{{ t.sunken }};border:{{ t.cardBorder }};display:flex;align-items:center;justify-content:center;font-size:10px">Стул</div>
+        <div style="height:40px;border-radius:{{ t.radiusSm }};background:{{ t.sunken }};border:{{ t.cardBorder }};display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px">Еда<span style="font-size:8px;color:{{ t.ink2 }}">65 г</span></div>
+        <div style="height:40px;border-radius:{{ t.radiusSm }};background:{{ t.sunken }};border:{{ t.cardBorder }};display:flex;align-items:center;justify-content:center;font-size:10px">Инцидент</div>
+        <div style="height:40px;border-radius:{{ t.radiusSm }};background:{{ t.sunken }};border:{{ t.cardBorder }};display:flex;align-items:center;justify-content:center;font-size:10px">Ещё</div>
+      </div>
+      <div style="display:flex;justify-content:space-around;padding:6px 0 4px;font-size:9px;color:{{ t.ink2 }}"><span style="color:{{ t.accentText }};font-weight:600">Сегодня</span><span>Стич</span><span>История</span><span>Семья</span></div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isOutside }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-direction:column;gap:8px;padding:6px 14px 14px;flex:1;min-height:0">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:4px 4px 0">
+        <div style="display:flex;flex-direction:column;gap:2px"><span style="font-family:{{ t.numFont }};font-size:{{ t.timerSize }};font-weight:{{ t.heroWeight }};letter-spacing:-0.02em;line-height:1">12:48</span><span style="font-size:11px;color:{{ t.accentText }}">на улице · с 12:36</span></div>
+        <span style="font-size:11px;color:{{ t.ink2 }}">Свернуть</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;padding:9px 12px;border-radius:{{ t.radiusSm }};background:{{ t.card }};border:{{ t.cardBorder }};font-size:11px">
+        <div style="display:flex;justify-content:space-between;color:{{ t.ink2 }};font-size:10px"><span>отмечено</span><span style="color:{{ t.err }}">убрать последнюю</span></div>
+        <div style="display:flex;gap:8px"><span style="font-family:{{ t.numFont }};color:{{ t.ink2 }}">12:41</span><span>пописал</span></div>
+      </div>
+      <div style="flex:1"></div>
+      <div style="height:84px;border-radius:{{ t.radius }};background:{{ t.accent }};color:{{ t.onAccent }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px"><span style="font-size:17px;font-weight:700">Пописал</span><span style="font-size:10px;opacity:.75">1 раз</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+        <div style="height:60px;border-radius:{{ t.radiusSm }};background:{{ t.sunken }};border:{{ t.cardBorder }};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600">Стул</div>
+        <div style="height:60px;border-radius:{{ t.radiusSm }};background:{{ t.warnSubtle }};color:{{ t.warn }};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600">Срыв</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
+        <div style="height:46px;border-radius:{{ t.radiusSm }};background:{{ t.errSubtle }};color:{{ t.err }};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600">Инцидент</div>
+        <div style="height:46px;border-radius:{{ t.radiusSm }};background:{{ t.sunken }};border:{{ t.cardBorder }};display:flex;align-items:center;justify-content:center;font-size:11px">Лакомство</div>
+        <div style="height:46px;border-radius:{{ t.radiusSm }};background:{{ t.sunken }};border:{{ t.cardBorder }};display:flex;align-items:center;justify-content:center;font-size:11px">Заметка</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 2fr;gap:6px">
+        <div style="height:46px;border-radius:{{ t.radiusSm }};background:{{ t.sunken }};border:{{ t.cardBorder }};display:flex;align-items:center;justify-content:center;font-size:12px">Пауза</div>
+        <div style="height:46px;border-radius:{{ t.radiusSm }};background:{{ t.card }};border:2px solid {{ t.accent }};display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700">Домой</div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:300,&quot;height&quot;:620},&quot;concept&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e&quot;],&quot;default&quot;:&quot;a&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;mode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;screen&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;today&quot;,&quot;outside&quot;],&quot;default&quot;:&quot;today&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  T = {
+    a: {
+      dark: { bg: '#181818', card: '#2C2C2C', sunken: '#1F1F1F', dock: '#181818', ink: '#F5F5F5', ink2: '#A8A8A8', line: '#3A3A3A', accent: '#D4F75F', onAccent: '#111111', accentText: '#D4F75F', accentSubtle: '#2D3802', accentSubtleText: '#D4F75F', warn: '#F7C75F', warnSubtle: '#4A300A', err: '#FF7A66', errSubtle: '#4D1F22', cardBorder: '0', shadow: 'none' },
+      light: { bg: '#F0F0F3', card: '#FFFFFF', sunken: '#E6E6EA', dock: '#F0F0F3', ink: '#111114', ink2: '#5E5E66', line: '#DCDCE1', accent: '#9CD425', onAccent: '#0B0B0C', accentText: '#3A6A00', accentSubtle: '#E6F4C8', accentSubtleText: '#335C00', warn: '#985808', warnSubtle: '#FFEFCF', err: '#CB180E', errSubtle: '#FDE3E1', cardBorder: '0', shadow: '0 1px 2px rgba(16,16,28,.06),0 6px 16px rgba(16,16,28,.06)' },
+      shape: { radius: '18px', radiusSm: '14px', font: '-apple-system,"SF Pro Text",system-ui,sans-serif', numFont: '-apple-system,"SF Pro Display",system-ui,sans-serif', titleFont: '-apple-system,"SF Pro Display",system-ui,sans-serif', titleSize: '30px', titleWeight: 700, titleTracking: '-0.02em', heroSize: '34px', heroWeight: 700, timerSize: '44px' }
+    },
+    b: {
+      dark: { bg: '#101214', card: 'transparent', sunken: 'transparent', dock: '#101214', ink: '#E8ECEF', ink2: '#8A949C', line: '#2A3036', accent: '#7CC4FF', onAccent: '#0B1620', accentText: '#7CC4FF', accentSubtle: '#17364D', accentSubtleText: '#9DD3FF', warn: '#F7C75F', warnSubtle: '#3A2A0C', err: '#FF7A66', errSubtle: '#3D1C1E', cardBorder: '1px solid #2A3036', shadow: 'none' },
+      light: { bg: '#F7F8F9', card: 'transparent', sunken: 'transparent', dock: '#F7F8F9', ink: '#0E1418', ink2: '#5A646C', line: '#D5DADF', accent: '#4FA9FF', onAccent: '#0B0B0C', accentText: '#0A5EAE', accentSubtle: '#E3F0FF', accentSubtleText: '#0A5196', warn: '#985808', warnSubtle: '#FFF3DA', err: '#CB180E', errSubtle: '#FDE8E6', cardBorder: '1px solid #D5DADF', shadow: 'none' },
+      shape: { radius: '6px', radiusSm: '4px', font: '-apple-system,"SF Pro Text",system-ui,sans-serif', numFont: 'ui-monospace,"SF Mono",Menlo,monospace', titleFont: 'ui-monospace,"SF Mono",Menlo,monospace', titleSize: '22px', titleWeight: 600, titleTracking: '-0.01em', heroSize: '30px', heroWeight: 500, timerSize: '46px' }
+    },
+    c: {
+      dark: { bg: '#1A1619', card: '#2A2328', sunken: '#231E22', dock: '#1A1619', ink: '#F7EEF2', ink2: '#B5A6AE', line: '#3A3036', accent: '#FF8FB8', onAccent: '#1A0B12', accentText: '#FF8FB8', accentSubtle: '#4F2233', accentSubtleText: '#FFA8C8', warn: '#F7C75F', warnSubtle: '#4A300A', err: '#FF7A66', errSubtle: '#4D1F22', cardBorder: '0', shadow: 'none' },
+      light: { bg: '#FBF5F7', card: '#FFFFFF', sunken: '#F4E9EE', dock: '#FBF5F7', ink: '#1E1418', ink2: '#6E5E66', line: '#EADDE3', accent: '#FF6FA3', onAccent: '#0B0B0C', accentText: '#B0285E', accentSubtle: '#FFE5EE', accentSubtleText: '#93204D', warn: '#985808', warnSubtle: '#FFEFCF', err: '#CB180E', errSubtle: '#FDE3E1', cardBorder: '0', shadow: '0 8px 24px rgba(176,40,94,.08)' },
+      shape: { radius: '28px', radiusSm: '22px', font: 'ui-rounded,"SF Pro Rounded",-apple-system,system-ui,sans-serif', numFont: 'ui-rounded,"SF Pro Rounded",-apple-system,system-ui,sans-serif', titleFont: 'ui-rounded,"SF Pro Rounded",-apple-system,system-ui,sans-serif', titleSize: '30px', titleWeight: 800, titleTracking: '-0.01em', heroSize: '36px', heroWeight: 800, timerSize: '46px' }
+    },
+    d: {
+      dark: { bg: '#000000', card: '#000000', sunken: '#000000', dock: '#000000', ink: '#FFFFFF', ink2: '#D0D0D0', line: '#6D6D6D', accent: '#D7FA63', onAccent: '#000000', accentText: '#D7FA63', accentSubtle: '#2D3802', accentSubtleText: '#D7FA63', warn: '#FFD36E', warnSubtle: '#3A2600', err: '#FE816E', errSubtle: '#3A1210', cardBorder: '2px solid #6D6D6D', shadow: 'none' },
+      light: { bg: '#FFFFFF', card: '#FFFFFF', sunken: '#FFFFFF', dock: '#FFFFFF', ink: '#000000', ink2: '#3A3A3F', line: '#AEAEB2', accent: '#9CD425', onAccent: '#000000', accentText: '#074200', accentSubtle: '#E6F4C8', accentSubtleText: '#074200', warn: '#7A4508', warnSubtle: '#FFEFCF', err: '#C30802', errSubtle: '#FDE3E1', cardBorder: '2px solid #AEAEB2', shadow: 'none' },
+      shape: { radius: '14px', radiusSm: '12px', font: '-apple-system,"SF Pro Text",system-ui,sans-serif', numFont: '-apple-system,"SF Pro Display",system-ui,sans-serif', titleFont: '-apple-system,"SF Pro Display",system-ui,sans-serif', titleSize: '34px', titleWeight: 800, titleTracking: '-0.02em', heroSize: '38px', heroWeight: 800, timerSize: '56px' }
+    },
+    e: {
+      dark: { bg: '#151311', card: '#201D1A', sunken: '#1B1916', dock: '#151311', ink: '#F2ECE3', ink2: '#ABA295', line: '#34302B', accent: '#7FD9C4', onAccent: '#0B1A16', accentText: '#7FD9C4', accentSubtle: '#163A33', accentSubtleText: '#9BE6D4', warn: '#F0C46A', warnSubtle: '#3F2C0E', err: '#F28470', errSubtle: '#45201B', cardBorder: '0', shadow: 'none' },
+      light: { bg: '#F5F1EA', card: '#FFFDF9', sunken: '#ECE6DC', dock: '#F5F1EA', ink: '#1C1915', ink2: '#6A6257', line: '#E2DBCF', accent: '#2BA58C', onAccent: '#FFFFFF', accentText: '#1A6E5D', accentSubtle: '#DDF1EB', accentSubtleText: '#165E50', warn: '#8F5A0B', warnSubtle: '#FBEBCB', err: '#B8321F', errSubtle: '#F9E1DC', cardBorder: '0', shadow: '0 1px 0 rgba(60,45,30,.06)' },
+      shape: { radius: '12px', radiusSm: '10px', font: '-apple-system,"SF Pro Text",system-ui,sans-serif', numFont: 'ui-serif,"New York",Georgia,serif', titleFont: 'ui-serif,"New York",Georgia,serif', titleSize: '32px', titleWeight: 600, titleTracking: '-0.01em', heroSize: '38px', heroWeight: 500, timerSize: '50px' }
+    }
+  };
+  renderVals() {
+    const c = this.T[this.props.concept] || this.T.a;
+    const mode = this.props.mode === 'light' ? 'light' : 'dark';
+    const screen = this.props.screen === 'outside' ? 'outside' : 'today';
+    const t = { ...c[mode], ...c.shape };
+    t.track = t.sunken === 'transparent' || t.sunken === t.card ? t.line : t.sunken;
+    return { t, isToday: screen === 'today', isOutside: screen === 'outside' };
+  }
+}
+</script>
+</body>
+</html>

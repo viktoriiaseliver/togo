@@ -1,0 +1,50 @@
+<!-- @dsCard group="Components" viewport="700x1000" name="Организмы" -->
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../graphite.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin></script>
+<script src="../preview-loader.js"></script>
+</head><body style="background:var(--bg-primary);padding: 20px;box-sizing:border-box">
+<div id="root"></div>
+<script type="text/babel">
+loadGraphite().then((G) => {
+  const L = ({ children }) => <span style={{ fontSize: 12, color: "var(--text-secondary)" }}>{children}</span>;
+  const Row = ({ children, gap = 8 }) => <div style={{ display: "flex", gap, flexWrap: "wrap", alignItems: "center" }}>{children}</div>;
+  const Col = ({ children, gap = 10 }) => <div style={{ display: "flex", flexDirection: "column", gap }}>{children}</div>;
+  function App() {
+    const { DeviceCard, Metric, Toggle, ProgressBar, IconButton, Button, NavBar, TabBar, EditBar, Sheet, ConfirmDialog, EmptyState, TextField } = G;
+    const [on, setOn] = React.useState(true); const [tab, setTab] = React.useState("home"); const [name, setName] = React.useState("Кухня");
+    const tabs = [{ value: "home", label: "Главная", icon: "home" }, { value: "rooms", label: "Комнаты", icon: "grid_view" }, { value: "stats", label: "Статистика", icon: "bar_chart" }, { value: "notif", label: "Уведомления", icon: "notifications" }];
+    return (<Col gap={18}>
+      <Col><L>DeviceCard · данные / inverse / добавить / загрузка / нет связи</L>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: "var(--space-8)" }}>
+          <DeviceCard title="Увлажнитель" subtitle="Dyson TP09"><Metric value={54} unit="%" /><Toggle checked={on} onChange={setOn} /></DeviceCard>
+          <DeviceCard variant="inverse" title="Пылесос" subtitle="Уборка · 80 %"><ProgressBar value={80} style={{ background: "var(--on-inverse)" }} /><IconButton icon="pause" label="Пауза" size="m" /></DeviceCard>
+          <DeviceCard variant="add" /><DeviceCard variant="loading" />
+          <DeviceCard variant="offline" title="Кондиционер" subtitle="Нет связи · 12 мин"><Metric value={null} caption=" " /><Button variant="secondary" size="m">Повторить</Button></DeviceCard>
+        </div></Col>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-16)" }}>
+        <Col gap={14}><L>NavBar · корневой / вложенный / правка</L>
+          <NavBar title="Комнаты" trailing={<><Button variant="plain">Изменить</Button><IconButton icon="add" label="Добавить" size="m" color="var(--accent-text)" /></>} />
+          <NavBar title="Гостиная" onBack={() => {}} trailing={<IconButton icon="more_horiz" label="Ещё" size="m" />} />
+          <NavBar editTitle="Выбрано: 2" leading={<Button variant="plain">Выбрать все</Button>} trailing={<Button variant="plain" style={{ fontWeight: 600 }}>Готово</Button>} /></Col>
+        <Col gap={10}><L>TabBar · regular / compact · EditBar</L><TabBar items={tabs} value={tab} onChange={setTab} /><TabBar items={tabs} value={tab} onChange={setTab} compact style={{ maxWidth: 288 }} /><EditBar count={2} /><EditBar count={2} secondaryLabel="Переместить" /></Col>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-16)", alignItems: "end" }}>
+        <Col><L>Sheet</L><div style={{ background: "var(--page)", borderRadius: 24, paddingTop: "var(--space-24)", overflow: "hidden" }}><Sheet inline title="Комната" doneDisabled={!name.trim()}><TextField value={name} onChange={setName} placeholder="Название" style={{ "--fill-1": "var(--fill-2)" }} /><Button variant="destructive" icon="delete" fullWidth>Удалить комнату</Button></Sheet></div></Col>
+        <Col><L>ConfirmDialog</L><div style={{ background: "var(--page)", borderRadius: 24, padding: "var(--space-24) var(--space-12) var(--space-12)" }}><ConfirmDialog inline message="Удалить 3 комнаты вместе с устройствами? Отменить можно в течение 5 секунд." confirmLabel="Удалить 3 комнаты" /></div></Col>
+      </div>
+      <Col><L>EmptyState · первый запуск / нет результатов / после удаления / ошибка / нет доступа</L>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: "var(--space-8)" }}>
+          <EmptyState card title="Пока пусто" message="Добавьте первую комнату" actionLabel="Добавить" primary />
+          <EmptyState card icon="search_off" title="Ничего не найдено" message="Проверьте написание" actionLabel="Сбросить" />
+          <EmptyState card icon="delete_sweep" title="Список очищен" message="Удалено: 5" actionLabel="Вернуть" actionIcon="undo" />
+          <EmptyState card icon="wifi_off" tone="error" title="Нет соединения" message="Данные за 12:40" actionLabel="Повторить" />
+          <EmptyState card icon="lock" tone="warning" title="Нужен доступ" message="Разрешите уведомления" actionLabel="Настройки" />
+        </div></Col>
+    </Col>);
+  }
+  ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+});
+</script></body></html>

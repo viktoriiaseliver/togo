@@ -1,0 +1,38 @@
+<!-- @dsCard group="Components" viewport="700x1700" name="Togo · здоровье, профиль, семья" -->
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin></script>
+<script src="../preview-loader.js"></script>
+</head><body style="background:var(--bg-primary);padding: 20px;box-sizing:border-box">
+<div id="root"></div>
+<script type="text/babel">
+loadGraphite().then((G) => {
+  const L = ({ children }) => <span style={{ fontSize: 12, color: "var(--text-secondary)" }}>{children}</span>;
+  const Row = ({ children, gap = 8 }) => <div style={{ display: "flex", gap, flexWrap: "wrap", alignItems: "center" }}>{children}</div>;
+  const Col = ({ children, gap = 10 }) => <div style={{ display: "flex", flexDirection: "column", gap }}>{children}</div>;
+  function App() {
+    const { SkillMatrix, LabChart, TreatmentPlan, DogProfile, FamilyList } = G; const grid = { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 12, alignItems: "start" };
+    const [sk, setSk] = React.useState([{ name: "Место", levels: [3, 2, 1, 0] }, { name: "Ко мне", levels: [3, 3, 2, 1] }, { name: "Рядом", levels: [2, 1, 0, 0] }]);
+    const [duty, setDuty] = React.useState(0);
+    const fam = [{ name: "Вика", you: true, role: "Владелец" }, { name: "Мама", role: "Пишет и видит всё" }].map((m, i) => ({ ...m, duty: i === duty }));
+    return (<Col gap={20}>
+      <div style={grid}>
+        <Col><L>SkillMatrix · Pro открыт</L><SkillMatrix contexts={["Дом", "Двор", "Парк", "Город"]} skills={sk} onCell={(i, j) => setSk(sk.map((s, a) => a === i ? { ...s, levels: s.levels.map((l, b) => b === j ? (l + 1) % 4 : l) } : s))} /></Col>
+        <Col><L>SkillMatrix · без Pro</L><SkillMatrix contexts={["Дом", "Двор", "Парк", "Город"]} skills={sk} locked /></Col>
+      </div>
+      <div style={grid}>
+        <Col><L>LabChart · Т4</L><LabChart points={[{ date: "12 мар", value: 14 }, { date: "9 апр", value: 17 }, { date: "2 мая", value: 26 }, { date: "6 июн", value: 34 }, { date: "15 сен", value: 41 }]} range={{ low: 19, high: 58 }} doses={[{ at: 1, label: "200 мкг" }]} /></Col>
+        <Col><L>LabChart · ТТГ, последнее вне нормы</L><LabChart title="ТТГ" unit="нг/мл" points={[{ date: "12 мар", value: 0.4 }, { date: "2 мая", value: 0.3 }, { date: "15 сен", value: 0.7 }]} range={{ low: 0.05, high: 0.5 }} /></Col>
+      </div>
+      <div style={grid}>
+        <Col><L>TreatmentPlan</L><TreatmentPlan drug="Левотироксин" dose="200 мкг" times={["07:00", "19:00"]} since="12 мар" fasting="40 мин без еды" history={[{ date: "9 апр", dose: "200 мкг", reason: "Т4 ниже нормы" }, { date: "12 мар", dose: "100 мкг", reason: "Начало" }]} onPause={() => {}} /></Col>
+        <Col><L>FamilyList · передать дежурство</L><FamilyList members={fam} onHandOff={setDuty} onInvite={() => {}} inviteLocked /></Col>
+      </div>
+      <Col><L>DogProfile</L><div style={{ maxWidth: 420 }}><DogProfile name="Стич" breed="Шипперке" sex="кобель" age="3 года" birth="19 марта 2023" weight="7,4 кг" weightTrend="+0,2 кг за месяц" chip="250 26 9 8000 12345" vet={{ name: "Д-р Мартен", clinic: "Клиника Арсон" }} onEdit={() => {}} /></div></Col>
+    </Col>);
+  }
+  ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+});
+</script></body></html>

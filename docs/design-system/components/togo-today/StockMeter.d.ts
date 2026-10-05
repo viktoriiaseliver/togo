@@ -1,0 +1,2 @@
+export interface StockMeterProps { icon?: string; name: string; left: string; unit: string; until?: string; perDay?: string; pct?: number; onBought?: () => void; style?: React.CSSProperties; }
+export declare function StockMeter(p: StockMeterProps): JSX.Element;

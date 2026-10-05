@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#050503;font-family:Manrope,system-ui,sans-serif;color:#F4F4F2}a{color:#D4F75F}a:hover{color:#E6FF9A}</style>
+</helmet>
+<div style="max-width:1240px;margin:0 auto;padding:56px 32px 120px;display:flex;flex-direction:column;gap:80px">
+
+  <header style="display:flex;flex-direction:column;gap:12px">
+    <div style="font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#8A8A86">Мобильная дизайн-система · iOS · v0.1</div>
+    <h1 style="margin:0;font-weight:300;font-size:64px;line-height:1;letter-spacing:-.025em">Graphite / Lime</h1>
+    <p style="margin:0;max-width:680px;font-size:16px;line-height:1.5;color:#A3A39F;text-wrap:pretty">Основа: глубина строится ступенями серого без теней и обводок, акцент один и означает «включено» или главное действие, данные показываются крупной тонкой цифрой. Единицы — pt, сетка 4 pt, экран 390.</p>
+    <nav style="display:flex;flex-wrap:wrap;gap:6px;margin-top:12px">
+      <a href="#color" style="text-decoration:none;background:#2C2C2C;color:#F4F4F2;border-radius:999px;padding:10px 16px;font-size:14px">01 Цвет</a>
+      <a href="#type" style="text-decoration:none;background:#2C2C2C;color:#F4F4F2;border-radius:999px;padding:10px 16px;font-size:14px">02 Шрифт</a>
+      <a href="#space" style="text-decoration:none;background:#2C2C2C;color:#F4F4F2;border-radius:999px;padding:10px 16px;font-size:14px">03 Сетка и форма</a>
+      <a href="#motion" style="text-decoration:none;background:#2C2C2C;color:#F4F4F2;border-radius:999px;padding:10px 16px;font-size:14px">04 Материал и движение</a>
+      <a href="#controls" style="text-decoration:none;background:#2C2C2C;color:#F4F4F2;border-radius:999px;padding:10px 16px;font-size:14px">05 Контролы</a>
+      <a href="#content" style="text-decoration:none;background:#2C2C2C;color:#F4F4F2;border-radius:999px;padding:10px 16px;font-size:14px">06 Контент</a>
+      <a href="#nav" style="text-decoration:none;background:#2C2C2C;color:#F4F4F2;border-radius:999px;padding:10px 16px;font-size:14px">07 Навигация и слои</a>
+      <a href="#a11y" style="text-decoration:none;background:#2C2C2C;color:#F4F4F2;border-radius:999px;padding:10px 16px;font-size:14px">08 Доступность</a>
+    </nav>
+  </header>
+
+  <section id="color" data-screen-label="01 Цвет" style="display:flex;flex-direction:column;gap:24px">
+    <div style="display:flex;align-items:baseline;gap:16px"><span style="font-size:14px;color:#8A8A86">01</span><h2 style="margin:0;font-weight:400;font-size:32px">Цвет</h2></div>
+
+    <div style="font-size:14px;color:#A3A39F">Примитивы</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:6px">
+      <div style="display:flex;flex-direction:column;gap:6px"><div style="height:64px;border-radius:20px;background:#050503;border:1px solid #2A2A2A"></div><span style="font-size:12px">gray.1000</span><span style="font-size:11px;color:#8A8A86">#050503</span></div>
+      <div style="display:flex;flex-direction:column;gap:6px"><div style="height:64px;border-radius:20px;background:#181818;border:1px solid #2A2A2A"></div><span style="font-size:12px">gray.950</span><span style="font-size:11px;color:#8A8A86">#181818</span></div>
+      <div style="display:flex;flex-direction:column;gap:6px"><div style="height:64px;border-radius:20px;background:#1F1F1F"></div><span style="font-size:12px">gray.900</span><span style="font-size:11px;color:#8A8A86">#1F1F1F</span></div>
+      <div style="display:flex;flex-direction:column;gap:6px"><div style="height:64px;border-radius:20px;background:#2C2C2C"></div><span style="font-size:12px">gray.850</span><span style="font-size:11px;color:#8A8A86">#2C2C2C</span></div>
+      <div style="display:flex;flex-direction:column;gap:6px"><div style="height:64px;border-radius:20px;background:#343434"></div><span style="font-size:12px">gray.800</span><span style="font-size:11px;color:#8A8A86">#343434</span></div>
+      <div style="display:flex;flex-direction:column;gap:6px"><div style="height:64px;border-radius:20px;background:#454545"></div><span style="font-size:12px">gray.700</span><span style="font-size:11px;color:#8A8A86">#454545</span></div>
+      <div style="display:flex;flex-direction:column;gap:6px"><div style="height:64px;border-radius:20px;background:#5D5D5D"></div><span style="font-size:12px">gray.600</span><span style="font-size:11px;color:#8A8A86">#5D5D5D</span></div>
+      <div style="display:flex;flex-direction:column;gap:6px"><div style="height:64px;border-radius:20px;background:#808080"></div><span style="font-size:12px">gray.500</span><span style="font-size:11px;color:#8A8A86">#808080</span></div>
+      <div style="display:flex;flex-direction:column;gap:6px"><div style="height:64px;border-radius:20px;background:#A3A39F"></div><span style="font-size:12px">gray.400</span><span style="font-size:11px;color:#8A8A86">#A3A39F</span></div>
+      <div style="display:flex;flex-direction:column;gap:6px"><div style="height:64px;border-radius:20px;background:#DCDCD7"></div><span style="font-size:12px">gray.200</span><span style="font-size:11px;color:#8A8A86">#DCDCD7</span></div>
+      <div style="display:flex;flex-direction:column;gap:6px"><div style="height:64px;border-radius:20px;background:#E8E8E4"></div><span style="font-size:12px">gray.100</span><span style="font-size:11px;color:#8A8A86">#E8E8E4</span></div>
+      <div style="display:flex;flex-direction:column;gap:6px"><div style="height:64px;border-radius:20px;background:#F4F4F2"></div><span style="font-size:12px">gray.50</span><span style="font-size:11px;color:#8A8A86">#F4F4F2</span></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:6px">
+      <div style="display:flex;flex-direction:column;gap:6px"><div style="height:64px;border-radius:20px;background:#E6FF9A"></div><span style="font-size:12px">lime.300</span><span style="font-size:11px;color:#8A8A86">#E6FF9A</span></div>
+      <div style="display:flex;flex-direction:column;gap:6px"><div style="height:64px;border-radius:20px;background:#D4F75F"></div><span style="font-size:12px">lime.400</span><span style="font-size:11px;color:#8A8A86">#D4F75F</span></div>
+      <div style="display:flex;flex-direction:column;gap:6px"><div style="height:64px;border-radius:20px;background:#BFE34A"></div><span style="font-size:12px">lime.500</span><span style="font-size:11px;color:#8A8A86">#BFE34A</span></div>
+      <div style="display:flex;flex-direction:column;gap:6px"><div style="height:64px;border-radius:20px;background:#4F6400"></div><span style="font-size:12px">lime.800</span><span style="font-size:11px;color:#8A8A86">#4F6400</span></div>
+      <div style="display:flex;flex-direction:column;gap:6px"><div style="height:64px;border-radius:20px;background:#3C4423"></div><span style="font-size:12px">lime.900</span><span style="font-size:11px;color:#8A8A86">#3C4423</span></div>
+      <div style="display:flex;flex-direction:column;gap:6px"><div style="height:64px;border-radius:20px;background:#FF7A66"></div><span style="font-size:12px">coral.400</span><span style="font-size:11px;color:#8A8A86">#FF7A66</span></div>
+      <div style="display:flex;flex-direction:column;gap:6px"><div style="height:64px;border-radius:20px;background:#B8321E"></div><span style="font-size:12px">coral.700</span><span style="font-size:11px;color:#8A8A86">#B8321E</span></div>
+      <div style="display:flex;flex-direction:column;gap:6px"><div style="height:64px;border-radius:20px;background:#F7C75F"></div><span style="font-size:12px">amber.400</span><span style="font-size:11px;color:#8A8A86">#F7C75F</span></div>
+      <div style="display:flex;flex-direction:column;gap:6px"><div style="height:64px;border-radius:20px;background:#8A5A00"></div><span style="font-size:12px">amber.700</span><span style="font-size:11px;color:#8A8A86">#8A5A00</span></div>
+    </div>
+    <p style="margin:0;font-size:13px;color:#8A8A86;max-width:720px">Коралл и янтарь добавлены для ошибок и предупреждений. Они той же насыщенности, что лайм, и встречаются только в статусах, не в заливках крупных плоскостей.</p>
+
+    <div style="font-size:14px;color:#A3A39F;margin-top:12px">Семантические токены · Dark (основная) / Light</div>
+    <div style="background:#181818;border-radius:32px;padding:8px 24px;overflow-x:auto">
+      <div style="display:grid;grid-template-columns:minmax(180px,1.3fr) minmax(160px,1fr) minmax(160px,1fr) minmax(200px,1.5fr);gap:16px;padding:14px 0;border-bottom:1px solid #2C2C2C;font-size:12px;color:#8A8A86"><span>Токен</span><span>Dark</span><span>Light</span><span>Где</span></div>
+      <div style="display:grid;grid-template-columns:minmax(180px,1.3fr) minmax(160px,1fr) minmax(160px,1fr) minmax(200px,1.5fr);gap:16px;padding:12px 0;border-bottom:1px solid #2C2C2C;font-size:14px;align-items:center"><span>bg.primary</span><div style="display:flex;gap:8px;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#181818;border:1px solid #454545"></div><span style="color:#A3A39F">gray.950</span></div><div style="display:flex;gap:8px;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#F2F2EF"></div><span style="color:#A3A39F">#F2F2EF</span></div><span style="color:#A3A39F">Фон экрана</span></div>
+      <div style="display:grid;grid-template-columns:minmax(180px,1.3fr) minmax(160px,1fr) minmax(160px,1fr) minmax(200px,1.5fr);gap:16px;padding:12px 0;border-bottom:1px solid #2C2C2C;font-size:14px;align-items:center"><span>fill.sunken</span><div style="display:flex;gap:8px;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#1F1F1F;border:1px solid #454545"></div><span style="color:#A3A39F">gray.900</span></div><div style="display:flex;gap:8px;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#E8E8E4"></div><span style="color:#A3A39F">gray.100</span></div><span style="color:#A3A39F">Трек, степпер, поле</span></div>
+      <div style="display:grid;grid-template-columns:minmax(180px,1.3fr) minmax(160px,1fr) minmax(160px,1fr) minmax(200px,1.5fr);gap:16px;padding:12px 0;border-bottom:1px solid #2C2C2C;font-size:14px;align-items:center"><span>fill.1</span><div style="display:flex;gap:8px;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#2C2C2C"></div><span style="color:#A3A39F">gray.850</span></div><div style="display:flex;gap:8px;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#FFFFFF"></div><span style="color:#A3A39F">#FFFFFF</span></div><span style="color:#A3A39F">Карточка, круг-кнопка</span></div>
+      <div style="display:grid;grid-template-columns:minmax(180px,1.3fr) minmax(160px,1fr) minmax(160px,1fr) minmax(200px,1.5fr);gap:16px;padding:12px 0;border-bottom:1px solid #2C2C2C;font-size:14px;align-items:center"><span>fill.2</span><div style="display:flex;gap:8px;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#343434"></div><span style="color:#A3A39F">gray.800</span></div><div style="display:flex;gap:8px;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#E8E8E4"></div><span style="color:#A3A39F">gray.100</span></div><span style="color:#A3A39F">Чип, таб-бар</span></div>
+      <div style="display:grid;grid-template-columns:minmax(180px,1.3fr) minmax(160px,1fr) minmax(160px,1fr) minmax(200px,1.5fr);gap:16px;padding:12px 0;border-bottom:1px solid #2C2C2C;font-size:14px;align-items:center"><span>fill.3</span><div style="display:flex;gap:8px;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#454545"></div><span style="color:#A3A39F">gray.700</span></div><div style="display:flex;gap:8px;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#DCDCD7"></div><span style="color:#A3A39F">gray.200</span></div><span style="color:#A3A39F">Вложенная плашка, pressed</span></div>
+      <div style="display:grid;grid-template-columns:minmax(180px,1.3fr) minmax(160px,1fr) minmax(160px,1fr) minmax(200px,1.5fr);gap:16px;padding:12px 0;border-bottom:1px solid #2C2C2C;font-size:14px;align-items:center"><span>fill.selected</span><div style="display:flex;gap:8px;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#5D5D5D"></div><span style="color:#A3A39F">gray.600</span></div><div style="display:flex;gap:8px;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#111111"></div><span style="color:#A3A39F">#111111</span></div><span style="color:#A3A39F">Выбранный сегмент, активный таб</span></div>
+      <div style="display:grid;grid-template-columns:minmax(180px,1.3fr) minmax(160px,1fr) minmax(160px,1fr) minmax(200px,1.5fr);gap:16px;padding:12px 0;border-bottom:1px solid #2C2C2C;font-size:14px;align-items:center"><span>fill.inverse</span><div style="display:flex;gap:8px;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#F4F4F2"></div><span style="color:#A3A39F">gray.50</span></div><div style="display:flex;gap:8px;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#181818;border:1px solid #454545"></div><span style="color:#A3A39F">gray.950</span></div><span style="color:#A3A39F">Одна выделенная карточка, тост</span></div>
+      <div style="display:grid;grid-template-columns:minmax(180px,1.3fr) minmax(160px,1fr) minmax(160px,1fr) minmax(200px,1.5fr);gap:16px;padding:12px 0;border-bottom:1px solid #2C2C2C;font-size:14px;align-items:center"><span>fill.accent</span><div style="display:flex;gap:8px;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#D4F75F"></div><span style="color:#A3A39F">lime.400</span></div><div style="display:flex;gap:8px;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#D4F75F"></div><span style="color:#A3A39F">lime.400</span></div><span style="color:#A3A39F">Главное действие, «включено»</span></div>
+      <div style="display:grid;grid-template-columns:minmax(180px,1.3fr) minmax(160px,1fr) minmax(160px,1fr) minmax(200px,1.5fr);gap:16px;padding:12px 0;border-bottom:1px solid #2C2C2C;font-size:14px;align-items:center"><span>fill.accent.pressed</span><div style="display:flex;gap:8px;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#BFE34A"></div><span style="color:#A3A39F">lime.500</span></div><div style="display:flex;gap:8px;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#BFE34A"></div><span style="color:#A3A39F">lime.500</span></div><span style="color:#A3A39F">Нажатие</span></div>
+      <div style="display:grid;grid-template-columns:minmax(180px,1.3fr) minmax(160px,1fr) minmax(160px,1fr) minmax(200px,1.5fr);gap:16px;padding:12px 0;border-bottom:1px solid #2C2C2C;font-size:14px;align-items:center"><span>fill.accent.knob</span><div style="display:flex;gap:8px;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#3C4423"></div><span style="color:#A3A39F">lime.900</span></div><div style="display:flex;gap:8px;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#3C4423"></div><span style="color:#A3A39F">lime.900</span></div><span style="color:#A3A39F">Ручка на акценте</span></div>
+      <div style="display:grid;grid-template-columns:minmax(180px,1.3fr) minmax(160px,1fr) minmax(160px,1fr) minmax(200px,1.5fr);gap:16px;padding:12px 0;border-bottom:1px solid #2C2C2C;font-size:14px;align-items:center"><span>text.primary</span><div style="display:flex;gap:8px;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#F4F4F2"></div><span style="color:#A3A39F">gray.50</span></div><div style="display:flex;gap:8px;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#111111;border:1px solid #454545"></div><span style="color:#A3A39F">#111111</span></div><span style="color:#A3A39F">Заголовки, цифры, текст</span></div>
+      <div style="display:grid;grid-template-columns:minmax(180px,1.3fr) minmax(160px,1fr) minmax(160px,1fr) minmax(200px,1.5fr);gap:16px;padding:12px 0;border-bottom:1px solid #2C2C2C;font-size:14px;align-items:center"><span>text.secondary</span><div style="display:flex;gap:8px;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#A3A39F"></div><span style="color:#A3A39F">gray.400</span></div><div style="display:flex;gap:8px;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#5E5E5A"></div><span style="color:#A3A39F">#5E5E5A</span></div><span style="color:#A3A39F">Подписи, модель, единицы</span></div>
+      <div style="display:grid;grid-template-columns:minmax(180px,1.3fr) minmax(160px,1fr) minmax(160px,1fr) minmax(200px,1.5fr);gap:16px;padding:12px 0;border-bottom:1px solid #2C2C2C;font-size:14px;align-items:center"><span>text.disabled</span><div style="display:flex;gap:8px;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#5D5D5D"></div><span style="color:#A3A39F">gray.600</span></div><div style="display:flex;gap:8px;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#A3A39F"></div><span style="color:#A3A39F">gray.400</span></div><span style="color:#A3A39F">Неактивное</span></div>
+      <div style="display:grid;grid-template-columns:minmax(180px,1.3fr) minmax(160px,1fr) minmax(160px,1fr) minmax(200px,1.5fr);gap:16px;padding:12px 0;border-bottom:1px solid #2C2C2C;font-size:14px;align-items:center"><span>text.accent</span><div style="display:flex;gap:8px;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#D4F75F"></div><span style="color:#A3A39F">lime.400</span></div><div style="display:flex;gap:8px;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#4F6400"></div><span style="color:#A3A39F">lime.800</span></div><span style="color:#A3A39F">Статус «ок», активный таб</span></div>
+      <div style="display:grid;grid-template-columns:minmax(180px,1.3fr) minmax(160px,1fr) minmax(160px,1fr) minmax(200px,1.5fr);gap:16px;padding:12px 0;border-bottom:1px solid #2C2C2C;font-size:14px;align-items:center"><span>text.onAccent</span><div style="display:flex;gap:8px;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#111111;border:1px solid #454545"></div><span style="color:#A3A39F">#111111</span></div><div style="display:flex;gap:8px;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#111111;border:1px solid #454545"></div><span style="color:#A3A39F">#111111</span></div><span style="color:#A3A39F">Текст на лайме и на inverse</span></div>
+      <div style="display:grid;grid-template-columns:minmax(180px,1.3fr) minmax(160px,1fr) minmax(160px,1fr) minmax(200px,1.5fr);gap:16px;padding:12px 0;border-bottom:1px solid #2C2C2C;font-size:14px;align-items:center"><span>status.error</span><div style="display:flex;gap:8px;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#FF7A66"></div><span style="color:#A3A39F">coral.400</span></div><div style="display:flex;gap:8px;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#B8321E"></div><span style="color:#A3A39F">coral.700</span></div><span style="color:#A3A39F">Ошибка, разрушающее действие</span></div>
+      <div style="display:grid;grid-template-columns:minmax(180px,1.3fr) minmax(160px,1fr) minmax(160px,1fr) minmax(200px,1.5fr);gap:16px;padding:12px 0;font-size:14px;align-items:center"><span>status.warning</span><div style="display:flex;gap:8px;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#F7C75F"></div><span style="color:#A3A39F">amber.400</span></div><div style="display:flex;gap:8px;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#8A5A00"></div><span style="color:#A3A39F">amber.700</span></div><span style="color:#A3A39F">Ожидание, внимание</span></div>
+    </div>
+
+    <div style="font-size:14px;color:#A3A39F;margin-top:12px">Правила</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:6px">
+      <div style="background:#181818;border-radius:28px;padding:20px;font-size:14px;line-height:1.5;color:#A3A39F"><span style="color:#F4F4F2">Глубина = ступень серого.</span> Каждый следующий слой светлее на одну ступень: bg → fill.1 → fill.2 → fill.3. Вложенный элемент не может быть того же цвета, что родитель.</div>
+      <div style="background:#181818;border-radius:28px;padding:20px;font-size:14px;line-height:1.5;color:#A3A39F"><span style="color:#F4F4F2">Лайм = состояние.</span> Заливка лаймом только у включённого элемента или у одного главного действия на экране. Лаймовый текст — статус «в порядке» и значение-показатель.</div>
+      <div style="background:#181818;border-radius:28px;padding:20px;font-size:14px;line-height:1.5;color:#A3A39F"><span style="color:#F4F4F2">Один inverse на экран.</span> Светлая карточка притягивает взгляд сильнее лайма, поэтому она одна и отдана самому срочному объекту.</div>
+    </div>
+  </section>
+
+  <section id="type" data-screen-label="02 Шрифт" style="display:flex;flex-direction:column;gap:24px">
+    <div style="display:flex;align-items:baseline;gap:16px"><span style="font-size:14px;color:#8A8A86">02</span><h2 style="margin:0;font-weight:400;font-size:32px">Шрифт</h2></div>
+    <p style="margin:0;font-size:14px;color:#8A8A86;max-width:720px">На iOS: SF Pro Rounded Light для цифр, SF Pro Regular для текста. Стили привязаны к Dynamic Type, размеры ниже — для Large (по умолчанию). Цифры всегда tabular (monospacedDigit). В превью — Manrope.</p>
+    <div style="background:#181818;border-radius:32px;padding:8px 28px">
+      <div style="display:grid;grid-template-columns:minmax(150px,200px) 1fr;gap:20px;align-items:center;padding:22px 0;border-bottom:1px solid #2C2C2C"><div style="font-size:12px;line-height:1.5;color:#8A8A86">number.xl<br>Rounded 300 · 80/80<br>единица 24 · сверху</div><div style="display:flex;align-items:flex-start;gap:4px;font-weight:300"><span style="font-size:80px;line-height:1;letter-spacing:-.03em">54</span><span style="font-size:24px;margin-top:6px">%</span></div></div>
+      <div style="display:grid;grid-template-columns:minmax(150px,200px) 1fr;gap:20px;align-items:center;padding:22px 0;border-bottom:1px solid #2C2C2C"><div style="font-size:12px;line-height:1.5;color:#8A8A86">number.l<br>Rounded 300 · 56/56<br>единица 17</div><div style="display:flex;align-items:flex-start;gap:3px;font-weight:300"><span style="font-size:56px;line-height:1;letter-spacing:-.03em">25</span><span style="font-size:17px;margin-top:4px">°</span></div></div>
+      <div style="display:grid;grid-template-columns:minmax(150px,200px) 1fr;gap:20px;align-items:center;padding:22px 0;border-bottom:1px solid #2C2C2C"><div style="font-size:12px;line-height:1.5;color:#8A8A86">number.m<br>Rounded 300 · 44/44<br>подпись 13 · справа</div><div style="display:flex;gap:24px;flex-wrap:wrap"><div style="display:flex;align-items:flex-start;gap:3px;font-weight:300;color:#D4F75F"><span style="font-size:44px;line-height:1">22</span><span style="font-size:13px;margin-top:2px">°C</span></div><div style="display:flex;align-items:flex-start;gap:6px;font-weight:300"><span style="font-size:44px;line-height:1">12</span><span style="font-size:13px;line-height:1.15;margin-top:2px">Total<br>Devices</span></div></div></div>
+      <div style="display:grid;grid-template-columns:minmax(150px,200px) 1fr;gap:20px;align-items:center;padding:22px 0;border-bottom:1px solid #2C2C2C"><div style="font-size:12px;line-height:1.5;color:#8A8A86">largeTitle<br>400 · 34/41</div><div style="font-size:34px;line-height:1.2">Rooms</div></div>
+      <div style="display:grid;grid-template-columns:minmax(150px,200px) 1fr;gap:20px;align-items:center;padding:22px 0;border-bottom:1px solid #2C2C2C"><div style="font-size:12px;line-height:1.5;color:#8A8A86">title2<br>400 · 22/28</div><div style="font-size:22px;line-height:1.27">Air Conditioner</div></div>
+      <div style="display:grid;grid-template-columns:minmax(150px,200px) 1fr;gap:20px;align-items:center;padding:22px 0;border-bottom:1px solid #2C2C2C"><div style="font-size:12px;line-height:1.5;color:#8A8A86">headline / body<br>400 · 17/22</div><div style="font-size:17px;line-height:1.3">Leave Home</div></div>
+      <div style="display:grid;grid-template-columns:minmax(150px,200px) 1fr;gap:20px;align-items:center;padding:22px 0;border-bottom:1px solid #2C2C2C"><div style="font-size:12px;line-height:1.5;color:#8A8A86">subheadline<br>400 · 15/20</div><div style="font-size:15px;line-height:1.33">General Overview</div></div>
+      <div style="display:grid;grid-template-columns:minmax(150px,200px) 1fr;gap:20px;align-items:center;padding:22px 0;border-bottom:1px solid #2C2C2C"><div style="font-size:12px;line-height:1.5;color:#8A8A86">footnote<br>400 · 13/18</div><div style="font-size:13px;line-height:1.38;color:#D4F75F">All Closed</div></div>
+      <div style="display:grid;grid-template-columns:minmax(150px,200px) 1fr;gap:20px;align-items:center;padding:22px 0"><div style="font-size:12px;line-height:1.5;color:#8A8A86">caption<br>400 · 12/16 · минимум</div><div style="font-size:12px;line-height:1.33;color:#A3A39F">SAMSUNG AR12</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:6px">
+      <div style="background:#181818;border-radius:28px;padding:20px;font-size:14px;line-height:1.5;color:#A3A39F"><span style="color:#F4F4F2">Два веса.</span> 300 только для цифр от 44 pt, 400 для всего остального. Жирный не используется: иерархию держат размер и цвет.</div>
+      <div style="background:#181818;border-radius:28px;padding:20px;font-size:14px;line-height:1.5;color:#A3A39F"><span style="color:#F4F4F2">Цифра + единица.</span> Единица в 3–4 раза меньше цифры, выровнена по верхней линии цифры, отступ 2–4 pt. Подпись из двух строк — справа, тоже от верха.</div>
+      <div style="background:#181818;border-radius:28px;padding:20px;font-size:14px;line-height:1.5;color:#A3A39F"><span style="color:#F4F4F2">Dynamic Type.</span> С размера accessibility1 подпись переезжает под цифру, ряды чипов становятся колонкой.</div>
+    </div>
+  </section>
+
+  <section id="space" data-screen-label="03 Сетка и форма" style="display:flex;flex-direction:column;gap:24px">
+    <div style="display:flex;align-items:baseline;gap:16px"><span style="font-size:14px;color:#8A8A86">03</span><h2 style="margin:0;font-weight:400;font-size:32px">Сетка и форма</h2></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:6px">
+      <div style="background:#181818;border-radius:32px;padding:24px;display:flex;flex-direction:column;gap:14px">
+        <div style="font-size:13px;color:#8A8A86">Шкала отступов · шаг 4, плюс 6 для зазора</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:13px">
+          <div style="display:grid;grid-template-columns:70px 1fr 40px;gap:10px;align-items:center"><span style="color:#A3A39F">space.1</span><div style="width:4px;height:12px;background:#D4F75F;border-radius:2px"></div><span>4</span></div>
+          <div style="display:grid;grid-template-columns:70px 1fr 40px;gap:10px;align-items:center"><span style="color:#A3A39F">gap</span><div style="width:6px;height:12px;background:#D4F75F;border-radius:2px"></div><span>6</span></div>
+          <div style="display:grid;grid-template-columns:70px 1fr 40px;gap:10px;align-items:center"><span style="color:#A3A39F">space.2</span><div style="width:8px;height:12px;background:#D4F75F;border-radius:2px"></div><span>8</span></div>
+          <div style="display:grid;grid-template-columns:70px 1fr 40px;gap:10px;align-items:center"><span style="color:#A3A39F">space.3</span><div style="width:12px;height:12px;background:#D4F75F;border-radius:2px"></div><span>12</span></div>
+          <div style="display:grid;grid-template-columns:70px 1fr 40px;gap:10px;align-items:center"><span style="color:#A3A39F">space.4</span><div style="width:16px;height:12px;background:#D4F75F;border-radius:2px"></div><span>16</span></div>
+          <div style="display:grid;grid-template-columns:70px 1fr 40px;gap:10px;align-items:center"><span style="color:#A3A39F">space.5</span><div style="width:20px;height:12px;background:#D4F75F;border-radius:2px"></div><span>20</span></div>
+          <div style="display:grid;grid-template-columns:70px 1fr 40px;gap:10px;align-items:center"><span style="color:#A3A39F">space.6</span><div style="width:24px;height:12px;background:#D4F75F;border-radius:2px"></div><span>24</span></div>
+          <div style="display:grid;grid-template-columns:70px 1fr 40px;gap:10px;align-items:center"><span style="color:#A3A39F">space.8</span><div style="width:32px;height:12px;background:#D4F75F;border-radius:2px"></div><span>32</span></div>
+          <div style="display:grid;grid-template-columns:70px 1fr 40px;gap:10px;align-items:center"><span style="color:#A3A39F">space.10</span><div style="width:40px;height:12px;background:#D4F75F;border-radius:2px"></div><span>40</span></div>
+        </div>
+      </div>
+      <div style="background:#181818;border-radius:32px;padding:24px;display:flex;flex-direction:column;gap:10px;font-size:14px">
+        <div style="font-size:13px;color:#8A8A86">Раскладка экрана</div>
+        <div style="display:flex;justify-content:space-between"><span>Поля</span><span style="color:#A3A39F">20</span></div>
+        <div style="display:flex;justify-content:space-between"><span>Зазор между карточками</span><span style="color:#A3A39F">6</span></div>
+        <div style="display:flex;justify-content:space-between"><span>Паддинг карточки</span><span style="color:#A3A39F">20</span></div>
+        <div style="display:flex;justify-content:space-between"><span>Подзаголовок → контент</span><span style="color:#A3A39F">12</span></div>
+        <div style="display:flex;justify-content:space-between"><span>Между секциями</span><span style="color:#A3A39F">32</span></div>
+        <div style="display:flex;justify-content:space-between"><span>Колонки</span><span style="color:#A3A39F">2 × 172 · 1 × 350</span></div>
+        <div style="display:flex;justify-content:space-between"><span>Горизонтальная лента</span><span style="color:#A3A39F">край в край, обрез справа</span></div>
+        <div style="display:flex;justify-content:space-between"><span>Запас под таб-бар</span><span style="color:#A3A39F">64 + 16 + safe area</span></div>
+      </div>
+      <div style="background:#181818;border-radius:32px;padding:24px;display:flex;flex-direction:column;gap:16px">
+        <div style="font-size:13px;color:#8A8A86">Радиусы · концентричность</div>
+        <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap">
+          <div style="display:flex;flex-direction:column;gap:6px;align-items:center"><div style="width:64px;height:64px;border-radius:40px 40px 0 0;background:#2C2C2C"></div><span style="font-size:12px;color:#A3A39F">sheet 40</span></div>
+          <div style="display:flex;flex-direction:column;gap:6px;align-items:center"><div style="width:64px;height:64px;border-radius:32px;background:#2C2C2C"></div><span style="font-size:12px;color:#A3A39F">card 32</span></div>
+          <div style="display:flex;flex-direction:column;gap:6px;align-items:center"><div style="width:64px;height:64px;border-radius:20px;background:#2C2C2C"></div><span style="font-size:12px;color:#A3A39F">inner 20</span></div>
+          <div style="display:flex;flex-direction:column;gap:6px;align-items:center"><div style="width:64px;height:36px;border-radius:999px;background:#2C2C2C"></div><span style="font-size:12px;color:#A3A39F">pill</span></div>
+        </div>
+        <div style="background:#2C2C2C;border-radius:32px;padding:12px"><div style="background:#454545;border-radius:20px;height:56px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#F4F4F2">внутренний = 32 − 12</div></div>
+        <div style="font-size:13px;line-height:1.5;color:#A3A39F">Всё, что ниже 64 pt по высоте, — пилюля или круг. Прямоугольник со скруглением только у карточек.</div>
+      </div>
+      <div style="background:#181818;border-radius:32px;padding:24px;display:flex;flex-direction:column;gap:10px;font-size:14px">
+        <div style="font-size:13px;color:#8A8A86">Размеры</div>
+        <div style="display:flex;justify-content:space-between"><span>Мин. зона касания</span><span style="color:#A3A39F">44 × 44</span></div>
+        <div style="display:flex;justify-content:space-between"><span>Круг-кнопка L / M</span><span style="color:#A3A39F">54 / 44</span></div>
+        <div style="display:flex;justify-content:space-between"><span>Кнопка</span><span style="color:#A3A39F">56</span></div>
+        <div style="display:flex;justify-content:space-between"><span>Слайдер-действие</span><span style="color:#A3A39F">58</span></div>
+        <div style="display:flex;justify-content:space-between"><span>Чип-статус</span><span style="color:#A3A39F">72</span></div>
+        <div style="display:flex;justify-content:space-between"><span>Таб-бар</span><span style="color:#A3A39F">64</span></div>
+        <div style="display:flex;justify-content:space-between"><span>Строка списка</span><span style="color:#A3A39F">60</span></div>
+        <div style="display:flex;justify-content:space-between"><span>Иконка</span><span style="color:#A3A39F">24 · контур 1.5</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="motion" data-screen-label="04 Материал и движение" style="display:flex;flex-direction:column;gap:24px">
+    <div style="display:flex;align-items:baseline;gap:16px"><span style="font-size:14px;color:#8A8A86">04</span><h2 style="margin:0;font-weight:400;font-size:32px">Материал и движение</h2></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:6px">
+      <div style="background:#181818;border-radius:32px;padding:24px;display:flex;flex-direction:column;gap:10px;font-size:14px">
+        <div style="font-size:13px;color:#8A8A86">Материал</div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>Тени</span><span style="color:#A3A39F">нет</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>Обводки</span><span style="color:#A3A39F">нет</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>Стекло</span><span style="color:#A3A39F;text-align:right">только плавающие слои: таб-бар, кнопки над фото</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>glass.dark</span><span style="color:#A3A39F">#343434 · 72% · blur 20</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>glass.photo</span><span style="color:#A3A39F">#E4E0DA · 82% · blur 12</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>Скрим под фото</span><span style="color:#A3A39F;text-align:right">к bg.primary, 0 → 85%, нижние 50%</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>Reduce Transparency</span><span style="color:#A3A39F">стекло → fill.2</span></div>
+      </div>
+      <div style="background:#181818;border-radius:32px;padding:24px;display:flex;flex-direction:column;gap:10px;font-size:14px">
+        <div style="font-size:13px;color:#8A8A86">Движение · SwiftUI spring</div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>motion.tap</span><span style="color:#A3A39F">scale 0.96 · 0.15 s</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>motion.toggle</span><span style="color:#A3A39F">.snappy · 0.25</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>motion.tab</span><span style="color:#A3A39F;text-align:right">.spring(0.4, 0.8) · пилюля перетекает</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>motion.number</span><span style="color:#A3A39F;text-align:right">.numericText() · 0.3</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>motion.sheet</span><span style="color:#A3A39F">системный</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>Reduce Motion</span><span style="color:#A3A39F;text-align:right">только смена прозрачности 0.2</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>Хаптика</span><span style="color:#A3A39F;text-align:right">toggle → selection, слайдер → success</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="controls" data-screen-label="05 Контролы" style="display:flex;flex-direction:column;gap:24px">
+    <div style="display:flex;align-items:baseline;gap:16px"><span style="font-size:14px;color:#8A8A86">05</span><h2 style="margin:0;font-weight:400;font-size:32px">Контролы</h2></div>
+
+    <div style="background:#181818;border-radius:32px;padding:24px;display:flex;flex-direction:column;gap:18px">
+      <div style="font-size:13px;color:#8A8A86">Кнопка · default / pressed / disabled</div>
+      <div style="display:grid;grid-template-columns:110px repeat(3,minmax(140px,1fr));gap:10px;align-items:center;overflow-x:auto">
+        <span style="font-size:13px;color:#A3A39F">primary</span>
+        <div style="height:56px;border-radius:999px;background:#D4F75F;color:#111111;display:flex;align-items:center;justify-content:center;font-size:17px">Сохранить</div>
+        <div style="height:56px;border-radius:999px;background:#BFE34A;color:#111111;display:flex;align-items:center;justify-content:center;font-size:17px;transform:scale(.96)">Сохранить</div>
+        <div style="height:56px;border-radius:999px;background:#2C2C2C;color:#5D5D5D;display:flex;align-items:center;justify-content:center;font-size:17px">Сохранить</div>
+        <span style="font-size:13px;color:#A3A39F">secondary</span>
+        <div style="height:56px;border-radius:999px;background:#343434;color:#F4F4F2;display:flex;align-items:center;justify-content:center;font-size:17px">Отмена</div>
+        <div style="height:56px;border-radius:999px;background:#454545;color:#F4F4F2;display:flex;align-items:center;justify-content:center;font-size:17px;transform:scale(.96)">Отмена</div>
+        <div style="height:56px;border-radius:999px;background:#1F1F1F;color:#5D5D5D;display:flex;align-items:center;justify-content:center;font-size:17px">Отмена</div>
+        <span style="font-size:13px;color:#A3A39F">plain</span>
+        <div style="height:44px;display:flex;align-items:center;justify-content:center;font-size:15px;color:#F4F4F2">Statistics</div>
+        <div style="height:44px;display:flex;align-items:center;justify-content:center;font-size:15px;color:#A3A39F">Statistics</div>
+        <div style="height:44px;display:flex;align-items:center;justify-content:center;font-size:15px;color:#5D5D5D">Statistics</div>
+        <span style="font-size:13px;color:#A3A39F">destructive</span>
+        <div style="height:56px;border-radius:999px;background:#343434;color:#FF7A66;display:flex;align-items:center;justify-content:center;font-size:17px">Удалить</div>
+        <div style="height:56px;border-radius:999px;background:#454545;color:#FF7A66;display:flex;align-items:center;justify-content:center;font-size:17px;transform:scale(.96)">Удалить</div>
+        <div style="height:56px;border-radius:999px;background:#1F1F1F;color:#5D5D5D;display:flex;align-items:center;justify-content:center;font-size:17px">Удалить</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:6px">
+      <div style="background:#181818;border-radius:32px;padding:24px;display:flex;flex-direction:column;gap:16px">
+        <div style="font-size:13px;color:#8A8A86">Круг-кнопка · L 54 / M 44 · иконка лаймом = добавить</div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <div style="width:54px;height:54px;border-radius:50%;background:#2C2C2C;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F4F4F2" stroke-width="1.5"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg></div>
+          <div style="width:54px;height:54px;border-radius:50%;background:#2C2C2C;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F4F4F2" stroke-width="1.5"><circle cx="12" cy="12" r="3"></circle><path d="M12 3l7.8 4.5v9L12 21l-7.8-4.5v-9z"></path></svg></div>
+          <div style="width:54px;height:54px;border-radius:50%;background:#2C2C2C;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#D4F75F" stroke-width="1.5"><path d="M12 5v14M5 12h14"></path></svg></div>
+          <div style="width:44px;height:44px;border-radius:50%;background:#111111;border:1.5px solid #2C2C2C;box-sizing:border-box;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F4F4F2" stroke-width="1.5"><path d="M12 4v8M7 6.5a7 7 0 1010 0"></path></svg></div>
+          <div style="width:44px;height:44px;border-radius:50%;background:#1F1F1F;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5D5D5D" stroke-width="1.5"><path d="M5 12h14"></path></svg></div>
+        </div>
+      </div>
+
+      <div style="background:#181818;border-radius:32px;padding:24px;display:flex;flex-direction:column;gap:16px">
+        <div style="font-size:13px;color:#8A8A86">Сегмент · иконки или текст</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+          <div style="display:flex;background:#2C2C2C;border-radius:999px">
+            <div style="width:54px;height:54px;border-radius:50%;background:#5D5D5D;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D4F75F" stroke-width="1.5"><rect x="4" y="4" width="7" height="7" rx="2"></rect><rect x="13" y="4" width="7" height="7" rx="2"></rect><rect x="4" y="13" width="7" height="7" rx="2"></rect><rect x="13" y="13" width="7" height="7" rx="2"></rect></svg></div>
+            <div style="width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A3A39F" stroke-width="1.5"><rect x="7" y="4" width="10" height="16" rx="2"></rect><path d="M4 7v10M20 7v10"></path></svg></div>
+          </div>
+          <div style="display:flex;background:#2C2C2C;border-radius:999px;padding:4px;gap:2px">
+            <div style="height:46px;padding:0 18px;border-radius:999px;background:#5D5D5D;display:flex;align-items:center;font-size:15px">День</div>
+            <div style="height:46px;padding:0 18px;border-radius:999px;display:flex;align-items:center;font-size:15px;color:#A3A39F">Неделя</div>
+            <div style="height:46px;padding:0 18px;border-radius:999px;display:flex;align-items:center;font-size:15px;color:#A3A39F">Месяц</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:#181818;border-radius:32px;padding:24px;display:flex;flex-direction:column;gap:16px">
+        <div style="font-size:13px;color:#8A8A86">Слайдер-действие · вкл / выкл · свайп на всю длину</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;background:#D4F75F;border-radius:999px;padding:0 0 0 22px;height:58px;color:#111111"><span style="font-size:17px">Leave Home</span><div style="width:58px;height:58px;border-radius:50%;background:#3C4423;border:2px solid #D4F75F;box-sizing:border-box"></div></div>
+        <div style="display:flex;align-items:center;gap:14px;background:#2C2C2C;border-radius:999px;height:58px"><div style="width:58px;height:58px;border-radius:50%;background:#5D5D5D"></div><span style="font-size:17px">Morning</span></div>
+        <div style="font-size:12px;line-height:1.5;color:#A3A39F">Для VoiceOver — обычная кнопка с действием по двойному касанию.</div>
+      </div>
+
+      <div style="background:#181818;border-radius:32px;padding:24px;display:flex;flex-direction:column;gap:16px">
+        <div style="font-size:13px;color:#8A8A86">Тумблер · L 104×36 / M 64×36 · степпер</div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <div style="width:104px;height:36px;border-radius:999px;background:#D4F75F;display:flex;justify-content:flex-end;padding:3px;box-sizing:border-box"><div style="width:30px;height:30px;border-radius:50%;background:#3C4423"></div></div>
+          <div style="width:104px;height:36px;border-radius:999px;background:#454545;display:flex;padding:3px;box-sizing:border-box"><div style="width:30px;height:30px;border-radius:50%;background:#E4E4E0"></div></div>
+          <div style="width:64px;height:36px;border-radius:999px;background:#D4F75F;display:flex;justify-content:flex-end;padding:3px;box-sizing:border-box"><div style="width:30px;height:30px;border-radius:50%;background:#3C4423"></div></div>
+          <div style="width:64px;height:36px;border-radius:999px;background:#1F1F1F;display:flex;padding:3px;box-sizing:border-box"><div style="width:30px;height:30px;border-radius:50%;background:#454545"></div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="width:48px;height:48px;border-radius:50%;background:#1F1F1F;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A3A39F" stroke-width="1.5"><path d="M5 12h14"></path></svg></div>
+          <div style="display:flex;align-items:flex-start;gap:2px;font-weight:300;min-width:72px;justify-content:center"><span style="font-size:44px;line-height:1">25</span><span style="font-size:14px">°</span></div>
+          <div style="width:48px;height:48px;border-radius:50%;background:#1F1F1F;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A3A39F" stroke-width="1.5"><path d="M12 5v14M5 12h14"></path></svg></div>
+        </div>
+      </div>
+
+      <div style="background:#181818;border-radius:32px;padding:24px;display:flex;flex-direction:column;gap:12px">
+        <div style="font-size:13px;color:#8A8A86">Поле ввода · пусто / фокус / ошибка</div>
+        <div style="height:56px;border-radius:999px;background:#1F1F1F;display:flex;align-items:center;padding:0 22px;font-size:17px;color:#5D5D5D">Название</div>
+        <div style="height:56px;border-radius:999px;background:#343434;display:flex;align-items:center;padding:0 22px;font-size:17px;gap:1px">Кухня<span style="width:2px;height:22px;background:#D4F75F;border-radius:1px"></span></div>
+        <div style="display:flex;flex-direction:column;gap:6px"><div style="height:56px;border-radius:999px;background:#343434;display:flex;align-items:center;padding:0 22px;font-size:17px">Кухня</div><span style="font-size:13px;color:#FF7A66;padding-left:22px">Такое название уже есть</span></div>
+      </div>
+
+      <div style="background:#181818;border-radius:32px;padding:24px;display:flex;flex-direction:column;gap:16px">
+        <div style="font-size:13px;color:#8A8A86">Прогресс-пилюля · бейдж</div>
+        <div style="display:flex;align-items:center;background:#111111;border-radius:999px;height:52px;padding:4px;box-sizing:border-box">
+          <div style="width:80%;height:44px;border-radius:999px;background:#D4F75F;color:#111111;display:flex;flex-direction:column;justify-content:center;padding:0 18px;box-sizing:border-box"><span style="font-size:15px;line-height:1.1">daily cleaning</span><span style="font-size:12px">80% completed</span></div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <div style="height:32px;padding:0 12px;border-radius:999px;background:#343434;display:flex;align-items:center;font-size:13px">58%</div>
+          <div style="height:32px;padding:0 12px;border-radius:999px;background:#3C4423;color:#D4F75F;display:flex;align-items:center;font-size:13px">Online</div>
+          <div style="height:32px;padding:0 12px;border-radius:999px;background:#4A2A22;color:#FF7A66;display:flex;align-items:center;font-size:13px">Offline</div>
+          <div style="height:32px;padding:0 12px;border-radius:999px;background:#463614;color:#F7C75F;display:flex;align-items:center;font-size:13px">Updating</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="content" data-screen-label="06 Контент" style="display:flex;flex-direction:column;gap:24px">
+    <div style="display:flex;align-items:baseline;gap:16px"><span style="font-size:14px;color:#8A8A86">06</span><h2 style="margin:0;font-weight:400;font-size:32px">Контент</h2></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:6px">
+
+      <div style="background:#181818;border-radius:32px;padding:24px;display:flex;flex-direction:column;gap:16px">
+        <div style="font-size:13px;color:#8A8A86">Чип-статус · лента с горизонтальным скроллом</div>
+        <div style="display:flex;gap:6px;overflow:hidden">
+          <div style="flex-shrink:0;display:flex;align-items:center;gap:12px;background:#343434;border-radius:999px;padding:0 24px 0 20px;height:72px;box-sizing:border-box"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#F4F4F2" stroke-width="1.5"><path d="M12 3l7 3v6c0 4-3 7-7 9-4-2-7-5-7-9V6z"></path><circle cx="12" cy="11" r="2"></circle></svg><div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:17px">Security</span><span style="font-size:13px;color:#D4F75F">All Closed</span></div></div>
+          <div style="flex-shrink:0;display:flex;align-items:center;gap:12px;background:#343434;border-radius:999px;padding:0 24px 0 20px;height:72px;box-sizing:border-box"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#F4F4F2" stroke-width="1.5"><path d="M7 4h10l2 8H5zM12 12v6M9 20h6"></path></svg><div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:17px">Lights</span><span style="font-size:13px;color:#F7C75F">2 On</span></div></div>
+          <div style="flex-shrink:0;display:flex;align-items:center;gap:12px;background:#343434;border-radius:999px;padding:0 24px 0 20px;height:72px;box-sizing:border-box"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#F4F4F2" stroke-width="1.5"><circle cx="12" cy="12" r="8"></circle><circle cx="12" cy="12" r="3"></circle></svg><div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:17px">Climate</span><span style="font-size:13px;color:#D4F75F">22°</span></div></div>
+        </div>
+      </div>
+
+      <div style="background:#181818;border-radius:32px;padding:24px;display:flex;flex-direction:column;gap:16px">
+        <div style="font-size:13px;color:#8A8A86">Полоса-сводка · 3 показателя</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;background:#2C2C2C;border-radius:999px;height:80px;padding:0 26px;gap:12px">
+          <div style="display:flex;align-items:flex-start;gap:6px;font-weight:300"><span style="font-size:44px;line-height:1">12</span><span style="font-size:13px;line-height:1.15;margin-top:3px">Total<br>Devices</span></div>
+          <div style="display:flex;align-items:flex-start;gap:6px;font-weight:300"><span style="font-size:44px;line-height:1">4</span><span style="font-size:13px;line-height:1.15;margin-top:3px">Active<br>Devices</span></div>
+          <div style="display:flex;align-items:flex-start;gap:6px;font-weight:300"><span style="font-size:44px;line-height:1">3</span><span style="font-size:13px;line-height:1.15;margin-top:3px">Scenarios</span></div>
+        </div>
+      </div>
+
+      <div style="background:#181818;border-radius:32px;padding:24px;display:flex;flex-direction:column;gap:16px">
+        <div style="font-size:13px;color:#8A8A86">Карточка-устройство · fill.1 / inverse</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          <div style="background:#2C2C2C;border-radius:32px;padding:20px;height:220px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between">
+            <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:22px;line-height:1.15">Humidifier</span><span style="font-size:13px;color:#D4F75F">Dyson TP09</span></div>
+            <div style="display:flex;align-items:flex-start;gap:3px;font-weight:300;justify-content:center"><span style="font-size:64px;line-height:1;letter-spacing:-.03em">54</span><span style="font-size:18px;margin-top:4px">%</span></div>
+            <div style="height:36px;border-radius:999px;background:#D4F75F;display:flex;justify-content:flex-end;padding:3px;box-sizing:border-box"><div style="width:30px;height:30px;border-radius:50%;background:#3C4423"></div></div>
+          </div>
+          <div style="background:#F4F4F2;color:#111111;border-radius:32px;padding:20px;height:220px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between">
+            <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:22px;line-height:1.15">Vacuum Cleaner</span><span style="font-size:13px;color:#5E5E5A">AENO RC2S</span></div>
+            <div style="display:flex;align-items:center;gap:6px"><div style="display:flex;align-items:center;justify-content:center;background:#E8E8E4;border-radius:999px;height:44px;padding:0 12px;font-size:13px">58%</div><div style="width:44px;height:44px;border-radius:50%;background:#111111;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F4F4F2" stroke-width="1.5"><path d="M12 4v8M7 6.5a7 7 0 1010 0"></path></svg></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:#181818;border-radius:32px;padding:24px;display:flex;flex-direction:column;gap:16px">
+        <div style="font-size:13px;color:#8A8A86">Карточка с фото · метка-стекло, цифры поверх скрима</div>
+        <div style="position:relative;height:200px;border-radius:32px;background:#5D5D5D;overflow:hidden">
+          <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(24,24,24,0) 45%,rgba(24,24,24,.85) 100%)"></div>
+          <div style="position:absolute;top:14px;left:14px;background:rgba(228,224,218,.82);color:#111111;border-radius:999px;padding:12px 22px;font-size:17px">Kitchen</div>
+          <div style="position:absolute;left:20px;right:20px;bottom:18px;display:flex;justify-content:space-between;align-items:flex-end">
+            <div style="display:flex;align-items:flex-start;gap:2px;font-weight:300;color:#D4F75F"><span style="font-size:44px;line-height:1">22</span><span style="font-size:13px">°C</span></div>
+            <div style="display:flex;align-items:flex-start;gap:4px;font-weight:300"><span style="font-size:44px;line-height:1">3</span><span style="font-size:13px">Scenarios</span></div>
+            <div style="display:flex;align-items:flex-start;gap:4px;font-weight:300"><span style="font-size:44px;line-height:1">25</span><span style="font-size:13px">Devices</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:#181818;border-radius:32px;padding:24px;display:flex;flex-direction:column;gap:16px">
+        <div style="font-size:13px;color:#8A8A86">Список в карточке · строка 60, разделитель с отступом 20</div>
+        <div style="background:#2C2C2C;border-radius:32px;overflow:hidden">
+          <div style="display:flex;align-items:center;justify-content:space-between;height:60px;padding:0 20px"><span style="font-size:17px">Уведомления</span><div style="width:64px;height:36px;border-radius:999px;background:#D4F75F;display:flex;justify-content:flex-end;padding:3px;box-sizing:border-box"><div style="width:30px;height:30px;border-radius:50%;background:#3C4423"></div></div></div>
+          <div style="height:1px;background:#3A3A3A;margin-left:20px"></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;height:60px;padding:0 20px"><span style="font-size:17px">Единицы</span><div style="display:flex;align-items:center;gap:6px;color:#A3A39F;font-size:17px">°C<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A3A39F" stroke-width="1.5"><path d="M9 6l6 6-6 6"></path></svg></div></div>
+          <div style="height:1px;background:#3A3A3A;margin-left:20px"></div>
+          <div style="display:flex;align-items:center;height:60px;padding:0 20px"><span style="font-size:17px;color:#FF7A66">Удалить комнату</span></div>
+        </div>
+      </div>
+
+      <div style="background:#181818;border-radius:32px;padding:24px;display:flex;flex-direction:column;gap:16px">
+        <div style="font-size:13px;color:#8A8A86">Пустое состояние</div>
+        <div style="background:#2C2C2C;border-radius:32px;padding:28px 24px;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center">
+          <div style="width:54px;height:54px;border-radius:50%;background:#343434;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A3A39F" stroke-width="1.5"><rect x="4" y="4" width="7" height="7" rx="2"></rect><rect x="13" y="4" width="7" height="7" rx="2"></rect><rect x="4" y="13" width="7" height="7" rx="2"></rect><path d="M16.5 13v7M13 16.5h7"></path></svg></div>
+          <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:17px">Пока пусто</span><span style="font-size:15px;color:#A3A39F">Заголовок 17, пояснение 15, одна кнопка</span></div>
+          <div style="height:44px;padding:0 20px;border-radius:999px;background:#D4F75F;color:#111111;display:flex;align-items:center;font-size:15px">Добавить</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="nav" data-screen-label="07 Навигация и слои" style="display:flex;flex-direction:column;gap:24px">
+    <div style="display:flex;align-items:baseline;gap:16px"><span style="font-size:14px;color:#8A8A86">07</span><h2 style="margin:0;font-weight:400;font-size:32px">Навигация и слои</h2></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:6px">
+
+      <div style="background:#181818;border-radius:32px;padding:24px;display:flex;flex-direction:column;gap:20px">
+        <div style="font-size:13px;color:#8A8A86">Навбар · корневой / вложенный</div>
+        <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:34px">Rooms</span><div style="display:flex;gap:6px"><div style="width:54px;height:54px;border-radius:50%;background:#2C2C2C;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F4F4F2" stroke-width="1.5"><circle cx="12" cy="12" r="3"></circle><path d="M12 3l7.8 4.5v9L12 21l-7.8-4.5v-9z"></path></svg></div><div style="width:54px;height:54px;border-radius:50%;background:#2C2C2C;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#D4F75F" stroke-width="1.5"><path d="M12 5v14M5 12h14"></path></svg></div></div></div>
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div style="display:flex;justify-content:space-between;align-items:center"><div style="width:54px;height:54px;border-radius:50%;background:#2C2C2C;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F4F4F2" stroke-width="1.5"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg></div><div style="width:54px;height:54px;border-radius:50%;background:#2C2C2C;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F4F4F2" stroke-width="1.5"><circle cx="12" cy="12" r="3"></circle><path d="M12 3l7.8 4.5v9L12 21l-7.8-4.5v-9z"></path></svg></div></div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:34px">Living room</span><span style="font-size:15px">Statistics</span></div>
+        </div>
+        <div style="font-size:12px;line-height:1.5;color:#A3A39F">Заголовок всегда крупный и не сжимается в inline: экран короткий, крупный заголовок — опора. Действия — круг-кнопки, не текст.</div>
+      </div>
+
+      <div style="background:#181818;border-radius:32px;padding:24px;display:flex;flex-direction:column;gap:20px">
+        <div style="font-size:13px;color:#8A8A86">Таб-бар · плавающий, отступ 16 от краёв</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(52,52,52,.72);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:999px;height:64px;padding:0 24px 0 0">
+          <div style="display:flex;align-items:center;gap:10px;background:#454545;border-radius:999px;padding:0 18px 0 0;height:64px"><div style="width:64px;height:64px;border-radius:50%;background:#808080;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="#D4F75F"><path d="M4 11l8-7 8 7v9H4z"></path></svg></div><span style="font-size:17px;color:#D4F75F">Dashboard</span></div>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#F4F4F2"><rect x="4" y="4" width="7" height="7" rx="1.5"></rect><rect x="13" y="4" width="7" height="7" rx="1.5"></rect><rect x="4" y="13" width="7" height="7" rx="1.5"></rect><rect x="13" y="13" width="7" height="7" rx="1.5"></rect></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#F4F4F2"><rect x="5" y="5" width="14" height="15" rx="3"></rect></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#F4F4F2"><path d="M12 3a6 6 0 016 6v5l2 3H4l2-3V9a6 6 0 016-6zM10 20h4"></path></svg>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:14px">
+          <div style="display:flex;justify-content:space-between"><span>Вкладок</span><span style="color:#A3A39F">3–5</span></div>
+          <div style="display:flex;justify-content:space-between"><span>Активная</span><span style="color:#A3A39F;text-align:right">круг gray.500 + пилюля gray.700 + подпись лаймом</span></div>
+          <div style="display:flex;justify-content:space-between"><span>Неактивные</span><span style="color:#A3A39F">только иконка, заливка</span></div>
+          <div style="display:flex;justify-content:space-between"><span>Подпись для VoiceOver</span><span style="color:#A3A39F">у каждой</span></div>
+        </div>
+      </div>
+
+      <div style="background:#181818;border-radius:32px;padding:24px;display:flex;flex-direction:column;gap:16px">
+        <div style="font-size:13px;color:#8A8A86">Шит · радиус 40, grabber, fill.1</div>
+        <div style="background:#050503;border-radius:28px;padding:40px 0 0;overflow:hidden">
+          <div style="background:#2C2C2C;border-radius:40px 40px 0 0;padding:10px 20px 24px;display:flex;flex-direction:column;gap:18px">
+            <div style="width:36px;height:5px;border-radius:3px;background:#5D5D5D;align-self:center"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:22px">Air Conditioner</span><div style="width:44px;height:44px;border-radius:50%;background:#343434;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F4F4F2" stroke-width="1.5"><path d="M6 6l12 12M18 6L6 18"></path></svg></div></div>
+            <div style="height:56px;border-radius:999px;background:#D4F75F;color:#111111;display:flex;align-items:center;justify-content:center;font-size:17px">Сохранить</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:#181818;border-radius:32px;padding:24px;display:flex;flex-direction:column;gap:16px">
+        <div style="font-size:13px;color:#8A8A86">Тост · inverse, над таб-баром, 3 с</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;background:#F4F4F2;color:#111111;border-radius:999px;height:56px;padding:0 6px 0 22px;gap:12px"><span style="font-size:15px">Сценарий запущен</span><div style="height:44px;padding:0 16px;border-radius:999px;background:#111111;color:#F4F4F2;display:flex;align-items:center;font-size:15px">Отменить</div></div>
+        <div style="display:flex;align-items:center;gap:12px;background:#343434;border-radius:999px;height:56px;padding:0 22px"><div style="width:8px;height:8px;border-radius:50%;background:#FF7A66"></div><span style="font-size:15px">Устройство не отвечает</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="a11y" data-screen-label="08 Доступность" style="display:flex;flex-direction:column;gap:24px">
+    <div style="display:flex;align-items:baseline;gap:16px"><span style="font-size:14px;color:#8A8A86">08</span><h2 style="margin:0;font-weight:400;font-size:32px">Доступность</h2></div>
+    <div style="background:#181818;border-radius:32px;padding:8px 24px;overflow-x:auto">
+      <div style="display:grid;grid-template-columns:minmax(220px,1.4fr) minmax(90px,.5fr) minmax(100px,.6fr) minmax(200px,1.3fr);gap:16px;padding:14px 0;border-bottom:1px solid #2C2C2C;font-size:12px;color:#8A8A86"><span>Пара</span><span>Контраст</span><span>WCAG</span><span>Допустимо для</span></div>
+      <div style="display:grid;grid-template-columns:minmax(220px,1.4fr) minmax(90px,.5fr) minmax(100px,.6fr) minmax(200px,1.3fr);gap:16px;padding:12px 0;border-bottom:1px solid #2C2C2C;font-size:14px"><span>text.primary / bg.primary</span><span>16.8</span><span style="color:#D4F75F">AAA</span><span style="color:#A3A39F">всё</span></div>
+      <div style="display:grid;grid-template-columns:minmax(220px,1.4fr) minmax(90px,.5fr) minmax(100px,.6fr) minmax(200px,1.3fr);gap:16px;padding:12px 0;border-bottom:1px solid #2C2C2C;font-size:14px"><span>text.secondary / fill.2</span><span>4.9</span><span style="color:#D4F75F">AA</span><span style="color:#A3A39F">подписи от 12</span></div>
+      <div style="display:grid;grid-template-columns:minmax(220px,1.4fr) minmax(90px,.5fr) minmax(100px,.6fr) minmax(200px,1.3fr);gap:16px;padding:12px 0;border-bottom:1px solid #2C2C2C;font-size:14px"><span>text.accent / bg.primary</span><span>14.9</span><span style="color:#D4F75F">AAA</span><span style="color:#A3A39F">статус, цифры</span></div>
+      <div style="display:grid;grid-template-columns:minmax(220px,1.4fr) minmax(90px,.5fr) minmax(100px,.6fr) minmax(200px,1.3fr);gap:16px;padding:12px 0;border-bottom:1px solid #2C2C2C;font-size:14px"><span>text.onAccent / fill.accent</span><span>16.2</span><span style="color:#D4F75F">AAA</span><span style="color:#A3A39F">кнопки</span></div>
+      <div style="display:grid;grid-template-columns:minmax(220px,1.4fr) minmax(90px,.5fr) minmax(100px,.6fr) minmax(200px,1.3fr);gap:16px;padding:12px 0;border-bottom:1px solid #2C2C2C;font-size:14px"><span>status.error / fill.1</span><span>6.3</span><span style="color:#D4F75F">AA</span><span style="color:#A3A39F">текст ошибки</span></div>
+      <div style="display:grid;grid-template-columns:minmax(220px,1.4fr) minmax(90px,.5fr) minmax(100px,.6fr) minmax(200px,1.3fr);gap:16px;padding:12px 0;border-bottom:1px solid #2C2C2C;font-size:14px"><span>text.accent (light) / #F2F2EF</span><span>6.2</span><span style="color:#D4F75F">AA</span><span style="color:#A3A39F">статус в светлой теме</span></div>
+      <div style="display:grid;grid-template-columns:minmax(220px,1.4fr) minmax(90px,.5fr) minmax(100px,.6fr) minmax(200px,1.3fr);gap:16px;padding:12px 0;font-size:14px"><span>fill.1 / bg.primary</span><span>1.3</span><span style="color:#F7C75F">не текст</span><span style="color:#A3A39F">граница карточки не несёт смысла</span></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:6px">
+      <div style="background:#181818;border-radius:28px;padding:20px;font-size:14px;line-height:1.5;color:#A3A39F"><span style="color:#F4F4F2">Increase Contrast.</span> Каждый fill поднимается на ступень, text.secondary → gray.200, у карточек появляется обводка 1 pt gray.600.</div>
+      <div style="background:#181818;border-radius:28px;padding:20px;font-size:14px;line-height:1.5;color:#A3A39F"><span style="color:#F4F4F2">Состояние не только цветом.</span> Включённый тумблер — ручка справа; статус-чип — слово рядом с цветом; ошибка — текст под полем.</div>
+      <div style="background:#181818;border-radius:28px;padding:20px;font-size:14px;line-height:1.5;color:#A3A39F"><span style="color:#F4F4F2">Цифры для VoiceOver.</span> «54 процента влажности», а не «54 %». Единица и подпись склеиваются в одну метку.</div>
+    </div>
+  </section>
+</div>
+</x-dc>
+</body>
+</html>

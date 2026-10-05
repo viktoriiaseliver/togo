@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet">
+<style>
+:root{--page:#050503;--bg:#181818;--f0:#1F1F1F;--f1:#2C2C2C;--f2:#343434;--f3:#454545;--trk:#2C2C2C;--sel:#5D5D5D;--tabc:#808080;--inv:#F4F4F2;--onInv:#111111;--t1:#F4F4F2;--t2:#A3A39F;--t3:#6D6D6D;--sep:#3A3A3A;--bd:transparent;--err:#FF7A66;--onErr:#111111;--errS:#4A2A22;--warn:#F7C75F;--warnS:#463614;--offT:#454545;--offK:#E4E4E0;--glass:rgba(52,52,52,.72);--scrim:rgba(0,0,0,.55);--ac:#D4F75F;--acP:#BFE34A;--acT:#D4F75F;--onAc:#111111;--acS:#3A4420;--acST:#D4F75F;--knob:#3C4423;--elev:inset 0 0 0 1px transparent;--elev2:inset 0 0 0 1px transparent;--fs-lt:34px;--fs-t1:28px;--fs-t2:22px;--fs-t3:20px;--fs-hl:17px;--fs-body:17px;--fs-call:16px;--fs-sub:15px;--fs-foot:13px;--fs-c1:12px;--fs-c2:11px;--fs-nxl:80px;--fs-nl:56px;--fs-nm:44px;--ic:24px;--ff:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro",system-ui,"Segoe UI",sans-serif;--fr:ui-rounded,"SF Pro Rounded",-apple-system,BlinkMacSystemFont,system-ui,sans-serif}
+body{margin:0;background:var(--page);font-family:var(--ff);color:var(--t1);-webkit-font-smoothing:antialiased}
+a{color:var(--acT)}a:hover{color:var(--ac)}
+button{font-family:inherit}
+input::placeholder{color:var(--t2)}
+</style>
+</helmet>
+<div style="max-width:1280px;margin:0 auto;padding:56px 24px 120px;display:flex;flex-direction:column;gap:88px">
+
+  <header style="display:flex;flex-direction:column;gap:14px">
+    <div style="font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--t2)">Мобильная дизайн-система · iOS 17+ · v0.2</div>
+    <h1 style="margin:0;font-weight:300;font-size:60px;line-height:1.02;letter-spacing:-.025em;font-family:var(--fr)">Graphite</h1>
+    <p style="margin:0;max-width:720px;font-size:16px;line-height:1.5;color:var(--t2);text-wrap:pretty">Атомная система: токены → атомы → молекулы → организмы → шаблоны. Компоненты ссылаются только на семантические токены, поэтому акцент, тема, размер текста и повышенный контраст меняются в одном месте. Переключатели — в панели Tweaks. Цвета пересчитываются под контраст автоматически.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">
+      <a href="#arch" style="text-decoration:none;background:var(--f1);color:var(--t1);border-radius:999px;padding:10px 16px;font-size:14px">00 Архитектура</a>
+      <a href="#tokens" style="text-decoration:none;background:var(--f1);color:var(--t1);border-radius:999px;padding:10px 16px;font-size:14px">01 Токены</a>
+      <a href="#atoms" style="text-decoration:none;background:var(--f1);color:var(--t1);border-radius:999px;padding:10px 16px;font-size:14px">02 Атомы</a>
+      <a href="#molecules" style="text-decoration:none;background:var(--f1);color:var(--t1);border-radius:999px;padding:10px 16px;font-size:14px">03 Молекулы</a>
+      <a href="#organisms" style="text-decoration:none;background:var(--f1);color:var(--t1);border-radius:999px;padding:10px 16px;font-size:14px">04 Организмы</a>
+      <a href="#patterns" style="text-decoration:none;background:var(--f1);color:var(--t1);border-radius:999px;padding:10px 16px;font-size:14px">05 Паттерны</a>
+      <a href="#sandbox" style="text-decoration:none;background:var(--ac);color:var(--onAc);border-radius:999px;padding:10px 16px;font-size:14px">06 Песочница</a>
+      <a href="#apple" style="text-decoration:none;background:var(--f1);color:var(--t1);border-radius:999px;padding:10px 16px;font-size:14px">07 Требования Apple</a>
+    </div>
+  </header>
+
+  <section id="arch" data-screen-label="00 Архитектура" style="display:flex;flex-direction:column;gap:24px">
+    <div style="display:flex;align-items:baseline;gap:16px"><span style="font-size:14px;color:var(--t2)">00</span><h2 style="margin:0;font-weight:400;font-size:32px">Архитектура</h2></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:6px">
+      <div style="background:var(--bg);border-radius:28px;padding:20px;display:flex;flex-direction:column;gap:8px;box-shadow:var(--elev)"><span style="font-size:12px;color:var(--t2)">Слой 1</span><span style="font-size:20px">Токены</span><span style="font-size:14px;line-height:1.5;color:var(--t2)">Примитивы (gray.850, lime.400) → семантика (fill.1, accent) → компонентные (button.primary.bg).</span></div>
+      <div style="background:var(--bg);border-radius:28px;padding:20px;display:flex;flex-direction:column;gap:8px;box-shadow:var(--elev)"><span style="font-size:12px;color:var(--t2)">Слой 2</span><span style="font-size:20px">Атомы</span><span style="font-size:14px;line-height:1.5;color:var(--t2)">Иконка, кнопка, круг-кнопка, тумблер, выбор, бейдж, поле, прогресс, скелетон.</span></div>
+      <div style="background:var(--bg);border-radius:28px;padding:20px;display:flex;flex-direction:column;gap:8px;box-shadow:var(--elev)"><span style="font-size:12px;color:var(--t2)">Слой 3</span><span style="font-size:20px">Молекулы</span><span style="font-size:14px;line-height:1.5;color:var(--t2)">Чип-статус, показатель, строка списка, сегмент, степпер, слайдер-действие, тост, поиск.</span></div>
+      <div style="background:var(--bg);border-radius:28px;padding:20px;display:flex;flex-direction:column;gap:8px;box-shadow:var(--elev)"><span style="font-size:12px;color:var(--t2)">Слой 4</span><span style="font-size:20px">Организмы</span><span style="font-size:14px;line-height:1.5;color:var(--t2)">Карточка, навбар, таб-бар, панель правки, шит, диалог, пустой экран.</span></div>
+      <div style="background:var(--bg);border-radius:28px;padding:20px;display:flex;flex-direction:column;gap:8px;box-shadow:var(--elev)"><span style="font-size:12px;color:var(--t2)">Слой 5</span><span style="font-size:20px">Шаблоны</span><span style="font-size:14px;line-height:1.5;color:var(--t2)">Экран-список, экран-деталь, форма. Проверяются на 320 и 390 pt.</span></div>
+    </div>
+    <div style="background:var(--bg);border-radius:28px;padding:20px 24px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:14px;box-shadow:var(--elev)">
+      <span style="color:var(--t2)">Пример цепочки:</span>
+      <span style="background:var(--f1);border-radius:999px;padding:8px 14px">lime.400</span><span style="color:var(--t2)">→</span>
+      <span style="background:var(--f1);border-radius:999px;padding:8px 14px">accent</span><span style="color:var(--t2)">→</span>
+      <span style="background:var(--f1);border-radius:999px;padding:8px 14px">button.primary.bg</span><span style="color:var(--t2)">→</span>
+      <span style="background:var(--ac);color:var(--onAc);border-radius:999px;padding:8px 14px">Сохранить</span>
+      <span style="color:var(--t2);flex-basis:100%;margin-top:4px">Правило: компонент не знает примитивов. В SwiftUI — Asset Catalog с вариантами Any / Dark / High Contrast + Color("accent").</span>
+    </div>
+  </section>
+
+  <section id="tokens" data-screen-label="01 Токены" style="display:flex;flex-direction:column;gap:28px">
+    <div style="display:flex;align-items:baseline;gap:16px"><span style="font-size:14px;color:var(--t2)">01</span><h2 style="margin:0;font-weight:400;font-size:32px">Токены</h2></div>
+
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:baseline"><h3 style="margin:0;font-weight:400;font-size:22px">Цвет · семантика</h3><span style="font-size:13px;color:var(--t2)">{{ themeLabel }}</span></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px">
+        <sc-for list="{{ tokens }}" as="t" hint-placeholder-count="12">
+          <div style="background:var(--bg);border-radius:24px;padding:10px;display:flex;flex-direction:column;gap:8px;box-shadow:var(--elev)">
+            <div style="height:56px;border-radius:16px;background:{{ t.css }};box-shadow:inset 0 0 0 1px var(--sep)"></div>
+            <div style="display:flex;flex-direction:column;gap:2px;padding:0 4px 4px"><span style="font-size:13px">{{ t.name }}</span><span style="font-size:12px;color:var(--t2)">{{ t.hex }}</span></div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:6px">
+        <div style="background:var(--bg);border-radius:24px;padding:18px 20px;font-size:14px;line-height:1.5;color:var(--t2);box-shadow:var(--elev)"><span style="color:var(--t1)">Акцент задаётся одним цветом.</span> Остальное выводится: onAccent — чёрный или белый, что контрастнее; accent.text затемняется или осветляется до 4.5:1 к фонам; knob — до 3:1 к акценту.</div>
+        <div style="background:var(--bg);border-radius:24px;padding:18px 20px;font-size:14px;line-height:1.5;color:var(--t2);box-shadow:var(--elev)"><span style="color:var(--t1)">Глубина = ступень.</span> bg → fill.1 → fill.2 → fill.3. Вложенный элемент на ступень светлее родителя (в светлой теме — карточки белые на сером).</div>
+        <div style="background:var(--bg);border-radius:24px;padding:18px 20px;font-size:14px;line-height:1.5;color:var(--t2);box-shadow:var(--elev)"><span style="color:var(--t1)">Акцент = состояние.</span> Заливка — только «включено» и одно главное действие на экране. Ошибка и предупреждение — только в статусах.</div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:baseline"><h3 style="margin:0;font-weight:400;font-size:22px">Контраст · считается живьём</h3><span style="font-size:14px;color:var(--acT)">{{ passLabel }}</span></div>
+      <div style="background:var(--bg);border-radius:28px;padding:6px 20px;overflow-x:auto;box-shadow:var(--elev)">
+        <div style="display:grid;grid-template-columns:44px minmax(150px,1.2fr) minmax(130px,1fr) 70px 64px 110px;gap:12px;padding:12px 0;border-bottom:1px solid var(--sep);font-size:12px;color:var(--t2);min-width:600px"><span>Вид</span><span>Текст / элемент</span><span>Фон</span><span>Ratio</span><span>Мин.</span><span>Итог</span></div>
+        <sc-for list="{{ contrast }}" as="c" hint-placeholder-count="10">
+          <div style="display:grid;grid-template-columns:44px minmax(150px,1.2fr) minmax(130px,1fr) 70px 64px 110px;gap:12px;padding:10px 0;border-bottom:1px solid var(--sep);font-size:14px;align-items:center;min-width:600px">
+            <div style="width:36px;height:28px;border-radius:999px;background:{{ c.bgCss }};color:{{ c.fgCss }};display:flex;align-items:center;justify-content:center;font-size:13px;box-shadow:inset 0 0 0 1px var(--sep)">Aa</div>
+            <span>{{ c.fg }}</span><span style="color:var(--t2)">{{ c.bg }}</span><span>{{ c.ratio }}</span><span style="color:var(--t2)">{{ c.min }}</span><span style="color:{{ c.okColor }}">{{ c.okText }}</span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="font-size:13px;color:var(--t2);max-width:760px">Текст 4.5:1 (AA), элементы интерфейса и крупный текст 3:1. Неактивные элементы по WCAG исключены. При «Повышенном контрасте» accent.text поднимается до 7:1, у карточек появляется обводка.</div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:baseline"><h3 style="margin:0;font-weight:400;font-size:22px">Шрифт · SF Pro + Dynamic Type</h3><span style="font-size:13px;color:var(--t2)">{{ dtLabel }}</span></div>
+      <div style="background:var(--bg);border-radius:28px;padding:6px 20px;box-shadow:var(--elev)">
+        <sc-for list="{{ typeRows }}" as="r" hint-placeholder-count="11">
+          <div style="display:grid;grid-template-columns:minmax(130px,190px) minmax(0,1fr);gap:16px;align-items:center;padding:14px 0;border-bottom:1px solid var(--sep)">
+            <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:13px">{{ r.name }}</span><span style="font-size:12px;color:var(--t2)">{{ r.swift }}</span><span style="font-size:12px;color:var(--t2)">{{ r.meta }}</span></div>
+            <div style="font-size:{{ r.fs }};font-weight:{{ r.fw }};font-family:{{ r.ff }};line-height:1.15;overflow-wrap:anywhere">{{ r.sample }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:6px">
+        <div style="background:var(--bg);border-radius:24px;padding:18px 20px;font-size:14px;line-height:1.5;color:var(--t2);box-shadow:var(--elev)"><span style="color:var(--t1)">Только системные стили.</span> .font(.body), .font(.title2) — размер меняется сам по настройке iPhone. Никаких .system(size:) для текста.</div>
+        <div style="background:var(--bg);border-radius:24px;padding:18px 20px;font-size:14px;line-height:1.5;color:var(--t2);box-shadow:var(--elev)"><span style="color:var(--t1)">Крупные цифры.</span> @ScaledMetric(relativeTo: .largeTitle) с потолком 150 %: дальше растёт подпись, а цифра не ломает экран 320.</div>
+        <div style="background:var(--bg);border-radius:24px;padding:18px 20px;font-size:14px;line-height:1.5;color:var(--t2);box-shadow:var(--elev)"><span style="color:var(--t1)">С AX1.</span> Горизонтальные ряды становятся колонкой (ViewThatFits / dynamicTypeSize.isAccessibilitySize), подпись уходит под цифру, лейбл активного таба скрывается.</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:6px">
+      <div style="background:var(--bg);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:12px;box-shadow:var(--elev)">
+        <span style="font-size:13px;color:var(--t2)">Отступы · шаг 4</span>
+        <div style="display:flex;flex-direction:column;gap:7px;font-size:13px">
+          <div style="display:grid;grid-template-columns:70px 1fr 28px;gap:10px;align-items:center"><span style="color:var(--t2)">space.1</span><div style="width:4px;height:10px;background:var(--ac);border-radius:2px"></div><span>4</span></div>
+          <div style="display:grid;grid-template-columns:70px 1fr 28px;gap:10px;align-items:center"><span style="color:var(--t2)">gap</span><div style="width:6px;height:10px;background:var(--ac);border-radius:2px"></div><span>6</span></div>
+          <div style="display:grid;grid-template-columns:70px 1fr 28px;gap:10px;align-items:center"><span style="color:var(--t2)">space.2</span><div style="width:8px;height:10px;background:var(--ac);border-radius:2px"></div><span>8</span></div>
+          <div style="display:grid;grid-template-columns:70px 1fr 28px;gap:10px;align-items:center"><span style="color:var(--t2)">space.3</span><div style="width:12px;height:10px;background:var(--ac);border-radius:2px"></div><span>12</span></div>
+          <div style="display:grid;grid-template-columns:70px 1fr 28px;gap:10px;align-items:center"><span style="color:var(--t2)">space.4</span><div style="width:16px;height:10px;background:var(--ac);border-radius:2px"></div><span>16</span></div>
+          <div style="display:grid;grid-template-columns:70px 1fr 28px;gap:10px;align-items:center"><span style="color:var(--t2)">space.5</span><div style="width:20px;height:10px;background:var(--ac);border-radius:2px"></div><span>20</span></div>
+          <div style="display:grid;grid-template-columns:70px 1fr 28px;gap:10px;align-items:center"><span style="color:var(--t2)">space.6</span><div style="width:24px;height:10px;background:var(--ac);border-radius:2px"></div><span>24</span></div>
+          <div style="display:grid;grid-template-columns:70px 1fr 28px;gap:10px;align-items:center"><span style="color:var(--t2)">space.8</span><div style="width:32px;height:10px;background:var(--ac);border-radius:2px"></div><span>32</span></div>
+        </div>
+      </div>
+      <div style="background:var(--bg);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:9px;font-size:14px;box-shadow:var(--elev)">
+        <span style="font-size:13px;color:var(--t2)">Ширина экрана</span>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>Минимум</span><span style="color:var(--t2)">320 pt · SE 1, Zoomed</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>Compact</span><span style="color:var(--t2)">320–374 · поля 16</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>Regular</span><span style="color:var(--t2)">375–440 · поля 20</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>Колонки</span><span style="color:var(--t2)">2 при ≥ 2×140, иначе 1</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>Зазор карточек</span><span style="color:var(--t2)">6</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>Между секциями</span><span style="color:var(--t2)">32</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>Под таб-бар</span><span style="color:var(--t2)">64 + 16 + safe area</span></div>
+      </div>
+      <div style="background:var(--bg);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:12px;box-shadow:var(--elev)">
+        <span style="font-size:13px;color:var(--t2)">Радиусы · концентричность</span>
+        <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
+          <div style="display:flex;flex-direction:column;gap:6px;align-items:center"><div style="width:56px;height:56px;border-radius:36px 36px 0 0;background:var(--f1)"></div><span style="font-size:12px;color:var(--t2)">sheet 36</span></div>
+          <div style="display:flex;flex-direction:column;gap:6px;align-items:center"><div style="width:56px;height:56px;border-radius:28px;background:var(--f1)"></div><span style="font-size:12px;color:var(--t2)">card 28</span></div>
+          <div style="display:flex;flex-direction:column;gap:6px;align-items:center"><div style="width:56px;height:56px;border-radius:16px;background:var(--f1)"></div><span style="font-size:12px;color:var(--t2)">inner 16</span></div>
+          <div style="display:flex;flex-direction:column;gap:6px;align-items:center"><div style="width:56px;height:32px;border-radius:999px;background:var(--f1)"></div><span style="font-size:12px;color:var(--t2)">pill</span></div>
+        </div>
+        <span style="font-size:13px;line-height:1.5;color:var(--t2)">inner = outer − padding. Элементы ниже 64 pt — пилюля или круг.</span>
+      </div>
+      <div style="background:var(--bg);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:9px;font-size:14px;box-shadow:var(--elev)">
+        <span style="font-size:13px;color:var(--t2)">Размеры (минимум, растут с текстом)</span>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>Зона касания</span><span style="color:var(--t2)">44 × 44</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>Кнопка</span><span style="color:var(--t2)">52</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>Круг-кнопка L / M</span><span style="color:var(--t2)">52 / 44</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>Строка списка</span><span style="color:var(--t2)">64</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>Таб-бар</span><span style="color:var(--t2)">64</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>Тумблер</span><span style="color:var(--t2)">64 × 36</span></div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:6px">
+      <div style="background:var(--bg);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--elev)">
+        <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><span style="font-size:13px;color:var(--t2)">Иконки · в коде SF Symbols, в макете Material Symbols Rounded 300</span></div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:6px">
+          <sc-for list="{{ icons }}" as="i" hint-placeholder-count="12">
+            <div style="background:var(--f1);border-radius:20px;padding:12px;display:flex;flex-direction:column;gap:8px">
+              <span style="font-family:'Material Symbols Rounded';font-size:24px;line-height:1;font-variation-settings:'wght' 300">{{ i.m }}</span>
+              <span style="font-size:12px;color:var(--t2);overflow-wrap:anywhere">{{ i.sf }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="background:var(--bg);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:10px;font-size:14px;line-height:1.5;color:var(--t2);box-shadow:var(--elev)">
+        <span style="font-size:13px">Почему SF Symbols</span>
+        <span>Встроены в iOS, бесплатны, сами масштабируются с Dynamic Type и выравниваются по базовой линии текста. Material на iOS требует шрифт в бандле и ручного масштаба.</span>
+        <span>Контур — по умолчанию. Заливка (.fill) — только выбранное состояние: активный таб, отмеченный пункт.</span>
+        <span>Размер: .imageScale(.medium) рядом с body, .large в круг-кнопке. Вес символа = вес соседнего текста.</span>
+        <span>У иконки без подписи — accessibilityLabel.</span>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:6px">
+      <div style="background:var(--bg);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:9px;font-size:14px;box-shadow:var(--elev)">
+        <span style="font-size:13px;color:var(--t2)">Материал</span>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>Тени</span><span style="color:var(--t2);text-align:right">тёмная — нет; светлая — elev (карточки) и elev2 (плавающие)</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>Стекло</span><span style="color:var(--t2);text-align:right">только плавающие: таб-бар, тост, метка над фото</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>SwiftUI</span><span style="color:var(--t2);text-align:right">.ultraThinMaterial / .glassEffect() (iOS 26)</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>Reduce Transparency</span><span style="color:var(--t2)">стекло → fill.2</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>Скрим</span><span style="color:var(--t2)">bg.primary 0 → 85 %</span></div>
+      </div>
+      <div style="background:var(--bg);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:9px;font-size:14px;box-shadow:var(--elev)">
+        <span style="font-size:13px;color:var(--t2)">Движение и хаптика</span>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>Нажатие</span><span style="color:var(--t2)">scale 0.96 · 0.15 s</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>Тумблер, сегмент</span><span style="color:var(--t2)">.snappy · .selection</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>Свайп, порог</span><span style="color:var(--t2)">.impact(.light)</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>Удаление</span><span style="color:var(--t2)">строка схлопывается 0.3 · .warning</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>Готово</span><span style="color:var(--t2)">.success</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>Цифры</span><span style="color:var(--t2)">.contentTransition(.numericText())</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span>Reduce Motion</span><span style="color:var(--t2)">только прозрачность 0.2</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="atoms" data-screen-label="02 Атомы" style="display:flex;flex-direction:column;gap:20px">
+    <div style="display:flex;align-items:baseline;gap:16px"><span style="font-size:14px;color:var(--t2)">02</span><h2 style="margin:0;font-weight:400;font-size:32px">Атомы</h2></div>
+
+    <div style="background:var(--bg);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:16px;box-shadow:var(--elev)">
+      <span style="font-size:13px;color:var(--t2)">Кнопка · default / pressed / focus / disabled / loading</span>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px 8px;align-items:end">
+        <div style="display:flex;flex-direction:column;gap:6px"><div style="min-height:52px;border-radius:999px;background:var(--ac);color:var(--onAc);display:flex;align-items:center;justify-content:center;padding:8px 20px;box-sizing:border-box;font-size:var(--fs-body);text-align:center">Сохранить</div><span style="font-size:12px;color:var(--t2)">primary</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px"><div style="min-height:52px;border-radius:999px;background:var(--acP);color:var(--onAc);display:flex;align-items:center;justify-content:center;padding:8px 20px;box-sizing:border-box;font-size:var(--fs-body);transform:scale(.96)">Сохранить</div><span style="font-size:12px;color:var(--t2)">pressed</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px"><div style="min-height:52px;border-radius:999px;background:var(--ac);color:var(--onAc);display:flex;align-items:center;justify-content:center;padding:8px 20px;box-sizing:border-box;font-size:var(--fs-body);box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--t1)">Сохранить</div><span style="font-size:12px;color:var(--t2)">focus</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px"><div style="min-height:52px;border-radius:999px;background:var(--f1);color:var(--t3);display:flex;align-items:center;justify-content:center;padding:8px 20px;box-sizing:border-box;font-size:var(--fs-body)">Сохранить</div><span style="font-size:12px;color:var(--t2)">disabled</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px"><div style="min-height:52px;border-radius:999px;background:var(--ac);color:var(--onAc);display:flex;align-items:center;justify-content:center;padding:8px 20px;box-sizing:border-box"><span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1;font-variation-settings:'wght' 400">progress_activity</span></div><span style="font-size:12px;color:var(--t2)">loading</span></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px 8px;align-items:end">
+        <div style="display:flex;flex-direction:column;gap:6px"><div style="min-height:52px;border-radius:999px;background:var(--f2);color:var(--t1);display:flex;align-items:center;justify-content:center;padding:8px 20px;box-sizing:border-box;font-size:var(--fs-body)">Отмена</div><span style="font-size:12px;color:var(--t2)">secondary</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px"><div style="min-height:52px;border-radius:999px;background:var(--f3);color:var(--t1);display:flex;align-items:center;justify-content:center;padding:8px 20px;box-sizing:border-box;font-size:var(--fs-body);transform:scale(.96)">Отмена</div><span style="font-size:12px;color:var(--t2)">pressed</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px"><div style="min-height:52px;border-radius:999px;background:var(--f2);color:var(--err);display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 20px;box-sizing:border-box;font-size:var(--fs-body)"><span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1;font-variation-settings:'wght' 300">delete</span>Удалить</div><span style="font-size:12px;color:var(--t2)">destructive</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px"><div style="min-height:52px;border-radius:999px;background:var(--err);color:var(--onErr);display:flex;align-items:center;justify-content:center;padding:8px 20px;box-sizing:border-box;font-size:var(--fs-body)">Удалить</div><span style="font-size:12px;color:var(--t2)">destructive.filled · только в свайпе</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px"><div style="min-height:44px;display:flex;align-items:center;justify-content:center;font-size:var(--fs-body);color:var(--acT)">Изменить</div><span style="font-size:12px;color:var(--t2)">plain</span></div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:6px">
+      <div style="background:var(--bg);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--elev)">
+        <span style="font-size:13px;color:var(--t2)">Круг-кнопка · default / pressed / selected / disabled / M</span>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <div style="width:52px;height:52px;border-radius:50%;background:var(--f1);box-shadow:var(--elev);display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1;font-variation-settings:'wght' 300">settings</span></div>
+          <div style="width:52px;height:52px;border-radius:50%;background:var(--f3);display:flex;align-items:center;justify-content:center;transform:scale(.94)"><span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1;font-variation-settings:'wght' 300">settings</span></div>
+          <div style="width:52px;height:52px;border-radius:50%;background:var(--sel);display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 1px var(--sep)"><span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1;font-variation-settings:'FILL' 1,'wght' 300;color:var(--acT)">grid_view</span></div>
+          <div style="width:52px;height:52px;border-radius:50%;background:var(--f0);display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1;font-variation-settings:'wght' 300;color:var(--t3)">add</span></div>
+          <div style="width:44px;height:44px;border-radius:50%;background:var(--f1);box-shadow:var(--elev);display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;font-variation-settings:'wght' 300">close</span></div>
+        </div>
+      </div>
+      <div style="background:var(--bg);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--elev)">
+        <span style="font-size:13px;color:var(--t2)">Тумблер · on / off / disabled</span>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <div style="width:64px;height:36px;border-radius:999px;background:var(--ac);display:flex;justify-content:flex-end;padding:3px;box-sizing:border-box"><div style="width:30px;height:30px;border-radius:50%;background:var(--knob)"></div></div>
+          <div style="width:64px;height:36px;border-radius:999px;background:var(--offT);display:flex;padding:3px;box-sizing:border-box"><div style="width:30px;height:30px;border-radius:50%;background:var(--offK)"></div></div>
+          <div style="width:64px;height:36px;border-radius:999px;background:var(--ac);opacity:.4;display:flex;justify-content:flex-end;padding:3px;box-sizing:border-box"><div style="width:30px;height:30px;border-radius:50%;background:var(--knob)"></div></div>
+          <div style="width:64px;height:36px;border-radius:999px;background:var(--offT);opacity:.4;display:flex;padding:3px;box-sizing:border-box"><div style="width:30px;height:30px;border-radius:50%;background:var(--offK)"></div></div>
+          <div style="width:104px;height:36px;border-radius:999px;background:var(--ac);display:flex;justify-content:flex-end;padding:3px;box-sizing:border-box"><div style="width:30px;height:30px;border-radius:50%;background:var(--knob)"></div></div>
+        </div>
+        <span style="font-size:12px;color:var(--t2)">Состояние читается по положению ручки, не только по цвету. Зона касания 64 × 44.</span>
+      </div>
+      <div style="background:var(--bg);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--elev)">
+        <span style="font-size:13px;color:var(--t2)">Выбор (режим правки) · off / on / disabled · Бейдж</span>
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+          <div style="width:26px;height:26px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--t2)"></div>
+          <div style="width:26px;height:26px;border-radius:50%;background:var(--ac);display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:18px;line-height:1;font-variation-settings:'wght' 500;color:var(--onAc)">check</span></div>
+          <div style="width:26px;height:26px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--t3);opacity:.5"></div>
+          <span style="min-height:28px;padding:0 12px;border-radius:999px;background:var(--acS);color:var(--acST);display:inline-flex;align-items:center;font-size:var(--fs-foot)">В сети</span>
+          <span style="min-height:28px;padding:0 12px;border-radius:999px;background:var(--f2);color:var(--t1);display:inline-flex;align-items:center;font-size:var(--fs-foot)">58 %</span>
+          <span style="min-height:28px;padding:0 12px;border-radius:999px;background:var(--warnS);color:var(--warn);display:inline-flex;align-items:center;font-size:var(--fs-foot)">Обновляется</span>
+          <span style="min-height:28px;padding:0 12px;border-radius:999px;background:var(--errS);color:var(--err);display:inline-flex;align-items:center;font-size:var(--fs-foot)">Нет связи</span>
+        </div>
+      </div>
+      <div style="background:var(--bg);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--elev)">
+        <span style="font-size:13px;color:var(--t2)">Поле · пусто / фокус / заполнено / ошибка / disabled</span>
+        <div style="min-height:52px;border-radius:999px;background:var(--f1);display:flex;align-items:center;padding:0 20px;font-size:var(--fs-body);color:var(--t2)">Название</div>
+        <div style="min-height:52px;border-radius:999px;background:var(--f2);display:flex;align-items:center;padding:0 20px;font-size:var(--fs-body);box-shadow:inset 0 0 0 2px var(--ac)">Кух<span style="width:2px;height:1.2em;background:var(--ac);border-radius:1px"></span></div>
+        <div style="min-height:52px;border-radius:999px;background:var(--f1);display:flex;align-items:center;justify-content:space-between;padding:0 8px 0 20px;font-size:var(--fs-body)">Кухня<span style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:var(--t2);font-variation-settings:'FILL' 1,'wght' 300">cancel</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px"><div style="min-height:52px;border-radius:999px;background:var(--f1);display:flex;align-items:center;padding:0 20px;font-size:var(--fs-body);box-shadow:inset 0 0 0 2px var(--err)"></div><span style="font-size:var(--fs-foot);color:var(--err);padding-left:20px;display:flex;gap:6px;align-items:center"><span style="font-family:'Material Symbols Rounded';font-size:16px;line-height:1">error</span>Название не может быть пустым</span></div>
+        <div style="min-height:52px;border-radius:999px;background:var(--f0);display:flex;align-items:center;padding:0 20px;font-size:var(--fs-body);color:var(--t3)">Только чтение</div>
+      </div>
+      <div style="background:var(--bg);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--elev)">
+        <span style="font-size:13px;color:var(--t2)">Прогресс 0 / 60 / 100 · Скелетон · Разделитель · Ручка шита</span>
+        <div style="height:8px;border-radius:999px;background:var(--f1)"></div>
+        <div style="height:8px;border-radius:999px;background:var(--f1);overflow:hidden"><div style="width:60%;height:100%;background:var(--ac);border-radius:999px"></div></div>
+        <div style="height:8px;border-radius:999px;background:var(--ac)"></div>
+        <div style="display:flex;gap:10px;align-items:center"><div style="width:44px;height:44px;border-radius:50%;background:var(--f1)"></div><div style="flex:1;display:flex;flex-direction:column;gap:8px"><div style="height:12px;width:70%;border-radius:999px;background:var(--f1)"></div><div style="height:10px;width:40%;border-radius:999px;background:var(--f1)"></div></div></div>
+        <div style="height:1px;background:var(--sep)"></div>
+        <div style="width:36px;height:5px;border-radius:3px;background:var(--t3);align-self:center"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="molecules" data-screen-label="03 Молекулы" style="display:flex;flex-direction:column;gap:20px">
+    <div style="display:flex;align-items:baseline;gap:16px"><span style="font-size:14px;color:var(--t2)">03</span><h2 style="margin:0;font-weight:400;font-size:32px">Молекулы</h2></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:6px">
+
+      <div style="background:var(--bg);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:12px;box-shadow:var(--elev)">
+        <span style="font-size:13px;color:var(--t2)">Чип-статус · ок / внимание / ошибка / выкл / нет данных / загрузка</span>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:10px;background:var(--f2);border-radius:999px;padding:12px 20px 12px 16px;min-height:64px;box-sizing:border-box"><span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1;font-variation-settings:'wght' 300">shield</span><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:var(--fs-body)">Охрана</span><span style="font-size:var(--fs-foot);color:var(--acT)">Всё закрыто</span></div></div>
+          <div style="display:flex;align-items:center;gap:10px;background:var(--f2);border-radius:999px;padding:12px 20px 12px 16px;min-height:64px;box-sizing:border-box"><span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1;font-variation-settings:'wght' 300">light</span><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:var(--fs-body)">Свет</span><span style="font-size:var(--fs-foot);color:var(--warn)">2 включено</span></div></div>
+          <div style="display:flex;align-items:center;gap:10px;background:var(--f2);border-radius:999px;padding:12px 20px 12px 16px;min-height:64px;box-sizing:border-box"><span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1;font-variation-settings:'wght' 300">videocam</span><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:var(--fs-body)">Камеры</span><span style="font-size:var(--fs-foot);color:var(--err)">Нет связи</span></div></div>
+          <div style="display:flex;align-items:center;gap:10px;background:var(--f1);border-radius:999px;padding:12px 20px 12px 16px;min-height:64px;box-sizing:border-box"><span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1;font-variation-settings:'wght' 300;color:var(--t2)">mode_fan</span><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:var(--fs-body);color:var(--t2)">Климат</span><span style="font-size:var(--fs-foot);color:var(--t2)">Выключено</span></div></div>
+          <div style="display:flex;align-items:center;gap:10px;background:var(--f1);border-radius:999px;padding:12px 20px 12px 16px;min-height:64px;box-sizing:border-box"><span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1;font-variation-settings:'wght' 300;color:var(--t2)">water_drop</span><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:var(--fs-body)">Вода</span><span style="font-size:var(--fs-foot);color:var(--t2)">Нет данных</span></div></div>
+          <div style="display:flex;align-items:center;gap:10px;background:var(--f1);border-radius:999px;padding:12px 20px 12px 16px;min-height:64px;width:150px;box-sizing:border-box"><div style="width:24px;height:24px;border-radius:50%;background:var(--f2)"></div><div style="flex:1;display:flex;flex-direction:column;gap:6px"><div style="height:10px;border-radius:999px;background:var(--f2)"></div><div style="height:8px;width:60%;border-radius:999px;background:var(--f2)"></div></div></div>
+        </div>
+      </div>
+
+      <div style="background:var(--bg);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:12px;box-shadow:var(--elev)">
+        <span style="font-size:13px;color:var(--t2)">Показатель · значение / пусто / AX (подпись под цифрой)</span>
+        <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start">
+          <div style="display:flex;align-items:flex-start;gap:3px;font-family:var(--fr);font-weight:300"><span style="font-size:var(--fs-nl);line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums">54</span><span style="font-size:var(--fs-t3);margin-top:4px">%</span></div>
+          <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:var(--fs-nl);line-height:1;font-family:var(--fr);font-weight:300;color:var(--t3)">—</span><span style="font-size:var(--fs-foot);color:var(--t2)">Нет данных</span></div>
+          <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:var(--fs-nm);line-height:1;font-family:var(--fr);font-weight:300">12</span><span style="font-size:var(--fs-foot);color:var(--t2)">Всего устройств</span></div>
+        </div>
+        <span style="font-size:12px;color:var(--t2)">Нет значения — прочерк и причина, никогда не «0». VoiceOver: «54 процента влажности».</span>
+      </div>
+
+      <div style="background:var(--bg);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:12px;box-shadow:var(--elev)">
+        <span style="font-size:13px;color:var(--t2)">Строка списка · переход / значение / тумблер / правка / свайп / удаление</span>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;align-items:center;gap:12px;min-height:64px;padding:10px 16px;background:var(--f1);border-radius:24px;box-sizing:border-box;box-shadow:var(--elev)"><span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1;font-variation-settings:'wght' 300">kitchen</span><div style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-size:var(--fs-body)">Кухня</span><span style="font-size:var(--fs-foot);color:var(--t2)">3 устройства</span></div><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:var(--t2)">chevron_right</span></div>
+          <div style="display:flex;align-items:center;gap:12px;min-height:64px;padding:10px 16px;background:var(--f1);border-radius:24px;box-sizing:border-box;box-shadow:var(--elev)"><span style="flex:1;font-size:var(--fs-body)">Единицы</span><span style="font-size:var(--fs-body);color:var(--t2)">°C</span><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:var(--t2)">chevron_right</span></div>
+          <div style="display:flex;align-items:center;gap:12px;min-height:64px;padding:10px 16px;background:var(--f1);border-radius:24px;box-sizing:border-box;box-shadow:var(--elev)"><span style="flex:1;font-size:var(--fs-body)">Уведомления</span><div style="width:64px;height:36px;border-radius:999px;background:var(--ac);display:flex;justify-content:flex-end;padding:3px;box-sizing:border-box;flex-shrink:0"><div style="width:30px;height:30px;border-radius:50%;background:var(--knob)"></div></div></div>
+          <div style="display:flex;align-items:center;gap:12px;min-height:64px;padding:10px 16px;background:var(--f1);border-radius:24px;box-sizing:border-box;box-shadow:var(--elev)"><div style="width:26px;height:26px;border-radius:50%;background:var(--ac);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-family:'Material Symbols Rounded';font-size:18px;line-height:1;font-variation-settings:'wght' 500;color:var(--onAc)">check</span></div><div style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-size:var(--fs-body)">Спальня</span><span style="font-size:var(--fs-foot);color:var(--t2)">выбрано</span></div><span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1;color:var(--t2)">drag_indicator</span></div>
+          <div style="position:relative;border-radius:24px;overflow:hidden;min-height:64px">
+            <div style="position:absolute;top:0;bottom:0;right:0;width:144px;display:flex"><div style="width:72px;background:var(--f3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:var(--fs-c1)"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">edit</span>Изменить</div><div style="width:72px;background:var(--err);color:var(--onErr);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:var(--fs-c1)"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">delete</span>Удалить</div></div>
+            <div style="position:relative;display:flex;align-items:center;gap:12px;min-height:64px;padding:10px 16px;background:var(--f1);border-radius:24px;box-sizing:border-box;transform:translateX(-144px)"><span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1;font-variation-settings:'wght' 300">bed</span><div style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-size:var(--fs-body)">Спальня</span><span style="font-size:var(--fs-foot);color:var(--t2)">свайп влево</span></div></div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:center;min-height:64px;padding:10px 16px;background:var(--f1);border-radius:24px;box-sizing:border-box;font-size:var(--fs-body);color:var(--err)">Удалить комнату</div>
+        </div>
+      </div>
+
+      <div style="background:var(--bg);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--elev)">
+        <span style="font-size:13px;color:var(--t2)">Сегмент · текст / иконки / disabled</span>
+        <div style="display:flex;background:var(--trk);border-radius:999px;padding:4px;gap:2px;align-self:flex-start;flex-wrap:wrap">
+          <div style="min-height:44px;padding:0 18px;border-radius:999px;background:var(--sel);display:flex;align-items:center;font-size:var(--fs-sub);box-shadow:var(--elev)">День</div>
+          <div style="min-height:44px;padding:0 18px;border-radius:999px;display:flex;align-items:center;font-size:var(--fs-sub);color:var(--t2)">Неделя</div>
+          <div style="min-height:44px;padding:0 18px;border-radius:999px;display:flex;align-items:center;font-size:var(--fs-sub);color:var(--t2)">Месяц</div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <div style="display:flex;background:var(--trk);border-radius:999px;padding:4px;gap:2px"><div style="width:44px;height:44px;border-radius:50%;background:var(--sel);display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1;font-variation-settings:'FILL' 1,'wght' 300;color:var(--acT)">grid_view</span></div><div style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1;font-variation-settings:'wght' 300;color:var(--t2)">view_agenda</span></div></div>
+          <div style="display:flex;background:var(--f0);border-radius:999px;padding:4px;gap:2px;opacity:.5"><div style="min-height:44px;padding:0 16px;border-radius:999px;background:var(--f1);display:flex;align-items:center;font-size:var(--fs-sub);color:var(--t3)">°C</div><div style="min-height:44px;padding:0 16px;display:flex;align-items:center;font-size:var(--fs-sub);color:var(--t3)">°F</div></div>
+        </div>
+        <span style="font-size:12px;color:var(--t2)">До 4 пунктов. На 320 pt при AX-размерах — превращается в Menu.</span>
+      </div>
+
+      <div style="background:var(--bg);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--elev)">
+        <span style="font-size:13px;color:var(--t2)">Степпер · обычный / на минимуме</span>
+        <div style="display:flex;gap:24px;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:8px"><div style="width:44px;height:44px;border-radius:50%;background:var(--f1);box-shadow:var(--elev);display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">remove</span></div><div style="display:flex;align-items:flex-start;gap:2px;font-family:var(--fr);font-weight:300;min-width:64px;justify-content:center"><span style="font-size:var(--fs-nm);line-height:1;font-variant-numeric:tabular-nums">25</span><span style="font-size:var(--fs-sub)">°</span></div><div style="width:44px;height:44px;border-radius:50%;background:var(--f1);box-shadow:var(--elev);display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">add</span></div></div>
+          <div style="display:flex;align-items:center;gap:8px"><div style="width:44px;height:44px;border-radius:50%;background:var(--f0);display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1;color:var(--t3)">remove</span></div><div style="display:flex;align-items:flex-start;gap:2px;font-family:var(--fr);font-weight:300;min-width:64px;justify-content:center"><span style="font-size:var(--fs-nm);line-height:1">16</span><span style="font-size:var(--fs-sub)">°</span></div><div style="width:44px;height:44px;border-radius:50%;background:var(--f1);box-shadow:var(--elev);display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">add</span></div></div>
+        </div>
+        <span style="font-size:12px;color:var(--t2)">Удержание — автоповтор. VoiceOver: adjustable, свайп вверх/вниз.</span>
+      </div>
+
+      <div style="background:var(--bg);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--elev)">
+        <span style="font-size:13px;color:var(--t2)">Слайдер-действие · покой / тянут / готово / disabled</span>
+        <div style="display:flex;align-items:center;gap:14px;background:var(--f1);border-radius:999px;min-height:56px;padding:0 20px 0 0"><div style="width:56px;height:56px;border-radius:50%;background:var(--sel);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1">chevron_right</span></div><span style="font-size:var(--fs-body)">Уйти из дома</span></div>
+        <div style="position:relative;display:flex;align-items:center;background:var(--f1);border-radius:999px;min-height:56px;overflow:hidden"><div style="position:absolute;left:0;top:0;bottom:0;width:60%;background:var(--acS);border-radius:999px"></div><div style="position:relative;margin-left:calc(60% - 56px);width:56px;height:56px;border-radius:50%;background:var(--ac);display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1;color:var(--onAc)">chevron_right</span></div></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--ac);border-radius:999px;min-height:56px;padding:0 0 0 22px;color:var(--onAc)"><span style="font-size:var(--fs-body)">Уйти из дома</span><div style="width:56px;height:56px;border-radius:50%;background:var(--knob);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1;color:var(--ac)">check</span></div></div>
+        <div style="display:flex;align-items:center;gap:14px;background:var(--f0);border-radius:999px;min-height:56px;padding:0 20px 0 0;color:var(--t3)"><div style="width:56px;height:56px;border-radius:50%;background:var(--f1);flex-shrink:0"></div><span style="font-size:var(--fs-body)">Недоступно</span></div>
+        <span style="font-size:12px;color:var(--t2)">Порог 80 % длины. Для VoiceOver и Switch Control — обычная кнопка.</span>
+      </div>
+
+      <div style="background:var(--bg);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--elev)">
+        <span style="font-size:13px;color:var(--t2)">Тост · отмена / инфо / ошибка с повтором</span>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--inv);color:var(--onInv);border-radius:999px;min-height:52px;padding:4px 4px 4px 20px;box-sizing:border-box"><span style="font-size:var(--fs-sub)">«Кухня» удалена</span><div style="min-height:44px;padding:0 16px;border-radius:999px;background:var(--onInv);color:var(--inv);display:flex;align-items:center;gap:6px;font-size:var(--fs-sub)"><span style="font-family:'Material Symbols Rounded';font-size:18px;line-height:1">undo</span>Отменить</div></div>
+        <div style="display:flex;align-items:center;gap:10px;background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:999px;min-height:52px;padding:4px 20px;box-sizing:border-box;box-shadow:var(--elev)"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:var(--acT);font-variation-settings:'FILL' 1">check_circle</span><span style="font-size:var(--fs-sub)">Изменения сохранены</span></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--errS);border-radius:999px;min-height:52px;padding:4px 4px 4px 20px;box-sizing:border-box"><span style="font-size:var(--fs-sub);color:var(--err)">Не удалось сохранить</span><div style="min-height:44px;padding:0 16px;border-radius:999px;background:var(--f1);color:var(--t1);display:flex;align-items:center;font-size:var(--fs-sub)">Повторить</div></div>
+        <span style="font-size:12px;color:var(--t2)">Над таб-баром, 5 с, свайп вниз — скрыть. Новый тост заменяет старый. Объявляется VoiceOver.</span>
+      </div>
+
+      <div style="background:var(--bg);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--elev)">
+        <span style="font-size:13px;color:var(--t2)">Поиск · пусто / ввод / нет результатов</span>
+        <div style="display:flex;align-items:center;gap:10px;min-height:48px;border-radius:999px;background:var(--f1);padding:0 16px"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1;color:var(--t2)">search</span><span style="font-size:var(--fs-body);color:var(--t2)">Поиск</span></div>
+        <div style="display:flex;align-items:center;gap:10px"><div style="flex:1;display:flex;align-items:center;gap:10px;min-height:48px;border-radius:999px;background:var(--f2);padding:0 8px 0 16px;box-shadow:inset 0 0 0 2px var(--ac)"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1;color:var(--t2)">search</span><span style="flex:1;font-size:var(--fs-body)">спа</span><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:var(--t2);font-variation-settings:'FILL' 1">cancel</span></div><span style="font-size:var(--fs-body);color:var(--acT)">Отмена</span></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 0;text-align:center"><span style="font-size:var(--fs-body)">Ничего не найдено</span><span style="font-size:var(--fs-foot);color:var(--t2)">По запросу «душ» нет комнат</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="organisms" data-screen-label="04 Организмы" style="display:flex;flex-direction:column;gap:20px">
+    <div style="display:flex;align-items:baseline;gap:16px"><span style="font-size:14px;color:var(--t2)">04</span><h2 style="margin:0;font-weight:400;font-size:32px">Организмы</h2></div>
+
+    <div style="background:var(--bg);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--elev)">
+      <span style="font-size:13px;color:var(--t2)">Карточка · данные / inverse / фото / пусто / загрузка / нет связи / правка</span>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px">
+        <div style="background:var(--f1);box-shadow:var(--elev);border-radius:28px;padding:18px;min-height:190px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;gap:12px;box-shadow:var(--elev)"><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:var(--fs-t3);line-height:1.15">Увлажнитель</span><span style="font-size:var(--fs-foot);color:var(--acT)">Dyson TP09</span></div><div style="display:flex;align-items:flex-start;gap:2px;font-family:var(--fr);font-weight:300"><span style="font-size:var(--fs-nl);line-height:1">54</span><span style="font-size:var(--fs-sub);margin-top:4px">%</span></div><div style="width:64px;height:36px;border-radius:999px;background:var(--ac);display:flex;justify-content:flex-end;padding:3px;box-sizing:border-box"><div style="width:30px;height:30px;border-radius:50%;background:var(--knob)"></div></div></div>
+        <div style="background:var(--inv);color:var(--onInv);border-radius:28px;padding:18px;min-height:190px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;gap:12px"><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:var(--fs-t3);line-height:1.15">Пылесос</span><span style="font-size:var(--fs-foot)">Уборка · 80 %</span></div><div style="height:8px;border-radius:999px;background:var(--onInv);overflow:hidden;opacity:.9"><div style="width:80%;height:100%;background:var(--ac)"></div></div><div style="width:44px;height:44px;border-radius:50%;background:var(--onInv);color:var(--inv);display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">pause</span></div></div>
+        <div style="position:relative;background:var(--f3);border-radius:28px;min-height:190px;overflow:hidden"><div style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,var(--bg) 100%);opacity:.9"></div><div style="position:absolute;top:12px;left:12px;background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:999px;padding:8px 16px;font-size:var(--fs-sub)">Кухня</div><div style="position:absolute;left:16px;bottom:14px;display:flex;align-items:flex-start;gap:2px;font-family:var(--fr);font-weight:300;color:var(--acT)"><span style="font-size:var(--fs-nm);line-height:1">22</span><span style="font-size:var(--fs-foot)">°C</span></div><div style="position:absolute;right:14px;bottom:16px;font-size:12px;color:var(--t2)">фото</div></div>
+        <div style="background:var(--f0);border-radius:28px;padding:18px;min-height:190px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;box-shadow:var(--elev)"><div style="width:44px;height:44px;border-radius:50%;background:var(--f1);box-shadow:var(--elev);display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1;color:var(--acT)">add</span></div><span style="font-size:var(--fs-sub)">Добавить устройство</span></div>
+        <div style="background:var(--f1);box-shadow:var(--elev);border-radius:28px;padding:18px;min-height:190px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between"><div style="display:flex;flex-direction:column;gap:8px"><div style="height:14px;width:70%;border-radius:999px;background:var(--f2)"></div><div style="height:10px;width:45%;border-radius:999px;background:var(--f2)"></div></div><div style="height:44px;width:55%;border-radius:14px;background:var(--f2)"></div><div style="height:36px;width:64px;border-radius:999px;background:var(--f2)"></div></div>
+        <div style="background:var(--f1);box-shadow:var(--elev);border-radius:28px;padding:18px;min-height:190px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;gap:10px"><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:var(--fs-t3);line-height:1.15;color:var(--t2)">Кондиционер</span><span style="font-size:var(--fs-foot);color:var(--err)">Нет связи · 12 мин</span></div><span style="font-size:var(--fs-nl);line-height:1;font-family:var(--fr);font-weight:300;color:var(--t3)">—</span><div style="min-height:44px;border-radius:999px;background:var(--f2);display:flex;align-items:center;justify-content:center;font-size:var(--fs-sub)">Повторить</div></div>
+        <div style="position:relative;padding:8px 0 0 8px"><div style="background:var(--f1);box-shadow:var(--elev);border-radius:28px;padding:18px;min-height:182px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;transform:rotate(-1.5deg)"><span style="font-size:var(--fs-t3);line-height:1.15">Лампа</span><span style="font-size:var(--fs-foot);color:var(--t2)">покачивается в режиме правки</span></div><div style="position:absolute;top:0;left:0;width:32px;height:32px;border-radius:50%;background:var(--f3);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 3px var(--bg)"><span style="font-family:'Material Symbols Rounded';font-size:18px;line-height:1">remove</span></div></div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:6px">
+      <div style="background:var(--bg);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:18px;box-shadow:var(--elev)">
+        <span style="font-size:13px;color:var(--t2)">Навбар · корневой / вложенный / режим правки</span>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><span style="font-size:var(--fs-lt);line-height:1.1">Комнаты</span><div style="display:flex;gap:6px;align-items:center"><span style="min-height:44px;display:flex;align-items:center;padding:0 8px;font-size:var(--fs-body);color:var(--acT)">Изменить</span><div style="width:44px;height:44px;border-radius:50%;background:var(--f1);box-shadow:var(--elev);display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1;color:var(--acT)">add</span></div></div></div>
+        <div style="height:1px;background:var(--sep)"></div>
+        <div style="display:flex;flex-direction:column;gap:10px"><div style="display:flex;justify-content:space-between"><div style="width:44px;height:44px;border-radius:50%;background:var(--f1);box-shadow:var(--elev);display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">chevron_left</span></div><div style="width:44px;height:44px;border-radius:50%;background:var(--f1);box-shadow:var(--elev);display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">more_horiz</span></div></div><span style="font-size:var(--fs-lt);line-height:1.1">Гостиная</span></div>
+        <div style="height:1px;background:var(--sep)"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span style="min-height:44px;display:flex;align-items:center;font-size:var(--fs-body);color:var(--acT)">Выбрать все</span><span style="font-size:var(--fs-hl);font-weight:600">Выбрано: 2</span><span style="min-height:44px;display:flex;align-items:center;font-size:var(--fs-body);color:var(--acT);font-weight:600">Готово</span></div>
+      </div>
+
+      <div style="background:var(--bg);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--elev)">
+        <span style="font-size:13px;color:var(--t2)">Таб-бар · regular / compact 320 · панель правки</span>
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:999px;min-height:64px;padding:0 22px 0 0;box-shadow:var(--elev)">
+          <div style="display:flex;align-items:center;gap:8px;background:var(--f3);border-radius:999px;padding:0 16px 0 0"><div style="width:64px;height:64px;border-radius:50%;background:var(--tabc);display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1;font-variation-settings:'FILL' 1;color:var(--acT)">home</span></div><span style="font-size:var(--fs-body);color:var(--acT)">Главная</span></div>
+          <span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1">grid_view</span><span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1">bar_chart</span><span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1">notifications</span>
+        </div>
+        <div style="max-width:288px;display:flex;align-items:center;justify-content:space-between;background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:999px;min-height:64px;padding:0 20px 0 0;box-shadow:var(--elev)">
+          <div style="width:64px;height:64px;border-radius:50%;background:var(--tabc);display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1;font-variation-settings:'FILL' 1;color:var(--acT)">home</span></div>
+          <span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1">grid_view</span><span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1">bar_chart</span><span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1">notifications</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:999px;min-height:64px;padding:6px;box-sizing:border-box;box-shadow:var(--elev)"><span style="min-height:52px;display:flex;align-items:center;padding:0 16px;font-size:var(--fs-body);color:var(--t1)">Переместить</span><span style="min-height:52px;display:flex;align-items:center;gap:6px;padding:0 18px;border-radius:999px;background:var(--errS);color:var(--err);font-size:var(--fs-body)"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1">delete</span>Удалить (2)</span></div>
+        <span style="font-size:12px;color:var(--t2)">Подпись активного таба скрыта при ширине &lt; 375 и при AX-размерах. accessibilityLabel есть всегда.</span>
+      </div>
+
+      <div style="background:var(--bg);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:12px;box-shadow:var(--elev)">
+        <span style="font-size:13px;color:var(--t2)">Шит редактирования</span>
+        <div style="background:var(--page);border-radius:24px;padding-top:28px;overflow:hidden">
+          <div style="background:var(--f1);border-radius:36px 36px 0 0;padding:8px 18px 20px;display:flex;flex-direction:column;gap:14px">
+            <div style="width:36px;height:5px;border-radius:3px;background:var(--t3);align-self:center"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center"><span style="min-height:44px;display:flex;align-items:center;font-size:var(--fs-body);color:var(--acT)">Отмена</span><span style="font-size:var(--fs-hl);font-weight:600">Комната</span><span style="min-height:44px;display:flex;align-items:center;font-size:var(--fs-body);color:var(--acT);font-weight:600">Готово</span></div>
+            <div style="min-height:52px;border-radius:999px;background:var(--f2);display:flex;align-items:center;padding:0 20px;font-size:var(--fs-body)">Кухня</div>
+            <div style="min-height:52px;border-radius:999px;background:var(--f2);display:flex;align-items:center;justify-content:center;gap:6px;font-size:var(--fs-body);color:var(--err)"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1">delete</span>Удалить комнату</div>
+          </div>
+        </div>
+        <span style="font-size:12px;color:var(--t2)">Свайп вниз с изменениями → «Отменить изменения?». Без изменений закрывается сразу.</span>
+      </div>
+
+      <div style="background:var(--bg);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:12px;box-shadow:var(--elev)">
+        <span style="font-size:13px;color:var(--t2)">Диалог подтверждения · массовое или необратимое</span>
+        <div style="background:var(--page);border-radius:24px;padding:28px 10px 10px;display:flex;flex-direction:column;gap:8px">
+          <div style="background:var(--f1);border-radius:24px;overflow:hidden;display:flex;flex-direction:column">
+            <div style="padding:14px 18px;text-align:center;font-size:var(--fs-foot);color:var(--t2);line-height:1.35">Удалить 3 комнаты вместе с устройствами? Отменить можно в течение 5 секунд.</div>
+            <div style="height:1px;background:var(--sep)"></div>
+            <div style="min-height:56px;display:flex;align-items:center;justify-content:center;font-size:var(--fs-body);color:var(--err)">Удалить 3 комнаты</div>
+          </div>
+          <div style="background:var(--f1);border-radius:24px;min-height:56px;display:flex;align-items:center;justify-content:center;font-size:var(--fs-body);font-weight:600">Отмена</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:var(--bg);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--elev)">
+      <span style="font-size:13px;color:var(--t2)">Пустой экран · у каждого контейнера пять состояний</span>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px">
+        <div style="background:var(--f1);box-shadow:var(--elev);border-radius:28px;padding:22px 18px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center"><div style="width:52px;height:52px;border-radius:50%;background:var(--f2);display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1;color:var(--t2)">inbox</span></div><span style="font-size:var(--fs-body)">Пока пусто</span><span style="font-size:var(--fs-foot);color:var(--t2)">Добавьте первую комнату</span><span style="min-height:44px;padding:0 18px;border-radius:999px;background:var(--ac);color:var(--onAc);display:flex;align-items:center;font-size:var(--fs-sub)">Добавить</span><span style="font-size:12px;color:var(--t2)">первый запуск</span></div>
+        <div style="background:var(--f1);box-shadow:var(--elev);border-radius:28px;padding:22px 18px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center"><div style="width:52px;height:52px;border-radius:50%;background:var(--f2);display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1;color:var(--t2)">search_off</span></div><span style="font-size:var(--fs-body)">Ничего не найдено</span><span style="font-size:var(--fs-foot);color:var(--t2)">Проверьте написание</span><span style="min-height:44px;padding:0 18px;border-radius:999px;background:var(--f2);display:flex;align-items:center;font-size:var(--fs-sub)">Сбросить поиск</span><span style="font-size:12px;color:var(--t2)">нет результатов</span></div>
+        <div style="background:var(--f1);box-shadow:var(--elev);border-radius:28px;padding:22px 18px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center"><div style="width:52px;height:52px;border-radius:50%;background:var(--f2);display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1;color:var(--t2)">delete_sweep</span></div><span style="font-size:var(--fs-body)">Список очищен</span><span style="font-size:var(--fs-foot);color:var(--t2)">Удалено: 5</span><span style="min-height:44px;padding:0 18px;border-radius:999px;background:var(--f2);display:flex;align-items:center;gap:6px;font-size:var(--fs-sub)"><span style="font-family:'Material Symbols Rounded';font-size:18px;line-height:1">undo</span>Вернуть</span><span style="font-size:12px;color:var(--t2)">после удаления</span></div>
+        <div style="background:var(--f1);box-shadow:var(--elev);border-radius:28px;padding:22px 18px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center"><div style="width:52px;height:52px;border-radius:50%;background:var(--errS);display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1;color:var(--err)">wifi_off</span></div><span style="font-size:var(--fs-body)">Нет соединения</span><span style="font-size:var(--fs-foot);color:var(--t2)">Показаны данные за 12:40</span><span style="min-height:44px;padding:0 18px;border-radius:999px;background:var(--f2);display:flex;align-items:center;font-size:var(--fs-sub)">Повторить</span><span style="font-size:12px;color:var(--t2)">ошибка</span></div>
+        <div style="background:var(--f1);box-shadow:var(--elev);border-radius:28px;padding:22px 18px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center"><div style="width:52px;height:52px;border-radius:50%;background:var(--warnS);display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1;color:var(--warn)">lock</span></div><span style="font-size:var(--fs-body)">Нужен доступ</span><span style="font-size:var(--fs-foot);color:var(--t2)">Разрешите уведомления</span><span style="min-height:44px;padding:0 18px;border-radius:999px;background:var(--f2);display:flex;align-items:center;font-size:var(--fs-sub)">Открыть настройки</span><span style="font-size:12px;color:var(--t2)">нет разрешения</span></div>
+      </div>
+      <span style="font-size:12px;color:var(--t2)">Загрузка — скелетон той же формы, что и контент, не спиннер на весь экран.</span>
+    </div>
+  </section>
+
+  <section id="patterns" data-screen-label="05 Паттерны" style="display:flex;flex-direction:column;gap:20px">
+    <div style="display:flex;align-items:baseline;gap:16px"><span style="font-size:14px;color:var(--t2)">05</span><h2 style="margin:0;font-weight:400;font-size:32px">Паттерны</h2></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:6px">
+      <div style="background:var(--bg);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:10px;font-size:14px;line-height:1.5;color:var(--t2);box-shadow:var(--elev)">
+        <span style="font-size:20px;color:var(--t1)">Свайп</span>
+        <span><span style="color:var(--t1)">Влево:</span> Удалить (справа, заливка error) + Изменить. Частичный свайп &gt; 60 pt — открывает 144 pt действий.</span>
+        <span><span style="color:var(--t1)">Полный свайп</span> &gt; 60 % ширины — удаляет сразу, хаптика на пороге, затем тост «Отменить».</span>
+        <span><span style="color:var(--t1)">Вправо:</span> одно недеструктивное действие (закрепить, отметить).</span>
+        <span><span style="color:var(--t1)">Дублирование.</span> Любое действие свайпа есть ещё в контекстном меню (долгое нажатие) и в режиме правки — свайп не обнаруживается сам.</span>
+        <span>SwiftUI: .swipeActions(edge: .trailing, allowsFullSwipe: true).</span>
+      </div>
+      <div style="background:var(--bg);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:10px;font-size:14px;line-height:1.5;color:var(--t2);box-shadow:var(--elev)">
+        <span style="font-size:20px;color:var(--t1)">Редактирование</span>
+        <span><span style="color:var(--t1)">Один объект:</span> тап по строке → шит с формой. «Готово» неактивна, пока нет изменений или есть ошибка.</span>
+        <span><span style="color:var(--t1)">Много объектов:</span> «Изменить» → выбор кружками, перетаскивание за ручку, таб-бар заменяется панелью действий.</span>
+        <span><span style="color:var(--t1)">Выход:</span> «Готово» сохраняет. Отмена с несохранёнными правками спрашивает подтверждение.</span>
+        <span><span style="color:var(--t1)">Ошибка</span> — под полем, текстом и цветом, фокус остаётся в поле.</span>
+      </div>
+      <div style="background:var(--bg);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:10px;font-size:14px;line-height:1.5;color:var(--t2);box-shadow:var(--elev)">
+        <span style="font-size:20px;color:var(--t1)">Удаление</span>
+        <span><span style="color:var(--t1)">Обратимое, один объект:</span> без вопроса, сразу тост с отменой.</span>
+        <span><span style="color:var(--t1)">Массовое или с вложенными данными:</span> диалог подтверждения, кнопка с числом («Удалить 3 комнаты»), «Отмена» — жирная.</span>
+        <span><span style="color:var(--t1)">Необратимое</span> (аккаунт, общий доступ): диалог + ввод названия или Face ID.</span>
+        <span>Строка схлопывается 0.3 с, соседние поднимаются; при Reduce Motion — исчезает.</span>
+      </div>
+      <div style="background:var(--bg);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:10px;font-size:14px;line-height:1.5;color:var(--t2);box-shadow:var(--elev)">
+        <span style="font-size:20px;color:var(--t1)">Отмена действий</span>
+        <span><span style="color:var(--t1)">Тост 5 с</span> после удаления, правки, массового действия. Объект возвращается на прежнее место.</span>
+        <span><span style="color:var(--t1)">Встряхивание</span> — системный Undo (UndoManager), работает и после скрытия тоста.</span>
+        <span><span style="color:var(--t1)">Серверное удаление</span> откладывается до исчезновения тоста — отмена не требует сети.</span>
+        <span>Тост с отменой не закрывается VoiceOver-фокусом до конца таймера.</span>
+      </div>
+      <div style="background:var(--bg);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:10px;font-size:14px;line-height:1.5;color:var(--t2);box-shadow:var(--elev)">
+        <span style="font-size:20px;color:var(--t1)">Пустые состояния</span>
+        <span>Каждый список, карточка и экран описывает: <span style="color:var(--t1)">загрузку, первый запуск, нет результатов, очищено, ошибку, нет доступа.</span></span>
+        <span>Формула: иконка в круге → что здесь будет (body) → почему пусто (footnote) → одно действие.</span>
+        <span>Значение без данных — «—» и причина. Никаких нулей вместо пустоты.</span>
+        <span>SwiftUI: ContentUnavailableView со своими стилями.</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="sandbox" data-screen-label="06 Песочница" style="display:flex;flex-direction:column;gap:20px">
+    <div style="display:flex;align-items:baseline;gap:16px;flex-wrap:wrap"><span style="font-size:14px;color:var(--t2)">06</span><h2 style="margin:0;font-weight:400;font-size:32px">Песочница · шаблон «список»</h2></div>
+    <div style="display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start">
+      <div style="display:flex;flex-direction:column;gap:14px;flex:1;min-width:260px;max-width:380px">
+        <div style="display:flex;background:var(--trk);border-radius:999px;padding:4px;gap:2px;align-self:flex-start">
+          <button onClick="{{ setW320 }}" style="border:none;cursor:pointer;min-height:44px;padding:0 18px;border-radius:999px;background:{{ w320Bg }};color:var(--t1);font-size:15px">320 pt</button>
+          <button onClick="{{ setW390 }}" style="border:none;cursor:pointer;min-height:44px;padding:0 18px;border-radius:999px;background:{{ w390Bg }};color:var(--t1);font-size:15px">390 pt</button>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button onClick="{{ onReset }}" style="border:none;cursor:pointer;min-height:44px;padding:0 18px;border-radius:999px;background:var(--f1);color:var(--t1);font-size:15px">Вернуть данные</button>
+          <button onClick="{{ onClearAll }}" style="border:none;cursor:pointer;min-height:44px;padding:0 18px;border-radius:999px;background:var(--f1);color:var(--err);font-size:15px">Очистить всё</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:14px;line-height:1.5;color:var(--t2)">
+          <span><span style="color:var(--t1)">Свайп влево</span> по строке — действия; до конца — удалить.</span>
+          <span><span style="color:var(--t1)">Тап</span> — шит редактирования; пустое имя даёт ошибку.</span>
+          <span><span style="color:var(--t1)">Изменить</span> — выбор нескольких, удаление с подтверждением.</span>
+          <span><span style="color:var(--t1)">Отменить</span> в тосте возвращает удалённое и правки.</span>
+          <span><span style="color:var(--t1)">Поиск</span> без совпадений и пустой список — свои пустые состояния.</span>
+          <span>В Tweaks поменяйте акцент, тему и размер текста — песочница пересчитается.</span>
+        </div>
+      </div>
+
+      <div data-screen-label="Песочница телефон" style="position:relative;width:{{ pw }};height:{{ ph }};flex-shrink:0;background:var(--bg);border-radius:44px;box-shadow:0 0 0 8px var(--f1),0 0 0 9px var(--sep);overflow:hidden;font-family:var(--ff);color:var(--t1)">
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;padding-top:{{ sbH }}">
+          <div style="display:flex;flex-direction:column;gap:12px;padding:8px {{ padX }} 0">
+            <div style="display:flex;justify-content:space-between;align-items:center;min-height:44px;gap:8px">
+              <sc-if value="{{ editing }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ onSelectAll }}" style="border:none;background:none;cursor:pointer;min-height:44px;padding:0;font-size:var(--fs-body);color:var(--acT)">{{ selectAllLabel }}</button>
+                <button onClick="{{ onToggleEdit }}" style="border:none;background:none;cursor:pointer;min-height:44px;padding:0;font-size:var(--fs-body);font-weight:600;color:var(--acT)">Готово</button>
+              </sc-if>
+              <sc-if value="{{ notEditing }}" hint-placeholder-val="{{ true }}">
+                <span></span>
+                <div style="display:flex;gap:4px;align-items:center">
+                  <button onClick="{{ onToggleEdit }}" style="border:none;background:none;cursor:pointer;min-height:44px;padding:0 8px;font-size:var(--fs-body);color:{{ editBtnColor }}">Изменить</button>
+                  <button onClick="{{ onAdd }}" aria-label="Добавить" style="border:none;cursor:pointer;width:44px;height:44px;border-radius:50%;background:var(--f1);box-shadow:var(--elev);display:flex;align-items:center;justify-content:center;padding:0"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1;color:var(--acT)">add</span></button>
+                </div>
+              </sc-if>
+            </div>
+            <div style="font-size:var(--fs-lt);line-height:1.1;overflow-wrap:anywhere">{{ navTitle }}</div>
+            <sc-if value="{{ showSearch }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;align-items:center;gap:8px;min-height:44px;border-radius:999px;background:var(--f1);padding:0 6px 0 14px">
+                <span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:var(--t2)">search</span>
+                <input value="{{ q }}" onChange="{{ onQuery }}" placeholder="Поиск" style="flex:1;min-width:0;border:none;outline:none;background:transparent;color:var(--t1);font-family:var(--ff);font-size:var(--fs-body);min-height:40px">
+                <sc-if value="{{ hasQuery }}" hint-placeholder-val="{{ false }}">
+                  <button onClick="{{ onClearQuery }}" aria-label="Очистить" style="border:none;background:none;cursor:pointer;width:36px;height:36px;display:flex;align-items:center;justify-content:center;padding:0"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:var(--t2);font-variation-settings:'FILL' 1">cancel</span></button>
+                </sc-if>
+              </div>
+            </sc-if>
+          </div>
+
+          <div style="flex:1;overflow-y:auto;padding:14px {{ padX }} 120px;display:flex;flex-direction:column;gap:6px">
+            <sc-for list="{{ rows }}" as="it" hint-placeholder-count="4">
+              <div style="position:relative;border-radius:24px;overflow:hidden;flex-shrink:0">
+                <div style="position:absolute;top:0;bottom:0;right:0;width:{{ it.aw }};display:flex;opacity:{{ it.aop }}">
+                  <button onClick="{{ it.onEditAct }}" style="border:none;cursor:pointer;width:72px;flex-shrink:0;background:var(--f3);color:var(--t1);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:var(--fs-c1);padding:0"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">edit</span>Изменить</button>
+                  <button onClick="{{ it.onDelAct }}" style="border:none;cursor:pointer;flex:1;background:var(--err);color:var(--onErr);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:var(--fs-c1);padding:0"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">delete</span>Удалить</button>
+                </div>
+                <div onPointerDown="{{ it.onDown }}" style="position:relative;display:flex;align-items:center;gap:12px;min-height:64px;padding:10px 14px;background:var(--f1);border-radius:24px;box-sizing:border-box;transform:{{ it.tx }};transition:{{ it.tr }};touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:pointer;box-shadow:var(--elev)">
+                  <sc-if value="{{ it.editing }}" hint-placeholder-val="{{ false }}">
+                    <div style="width:26px;height:26px;border-radius:50%;flex-shrink:0;background:{{ it.chkBg }};box-shadow:inset 0 0 0 1.5px {{ it.chkBd }};display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:18px;line-height:1;font-variation-settings:'wght' 500;color:{{ it.chkIc }}">check</span></div>
+                  </sc-if>
+                  <div style="width:40px;height:40px;border-radius:50%;background:var(--f2);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1;font-variation-settings:'wght' 300">{{ it.icon }}</span></div>
+                  <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font-size:var(--fs-body);overflow-wrap:anywhere">{{ it.title }}</span><span style="font-size:var(--fs-foot);color:var(--t2)">{{ it.sub }}</span></div>
+                  <span style="font-size:var(--fs-foot);color:{{ it.stColor }};text-align:right;flex-shrink:0;max-width:40%">{{ it.stText }}</span>
+                </div>
+              </div>
+            </sc-for>
+
+            <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:48px 12px">
+                <div style="width:56px;height:56px;border-radius:50%;background:var(--f1);box-shadow:var(--elev);display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1;color:var(--t2)">inbox</span></div>
+                <span style="font-size:var(--fs-body)">Пока пусто</span>
+                <span style="font-size:var(--fs-foot);color:var(--t2)">Добавьте первую комнату, она появится здесь</span>
+                <button onClick="{{ onAdd }}" style="border:none;cursor:pointer;min-height:44px;padding:0 20px;border-radius:999px;background:var(--ac);color:var(--onAc);font-size:var(--fs-sub);margin-top:4px">Добавить</button>
+              </div>
+            </sc-if>
+            <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:48px 12px">
+                <div style="width:56px;height:56px;border-radius:50%;background:var(--f1);box-shadow:var(--elev);display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1;color:var(--t2)">search_off</span></div>
+                <span style="font-size:var(--fs-body)">Ничего не найдено</span>
+                <span style="font-size:var(--fs-foot);color:var(--t2)">{{ noResultsText }}</span>
+                <button onClick="{{ onClearQuery }}" style="border:none;cursor:pointer;min-height:44px;padding:0 20px;border-radius:999px;background:var(--f2);color:var(--t1);font-size:var(--fs-sub);margin-top:4px">Сбросить поиск</button>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+
+        <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+          <div role="status" style="box-shadow:var(--elev2);position:absolute;left:12px;right:12px;bottom:104px;display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--inv);color:var(--onInv);border-radius:999px;min-height:52px;padding:4px 4px 4px 18px;box-sizing:border-box">
+            <span style="font-size:var(--fs-sub);min-width:0;overflow-wrap:anywhere">{{ toastText }}</span>
+            <sc-if value="{{ toastUndo }}" hint-placeholder-val="{{ true }}">
+              <button onClick="{{ onUndo }}" style="border:none;cursor:pointer;min-height:44px;padding:0 14px;border-radius:999px;background:var(--onInv);color:var(--inv);display:flex;align-items:center;gap:6px;font-size:var(--fs-sub);flex-shrink:0"><span style="font-family:'Material Symbols Rounded';font-size:18px;line-height:1">undo</span>Отменить</button>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ notEditing }}" hint-placeholder-val="{{ true }}">
+          <div style="position:absolute;left:12px;right:12px;bottom:24px;display:flex;align-items:center;justify-content:space-between;background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:999px;min-height:64px;padding:0 20px 0 0;box-shadow:var(--elev)">
+            <div style="display:flex;align-items:center;gap:8px;background:var(--f3);border-radius:999px;padding:0 {{ tabPadR }} 0 0">
+              <div style="width:64px;height:64px;border-radius:50%;background:var(--tabc);display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1;font-variation-settings:'FILL' 1;color:var(--acT)">grid_view</span></div>
+              <sc-if value="{{ showTabLabel }}" hint-placeholder-val="{{ true }}"><span style="font-size:var(--fs-body);color:var(--acT)">Комнаты</span></sc-if>
+            </div>
+            <span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1">home</span>
+            <span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1">bar_chart</span>
+            <span style="font-family:'Material Symbols Rounded';font-size:var(--ic);line-height:1">notifications</span>
+          </div>
+        </sc-if>
+        <sc-if value="{{ editing }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;left:12px;right:12px;bottom:24px;display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:999px;min-height:64px;padding:6px;box-sizing:border-box">
+            <span style="padding:0 14px;font-size:var(--fs-sub);color:var(--t2)">{{ selInfo }}</span>
+            <button onClick="{{ onAskDelete }}" disabled="{{ delDisabled }}" style="border:none;cursor:pointer;min-height:52px;display:flex;align-items:center;gap:6px;padding:0 18px;border-radius:999px;background:{{ delBg }};color:{{ delColor }};font-size:var(--fs-body)"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1">delete</span>Удалить</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ sheetOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;inset:0;background:var(--scrim);display:flex;flex-direction:column;justify-content:flex-end">
+            <div onClick="{{ onCancelSheet }}" style="flex:1"></div>
+            <div style="background:var(--f1);border-radius:36px 36px 0 0;padding:8px {{ padX }} 32px;display:flex;flex-direction:column;gap:14px">
+              <div style="width:36px;height:5px;border-radius:3px;background:var(--t3);align-self:center"></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+                <button onClick="{{ onCancelSheet }}" style="border:none;background:none;cursor:pointer;min-height:44px;padding:0;font-size:var(--fs-body);color:var(--acT)">Отмена</button>
+                <span style="font-size:var(--fs-hl);font-weight:600;text-align:center">{{ sheetTitle }}</span>
+                <button onClick="{{ onSave }}" style="border:none;background:none;cursor:pointer;min-height:44px;padding:0;font-size:var(--fs-body);font-weight:600;color:{{ saveColor }}">Готово</button>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <input value="{{ sheetValue }}" onChange="{{ onSheetInput }}" placeholder="Название" autofocus style="min-height:52px;border:none;outline:none;border-radius:999px;background:var(--f2);color:var(--t1);font-family:var(--ff);font-size:var(--fs-body);padding:0 20px;box-shadow:inset 0 0 0 2px {{ inputRing }}">
+                <sc-if value="{{ sheetError }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-size:var(--fs-foot);color:var(--err);padding-left:20px;display:flex;gap:6px;align-items:center"><span style="font-family:'Material Symbols Rounded';font-size:16px;line-height:1">error</span>Название не может быть пустым</span>
+                </sc-if>
+              </div>
+              <sc-if value="{{ sheetIsEdit }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ onSheetDelete }}" style="border:none;cursor:pointer;min-height:52px;border-radius:999px;background:var(--f2);color:var(--err);display:flex;align-items:center;justify-content:center;gap:6px;font-size:var(--fs-body)"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1">delete</span>Удалить комнату</button>
+              </sc-if>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ confirmOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;inset:0;background:var(--scrim);display:flex;flex-direction:column;justify-content:flex-end;padding:10px 10px 28px;box-sizing:border-box;gap:8px">
+            <div onClick="{{ onCancelConfirm }}" style="flex:1"></div>
+            <div style="background:var(--f1);border-radius:24px;overflow:hidden;display:flex;flex-direction:column">
+              <div style="padding:14px 18px;text-align:center;font-size:var(--fs-foot);color:var(--t2);line-height:1.35">{{ confirmText }}</div>
+              <div style="height:1px;background:var(--sep)"></div>
+              <button onClick="{{ onConfirmDelete }}" style="border:none;background:none;cursor:pointer;min-height:56px;font-size:var(--fs-body);color:var(--err)">{{ confirmBtn }}</button>
+            </div>
+            <button onClick="{{ onCancelConfirm }}" style="border:none;cursor:pointer;background:var(--f1);border-radius:24px;min-height:56px;font-size:var(--fs-body);font-weight:600;color:var(--t1)">Отмена</button>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </section>
+
+  <section id="apple" data-screen-label="07 Требования Apple" style="display:flex;flex-direction:column;gap:20px">
+    <div style="display:flex;align-items:baseline;gap:16px"><span style="font-size:14px;color:var(--t2)">07</span><h2 style="margin:0;font-weight:400;font-size:32px">Требования Apple · проверка</h2></div>
+    <div style="background:var(--bg);border-radius:28px;padding:6px 20px;box-shadow:var(--elev)">
+      <sc-for list="{{ checklist }}" as="c" hint-placeholder-count="12">
+        <div style="display:grid;grid-template-columns:28px minmax(0,1fr) minmax(0,1.3fr);gap:14px;padding:14px 0;border-bottom:1px solid var(--sep);align-items:start">
+          <span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1;color:{{ c.color }};font-variation-settings:'FILL' 1">{{ c.icon }}</span>
+          <span style="font-size:15px">{{ c.req }}</span>
+          <span style="font-size:14px;line-height:1.45;color:var(--t2)">{{ c.how }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#D4F75F&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#D4F75F&quot;,&quot;#FF9F5A&quot;,&quot;#7CC4FF&quot;,&quot;#FF8FB8&quot;],&quot;section&quot;:&quot;Тема&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;'dark'|'light'&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;section&quot;:&quot;Тема&quot;},&quot;highContrast&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Доступность&quot;},&quot;textSize&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;L&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;xS&quot;,&quot;S&quot;,&quot;M&quot;,&quot;L&quot;,&quot;xL&quot;,&quot;xxL&quot;,&quot;xxxL&quot;,&quot;AX1&quot;,&quot;AX2&quot;,&quot;AX3&quot;,&quot;AX4&quot;,&quot;AX5&quot;],&quot;section&quot;:&quot;Доступность&quot;}}">
+const SEED=[{id:1,title:'Кухня',sub:'3 устройства',icon:'kitchen',st:'ok',stText:'Всё закрыто'},{id:2,title:'Гостиная',sub:'12 устройств',icon:'chair',st:'warn',stText:'2 включено'},{id:3,title:'Спальня',sub:'6 устройств',icon:'bed',st:'ok',stText:'22°'},{id:4,title:'Ванная',sub:'4 устройства',icon:'bathtub',st:'err',stText:'Нет связи'},{id:5,title:'Прихожая',sub:'2 устройства',icon:'door_front',st:'ok',stText:'Выключено'}];
+const ST={ok:'var(--acT)',warn:'var(--warn)',err:'var(--err)'};
+const DTK=['xS','S','M','L','xL','xxL','xxxL','AX1','AX2','AX3','AX4','AX5'];
+const DTT={lt:[31,32,33,34,36,38,40,44,48,52,56,60],t1:[25,26,27,28,30,32,34,38,43,48,53,58],t2:[19,20,21,22,24,26,28,34,39,44,50,56],t3:[17,18,19,20,22,24,26,31,37,43,49,55],hl:[14,15,16,17,19,21,23,28,33,40,47,53],body:[14,15,16,17,19,21,23,28,33,40,47,53],call:[13,14,15,16,18,20,22,26,32,38,44,51],sub:[12,13,14,15,17,19,21,25,30,36,42,49],foot:[13,13,13,13,15,17,19,23,27,33,38,44],c1:[12,12,12,12,14,16,18,22,26,32,37,43],c2:[12,12,12,12,13,15,17,20,24,29,34,40]};
+const h2r=h=>{h=String(h).replace('#','');if(h.length===3)h=h.split('').map(c=>c+c).join('');return [0,2,4].map(i=>parseInt(h.slice(i,i+2),16)||0)};
+const r2h=a=>'#'+a.map(v=>Math.round(Math.max(0,Math.min(255,v))).toString(16).padStart(2,'0')).join('').toUpperCase();
+const mix=(a,b,t)=>{const x=h2r(a),y=h2r(b);return r2h(x.map((v,i)=>v+(y[i]-v)*t))};
+const lum=h=>h2r(h).map(v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)}).reduce((s,v,i)=>s+v*[.2126,.7152,.0722][i],0);
+const cr=(a,b)=>{const x=lum(a),y=lum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)};
+const ensure=(fg,bgs,min,to)=>{let c=fg;for(let t=0;t<=1.0001&&bgs.some(b=>cr(c,b)<min);t+=.02)c=mix(fg,to,t);return c};
+const toLin=v=>{v/=255;return v<=.04045?v/12.92:Math.pow((v+.055)/1.055,2.4)};
+const toSrgb=v=>255*(v<=.0031308?12.92*v:1.055*Math.pow(v,1/2.4)-.055);
+const hexToOklch=h=>{const [r,g,b]=h2r(h).map(toLin);
+  const l=Math.cbrt(.4122214708*r+.5363325363*g+.0514459929*b),m=Math.cbrt(.2119034982*r+.6806995451*g+.1073969566*b),s=Math.cbrt(.0883024619*r+.2817188376*g+.6299787005*b);
+  const L=.2104542553*l+.793617785*m-.0040720468*s,A=1.9779984951*l-2.428592205*m+.4505937099*s,B=.0259040371*l+.7827717662*m-.808675766*s;
+  return {L,C:Math.hypot(A,B),H:Math.atan2(B,A)}};
+const oklchRaw=(L,C,H)=>{const A=C*Math.cos(H),B=C*Math.sin(H);
+  const l=Math.pow(L+.3963377774*A+.2158037573*B,3),m=Math.pow(L-.1055613458*A-.0638541728*B,3),s=Math.pow(L-.0894841694*A-1.291485548*B,3);
+  return [4.0767416621*l-3.3077115913*m+.2309699292*s,-1.2684380046*l+2.6097574011*m-.3413193965*s,-.0041960863*l-.7034186147*m+1.707614701*s]};
+const oklch=(L,C,H)=>{L=Math.max(0,Math.min(1,L));let c=C,rgb=oklchRaw(L,c,H);
+  for(let i=0;i<40&&rgb.some(x=>x<-.0005||x>1.0005);i++){c*=.94;rgb=oklchRaw(L,c,H)}
+  return r2h(rgb.map(x=>toSrgb(Math.max(0,Math.min(1,x)))))};
+const shade=(hex,dL,cK)=>{const o=hexToOklch(hex);return oklch(o.L+dL,o.C*(cK??1),o.H)};
+const tint=(hex,L,cK)=>{const o=hexToOklch(hex);return oklch(L,o.C*cK,o.H)};
+const textHue=H=>{const d=((H*180/Math.PI)+360)%360;let n=d;if(d>35&&d<75)n=d-14;else if(d>=75&&d<125)n=d+20;return n*Math.PI/180};
+const ensureVivid=(fg,bgs,min,shift)=>{const o=hexToOklch(fg);const H=shift?textHue(o.H):o.H;let L=o.L,c=oklch(L,.4,H);for(let i=0;i<100&&bgs.some(b=>cr(c,b)<min);i++){L-=.01;c=oklch(L,.4,H)}return c};
+const ensureL=(fg,bgs,min,dir)=>{const o=hexToOklch(fg);let L=o.L,c=fg;for(let i=0;i<100&&bgs.some(b=>cr(c,b)<min);i++){L+=dir*.01;c=oklch(L,o.C,o.H)}return c};
+const BASE={
+ dark:{page:'#050503',bg:'#181818',f0:'#1F1F1F',f1:'#2C2C2C',f2:'#343434',f3:'#454545',trk:'#2C2C2C',sel:'#5D5D5D',tabc:'#808080',inv:'#F4F4F2',onInv:'#111111',t1:'#F4F4F2',t2:'#A3A39F',t3:'#6D6D6D',sep:'#3A3A3A',bd:'transparent',err:'#FF7A66',errS:'#4A2A22',warn:'#F7C75F',warnS:'#463614',offT:'#454545',offK:'#E4E4E0',glass:'rgba(52,52,52,.72)',scrim:'rgba(0,0,0,.55)'},
+ light:{page:'#FFFFFF',bg:'#F0F0F3',f0:'#E6E6EA',f1:'#FFFFFF',f2:'#E6E6EB',f3:'#D6D6DC',trk:'#E2E2E7',sel:'#FFFFFF',tabc:'#FFFFFF',inv:'#111113',onInv:'#FFFFFF',t1:'#0B0B0C',t2:'#66666B',t3:'#AEAEB2',sep:'#DCDCE1',bd:'transparent',err:'#D92D20',errS:'#FDECEA',warn:'#A15C00',warnS:'#FFF3DF',offT:'#8E8E93',offK:'#FFFFFF',glass:'rgba(255,255,255,.82)',scrim:'rgba(10,10,12,.28)'}};
+const HC={dark:{t2:'#C8C8C4',t3:'#8A8A86',sep:'#6D6D6D',bd:'#6D6D6D',f1:'#303030',f2:'#3A3A3A',f3:'#4D4D4D',offT:'#5D5D5D'},light:{t2:'#48484D',t3:'#8E8E93',sep:'#AEAEB2',bd:'#AEAEB2',f2:'#DEDEE4',f3:'#CBCBD2',offT:'#6E6E73'}};
+
+function buildTheme(accent,mode,hc){
+  const v={...BASE[mode],...(hc?HC[mode]:{})};
+  const dark=mode==='dark',up=dark?'#FFFFFF':'#000000';
+  const ac=/^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.test(accent||'')?r2h(h2r(accent)):'#D4F75F';
+  v.ac=ac;
+  v.onAc=cr(ac,'#111111')>=cr(ac,'#FFFFFF')?'#111111':'#FFFFFF';
+  const dir=dark?1:-1;
+  if(dark){
+    v.acP=shade(ac,v.onAc==='#FFFFFF'?.06:-.06);
+    v.acT=ensureL(ac,[v.bg,v.f1,v.f2,v.f3],hc?7:4.5,1);
+    v.acS=tint(ac,.32,.5);
+    v.acST=ensureL(v.acT,[v.acS],4.5,1);
+    v.knob=ensureL(shade(ac,-.42,.75),[ac],3,-1);
+  }else{
+    const o=hexToOklch(ac);
+    v.ac=oklch(Math.min(o.L,.89),Math.min(o.C*1.05,.2),o.H);
+    v.onAc=cr(v.ac,'#0B0B0C')>=cr(v.ac,'#FFFFFF')?'#0B0B0C':'#FFFFFF';
+    v.acP=shade(v.ac,-.05);
+    const tH=textHue(o.H),tC=Math.min(o.C,.16);
+    const dk=(C,H,bgs,min)=>{let L=.75,c=oklch(L,C,H);for(let i=0;i<70&&bgs.some(b=>cr(c,b)<min);i++){L-=.01;c=oklch(L,C,H)}return c};
+    v.acT=dk(tC,tH,[v.bg,v.f1,v.f2,v.f3],hc?7:4.5);
+    v.acS=oklch(.95,Math.min(o.C*.3,.045),o.H);
+    v.acST=dk(tC,tH,[v.acS],4.5);
+    v.knob=oklch(.28,.05,o.H);
+  }
+  v.err=ensureL(v.err,[v.f1,v.f2,v.errS],4.5,dir);
+  v.warn=ensureL(v.warn,[v.f1,v.f2,v.warnS],4.5,dir);
+  v.t2=ensure(v.t2,[v.bg,v.f1,v.f2],4.5,up);
+  v.onErr=cr(v.err,'#111111')>=cr(v.err,'#FFFFFF')?'#111111':'#FFFFFF';
+  v.offK=ensure(v.offK,[v.offT],3,'#FFFFFF');
+  const ring=hc?`inset 0 0 0 1px ${v.bd},`:'';
+  v.elev=dark?`inset 0 0 0 1px ${v.bd}`:`${ring}0 0 0 1px rgba(16,16,28,.05),0 1px 2px rgba(16,16,28,.06),0 6px 16px rgba(16,16,28,.06)`;
+  v.elev2=dark?`inset 0 0 0 1px ${v.bd}`:`${ring}0 0 0 1px rgba(16,16,28,.06),0 10px 30px rgba(16,16,28,.14)`;
+  return v;
+}
+function buildFs(dt){
+  let i=DTK.indexOf(dt);if(i<0)i=3;
+  const o={};Object.keys(DTT).forEach(k=>o['fs-'+k]=DTT[k][i]+'px');
+  const s=DTT.body[i]/17,k=Math.min(s,1.5);
+  o['fs-nxl']=Math.round(80*k)+'px';o['fs-nl']=Math.round(56*k)+'px';o['fs-nm']=Math.round(44*k)+'px';o.ic=Math.round(24*Math.min(s,1.6))+'px';
+  return {vars:o,i,ax:i>=7};
+}
+const TOK=[['bg.primary','bg'],['fill.sunken','f0'],['fill.1','f1'],['fill.2','f2'],['fill.3','f3'],['fill.selected','sel'],['fill.inverse','inv'],['text.primary','t1'],['text.secondary','t2'],['text.disabled','t3'],['separator','sep'],['accent','ac'],['accent.pressed','acP'],['accent.text','acT'],['onAccent','onAc'],['accent.subtle','acS'],['accent.knob','knob'],['status.error','err'],['error.subtle','errS'],['status.warning','warn'],['warning.subtle','warnS'],['toggle.off','offT']];
+const CON=[['text.primary','bg.primary','t1','bg',4.5],['text.primary','fill.2','t1','f2',4.5],['text.secondary','bg.primary','t2','bg',4.5],['text.secondary','fill.1','t2','f1',4.5],['text.secondary','fill.2','t2','f2',4.5],['accent.text','bg.primary','acT','bg',4.5],['accent.text','fill.1','acT','f1',4.5],['accent.text','fill.3 (таб)','acT','f3',4.5],['onAccent','accent','onAc','ac',4.5],['onAccent','accent.pressed','onAc','acP',4.5],['accent.subtle.text','accent.subtle','acST','acS',4.5],['knob','accent','knob','ac',3],['toggle.off.knob','toggle.off','offK','offT',3],['status.error','fill.1','err','f1',4.5],['status.error','error.subtle','err','errS',4.5],['onError','status.error','onErr','err',4.5],['status.warning','fill.1','warn','f1',4.5],['status.warning','warning.subtle','warn','warnS',4.5],['onInverse','fill.inverse','onInv','inv',4.5]];
+const TYPE=[['Large Title','.largeTitle','lt','400','Комнаты'],['Title 1','.title','t1','400','Гостиная'],['Title 2','.title2','t2','400','Кондиционер'],['Title 3','.title3','t3','400','Увлажнитель'],['Headline','.headline','hl','600','Выбрано: 2'],['Body','.body','body','400','Уйти из дома'],['Callout','.callout','call','400','Сценарий запущен'],['Subheadline','.subheadline','sub','400','Общий обзор'],['Footnote','.footnote','foot','400','Всё закрыто'],['Caption 1','.caption','c1','400','SAMSUNG AR12'],['Caption 2','.caption2','c2','400','Обновлено 12:40'],['Number XL','@ScaledMetric 80 · rounded','nxl','300','54%'],['Number L','@ScaledMetric 56 · rounded','nl','300','25°'],['Number M','@ScaledMetric 44 · rounded','nm','300','12']];
+const ICONS=[['home','house.fill'],['grid_view','square.grid.2x2'],['add','plus'],['chevron_left','chevron.left'],['chevron_right','chevron.right'],['close','xmark'],['settings','gearshape'],['search','magnifyingglass'],['edit','pencil'],['delete','trash'],['undo','arrow.uturn.backward'],['check','checkmark'],['check_circle','checkmark.circle.fill'],['more_horiz','ellipsis'],['notifications','bell'],['power_settings_new','power'],['warning','exclamationmark.triangle'],['wifi_off','wifi.slash'],['inbox','tray'],['push_pin','pin'],['drag_indicator','line.3.horizontal'],['remove','minus'],['cancel','xmark.circle.fill'],['lock','lock']];
+
+class Component extends DCLogic {
+  state={items:SEED.map(x=>({...x})),editing:false,sel:{},open:null,drag:null,toast:null,sheet:null,confirm:false,w:390,q:''};
+  nextId=100;
+  componentDidMount(){this.applyTheme()}
+  componentDidUpdate(){this.applyTheme()}
+  componentWillUnmount(){clearTimeout(this.tt);this.unbind()}
+  applyTheme(){
+    if(!this._dirty)return;this._dirty=false;
+    const r=document.documentElement.style;
+    Object.entries(this._v).forEach(([k,x])=>r.setProperty('--'+k,x));
+    Object.entries(this._fs.vars).forEach(([k,x])=>r.setProperty('--'+k,x));
+  }
+  unbind(){if(this.mv){window.removeEventListener('pointermove',this.mv);window.removeEventListener('pointerup',this.upH);window.removeEventListener('pointercancel',this.upH)}}
+  down(id,e){
+    if(this.state.editing){this.toggleSel(id);return}
+    this.d={id,x0:e.clientX,base:this.state.open===id?-144:0,moved:false,dx:0};
+    this.unbind();
+    this.mv=ev=>this.move(ev);this.upH=ev=>this.up(ev);
+    window.addEventListener('pointermove',this.mv);window.addEventListener('pointerup',this.upH);window.addEventListener('pointercancel',this.upH);
+  }
+  move(e){
+    const d=this.d;if(!d)return;const dx=e.clientX-d.x0;
+    if(!d.moved&&Math.abs(dx)<6)return;d.moved=true;
+    const max=this.state.w-32;d.dx=Math.max(-max,Math.min(0,d.base+dx));
+    this.setState({drag:{id:d.id,dx:d.dx}});
+  }
+  up(){
+    const d=this.d;this.d=null;this.unbind();if(!d)return;
+    if(!d.moved){if(this.state.open!=null){this.setState({open:null});return}this.openEdit(d.id);return}
+    const full=-(this.state.w-32)*.6;
+    if(d.dx<full){this.setState({drag:null});this.removeIds([d.id]);return}
+    this.setState({drag:null,open:d.dx<-60?d.id:null});
+  }
+  toggleSel(id){this.setState(s=>{const sel={...s.sel};if(sel[id])delete sel[id];else sel[id]=true;return {sel}})}
+  showToast(text,undo){clearTimeout(this.tt);this.undoFn=undo||null;this.setState({toast:{text,undo:!!undo}});this.tt=setTimeout(()=>{this.undoFn=null;this.setState({toast:null})},5000)}
+  undo(){const f=this.undoFn;this.undoFn=null;clearTimeout(this.tt);this.setState({toast:null});f&&f()}
+  removeIds(ids){
+    const items=this.state.items,removed=[];
+    items.forEach((it,i)=>{if(ids.includes(it.id))removed.push({it,i})});
+    if(!removed.length)return;
+    const rest=items.filter(it=>!ids.includes(it.id));
+    const text=removed.length===1?`«${removed[0].it.title}» удалено`:`Удалено: ${removed.length}`;
+    this.setState({items:rest,open:null,sel:{},confirm:false,sheet:null,editing:rest.length?this.state.editing:false});
+    this.showToast(text,()=>this.setState(s=>{const arr=[...s.items];removed.sort((a,b)=>a.i-b.i).forEach(r=>arr.splice(Math.min(r.i,arr.length),0,r.it));return {items:arr}}));
+  }
+  openEdit(id){const it=this.state.items.find(x=>x.id===id);if(!it)return;this.setState({sheet:{mode:'edit',id,value:it.title,touched:false},open:null})}
+  save(){
+    const s=this.state.sheet;if(!s)return;const v=s.value.trim();
+    if(!v){this.setState({sheet:{...s,touched:true}});return}
+    if(s.mode==='edit'){
+      const old=(this.state.items.find(x=>x.id===s.id)||{}).title;
+      if(old===v){this.setState({sheet:null});return}
+      this.setState(st=>({items:st.items.map(x=>x.id===s.id?{...x,title:v}:x),sheet:null}));
+      this.showToast('Изменения сохранены',()=>this.setState(st=>({items:st.items.map(x=>x.id===s.id?{...x,title:old}:x)})));
+    }else{
+      const id=this.nextId++;
+      this.setState(st=>({items:[{id,title:v,sub:'0 устройств',icon:'meeting_room',st:'ok',stText:'Новая'},...st.items],sheet:null,q:''}));
+      this.showToast(`«${v}» добавлено`,()=>this.setState(st=>({items:st.items.filter(x=>x.id!==id)})));
+    }
+  }
+  renderVals(){
+    const p=this.props||{};
+    const accent=p.accent??'#D4F75F',mode=p.theme==='light'?'light':'dark',hc=!!p.highContrast,dt=p.textSize??'L';
+    const key=[accent,mode,hc,dt].join('|');
+    if(this._key!==key){this._key=key;this._v=buildTheme(accent,mode,hc);this._fs=buildFs(dt);this._dirty=true}
+    const v=this._v,fs=this._fs;
+    const contrast=CON.map(([fg,bg,a,b,min])=>{const r=cr(v[a],v[b]);const ok=r>=min;return {fg,bg,fgCss:`var(--${a})`,bgCss:`var(--${b})`,ratio:r.toFixed(2),min:min+':1',ok,okText:ok?'Проходит':'Не проходит',okColor:ok?'var(--acT)':'var(--err)'}});
+    const pass=contrast.filter(c=>c.ok).length;
+    const s=this.state,W=s.w;
+    const q=s.q.trim().toLowerCase();
+    const visible=q?s.items.filter(x=>x.title.toLowerCase().includes(q)):s.items;
+    const rows=visible.map(it=>{
+      const dragging=s.drag&&s.drag.id===it.id;
+      const dx=dragging?s.drag.dx:(s.open===it.id?-144:0);
+      const checked=!!s.sel[it.id];
+      return {...it,stColor:ST[it.st],tx:`translateX(${dx}px)`,tr:dragging?'none':'transform .3s cubic-bezier(.2,.8,.2,1)',aw:Math.max(144,-dx)+'px',aop:dx<0?1:0,
+        onDown:e=>this.down(it.id,e),onEditAct:()=>this.openEdit(it.id),onDelAct:()=>this.removeIds([it.id]),
+        editing:s.editing,chkBg:checked?'var(--ac)':'transparent',chkBd:checked?'var(--ac)':'var(--t2)',chkIc:checked?'var(--onAc)':'transparent'};
+    });
+    const selIds=Object.keys(s.sel).map(Number);
+    const n=selIds.length;
+    const allSel=visible.length>0&&visible.every(x=>s.sel[x.id]);
+    const sheet=s.sheet,sheetErr=!!(sheet&&sheet.touched&&!sheet.value.trim());
+    const plural=k=>k%10===1&&k%100!==11?'комнату':(k%10>=2&&k%10<=4&&(k%100<10||k%100>=20)?'комнаты':'комнат');
+    const compact=W<375;
+    return {
+      themeLabel:`${mode==='dark'?'Тёмная':'Светлая'} тема · акцент ${v.ac}${hc?' · повышенный контраст':''}`,
+      tokens:TOK.map(([name,k])=>({name,css:`var(--${k})`,hex:v[k]})),
+      contrast,passLabel:`${pass} из ${contrast.length} пар проходят`,
+      dtLabel:`Размер текста: ${DTK[fs.i]}${fs.ax?' · Accessibility':''}`,
+      typeRows:TYPE.map(([name,swift,k,fw,sample])=>({name,swift,meta:`${fs.vars['fs-'+k]} · ${fw}`,fs:`var(--fs-${k})`,fw,ff:k[0]==='n'?'var(--fr)':'var(--ff)',sample})),
+      icons:ICONS.map(([m,sf])=>({m,sf})),
+      checklist:[
+        {req:'Контраст WCAG AA',how:`${pass} из ${contrast.length} пар ≥ порога в текущей теме. Акцентные цвета пересчитываются автоматически под любой выбранный акцент.`,ok:pass===contrast.length},
+        {req:'Светлая, тёмная тема, Increase Contrast',how:'Все цвета — семантические токены с вариантами Any / Dark / High Contrast в Asset Catalog.',ok:true},
+        {req:'Dynamic Type xS…AX5',how:'Только системные стили шрифта; контейнеры с min-height; с AX1 ряды становятся колонкой.',ok:true},
+        {req:'Минимальная ширина 320 pt',how:'Поля 16 на compact; подпись таба скрывается; карточки в одну колонку. Проверьте в песочнице.',ok:true},
+        {req:'Зона касания ≥ 44 × 44 pt',how:'Все кнопки, круг-кнопки, строки и сегменты не ниже 44; тумблер 64 × 44 с учётом отступов.',ok:true},
+        {req:'Состояние не только цветом',how:'Тумблер — положение ручки, статус — слово, ошибка — текст и иконка, выбор — галочка.',ok:true},
+        {req:'Свайпы дублируются',how:'Действия свайпа есть в режиме «Изменить», в шите и в контекстном меню.',ok:true},
+        {req:'Разрушающие действия',how:'Красный цвет role: .destructive; массовое удаление — confirmationDialog; отмена через тост и встряхивание.',ok:true},
+        {req:'VoiceOver',how:'Метки у иконок без подписи; цифра+единица одной фразой; слайдер-действие — кнопка; тост объявляется.',ok:true},
+        {req:'Reduce Motion / Transparency',how:'Анимации заменяются прозрачностью; стекло — на fill.2.',ok:true},
+        {req:'Safe area и Home Indicator',how:'Таб-бар и тост над индикатором; контент прокручивается под таб-бар с отступом 96.',ok:true},
+        {req:'SF Symbols',how:'В коде — системные символы (таблица выше). Material Symbols — только для макета.',ok:true}
+      ].map(c=>({...c,icon:c.ok?'check_circle':'error',color:c.ok?'var(--acT)':'var(--err)'})),
+      pw:W+'px',ph:(compact?568:844)+'px',sbH:(compact?24:54)+'px',padX:compact?'16px':'20px',
+      w320Bg:W===320?'var(--sel)':'transparent',w390Bg:W===390?'var(--sel)':'transparent',
+      setW320:()=>this.setState({w:320,open:null}),setW390:()=>this.setState({w:390,open:null}),
+      onReset:()=>{clearTimeout(this.tt);this.setState({items:SEED.map(x=>({...x})),editing:false,sel:{},open:null,toast:null,sheet:null,confirm:false,q:''})},
+      onClearAll:()=>this.removeIds(this.state.items.map(x=>x.id)),
+      editing:s.editing,notEditing:!s.editing,
+      navTitle:s.editing?(n?`Выбрано: ${n}`:'Выберите'):'Комнаты',
+      selectAllLabel:allSel?'Снять выбор':'Выбрать все',
+      onSelectAll:()=>this.setState(st=>{const vis=q?st.items.filter(x=>x.title.toLowerCase().includes(q)):st.items;const all=vis.length&&vis.every(x=>st.sel[x.id]);const sel={};if(!all)vis.forEach(x=>sel[x.id]=true);return {sel}}),
+      onToggleEdit:()=>{if(!this.state.items.length&&!this.state.editing)return;this.setState(st=>({editing:!st.editing,sel:{},open:null}))},
+      editBtnColor:s.items.length?'var(--acT)':'var(--t3)',
+      onAdd:()=>this.setState({sheet:{mode:'new',value:'',touched:false},open:null}),
+      showSearch:s.items.length>0,q:s.q,hasQuery:!!s.q,
+      onQuery:e=>this.setState({q:e.target.value,open:null}),onClearQuery:()=>this.setState({q:''}),
+      rows,isEmpty:s.items.length===0,noResults:s.items.length>0&&visible.length===0,
+      noResultsText:`По запросу «${s.q.trim()}» нет комнат`,
+      toast:!!s.toast,toastText:s.toast?s.toast.text:'',toastUndo:!!(s.toast&&s.toast.undo),onUndo:()=>this.undo(),
+      showTabLabel:!compact&&!fs.ax,tabPadR:(!compact&&!fs.ax)?'16px':'0px',
+      selInfo:n?`Выбрано: ${n}`:'Ничего не выбрано',delDisabled:n===0,
+      delBg:n?'var(--errS)':'var(--f0)',delColor:n?'var(--err)':'var(--t3)',
+      onAskDelete:()=>{if(!n)return;if(n===1){this.removeIds(selIds);return}this.setState({confirm:true})},
+      confirmOpen:s.confirm,confirmText:`Удалить ${n} ${plural(n)} вместе с устройствами? Отменить можно в течение 5 секунд.`,confirmBtn:`Удалить ${n} ${plural(n)}`,
+      onConfirmDelete:()=>this.removeIds(selIds),onCancelConfirm:()=>this.setState({confirm:false}),
+      sheetOpen:!!sheet,sheetTitle:sheet&&sheet.mode==='edit'?'Комната':'Новая комната',sheetValue:sheet?sheet.value:'',
+      sheetIsEdit:!!(sheet&&sheet.mode==='edit'),sheetError:sheetErr,inputRing:sheetErr?'var(--err)':'transparent',
+      saveColor:sheet&&sheet.value.trim()?'var(--acT)':'var(--t3)',
+      onSheetInput:e=>{const value=e.target.value;this.setState(st=>({sheet:{...st.sheet,value,touched:true}}))},
+      onSave:()=>this.save(),onCancelSheet:()=>this.setState({sheet:null}),
+      onSheetDelete:()=>{const id=this.state.sheet&&this.state.sheet.id;if(id!=null)this.removeIds([id])}
+    };
+  }
+}
+</script>
+</body>
+</html>

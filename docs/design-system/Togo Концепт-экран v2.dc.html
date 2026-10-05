@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="width:300px;height:620px;border-radius:44px;padding:10px;box-sizing:border-box;background:#0A0A0A;box-shadow:0 20px 50px rgba(0,0,0,.35)">
+<div style="width:100%;height:100%;border-radius:36px;overflow:hidden;background:{{ t.bg }};color:{{ t.ink }};font-family:-apple-system,'SF Pro Text',system-ui,sans-serif;display:flex;flex-direction:column;position:relative">
+  <div style="display:flex;justify-content:space-between;padding:12px 22px 0;font-size:12px;font-weight:600"><span>9:41</span><span>●●● ▮</span></div>
+
+  <!-- R · Одна кнопка -->
+  <sc-if value="{{ isR }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;flex-direction:column;min-height:0;padding:10px 20px 20px;font-variant-numeric:tabular-nums">
+      <div style="display:flex;justify-content:space-between;align-items:center"><span style="display:flex;align-items:center;gap:8px"><span style="width:24px;height:24px;border-radius:50%;background:{{ t.accentSubtle }};color:{{ t.accentSubtleText }};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800">С</span><span style="font-size:13px;font-weight:600">Стич</span></span><span style="font-size:12px;color:{{ t.ink2 }}">···</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px">
+        <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:12px;color:{{ t.ink2 }}">На улице были</span><span style="font-size:72px;font-weight:600;letter-spacing:-0.04em;line-height:1;white-space:nowrap">2:10</span><span style="font-size:12px;color:{{ t.ink2 }}">назад · как обычно</span></div>
+        <div style="display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:10px;background:{{ t.warnSubtle }};color:{{ t.warn }};font-size:13px"><span style="width:8px;height:8px;border-radius:50%;background:{{ t.warn }}"></span><span>Натощак ещё 19 мин — мама дала дозу в 8:00</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;align-items:center">
+        <div style="width:100%;height:72px;border-radius:18px;background:{{ t.accent }};color:{{ t.onAccent }};box-shadow:0 5px 0 {{ t.accentPressed }};display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800">Просится</div>
+        <span style="font-size:13px;color:{{ t.ink2 }}">Гулять &nbsp;·&nbsp; Что-то ещё</span>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- S · Одна фраза -->
+  <sc-if value="{{ isS }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;flex-direction:column;min-height:0;padding:10px 20px 20px;font-variant-numeric:tabular-nums">
+      <div style="display:flex;justify-content:space-between;align-items:center"><span style="display:flex;align-items:center;gap:8px"><span style="width:24px;height:24px;border-radius:50%;background:{{ t.accentSubtle }};color:{{ t.accentSubtleText }};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800">С</span><span style="font-size:13px;font-weight:600">Стич</span></span><span style="font-size:12px;color:{{ t.ink2 }}">···</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:22px">
+        <span style="font-size:12px;color:{{ t.ink2 }}">На улице были <span style="color:{{ t.ink }};font-weight:600">2 ч 10 мин</span> назад</span>
+        <span style="font-size:30px;font-weight:600;letter-spacing:-0.02em;line-height:1.2;text-wrap:balance">Пока ничего не нужно. Следующий выход — около 11.</span>
+        <span style="font-size:13px;color:{{ t.warn }};line-height:1.4">До 8:30 не кормить: мама дала дозу в 8:00.</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;align-items:center">
+        <div style="width:100%;height:64px;border-radius:16px;background:{{ t.card }};box-shadow:0 4px 0 {{ t.line }},inset 0 0 0 1.5px {{ t.ink }};display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700">Просится раньше</div>
+        <span style="font-size:13px;color:{{ t.ink2 }}">Записать что-то другое</span>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- P · Прибор -->
+  <sc-if value="{{ isP }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;flex-direction:column;min-height:0;padding:8px 14px 12px;gap:10px;font-variant-numeric:tabular-nums">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:0 2px"><span style="display:flex;align-items:center;gap:8px"><span style="width:26px;height:26px;border-radius:50%;background:{{ t.accentSubtle }};color:{{ t.accentSubtleText }};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800">С</span><span style="font-size:13px;font-weight:600">Стич</span></span><span style="display:flex;align-items:center;gap:6px;font-size:10px;color:{{ t.ink2 }};letter-spacing:.06em;text-transform:uppercase"><span style="width:7px;height:7px;border-radius:50%;background:{{ t.accent }};box-shadow:0 0 6px {{ t.accent }}"></span>семья в сети</span></div>
+
+      <div style="border-radius:16px;background:{{ t.card }};box-shadow:{{ t.shadow }},inset 0 0 0 1px {{ t.line }};padding:14px 16px 12px;display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;justify-content:space-between;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:{{ t.ink2 }}"><span>С последнего выхода</span><span>7:10 → сейчас</span></div>
+        <div style="display:flex;align-items:baseline;gap:8px"><span style="font-size:52px;font-weight:600;letter-spacing:-0.03em;line-height:1;white-space:nowrap">2:10</span><span style="font-size:13px;color:{{ t.ink2 }}">ч:мин</span><span style="flex:1"></span><span style="font-size:11px;padding:4px 8px;border-radius:6px;background:{{ t.accentSubtle }};color:{{ t.accentSubtleText }};font-weight:600;white-space:nowrap">как обычно</span></div>
+        <div style="display:flex;gap:3px;align-items:center;margin-top:4px"><span style="width:28px;height:8px;border-radius:2px;background:{{ t.accent }}"></span><span style="width:28px;height:8px;border-radius:2px;background:{{ t.accent }}"></span><span style="width:28px;height:8px;border-radius:2px;background:{{ t.accent }}"></span><span style="width:28px;height:8px;border-radius:2px;background:{{ t.line }}"></span><span style="width:28px;height:8px;border-radius:2px;background:{{ t.line }}"></span><span style="font-size:10px;color:{{ t.ink2 }};margin-left:8px">3 из 5 выходов за день</span></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="border-radius:12px;background:{{ t.card }};box-shadow:{{ t.shadow }},inset 0 0 0 1px {{ t.line }};padding:10px 12px;display:flex;flex-direction:column;gap:3px"><span style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:{{ t.ink2 }}">Доза 8:00</span><span style="font-size:17px;font-weight:600">дала мама</span><span style="font-size:10px;color:{{ t.ink2 }}">следующая 20:00</span></div>
+        <div style="border-radius:12px;background:{{ t.warnSubtle }};box-shadow:inset 0 0 0 1px {{ t.warn }};color:{{ t.warn }};padding:10px 12px;display:flex;flex-direction:column;gap:3px"><span style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;opacity:.85">Натощак</span><span style="font-size:17px;font-weight:600">ещё 0:19</span><span style="font-size:10px;opacity:.85">еда откроется в 8:30</span></div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:0;border-radius:12px;background:{{ t.card }};box-shadow:{{ t.shadow }},inset 0 0 0 1px {{ t.line }};padding:4px 12px;font-size:12px;flex:1;min-height:0;overflow:hidden">
+        <div style="display:grid;grid-template-columns:40px 1fr auto;gap:10px;padding:8px 0;border-bottom:1px solid {{ t.line }}"><span style="color:{{ t.ink2 }}">7:10</span><span style="white-space:nowrap">На улице · 18 мин</span><span style="color:{{ t.ink2 }};white-space:nowrap">пописал</span></div>
+        <div style="display:grid;grid-template-columns:40px 1fr auto;gap:10px;padding:8px 0;border-bottom:1px solid {{ t.line }}"><span style="color:{{ t.ink2 }}">8:00</span><span>Доза · левотироксин</span><span style="color:{{ t.accentText }}">мама ✓</span></div>
+        <div style="display:grid;grid-template-columns:40px 1fr auto;gap:10px;padding:8px 0;color:{{ t.ink2 }}"><span>~11</span><span>обычно выходите</span><span>план</span></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="height:60px;border-radius:12px;background:{{ t.accent }};color:{{ t.onAccent }};box-shadow:0 4px 0 {{ t.accentPressed }};padding:8px 12px;display:flex;flex-direction:column;justify-content:space-between"><span style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;opacity:.7">у двери</span><span style="font-size:17px;font-weight:800">Просится</span></div>
+        <div style="height:60px;border-radius:12px;background:{{ t.card }};box-shadow:0 4px 0 {{ t.line }},inset 0 0 0 1.5px {{ t.ink }};padding:8px 12px;display:flex;flex-direction:column;justify-content:space-between"><span style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:{{ t.ink2 }}">таймер</span><span style="font-size:17px;font-weight:700">Гулять</span></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+        <div style="height:46px;border-radius:10px;background:{{ t.card }};box-shadow:0 3px 0 {{ t.line }},inset 0 0 0 1px {{ t.line }};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600">Стул</div>
+        <div style="height:46px;border-radius:10px;background:{{ t.card }};box-shadow:0 3px 0 {{ t.line }},inset 0 0 0 1px {{ t.line }};display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:12px;font-weight:600;opacity:.45">Еда<span style="font-size:8px;font-weight:500">с 8:30</span></div>
+        <div style="height:46px;border-radius:10px;background:{{ t.card }};box-shadow:0 3px 0 {{ t.errSubtle }},inset 0 0 0 1px {{ t.err }};color:{{ t.err }};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;white-space:nowrap">Инцидент</div>
+        <div style="height:46px;border-radius:10px;background:{{ t.card }};box-shadow:0 3px 0 {{ t.line }},inset 0 0 0 1px {{ t.line }};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600">Ещё</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- Q · Шкала -->
+  <sc-if value="{{ isQ }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;flex-direction:column;min-height:0;padding:8px 14px 12px;gap:10px;font-variant-numeric:tabular-nums">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:0 2px"><span style="display:flex;align-items:center;gap:8px"><span style="width:26px;height:26px;border-radius:50%;background:{{ t.accentSubtle }};color:{{ t.accentSubtleText }};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800">С</span><span style="font-size:13px;font-weight:600">Стич · чт</span></span><span style="font-size:11px;color:{{ t.ink2 }}">⚙︎</span></div>
+
+      <div style="display:flex;flex-direction:column;gap:2px;padding:6px 4px 0"><span style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:{{ t.ink2 }}">На улице были</span><div style="display:flex;align-items:baseline;gap:8px"><span style="font-size:60px;font-weight:600;letter-spacing:-0.03em;line-height:1;white-space:nowrap">2 ч 10</span><span style="font-size:13px;color:{{ t.ink2 }}">мин назад</span></div></div>
+
+      <div style="position:relative;height:84px;border-radius:12px;background:{{ t.card }};box-shadow:{{ t.shadow }},inset 0 0 0 1px {{ t.line }};overflow:hidden">
+        <div style="position:absolute;left:12px;right:12px;top:40px;height:1px;background:{{ t.line }}"></div>
+        <div style="position:absolute;left:12px;right:12px;top:34px;display:flex;justify-content:space-between"><span style="width:1px;height:13px;background:{{ t.ink2 }}"></span><span style="width:1px;height:7px;background:{{ t.line }}"></span><span style="width:1px;height:7px;background:{{ t.line }}"></span><span style="width:1px;height:13px;background:{{ t.ink2 }}"></span><span style="width:1px;height:7px;background:{{ t.line }}"></span><span style="width:1px;height:7px;background:{{ t.line }}"></span><span style="width:1px;height:13px;background:{{ t.ink2 }}"></span><span style="width:1px;height:7px;background:{{ t.line }}"></span><span style="width:1px;height:7px;background:{{ t.line }}"></span><span style="width:1px;height:13px;background:{{ t.ink2 }}"></span><span style="width:1px;height:7px;background:{{ t.line }}"></span><span style="width:1px;height:7px;background:{{ t.line }}"></span><span style="width:1px;height:13px;background:{{ t.ink2 }}"></span></div>
+        <div style="position:absolute;left:12px;right:12px;top:52px;display:flex;justify-content:space-between;font-size:9px;color:{{ t.ink2 }}"><span>6</span><span>9</span><span>12</span><span>15</span><span>18</span></div>
+        <div style="position:absolute;left:34px;top:24px;width:10px;height:10px;border-radius:50%;background:{{ t.accent }}"></div>
+        <div style="position:absolute;left:54px;top:24px;width:10px;height:10px;border-radius:50%;background:{{ t.accent }}"></div>
+        <div style="position:absolute;left:66px;top:24px;width:10px;height:10px;border-radius:50%;background:{{ t.warn }}"></div>
+        <div style="position:absolute;left:92px;top:10px;bottom:10px;width:2px;background:{{ t.ink }}"></div>
+        <div style="position:absolute;left:84px;top:4px;font-size:9px;font-weight:700">9:41</div>
+        <div style="position:absolute;left:118px;top:25px;width:8px;height:8px;border-radius:50%;border:1.5px dashed {{ t.ink2 }};box-sizing:border-box"></div>
+        <div style="position:absolute;left:170px;top:25px;width:8px;height:8px;border-radius:50%;border:1.5px dashed {{ t.ink2 }};box-sizing:border-box"></div>
+        <div style="position:absolute;left:228px;top:25px;width:8px;height:8px;border-radius:50%;border:1.5px dashed {{ t.ink2 }};box-sizing:border-box"></div>
+        <div style="position:absolute;right:12px;top:66px;font-size:9px;color:{{ t.ink2 }}">● выход · доза &nbsp; ● натощак &nbsp; ◌ план</div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="border-radius:12px;background:{{ t.card }};box-shadow:{{ t.shadow }},inset 0 0 0 1px {{ t.line }};padding:10px 12px;display:flex;flex-direction:column;gap:3px"><span style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:{{ t.ink2 }}">Доза 8:00</span><span style="font-size:16px;font-weight:600">мама ✓</span></div>
+        <div style="border-radius:12px;background:{{ t.warnSubtle }};box-shadow:inset 0 0 0 1px {{ t.warn }};color:{{ t.warn }};padding:10px 12px;display:flex;flex-direction:column;gap:3px"><span style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;opacity:.85">Натощак</span><span style="font-size:16px;font-weight:600">до 8:30</span></div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;border-radius:12px;background:{{ t.card }};box-shadow:{{ t.shadow }},inset 0 0 0 1px {{ t.line }};padding:4px 12px;font-size:12px;min-height:0;overflow:hidden"><div style="display:grid;grid-template-columns:40px 1fr auto;gap:10px;padding:8px 0;border-bottom:1px solid {{ t.line }}"><span style="color:{{ t.ink2 }}">7:10</span><span style="white-space:nowrap">На улице · 18 мин</span><span style="color:{{ t.ink2 }};white-space:nowrap">пописал</span></div><div style="display:grid;grid-template-columns:40px 1fr auto;gap:10px;padding:8px 0;color:{{ t.ink2 }}"><span>ритм</span><span>учусь · день 2 из 4</span><span>послезавтра</span></div></div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="height:60px;border-radius:12px;background:{{ t.accent }};color:{{ t.onAccent }};box-shadow:0 4px 0 {{ t.accentPressed }};display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800">Просится</div>
+        <div style="height:60px;border-radius:12px;background:{{ t.card }};box-shadow:0 4px 0 {{ t.line }},inset 0 0 0 1.5px {{ t.ink }};display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700">Гулять</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+        <div style="height:46px;border-radius:10px;background:{{ t.card }};box-shadow:0 3px 0 {{ t.line }},inset 0 0 0 1px {{ t.line }};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600">Стул</div>
+        <div style="height:46px;border-radius:10px;background:{{ t.card }};box-shadow:0 3px 0 {{ t.line }},inset 0 0 0 1px {{ t.line }};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;opacity:.45">Еда</div>
+        <div style="height:46px;border-radius:10px;background:{{ t.card }};box-shadow:0 3px 0 {{ t.errSubtle }},inset 0 0 0 1px {{ t.err }};color:{{ t.err }};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;white-space:nowrap">Инцидент</div>
+        <div style="height:46px;border-radius:10px;background:{{ t.card }};box-shadow:0 3px 0 {{ t.line }},inset 0 0 0 1px {{ t.line }};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600">Ещё</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- M · Хара · предложение -->
+  <sc-if value="{{ isM }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;flex-direction:column;min-height:0;padding:26px 24px 22px">
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:{{ t.ink2 }}"><span>Четверг, 4 октября</span><span>Стич</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:22px">
+        <p style="margin:0;font-size:30px;font-weight:400;line-height:1.25;letter-spacing:-0.02em;text-wrap:balance">Стич был на улице <span style="font-weight:600">2 часа 10 минут</span> назад. Для него это обычно.</p>
+        <p style="margin:0;font-size:15px;line-height:1.55;color:{{ t.ink2 }}">В восемь мама дала таблетку — кормить можно <span style="color:{{ t.warn }}">после 8:30</span>. Утром гуляли 18 минут, сходил по-большому.</p>
+        <p style="margin:0;font-size:13px;line-height:1.5;color:{{ t.ink2 }}">Второй день учусь его ритму. Подсказки «просится» — послезавтра.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;align-items:center;justify-content:space-between;height:56px;padding:0 6px 0 20px;border-radius:999px;background:{{ t.card }};box-shadow:{{ t.shadow }}"><span style="font-size:17px;font-weight:600">Просится</span><span style="width:44px;height:44px;border-radius:50%;background:{{ t.accent }};color:{{ t.onAccent }};display:flex;align-items:center;justify-content:center;font-size:17px">→</span></div>
+        <div style="display:flex;justify-content:space-between;padding:0 8px;font-size:14px"><span>Гулять</span><span style="color:{{ t.ink2 }}">Стул</span><span style="color:{{ t.ink2 }}">Еда</span><span style="color:{{ t.err }}">Случилось</span><span style="color:{{ t.ink2 }}">···</span></div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- N · Хара · расписание -->
+  <sc-if value="{{ isN }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;flex-direction:column;min-height:0;padding:24px 22px 20px;gap:18px">
+      <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:12px;color:{{ t.ink2 }}">Стич · четверг</span><span style="font-size:40px;font-weight:400;letter-spacing:-0.03em;line-height:1;white-space:nowrap">2 ч 10 мин <span style="font-size:14px;color:{{ t.ink2 }};letter-spacing:0">с выхода</span></span></div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:0;font-size:14px;line-height:1.4">
+        <div style="display:grid;grid-template-columns:44px 1fr;gap:12px;padding:9px 0;border-bottom:1px solid {{ t.line }}"><span style="color:{{ t.ink2 }}">7:10</span><span>на улице 18 мин <span style="color:{{ t.ink2 }}">· пописал, стул</span></span></div>
+        <div style="display:grid;grid-template-columns:44px 1fr;gap:12px;padding:9px 0;border-bottom:1px solid {{ t.line }}"><span style="color:{{ t.ink2 }}">8:00</span><span>доза <span style="color:{{ t.ink2 }}">· мама</span></span></div>
+        <div style="display:grid;grid-template-columns:44px 1fr;gap:12px;padding:9px 0;border-bottom:1px solid {{ t.line }};color:{{ t.warn }}"><span>8:30</span><span>до этого не кормить</span></div>
+        <div style="display:grid;grid-template-columns:44px 1fr;gap:12px;padding:9px 0;border-bottom:1px solid {{ t.line }};align-items:center"><span style="display:flex;align-items:center;gap:6px;font-weight:600"><span style="width:8px;height:8px;border-radius:50%;background:{{ t.accent }}"></span>9:41</span><span style="height:1px;background:{{ t.accent }}"></span></div>
+        <div style="display:grid;grid-template-columns:44px 1fr;gap:12px;padding:9px 0;border-bottom:1px solid {{ t.line }};color:{{ t.ink2 }}"><span>~11</span><span>обычно выходите</span></div>
+        <div style="display:grid;grid-template-columns:44px 1fr;gap:12px;padding:9px 0;border-bottom:1px solid {{ t.line }};color:{{ t.ink2 }}"><span>13:00</span><span>еда · 65 г</span></div>
+        <div style="display:grid;grid-template-columns:44px 1fr;gap:12px;padding:9px 0;color:{{ t.ink2 }}"><span>20:00</span><span>доза</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;gap:8px"><div style="flex:1;height:52px;border-radius:14px;background:{{ t.accent }};color:{{ t.onAccent }};display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600">Просится</div><div style="flex:1;height:52px;border-radius:14px;border:1px solid {{ t.ink }};display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:500">Гулять</div></div>
+        <div style="display:flex;gap:8px;font-size:13px"><span style="flex:1;height:40px;border-radius:12px;border:1px solid {{ t.line }};display:flex;align-items:center;justify-content:center">Стул</span><span style="flex:1;height:40px;border-radius:12px;border:1px solid {{ t.line }};display:flex;align-items:center;justify-content:center">Еда</span><span style="flex:1;height:40px;border-radius:12px;border:1px solid {{ t.line }};color:{{ t.err }};display:flex;align-items:center;justify-content:center">Случилось</span><span style="width:40px;height:40px;border-radius:12px;border:1px solid {{ t.line }};display:flex;align-items:center;justify-content:center">···</span></div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- O · Хара · две половины -->
+  <sc-if value="{{ isO }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;flex-direction:column;min-height:0">
+      <div style="flex:1.1;display:flex;flex-direction:column;justify-content:flex-end;padding:20px 24px 22px;gap:8px;background:{{ t.card }}">
+        <span style="font-size:12px;color:{{ t.ink2 }}">Стич · на улице были</span>
+        <span style="font-size:64px;font-weight:300;letter-spacing:-0.04em;line-height:.95;white-space:nowrap">2<span style="font-size:22px;font-weight:400;letter-spacing:0;margin:0 6px 0 3px">ч</span>10<span style="font-size:22px;font-weight:400;letter-spacing:0;margin-left:3px">мин</span></span>
+        <span style="font-size:13px;color:{{ t.ink2 }}">назад · как обычно · <span style="color:{{ t.accentText }}">учусь ритму, день 2 из 4</span></span>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;padding:18px 24px 20px;gap:14px">
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:14px;line-height:1.45;flex:1">
+          <div style="display:flex;gap:12px"><span style="color:{{ t.ink2 }};width:40px">8:00</span><span>доза · мама</span></div>
+          <div style="display:flex;gap:12px;color:{{ t.warn }}"><span style="width:40px">8:30</span><span>не кормить до</span></div>
+          <div style="display:flex;gap:12px"><span style="color:{{ t.ink2 }};width:40px">7:10</span><span>на улице 18 мин · пописал, стул</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;gap:8px"><div style="flex:1.4;height:54px;border-radius:999px;background:{{ t.accent }};color:{{ t.onAccent }};display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600">Просится</div><div style="flex:1;height:54px;border-radius:999px;border:1px solid {{ t.ink }};display:flex;align-items:center;justify-content:center;font-size:15px">Гулять</div></div>
+          <div style="display:flex;justify-content:space-between;padding:0 10px;font-size:13px;color:{{ t.ink2 }}"><span>Стул</span><span>Еда · 65 г</span><span style="color:{{ t.err }}">Случилось</span><span>Ещё</span></div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- I · Bauhaus -->
+  <sc-if value="{{ isI }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;flex-direction:column;min-height:0;padding:8px 16px 14px;gap:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:lowercase">togo · стич</span><span style="width:12px;height:12px;border-radius:50%;background:{{ t.err }}"></span></div>
+      <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr 1fr;gap:10px;min-height:0">
+        <div style="grid-column:1 / -1;display:flex;align-items:flex-end;gap:12px;padding-bottom:4px;border-bottom:3px solid {{ t.ink }}"><span style="font-size:72px;font-weight:800;letter-spacing:-0.05em;line-height:.85">2:10</span><span style="font-size:12px;line-height:1.3;padding-bottom:4px;color:{{ t.ink2 }}">с последнего<br>выхода · 3 из 5</span></div>
+        <div style="position:relative;background:{{ t.accent }};color:{{ t.onAccent }};padding:12px;display:flex;flex-direction:column;justify-content:space-between"><span style="position:absolute;right:10px;top:10px;width:28px;height:28px;border-radius:50%;background:{{ t.onAccent }};opacity:.9"></span><span style="font-size:11px;font-weight:700">доза · 8:00</span><span style="font-size:15px;font-weight:800;line-height:1.1">дала<br>мама</span></div>
+        <div style="position:relative;background:{{ t.warnSubtle }};color:{{ t.warn }};padding:12px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden"><span style="position:absolute;right:-14px;top:-14px;width:0;height:0;border-left:36px solid transparent;border-right:36px solid transparent;border-bottom:62px solid {{ t.warn }};opacity:.35;transform:rotate(45deg)"></span><span style="font-size:11px;font-weight:700">натощак</span><span style="font-size:22px;font-weight:800;letter-spacing:-0.03em">до 8:30</span></div>
+        <div style="background:{{ t.card }};box-shadow:{{ t.shadow }};padding:12px;display:flex;flex-direction:column;justify-content:space-between"><span style="font-size:11px;font-weight:700;color:{{ t.ink2 }}">учусь ритму</span><div style="display:flex;gap:3px"><span style="width:14px;height:14px;background:{{ t.ink }}"></span><span style="width:14px;height:14px;background:{{ t.ink }}"></span><span style="width:14px;height:14px;border:2px solid {{ t.ink }};box-sizing:border-box"></span><span style="width:14px;height:14px;border:2px solid {{ t.ink }};box-sizing:border-box"></span></div><span style="font-size:11px;color:{{ t.ink2 }}">день 2 из 4</span></div>
+        <div style="background:{{ t.card }};box-shadow:{{ t.shadow }};padding:12px;display:flex;flex-direction:column;justify-content:space-between"><span style="font-size:11px;font-weight:700;color:{{ t.ink2 }}">7:10 · на улице</span><span style="font-size:13px;font-weight:600;line-height:1.2">18 мин<br>пописал, стул</span></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:56px 48px;gap:6px">
+        <div style="grid-column:1 / 3;background:{{ t.ink }};color:{{ t.bg }};display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;letter-spacing:.02em">просится</div>
+        <div style="background:{{ t.accent }};color:{{ t.onAccent }};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800">гулять</div>
+        <div style="border:3px solid {{ t.ink }};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700">стул</div>
+        <div style="border:3px solid {{ t.ink }};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700">еда</div>
+        <div style="border:3px solid {{ t.err }};color:{{ t.err }};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700">инцидент</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- J · Swiss -->
+  <sc-if value="{{ isJ }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;flex-direction:column;min-height:0;padding:8px 16px 14px">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;font-size:9px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:{{ t.ink2 }};padding-bottom:6px;border-bottom:1px solid {{ t.ink }}"><span>Togo</span><span>Стич</span><span>Четверг</span><span style="text-align:right">04.10</span></div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:16px 0 12px;border-bottom:1px solid {{ t.line }}">
+        <span style="grid-column:1 / 2;font-size:9px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:{{ t.ink2 }};line-height:1.4">На улице<br>были</span>
+        <span style="grid-column:2 / 5;font-size:56px;font-weight:700;letter-spacing:-0.04em;line-height:.9;white-space:nowrap">2 ч 10</span>
+        <span style="grid-column:2 / 5;font-size:11px;color:{{ t.ink2 }}">минут назад · 3 из 5 за день — как обычно</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:12px 0;border-bottom:1px solid {{ t.line }}">
+        <span style="font-size:9px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:{{ t.ink2 }}">Доза</span><span style="grid-column:2 / 5;font-size:13px;line-height:1.3">8:00 · Левотироксин · <span style="color:{{ t.accentText }};font-weight:600">мама</span></span>
+        <span style="font-size:9px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:{{ t.warn }}">Натощак</span><span style="grid-column:2 / 5;font-size:13px;line-height:1.3;color:{{ t.warn }}">до 8:30 · потом еда 65 г</span>
+        <span style="font-size:9px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:{{ t.ink2 }}">Ритм</span><span style="grid-column:2 / 5;display:flex;align-items:center;gap:8px;font-size:13px"><span style="display:flex;gap:2px"><span style="width:18px;height:6px;background:{{ t.accent }}"></span><span style="width:18px;height:6px;background:{{ t.accent }}"></span><span style="width:18px;height:6px;background:{{ t.line }}"></span><span style="width:18px;height:6px;background:{{ t.line }}"></span></span>учусь · 2 из 4</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:12px 0;flex:1">
+        <span style="font-size:9px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:{{ t.ink2 }}">Утро</span><span style="grid-column:2 / 5;font-size:13px;line-height:1.3">7:10 · На улице 18 мин · пописал, стул · сел у двери</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+        <div style="grid-column:1 / 3;height:56px;background:{{ t.accent }};color:{{ t.onAccent }};display:flex;align-items:flex-end;padding:8px;font-size:15px;font-weight:700">Просится</div>
+        <div style="grid-column:3 / 5;height:56px;background:{{ t.ink }};color:{{ t.bg }};display:flex;align-items:flex-end;padding:8px;font-size:15px;font-weight:700">Гулять</div>
+        <div style="height:44px;border-top:1px solid {{ t.ink }};display:flex;align-items:flex-end;padding-bottom:6px;font-size:11px;font-weight:600">Стул</div>
+        <div style="height:44px;border-top:1px solid {{ t.ink }};display:flex;align-items:flex-end;padding-bottom:6px;font-size:11px;font-weight:600">Еда</div>
+        <div style="height:44px;border-top:1px solid {{ t.err }};color:{{ t.err }};display:flex;align-items:flex-end;padding-bottom:6px;font-size:11px;font-weight:600">Инцидент</div>
+        <div style="height:44px;border-top:1px solid {{ t.ink }};display:flex;align-items:flex-end;padding-bottom:6px;font-size:11px;font-weight:600">Ещё</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- K · Rams -->
+  <sc-if value="{{ isK }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;flex-direction:column;min-height:0;padding:10px 16px 14px;gap:12px">
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;color:{{ t.ink2 }}"><span>Стич</span><span style="width:8px;height:8px;border-radius:50%;background:{{ t.accent }}"></span></div>
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:14px">
+        <div style="width:184px;height:184px;border-radius:50%;background:{{ t.card }};box-shadow:{{ t.shadow }},inset 0 0 0 1px {{ t.line }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;position:relative">
+          <span style="position:absolute;top:14px;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:{{ t.ink2 }}">на улице были</span>
+          <span style="font-size:44px;font-weight:600;letter-spacing:-0.03em;line-height:1;white-space:nowrap">2:10</span>
+          <span style="font-size:11px;color:{{ t.ink2 }}">назад</span>
+          <span style="position:absolute;bottom:16px;display:flex;gap:4px"><span style="width:6px;height:6px;border-radius:50%;background:{{ t.accent }}"></span><span style="width:6px;height:6px;border-radius:50%;background:{{ t.accent }}"></span><span style="width:6px;height:6px;border-radius:50%;background:{{ t.accent }}"></span><span style="width:6px;height:6px;border-radius:50%;background:{{ t.line }}"></span><span style="width:6px;height:6px;border-radius:50%;background:{{ t.line }}"></span></span>
+        </div>
+        <div style="display:flex;gap:28px;font-size:11px;color:{{ t.ink2 }}"><span style="display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-size:15px;font-weight:600;color:{{ t.ink }}">8:00</span>доза · мама</span><span style="display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-size:15px;font-weight:600;color:{{ t.warn }}">8:30</span>натощак до</span><span style="display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-size:15px;font-weight:600;color:{{ t.ink }}">2/4</span>учусь ритму</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;align-items:center">
+        <div style="display:flex;gap:14px">
+          <div style="width:88px;height:88px;border-radius:50%;background:{{ t.accent }};color:{{ t.onAccent }};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;box-shadow:0 2px 0 rgba(0,0,0,.25)">Просится</div>
+          <div style="width:88px;height:88px;border-radius:50%;background:{{ t.card }};box-shadow:{{ t.shadow }},inset 0 0 0 1px {{ t.line }},0 2px 0 rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600">Гулять</div>
+        </div>
+        <div style="display:flex;gap:10px">
+          <div style="width:58px;height:58px;border-radius:50%;background:{{ t.card }};box-shadow:{{ t.shadow }},inset 0 0 0 1px {{ t.line }};display:flex;align-items:center;justify-content:center;font-size:10px">Стул</div>
+          <div style="width:58px;height:58px;border-radius:50%;background:{{ t.card }};box-shadow:{{ t.shadow }},inset 0 0 0 1px {{ t.line }};display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px">Еда<span style="font-size:8px;color:{{ t.ink2 }}">65 г</span></div>
+          <div style="width:58px;height:58px;border-radius:50%;background:{{ t.card }};box-shadow:{{ t.shadow }},inset 0 0 0 1px {{ t.err }};color:{{ t.err }};display:flex;align-items:center;justify-content:center;font-size:10px">!</div>
+          <div style="width:58px;height:58px;border-radius:50%;background:{{ t.card }};box-shadow:{{ t.shadow }},inset 0 0 0 1px {{ t.line }};display:flex;align-items:center;justify-content:center;font-size:10px">···</div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- L · Hara -->
+  <sc-if value="{{ isL }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;flex-direction:column;min-height:0;padding:28px 24px 20px;gap:18px">
+      <span style="font-size:11px;color:{{ t.ink2 }};letter-spacing:.06em">стич · четверг</span>
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:20px">
+        <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;color:{{ t.ink2 }}">на улице были</span><span style="font-size:48px;font-weight:300;letter-spacing:-0.02em;line-height:1;white-space:nowrap">2 ч 10 мин</span><span style="font-size:13px;color:{{ t.ink2 }}">назад</span></div>
+        <div style="width:40px;height:1px;background:{{ t.line }}"></div>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;line-height:1.5">
+          <div style="display:flex;gap:14px"><span style="color:{{ t.ink2 }};width:36px">8:00</span><span>доза, дала мама</span></div>
+          <div style="display:flex;gap:14px"><span style="color:{{ t.warn }};width:36px">8:30</span><span style="color:{{ t.warn }}">до этого не кормить</span></div>
+          <div style="display:flex;gap:14px"><span style="color:{{ t.ink2 }};width:36px">7:10</span><span>на улице 18 минут</span></div>
+        </div>
+        <div style="width:40px;height:1px;background:{{ t.line }}"></div>
+        <span style="font-size:12px;color:{{ t.ink2 }};line-height:1.5">Учусь ритму Стича, второй день из четырёх.<br>Подсказки «просится» появятся послезавтра.</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid {{ t.ink }}"><span style="font-size:20px;font-weight:500">Просится</span><span style="width:36px;height:36px;border-radius:50%;background:{{ t.accent }};color:{{ t.onAccent }};display:flex;align-items:center;justify-content:center;font-size:16px">→</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:14px"><span>Гулять</span><span style="color:{{ t.ink2 }}">Стул</span><span style="color:{{ t.ink2 }}">Еда</span><span style="color:{{ t.err }}">Случилось</span><span style="color:{{ t.ink2 }}">···</span></div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- F · Apple HIG -->
+  <sc-if value="{{ isF }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;flex-direction:column;min-height:0">
+      <div style="display:flex;flex-direction:column;gap:14px;padding:8px 16px 0;flex:1;min-height:0;overflow:hidden">
+        <div style="display:flex;justify-content:space-between;align-items:flex-end"><span style="font-size:34px;font-weight:700;letter-spacing:-0.4px;line-height:1">Сегодня</span><span style="width:30px;height:30px;border-radius:50%;background:{{ t.card }};display:flex;align-items:center;justify-content:center;font-size:13px;color:{{ t.accentText }}">⚙︎</span></div>
+        <div style="display:flex;gap:10px">
+          <div style="flex:1;aspect-ratio:1;border-radius:22px;background:{{ t.card }};box-shadow:{{ t.shadow }};padding:14px;display:flex;flex-direction:column;justify-content:space-between"><span style="font-size:11px;font-weight:600;color:{{ t.ink2 }};text-transform:uppercase;letter-spacing:.02em">На улице</span><span style="font-size:21px;font-weight:700;letter-spacing:-0.5px;line-height:1;white-space:nowrap">2 ч 10 мин</span><span style="font-size:11px;color:{{ t.ink2 }}">назад · как обычно</span></div>
+          <div style="flex:1;aspect-ratio:1;border-radius:22px;background:{{ t.card }};box-shadow:{{ t.shadow }};padding:14px;display:flex;flex-direction:column;justify-content:space-between"><span style="font-size:11px;font-weight:600;color:{{ t.ink2 }};text-transform:uppercase;letter-spacing:.02em">Натощак</span><span style="font-size:21px;font-weight:700;letter-spacing:-0.5px;line-height:1;color:{{ t.warn }};white-space:nowrap">до 8:30</span><span style="font-size:11px;color:{{ t.ink2 }}">потом еда · 65 г</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:13px;color:{{ t.ink2 }};text-transform:uppercase;letter-spacing:.02em;padding-left:16px">Режим дня</span>
+          <div style="border-radius:12px;background:{{ t.card }};box-shadow:{{ t.shadow }};display:flex;flex-direction:column">
+            <div style="display:flex;align-items:center;gap:12px;padding:11px 16px;font-size:15px"><span style="width:28px;height:28px;border-radius:7px;background:{{ t.accentSubtle }};color:{{ t.accentSubtleText }};display:flex;align-items:center;justify-content:center;font-size:13px">✓</span><span style="flex:1;display:flex;flex-direction:column"><span>Доза · Левотироксин</span><span style="font-size:12px;color:{{ t.ink2 }}">8:00 · мама</span></span></div>
+            <div style="height:1px;background:{{ t.line }};margin-left:56px"></div>
+            <div style="display:flex;align-items:center;gap:12px;padding:11px 16px;font-size:15px"><span style="width:28px;height:28px;border-radius:7px;background:{{ t.warnSubtle }};color:{{ t.warn }};display:flex;align-items:center;justify-content:center;font-size:13px">◷</span><span style="flex:1;display:flex;flex-direction:column"><span>Еда · 65 г</span><span style="font-size:12px;color:{{ t.ink2 }}">после 8:30</span></span><span style="color:{{ t.ink2 }}">›</span></div>
+            <div style="height:1px;background:{{ t.line }};margin-left:56px"></div>
+            <div style="display:flex;align-items:center;gap:12px;padding:11px 16px;font-size:15px"><span style="width:28px;height:28px;border-radius:7px;background:{{ t.sunken }};display:flex;align-items:center;justify-content:center;font-size:13px">◌</span><span style="flex:1;display:flex;flex-direction:column"><span>Учусь ритму</span><span style="font-size:12px;color:{{ t.ink2 }}">2 дня из 4 · 9 выходов</span></span><span style="color:{{ t.ink2 }}">›</span></div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:13px;color:{{ t.ink2 }};text-transform:uppercase;letter-spacing:.02em;padding-left:16px">Утро</span>
+          <div style="border-radius:12px;background:{{ t.card }};box-shadow:{{ t.shadow }};display:flex;align-items:center;gap:12px;padding:11px 16px;font-size:15px"><span style="width:28px;height:28px;border-radius:7px;background:{{ t.accentSubtle }};color:{{ t.accentSubtleText }};display:flex;align-items:center;justify-content:center;font-size:13px">↗</span><span style="flex:1;display:flex;flex-direction:column"><span>На улице · 18 мин</span><span style="font-size:12px;color:{{ t.ink2 }}">7:10 · пописал, стул</span></span><span style="color:{{ t.ink2 }}">›</span></div>
+        </div>
+      </div>
+      <div style="padding:10px 16px 6px;background:{{ t.glass }};backdrop-filter:blur(20px);border-top:1px solid {{ t.line }};display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;gap:8px"><div style="flex:1;height:50px;border-radius:14px;background:{{ t.accent }};color:{{ t.onAccent }};display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600">Просится</div><div style="flex:1;height:50px;border-radius:14px;background:{{ t.accentSubtle }};color:{{ t.accentSubtleText }};display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600">Гулять</div></div>
+        <div style="display:flex;justify-content:space-around;padding:4px 0 2px"><span style="display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;color:{{ t.accentText }}"><span style="font-size:18px">☀︎</span>Сегодня</span><span style="display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;color:{{ t.ink2 }}"><span style="font-size:18px">🐾</span>Стич</span><span style="display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;color:{{ t.ink2 }}"><span style="font-size:18px">▦</span>История</span><span style="display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;color:{{ t.ink2 }}"><span style="font-size:18px">👥</span>Семья</span></div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- G · NN/g -->
+  <sc-if value="{{ isG }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;flex-direction:column;min-height:0;padding:8px 14px 10px;gap:7px">
+      <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:20px;font-weight:700;white-space:nowrap">Чт, 4 окт</span><span style="font-size:12px;padding:5px 9px;border-radius:6px;border:1px solid {{ t.line }}">Настройки</span></div>
+      <div style="padding:12px 14px;border-radius:10px;border:1px solid {{ t.line }};background:{{ t.card }};display:flex;flex-direction:column;gap:4px"><span style="font-size:12px;color:{{ t.ink2 }}">Последний выход на улицу</span><span style="font-size:20px;font-weight:700;white-space:nowrap">2 ч 10 мин назад <span style="font-size:12px;font-weight:400;color:{{ t.ink2 }}">(7:10)</span></span><span style="font-size:11px;color:{{ t.ink2 }}">Обычно каждые 3–4 часа · следующий около 11:00</span></div>
+      <div style="padding:12px 14px;border-radius:10px;border:1px solid {{ t.warn }};background:{{ t.warnSubtle }};display:flex;flex-direction:column;gap:4px"><span style="font-size:13px;font-weight:700;color:{{ t.warn }}">Кормить нельзя до 8:30</span><span style="font-size:11px;color:{{ t.ink }}">Левотироксин дан в 8:00 (мама). 30 минут натощак — кнопка «Покормил» откроется в 8:30.</span></div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <span style="font-size:12px;font-weight:700;color:{{ t.ink2 }}">ЧТО ЗАПИСАТЬ СЕЙЧАС</span>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          <div style="padding:9px 10px;border-radius:10px;background:{{ t.accent }};color:{{ t.onAccent }};display:flex;flex-direction:column;gap:1px"><span style="font-size:14px;font-weight:700">Собака просится</span><span style="font-size:10px">покажу, нужда ли это</span></div>
+          <div style="padding:9px 10px;border-radius:10px;border:1px solid {{ t.ink }};display:flex;flex-direction:column;gap:1px"><span style="font-size:14px;font-weight:700">Идём гулять</span><span style="font-size:10px;color:{{ t.ink2 }}">запустится таймер</span></div>
+          <div style="padding:9px 10px;border-radius:10px;border:1px solid {{ t.line }};display:flex;align-items:center"><span style="font-size:13px;font-weight:600">Сходил по-большому</span></div>
+          <div style="padding:9px 10px;border-radius:10px;border:1px solid {{ t.line }};display:flex;flex-direction:column;gap:1px;opacity:.5"><span style="font-size:13px;font-weight:600">Покормил · 65 г</span><span style="font-size:10px;color:{{ t.ink2 }}">доступно с 8:30</span></div>
+          <div style="padding:9px 10px;border-radius:10px;border:1px solid {{ t.err }};display:flex;justify-content:space-between;align-items:center;grid-column:1 / -1"><span style="font-size:13px;font-weight:600;color:{{ t.err }}">Что-то случилось</span><span style="font-size:10px;color:{{ t.ink2 }}">вырвало · лужа · испугался</span></div>
+        </div>
+      </div>
+      <div style="flex:1"></div>
+      <div style="display:flex;flex-direction:column;gap:2px;font-size:11px">
+        <span style="font-weight:700;color:{{ t.ink2 }}">СЕГОДНЯ ЗАПИСАНО · 2</span>
+        <div style="display:flex;justify-content:space-between;padding:5px 0;border-top:1px solid {{ t.line }}"><span>8:00 · Доза · мама</span><span style="color:{{ t.accentText }};text-decoration:underline">изменить</span></div>
+        <div style="display:flex;justify-content:space-between;padding:5px 0;border-top:1px solid {{ t.line }}"><span>7:10 · На улице 18 мин</span><span style="color:{{ t.accentText }};text-decoration:underline">изменить</span></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:{{ t.ink2 }};padding-top:5px;border-top:1px solid {{ t.line }}"><span style="color:{{ t.ink }};font-weight:700">Сегодня</span><span>Стич</span><span>История</span><span>Семья</span></div>
+    </div>
+  </sc-if>
+
+  <!-- H · Balenciaga -->
+  <sc-if value="{{ isH }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;flex-direction:column;min-height:0;padding:6px 14px 14px;text-transform:uppercase">
+      <div style="display:flex;justify-content:space-between;font-size:10px;font-weight:700;letter-spacing:.14em;padding:6px 0;border-bottom:2px solid {{ t.ink }}"><span>TOGO</span><span style="white-space:nowrap;letter-spacing:.08em">STICH · THU</span><span>⚙</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:0;padding:12px 0">
+        <span style="font-size:11px;font-weight:700;letter-spacing:.14em;color:{{ t.ink2 }}">Last outing</span>
+        <span style="font-size:118px;font-weight:900;letter-spacing:-0.07em;line-height:.82">2:10</span>
+        <span style="font-size:11px;font-weight:700;letter-spacing:.14em;color:{{ t.ink2 }};margin-top:6px">ago · 3/5 today · as usual</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;font-size:10px;font-weight:700;letter-spacing:.1em;border-top:2px solid {{ t.ink }};border-bottom:2px solid {{ t.ink }}">
+        <div style="padding:10px 0;border-right:2px solid {{ t.ink }};display:flex;flex-direction:column;gap:3px"><span style="color:{{ t.ink2 }}">Dose 08:00</span><span>Given — Mom</span></div>
+        <div style="padding:10px 0 10px 10px;display:flex;flex-direction:column;gap:3px"><span style="color:{{ t.ink2 }}">Fasting</span><span style="color:{{ t.warn }}">Until 08:30</span></div>
+        <div style="padding:10px 0;border-right:2px solid {{ t.ink }};border-top:2px solid {{ t.ink }};display:flex;flex-direction:column;gap:3px"><span style="color:{{ t.ink2 }}">Learning</span><span>Day 2 / 4</span></div>
+        <div style="padding:10px 0 10px 10px;border-top:2px solid {{ t.ink }};display:flex;flex-direction:column;gap:3px"><span style="color:{{ t.ink2 }}">On duty</span><span>Mom · 18:00</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;margin-top:10px">
+        <div style="height:58px;background:{{ t.ink }};color:{{ t.bg }};display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:15px;font-weight:900;letter-spacing:.12em"><span>Asking out</span><span>→</span></div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr)">
+          <div style="height:46px;border:2px solid {{ t.ink }};border-top:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;letter-spacing:.1em;background:{{ t.accent }};color:{{ t.onAccent }}">Walk</div>
+          <div style="height:46px;border:2px solid {{ t.ink }};border-top:0;border-left:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;letter-spacing:.1em">Poop</div>
+          <div style="height:46px;border:2px solid {{ t.ink }};border-top:0;border-left:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;letter-spacing:.1em;color:{{ t.ink2 }}">Food</div>
+          <div style="height:46px;border:2px solid {{ t.ink }};border-top:0;border-left:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;letter-spacing:.1em;color:{{ t.err }}">!</div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- A · Один вопрос -->
+  <sc-if value="{{ isA }}" hint-placeholder-val="{{ true }}">
+    <div style="flex:1;display:flex;flex-direction:column;padding:18px 20px 16px;min-height:0">
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:{{ t.ink2 }}"><span>Стич · четверг</span><span>⚙︎</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:6px">
+        <span style="font-size:13px;color:{{ t.ink2 }}">на улице были</span>
+        <span style="font-size:92px;font-weight:800;letter-spacing:-0.05em;line-height:.9">2<span style="font-size:36px;font-weight:600;letter-spacing:-0.02em;margin-left:4px">ч</span> 10<span style="font-size:36px;font-weight:600;letter-spacing:-0.02em;margin-left:4px">м</span></span>
+        <span style="font-size:13px;color:{{ t.ink2 }}">назад · 3 из 5 за день — как обычно</span>
+        <div style="display:flex;gap:4px;margin-top:14px;align-items:center"><div style="flex:1;height:3px;background:{{ t.accent }}"></div><div style="flex:1;height:3px;background:{{ t.accent }}"></div><div style="flex:1;height:3px;background:{{ t.line }}"></div><div style="flex:1;height:3px;background:{{ t.line }}"></div><span style="font-size:10px;color:{{ t.ink2 }};margin-left:6px">учусь ритму · 2 из 4</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;font-size:12px;border-top:1px solid {{ t.line }};padding-top:12px">
+        <div style="display:flex;justify-content:space-between"><span><span style="color:{{ t.ink2 }}">8:00</span> Доза · Левотироксин</span><span style="color:{{ t.accentText }};font-weight:600">мама ✓</span></div>
+        <div style="display:flex;justify-content:space-between"><span><span style="color:{{ t.ink2 }}">8:30</span> Еда · 65 г</span><span style="color:{{ t.warn }};font-weight:600">натощак до 8:30</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px">
+        <div style="height:60px;border-radius:999px;background:{{ t.accent }};color:{{ t.onAccent }};display:flex;align-items:center;justify-content:space-between;padding:0 10px 0 26px"><span style="font-size:18px;font-weight:800">Просится</span><span style="width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.18);display:flex;align-items:center;justify-content:center;font-size:18px">→</span></div>
+        <div style="display:flex;gap:6px;font-size:12px;font-weight:600"><span style="flex:1;height:44px;border-radius:999px;border:1.5px solid {{ t.ink }};display:flex;align-items:center;justify-content:center">Гулять</span><span style="height:44px;padding:0 16px;border-radius:999px;border:1.5px solid {{ t.line }};display:flex;align-items:center;justify-content:center">Стул</span><span style="height:44px;padding:0 16px;border-radius:999px;border:1.5px solid {{ t.line }};display:flex;align-items:center;justify-content:center">Еда</span><span style="width:44px;height:44px;border-radius:50%;border:1.5px solid {{ t.line }};display:flex;align-items:center;justify-content:center">…</span></div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- B · Лента времени -->
+  <sc-if value="{{ isB }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;flex-direction:column;min-height:0;padding:14px 0 0">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;padding:0 20px 10px"><span style="font-size:26px;font-weight:700;letter-spacing:-0.02em">Четверг</span><span style="font-size:12px;color:{{ t.ink2 }}">2 ч 10 мин с выхода</span></div>
+      <div style="flex:1;position:relative;min-height:0;overflow:hidden;padding:0 20px 0 64px">
+        <div style="position:absolute;left:37px;top:0;bottom:0;width:2px;background:{{ t.line }}"></div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="position:relative"><span style="position:absolute;left:-52px;top:1px;font-size:11px;color:{{ t.ink2 }};width:30px;text-align:right">7:10</span><span style="position:absolute;left:-31px;top:4px;width:10px;height:10px;border-radius:50%;background:{{ t.accent }}"></span><div style="padding:10px 12px;border-radius:14px;background:{{ t.card }};box-shadow:{{ t.shadow }}"><div style="font-size:13px;font-weight:600">На улице · 18 мин</div><div style="font-size:11px;color:{{ t.ink2 }}">пописал · стул · сел у двери</div></div></div>
+          <div style="position:relative"><span style="position:absolute;left:-52px;top:1px;font-size:11px;color:{{ t.ink2 }};width:30px;text-align:right">8:00</span><span style="position:absolute;left:-31px;top:4px;width:10px;height:10px;border-radius:50%;background:{{ t.accent }}"></span><div style="padding:10px 12px;border-radius:14px;background:{{ t.card }};box-shadow:{{ t.shadow }}"><div style="font-size:13px;font-weight:600">Доза · Левотироксин</div><div style="font-size:11px;color:{{ t.accentText }}">мама · из уведомления</div></div></div>
+          <div style="position:relative"><span style="position:absolute;left:-52px;top:1px;font-size:11px;color:{{ t.ink2 }};width:30px;text-align:right">8:30</span><span style="position:absolute;left:-31px;top:4px;width:10px;height:10px;border-radius:50%;background:{{ t.warn }}"></span><div style="padding:10px 12px;border-radius:14px;background:{{ t.warnSubtle }};color:{{ t.warn }}"><div style="font-size:13px;font-weight:600">Окно натощак до 8:30</div><div style="font-size:11px;opacity:.85">потом еда · 65 г</div></div></div>
+          <div style="position:relative"><span style="position:absolute;left:-52px;top:-2px;font-size:11px;font-weight:700;width:30px;text-align:right">9:41</span><span style="position:absolute;left:-34px;top:0;width:16px;height:16px;border-radius:50%;background:{{ t.accent }};box-shadow:0 0 0 4px {{ t.accentSubtle }}"></span><div style="height:2px;background:{{ t.accent }};margin-top:7px"></div></div>
+          <div style="position:relative;opacity:.55"><span style="position:absolute;left:-52px;top:1px;font-size:11px;color:{{ t.ink2 }};width:30px;text-align:right">12:30</span><span style="position:absolute;left:-30px;top:5px;width:8px;height:8px;border-radius:50%;border:2px dashed {{ t.ink2 }}"></span><div style="padding:10px 12px;border-radius:14px;border:1px dashed {{ t.line }}"><div style="font-size:13px">Обычно выходите</div></div></div>
+          <div style="position:relative;opacity:.55"><span style="position:absolute;left:-52px;top:1px;font-size:11px;color:{{ t.ink2 }};width:30px;text-align:right">20:00</span><span style="position:absolute;left:-30px;top:5px;width:8px;height:8px;border-radius:50%;border:2px dashed {{ t.ink2 }}"></span><div style="padding:10px 12px;border-radius:14px;border:1px dashed {{ t.line }}"><div style="font-size:13px">Доза · вечер</div></div></div>
+        </div>
+      </div>
+      <div style="padding:10px 14px 14px;display:flex;gap:6px;overflow:hidden">
+        <span style="height:48px;padding:0 18px;border-radius:14px;background:{{ t.accent }};color:{{ t.onAccent }};display:flex;align-items:center;font-size:14px;font-weight:700;white-space:nowrap">+ Просится</span>
+        <span style="height:48px;padding:0 14px;border-radius:14px;background:{{ t.card }};box-shadow:{{ t.shadow }};display:flex;align-items:center;font-size:13px;white-space:nowrap">Гулять</span>
+        <span style="height:48px;padding:0 14px;border-radius:14px;background:{{ t.card }};box-shadow:{{ t.shadow }};display:flex;align-items:center;font-size:13px;white-space:nowrap">Стул</span>
+        <span style="height:48px;padding:0 14px;border-radius:14px;background:{{ t.card }};box-shadow:{{ t.shadow }};display:flex;align-items:center;font-size:13px;white-space:nowrap">Еда</span>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- C · Циферблат -->
+  <sc-if value="{{ isC }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;flex-direction:column;padding:10px 18px 16px;min-height:0">
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;color:{{ t.ink2 }}"><span style="font-size:20px;font-weight:700;color:{{ t.ink }};letter-spacing:-0.02em">Стич</span><span>учусь ритму · 2 из 4</span></div>
+      <div style="flex:1;display:flex;align-items:center;justify-content:center;position:relative">
+        <svg viewBox="0 0 240 240" style="width:240px;height:240px">
+          <circle cx="120" cy="120" r="104" fill="none" stroke="{{ t.line }}" stroke-width="10"></circle>
+          <path d="M120 16 A104 104 0 0 1 207 72" fill="none" stroke="{{ t.accent }}" stroke-width="10" stroke-linecap="round"></path>
+          <circle cx="146" cy="19" r="8" fill="{{ t.accent }}"></circle>
+          <circle cx="179" cy="36" r="8" fill="{{ t.accent }}"></circle>
+          <circle cx="205" cy="68" r="8" fill="{{ t.warn }}"></circle>
+          <circle cx="224" cy="120" r="5" fill="none" stroke="{{ t.ink2 }}" stroke-width="2" stroke-dasharray="3 2"></circle>
+          <circle cx="120" cy="224" r="5" fill="none" stroke="{{ t.ink2 }}" stroke-width="2" stroke-dasharray="3 2"></circle>
+          <line x1="120" y1="120" x2="213" y2="74" stroke="{{ t.ink }}" stroke-width="2" stroke-linecap="round"></line>
+          <circle cx="120" cy="120" r="5" fill="{{ t.ink }}"></circle>
+          <text x="120" y="12" text-anchor="middle" font-size="9" fill="{{ t.ink2 }}" font-family="-apple-system,system-ui">6</text>
+          <text x="232" y="124" text-anchor="middle" font-size="9" fill="{{ t.ink2 }}" font-family="-apple-system,system-ui">12</text>
+          <text x="120" y="236" text-anchor="middle" font-size="9" fill="{{ t.ink2 }}" font-family="-apple-system,system-ui">18</text>
+          <text x="8" y="124" text-anchor="middle" font-size="9" fill="{{ t.ink2 }}" font-family="-apple-system,system-ui">0</text>
+        </svg>
+        <div style="position:absolute;display:flex;flex-direction:column;align-items:center;gap:2px;padding-top:40px"><span style="font-size:10px;color:{{ t.ink2 }}">на улице были</span><span style="font-size:34px;font-weight:800;letter-spacing:-0.03em;line-height:1">2 ч 10</span><span style="font-size:10px;color:{{ t.ink2 }}">назад</span></div>
+      </div>
+      <div style="display:flex;justify-content:center;gap:14px;font-size:10px;color:{{ t.ink2 }};margin-bottom:12px"><span><span style="color:{{ t.accentText }}">●</span> выход · доза</span><span><span style="color:{{ t.warn }}">●</span> натощак до 8:30</span><span>◌ обычно</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+        <div style="grid-column:1 / -1;height:56px;border-radius:28px;background:{{ t.accent }};color:{{ t.onAccent }};display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800">Просится</div>
+        <div style="height:48px;border-radius:24px;background:{{ t.card }};box-shadow:{{ t.shadow }};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600">Гулять</div>
+        <div style="height:48px;border-radius:24px;background:{{ t.card }};box-shadow:{{ t.shadow }};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600">Стул</div>
+        <div style="height:48px;border-radius:24px;background:{{ t.card }};box-shadow:{{ t.shadow }};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600">Еда · 65 г</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- D · Доска -->
+  <sc-if value="{{ isD }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;flex-direction:column;padding:12px 12px 12px;gap:8px;min-height:0">
+      <div style="display:flex;justify-content:space-between;padding:0 6px;font-size:12px;color:{{ t.ink2 }}"><span style="font-size:22px;font-weight:800;color:{{ t.ink }};letter-spacing:-0.03em;text-transform:uppercase">Сегодня</span><span>⚙︎</span></div>
+      <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1.4fr 1fr 1fr;gap:8px;min-height:0">
+        <div style="grid-column:1 / -1;padding:14px;border-radius:6px;background:{{ t.accent }};color:{{ t.onAccent }};display:flex;flex-direction:column;justify-content:space-between"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;opacity:.7">на улице были</span><span style="font-size:52px;font-weight:800;letter-spacing:-0.05em;line-height:.9">2:10</span><span style="font-size:11px;font-weight:600">назад · 3 из 5 за день</span></div>
+        <div style="padding:12px;border-radius:6px;background:{{ t.card }};box-shadow:{{ t.shadow }};display:flex;flex-direction:column;justify-content:space-between"><span style="font-size:10px;color:{{ t.ink2 }};text-transform:uppercase;letter-spacing:.06em">доза 8:00</span><span style="font-size:15px;font-weight:700">Дала мама</span><span style="font-size:10px;color:{{ t.accentText }}">следующая 20:00</span></div>
+        <div style="padding:12px;border-radius:6px;background:{{ t.warnSubtle }};color:{{ t.warn }};display:flex;flex-direction:column;justify-content:space-between"><span style="font-size:10px;text-transform:uppercase;letter-spacing:.06em;opacity:.8">натощак</span><span style="font-size:22px;font-weight:800;letter-spacing:-0.03em">до 8:30</span><span style="font-size:10px">потом еда · 65 г</span></div>
+        <div style="padding:12px;border-radius:6px;background:{{ t.card }};box-shadow:{{ t.shadow }};display:flex;flex-direction:column;justify-content:space-between"><span style="font-size:10px;color:{{ t.ink2 }};text-transform:uppercase;letter-spacing:.06em">учусь ритму</span><div style="display:flex;gap:3px"><div style="flex:1;height:14px;background:{{ t.accent }}"></div><div style="flex:1;height:14px;background:{{ t.accent }}"></div><div style="flex:1;height:14px;background:{{ t.line }}"></div><div style="flex:1;height:14px;background:{{ t.line }}"></div></div><span style="font-size:10px;color:{{ t.ink2 }}">2 дня из 4</span></div>
+        <div style="padding:12px;border-radius:6px;background:{{ t.card }};box-shadow:{{ t.shadow }};display:flex;flex-direction:column;justify-content:space-between"><span style="font-size:10px;color:{{ t.ink2 }};text-transform:uppercase;letter-spacing:.06em">семья</span><span style="font-size:15px;font-weight:700">Дежурит мама</span><span style="font-size:10px;color:{{ t.ink2 }}">до 18:00 · передать</span></div>
+      </div>
+      <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:6px">
+        <div style="height:52px;border-radius:6px;background:{{ t.ink }};color:{{ t.bg }};display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:.04em">Просится</div>
+        <div style="height:52px;border-radius:6px;border:2px solid {{ t.ink }};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">Гулять</div>
+        <div style="height:52px;border-radius:6px;border:2px solid {{ t.line }};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">Стул</div>
+        <div style="height:52px;border-radius:6px;border:2px solid {{ t.line }};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">Еда</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- E · Разговор -->
+  <sc-if value="{{ isE }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;flex-direction:column;min-height:0;padding:10px 0 0">
+      <div style="display:flex;align-items:center;gap:10px;padding:0 16px 10px;border-bottom:1px solid {{ t.line }}"><div style="width:36px;height:36px;border-radius:50%;background:{{ t.accentSubtle }};color:{{ t.accentSubtleText }};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px">С</div><div style="display:flex;flex-direction:column"><span style="font-size:15px;font-weight:700">Стич</span><span style="font-size:11px;color:{{ t.accentText }}">на улице были 2 ч 10 мин назад</span></div></div>
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:10px;padding:12px 14px;min-height:0;overflow:hidden">
+        <div style="align-self:center;font-size:10px;color:{{ t.ink2 }}">четверг</div>
+        <div style="align-self:flex-end;max-width:82%;display:flex;flex-direction:column;gap:3px;align-items:flex-end"><div style="padding:9px 12px;border-radius:18px 18px 4px 18px;background:{{ t.accent }};color:{{ t.onAccent }};font-size:13px;line-height:1.35">Вывела. 18 минут, пописал и сходил по-большому. Сел у двери.</div><span style="font-size:9px;color:{{ t.ink2 }}">я · 7:10</span></div>
+        <div style="align-self:flex-start;max-width:82%;display:flex;flex-direction:column;gap:3px"><div style="padding:9px 12px;border-radius:18px 18px 18px 4px;background:{{ t.card }};box-shadow:{{ t.shadow }};font-size:13px;line-height:1.35">Дала левотироксин.</div><span style="font-size:9px;color:{{ t.ink2 }}">мама · 8:00 · из уведомления</span></div>
+        <div style="align-self:center;max-width:90%;padding:8px 12px;border-radius:14px;background:{{ t.warnSubtle }};color:{{ t.warn }};font-size:12px;text-align:center;line-height:1.35">Окно натощак до 8:30. Потом еда · 65 г.</div>
+        <div style="align-self:center;max-width:90%;padding:8px 12px;border-radius:14px;border:1px dashed {{ t.line }};font-size:11px;color:{{ t.ink2 }};text-align:center;line-height:1.35">Учусь ритму Стича · 2 дня из 4. Подсказки «просится» — через 2 дня.</div>
+      </div>
+      <div style="padding:8px 12px 12px;display:flex;flex-direction:column;gap:8px;border-top:1px solid {{ t.line }}">
+        <div style="display:flex;gap:6px;overflow:hidden"><span style="padding:7px 12px;border-radius:999px;background:{{ t.card }};box-shadow:{{ t.shadow }};font-size:12px;white-space:nowrap">Стул</span><span style="padding:7px 12px;border-radius:999px;background:{{ t.card }};box-shadow:{{ t.shadow }};font-size:12px;white-space:nowrap">Еда · 65 г</span><span style="padding:7px 12px;border-radius:999px;background:{{ t.card }};box-shadow:{{ t.shadow }};font-size:12px;white-space:nowrap">Инцидент</span><span style="padding:7px 12px;border-radius:999px;background:{{ t.card }};box-shadow:{{ t.shadow }};font-size:12px;white-space:nowrap">Заметка</span></div>
+        <div style="display:flex;gap:6px"><div style="flex:1;height:48px;border-radius:24px;background:{{ t.accent }};color:{{ t.onAccent }};display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800">Просится</div><div style="width:48px;height:48px;border-radius:50%;border:2px solid {{ t.ink }};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">Гул</div></div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:300,&quot;height&quot;:620},&quot;concept&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e&quot;,&quot;f&quot;,&quot;g&quot;,&quot;h&quot;,&quot;i&quot;,&quot;j&quot;,&quot;k&quot;,&quot;l&quot;,&quot;m&quot;,&quot;n&quot;,&quot;o&quot;,&quot;p&quot;,&quot;q&quot;,&quot;r&quot;,&quot;s&quot;],&quot;default&quot;:&quot;r&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;mode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  D = { bg: '#181818', card: '#2C2C2C', ink: '#F5F5F5', ink2: '#A8A8A8', line: '#3A3A3A', accent: '#D4F75F', onAccent: '#111111', accentText: '#D4F75F', accentSubtle: '#2D3802', accentSubtleText: '#D4F75F', warn: '#F7C75F', warnSubtle: '#4A300A', err: '#FF7A66', errSubtle: '#4D1F22', shadow: 'none', sunken: '#1F1F1F', glass: 'rgba(52,52,52,.72)', accentPressed: '#C1E348' };
+  L = { bg: '#F0F0F3', card: '#FFFFFF', ink: '#111114', ink2: '#5E5E66', line: '#DCDCE1', accent: '#9CD425', onAccent: '#0B0B0C', accentText: '#3A6A00', accentSubtle: '#E6F4C8', accentSubtleText: '#335C00', warn: '#985808', warnSubtle: '#FFEFCF', err: '#CB180E', errSubtle: '#FDE3E1', shadow: '0 1px 2px rgba(16,16,28,.06),0 6px 16px rgba(16,16,28,.06)', sunken: '#E6E6EA', glass: 'rgba(255,255,255,.82)', accentPressed: '#8CC116' };
+  renderVals() {
+    const c = this.props.concept || 'a';
+    return { t: this.props.mode === 'light' ? this.L : this.D, isA: c === 'a', isB: c === 'b', isC: c === 'c', isD: c === 'd', isE: c === 'e', isF: c === 'f', isG: c === 'g', isH: c === 'h', isI: c === 'i', isJ: c === 'j', isK: c === 'k', isL: c === 'l', isM: c === 'm', isN: c === 'n', isO: c === 'o', isP: c === 'p', isQ: c === 'q', isR: c === 'r', isS: c === 's' };
+  }
+}
+</script>
+</body>
+</html>

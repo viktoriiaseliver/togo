@@ -1,0 +1,31 @@
+<!-- @dsCard group="Components" viewport="760x1200" name="Togo · Сегодня v2" subtitle="Каркас главного экрана и iOS 26" -->
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin></script>
+<script src="../preview-loader.js"></script>
+</head><body style="background:var(--bg-primary);padding:20px;box-sizing:border-box">
+<div id="root"></div>
+<script type="text/babel">
+loadGraphite().then((G) => {
+  const { HeroReading, FactList, RecordTile, StockMeter, DayScale, ReadOnlyBar, Button, StatusLine, TabBar } = G;
+  const L = ({ children }) => <span style={{ fontSize: 12, color: "var(--text-secondary)" }}>{children}</span>;
+  const Col = ({ children, gap = 10 }) => <div style={{ display: "flex", flexDirection: "column", gap }}>{children}</div>;
+  const grid = { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 20, alignItems: "start" };
+  function App() {
+    return (<div style={grid}>
+      <Col><L>Button · edge (xl primary · l secondary · destructive-filled)</L><Button size="xl" edge fullWidth icon="pets">Просится</Button><div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}><Button variant="secondary" edge icon="directions_walk">Гулять</Button><Button variant="secondary" edge icon="add">Записать…</Button></div><Button size="xl" variant="destructive-filled" edge fullWidth icon="call">Позвонить врачу</Button></Col>
+      <Col><L>HeroReading · default / timer / night / empty</L><HeroReading label="Гулял" value="2:10" sub="назад · обычно раз в 3–4 ч" /><div style={{ display: "flex", gap: 24 }}><HeroReading size="compact" label="На улице" value="12:04" variant="timer" /><HeroReading size="compact" label="Ночь" value="4:25" variant="night" /></div></Col>
+      <Col><L>StatusLine · success / warning / error / neutral</L>{StatusLine && <><StatusLine text="Доза 20:00 · Левотироксин" icon="medication" actionLabel="Беру на себя" actionIcon="back_hand" /><StatusLine tone="warning" icon="no_meals" text="Не кормить ещё 19 мин" /><StatusLine tone="error" icon="emergency_home" text="Кровь в стуле — позвоните врачу" /><StatusLine tone="neutral" text="Нет сети. 1 запись на телефоне" /></>}</Col>
+      <Col><L>FactList</L><FactList items={[{ time: "7:10", what: "На улице 18 мин" }, { time: "8:00", what: "Доза", who: "мама" }]} /><FactList items={[{ time: "9:38", what: "Стул", pending: true }]} /></Col>
+      <Col><L>RecordTile · incident / default</L><RecordTile tone="incident" icon="emergency_home" title="Инцидент" sub="вырвал · лужа · стул в доме" /><div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}><RecordTile icon="grass" title="Стул" sub="дома или на улице" /><RecordTile icon="restaurant" title="Покормил" sub="65 г" /></div></Col>
+      <Col><L>StockMeter</L><StockMeter name="Левотироксин" left="9" unit="таб." until="пн 8 окт" perDay="1,5 таб./день" pct={18} onBought={() => {}} /></Col>
+      <Col><L>DayScale</L><DayScale now={15.3} events={[{ start: 7.2, end: 7.5, kind: "outside" }, { start: 8, kind: "dose" }, { start: 8, end: 8.5, kind: "fasting" }, { start: 12.3, end: 12.7, kind: "outside" }, { start: 11.3, kind: "incident" }, { start: 18, end: 18.4, kind: "plan" }]} /></Col>
+      <Col><L>ReadOnlyBar</L><ReadOnlyBar text="Записывает Аня · вы видите всё" /><ReadOnlyBar icon="stethoscope" text="Только просмотр · доступ до 30 окт" /></Col>
+      <Col><L>TabBar · glass</L><TabBar value="today" items={[{ value: "today", icon: "today", label: "Сегодня" }, { value: "h", icon: "history", label: "История" }, { value: "z", icon: "monitor_heart", label: "Здоровье" }, { value: "d", icon: "pets", label: "Собака" }]} /></Col>
+    </div>);
+  }
+  ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+});
+</script></body></html>

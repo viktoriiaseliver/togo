@@ -1,0 +1,34 @@
+<!-- @dsCard group="Components" viewport="700x820" name="Обратная связь" -->
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../graphite.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin></script>
+<script src="../preview-loader.js"></script>
+</head><body style="background:var(--bg-primary);padding: 20px;box-sizing:border-box">
+<div id="root"></div>
+<script type="text/babel">
+loadGraphite().then((G) => {
+  const L = ({ children }) => <span style={{ fontSize: 12, color: "var(--text-secondary)" }}>{children}</span>;
+  const Row = ({ children, gap = 8 }) => <div style={{ display: "flex", gap, flexWrap: "wrap", alignItems: "center" }}>{children}</div>;
+  const Col = ({ children, gap = 10 }) => <div style={{ display: "flex", flexDirection: "column", gap }}>{children}</div>;
+  function App() {
+    const { Alert, InlineAlert, PushNotification, ContextMenu, ListRow } = G; const grid = { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "var(--space-12)", alignItems: "start" };
+    return (<Col gap={18}>
+      <Col><L>Alert · 2 действия / 3 действия</L><div style={grid}>
+        <div style={{ background: "var(--page)", borderRadius: 24, padding: "var(--space-20)", display: "flex", justifyContent: "center" }}><Alert inline title="Закончить прогулку?" message="Ты не отметил ни одного дела. Запись сохранится без отметок." actions={[{ label: "Продолжить", style: "cancel" }, { label: "Закончить" }]} /></div>
+        <div style={{ background: "var(--page)", borderRadius: 24, padding: "var(--space-20)", display: "flex", justifyContent: "center" }}><Alert inline title="Выйти из общего дневника?" message="Записи останутся у остальных." actions={[{ label: "Выйти", style: "destructive" }, { label: "Передать дежурство" }, { label: "Отмена", style: "cancel" }]} /></div></div></Col>
+      <Col gap={6}><L>InlineAlert · инфо / успех / внимание / ошибка</L><div style={grid}>
+        <InlineAlert title="Мало данных" message="Вердикт станет точнее через 2 дня записей" onClose={() => {}} />
+        <InlineAlert tone="success" title="Мама в дневнике" message="Видит и пишет те же записи" />
+        <InlineAlert tone="warning" title="Уведомления выключены" message="Без них доза по часам не напомнит" actionLabel="Открыть настройки" />
+        <InlineAlert tone="error" title="Не отправилось маме" message="Запись сохранена у тебя" actionLabel="Повторить" /></div></Col>
+      <div style={grid}>
+        <Col><L>PushNotification</L><div style={{ background: "var(--fill-3)", borderRadius: 24, padding: "var(--space-12)" }}><PushNotification title="Доза Стичу" body="Левотироксин 200 мкг, 07:00. Потом 40 минут без еды." actions={[{ label: "Дал" }, { label: "Через 10 мин" }]} /></div></Col>
+        <Col><L>ContextMenu</L><ContextMenu preview={<ListRow icon="pets" title="Выход" subtitle="08:10 · Мама" />} items={[{ label: "Изменить время", icon: "schedule" }, { label: "Как попросил", icon: "front_hand" }, { label: "Удалить", icon: "delete", destructive: true, group: true }]} /></Col>
+      </div>
+    </Col>);
+  }
+  ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+});
+</script></body></html>

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..500,0..1,0">
+<style>
+html{background:#0A0A0A}body{margin:0;background:#0A0A0A;color:#F4F4F2;font-family:var(--font-text);-webkit-font-smoothing:antialiased}a{color:#D4F75F}a:hover{color:#F4F4F2}
+@keyframes tg-press{0%,60%,100%{transform:translateY(0);box-shadow:0 4px 0 var(--accent-edge)}70%,85%{transform:translateY(4px);box-shadow:0 0 0 var(--accent-edge)}}
+@keyframes tg-roll{0%,40%{transform:translateY(0)}50%,90%{transform:translateY(-50%)}100%{transform:translateY(0)}}
+@keyframes tg-count{from{transform:translateY(0)}to{transform:translateY(-100%)}}
+@keyframes tg-ring{from{stroke-dashoffset:0}to{stroke-dashoffset:126}}
+@keyframes tg-slide{0%,15%{transform:translateX(0)}60%,80%{transform:translateX(calc(100% + 196px))}100%{transform:translateX(0)}}
+@keyframes tg-pulse{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 50%,transparent)}50%{box-shadow:0 0 0 14px color-mix(in srgb,var(--accent) 0%,transparent)}}
+@keyframes tg-fill{0%{width:0}70%,100%{width:62%}}
+@keyframes tg-in{0%{transform:translateY(30px);opacity:0}15%,85%{transform:translateY(0);opacity:1}100%{transform:translateY(30px);opacity:0}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important}}
+</style>
+</helmet>
+<div style="display:flex;flex-direction:column;gap:96px;padding:72px;background:#0A0A0A;min-height:100vh">
+
+<section data-screen-label="00 Обзор" style="display:flex;flex-direction:column;gap:16px;max-width:1100px">
+  <div style="font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#B2B2AE">Togo · чистовик v2 · остальные экраны, движение, идеи</div>
+  <h1 style="margin:0;font-family:var(--font-rounded);font-weight:300;font-size:64px;line-height:1;letter-spacing:-0.03em">Докрутка: шторки, История, запас, система, iPad</h1>
+  <p style="margin:0;font-size:18px;line-height:1.55;color:#C8C8C4;text-wrap:pretty">Тот же язык, что на «Сегодня» в <a href="Togo Чистовик v2.dc.html">v2</a>: фактура плашек, тонкие цифры с единицей акцентом, одна инверсная плашка, слайдер для необратимого. Ниже — движение (живые демо) и идеи, которые я предлагаю добавить. Каждая идея помечена: решает задачу или просто радует.</p>
+</section>
+
+<section data-screen-label="01 Шторки" style="display:flex;flex-direction:column;gap:24px">
+  <h2 style="margin:0;font-size:36px;letter-spacing:-0.02em">Шторки</h2>
+  <div style="display:flex;flex-wrap:wrap;gap:40px">
+    <sc-for list="{{ sheets }}" as="sh" hint-placeholder-count="4">
+      <div style="display:flex;flex-direction:column;gap:8px;width:402px">
+        <span style="font-size:13px;font-weight:700;color:#D4F75F">{{ sh.title }}</span>
+        <div data-theme="{{ sh.attr }}" data-screen-label="{{ sh.title }}" style="position:relative;width:402px;height:874px;border-radius:56px;background:var(--bg-primary);color:var(--text-primary);overflow:hidden;box-shadow:0 0 0 10px #000,0 0 0 11px #3A3A3A;font-family:var(--font-text)">
+          <div style="position:absolute;left:138px;top:11px;width:126px;height:37px;border-radius:var(--radius-pill);background:var(--system-island);z-index:2"></div>
+          <div style="position:absolute;left:20px;right:20px;top:120px;height:260px;border-radius:var(--radius-card);background:var(--fill-1)"></div>
+          <div style="position:absolute;inset:0;background:var(--scrim)"></div>
+          <div style="position:absolute;left:8px;right:8px;bottom:8px;border-radius:var(--radius-sheet-floating);background:var(--glass-regular);backdrop-filter:blur(var(--blur-glass)) saturate(var(--glass-saturate));-webkit-backdrop-filter:blur(var(--blur-glass)) saturate(var(--glass-saturate));box-shadow:var(--glass-shadow);padding:var(--space-8) var(--space-16) var(--space-24);display:flex;flex-direction:column;gap:var(--space-12)">
+            <span style="align-self:center;width:36px;height:5px;border-radius:3px;background:var(--separator)"></span>
+            <div style="display:flex;justify-content:space-between;align-items:center"><span style="width:44px;height:44px;border-radius:50%;background:var(--glass-clear);display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:22px">{{ sh.lead }}</span><span style="display:flex;flex-direction:column;align-items:center"><span style="font-size:var(--fs-headline);font-weight:var(--fw-semibold)">{{ sh.head }}</span><span style="font-size:var(--fs-footnote);color:var(--text-secondary)">{{ sh.sub }}</span></span><span style="width:44px;height:44px;border-radius:50%;background:var(--glass-clear);display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:22px">{{ sh.trail }}</span></div>
+            <sc-if value="{{ sh.isRecord }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;align-items:center;gap:var(--space-12);min-height:var(--size-row);padding:0 var(--space-16) 0 var(--space-12);border-radius:var(--radius-row);background:var(--fill-1);box-shadow:var(--elev-1);color:var(--text-primary)"><span style="width:40px;height:40px;border-radius:50%;background:var(--error-subtle);color:var(--status-error);display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:22px">emergency_home</span><span style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-size:var(--fs-callout);font-weight:var(--fw-semibold)">Инцидент</span><span style="font-size:var(--fs-footnote);color:var(--text-secondary)">вырвал · лужа · стул в доме · своё</span></span><span style="font-family:var(--font-icon);font-size:20px;color:var(--text-secondary)">chevron_right</span></div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-8)"><sc-for list="{{ tiles }}" as="r" hint-placeholder-count="6"><div style="position:relative;display:flex;flex-direction:column;justify-content:space-between;min-height:104px;padding:var(--space-12) var(--space-16);border-radius:var(--radius-row);background:var(--fill-1);box-shadow:var(--elev-1)"><span style="width:40px;height:40px;border-radius:50%;background:var(--fill-2);display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:22px;font-weight:300">{{ r.icon }}</span><span style="display:flex;flex-direction:column"><span style="font-size:var(--fs-callout)">{{ r.t }}</span><span style="font-size:var(--fs-footnote);color:var(--text-secondary)">{{ r.d }}</span></span><sc-if value="{{ r.hasN }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;right:var(--space-16);top:var(--space-12);display:flex;align-items:flex-start"><span style="font-family:var(--font-rounded);font-weight:var(--fw-number);font-size:var(--fs-number-s);line-height:1">{{ r.n }}</span><span style="font-family:var(--font-rounded);font-size:var(--fs-footnote);color:var(--accent-text)">{{ r.u }}</span></span></sc-if></div></sc-for></div>
+            </sc-if>
+            <sc-if value="{{ sh.isIncident }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:var(--space-8)"><sc-for list="{{ incidents }}" as="r" hint-placeholder-count="5"><div style="display:flex;gap:var(--space-12);align-items:center;min-height:var(--size-row);padding:0 var(--space-16) 0 var(--space-12);border-radius:var(--radius-row);background:var(--fill-1);box-shadow:var(--elev-1)"><span style="width:40px;height:40px;border-radius:50%;background:var(--fill-2);display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:22px;font-weight:300">{{ r.icon }}</span><span style="flex:1;font-size:var(--fs-callout)">{{ r.t }}</span><span style="font-size:var(--fs-footnote);color:var(--text-secondary)">{{ r.d }}</span></div></sc-for><div style="display:flex;gap:var(--space-12);align-items:center;min-height:var(--size-row);padding:0 var(--space-16) 0 var(--space-12);border-radius:var(--radius-row);box-shadow:inset 0 0 0 1.5px var(--accent-text);color:var(--accent-text)"><span style="width:40px;height:40px;border-radius:50%;background:var(--accent-subtle);display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:22px">edit</span><span style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-size:var(--fs-callout);font-weight:var(--fw-semibold)">Другое…</span><span style="font-size:var(--fs-footnote);color:var(--text-secondary)">своими словами</span></span></div></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;min-height:var(--size-hit);font-size:var(--fs-body)"><span>Сказать семье</span><span style="width:var(--size-toggle-w);height:var(--size-toggle-h);border-radius:var(--radius-pill);background:var(--accent);position:relative"><span style="position:absolute;right:3px;top:3px;width:30px;height:30px;border-radius:50%;background:var(--accent-knob)"></span></span></div>
+            </sc-if>
+            <sc-if value="{{ sh.isOther }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-wrap:wrap;gap:var(--space-8)"><sc-for list="{{ vomit }}" as="c" hint-placeholder-count="5"><span style="min-height:var(--size-hit);padding:0 var(--space-16);border-radius:var(--radius-pill);background:{{ c.bg }};color:{{ c.fg }};display:flex;align-items:center;gap:6px;font-size:var(--fs-subheadline)">{{ c.t }}</span></sc-for><span style="min-height:var(--size-hit);padding:0 var(--space-16) 0 var(--space-12);border-radius:var(--radius-pill);box-shadow:inset 0 0 0 1.5px var(--accent-text);color:var(--accent-text);display:flex;align-items:center;gap:6px;font-size:var(--fs-subheadline);font-weight:var(--fw-semibold)"><span style="font-family:var(--font-icon);font-size:18px">edit</span>Другое…</span></div>
+              <div style="display:flex;flex-direction:column;gap:var(--space-4);padding:var(--space-12) var(--space-16);border-radius:var(--radius-row);background:var(--fill-1);box-shadow:inset 0 0 0 2px var(--accent)"><span style="font-size:var(--fs-footnote);color:var(--text-secondary)">Своими словами</span><span style="font-size:var(--fs-body)">пеной после травы</span></div>
+              <div style="min-height:var(--size-button-xl);border-radius:var(--radius-pill);background:var(--accent);color:var(--on-accent);box-shadow:0 var(--edge-height) 0 var(--accent-edge);display:flex;align-items:center;justify-content:center;gap:var(--space-8);font-size:var(--fs-headline);font-weight:var(--fw-semibold)"><span style="font-family:var(--font-icon);font-size:24px;font-weight:300">check</span>Готово</div>
+            </sc-if>
+            <sc-if value="{{ sh.isVerdict }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:var(--space-20);padding:var(--space-20);border-radius:var(--radius-card);background:var(--fill-1);box-shadow:var(--elev-1)">
+                <div style="display:flex;align-items:center;gap:var(--space-12)"><span style="width:48px;height:48px;flex-shrink:0;border-radius:50%;background:var(--accent);color:var(--on-accent);display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:26px;font-variation-settings:'FILL' 1">directions_walk</span><span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:var(--fs-title-3);font-weight:var(--fw-semibold);line-height:1.15">Похоже, пора выйти</span><span style="font-size:var(--fs-subheadline);color:var(--text-secondary)">дольше обычного на 40 мин</span></span></div>
+                <div style="display:flex;flex-direction:column;gap:var(--space-8)">
+                  <div style="position:relative;height:44px">
+                    <span style="position:absolute;left:84%;top:0;transform:translateX(-50%);display:flex;align-items:flex-start;gap:1px;white-space:nowrap"><span style="font-family:var(--font-rounded);font-weight:var(--fw-number);font-size:var(--fs-title-2);line-height:1">3</span><span style="font-family:var(--font-rounded);font-size:var(--fs-footnote);color:var(--accent-text)">ч</span></span>
+                    <div style="position:absolute;left:0;right:0;top:32px;height:8px;border-radius:var(--radius-pill);background:var(--fill-2)"></div>
+                    <div style="position:absolute;left:42%;width:30%;top:32px;height:8px;border-radius:var(--radius-pill);background:var(--accent-subtle);box-shadow:inset 0 0 0 1.5px var(--accent-text)"></div>
+                    <span style="position:absolute;left:84%;top:28px;transform:translateX(-50%);width:16px;height:16px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px var(--fill-1)"></span>
+                  </div>
+                  <div style="position:relative;height:16px;font-size:var(--fs-footnote);color:var(--text-secondary)"><span style="position:absolute;left:0">выход 18:40</span><span style="position:absolute;left:57%;transform:translateX(-50%);white-space:nowrap">обычно 2–2,5 ч</span></div>
+                </div>
+              </div>
+              <div style="display:flex;gap:var(--space-12);align-items:center;min-height:var(--size-button);padding:var(--space-8) var(--space-16);border-radius:var(--radius-row);background:var(--accent-subtle);color:var(--accent-subtle-text);font-size:var(--fs-subheadline)"><span style="font-family:var(--font-icon);font-size:22px;font-weight:300">medication</span>Доза в 20:00 — возьмите таблетку</div>
+              <div style="display:flex;flex-wrap:wrap;gap:var(--space-8)"><span style="font-size:var(--fs-footnote);color:var(--text-secondary);width:100%">Как попросил · необязательно</span><span style="min-height:var(--size-hit);padding:0 var(--space-16);border-radius:var(--radius-pill);background:var(--accent-subtle);color:var(--accent-subtle-text);display:flex;align-items:center;font-size:var(--fs-subheadline);font-weight:var(--fw-semibold)">у двери</span><span style="min-height:var(--size-hit);padding:0 var(--space-16);border-radius:var(--radius-pill);background:var(--fill-2);display:flex;align-items:center;font-size:var(--fs-subheadline)">скулит</span><span style="min-height:var(--size-hit);padding:0 var(--space-16);border-radius:var(--radius-pill);background:var(--fill-2);display:flex;align-items:center;font-size:var(--fs-subheadline)">смотрит</span><span style="min-height:var(--size-hit);padding:0 var(--space-16) 0 var(--space-12);border-radius:var(--radius-pill);box-shadow:inset 0 0 0 1.5px var(--accent-text);color:var(--accent-text);display:flex;align-items:center;gap:6px;font-size:var(--fs-subheadline);font-weight:var(--fw-semibold)"><span style="font-family:var(--font-icon);font-size:18px">edit</span>Другое…</span></div>
+              <div style="min-height:var(--size-button-xl);border-radius:var(--radius-pill);background:var(--accent);color:var(--on-accent);box-shadow:0 var(--edge-height) 0 var(--accent-edge);display:flex;align-items:center;justify-content:center;gap:var(--space-8);font-size:var(--fs-headline);font-weight:var(--fw-semibold)"><span style="font-family:var(--font-icon);font-size:24px;font-weight:300">directions_walk</span>Вывожу</div>
+              <div style="min-height:var(--size-button);border-radius:var(--radius-pill);background:var(--fill-2);box-shadow:0 var(--edge-height-s) 0 var(--fill-edge);display:flex;align-items:center;justify-content:center;gap:var(--space-8);font-size:var(--fs-body)"><span style="font-family:var(--font-icon);font-size:20px;font-weight:300">schedule</span>Не сейчас</div>
+            </sc-if>
+          </div>
+        </div>
+        <span style="font-size:14px;line-height:1.5;color:#C8C8C4">{{ sh.note }}</span>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<section data-screen-label="02b История v4" style="display:flex;flex-direction:column;gap:24px">
+  <h2 style="margin:0;font-size:36px;letter-spacing:-0.02em">История v4 · тихо и понятно</h2>
+  <p style="margin:0;max-width:1000px;font-size:15px;line-height:1.55;color:#B2B2AE">Шкала с дорожками убрана с первого экрана: для вопроса «как прошёл день» она шумная. Остались ответ словами, исключение отдельной строкой и четыре итога с сравнением с обычным — как сводка в Apple Health. Шкала по часам — по кнопке «День по часам». Цвет только у исключения.</p>
+  <div style="display:flex;flex-wrap:wrap;gap:40px">
+    <sc-for list="{{ themes }}" as="th" hint-placeholder-count="2">
+      <div style="display:flex;flex-direction:column;gap:8px;width:402px">
+        <span style="font-size:13px;font-weight:700;color:#D4F75F">История v4 / День / {{ th.name }}</span>
+        <div data-theme="{{ th.attr }}" data-screen-label="История v4 / {{ th.name }}" style="position:relative;width:402px;height:874px;border-radius:56px;background:var(--bg-primary);color:var(--text-primary);overflow:hidden;box-shadow:0 0 0 10px #000,0 0 0 11px #3A3A3A;display:flex;flex-direction:column;font-family:var(--font-text)">
+          <div style="position:absolute;left:138px;top:11px;width:126px;height:37px;border-radius:var(--radius-pill);background:var(--system-island)"></div>
+          <div style="height:62px;flex-shrink:0"></div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:var(--space-16);padding:4px 20px 0;min-height:0">
+            <div style="display:flex;justify-content:space-between;align-items:center"><span style="width:44px;height:44px;border-radius:50%;background:var(--fill-2);display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:24px">chevron_left</span><span style="font-size:var(--fs-headline);font-weight:var(--fw-semibold)">Чт, 4 октября</span><span style="width:44px;height:44px;border-radius:50%;background:var(--fill-2);display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:22px;font-weight:300">calendar_month</span></div>
+            <div style="display:flex;flex-direction:column;gap:var(--space-8);padding:var(--space-8) var(--space-4) 0"><span style="font-family:var(--font-rounded);font-weight:var(--fw-number);font-size:var(--fs-large-title);line-height:1.1">Спокойный день</span><span style="font-size:var(--fs-body);line-height:1.4;color:var(--text-secondary)">Одна рвота утром, остальное как обычно.</span></div>
+            <div style="display:flex;align-items:center;gap:var(--space-12);min-height:var(--size-row);padding:0 var(--space-12) 0 var(--space-12);border-radius:var(--radius-row);background:var(--error-subtle);color:var(--status-error)"><span style="width:40px;height:40px;border-radius:50%;background:var(--fill-1);display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:22px">sick</span><span style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-size:var(--fs-body);font-weight:var(--fw-semibold)">Вырвал травой</span><span style="font-size:var(--fs-subheadline)">11:20 · отметил ты</span></span><span style="font-family:var(--font-icon);font-size:22px">chevron_right</span></div>
+            <div style="display:flex;flex-direction:column;border-radius:var(--radius-card);background:var(--fill-1);box-shadow:var(--elev-1);overflow:hidden">
+              <sc-for list="{{ sum4 }}" as="r" hint-placeholder-count="4"><div style="display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:var(--space-12);align-items:center;min-height:72px;padding:0 var(--space-16);border-top:{{ r.bt }}"><span style="width:40px;height:40px;border-radius:50%;background:var(--fill-2);display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:22px;font-weight:300">{{ r.icon }}</span><span style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:var(--fs-body)">{{ r.t }}</span><span style="font-size:var(--fs-subheadline);color:var(--text-secondary)">{{ r.cmp }}</span></span><span style="display:flex;align-items:flex-start;gap:2px"><span style="font-family:var(--font-rounded);font-weight:var(--fw-number);font-size:var(--fs-number-s);line-height:1">{{ r.v }}</span><span style="font-family:var(--font-rounded);font-size:var(--fs-subheadline);color:var(--text-secondary)">{{ r.u }}</span></span></div></sc-for>
+            </div>
+            <div style="min-height:var(--size-button);border-radius:var(--radius-pill);background:var(--fill-2);box-shadow:0 var(--edge-height-s) 0 var(--fill-edge);display:flex;align-items:center;justify-content:center;gap:var(--space-8);font-size:var(--fs-body)"><span style="font-family:var(--font-icon);font-size:20px;font-weight:300">schedule</span>День по часам</div>
+          </div>
+          <div style="margin:var(--space-12) 20px 28px;flex-shrink:0;min-height:var(--size-row);border-radius:var(--radius-pill);background:var(--glass-regular);backdrop-filter:blur(var(--blur-glass)) saturate(var(--glass-saturate));-webkit-backdrop-filter:blur(var(--blur-glass)) saturate(var(--glass-saturate));box-shadow:var(--glass-shadow);display:flex;align-items:center;justify-content:space-between;padding:0 var(--space-8)"><span style="width:52px;height:52px;display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:24px;font-weight:300">today</span><span style="display:flex;align-items:center;min-height:48px;padding-right:var(--space-16);border-radius:var(--radius-pill);background:var(--glass-tint-accent);color:var(--accent-text);font-size:var(--fs-subheadline);font-weight:var(--fw-semibold)"><span style="width:52px;height:48px;display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:24px;font-variation-settings:'FILL' 1">history</span>История</span><span style="width:52px;height:52px;display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:24px;font-weight:300">monitor_heart</span><span style="width:52px;height:52px;display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:24px;font-weight:300">pets</span></div>
+        </div>
+        <span style="font-size:14px;line-height:1.5;color:#C8C8C4">Три уровня чтения: заголовок за 1 секунду, исключение за 2, итоги за 3. Всё остальное — по тапу.</span>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<section data-screen-label="02 История и запас" style="display:flex;flex-direction:column;gap:24px">
+  <h2 style="margin:0;font-size:36px;letter-spacing:-0.02em">Запас</h2>
+  <div style="display:flex;flex-wrap:wrap;gap:40px">
+    <div style="display:flex;flex-direction:column;gap:8px;width:402px">
+      <span style="font-size:13px;font-weight:700;color:#D4F75F">Собака / Запас / Dark</span>
+      <div data-theme="dark" data-screen-label="Запас" style="position:relative;width:402px;height:874px;border-radius:56px;background:var(--bg-primary);color:var(--text-primary);overflow:hidden;box-shadow:0 0 0 10px #000,0 0 0 11px #3A3A3A;display:flex;flex-direction:column;font-family:var(--font-text)">
+        <div style="position:absolute;left:138px;top:11px;width:126px;height:37px;border-radius:var(--radius-pill);background:var(--system-island)"></div>
+        <div style="height:62px;flex-shrink:0"></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:var(--space-12);padding:4px 20px 34px">
+          <div style="display:flex;align-items:center;gap:var(--space-12)"><span style="width:44px;height:44px;border-radius:50%;background:var(--fill-2);display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:24px">chevron_left</span><span style="font-family:var(--font-rounded);font-weight:var(--fw-number);font-size:var(--fs-large-title)">Запас</span></div>
+          <sc-for list="{{ stock }}" as="m" hint-placeholder-count="3">
+            <div style="position:relative;display:flex;flex-direction:column;gap:var(--space-12);padding:var(--space-20);border-radius:var(--radius-card);background:{{ m.bg }};background-image:{{ m.tex }};color:{{ m.fg }}">
+              <div style="display:flex;justify-content:space-between;align-items:center"><span style="display:flex;align-items:center;gap:var(--space-8);font-size:var(--fs-headline);font-weight:var(--fw-semibold)"><span style="font-family:var(--font-icon);font-size:22px;font-weight:300">{{ m.icon }}</span>{{ m.name }}</span><span style="font-size:var(--fs-footnote);opacity:.75">{{ m.per }}</span></div>
+              <div style="display:flex;align-items:flex-end;justify-content:space-between"><span style="display:flex;align-items:flex-start;gap:2px"><span style="font-family:var(--font-rounded);font-weight:var(--fw-number);font-size:var(--fs-number-l);line-height:.9">{{ m.left }}</span><span style="font-family:var(--font-rounded);font-size:var(--fs-subheadline);color:{{ m.uc }}">{{ m.unit }}</span></span><span style="display:flex;flex-direction:column;align-items:flex-end;font-size:var(--fs-footnote)"><span style="opacity:.75">хватит до</span><span style="font-size:var(--fs-callout);font-weight:var(--fw-semibold)">{{ m.until }}</span></span></div>
+              <div style="display:flex;gap:3px"><sc-for list="{{ m.days }}" as="d" hint-placeholder-count="14"><span style="flex:1;height:10px;border-radius:var(--radius-pill);background:{{ d }}"></span></sc-for></div>
+              <sc-if value="{{ m.cta }}" hint-placeholder-val="{{ false }}"><div style="min-height:var(--size-button);border-radius:var(--radius-pill);background:var(--fill-2);color:var(--text-primary);display:flex;align-items:center;justify-content:center;gap:var(--space-8);font-size:var(--fs-body)"><span style="font-family:var(--font-icon);font-size:20px;font-weight:300">add_shopping_cart</span>Купил</div></sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <span style="font-size:14px;line-height:1.5;color:#C8C8C4">Запас — пилюли по дням: одна пилюля = один день. Видно «на сколько хватит» без чтения цифр. То, что кончается первым, — инверсной плашкой.</span>
+    </div>
+  </div>
+</section>
+
+<section data-screen-label="03 Движение" style="display:flex;flex-direction:column;gap:24px">
+  <h2 style="margin:0;font-size:36px;letter-spacing:-0.02em">Движение · живые демо</h2>
+  <p style="margin:0;max-width:980px;font-size:15px;line-height:1.55;color:#B2B2AE">Все анимации — 0.15–0.3 s, ease-out системы; при «Уменьшить движение» остаётся только смена прозрачности. Хаптика — по таблице из readme.</p>
+  <div data-theme="dark" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;max-width:1300px">
+    <sc-for list="{{ motion }}" as="m" hint-placeholder-count="6">
+      <div style="display:flex;flex-direction:column;gap:12px;padding:24px;border-radius:var(--radius-card);background:var(--fill-1);color:var(--text-primary);font-family:var(--font-text)">
+        <div style="height:120px;display:flex;align-items:center;justify-content:center">{{ m.demo }}</div>
+        <span style="font-size:var(--fs-headline);font-weight:var(--fw-semibold)">{{ m.t }}</span>
+        <span style="font-size:var(--fs-subheadline);line-height:1.45;color:var(--text-secondary)">{{ m.d }}</span>
+        <span style="font-size:var(--fs-footnote);color:var(--accent-text)">{{ m.spec }}</span>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<section data-screen-label="04 Идеи" style="display:flex;flex-direction:column;gap:24px">
+  <h2 style="margin:0;font-size:36px;letter-spacing:-0.02em">Идеи · все 10 приняты</h2>
+  <p style="margin:0;max-width:980px;font-size:15px;line-height:1.55;color:#B2B2AE">Утверждено владельцем продукта. Каждая идея уходит в бриф дизайн-системы и handoff как отдельная задача.</p>
+  <div style="display:flex;flex-direction:column;border-radius:24px;background:#1C1C1C;overflow:hidden;font-size:14px;max-width:1300px">
+    <div style="display:grid;grid-template-columns:44px minmax(0,1fr) minmax(0,1.6fr) 140px;gap:14px;padding:12px 20px;color:#B2B2AE;font-size:12px;letter-spacing:.06em;text-transform:uppercase"><span></span><span>Идея</span><span>Что даёт</span><span>Зачем</span></div>
+    <sc-for list="{{ ideas }}" as="r" hint-placeholder-count="10"><div style="display:grid;grid-template-columns:44px minmax(0,1fr) minmax(0,1.6fr) 140px;gap:14px;padding:12px 20px;border-top:1px solid #2C2C2C;line-height:1.45;align-items:start"><span style="font-family:'Material Symbols Rounded';font-size:24px;color:#D4F75F">{{ r.icon }}</span><span style="font-weight:600">{{ r.t }}</span><span style="color:#C8C8C4">{{ r.d }}</span><span style="color:{{ r.c }};font-weight:600">{{ r.k }}</span></div></sc-for>
+  </div>
+</section>
+
+<section data-screen-label="05 Система и iPad" style="display:flex;flex-direction:column;gap:24px">
+  <h2 style="margin:0;font-size:36px;letter-spacing:-0.02em">Экран блокировки и iPad</h2>
+  <div style="display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start">
+    <div style="display:flex;flex-direction:column;gap:8px;width:402px">
+      <span style="font-size:13px;font-weight:700;color:#D4F75F">Система / Блокировка / Dark</span>
+      <div data-theme="dark" data-screen-label="Блокировка" style="position:relative;width:402px;height:874px;border-radius:56px;background:var(--fill-sunken);color:var(--text-primary);overflow:hidden;box-shadow:0 0 0 10px #000,0 0 0 11px #3A3A3A;font-family:var(--font-text)">
+        <div style="position:absolute;left:138px;top:11px;width:126px;height:37px;border-radius:var(--radius-pill);background:var(--system-island);z-index:2"></div>
+        <div style="display:flex;flex-direction:column;align-items:center;padding:74px 0 24px"><span style="font-size:var(--fs-title-3);font-weight:var(--fw-semibold)">Четверг, 4 октября</span><span style="font-family:var(--font-rounded);font-size:104px;font-weight:var(--fw-semibold);line-height:1">19:58</span></div>
+        <div style="display:flex;flex-direction:column;gap:var(--space-8);padding:0 12px">
+          <div style="border-radius:var(--radius-card);background:var(--glass-regular);backdrop-filter:blur(var(--blur-glass)) saturate(var(--glass-saturate));-webkit-backdrop-filter:blur(var(--blur-glass)) saturate(var(--glass-saturate));box-shadow:var(--glass-shadow);padding:var(--space-16);display:flex;flex-direction:column;gap:var(--space-12)">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start"><span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:var(--fs-footnote);color:var(--text-secondary)">Стич на улице</span><span style="display:flex;align-items:flex-start;gap:2px"><span style="font-family:var(--font-rounded);font-weight:var(--fw-number);font-size:var(--fs-number-m);line-height:1;color:var(--accent)">13</span><span style="font-family:var(--font-rounded);font-size:var(--fs-footnote);color:var(--accent)">мин</span></span></span><span style="display:flex;gap:var(--space-16);font-size:var(--fs-footnote);color:var(--text-secondary)"><span style="display:flex;align-items:flex-start;gap:2px"><span style="font-family:var(--font-rounded);font-size:var(--fs-number-s);line-height:1;color:var(--text-primary)">1</span>пописал</span><span style="display:flex;align-items:flex-start;gap:2px"><span style="font-family:var(--font-rounded);font-size:var(--fs-number-s);line-height:1;color:var(--text-primary)">0</span>стул</span></span></div>
+            <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--space-8)"><div style="min-width:0;min-height:56px;border-radius:var(--radius-pill);background:var(--glass-clear);display:flex;align-items:center;padding:4px;gap:var(--space-8)"><span style="width:48px;height:48px;flex-shrink:0;border-radius:50%;background:var(--accent);color:var(--on-accent);display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:22px">water_drop</span><span style="font-size:var(--fs-callout)">Пописал</span><span style="margin-left:auto;padding-right:12px;font-size:var(--fs-callout);color:var(--text-secondary)">›››</span></div><div style="min-width:0;min-height:56px;border-radius:var(--radius-pill);background:var(--glass-clear);display:flex;align-items:center;padding:4px;gap:var(--space-8)"><span style="width:48px;height:48px;flex-shrink:0;border-radius:50%;background:var(--fill-2);color:var(--text-primary);display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:22px">grass</span><span style="font-size:var(--fs-callout)">Стул</span><span style="margin-left:auto;padding-right:12px;font-size:var(--fs-callout);color:var(--text-secondary)">›››</span></div></div>
+          </div>
+          <sc-for list="{{ notifs }}" as="n" hint-placeholder-count="2"><div style="border-radius:var(--radius-row);background:{{ n.bg }};backdrop-filter:blur(var(--blur-glass)) saturate(var(--glass-saturate));-webkit-backdrop-filter:blur(var(--blur-glass)) saturate(var(--glass-saturate));box-shadow:var(--glass-shadow);color:{{ n.fg }};padding:var(--space-12) var(--space-16);display:grid;grid-template-columns:38px 1fr;gap:var(--space-12)"><span style="width:38px;height:38px;border-radius:10px;background:var(--accent);color:var(--on-accent);display:flex;align-items:center;justify-content:center;font-family:var(--font-icon);font-size:22px">{{ n.icon }}</span><span style="display:flex;flex-direction:column;gap:2px"><span style="display:flex;justify-content:space-between;font-size:var(--fs-subheadline)"><b>{{ n.title }}</b><span style="font-size:var(--fs-footnote);opacity:.7">{{ n.when }}</span></span><span style="font-size:var(--fs-subheadline)">{{ n.body }}</span></span></div></sc-for>
+        </div>
+      </div>
+      <span style="font-size:14px;line-height:1.5;color:#C8C8C4">На блокировке «Пописал» — тоже слайдер: случайное касание в кармане ничего не запишет.</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;width:1194px">
+      <span style="font-size:13px;font-weight:700;color:#D4F75F">iPad / Сегодня / Dark</span>
+      <div data-theme="dark" data-screen-label="iPad" style="position:relative;width:1194px;height:834px;border-radius:32px;background:var(--bg-primary);color:var(--text-primary);overflow:hidden;box-shadow:0 0 0 14px #000,0 0 0 15px #3A3A3A;font-family:var(--font-text)">
+        <div style="position:absolute;left:50%;top:24px;transform:translateX(-50%);min-height:52px;border-radius:var(--radius-pill);background:var(--glass-regular);box-shadow:var(--glass-shadow);display:flex;align-items:center;gap:var(--space-4);padding:0 var(--space-4);font-size:var(--fs-subheadline)"><span style="min-height:44px;padding:0 var(--space-16) 0 var(--space-12);border-radius:var(--radius-pill);background:var(--glass-tint-accent);color:var(--accent-text);display:flex;align-items:center;gap:6px;font-weight:var(--fw-semibold)"><span style="font-family:var(--font-icon);font-size:20px;font-variation-settings:'FILL' 1">today</span>Сегодня</span><span style="min-height:44px;padding:0 var(--space-16) 0 var(--space-12);display:flex;align-items:center;gap:6px"><span style="font-family:var(--font-icon);font-size:20px;font-weight:300">history</span>История</span><span style="min-height:44px;padding:0 var(--space-16) 0 var(--space-12);display:flex;align-items:center;gap:6px"><span style="font-family:var(--font-icon);font-size:20px;font-weight:300">monitor_heart</span>Здоровье</span><span style="min-height:44px;padding:0 var(--space-16) 0 var(--space-12);display:flex;align-items:center;gap:6px"><span style="font-family:var(--font-icon);font-size:20px;font-weight:300">pets</span>Собака</span></div>
+        <div style="position:absolute;left:28px;right:28px;top:100px;bottom:28px;display:grid;grid-template-columns:400px minmax(0,1fr) 320px;gap:var(--space-20)">
+          <div style="display:flex;flex-direction:column;gap:var(--space-12)">
+            <div style="position:relative;flex:1;border-radius:var(--radius-card);background:var(--fill-1);padding:var(--space-20);display:flex;flex-direction:column;justify-content:space-between"><span style="font-family:var(--font-rounded);font-weight:var(--fw-number);font-size:var(--fs-title-1)">Стич</span><span style="display:flex;flex-direction:column;gap:var(--space-4)"><span style="font-size:var(--fs-subheadline);color:var(--text-secondary)">Гулял · назад</span><span style="display:flex;align-items:flex-start;gap:2px;line-height:.9"><span style="font-family:var(--font-rounded);font-weight:var(--fw-number);font-size:var(--fs-number-hero-pad)">2</span><span style="font-family:var(--font-rounded);font-size:28px;color:var(--accent-text);padding-top:8px">ч</span><span style="width:10px"></span><span style="font-family:var(--font-rounded);font-weight:var(--fw-number);font-size:var(--fs-number-hero-pad)">10</span><span style="font-family:var(--font-rounded);font-size:28px;color:var(--accent-text);padding-top:8px">мин</span></span></span></div>
+            <div style="min-height:var(--size-button-xl);border-radius:var(--radius-pill);background:var(--accent);color:var(--on-accent);box-shadow:0 var(--edge-height) 0 var(--accent-edge);display:flex;align-items:center;justify-content:center;gap:var(--space-8);font-size:var(--fs-headline);font-weight:var(--fw-semibold)"><span style="font-family:var(--font-icon);font-size:24px;font-weight:300">pets</span>Просится</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-12);padding-bottom:var(--space-4)"><div style="min-height:var(--size-button);border-radius:var(--radius-pill);background:var(--fill-2);box-shadow:0 var(--edge-height-s) 0 var(--fill-edge);display:flex;align-items:center;justify-content:center;gap:6px"><span style="font-family:var(--font-icon);font-size:20px;font-weight:300">directions_walk</span>Гулять</div><div style="min-height:var(--size-button);border-radius:var(--radius-pill);background:var(--fill-2);box-shadow:0 var(--edge-height-s) 0 var(--fill-edge);display:flex;align-items:center;justify-content:center;gap:6px"><span style="font-family:var(--font-icon);font-size:20px;font-weight:300">add</span>Записать…</div></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:var(--space-12);min-height:0">
+            <div style="padding:var(--space-20);border-radius:var(--radius-card);background:var(--fill-1);display:flex;flex-direction:column;gap:var(--space-16)"><div style="display:flex;gap:var(--space-24)"><sc-for list="{{ metrics }}" as="m" hint-placeholder-count="3"><span style="display:flex;align-items:flex-start;gap:2px"><span style="font-family:var(--font-rounded);font-weight:var(--fw-number);font-size:var(--fs-number-m);line-height:1">{{ m.v }}</span><span style="font-family:var(--font-rounded);font-size:var(--fs-footnote);color:var(--accent-text)">{{ m.u }}</span><span style="font-size:var(--fs-footnote);color:var(--text-secondary);padding:6px 0 0 4px">{{ m.l }}</span></span></sc-for></div><div style="position:relative;height:56px"><div style="position:absolute;left:0;right:0;top:20px;height:2px;background:var(--fill-2)"></div><sc-for list="{{ dots }}" as="d" hint-placeholder-count="8"><span style="position:absolute;left:{{ d.x }};top:{{ d.y }};width:{{ d.w }};height:12px;border-radius:var(--radius-pill);background:{{ d.c }}"></span></sc-for><span style="position:absolute;left:62%;top:4px;width:2px;height:36px;background:var(--text-primary)"></span><div style="position:absolute;left:0;right:0;top:40px;display:flex;justify-content:space-between;font-size:var(--fs-footnote);color:var(--text-secondary)"><span>6</span><span>9</span><span>12</span><span>15</span><span>18</span><span>21</span></div></div></div>
+            <div style="flex:1;display:flex;flex-direction:column;border-radius:var(--radius-row);background:var(--fill-1);overflow:hidden;min-height:0"><sc-for list="{{ feed }}" as="r" hint-placeholder-count="5"><div style="display:grid;grid-template-columns:56px 28px 1fr auto;gap:var(--space-8);align-items:center;min-height:56px;padding:0 var(--space-16);font-size:var(--fs-callout);border-top:{{ r.bt }}"><span style="color:var(--text-secondary)">{{ r.time }}</span><span style="font-family:var(--font-icon);font-size:20px;font-weight:300;color:{{ r.ic }}">{{ r.icon }}</span><span>{{ r.what }}</span><span style="color:var(--text-secondary);font-size:var(--fs-subheadline)">{{ r.who }}</span></div></sc-for></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:var(--space-12)">
+            <div style="padding:var(--space-20);border-radius:var(--radius-card);background:var(--fill-inverse);color:var(--on-inverse);display:flex;flex-direction:column;gap:var(--space-8)"><span style="font-size:var(--fs-footnote);opacity:.75">Следующее</span><span style="display:flex;align-items:flex-start;gap:2px"><span style="font-family:var(--font-rounded);font-weight:var(--fw-number);font-size:var(--fs-number-l);line-height:.9">20:00</span></span><span style="font-size:var(--fs-subheadline)">Доза · Левотироксин 0,1 мг</span><span style="font-size:var(--fs-footnote);opacity:.75">потом натощак 30 мин · ужин 20:30</span></div>
+            <sc-for list="{{ stock }}" as="m" hint-placeholder-count="2"><div style="display:flex;flex-direction:column;gap:var(--space-8);padding:var(--space-16) var(--space-20);border-radius:var(--radius-card);background:var(--fill-1)"><div style="display:flex;justify-content:space-between;font-size:var(--fs-subheadline)"><span>{{ m.name }}</span><span style="color:var(--text-secondary)">до {{ m.until }}</span></div><div style="display:flex;gap:3px"><sc-for list="{{ m.daysPad }}" as="d" hint-placeholder-count="14"><span style="flex:1;height:8px;border-radius:var(--radius-pill);background:{{ d }}"></span></sc-for></div></div></sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const h = React.createElement;
+    const bt = a => a.map((r, i) => ({ ...r, bt: i ? '1px solid var(--separator)' : 'none' }));
+    const days = (left, total, tone) => Array.from({ length: total }, (_, i) => i < left ? (tone === 'inv' ? 'var(--on-inverse)' : 'var(--accent)') : (tone === 'inv' ? 'color-mix(in srgb, var(--on-inverse) 15%, transparent)' : 'var(--fill-2)'));
+    const icon = (n, extra) => h('span', { style: { fontFamily: 'var(--font-icon)', fontSize: 24, fontWeight: 300, ...extra } }, n);
+    const demoPress = h('div', { style: { minHeight: 64, width: 240, borderRadius: 999, background: 'var(--accent)', color: 'var(--on-accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontSize: 17, fontWeight: 600, animation: 'tg-press 2.4s var(--ease-out) infinite' } }, icon('pets'), 'Просится');
+    const demoRoll = h('div', { style: { display: 'flex', alignItems: 'flex-start', gap: 2, height: 80, overflow: 'hidden' } },
+      h('span', { style: { fontFamily: 'var(--font-rounded)', fontWeight: 300, fontSize: 80, lineHeight: 1 } }, '2'), h('span', { style: { fontFamily: 'var(--font-rounded)', fontSize: 20, color: 'var(--accent-text)', paddingTop: 6 } }, 'ч'), h('span', { style: { width: 8 } }),
+      h('span', { style: { display: 'inline-flex', flexDirection: 'column', height: 160, animation: 'tg-roll 4s var(--ease-out) infinite' } }, h('span', { style: { fontFamily: 'var(--font-rounded)', fontWeight: 300, fontSize: 80, lineHeight: 1, height: 80 } }, '10'), h('span', { style: { fontFamily: 'var(--font-rounded)', fontWeight: 300, fontSize: 80, lineHeight: 1, height: 80 } }, '11')),
+      h('span', { style: { fontFamily: 'var(--font-rounded)', fontSize: 20, color: 'var(--accent-text)', paddingTop: 6 } }, 'мин'));
+    const demoUndo = h('div', { style: { display: 'flex', alignItems: 'center', gap: 12, minHeight: 56, padding: '0 6px 0 16px', borderRadius: 999, background: 'var(--glass-regular)', boxShadow: 'var(--glass-shadow)', color: 'var(--text-primary)', fontSize: 15, animation: 'tg-in 5s var(--ease-out) infinite' } },
+      icon('check_circle', { fontSize: 20, color: 'var(--accent-text)', fontVariationSettings: "'FILL' 1" }), 'Записано · стул',
+      h('span', { style: { display: 'flex', alignItems: 'center', gap: 8, minHeight: 44, padding: '0 6px 0 14px', borderRadius: 999, background: 'var(--fill-2)', fontWeight: 600 } }, 'Отменить',
+        h('span', { style: { position: 'relative', width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center' } },
+          h('svg', { width: 32, height: 32, viewBox: '0 0 44 44', style: { position: 'absolute', inset: 0, transform: 'rotate(-90deg)' } }, h('circle', { cx: 22, cy: 22, r: 20, fill: 'none', stroke: 'var(--accent)', strokeWidth: 4, strokeDasharray: 126, style: { animation: 'tg-ring 5s linear infinite' } })),
+          h('span', { style: { height: 18, overflow: 'hidden', fontFamily: 'var(--font-rounded)', fontSize: 15, lineHeight: '18px', fontVariantNumeric: 'tabular-nums' } }, h('span', { style: { display: 'flex', flexDirection: 'column', animation: 'tg-count 5s steps(5) infinite' } }, ...['5', '4', '3', '2', '1'].map(n => h('span', { key: n, style: { height: 18 } }, n)))))));
+    const demoSlide = h('div', { style: { position: 'relative', width: 260, minHeight: 64, borderRadius: 999, background: 'var(--fill-2)', display: 'flex', alignItems: 'center', padding: 4, boxSizing: 'border-box', overflow: 'hidden' } },
+      h('span', { style: { width: 56, height: 56, borderRadius: '50%', background: 'var(--accent)', color: 'var(--on-accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'tg-slide 3s var(--ease-out) infinite', zIndex: 1 } }, icon('home')),
+      h('span', { style: { position: 'absolute', left: 0, right: 0, textAlign: 'center', fontSize: 17, color: 'var(--text-secondary)' } }, 'Домой'));
+    const demoFast = h('div', { style: { height: 37, width: 250, borderRadius: 999, background: 'var(--system-island)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 12px 0 8px', boxSizing: 'border-box' } },
+      h('span', { style: { position: 'relative', width: 26, height: 26, display: 'flex', alignItems: 'center', justifyContent: 'center' } }, h('svg', { width: 26, height: 26, viewBox: '0 0 44 44', style: { position: 'absolute', transform: 'rotate(-90deg)' } }, h('circle', { cx: 22, cy: 22, r: 20, fill: 'none', stroke: 'var(--status-warning)', strokeWidth: 5, strokeDasharray: 126, style: { animation: 'tg-ring 6s linear infinite' } })), icon('no_meals', { fontSize: 14, color: 'var(--status-warning)' })),
+      h('span', { style: { fontFamily: 'var(--font-rounded)', fontSize: 15, color: 'var(--status-warning)' } }, '0:19'));
+    const demoPulse = h('div', { style: { width: 72, height: 72, borderRadius: '50%', background: 'var(--accent)', color: 'var(--on-accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'tg-pulse 2s ease-out infinite' } }, icon('medication', { fontSize: 32 }));
+    const demoFill = h('div', { style: { width: 260, display: 'flex', flexDirection: 'column', gap: 8 } }, h('span', { style: { fontSize: 13, color: 'var(--text-secondary)' } }, 'Учусь ритму · день 2 из 4'), h('div', { style: { height: 10, borderRadius: 999, background: 'var(--fill-2)', overflow: 'hidden' } }, h('div', { style: { height: '100%', borderRadius: 999, background: 'var(--accent)', animation: 'tg-fill 3s var(--ease-out) infinite' } })));
+    return {
+      themes: [{ name: 'Dark', attr: 'dark' }, { name: 'Light', attr: 'light' }],
+      sum4: [
+        { icon: 'directions_walk', t: 'Прогулки', cmp: 'как обычно', v: '5', u: '', bt: 'none' },
+        { icon: 'medication', t: 'Дозы', cmp: 'вечерняя в 20:00', v: '1', u: 'из 2', bt: '1px solid var(--separator)' },
+        { icon: 'restaurant', t: 'Еда', cmp: 'по плану', v: '130', u: 'г', bt: '1px solid var(--separator)' },
+        { icon: 'grass', t: 'Стул', cmp: 'норма', v: '1', u: '', bt: '1px solid var(--separator)' }
+      ],
+      vizRules: [
+        { n: '1', t: 'Сначала ответ словами', d: 'Человек приходит с вопросом «всё нормально?». Заголовок отвечает до графика.', togo: '«Обычный день, одна рвота» над шкалой.' },
+        { n: '2', t: 'Подписи прямо на графике', d: 'Легенда заставляет глазом ходить туда-обратно. Подпись рядом с отметкой читается сразу.', togo: 'Дорожки подписаны слева: Улица, Доза, Еда, Случаи.' },
+        { n: '3', t: 'Положение важнее цвета', d: 'Глаз точнее всего сравнивает положение на общей оси, хуже — длину, хуже всего — оттенок.', togo: 'Каждый вид на своей дорожке на общей оси часов; цвет не нужен, чтобы понять, что это.' },
+        { n: '4', t: 'Цвет — только для исключения', d: 'Если цветное всё, не выделено ничего. Обычное — тоном текста, отклонение — статусным цветом.', togo: 'Прогулки и дозы — тоном текста и акцентом; красный — только случай.' },
+        { n: '5', t: 'Один цвет — одно значение везде', d: 'Цвет, который значит разное на разных экранах, перестаёт что-либо значить.', togo: 'Янтарь — только натощак, терракот — только инцидент, лайм — улица и главное действие.' },
+        { n: '6', t: 'Сравнение с обычным', d: 'Число без нормы не читается: «5 выходов» — это много или мало?', togo: '«5 выходов — как всегда»; на «Просится» — полоса «обычно 2–2,5 ч».' },
+        { n: '7', t: 'Не больше 4–5 категорий', d: 'Больше пяти видов отметок на одной шкале уже не различаются с одного взгляда.', togo: '4 дорожки. Лакомства и занятия — только в ленте.' },
+        { n: '8', t: 'Подписывать только важное', d: 'Подписи на каждой точке — шум. Подпись нужна у «сейчас», у исключения и у крайних значений.', togo: 'Подписаны «сейчас», «рвота 11:20» и ось 6–22.' },
+        { n: '9', t: 'Есть текст для VoiceOver', d: 'График без текста недоступен. Заголовок-ответ и лента — уже текстовая альтернатива; плюс Audio Graphs в iOS.', togo: 'accessibilityLabel дорожки: «Улица: 5 раз, последний в 12:22».' }
+      ],
+      lanes: (() => {
+        const X = (hh) => ((hh - 6) / 16 * 100).toFixed(2) + '%';
+        const pill = (a, b) => ({ x: X(a), y: '5px', w: 'max(10px, calc(' + X(b) + ' - ' + X(a) + '))', h: '10px', c: 'var(--accent)', bs: 'none' });
+        const dot = (a, c, plan) => ({ x: 'calc(' + X(a) + ' - 5px)', y: '5px', w: '10px', h: '10px', c: plan ? 'var(--bg-primary)' : c, bs: plan ? 'inset 0 0 0 1.5px var(--text-secondary)' : '0 0 0 3px var(--fill-1)' });
+        return [
+          { bt: 'none', count: '5', unit: '', label: 'Улица · как обычно', lc: 'var(--text-primary)', marks: [pill(7.17, 7.47), pill(10.0, 10.2), pill(12.37, 12.68), pill(15.0, 15.2), { ...pill(19.75, 20.1), c: 'transparent', bs: 'inset 0 0 0 1.5px var(--text-secondary)' }], hasNote: false },
+          { bt: '1px solid var(--separator)', count: '1', unit: '/2', label: 'Доза · вовремя · натощак до 8:30', lc: 'var(--text-primary)', marks: [dot(8, 'var(--text-primary)'), { x: 'calc(' + X(8) + ' + 7px)', y: '8px', w: 'max(20px, calc(' + X(8.5) + ' - ' + X(8) + '))', h: '4px', c: 'var(--status-warning)', bs: 'none' }, dot(20, '', true)], hasNote: false },
+          { bt: '1px solid var(--separator)', count: '130', unit: 'г', label: 'Еда · по плану', lc: 'var(--text-primary)', marks: [dot(8.52, 'var(--text-primary)'), dot(13.08, 'var(--text-primary)'), dot(20.5, '', true)], hasNote: false },
+          { bt: '1px solid var(--separator)', count: '1', unit: '', label: 'Случаи · рвота 11:20', lc: 'var(--status-error)', marks: [dot(11.33, 'var(--status-error)')], hasNote: true, note: 'рвота', noteX: 'calc(' + X(11.33) + ' + 10px)', noteC: 'var(--status-error)' }
+        ];
+      })(),
+      feed3: [{ time: '15:05', icon: 'restaurant', what: 'Покормил 65 г', who: 'мама' }, { time: '15:00', icon: 'directions_walk', what: 'На улице 12 мин', who: 'мама' }, { time: '12:22', icon: 'directions_walk', what: 'На улице 19 мин', who: 'ты' }, { time: '8:00', icon: 'medication', what: 'Доза', who: 'мама' }],
+      sheets: [
+        { title: 'Шторка / Просится · вердикт / Dark', attr: 'dark', head: 'Стич просится', sub: '9:41', lead: 'close', trail: 'info', isVerdict: true, isRecord: false, isIncident: false, isOther: false, note: 'Вердикт — инверсная плашка: это главное на экране. Два числа объясняют почему. Строка о таблетке — если до дозы ≤ 30 мин.' },
+        { title: 'Шторка / Записать… / Dark', attr: 'dark', head: 'Записать', sub: 'сейчас · изменить время', lead: 'close', trail: 'schedule', isRecord: true, isVerdict: false, isIncident: false, isOther: false, note: 'Плитки выросли до 104 (быстрая запись из readme) и показывают счёт за день — видно, что уже отмечено.' },
+        { title: 'Шторка / Записать… / Light', attr: 'light', head: 'Записать', sub: 'сейчас · изменить время', lead: 'close', trail: 'schedule', isRecord: true, isVerdict: false, isIncident: false, isOther: false, note: 'То же в светлой теме.' },
+        { title: 'Шторка / Инцидент / Dark', attr: 'dark', head: 'Что случилось?', sub: '9:41', lead: 'chevron_left', trail: 'schedule', isIncident: true, isRecord: false, isVerdict: false, isOther: false, note: 'Тап — записано. Второй экран — только там, где есть что уточнить.' },
+        { title: 'Шторка / Вырвал · Другое… / Light', attr: 'light', head: 'Вырвал · чем?', sub: 'записано в 9:41', lead: 'chevron_left', trail: 'check', isOther: true, isRecord: false, isVerdict: false, isIncident: false, note: 'Выбранный чип — акцентная подложка с галочкой; «Другое…» раскрывает поле.' }
+      ],
+      tiles: [{ icon: 'grass', t: 'Стул', d: 'дома или на улице', hasN: true, n: '1', u: 'раз' }, { icon: 'restaurant', t: 'Покормил', d: '65 г · по плану', hasN: true, n: '130', u: 'г' }, { icon: 'cookie', t: 'Лакомство', d: 'по плану', hasN: true, n: '3', u: 'шт' }, { icon: 'school', t: 'Занятие', d: 'шаг 3 · у двери', hasN: false }, { icon: 'edit_note', t: 'Заметка', d: 'текст или фото', hasN: false }, { icon: 'work', t: 'Весь день', d: 'со мной', hasN: false }],
+      incidents: [{ icon: 'sick', t: 'Вырвал', d: 'чем ›' }, { icon: 'water_drop', t: 'Лужа в доме', d: 'что было до ›' }, { icon: 'grass', t: 'Стул в доме', d: 'что было до ›' }, { icon: 'bolt', t: 'Сорвался', d: '' }, { icon: 'sentiment_stressed', t: 'Испугался', d: 'режим поведения' }],
+      vomit: [{ t: 'едой', bg: 'var(--fill-2)', fg: 'var(--text-primary)' }, { t: '✓ травой', bg: 'var(--accent-subtle)', fg: 'var(--accent-subtle-text)' }, { t: 'желчью', bg: 'var(--fill-2)', fg: 'var(--text-primary)' }, { t: 'с кровью', bg: 'var(--fill-2)', fg: 'var(--text-primary)' }],
+      week: ['пн 1', 'вт 2', 'ср 3', 'чт 4', 'пт 5', 'сб 6', 'вс 7'].map((x, i) => ({ w: x.split(' ')[0], n: x.split(' ')[1], bg: i === 3 ? 'var(--fill-inverse)' : i > 3 ? 'transparent' : 'var(--fill-1)', fg: i === 3 ? 'var(--on-inverse)' : i > 3 ? 'var(--text-disabled)' : 'var(--text-primary)' })),
+      metrics: [{ v: '5', u: '', l: 'выходов' }, { v: '2', u: '/2', l: 'дозы' }, { v: '130', u: 'г', l: 'еда' }],
+      dots: [{ x: '6%', y: '14px', w: '16px', c: 'var(--accent)' }, { x: '12%', y: '14px', w: '10px', c: 'var(--text-primary)' }, { x: '13%', y: '26px', w: '20px', c: 'var(--status-warning)' }, { x: '33%', y: '14px', w: '18px', c: 'var(--accent)' }, { x: '44%', y: '14px', w: '10px', c: 'var(--status-error)' }, { x: '54%', y: '14px', w: '20px', c: 'var(--accent)' }, { x: '80%', y: '14px', w: '10px', c: 'var(--text-primary)' }, { x: '88%', y: '14px', w: '14px', c: 'var(--separator)' }],
+      feed: bt([{ time: '15:05', icon: 'restaurant', ic: 'var(--text-secondary)', what: 'Покормил 65 г', who: 'мама' }, { time: '12:22', icon: 'directions_walk', ic: 'var(--accent-text)', what: 'На улице 19 мин', who: 'ты' }, { time: '11:20', icon: 'sick', ic: 'var(--status-error)', what: 'Вырвал · травой', who: 'ты' }, { time: '8:00', icon: 'medication', ic: 'var(--text-secondary)', what: 'Доза', who: 'мама' }, { time: '7:10', icon: 'directions_walk', ic: 'var(--accent-text)', what: 'На улице 18 мин', who: 'ты' }]),
+      stock: [
+        { name: 'Левотироксин', icon: 'medication', per: '1,5 таб./день', left: '9', unit: 'таб', until: 'пн 8 окт', bg: 'var(--fill-inverse)', fg: 'var(--on-inverse)', tex: 'none', uc: 'var(--on-inverse)', days: days(6, 14, 'inv'), daysPad: days(6, 14), cta: true },
+        { name: 'Корм', icon: 'restaurant', per: '130 г/день', left: '1,4', unit: 'кг', until: 'вт 16 окт', bg: 'var(--fill-1)', fg: 'var(--text-primary)', tex: 'var(--texture-graphite)', uc: 'var(--accent-text)', days: days(11, 14), daysPad: days(11, 14), cta: false },
+        { name: 'Капли Вет', icon: 'water_drop', per: '0,5 мл/день', left: '6,5', unit: 'мл', until: 'курс до 9 окт', bg: 'var(--fill-1)', fg: 'var(--text-primary)', tex: 'var(--texture-graphite)', uc: 'var(--accent-text)', days: days(13, 14), daysPad: days(13, 14), cta: false }
+      ],
+      notifs: [{ icon: 'check_circle', title: 'Мама дала дозу', when: '8:00', body: 'Кормить можно с 8:30.', bg: 'var(--glass-regular)', fg: 'var(--text-primary)' }, { icon: 'inventory_2', title: 'Таблетки кончатся в пн', when: '9:00', body: 'Левотироксин: 9 таб.', bg: 'var(--glass-regular)', fg: 'var(--text-primary)' }],
+      motion: [
+        { demo: demoPress, t: 'Нажатие с гранью', d: 'Кнопка опускается на высоту грани, грань исчезает. Ощущается как физическая клавиша — понятно, что нажалось.', spec: 'translateY(var(--edge-height)) · 0.15 s · .impact(.light)' },
+        { demo: demoRoll, t: 'Цифры перекатываются', d: 'Каждую минуту меняется только изменившаяся цифра — сверху вниз. Глаз видит, что время идёт, без мигания.', spec: '.contentTransition(.numericText()) · 0.3 s' },
+        { demo: demoUndo, t: 'Отмена с кольцом', d: 'Стеклянный тост «Записано» и кнопка «Отменить» с секундами 5…1 внутри убывающего кольца. Видно, сколько осталось, чтобы передумать.', spec: '--toast-duration 5 s · .success' },
+        { demo: demoSlide, t: 'Слайдер «Домой»', d: 'Ручка тянется вправо, на пороге — лёгкий толчок, отпустили — прогулка закончена.', spec: 'SlideAction · порог 80 % · .impact(.light)' },
+        { demo: demoFast, t: 'Натощак в Dynamic Island', d: 'Кольцо вокруг иконки убывает за 30 минут. Можно не открывать приложение, чтобы понять, сколько ещё ждать.', spec: 'Live Activity · обновление раз в минуту' },
+        { demo: demoPulse, t: 'Доза сейчас', d: 'Главная кнопка «Дал дозу» мягко пульсирует первые 10 секунд после открытия в час дозы — потом спокойна.', spec: '2 × 1 s · только в час дозы · Reduce Motion — без пульса' },
+        { demo: demoFill, t: 'Ритм учится', d: 'Полоса «Учусь ритму» дорастает при каждом новом выходе — видно, что запись чему-то служит.', spec: '0.3 s ease-out · .selection на шаге' }
+      ],
+      ideas: [
+        { icon: 'touch_app', t: 'Долгое нажатие на «Просится»', d: 'Пропустить вердикт и сразу открыть «На улице» — для тех, кто и так знает, что пора.', k: 'Скорость', c: '#D4F75F' },
+        { icon: 'nightlight', t: 'Ночной режим экрана', d: 'С 22:00 до 6:00 тема темнее, кнопки крупнее, никакой подсветки акцентом кроме главной. Выводить собаку в 3 ночи, не ослепнув.', k: 'Задача', c: '#D4F75F' },
+        { icon: 'back_hand', t: 'Жест «Дал» на Apple Watch', d: 'Двойное касание пальцами (Double Tap) на часах отмечает дозу или «Пописал» — руки заняты поводком.', k: 'Задача', c: '#D4F75F' },
+        { icon: 'mic', t: '«Siri, Стич пописал»', d: 'App Intents уже есть; добавить фразы на русском, украинском, французском и результат голосом.', k: 'Задача', c: '#D4F75F' },
+        { icon: 'calendar_view_week', t: 'Неделя пилюлями', d: 'В Истории неделя — 7 пилюль; день с инцидентом — иконкой внутри. Видно паттерн без графиков.', k: 'Задача', c: '#D4F75F' },
+        { icon: 'family_restroom', t: 'Кто сейчас с собакой', d: 'Маленький аватар на плашке: «с Аней», «с мамой». Снимает «а кто его сейчас выводит?» в семье.', k: 'Задача', c: '#D4F75F' },
+        { icon: 'celebration', t: 'Тихие вехи', d: '«7 дней без луж», «курс завершён» — одной строкой состояния и лёгкой хаптикой, без конфетти.', k: 'Радует', c: '#F7C75F' },
+        { icon: 'wb_twilight', t: 'Плашка по времени суток', d: 'Фактура чуть теплее утром и холоднее вечером — в пределах fill-1, без новых цветов.', k: 'Радует', c: '#F7C75F' },
+        { icon: 'pets', t: 'Стикер собаки в Live Activity', d: 'Если фото включено — круглый вырез в Dynamic Island вместо иконки.', k: 'Радует', c: '#F7C75F' },
+        { icon: 'screen_rotation', t: 'StandBy на зарядке', d: 'Телефон на тумбочке в StandBy показывает «2ч 10мин» и «Доза 20:00» крупно — ночные часы для хозяина собаки.', k: 'Задача', c: '#D4F75F' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

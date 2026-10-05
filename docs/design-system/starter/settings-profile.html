@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Настройки и профиль</title>
+<link rel="stylesheet" href="../graphite.css">
+<link rel="stylesheet" href="brand.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin></script>
+<script src="../components/preview-loader.js"></script>
+</head>
+<body style="margin: 0;background:var(--page);display:flex;justify-content:center;padding:24px 0">
+<div id="root"></div>
+<script type="text/babel">
+loadGraphite().then((G) => {
+  const { NavBar, TabBar, Card, CardHeader, ListRow, ActionRow, Button, SectionHeader, Toast } = G;
+  const Phone = ({ children }) => <div style={{ position: "relative", width: 390, minHeight: 844, background: "var(--bg-primary)", borderRadius: 48, overflow: "hidden", color: "var(--text-primary)", padding: "56px var(--margin-regular) 48px", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: "var(--gap-sections)" }}>{children}</div>;
+  function Settings() {
+    const { NavBar, SectionHeader, ListRow, Toggle, Menu, Slider, Button } = G;
+    const [push, setPush] = React.useState(true); const [theme, setTheme] = React.useState("Как в системе"); const [h, setH] = React.useState(5);
+    return (<Phone>
+      <NavBar title="Настройки" />
+      <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-cards)" }}><SectionHeader title="Уведомления" />
+        <ListRow icon="notifications" title="Уведомления" trailing={<Toggle checked={push} onChange={setPush} label="Уведомления" />} />
+        <ListRow icon="schedule" title="Напоминания" subtitle="Доза, долго без выхода" chevron onClick={() => {}} />
+        <div style={{ background: "var(--fill-1)", borderRadius: "var(--radius-row)", padding: "var(--pad-row-y) var(--pad-row)", boxShadow: "var(--elev-1)" }}><G.Slider label="Порог «долго без выхода»" value={h} min={2} max={8} onChange={setH} format={(v) => v + " ч"} /></div></div>
+      <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-cards)" }}><SectionHeader title="Вид" />
+        <Menu label="Тема" value={theme} onChange={setTheme} options={["Как в системе", "Тёмная", "Светлая"]} /></div>
+      <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-cards)" }}><SectionHeader title="Данные" />
+        <ListRow icon="ios_share" title="Экспорт" subtitle="PDF врачу и CSV" chevron onClick={() => {}} />
+        <ListRow destructive title="Удалить все записи" onClick={() => {}} /></div>
+      <Button variant="plain">Восстановить покупки</Button>
+    </Phone>);
+  }
+  function Profile() {
+    const { NavBar, Button, SectionHeader, ListRow } = G;
+    return (<Phone>
+      <NavBar title="Профиль" trailing={<Button icon="edit" label="Изменить" variant="surface" size="m" />} />
+      <G.DogProfile name="Стич" breed="Шипперке" sex="кобель" age="3 года" birth="19 марта 2023" weight="7,4 кг" weightTrend="+0,2 кг за месяц" vet={{ name: "Д-р Мартен", clinic: "Клиника Арсон" }} />
+      <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-cards)" }}><SectionHeader title="Семья" action="Пригласить" />
+        <G.FamilyList members={[{ name: "Вика", you: true, duty: true, role: "Владелец" }, { name: "Мама", role: "Пишет и видит всё" }]} onHandOff={() => {}} /></div>
+    </Phone>);
+  }
+  function App() { return <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-32)", justifyContent: "center", alignItems: "flex-start" }}><Settings /><Profile /></div>; }
+  ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+});
+</script>
+</body>
+</html>

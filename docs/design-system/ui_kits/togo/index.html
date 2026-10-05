@@ -1,0 +1,43 @@
+<!-- @dsCard group="UI kit" viewport="900x900" name="Togo · прототип" subtitle="Сегодня, прогулка, доза, история, семья — 390 / 320 pt" -->
+<!-- @startingPoint section="Togo" subtitle="Экран «Сегодня» с вердиктом и быстрой записью" viewport="900x900" -->
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Togo · прототип на Graphite</title>
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin></script>
+<script src="../../components/preview-loader.js"></script>
+</head><body style="padding: 24px;box-sizing:border-box">
+<div id="root"></div>
+<script type="text/babel" src="TogoApp.jsx"></script>
+<script type="text/babel">
+const KEY = "togo-kit";
+function Seg({ value, onChange, options }) {
+  return <div style={{ display: "inline-flex", flexWrap: "wrap", background: "var(--fill-track)", borderRadius: 999, padding: "var(--space-4)", gap: "var(--space-4)" }}>{options.map(([v, l]) => <button key={v} onClick={() => onChange(v)} style={{ border: "none", cursor: "pointer", minHeight: 40, padding: "0 var(--space-16)", borderRadius: 999, fontSize: 14, background: value === v ? "var(--fill-selected)" : "transparent", color: value === v ? "var(--text-primary)" : "var(--text-secondary)" }}>{l}</button>)}</div>;
+}
+function Shell() {
+  const saved = JSON.parse(localStorage.getItem(KEY) || "{}");
+  const [w, setW] = React.useState(saved.w || 390);
+  const [theme, setTheme] = React.useState(saved.theme || "dark");
+  const [fs, setFs] = React.useState(saved.fs || "L");
+  React.useEffect(() => { const h = document.documentElement; h.dataset.theme = theme; h.style.fontSize = ""; localStorage.setItem(KEY, JSON.stringify({ w, theme, fs }));
+    const S = { L: {}, XL: { "--fs-body": "19px", "--fs-subheadline": "17px", "--fs-footnote": "15px", "--fs-title-3": "22px", "--fs-large-title": "36px", "--fs-headline": "19px" }, AX1: { "--fs-body": "28px", "--fs-subheadline": "25px", "--fs-footnote": "23px", "--fs-title-3": "31px", "--fs-large-title": "44px", "--fs-headline": "28px" } };
+    ["--fs-body","--fs-subheadline","--fs-footnote","--fs-title-3","--fs-large-title","--fs-headline"].forEach((k) => h.style.removeProperty(k)); Object.entries(S[fs]).forEach(([k, v]) => h.style.setProperty(k, v)); }, [w, theme, fs]);
+  const compact = w < 375;
+  return (
+    <div style={{ display: "flex", gap: "var(--space-32)", flexWrap: "wrap", alignItems: "flex-start" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-12)", width: 280 }}>
+        <span style={{ fontFamily: "var(--font-rounded)", fontWeight: 300, fontSize: 36, letterSpacing: "-.02em" }}>Togo</span>
+        <Seg value={w} onChange={setW} options={[[390, "390 pt"], [320, "320 pt"]]} />
+        <Seg value={theme} onChange={setTheme} options={[["dark", "Тёмная"], ["light", "Светлая"]]} />
+        <Seg value={fs} onChange={setFs} options={[["L", "Текст L"], ["XL", "XL"], ["AX1", "AX1"]]} />
+        <span style={{ fontSize: 14, lineHeight: 1.5, color: "var(--text-secondary)" }}>«Вывожу» запускает прогулку. «Выход» и «Стул» — два тапа. После дозы «Корм» предупреждает об окне натощак. Тап по записи в «Истории» — удалить с отменой.</span>
+      </div>
+      <div style={{ position: "relative", width: w, height: compact ? 568 : 844, background: "var(--bg-primary)", borderRadius: 44, boxShadow: "0 0 0 8px var(--fill-1), 0 0 0 9px var(--separator)", overflow: "hidden" }}>
+        <div style={{ position: "absolute", inset: 0, top: compact ? 24 : 54 }}><TogoApp width={w} /></div>
+      </div>
+    </div>
+  );
+}
+loadGraphite().then(() => ReactDOM.createRoot(document.getElementById("root")).render(<Shell />));
+</script></body></html>

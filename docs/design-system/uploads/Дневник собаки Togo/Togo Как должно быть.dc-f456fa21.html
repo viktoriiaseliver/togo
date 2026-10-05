@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;background:#131211;color:#F2EEE8;font-family:-apple-system,"SF Pro Text",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#2FE0BE;text-decoration:none}
+a:hover{color:#7FF0DA;text-decoration:underline}
+</style>
+</helmet>
+<div style="max-width:1180px;margin:0 auto;padding:56px 24px 120px;display:flex;flex-direction:column;gap:88px">
+
+<header style="display:flex;flex-direction:column;gap:24px">
+  <div style="font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#A9A39B">Togo · как должно быть · v2 · 4 октября 2026</div>
+  <h1 style="margin:0;font-size:clamp(34px,5vw,56px);line-height:1.05;letter-spacing:-0.03em;font-weight:700;text-wrap:balance">Критичный пересмотр и целевая схема: флоу, карта, каркас</h1>
+  <p style="margin:0;max-width:740px;font-size:17px;line-height:1.55;color:#C9C3BA;text-wrap:pretty">Первая версия описывала, как устроено сейчас: <a href="Togo Исследование.dc.html">Togo Исследование</a>. Здесь — что в ней было не так, что нашлось в коде при перепроверке (WalkMode, IncidentSheet, NeedsSheet, WalkSheets) и как должно быть. Всё целевое — предложения; решения за тобой.</p>
+  <nav style="display:flex;flex-wrap:wrap;gap:8px;font-size:14px">
+    <a href="#r0" style="padding:8px 14px;border-radius:99px;background:#1E1C1A;border:1px solid #2C2926;color:#F2EEE8">0 · Что было не так</a>
+    <a href="#r1" style="padding:8px 14px;border-radius:99px;background:#1E1C1A;border:1px solid #2C2926;color:#F2EEE8">1 · Правила флоу</a>
+    <a href="#r2" style="padding:8px 14px;border-radius:99px;background:#1E1C1A;border:1px solid #2C2926;color:#F2EEE8">2 · Флоу</a>
+    <a href="#r3" style="padding:8px 14px;border-radius:99px;background:#1E1C1A;border:1px solid #2C2926;color:#F2EEE8">3 · Карта приложения</a>
+    <a href="#r4" style="padding:8px 14px;border-radius:99px;background:#1E1C1A;border:1px solid #2C2926;color:#F2EEE8">4 · Каркас экранов</a>
+    <a href="#r5" style="padding:8px 14px;border-radius:99px;background:#1E1C1A;border:1px solid #2C2926;color:#F2EEE8">5 · Что проверить на людях</a>
+  </nav>
+</header>
+
+<!-- 0 -->
+<section id="r0" data-screen-label="00 Пересмотр" style="display:flex;flex-direction:column;gap:28px">
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <div style="font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#E0735A">0 · Критичный пересмотр</div>
+    <h2 style="margin:0;font-size:34px;letter-spacing:-0.02em;line-height:1.1">Главное: «на улице» устроено двумя разными режимами, и инцидент в них теряется</h2>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px">
+    <div style="display:flex;flex-direction:column;gap:12px;padding:22px;border-radius:18px;background:#1E1C1A;border:1px solid rgba(224,115,90,.45)">
+      <div style="font-size:12px;font-weight:700;color:#E0735A">Дефект · высокий</div>
+      <div style="font-size:18px;font-weight:600;line-height:1.35">Инцидент на прогулке пишется без вида</div>
+      <div style="font-size:14px;line-height:1.55;color:#C9C3BA">Плитка «Инцидент» в WalkMode ставит отметку без IncidentKind. Отсюда: нельзя отметить кровь, не поднимается эпизод (<code style="color:#F2EEE8">raiseEpisodeIfNeeded</code> живёт только в IncidentSheet), не включается «сказать остальным», а итог прогулки спрашивает про срыв и заметку, но не про инцидент.</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;padding:22px;border-radius:18px;background:#1E1C1A;border:1px solid rgba(224,115,90,.45)">
+      <div style="font-size:12px;font-weight:700;color:#E0735A">Дефект · высокий</div>
+      <div style="font-size:18px;font-weight:600;line-height:1.35">У выхода по нужде нет отметок вовсе</div>
+      <div style="font-size:14px;line-height:1.55;color:#C9C3BA">«Просится → Вывожу» запускает таймер без сетки отметок. Вырвало или сорвался на коротком выходе — записать можно только потом, с главного, отдельной шторкой и с неверным временем.</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;padding:22px;border-radius:18px;background:#1E1C1A;border:1px solid rgba(232,176,75,.45)">
+      <div style="font-size:12px;font-weight:700;color:#E8B04B">Сложность</div>
+      <div style="font-size:18px;font-weight:600;line-height:1.35">Два режима с разной механикой</div>
+      <div style="font-size:14px;line-height:1.55;color:#C9C3BA">Выход: «Стоп» → шторка «Как сходил?». Прогулка: «Пошли» → сетка → «Закончить» → итог «Погуляли» → «Готово». Разные кнопки конца, разные экраны итога. У двери человек не знает заранее, будет это три минуты или сорок.</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;padding:22px;border-radius:18px;background:#1E1C1A;border:1px solid rgba(232,176,75,.45)">
+      <div style="font-size:12px;font-weight:700;color:#E8B04B">Лишние шаги</div>
+      <div style="font-size:18px;font-weight:600;line-height:1.35">Итог прогулки — всегда, даже пустой</div>
+      <div style="font-size:14px;line-height:1.55;color:#C9C3BA">Шторка «Погуляли» появляется после каждой прогулки, хотя вопросы в ней есть только при срыве и заметке. Плюс шторка-инструкция «Пошли» перед стартом. Два экрана на ровном месте.</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;padding:22px;border-radius:18px;background:#1E1C1A;border:1px solid rgba(232,176,75,.45)">
+      <div style="font-size:12px;font-weight:700;color:#E8B04B">Дубль понятия</div>
+      <div style="font-size:18px;font-weight:600;line-height:1.35">«Срыв» живёт в двух местах</div>
+      <div style="font-size:14px;line-height:1.55;color:#C9C3BA">Отметка прогулки <code style="color:#F2EEE8">.reaction</code> и вид инцидента «Сорвался» — два пути к одному факту с разными вопросами после.</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;padding:22px;border-radius:18px;background:#1E1C1A;border:1px solid rgba(232,176,75,.45)">
+      <div style="font-size:12px;font-weight:700;color:#E8B04B">Кризис далеко</div>
+      <div style="font-size:18px;font-weight:600;line-height:1.35">Кровь не ведёт к врачу</div>
+      <div style="font-size:14px;line-height:1.55;color:#C9C3BA">«Вырвал с кровью» красит запись и предлагает выписку, но телефона врача рядом нет — он на вкладке «Собака». В панике человек стоит на «Сегодня».</div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:10px;padding:20px;border-radius:16px;background:#191816;border:1px solid #2C2926">
+    <div style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#A9A39B">Ошибки первой версии исследования</div>
+    <ul style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:14px;line-height:1.55;color:#C9C3BA">
+      <li>Флоу считались по экранам, а не по тапам, и без потолка — сложность не была видна.</li>
+      <li>Прогулка и выход разобраны как отдельные флоу, их общая проблема не замечена.</li>
+      <li>Кризис (F5) вёл через вкладку «Собака» — это путь из спокойного состояния, не из паники.</li>
+      <li>Кривая эмоций в CJM нарисована без данных — это гипотеза, её надо подписывать как гипотезу.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 1 -->
+<section id="r1" data-screen-label="01 Правила" style="display:flex;flex-direction:column;gap:24px">
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <div style="font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#2FE0BE">1 · Правила флоу</div>
+    <h2 style="margin:0;font-size:34px;letter-spacing:-0.02em;line-height:1.1">Пять правил, по которым проверяется каждый путь</h2>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px">
+    <div style="display:flex;flex-direction:column;gap:8px;padding:20px;border-radius:16px;background:#1E1C1A;border:1px solid #2C2926"><div style="font-size:30px;font-weight:700;color:#2FE0BE">≤ 2</div><div style="font-size:15px;font-weight:600">тапа до записи</div><div style="font-size:13px;line-height:1.5;color:#A9A39B">Любой частый факт записывается за два тапа с того экрана, где человек стоит.</div></div>
+    <div style="display:flex;flex-direction:column;gap:8px;padding:20px;border-radius:16px;background:#1E1C1A;border:1px solid #2C2926"><div style="font-size:30px;font-weight:700;color:#2FE0BE">≤ 1</div><div style="font-size:15px;font-weight:600">вопрос после</div><div style="font-size:13px;line-height:1.5;color:#A9A39B">И только если ответ меняет поведение приложения: вердикт, эпизод, порог.</div></div>
+    <div style="display:flex;flex-direction:column;gap:8px;padding:20px;border-radius:16px;background:#1E1C1A;border:1px solid #2C2926"><div style="font-size:30px;font-weight:700;color:#2FE0BE">1</div><div style="font-size:15px;font-weight:600">режим «на улице»</div><div style="font-size:13px;line-height:1.5;color:#A9A39B">Один экран для выхода и прогулки: те же отметки, одна кнопка «Домой».</div></div>
+    <div style="display:flex;flex-direction:column;gap:8px;padding:20px;border-radius:16px;background:#1E1C1A;border:1px solid #2C2926"><div style="font-size:30px;font-weight:700;color:#2FE0BE">потом</div><div style="font-size:15px;font-weight:600">подробности</div><div style="font-size:13px;line-height:1.5;color:#A9A39B">На улице — факт и время. Детали — в итоге, если есть что спросить, или тапом по строке.</div></div>
+    <div style="display:flex;flex-direction:column;gap:8px;padding:20px;border-radius:16px;background:#1E1C1A;border:1px solid rgba(224,115,90,.4)"><div style="font-size:30px;font-weight:700;color:#E0735A">1 тап</div><div style="font-size:15px;font-weight:600">до врача при тревоге</div><div style="font-size:13px;line-height:1.5;color:#A9A39B">Кровь или третий эпизод — кнопка звонка там, где это записали.</div></div>
+  </div>
+</section>
+
+<!-- 2 -->
+<section id="r2" data-screen-label="02 Флоу" style="display:flex;flex-direction:column;gap:24px">
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <div style="font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#2FE0BE">2 · Юзер-флоу: сейчас → должно быть</div>
+    <h2 style="margin:0;font-size:34px;letter-spacing:-0.02em;line-height:1.1">Семь путей, тапы посчитаны</h2>
+    <p style="margin:0;max-width:740px;font-size:15px;line-height:1.55;color:#A9A39B">Считаются тапы человека от первого касания до записанного факта. Отметки по ходу прогулки в счёт не входят — их столько, сколько было событий.</p>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:14px">
+
+    <article style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:0;border-radius:18px;overflow:hidden;border:1px solid #2C2926;background:#1E1C1A">
+      <div style="grid-column:1 / -1;display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;padding:18px 20px;border-bottom:1px solid #2C2926">
+        <span style="font-size:18px;font-weight:700">F1 · Просится → вывел</span>
+        <span style="font-size:14px;color:#A9A39B">5 тапов, 3 шторки → <span style="color:#2FE0BE;font-weight:600">3 тапа, 1 шторка</span></span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;padding:18px 20px;border-right:1px solid #2C2926">
+        <div style="font-size:12px;color:#A9A39B;text-transform:uppercase;letter-spacing:.08em">Сейчас</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px">
+          <span style="padding:7px 10px;border-radius:9px;background:#2A2724">Просится</span><span style="color:#6E6862">→</span>
+          <span style="padding:7px 10px;border-radius:9px;background:#2A2724">Вывожу</span><span style="color:#6E6862">→</span>
+          <span style="padding:7px 10px;border-radius:9px;border:1px dashed #3A3632">Как попросил? 1 из 5</span><span style="color:#6E6862">→</span>
+          <span style="padding:7px 10px;border-radius:9px;background:#2A2724">Стоп</span><span style="color:#6E6862">→</span>
+          <span style="padding:7px 10px;border-radius:9px;background:#2A2724">Как сходил? · ответ</span>
+        </div>
+        <div style="font-size:13px;color:#E8B04B">На улице ничего отметить нельзя</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;padding:18px 20px">
+        <div style="font-size:12px;color:#2FE0BE;text-transform:uppercase;letter-spacing:.08em">Должно быть</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px">
+          <span style="padding:7px 10px;border-radius:9px;background:#2A2724">Просится</span><span style="color:#6E6862">→</span>
+          <span style="padding:7px 10px;border-radius:9px;background:#2FE0BE;color:#0E1412;font-weight:600">Вывожу</span><span style="color:#6E6862">→</span>
+          <span style="padding:7px 10px;border-radius:9px;background:#2A2724">«На улице»: Пописал</span><span style="color:#6E6862">→</span>
+          <span style="padding:7px 10px;border-radius:9px;background:#2A2724">Домой</span>
+        </div>
+        <div style="font-size:13px;line-height:1.5;color:#C9C3BA">«Как сходил?» не нужен — ответ уже в отметках. Спрашивается только если отметок не было. «Как попросил?» — одной строкой чипов в шторке вердикта, над «Вывожу», раз в 5 выходов; без отдельной шторки.</div>
+      </div>
+    </article>
+
+    <article style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));border-radius:18px;overflow:hidden;border:1px solid #2C2926;background:#1E1C1A">
+      <div style="grid-column:1 / -1;display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;padding:18px 20px;border-bottom:1px solid #2C2926">
+        <span style="font-size:18px;font-weight:700">F2 · Прогулка</span>
+        <span style="font-size:14px;color:#A9A39B">4 тапа, 3 экрана → <span style="color:#2FE0BE;font-weight:600">2 тапа, 1 экран</span></span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;padding:18px 20px;border-right:1px solid #2C2926">
+        <div style="font-size:12px;color:#A9A39B;text-transform:uppercase;letter-spacing:.08em">Сейчас</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px">
+          <span style="padding:7px 10px;border-radius:9px;background:#2A2724">Гулять</span><span style="color:#6E6862">→</span>
+          <span style="padding:7px 10px;border-radius:9px;border:1px solid #E8B04B;color:#E8B04B">Инструкция · Пошли</span><span style="color:#6E6862">→</span>
+          <span style="padding:7px 10px;border-radius:9px;background:#2A2724">отметки</span><span style="color:#6E6862">→</span>
+          <span style="padding:7px 10px;border-radius:9px;background:#2A2724">Закончить</span><span style="color:#6E6862">→</span>
+          <span style="padding:7px 10px;border-radius:9px;border:1px solid #E8B04B;color:#E8B04B">Погуляли · Готово</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;padding:18px 20px">
+        <div style="font-size:12px;color:#2FE0BE;text-transform:uppercase;letter-spacing:.08em">Должно быть</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px">
+          <span style="padding:7px 10px;border-radius:9px;background:#2FE0BE;color:#0E1412;font-weight:600">Гулять</span><span style="color:#6E6862">→</span>
+          <span style="padding:7px 10px;border-radius:9px;background:#2A2724">«На улице» · таймер идёт</span><span style="color:#6E6862">→</span>
+          <span style="padding:7px 10px;border-radius:9px;background:#2A2724">отметки</span><span style="color:#6E6862">→</span>
+          <span style="padding:7px 10px;border-radius:9px;background:#2A2724">Домой</span><span style="color:#6E6862">→</span>
+          <span style="padding:7px 10px;border-radius:9px;background:#2A2724">тост</span>
+        </div>
+        <div style="font-size:13px;line-height:1.5;color:#C9C3BA">Итог открывается, только если есть что уточнить: срыв, инцидент, заметка. Подсказка про отметки — один раз, строкой на самом экране. Первые 10 с — «Отменить», если нажали случайно.</div>
+      </div>
+    </article>
+
+    <article style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));border-radius:18px;overflow:hidden;border:1px solid rgba(224,115,90,.45);background:#1E1C1A">
+      <div style="grid-column:1 / -1;display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;padding:18px 20px;border-bottom:1px solid #2C2926">
+        <span style="font-size:18px;font-weight:700">F3 · Инцидент на улице <span style="font-size:13px;font-weight:600;color:#E0735A">новое</span></span>
+        <span style="font-size:14px;color:#A9A39B">1 тап, без вида → <span style="color:#2FE0BE;font-weight:600">2 тапа, с видом</span></span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;padding:18px 20px;border-right:1px solid #2C2926">
+        <div style="font-size:12px;color:#A9A39B;text-transform:uppercase;letter-spacing:.08em">Сейчас</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px">
+          <span style="padding:7px 10px;border-radius:9px;background:#2A2724">Инцидент</span><span style="color:#6E6862">→</span>
+          <span style="padding:7px 10px;border-radius:9px;border:1px solid #E0735A;color:#E0735A">отметка «инцидент» без вида</span>
+        </div>
+        <div style="font-size:13px;color:#E8B04B">Нет крови, эпизода, «сказать остальным», вопроса в итоге. У выхода по нужде — нет и плитки.</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;padding:18px 20px">
+        <div style="font-size:12px;color:#2FE0BE;text-transform:uppercase;letter-spacing:.08em">Должно быть</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px">
+          <span style="padding:7px 10px;border-radius:9px;background:#2A2724">Инцидент</span><span style="color:#6E6862">→</span>
+          <span style="padding:7px 10px;border-radius:9px;background:#2A2724">ряд чипов прямо на экране</span><span style="color:#6E6862">→</span>
+          <span style="padding:7px 10px;border-radius:9px;border:1px solid #E0735A;color:#E0735A">Вырвал · Подобрал с земли · Другое</span>
+        </div>
+        <div style="font-size:13px;line-height:1.5;color:#C9C3BA">Таймер не останавливается, шторки нет. Запись идёт через тот же путь, что и дома: вид, эпизод, «сказать остальным». «Чем вырвал» — в итоге одной строкой чипов; выбрал «с кровью» → там же «Позвонить врачу». «Сорвался» здесь не дублируется — у срыва своя плитка.</div>
+      </div>
+    </article>
+
+    <article style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));border-radius:18px;overflow:hidden;border:1px solid #2C2926;background:#1E1C1A">
+      <div style="grid-column:1 / -1;display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;padding:18px 20px;border-bottom:1px solid #2C2926">
+        <span style="font-size:18px;font-weight:700">F4 · Инцидент дома</span>
+        <span style="font-size:14px;color:#A9A39B">3 тапа → <span style="color:#2FE0BE;font-weight:600">2 тапа</span></span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;padding:18px 20px;border-right:1px solid #2C2926">
+        <div style="font-size:12px;color:#A9A39B;text-transform:uppercase;letter-spacing:.08em">Сейчас</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px">
+          <span style="padding:7px 10px;border-radius:9px;background:#2A2724">Инцидент</span><span style="color:#6E6862">→</span>
+          <span style="padding:7px 10px;border-radius:9px;background:#2A2724">вид</span><span style="color:#6E6862">→</span>
+          <span style="padding:7px 10px;border-radius:9px;background:#2A2724">экран уточнения · Готово</span>
+        </div>
+        <div style="font-size:13px;color:#C9C3BA">Экран уточнения — всегда, даже для «Другое»</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;padding:18px 20px">
+        <div style="font-size:12px;color:#2FE0BE;text-transform:uppercase;letter-spacing:.08em">Должно быть</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px">
+          <span style="padding:7px 10px;border-radius:9px;background:#2A2724">Инцидент</span><span style="color:#6E6862">→</span>
+          <span style="padding:7px 10px;border-radius:9px;background:#2A2724">вид → записано</span>
+        </div>
+        <div style="font-size:13px;line-height:1.5;color:#C9C3BA">Второй экран остаётся только там, где ему есть что сказать: «Вырвал» — чем (и кровь → врач), «Лужа / стул в доме» — «не наказывай» и что было до. Остальное закрывается тостом с «Уточнить».</div>
+      </div>
+    </article>
+
+    <article style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));border-radius:18px;overflow:hidden;border:1px solid #2C2926;background:#1E1C1A">
+      <div style="grid-column:1 / -1;display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;padding:18px 20px;border-bottom:1px solid #2C2926">
+        <span style="font-size:18px;font-weight:700">F5 · Тревога: кровь или третий эпизод</span>
+        <span style="font-size:14px;color:#A9A39B">3+ тапа с другой вкладки → <span style="color:#2FE0BE;font-weight:600">1 тап на месте</span></span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;padding:18px 20px;border-right:1px solid #2C2926">
+        <div style="font-size:12px;color:#A9A39B;text-transform:uppercase;letter-spacing:.08em">Сейчас</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px">
+          <span style="padding:7px 10px;border-radius:9px;background:#2A2724">вкладка Собака</span><span style="color:#6E6862">→</span>
+          <span style="padding:7px 10px;border-radius:9px;background:#2A2724">Если что-то случилось</span><span style="color:#6E6862">→</span>
+          <span style="padding:7px 10px;border-radius:9px;background:#2A2724">номер</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;padding:18px 20px">
+        <div style="font-size:12px;color:#2FE0BE;text-transform:uppercase;letter-spacing:.08em">Должно быть</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px">
+          <span style="padding:7px 10px;border-radius:9px;border:1px solid #E0735A;color:#E0735A">Полоса тревоги на «Сегодня» / в итоге</span><span style="color:#6E6862">→</span>
+          <span style="padding:7px 10px;border-radius:9px;background:#E0735A;color:#1A0E0A;font-weight:600">Позвонить врачу</span>
+        </div>
+        <div style="font-size:13px;line-height:1.5;color:#C9C3BA">Рядом — «Что сказать врачу» (та же карточка из дневника). Вход с вкладки «Собака» остаётся для спокойного времени.</div>
+      </div>
+    </article>
+
+    <article style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));border-radius:18px;overflow:hidden;border:1px solid #2C2926;background:#1E1C1A">
+      <div style="grid-column:1 / -1;display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;padding:18px 20px;border-bottom:1px solid #2C2926">
+        <span style="font-size:18px;font-weight:700">F6 · Доза</span>
+        <span style="font-size:14px;color:#A9A39B">2 тапа → <span style="color:#2FE0BE;font-weight:600">1 тап из уведомления</span></span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;padding:18px 20px;border-right:1px solid #2C2926">
+        <div style="font-size:12px;color:#A9A39B;text-transform:uppercase;letter-spacing:.08em">Сейчас</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px">
+          <span style="padding:7px 10px;border-radius:9px;background:#2A2724">уведомление → приложение</span><span style="color:#6E6862">→</span>
+          <span style="padding:7px 10px;border-radius:9px;background:#2A2724">строка режима дня · Дал</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;padding:18px 20px">
+        <div style="font-size:12px;color:#2FE0BE;text-transform:uppercase;letter-spacing:.08em">Должно быть</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px">
+          <span style="padding:7px 10px;border-radius:9px;background:#E8B04B;color:#1A1408;font-weight:600">Дал</span><span style="color:#6E6862">— кнопкой в уведомлении</span>
+        </div>
+        <div style="font-size:13px;line-height:1.5;color:#C9C3BA">Если кто-то уже взял дозу на себя — кнопки нет, текст «Мама даёт, с 8:02». Окно натощак приходит следом тем же уведомлением. Нужно проверить, есть ли действия в уведомлениях сейчас.</div>
+      </div>
+    </article>
+
+    <article style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));border-radius:18px;overflow:hidden;border:1px solid #2C2926;background:#1E1C1A">
+      <div style="grid-column:1 / -1;display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;padding:18px 20px;border-bottom:1px solid #2C2926">
+        <span style="font-size:18px;font-weight:700">F7 · Позвать маму</span>
+        <span style="font-size:14px;color:#A9A39B">роль и 8 прав до отправки → <span style="color:#2FE0BE;font-weight:600">3 тапа, роль готова</span></span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;padding:18px 20px;border-right:1px solid #2C2926">
+        <div style="font-size:12px;color:#A9A39B;text-transform:uppercase;letter-spacing:.08em">Сейчас</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px">
+          <span style="padding:7px 10px;border-radius:9px;background:#2A2724">Семья</span><span style="color:#6E6862">→</span>
+          <span style="padding:7px 10px;border-radius:9px;background:#2A2724">Пригласить</span><span style="color:#6E6862">→</span>
+          <span style="padding:7px 10px;border-radius:9px;background:#2A2724">Поделиться · контакт</span><span style="color:#6E6862">→</span>
+          <span style="padding:7px 10px;border-radius:9px;background:#2A2724">роль · права</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;padding:18px 20px">
+        <div style="font-size:12px;color:#2FE0BE;text-transform:uppercase;letter-spacing:.08em">Должно быть</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px">
+          <span style="padding:7px 10px;border-radius:9px;background:#2A2724">Пригласить</span><span style="color:#6E6862">→</span>
+          <span style="padding:7px 10px;border-radius:9px;background:#2A2724">Кто это: семья · ситтер · врач</span><span style="color:#6E6862">→</span>
+          <span style="padding:7px 10px;border-radius:9px;background:#2A2724">контакт</span>
+        </div>
+        <div style="font-size:13px;line-height:1.5;color:#C9C3BA">Три понятных выбора вместо пяти ролей: семья = ухаживающий, ситтер = помощник, врач = наблюдатель. Права поимённо — потом, в карточке участника. Блокер прежний: схема CloudKit не в production.</div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- 3 -->
+<section id="r3" data-screen-label="03 Карта" style="display:flex;flex-direction:column;gap:24px">
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <div style="font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#2FE0BE">3 · Карта приложения: должно быть</div>
+    <h2 style="margin:0;font-size:34px;letter-spacing:-0.02em;line-height:1.1">Вкладки те же. Меняется то, что внутри</h2>
+    <p style="margin:0;max-width:740px;font-size:15px;line-height:1.55;color:#A9A39B"><span style="color:#2FE0BE">●</span> новое или переложено · <span style="color:#E0735A">●</span> убрано · без точки — без изменений. Принципы из доков сохранены: медицина — режим, не глубже трёх шагов, шестерёнка на каждой вкладке.</p>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;font-size:14px;line-height:1.45">
+    <div style="display:flex;flex-direction:column;gap:10px;padding:18px;border-radius:16px;background:#1E1C1A;border:1px solid #2C2926">
+      <div style="font-size:16px;font-weight:700">Сегодня</div>
+      <div>Герой «N ч назад»</div>
+      <div><span style="color:#2FE0BE">●</span> Полоса тревоги + «Позвонить врачу»</div>
+      <div><span style="color:#2FE0BE">●</span> Дни 1–3: прогресс до вердикта</div>
+      <div>Режим дня · доза · уход</div>
+      <div>Лента → правка</div>
+      <div>Просится · Гулять · Стул · Еда · Инцидент · Ещё</div>
+      <div style="padding:10px 12px;border-radius:12px;background:rgba(47,224,190,.08);border:1px solid rgba(47,224,190,.35);display:flex;flex-direction:column;gap:6px">
+        <div style="font-weight:600;color:#2FE0BE">● На улице · один режим</div>
+        <div style="color:#C9C3BA">из «Вывожу» и из «Гулять»</div>
+        <div style="color:#C9C3BA">Пописал · Стул · Срыв · Инцидент ▸ чипы · Лакомство · Заметка</div>
+        <div style="color:#C9C3BA">Домой → итог, только если есть вопрос</div>
+      </div>
+      <div><span style="color:#E0735A">●</span> шторка «Пошли»</div>
+      <div><span style="color:#E0735A">●</span> шторка «Как сходил?» после отметок</div>
+      <div><span style="color:#E0735A">●</span> отдельная шторка «Как попросил?»</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;padding:18px;border-radius:16px;background:#1E1C1A;border:1px solid #2C2926">
+      <div style="font-size:16px;font-weight:700">Собака</div>
+      <div><span style="color:#2FE0BE">●</span> Шапка + переключатель + «завести ещё»</div>
+      <div>Если что-то случилось</div>
+      <div style="color:#A9A39B">каждый день</div>
+      <div>Питание и режим · Уход · Вес</div>
+      <div style="color:#2FE0BE">● занятия</div>
+      <div>Занятия и шаги · Процедуры · Перенос навыка (Pro)</div>
+      <div style="color:#A9A39B">когда спросят</div>
+      <div>Документы и контакты · Цикл</div>
+      <div style="color:#A9A39B">поездки</div>
+      <div>Поездки · <span style="color:#2FE0BE">●</span> Собака со мной весь день</div>
+      <div><span style="color:#E0735A">●</span> строка «Завести ещё собаку»</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;padding:18px;border-radius:16px;background:#1E1C1A;border:1px solid #2C2926">
+      <div style="font-size:16px;font-weight:700">История</div>
+      <div>Фильтр: всё · стул · симптомы · срывы · вес · <span style="color:#2FE0BE">● лечение</span></div>
+      <div>Календарь → день</div>
+      <div>График · эпизоды</div>
+      <div><span style="color:#2FE0BE">●</span> Итоги завершённых курсов</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;padding:18px;border-radius:16px;background:rgba(232,176,75,.06);border:1px dashed rgba(232,176,75,.5)">
+      <div style="font-size:16px;font-weight:700;color:#E8B04B">Здоровье · режим</div>
+      <div>Схема лечения → препарат</div>
+      <div>Протокол · Прививки · Отчёт врачу</div>
+      <div>Запас таблеток · порог тревоги</div>
+      <div>Курс завершён → итог уходит в Историю</div>
+      <div><span style="color:#2FE0BE">●</span> Вес — ссылка на тот же экран, что в «Собаке»</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;padding:18px;border-radius:16px;background:#1E1C1A;border:1px solid #2C2926">
+      <div style="font-size:16px;font-weight:700">Семья</div>
+      <div><span style="color:#2FE0BE">●</span> Пусто: одна карточка «Кто ещё кормит?»</div>
+      <div>Дежурство → передать</div>
+      <div><span style="color:#2FE0BE">●</span> Пригласить: семья · ситтер · врач</div>
+      <div>Участник → роль, права поимённо</div>
+      <div style="font-size:16px;font-weight:700;margin-top:8px">Онбординг</div>
+      <div><span style="color:#2FE0BE">●</span> 3 шага: собака · режим · уведомления</div>
+      <div><span style="color:#E0735A">●</span> шаги «уход» и «семья» → в момент пользы</div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 -->
+<section id="r4" data-screen-label="04 Каркас" style="display:flex;flex-direction:column;gap:24px">
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <div style="font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#2FE0BE">4 · Каркас ключевых экранов</div>
+    <h2 style="margin:0;font-size:34px;letter-spacing:-0.02em;line-height:1.1">Режим «На улице» и то, что вокруг него</h2>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:24px;justify-items:center">
+
+    <figure style="margin:0;display:flex;flex-direction:column;gap:12px;align-items:center">
+      <div style="width:250px;height:520px;border-radius:34px;border:2px solid #3A3632;padding:14px;box-sizing:border-box;display:flex;flex-direction:column;gap:8px;background:#131211">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:4px 6px">
+          <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:30px;font-weight:700;letter-spacing:-0.02em">12:48</span><span style="font-size:10px;color:#2FE0BE">на улице · вышли по просьбе</span></div>
+          <span style="font-size:10px;color:#A9A39B">Свернуть</span>
+        </div>
+        <div style="padding:8px 10px;border-radius:10px;background:#1E1C1A;font-size:10px;color:#A9A39B;display:flex;justify-content:space-between"><span>12:41 пописал</span><span style="color:#E0735A">убрать</span></div>
+        <div style="flex:1"></div>
+        <div style="height:72px;border-radius:14px;background:#2FE0BE;color:#0E1412;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700">Пописал · 1</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          <div style="height:54px;border-radius:12px;background:#1E1C1A;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600">Стул</div>
+          <div style="height:54px;border-radius:12px;background:rgba(232,176,75,.16);color:#E8B04B;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600">Срыв</div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
+          <div style="height:44px;border-radius:10px;background:rgba(224,115,90,.16);color:#E0735A;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600">Инцидент</div>
+          <div style="height:44px;border-radius:10px;background:#1E1C1A;display:flex;align-items:center;justify-content:center;font-size:10px">Лакомство</div>
+          <div style="height:44px;border-radius:10px;background:#1E1C1A;display:flex;align-items:center;justify-content:center;font-size:10px">Заметка</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 2fr;gap:6px">
+          <div style="height:44px;border-radius:12px;background:#2A2724;display:flex;align-items:center;justify-content:center;font-size:11px">Пауза</div>
+          <div style="height:44px;border-radius:12px;background:#2A2724;border:1px solid #2FE0BE;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600">Домой</div>
+        </div>
+      </div>
+      <figcaption style="font-size:13px;line-height:1.5;color:#A9A39B;text-align:center;max-width:250px"><b style="color:#F2EEE8">А · На улице.</b> Один экран для выхода и прогулки. «Занятие» убрано отсюда — оно в «Ещё».</figcaption>
+    </figure>
+
+    <figure style="margin:0;display:flex;flex-direction:column;gap:12px;align-items:center">
+      <div style="width:250px;height:520px;border-radius:34px;border:2px solid #3A3632;padding:14px;box-sizing:border-box;display:flex;flex-direction:column;gap:8px;background:#131211">
+        <div style="display:flex;flex-direction:column;gap:2px;padding:4px 6px"><span style="font-size:30px;font-weight:700;letter-spacing:-0.02em">12:52</span><span style="font-size:10px;color:#2FE0BE">на улице</span></div>
+        <div style="flex:1"></div>
+        <div style="padding:12px;border-radius:16px;background:#1E1C1A;border:1px solid rgba(224,115,90,.5);display:flex;flex-direction:column;gap:8px">
+          <span style="font-size:12px;font-weight:600">Что случилось?</span>
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            <span style="padding:8px 10px;border-radius:99px;background:#2A2724;font-size:11px">Вырвал</span>
+            <span style="padding:8px 10px;border-radius:99px;background:#2A2724;font-size:11px">Подобрал с земли</span>
+            <span style="padding:8px 10px;border-radius:99px;background:#2A2724;font-size:11px">Другое</span>
+          </div>
+          <span style="font-size:9px;color:#A9A39B">таймер идёт · подробности — дома</span>
+        </div>
+        <div style="height:72px;border-radius:14px;background:#2FE0BE;opacity:.35"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;opacity:.35"><div style="height:54px;border-radius:12px;background:#1E1C1A"></div><div style="height:54px;border-radius:12px;background:#1E1C1A"></div></div>
+        <div style="display:grid;grid-template-columns:1fr 2fr;gap:6px;opacity:.35"><div style="height:44px;border-radius:12px;background:#2A2724"></div><div style="height:44px;border-radius:12px;background:#2A2724"></div></div>
+      </div>
+      <figcaption style="font-size:13px;line-height:1.5;color:#A9A39B;text-align:center;max-width:250px"><b style="color:#F2EEE8">Б · Инцидент на улице.</b> Ряд чипов поверх сетки, не шторка. Тап по чипу — записано с видом, ряд закрывается.</figcaption>
+    </figure>
+
+    <figure style="margin:0;display:flex;flex-direction:column;gap:12px;align-items:center">
+      <div style="width:250px;height:520px;border-radius:34px;border:2px solid #3A3632;padding:14px;box-sizing:border-box;display:flex;flex-direction:column;gap:8px;background:#131211">
+        <div style="display:flex;flex-direction:column;gap:2px;padding:4px 6px"><span style="font-size:20px;font-weight:700">Погуляли · 34 мин</span><span style="font-size:10px;color:#A9A39B">2 вопроса · можно пропустить</span></div>
+        <div style="padding:10px;border-radius:14px;background:#1E1C1A;display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:11px;font-weight:600">Вырвал в 12:52 · чем?</span>
+          <div style="display:flex;flex-wrap:wrap;gap:4px">
+            <span style="padding:6px 8px;border-radius:99px;background:#2A2724;font-size:10px">едой</span><span style="padding:6px 8px;border-radius:99px;background:#2A2724;font-size:10px">травой</span><span style="padding:6px 8px;border-radius:99px;background:#2A2724;font-size:10px">желчью</span><span style="padding:6px 8px;border-radius:99px;background:rgba(224,115,90,.2);color:#E0735A;font-size:10px;border:1px solid #E0735A">с кровью</span>
+          </div>
+        </div>
+        <div style="padding:10px;border-radius:14px;background:rgba(224,115,90,.12);border:1px solid rgba(224,115,90,.5);display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:11px;font-weight:600;color:#E0735A">Кровь — лучше позвонить</span>
+          <div style="height:36px;border-radius:10px;background:#E0735A;color:#1A0E0A;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">Позвонить врачу</div>
+          <span style="font-size:9px;color:#C9C3BA">Что сказать врачу ›</span>
+        </div>
+        <div style="padding:10px;border-radius:14px;background:#1E1C1A;display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:11px;font-weight:600">Срыв · на что?</span>
+          <div style="display:flex;flex-wrap:wrap;gap:4px"><span style="padding:6px 8px;border-radius:99px;background:#2A2724;font-size:10px">собака</span><span style="padding:6px 8px;border-radius:99px;background:#2A2724;font-size:10px">человек</span><span style="padding:6px 8px;border-radius:99px;background:#2A2724;font-size:10px">велосипед</span><span style="padding:6px 8px;border-radius:99px;background:#2A2724;font-size:10px">…</span></div>
+        </div>
+        <div style="flex:1"></div>
+        <div style="height:44px;border-radius:12px;background:#2A2724;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600">Готово</div>
+      </div>
+      <figcaption style="font-size:13px;line-height:1.5;color:#A9A39B;text-align:center;max-width:250px"><b style="color:#F2EEE8">В · Итог — только с вопросами.</b> По строке на каждый факт, который стоит уточнить. Без вопросов — тост вместо экрана.</figcaption>
+    </figure>
+
+    <figure style="margin:0;display:flex;flex-direction:column;gap:12px;align-items:center">
+      <div style="width:250px;height:520px;border-radius:34px;border:2px solid #3A3632;padding:14px;box-sizing:border-box;display:flex;flex-direction:column;gap:8px;background:#131211">
+        <div style="font-size:20px;font-weight:700;padding:4px 6px">Сегодня</div>
+        <div style="padding:10px;border-radius:14px;background:rgba(224,115,90,.12);border:1px solid rgba(224,115,90,.5);display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:11px;font-weight:600;color:#E0735A">Третий раз за 6 часов</span>
+          <span style="font-size:9px;color:#C9C3BA">Рвота в 9:10, 11:40, 14:05</span>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+            <div style="height:34px;border-radius:9px;background:#E0735A;color:#1A0E0A;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700">Позвонить</div>
+            <div style="height:34px;border-radius:9px;background:#2A2724;display:flex;align-items:center;justify-content:center;font-size:10px">Подожду час</div>
+          </div>
+        </div>
+        <div style="padding:10px;border-radius:14px;background:#1E1C1A;display:flex;flex-direction:column;gap:2px"><span style="font-size:24px;font-weight:700">1 ч 20 мин</span><span style="font-size:9px;color:#A9A39B">на улице были</span></div>
+        <div style="flex:1;border-radius:12px;background:#191816"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          <div style="height:42px;border-radius:12px;background:#2FE0BE;color:#0E1412;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">Просится</div>
+          <div style="height:42px;border-radius:12px;background:#2A2724;font-size:11px;display:flex;align-items:center;justify-content:center">Гулять</div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px">
+          <div style="height:38px;border-radius:9px;background:#1E1C1A;font-size:9px;display:flex;align-items:center;justify-content:center">Стул</div><div style="height:38px;border-radius:9px;background:#1E1C1A;font-size:9px;display:flex;align-items:center;justify-content:center">Еда</div><div style="height:38px;border-radius:9px;background:#1E1C1A;font-size:9px;display:flex;align-items:center;justify-content:center">Инцидент</div><div style="height:38px;border-radius:9px;background:#1E1C1A;font-size:9px;display:flex;align-items:center;justify-content:center">Ещё</div>
+        </div>
+      </div>
+      <figcaption style="font-size:13px;line-height:1.5;color:#A9A39B;text-align:center;max-width:250px"><b style="color:#F2EEE8">Г · Тревога на главном.</b> Порог тревоги уже есть в коде; к нему добавляется звонок одним тапом.</figcaption>
+    </figure>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:10px;padding:20px;border-radius:16px;background:#191816;border:1px solid rgba(232,176,75,.45)">
+    <div style="font-size:15px;font-weight:600;color:#E8B04B">Что это задевает в «решениях, которые нельзя ломать»</div>
+    <div style="font-size:14px;line-height:1.6;color:#C9C3BA">Словарь: «прогулка — отдельный режим, не синоним выхода». Экран «На улице» сохраняет оба слова в ленте (выход по просьбе / прогулка — по тому, с какой кнопки начали), но механика становится одной. Это твоё решение. Если слово менять не хочется, можно оставить два входа и два названия, а объединить только экран отметок и концовку — польза почти та же.</div>
+  </div>
+</section>
+
+<!-- 5 -->
+<section id="r5" data-screen-label="05 Проверка" style="display:flex;flex-direction:column;gap:24px">
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <div style="font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#2FE0BE">5 · Что проверить на людях</div>
+    <h2 style="margin:0;font-size:34px;letter-spacing:-0.02em;line-height:1.1">Задачи для сессий, обновлённые</h2>
+  </div>
+  <div style="border-radius:18px;border:1px solid #2C2926;overflow:hidden;background:#1E1C1A">
+    <div style="display:grid;grid-template-columns:44px minmax(0,2fr) minmax(0,1.2fr);font-size:14px;line-height:1.5">
+      <div style="padding:12px;background:#191816;color:#A9A39B;font-size:12px">№</div>
+      <div style="padding:12px;background:#191816;color:#A9A39B;font-size:12px;text-transform:uppercase;letter-spacing:.08em">Задача</div>
+      <div style="padding:12px;background:#191816;color:#A9A39B;font-size:12px;text-transform:uppercase;letter-spacing:.08em">Порог успеха</div>
+      <div style="padding:12px;border-top:1px solid #2C2926;color:#A9A39B">T1</div><div style="padding:12px;border-top:1px solid #2C2926">Собака у двери. Выведи и отметь, что пописал.</div><div style="padding:12px;border-top:1px solid #2C2926;color:#C9C3BA">≤ 3 тапа, без вопросов к модератору</div>
+      <div style="padding:12px;border-top:1px solid #2C2926;color:#A9A39B">T2</div><div style="padding:12px;border-top:1px solid #2C2926">На прогулке собаку вырвало. Отметь и продолжай гулять.</div><div style="padding:12px;border-top:1px solid #2C2926;color:#C9C3BA">≤ 2 тапа, таймер не остановлен</div>
+      <div style="padding:12px;border-top:1px solid #2C2926;color:#A9A39B">T3</div><div style="padding:12px;border-top:1px solid #2C2926">Дома: в рвоте кровь. Что делаешь?</div><div style="padding:12px;border-top:1px solid #2C2926;color:#C9C3BA">До звонка ≤ 20 с</div>
+      <div style="padding:12px;border-top:1px solid #2C2926;color:#A9A39B">T4</div><div style="padding:12px;border-top:1px solid #2C2926">Погуляли 30 минут без событий. Закончи.</div><div style="padding:12px;border-top:1px solid #2C2926;color:#C9C3BA">1 тап, ни одного экрана после</div>
+      <div style="padding:12px;border-top:1px solid #2C2926;color:#A9A39B">T5</div><div style="padding:12px;border-top:1px solid #2C2926">Утренняя доза пришла уведомлением. Отметь.</div><div style="padding:12px;border-top:1px solid #2C2926;color:#C9C3BA">1 тап, не открывая приложение</div>
+      <div style="padding:12px;border-top:1px solid #2C2926;color:#A9A39B">T6</div><div style="padding:12px;border-top:1px solid #2C2926">Позови маму, чтобы она тоже отмечала.</div><div style="padding:12px;border-top:1px solid #2C2926;color:#C9C3BA">≤ 3 тапа, роль выбрана верно</div>
+      <div style="padding:12px;border-top:1px solid #2C2926;color:#A9A39B">T7</div><div style="padding:12px;border-top:1px solid #2C2926">Объясни, что значит экран, который ты видишь на 2-й день.</div><div style="padding:12px;border-top:1px solid #2C2926;color:#C9C3BA">Называет, когда заработает вердикт</div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:14px;padding:24px;border-radius:20px;background:rgba(47,224,190,.08);border:1px solid rgba(47,224,190,.35)">
+    <div style="font-size:18px;font-weight:700">Порядок работ, если согласна</div>
+    <ol style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:15px;line-height:1.5;color:#C9C3BA">
+      <li>Инцидент на улице с видом и через тот же путь записи, что дома (эпизод, кровь, «сказать остальным») — дефект, 1 вечер.</li>
+      <li>Итог прогулки только при вопросах; старт по тапу без «Пошли» — полвечера.</li>
+      <li>«Позвонить врачу» в полосе тревоги и при крови — полвечера.</li>
+      <li>Общий экран «На улице» для выхода и прогулки — спринт, 2–3 вечера, после твоего решения про словарь.</li>
+      <li>Приглашение «семья · ситтер · врач», онбординг в 3 шага, группы на вкладке «Собака» — по полвечера.</li>
+    </ol>
+  </div>
+</section>
+
+</div>
+</x-dc>
+</body>
+</html>
