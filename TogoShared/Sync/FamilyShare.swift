@@ -20,16 +20,56 @@ import CloudKit
 @MainActor
 enum FamilyShare {
 
+    /// Почему приглашение не вышло — по причинам, а не одним текстом.
+    ///
+    /// **До 05.10 причин было три, а мест, бросавших `notOwner`, — тоже
+    /// три, и две из них не про владельца.** Ссылка ещё не выдана
+    /// облаком и CloudKit отказался сохранить запись одинаково
+    /// превращались в «Приглашать может только владелец дневника» —
+    /// совет, которому нельзя последовать, потому что человек и так
+    /// владелец. Он будет искать у себя права, которых не терял.
+    ///
+    /// > Это та самая ступень, что уже чинилась в `Persistence`
+    /// > (пять причин вместо одной): **сообщение, покрывающее несколько
+    /// > причин одним текстом, даёт совет, неверный для большинства
+    /// > из них.** Оно хуже молчания: молчание заставляет спросить,
+    /// > неверный совет — попробовать и увериться.
+    ///
+    /// Второй раз это место чинится потому, что правило чинили
+    /// на одной поверхности из двух: `Persistence` знает пять причин
+    /// с 23.09, `FamilyShare` всё это время знал три.
     enum ShareError: LocalizedError {
         case noAccount
         case noEntitlement
+        /// Ты участник, а не владелец: делиться может только он.
         case notOwner
+        /// Запись общего доступа создана, но адрес облако ещё не выдало.
+        /// Не отказ: через миг он появится.
+        case linkNotReady
+        /// CloudKit отказался сохранить запись общего доступа.
+        /// Код отказа несём с собой: без него «что-то пошло не так».
+        case saveFailed(code: Int?)
 
         var errorDescription: String? {
             switch self {
-            case .noAccount: String(localized: "Войди в iCloud на телефоне — приглашение живёт там.")
-            case .noEntitlement: String(localized: "У этой сборки нет права на iCloud.")
-            case .notOwner: String(localized: "Приглашать может только владелец дневника.")
+            case .noAccount:
+                String(localized: "Войди в iCloud на телефоне — приглашение живёт там.")
+            case .noEntitlement:
+                String(localized: "У этой сборки нет права на iCloud.")
+            case .notOwner:
+                String(localized: "Приглашать может только владелец дневника.")
+            case .linkNotReady:
+                // Совета «проверь настройки» здесь нарочно нет: проверять
+                // нечего, всё уже верно. Единственное верное действие —
+                // подождать, и мы говорим именно его.
+                String(localized: "Приглашение уже создано, облако ещё не выдало адрес. Попробуй через несколько секунд.")
+            case .saveFailed(let code):
+                // Называем, что знаем, и не притворяемся, что знаем больше.
+                if let code {
+                    String(localized: "iCloud не принял приглашение (код \(code)). Проверь связь и попробуй ещё раз.")
+                } else {
+                    String(localized: "iCloud не принял приглашение. Проверь связь и попробуй ещё раз.")
+                }
             }
         }
     }
@@ -42,7 +82,9 @@ enum FamilyShare {
         container: CKContainer = CKContainer(identifier: AppIdentifiers.cloudContainer)
     ) async throws -> URL {
         let share = try await invite(dogName: dogName, container: container)
-        guard let url = share.url else { throw ShareError.notOwner }
+        // Пустой `url` — не «ты не владелец»: запись уже наша и уже
+        // сохранена, облако просто не успело выдать адрес.
+        guard let url = share.url else { throw ShareError.linkNotReady }
         return url
     }
 
@@ -77,10 +119,26 @@ enum FamilyShare {
         share.publicPermission = .none
 
         let saved = try await database.modifyRecords(saving: [share], deleting: [])
-        guard case .success(let record) = saved.saveResults[shareID],
-              let created = record as? CKShare
-        else { throw ShareError.notOwner }
-        return created
+        switch saved.saveResults[shareID] {
+        case .success(let record):
+            guard let created = record as? CKShare else {
+                // Сохранилось, но вернулось не то. Своего кода у этого
+                // случая нет — и выдумывать его мы не станем.
+                throw ShareError.saveFailed(code: nil)
+            }
+            return created
+        case .failure(let error):
+            // `notOwner` CloudKit тоже умеет назвать — и только тогда
+            // мы говорим про владельца. Во всех прочих случаях несём код.
+            if let ck = error as? CKError, ck.code == .notAuthenticated {
+                throw ShareError.noAccount
+            }
+            throw ShareError.saveFailed(code: (error as? CKError)?.errorCode)
+        case nil:
+            // Облако не отчиталось об этой записи вовсе — не успех
+            // и не отказ. Молчание называем молчанием, а не владельцем.
+            throw ShareError.saveFailed(code: nil)
+        }
     }
 
     /// Уже созданное приглашение, если оно есть, — ничего не создавая.
@@ -115,6 +173,8 @@ enum FamilyShare {
         case ShareError.noAccount: "noAccount"
         case ShareError.noEntitlement: "noEntitlement"
         case ShareError.notOwner: "notOwner"
+        case ShareError.linkNotReady: "linkNotReady"
+        case ShareError.saveFailed(let code): code.map { "saveFailed\($0)" } ?? "saveFailed"
         default: (error as? CKError).map { "ck\($0.errorCode)" } ?? "unknown"
         }
     }
