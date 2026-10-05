@@ -480,19 +480,36 @@ struct PrototypeV2Tests {
                           Int(parts[0] * 255 + 0.5), Int(parts[1] * 255 + 0.5),
                           Int(parts[2] * 255 + 0.5))
         }
-        // Хендоф «Лёд», принят 24.09.2026. Прежний мятный набор
-        // (#131211 / #2FE0BE / #FF453A) заменён целиком: синий —
-        // интерактив и «сейчас», хвойный — «сделано», они больше не одно.
-        #expect(hex(Token.Surface.screen) == "#0B1016")
-        #expect(hex(Token.Surface.card) == "#151C24")
-        #expect(hex(Token.Surface.sunken) == "#222B36")
-        #expect(hex(Token.Surface.control) == "#2D3844")
-        #expect(hex(Token.Action.primary) == "#7FB2FF")
+        // Хендоф «ФИНАЛ» (Graphite), принят 05.10.2026, макет
+        // sha256 d804c1ea…. Третье поколение: мята → «Лёд» (синий) →
+        // лайм. Значения взяты из docs/design-handoff/tokens/ по РОЛИ,
+        // режим Dark: наши имена остались прежними, сменились числа.
+        //
+        // ЭТОТ СТОРОЖ ДЕРЖИТ КОПИЮ ЧИСЕЛ, и это его слабость, названная
+        // вслух: он краснеет на смене поколения — как покраснел сейчас,
+        // и это правильно, — но не заметит, если наше значение разойдётся
+        // с хендофом ВНУТРИ поколения. У Gamut так `0x5972FE` в тесте
+        // пережил замену цвета в приложении на два дня. Сильная форма —
+        // читать `tokens/colors.css` и `togo.css` прямо из пакета, он
+        // теперь лежит в git; мешает одно: соответствие наших имён
+        // их переменным установлено ПО РОЛИ человеком, и перенос этого
+        // суждения в тест его не проверит, а продублирует.
+        #expect(hex(Token.Surface.screen) == "#050503")   // color.bg.page
+        #expect(hex(Token.Surface.card) == "#181818")     // color.bg.primary
+        #expect(hex(Token.Surface.sunken) == "#1F1F1F")   // color.fill.sunken
+        #expect(hex(Token.Surface.control) == "#2C2C2C")  // color.fill.1
+        #expect(hex(Token.Action.primary) == "#D4F75F")   // accent.dark.fill, Lime
+        #expect(hex(Token.Status.waitingText) == "#F7C75F") // color.status.warning
+        #expect(hex(Token.Status.overdueText) == "#FF7A66") // color.status.error
+        #expect(hex(Token.Status.stockLowText) == "#FFA15C") // togo.css --stock-low
+        // Подпись на лаймовой заливке тёмная, и теперь это не «норма
+        // не проходит», а «не видно вовсе»: белое на #D4F75F даёт 1,22:1.
+        #expect(hex(Token.Ink.onAccent) == "#111111")     // accent.dark.on
+        // «Сделано» НЕ перенесено: зелёного в поколении «финал» нет
+        // вовсе (ноль success/done/green в colors.css и accents.css).
+        // Подменять его акцентом значило бы решить продуктовый вопрос
+        // правкой токена, поэтому хвойный остался от «Льда».
         #expect(hex(Token.Action.doneText) == "#7FD3A8")
-        #expect(hex(Token.Status.waitingText) == "#FFD60A")
-        #expect(hex(Token.Status.overdueText) == "#FF6B5E")
-        // Подпись на синей заливке тёмная: белая на #7FB2FF не проходит 4,5:1.
-        #expect(hex(Token.Ink.onAccent) == "#06142A")
     }
 
     @Test("Радиусы и отступы по хендофу")
