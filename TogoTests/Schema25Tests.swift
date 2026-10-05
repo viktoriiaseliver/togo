@@ -79,8 +79,15 @@ struct Schema25Tests {
         //    SwiftData её не опознаёт. То есть двенадцать добавленных полей
         //    `.lightweight` сам не выводит: он переводит форму, КОТОРУЮ
         //    опознал, а не любую.
+        //    **Ждём ошибку SwiftData, а не любую.** Первая редакция
+        //    стояла на `(any Error).self` — и проходила бы при отказе
+        //    по правам или по пути, то есть при ошибке, к схеме
+        //    отношения не имеющей. Вопрос был слабее дефекта, который
+        //    он ищет; поймал togo-5a, и это тот же класс, что «не все»
+        //    у Kvit: отрицательное утверждение выполняется и при
+        //    отсутствии предмета.
         let схема5 = Schema(versionedSchema: TogoSchemaV5.self)
-        #expect(throws: (any Error).self) {
+        #expect(throws: SwiftDataError.self) {
             _ = try ModelContainer(for: схема5,
                                    migrationPlan: TogoMigrationPlan.self,
                                    configurations: конфигурация(схема5, url))
