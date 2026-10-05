@@ -171,11 +171,27 @@ nonisolated enum VerdictEngine {
         } else {
             parts.append(String(localized: "стула ещё не было"))
         }
+        // Еда и прогулка — через `FactAge`, а не голыми часами. До 05.10
+        // здесь стояло `Fmt.duration` без потолка, и на заброшенном
+        // дневнике строка печатала «ел 437 ч 19 мин назад» под вердиктом,
+        // который строкой выше честно говорит «приложение не знает».
+        // Разветвление у стула было, у этих двух — нет; это не решение
+        // печатать часы, а пропуск, который выглядит как решение.
         if let meal = s.lastMeal {
-            parts.append(String(localized: "ел \(Fmt.duration(s.now.timeIntervalSince(meal))) назад"))
+            switch FactAge.answer(since: meal, now: s.now) {
+            case .elapsed(let прошло):
+                parts.append(String(localized: "ел \(Fmt.duration(прошло)) назад"))
+            case .day(let день):
+                parts.append(String(localized: "ел \(Fmt.shortDay(день))"))
+            }
         }
         if let walk = s.lastWalk {
-            parts.append(String(localized: "гулял \(Fmt.duration(s.now.timeIntervalSince(walk))) назад"))
+            switch FactAge.answer(since: walk, now: s.now) {
+            case .elapsed(let прошло):
+                parts.append(String(localized: "гулял \(Fmt.duration(прошло)) назад"))
+            case .day(let день):
+                parts.append(String(localized: "гулял \(Fmt.shortDay(день))"))
+            }
         }
         return parts.joined(separator: " · ")
     }
@@ -196,7 +212,21 @@ nonisolated enum VerdictEngine {
             // До 28.09 на этих же данных тут стояло «Не писал 434 ч. Это
             // дольше, чем он когда-либо терпел»: утверждение о собаке,
             // выведенное из отсутствия записи.
-            return String(localized: "Отметок мочи нет с \(Fmt.shortDay(since)). Приложение не знает, писал он или просто никто не отметил.")
+            //
+            // **Дата стоит НЕ последней, и это не стиль.** 05.10 кадр
+            // показал «нет отметок с 17 сент.. Приложение не знает…» —
+            // две точки: `Fmt.shortDay` отдаёт сокращение месяца
+            // со СВОЕЙ точкой, а шаблон ставил свою. Убрать точку
+            // из шаблона нельзя: сокращение кончается точкой не во всех
+            // языках, и починка русского сломала бы остальные молча.
+            // Править `Fmt.shortDay` нельзя тем более — точка приходит
+            // из локали вместе с сокращением и стоит там по праву.
+            //
+            // Поэтому вопрос «чем кончается подстановка» снят структурой:
+            // посреди фразы точка сокращения служит сама собой, и решение
+            // верно во всех языках разом, а не принимается в каждом
+            // отдельно.
+            return String(localized: "С \(Fmt.shortDay(since)) отметок мочи нет. Приложение не знает, писал он или просто никто не отметил.")
         case .unknown(.ambiguous):
             let since = s.sinceUrine.map(Fmt.duration) ?? String(localized: "недавно")
             return String(localized: "Писал \(since) назад. Может, скучно — а может, живот. Выведи, если сомневаешься: приложение не знает лучше тебя.")
