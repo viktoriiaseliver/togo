@@ -1,236 +1,296 @@
 {
-  "sourceLanguage": "ru",
-  "strings": {
-    "${applicationName}: давно ли гуляли": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "${applicationName}: давно ли гуляли"
+  "sourceLanguage" : "ru",
+  "strings" : {
+    "${applicationName}: давно ли гуляли" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "${applicationName}: when was the last walk"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "needs_review",
-            "value": "${applicationName} : dernière promenade"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "${applicationName} : dernière promenade"
           }
         },
-        "uk": {
-          "stringUnit": {
-            "state": "needs_review",
-            "value": "${applicationName}: чи давно гуляли"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName}: давно ли гуляли"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "${applicationName}: чи давно гуляли"
           }
         }
       }
     },
-    "${applicationName}: покормила": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "${applicationName}: покормила"
+    "${applicationName}: покормила" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "${applicationName}: fed"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "needs_review",
-            "value": "${applicationName} : nourri"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "${applicationName} : nourri"
           }
         },
-        "uk": {
-          "stringUnit": {
-            "state": "needs_review",
-            "value": "${applicationName}: погодувала"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName}: покормила"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "${applicationName}: погодувала"
           }
         }
       }
     },
-    "${applicationName}: пописал": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "${applicationName}: пописал"
+    "${applicationName}: пописал" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "${applicationName}: peed"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "needs_review",
-            "value": "${applicationName} : pipi"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "${applicationName} : pipi"
           }
         },
-        "uk": {
-          "stringUnit": {
-            "state": "needs_review",
-            "value": "${applicationName}: попісяв"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName}: пописал"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "${applicationName}: попісяв"
           }
         }
       }
     },
-    "${applicationName}: прогулка": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "${applicationName}: прогулка"
+    "${applicationName}: прогулка" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "${applicationName}: walk"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "needs_review",
-            "value": "${applicationName} : promenade"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "${applicationName} : promenade"
           }
         },
-        "uk": {
-          "stringUnit": {
-            "state": "needs_review",
-            "value": "${applicationName}: прогулянка"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName}: прогулка"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "${applicationName}: прогулянка"
           }
         }
       }
     },
-    "${applicationName}: стул": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "${applicationName}: стул"
+    "${applicationName}: стул" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "${applicationName}: stool"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "needs_review",
-            "value": "${applicationName} : selles"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "${applicationName} : selles"
           }
         },
-        "uk": {
-          "stringUnit": {
-            "state": "needs_review",
-            "value": "${applicationName}: випорожнення"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName}: стул"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "${applicationName}: випорожнення"
           }
         }
       }
     },
-    "Давно ли гуляли в ${applicationName}": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Давно ли гуляли в ${applicationName}"
+    "Давно ли гуляли в ${applicationName}" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "When was the last walk in ${applicationName}"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "needs_review",
-            "value": "Dernière promenade dans ${applicationName}"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dernière promenade dans ${applicationName}"
           }
         },
-        "uk": {
-          "stringUnit": {
-            "state": "needs_review",
-            "value": "Чи давно гуляли в ${applicationName}"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Давно ли гуляли в ${applicationName}"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Чи давно гуляли в ${applicationName}"
           }
         }
       }
     },
-    "Записать кормление в ${applicationName}": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Записать кормление в ${applicationName}"
+    "Записать кормление в ${applicationName}" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Note a meal in ${applicationName}"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "needs_review",
-            "value": "Noter le repas dans ${applicationName}"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Noter le repas dans ${applicationName}"
           }
         },
-        "uk": {
-          "stringUnit": {
-            "state": "needs_review",
-            "value": "Записати годування в ${applicationName}"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Записать кормление в ${applicationName}"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Записати годування в ${applicationName}"
           }
         }
       }
     },
-    "Отметить в ${applicationName}, что пописал": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Отметить в ${applicationName}, что пописал"
+    "Отметить в ${applicationName}, что пописал" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Note a pee in ${applicationName}"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "needs_review",
-            "value": "Noter un pipi dans ${applicationName}"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Noter un pipi dans ${applicationName}"
           }
         },
-        "uk": {
-          "stringUnit": {
-            "state": "needs_review",
-            "value": "Записати в ${applicationName}, що попісяв"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отметить в ${applicationName}, что пописал"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Записати в ${applicationName}, що попісяв"
           }
         }
       }
     },
-    "Отметить стул в ${applicationName}": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Отметить стул в ${applicationName}"
+    "Отметить стул в ${applicationName}" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Note a stool in ${applicationName}"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "needs_review",
-            "value": "Noter les selles dans ${applicationName}"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Noter les selles dans ${applicationName}"
           }
         },
-        "uk": {
-          "stringUnit": {
-            "state": "needs_review",
-            "value": "Записати випорожнення в ${applicationName}"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отметить стул в ${applicationName}"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Записати випорожнення в ${applicationName}"
           }
         }
       }
     },
-    "Прогулка в ${applicationName}": {
-      "extractionState": "manual",
-      "localizations": {
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Прогулка в ${applicationName}"
+    "Прогулка в ${applicationName}" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Walk in ${applicationName}"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "needs_review",
-            "value": "Promenade dans ${applicationName}"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Promenade dans ${applicationName}"
           }
         },
-        "uk": {
-          "stringUnit": {
-            "state": "needs_review",
-            "value": "Прогулянка в ${applicationName}"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прогулка в ${applicationName}"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Прогулянка в ${applicationName}"
           }
         }
       }
     }
   },
-  "version": "1.0"
+  "version" : "1.0"
 }
