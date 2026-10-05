@@ -50804,13 +50804,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "pee not marked since %@"
+            "value" : "%@ · pee not marked"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "pipi non coché depuis le %@"
+            "value" : "%@ · pipi non coché"
           }
         },
         "uk" : {
