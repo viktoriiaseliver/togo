@@ -68,9 +68,9 @@
   --primitive-color-spruceTint: #5FBF9326;
   --primitive-color-stockLow: #FFA15C;
   --primitive-color-stockLowBg: #4A2A10;
-  --primitive-duration-instant: 120ms;
+  --primitive-duration-instant: 150ms;
   --primitive-duration-quick: 180ms;
-  --primitive-duration-settle: 280ms;
+  --primitive-duration-settle: 300ms;
   --primitive-font-size-body: 17px;
   --primitive-font-size-caption: 14px;
   --primitive-font-size-display: 34px;
