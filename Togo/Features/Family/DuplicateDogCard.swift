@@ -138,12 +138,44 @@ struct DuplicateDogCard: View {
         Haptics.success()
     }
 
+    /// Сколько записей висит на собаке — по всем одиннадцати связям.
+    ///
+    /// **Сумма набирается в цикле, а не одним выражением, и это
+    /// не стиль.** Прежняя редакция складывала одиннадцать слагаемых
+    /// вида `(x?.count ?? 0)` в одном выражении, и на раннере CI
+    /// компилятор не уложился:
+    ///
+    /// ```
+    /// The compiler is unable to type-check this expression
+    /// in reasonable time; try breaking up the expression
+    /// → Testing cancelled because the build failed
+    /// ```
+    ///
+    /// **Локально оно собиралось**, и потому дефект был невидим: сборка
+    /// на моей машине и сборка на раннере отличались загрузкой, а
+    /// не кодом. Шесть прогонов CI подряд падали на нём, и сверка
+    /// эталона честно говорила «сверять нечем» — то есть инструмент
+    /// наблюдения отказывался называть это и зелёным, и красным,
+    /// а мы час искали регрессии, которых не было.
+    ///
+    /// Срыв типизатора у `??` в длинной цепочке `+` — известная форма:
+    /// у каждого слагаемого два возможных типа, и перебор растёт
+    /// степенью. Цикл убирает перебор целиком.
     private func связанных(_ собака: Dog) -> Int {
-        (собака.eventsStorage?.count ?? 0) + (собака.weightsStorage?.count ?? 0)
-            + (собака.careTasksStorage?.count ?? 0) + (собака.medicationsStorage?.count ?? 0)
-            + (собака.trainingStepsStorage?.count ?? 0) + (собака.trainingSessionsStorage?.count ?? 0)
-            + (собака.tripsStorage?.count ?? 0) + (собака.documentsStorage?.count ?? 0)
-            + (собака.daysOutStorage?.count ?? 0) + (собака.heatsStorage?.count ?? 0)
-            + (собака.stocksStorage?.count ?? 0)
+        var всего = 0
+        for связь in [собака.eventsStorage?.count,
+                      собака.weightsStorage?.count,
+                      собака.careTasksStorage?.count,
+                      собака.medicationsStorage?.count,
+                      собака.trainingStepsStorage?.count,
+                      собака.trainingSessionsStorage?.count,
+                      собака.tripsStorage?.count,
+                      собака.documentsStorage?.count,
+                      собака.daysOutStorage?.count,
+                      собака.heatsStorage?.count,
+                      собака.stocksStorage?.count] {
+            всего += связь ?? 0
+        }
+        return всего
     }
 }
