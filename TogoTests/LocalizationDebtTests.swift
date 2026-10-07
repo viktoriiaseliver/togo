@@ -201,7 +201,7 @@ struct LocalizationDebtTests {
                 "литерал в `String(localized:)` внутри интерполяции долгом не является")
     }
 
-    @Test("У каждого исключения есть причина и оно существует")
+    @Test("У каждого исключения долга локализации есть причина и оно существует")
     func исключенияЧестные() {
         let корень = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent().deletingLastPathComponent()

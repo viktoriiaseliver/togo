@@ -210,7 +210,7 @@ struct MedLayerDomainTests {
         #expect(Set(все.map(ControlWindow.word)).count == все.count)
     }
 
-    @Test("Набору было что проверять")
+    @Test("Набору было что проверять: домен медслоя")
     func suiteHadSomethingToCheck() {
         #expect(LabSampleTiming.comparableSpreadHours == 3)
         #expect(LabNorm.bandBounds(Self.т4) != nil)
