@@ -131,3 +131,29 @@ nonisolated enum MedUnit: String, Codable, CaseIterable, Sendable {
         }
     }
 }
+
+/// Вид документа собаки.
+///
+/// Шаг 0 медицинского слоя, 07.10.2026. Виды взяты из карты Стича,
+/// а не придуманы: паспорт, чип, договор, сертификат — каждый
+/// встречается в ней не меньше трёх раз (§2.5 ТЗ). Пятый случай
+/// `other` нужен затем, чтобы человек не выбирал неверный вид вместо
+/// «не знаю»: пустого значения у `Raw` быть не должно — это ключ
+/// группировки списка.
+nonisolated enum DocumentKind: String, Codable, CaseIterable, Sendable {
+    case passport
+    case chip
+    case contract
+    case certificate
+    case other
+
+    var title: String {
+        switch self {
+        case .passport: String(localized: "паспорт")
+        case .chip: String(localized: "чип")
+        case .contract: String(localized: "договор")
+        case .certificate: String(localized: "сертификат")
+        case .other: String(localized: "прочее")
+        }
+    }
+}
