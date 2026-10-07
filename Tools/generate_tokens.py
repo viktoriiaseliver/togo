@@ -102,7 +102,65 @@ def hex_literal(value):
     return "0x" + value.lstrip("#").upper()
 
 
-def swift_color(resolved):
+def modal_key(resolved):
+    return tuple(hex_literal(resolved[m]) for m in MODES)
+
+
+def shared_palette(flat):
+    """Имя общего цвета на каждое РАЗНОЕ значение по режимам.
+
+    **Зачем вообще, и это не экономия строк.** `Color(Dyn(…))` делает
+    `UIColor(dynamicProvider:)`, а два таких объекта с одинаковыми
+    значениями **не равны**: равенство у динамического цвета по
+    объекту, не по значению. Первая редакция печатала `Color(Dyn(…))`
+    на каждый токен, и три утверждения в `DesignTokenTests` упали —
+    те, что говорят «эти две роли это один токен»:
+
+        Component.Button.Primary.background == Action.primary
+        Component.Timeline.nowMarker        == Action.primary
+        Component.Button.Primary.label      == Ink.onAccent
+
+    Значения у них совпадали до байта. Сторожа были правы, сломал их я.
+
+    > **Переход на динамический цвет отнимает у токенов равенство по
+    > значению.** Сторож, выражающий правило через `==` двух токенов,
+    > краснеет не на правиле, а на устройстве цвета — и выглядит это
+    > как регрессия палитры.
+
+    Поэтому одно значение — один объект: токены с совпадающими
+    режимами смотрят на одну константу, и `==` снова означает
+    «один токен».
+
+    Имя берётся у ПЕРВОГО по алфавиту токена с этим значением —
+    детерминированно, чтобы диф сгенерированного файла не плясал
+    от порядка обхода.
+    """
+    # Порядок предпочтения, а не алфавит. Первая редакция брала просто
+    # первый по алфавиту — и `component.*` всегда опережал `primitive.*`,
+    # отчего `Ink.primary` получал имя `Общие.finishLabel`: цвет чернил,
+    # названный подписью кнопки «закончить».
+    #
+    # **Имя общего цвета читают там, где его употребляют, а не там,
+    # откуда оно взялось.** Поэтому имя берётся у ПРИМИТИВА — он и есть
+    # то, чем значение является; семантика и компонент только ссылаются.
+    СЛОЙ = {"primitive": 0, "semantic": 1, "component": 2}
+    первые = {}
+    for key in sorted(flat, key=lambda k: (СЛОЙ.get(k.split(".")[0], 9), k.count("."), k)):
+        token_type, value, _note = flat[key]
+        if token_type != "color":
+            continue
+        resolved = resolve(flat, value)
+        if not is_modal(resolved):
+            continue
+        первые.setdefault(modal_key(resolved), key)
+    палитра = {}
+    for ключ, путь in первые.items():
+        части = [ч for ч in путь.split(".") if ч not in ("primitive", "color")]
+        палитра[ключ] = camel("-".join(части[-2:]))
+    return палитра
+
+
+def swift_color(resolved, палитра):
     """Одно место, где цвет превращается в Swift.
 
     Их было два — `emit_swift` и `emit_component_tree`, — и первая
@@ -112,9 +170,7 @@ def swift_color(resolved):
     зовут оба.
     """
     if is_modal(resolved):
-        return ("Color(Dyn(dark: %s, light: %s, darkHC: %s, lightHC: %s))"
-                % (hex_literal(resolved["dark"]), hex_literal(resolved["light"]),
-                   hex_literal(resolved["darkHC"]), hex_literal(resolved["lightHC"])))
+        return "Общие.%s" % палитра[modal_key(resolved)]
     return "Color(hex: %s)" % hex_literal(resolved)
 
 
@@ -206,6 +262,35 @@ def emit_swift(raw, flat):
         "nonisolated enum Token {",
     ]
 
+    палитра = shared_palette(flat)
+    if палитра:
+        lines.append("")
+        lines += doc(
+            "Общие динамические цвета: ОДИН объект на одно значение.\n"
+            "\n"
+            "`Color(Dyn(…))` делает `UIColor(dynamicProvider:)`, а два таких\n"
+            "объекта с одинаковыми значениями НЕ РАВНЫ — равенство у\n"
+            "динамического цвета по объекту, не по значению. Пока каждый\n"
+            "токен получал свой `Dyn`, три утверждения `DesignTokenTests`\n"
+            "падали на верных значениях: `Button.Primary.background ==\n"
+            "Action.primary`, `Timeline.nowMarker == Action.primary`,\n"
+            "`Button.Primary.label == Ink.onAccent`.\n"
+            "\n"
+            "Переход на динамический цвет отнимает у токенов равенство\n"
+            "по значению; сторож, выражающий правило через `==` двух\n"
+            "токенов, краснеет не на правиле, а на устройстве цвета.\n"
+            "Одно значение — один объект, и `==` снова означает «один токен».",
+            "    ")
+        lines.append("    fileprivate enum Общие {")
+        обратно = {}
+        for ключ, имя in палитра.items():
+            обратно[имя] = ключ
+        for имя in sorted(обратно):
+            d, l, dhc, lhc = обратно[имя]
+            lines.append("        static let %s = Color(Dyn(dark: %s, light: %s, darkHC: %s, lightHC: %s))"
+                         % (имя, d, l, dhc, lhc))
+        lines.append("    }")
+
     for prefix, enum_name, kind, description in GROUPS:
         entries = [(k, v) for k, v in flat.items() if k.startswith(prefix + ".")]
         if not entries:
@@ -218,7 +303,7 @@ def emit_swift(raw, flat):
             resolved = resolve(flat, value)
             lines += doc(note, "        ")
             if kind == "color":
-                lines.append("        static let %s = %s" % (swift_name(leaf), swift_color(resolved)))
+                lines.append("        static let %s = %s" % (swift_name(leaf), swift_color(resolved, палитра)))
             elif kind == "dimension":
                 lines.append("        static let %s: CGFloat = %g" % (swift_name(leaf), px(resolved)))
             elif kind == "duration":
@@ -265,7 +350,7 @@ def emit_swift(raw, flat):
         lines.append("    /// Слой компонентов — то, что в Figma лежит свойствами внутри самого")
         lines.append("    /// компонента. Экран сюда не лезет: он выбирает вариант.")
         lines.append("    enum Component {")
-        lines += emit_component_tree(tree, flat, "        ")
+        lines += emit_component_tree(tree, flat, "        ", палитра)
         lines.append("    }")
 
     lines.append("}")
@@ -273,20 +358,20 @@ def emit_swift(raw, flat):
     return "\n".join(lines)
 
 
-def emit_component_tree(tree, flat, indent):
+def emit_component_tree(tree, flat, indent, палитра):
     lines = []
     for key in sorted(tree):
         node = tree[key]
         if isinstance(node, dict):
             lines.append("%senum %s {" % (indent, pascal(key)))
-            lines += emit_component_tree(node, flat, indent + "    ")
+            lines += emit_component_tree(node, flat, indent + "    ", палитра)
             lines.append("%s}" % indent)
         else:
             token_type, value, note = flat[node]
             resolved = resolve(flat, value)
             lines += doc(note, indent)
             if token_type == "color":
-                lines.append("%sstatic let %s = %s" % (indent, camel(key), swift_color(resolved)))
+                lines.append("%sstatic let %s = %s" % (indent, camel(key), swift_color(resolved, палитра)))
             elif token_type == "dimension":
                 lines.append("%sstatic let %s: CGFloat = %g" % (indent, camel(key), px(resolved)))
     return lines

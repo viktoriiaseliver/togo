@@ -10,29 +10,73 @@ import SwiftUI
 /// внутри дизайн-системы.
 nonisolated enum Token {
 
+    /// Общие динамические цвета: ОДИН объект на одно значение.
+    /// 
+    /// `Color(Dyn(…))` делает `UIColor(dynamicProvider:)`, а два таких
+    /// объекта с одинаковыми значениями НЕ РАВНЫ — равенство у
+    /// динамического цвета по объекту, не по значению. Пока каждый
+    /// токен получал свой `Dyn`, три утверждения `DesignTokenTests`
+    /// падали на верных значениях: `Button.Primary.background ==
+    /// Action.primary`, `Timeline.nowMarker == Action.primary`,
+    /// `Button.Primary.label == Ink.onAccent`.
+    /// 
+    /// Переход на динамический цвет отнимает у токенов равенство
+    /// по значению; сторож, выражающий правило через `==` двух
+    /// токенов, краснеет не на правиле, а на устройстве цвета.
+    /// Одно значение — один объект, и `==` снова означает «один токен».
+    fileprivate enum Общие {
+        static let amber = Color(Dyn(dark: 0xF7C75F, light: 0x8A640F, darkHC: 0xF7C75F, lightHC: 0x6B4C0C))
+        static let amberBg = Color(Dyn(dark: 0x4A300A, light: 0xFCEBCB, darkHC: 0x4A300A, lightHC: 0xFCEBCB))
+        static let arctic = Color(Dyn(dark: 0xA2C1FE, light: 0x0E14A1, darkHC: 0xA2C1FE, lightHC: 0x0E14A1))
+        static let arcticInk = Color(Dyn(dark: 0x0B0D2E, light: 0xFFFFFF, darkHC: 0x0B0D2E, lightHC: 0xFFFFFF))
+        static let arcticPressed = Color(Dyn(dark: 0x7BA5FE, light: 0x080679, darkHC: 0x7BA5FE, lightHC: 0x080679))
+        static let arcticSubtle = Color(Dyn(dark: 0x2E3866, light: 0xD9E3FC, darkHC: 0x2E3866, lightHC: 0xD9E3FC))
+        static let arcticTint = Color(Dyn(dark: 0xA2C1FE2E, light: 0x0E14A138, darkHC: 0xA2C1FE2E, lightHC: 0x0E14A138))
+        static let clay = Color(Dyn(dark: 0xFF7A66, light: 0xAE2219, darkHC: 0xFFA696, lightHC: 0x9B100E))
+        static let clayBg = Color(Dyn(dark: 0x4D1F22, light: 0xF7D5CF, darkHC: 0x4D1F22, lightHC: 0xF7D5CF))
+        static let glass = Color(Dyn(dark: 0x343434B8, light: 0xFFFFFFD1, darkHC: 0x343434B8, lightHC: 0xFFFFFFD1))
+        static let hairline = Color(Dyn(dark: 0x3A3A3A, light: 0xD6D9DD, darkHC: 0x3A3A3A, lightHC: 0x7D8085))
+        static let ink = Color(Dyn(dark: 0xF4F4F2, light: 0x101112, darkHC: 0xF4F4F2, lightHC: 0x101112))
+        static let inkFaint = Color(Dyn(dark: 0x6D6D6D, light: 0xA1A4A8, darkHC: 0x8A8A86, lightHC: 0x7D8085))
+        static let inkMuted = Color(Dyn(dark: 0xB2B2AE, light: 0x5A5D61, darkHC: 0xC8C8C4, lightHC: 0x45484C))
+        static let night1 = Color(Dyn(dark: 0x050503, light: 0xFFFFFF, darkHC: 0x050503, lightHC: 0xFFFFFF))
+        static let night2 = Color(Dyn(dark: 0x181818, light: 0xECEDF0, darkHC: 0x181818, lightHC: 0xECEDF0))
+        static let night3 = Color(Dyn(dark: 0x1F1F1F, light: 0xE3E5E8, darkHC: 0x1F1F1F, lightHC: 0xE3E5E8))
+        static let night4 = Color(Dyn(dark: 0x2C2C2C, light: 0xFFFFFF, darkHC: 0x2C2C2C, lightHC: 0xFFFFFF))
+        static let night5 = Color(Dyn(dark: 0x383838, light: 0xD7DBE0, darkHC: 0x383838, lightHC: 0xD6D9DD))
+        static let posterAmber = Color(Dyn(dark: 0x4A3A14, light: 0x8A640F, darkHC: 0x4A3A14, lightHC: 0x8A640F))
+        static let posterClay = Color(Dyn(dark: 0x5E2A22, light: 0xB5402F, darkHC: 0x5E2A22, lightHC: 0xB5402F))
+        static let posterIndigo = Color(Dyn(dark: 0x2A3670, light: 0x3F5BC4, darkHC: 0x2A3670, lightHC: 0x3F5BC4))
+        static let posterInk = Color(Dyn(dark: 0xF4F4F2, light: 0xFFFFFF, darkHC: 0xF4F4F2, lightHC: 0xFFFFFF))
+        static let posterInkMuted = Color(Dyn(dark: 0xB2B2AE, light: 0xFFFFFFE0, darkHC: 0xB2B2AE, lightHC: 0xFFFFFFE0))
+        static let scrim = Color(Dyn(dark: 0x0000008C, light: 0x10111252, darkHC: 0x0000008C, lightHC: 0x10111252))
+        static let stockLow = Color(Dyn(dark: 0xFFA15C, light: 0xB85400, darkHC: 0xFFA15C, lightHC: 0xB85400))
+        static let stockLowBg = Color(Dyn(dark: 0x4A2A10, light: 0xFFEBD9, darkHC: 0x4A2A10, lightHC: 0xFFEBD9))
+    }
+
     /// Поверхности: бумага, карточка, утопленное, хайрлайн.
     enum Surface {
-        static let card = Color(Dyn(dark: 0x181818, light: 0xECEDF0, darkHC: 0x181818, lightHC: 0xECEDF0))
-        static let control = Color(Dyn(dark: 0x2C2C2C, light: 0xFFFFFF, darkHC: 0x2C2C2C, lightHC: 0xFFFFFF))
+        static let card = Общие.night2
+        static let control = Общие.night4
         /// Стекло таббара и круглых кнопок
-        static let glass = Color(Dyn(dark: 0x343434B8, light: 0xFFFFFFD1, darkHC: 0x343434B8, lightHC: 0xFFFFFFD1))
+        static let glass = Общие.glass
         /// Внутренний край стекла
         static let glassEdge = Color(hex: 0xFFFFFF1A)
-        static let hairline = Color(Dyn(dark: 0x3A3A3A, light: 0xD6D9DD, darkHC: 0x3A3A3A, lightHC: 0x7D8085))
-        static let pressed = Color(Dyn(dark: 0x383838, light: 0xD7DBE0, darkHC: 0x383838, lightHC: 0xD6D9DD))
-        static let screen = Color(Dyn(dark: 0x050503, light: 0xFFFFFF, darkHC: 0x050503, lightHC: 0xFFFFFF))
+        static let hairline = Общие.hairline
+        static let pressed = Общие.night5
+        static let screen = Общие.night1
         /// Затемнение под шторкой
-        static let scrim = Color(Dyn(dark: 0x0000008C, light: 0x10111252, darkHC: 0x0000008C, lightHC: 0x10111252))
-        static let sunken = Color(Dyn(dark: 0x1F1F1F, light: 0xE3E5E8, darkHC: 0x1F1F1F, lightHC: 0xE3E5E8))
+        static let scrim = Общие.scrim
+        static let sunken = Общие.night3
     }
 
     /// Текст. `faint` — 2,5:1, текстом и значками НЕ красится ни в каком кегле: разрешение «только с 14pt» было неверным и развело его по двадцати четырём файлам.
     enum Ink {
-        static let faint = Color(Dyn(dark: 0x6D6D6D, light: 0xA1A4A8, darkHC: 0x8A8A86, lightHC: 0x7D8085))
-        static let onAccent = Color(Dyn(dark: 0x0B0D2E, light: 0xFFFFFF, darkHC: 0x0B0D2E, lightHC: 0xFFFFFF))
-        static let primary = Color(Dyn(dark: 0xF4F4F2, light: 0x101112, darkHC: 0xF4F4F2, lightHC: 0x101112))
-        static let secondary = Color(Dyn(dark: 0xB2B2AE, light: 0x5A5D61, darkHC: 0xC8C8C4, lightHC: 0x45484C))
-        static let silhouette = Color(Dyn(dark: 0xB2B2AE, light: 0x5A5D61, darkHC: 0xC8C8C4, lightHC: 0x45484C))
+        static let faint = Общие.inkFaint
+        static let onAccent = Общие.arcticInk
+        static let primary = Общие.ink
+        static let secondary = Общие.inkMuted
+        static let silhouette = Общие.inkMuted
     }
 
     /// Действия. Охряная кнопка строго одна на экран.
@@ -41,25 +85,25 @@ nonisolated enum Token {
         static let doneQuiet = Color(hex: 0x5FBF9326)
         /// «Сделано» СЛОВАМИ. Отдельный токен, потому что done — это тинт 15 %: как чернила он даёт 1,31:1 на карточке, вдвое хуже уже запрещённого faint. Та же пара, что waitingText и overdueText.
         static let doneText = Color(hex: 0x7FD3A8)
-        static let primary = Color(Dyn(dark: 0xA2C1FE, light: 0x0E14A1, darkHC: 0xA2C1FE, lightHC: 0x0E14A1))
+        static let primary = Общие.arctic
         /// Нажатое главное действие
-        static let primaryPressed = Color(Dyn(dark: 0x7BA5FE, light: 0x080679, darkHC: 0x7BA5FE, lightHC: 0x080679))
-        static let primaryQuiet = Color(Dyn(dark: 0xA2C1FE2E, light: 0x0E14A138, darkHC: 0xA2C1FE2E, lightHC: 0x0E14A138))
-        static let secondary = Color(Dyn(dark: 0x2C2C2C, light: 0xFFFFFF, darkHC: 0x2C2C2C, lightHC: 0xFFFFFF))
+        static let primaryPressed = Общие.arcticPressed
+        static let primaryQuiet = Общие.arcticTint
+        static let secondary = Общие.night4
     }
 
     /// Состояния: янтарь — «подожди», терракот — просрочка или кровь.
     enum Status {
         static let doneBg = Color(hex: 0x5FBF9326)
-        static let doneText = Color(Dyn(dark: 0xF4F4F2, light: 0x101112, darkHC: 0xF4F4F2, lightHC: 0x101112))
-        static let overdueBg = Color(Dyn(dark: 0x4D1F22, light: 0xF7D5CF, darkHC: 0x4D1F22, lightHC: 0xF7D5CF))
-        static let overdueText = Color(Dyn(dark: 0xFF7A66, light: 0xAE2219, darkHC: 0xFFA696, lightHC: 0x9B100E))
+        static let doneText = Общие.ink
+        static let overdueBg = Общие.clayBg
+        static let overdueText = Общие.clay
         /// Запас кончается — плашка. ≤ 7 дней; ≤ 3 берёт overdue
-        static let stockLowBg = Color(Dyn(dark: 0x4A2A10, light: 0xFFEBD9, darkHC: 0x4A2A10, lightHC: 0xFFEBD9))
+        static let stockLowBg = Общие.stockLowBg
         /// Запас кончается — текст и значок. Заведён 05.10 вечером вторым шагом: примитив положили в tokens.json, а семантического имени не дали — и в Tokens.generated.swift его не оказалось ВОВСЕ. Генератор поднимает в Swift то, на что ссылается семантика; примитив без алиаса до слоя вида не доезжает. Нашёл togo-9e, искавший, чем покрасить уровень .low. ПРАВКА 07.10 вечер, togo-1e: у лестницы запаса ЧЕТЫРЕ ступени (PillSupplyAdvisor.Level: ok · low · urgent · out), а статусных цветов три. Ступень .out («кончилось») красится ТЕМ ЖЕ терракотом, что .urgent, и это решение, а не недосмотр: четвёртого статусного цвета у системы нет, и заводить его ради одной ступени нельзя — различать «пора покупать» и «уже нечего дать» обязано СЛОВО. У нас записано, что срочность не передаётся одним цветом; здесь то же правило с другой стороны — раз цвет не различает, различает текст. Заведёшь пятый цвет под .out — сначала проверь, что слова не хватило.
-        static let stockLowText = Color(Dyn(dark: 0xFFA15C, light: 0xB85400, darkHC: 0xFFA15C, lightHC: 0xB85400))
-        static let waitingBg = Color(Dyn(dark: 0x4A300A, light: 0xFCEBCB, darkHC: 0x4A300A, lightHC: 0xFCEBCB))
-        static let waitingText = Color(Dyn(dark: 0xF7C75F, light: 0x8A640F, darkHC: 0xF7C75F, lightHC: 0x6B4C0C))
+        static let stockLowText = Общие.stockLow
+        static let waitingBg = Общие.amberBg
+        static let waitingText = Общие.amber
     }
 
     /// Отступы.
@@ -84,24 +128,24 @@ nonisolated enum Token {
 
     /// Плакат — верхняя треть «Сегодня» и «На улице». Цвет блока = РЕЖИМ ДНЯ, и правило выбора в `TogoShared/Domain/PosterMode.swift`, не во вью: его спрашивают экран, виджет и «остров». Шторки плаката не несут.
     enum Poster {
-        static let background = Color(Dyn(dark: 0x2A3670, light: 0x3F5BC4, darkHC: 0x2A3670, lightHC: 0x3F5BC4))
-        static let backgroundAlarm = Color(Dyn(dark: 0x5E2A22, light: 0xB5402F, darkHC: 0x5E2A22, lightHC: 0xB5402F))
-        static let backgroundDose = Color(Dyn(dark: 0xA2C1FE, light: 0x0E14A1, darkHC: 0xA2C1FE, lightHC: 0x0E14A1))
-        static let backgroundFasting = Color(Dyn(dark: 0x4A3A14, light: 0x8A640F, darkHC: 0x4A3A14, lightHC: 0x8A640F))
-        static let backgroundQuiet = Color(Dyn(dark: 0x181818, light: 0xECEDF0, darkHC: 0x181818, lightHC: 0xECEDF0))
-        static let bar = Color(Dyn(dark: 0xA2C1FE, light: 0x0E14A1, darkHC: 0xA2C1FE, lightHC: 0x0E14A1))
-        static let barOnDose = Color(Dyn(dark: 0x0B0D2E, light: 0xFFFFFF, darkHC: 0x0B0D2E, lightHC: 0xFFFFFF))
+        static let background = Общие.posterIndigo
+        static let backgroundAlarm = Общие.posterClay
+        static let backgroundDose = Общие.arctic
+        static let backgroundFasting = Общие.posterAmber
+        static let backgroundQuiet = Общие.night2
+        static let bar = Общие.arctic
+        static let barOnDose = Общие.arcticInk
         /// ТОЛЬКО НЕЙТРАЛЬНЫЙ БЛОК. На цветных — captionOnColor, на дозе — captionOnDose. В светлой на синем блоке даёт 1,10.
-        static let caption = Color(Dyn(dark: 0xB2B2AE, light: 0x5A5D61, darkHC: 0xC8C8C4, lightHC: 0x45484C))
+        static let caption = Общие.inkMuted
         /// Подпись плаката на ЦВЕТНОМ блоке.
-        static let captionOnColor = Color(Dyn(dark: 0xB2B2AE, light: 0xFFFFFFE0, darkHC: 0xB2B2AE, lightHC: 0xFFFFFFE0))
+        static let captionOnColor = Общие.posterInkMuted
         /// Подпись плаката на заливке дозы. Отдельная от caption потому, что доза — единственный режим дня со СВЕТЛОЙ подложкой: остальные четыре кладут текст на тёмный блок, и там caption честен. У плаката ПАКЕТА режима дозы нет вовсе — его bg всегда тёмный блок с белым текстом, — то есть инверсия наша, и цена её в том, что для неё нужен свой тихий цвет.
-        static let captionOnDose = Color(Dyn(dark: 0x2E3866, light: 0xD9E3FC, darkHC: 0x2E3866, lightHC: 0xD9E3FC))
+        static let captionOnDose = Общие.arcticSubtle
         /// ТОЛЬКО НЕЙТРАЛЬНЫЙ БЛОК (backgroundQuiet). На цветных блоках берётся labelOnColor, на дозе labelOnDose: у плаката ТРИ семьи текста, а не одна. Замер 07.10.2026: этот токен на синем блоке в светлой даёт 3,15 — он честен только там, где подложка нейтральна.
-        static let label = Color(Dyn(dark: 0xF4F4F2, light: 0x101112, darkHC: 0xF4F4F2, lightHC: 0x101112))
+        static let label = Общие.ink
         /// Заголовок плаката на ЦВЕТНОМ блоке: обычный, тревожный, натощак.
-        static let labelOnColor = Color(Dyn(dark: 0xF4F4F2, light: 0xFFFFFF, darkHC: 0xF4F4F2, lightHC: 0xFFFFFF))
-        static let labelOnDose = Color(Dyn(dark: 0x0B0D2E, light: 0xFFFFFF, darkHC: 0x0B0D2E, lightHC: 0xFFFFFF))
+        static let labelOnColor = Общие.posterInk
+        static let labelOnDose = Общие.arcticInk
     }
 
     /// Шаг сетки. Прикладной код берёт Spacing, а не это.
@@ -202,7 +246,7 @@ nonisolated enum Token {
     /// компонента. Экран сюда не лезет: он выбирает вариант.
     enum Component {
         enum ActionTile {
-            static let background = Color(Dyn(dark: 0x2C2C2C, light: 0xFFFFFF, darkHC: 0x2C2C2C, lightHC: 0xFFFFFF))
+            static let background = Общие.night4
             static let minHeight: CGFloat = 52
             static let radius: CGFloat = 16
         }
@@ -214,58 +258,58 @@ nonisolated enum Token {
         }
         enum Button {
             enum Destructive {
-                static let background = Color(Dyn(dark: 0x4D1F22, light: 0xF7D5CF, darkHC: 0x4D1F22, lightHC: 0xF7D5CF))
+                static let background = Общие.clayBg
                 static let height: CGFloat = 50
-                static let label = Color(Dyn(dark: 0xFF7A66, light: 0xAE2219, darkHC: 0xFFA696, lightHC: 0x9B100E))
+                static let label = Общие.clay
                 static let radius: CGFloat = 24
             }
             enum Disabled {
-                static let background = Color(Dyn(dark: 0x2C2C2C, light: 0xFFFFFF, darkHC: 0x2C2C2C, lightHC: 0xFFFFFF))
-                static let label = Color(Dyn(dark: 0x6D6D6D, light: 0xA1A4A8, darkHC: 0x8A8A86, lightHC: 0x7D8085))
+                static let background = Общие.night4
+                static let label = Общие.inkFaint
             }
             enum Finish {
-                static let background = Color(Dyn(dark: 0xA2C1FE2E, light: 0x0E14A138, darkHC: 0xA2C1FE2E, lightHC: 0x0E14A138))
+                static let background = Общие.arcticTint
                 static let height: CGFloat = 50
-                static let label = Color(Dyn(dark: 0xF4F4F2, light: 0x101112, darkHC: 0xF4F4F2, lightHC: 0x101112))
+                static let label = Общие.ink
                 static let radius: CGFloat = 24
             }
             enum Primary {
-                static let background = Color(Dyn(dark: 0xA2C1FE, light: 0x0E14A1, darkHC: 0xA2C1FE, lightHC: 0x0E14A1))
+                static let background = Общие.arctic
                 static let height: CGFloat = 60
-                static let label = Color(Dyn(dark: 0x0B0D2E, light: 0xFFFFFF, darkHC: 0x0B0D2E, lightHC: 0xFFFFFF))
+                static let label = Общие.arcticInk
                 static let radius: CGFloat = 999
             }
             enum Secondary {
-                static let background = Color(Dyn(dark: 0x2C2C2C, light: 0xFFFFFF, darkHC: 0x2C2C2C, lightHC: 0xFFFFFF))
+                static let background = Общие.night4
                 static let height: CGFloat = 50
-                static let label = Color(Dyn(dark: 0xF4F4F2, light: 0x101112, darkHC: 0xF4F4F2, lightHC: 0x101112))
+                static let label = Общие.ink
                 static let radius: CGFloat = 24
             }
         }
         enum Card {
-            static let background = Color(Dyn(dark: 0x181818, light: 0xECEDF0, darkHC: 0x181818, lightHC: 0xECEDF0))
+            static let background = Общие.night2
             static let padding: CGFloat = 16
             static let radius: CGFloat = 28
         }
         enum Chip {
-            static let alarmBackground = Color(Dyn(dark: 0x4D1F22, light: 0xF7D5CF, darkHC: 0x4D1F22, lightHC: 0xF7D5CF))
-            static let alarmLabel = Color(Dyn(dark: 0xFF7A66, light: 0xAE2219, darkHC: 0xFFA696, lightHC: 0x9B100E))
+            static let alarmBackground = Общие.clayBg
+            static let alarmLabel = Общие.clay
             static let height: CGFloat = 44
             static let radius: CGFloat = 16
-            static let restBackground = Color(Dyn(dark: 0x2C2C2C, light: 0xFFFFFF, darkHC: 0x2C2C2C, lightHC: 0xFFFFFF))
-            static let selectedBackground = Color(Dyn(dark: 0xA2C1FE2E, light: 0x0E14A138, darkHC: 0xA2C1FE2E, lightHC: 0x0E14A138))
+            static let restBackground = Общие.night4
+            static let selectedBackground = Общие.arcticTint
         }
         enum Sheet {
-            static let background = Color(Dyn(dark: 0x050503, light: 0xFFFFFF, darkHC: 0x050503, lightHC: 0xFFFFFF))
-            static let handleColor = Color(Dyn(dark: 0x3A3A3A, light: 0xD6D9DD, darkHC: 0x3A3A3A, lightHC: 0x7D8085))
+            static let background = Общие.night1
+            static let handleColor = Общие.hairline
             static let handleHeight: CGFloat = 4
             static let handleWidth: CGFloat = 36
             static let radius: CGFloat = 36
         }
         enum Timeline {
-            static let alarmMark = Color(Dyn(dark: 0xFF7A66, light: 0xAE2219, darkHC: 0xFFA696, lightHC: 0x9B100E))
+            static let alarmMark = Общие.clay
             static let gutter: CGFloat = 12
-            static let nowMarker = Color(Dyn(dark: 0xA2C1FE, light: 0x0E14A1, darkHC: 0xA2C1FE, lightHC: 0x0E14A1))
+            static let nowMarker = Общие.arctic
             static let syncedMark = Color(hex: 0x5FBF9326)
         }
     }
