@@ -1844,6 +1844,35 @@
         }
       }
     },
+    "%@ вывела собаку" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ took the dog out"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ a sorti le chien"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ вывела собаку"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ вивела собаку"
+          }
+        }
+      }
+    },
     "%@ г" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -3583,208 +3612,6 @@
             "value" : "%lld %@ по %@"
           }
         }
-      }
-    },
-    "%lld срывов" : {
-      "extractionState" : "manual",
-      "localizations" : {
-      "en" : {
-        "variations" : {
-          "plural" : {
-            "one" : {
-              "stringUnit" : {
-                "state" : "needs_review",
-                "value" : "%lld reaction"
-              }
-            },
-            "other" : {
-              "stringUnit" : {
-                "state" : "needs_review",
-                "value" : "%lld reactions"
-              }
-            }
-          }
-        }
-      },
-      "fr" : {
-        "variations" : {
-          "plural" : {
-            "one" : {
-              "stringUnit" : {
-                "state" : "needs_review",
-                "value" : "%lld réaction"
-              }
-            },
-            "other" : {
-              "stringUnit" : {
-                "state" : "needs_review",
-                "value" : "%lld réactions"
-              }
-            }
-          }
-        }
-      },
-      "ru" : {
-        "variations" : {
-          "plural" : {
-            "few" : {
-              "stringUnit" : {
-                "state" : "translated",
-                "value" : "%lld срыва"
-              }
-            },
-            "many" : {
-              "stringUnit" : {
-                "state" : "translated",
-                "value" : "%lld срывов"
-              }
-            },
-            "one" : {
-              "stringUnit" : {
-                "state" : "translated",
-                "value" : "%lld срыв"
-              }
-            },
-            "other" : {
-              "stringUnit" : {
-                "state" : "translated",
-                "value" : "%lld срывов"
-              }
-            }
-          }
-        }
-      },
-      "uk" : {
-        "variations" : {
-          "plural" : {
-            "few" : {
-              "stringUnit" : {
-                "state" : "needs_review",
-                "value" : "%lld зриви"
-              }
-            },
-            "many" : {
-              "stringUnit" : {
-                "state" : "needs_review",
-                "value" : "%lld зривів"
-              }
-            },
-            "one" : {
-              "stringUnit" : {
-                "state" : "needs_review",
-                "value" : "%lld зрив"
-              }
-            },
-            "other" : {
-              "stringUnit" : {
-                "state" : "needs_review",
-                "value" : "%lld зривів"
-              }
-            }
-          }
-        }
-      }
-      }
-    },
-    "%lld раз пописал" : {
-      "extractionState" : "manual",
-      "localizations" : {
-      "en" : {
-        "variations" : {
-          "plural" : {
-            "one" : {
-              "stringUnit" : {
-                "state" : "needs_review",
-                "value" : "%lld pee"
-              }
-            },
-            "other" : {
-              "stringUnit" : {
-                "state" : "needs_review",
-                "value" : "%lld pees"
-              }
-            }
-          }
-        }
-      },
-      "fr" : {
-        "variations" : {
-          "plural" : {
-            "one" : {
-              "stringUnit" : {
-                "state" : "needs_review",
-                "value" : "%lld pipi"
-              }
-            },
-            "other" : {
-              "stringUnit" : {
-                "state" : "needs_review",
-                "value" : "%lld pipis"
-              }
-            }
-          }
-        }
-      },
-      "ru" : {
-        "variations" : {
-          "plural" : {
-            "few" : {
-              "stringUnit" : {
-                "state" : "translated",
-                "value" : "%lld раза пописал"
-              }
-            },
-            "many" : {
-              "stringUnit" : {
-                "state" : "translated",
-                "value" : "%lld раз пописал"
-              }
-            },
-            "one" : {
-              "stringUnit" : {
-                "state" : "translated",
-                "value" : "%lld раз пописал"
-              }
-            },
-            "other" : {
-              "stringUnit" : {
-                "state" : "translated",
-                "value" : "%lld раз пописал"
-              }
-            }
-          }
-        }
-      },
-      "uk" : {
-        "variations" : {
-          "plural" : {
-            "few" : {
-              "stringUnit" : {
-                "state" : "needs_review",
-                "value" : "%lld рази пісяв"
-              }
-            },
-            "many" : {
-              "stringUnit" : {
-                "state" : "needs_review",
-                "value" : "%lld разів пісяв"
-              }
-            },
-            "one" : {
-              "stringUnit" : {
-                "state" : "needs_review",
-                "value" : "%lld раз пісяв"
-              }
-            },
-            "other" : {
-              "stringUnit" : {
-                "state" : "needs_review",
-                "value" : "%lld разів пісяв"
-              }
-            }
-          }
-        }
-      }
       }
     },
     "%lld банок" : {
@@ -5792,6 +5619,107 @@
         }
       }
     },
+    "%lld попыток" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld attempt"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld attempts"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld essai"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld essais"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld попытки"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld попыток"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld попытка"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld попыток"
+                }
+              }
+            }
+          }
+        },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld спроби"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld спроб"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld спроба"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld спроб"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "%lld просьб за неделю" : {
       "localizations" : {
         "en" : {
@@ -5993,6 +5921,107 @@
         }
       }
     },
+    "%lld раз пописал" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld pee"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld pees"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld pipi"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld pipis"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld раза пописал"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld раз пописал"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld раз пописал"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld раз пописал"
+                }
+              }
+            }
+          }
+        },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld рази пісяв"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld разів пісяв"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld раз пісяв"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld разів пісяв"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "%lld раза" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -6087,6 +6116,107 @@
                 "stringUnit" : {
                   "state" : "needs_review",
                   "value" : "%lld разів"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld сеансов" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld session"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld sessions"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld session"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld sessions"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld сеанса"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld сеансов"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld сеанс"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld сеансов"
+                }
+              }
+            }
+          }
+        },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld сеанси"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld сеансів"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld сеанс"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld сеансів"
                 }
               }
             }
@@ -6238,208 +6368,6 @@
         }
       }
     },
-    "%lld сеансов" : {
-      "extractionState" : "manual",
-      "localizations" : {
-      "en" : {
-        "variations" : {
-          "plural" : {
-            "one" : {
-              "stringUnit" : {
-                "state" : "needs_review",
-                "value" : "%lld session"
-              }
-            },
-            "other" : {
-              "stringUnit" : {
-                "state" : "needs_review",
-                "value" : "%lld sessions"
-              }
-            }
-          }
-        }
-      },
-      "fr" : {
-        "variations" : {
-          "plural" : {
-            "one" : {
-              "stringUnit" : {
-                "state" : "needs_review",
-                "value" : "%lld session"
-              }
-            },
-            "other" : {
-              "stringUnit" : {
-                "state" : "needs_review",
-                "value" : "%lld sessions"
-              }
-            }
-          }
-        }
-      },
-      "ru" : {
-        "variations" : {
-          "plural" : {
-            "few" : {
-              "stringUnit" : {
-                "state" : "translated",
-                "value" : "%lld сеанса"
-              }
-            },
-            "many" : {
-              "stringUnit" : {
-                "state" : "translated",
-                "value" : "%lld сеансов"
-              }
-            },
-            "one" : {
-              "stringUnit" : {
-                "state" : "translated",
-                "value" : "%lld сеанс"
-              }
-            },
-            "other" : {
-              "stringUnit" : {
-                "state" : "translated",
-                "value" : "%lld сеансов"
-              }
-            }
-          }
-        }
-      },
-      "uk" : {
-        "variations" : {
-          "plural" : {
-            "few" : {
-              "stringUnit" : {
-                "state" : "needs_review",
-                "value" : "%lld сеанси"
-              }
-            },
-            "many" : {
-              "stringUnit" : {
-                "state" : "needs_review",
-                "value" : "%lld сеансів"
-              }
-            },
-            "one" : {
-              "stringUnit" : {
-                "state" : "needs_review",
-                "value" : "%lld сеанс"
-              }
-            },
-            "other" : {
-              "stringUnit" : {
-                "state" : "needs_review",
-                "value" : "%lld сеансів"
-              }
-            }
-          }
-        }
-      }
-      }
-    },
-    "%lld попыток" : {
-      "extractionState" : "manual",
-      "localizations" : {
-      "en" : {
-        "variations" : {
-          "plural" : {
-            "one" : {
-              "stringUnit" : {
-                "state" : "needs_review",
-                "value" : "%lld attempt"
-              }
-            },
-            "other" : {
-              "stringUnit" : {
-                "state" : "needs_review",
-                "value" : "%lld attempts"
-              }
-            }
-          }
-        }
-      },
-      "fr" : {
-        "variations" : {
-          "plural" : {
-            "one" : {
-              "stringUnit" : {
-                "state" : "needs_review",
-                "value" : "%lld essai"
-              }
-            },
-            "other" : {
-              "stringUnit" : {
-                "state" : "needs_review",
-                "value" : "%lld essais"
-              }
-            }
-          }
-        }
-      },
-      "ru" : {
-        "variations" : {
-          "plural" : {
-            "few" : {
-              "stringUnit" : {
-                "state" : "translated",
-                "value" : "%lld попытки"
-              }
-            },
-            "many" : {
-              "stringUnit" : {
-                "state" : "translated",
-                "value" : "%lld попыток"
-              }
-            },
-            "one" : {
-              "stringUnit" : {
-                "state" : "translated",
-                "value" : "%lld попытка"
-              }
-            },
-            "other" : {
-              "stringUnit" : {
-                "state" : "translated",
-                "value" : "%lld попыток"
-              }
-            }
-          }
-        }
-      },
-      "uk" : {
-        "variations" : {
-          "plural" : {
-            "few" : {
-              "stringUnit" : {
-                "state" : "needs_review",
-                "value" : "%lld спроби"
-              }
-            },
-            "many" : {
-              "stringUnit" : {
-                "state" : "needs_review",
-                "value" : "%lld спроб"
-              }
-            },
-            "one" : {
-              "stringUnit" : {
-                "state" : "needs_review",
-                "value" : "%lld спроба"
-              }
-            },
-            "other" : {
-              "stringUnit" : {
-                "state" : "needs_review",
-                "value" : "%lld спроб"
-              }
-            }
-          }
-        }
-      }
-      }
-    },
     "%lld собак" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6534,6 +6462,107 @@
                 "stringUnit" : {
                   "state" : "needs_review",
                   "value" : "%lld собак"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld срывов" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld reaction"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld reactions"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld réaction"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld réactions"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld срыва"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld срывов"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld срыв"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld срывов"
+                }
+              }
+            }
+          }
+        },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld зриви"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld зривів"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld зрив"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld зривів"
                 }
               }
             }
@@ -11093,6 +11122,9 @@
         }
       }
     },
+    "Вместе с ней исчезнет весь её дневник — одиннадцать видов записей: отметки, взвешивания, дела ухода, схемы лечения с дозами, шаги и занятия, поездки, документы, выезды, течки и запас корма. Выгрузить дневник можно в «Настройки → Данные и приватность»." : {
+
+    },
     "Вместе с ней удалятся её записи, схемы лечения, занятия и поездки. Выгрузить дневник можно в «Настройки → Данные и приватность»." : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -12022,6 +12054,9 @@
           }
         }
       }
+    },
+    "время забора не указано" : {
+
     },
     "Время каждой отметки запишется само. Телефон можно убрать в карман — секунды считаются от начала, а не тикают на экране." : {
       "comment" : "startSheet",
@@ -13133,64 +13168,6 @@
         }
       }
     },
-    "вывел собаку" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "took the dog out"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "a sorti le chien"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "вывел собаку"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "вивів собаку"
-          }
-        }
-      }
-    },
-    "%@ вывела собаку" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%@ took the dog out"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%@ a sorti le chien"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ вывела собаку"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%@ вивела собаку"
-          }
-        }
-      }
-    },
     "вывел %@" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -13217,6 +13194,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "вивів %@"
+          }
+        }
+      }
+    },
+    "вывел собаку" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "took the dog out"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "a sorti le chien"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "вывел собаку"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "вивів собаку"
           }
         }
       }
@@ -14239,6 +14245,9 @@
           }
         }
       }
+    },
+    "выше нормы" : {
+
     },
     "Вышли" : {
       "comment" : "body",
@@ -15340,6 +15349,9 @@
           }
         }
       }
+    },
+    "дальше" : {
+
     },
     "Дальше" : {
       "comment" : "body",
@@ -17915,6 +17927,9 @@
           }
         }
       }
+    },
+    "договор" : {
+
     },
     "доз вовремя" : {
       "comment" : "numbersCard",
@@ -21103,6 +21118,9 @@
         }
       }
     },
+    "забор вне окна 4–6 ч — читается по обычной норме" : {
+
+    },
     "забор крови" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -21162,6 +21180,9 @@
           }
         }
       }
+    },
+    "забор через %@ после дозы" : {
+
     },
     "Забрать сейчас" : {
       "comment" : "statusCard",
@@ -26210,6 +26231,9 @@
         }
       }
     },
+    "Исчезнут все одиннадцать видов записей: отметки, взвешивания, дела ухода, схемы лечения с дозами, шаги и занятия, поездки, документы, выезды, течки и запас корма. Это нельзя отменить." : {
+
+    },
     "их записи сохранятся и вернутся при возобновлении" : {
       "comment" : "handle",
       "extractionState" : "manual",
@@ -28021,6 +28045,12 @@
           }
         }
       }
+    },
+    "контроль" : {
+
+    },
+    "контроль ещё не скоро" : {
+
     },
     "Контрольный приём" : {
       "comment" : "next",
@@ -30950,6 +30980,9 @@
         }
       }
     },
+    "мин" : {
+
+    },
     "минуты" : {
       "comment" : "header",
       "extractionState" : "manual",
@@ -33394,6 +33427,9 @@
         }
       }
     },
+    "не записано, через сколько часов после дозы" : {
+
+    },
     "не заполнены" : {
       "comment" : "documents",
       "extractionState" : "manual",
@@ -33453,6 +33489,9 @@
           }
         }
       }
+    },
+    "не кормить" : {
+
     },
     "Не кормить %@" : {
       "comment" : "Что случилось — то, из-за чего экран открыли",
@@ -35208,6 +35247,9 @@
         }
       }
     },
+    "ниже нормы" : {
+
+    },
     "Ницца → Лион" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -35940,6 +35982,9 @@
         }
       }
     },
+    "норма не указана" : {
+
+    },
     "норма разложена полностью" : {
       "comment" : "splitStatus",
       "extractionState" : "manual",
@@ -36209,6 +36254,9 @@
           }
         }
       }
+    },
+    "нужно внимание" : {
+
     },
     "Нужно хотя бы %@ с записями — пока их %@. Просто продолжай отмечать выходы." : {
       "comment" : "body",
@@ -37613,6 +37661,12 @@
           }
         }
       }
+    },
+    "онлайн" : {
+
+    },
+    "осмотр" : {
+
     },
     "Осмотр у врача" : {
       "extractionState" : "manual",
@@ -40767,6 +40821,9 @@
         }
       }
     },
+    "паспорт" : {
+
+    },
     "Паспорт" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -42259,6 +42316,9 @@
         }
       }
     },
+    "по острому" : {
+
+    },
     "по памяти, из %@" : {
       "comment" : "recalled",
       "extractionState" : "manual",
@@ -43000,6 +43060,9 @@
           }
         }
       }
+    },
+    "подтверждён" : {
+
     },
     "Подтверждение нужно потому, что запись с особенностью уходит в медицинскую часть и попадает в отчёт врачу." : {
       "comment" : "body",
@@ -45037,6 +45100,7 @@
       }
     },
     "попыток" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -45101,6 +45165,12 @@
           }
         }
       }
+    },
+    "пора дать лекарство" : {
+
+    },
+    "пора на контроль" : {
+
     },
     "пора покупать" : {
       "comment" : "countCard",
@@ -45879,6 +45949,9 @@
           }
         }
       }
+    },
+    "последний день контроля" : {
+
     },
     "Последний раз" : {
       "comment" : "body",
@@ -46679,6 +46752,9 @@
           }
         }
       }
+    },
+    "Править и удалить" : {
+
     },
     "Править и удалять записи" : {
       "comment" : "title",
@@ -49810,6 +49886,9 @@
         }
       }
     },
+    "рабочая гипотеза" : {
+
+    },
     "раз в %@" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -52930,6 +53009,9 @@
         }
       }
     },
+    "сертификат" : {
+
+    },
     "Симптомы" : {
       "comment" : "title",
       "extractionState" : "manual",
@@ -54001,6 +54083,9 @@
           }
         }
       }
+    },
+    "снят" : {
+
     },
     "Снято · %@" : {
       "comment" : "toggle",
@@ -55574,6 +55659,9 @@
         }
       }
     },
+    "сравнить нельзя" : {
+
+    },
     "среднее %@ мс" : {
       "comment" : "recentMarks",
       "extractionState" : "manual",
@@ -55745,6 +55833,9 @@
           }
         }
       }
+    },
+    "срок контроля прошёл" : {
+
     },
     "Срок не пересчитался · нажми ещё раз" : {
       "comment" : "allowed",
@@ -62228,6 +62319,9 @@
         }
       }
     },
+    "ч" : {
+
+    },
     "Час" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -62947,6 +63041,9 @@
           }
         }
       }
+    },
+    "чип" : {
+
     },
     "Чип" : {
       "comment" : "body",
@@ -66217,6 +66314,9 @@
           }
         }
       }
+    },
+    "Язык, уведомления, перенос" : {
+
     },
     "Языков мало намеренно: машинный перевод в приложении про здоровье собаки хуже, чем язык, сделанный целиком." : {
       "comment" : "body",
