@@ -157,6 +157,111 @@ nonisolated struct BackupArchive: Codable, Sendable {
         /// до 07.10.2026, этого поля нет, и прочитаться они обязаны.
         /// Та же причина, что у `stocks`, `heats` и `documents`.
         var daysOut: [DayOutSnapshot]?
+
+        /// Медицинский слой — 07.10.2026. Внутри собаки, а не корневым
+        /// списком: у всех четырёх есть `dog`, в отличие от клиник
+        /// и навыков процедур.
+        ///
+        /// **Это медкнижка, и терять её при переезде нельзя ни строкой.**
+        /// У Стича 127 анализов, 34 рецепта, восемь замеров щитовидной
+        /// с часами после приёма — то, что собирали год по бланкам
+        /// из четырёх лабораторий. Восстановить это неоткуда: бумажные
+        /// бланки остались в клиниках, а письма врачей — в почте.
+        var labResults: [LabResultSnapshot]?
+        var vetVisits: [VetVisitSnapshot]?
+        var diagnoses: [DiagnosisSnapshot]?
+        var prescriptions: [PrescriptionSnapshot]?
+    }
+
+    /// Строка анализа.
+    ///
+    /// **Три поля значения вместо одного, и это не избыточность.**
+    /// `value` — число; `belowLimit` — `<0,1 нг/дл` с бланка;
+    /// `textValue` — «выделен штамм коагулазо-отрицательного
+    /// стафилококка». Сложи их в одно, и предел прибора станет числом
+    /// 0,1 — то есть **тихо неверным значением вместо видимо
+    /// неизвестного**, а девять строк бактериологии не влезут вовсе.
+    ///
+    /// `method` возится потому, что свободный Т4 равновесным диализом
+    /// не сравним с обычным: потеряв метод, два значения станут
+    /// противоречием там, где его нет.
+    ///
+    /// `labMark` — отметка самой лаборатории, факт из документа,
+    /// а не наш вердикт. Везётся отдельно от нормы нарочно:
+    /// референс Т4 в карте менялся трижды, и расхождение нашего счёта
+    /// с отметкой бланка — находка, а не ошибка.
+    struct LabResultSnapshot: Codable, Sendable {
+        var sampledOn: Date
+        var sampledAt: Date?
+        var laboratory: String
+        var reportNumber: String
+        var section: String
+        var indicator: String
+        var value: Double?
+        var belowLimit: Double?
+        var aboveLimit: Double?
+        var textValue: String?
+        var unit: String
+        var referenceLow: Double?
+        var referenceHigh: Double?
+        var method: String?
+        var labMark: String
+        var note: String
+    }
+
+    /// Визит к врачу. Онлайн-консультация — такой же визит.
+    ///
+    /// Клиника — **именем**, как у дела ухода: справочник лежит
+    /// корневым списком `clinics`, и связь хранится одним концом.
+    struct VetVisitSnapshot: Codable, Sendable {
+        var date: Date
+        var clinicName: String?
+        var doctor: String
+        var reasonRaw: String
+        var conclusion: String
+    }
+
+    /// Диагноз. Статус везётся обязательно: по подтверждённому лечат,
+    /// по гипотезе ищут, и потеряв различие, восстановленная карта
+    /// скажет про гипотезу «подтверждён».
+    struct DiagnosisSnapshot: Codable, Sendable {
+        var wording: String
+        var statusRaw: String
+        var madeOn: Date
+        var madeBy: String
+        var evidence: String
+    }
+
+    /// Назначение.
+    ///
+    /// **`dogWeightKg` — часть назначения, а не справка:** доза
+    /// считается от веса на дату, и без него проверить дозу задним
+    /// числом нечем.
+    ///
+    /// **`pharmacyForm` живёт здесь, а не у схемы лечения**, потому
+    /// что вопрос ретроспективный: «какая форма была в тот месяц,
+    /// когда Т4 провалился». Рецепт датирован по природе, схема
+    /// отвечает «какая сейчас» и переписывает историю молча.
+    ///
+    /// **`controlFromWeeks`/`controlToWeeks` — окно, а не дата.**
+    /// Три врача назвали три интервала; свести к одной дате значило бы
+    /// придумать число за врача.
+    struct PrescriptionSnapshot: Codable, Sendable {
+        var number: String
+        var date: Date
+        var clinicName: String?
+        var doctor: String
+        var dogWeightKg: Double?
+        var medicationName: String
+        var dosage: String
+        var schedule: String
+        var duration: String
+        var pharmacyForm: String?
+        var controlFromWeeks: Int
+        var controlToWeeks: Int
+        var dispensed: String
+        var instruction: String
+        var source: String
     }
 
     /// Фотография документа целиком: паспорт, потерянный вместе

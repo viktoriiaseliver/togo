@@ -460,6 +460,74 @@ struct DeviceLocalFieldTests {
         // кто выгуливает.
         "HeatRecord.id", "HeatRecord.startedAt", "HeatRecord.endedAt",
         "HeatRecord.note", "HeatRecord.dog",
+
+        // MARK: Медицинский слой — 07.10.2026
+        //
+        // **Все поля четырёх сущностей — про семью, и проверял я
+        // вопросом по каждой группе, а не правилом «модель = про
+        // семью»:** оно у нас уже дало `isMe` и обожглось дважды.
+        //
+        // Общее у четырёх моделей то, что они **документы, а не
+        // состояние телефона**. Бланк анализа, заключение врача,
+        // формулировка диагноза и бланк рецепта одинаковы с любого
+        // телефона — их напечатала клиника, а не наше приложение.
+        // «Моего анализа» не бывает, как не бывает «моей собаки».
+        //
+        // И цена обратного решения названа данными: в карте Стича
+        // 127 анализов, 34 рецепта и девятнадцать пробелов, где
+        // назначение известно письмом, а бланка нет вовсе. Человек,
+        // который сегодня ведёт собаку в клинику, — не обязательно
+        // владелец телефона, где это лежит.
+        //
+        // `changedAt` — разрешает спор двух телефонов; та же причина,
+        // что у собаки, схемы лечения и клиники. `dog` — связь, едет
+        // своим типом записи.
+
+        // Анализ. `labMark` возится ВМЕСТЕ с нашей нормой, а не вместо
+        // неё: отметка лаборатории — факт из документа, наш вердикт
+        // даёт `LabNorm`, и расхождение между ними находка, а не ошибка.
+        // Потеряй одно — расхождение станет невидимым.
+        "LabResult.id", "LabResult.sampledOn", "LabResult.sampledAt",
+        "LabResult.laboratory", "LabResult.reportNumber", "LabResult.section",
+        "LabResult.indicator", "LabResult.value", "LabResult.belowLimit",
+        "LabResult.aboveLimit", "LabResult.textValue", "LabResult.unit",
+        "LabResult.referenceLow", "LabResult.referenceHigh",
+        "LabResult.method", "LabResult.labMark", "LabResult.note",
+        "LabResult.changedAt", "LabResult.dog",
+
+        // Визит. Онлайн-консультация — такой же визит, и `reasonRaw`
+        // это различает; потеряв его, половина истории Стича станет
+        // осмотрами, которых не было.
+        "VetVisit.id", "VetVisit.date", "VetVisit.clinic", "VetVisit.doctor",
+        "VetVisit.reasonRaw", "VetVisit.conclusion",
+        "VetVisit.changedAt", "VetVisit.dog",
+
+        // Диагноз. `statusRaw` обязателен: по подтверждённому лечат,
+        // по гипотезе ищут. Второй человек, увидевший гипотезу как
+        // подтверждённый диагноз, начнёт лечить по ней.
+        "Diagnosis.id", "Diagnosis.wording", "Diagnosis.statusRaw",
+        "Diagnosis.madeOn", "Diagnosis.madeBy", "Diagnosis.evidence",
+        "Diagnosis.changedAt", "Diagnosis.dog",
+
+        // Назначение. `dogWeightKg` — часть назначения, а не справка:
+        // доза считается от веса на дату. `pharmacyForm` датирован
+        // рецептом нарочно — вопрос «какая форма была в тот месяц,
+        // когда Т4 провалился» ретроспективный.
+        "Prescription.id", "Prescription.number", "Prescription.date",
+        "Prescription.clinic", "Prescription.doctor", "Prescription.dogWeightKg",
+        "Prescription.medicationName", "Prescription.dosage",
+        "Prescription.schedule", "Prescription.duration",
+        "Prescription.pharmacyForm", "Prescription.controlFromWeeks",
+        "Prescription.controlToWeeks", "Prescription.dispensed",
+        "Prescription.instruction", "Prescription.source",
+        "Prescription.changedAt", "Prescription.dog",
+
+        // Обратные стороны связей у собаки и у клиники — заведены
+        // 07.10 вместе с регистрацией сущностей. Связь требует зеркало
+        // CloudKit; без обратной стороны хранилище не открывается вовсе.
+        "Dog.labResultsStorage", "Dog.vetVisitsStorage",
+        "Dog.diagnosesStorage", "Dog.prescriptionsStorage",
+        "Clinic.vetVisitsStorage", "Clinic.prescriptionsStorage",
     ]
 
     /// Модели, поля которых уже разобраны — **выводится из самих

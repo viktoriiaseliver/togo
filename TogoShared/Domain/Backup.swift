@@ -230,6 +230,43 @@ nonisolated enum BackupService {
             daysOut: daysOut.map {
                 BackupArchive.DayOutSnapshot(startedAt: $0.startedAt, endedAt: $0.endedAt,
                                              plannedHours: $0.plannedHours, note: $0.note)
+            },
+            // Медкнижка — 07.10.2026. Собирается здесь, а не отдельным
+            // проходом: `togo-1e` нашёл сегодня три поля, объявленные
+            // в снимке и не заполненные сборщиком, и сторож паритета
+            // такое не ловит — он сверяет ИМЕНА.
+            labResults: dog.labResults.map {
+                BackupArchive.LabResultSnapshot(
+                    sampledOn: $0.sampledOn, sampledAt: $0.sampledAt,
+                    laboratory: $0.laboratory, reportNumber: $0.reportNumber,
+                    section: $0.section, indicator: $0.indicator,
+                    value: $0.value, belowLimit: $0.belowLimit,
+                    aboveLimit: $0.aboveLimit, textValue: $0.textValue,
+                    unit: $0.unit,
+                    referenceLow: $0.referenceLow, referenceHigh: $0.referenceHigh,
+                    method: $0.method, labMark: $0.labMark, note: $0.note)
+            },
+            vetVisits: dog.vetVisits.map {
+                BackupArchive.VetVisitSnapshot(
+                    date: $0.date, clinicName: $0.clinic?.name, doctor: $0.doctor,
+                    reasonRaw: $0.reasonRaw, conclusion: $0.conclusion)
+            },
+            diagnoses: dog.diagnoses.map {
+                BackupArchive.DiagnosisSnapshot(
+                    wording: $0.wording, statusRaw: $0.statusRaw,
+                    madeOn: $0.madeOn, madeBy: $0.madeBy, evidence: $0.evidence)
+            },
+            prescriptions: dog.prescriptions.map {
+                BackupArchive.PrescriptionSnapshot(
+                    number: $0.number, date: $0.date, clinicName: $0.clinic?.name,
+                    doctor: $0.doctor, dogWeightKg: $0.dogWeightKg,
+                    medicationName: $0.medicationName, dosage: $0.dosage,
+                    schedule: $0.schedule, duration: $0.duration,
+                    pharmacyForm: $0.pharmacyForm,
+                    controlFromWeeks: $0.controlFromWeeks,
+                    controlToWeeks: $0.controlToWeeks,
+                    dispensed: $0.dispensed, instruction: $0.instruction,
+                    source: $0.source)
             }
         )
     }
@@ -305,6 +342,14 @@ nonisolated enum BackupService {
                           // записью, и человек получил бы одиннадцать
                           // организаций Стича дважды.
                           Clinic.self,
+                          // Медкнижка — 07.10.2026. Поимённо, хотя у всех
+                          // четырёх каскад от собаки: каскад срабатывает
+                          // по связи, а запись с пустым `dog` каскадом
+                          // не убирается и осталась бы сиротой. Ровно
+                          // тот класс, из-за которого здесь уже стоят
+                          // `LogEvent` и `WeightEntry`.
+                          LabResult.self, VetVisit.self,
+                          Diagnosis.self, Prescription.self,
                           FamilyMember.self, Dog.self] as [any PersistentModel.Type] {
                 try context.delete(model: model)
             }
@@ -762,6 +807,70 @@ nonisolated enum BackupService {
             document.validUntil = documentSnapshot.validUntil
             document.dog = dog
             context.insert(document)
+        }
+        // Медкнижка — 07.10.2026. Клиника ищется по имени в уже
+        // вставленном справочнике, как у дел ухода; промах оставляет
+        // связь пустой и клиники не заводит.
+        for снимок in snapshot.labResults ?? [] {
+            let анализ = LabResult(sampledOn: снимок.sampledOn,
+                                   indicator: снимок.indicator,
+                                   section: снимок.section,
+                                   laboratory: снимок.laboratory,
+                                   reportNumber: снимок.reportNumber)
+            анализ.sampledAt = снимок.sampledAt
+            // Три поля значения — порознь. Сложить их в одно значило бы
+            // превратить «<0,1» в число 0,1, то есть тихо неверное
+            // значение вместо видимо неизвестного.
+            анализ.value = снимок.value
+            анализ.belowLimit = снимок.belowLimit
+            анализ.aboveLimit = снимок.aboveLimit
+            анализ.textValue = снимок.textValue
+            анализ.unit = снимок.unit
+            анализ.referenceLow = снимок.referenceLow
+            анализ.referenceHigh = снимок.referenceHigh
+            анализ.method = снимок.method
+            анализ.labMark = снимок.labMark
+            анализ.note = снимок.note
+            анализ.dog = dog
+            context.insert(анализ)
+        }
+        for снимок in snapshot.vetVisits ?? [] {
+            let визит = VetVisit(date: снимок.date, doctor: снимок.doctor,
+                                 reasonRaw: снимок.reasonRaw)
+            визит.conclusion = снимок.conclusion
+            if let имя = Fmt.notBlank(снимок.clinicName ?? "") {
+                визит.clinic = clinics[имя]
+            }
+            визит.dog = dog
+            context.insert(визит)
+        }
+        for снимок in snapshot.diagnoses ?? [] {
+            let диагноз = Diagnosis(wording: снимок.wording, madeOn: снимок.madeOn,
+                                    statusRaw: снимок.statusRaw)
+            диагноз.madeBy = снимок.madeBy
+            диагноз.evidence = снимок.evidence
+            диагноз.dog = dog
+            context.insert(диагноз)
+        }
+        for снимок in snapshot.prescriptions ?? [] {
+            let рецепт = Prescription(number: снимок.number, date: снимок.date,
+                                      medicationName: снимок.medicationName)
+            рецепт.doctor = снимок.doctor
+            рецепт.dogWeightKg = снимок.dogWeightKg
+            рецепт.dosage = снимок.dosage
+            рецепт.schedule = снимок.schedule
+            рецепт.duration = снимок.duration
+            рецепт.pharmacyForm = снимок.pharmacyForm
+            рецепт.controlFromWeeks = снимок.controlFromWeeks
+            рецепт.controlToWeeks = снимок.controlToWeeks
+            рецепт.dispensed = снимок.dispensed
+            рецепт.instruction = снимок.instruction
+            рецепт.source = снимок.source
+            if let имя = Fmt.notBlank(снимок.clinicName ?? "") {
+                рецепт.clinic = clinics[имя]
+            }
+            рецепт.dog = dog
+            context.insert(рецепт)
         }
         for tripSnapshot in snapshot.trips {
             let trip = Trip(destination: tripSnapshot.destination,
