@@ -53,26 +53,52 @@ struct EmptyStateFrameTests {
         }
     }
 
+    /// Цвет токена в заданной теме.
+    ///
+    /// **`UIColor(SwiftUI.Color)` теряет динамику.** Первая редакция
+    /// делала `UIColor(c).resolvedColor(with: UITraitCollection(...))`
+    /// и получала ТЁМНОЕ значение, когда просила светлое: преобразование
+    /// `Color` → `UIColor` запекает цвет по `UITraitCollection.current`
+    /// в момент преобразования, и `resolvedColor` потом разрешает уже
+    /// константу.
+    ///
+    /// Цена ошибки была не в числе. Отрисовка уехала в тёмную тему
+    /// ровно так же — и ожидание сошлось с кадром, потому что **обе
+    /// половины сломались одинаково**. Проверка прошла, подпись
+    /// «светлая тема» в выводе была ложной, и поймал это не замер,
+    /// а взгляд на кадр.
+    ///
+    /// > Две половины проверки, сломанные одинаково, подтверждают
+    /// > друг друга.
     private func цвет(_ c: Color, _ схема: UIUserInterfaceStyle) -> UInt32 {
-        let окружение = UITraitCollection(userInterfaceStyle: схема)
-        let тон = UIColor(c).resolvedColor(with: окружение)
-        var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
-        тон.getRed(&r, green: &g, blue: &b, alpha: &a)
-        return (UInt32(r * 255) << 16) | (UInt32(g * 255) << 8) | UInt32(b * 255)
+        UITraitCollection(userInterfaceStyle: схема).performAsCurrent {
+            var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
+            UIColor(c).getRed(&r, green: &g, blue: &b, alpha: &a)
+            return (UInt32(r * 255) << 16) | (UInt32(g * 255) << 8) | UInt32(b * 255)
+        }
     }
 
     /// Снять кадр вида и положить файлом. Возвращает путь и разбор.
     private func снять<V: View>(_ вид: V, имя: String,
                                 схема: ColorScheme) throws -> (путь: URL, кадр: Кадр) {
-        let отрисовщик = ImageRenderer(
-            content: вид
-                .environment(\.colorScheme, схема)
-                .frame(width: 360)
-                .background(Color(white: схема == .dark ? 0.04 : 1))
-        )
-        отрисовщик.scale = 2
+        // `.environment(\.colorScheme,)` одного мало: токены —
+        // динамические `UIColor`, и разрешаются они по
+        // `UITraitCollection.current`, а не по окружению SwiftUI.
+        // Поэтому отрисовка идёт ВНУТРИ нужной коллекции.
+        let стиль: UIUserInterfaceStyle = схема == .dark ? .dark : .light
+        let нарисованное: UIImage? = UITraitCollection(userInterfaceStyle: стиль)
+            .performAsCurrent {
+                let отрисовщик = ImageRenderer(
+                    content: вид
+                        .environment(\.colorScheme, схема)
+                        .frame(width: 360)
+                        .background(Color(white: схема == .dark ? 0.04 : 1))
+                )
+                отрисовщик.scale = 2
+                return отрисовщик.uiImage
+            }
 
-        let картинка = try #require(отрисовщик.uiImage, "ImageRenderer не отдал картинку")
+        let картинка = try #require(нарисованное, "ImageRenderer не отдал картинку")
         let данные = try #require(картинка.pngData(), "картинка не превратилась в PNG")
 
         try FileManager.default.createDirectory(at: Self.каталог,
@@ -125,6 +151,48 @@ struct EmptyStateFrameTests {
             либо `look` перестал отдавать `.illustration`, и замеры ниже
             зелены потому, что им нечего мерить.
             """)
+    }
+
+    /// Кадр снят в ТОЙ теме, которую просили, — и это измерено,
+    /// а не написано в подписи.
+    ///
+    /// Первая редакция набора просила светлую, получала тёмную
+    /// и печатала «КАДРЫ (светлая тема)». Числа при этом сходились:
+    /// ожидание разрешалось в ту же тёмную тему. Проверки темы
+    /// не было вовсе — её заменял ярлык в строке вывода.
+    @Test("Кадр снят в той теме, которую просили")
+    func темаТа() throws {
+        func преобладающий(_ кадр: Кадр) -> Double {
+            var счёт: [UInt32: Int] = [:]
+            for (i, p) in кадр.пиксели.enumerated() where i % 7 == 0 {
+                счёт[p, default: 0] += 1
+            }
+            let цвет = счёт.max { $0.value < $1.value }?.key ?? 0
+            let r = Double((цвет >> 16) & 0xFF) / 255
+            let g = Double((цвет >> 8) & 0xFF) / 255
+            let b = Double(цвет & 0xFF) / 255
+            return 0.2126 * r + 0.7152 * g + 0.0722 * b
+        }
+
+        let (путьСвет, светлый) = try снять(карточка(.history),
+                                            имя: "history-светлая", схема: .light)
+        let (путьТьма, тёмный) = try снять(карточка(.history),
+                                           имя: "history-тёмная", схема: .dark)
+
+        let яС = преобладающий(светлый), яТ = преобладающий(тёмный)
+        #expect(яС > яТ, """
+            преобладающий тон светлого кадра \(String(format: "%.3f", яС))
+            не светлее тёмного \(String(format: "%.3f", яТ)).
+
+            Значит тема не доехала до токенов, и остальные замеры этого
+            набора мерят не ту тему, о которой говорят. `ImageRenderer`
+            слушает `UITraitCollection.current`, а не `\\.colorScheme`.
+
+            Кадры: \(путьСвет.path)
+                   \(путьТьма.path)
+            """)
+        #expect(яС > 0.5, "светлый кадр не светлый: преобладает \(яС)")
+        #expect(яТ < 0.3, "тёмный кадр не тёмный: преобладает \(яТ)")
     }
 
     @Test("Деталь иллюстрации нарисована АКЦЕНТОМ, а не чем попало")
