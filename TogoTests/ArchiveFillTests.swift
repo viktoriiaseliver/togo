@@ -301,12 +301,49 @@ private extension String {
         return String(части[i + 1].prefix { $0.isLetter || $0.isNumber })
     }
 
+    /// Имя поля из строки объявления.
+    ///
+    /// **Атрибуты срезаются, а не запрещаются.** `@Attribute(.externalStorage)
+    /// var image: Data?` стоит в одной строке, и разбор, требующий
+    /// начала с `var`, такое поле не видит. Это ТРЕТИЙ раз за проект,
+    /// когда тот же атрибут обманывает разбор исходника: первые два
+    /// стоили снимка схемы и неоткрывшегося хранилища. Предупредил
+    /// `togo-05` 07.10.2026, и предупреждение пришло раньше дефекта —
+    /// у структур снимка таких полей сегодня нет ни одного, то есть
+    /// сторож был слеп **потенциально**.
+    ///
+    /// > Разбор, который требует начала строки, ломается об атрибут,
+    /// > стоящий перед объявлением, — и ответ у него синтаксически
+    /// > правильный. Порог «нашёл не меньше N» такое не ловит: поле
+    /// > одно, а порог про объём.
     func firstMatch(поле: ()) -> String? {
-        let s = trimmingCharacters(in: .whitespaces)
-        guard s.hasPrefix("var ") || s.hasPrefix("public var ") else { return nil }
-        let после = s.replacingOccurrences(of: "public ", with: "")
-            .dropFirst("var ".count)
-        let имя = после.prefix { $0.isLetter || $0.isNumber }
+        var s = trimmingCharacters(in: .whitespaces)
+        while s.hasPrefix("@") {
+            // Срезается по СКОБКАМ, а не по первому пробелу: у атрибута
+            // пробел бывает внутри — `@Relationship(deleteRule: .cascade,
+            // inverse: \X.y) var …`. Первая редакция резала по пробелу
+            // и теряла такое поле; нашла это собственная подделка,
+            // вторым случаем, который я дописал наудачу.
+            var глубина = 0
+            var индекс = s.startIndex
+            var встретилСкобку = false
+            while индекс < s.endIndex {
+                let c = s[индекс]
+                if c == "(" { глубина += 1; встретилСкобку = true }
+                if c == ")" { глубина -= 1 }
+                индекс = s.index(after: индекс)
+                if встретилСкобку, глубина == 0 { break }
+                if !встретилСкобку, c == " " { break }
+            }
+            guard индекс < s.endIndex else { return nil }
+            s = String(s[индекс...]).trimmingCharacters(in: .whitespaces)
+        }
+        for модификатор in ["public ", "private ", "internal ", "fileprivate "]
+        where s.hasPrefix(модификатор) {
+            s = String(s.dropFirst(модификатор.count))
+        }
+        guard s.hasPrefix("var ") else { return nil }
+        let имя = s.dropFirst("var ".count).prefix { $0.isLetter || $0.isNumber }
         return имя.isEmpty ? nil : String(имя)
     }
 }
