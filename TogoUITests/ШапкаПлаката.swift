@@ -116,6 +116,49 @@ nonisolated final class ШапкаПлаката: XCTestCase {
             """)
     }
 
+    /// Та же граница, но на ВЕТКЕ ЗАПАСНОГО СЛОВА.
+    ///
+    /// Первый французский кадр показал «Стич» — кличку, и это верно:
+    /// `.значение` рисует дословно. Но чинил я не её, а запасное слово
+    /// `?? String(localized: "Профиль")`, и оно **на том кадре
+    /// не отрисовалось ни разу**: собака есть, значит заголовок —
+    /// кличка.
+    ///
+    /// > Вид, принятый кадром, доказан только для тех входов, которые
+    /// > в кадр попали.
+    ///
+    /// Сценарий `emptyDogs` заводит собак с пустой кличкой — то есть
+    /// `nameIfAny` даёт `nil`, и заголовок уходит в запасное слово.
+    /// Вот оно и обязано быть французским.
+    func testФранцузскоеЗапасноеСловоПрофиля() throws {
+        let язык = Locale.preferredLanguages.first ?? "?"
+        guard язык.hasPrefix("fr") else {
+            XCTFail("нужен `-testLanguage fr`, а прогон на «\(язык)»")
+            return
+        }
+
+        app.terminate()
+        app = XCUIApplication()
+        app.launchArguments = ["-UITesting", "-Сценарий", "emptyDogs"]
+        app.launch()
+
+        let вкладки = app.tabBars.buttons
+        XCTAssertTrue(вкладки.firstMatch.waitForExistence(timeout: 10),
+                      "панель вкладок не появилась")
+        if вкладки.count >= 2 { вкладки.element(boundBy: 1).tap() }
+
+        let путь = try снять("французский-профиль-запасное-слово")
+
+        XCTAssertFalse(app.staticTexts["Профиль"].waitForExistence(timeout: 3), """
+            запасное слово заголовка осталось русским на французском
+            экране — `String(localized:)` не прошёл каталог.
+            Это ровно то, ради чего `заголовок` объявлен `Text`,
+            и ровно то, чего первый французский кадр НЕ показал:
+            там была кличка, а не запасное слово.
+            Кадр: \(путь.path)
+            """)
+    }
+
     func testШапкаПлакатаНаЖивыхНастройках() throws {
         let шестерёнка = app.buttons["Настройки"].firstMatch
         XCTAssertTrue(шестерёнка.waitForExistence(timeout: 10),
