@@ -1,0 +1,63 @@
+/* Продуктовый слой Togo поверх Graphite: смысловые алиасы статусов и шкала запаса. В ядро не входит. */
+:root {
+  --status-done: var(--accent-subtle);         /* мятная плашка «сделано» */
+  --status-done-text: var(--accent-subtle-text);
+  --status-waiting: var(--status-warning);     /* только окно натощак */
+  --status-waiting-subtle: var(--warning-subtle);
+  --status-overdue: var(--status-error);       /* пропущенная доза, кровь, удаление */
+  --status-overdue-subtle: var(--error-subtle);
+}
+
+/* Запас: оранжевый — осталось ≤ 7 дней, красный (status-error) — ≤ 3 дня. */
+:root {
+  --stock-low: #FFA15C;
+  --stock-low-subtle: #4A2A10;
+  --stock-out: var(--status-error);
+  --stock-out-subtle: var(--error-subtle);
+}
+[data-theme="light"] {
+  --stock-low: #B85400;
+  --stock-low-subtle: #FFEBD9;
+}
+
+/* Время и важные значения (окт 2026): всегда semibold, цифры табличные. Крупные показания (Rounded 300) — исключение. */
+:root {
+  --fw-time: var(--fw-semibold); /* @kind font */
+}
+
+/* «Сегодня» · плакат (окт 2026). Лестница: фон → блок состояния (средний тон) → косточка и подписи (статусный цвет) → главная кнопка (заливка).
+   Цифры на блоке — всегда основной текст (≥ 8:1), подписи ≥ 4.5:1, косточка к дорожке ≥ 3:1. Доза — единственный «громкий» блок (акцент целиком), кнопка под ним — инверсная. */
+:root {
+  --poster-bg: #2A3670;            /* индиго 800 · обычный день */
+  --poster-fg: var(--text-primary);
+  --poster-sub: var(--accent-text); /* подписи, дата, «дальше» */
+  --poster-bar: var(--accent);      /* заливка косточки, кружок «дальше» */
+  --poster-on-bar: var(--on-accent);
+  --poster-track: rgba(255,255,255,.14);
+  --poster-row: rgba(255,255,255,.10);
+  --poster-warn-bg: #4A3A14;
+  --poster-warn-sub: var(--status-warning);
+  --poster-warn-bar: var(--status-warning);
+  --poster-err-bg: #5E2A22;
+  --poster-err-sub: var(--status-error);
+  --poster-err-bar: var(--status-error);
+  --poster-err-on-bar: var(--on-error);
+  --inverse-edge: #A9A9A6;          /* грань инверсной кнопки под блоком дозы */
+}
+[data-theme="light"] {
+  --poster-bg: #3F5BC4;            /* индиго 500 · белый текст 6:1 */
+  --poster-fg: #FFFFFF;
+  --poster-sub: rgba(255,255,255,.88);
+  --poster-bar: #FFFFFF;
+  --poster-on-bar: #3F5BC4;
+  --poster-track: rgba(0,0,0,.16);
+  --poster-row: rgba(0,0,0,.12);
+  --poster-warn-bg: #8A640F;
+  --poster-warn-sub: rgba(255,255,255,.88);
+  --poster-warn-bar: #FFFFFF;
+  --poster-err-bg: #B5402F;
+  --poster-err-sub: rgba(255,255,255,.88);
+  --poster-err-bar: #FFFFFF;
+  --poster-err-on-bar: #B5402F;
+  --inverse-edge: #000000;
+}

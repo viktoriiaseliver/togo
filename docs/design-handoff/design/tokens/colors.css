@@ -1,0 +1,164 @@
+/* Graphite · семантические цвета. Тёмная тема по умолчанию. Акцент: индиго (шкала от #0E14A1, OKLCH 267°).
+   Светлая: data-theme="light" на <html>. Повышенный контраст: data-contrast="high". */
+:root {
+  --page: #000000;
+  --bg-primary: #121211;
+  --fill-sunken: #1A1A19;
+  --fill-1: #262625;
+  --fill-2: #353534;
+  --fill-3: #474746;
+  --fill-track: #262625;
+  --fill-selected: #5E5E5C;
+  --fill-tab-active: #808080;
+  --fill-inverse: #F4F4F2;
+  --on-inverse: #111111;
+  --text-primary: #F4F4F2;
+  --text-secondary: #B2B2AE;
+  --text-disabled: #757573;
+  --separator: #343432;
+  --border: transparent;
+  --status-error: #FF7A66;
+  --on-error: #111111;
+  --error-subtle: #55261F;
+  --status-warning: #EFB737;
+  --warning-subtle: #3D2F17;
+  --toggle-off: #767676;
+  --accent-ring: transparent;
+  --toggle-marks: none; /* @kind other */
+  --toggle-off-knob: #E4E4E0;
+  --glass: rgba(52,52,52,.72);
+  --scrim: rgba(0,0,0,.55);
+  --accent: #A2C1FE;
+  --accent-pressed: #7BA5FE;
+  --accent-text: #C4D8FF;
+  --on-accent: #0B0D2E;
+  --accent-subtle: #2E3866;
+  --accent-muted: #3D4A85;
+  --accent-subtle-text: #E0EAFC;
+  --accent-knob: #1C2140;
+  --elev-1: inset 0 0 0 1px rgba(255,255,255,.07);
+  --elev-2: inset 0 0 0 1px rgba(255,255,255,.09);
+
+  /* v2 · грань кнопок и Liquid Glass (iOS 26) */
+  --accent-edge: color-mix(in oklab, var(--accent) 78%, #000);
+  --error-edge: color-mix(in oklab, var(--status-error) 70%, #000);
+  --fill-edge: var(--fill-3);
+  --glass-regular: rgba(30,30,29,.82);
+  --glass-clear: rgba(255,255,255,.10);
+  --glass-tint-accent: color-mix(in srgb, var(--accent) 18%, transparent);
+  --glass-shadow: inset 0 1px 0 rgba(255,255,255,.14), 0 0 0 1px rgba(255,255,255,.12), 0 8px 32px rgba(0,0,0,.6);
+}
+/* Светлая v5: почти нейтральный с лёгким холодом, тени графитовые; акцент — глубокий индиго с белым текстом */
+[data-theme="light"] {
+  --page: #FFFFFF;
+  --bg-primary: #ECEDF0;
+  --fill-sunken: #E3E5E8;
+  --fill-1: #FFFFFF;
+  --fill-2: #D7DBE0;
+  --fill-3: #C6CBD1;
+  --fill-track: #D7DBE0;
+  --fill-selected: #FFFFFF;
+  --fill-tab-active: #FFFFFF;
+  --fill-inverse: #161718;
+  --on-inverse: #FFFFFF;
+  --text-primary: #101112;
+  --text-secondary: #5A5D61;
+  --text-disabled: #909399;
+  --separator: #D6D9DD;
+  --border: transparent;
+  --status-error: #AE2219;
+  --on-error: #FFFFFF;
+  --error-subtle: #F7D5CF;
+  --status-warning: #8A640F;
+  --warning-subtle: #FCEBCB;
+  --toggle-off: #7D8085;
+  --toggle-off-knob: #FFFFFF;
+  --glass: rgba(255,255,255,.82);
+  --scrim: rgba(16,17,18,.32);
+  --accent: #0E14A1;
+  --accent-pressed: #080679;
+  --accent-text: #132BDE;
+  --on-accent: #FFFFFF;
+  --accent-subtle: #D3DEFB;
+  --accent-muted: #C7D5FA;
+  --accent-subtle-text: #0E14A1;
+  --accent-knob: #FFFFFF;
+  --elev-1: 0 0 0 1px rgba(10,12,16,.05),0 1px 2px rgba(10,12,16,.06),0 6px 16px rgba(10,12,16,.06);
+  --elev-2: 0 0 0 1px rgba(10,12,16,.06),0 10px 30px rgba(10,12,16,.14);
+
+  --accent-edge: color-mix(in oklab, var(--accent) 80%, #000);
+  --error-edge: color-mix(in oklab, var(--status-error) 72%, #000);
+  --fill-edge: #BFC3C9;
+  --glass-regular: rgba(255,255,255,.72);
+  --glass-clear: rgba(255,255,255,.5);
+  --glass-tint-accent: color-mix(in srgb, var(--accent) 22%, transparent);
+  --glass-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 0 0 1px rgba(10,12,16,.06), 0 8px 32px rgba(10,12,16,.12);
+}
+[data-contrast="high"] {
+  --error-subtle: #62291F;
+  --warning-subtle: #4C3A19;
+  --accent-subtle: #3A4680;
+  --fill-1: #303030;
+  --fill-2: #3A3A3A;
+  --fill-3: #4D4D4D;
+  --text-secondary: #C8C8C4;
+  --text-disabled: #8A8A86;
+  --separator: #6D6D6D;
+  --border: #6D6D6D;
+  --status-error: #FFA696;
+  --status-warning: #FFD070;
+  --toggle-off: #808080;
+  --accent-ring: var(--accent-text);
+  --accent-text: #E0EAFC;
+  --accent-subtle-text: #E0EAFC;
+  --elev-1: inset 0 0 0 1px #6D6D6D;
+  --elev-2: inset 0 0 0 1px #6D6D6D;
+
+  --glass-regular: var(--fill-1);
+  --glass-clear: var(--fill-2);
+  --glass-shadow: inset 0 0 0 1px var(--border);
+}
+[data-theme="light"][data-contrast="high"] {
+  --error-subtle: #F7D5CF;
+  --warning-subtle: #FCEBCB;
+  --accent-subtle: #D3DEFB;
+  --fill-1: #FFFFFF;
+  --accent-subtle-text: #080679;
+  --fill-2: #D6D9DD;
+  --fill-3: #C6C9CE;
+  --text-secondary: #45484C;
+  --text-disabled: #7D8085;
+  --separator: #7D8085;
+  --border: #7D8085;
+  --status-error: #9B100E;
+  --status-warning: #6B4C0C;
+  --toggle-off: #6B6E72;
+  --accent-ring: var(--accent-text);
+  --accent-text: #0E14A1;
+  --elev-1: inset 0 0 0 1px #7D8085,0 0 0 1px rgba(10,12,16,.05),0 1px 2px rgba(10,12,16,.06),0 6px 16px rgba(10,12,16,.06);
+  --elev-2: inset 0 0 0 1px #7D8085,0 0 0 1px rgba(10,12,16,.06),0 10px 30px rgba(10,12,16,.14);
+
+  --glass-regular: var(--fill-1);
+  --glass-clear: var(--fill-2);
+  --glass-shadow: inset 0 0 0 1px var(--border);
+}
+
+/* Не зависят от темы: ручки, подложки поверх цвета и скрима */
+:root {
+  --control-knob: #FFFFFF;
+  --shadow-knob: 0 1px 4px rgba(0,0,0,.3);
+  --on-scrim: #FFFFFF;
+  --fill-on-inverse: rgba(127,127,127,.18);
+  --fill-on-color: rgba(0,0,0,.14);
+}
+
+/* Различать без цвета: метки I/O в тумблере, как в iOS (On/Off Labels и Differentiate Without Color). */
+[data-differentiate] { --toggle-marks: block; /* @kind other */ }
+
+@media (prefers-reduced-transparency: reduce) {
+  :root, [data-theme="light"] { --glass-regular: var(--fill-1); --glass-clear: var(--fill-2); }
+}
+
+/* v2 · фактура графитовых плашек (из референса): тонкая диагональная штриховка */
+:root { --texture-graphite: repeating-linear-gradient(135deg, rgba(255,255,255,.035) 0 1px, transparent 1px 7px); /* @kind color */ --photo-scrim: linear-gradient(180deg, rgba(0,0,0,0) 35%, rgba(0,0,0,.62) 100%); /* @kind color */ }
+[data-theme="light"] { --texture-graphite: repeating-linear-gradient(135deg, rgba(10,12,16,.045) 0 1px, transparent 1px 7px); /* @kind color */ }
