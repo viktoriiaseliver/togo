@@ -26,6 +26,28 @@ FIGMA_OUT = os.path.join(ROOT, "DesignTokens", "build", "figma-variables.json")
 
 ALIAS = re.compile(r"^\{([^}]+)\}$")
 
+# Четыре режима системы: тема × повышенный контраст. Ровно те четыре,
+# которые несёт коллекция `Theme` пакета Graphite и которые умеет
+# выбирать сама iOS, — больше в `UITraitCollection` ничего про цвет нет.
+#
+# Светлой темы у нас не было СТРУКТУРНО до 07.10.2026: из 174 листьев
+# словарь вместо значения стоял у двух, и оба — тени. Единственное
+# вхождение слова `light` жило в `emit_figma` ярлыком на выгрузке,
+# под которым в Фигму уезжала ТЁМНАЯ палитра.
+MODES = ("dark", "light", "darkHC", "lightHC")
+
+
+def is_modal(value):
+    """Значение задано по режимам, а не одним цветом.
+
+    Проверяется полным набором ключей, а не наличием одного: у тени
+    `$value` тоже словарь (`color`, `offsetX`, `blur`…), и проверка
+    «это словарь» спутала бы их. Сравнение префиксом или одним ключом
+    здесь дало бы ровно ту ошибку, за которую мы платили на `Swatch`
+    против `SwatchRow`.
+    """
+    return isinstance(value, dict) and set(value) == set(MODES)
+
 
 # ---------------------------------------------------------------- разбор
 
@@ -78,6 +100,22 @@ def hex_literal(value):
     В светлой теме это было незаметно, в тёмной — половина токенов
     задана долей белого, и обрезка сделала бы их все сплошными."""
     return "0x" + value.lstrip("#").upper()
+
+
+def swift_color(resolved):
+    """Одно место, где цвет превращается в Swift.
+
+    Их было два — `emit_swift` и `emit_component_tree`, — и первая
+    редакция режимов научила только первое. Падение пришло из второго,
+    и это наш записанный класс: **третья реализация одного правила
+    молчала в двух случаях из трёх**. Теперь реализация одна, и её
+    зовут оба.
+    """
+    if is_modal(resolved):
+        return ("Color(Dyn(dark: %s, light: %s, darkHC: %s, lightHC: %s))"
+                % (hex_literal(resolved["dark"]), hex_literal(resolved["light"]),
+                   hex_literal(resolved["darkHC"]), hex_literal(resolved["lightHC"])))
+    return "Color(hex: %s)" % hex_literal(resolved)
 
 
 def px(value):
@@ -180,7 +218,7 @@ def emit_swift(raw, flat):
             resolved = resolve(flat, value)
             lines += doc(note, "        ")
             if kind == "color":
-                lines.append("        static let %s = Color(hex: %s)" % (swift_name(leaf), hex_literal(resolved)))
+                lines.append("        static let %s = %s" % (swift_name(leaf), swift_color(resolved)))
             elif kind == "dimension":
                 lines.append("        static let %s: CGFloat = %g" % (swift_name(leaf), px(resolved)))
             elif kind == "duration":
@@ -248,7 +286,7 @@ def emit_component_tree(tree, flat, indent):
             resolved = resolve(flat, value)
             lines += doc(note, indent)
             if token_type == "color":
-                lines.append("%sstatic let %s = Color(hex: %s)" % (indent, camel(key), hex_literal(resolved)))
+                lines.append("%sstatic let %s = %s" % (indent, camel(key), swift_color(resolved)))
             elif token_type == "dimension":
                 lines.append("%sstatic let %s: CGFloat = %g" % (indent, camel(key), px(resolved)))
     return lines
@@ -257,22 +295,46 @@ def emit_component_tree(tree, flat, indent):
 # ----------------------------------------------------------------- CSS
 
 def emit_css(flat):
+    """Четыре блока теми же селекторами, что у пакета Graphite.
+
+    Селекторы взяты у него дословно, а не выдуманы: по ним считает
+    контраст `Tools/contrast_graphite.py`, и расхождение в селекторе
+    сделало бы наш CSS неизмеримым его инструментом — то есть мы завели
+    бы светлую тему, которую нечем проверить.
+    """
+    blocks = [
+        (":root", "dark"),
+        ('[data-theme="light"]', "light"),
+        ('[data-contrast="high"]', "darkHC"),
+        ('[data-theme="light"][data-contrast="high"]', "lightHC"),
+    ]
     lines = [
         "/* Сгенерировано Tools/generate_tokens.py. Не редактировать руками. */",
         "/* Те же токены для веб-макета: .dc.html и Figma читают одно и то же. */",
-        ":root {",
     ]
-    for key in sorted(flat):
-        token_type, value, _note = flat[key]
-        if token_type not in ("color", "dimension", "duration"):
+    for selector, mode in blocks:
+        body = []
+        for key in sorted(flat):
+            token_type, value, _note = flat[key]
+            if token_type not in ("color", "dimension", "duration"):
+                continue
+            resolved = resolve(flat, value)
+            name = "--" + key.replace(".", "-")
+            if is_modal(resolved):
+                # В блок режима попадает только то, что в нём ОТЛИЧАЕТСЯ
+                # от тёмной: иначе светлый блок повторит тёмную целиком,
+                # и человек не увидит в дифе, что именно меняет тема.
+                if mode != "dark" and resolved[mode] == resolved["dark"]:
+                    continue
+                body.append("  %s: %s;" % (name, resolved[mode]))
+            elif mode == "dark":
+                body.append("  %s: %s;" % (name, resolved))
+        if not body:
             continue
-        resolved = resolve(flat, value)
-        name = "--" + key.replace(".", "-")
-        if token_type == "color":
-            lines.append("  %s: %s;" % (name, resolved))
-        else:
-            lines.append("  %s: %s;" % (name, resolved))
-    lines.append("}")
+        lines.append("")
+        lines.append("%s {" % selector)
+        lines += body
+        lines.append("}")
     lines.append("")
     return "\n".join(lines)
 
@@ -311,10 +373,23 @@ def emit_figma(flat):
             "type": FIGMA_TYPE[token_type],
             "description": note or "",
         }
-        m = ALIAS.match(str(value).strip())
+        # Режимы спрашиваются ПЕРВЫМИ, и это не вкус порядка.
+        # `ALIAS` — это `^\{([^}]+)\}$`, а `str({...})` питоновского
+        # словаря тоже начинается с `{` и кончается `}`: проверка на
+        # ссылку совпадала со строковым видом словаря режимов и
+        # разбирала `'dark': '#F7C75F', …` как путь к токену.
+        # Наш класс «вопрос слабее предмета, который он ищет»: регулярка
+        # верна, а спрошена о другом предмете.
+        m = None if isinstance(value, dict) else ALIAS.match(str(value).strip())
         if m:
             entry["alias"] = "/".join(m.group(1).split(".")[1:])
             entry["aliasCollection"] = {"primitive": "Primitive", "semantic": "Semantic"}[m.group(1).split(".")[0]]
+        elif is_modal(value):
+            # ВРЕМЕННО: в Фигму уезжает только тёмное значение — так было
+            # и до четырёх режимов, и менять это здесь нельзя, не починив
+            # ярлык `modes` ниже. Чинится отдельным коммитом: ярлык врёт
+            # про режим, и утонуть этой починке в светлой теме нельзя.
+            entry["value"] = figma_value(token_type, value["dark"])
         else:
             entry["value"] = figma_value(token_type, value)
         collections[collection].append(entry)
