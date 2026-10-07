@@ -409,6 +409,10 @@ struct SchemaMigrationTests {
             // требует обратной у каждой связи.
             "Dog": ["labResultsStorage", "vetVisitsStorage",
                     "diagnosesStorage", "prescriptionsStorage"],
+            // Обмен взвешиваний, 07.10.2026 вечером. Спор двух
+            // телефонов решать было нечем: `date` — день, когда
+            // взвесили, а не когда правили запись.
+            "WeightEntry": ["changedAt"],
         ]
 
         // Прирост сущностей — тоже по именам.

@@ -276,6 +276,19 @@ extension Medication {
     }
 }
 
+@MainActor
+extension WeightEntry {
+    var payload: WeightPayload {
+        WeightPayload(id: id, dogID: dog?.id, date: date, kg: kg, changedAt: changedAt)
+    }
+
+    func apply(_ payload: WeightPayload) {
+        date = payload.date
+        kg = payload.kg
+        changedAt = payload.changedAt
+    }
+}
+
 // MARK: - Медкнижка
 //
 // У всех четырёх `clinic` НЕ ставится в `apply`: для поиска по id нужен
@@ -639,6 +652,48 @@ enum SharedDiaryInbox {
         guard let имя = Fmt.notBlank(payload.clinicName ?? "") else { return nil }
         return try? context.fetch(FetchDescriptor<Clinic>())
             .first { $0.name == имя }
+    }
+
+    /// Принять взвешивание.
+    ///
+    /// **Нулевой вес не принимается**, и проверка стоит ЗДЕСЬ тоже,
+    /// а не только в разборе записи: `accept` зовут и из тестов,
+    /// минуя `CKRecord`. Проверка в одном из двух входов — это
+    /// проверка, которую обойдут, не заметив.
+    @discardableResult
+    static func accept(_ payload: WeightPayload, dog: Dog?, context: ModelContext) -> Bool {
+        guard payload.kg > 0 else {
+            log.error("общий дневник: приехало взвешивание с нулём — не принимаем")
+            return false
+        }
+        let id = payload.id
+        let existing = try? context.fetch(
+            FetchDescriptor<WeightEntry>(predicate: #Predicate { $0.id == id })
+        ).first
+
+        guard let local = existing else {
+            let запись = WeightEntry(date: payload.date, kg: payload.kg)
+            запись.id = payload.id
+            запись.changedAt = payload.changedAt
+            запись.dog = dog
+            context.insert(запись)
+            guard context.persist(otherwise: { context.delete(запись) }) else {
+                log.error("общий дневник: взвешивание не записалось")
+                return false
+            }
+            return false
+        }
+
+        let merged = SharedDiaryMerge.resolve(local: local.payload, remote: payload)
+        let changed = merged != payload
+        if merged != local.payload {
+            let былПрежний = local.payload
+            local.apply(merged)
+            if !context.persist(otherwise: { local.apply(былПрежний) }) {
+                log.error("общий дневник: слияние взвешивания не записалось")
+            }
+        }
+        return changed
     }
 
     // MARK: Медкнижка

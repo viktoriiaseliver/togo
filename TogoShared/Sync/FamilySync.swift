@@ -233,6 +233,13 @@ final class FamilySync: NSObject {
                     medication.changedAt = now
                     stamped = true
                     changes.append(.saveRecord(SharedDiaryRecords.recordID(medication.id, in: zone)))
+                } else if let взвешивание = ctx.model(for: id) as? WeightEntry {
+                    // Взвешивания ездят с 07.10.2026: тип записи был
+                    // объявлен и не создавался ни разу. Доза считается
+                    // от веса, и расхождение веса даёт расхождение дозы.
+                    взвешивание.changedAt = now
+                    stamped = true
+                    changes.append(.saveRecord(SharedDiaryRecords.recordID(взвешивание.id, in: zone)))
                 } else if let анализ = ctx.model(for: id) as? LabResult {
                     // Медкнижка ездит с 07.10.2026: без неё второй
                     // человек приходил к врачу с пересказом.
@@ -399,6 +406,11 @@ extension FamilySync: CKSyncEngineDelegate {
         ).first {
             return SharedDiaryRecords.record(clinic.payload, base: base, in: recordID.zoneID)
         }
+        if let взвешивание = try? ctx.fetch(
+            FetchDescriptor<WeightEntry>(predicate: #Predicate { $0.id == id })
+        ).first {
+            return SharedDiaryRecords.record(взвешивание.payload, base: base, in: recordID.zoneID)
+        }
         if let анализ = try? ctx.fetch(
             FetchDescriptor<LabResult>(predicate: #Predicate { $0.id == id })
         ).first {
@@ -495,6 +507,11 @@ extension FamilySync: CKSyncEngineDelegate {
                         dog: SharedDiaryInbox.dog(for: payload, context: ctx),
                         context: ctx
                     )
+                case .weight:
+                    guard let payload = SharedDiaryRecords.weightPayload(record) else { continue }
+                    SharedDiaryInbox.accept(
+                        payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
+                        context: ctx)
                 case .labResult:
                     guard let payload = SharedDiaryRecords.labResultPayload(record) else { continue }
                     SharedDiaryInbox.accept(

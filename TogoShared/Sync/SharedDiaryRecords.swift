@@ -350,6 +350,53 @@ nonisolated enum SharedDiaryRecords {
         )
     }
 
+    // MARK: Взвешивания
+
+    static func record(_ payload: WeightPayload, base: CKRecord?, in zone: CKRecordZone.ID) -> CKRecord {
+        let id = recordID(payload.id, in: zone)
+        guard let base, base.recordID == id else {
+            let record = CKRecord(recordType: SharedDiary.RecordType.weight.rawValue, recordID: id)
+            apply(payload, to: record)
+            return record
+        }
+        let merged = weightPayload(base).map { SharedDiaryMerge.resolve(local: payload, remote: $0) } ?? payload
+        apply(merged, to: base)
+        return base
+    }
+
+    static func apply(_ payload: WeightPayload, to record: CKRecord) {
+        record["dogID"] = payload.dogID?.uuidString
+        record["date"] = payload.date
+        record["kg"] = payload.kg
+        record["changedAt"] = payload.changedAt
+    }
+
+    /// Разбор записи взвешивания.
+    ///
+    /// **Нулевой вес не принимается.** `kg` в модели по умолчанию
+    /// ноль, и запись с нулём — это не «собака весит ноль», а запись,
+    /// которую не заполнили. Приняв её, мы положили бы в график точку,
+    /// от которой считается доза.
+    ///
+    /// > **Группировка и счёт по полю со значением по умолчанию
+    /// > собирают в себя всё, что это поле не заполнило.** В показе
+    /// > пустота видна человеку, в числе — не видна никому.
+    static func weightPayload(_ record: CKRecord) -> WeightPayload? {
+        guard let id = UUID(uuidString: record.recordID.recordName),
+              let date = record["date"] as? Date,
+              let kg = record["kg"] as? Double, kg > 0,
+              let changedAt = record["changedAt"] as? Date
+        else { return nil }
+
+        return WeightPayload(
+            id: id,
+            dogID: (record["dogID"] as? String).flatMap(UUID.init),
+            date: date,
+            kg: kg,
+            changedAt: changedAt
+        )
+    }
+
     // MARK: Медкнижка
 
     static func record(_ payload: LabResultPayload, base: CKRecord?, in zone: CKRecordZone.ID) -> CKRecord {

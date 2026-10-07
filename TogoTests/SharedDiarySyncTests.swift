@@ -752,6 +752,121 @@ struct SharedLostFieldsTests {
     }
 }
 
+/// Взвешивания доезжают до второго человека.
+///
+/// **Тип записи `WeightEntry` был объявлен с самого начала и
+/// не создавался ни разу.** Поймал это сторож `RecordTypeUsedTests`,
+/// заведённый 07.10.2026 под класс «объявлено, а писателя нет» —
+/// четыре случая за один день.
+///
+/// Снаружи дыра выглядела закрытой: вес из профиля (`Dog.weightKg`)
+/// возился с самого начала, и «вес не виден» было бы неправдой.
+/// Не виден был **график**, а ущерб лежал не в графике:
+///
+/// > **Вес — то, от чего считается доза**, и расхождение веса между
+/// > двумя людьми даёт расхождение дозы.
+@Suite("Общий дневник · взвешивания")
+@MainActor
+struct SharedWeightSyncTests {
+
+    private let zone = CKRecordZone.ID(zoneName: SharedDiary.zoneName, ownerName: "_owner")
+
+    private func телефон() throws -> (ModelContext, Dog) {
+        let container = try ModelContainer(
+            for: Dog.self,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+        )
+        let context = ModelContext(container)
+        let dog = Dog(name: "Стич", weightKg: 4.1)
+        context.insert(dog)
+        try context.save()
+        return (context, dog)
+    }
+
+    @Test("Взвешивание доезжает со своим днём, а не с днём правки")
+    func взвешиваниеДоезжает() throws {
+        let (мой, собака) = try телефон()
+        let когдаВзвесили = Date(timeIntervalSince1970: 1_770_000_000)
+        let запись = WeightEntry(date: когдаВзвесили, kg: 4.35)
+        запись.dog = собака
+        мой.insert(запись)
+        try мой.save()
+
+        let ck = SharedDiaryRecords.record(запись.payload, base: nil, in: zone)
+        #expect(ck.recordType == SharedDiary.RecordType.weight.rawValue)
+        let приехало = try #require(SharedDiaryRecords.weightPayload(ck))
+
+        let (её, её_собака) = try телефон()
+        SharedDiaryInbox.accept(приехало, dog: её_собака, context: её)
+
+        let у_мамы = try #require(try её.fetch(FetchDescriptor<WeightEntry>()).first)
+        #expect(у_мамы.kg == 4.35, "вес не доехал")
+        #expect(у_мамы.date == когдаВзвесили, """
+            день взвешивания потерян. `date` — это КОГДА ВЗВЕСИЛИ, \
+            и подмена его временем правки превратила бы историю \
+            в список «когда кто редактировал».
+            """)
+        #expect(у_мамы.dog?.name == "Стич", "взвешивание приехало без собаки")
+    }
+
+    /// Нулевой вес не принимается — ни разбором, ни приёмом.
+    ///
+    /// **Проверка стоит в ОБОИХ входах нарочно.** `accept` зовут
+    /// и из тестов, минуя `CKRecord`: проверка в одном из двух входов —
+    /// это проверка, которую обойдут, не заметив.
+    @Test("Нулевой вес не принимается ни разбором, ни приёмом")
+    func нулевойВесНеПринимается() throws {
+        let ck = CKRecord(recordType: SharedDiary.RecordType.weight.rawValue,
+                          recordID: SharedDiaryRecords.recordID(UUID(), in: zone))
+        ck["date"] = Date()
+        ck["kg"] = 0.0
+        ck["changedAt"] = Date()
+        #expect(SharedDiaryRecords.weightPayload(ck) == nil, """
+            запись с нулём разобралась как годная. `kg` по умолчанию \
+            ноль, и ноль — это не «собака весит ноль», а запись, \
+            которую не заполнили. Приняв её, мы положили бы в график \
+            точку, от которой считается ДОЗА.
+            """)
+
+        let (её, её_собака) = try телефон()
+        SharedDiaryInbox.accept(
+            WeightPayload(id: UUID(), dogID: её_собака.id, date: Date(),
+                          kg: 0, changedAt: Date()),
+            dog: её_собака, context: её)
+        #expect(try её.fetch(FetchDescriptor<WeightEntry>()).isEmpty, """
+            приём завёл взвешивание с нулём — второй вход того же \
+            дефекта, и он обходится мимо разбора записи.
+            """)
+    }
+
+    /// При ничьей по времени выигрывает МЕНЬШИЙ вес.
+    @Test("При ничьей выигрывает меньший вес: от веса считается доза")
+    func ничьяВПользуМеньшегоВеса() {
+        let id = UUID()
+        let когда = Date()
+        func вес(_ kg: Double) -> WeightPayload {
+            WeightPayload(id: id, dogID: nil, date: когда, kg: kg, changedAt: когда)
+        }
+        #expect(SharedDiaryMerge.resolve(local: вес(4.8), remote: вес(4.3)) == вес(4.3), """
+            ничья решилась в пользу большего веса. Доза считается \
+            от веса: завысив вес, мы завысим дозу. Ошибиться в сторону \
+            меньшей дозы безопаснее, чем в сторону большей.
+            """)
+        #expect(SharedDiaryMerge.resolve(local: вес(4.3), remote: вес(4.8)) == вес(4.3),
+                "исход зависит от того, с какой стороны спросили")
+
+        // А правка, что позже, побеждает независимо от веса: человек
+        // мог исправить опечатку, и «меньший» не должен её отменять.
+        var позже = вес(5.2)
+        позже.changedAt = когда.addingTimeInterval(60)
+        #expect(SharedDiaryMerge.resolve(local: вес(4.3), remote: позже) == позже, """
+            правка, что позже, проиграла меньшему весу. Тогда \
+            исправление опечатки «4,3 вместо 5,2» было бы невозможно \
+            со второго телефона.
+            """)
+    }
+}
+
 /// Медкнижка доезжает до второго человека.
 ///
 /// **Зачем она ездит, одной строкой:** в клинику собаку ведёт тот, кто
