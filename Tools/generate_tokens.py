@@ -343,6 +343,11 @@ def emit_css(flat):
 
 FIGMA_TYPE = {"color": "COLOR", "dimension": "FLOAT", "duration": "FLOAT", "fontWeight": "FLOAT"}
 
+# Имена режимов на той стороне. Взяты у пакета дословно, а не придуманы:
+# файл уезжает в ту же Фигму, откуда пришли значения, и свои имена
+# режимов сделали бы сверку двух концов невозможной.
+FIGMA_MODES = {"dark": "Dark", "light": "Light", "darkHC": "Dark HC", "lightHC": "Light HC"}
+
 
 def figma_value(token_type, value):
     if token_type == "color":
@@ -385,11 +390,12 @@ def emit_figma(flat):
             entry["alias"] = "/".join(m.group(1).split(".")[1:])
             entry["aliasCollection"] = {"primitive": "Primitive", "semantic": "Semantic"}[m.group(1).split(".")[0]]
         elif is_modal(value):
-            # ВРЕМЕННО: в Фигму уезжает только тёмное значение — так было
-            # и до четырёх режимов, и менять это здесь нельзя, не починив
-            # ярлык `modes` ниже. Чинится отдельным коммитом: ярлык врёт
-            # про режим, и утонуть этой починке в светлой теме нельзя.
-            entry["value"] = figma_value(token_type, value["dark"])
+            # Все четыре режима, именами пакета Graphite: файл уезжает
+            # в ту же Фигму, откуда пришли значения, и разные имена
+            # режимов на двух концах сделали бы сверку невозможной.
+            entry["values"] = {
+                FIGMA_MODES[mode]: figma_value(token_type, value[mode]) for mode in MODES
+            }
         else:
             entry["value"] = figma_value(token_type, value)
         collections[collection].append(entry)
@@ -397,7 +403,26 @@ def emit_figma(flat):
     return json.dumps(
         {
             "$generatedBy": "Tools/generate_tokens.py",
-            "modes": ["Light"],
+            # Было `["Light"]` — ярлык врал, и врал в худшем месте:
+            # под ним в Фигму уезжала ТЁМНАЯ палитра целиком
+            # (`night1 = #050503` как фон экрана). То есть дизайнер
+            # получал тёмные значения, подписанные «светлая».
+            #
+            # Поправлено 07.10.2026 вместе с заведением четырёх режимов,
+            # и ОТДЕЛЬНЫМ коммитом: у этой починки своя цена, и утонуть
+            # ей в светлой теме нельзя.
+            "modes": [FIGMA_MODES[m] for m in MODES],
+            # Почему поле стоит наверху, а не у коллекции. У Фигмы режимы
+            # принадлежат КОЛЛЕКЦИИ, а наши три — это СЛОИ
+            # (`primitive → semantic → component`), и ось режима к ним
+            # ортогональна: один и тот же режим живёт во всех трёх.
+            # Прежний ярлык был не просто неверен — он стоял в месте,
+            # где по устройству Фигмы его быть не может, и потому
+            # не проверялся ничем.
+            "$note": "Три коллекции здесь — СЛОИ, а не наборы режимов Фигмы. "
+                     "Режимы перечислены сверху и относятся к цветам: "
+                     "у цвета `values` по режимам, у размеров и длительностей "
+                     "один `value`, годный во всех четырёх.",
             "collections": [
                 {"name": name, "variables": items} for name, items in collections.items()
             ],
