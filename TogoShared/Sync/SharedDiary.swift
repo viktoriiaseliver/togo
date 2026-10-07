@@ -69,6 +69,16 @@ nonisolated enum SharedDiary {
         case member = "FamilyMember"
         /// Справочник клиник — с 07.10.2026, шаг 0 медицинского слоя.
         case clinic = "Clinic"
+        /// Медкнижка — с 07.10.2026.
+        ///
+        /// **Зачем она ездит, одной строкой:** в клинику собаку ведёт
+        /// тот, кто сегодня свободен, а бланки лежат на телефоне
+        /// хозяйки. Без обмена второй человек приходит к врачу
+        /// с пересказом.
+        case labResult = "LabResult"
+        case vetVisit = "VetVisit"
+        case diagnosis = "Diagnosis"
+        case prescription = "Prescription"
     }
 }
 
@@ -334,6 +344,108 @@ nonisolated struct CarePayload: Equatable, Sendable, Codable {
 /// **Телефон ездит вместе с именем нарочно.** Везти одно имя было бы
 /// дешевле и бессмысленно: название клиники без номера не помогает
 /// в тот час, когда с собакой что-то не так.
+/// Строка анализа.
+///
+/// **Три поля значения вместо одного, и это не избыточность.** `value` —
+/// число; `belowLimit` — `<0,1 нг/дл` с бланка; `textValue` — описание
+/// там, где числа нет вовсе. Сложи их в одно, и предел прибора станет
+/// числом 0,1, то есть **тихо неверным значением вместо видимо
+/// неизвестного**.
+///
+/// `method` возится потому, что свободный Т4 равновесным диализом
+/// не сравним с обычным: без метода два значения станут противоречием
+/// там, где его нет.
+///
+/// `labMark` — отметка самой лаборатории, факт из документа, а не наш
+/// вердикт. Везётся отдельно от референса нарочно: расхождение нашего
+/// счёта с бланком — находка, а не ошибка.
+nonisolated struct LabResultPayload: Equatable, Sendable, Codable {
+    var id: UUID
+    var dogID: UUID?
+    var sampledOn: Date
+    var sampledAt: Date?
+    var laboratory: String
+    var reportNumber: String
+    var section: String
+    var indicator: String
+    var value: Double?
+    var belowLimit: Double?
+    var aboveLimit: Double?
+    var textValue: String?
+    var unit: String
+    var referenceLow: Double?
+    var referenceHigh: Double?
+    var method: String?
+    var labMark: String
+    var note: String
+    var changedAt: Date
+}
+
+/// Визит к врачу. Онлайн-консультация — такой же визит.
+///
+/// Клиника — и по id, и по имени, по той же причине, что у дела ухода:
+/// справочник второй человек мог завести своей рукой до включения
+/// обмена, и промах по id там норма, а не сбой.
+nonisolated struct VetVisitPayload: Equatable, Sendable, Codable {
+    var id: UUID
+    var dogID: UUID?
+    var date: Date
+    var clinicID: UUID?
+    var clinicName: String?
+    var doctor: String
+    var reason: String
+    var conclusion: String
+    var changedAt: Date
+}
+
+/// Диагноз.
+///
+/// **`status` возится обязательно:** по подтверждённому лечат,
+/// по гипотезе ищут. Второй человек, увидевший гипотезу как
+/// подтверждённый диагноз, начнёт лечить по ней.
+nonisolated struct DiagnosisPayload: Equatable, Sendable, Codable {
+    var id: UUID
+    var dogID: UUID?
+    var wording: String
+    var status: String
+    var madeOn: Date
+    var madeBy: String
+    var evidence: String
+    var changedAt: Date
+}
+
+/// Назначение.
+///
+/// **`dogWeightKg` — часть назначения, а не справка:** доза считается
+/// от веса на дату. Это поле важно вдвойне, потому что сама история
+/// взвешиваний ко второму человеку пока не едет — значит проверить
+/// дозу задним числом он сможет только отсюда.
+///
+/// **`controlFrom`/`controlTo` — окно, а не дата.** Три врача назвали
+/// три интервала; свести к одной дате значило бы придумать число
+/// за врача.
+nonisolated struct PrescriptionPayload: Equatable, Sendable, Codable {
+    var id: UUID
+    var dogID: UUID?
+    var number: String
+    var date: Date
+    var clinicID: UUID?
+    var clinicName: String?
+    var doctor: String
+    var dogWeightKg: Double?
+    var medicationName: String
+    var dosage: String
+    var schedule: String
+    var duration: String
+    var pharmacyForm: String?
+    var controlFromWeeks: Int
+    var controlToWeeks: Int
+    var dispensed: String
+    var instruction: String
+    var source: String
+    var changedAt: Date
+}
+
 nonisolated struct ClinicPayload: Equatable, Sendable, Codable {
     var id: UUID
     var name: String
@@ -519,6 +631,105 @@ nonisolated enum SharedDiaryMerge {
         // а не мнение, и потерять его хуже, чем потерять правку названия.
         return (local.lastDone ?? .distantPast) >= (remote.lastDone ?? .distantPast)
             ? local : remote
+    }
+
+    // MARK: Медкнижка
+    //
+    // У всех четырёх правило одно: побеждает правка, что позже.
+    // Своих «сильных» полей, как «дано» у дозы или удаление у ленты,
+    // здесь нет — медкнижка это **перепечатка документа**, а не
+    // действие. Расхождение двух телефонов о бланке значит, что один
+    // из них набрал его точнее, а не что кто-то что-то сделал.
+    //
+    // При ничьей по времени — та версия, где полей заполнено больше:
+    // часы расходятся на секунды, и терять набранное из-за этого
+    // нельзя. Ровно то же правило, что у профиля собаки.
+
+    static func resolve(local: LabResultPayload, remote: LabResultPayload) -> LabResultPayload {
+        precondition(local.id == remote.id)
+        if local.changedAt != remote.changedAt {
+            return local.changedAt > remote.changedAt ? local : remote
+        }
+        func заполнено(_ p: LabResultPayload) -> Int {
+            var счёт = 0
+            // Значение считается ОДИН раз, какой бы из трёх форм оно
+            // ни было: иначе версия с числом проиграла бы версии,
+            // где заполнены и число, и предел, — а так не бывает.
+            if p.value != nil || p.belowLimit != nil
+                || p.aboveLimit != nil || p.textValue?.isEmpty == false { счёт += 1 }
+            if p.sampledAt != nil { счёт += 1 }
+            if p.referenceLow != nil || p.referenceHigh != nil { счёт += 1 }
+            if p.method?.isEmpty == false { счёт += 1 }
+            if !p.labMark.isEmpty { счёт += 1 }
+            if !p.note.isEmpty { счёт += 1 }
+            if !p.unit.isEmpty { счёт += 1 }
+            if !p.reportNumber.isEmpty { счёт += 1 }
+            return счёт
+        }
+        return заполнено(local) >= заполнено(remote) ? local : remote
+    }
+
+    static func resolve(local: VetVisitPayload, remote: VetVisitPayload) -> VetVisitPayload {
+        precondition(local.id == remote.id)
+        if local.changedAt != remote.changedAt {
+            return local.changedAt > remote.changedAt ? local : remote
+        }
+        func заполнено(_ p: VetVisitPayload) -> Int {
+            var счёт = 0
+            if !p.conclusion.isEmpty { счёт += 1 }
+            if !p.doctor.isEmpty { счёт += 1 }
+            if p.clinicID != nil || p.clinicName?.isEmpty == false { счёт += 1 }
+            return счёт
+        }
+        return заполнено(local) >= заполнено(remote) ? local : remote
+    }
+
+    static func resolve(local: DiagnosisPayload, remote: DiagnosisPayload) -> DiagnosisPayload {
+        precondition(local.id == remote.id)
+        if local.changedAt != remote.changedAt {
+            return local.changedAt > remote.changedAt ? local : remote
+        }
+        // При ничьей выигрывает **снятый** диагноз, и это не «больше
+        // полей», а решение: по снятому не лечат. Та же форма, что
+        // у дозы, где «дано» побеждает всегда, — цена ошибки
+        // несимметрична. Лечить по снятому диагнозу хуже, чем
+        // не лечить по подтверждённому лишний час до следующего круга.
+        if local.status != remote.status {
+            if local.status == DiagnosisStatus.withdrawn.rawValue { return local }
+            if remote.status == DiagnosisStatus.withdrawn.rawValue { return remote }
+        }
+        func заполнено(_ p: DiagnosisPayload) -> Int {
+            var счёт = 0
+            if !p.wording.isEmpty { счёт += 1 }
+            if !p.madeBy.isEmpty { счёт += 1 }
+            if !p.evidence.isEmpty { счёт += 1 }
+            return счёт
+        }
+        return заполнено(local) >= заполнено(remote) ? local : remote
+    }
+
+    static func resolve(local: PrescriptionPayload, remote: PrescriptionPayload) -> PrescriptionPayload {
+        precondition(local.id == remote.id)
+        if local.changedAt != remote.changedAt {
+            return local.changedAt > remote.changedAt ? local : remote
+        }
+        func заполнено(_ p: PrescriptionPayload) -> Int {
+            var счёт = 0
+            if !p.dosage.isEmpty { счёт += 1 }
+            if !p.schedule.isEmpty { счёт += 1 }
+            if !p.duration.isEmpty { счёт += 1 }
+            if p.dogWeightKg != nil { счёт += 1 }
+            if p.pharmacyForm?.isEmpty == false { счёт += 1 }
+            // Окно контроля — единственное место, откуда приложение
+            // знает, когда напоминать. Версия с окном не должна
+            // проигрывать версии без него из-за расхождения часов.
+            if p.controlFromWeeks > 0 || p.controlToWeeks > 0 { счёт += 1 }
+            if !p.instruction.isEmpty { счёт += 1 }
+            if !p.source.isEmpty { счёт += 1 }
+            if !p.dispensed.isEmpty { счёт += 1 }
+            return счёт
+        }
+        return заполнено(local) >= заполнено(remote) ? local : remote
     }
 
     /// Спор о записи справочника.

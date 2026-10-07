@@ -752,6 +752,311 @@ struct SharedLostFieldsTests {
     }
 }
 
+/// Медкнижка доезжает до второго человека.
+///
+/// **Зачем она ездит, одной строкой:** в клинику собаку ведёт тот, кто
+/// сегодня свободен, а бланки лежат на телефоне хозяйки. Без обмена
+/// второй человек приходит к врачу с пересказом.
+///
+/// Проверка идёт **значениями через запись CloudKit**: поле может лежать
+/// в нагрузке и не попасть в `CKRecord` — это следующий слой, и сторож
+/// имён его не видит.
+@Suite("Общий дневник · медкнижка")
+@MainActor
+struct SharedMedicalSyncTests {
+
+    private let zone = CKRecordZone.ID(zoneName: SharedDiary.zoneName, ownerName: "_owner")
+
+    private func телефон() throws -> (ModelContext, Dog) {
+        let container = try ModelContainer(
+            for: Dog.self,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+        )
+        let context = ModelContext(container)
+        let dog = Dog(name: "Стич", weightKg: 4.1)
+        context.insert(dog)
+        try context.save()
+        return (context, dog)
+    }
+
+    /// **Главный тест суиты.** Предел обнаружения остаётся пределом.
+    @Test("Анализ доезжает: предел «<0,1» не превращается в число 0,1")
+    func анализДоезжает() throws {
+        let (мой, собака) = try телефон()
+        let анализ = LabResult(sampledOn: Date(timeIntervalSince1970: 1_780_000_000),
+                               indicator: "Т4 свободный", section: "гормоны",
+                               laboratory: "IDEXX", reportNumber: "VF120682")
+        анализ.sampledAt = Date(timeIntervalSince1970: 1_780_018_000)
+        анализ.belowLimit = 0.1
+        анализ.unit = "нг/дл"
+        анализ.referenceLow = 12.9
+        анализ.referenceHigh = 51.5
+        анализ.method = "равновесный диализ"
+        анализ.labMark = "↓"
+        анализ.note = "на бланке Т+5ч, по счёту ≈3,5 ч"
+        анализ.dog = собака
+        мой.insert(анализ)
+        try мой.save()
+
+        let запись = SharedDiaryRecords.record(анализ.payload, base: nil, in: zone)
+        let приехало = try #require(SharedDiaryRecords.labResultPayload(запись))
+
+        let (её, её_собака) = try телефон()
+        SharedDiaryInbox.accept(приехало, dog: её_собака, context: её)
+        let у_мамы = try #require(try её.fetch(FetchDescriptor<LabResult>()).first)
+
+        #expect(у_мамы.value == nil, """
+            у второго человека появилось число там, где его не было. \
+            `<0,1` — это НЕ 0,1: записав пределом, мы отдали бы тихо \
+            неверное значение вместо видимо неизвестного.
+            """)
+        #expect(у_мамы.belowLimit == 0.1, "предел обнаружения не доехал")
+        #expect(у_мамы.sampledAt == анализ.sampledAt, """
+            время забора не доехало, а при активном лечении оно \
+            обязательно: без «левотироксин принят N часов назад» \
+            результат не интерпретируется вовсе.
+            """)
+        #expect(у_мамы.method == "равновесный диализ", """
+            метод не доехал — и тогда два значения разными методами \
+            станут противоречием там, где его нет.
+            """)
+        #expect(у_мамы.labMark == "↓", """
+            отметка лаборатории не доехала. Она не наш вердикт, а факт \
+            из документа, и расхождение с нашим счётом — находка.
+            """)
+        #expect(у_мамы.referenceLow == 12.9 && у_мамы.referenceHigh == 51.5)
+        #expect(у_мамы.unit == "нг/дл", "единица не доехала")
+        #expect(у_мамы.reportNumber == "VF120682", "номер отчёта не доехал")
+        #expect(у_мамы.dog?.name == "Стич", "анализ приехал без собаки")
+    }
+
+    @Test("Текстовый результат бактериологии доезжает")
+    func текстовыйРезультатДоезжает() throws {
+        let (мой, собака) = try телефон()
+        let посев = LabResult(sampledOn: Date(), indicator: "посев",
+                              section: "бактериология", laboratory: "Antech")
+        посев.textValue = "выделен штамм коагулазо-отрицательного стафилококка"
+        посев.dog = собака
+        мой.insert(посев)
+        try мой.save()
+
+        let запись = SharedDiaryRecords.record(посев.payload, base: nil, in: zone)
+        let приехало = try #require(SharedDiaryRecords.labResultPayload(запись))
+        #expect(приехало.textValue?.contains("стафилококка") == true, """
+            текстовый результат не доехал. Девять строк карты — \
+            описание, а не число, и без этого поля они не влезают вовсе.
+            """)
+    }
+
+    @Test("Визит доезжает вместе с клиникой и поводом «онлайн»")
+    func визитДоезжает() throws {
+        let (мой, собака) = try телефон()
+        let клиника = Clinic(name: "Vet Riviera", phone: "+33 4 93 00 00 00")
+        мой.insert(клиника)
+        let визит = VetVisit(date: Date(timeIntervalSince1970: 1_782_000_000),
+                             doctor: "Кочубина", reasonRaw: VisitReason.online.rawValue)
+        визит.conclusion = "рабочая гипотеза: вторичный характер"
+        визит.clinic = клиника
+        визит.dog = собака
+        мой.insert(визит)
+        try мой.save()
+
+        // Справочник приезжает раньше — порядок приёма это обеспечивает.
+        let (её, её_собака) = try телефон()
+        SharedDiaryInbox.accept(
+            try #require(SharedDiaryRecords.clinicPayload(
+                SharedDiaryRecords.record(клиника.payload, base: nil, in: zone))),
+            context: её)
+
+        let приехало = try #require(SharedDiaryRecords.vetVisitPayload(
+            SharedDiaryRecords.record(визит.payload, base: nil, in: zone)))
+        SharedDiaryInbox.accept(приехало, dog: её_собака, context: её)
+
+        let у_мамы = try #require(try её.fetch(FetchDescriptor<VetVisit>()).first)
+        #expect(у_мамы.reasonRaw == VisitReason.online.rawValue, """
+            повод визита не доехал. Онлайн-консультация — такой же \
+            визит, и став «осмотром», она соврёт про то, чего не было: \
+            у Стича их две, и одна дала рабочую гипотезу диагноза.
+            """)
+        #expect(у_мамы.conclusion.contains("вторичный"), "заключение врача не доехало")
+        #expect(у_мамы.clinic?.name == "Vet Riviera", "связь визита с клиникой не сшилась")
+        #expect(у_мамы.doctor == "Кочубина")
+    }
+
+    @Test("Диагноз доезжает со статусом: по подтверждённому лечат, по гипотезе ищут")
+    func диагнозДоезжаетСоСтатусом() throws {
+        let (мой, собака) = try телефон()
+        let диагноз = Diagnosis(wording: "первичный гипотиреоз",
+                                madeOn: Date(timeIntervalSince1970: 1_783_000_000),
+                                statusRaw: DiagnosisStatus.confirmed.rawValue)
+        диагноз.madeBy = "Кочубина, Vet Riviera"
+        диагноз.evidence = "VF120682"
+        диагноз.dog = собака
+        мой.insert(диагноз)
+        try мой.save()
+
+        let приехало = try #require(SharedDiaryRecords.diagnosisPayload(
+            SharedDiaryRecords.record(диагноз.payload, base: nil, in: zone)))
+        let (её, её_собака) = try телефон()
+        SharedDiaryInbox.accept(приехало, dog: её_собака, context: её)
+
+        let у_мамы = try #require(try её.fetch(FetchDescriptor<Diagnosis>()).first)
+        #expect(у_мамы.statusRaw == DiagnosisStatus.confirmed.rawValue, """
+            статус диагноза не доехал. По подтверждённому лечат, \
+            по гипотезе ищут — и человек, получивший одно вместо \
+            другого, будет действовать не по тому.
+            """)
+        #expect(у_мамы.evidence == "VF120682", "чем подтверждён — не доехало")
+    }
+
+    /// Запись без статуса читается как ГИПОТЕЗА, а не «подтверждён».
+    @Test("У записи без статуса умолчание — гипотеза, а не подтверждённый")
+    func умолчаниеСтатусаГипотеза() throws {
+        let запись = CKRecord(recordType: SharedDiary.RecordType.diagnosis.rawValue,
+                              recordID: SharedDiaryRecords.recordID(UUID(), in: zone))
+        запись["madeOn"] = Date()
+        запись["changedAt"] = Date()
+        запись["wording"] = "что-то"
+        let приехало = try #require(SharedDiaryRecords.diagnosisPayload(запись))
+        #expect(приехало.status == DiagnosisStatus.hypothesis.rawValue, """
+            запись без статуса прочитана как подтверждённый диагноз. \
+            Мы не знаем, что это, — и назвать подтверждённым значило бы \
+            начать лечить по тому, о чём не спрашивали.
+            """)
+    }
+
+    /// При ничьей выигрывает СНЯТЫЙ диагноз, и это не «больше полей».
+    @Test("При ничьей выигрывает снятый диагноз: по снятому не лечат")
+    func ничьяВПользуСнятого() {
+        let id = UUID()
+        let когда = Date()
+        func диагноз(_ статус: DiagnosisStatus) -> DiagnosisPayload {
+            DiagnosisPayload(id: id, dogID: nil, wording: "первичный гипотиреоз",
+                             status: статус.rawValue, madeOn: когда,
+                             madeBy: "врач", evidence: "VF120682", changedAt: когда)
+        }
+        let снят = диагноз(.withdrawn)
+        let подтверждён = диагноз(.confirmed)
+
+        #expect(SharedDiaryMerge.resolve(local: подтверждён, remote: снят) == снят, """
+            ничья решилась в пользу подтверждённого диагноза. Цена \
+            ошибки несимметрична: лечить по СНЯТОМУ хуже, чем не лечить \
+            по подтверждённому лишний час до следующего круга обмена.
+            """)
+        #expect(SharedDiaryMerge.resolve(local: снят, remote: подтверждён) == снят,
+                "исход зависит от того, с какой стороны спросили")
+    }
+
+    @Test("Назначение доезжает: вес на дату, форма, окно контроля, источник")
+    func назначениеДоезжает() throws {
+        let (мой, собака) = try телефон()
+        let клиника = Clinic(name: "Vet Riviera")
+        мой.insert(клиника)
+        let рецепт = Prescription(number: "8935331",
+                                  date: Date(timeIntervalSince1970: 1_784_000_000),
+                                  medicationName: "Lévothyrox")
+        рецепт.doctor = "Кочубина"
+        рецепт.dogWeightKg = 4.1
+        рецепт.dosage = "66 мкг"
+        рецепт.schedule = "дважды в день натощак"
+        рецепт.duration = "до контроля"
+        рецепт.pharmacyForm = "магистральный"
+        рецепт.controlFromWeeks = 4
+        рецепт.controlToWeeks = 6
+        рецепт.dispensed = "4 таблетки"
+        рецепт.instruction = "не кормить 45 минут после"
+        рецепт.source = "PDF-ордоннанс"
+        рецепт.clinic = клиника
+        рецепт.dog = собака
+        мой.insert(рецепт)
+        try мой.save()
+
+        let (её, её_собака) = try телефон()
+        SharedDiaryInbox.accept(
+            try #require(SharedDiaryRecords.clinicPayload(
+                SharedDiaryRecords.record(клиника.payload, base: nil, in: zone))),
+            context: её)
+        let приехало = try #require(SharedDiaryRecords.prescriptionPayload(
+            SharedDiaryRecords.record(рецепт.payload, base: nil, in: zone)))
+        SharedDiaryInbox.accept(приехало, dog: её_собака, context: её)
+
+        let у_мамы = try #require(try её.fetch(FetchDescriptor<Prescription>()).first)
+        #expect(у_мамы.number == "8935331", "номер рецепта не доехал — в аптеке по нему получают")
+        #expect(у_мамы.dogWeightKg == 4.1, """
+            вес на дату назначения не доехал. Доза считается от него, \
+            а история взвешиваний ко второму человеку пока НЕ едет — \
+            значит это единственное место, откуда он сможет проверить \
+            дозу задним числом.
+            """)
+        #expect(у_мамы.pharmacyForm == "магистральный", """
+            форма препарата не доехала. Вопрос ретроспективный — «какая \
+            форма была в тот месяц, когда Т4 провалился», — и ответ \
+            ждут к контролю 13.10.
+            """)
+        #expect(у_мамы.controlFromWeeks == 4 && у_мамы.controlToWeeks == 6, """
+            окно контроля не доехало. Это единственное место, откуда \
+            приложение знает, когда напоминать; три врача назвали три \
+            разных интервала, и сведение к одной дате придумало бы \
+            число за врача.
+            """)
+        #expect(у_мамы.instruction.contains("45 минут"), "инструкция не доехала")
+        #expect(у_мамы.source == "PDF-ордоннанс", """
+            происхождение не доехало. Оно решает споры: в карте \
+            девятнадцать пробелов, где назначение известно письмом, \
+            а бланка нет вовсе.
+            """)
+        #expect(у_мамы.clinic?.name == "Vet Riviera", "связь рецепта с клиникой не сшилась")
+    }
+
+    /// Промах по id клиники ловится именем — как у дела ухода.
+    @Test("Своя «Vet Riviera» с другим UUID подхватывается по имени")
+    func промахПоIdЛовитсяИменем() throws {
+        let (её, её_собака) = try телефон()
+        let её_клиника = Clinic(name: "Vet Riviera", phone: "её номер")
+        её.insert(её_клиника)
+        try её.save()
+
+        let приехало = PrescriptionPayload(
+            id: UUID(), dogID: её_собака.id, number: "8935331", date: Date(),
+            clinicID: UUID(), clinicName: "Vet Riviera", doctor: "Кочубина",
+            dogWeightKg: 4.1, medicationName: "Lévothyrox", dosage: "66 мкг",
+            schedule: "", duration: "", pharmacyForm: nil,
+            controlFromWeeks: 4, controlToWeeks: 6, dispensed: "",
+            instruction: "", source: "", changedAt: Date())
+        SharedDiaryInbox.accept(приехало, dog: её_собака, context: её)
+
+        let у_мамы = try #require(try её.fetch(FetchDescriptor<Prescription>()).first)
+        #expect(у_мамы.clinic?.id == её_клиника.id, """
+            промах по id оставил рецепт без клиники, хотя та же клиника \
+            лежит рядом под тем же именем. Промах по id здесь норма: \
+            справочник могли завести до включения обмена.
+            """)
+        #expect(try её.fetch(FetchDescriptor<Clinic>()).count == 1,
+                "приём завёл вторую клинику — справочник без дублей это правило дизайна")
+    }
+
+    /// Границы — печатаются, а не хранятся в чьей-то памяти.
+    @Test("Границы: чего не проверяет набор про медкнижку в обмене")
+    func границыНазваны() {
+        let границы = """
+            Зелёный здесь значит: запись медкнижки собирается в CKRecord, \
+            разбирается обратно и ложится у второго человека теми же \
+            значениями. И только это.
+
+            НЕ проверяется:
+            · настоящий CloudKit — двух телефонов эти тесты не заменяют;
+            · ПОРЯДОК приезда в живом обмене. Он задан рангом
+              в `FamilySync` (клиника → собака → остальное), и здесь
+              справочник подаётся вручную первым. Приедь запись раньше
+              клиники — связь сошьётся пустой до следующей правки;
+            · взвешивания: история веса ко второму человеку НЕ едет
+              вовсе, и `dogWeightKg` рецепта — единственное, откуда
+              он узнает вес на дату.
+            """
+        #expect(границы.isEmpty == false)
+    }
+}
+
 @Suite("Общий дневник · доза находит препарат")
 @MainActor
 struct SharedDoseMedicationTests {

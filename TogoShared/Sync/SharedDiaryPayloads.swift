@@ -276,6 +276,123 @@ extension Medication {
     }
 }
 
+// MARK: - Медкнижка
+//
+// У всех четырёх `clinic` НЕ ставится в `apply`: для поиска по id нужен
+// контекст, а у модели до вставки его может не быть. Связь сшивает
+// приём — там, где контекст есть по устройству. То же решение, что
+// у дела ухода.
+
+@MainActor
+extension LabResult {
+    var payload: LabResultPayload {
+        LabResultPayload(
+            id: id, dogID: dog?.id, sampledOn: sampledOn, sampledAt: sampledAt,
+            laboratory: laboratory, reportNumber: reportNumber,
+            section: section, indicator: indicator,
+            value: value, belowLimit: belowLimit, aboveLimit: aboveLimit,
+            textValue: textValue, unit: unit,
+            referenceLow: referenceLow, referenceHigh: referenceHigh,
+            method: method, labMark: labMark, note: note, changedAt: changedAt
+        )
+    }
+
+    func apply(_ payload: LabResultPayload) {
+        sampledOn = payload.sampledOn
+        sampledAt = payload.sampledAt
+        laboratory = payload.laboratory
+        reportNumber = payload.reportNumber
+        section = payload.section
+        indicator = payload.indicator
+        value = payload.value
+        belowLimit = payload.belowLimit
+        aboveLimit = payload.aboveLimit
+        textValue = payload.textValue
+        unit = payload.unit
+        referenceLow = payload.referenceLow
+        referenceHigh = payload.referenceHigh
+        method = payload.method
+        labMark = payload.labMark
+        note = payload.note
+        changedAt = payload.changedAt
+    }
+}
+
+@MainActor
+extension VetVisit {
+    var payload: VetVisitPayload {
+        VetVisitPayload(
+            id: id, dogID: dog?.id, date: date,
+            clinicID: clinic?.id, clinicName: clinic?.name,
+            doctor: doctor, reason: reasonRaw, conclusion: conclusion,
+            changedAt: changedAt
+        )
+    }
+
+    func apply(_ payload: VetVisitPayload) {
+        date = payload.date
+        doctor = payload.doctor
+        reasonRaw = payload.reason
+        conclusion = payload.conclusion
+        changedAt = payload.changedAt
+    }
+}
+
+@MainActor
+extension Diagnosis {
+    var payload: DiagnosisPayload {
+        DiagnosisPayload(
+            id: id, dogID: dog?.id, wording: wording, status: statusRaw,
+            madeOn: madeOn, madeBy: madeBy, evidence: evidence,
+            changedAt: changedAt
+        )
+    }
+
+    func apply(_ payload: DiagnosisPayload) {
+        wording = payload.wording
+        statusRaw = payload.status
+        madeOn = payload.madeOn
+        madeBy = payload.madeBy
+        evidence = payload.evidence
+        changedAt = payload.changedAt
+    }
+}
+
+@MainActor
+extension Prescription {
+    var payload: PrescriptionPayload {
+        PrescriptionPayload(
+            id: id, dogID: dog?.id, number: number, date: date,
+            clinicID: clinic?.id, clinicName: clinic?.name,
+            doctor: doctor, dogWeightKg: dogWeightKg,
+            medicationName: medicationName, dosage: dosage,
+            schedule: schedule, duration: duration,
+            pharmacyForm: pharmacyForm,
+            controlFromWeeks: controlFromWeeks, controlToWeeks: controlToWeeks,
+            dispensed: dispensed, instruction: instruction, source: source,
+            changedAt: changedAt
+        )
+    }
+
+    func apply(_ payload: PrescriptionPayload) {
+        number = payload.number
+        date = payload.date
+        doctor = payload.doctor
+        dogWeightKg = payload.dogWeightKg
+        medicationName = payload.medicationName
+        dosage = payload.dosage
+        schedule = payload.schedule
+        duration = payload.duration
+        pharmacyForm = payload.pharmacyForm
+        controlFromWeeks = payload.controlFromWeeks
+        controlToWeeks = payload.controlToWeeks
+        dispensed = payload.dispensed
+        instruction = payload.instruction
+        source = payload.source
+        changedAt = payload.changedAt
+    }
+}
+
 @MainActor
 extension Clinic {
     var payload: ClinicPayload {
@@ -522,6 +639,167 @@ enum SharedDiaryInbox {
         guard let имя = Fmt.notBlank(payload.clinicName ?? "") else { return nil }
         return try? context.fetch(FetchDescriptor<Clinic>())
             .first { $0.name == имя }
+    }
+
+    // MARK: Медкнижка
+    //
+    // Четыре приёма, и все четыре по одной форме: нашли по id — слили,
+    // не нашли — завели. Своих «сильных» полей здесь нет: медкнижка это
+    // перепечатка документа, а не действие, и спор решает `changedAt`.
+
+    /// Клиника для приехавшей записи медкнижки: по id, при промахе —
+    /// по имени. Клинику по имени НЕ заводим: запись, рождённая
+    /// промахом, была бы дублем справочника.
+    private static func клиника(id: UUID?, имя: String?, context: ModelContext) -> Clinic? {
+        if let id, let найдена = try? context.fetch(
+            FetchDescriptor<Clinic>(predicate: #Predicate { $0.id == id })
+        ).first {
+            return найдена
+        }
+        guard let имя = Fmt.notBlank(имя ?? "") else { return nil }
+        return try? context.fetch(FetchDescriptor<Clinic>()).first { $0.name == имя }
+    }
+
+    /// Принять строку анализа.
+    @discardableResult
+    static func accept(_ payload: LabResultPayload, dog: Dog?, context: ModelContext) -> Bool {
+        let id = payload.id
+        let existing = try? context.fetch(
+            FetchDescriptor<LabResult>(predicate: #Predicate { $0.id == id })
+        ).first
+
+        guard let local = existing else {
+            let анализ = LabResult(sampledOn: payload.sampledOn)
+            анализ.id = payload.id
+            анализ.apply(payload)
+            анализ.dog = dog
+            context.insert(анализ)
+            guard context.persist(otherwise: { context.delete(анализ) }) else {
+                log.error("общий дневник: анализ не записался")
+                return false
+            }
+            return false
+        }
+
+        let merged = SharedDiaryMerge.resolve(local: local.payload, remote: payload)
+        let changed = merged != payload
+        if merged != local.payload {
+            let былПрежний = local.payload
+            local.apply(merged)
+            if !context.persist(otherwise: { local.apply(былПрежний) }) {
+                log.error("общий дневник: слияние анализа не записалось")
+            }
+        }
+        return changed
+    }
+
+    /// Принять визит к врачу.
+    @discardableResult
+    static func accept(_ payload: VetVisitPayload, dog: Dog?, context: ModelContext) -> Bool {
+        let id = payload.id
+        let existing = try? context.fetch(
+            FetchDescriptor<VetVisit>(predicate: #Predicate { $0.id == id })
+        ).first
+
+        guard let local = existing else {
+            let визит = VetVisit(date: payload.date)
+            визит.id = payload.id
+            визит.apply(payload)
+            визит.clinic = клиника(id: payload.clinicID, имя: payload.clinicName, context: context)
+            визит.dog = dog
+            context.insert(визит)
+            guard context.persist(otherwise: { context.delete(визит) }) else {
+                log.error("общий дневник: визит не записался")
+                return false
+            }
+            return false
+        }
+
+        let merged = SharedDiaryMerge.resolve(local: local.payload, remote: payload)
+        let changed = merged != payload
+        if merged != local.payload {
+            let былПрежний = local.payload
+            local.apply(merged)
+            // Связь сшивается по ПОБЕДИВШЕЙ версии: иначе спор
+            // решался бы по-разному для поля и для связи.
+            if let сшита = клиника(id: merged.clinicID, имя: merged.clinicName, context: context) {
+                local.clinic = сшита
+            }
+            if !context.persist(otherwise: { local.apply(былПрежний) }) {
+                log.error("общий дневник: слияние визита не записалось")
+            }
+        }
+        return changed
+    }
+
+    /// Принять диагноз.
+    @discardableResult
+    static func accept(_ payload: DiagnosisPayload, dog: Dog?, context: ModelContext) -> Bool {
+        let id = payload.id
+        let existing = try? context.fetch(
+            FetchDescriptor<Diagnosis>(predicate: #Predicate { $0.id == id })
+        ).first
+
+        guard let local = existing else {
+            let диагноз = Diagnosis(madeOn: payload.madeOn)
+            диагноз.id = payload.id
+            диагноз.apply(payload)
+            диагноз.dog = dog
+            context.insert(диагноз)
+            guard context.persist(otherwise: { context.delete(диагноз) }) else {
+                log.error("общий дневник: диагноз не записался")
+                return false
+            }
+            return false
+        }
+
+        let merged = SharedDiaryMerge.resolve(local: local.payload, remote: payload)
+        let changed = merged != payload
+        if merged != local.payload {
+            let былПрежний = local.payload
+            local.apply(merged)
+            if !context.persist(otherwise: { local.apply(былПрежний) }) {
+                log.error("общий дневник: слияние диагноза не записалось")
+            }
+        }
+        return changed
+    }
+
+    /// Принять назначение.
+    @discardableResult
+    static func accept(_ payload: PrescriptionPayload, dog: Dog?, context: ModelContext) -> Bool {
+        let id = payload.id
+        let existing = try? context.fetch(
+            FetchDescriptor<Prescription>(predicate: #Predicate { $0.id == id })
+        ).first
+
+        guard let local = existing else {
+            let рецепт = Prescription(date: payload.date)
+            рецепт.id = payload.id
+            рецепт.apply(payload)
+            рецепт.clinic = клиника(id: payload.clinicID, имя: payload.clinicName, context: context)
+            рецепт.dog = dog
+            context.insert(рецепт)
+            guard context.persist(otherwise: { context.delete(рецепт) }) else {
+                log.error("общий дневник: назначение не записалось")
+                return false
+            }
+            return false
+        }
+
+        let merged = SharedDiaryMerge.resolve(local: local.payload, remote: payload)
+        let changed = merged != payload
+        if merged != local.payload {
+            let былПрежний = local.payload
+            local.apply(merged)
+            if let сшита = клиника(id: merged.clinicID, имя: merged.clinicName, context: context) {
+                local.clinic = сшита
+            }
+            if !context.persist(otherwise: { local.apply(былПрежний) }) {
+                log.error("общий дневник: слияние назначения не записалось")
+            }
+        }
+        return changed
     }
 
     /// Принять дело ухода.
