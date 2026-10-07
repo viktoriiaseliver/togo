@@ -249,15 +249,30 @@ struct StorageFailureScreen: View {
     @Environment(\.openURL) private var openURL
     @State private var копияАдреса: String?
 
+    /// Крошки запуска читаются ОДИН раз: по ним же решается, можно ли
+    /// советовать переустановку, и два чтения разошлись бы, если файл
+    /// дописали между ними.
+    private let журналЗапуска = StartupLog.read()
+
+    private var возврат: StorageFailureAdvice.Возврат {
+        StorageFailureAdvice.возврат(журналЗапуска: журналЗапуска)
+    }
+
     var body: some View {
         TGScreen(title: "Дневник не открылся") {
             TGBanner(tone: .alarm, title: "Не удалось открыть хранилище",
-                     subtitle: "Это не потеря данных: записи на месте, но приложение сейчас не может до них добраться.",
+                     subtitle: .готовая(StorageFailureAdvice.подзаголовок(возврат)),
                      systemImage: "externaldrive.badge.exclamationmark")
+
+            if let предупреждение = StorageFailureAdvice.предупреждение(возврат) {
+                TGBanner(tone: .alarm, title: "Переустановка удалит дневник",
+                         subtitle: .готовая(предупреждение),
+                         systemImage: "exclamationmark.triangle.fill")
+            }
 
             TGCard {
                 Text("Что попробовать").textStyle(AppFont.cardTitle)
-                ForEach(steps, id: \.self) { step in
+                ForEach(StorageFailureAdvice.шаги(возврат), id: \.self) { step in
                     HStack(alignment: .top, spacing: Token.Space.s8) {
                         Image(systemName: "circle.fill")
                             .font(.system(size: 5))
@@ -274,7 +289,7 @@ struct StorageFailureScreen: View {
 
             TGCard {
                 TGSectionHeader(title: "что записало приложение при запуске")
-                Text(StartupLog.read())
+                Text(журналЗапуска)
                     .textStyle(AppFont.numeric(12, weight: .regular))
                     .wraps()
                 TGExplainer(text: "Здесь только этапы запуска — ничего о собаке. Эти строки помогают понять причину.")
@@ -300,9 +315,11 @@ struct StorageFailureScreen: View {
         }
     }
 
-    private let steps = [
-        "Закрыть приложение полностью и открыть заново.",
-        "Проверить, что на устройстве есть свободное место.",
-        "Если не помогло — переустановить. Дневник вернётся из iCloud или из сохранённого файла.",
-    ]
+    // `steps` был КОНСТАНТОЙ из трёх пунктов, и третий звал
+    // переустановить, обещая возврат «из iCloud или из сохранённого
+    // файла». Переустановка сносит контейнер App Group, и у человека
+    // без iCloud совет уничтожал то, что баннер над ним называл целым.
+    //
+    // Правило переехало в `StorageFailureAdvice` — чтобы его можно было
+    // спросить из теста. Вью текстов больше не держит.
 }

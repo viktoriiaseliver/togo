@@ -217,7 +217,12 @@ nonisolated enum Persistence {
                                                    migrationPlan: TogoMigrationPlan.self,
                                                    configurations: cloud) {
                 isUsingCloud = true
-                StartupLog.note("хранилище: iCloud")
+                // Литерала здесь нет нарочно: по этой строке экран
+                // отказа решает, можно ли советовать переустановку.
+                // Два места, пишущих и читающих одну мысль разными
+                // литералами, расходятся на второй правке — а ценой
+                // расхождения тут будет чужой дневник.
+                StartupLog.note(StorageFailureAdvice.признакОблака)
                 return container
             }
             StartupLog.note("iCloud не открылся, откатываюсь на локальное")
