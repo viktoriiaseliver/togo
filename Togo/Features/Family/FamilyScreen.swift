@@ -54,7 +54,14 @@ struct FamilyScreen: View {
             } bottom: {
                 TGButton(title: "Добавить человека", systemImage: "person.badge.plus") {
                     UsageLog.note(.open, "addMember", on: .family)
-                    if store.isPro || members.count < 2 { showInvite = true } else { showPaywall = true }
+                    // Порог «двое бесплатно» живёт в `ProLimit`, а не
+                    // числом здесь: см. `Togo/Store/ProGate.swift`.
+                    if ProGate.isOpen(.familyBeyondTwo(familyMembers: members.count),
+                                      isPro: store.isPro) {
+                        showInvite = true
+                    } else {
+                        showPaywall = true
+                    }
                 }
             }
             .navigationTitle("Семья")

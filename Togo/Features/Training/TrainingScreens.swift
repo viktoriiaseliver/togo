@@ -107,7 +107,10 @@ struct TransferMatrixScreen: View {
             axisCard(title: "кто просит", values: people)
             distanceCard
 
-            if store.isPro {
+            // Ворота — через `ProGate`, а не `store.isPro` на месте:
+            // «Pro открывает ровно три вещи» проверяемо только там, где
+            // эти три перечислены. См. `Togo/Store/ProGate.swift`.
+            if ProGate.isOpen(.skillMatrix, isPro: store.isPro) {
                 nextStepCard
             } else {
                 lockedCard

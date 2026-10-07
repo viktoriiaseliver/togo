@@ -214,7 +214,11 @@ struct SettingsScreen: View {
                     LabeledContent(dog.displayName, value: Fmt.weight(dog.weightKg))
                 }
             }
-            if показываемые.isEmpty || store.isPro {
+            // Фильтр показа применяет сама фабрика `secondDog(among:)` —
+            // не повторяем его здесь: `dogs.count` и
+            // `dogs.shownToPerson.count` одного типа и разного смысла,
+            // и промах между ними компилируется.
+            if ProGate.isOpen(.secondDog(among: dogs), isPro: store.isPro) {
                 NavigationLink("Добавить собаку") { DogEditorScreen() }
             } else {
                 Button("Добавить вторую собаку") { showPaywall = true }
