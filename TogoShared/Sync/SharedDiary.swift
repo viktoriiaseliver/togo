@@ -43,6 +43,20 @@ nonisolated enum SharedDiary {
     /// **На экране написано то же самое.** Обещать больше, чем умеет
     /// обмен, дневнику с дозами нельзя — и меньше тоже: тогда человек
     /// не воспользуется тем, что есть.
+    /// **Перечисление объявляет больше типов, чем ездит, и это надо
+    /// читать осторожно.** Замер 07.10.2026 (`grep CKRecord(` по всему
+    /// дереву): записи создаются ровно для шести типов. `weight`
+    /// и `member` объявлены и не создаются ни разу — то есть история
+    /// веса и состав семьи ко второму человеку не едут вовсе.
+    ///
+    /// > **Перечисление из семи читалось как семь едущих типов.**
+    /// > Список имён — это заявка, а не замер.
+    ///
+    /// Долг назван по моделям в `DogPayloadParityTests.неЕздитПока`,
+    /// с датой у каждой: двенадцать моделей из семнадцати не доезжают
+    /// до второго человека, и ровно поэтому список держится там,
+    /// а не здесь — чтобы он краснел, когда к нему добавят
+    /// восемнадцатую модель молча.
     enum RecordType: String, CaseIterable, Sendable {
         case dog = "Dog"
         case event = "LogEvent"
@@ -51,6 +65,8 @@ nonisolated enum SharedDiary {
         case dose = "DoseRecord"
         case weight = "WeightEntry"
         case member = "FamilyMember"
+        /// Справочник клиник — с 07.10.2026, шаг 0 медицинского слоя.
+        case clinic = "Clinic"
     }
 }
 
@@ -235,6 +251,45 @@ nonisolated struct CarePayload: Equatable, Sendable, Codable {
     var seasonStartMonth: Int?
     var seasonEndMonth: Int?
     var snoozeCount: Int
+
+    /// Прививка: номер партии, срок годности и где её сделали.
+    ///
+    /// **Три поля шага 0, 07.10.2026.** Заведены в модели тем же днём
+    /// и в нагрузку не попали: числились «про семью» и не ехали никуда.
+    ///
+    /// **Клиника — и по id, и по имени, и это не избыточность.**
+    /// Тот же урок, что у `DosePayload.medicationName`: запись клиники
+    /// может приехать позже дела ухода, обмен могли включить посреди
+    /// курса, а справочник второй человек мог завести своей рукой
+    /// и со своим UUID. Промах по id здесь норма, а не сбой; без имени
+    /// прививка легла бы без места, где её сделали.
+    var clinicID: UUID?
+    var clinicName: String?
+    var vaccineBatch: String?
+    var vaccineValidUntil: Date?
+
+    var changedAt: Date
+}
+
+/// Клиника или лаборатория из справочника.
+///
+/// **Зачем ездит.** В карте Стича одиннадцать организаций, и каждая
+/// встречается в среднем в четырёх записях. Без обмена у второго
+/// человека справочник пуст: он видит прививку и не видит, где её
+/// сделали, а на вопрос «куда вести в следующий раз» ответа нет.
+/// Это тот же сценарий, что уже оплачен листом для догситтера —
+/// человек один с собакой, и нужное ему лежит у хозяйки.
+///
+/// **Телефон ездит вместе с именем нарочно.** Везти одно имя было бы
+/// дешевле и бессмысленно: название клиники без номера не помогает
+/// в тот час, когда с собакой что-то не так.
+nonisolated struct ClinicPayload: Equatable, Sendable, Codable {
+    var id: UUID
+    var name: String
+    var detail: String?
+    var isLab: Bool
+    var phone: String?
+    var createdAt: Date
     var changedAt: Date
 }
 
@@ -262,6 +317,12 @@ nonisolated struct MedicationPayload: Equatable, Sendable, Codable {
     var prescriber: String?
     var cancelledAt: Date?
     var cancelledNote: String?
+
+    /// Номер назначения — шаг 0, 07.10.2026. Его называют в аптеке,
+    /// чтобы продлить, и в клинике, чтобы найти запись; делает это
+    /// тот, кто сегодня свободен, а не владелец телефона.
+    var prescriptionNumber: String?
+
     var changedAt: Date
 }
 
@@ -369,6 +430,28 @@ nonisolated enum SharedDiaryMerge {
         // а не мнение, и потерять его хуже, чем потерять правку названия.
         return (local.lastDone ?? .distantPast) >= (remote.lastDone ?? .distantPast)
             ? local : remote
+    }
+
+    /// Спор о записи справочника.
+    ///
+    /// Побеждает правка, что позже, — как у профиля. При ничьей
+    /// по времени берётся та, где **полей заполнено больше**: клиника
+    /// это набор контактов, и разумнее взять версию с телефоном, чем
+    /// ту, где его стёрли. Два телефона расходятся на секунды, и ничья
+    /// здесь не редкость — справочник правят оба, набирая одно и то же.
+    static func resolve(local: ClinicPayload, remote: ClinicPayload) -> ClinicPayload {
+        precondition(local.id == remote.id)
+        if local.changedAt != remote.changedAt {
+            return local.changedAt > remote.changedAt ? local : remote
+        }
+        func заполнено(_ p: ClinicPayload) -> Int {
+            var счёт = 0
+            if Fmt.notBlank(p.name) != nil { счёт += 1 }
+            if p.detail?.isEmpty == false { счёт += 1 }
+            if p.phone?.isEmpty == false { счёт += 1 }
+            return счёт
+        }
+        return заполнено(local) >= заполнено(remote) ? local : remote
     }
 
     static func resolve(local: MedicationPayload, remote: MedicationPayload) -> MedicationPayload {

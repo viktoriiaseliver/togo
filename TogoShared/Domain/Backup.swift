@@ -49,6 +49,8 @@ nonisolated enum BackupService {
         let episodes = try context.fetch(FetchDescriptor<Episode>())
         // Навыки процедур — корневой список: связи с собакой у них нет.
         let skills = (try? context.fetch(FetchDescriptor<ProcedureSkill>())) ?? []
+        // Справочник клиник — тоже корневой и по той же причине.
+        let clinics = (try? context.fetch(FetchDescriptor<Clinic>())) ?? []
 
         return BackupArchive(
             createdAt: Date(),
@@ -77,6 +79,11 @@ nonisolated enum BackupService {
                     title: $0.title, detail: $0.detail, statusRaw: $0.statusRaw,
                     targetDate: $0.targetDate, successes: $0.successes,
                     attempts: $0.attempts)
+            },
+            clinics: clinics.map {
+                BackupArchive.ClinicSnapshot(
+                    name: $0.name, detail: $0.detail, isLab: $0.isLab,
+                    phone: $0.phone, createdAt: $0.createdAt)
             }
         )
     }
@@ -137,7 +144,14 @@ nonisolated enum BackupService {
                     seasonStartMonth: $0.seasonStartMonth, seasonEndMonth: $0.seasonEndMonth,
                     snoozeCount: $0.snoozeCount,
                     kindRaw: $0.kindRaw, scheduledDate: $0.scheduledDate,
-                    remindDaysBefore: $0.remindDaysBefore, streak: $0.streak
+                    remindDaysBefore: $0.remindDaysBefore, streak: $0.streak,
+                    // Клиника — ИМЕНЕМ, и имя берётся у связи, а не
+                    // у поля `Dog.clinicName`: это разные клиники.
+                    // Второе — врач собаки для листа ситтера, первое —
+                    // где делали эту прививку.
+                    clinicName: $0.clinic?.name,
+                    vaccineBatch: $0.vaccineBatch,
+                    vaccineValidUntil: $0.vaccineValidUntil
                 )
             },
             medications: dog.medications.map { medication in
@@ -168,7 +182,8 @@ nonisolated enum BackupService {
                     stockTotal: medication.stockTotal,
                     stockLeftAmount: medication.stockLeftAmount,
                     packAmount: medication.packAmount,
-                    canGiveOutside: medication.canGiveOutside
+                    canGiveOutside: medication.canGiveOutside,
+                    prescriptionNumber: medication.prescriptionNumber
                 )
             },
             trainingSteps: dog.trainingSteps.map {
@@ -207,7 +222,10 @@ nonisolated enum BackupService {
             },
             documents: documents.map {
                 BackupArchive.DocumentSnapshot(title: $0.title, image: $0.image,
-                                               addedAt: $0.addedAt, note: $0.note)
+                                               addedAt: $0.addedAt, note: $0.note,
+                                               kindRaw: $0.kindRaw, number: $0.number,
+                                               issuedBy: $0.issuedBy,
+                                               validUntil: $0.validUntil)
             },
             daysOut: daysOut.map {
                 BackupArchive.DayOutSnapshot(startedAt: $0.startedAt, endedAt: $0.endedAt,
@@ -280,6 +298,13 @@ nonisolated enum BackupService {
             for model in [LogEvent.self, WeightEntry.self, DoseRecord.self, Medication.self,
                           CareTask.self, TrainingSession.self, TrainingStep.self,
                           Trip.self, Episode.self, ProcedureSkill.self,
+                          // `Clinic` — 07.10.2026, вместе со снимком.
+                          // Без чистки «заменить» удвоило бы справочник:
+                          // слияние по имени работает только в ветке
+                          // «долить», а здесь имя уже занято старой
+                          // записью, и человек получил бы одиннадцать
+                          // организаций Стича дважды.
+                          Clinic.self,
                           FamilyMember.self, Dog.self] as [any PersistentModel.Type] {
                 try context.delete(model: model)
             }
@@ -296,6 +321,34 @@ nonisolated enum BackupService {
             : []
 
         var restored = 0
+
+        // Справочник клиник — ДО собак: дела ухода ссылаются на него,
+        // и ссылка восстанавливается только из уже вставленной записи.
+        //
+        // **Слияние по имени здесь осмысленно, в отличие от собак.**
+        // У собак две «Стич» в одном доме — две собаки, у клиник
+        // наоборот: дизайн требует справочника без дублей, и две
+        // записи «Vet Riviera» это одна организация, набранная дважды.
+        // Но проверка на пустоту обязательна по той же причине, что
+        // у собак: пустое имя клиникой не является, а группировка
+        // по полю со значением по умолчанию собирает в одну группу
+        // всё, что это поле не заполнило.
+        var клиники: [String: Clinic] = [:]
+        if strategy == .merge {
+            for clinic in try context.fetch(FetchDescriptor<Clinic>()) {
+                guard let имя = Fmt.notBlank(clinic.name) else { continue }
+                клиники[имя] = clinic
+            }
+        }
+        for snapshot in archive.clinics ?? [] {
+            guard let имя = Fmt.notBlank(snapshot.name) else { continue }
+            if клиники[имя] != nil { continue }
+            let clinic = Clinic(name: имя, detail: snapshot.detail,
+                                isLab: snapshot.isLab, phone: snapshot.phone)
+            clinic.createdAt = snapshot.createdAt
+            context.insert(clinic)
+            клиники[имя] = clinic
+        }
 
         for snapshot in archive.dogs {
             // Слияние идёт по кличке — и **только по настоящей кличке**.
@@ -354,7 +407,7 @@ nonisolated enum BackupService {
             let dog = makeDog(snapshot)
             context.insert(dog)
             restored += attachEvents(snapshot.events, to: dog, skipping: existingEventIDs, context: context)
-            attachRest(snapshot, to: dog, context: context)
+            attachRest(snapshot, to: dog, clinics: клиники, context: context)
         }
 
         // Участники сливаются по имени — и тот же класс, что у собак:
@@ -549,6 +602,7 @@ nonisolated enum BackupService {
     private static func attachRest(
         _ snapshot: BackupArchive.DogSnapshot,
         to dog: Dog,
+        clinics: [String: Clinic],
         context: ModelContext
     ) {
         for weight in snapshot.weights {
@@ -570,6 +624,18 @@ nonisolated enum BackupService {
             task.scheduledDate = care.scheduledDate
             task.remindDaysBefore = care.remindDaysBefore ?? task.remindDaysBefore
             task.streak = care.streak ?? task.streak
+            // Номер партии и «годна до» — шаг 0, 07.10.2026. Их
+            // спрашивает врач, и спрашивает у того, кто привёл собаку.
+            task.vaccineBatch = care.vaccineBatch
+            task.vaccineValidUntil = care.vaccineValidUntil
+            // Клиника связывается ПО ИМЕНИ из уже вставленного
+            // справочника. Промах по имени оставляет связь пустой
+            // и клинику не заводит: справочник без дублей — правило
+            // дизайна, а запись, рождённая промахом, была бы дублем,
+            // отличающимся опечаткой.
+            if let имя = Fmt.notBlank(care.clinicName ?? "") {
+                task.clinic = clinics[имя]
+            }
             task.dog = dog
             context.insert(task)
         }
@@ -609,6 +675,7 @@ nonisolated enum BackupService {
             medication.packAmount = medicationSnapshot.packAmount
             medication.canGiveOutside = medicationSnapshot.canGiveOutside
                 ?? medication.canGiveOutside
+            medication.prescriptionNumber = medicationSnapshot.prescriptionNumber
             medication.dog = dog
             context.insert(medication)
             for doseSnapshot in medicationSnapshot.doses {
@@ -686,6 +753,13 @@ nonisolated enum BackupService {
                                        image: documentSnapshot.image,
                                        note: documentSnapshot.note)
             document.addedAt = documentSnapshot.addedAt
+            // Четыре поля шага 0: тип, номер, кем выдан, срок. Срок —
+            // то, из-за чего шаг 0 и начался: истёкшую прививку нельзя
+            // было назвать, потому что поля не существовало.
+            document.kindRaw = documentSnapshot.kindRaw ?? document.kindRaw
+            document.number = documentSnapshot.number
+            document.issuedBy = documentSnapshot.issuedBy
+            document.validUntil = documentSnapshot.validUntil
             document.dog = dog
             context.insert(document)
         }

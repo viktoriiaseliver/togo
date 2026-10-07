@@ -38,6 +38,36 @@ nonisolated struct BackupArchive: Codable, Sendable {
     /// `documents` и `daysOut`.
     var procedureSkills: [ProcedureSkillSnapshot]?
 
+    /// Справочник клиник и лабораторий.
+    ///
+    /// **Корневым массивом по той же причине, что `procedureSkills`:**
+    /// у клиники нет связи с собакой. К одному врачу ходят обе собаки,
+    /// и положить справочник внутрь собаки значило бы раздвоить
+    /// одиннадцать организаций Стича на столько копий, сколько собак
+    /// в дневнике.
+    ///
+    /// **Заведён 07.10.2026 вместе с самой моделью — и это
+    /// не предусмотрительность, а починка.** Шагом 0 медицинского
+    /// слоя `Clinic` появилась в схеме и не попала ни в архив,
+    /// ни в общий дневник: все её поля числились «про семью»
+    /// и не ехали никуда. ТЗ §4 требует обратного — поле входит
+    /// в архив и в обмен тем же коммитом.
+    var clinics: [ClinicSnapshot]?
+
+    /// Клиника или лаборатория.
+    ///
+    /// `careTasks` здесь нет: связь хранится **со стороны дела ухода**
+    /// (`CareTaskSnapshot.clinicName`), одним концом. Два конца
+    /// в одном файле разошлись бы при первой правке руками, а файл
+    /// этот человек открывает текстовым редактором — он так задуман.
+    struct ClinicSnapshot: Codable, Sendable {
+        var name: String
+        var detail: String?
+        var isLab: Bool
+        var phone: String?
+        var createdAt: Date
+    }
+
     /// Навык подготовки к процедуре.
     ///
     /// `targetDate` здесь есть, хотя писателя у него в приложении
@@ -136,6 +166,21 @@ nonisolated struct BackupArchive: Codable, Sendable {
         var image: Data?
         var addedAt: Date
         var note: String?
+        /// Четыре поля шага 0 медицинского слоя, 07.10.2026.
+        ///
+        /// **`validUntil` — то, из-за чего шаг 0 и начался:** у Стича
+        /// срок бешенства истёк 03.10, и назвать это приложение
+        /// не могло — поля не было. Потерять его при переезде значило
+        /// бы вернуть ровно то состояние, которое чинили.
+        ///
+        /// Этого разрыва не поймал ни один сторож: паритет архива
+        /// сверяет `Dog`, `CareTask`, `Medication` и `DoseRecord` —
+        /// четыре модели из семнадцати, и `DogDocument` не входит.
+        /// Он был прав и слеп, и слепоту печатал о себе сам.
+        var kindRaw: String?
+        var number: String?
+        var issuedBy: String?
+        var validUntil: Date?
     }
 
     struct StockSnapshot: Codable, Sendable {
@@ -299,6 +344,20 @@ nonisolated struct BackupArchive: Codable, Sendable {
         var scheduledDate: Date?
         var remindDaysBefore: Int?
         var streak: Int?
+        /// Три поля шага 0 медицинского слоя, 07.10.2026.
+        ///
+        /// **`clinicName`, а не ссылка.** Клиника лежит корневым
+        /// массивом `clinics`, и связь хранится одним концом — здесь.
+        /// Имя, а не индекс: файл человек читает глазами, и «клиника
+        /// № 3» в нём не значит ничего. Имя клиники — ключ группировки
+        /// и в самой модели, то есть второй сущности не заводим.
+        ///
+        /// **`vaccineBatch` — номер партии.** Его спрашивают, когда
+        /// у собаки реакция или когда партию отзывают, и спрашивают
+        /// у того, кто привёл собаку сегодня, — а не у хозяйки.
+        var clinicName: String?
+        var vaccineBatch: String?
+        var vaccineValidUntil: Date?
     }
 
     struct MedicationSnapshot: Codable, Sendable {
@@ -342,6 +401,12 @@ nonisolated struct BackupArchive: Codable, Sendable {
         var stockLeftAmount: Double?
         var packAmount: Double?
         var canGiveOutside: Bool?
+        /// Номер назначения — шаг 0, 07.10.2026.
+        ///
+        /// Связывает схему лечения с бланком рецепта: его называют
+        /// в аптеке, чтобы продлить, и в клинике, чтобы найти запись.
+        /// У Стича таких бланков тридцать четыре.
+        var prescriptionNumber: String?
     }
 
     struct DoseSnapshot: Codable, Sendable {

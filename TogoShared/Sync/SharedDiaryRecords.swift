@@ -287,6 +287,12 @@ nonisolated enum SharedDiaryRecords {
         record["seasonStartMonth"] = payload.seasonStartMonth
         record["seasonEndMonth"] = payload.seasonEndMonth
         record["snoozeCount"] = payload.snoozeCount
+        // Прививка — шаг 0, 07.10.2026. Клиника и по id, и по имени:
+        // промах по id норма, а имя — то, что человек прочтёт.
+        record["clinicID"] = payload.clinicID?.uuidString
+        record["clinicName"] = payload.clinicName
+        record["vaccineBatch"] = payload.vaccineBatch
+        record["vaccineValidUntil"] = payload.vaccineValidUntil
         record["changedAt"] = payload.changedAt
     }
 
@@ -311,6 +317,61 @@ nonisolated enum SharedDiaryRecords {
             seasonStartMonth: record["seasonStartMonth"] as? Int,
             seasonEndMonth: record["seasonEndMonth"] as? Int,
             snoozeCount: record["snoozeCount"] as? Int ?? 0,
+            clinicID: (record["clinicID"] as? String).flatMap(UUID.init),
+            clinicName: record["clinicName"] as? String,
+            vaccineBatch: record["vaccineBatch"] as? String,
+            vaccineValidUntil: record["vaccineValidUntil"] as? Date,
+            changedAt: changedAt
+        )
+    }
+
+    // MARK: Справочник клиник
+
+    static func record(_ payload: ClinicPayload, base: CKRecord?, in zone: CKRecordZone.ID) -> CKRecord {
+        let id = recordID(payload.id, in: zone)
+        guard let base, base.recordID == id else {
+            let record = CKRecord(recordType: SharedDiary.RecordType.clinic.rawValue, recordID: id)
+            apply(payload, to: record)
+            return record
+        }
+        let merged = clinicPayload(base).map { SharedDiaryMerge.resolve(local: payload, remote: $0) } ?? payload
+        apply(merged, to: base)
+        return base
+    }
+
+    static func apply(_ payload: ClinicPayload, to record: CKRecord) {
+        record["name"] = payload.name
+        record["detail"] = payload.detail
+        record["isLab"] = payload.isLab
+        record["phone"] = payload.phone
+        record["createdAt"] = payload.createdAt
+        record["changedAt"] = payload.changedAt
+    }
+
+    /// Разбор записи справочника.
+    ///
+    /// **Безымянную не принимаем**, и это тот же запрет, что у собаки.
+    /// Имя клиники — ключ группировки: запись без имени собрала бы
+    /// в одну группу всё, что имени не заполнило, и человек увидел бы
+    /// «прививки в клинике ———» с чужими записями внутри.
+    ///
+    /// > **Группировка по полю со значением по умолчанию собирает
+    /// > в одну группу всё, что его не заполнило.** В показе пустота
+    /// > видна человеку, в ключе — не видна никому.
+    static func clinicPayload(_ record: CKRecord) -> ClinicPayload? {
+        guard let id = UUID(uuidString: record.recordID.recordName),
+              let name = record["name"] as? String,
+              Fmt.notBlank(name) != nil,
+              let changedAt = record["changedAt"] as? Date
+        else { return nil }
+
+        return ClinicPayload(
+            id: id,
+            name: name,
+            detail: record["detail"] as? String,
+            isLab: record["isLab"] as? Bool ?? false,
+            phone: record["phone"] as? String,
+            createdAt: record["createdAt"] as? Date ?? changedAt,
             changedAt: changedAt
         )
     }
@@ -339,6 +400,7 @@ nonisolated enum SharedDiaryRecords {
         record["prescriber"] = payload.prescriber
         record["cancelledAt"] = payload.cancelledAt
         record["cancelledNote"] = payload.cancelledNote
+        record["prescriptionNumber"] = payload.prescriptionNumber
         record["changedAt"] = payload.changedAt
     }
 
@@ -363,6 +425,7 @@ nonisolated enum SharedDiaryRecords {
             prescriber: record["prescriber"] as? String,
             cancelledAt: record["cancelledAt"] as? Date,
             cancelledNote: record["cancelledNote"] as? String,
+            prescriptionNumber: record["prescriptionNumber"] as? String,
             changedAt: changedAt
         )
     }

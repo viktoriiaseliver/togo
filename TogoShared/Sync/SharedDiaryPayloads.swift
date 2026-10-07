@@ -174,6 +174,8 @@ extension CareTask {
             remindDaysBefore: remindDaysBefore, lastDone: lastDone,
             streak: streak, seasonStartMonth: seasonStartMonth,
             seasonEndMonth: seasonEndMonth, snoozeCount: snoozeCount,
+            clinicID: clinic?.id, clinicName: clinic?.name,
+            vaccineBatch: vaccineBatch, vaccineValidUntil: vaccineValidUntil,
             changedAt: changedAt
         )
     }
@@ -191,6 +193,13 @@ extension CareTask {
         seasonStartMonth = payload.seasonStartMonth
         seasonEndMonth = payload.seasonEndMonth
         snoozeCount = payload.snoozeCount
+        vaccineBatch = payload.vaccineBatch
+        vaccineValidUntil = payload.vaccineValidUntil
+        // Клиника здесь НЕ ставится: для поиска по id нужен контекст,
+        // а у модели до вставки его может не быть. Связь сшивает
+        // `SharedDiaryInbox.accept(_:dog:context:)` — там, где контекст
+        // есть по устройству. Разделение не стиль: `apply` зовут и из
+        // тестов без хранилища.
         changedAt = payload.changedAt
     }
 }
@@ -204,7 +213,9 @@ extension Medication {
             fastingBeforeMinutes: fastingBeforeMinutes,
             minutesAfterMeal: minutesAfterMeal, isPaused: isPaused,
             prescriber: prescriber, cancelledAt: cancelledAt,
-            cancelledNote: cancelledNote, changedAt: changedAt
+            cancelledNote: cancelledNote,
+            prescriptionNumber: prescriptionNumber,
+            changedAt: changedAt
         )
     }
 
@@ -221,6 +232,28 @@ extension Medication {
         prescriber = payload.prescriber
         cancelledAt = payload.cancelledAt
         cancelledNote = payload.cancelledNote
+        prescriptionNumber = payload.prescriptionNumber
+        changedAt = payload.changedAt
+    }
+}
+
+@MainActor
+extension Clinic {
+    var payload: ClinicPayload {
+        ClinicPayload(
+            id: id, name: name, detail: detail, isLab: isLab,
+            phone: phone, createdAt: createdAt, changedAt: changedAt
+        )
+    }
+
+    /// `createdAt` не трогается: это факт о ЗАПИСИ на том телефоне,
+    /// где её завели, а не о клинике. Та же причина, по которой
+    /// `Dog.createdAt` не ездит вовсе.
+    func apply(_ payload: ClinicPayload) {
+        name = payload.name
+        detail = payload.detail
+        isLab = payload.isLab
+        phone = payload.phone
         changedAt = payload.changedAt
     }
 }
@@ -375,6 +408,83 @@ enum SharedDiaryInbox {
         return changed
     }
 
+    /// Принять запись справочника клиник.
+    ///
+    /// **Безымянную не принимаем вовсе.** Имя клиники — ключ
+    /// группировки «где делали»: запись без имени собрала бы в одну
+    /// группу всё, что имени не заполнило, и человек увидел бы
+    /// прививки неизвестно откуда, сложенные вместе. Это тот же
+    /// запрет, что у приёма собаки, и завёлся он той же ценой.
+    ///
+    /// **Слияния по имени здесь НЕТ, и это осознанно.** У архива оно
+    /// есть: там обе стороны вышли из одного файла, и имя совпадает
+    /// побайтно. В обмене совпадение имён значит другое — двое завели
+    /// одну организацию своими руками, с разными UUID. Склеить их
+    /// значило бы решить за человека, что «Vet Riviera» у мамы
+    /// и у Виктории — одна запись; разъехавшиеся телефоны схлопнутся
+    /// при первой правке. Два справочника с похожими именами —
+    /// видимая человеку неприятность; склейка — невидимая.
+    @discardableResult
+    static func accept(_ payload: ClinicPayload, context: ModelContext) -> Bool {
+        guard Fmt.notBlank(payload.name) != nil else {
+            log.error("общий дневник: приехала клиника без имени — не принимаем")
+            return false
+        }
+        let id = payload.id
+        let existing = try? context.fetch(
+            FetchDescriptor<Clinic>(predicate: #Predicate { $0.id == id })
+        ).first
+
+        guard let local = existing else {
+            let clinic = Clinic(name: payload.name, detail: payload.detail,
+                                isLab: payload.isLab, phone: payload.phone)
+            clinic.id = payload.id
+            clinic.createdAt = payload.createdAt
+            clinic.changedAt = payload.changedAt
+            context.insert(clinic)
+            guard context.persist(otherwise: { context.delete(clinic) }) else {
+                log.error("общий дневник: клиника не записалась")
+                return false
+            }
+            return false
+        }
+
+        let merged = SharedDiaryMerge.resolve(local: local.payload, remote: payload)
+        let changed = merged != payload
+        if merged != local.payload {
+            let былПрежний = local.payload
+            local.apply(merged)
+            if !context.persist(otherwise: { local.apply(былПрежний) }) {
+                log.error("общий дневник: слияние клиники не записалось")
+            }
+        }
+        return changed
+    }
+
+    /// Клиника для приехавшего дела ухода: по id, при промахе — по имени.
+    ///
+    /// **Промах по id здесь норма, а не сбой** — тот же урок, что
+    /// у висящих доз. Справочник второй человек мог завести своей
+    /// рукой до включения обмена, и тогда та же «Vet Riviera» лежит
+    /// у него с другим UUID.
+    ///
+    /// **Клинику по имени мы НЕ заводим.** Промах по обоим оставляет
+    /// связь пустой: запись, рождённая промахом, была бы дублем
+    /// справочника, а справочник без дублей — правило дизайна.
+    /// Приедет своя запись клиники — связь сошьётся следующей правкой
+    /// дела ухода.
+    static func clinic(for payload: CarePayload, context: ModelContext) -> Clinic? {
+        if let id = payload.clinicID,
+           let найдена = try? context.fetch(
+               FetchDescriptor<Clinic>(predicate: #Predicate { $0.id == id })
+           ).first {
+            return найдена
+        }
+        guard let имя = Fmt.notBlank(payload.clinicName ?? "") else { return nil }
+        return try? context.fetch(FetchDescriptor<Clinic>())
+            .first { $0.name == имя }
+    }
+
     /// Принять дело ухода.
     @discardableResult
     static func accept(_ payload: CarePayload, dog: Dog?, context: ModelContext) -> Bool {
@@ -387,6 +497,7 @@ enum SharedDiaryInbox {
             let task = CareTask(title: payload.title, detail: payload.detail)
             task.id = payload.id
             task.apply(payload)
+            task.clinic = clinic(for: payload, context: context)
             task.dog = dog
             context.insert(task)
             guard context.persist(otherwise: { context.delete(task) }) else {
@@ -401,6 +512,13 @@ enum SharedDiaryInbox {
         if merged != local.payload {
             let былПрежний = local.payload
             local.apply(merged)
+            // Связь сшивается по ПОБЕДИВШЕЙ версии, а не по приехавшей:
+            // иначе проигравшая правка всё равно переставила бы клинику,
+            // и спор двух телефонов решался бы по-разному для поля
+            // и для связи.
+            if let сшита = clinic(for: merged, context: context) {
+                local.clinic = сшита
+            }
             if !context.persist(otherwise: { local.apply(былПрежний) }) {
                 log.error("общий дневник: слияние дела ухода не записалось")
             }

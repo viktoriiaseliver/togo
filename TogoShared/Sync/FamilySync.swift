@@ -233,6 +233,12 @@ final class FamilySync: NSObject {
                     medication.changedAt = now
                     stamped = true
                     changes.append(.saveRecord(SharedDiaryRecords.recordID(medication.id, in: zone)))
+                } else if let clinic = ctx.model(for: id) as? Clinic {
+                    // Справочник ездит с 07.10.2026: без него второй
+                    // человек видел прививку и не видел, где её сделали.
+                    clinic.changedAt = now
+                    stamped = true
+                    changes.append(.saveRecord(SharedDiaryRecords.recordID(clinic.id, in: zone)))
                 } else if let dog = ctx.model(for: id) as? Dog {
                     // Профиль ездит с 23.09: без него приглашение вело
                     // в пустую комнату — мама не видела ни собаки,
@@ -370,6 +376,11 @@ extension FamilySync: CKSyncEngineDelegate {
         ).first {
             return SharedDiaryRecords.record(medication.payload, base: base, in: recordID.zoneID)
         }
+        if let clinic = try? ctx.fetch(
+            FetchDescriptor<Clinic>(predicate: #Predicate { $0.id == id })
+        ).first {
+            return SharedDiaryRecords.record(clinic.payload, base: base, in: recordID.zoneID)
+        }
         return nil
     }
 
@@ -389,8 +400,25 @@ extension FamilySync: CKSyncEngineDelegate {
             // цеплялась к ПЕРВОЙ местной (а у гостя это его собственная
             // собака) или повисала ничьей, если местной нет ни одной.
             // Разобрать профили до ленты стоит один проход по массиву.
-            let modifications = changes.modifications.sorted { left, _ in
-                left.record.recordType == SharedDiary.RecordType.dog.rawValue
+            // **Порядок, а не признак «это собака».** Прежняя редакция
+            // сортировала предикатом «слева собака» — он ставит профили
+            // вперёд и больше ничего не упорядочивает. С приездом
+            // справочника этого мало: дело ухода ссылается на клинику,
+            // и приехав раньше неё, оно сошьётся с пустотой, а второй
+            // попытки у него не будет до следующей правки.
+            //
+            // Ранг вместо предиката ещё и честнее перед `sorted`:
+            // предикат «слева собака» не задаёт строгого порядка,
+            // и устойчивость результата — везение, а не свойство.
+            func ранг(_ тип: String) -> Int {
+                switch SharedDiary.RecordType(rawValue: тип) {
+                case .clinic: 0   // на него ссылаются дела ухода
+                case .dog: 1      // на него ссылается всё остальное
+                default: 2
+                }
+            }
+            let modifications = changes.modifications.sorted {
+                ранг($0.record.recordType) < ранг($1.record.recordType)
             }
 
             for modification in modifications {
@@ -400,11 +428,17 @@ extension FamilySync: CKSyncEngineDelegate {
                 outbox.remember(record)
 
                 switch SharedDiary.RecordType(rawValue: record.recordType) {
+                case .clinic:
+                    guard let payload = SharedDiaryRecords.clinicPayload(record) else { continue }
+                    SharedDiaryInbox.accept(payload, context: ctx)
                 case .dog:
                     guard let payload = SharedDiaryRecords.dogPayload(record) else { continue }
                     SharedDiaryInbox.accept(payload, context: ctx)
                 case .care:
                     guard let payload = SharedDiaryRecords.carePayload(record) else { continue }
+                    // Клиника сшивается внутри `accept`: там контекст
+                    // есть по устройству, и промах по id там же
+                    // падает на поиск по имени.
                     SharedDiaryInbox.accept(
                         payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
                         context: ctx)

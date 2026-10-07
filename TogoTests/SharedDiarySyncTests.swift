@@ -281,6 +281,236 @@ struct SharedDiaryRecordBuildTests {
 }
 
 /// Чужая отметка дозы находит препарат.
+/// Справочник клиник и поля прививки доезжают до второго человека.
+///
+/// **Зачем суита появилась.** Шагом 0 медицинского слоя (07.10.2026)
+/// завелись `Clinic`, `CareTask.vaccineBatch`, `vaccineValidUntil`
+/// и `Medication.prescriptionNumber`. Все они числились «про семью»
+/// и **не ехали никуда**: в нагрузке обмена их не было, и сторож
+/// паритета смотрел тогда одну модель из семнадцати.
+///
+/// > **Я записал «про семью» и этим ничего не отправил.**
+///
+/// Проверка идёт **значениями через запись CloudKit**, а не наличием
+/// поля в структуре: поле может лежать в нагрузке и не попасть
+/// в `CKRecord` — это следующий слой, и сторож имён его не видит.
+@Suite("Общий дневник · справочник клиник и прививка")
+@MainActor
+struct SharedClinicSyncTests {
+
+    private let zone = CKRecordZone.ID(zoneName: SharedDiary.zoneName, ownerName: "_owner")
+
+    private func телефон() throws -> (ModelContext, Dog) {
+        let container = try ModelContainer(
+            for: Dog.self,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+        )
+        let context = ModelContext(container)
+        let dog = Dog(name: "Стич", weightKg: 4.1)
+        context.insert(dog)
+        try context.save()
+        return (context, dog)
+    }
+
+    @Test("Клиника доезжает целиком: имя, телефон, адрес и признак лаборатории")
+    func клиникаДоезжает() throws {
+        let (мой, _) = try телефон()
+        let клиника = Clinic(name: "Vet Riviera", detail: "Ницца, Либерасьон",
+                             isLab: false, phone: "+33 4 93 00 00 00")
+        мой.insert(клиника)
+        try мой.save()
+
+        let запись = SharedDiaryRecords.record(клиника.payload, base: nil, in: zone)
+        #expect(запись.recordType == SharedDiary.RecordType.clinic.rawValue)
+        let приехало = try #require(SharedDiaryRecords.clinicPayload(запись), """
+            запись клиники не разобралась обратно — значит поле лежит \
+            в нагрузке и не попало в `CKRecord`. Ровно тот слой, \
+            которого сторож имён не видит.
+            """)
+
+        let (её, _) = try телефон()
+        SharedDiaryInbox.accept(приехало, context: её)
+
+        let клиники = try её.fetch(FetchDescriptor<Clinic>())
+        #expect(клиники.count == 1)
+        let у_мамы = try #require(клиники.first)
+        #expect(у_мамы.name == "Vet Riviera")
+        #expect(у_мамы.phone == "+33 4 93 00 00 00", """
+            название клиники без номера не помогает в тот час, когда \
+            с собакой что-то не так, — телефон ездит вместе с именем \
+            нарочно.
+            """)
+        #expect(у_мамы.detail == "Ницца, Либерасьон")
+        #expect(у_мамы.isLab == false)
+        #expect(у_мамы.id == клиника.id, "id сохраняется — иначе справочник раздвоится")
+    }
+
+    @Test("Безымянная клиника наружу не уезжает и внутрь не принимается")
+    func безымяннаяНеЕдет() throws {
+        let (мой, _) = try телефон()
+        let пустая = Clinic(name: "   ")
+        мой.insert(пустая)
+        try мой.save()
+
+        let запись = SharedDiaryRecords.record(пустая.payload, base: nil, in: zone)
+        #expect(SharedDiaryRecords.clinicPayload(запись) == nil, """
+            безымянная клиника разобралась как годная. Имя клиники — \
+            ключ группировки «где делали»: запись без имени собрала бы \
+            в одну группу всё, что имени не заполнило, и человек \
+            увидел бы прививки неизвестно откуда, сложенные вместе.
+
+            В показе пустота видна человеку. В ключе — не видна никому.
+            """)
+
+        let (её, _) = try телефон()
+        let подделка = ClinicPayload(id: UUID(), name: "", detail: nil, isLab: false,
+                                     phone: nil, createdAt: Date(), changedAt: Date())
+        SharedDiaryInbox.accept(подделка, context: её)
+        #expect(try её.fetch(FetchDescriptor<Clinic>()).isEmpty,
+                "приём завёл безымянную клинику — второй вход того же дефекта")
+    }
+
+    @Test("Партия вакцины, срок и клиника доезжают вместе с прививкой")
+    func прививкаДоезжаетЦеликом() throws {
+        let (мой, собака) = try телефон()
+        let клиника = Clinic(name: "Vet Riviera", phone: "+33 4 93 00 00 00")
+        мой.insert(клиника)
+        let прививка = CareTask(title: "Бешенство", detail: "ежегодно",
+                                intervalDays: 365, category: .medical)
+        прививка.vaccineBatch = "L3421-07"
+        прививка.vaccineValidUntil = Date(timeIntervalSince1970: 1_790_000_000)
+        прививка.clinic = клиника
+        прививка.dog = собака
+        мой.insert(прививка)
+        try мой.save()
+
+        let запись = SharedDiaryRecords.record(прививка.payload, base: nil, in: zone)
+        let приехало = try #require(SharedDiaryRecords.carePayload(запись))
+        #expect(приехало.vaccineBatch == "L3421-07", """
+            номер партии не доехал. Его спрашивают, когда у собаки \
+            реакция или когда партию отзывают, — и спрашивают у того, \
+            кто привёл собаку сегодня.
+            """)
+        #expect(приехало.vaccineValidUntil == прививка.vaccineValidUntil, """
+            срок прививки не доехал — то самое поле, из-за которого \
+            шаг 0 и начался.
+            """)
+        #expect(приехало.clinicName == "Vet Riviera", "имя клиники не доехало")
+        #expect(приехало.clinicID == клиника.id, "id клиники не доехал")
+
+        // У мамы справочник уже приехал — значит связь сошьётся по id.
+        let (её, её_собака) = try телефон()
+        SharedDiaryInbox.accept(
+            try #require(SharedDiaryRecords.clinicPayload(
+                SharedDiaryRecords.record(клиника.payload, base: nil, in: zone))),
+            context: её)
+        SharedDiaryInbox.accept(приехало, dog: её_собака, context: её)
+
+        let дела = try её.fetch(FetchDescriptor<CareTask>())
+        let у_мамы = try #require(дела.first)
+        #expect(у_мамы.vaccineBatch == "L3421-07")
+        #expect(у_мамы.clinic?.name == "Vet Riviera", """
+            прививка приехала без места, где её сделали. Это факт \
+            без места — и у мамы не будет ответа на вопрос, куда \
+            вести собаку в следующий раз.
+            """)
+    }
+
+    /// **Главный тест суиты.** Промах по id — норма, а не сбой.
+    ///
+    /// Справочник второй человек мог завести своей рукой до включения
+    /// обмена, и тогда та же «Vet Riviera» лежит у него с другим UUID.
+    /// Тот же урок, что у висящих доз, оплаченный 23.09.
+    @Test("Промах по id ловится именем: своя «Vet Riviera» с другим UUID")
+    func промахПоIdЛовитсяИменем() throws {
+        let (её, её_собака) = try телефон()
+        let её_клиника = Clinic(name: "Vet Riviera", phone: "её номер")
+        её.insert(её_клиника)
+        try её.save()
+
+        // Приехало дело ухода с ЧУЖИМ id клиники и тем же именем.
+        var приехало = CarePayload(
+            id: UUID(), dogID: её_собака.id, title: "Бешенство", detail: "",
+            kind: CareKind.dated.rawValue, category: CareCategory.medical.rawValue,
+            intervalDays: 365, scheduledDate: nil, remindDaysBefore: 14,
+            lastDone: nil, streak: 0, seasonStartMonth: nil, seasonEndMonth: nil,
+            snoozeCount: 0, clinicID: UUID(), clinicName: "Vet Riviera",
+            vaccineBatch: "L3421-07", vaccineValidUntil: nil, changedAt: Date())
+        SharedDiaryInbox.accept(приехало, dog: её_собака, context: её)
+
+        let дело = try #require(try её.fetch(FetchDescriptor<CareTask>()).first)
+        #expect(дело.clinic?.id == её_клиника.id, """
+            промах по id оставил прививку без клиники, хотя та же \
+            клиника лежит рядом под тем же именем. Промах по id здесь \
+            норма: справочник могли завести до включения обмена.
+            """)
+
+        // А промах по ОБОИМ не заводит клинику: запись, рождённая
+        // промахом, была бы дублем справочника.
+        приехало.id = UUID()
+        приехало.clinicID = UUID()
+        приехало.clinicName = "Клиника, которой тут нет"
+        SharedDiaryInbox.accept(приехало, dog: её_собака, context: её)
+        #expect(try её.fetch(FetchDescriptor<Clinic>()).count == 1, """
+            промах по имени завёл новую клинику. Справочник без дублей — \
+            правило дизайна, а запись, рождённая промахом, отличалась бы \
+            от настоящей опечаткой.
+            """)
+    }
+
+    @Test("Номер рецепта доезжает до того, кто пойдёт в аптеку")
+    func номерРецептаДоезжает() throws {
+        let (мой, собака) = try телефон()
+        let схема = Medication(name: "Lévothyrox", doseText: "66 мкг", times: [420])
+        схема.prescriptionNumber = "2026/0417"
+        схема.dog = собака
+        мой.insert(схема)
+        try мой.save()
+
+        let запись = SharedDiaryRecords.record(схема.payload, base: nil, in: zone)
+        let приехало = try #require(SharedDiaryRecords.medicationPayload(запись))
+        #expect(приехало.prescriptionNumber == "2026/0417")
+
+        let (её, её_собака) = try телефон()
+        SharedDiaryInbox.accept(приехало, dog: её_собака, context: её)
+        #expect(try её.fetch(FetchDescriptor<Medication>()).first?.prescriptionNumber == "2026/0417", """
+            номер назначения не доехал. Его называют в аптеке, чтобы \
+            продлить, и делает это тот, кто сегодня свободен, \
+            а не владелец телефона.
+            """)
+    }
+
+    /// Спор двух телефонов о записи справочника.
+    @Test("При ничьей по времени выигрывает версия с телефоном, а не без")
+    func спорПриНичьей() {
+        let id = UUID()
+        let когда = Date()
+        let сТелефоном = ClinicPayload(id: id, name: "Vet Riviera", detail: nil,
+                                       isLab: false, phone: "+33 4 93 00 00 00",
+                                       createdAt: когда, changedAt: когда)
+        let безТелефона = ClinicPayload(id: id, name: "Vet Riviera", detail: nil,
+                                        isLab: false, phone: nil,
+                                        createdAt: когда, changedAt: когда)
+
+        #expect(SharedDiaryMerge.resolve(local: безТелефона, remote: сТелефоном) == сТелефоном, """
+            ничья решилась в пользу версии без телефона. Часы двух \
+            телефонов расходятся на секунды, и разумнее взять ту, \
+            где данных больше, чем ту, где их стёрли.
+            """)
+        #expect(SharedDiaryMerge.resolve(local: сТелефоном, remote: безТелефона) == сТелефоном,
+                "исход зависит от того, с какой стороны спросили")
+
+        let позже = сТелефоном.changedAt.addingTimeInterval(60)
+        var правкаПозже = безТелефона
+        правкаПозже.phone = nil
+        правкаПозже.changedAt = позже
+        #expect(SharedDiaryMerge.resolve(local: сТелефоном, remote: правкаПозже) == правкаПозже, """
+            правка, что позже, проиграла. Стирание номера — это тоже \
+            правка: человек мог убрать номер, который сменился.
+            """)
+    }
+}
+
 @Suite("Общий дневник · доза находит препарат")
 @MainActor
 struct SharedDoseMedicationTests {
