@@ -29,7 +29,7 @@ struct ProfileScreen: View {
         }
         .disabled(false)
         .navigationTitle(заголовок)
-        .posterHeader(.готовое(заголовок))
+        .posterHeader(.значение(dog.flatMap(\.nameIfAny) ?? String(localized: "Профиль")))
         .navigationBarTitleDisplayMode(.large)
     }
 

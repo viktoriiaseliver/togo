@@ -41,7 +41,7 @@ struct DogTab: View {
                 }
             }
             .navigationTitle(dog.flatMap(\.nameIfAny) ?? String(localized: "Собака"))
-            .posterHeader(.готовое(dog.flatMap(\.nameIfAny) ?? String(localized: "Собака")))
+            .posterHeader(.значение(dog.flatMap(\.nameIfAny) ?? String(localized: "Собака")))
             .usageScreen(.profile)
             .navigationBarTitleDisplayMode(.large)
             .toolbar { SettingsToolbarItem() }
@@ -222,7 +222,7 @@ struct TripScreen: View {
                      size: .medium, systemImage: "trash") { isConfirmingDelete = true }
         }
         .navigationTitle(trip.destination)
-        .posterHeader(.готовое(trip.destination))
+        .posterHeader(.значение(trip.destination))
         .navigationBarTitleDisplayMode(.large)
         .confirmationDialog("Убрать поездку?", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
             Button("Убрать", role: .destructive) {

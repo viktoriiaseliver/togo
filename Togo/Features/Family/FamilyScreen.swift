@@ -434,7 +434,7 @@ struct MemberScreen: View {
             }
         }
         .navigationTitle(member.name)
-        .posterHeader(.готовое(member.name))
+        .posterHeader(.значение(member.name))
         .navigationBarTitleDisplayMode(.large)
     }
 }
