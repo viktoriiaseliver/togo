@@ -480,9 +480,13 @@ struct WalkSummarySheet: View {
         TGCard {
             HStack(spacing: 0) {
                 TGStat(value: Fmt.duration(session.duration()), caption: "в пути", size: 20)
-                TGStat(value: "\(session.count(of: .urine))", caption: "раз пописал", size: 20)
+                TGStat(count: session.count(of: .urine),
+                       сЧислом: String(localized: "\(session.count(of: .urine)) раз пописал"),
+                       size: 20)
                 if session.reactions > 0 {
-                    TGStat(value: "\(session.reactions)", caption: "срывов", size: 20)
+                    TGStat(count: session.reactions,
+                           сЧислом: String(localized: "\(session.reactions) срывов"),
+                           size: 20)
                 } else {
                     TGStat(value: session.count(of: .stool) > 0 ? "да" : "нет", caption: "стул", size: 20)
                 }
