@@ -46,7 +46,17 @@ struct LocalizationDebtTests {
         "DogDocument.swift": 22, "FamilyShare.swift": 4, "FamilySync.swift": 3,
         "Feeding.swift": 5, "ScheduleChange.swift": 9,
         "TimelineBuilder.swift": 9, "TreatmentCourse.swift": 10, "VetSummary.swift": 10, "WalkMarkIntent.swift": 8,
-        "WalkRecorder.swift": 1, "WidgetSnapshot.swift": 3,
+        // `WidgetSnapshot.swift` стоял здесь с долгом 3 и ушёл 07.10.2026:
+        // три слова заглушки виджета («Собака», «Просится», «нет данных»)
+        // рисовались по-русски на любом языке. Человек видит их в галерее
+        // при добавлении виджета — `TodayWidget.swift:25` отдаёт `.empty`
+        // из `placeholder(in:)`. Новых ключей правка не завела: все три
+        // лежали в каталоге на четырёх языках, менялась только дорога.
+        //
+        // Строку убрал не из аккуратности: сторож потребовал сам —
+        // «долг, которого больше нет, разрешает вернуть то, что уже
+        // починено».
+        "WalkRecorder.swift": 1,
     ]
 
     @Test("Непереведённых строк в общем слое не становится больше")

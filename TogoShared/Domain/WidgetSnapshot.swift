@@ -41,11 +41,27 @@ nonisolated struct WidgetSnapshot: Codable, Equatable, Sendable {
 
     var updatedAt: Date
 
+    /// Заглушка виджета — **её человек видит**, а не только мы.
+    ///
+    /// `TodayWidget.swift:25` отдаёт её из `placeholder(in:)`: это
+    /// и галерея при добавлении виджета, и то, что стоит на экране,
+    /// пока снимок не прочитан.
+    ///
+    /// **Три слова здесь рисовались по-русски на любом языке.** Литерал
+    /// в `String`-поле — это ЗНАЧЕНИЕ, и до каталога оно не доходит;
+    /// `Text(значение)` печатает его дословно. Тот же класс, что
+    /// `dog?.name ?? "Собака"` на тридцати поверхностях, только здесь
+    /// не про пустоту, а про язык.
+    ///
+    /// Новых ключей это не заводит: «Собака», «Просится» и «нет данных»
+    /// лежат в каталоге на всех четырёх языках. Слова не меняются —
+    /// текст заморожен решением Виктории 07.10.2026; меняется только
+    /// дорога, которой они идут на экран.
     static let empty = WidgetSnapshot(
-        dogName: "Собака",
+        dogName: String(localized: "Собака"),
         dogInitial: "?",
-        verdictTitle: "Просится",
-        verdictBadge: "нет данных",
+        verdictTitle: String(localized: "Просится"),
+        verdictBadge: String(localized: "нет данных"),
         sinceUrineSeconds: nil,
         urineSilenceSince: nil,
         lastStoolSummary: nil,
