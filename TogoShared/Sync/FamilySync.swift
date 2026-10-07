@@ -351,6 +351,13 @@ extension FamilySync: CKSyncEngineDelegate {
         if let dog = try? ctx.fetch(
             FetchDescriptor<Dog>(predicate: #Predicate { $0.id == id })
         ).first {
+            // Отправка профиля может вернуть `nil` — безымянную собаку
+            // наружу не отправляем. Решение живёт в самой
+            // `SharedDiaryRecords`, а не здесь: этот метод `private`
+            // и требует `context` с `outbox`, то есть проверить его
+            // тестом нечем. Поверхность без шва — это не
+            // «непроверенная», а «непроверяемая», и лечится она
+            // переносом решения, а не внимательностью.
             return SharedDiaryRecords.record(dog.payload, base: base, in: recordID.zoneID)
         }
         if let care = try? ctx.fetch(
