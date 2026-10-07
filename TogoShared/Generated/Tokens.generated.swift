@@ -75,6 +75,8 @@ nonisolated enum Token {
         static let capsule: CGFloat = 999
         static let card: CGFloat = 28
         static let control: CGFloat = 24
+        /// Радиус нижних углов плаката. Макет: border-radius: 0 0 44px 44px.
+        static let poster: CGFloat = 44
         static let sheet: CGFloat = 36
         static let small: CGFloat = 12
         static let tile: CGFloat = 16
@@ -90,6 +92,8 @@ nonisolated enum Token {
         static let bar = Color(Dyn(dark: 0xA2C1FE, light: 0x0E14A1, darkHC: 0xA2C1FE, lightHC: 0x0E14A1))
         static let barOnDose = Color(Dyn(dark: 0x0B0D2E, light: 0xFFFFFF, darkHC: 0x0B0D2E, lightHC: 0xFFFFFF))
         static let caption = Color(Dyn(dark: 0xB2B2AE, light: 0x5A5D61, darkHC: 0xC8C8C4, lightHC: 0x45484C))
+        /// Подпись плаката на заливке дозы. Отдельная от caption потому, что доза — единственный режим дня со СВЕТЛОЙ подложкой: остальные четыре кладут текст на тёмный блок, и там caption честен. У плаката ПАКЕТА режима дозы нет вовсе — его bg всегда тёмный блок с белым текстом, — то есть инверсия наша, и цена её в том, что для неё нужен свой тихий цвет.
+        static let captionOnDose = Color(Dyn(dark: 0x2E3866, light: 0xD9E3FC, darkHC: 0x2E3866, lightHC: 0xD9E3FC))
         static let label = Color(Dyn(dark: 0xF4F4F2, light: 0x101112, darkHC: 0xF4F4F2, lightHC: 0x101112))
         static let labelOnDose = Color(Dyn(dark: 0x0B0D2E, light: 0xFFFFFF, darkHC: 0x0B0D2E, lightHC: 0xFFFFFF))
     }
@@ -115,6 +119,8 @@ nonisolated enum Token {
     enum Size {
         static let avatarMd: CGFloat = 40
         static let avatarSm: CGFloat = 26
+        /// Высота косточки прогресса на плакате. Макет: height 16px. ПАРЫ В ПАКЕТЕ НЕТ: среди size/ шестнадцати нет вовсе, а space/16, radius/inner и type/size/callout равны шестнадцати СЛУЧАЙНО — по роли они косточке не родня. Взять любое из них значило бы завести связь, которой нет, и в день, когда иконки станут 18, косточка поехала бы за ними без причины.
+        static let bone: CGFloat = 16
         /// Главное действие — капсула 60 pt. Только оно
         static let capsule: CGFloat = 60
         /// Плитка действия. Было общим с главной кнопкой: один номер держал две роли, и «капсула 60 pt» из «Льда» растила заодно плитки

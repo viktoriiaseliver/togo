@@ -75,6 +75,8 @@ struct ThemeContrastTests {
         .init(что: Token.Status.stockLowText, на: Token.Status.stockLowBg, порог: 4.5, роль: "запас ≤7 дней на своей плашке"),
         .init(что: Token.Poster.label, на: Token.Poster.background, порог: 4.5, роль: "подпись плаката"),
         .init(что: Token.Poster.labelOnDose, на: Token.Poster.backgroundDose, порог: 4.5, роль: "подпись плаката на дозе — ИНВЕРСИЯ"),
+        .init(что: Token.Poster.captionOnDose, на: Token.Poster.backgroundDose, порог: 4.5, роль: "тихая подпись плаката на дозе"),
+        .init(что: Token.Poster.caption, на: Token.Poster.background, порог: 4.5, роль: "тихая подпись плаката на тёмном блоке"),
     ]
 
     /// Непрохождения, **измеренные и названные**, с числом и хозяином.

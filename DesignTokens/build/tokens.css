@@ -49,6 +49,7 @@
   --primitive-color-arctic: #A2C1FE;
   --primitive-color-arcticInk: #0B0D2E;
   --primitive-color-arcticPressed: #7BA5FE;
+  --primitive-color-arcticSubtle: #2E3866;
   --primitive-color-arcticTint: #A2C1FE2E;
   --primitive-color-clay: #FF7A66;
   --primitive-color-clayBg: #4D1F22;
@@ -91,9 +92,11 @@
   --primitive-radius-none: 0px;
   --primitive-radius-row: 24px;
   --primitive-radius-sheet: 36px;
+  --primitive-radius-sheetFloating: 44px;
   --primitive-radius-tile: 16px;
   --primitive-size-avatarMd: 40px;
   --primitive-size-avatarSm: 26px;
+  --primitive-size-bone: 16px;
   --primitive-size-capsule: 60px;
   --primitive-size-controlL: 52px;
   --primitive-size-controlM: 50px;
@@ -133,11 +136,13 @@
   --semantic-poster-bar: #A2C1FE;
   --semantic-poster-barOnDose: #0B0D2E;
   --semantic-poster-caption: #B2B2AE;
+  --semantic-poster-captionOnDose: #2E3866;
   --semantic-poster-label: #F4F4F2;
   --semantic-poster-labelOnDose: #0B0D2E;
   --semantic-radius-capsule: 999px;
   --semantic-radius-card: 28px;
   --semantic-radius-control: 24px;
+  --semantic-radius-poster: 44px;
   --semantic-radius-sheet: 36px;
   --semantic-radius-small: 12px;
   --semantic-radius-tile: 16px;
@@ -194,6 +199,7 @@
   --primitive-color-arctic: #0E14A1;
   --primitive-color-arcticInk: #FFFFFF;
   --primitive-color-arcticPressed: #080679;
+  --primitive-color-arcticSubtle: #D9E3FC;
   --primitive-color-arcticTint: #0E14A138;
   --primitive-color-clay: #AE2219;
   --primitive-color-clayBg: #F7D5CF;
@@ -225,6 +231,7 @@
   --semantic-poster-bar: #0E14A1;
   --semantic-poster-barOnDose: #FFFFFF;
   --semantic-poster-caption: #5A5D61;
+  --semantic-poster-captionOnDose: #D9E3FC;
   --semantic-poster-label: #101112;
   --semantic-poster-labelOnDose: #FFFFFF;
   --semantic-status-doneText: #101112;
@@ -290,6 +297,7 @@
   --primitive-color-arctic: #0E14A1;
   --primitive-color-arcticInk: #FFFFFF;
   --primitive-color-arcticPressed: #080679;
+  --primitive-color-arcticSubtle: #D9E3FC;
   --primitive-color-arcticTint: #0E14A138;
   --primitive-color-clay: #9B100E;
   --primitive-color-clayBg: #F7D5CF;
@@ -321,6 +329,7 @@
   --semantic-poster-bar: #0E14A1;
   --semantic-poster-barOnDose: #FFFFFF;
   --semantic-poster-caption: #45484C;
+  --semantic-poster-captionOnDose: #D9E3FC;
   --semantic-poster-label: #101112;
   --semantic-poster-labelOnDose: #FFFFFF;
   --semantic-status-doneText: #101112;
