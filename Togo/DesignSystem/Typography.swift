@@ -65,6 +65,37 @@ enum AppFont {
     /// Название экрана. 34/700 — как большой заголовок в iOS.
     static let screenTitle = TextStyleToken(size: Token.FontSize.screen, weight: Token.FontWeight.bold, color: Token.Ink.primary,
                                             relativeTo: .largeTitle)
+    /// Название экрана в шапке-плакате. Rounded и на цветной подложке.
+    ///
+    /// **Кегль 34, а решение дизайна называет 40 — и это пробел
+    /// токенов, а не недосмотр.** В `FontSize` сорока нет: шкала
+    /// кончается на `screen: 34` и `hero: 56`. Литерал сюда поставить
+    /// нельзя — `DesignLiteralTests` держит храповик на числа в слое
+    /// вида, и держит правильно.
+    ///
+    /// Рядом стоит прецедент того же рода: `hero` намеренно НЕ подняли
+    /// до 96px, потому что макет задаёт её с осью устройства, которой
+    /// в токенах нет, и плоское значение переполнило бы SE. Здесь
+    /// случай проще — сорок на узком экране помещаются, — но источник
+    /// правды по кеглю один (`DesignTokens/tokens.json`), и дописывать
+    /// его из слоя вида значит заводить вторую шкалу.
+    ///
+    /// То есть 34 — это НЕ «решили, что хватит», а «сорока в токенах
+    /// нет». Появится — одна строка здесь.
+    static let posterHeaderTitle = TextStyleToken(size: Token.FontSize.screen,
+                                                  weight: Token.FontWeight.bold,
+                                                  color: Token.Poster.labelOnColor,
+                                                  rounded: true,
+                                                  relativeTo: .largeTitle)
+
+    /// Подзаголовок шапки-плаката. `captionOnColor`, а не `caption`:
+    /// у плаката три семьи текста, и `caption` честен только
+    /// на нейтральном блоке — на синем в светлой он даёт 1,10.
+    static let posterHeaderSubtitle = TextStyleToken(size: Token.FontSize.meta,
+                                                     weight: Token.FontWeight.regular,
+                                                     color: Token.Poster.captionOnColor,
+                                                     relativeTo: .subheadline)
+
     /// Заголовок группы и карточки. 20/600 — в системе это одна ступень.
     static let sectionTitle = TextStyleToken(size: Token.FontSize.section, weight: Token.FontWeight.semibold, color: Token.Ink.primary,
                                              relativeTo: .title3)
