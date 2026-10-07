@@ -70,17 +70,54 @@ struct RealUsageTests {
         #expect(try context.fetch(FetchDescriptor<LogEvent>()).count == 2)
     }
 
-    @Test("Выходы и вода не считаются повторами: собака писает и пьёт когда хочет")
-    func repeatableKindsAreNotDeduplicated() throws {
+    /// Прежняя редакция называла два вида разом — выход и воду — и ждала
+    /// шесть записей от шести вызовов. Для воды это верно и сейчас.
+    /// Для выхода с 07.10.2026 нет: три вызова **без всякого промежутка**
+    /// — это три тапа по одной кнопке, и в живом дневнике они нашлись
+    /// на интервалах 1, 2 и 3 секунды. Настоящие повторы того же дня
+    /// стоят от 36 секунд, и их проверяет вторая половина теста.
+    ///
+    /// Разделено на два, потому что один тест на два вида не мог бы
+    /// покраснеть правильно: любая правка одного вида ломала его так,
+    /// будто сломались оба.
+    @Test("Вода не считается повтором: собака пьёт когда хочет")
+    func waterIsNeverDeduplicated() throws {
         let context = контекст()
         let dog = стич(в: context)
         let log = EventLog(context: context, appState: AppState.наСвоёмТелефоне())
 
         for _ in 0..<3 {
-            log.record(.outing, dog: dog, confirmation: nil)
             log.record(.water, dog: dog, confirmation: nil) { $0.milliliters = 50 }
         }
-        #expect(try context.fetch(FetchDescriptor<LogEvent>()).count == 6)
+        #expect(try context.fetch(FetchDescriptor<LogEvent>()).count == 3,
+                "вода повторяется по смыслу: миска стоит целый день")
+    }
+
+    @Test("Три выхода без промежутка — один, через полминуты — три")
+    func outingsAreDeduplicatedOnlyWithinSeconds() throws {
+        let context = контекст()
+        let dog = стич(в: context)
+        let log = EventLog(context: context, appState: AppState.наСвоёмТелефоне())
+
+        // Момент задан явно у всех пяти записей: иначе половина теста
+        // берёт его у `appState.моментЗаписи`, и расстояние между
+        // половинами зависит от состояния, а не от теста.
+        let вышли = Date()
+
+        // Три тапа в один миг. До 07.10 это были три записи в ленте.
+        for шаг in [0.0, 1.0, 3.0] {
+            log.record(.outing, dog: dog, at: вышли.addingTimeInterval(шаг), confirmation: nil)
+        }
+        #expect(try context.fetch(FetchDescriptor<LogEvent>()).count == 1,
+                "три тапа по одной кнопке стали тремя выходами")
+
+        // А это настоящие повторы: собака правда писает несколько раз
+        // за прогулку. Шаг 40 секунд, ближайший измеренный — 36.
+        for шаг in [40.0, 80.0] {
+            log.record(.outing, dog: dog, at: вышли.addingTimeInterval(шаг), confirmation: nil)
+        }
+        #expect(try context.fetch(FetchDescriptor<LogEvent>()).count == 3,
+                "сторож съел настоящий второй выход — окно доросло до повтора")
     }
 
     // MARK: Уход, который молчал
