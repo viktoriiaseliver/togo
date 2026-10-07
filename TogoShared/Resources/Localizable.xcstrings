@@ -37452,36 +37452,6 @@
         }
       }
     },
-    "Он" : {
-      "comment" : "Что было за день и что осталось",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "She"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Il"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Он"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Він"
-          }
-        }
-      }
-    },
     "Он заполняется сам, пока приложением пользуются. Возвращайся через пару недель." : {
       "comment" : "body",
       "extractionState" : "manual",
