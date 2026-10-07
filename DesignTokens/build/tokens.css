@@ -224,8 +224,10 @@
   --primitive-color-posterInk: #FFFFFF;
   --primitive-color-posterInkMuted: #FFFFFFE0;
   --primitive-color-scrim: #10111252;
+  --primitive-color-spruceText: #286B4C;
   --primitive-color-stockLow: #B85400;
   --primitive-color-stockLowBg: #FFEBD9;
+  --semantic-action-doneText: #286B4C;
   --semantic-action-primary: #0E14A1;
   --semantic-action-primaryPressed: #080679;
   --semantic-action-primaryQuiet: #0E14A138;
@@ -326,8 +328,10 @@
   --primitive-color-posterInk: #FFFFFF;
   --primitive-color-posterInkMuted: #FFFFFFE0;
   --primitive-color-scrim: #10111252;
+  --primitive-color-spruceText: #215940;
   --primitive-color-stockLow: #A34A00;
   --primitive-color-stockLowBg: #FFEBD9;
+  --semantic-action-doneText: #215940;
   --semantic-action-primary: #0E14A1;
   --semantic-action-primaryPressed: #080679;
   --semantic-action-primaryQuiet: #0E14A138;
