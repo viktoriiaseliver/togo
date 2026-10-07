@@ -20,7 +20,14 @@ import XCTest
 /// это кадр, которого нет. PNG по `#filePath` переживает и обрыв
 /// прогона, а путь печатается в сообщении: сообщение попадает в лог
 /// всегда.
-final class ШапкаПлаката: XCTestCase {
+/// `nonisolated` — как у соседних наборов, и это не оформление:
+/// `XCTestCase.setUp()` объявлен вне актора, а класс без пометки
+/// в Swift 6 получает `@MainActor` по умолчанию и перестаёт
+/// переопределять то, что собирался. Компилятор говорит об этом
+/// прямо («different actor isolation from nonisolated overridden
+/// declaration»), но указывает на `setUp` и на `init(invocation:)`,
+/// а причина — в объявлении класса строкой выше.
+nonisolated final class ШапкаПлаката: XCTestCase {
 
     private var app: XCUIApplication!
 
