@@ -30,28 +30,33 @@ ROOT = Path(__file__).resolve().parent.parent
 ARCHIVE_PATH = "TogoShared/Domain/BackupArchive.swift"
 MODEL_GLOB = "TogoShared/Models/*.swift"
 
-# Соответствие модель → структура снимка. Выводится по имени там, где
-# совпадает, и перечислено руками там, где нет: `FoodStock` едет
-# в `StockSnapshot`, `FamilyMember` — в `MemberSnapshot`.
-# Модель, которой в этой таблице нет, НЕ выбрасывается молча: она
-# попадает в перечень со словами «снимка нет вовсе».
-SNAPSHOT_BY_MODEL = {
-    "Dog": "DogSnapshot",
+# Соответствие модель → структура снимка выводится ИЗ ИСХОДНИКА:
+# `Dog` → `DogSnapshot`. Руками перечислены только те, где имена
+# не совпадают, и список исключений закрыт.
+#
+# **Первая редакция держала руками ВСЮ таблицу, и это был дефект
+# ровно того класса, за который мы ругаем сторожей.** `togo-05` завёл
+# `ProcedureSkillSnapshot`, а инструмент сказал «снимка нет вовсе» —
+# то есть измеритель полноты выдал СВОЮ неполноту за находку о мире.
+# Нашёл это не я и не мой порог: нашёл человек, который правил код
+# и спросил инструмент после правки.
+#
+# > Инструмент с перечнем руками знает только то, что в него положили.
+SNAPSHOT_RENAMED = {
     "LogEvent": "EventSnapshot",
     "WeightEntry": "WeightSnapshot",
-    "CareTask": "CareTaskSnapshot",
-    "Medication": "MedicationSnapshot",
     "DoseRecord": "DoseSnapshot",
-    "TrainingStep": "TrainingStepSnapshot",
-    "TrainingSession": "TrainingSessionSnapshot",
-    "Trip": "TripSnapshot",
     "FoodStock": "StockSnapshot",
     "HeatRecord": "HeatSnapshot",
     "DogDocument": "DocumentSnapshot",
-    "DayOut": "DayOutSnapshot",
     "FamilyMember": "MemberSnapshot",
-    "Episode": "EpisodeSnapshot",
 }
+
+# Реестр решений «поле живёт только на этом телефоне» — читается
+# из сторожа `DeviceLocalFieldTests`, а не повторяется здесь копией.
+# Без него каждое новое device-local поле выглядит дырой в архиве,
+# и перечень перестают читать.
+DEVICE_LOCAL_SOURCE = "TogoTests/DeviceLocalFieldTests.swift"
 
 # Классы полей, которые «не едут» по устройству формата, а не по
 # недосмотру. Их держат ОТДЕЛЬНО от настоящих потерь: пятнадцать
@@ -293,9 +298,33 @@ def base(name: str) -> str:
     return name.lower()
 
 
+def device_local(ref: str) -> set[str]:
+    """Ключи `Модель.поле`, про которые ПРИНЯТО решение «только этот
+    телефон». Читается из сторожа, а не хранится копией: копия числа
+    меряет себя, а не мир."""
+    try:
+        text = read(ref, DEVICE_LOCAL_SOURCE)
+    except Exception:
+        return set()
+    m = re.search(r'проЭтотТелефон[^=]*=\s*\[(.*?)\n\s*\]', text, re.S)
+    if not m:
+        return set()
+    return set(re.findall(r'"(\w+\.\w+)"\s*:', m.group(1)))
+
+
+def snapshot_name(model: str, snaps: dict[str, list[str]]) -> str | None:
+    """Имя снимка выводится из исходника; руками — только переименования."""
+    direct = f"{model}Snapshot"
+    if direct in snaps:
+        return direct
+    renamed = SNAPSHOT_RENAMED.get(model)
+    return renamed if renamed in snaps else None
+
+
 def measure(ref: str) -> dict:
     archive = read(ref, ARCHIVE_PATH)
     snaps = bodies(archive, STRUCT_OPENER)
+    local = device_local(ref)
 
     models: dict[str, list[str]] = {}
     for path in list_files(ref, MODEL_GLOB):
@@ -305,17 +334,26 @@ def measure(ref: str) -> dict:
     rows = []
     for model in sorted(models):
         stored, computed = fields(models[model])
-        data = [(n, t) for n, t in stored
-                if not structural(n, t, model_names) and n not in SERVICE_FIELDS]
-        service = [n for n, t in stored
-                   if n in SERVICE_FIELDS and not structural(n, t, model_names)]
-        tree = [n for n, t in stored if structural(n, t, model_names)]
+        def kind(n: str, t: str) -> str:
+            if structural(n, t, model_names):
+                return "tree"
+            if f"{model}.{n}" in local:
+                return "phone"
+            if n in SERVICE_FIELDS:
+                return "service"
+            return "data"
 
-        snap_name = SNAPSHOT_BY_MODEL.get(model)
-        if snap_name is None or snap_name not in snaps:
+        data = [(n, t) for n, t in stored if kind(n, t) == "data"]
+        service = [n for n, t in stored if kind(n, t) == "service"]
+        phone = [n for n, t in stored if kind(n, t) == "phone"]
+        tree = [n for n, t in stored if kind(n, t) == "tree"]
+
+        snap_name = snapshot_name(model, snaps)
+        if snap_name is None:
             rows.append({
-                "model": model, "snapshot": snap_name or "—",
-                "data": data, "service": service, "tree": tree, "computed": computed,
+                "model": model, "snapshot": "—",
+                "data": data, "service": service, "phone": phone, "tree": tree,
+                "computed": computed,
                 "in_snapshot": [], "missing": [n for n, _ in data],
                 "missing_service": service, "no_snapshot": True,
             })
@@ -324,13 +362,23 @@ def measure(ref: str) -> dict:
         have = {base(n) for n, _ in snap_stored}
         rows.append({
             "model": model, "snapshot": snap_name,
-            "data": data, "service": service, "tree": tree, "computed": computed,
+            "data": data, "service": service, "phone": phone, "tree": tree,
+            "computed": computed,
             "in_snapshot": snap_stored,
             "missing": [n for n, _ in data if base(n) not in have],
             "missing_service": [n for n in service if base(n) not in have],
             "no_snapshot": False,
         })
-    return {"rows": rows, "models": models, "snaps": snaps}
+    # Сирота — ЛЮБАЯ структура архива, которую не забрала ни одна модель,
+    # кроме корневой. Проверять `endswith("Snapshot")` нельзя: подделка
+    # переименовала `ProcedureSkillSnapshot` в `SkillSnap`, и сторож
+    # остался зелёным — он искал по имени то, что обязан искать по месту.
+    # Та же ошибка, что `hasPrefix("struct Swatch")` у Gamut.
+    claimed = {r["snapshot"] for r in rows}
+    orphans = sorted(n for n in snaps
+                     if n not in claimed and n != "BackupArchive")
+    return {"rows": rows, "models": models, "snaps": snaps,
+            "orphan_snapshots": orphans, "device_local": local}
 
 
 def blind(result: dict) -> list[str]:
@@ -353,6 +401,18 @@ def blind(result: dict) -> list[str]:
         bad.append(
             f"моделей без снимка: {len(orphans)} ({', '.join(orphans)}) — "
             "столько сразу не бывает, это разбор архива, а не находка"
+        )
+    if result["orphan_snapshots"]:
+        bad.append(
+            "снимки, которых не забрала ни одна модель: "
+            + ", ".join(result["orphan_snapshots"])
+            + " — либо отображение имён неверно, либо модель исчезла; "
+              "в обоих случаях перечень ниже неполон"
+        )
+    if not result["device_local"]:
+        bad.append(
+            f"реестр «только этот телефон» ({DEVICE_LOCAL_SOURCE}) прочитан "
+            "пустым — device-local поля будут названы потерей"
         )
     for row in result["rows"]:
         total = len(row["data"]) + len(row["service"]) + len(row["tree"])
@@ -417,23 +477,26 @@ def main() -> int:
     if args.only:
         rows = [r for r in rows if r["model"] in args.only]
 
-    print("Столбец «данных» — поля, которые ввёл человек: без тождества")
-    print("(`id`), без метки слияния (`changedAt`) и без связей дерева.")
+    print("Столбец «данных» — поля, которые ввёл человек. Из него вынесены:")
+    print("  служ.    тождество `id` и метка слияния `changedAt`")
+    print("  телеф.   решение «только этот телефон» — читается из реестра")
+    print(f"           {DEVICE_LOCAL_SOURCE}, а не повторено здесь копией")
+    print("  дерево   связи: в архиве выражены вложенностью, а не полем")
     print("Чистые модели стоят в перечне наравне с дырявыми — иначе это")
     print("список находок, а не перебор.")
     print()
     print(f"{'модель':<18}{'данных':>7}{'в снимке':>9}{'НЕ ЕДЕТ':>9}"
-          f"{'служ.':>7}{'дерево':>8}   снимок")
-    print("-" * 78)
+          f"{'служ.':>7}{'телеф.':>7}{'дерево':>8}   снимок")
+    print("-" * 85)
     total_missing = 0
     for r in rows:
         total_missing += len(r["missing"])
         mark = "  ← СНИМКА НЕТ ВОВСЕ" if r["no_snapshot"] else ""
         flag = " ←" if r["missing"] and not r["no_snapshot"] else ""
         print(f"{r['model']:<18}{len(r['data']):>7}{len(r['in_snapshot']):>9}"
-              f"{len(r['missing']):>9}{len(r['service']):>7}{len(r['tree']):>8}"
-              f"   {r['snapshot']}{mark}{flag}")
-    print("-" * 78)
+              f"{len(r['missing']):>9}{len(r['service']):>7}{len(r['phone']):>7}"
+              f"{len(r['tree']):>8}   {r['snapshot']}{mark}{flag}")
+    print("-" * 85)
     print(f"{'итого':<18}{sum(len(r['data']) for r in rows):>7}{'':>9}"
           f"{total_missing:>9}")
     print()
@@ -465,9 +528,12 @@ def main() -> int:
     print("  · служебным я назвал `id` и `changedAt` РЕШЕНИЕМ, а не замером:")
     print("    если тождество записи кому-то нужно при восстановлении,")
     print("    этот столбец прячет настоящую потерю")
-    print("  · соответствие модель → снимок названо руками в SNAPSHOT_BY_MODEL;")
-    print("    модель, которой там нет, попадает в перечень как «снимка нет»,")
-    print("    но ошибку в самой таблице замер не поймает")
+    print("  · соответствие модель → снимок выводится из исходника")
+    print("    (`XSnapshot`), руками — только переименования; снимок,")
+    print("    которого не забрала ни одна модель, валит замер целиком.")
+    print("    Но ПЕРЕИМЕНОВАНИЕ, добавленное неверно, замер не поймает")
+    print("  · «только этот телефон» берётся из реестра сторожа: решение,")
+    print("    записанное там неверно, замер повторит, а не оспорит")
     return 0
 
 
