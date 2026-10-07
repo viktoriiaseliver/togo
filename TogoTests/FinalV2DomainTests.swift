@@ -257,6 +257,69 @@ struct FinalV2DomainTests {
         #expect(AccentChoice.allCases.count == 3)
     }
 
+    // MARK: Конец эпизода
+
+    @Test("Нажатие «закончился» сильнее тишины: эпизод не оживает от свежего инцидента")
+    func declaredEndBeatsQuiet() {
+        let сейчас = Date()
+        let инцидентЧасНазад = сейчас.addingTimeInterval(-3600)
+        let объявлен = сейчас.addingTimeInterval(-60)
+
+        // Без объявления эпизод активен — инцидент час назад.
+        #expect(EpisodeLifetime.isActive(lastIncidentAt: инцидентЧасНазад, endedAt: nil, now: сейчас))
+        // С объявлением — нет, хотя инцидент тот же. Порядок проверок
+        // и есть правило: иначе нажатие ничего не значило бы.
+        #expect(!EpisodeLifetime.isActive(lastIncidentAt: инцидентЧасНазад, endedAt: объявлен, now: сейчас))
+        #expect(EpisodeLifetime.end(lastIncidentAt: инцидентЧасНазад, endedAt: объявлен, now: сейчас)
+                == .declared(at: объявлен))
+    }
+
+    @Test("Тишина — сетка, а не правило: двое суток без инцидентов гасят эпизод сами")
+    func quietPeriodIsTheSafetyNet() {
+        let сейчас = Date()
+        let давно = сейчас.addingTimeInterval(-EpisodeLifetime.quietPeriod - 60)
+        let недавно = сейчас.addingTimeInterval(-EpisodeLifetime.quietPeriod + 60)
+
+        #expect(!EpisodeLifetime.isActive(lastIncidentAt: давно, endedAt: nil, now: сейчас))
+        #expect(EpisodeLifetime.end(lastIncidentAt: давно, endedAt: nil, now: сейчас) == .quiet(since: давно))
+        // И обратный край: за минуту до порога эпизод ещё жив. Без этой
+        // половины правило выполнялось бы и при отсутствии предмета.
+        #expect(EpisodeLifetime.isActive(lastIncidentAt: недавно, endedAt: nil, now: сейчас))
+        #expect(EpisodeLifetime.end(lastIncidentAt: недавно, endedAt: nil, now: сейчас) == nil)
+    }
+
+    @Test("Кнопку «закончился» не показываем у законченного эпизода")
+    func endButtonHiddenWhenAlreadyOver() {
+        let сейчас = Date()
+        let инцидентЧасНазад = сейчас.addingTimeInterval(-3600)
+        let давно = сейчас.addingTimeInterval(-EpisodeLifetime.quietPeriod - 60)
+
+        #expect(EpisodeLifetime.canDeclareEnd(lastIncidentAt: инцидентЧасНазад, endedAt: nil, now: сейчас))
+        // Уже объявлен — кнопки нет: иначе однажды покажут кнопку,
+        // которая ничего не делает. У Togo это уже было с удалением
+        // собаки, обещанным текстом и не существовавшим.
+        #expect(!EpisodeLifetime.canDeclareEnd(lastIncidentAt: инцидентЧасНазад,
+                                               endedAt: сейчас.addingTimeInterval(-60), now: сейчас))
+        // Затих сам — тоже нет: заканчивать нечего.
+        #expect(!EpisodeLifetime.canDeclareEnd(lastIncidentAt: давно, endedAt: nil, now: сейчас))
+    }
+
+    @Test("Причина конца различается: «закончился» и «затих сам» — разные новости")
+    func endReasonsAreDistinguished() {
+        let сейчас = Date()
+        let давно = сейчас.addingTimeInterval(-EpisodeLifetime.quietPeriod - 60)
+        let объявлен = сейчас.addingTimeInterval(-60)
+        let declared = EpisodeLifetime.end(lastIncidentAt: сейчас.addingTimeInterval(-3600),
+                                           endedAt: объявлен, now: сейчас)
+        let quiet = EpisodeLifetime.end(lastIncidentAt: давно, endedAt: nil, now: сейчас)
+        #expect(declared != quiet)
+        // Одним текстом их покрывать нельзя: у Togo ступень отката
+        // iCloud говорила одним текстом на три причины, и совет в нём
+        // двум из трёх не помогал ничем.
+        if case .declared = declared {} else { Issue.record("ожидался объявленный конец") }
+        if case .quiet = quiet {} else { Issue.record("ожидался конец по тишине") }
+    }
+
     @Test("Набору было что проверять")
     func suiteHadSomethingToCheck() {
         // Первой строкой у любой группы — проверка, что предмет есть.
