@@ -71,7 +71,17 @@ enum NotificationCenterService {
     static func scheduleFastingEnd(id: String, at date: Date, dogName: String) async {
         let content = UNMutableNotificationContent()
         content.title = "Можно кормить"
-        content.body = "Окно натощак закончилось. \(dogName) может есть."
+        // Кличка приходит параметром и пустой быть может: место вызова
+        // её защищает (`ReminderScheduler` передаёт `dog.displayName`),
+        // а функция — нет, и этого достаточно, чтобы однажды сломалось.
+        // Без отката текст выходил «Окно натощак закончилось.  может
+        // есть.» — с двойным пробелом на месте подлежащего.
+        //
+        // **Это одно из трёх уведомлений с `.timeSensitive`.** Оно
+        // будит, человек читает его один раз с экрана блокировки,
+        // и переспросить ему некого.
+        let кличка = Fmt.dogNameOrFallback(dogName)
+        content.body = "Окно натощак закончилось. \(кличка) может есть."
         content.sound = .default
         content.interruptionLevel = .timeSensitive
         content.categoryIdentifier = Category.fasting.rawValue

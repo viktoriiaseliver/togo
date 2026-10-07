@@ -53,6 +53,10 @@ nonisolated struct BackupArchive: Codable, Sendable {
         /// Снимки документов. Тоже позже: экрана у них не было вовсе,
         /// а значит, и сохранять было нечего.
         var documents: [DocumentSnapshot]?
+        /// Выезды. Опциональность — не стиль: у файлов, сохранённых
+        /// до 07.10.2026, этого поля нет, и прочитаться они обязаны.
+        /// Та же причина, что у `stocks`, `heats` и `documents`.
+        var daysOut: [DayOutSnapshot]?
     }
 
     /// Фотография документа целиком: паспорт, потерянный вместе
@@ -76,6 +80,24 @@ nonisolated struct BackupArchive: Codable, Sendable {
     struct HeatSnapshot: Codable, Sendable {
         var startedAt: Date
         var endedAt: Date?
+        var note: String?
+    }
+
+    /// День с человеком: по делам, в дороге, в гостях.
+    ///
+    /// **Появился в архиве 07.10.2026, и до этого его не было вовсе.**
+    /// `DayOut` живёт в приложении давно: `TodayScreen` читает выезды
+    /// запросом и меняет по ним поведение главного экрана,
+    /// а «Удалить все данные» про них знает. Не знал только перенос.
+    ///
+    /// Цена молчания: человек, переезжающий на новый телефон, терял все
+    /// выезды — и узнать об этом ему было негде. Это не дефект показа,
+    /// на который жалуются; это потеря данных, которую обнаруживают
+    /// через месяц, если вообще.
+    struct DayOutSnapshot: Codable, Sendable {
+        var startedAt: Date
+        var endedAt: Date?
+        var plannedHours: Int
         var note: String?
     }
 

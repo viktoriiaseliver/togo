@@ -44,6 +44,7 @@ nonisolated enum BackupService {
         let allStocks = (try? context.fetch(FetchDescriptor<FoodStock>())) ?? []
         let allHeats = (try? context.fetch(FetchDescriptor<HeatRecord>())) ?? []
         let allDocuments = (try? context.fetch(FetchDescriptor<DogDocument>())) ?? []
+        let allDaysOut = (try? context.fetch(FetchDescriptor<DayOut>())) ?? []
         let members = try context.fetch(FetchDescriptor<FamilyMember>())
         let episodes = try context.fetch(FetchDescriptor<Episode>())
 
@@ -54,7 +55,8 @@ nonisolated enum BackupService {
                 snapshot(dog,
                          stocks: allStocks.filter { $0.dog?.persistentModelID == dog.persistentModelID },
                          heats: allHeats.filter { $0.dog?.persistentModelID == dog.persistentModelID },
-                         documents: allDocuments.filter { $0.dog?.persistentModelID == dog.persistentModelID })
+                         documents: allDocuments.filter { $0.dog?.persistentModelID == dog.persistentModelID },
+                         daysOut: allDaysOut.filter { $0.dog?.persistentModelID == dog.persistentModelID })
             },
             members: members.map { member in
                 BackupArchive.MemberSnapshot(
@@ -76,7 +78,8 @@ nonisolated enum BackupService {
         _ dog: Dog,
         stocks: [FoodStock] = [],
         heats: [HeatRecord] = [],
-        documents: [DogDocument] = []
+        documents: [DogDocument] = [],
+        daysOut: [DayOut] = []
     ) -> BackupArchive.DogSnapshot {
         BackupArchive.DogSnapshot(
             name: dog.name, photo: dog.photo, breed: dog.breed, birthDate: dog.birthDate,
@@ -159,6 +162,10 @@ nonisolated enum BackupService {
             documents: documents.map {
                 BackupArchive.DocumentSnapshot(title: $0.title, image: $0.image,
                                                addedAt: $0.addedAt, note: $0.note)
+            },
+            daysOut: daysOut.map {
+                BackupArchive.DayOutSnapshot(startedAt: $0.startedAt, endedAt: $0.endedAt,
+                                             plannedHours: $0.plannedHours, note: $0.note)
             }
         )
     }
@@ -317,16 +324,22 @@ nonisolated enum BackupService {
 
     /// Тянет ли снимок собаки за собой хоть одну запись.
     ///
-    /// Перечислены **все десять** коллекций снимка — не выборка. Если
-    /// в архиве появится одиннадцатая, здесь её не будет, и безымянная
-    /// собака с записями этого нового вида пропадёт при восстановлении
-    /// молча. Сторожа на полноту этого перечня у нас нет; поэтому список
-    /// стоит целиком и рядом с тем, что он решает, а не в трёх местах
-    /// по кусочку.
+    /// Перечислены **все одиннадцать** коллекций снимка — не выборка.
     ///
-    /// `daysOut` здесь нет не по забывчивости: выездов в архиве нет
-    /// вовсе — `DogSnapshot` их не хранит. Это отдельный вопрос
-    /// к полноте архива, и он не этой работы.
+    /// **Предупреждение, стоявшее здесь утром, сбылось к вечеру того же
+    /// дня, и сбылось моей же правкой.** Было написано: «если в архиве
+    /// появится одиннадцатая, здесь её не будет, и безымянная собака
+    /// с записями нового вида пропадёт при восстановлении молча».
+    /// Одиннадцатой оказались `daysOut` — те самые выезды, про которые
+    /// здесь же стояло «в архиве их нет вовсе, и это не этой работы».
+    /// Оказалось — этой.
+    ///
+    /// > **Срок жизни предупреждения «если появится X» измеряется
+    /// > часами, а не месяцами, когда X уже назван поимённо рядом.**
+    ///
+    /// Сторож на полноту перечня теперь есть — `ArchiveParityTests`:
+    /// каждая каскадная связь `Dog` обязана быть в `DogSnapshot` либо
+    /// названа исключением с причиной.
     private static func ничегоНеТянет(_ snapshot: BackupArchive.DogSnapshot) -> Bool {
         snapshot.events.isEmpty
             && snapshot.weights.isEmpty
@@ -338,6 +351,7 @@ nonisolated enum BackupService {
             && (snapshot.stocks ?? []).isEmpty
             && (snapshot.heats ?? []).isEmpty
             && (snapshot.documents ?? []).isEmpty
+            && (snapshot.daysOut ?? []).isEmpty
     }
 
     @MainActor
@@ -486,6 +500,14 @@ nonisolated enum BackupService {
                                   note: heatSnapshot.note)
             heat.dog = dog
             context.insert(heat)
+        }
+        for dayOutSnapshot in snapshot.daysOut ?? [] {
+            let выезд = DayOut(startedAt: dayOutSnapshot.startedAt,
+                               plannedHours: dayOutSnapshot.plannedHours)
+            выезд.endedAt = dayOutSnapshot.endedAt
+            выезд.note = dayOutSnapshot.note
+            выезд.dog = dog
+            context.insert(выезд)
         }
         for documentSnapshot in snapshot.documents ?? [] {
             let document = DogDocument(title: documentSnapshot.title,
