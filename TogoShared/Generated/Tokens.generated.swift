@@ -50,7 +50,7 @@ nonisolated enum Token {
         static let posterInk = Color(Dyn(dark: 0xF4F4F2, light: 0xFFFFFF, darkHC: 0xF4F4F2, lightHC: 0xFFFFFF))
         static let posterInkMuted = Color(Dyn(dark: 0xB2B2AE, light: 0xFFFFFFE0, darkHC: 0xB2B2AE, lightHC: 0xFFFFFFE0))
         static let scrim = Color(Dyn(dark: 0x0000008C, light: 0x10111252, darkHC: 0x0000008C, lightHC: 0x10111252))
-        static let stockLow = Color(Dyn(dark: 0xFFA15C, light: 0xB85400, darkHC: 0xFFA15C, lightHC: 0xB85400))
+        static let stockLow = Color(Dyn(dark: 0xFFA15C, light: 0xB85400, darkHC: 0xFFA15C, lightHC: 0xA34A00))
         static let stockLowBg = Color(Dyn(dark: 0x4A2A10, light: 0xFFEBD9, darkHC: 0x4A2A10, lightHC: 0xFFEBD9))
     }
 

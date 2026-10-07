@@ -326,7 +326,7 @@
   --primitive-color-posterInk: #FFFFFF;
   --primitive-color-posterInkMuted: #FFFFFFE0;
   --primitive-color-scrim: #10111252;
-  --primitive-color-stockLow: #B85400;
+  --primitive-color-stockLow: #A34A00;
   --primitive-color-stockLowBg: #FFEBD9;
   --semantic-action-primary: #0E14A1;
   --semantic-action-primaryPressed: #080679;
@@ -349,7 +349,7 @@
   --semantic-status-overdueBg: #F7D5CF;
   --semantic-status-overdueText: #9B100E;
   --semantic-status-stockLowBg: #FFEBD9;
-  --semantic-status-stockLowText: #B85400;
+  --semantic-status-stockLowText: #A34A00;
   --semantic-status-waitingBg: #FCEBCB;
   --semantic-status-waitingText: #6B4C0C;
   --semantic-surface-card: #ECEDF0;
