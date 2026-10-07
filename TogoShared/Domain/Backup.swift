@@ -91,6 +91,16 @@ nonisolated enum BackupService {
             rewards: dog.rewards, trainingFoodFromPortion: dog.trainingFoodFromPortion,
             markerKindRaw: dog.markerKindRaw, sessionLengthMinutes: dog.sessionLengthMinutes,
             isOnTreatment: dog.isOnTreatment, createdAt: dog.createdAt,
+            sexRaw: dog.sexRaw, isNeutered: dog.isNeutered,
+            wakeMinuteOfDay: dog.wakeMinuteOfDay, sleepMinuteOfDay: dog.sleepMinuteOfDay,
+            chipNumber: dog.chipNumber, passportNumber: dog.passportNumber,
+            insuranceNumber: dog.insuranceNumber,
+            vetName: dog.vetName, vetPhone: dog.vetPhone,
+            clinicName: dog.clinicName, clinicPhone: dog.clinicPhone,
+            distinctiveMarks: dog.distinctiveMarks,
+            sitterFood: dog.sitterFood, sitterDose: dog.sitterDose,
+            sitterWalks: dog.sitterWalks, sitterForbidden: dog.sitterForbidden,
+            sitterEscalation: dog.sitterEscalation,
             events: dog.events.map { event in
                 BackupArchive.EventSnapshot(
                     id: event.id, date: event.date, kindRaw: event.kindRaw,
@@ -109,7 +119,9 @@ nonisolated enum BackupService {
                     title: $0.title, detail: $0.detail, intervalDays: $0.intervalDays,
                     lastDone: $0.lastDone, categoryRaw: $0.categoryRaw,
                     seasonStartMonth: $0.seasonStartMonth, seasonEndMonth: $0.seasonEndMonth,
-                    snoozeCount: $0.snoozeCount
+                    snoozeCount: $0.snoozeCount,
+                    kindRaw: $0.kindRaw, scheduledDate: $0.scheduledDate,
+                    remindDaysBefore: $0.remindDaysBefore, streak: $0.streak
                 )
             },
             medications: dog.medications.map { medication in
@@ -123,8 +135,24 @@ nonisolated enum BackupService {
                     doses: medication.doses.map {
                         BackupArchive.DoseSnapshot(scheduledAt: $0.scheduledAt, givenAt: $0.givenAt,
                                                    givenBy: $0.givenBy, cancelledAt: $0.cancelledAt,
-                                                   cancelReason: $0.cancelReason)
-                    }
+                                                   cancelReason: $0.cancelReason,
+                                                   skippedAt: $0.skippedAt, skippedBy: $0.skippedBy,
+                                                   claimedBy: $0.claimedBy, claimedAt: $0.claimedAt)
+                    },
+                    unitRaw: medication.unitRaw,
+                    minutesAfterMeal: medication.minutesAfterMeal,
+                    dependsOnMeal: medication.dependsOnMeal,
+                    doseSlots: medication.doseSlotsData,
+                    courseEnd: medication.courseEnd,
+                    expiry: medication.expiry,
+                    openedAt: medication.openedAt,
+                    shelfAfterOpenDays: medication.shelfAfterOpenDays,
+                    remindBeforeExpiry: medication.remindBeforeExpiry,
+                    stockLeft: medication.stockLeft,
+                    stockTotal: medication.stockTotal,
+                    stockLeftAmount: medication.stockLeftAmount,
+                    packAmount: medication.packAmount,
+                    canGiveOutside: medication.canGiveOutside
                 )
             },
             trainingSteps: dog.trainingSteps.map {
@@ -408,6 +436,28 @@ nonisolated enum BackupService {
         dog.sessionLengthMinutes = snapshot.sessionLengthMinutes
         dog.isOnTreatment = snapshot.isOnTreatment
         dog.createdAt = snapshot.createdAt
+        // Семнадцать полей, добавленных 07.10.2026. Там, где поле
+        // непустое по типу, стоит `?? dog.<поле>` — то есть значение
+        // по умолчанию МОДЕЛИ, а не ноль: старый архив ключа не знает,
+        // и подставить ему нуль значило бы сказать «человек выбрал 00:00
+        // подъёмом», чего он не выбирал.
+        dog.sexRaw = snapshot.sexRaw ?? dog.sexRaw
+        dog.isNeutered = snapshot.isNeutered ?? dog.isNeutered
+        dog.wakeMinuteOfDay = snapshot.wakeMinuteOfDay ?? dog.wakeMinuteOfDay
+        dog.sleepMinuteOfDay = snapshot.sleepMinuteOfDay ?? dog.sleepMinuteOfDay
+        dog.passportNumber = snapshot.passportNumber
+        dog.chipNumber = snapshot.chipNumber
+        dog.insuranceNumber = snapshot.insuranceNumber
+        dog.vetName = snapshot.vetName
+        dog.vetPhone = snapshot.vetPhone
+        dog.clinicName = snapshot.clinicName
+        dog.clinicPhone = snapshot.clinicPhone
+        dog.distinctiveMarks = snapshot.distinctiveMarks
+        dog.sitterFood = snapshot.sitterFood ?? dog.sitterFood
+        dog.sitterDose = snapshot.sitterDose ?? dog.sitterDose
+        dog.sitterWalks = snapshot.sitterWalks ?? dog.sitterWalks
+        dog.sitterForbidden = snapshot.sitterForbidden ?? dog.sitterForbidden
+        dog.sitterEscalation = snapshot.sitterEscalation ?? dog.sitterEscalation
         return dog
     }
 
@@ -464,6 +514,12 @@ nonisolated enum BackupService {
             task.seasonStartMonth = care.seasonStartMonth
             task.seasonEndMonth = care.seasonEndMonth
             task.snoozeCount = care.snoozeCount
+            // `scheduledDate` — дата прививки; без неё медкнижка
+            // превращается в «каждые 365 дней от неизвестного дня».
+            task.kindRaw = care.kindRaw ?? task.kindRaw
+            task.scheduledDate = care.scheduledDate
+            task.remindDaysBefore = care.remindDaysBefore ?? task.remindDaysBefore
+            task.streak = care.streak ?? task.streak
             task.dog = dog
             context.insert(task)
         }
@@ -477,6 +533,32 @@ nonisolated enum BackupService {
             medication.prescriber = medicationSnapshot.prescriber
             medication.cancelledAt = medicationSnapshot.cancelledAt
             medication.cancelledNote = medicationSnapshot.cancelledNote
+            // Единица дозы — первая из тринадцати: без неё «0,5»
+            // не значит ничего, а ошибка здесь не путаница в дневнике,
+            // а передозировка.
+            medication.unitRaw = medicationSnapshot.unitRaw ?? medication.unitRaw
+            medication.minutesAfterMeal = medicationSnapshot.minutesAfterMeal
+                ?? medication.minutesAfterMeal
+            // `dependsOnMeal` — вычисляемое (get-only): оно выводится
+            // из `minutesAfterMeal`, и восстанавливать его отдельно
+            // нечего. В снимок положено нарочно: для ветеринара это
+            // ответ на вопрос «до еды или после», и прочитать его
+            // из файла глазами важнее, чем вывести.
+            medication.doseSlotsData = medicationSnapshot.doseSlots
+                ?? medication.doseSlotsData
+            medication.courseEnd = medicationSnapshot.courseEnd
+            medication.expiry = medicationSnapshot.expiry
+            medication.openedAt = medicationSnapshot.openedAt
+            medication.shelfAfterOpenDays = medicationSnapshot.shelfAfterOpenDays
+                ?? medication.shelfAfterOpenDays
+            medication.remindBeforeExpiry = medicationSnapshot.remindBeforeExpiry
+                ?? medication.remindBeforeExpiry
+            medication.stockLeft = medicationSnapshot.stockLeft ?? medication.stockLeft
+            medication.stockTotal = medicationSnapshot.stockTotal ?? medication.stockTotal
+            medication.stockLeftAmount = medicationSnapshot.stockLeftAmount
+            medication.packAmount = medicationSnapshot.packAmount
+            medication.canGiveOutside = medicationSnapshot.canGiveOutside
+                ?? medication.canGiveOutside
             medication.dog = dog
             context.insert(medication)
             for doseSnapshot in medicationSnapshot.doses {
@@ -485,6 +567,13 @@ nonisolated enum BackupService {
                 dose.givenBy = doseSnapshot.givenBy
                 dose.cancelledAt = doseSnapshot.cancelledAt
                 dose.cancelReason = doseSnapshot.cancelReason
+                // Пропущенная доза — факт, а не его отсутствие: врач
+                // спрашивает «сколько раз пропустили», и архив отвечал
+                // «ни разу» вместо правды.
+                dose.skippedAt = doseSnapshot.skippedAt
+                dose.skippedBy = doseSnapshot.skippedBy
+                dose.claimedBy = doseSnapshot.claimedBy
+                dose.claimedAt = doseSnapshot.claimedAt
                 dose.medication = medication
                 context.insert(dose)
             }

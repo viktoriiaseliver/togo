@@ -94,6 +94,168 @@ struct ArchiveParityTests {
         return поля
     }
 
+    // MARK: Скаляры — то, из чего состоит медицинская карточка
+
+    /// Поля моделей, которых в снимке нет НАМЕРЕННО, — с причиной.
+    ///
+    /// Ключ — `Модель.поле`.
+    private static let вСнимкеНетНамеренно: [String: String] = [
+        // Идентификатор записи. В архив не идёт нарочно: после
+        // восстановления это ДРУГАЯ запись в другом хранилище, и `id`
+        // у неё свой. У событий он как раз нужен и есть — по нему
+        // работает дедупликация при «долить»; у собаки и схемы его
+        // сохранение склеило бы записи между устройствами.
+        "Dog.id": "после восстановления это другая запись; у события id есть и нужен для дедупликации",
+        "CareTask.id": "см. Dog.id",
+        "Medication.id": "см. Dog.id",
+        "DoseRecord.id": "см. Dog.id",
+        // Когда телефон трогал запись. Факт про обмен, а не про собаку:
+        // восстановленная запись изменена СЕЙЧАС, и врать об этом нельзя.
+        "Dog.changedAt": "время правки на том телефоне; у восстановленной записи оно своё",
+        "CareTask.changedAt": "см. Dog.changedAt",
+        "Medication.changedAt": "см. Dog.changedAt",
+        "DoseRecord.changedAt": "см. Dog.changedAt",
+        // Обратные связи: они восстанавливаются привязкой к собаке
+        // и к схеме, а не значением поля.
+        "CareTask.dog": "обратная связь, ставится при восстановлении",
+        "Medication.dog": "обратная связь, ставится при восстановлении",
+        "DoseRecord.medication": "обратная связь, ставится при восстановлении",
+        "Medication.dosesStorage": "коллекция доз едет полем `doses` снимка схемы",
+        // Ожидание препарата, которого нет: состояние приёма чужой
+        // отметки дозы, живущее до первой синхронизации. На другом
+        // телефоне оно бессмысленно — там этого ожидания не было.
+        "DoseRecord.awaitedMedicationID": "состояние приёма чужой отметки, живёт до первой синхронизации",
+        "DoseRecord.awaitedMedicationName": "см. awaitedMedicationID",
+    ]
+
+    /// Хранимые поля модели — из исходника, а не списком.
+    private func поляМодели(_ файл: String, _ класс: String) throws -> [String] {
+        let путь = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("TogoShared/Models/\(файл)")
+        let строки = try String(contentsOf: путь, encoding: .utf8)
+            .components(separatedBy: .newlines)
+        guard let начало = строки.firstIndex(where: { $0.contains("final class \(класс)") })
+        else { return [] }
+
+        var глубина = 0
+        var поля: [String] = []
+        for (смещение, строка) in строки[начало...].enumerated() {
+            // Уровень тела класса — единица: строка `final class X {`
+            // уже открыла скобку.
+            let член = глубина == 1 && строка.hasPrefix("    ")
+                && !строка.hasPrefix("     ") && строка.trimmingCharacters(in: .whitespaces).isEmpty == false
+            глубина += строка.filter { $0 == "{" }.count
+            глубина -= строка.filter { $0 == "}" }.count
+            if смещение > 0, глубина == 0 { break }
+            guard член else { continue }
+            let голая = строка.trimmingCharacters(in: .whitespaces)
+                .replacingOccurrences(of: #"^@\w+\([^)]*\)\s*"#,
+                                      with: "", options: .regularExpression)
+            // Членом считается только то, что стоит на уровне тела:
+            // разбор по одной строке не отличает поле от локальной
+            // переменной внутри вычисляемого свойства и ошибается
+            // в сторону полноты.
+            guard !голая.contains("{"),
+                  let поле = голая.firstMatchГруппа(#"^var (\w+): "#)
+            else { continue }
+            поля.append(поле)
+        }
+        return поля
+    }
+
+    /// Поля произвольной структуры снимка.
+    private func поляСнимка(_ структура: String) throws -> Set<String> {
+        let файл = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("TogoShared/Domain/BackupArchive.swift")
+        let текст = try String(contentsOf: файл, encoding: .utf8)
+        guard let начало = текст.range(of: "struct \(структура)") else { return [] }
+
+        var поля: Set<String> = []
+        for строка in текст[начало.upperBound...].components(separatedBy: .newlines) {
+            if строка.hasPrefix("    }") { break }
+            let голая = строка.trimmingCharacters(in: .whitespaces)
+            guard голая.hasPrefix("var "),
+                  let имя = голая.dropFirst(4).split(separator: ":").first
+            else { continue }
+            поля.insert(String(имя))
+        }
+        return поля
+    }
+
+    /// **Сторож на связи не видит полей, а медицинская карточка состоит
+    /// из полей.**
+    ///
+    /// Замер 07.10.2026: архив терял тридцать восемь скаляров —
+    /// семнадцать у собаки, четыре у дела ухода, тринадцать у схемы
+    /// лечения, четыре у дозы. Среди них номер чипа, номер страховки,
+    /// врач с телефоном, **дата прививки**, **единица дозы**, срок
+    /// курса, срок годности, запас и отметки пропущенных доз.
+    ///
+    /// Сторож на каскадные связи (выше) был прав и слеп к этому:
+    /// он проверял, что уезжают КОЛЛЕКЦИИ. Тот же разрыв, что был
+    /// между `DeviceLocalFieldTests` и нагрузкой обмена — один сторож
+    /// делит поля, другой смотрит нагрузку, и между ними дыра.
+    @Test("Каждое хранимое поле модели уезжает в архив или названо исключением")
+    func скалярыУезжают() throws {
+        let пары = [("Dog.swift", "Dog", "DogSnapshot"),
+                    ("Care.swift", "CareTask", "CareTaskSnapshot"),
+                    ("Care.swift", "Medication", "MedicationSnapshot"),
+                    ("Care.swift", "DoseRecord", "DoseSnapshot")]
+
+        // Как поле модели называется в снимке: `*Storage` у связей
+        // и `doseSlotsData` → `doseSlots`.
+        let переименования = ["doseSlotsData": "doseSlots"]
+
+        var потеряно: [String] = []
+        var разобрано = 0
+
+        for (файл, класс, снимок) in пары {
+            let поля = try поляМодели(файл, класс)
+            let вСнимке = try поляСнимка(снимок)
+            #expect(поля.count >= 10, """
+                у \(класс) разобрано \(поля.count) полей — разбор
+                не состоялся, и сторож зелен впустую.
+                """)
+            #expect(вСнимке.count >= 5, "у \(снимок) разобрано \(вСнимке.count) полей")
+            разобрано += поля.count
+
+            for поле in поля {
+                let ключ = "\(класс).\(поле)"
+                if Self.вСнимкеНетНамеренно[ключ] != nil { continue }
+                // Связи едут коллекциями: `eventsStorage` → `events`.
+                let имя = переименования[поле]
+                    ?? (поле.hasSuffix("Storage") ? String(поле.dropLast("Storage".count)) : поле)
+                if вСнимке.contains(имя) { continue }
+                потеряно.append(ключ)
+            }
+        }
+
+        #expect(разобрано >= 90, "разобрано полей всего: \(разобрано) — разбор не состоялся")
+        #expect(потеряно.isEmpty, """
+            хранимое поле модели не уезжает в архив: \(потеряно.sorted()).
+
+            Это молчаливая потеря данных при переносе на новый телефон:
+            человек не увидит пустого места, он просто не найдёт поле
+            через месяц. Так архив терял номер чипа, дату прививки
+            и единицу дозы.
+
+            Либо допиши поле в снимок (ОПЦИОНАЛЬНЫМ — старые файлы
+            обязаны читаться), в сборку и в восстановление, либо впиши
+            ключ в `вСнимкеНетНамеренно` С ПРИЧИНОЙ. Исключение без
+            причины через месяц неотличимо от дыры.
+            """)
+    }
+
+    @Test("У каждого «в снимке нет» записана причина")
+    func причиныСкаляровЕсть() {
+        let безПричины = Self.вСнимкеНетНамеренно
+            .filter { $0.value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+            .map(\.key).sorted()
+        #expect(безПричины.isEmpty, "«в снимке нет» без причины: \(безПричины)")
+    }
+
     @Test("Каждая каскадная связь собаки уезжает в архив")
     func каскадноеУезжает() throws {
         let связи = try каскадныеСвязи()
@@ -164,5 +326,17 @@ struct ArchiveParityTests {
             того, чтобы остановиться: первый — потеря данных при
             переносе, второй — слепой сторож.
             """)
+    }
+}
+
+
+private extension String {
+    /// Первая группа первого совпадения — или `nil`.
+    func firstMatchГруппа(_ образец: String) -> String? {
+        guard let re = try? NSRegularExpression(pattern: образец),
+              let m = re.firstMatch(in: self, range: NSRange(startIndex..., in: self)),
+              m.numberOfRanges > 1
+        else { return nil }
+        return Range(m.range(at: 1), in: self).map { String(self[$0]) }
     }
 }

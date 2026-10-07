@@ -94,6 +94,150 @@ struct BackupTests {
         #expect(стич.stocks.contains { $0.kind == .wet && $0.packGrams == 100 })
     }
 
+    /// Медицинская карточка переживает переустановку целиком.
+    ///
+    /// **Замер 07.10.2026: архив терял 38 скалярных полей** — семнадцать
+    /// у собаки, четыре у дела ухода, тринадцать у схемы лечения,
+    /// четыре у дозы. Среди них номер чипа, номер паспорта, номер
+    /// страховки, врач и клиника с телефонами, приметы для объявления
+    /// о пропаже, **дата прививки**, **единица дозы**, срок курса, срок
+    /// годности, запас и **отметки пропущенных доз**.
+    ///
+    /// Сторож паритета (`ArchiveParityTests`) этого не ловил и не мог:
+    /// он проверяет каскадные СВЯЗИ, то есть что коллекции уезжают.
+    ///
+    /// > **Сторож на связи не видит полей, а медицинская карточка
+    /// > состоит из полей.**
+    ///
+    /// Поэтому здесь круговой тест: заполнить ВСЁ → выгрузить →
+    /// восстановить в пустое хранилище → сверить поимённо. Без него
+    /// тридцать восемь полей уезжали в ноль молча, и ни один
+    /// существующий тест этого не замечал: все они проверяли то, что
+    /// в снимке есть.
+    @Test("Медкнижка переезжает целиком: тридцать восемь полей, которых архив не нёс")
+    func медкнижкаПереезжаетЦеликом() throws {
+        let старый = контекст()
+        let стич = завестиСтича(в: старый)
+
+        стич.sexRaw = DogSex.female.rawValue
+        стич.isNeutered = true
+        стич.wakeMinuteOfDay = 6 * 60 + 15
+        стич.sleepMinuteOfDay = 22 * 60 + 45
+        стич.chipNumber = "250269606000000"
+        стич.passportNumber = "FR 123456"
+        стич.insuranceNumber = "POL-77-2026"
+        стич.vetName = "д-р Моро"
+        стич.vetPhone = "+33 4 93 00 00 00"
+        стич.clinicName = "Clinique des Alpes"
+        стич.clinicPhone = "+33 4 93 11 11 11"
+        стич.distinctiveMarks = "белое пятно на груди, шрам на левой лапе"
+        стич.sitterFood = "60 г утром и вечером"
+        стич.sitterDose = "½ таблетки в 8:00"
+        стич.sitterWalks = "7:00, 13:00, 19:00"
+        стич.sitterForbidden = "курица, кукуруза"
+        стич.sitterEscalation = "кровь или рвота — звонить сразу"
+
+        let прививка = CareTask(title: "Бешенство", detail: "Nobivac Rabies",
+                                intervalDays: 365, category: .medical)
+        прививка.scheduledDate = Date(timeIntervalSince1970: 1_790_000_000)
+        прививка.remindDaysBefore = 14
+        прививка.streak = 3
+        прививка.dog = стич
+        старый.insert(прививка)
+
+        let схема = try #require(стич.medications.first)
+        схема.unitRaw = MedUnit.tab.rawValue
+        схема.minutesAfterMeal = 45
+        схема.courseEnd = Date(timeIntervalSince1970: 1_795_000_000)
+        схема.expiry = Date(timeIntervalSince1970: 1_800_000_000)
+        схема.openedAt = Date(timeIntervalSince1970: 1_780_000_000)
+        схема.shelfAfterOpenDays = 28
+        схема.remindBeforeExpiry = true
+        схема.stockLeft = 17
+        схема.stockTotal = 30
+        схема.stockLeftAmount = 8.5
+        схема.packAmount = 30
+        схема.canGiveOutside = true
+        схема.doseSlotsData = [DoseSlot(minuteOfDay: 7 * 60, quantity: 0.5)]
+
+        let пропущенная = DoseRecord(scheduledAt: Date(timeIntervalSince1970: 1_770_000_000))
+        пропущенная.skippedAt = Date(timeIntervalSince1970: 1_770_003_600)
+        пропущенная.skippedBy = "Виктория"
+        пропущенная.medication = схема
+        старый.insert(пропущенная)
+        try старый.save()
+
+        let данные = try BackupService.encode(
+            try BackupService.archive(context: старый, appVersion: "1.0.0")
+        )
+        let новый = контекст()
+        try BackupService.restore(try BackupService.decode(данные), into: новый, strategy: .replace)
+
+        let собака = try #require(try новый.fetch(FetchDescriptor<Dog>()).first)
+
+        // Собака: семнадцать полей.
+        #expect(собака.sexRaw == DogSex.female.rawValue, "пол потерян — с ним уходит календарь течки")
+        #expect(собака.isNeutered == true)
+        #expect(собака.wakeMinuteOfDay == 6 * 60 + 15, "режим дня потерян")
+        #expect(собака.sleepMinuteOfDay == 22 * 60 + 45)
+        #expect(собака.chipNumber == "250269606000000", "номер чипа потерян — его спрашивают в клинике")
+        #expect(собака.passportNumber == "FR 123456")
+        #expect(собака.insuranceNumber == "POL-77-2026")
+        #expect(собака.vetName == "д-р Моро", "врач потерян — он нужен, когда хозяина нет рядом")
+        #expect(собака.vetPhone == "+33 4 93 00 00 00")
+        #expect(собака.clinicName == "Clinique des Alpes")
+        #expect(собака.clinicPhone == "+33 4 93 11 11 11")
+        #expect(собака.distinctiveMarks?.isEmpty == false, "приметы потеряны — это объявление о пропаже")
+        #expect(собака.sitterFood == "60 г утром и вечером")
+        #expect(собака.sitterDose == "½ таблетки в 8:00")
+        #expect(собака.sitterWalks == "7:00, 13:00, 19:00")
+        #expect(собака.sitterForbidden == "курица, кукуруза")
+        #expect(собака.sitterEscalation == "кровь или рвота — звонить сразу")
+
+        // Уход: дата прививки.
+        let восстановленнаяПрививка = try #require(
+            собака.careTasks.first { $0.title == "Бешенство" })
+        #expect(восстановленнаяПрививка.scheduledDate == прививка.scheduledDate, """
+            дата прививки потеряна. Медкнижка без дат прививок — это
+            «каждые 365 дней от неизвестного дня», и ветеринару она
+            не отвечает ни на один вопрос.
+            """)
+        #expect(восстановленнаяПрививка.remindDaysBefore == 14)
+        #expect(восстановленнаяПрививка.streak == 3)
+        #expect(восстановленнаяПрививка.kindRaw == прививка.kindRaw)
+
+        // Схема лечения: тринадцать полей.
+        let восстановленнаяСхема = try #require(собака.medications.first)
+        #expect(восстановленнаяСхема.unitRaw == MedUnit.tab.rawValue, """
+            единица дозы потеряна. «0,5» без единицы не значит ничего:
+            половина таблетки, половина миллилитра и половина капли —
+            три разные дозы, и ошибка здесь не путаница в дневнике,
+            а передозировка.
+            """)
+        #expect(восстановленнаяСхема.minutesAfterMeal == 45)
+        #expect(восстановленнаяСхема.courseEnd == схема.courseEnd, "срок курса потерян")
+        #expect(восстановленнаяСхема.expiry == схема.expiry, "срок годности потерян")
+        #expect(восстановленнаяСхема.openedAt == схема.openedAt)
+        #expect(восстановленнаяСхема.shelfAfterOpenDays == 28)
+        #expect(восстановленнаяСхема.remindBeforeExpiry == true)
+        #expect(восстановленнаяСхема.stockLeft == 17, "запас потерян — по нему считается «пора покупать»")
+        #expect(восстановленнаяСхема.stockTotal == 30)
+        #expect(восстановленнаяСхема.stockLeftAmount == 8.5)
+        #expect(восстановленнаяСхема.packAmount == 30)
+        #expect(восстановленнаяСхема.canGiveOutside == true)
+        #expect(восстановленнаяСхема.doseSlotsData.count == 1)
+        #expect(восстановленнаяСхема.doseSlotsData.first?.quantity == 0.5)
+
+        // Доза: пропуск — факт лечения.
+        let пропуск = try #require(
+            восстановленнаяСхема.doses.first { $0.skippedAt != nil })
+        #expect(пропуск.skippedBy == "Виктория", """
+            отметка «пропущено» потеряна. Врач спрашивает «сколько раз
+            пропустили», и архив отвечал «ни разу» вместо правды:
+            отсутствие отметки читается как «дали».
+            """)
+    }
+
     /// Выезды переживают переустановку — то, чего архив не умел вовсе.
     ///
     /// **До 07.10.2026 `DogSnapshot` их не хранил**, при том что
