@@ -1,9 +1,8 @@
+import Testing
 import Foundation
 import SwiftUI
-import Testing
-#if canImport(UIKit)
 import UIKit
-#endif
+@testable import Togo
 
 /// Контраст в четырёх режимах — числом, а не глазами.
 ///
