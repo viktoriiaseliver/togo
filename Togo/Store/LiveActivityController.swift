@@ -78,6 +78,8 @@ enum LiveActivityController {
             dogName: dog.displayName,
             dogInitial: dog.initial,
             verdictTitle: verdict.title,
+            // ЧИТАТЕЛЯ-НЕТ-verdictBadge: считается из настоящего
+            // вердикта и не показывается ни одной поверхностью.
             verdictBadge: verdict.badge,
             sinceUrineSeconds: signals.sinceUrine,
             urineSilenceSince: signals.urineSilence,

@@ -10,7 +10,54 @@ nonisolated struct WidgetSnapshot: Codable, Equatable, Sendable {
     var dogInitial: String
     /// Текст вердикта «просится» — уже посчитанный, без логики на стороне виджета.
     var verdictTitle: String
-    var verdictBadge: String
+    /// Подпись под вердиктом — **её не читает НИКТО.**
+    ///
+    /// **И она не одна: таких полей здесь ПЯТЬ из пятнадцати.**
+    /// Замер 07.10.2026 по всему дереву, включая тесты:
+    ///
+    /// ```
+    /// verdictBadge        ни одного чтения
+    /// lastStoolSummary    ни одного чтения
+    /// lastWalkSummary     ни одного чтения
+    /// walkStartedBy       ни одного чтения
+    /// updatedAt           ни одного чтения
+    /// контроль            dogName 6 · urineSilenceSince 3 · mealsPlanned 3
+    ///                     verdictTitle 2 · dogInitial 1 — разбор видит чтения
+    /// ```
+    ///
+    /// То есть **треть снимка** считается, кодируется, кладётся в общее
+    /// хранилище App Group и уезжает в расширение — и не показывается
+    /// никому. У `walkStartedBy` ловушка отдельная: единственное
+    /// совпадение по тексту — `appState.walkStartedBy` на строке ЗАПИСИ,
+    /// то есть чужое свойство с тем же именем. Первая редакция этого
+    /// замера сочла его читаемым.
+    ///
+    /// Замер 07.10.2026 (`togo-02`, перемерен этой сессией с контролем):
+    ///
+    /// ```
+    /// пишут    WidgetSnapshot.empty · WidgetGallery ×2 · LiveActivityController
+    /// читают   ни одного места
+    /// контроль snapshot.verdictTitle читается дважды в TodayWidgetView
+    ///          — значит разбор видит чтения, когда они есть
+    /// ```
+    ///
+    /// Поле считается из настоящего вердикта, кладётся в снимок App
+    /// Group, уезжает в расширение — и показывается никому. Это зеркало
+    /// нашего «имя упомянуто, и от упоминания ничего не происходит»:
+    /// там бессилен вызов, здесь **значение некому прочесть**.
+    ///
+    /// И оно объясняет, почему русское слово в этой строке никто
+    /// не замечал: его и по-русски не видел никто.
+    ///
+    /// **Ни убрано, ни показано, и это решение.** Убрать — правка кода
+    /// при замороженном дизайне; показать — продуктовое решение, а его
+    /// принимает не сессия. Поэтому поле помечено: **читателя нет;
+    /// появится — эта строка станет ложной, и
+    /// `grep ЧИТАТЕЛЯ-НЕТ-verdictBadge` её найдёт.**
+    ///
+    /// Пометка стоит и у каждой из четырёх записей: четыре места —
+    /// четыре человека, которые думают, что делают работу.
+    var verdictBadge: String   // ЧИТАТЕЛЯ-НЕТ-verdictBadge
     var sinceUrineSeconds: Double?
     /// Дата, с которой про мочу нечего сказать, — если `UrineSilence`
     /// так решил. Не пусто ⇒ виджет печатает дату, а число не печатает
@@ -23,10 +70,10 @@ nonisolated struct WidgetSnapshot: Codable, Equatable, Sendable {
     /// из трёх, пока главный экран знал правило. Сторож на вызов такого
     /// не видит: звать нечего.
     var urineSilenceSince: Date?
-    var lastStoolSummary: String?
-    var lastWalkSummary: String?
+    var lastStoolSummary: String?   // ЧИТАТЕЛЯ-НЕТ-lastStoolSummary
+    var lastWalkSummary: String?   // ЧИТАТЕЛЯ-НЕТ-lastWalkSummary
     var walkStartedAt: Date?
-    var walkStartedBy: String?
+    var walkStartedBy: String?   // ЧИТАТЕЛЯ-НЕТ-walkStartedBy
     var fastingEndsAt: Date?
 
     /// Еда: когда в последний раз и сколько из запланированного.
@@ -39,7 +86,7 @@ nonisolated struct WidgetSnapshot: Codable, Equatable, Sendable {
     var mealsToday: Int
     var mealsPlanned: Int
 
-    var updatedAt: Date
+    var updatedAt: Date   // ЧИТАТЕЛЯ-НЕТ-updatedAt
 
     /// Заглушка виджета — **её человек видит**, а не только мы.
     ///
@@ -57,10 +104,17 @@ nonisolated struct WidgetSnapshot: Codable, Equatable, Sendable {
     /// лежат в каталоге на всех четырёх языках. Слова не меняются —
     /// текст заморожен решением Виктории 07.10.2026; меняется только
     /// дорога, которой они идут на экран.
+    ///
+    /// **Сузить сказанное: из трёх слов до экрана доезжают ДВА.**
+    /// «Собака» и «Просится» читаются (`TodayWidgetView:39,51,61`),
+    /// «нет данных» — нет: у `verdictBadge` читателя не существует.
+    /// То есть локализация этого слова верна и недостижима, и говорить
+    /// «локализовали заглушку» без оговорки — шире сделанного.
     static let empty = WidgetSnapshot(
         dogName: String(localized: "Собака"),
         dogInitial: "?",
         verdictTitle: String(localized: "Просится"),
+        // ЧИТАТЕЛЯ-НЕТ-verdictBadge: перевод верен и недостижим
         verdictBadge: String(localized: "нет данных"),
         sinceUrineSeconds: nil,
         urineSilenceSince: nil,

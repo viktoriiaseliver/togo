@@ -43,7 +43,7 @@ struct WidgetGallery: View {
         s.dogName = "Стич"
         s.dogInitial = "С"
         s.verdictTitle = "Непонятно"
-        s.verdictBadge = "отметок мочи нет"
+        s.verdictBadge = "отметок мочи нет"   // ЧИТАТЕЛЯ-НЕТ-verdictBadge
         s.sinceUrineSeconds = 434 * 3600
         s.urineSilenceSince = Self.сейчас.addingTimeInterval(-434 * 3600)
         s.lastMealAt = Self.сейчас.addingTimeInterval(-437 * 3600)
@@ -56,7 +56,7 @@ struct WidgetGallery: View {
         s.dogName = "Стич"
         s.dogInitial = "С"
         s.verdictTitle = "Скорее просится"
-        s.verdictBadge = "дольше обычного"
+        s.verdictBadge = "дольше обычного"   // ЧИТАТЕЛЯ-НЕТ-verdictBadge
         s.sinceUrineSeconds = 7 * 3600
         s.lastMealAt = Self.сейчас.addingTimeInterval(-3 * 3600)
         s.mealsToday = 1

@@ -307,7 +307,14 @@ nonisolated enum BackupService {
             attachRest(snapshot, to: dog, context: context)
         }
 
-        for snapshot in archive.members where !(strategy == .merge && existingMemberNames.contains(snapshot.name)) {
+        // Участники сливаются по имени — и тот же класс, что у собак:
+        // `FamilyMember.name` по умолчанию `""`, и безымянный участник
+        // из архива слился бы с безымянным из хранилища. Проверка
+        // на пустоту делает «сливать по имени» осмысленным:
+        // пустое имя именем не является.
+        for snapshot in archive.members
+        where !(strategy == .merge && Fmt.notBlank(snapshot.name) != nil
+                && existingMemberNames.contains(snapshot.name)) {
             let member = FamilyMember(name: snapshot.name,
                                       role: FamilyRole(rawValue: snapshot.roleRaw) ?? .helper,
                                       isMe: snapshot.isMe)

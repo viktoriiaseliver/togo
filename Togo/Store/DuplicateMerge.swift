@@ -21,6 +21,30 @@ import SwiftData
 /// работа.
 nonisolated enum DuplicateMerge {
 
+    /// Группировка по кличке — **только по настоящей**.
+    ///
+    /// `Dog.name` и `FamilyMember.name` по умолчанию `""`. Группировка
+    /// по такому полю собирает в одну группу всё, что его не заполнило,
+    /// и инструмент, созданный переносить записи, предложил бы свести
+    /// восемь безымянных фантомов в один — а если среди них окажется
+    /// настоящая собака с затёртой кличкой, перенёс бы её дневник
+    /// на фантом и убрал её запись.
+    ///
+    /// Своя дока этого файла говорит «здесь не удаление, а перенос» —
+    /// осторожность верная и обходилась с другой стороны: выбор
+    /// «лишней» делался по пустому ключу.
+    @MainActor
+    private static func поКличке(_ собаки: [Dog]) -> [String: [Dog]] {
+        Dictionary(grouping: собаки.compactMap { d in d.nameIfAny.map { (d, $0) } },
+                   by: \.1).mapValues { $0.map(\.0) }
+    }
+
+    @MainActor
+    private static func поИмени(_ участники: [FamilyMember]) -> [String: [FamilyMember]] {
+        Dictionary(grouping: участники.compactMap { m in Fmt.notBlank(m.name).map { (m, $0) } },
+                   by: \.1).mapValues { $0.map(\.0) }
+    }
+
     /// Что будет сделано, без единой правки. Смотреть до того, как жать.
     @MainActor
     static func план(in context: ModelContext) -> String {
@@ -28,7 +52,7 @@ nonisolated enum DuplicateMerge {
         let участники = (try? context.fetch(FetchDescriptor<FamilyMember>())) ?? []
 
         var строки: [String] = []
-        for (кличка, группа) in Dictionary(grouping: собаки, by: \.name) where группа.count > 1 {
+        for (кличка, группа) in поКличке(собаки) where группа.count > 1 {
             let по_дате = группа.sorted { $0.createdAt < $1.createdAt }
             let главная = по_дате[0]
             let переносим = по_дате.dropFirst().map(записейУ).reduce(0, +)
@@ -36,7 +60,7 @@ nonisolated enum DuplicateMerge {
                           + "\(главная.createdAt.formatted(date: .numeric, time: .shortened)), "
                           + "перенесу на неё \(переносим) связанных записей.")
         }
-        for (имя, группа) in Dictionary(grouping: участники, by: \.name) where группа.count > 1 {
+        for (имя, группа) in поИмени(участники) where группа.count > 1 {
             строки.append("Участник «\(имя)»: \(группа.count) штуки, оставлю одного.")
         }
         return строки.isEmpty ? "Дубликатов нет." : строки.joined(separator: "\n")
@@ -48,7 +72,7 @@ nonisolated enum DuplicateMerge {
         var итог: [String] = []
 
         let собаки = (try? context.fetch(FetchDescriptor<Dog>())) ?? []
-        for (кличка, группа) in Dictionary(grouping: собаки, by: \.name) where группа.count > 1 {
+        for (кличка, группа) in поКличке(собаки) where группа.count > 1 {
             let по_дате = группа.sorted { $0.createdAt < $1.createdAt }
             guard let главная = по_дате.first else { continue }
             var перенесено = 0
@@ -76,7 +100,8 @@ nonisolated enum DuplicateMerge {
 
         let участники = (try? context.fetch(FetchDescriptor<FamilyMember>())) ?? []
         var убрано = 0
-        for (_, группа) in Dictionary(grouping: участники, by: { "\($0.name)·\($0.roleRaw)" })
+        for (_, группа) in Dictionary(grouping: участники.filter { Fmt.notBlank($0.name) != nil },
+                                      by: { "\($0.name)·\($0.roleRaw)" })
         where группа.count > 1 {
             // Оставляем того, кого ЭТО устройство считает собой.
             //
