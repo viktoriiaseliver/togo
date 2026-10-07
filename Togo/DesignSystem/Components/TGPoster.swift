@@ -23,6 +23,35 @@ import SwiftUI
 /// ниоткуда** — тот же класс, что `replaceInPool` у Gamut: правило
 /// верное, тест зелёный, действия нет. Поверхность при этом была
 /// не «непроверенной», а **непроверяемой**: смотреть было не на что.
+/// Чем красить плакат — **одно место на все поверхности.**
+///
+/// Вынесено из `TGPoster` 07.10.2026 по кадру. Блок прокручивается
+/// вместе с содержимым, поэтому полосу под статус-баром красит ЭКРАН,
+/// а не блок: `.ignoresSafeArea` внутри прокрутки не выходит за её
+/// обрезку, и кадр показал над плакатом чёрную полосу.
+///
+/// **Но это не повод писать `switch` по режиму второй раз.** Правило
+/// цвета у Togo уже трижды оказывалось списанным по местам применения,
+/// и каждый раз третья копия расходилась молча. Здесь функция одна,
+/// зовут её двое — блок и экран.
+///
+/// > **Два места, которым нужен один цвет, — это не повод для двух
+/// > `switch`, а повод для одной функции.**
+nonisolated enum PosterPaint {
+    /// Подложка по режиму. Перечисление полное: добавят шестой режим —
+    /// компилятор потребует решить, каким он будет, а не подставит
+    /// обычный индиго молча.
+    static func background(_ mode: PosterMode) -> Color {
+        switch mode {
+        case .usual: Token.Poster.background
+        case .fasting: Token.Poster.backgroundFasting
+        case .dose: Token.Poster.backgroundDose
+        case .alarm: Token.Poster.backgroundAlarm
+        case .quiet: Token.Poster.backgroundQuiet
+        }
+    }
+}
+
 struct TGPoster<Trailing: View>: View {
 
     /// Показание — главный ответ экрана.
@@ -87,18 +116,7 @@ struct TGPoster<Trailing: View>: View {
 
     // MARK: Цвет
 
-    /// Подложка по режиму. Перечисление полное: добавят шестой режим —
-    /// компилятор потребует решить, каким он будет, а не подставит
-    /// обычный индиго молча.
-    private var background: Color {
-        switch mode {
-        case .usual: Token.Poster.background
-        case .fasting: Token.Poster.backgroundFasting
-        case .dose: Token.Poster.backgroundDose
-        case .alarm: Token.Poster.backgroundAlarm
-        case .quiet: Token.Poster.backgroundQuiet
-        }
-    }
+    private var background: Color { PosterPaint.background(mode) }
 
     /// Цвет цифр и надписей. **Цифры всегда основным текстом** —
     /// решение дизайна, и никаких `opacity` на тексте: `#666`
@@ -217,11 +235,30 @@ struct TGPoster<Trailing: View>: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, Token.Space.s24)
         .padding(.bottom, collapsed ? Token.Space.s12 : Token.Space.s24)
-        .background(background)
-        .clipShape(
-            .rect(bottomLeadingRadius: Token.Radius.poster,
-                  bottomTrailingRadius: Token.Radius.poster)
-        )
+        // **Цвет доходит до верха, содержимое — нет.** Подложка вынесена
+        // в `.background` и игнорирует безопасную область сама; текст
+        // и шапка остаются внутри неё.
+        //
+        // Первая редакция делала обратное — `.ignoresSafeArea` стоял
+        // на всей прокрутке экрана, — и кадр 07.10 показал, во что это
+        // обходится: **шапка «Стич · 4,1 кг · дежурит Тео» ушла под
+        // статус-бар и обрезалась**, наложившись на часы и батарею.
+        // Ни один замер этого не поймал: цвет был верным, токены
+        // верными, тест мерил пиксель подложки и был прав.
+        //
+        // > **Замер отвечает на вопрос, который ему задали. Кадр
+        // > показывает то, о чём спросить не догадались.**
+        //
+        // Скругление живёт здесь же, на подложке: примени его снаружи —
+        // и оно обрежет расширение вверх ровно там, где оно нужно.
+        .background {
+            background
+                .clipShape(
+                    .rect(bottomLeadingRadius: Token.Radius.poster,
+                          bottomTrailingRadius: Token.Radius.poster)
+                )
+                .ignoresSafeArea(edges: .top)
+        }
         // **Безопасной области здесь нет нарочно.** На «Сегодня» блок
         // обязан идти от статус-бара, и `.ignoresSafeArea(edges: .top)`
         // ставит ЭКРАН, а не компонент. Первая редакция держала это
