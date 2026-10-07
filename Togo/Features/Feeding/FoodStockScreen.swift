@@ -1,6 +1,25 @@
 import SwiftUI
 import SwiftData
 
+/// Цвет числа «хватит на N дней» по лестнице запаса.
+///
+/// Лестница берётся у `PillSupplyAdvisor` — одна на корм и таблетки,
+/// с порогами 7 и 3 (07.10.2026). До этого корм красился по булеву
+/// `needsRestock`, и «кончается через неделю» было того же цвета,
+/// что «кончается завтра».
+///
+/// Готовое `Level.цветТекста` со экрана таблеток намеренно НЕ зовётся:
+/// там у `.ok` цвет «сделано», и для строки списка это была бы
+/// подтверждающая зелень на ровном месте. Расходится палитра, а не
+/// правило — правило одно и спрашивается, а не повторяется.
+private func цветЗапаса(_ level: PillSupplyAdvisor.Level) -> Color {
+    switch level {
+    case .ok: Token.Ink.primary
+    case .low: Token.Status.stockLowText
+    case .urgent, .out: Token.Status.overdueText
+    }
+}
+
 /// Строка одного корма в запасе.
 struct StockRow: View {
     let stock: FoodStock
@@ -23,9 +42,7 @@ struct StockRow: View {
             Spacer(minLength: Token.Space.s8)
             VStack(alignment: .trailing, spacing: Token.Space.s2) {
                 Text(stock.daysLeft(at: now).map { Fmt.days($0) } ?? "—")
-                    .textStyle(AppFont.numeric(15).color(
-                        stock.needsRestock(at: now) ? Token.Status.waitingText : Token.Ink.primary
-                    ))
+                    .textStyle(AppFont.numeric(15).color(цветЗапаса(stock.level(at: now))))
                 Text("хватит").textStyle(AppFont.micro)
             }
         }

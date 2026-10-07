@@ -90,6 +90,11 @@ nonisolated enum PillSupplyAdvisor {
     static let warningDays = 3
 
     /// Насколько всё плохо с запасом.
+    ///
+    /// **Лестница одна на таблетки и на корм.** Второго порога
+    /// не заводим: два правила на одну мысль расходятся на второй
+    /// правке. Корм зовёт `level(days:)` отсюда, а не держит свой
+    /// (`FoodStock.level(at:)`).
     enum Level: Equatable, Sendable {
         /// Хватает — или покупать не нужно, потому что курс кончится раньше.
         case ok
@@ -97,6 +102,30 @@ nonisolated enum PillSupplyAdvisor {
         case low
         /// Пора покупать: терракот.
         case urgent
+        /// Кончилось. Отдельная ступень, а не `urgent` с нулём:
+        /// «пора покупать» и «уже нечего дать» — разные новости,
+        /// и вторая не про планирование, а про сегодняшнюю дозу.
+        ///
+        /// Заведена 07.10.2026 по замеру библиотеки компонентов
+        /// хендоффа: `stockLevel(daysLeft) → "ok" | "low" | "out"`
+        /// (`togo-final/StockCard.d.ts`). У дизайна третья ступень была,
+        /// у нас не было ни у таблеток, ни у корма — и это единственное
+        /// настоящее добавление из той находки.
+        case out
+    }
+
+    /// Лестница по числу дней — одна точка для всех запасов.
+    ///
+    /// Вынесена из `level(_:)` 07.10.2026, когда выяснилось, что корм
+    /// отвечает **булевым** `needsRestock`, а таблетки — полной
+    /// лестницей. Это был наш записанный класс «починка на одной
+    /// поверхности из двух», а не нехватка правила: правило было,
+    /// его не позвали.
+    static func level(days: Int) -> Level {
+        if days <= 0 { return .out }
+        if days <= warningDays { return .urgent }
+        if days <= lowDays { return .low }
+        return .ok
     }
 
     static func supply(
@@ -128,8 +157,8 @@ nonisolated enum PillSupplyAdvisor {
         guard let supply, supply.perDay > 0 else { return .ok }
         if supply.courseEndsFirst { return .ok }
 
-        if supply.days <= warningDays { return .urgent }
-        if supply.days <= lowDays { return .low }
+        let byDays = level(days: supply.days)
+        if byDays != .ok { return byDays }
         // Запаса больше недели, но до конца курса всё равно не хватит —
         // сказать стоит, пугать нечем.
         return supply.shortfallDays == nil ? .ok : .low

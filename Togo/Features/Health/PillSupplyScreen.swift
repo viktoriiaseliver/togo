@@ -167,7 +167,11 @@ extension PillSupplyAdvisor.Level {
         switch self {
         case .ok: Token.Action.doneText
         case .low: Token.Status.stockLowText
-        case .urgent: Token.Status.overdueText
+        // «Кончилось» и «пора покупать» красятся одинаково — терракотом:
+        // четвёртого статусного цвета у системы нет, и заводить его ради
+        // одной ступени нельзя. Различает их СЛОВО, а не цвет; у нас
+        // записано, что срочность не передаётся одним цветом.
+        case .urgent, .out: Token.Status.overdueText
         }
     }
 }
