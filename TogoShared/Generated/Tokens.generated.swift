@@ -29,7 +29,7 @@ nonisolated enum Token {
     /// Текст. `faint` — 2,5:1, текстом и значками НЕ красится ни в каком кегле: разрешение «только с 14pt» было неверным и развело его по двадцати четырём файлам.
     enum Ink {
         static let faint = Color(hex: 0x6D6D6D)
-        static let onAccent = Color(hex: 0x111111)
+        static let onAccent = Color(hex: 0x0B0D2E)
         static let primary = Color(hex: 0xF4F4F2)
         static let secondary = Color(hex: 0xB2B2AE)
         static let silhouette = Color(hex: 0xB2B2AE)
@@ -41,10 +41,10 @@ nonisolated enum Token {
         static let doneQuiet = Color(hex: 0x5FBF9326)
         /// «Сделано» СЛОВАМИ. Отдельный токен, потому что done — это тинт 15 %: как чернила он даёт 1,31:1 на карточке, вдвое хуже уже запрещённого faint. Та же пара, что waitingText и overdueText.
         static let doneText = Color(hex: 0x7FD3A8)
-        static let primary = Color(hex: 0xD4F75F)
+        static let primary = Color(hex: 0xA2C1FE)
         /// Нажатое главное действие
-        static let primaryPressed = Color(hex: 0xC1E348)
-        static let primaryQuiet = Color(hex: 0xD4F75F2E)
+        static let primaryPressed = Color(hex: 0x7BA5FE)
+        static let primaryQuiet = Color(hex: 0xA2C1FE2E)
         static let secondary = Color(hex: 0x2C2C2C)
     }
 
@@ -196,15 +196,15 @@ nonisolated enum Token {
                 static let label = Color(hex: 0x6D6D6D)
             }
             enum Finish {
-                static let background = Color(hex: 0xD4F75F2E)
+                static let background = Color(hex: 0xA2C1FE2E)
                 static let height: CGFloat = 50
                 static let label = Color(hex: 0xF4F4F2)
                 static let radius: CGFloat = 24
             }
             enum Primary {
-                static let background = Color(hex: 0xD4F75F)
+                static let background = Color(hex: 0xA2C1FE)
                 static let height: CGFloat = 60
-                static let label = Color(hex: 0x111111)
+                static let label = Color(hex: 0x0B0D2E)
                 static let radius: CGFloat = 999
             }
             enum Secondary {
@@ -225,7 +225,7 @@ nonisolated enum Token {
             static let height: CGFloat = 44
             static let radius: CGFloat = 16
             static let restBackground = Color(hex: 0x2C2C2C)
-            static let selectedBackground = Color(hex: 0xD4F75F2E)
+            static let selectedBackground = Color(hex: 0xA2C1FE2E)
         }
         enum Sheet {
             static let background = Color(hex: 0x050503)
@@ -237,7 +237,7 @@ nonisolated enum Token {
         enum Timeline {
             static let alarmMark = Color(hex: 0xFF7A66)
             static let gutter: CGFloat = 12
-            static let nowMarker = Color(hex: 0xD4F75F)
+            static let nowMarker = Color(hex: 0xA2C1FE)
             static let syncedMark = Color(hex: 0x5FBF9326)
         }
     }
