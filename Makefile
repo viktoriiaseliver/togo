@@ -113,15 +113,30 @@ device: ## Поставить на подключённый iPhone: make device 
 
 .PHONY: archive
 archive: ## Собрать архив для App Store Connect
-	@# Номер сборки — количество коммитов, как в Tools/upload_testflight.sh.
-	@# Без него архив получал BUILD_NUMBER = 1 из xcconfig: собирался
+	@# Номер сборки берётся из Tools/номер-сборки.txt через скрипт —
+	@# ОДНА дорога к этому числу на три файла.
+	@#
+	@# Без номера архив получал BUILD_NUMBER = 1 из xcconfig: собирался
 	@# успешно и был непригоден, потому что номер обязан расти от загрузки
 	@# к загрузке. Узнать об этом на шаге загрузки — потерять сборку зря.
-	@xcodebuild -project $(PROJECT) -scheme $(SCHEME) -configuration Release \
+	@#
+	@# Прежде здесь стояло `git rev-list --count HEAD`, и 07.10.2026 это
+	@# дало бы 506 при 271 в ASC — прыжок на 235 номеров, необратимый:
+	@# вернуться к 274 после 506 нельзя уже никогда. Счёт коммитов мерит
+	@# количество нашей работы, а номер сборки — количество отданных
+	@# сборок, и это разные величины.
+	@#
+	@# Подстановку нельзя оставлять внутри строки xcodebuild: отказ
+	@# скрипта дал бы ПУСТОЙ номер и успешную сборку. Поэтому номер
+	@# добывается отдельным шагом с `|| exit 1` и печатается — читатель
+	@# лога видит, с каким числом собрано, не разбирая рецепт.
+	@BUILD="$$(bash Tools/номер-сборки.sh)" || exit 1; \
+	echo "Номер сборки: $$BUILD (Tools/номер-сборки.txt)"; \
+	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -configuration Release \
 		-destination 'generic/platform=iOS' \
 		-archivePath build/Togo.xcarchive \
 		-allowProvisioningUpdates \
-		BUILD_NUMBER="$$(git rev-list --count HEAD)" \
+		BUILD_NUMBER="$$BUILD" \
 		archive
 	@# Языки считаются в КАЖДОМ бандле архива, включая PlugIns/*.appex.
 	@# Паспорт архива 216 говорил «fr ru uk внутри бандла» — считали
