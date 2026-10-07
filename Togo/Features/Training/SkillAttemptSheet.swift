@@ -30,7 +30,8 @@ struct SkillAttemptSheet: View {
             TGCard {
                 HStack(spacing: 0) {
                     TGStat(value: "\(skill.successes)", caption: "получилось")
-                    TGStat(value: "\(skill.attempts)", caption: "попыток")
+                    TGStat(count: skill.attempts,
+                           сЧислом: String(localized: "\(skill.attempts) попыток"))
                 }
                 TGDivider()
                 Text(объяснение)

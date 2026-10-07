@@ -22,9 +22,12 @@ struct DataPrivacyScreen: View {
                     .textStyle(AppFont.caption)
                 TGDivider()
                 HStack(spacing: 0) {
-                    TGStat(value: "\(activeEvents.count)", caption: "записей")
-                    TGStat(value: "\(dogs.count)", caption: "собак")
-                    TGStat(value: "\(Diary.daysOfData(activeEvents))", caption: "дней")
+                    TGStat(count: activeEvents.count,
+                           сЧислом: String(localized: "\(activeEvents.count) записей"))
+                    TGStat(count: dogs.count,
+                           сЧислом: String(localized: "\(dogs.count) собак"))
+                    TGStat(count: Diary.daysOfData(activeEvents),
+                           сЧислом: String(localized: "\(Diary.daysOfData(activeEvents)) дней"))
                 }
             }
 

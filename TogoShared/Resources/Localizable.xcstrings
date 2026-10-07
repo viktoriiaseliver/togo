@@ -6238,6 +6238,208 @@
         }
       }
     },
+    "%lld сеансов" : {
+      "extractionState" : "manual",
+      "localizations" : {
+      "en" : {
+        "variations" : {
+          "plural" : {
+            "one" : {
+              "stringUnit" : {
+                "state" : "needs_review",
+                "value" : "%lld session"
+              }
+            },
+            "other" : {
+              "stringUnit" : {
+                "state" : "needs_review",
+                "value" : "%lld sessions"
+              }
+            }
+          }
+        }
+      },
+      "fr" : {
+        "variations" : {
+          "plural" : {
+            "one" : {
+              "stringUnit" : {
+                "state" : "needs_review",
+                "value" : "%lld session"
+              }
+            },
+            "other" : {
+              "stringUnit" : {
+                "state" : "needs_review",
+                "value" : "%lld sessions"
+              }
+            }
+          }
+        }
+      },
+      "ru" : {
+        "variations" : {
+          "plural" : {
+            "few" : {
+              "stringUnit" : {
+                "state" : "translated",
+                "value" : "%lld сеанса"
+              }
+            },
+            "many" : {
+              "stringUnit" : {
+                "state" : "translated",
+                "value" : "%lld сеансов"
+              }
+            },
+            "one" : {
+              "stringUnit" : {
+                "state" : "translated",
+                "value" : "%lld сеанс"
+              }
+            },
+            "other" : {
+              "stringUnit" : {
+                "state" : "translated",
+                "value" : "%lld сеансов"
+              }
+            }
+          }
+        }
+      },
+      "uk" : {
+        "variations" : {
+          "plural" : {
+            "few" : {
+              "stringUnit" : {
+                "state" : "needs_review",
+                "value" : "%lld сеанси"
+              }
+            },
+            "many" : {
+              "stringUnit" : {
+                "state" : "needs_review",
+                "value" : "%lld сеансів"
+              }
+            },
+            "one" : {
+              "stringUnit" : {
+                "state" : "needs_review",
+                "value" : "%lld сеанс"
+              }
+            },
+            "other" : {
+              "stringUnit" : {
+                "state" : "needs_review",
+                "value" : "%lld сеансів"
+              }
+            }
+          }
+        }
+      }
+      }
+    },
+    "%lld попыток" : {
+      "extractionState" : "manual",
+      "localizations" : {
+      "en" : {
+        "variations" : {
+          "plural" : {
+            "one" : {
+              "stringUnit" : {
+                "state" : "needs_review",
+                "value" : "%lld attempt"
+              }
+            },
+            "other" : {
+              "stringUnit" : {
+                "state" : "needs_review",
+                "value" : "%lld attempts"
+              }
+            }
+          }
+        }
+      },
+      "fr" : {
+        "variations" : {
+          "plural" : {
+            "one" : {
+              "stringUnit" : {
+                "state" : "needs_review",
+                "value" : "%lld essai"
+              }
+            },
+            "other" : {
+              "stringUnit" : {
+                "state" : "needs_review",
+                "value" : "%lld essais"
+              }
+            }
+          }
+        }
+      },
+      "ru" : {
+        "variations" : {
+          "plural" : {
+            "few" : {
+              "stringUnit" : {
+                "state" : "translated",
+                "value" : "%lld попытки"
+              }
+            },
+            "many" : {
+              "stringUnit" : {
+                "state" : "translated",
+                "value" : "%lld попыток"
+              }
+            },
+            "one" : {
+              "stringUnit" : {
+                "state" : "translated",
+                "value" : "%lld попытка"
+              }
+            },
+            "other" : {
+              "stringUnit" : {
+                "state" : "translated",
+                "value" : "%lld попыток"
+              }
+            }
+          }
+        }
+      },
+      "uk" : {
+        "variations" : {
+          "plural" : {
+            "few" : {
+              "stringUnit" : {
+                "state" : "needs_review",
+                "value" : "%lld спроби"
+              }
+            },
+            "many" : {
+              "stringUnit" : {
+                "state" : "needs_review",
+                "value" : "%lld спроб"
+              }
+            },
+            "one" : {
+              "stringUnit" : {
+                "state" : "needs_review",
+                "value" : "%lld спроба"
+              }
+            },
+            "other" : {
+              "stringUnit" : {
+                "state" : "needs_review",
+                "value" : "%lld спроб"
+              }
+            }
+          }
+        }
+      }
+      }
+    },
     "%lld собак" : {
       "extractionState" : "manual",
       "localizations" : {

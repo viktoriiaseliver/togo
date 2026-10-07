@@ -75,9 +75,12 @@ struct UsageLogScreen: View {
                 .textStyle(AppFont.caption)
             TGDivider()
             HStack(spacing: 0) {
-                TGStat(value: "\(report.total)", caption: "действий")
-                TGStat(value: "\(report.records)", caption: "записей")
-                TGStat(value: "\(report.sessions.count)", caption: "сеансов")
+                TGStat(count: report.total,
+                       сЧислом: String(localized: "\(report.total) действий"))
+                TGStat(count: report.records,
+                       сЧислом: String(localized: "\(report.records) записей"))
+                TGStat(count: report.sessions.count,
+                       сЧислом: String(localized: "\(report.sessions.count) сеансов"))
             }
             TGDivider()
             Text(summaryLine).textStyle(AppFont.caption)
