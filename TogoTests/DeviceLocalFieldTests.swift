@@ -50,7 +50,10 @@ struct DeviceLocalFieldTests {
     /// Поля, которым уезжать положено: это факты про собаку и семью.
     /// Проверяются не по одному — списком, чтобы «не подумали» было
     /// видно.
-    private static let проСемью: Set<String> = [
+    /// Открыт (был `private`) 07.10.2026: его читает `DogPayloadParityTests`.
+    /// Копия этого списка разошлась бы с ним молча — оба были бы
+    /// зелёными, каждый про своё.
+    static let проСемью: Set<String> = [
         "FamilyMember.id", "FamilyMember.name", "FamilyMember.roleRaw",
         "FamilyMember.note", "FamilyMember.customPermissionsRaw",
         // Кто на дежурстве — факт про семью, а не про телефон:
