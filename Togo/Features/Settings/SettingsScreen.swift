@@ -288,6 +288,10 @@ struct SettingsScreen: View {
             // а вид не строился нигде, кроме живой прогулки — до него
             // надо было выйти с собакой и вернуться.
             NavigationLink("Итог прогулки") { WalkSummaryGallery() }
+            // Восемь состояний «Просится». Чтобы увидеть «отметок мочи
+            // нет», надо было восемнадцать дней не вести дневник;
+            // чтобы «мало данных» — удалить собаку и завести заново.
+            NavigationLink("Просится") { VerdictGallery() }
             // Пять режимов плаката. На «Сегодня» виден ровно один —
             // тот, который сегодня; тревогу и час дозы надо было бы
             // устроить, чтобы увидеть. `PosterMode` при этом был
@@ -363,6 +367,7 @@ struct NotificationSettingsScreen: View {
             }
         }
         .navigationTitle("Уведомления")
+        .posterHeader("Уведомления")
         .navigationBarTitleDisplayMode(.inline)
         .scrollContentBackground(.hidden)
         .background(Token.Surface.screen)

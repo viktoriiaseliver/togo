@@ -37,6 +37,7 @@ struct UsageLogScreen: View {
             privacy
         }
         .navigationTitle("Журнал действий")
+        .posterHeader("Журнал действий")
         .navigationBarTitleDisplayMode(.large)
         .task { await reload() }
         .usageScreen(.usageLog)

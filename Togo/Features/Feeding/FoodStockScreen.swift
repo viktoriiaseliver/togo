@@ -109,6 +109,7 @@ struct FoodStockScreen: View {
             }
         }
         .navigationTitle("Чем кормим")
+        .posterHeader("Чем кормим")
         .usageScreen(.foodStock)
         .navigationBarTitleDisplayMode(.large)
         .sheet(isPresented: $isAdding) { FoodStockEditorSheet(dog: dog) }

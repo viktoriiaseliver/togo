@@ -65,6 +65,7 @@ struct FamilyScreen: View {
                 }
             }
             .navigationTitle("Семья")
+            .posterHeader("Семья")
             .usageScreen(.family)
             // Приглашение живёт в облаке, а не в `@State`: без этой
             // строки человек, уже создавший ссылку, возвращался
@@ -433,6 +434,7 @@ struct MemberScreen: View {
             }
         }
         .navigationTitle(member.name)
+        .posterHeader(.готовое(member.name))
         .navigationBarTitleDisplayMode(.large)
     }
 }
@@ -565,6 +567,7 @@ struct SitterPreviewScreen: View {
             }
         }
         .navigationTitle("Вид ситтера")
+        .posterHeader("Вид ситтера")
         .navigationBarTitleDisplayMode(.large)
     }
 

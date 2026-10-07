@@ -38,6 +38,7 @@ struct BackupScreen: View {
             formatCard
         }
         .navigationTitle("Перенос")
+        .posterHeader("Перенос")
         .usageScreen(.backup)
         .navigationBarTitleDisplayMode(.large)
         .task {

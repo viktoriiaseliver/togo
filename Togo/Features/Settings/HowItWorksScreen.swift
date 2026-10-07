@@ -82,6 +82,7 @@ struct HowItWorksScreen: View {
             }
         }
         .navigationTitle("Как это работает")
+        .posterHeader("Как это работает")
         .navigationBarTitleDisplayMode(.large)
     }
 }

@@ -91,6 +91,7 @@ struct FeedingScreen: View {
             }
         }
         .navigationTitle("Питание")
+        .posterHeader("Питание")
         .usageScreen(.feeding)
         .navigationBarTitleDisplayMode(.large)
         .task {

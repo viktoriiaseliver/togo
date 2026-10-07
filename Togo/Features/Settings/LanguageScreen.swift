@@ -107,6 +107,7 @@ struct LanguageScreen: View {
         .scrollContentBackground(.hidden)
         .background(Token.Surface.screen)
         .navigationTitle("Язык")
+        .posterHeader("Язык")
         .navigationBarTitleDisplayMode(.large)
     }
 

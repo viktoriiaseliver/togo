@@ -117,6 +117,7 @@ struct TransferMatrixScreen: View {
             }
         }
         .navigationTitle("Перенос навыка")
+        .posterHeader("Перенос навыка")
         .navigationBarTitleDisplayMode(.large)
         .sheet(isPresented: $showPaywall) { NavigationStack { PaywallScreen() } }
     }
@@ -276,6 +277,7 @@ struct ProcedurePrepScreen: View {
             }
         }
         .navigationTitle("Процедуры")
+        .posterHeader("Процедуры")
         .navigationBarTitleDisplayMode(.large)
         .task { seedOnce() }
         .sheet(item: $открыт) { skill in

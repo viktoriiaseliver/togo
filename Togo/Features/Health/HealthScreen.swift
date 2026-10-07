@@ -52,6 +52,7 @@ struct HealthScreen: View {
                 disclaimer
             }
             .navigationTitle("Здоровье")
+            .posterHeader("Здоровье")
             .usageScreen(.health)
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
@@ -285,6 +286,7 @@ struct ProtocolScreen: View {
             }
         }
         .navigationTitle("Протокол")
+        .posterHeader("Протокол")
         .navigationBarTitleDisplayMode(.large)
         .onReceive(tick) { now = $0 }
     }
@@ -375,6 +377,7 @@ struct VetReportScreen: View {
             .buttonStyle(.plain)
         }
         .navigationTitle("Отчёт")
+        .posterHeader("Отчёт")
         .navigationBarTitleDisplayMode(.large)
     }
 
@@ -452,6 +455,7 @@ struct WeightScreen: View {
             }
         }
         .navigationTitle("Вес")
+        .posterHeader("Вес")
         .navigationBarTitleDisplayMode(.large)
         .confirmationDialog("Удалить взвешивание?",
                             isPresented: Binding(get: { removing != nil },

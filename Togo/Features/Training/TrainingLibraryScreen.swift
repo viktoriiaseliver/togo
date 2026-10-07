@@ -44,6 +44,7 @@ struct TrainingLibraryScreen: View {
             }
         }
         .navigationTitle("Занятия и шаги")
+        .posterHeader("Занятия и шаги")
         .navigationBarTitleDisplayMode(.large)
         .confirmationDialog("Удалить шаг?",
                             isPresented: Binding(get: { removingStep != nil },

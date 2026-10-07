@@ -38,6 +38,7 @@ struct CareScreen: View {
             }
         }
         .navigationTitle("Уход")
+        .posterHeader("Уход")
         .usageScreen(.care)
         .navigationBarTitleDisplayMode(.large)
         .toolbar {

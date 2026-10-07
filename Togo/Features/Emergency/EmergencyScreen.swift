@@ -21,6 +21,7 @@ struct EmergencyScreen: View {
             vetBriefCard
         }
         .navigationTitle("Если что-то случилось")
+        .posterHeader("Если что-то случилось")
         .usageScreen(.emergency)
         .navigationBarTitleDisplayMode(.large)
     }
@@ -265,6 +266,7 @@ struct DocumentsScreen: View {
             TGExplainer(text: "Всё это лежит на телефоне и никуда не отправляется само.")
         }
         .navigationTitle("Документы")
+        .posterHeader("Документы")
         .navigationBarTitleDisplayMode(.large)
     }
 

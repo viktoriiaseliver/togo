@@ -36,6 +36,7 @@ struct SharedDiaryScreen: View {
             limitsCard
         }
         .navigationTitle("Общий дневник")
+        .posterHeader("Общий дневник")
         .navigationBarTitleDisplayMode(.large)
         .usageScreen(.sharedDiary)
         .task { await refresh() }

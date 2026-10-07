@@ -2,10 +2,28 @@ import SwiftUI
 import SwiftData
 
 /// «Просится» — главная кнопка приложения и единственное место, где приложение
-/// может незаметно испортить поведение. Четыре исхода вердикта, и «Вывожу»
-/// первой кнопкой во всех: вердикт не блокирует выход.
+/// может незаметно испортить поведение. **Пять случаев вердикта и шесть
+/// разных объяснений** (у `.unknown` три причины), и «Вывожу» первой
+/// кнопкой во всех: вердикт не блокирует выход.
+///
+/// **Здесь было написано «четыре исхода» — 07.10.2026 это посчитано
+/// и оказалось неверно**, ровно как и та же фраза в `NeedVerdict.swift:3`.
+/// Числа в документации стареют молча: `.episode` и `.silence`
+/// приехали позже, а строка осталась и читается ВМЕСТО кода —
+/// тем же способом, каким у Gamut имя теста пять дней рассказывало
+/// отменённое поведение.
 struct NeedsSheet: View {
     let dog: Dog?
+
+    /// Готовый срез фактов вместо чтения из базы — вход для галереи.
+    ///
+    /// Без него шесть состояний вердикта требуют шести собак с нужной
+    /// историей событий в SwiftData, то есть поверхность остаётся
+    /// **проверяемой только живой собакой**. Тот же ход, что
+    /// у `WalkActivityView`: не новый вид рядом с настоящим,
+    /// а второй вход в настоящий — иначе кадр доказывал бы, что верна
+    /// копия.
+    var демоСигналы: NeedSignals?
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
@@ -18,7 +36,12 @@ struct NeedsSheet: View {
     @State private var verdict: NeedVerdict = .unknown(reason: .ambiguous)
 
     private func evaluate() {
-        signals = Diary.signals(dog?.events ?? [], episodeActive: appState.isEpisodeActive)
+        // Галерея подставляет срез фактов; вердикт всё равно считает
+        // НАСТОЯЩИЙ движок. Подставь сюда готовый вердикт — и кадр
+        // доказывал бы, что верна подпись под картинкой, а не что
+        // правило считает то, что написано.
+        signals = демоСигналы
+            ?? Diary.signals(dog?.events ?? [], episodeActive: appState.isEpisodeActive)
         verdict = VerdictEngine.evaluate(signals)
     }
 
@@ -48,7 +71,9 @@ struct NeedsSheet: View {
             TGButton(title: .готовая(verdict.alternativeAction), variant: .secondary, size: .medium) { dismiss() }
         }
         .presentationDetents([.medium, .large])
-        .usageScreen(.needs)
+        // Демо-показ в журнал не пишем: шесть состояний галереи дали бы
+        // шесть посещений «Просится», которых человек не делал.
+        .usageScreen(демоСигналы == nil ? .needs : nil)
         .task { evaluate() }
         .sheet(isPresented: $askSignal) {
             HowAskedSheet(dog: dog) { dismiss() }

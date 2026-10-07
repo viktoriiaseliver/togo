@@ -62,6 +62,7 @@ struct DogEditorScreen: View {
             TGButton(title: isNew ? "Добавить собаку" : "Сохранить", isEnabled: draft.isValid) { save() }
         }
         .navigationTitle(isNew ? "Новая собака" : "Профиль")
+        .posterHeader(isNew ? "Новая собака" : "Профиль")
         .navigationBarTitleDisplayMode(.large)
         .task { load() }
         .confirmationDialog("Удалить \(dog?.displayName ?? draft.name)?", isPresented: $isConfirmingDelete, titleVisibility: .visible) {

@@ -62,6 +62,7 @@ struct TripSetupScreen: View {
             TGButton(title: "Включить режим", systemImage: "car", isEnabled: !destination.isEmpty) { save() }
         }
         .navigationTitle("Поездка")
+        .posterHeader("Поездка")
         .usageScreen(.trip)
         .navigationBarTitleDisplayMode(.large)
     }

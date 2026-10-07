@@ -65,6 +65,7 @@ struct DoorTagScreen: View {
             TGExplainer(text: "Метка не знает о тебе ничего: в ней записан только номер, по которому «Команды» узнают наклейку. Геопозицию Togo не спрашивает вовсе.")
         }
         .navigationTitle("Метка у двери")
+        .posterHeader("Метка у двери")
         .navigationBarTitleDisplayMode(.large)
     }
 }

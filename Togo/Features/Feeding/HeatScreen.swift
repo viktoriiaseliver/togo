@@ -45,6 +45,7 @@ struct HeatScreen: View {
             disclaimer
         }
         .navigationTitle("Цикл")
+        .posterHeader("Цикл")
         .navigationBarTitleDisplayMode(.large)
         .toolbar {
             if canEdit {

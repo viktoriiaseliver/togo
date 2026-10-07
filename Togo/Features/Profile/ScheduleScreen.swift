@@ -32,6 +32,7 @@ struct ScheduleScreen: View {
             }
         }
         .navigationTitle("Режим")
+        .posterHeader("Режим")
         .navigationBarTitleDisplayMode(.large)
         .task {
             guard !loaded else { return }

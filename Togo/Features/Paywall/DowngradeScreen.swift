@@ -51,6 +51,7 @@ struct DowngradeScreen: View {
             }
         }
         .navigationTitle("Отключить Pro")
+        .posterHeader("Отключить Pro")
         .navigationBarTitleDisplayMode(.large)
     }
 }

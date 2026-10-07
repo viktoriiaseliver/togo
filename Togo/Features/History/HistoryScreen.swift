@@ -47,6 +47,7 @@ struct HistoryScreen: View {
                 }
             }
             .navigationTitle("История")
+            .posterHeader("История")
             .usageScreen(.history)
             .navigationBarTitleDisplayMode(.large)
             .toolbar { SettingsToolbarItem() }

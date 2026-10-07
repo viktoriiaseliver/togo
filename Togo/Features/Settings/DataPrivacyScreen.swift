@@ -71,6 +71,7 @@ struct DataPrivacyScreen: View {
             }
         }
         .navigationTitle("Данные")
+        .posterHeader("Данные")
         .usageScreen(.dataPrivacy)
         .navigationBarTitleDisplayMode(.large)
         .confirmationDialog("Удалить все данные?", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
@@ -158,6 +159,7 @@ struct SupportScreen: View {
             }
         }
         .navigationTitle("Поддержка")
+        .posterHeader("Поддержка")
         .navigationBarTitleDisplayMode(.large)
     }
 
@@ -240,6 +242,7 @@ struct AboutScreen: View {
             }
         }
         .navigationTitle("О приложении")
+        .posterHeader("О приложении")
         .navigationBarTitleDisplayMode(.large)
     }
 

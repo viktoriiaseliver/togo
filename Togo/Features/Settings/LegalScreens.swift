@@ -38,6 +38,7 @@ struct LegalDocument: View {
             }
         }
         .navigationTitle(title)
+        .posterHeader(.готовое(title))
         .navigationBarTitleDisplayMode(.inline)
     }
 }

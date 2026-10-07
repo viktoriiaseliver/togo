@@ -30,14 +30,47 @@ import SwiftUI
 /// шапки цветной всегда, поэтому здесь `labelOnColor` и `captionOnColor`.
 /// Приёмка — замер пикселя на кадре, а не это рассуждение.
 struct TGPosterHeader: View {
-    let title: LocalizedStringKey
+
+    /// Название экрана: либо ключ каталога, либо готовое значение.
+    ///
+    /// Два случая разведены типом нарочно. У Togo записано, чем
+    /// кончается их смешение: `Text` со ЗНАЧЕНИЕМ типа `String` рисует
+    /// текст **дословно, мимо каталога**, и 23.09 французский экран
+    /// оказался наполовину русским при полном каталоге — локализуется
+    /// только литерал.
+    ///
+    /// Поэтому `.ключ` для литералов (идёт в каталог) и `.готовое`
+    /// для того, что каталогу неизвестно по смыслу: кличка собаки,
+    /// город поездки, имя участника. Второе дословно — и это верно,
+    /// переводить кличку нечем.
+    enum Название {
+        case ключ(LocalizedStringKey)
+        case готовое(String)
+    }
+
+    let title: Название
     var subtitle: LocalizedStringKey?
+
+    init(title: LocalizedStringKey, subtitle: LocalizedStringKey? = nil) {
+        self.title = .ключ(title)
+        self.subtitle = subtitle
+    }
+
+    init(title: Название, subtitle: LocalizedStringKey? = nil) {
+        self.title = title
+        self.subtitle = subtitle
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: Token.Space.s4) {
-            Text(title)
-                .textStyle(AppFont.posterHeaderTitle)
-                .accessibilityAddTraits(.isHeader)
+            Group {
+                switch title {
+                case .ключ(let k): Text(k)
+                case .готовое(let s): Text(s)
+                }
+            }
+            .textStyle(AppFont.posterHeaderTitle)
+            .accessibilityAddTraits(.isHeader)
             if let subtitle {
                 Text(subtitle)
                     .textStyle(AppFont.posterHeaderSubtitle)
@@ -76,6 +109,14 @@ extension View {
     /// подряд — это не «плакат плюс навигация», это просто два
     /// заголовка.
     func posterHeader(_ title: LocalizedStringKey,
+                      subtitle: LocalizedStringKey? = nil) -> some View {
+        posterHeader(.ключ(title), subtitle: subtitle)
+    }
+
+    /// То же для названия-значения: кличка, город, имя участника.
+    /// Такое название каталог не знает по смыслу, и рисуется оно
+    /// дословно — см. `TGPosterHeader.Название`.
+    func posterHeader(_ title: TGPosterHeader.Название,
                       subtitle: LocalizedStringKey? = nil) -> some View {
         self
             .navigationBarTitleDisplayMode(.inline)

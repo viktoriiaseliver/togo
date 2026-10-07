@@ -29,6 +29,7 @@ struct ProfileScreen: View {
         }
         .disabled(false)
         .navigationTitle(заголовок)
+        .posterHeader(.готовое(заголовок))
         .navigationBarTitleDisplayMode(.large)
     }
 
