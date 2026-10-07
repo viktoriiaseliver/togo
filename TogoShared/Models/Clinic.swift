@@ -63,9 +63,28 @@ final class Clinic {
     @Relationship(deleteRule: .nullify, inverse: \CareTask.clinic)
     var careTasksStorage: [CareTask]?
 
+    /// Приёмы, прошедшие в этой организации, и выписанные в ней рецепты.
+    ///
+    /// **`.nullify` по той же причине, что у дел ухода, и это важнее,
+    /// чем кажется.** Визит к врачу и бланк рецепта — факты: они
+    /// случились в тот день, даже если организацию потом убрали
+    /// из справочника. Каскад значил бы, что человек, прибирающий
+    /// список клиник, стирает себе историю приёмов и назначений,
+    /// будучи уверен, что правит справочник.
+    ///
+    /// У собаки те же четыре связи стоят каскадом — и это не разнобой:
+    /// без собаки визита не существует, без клиники существует.
+    @Relationship(deleteRule: .nullify, inverse: \VetVisit.clinic)
+    var vetVisitsStorage: [VetVisit]?
+
+    @Relationship(deleteRule: .nullify, inverse: \Prescription.clinic)
+    var prescriptionsStorage: [Prescription]?
+
     /// Наружу — обычный массив: CloudKit требует опциональности
     /// у хранимого, остальному коду про это знать незачем.
     var careTasks: [CareTask] { careTasksStorage ?? [] }
+    var vetVisits: [VetVisit] { vetVisitsStorage ?? [] }
+    var prescriptions: [Prescription] { prescriptionsStorage ?? [] }
 
     init(name: String, detail: String? = nil, isLab: Bool = false, phone: String? = nil) {
         self.name = name

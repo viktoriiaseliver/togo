@@ -175,6 +175,44 @@ final class Dog {
     @Relationship(deleteRule: .cascade, inverse: \FoodStock.dog)
     var stocksStorage: [FoodStock]?
 
+    // MARK: Медицинский слой — 07.10.2026
+    //
+    // **Четыре обратные связи заводятся В ТОЙ ЖЕ ПРАВКЕ, что
+    // регистрация сущностей в схеме.** Модели приехали коммитом
+    // `576d5a1` с полями `dog: Dog?` и без обратной стороны. Пока они
+    // не в схеме, всё цело — SwiftData проверяет только
+    // зарегистрированные; зарегистрируй их без обратных сторон, и
+    // контейнер не откроется ни у кого:
+    //
+    //     CloudKit integration requires that all relationships
+    //     have an inverse, the following do not: LabResult: dog
+    //
+    // Это не красный тест, а хранилище, не открывшееся вовсе.
+    //
+    // **`.cascade`, а не `.nullify`, и выбор тот же, что у остальных
+    // одиннадцати:** анализ, визит, диагноз и рецепт существуют только
+    // вместе с собакой. Убрали собаку — убрали и её медкнижку; записи
+    // «чей-то анализ без собаки» не бывает.
+    //
+    // Противоположный выбор стоит рядом, у `Clinic`: там `.nullify`,
+    // потому что визит остался фактом, даже если организацию убрали
+    // из справочника.
+    //
+    // > **Правило удаления выводится из вопроса «существует ли запись
+    // > без этого», а не из того, как устроены соседние связи.**
+
+    @Relationship(deleteRule: .cascade, inverse: \LabResult.dog)
+    var labResultsStorage: [LabResult]?
+
+    @Relationship(deleteRule: .cascade, inverse: \VetVisit.dog)
+    var vetVisitsStorage: [VetVisit]?
+
+    @Relationship(deleteRule: .cascade, inverse: \Diagnosis.dog)
+    var diagnosesStorage: [Diagnosis]?
+
+    @Relationship(deleteRule: .cascade, inverse: \Prescription.dog)
+    var prescriptionsStorage: [Prescription]?
+
 
     init(name: String, weightKg: Double) {
         self.name = name
@@ -197,6 +235,10 @@ final class Dog {
     var daysOut: [DayOut] { daysOutStorage ?? [] }
     var heats: [HeatRecord] { heatsStorage ?? [] }
     var stocks: [FoodStock] { stocksStorage ?? [] }
+    var labResults: [LabResult] { labResultsStorage ?? [] }
+    var vetVisits: [VetVisit] { vetVisitsStorage ?? [] }
+    var diagnoses: [Diagnosis] { diagnosesStorage ?? [] }
+    var prescriptions: [Prescription] { prescriptionsStorage ?? [] }
 
 
     var sex: DogSex {
