@@ -76,7 +76,7 @@ struct TodayScreen: View {
     /// без объяснения читается как сломанное приложение, а не как выбор.
     private var нетСобаки: some View {
         EmptyStateCard(
-            systemImage: "pawprint",
+            subject: .day,
             title: "Собака пока не заведена",
             message: "Отмечать некого: еда, выходы и дозы считаются по собаке. Заведи её — нужны только кличка и вес.",
             actionTitle: "Завести собаку",

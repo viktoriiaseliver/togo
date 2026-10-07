@@ -219,7 +219,7 @@ struct ProcedurePrepScreen: View {
 
             if skills.isEmpty {
                 EmptyStateCard(
-                    systemImage: "hand.raised",
+                    subject: .training,
                     title: "Список пуст",
                     message: "Навыки для процедур убраны. Заготовки можно вернуть — это три самых нужных: дать лапу, стоять при осмотре и залезть в переноску.",
                     actionTitle: canEdit ? "Вернуть заготовки" : nil,

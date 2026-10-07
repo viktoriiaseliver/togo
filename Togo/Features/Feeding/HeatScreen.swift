@@ -32,7 +32,7 @@ struct HeatScreen: View {
             }
             if records.isEmpty {
                 EmptyStateCard(
-                    systemImage: "calendar.badge.clock",
+                    subject: .heat,
                     title: "Записей пока нет",
                     message: "Отметь дату начала — и приложение начнёт считать промежуток. После двух записей оно сможет подсказывать, когда ждать следующую.",
                     actionTitle: canEdit ? "Записать течку" : nil,

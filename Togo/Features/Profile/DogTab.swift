@@ -32,7 +32,7 @@ struct DogTab: View {
                     travel(dog)
                 } else {
                     EmptyStateCard(
-                        systemImage: "pawprint",
+                        subject: .dog,
                         title: "Собаки пока нет",
                         message: "Заведи её — и приложению будет что считать.",
                         actionTitle: nil,

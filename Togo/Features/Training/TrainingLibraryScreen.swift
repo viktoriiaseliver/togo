@@ -32,7 +32,7 @@ struct TrainingLibraryScreen: View {
         TGScreen {
             if steps.isEmpty && sessions.isEmpty {
                 EmptyStateCard(
-                    systemImage: "target",
+                    subject: .trainingLibrary,
                     title: "Занятий пока не было",
                     message: "Первый шаг заведётся сам, как только начнёшь занятие. Здесь потом будет видно, что накопилось, и лишнее можно будет убрать.",
                     actionTitle: nil,

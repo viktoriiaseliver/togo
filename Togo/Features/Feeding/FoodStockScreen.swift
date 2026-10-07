@@ -80,7 +80,7 @@ struct FoodStockScreen: View {
         TGScreen {
             if stocks.isEmpty {
                 EmptyStateCard(
-                    systemImage: "shippingbox",
+                    subject: .foodStock,
                     title: "Корм пока не записан",
                     message: "Добавь то, чем кормишь: сухой считается мешками, влажный — банками. Даёшь оба — добавь оба и укажи граммы в день на каждый.",
                     actionTitle: canEdit ? "Добавить корм" : nil,

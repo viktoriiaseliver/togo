@@ -33,7 +33,7 @@ struct PaywallScreen: View {
                 isLoading: store.isLoading,
                 isEmpty: store.products.isEmpty,
                 loadingMessage: "Спрашиваю цены у App Store…",
-                emptyImage: "wifi.exclamationmark",
+                emptySubject: .offline,
                 emptyTitle: "Цены не загрузились",
                 // Причину называем ту, что случилась, а не самую частую.
                 // «Обычно это связь» стояло здесь всегда — и было

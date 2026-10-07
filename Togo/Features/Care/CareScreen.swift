@@ -61,7 +61,7 @@ struct CareScreen: View {
     private var emptyState: some View {
         VStack(alignment: .leading, spacing: Token.Spacing.stack) {
             EmptyStateCard(
-                systemImage: "scissors",
+                subject: .care,
                 title: "Уход настраивается под собаку",
                 message: "У каждой собаки он свой: шипперке не купают часто, а зубы чистят всем и каждый день. Выбери из списка то, что делаешь, — или заведи своё.",
                 actionTitle: dog == nil ? nil : "Выбрать из списка",

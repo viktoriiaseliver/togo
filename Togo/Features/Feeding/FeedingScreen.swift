@@ -67,7 +67,7 @@ struct FeedingScreen: View {
         TGScreen {
             if dog == nil {
                 EmptyStateCard(
-                    systemImage: "fork.knife",
+                    subject: .feeding,
                     title: "Собаки пока нет",
                     message: "Добавь собаку — и приложение начнёт считать, сколько она ест и во сколько.",
                     actionTitle: nil,

@@ -27,7 +27,7 @@ struct HealthScreen: View {
             TGScreen {
                 if medications.isEmpty {
                     EmptyStateCard(
-                        systemImage: "pills",
+                        subject: .health,
                         title: "Схемы лечения пока нет",
                         message: "Добавь препарат — приложение начнёт напоминать про дозу, держать окно натощак и защищать от двойной дозы. Это бесплатно и работает всегда.",
                         actionTitle: canEdit ? "Добавить препарат" : nil,

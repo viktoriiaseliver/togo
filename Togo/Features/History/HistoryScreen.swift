@@ -31,7 +31,7 @@ struct HistoryScreen: View {
             TGScreen {
                 if events.isEmpty {
                     EmptyStateCard(
-                        systemImage: "calendar",
+                        subject: .history,
                         title: "История начнётся с первой записи",
                         message: "Здесь появятся календарь с точкой на каждый день, графики по стулу и весу и список эпизодов. Заполнять заранее ничего не надо.",
                         actionTitle: nil,

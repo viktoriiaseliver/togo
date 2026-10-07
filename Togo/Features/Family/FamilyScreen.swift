@@ -38,7 +38,7 @@ struct FamilyScreen: View {
                 }
                 if members.filter({ !$0.isMe }).isEmpty {
                     EmptyStateCard(
-                        systemImage: "person.2",
+                        subject: .family,
                         title: "Пока вы вдвоём с собакой",
                         message: "Заведи тех, кто тоже за ней ходит: совладельца, ситтера, ребёнка или врача. Роль и права выбираешь ты — сам он их не поменяет.",
                         actionTitle: nil,
