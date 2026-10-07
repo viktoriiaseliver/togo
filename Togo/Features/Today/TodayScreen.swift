@@ -95,17 +95,28 @@ struct TodayScreen: View {
                 ZStack {
                     Token.Surface.screen.ignoresSafeArea()
                     ScrollView {
-                        VStack(alignment: .leading, spacing: Token.Spacing.stack) {
-                            if dog == nil { нетСобаки }
-                            header
-                            тревоги
-                            происходящее
-                            деньПозади
-                            планНаОстаток
+                        // Плакат — ВО ВСЮ ШИРИНУ, поэтому он снаружи
+                        // отступов экрана, а не внутри. Это решение
+                        // дизайна: верхняя треть — цветной блок, а
+                        // не карточка с полями по краям.
+                        VStack(alignment: .leading, spacing: 0) {
+                            плакат
+                            VStack(alignment: .leading, spacing: Token.Spacing.stack) {
+                                if dog == nil { нетСобаки }
+                                тревоги
+                                происходящее
+                                деньПозади
+                                планНаОстаток
+                            }
+                            .padding(.horizontal, Token.Spacing.screenPadding)
+                            .padding(.top, Token.Spacing.stack)
+                            .padding(.bottom, 24)
                         }
-                        .padding(.horizontal, Token.Spacing.screenPadding)
-                        .padding(.bottom, 24)
                     }
+                    // Безопасную область сверху отдаёт ЭКРАН, а не
+                    // компонент: плакат идёт от статус-бара, и это
+                    // знание про место, а не про сам блок.
+                    .ignoresSafeArea(edges: .top)
                 }
                 .safeAreaInset(edge: .bottom) {
                     VStack(spacing: 0) {
@@ -187,12 +198,20 @@ struct TodayScreen: View {
             )
         }
 
+        // **Показание переехало в плакат, строка про режим осталась
+        // здесь.** `showsReading: false` — не экономия, а отказ от
+        // копии: в `support` живут порог `rhythm.isReliable` и правило
+        // «`Fmt.plural` возвращает число вместе со словом», на котором
+        // здесь уже починен дефект «3 3 выхода за день». Переписать
+        // строку рядом с плакатом значило бы завести вторую
+        // реализацию, которая разойдётся молча.
         TodayHero(indoors: timeIndoors,
                   lastOutingEndedAt: lastOutingEndedAt,
                   session: appState.session,
                   now: now,
                   rhythm: WalkRhythmAnalyzer.rhythm(events: events, now: now),
-                  outingsToday: outingsToday)
+                  outingsToday: outingsToday,
+                  showsReading: false)
 
         // Порог тревоги: счёт дошёл сам, и человек должен увидеть это
         // до того, как начнёт гадать в три часа ночи, «уже пора или ещё нет».
@@ -421,12 +440,143 @@ struct TodayScreen: View {
 
     // MARK: Шапка
 
+    // MARK: Плакат — верхняя треть
+
+    /// Состояние дня для плаката.
+    ///
+    /// **Собрано из того, что экран уже считает, и ни одного правила
+    /// здесь не выведено заново.** Это главное требование наряда:
+    /// `PosterMode` спрашивают четыре поверхности, и третья реализация
+    /// одного правила у Togo уже стоила дня (виджет считал окно
+    /// «не кормить» своей арифметикой, сторож на вызов был к этому слеп).
+    ///
+    /// ```
+    /// isAlarm      AlarmThresholdAnalyzer.evaluate + appState.isEpisodeActive
+    /// isFasting    fastingWindow (то же, что у баннера натощак)
+    /// isDoseDue    overdueDose (то же, что у баннера дозы)
+    /// isNight      settings.isQuietHour — тихие часы, уже настраиваемые
+    /// isFirstDay   rhythm.isReliable ложно: ритма ещё нет, измерять нечего
+    /// ```
+    ///
+    /// **`isFirstDay` — единственное, где я выбирал смысл**, и первый
+    /// выбор был неверным. Отдельного «первого дня» в проекте нет
+    /// вовсе — искал и по типам, и по словам, — поэтому смысл надо было
+    /// чем-то выразить.
+    ///
+    /// Сперва взял `!rhythm.isReliable`: формулировка `PosterMode`
+    /// («ритма ещё нет») совпадает с ним дословно. Потом посчитал,
+    /// что из этого выходит у человека:
+    ///
+    /// ```
+    /// WalkRhythm.minimumDays = 3   →  isReliable ложно ПЕРВЫЕ ТРИ ДНЯ
+    /// значит плакат нейтрально-серый трое суток после установки
+    /// ```
+    ///
+    /// Решение дизайна говорит «ночь и **первый день** — нейтральный»,
+    /// а не «первые три дня». И дело не в букве: показание плаката —
+    /// это «давно ли выходили», и оно осмысленно с первой же записи.
+    /// Серый блок на третьи сутки скрывал бы цвет без причины.
+    ///
+    /// Поэтому `rhythm.days == 0` — ритма нет **вовсе**, то есть
+    /// записей ещё не было. С первой записи плакат получает цвет.
+    ///
+    /// > **Формулировка, совпадающая с правилом дословно, не обязана
+    /// > совпадать с ним по следствиям.** Проверять надо следствие
+    /// > у человека, а не совпадение слов.
+    ///
+    /// Если дизайн имел в виду именно «пока нет ритма» — это решение
+    /// на одну строку, и ждёт оно кадра, а не спора.
+    private var состояниеДня: PosterMode.DayState {
+        PosterMode.DayState(
+            isAlarm: AlarmThresholdAnalyzer.evaluate(events: events, now: now) != nil
+                || appState.isEpisodeActive,
+            isFasting: fastingWindow != nil,
+            isDoseDue: overdueDose != nil,
+            isNight: settings.isQuietHour(now),
+            isFirstDay: WalkRhythmAnalyzer.rhythm(events: events, now: now).days == 0
+        )
+    }
+
+    private var режимПлаката: PosterMode { PosterMode.mode(состояниеДня) }
+
+    /// Показание плаката.
+    ///
+    /// Правило тишины НЕ дублируется: `TodayHero.silence(…)` статическое
+    /// ровно для этого — 24.09 его вынесли из вью, потому что Siri
+    /// читала ту же величину мимо потолка и отвечала «дома 434 ч».
+    private var показаниеПлаката: TGPoster<TodayHeader>.Reading {
+        if let session = appState.session {
+            return .running(session: session, now: now)
+        }
+        if let тишина = TodayHero.silence(indoors: timeIndoors,
+                                          lastOutingEndedAt: lastOutingEndedAt) {
+            return .sentence(.готовая(String(localized: "Выходов нет с \(Fmt.shortDay(тишина))")))
+        }
+        guard let indoors = timeIndoors else {
+            return .sentence("Сегодня ещё не выходили")
+        }
+        let всегоМинут = Int(indoors / 60)
+        return .hoursMinutes(h: всегоМинут / 60, m: всегоМинут % 60)
+    }
+
+    /// Подпись показания — прежняя строка состояния.
+    ///
+    /// На нейтральном блоке её не покажет сам `TGPoster`
+    /// (`carriesStatusColour`), поэтому здесь про режим не спрашиваем:
+    /// иначе появилось бы второе место, решающее то же самое.
+    private var подписьПлаката: TGPoster<TodayHeader>.Caption? {
+        switch режимПлаката {
+        case .alarm:
+            .init(symbol: "exclamationmark.triangle.fill", text: "нужно внимание")
+        case .dose:
+            .init(symbol: "pills.fill", text: "пора дать лекарство")
+        case .fasting:
+            if let окно = fastingWindow {
+                .init(symbol: "clock.badge.exclamationmark",
+                      text: .готовая(String(localized: "Не кормить до \(Fmt.clock(окно.freeAt))")))
+            } else {
+                .init(symbol: "clock.badge.exclamationmark", text: "не кормить")
+            }
+        case .usual:
+            .init(symbol: "figure.walk", text: "на улице были")
+        case .quiet:
+            nil
+        }
+    }
+
+    private var плакат: some View {
+        TGPoster(mode: режимПлаката,
+                 reading: показаниеПлаката,
+                 caption: подписьПлаката,
+                 next: nil,
+                 progress: nil) {
+            header
+        }
+        // Опознаётся приёмкой, чтобы точку замера брать по РАМКЕ блока,
+        // а не по доле экрана.
+        //
+        // **Доля экрана уже промахнулась.** Первая редакция приёмки
+        // мерила точку на 92 % ширины и 9 % высоты — и попадала
+        // в шестерёнку настроек, акцентную и светлую. Три сценария дали
+        // `#96B2EC`, `#96B2EC`, `#9BBAF5`: два совпали, тест покраснел,
+        // и покраснел он **правдиво про замер и ложно про плакат**.
+        //
+        // > Координата, посчитанная от края экрана, измеряет экран.
+        // > Рамка элемента измеряет элемент.
+        //
+        // `children: .contain` — дети остаются доступными: внутри блока
+        // живёт шапка с кнопками листания дня, и `.combine` отняло бы
+        // у них и нажатие, и голос.
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("плакат-главный")
+    }
+
     /// Шапка и полоса чисел живут в `TodayHeader` и `TodaySummaryStrip`.
     /// Вынесены 28.09: обе — чистое представление с явным входом,
     /// и обе собираются в превью, чего внутри этого экрана нельзя было
     /// сделать никогда — для сборки требовались `@Query`, `AppState`
     /// и хранилище.
-    private var header: some View {
+    private var header: TodayHeader {
         TodayHeader(dog: dog, duty: dutyMember, день: экранДень) { шаг in
             показанныйДень = экранДень.сдвинуть(на: шаг).начало
         }

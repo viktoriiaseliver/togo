@@ -32,13 +32,20 @@ struct TGPoster<Trailing: View>: View {
     /// отдельными глифами 24 pt), и так надо по делу: одна строка
     /// «14 ч 15 мин» героем рвётся посередине числа — «14 ч» сверху,
     /// «15 мин» снизу, — и ровно это приехало кадром 24.09.
-    enum Reading: Equatable {
+    enum Reading {
         /// Часы и минуты. Любая часть может быть нулём.
         case hoursMinutes(h: Int, m: Int)
         /// Считать нечего — тогда предложение, а не большее число.
         /// Так закрыт дефект 21.09: «434 ч назад · на улице были»
         /// говорило о СОБАКЕ то, чего приложение не знало.
         case sentence(LocalizedStringKey)
+        /// Выход идёт — показание отвечает таймером.
+        ///
+        /// **Тем же `TGStopwatch`, что у героя, а не своим счётом.**
+        /// На паузах начало сдвигается, и вторая арифметика разошлась бы
+        /// с первой молча — у Togo это уже стоило трёх реализаций одного
+        /// правила в виджете, на главном и в «острове».
+        case running(session: ActiveSession, now: Date)
     }
 
     /// Подпись показания — прежняя строка состояния.
@@ -251,6 +258,15 @@ struct TGPoster<Trailing: View>: View {
     @ViewBuilder
     private var readingRow: some View {
         switch reading {
+        case .running(let session, let сейчас):
+            HStack(alignment: .firstTextBaseline, spacing: Token.Space.s8) {
+                TGStopwatch(session: session, now: сейчас,
+                            style: AppFont.hero.color(ink))
+                Text(session.isPaused ? "на паузе" : "на улице")
+                    .textStyle(AppFont.caption.color(subInk))
+                Spacer(minLength: 0)
+            }
+            .padding(.top, Token.Space.s4)
         case .sentence(let фраза):
             Text(фраза)
                 .textStyle(AppFont.sectionTitle.color(ink))
@@ -308,6 +324,9 @@ struct TGPoster<Trailing: View>: View {
     private var collapsedRow: some View {
         HStack(spacing: Token.Space.s8) {
             switch reading {
+            case .running(let session, let сейчас):
+                TGStopwatch(session: session, now: сейчас,
+                            style: AppFont.cardTitle.color(ink))
             case .sentence(let фраза):
                 Text(фраза).textStyle(AppFont.cardTitle.color(ink)).lineLimit(1)
             case .hoursMinutes(let h, let m):
