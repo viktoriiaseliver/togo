@@ -128,14 +128,37 @@ nonisolated enum DuplicateMerge {
         return итог.isEmpty ? "Дубликатов не нашлось." : итог.joined(separator: "\n")
     }
 
+    /// Сколько записей висит на собаке — по всем одиннадцати связям.
+    ///
+    /// **Сумма в цикле, а не одним выражением, и причина измерена.**
+    /// Прежняя редакция складывала одиннадцать `(x?.count ?? 0)`
+    /// в одной цепочке `+`: у каждого слагаемого два возможных типа,
+    /// перебор растёт степенью, и на раннере CI компилятор не уложился
+    /// в отведённое время. Локально то же выражение собиралось —
+    /// разница между машинами в загрузке, а не в коде.
+    ///
+    /// Этот файл был **назван и не починен** в коммите `420ce44`,
+    /// где то же выражение правили в `DuplicateDogCard`. Следующий
+    /// прогон CI упал ровно здесь. То есть «названо, не сделано»
+    /// в применении к сборке означает «упадёт в следующий раз»,
+    /// а не «записано на потом».
     @MainActor
     private static func записейУ(_ собака: Dog) -> Int {
-        (собака.eventsStorage?.count ?? 0) + (собака.weightsStorage?.count ?? 0)
-            + (собака.careTasksStorage?.count ?? 0) + (собака.medicationsStorage?.count ?? 0)
-            + (собака.trainingStepsStorage?.count ?? 0) + (собака.trainingSessionsStorage?.count ?? 0)
-            + (собака.tripsStorage?.count ?? 0) + (собака.documentsStorage?.count ?? 0)
-            + (собака.daysOutStorage?.count ?? 0) + (собака.heatsStorage?.count ?? 0)
-            + (собака.stocksStorage?.count ?? 0)
+        var всего = 0
+        for связь in [собака.eventsStorage?.count,
+                      собака.weightsStorage?.count,
+                      собака.careTasksStorage?.count,
+                      собака.medicationsStorage?.count,
+                      собака.trainingStepsStorage?.count,
+                      собака.trainingSessionsStorage?.count,
+                      собака.tripsStorage?.count,
+                      собака.documentsStorage?.count,
+                      собака.daysOutStorage?.count,
+                      собака.heatsStorage?.count,
+                      собака.stocksStorage?.count] {
+            всего += связь ?? 0
+        }
+        return всего
     }
 }
 #endif
