@@ -43,18 +43,53 @@ nonisolated enum WalkRecorder {
         var вставленные: [LogEvent] = []
         let walk = LogEvent(kind: .walk, date: session.startedAt, authorName: author)
         walk.durationSeconds = Int(session.duration())
-        walk.note = session.marks.isEmpty ? nil : session.tally
         walk.dog = dog
         context.insert(walk)
         вставленные.append(walk)
 
+        var принятые: [ActiveSession.Mark] = []
         for mark in session.marks {
             let event = LogEvent(kind: mark.kind.logKind, date: mark.at, authorName: author)
             apply(mark, to: event, dog: dog, walkID: walk.id)
+
+            // Два тапа по одной кнопке. До 07.10.2026 этот путь
+            // не спрашивал `DuplicateGuard` вовсе — ни про `.outing`,
+            // которого в наборе не было, ни про `.walk`, который в наборе
+            // с 23.09. Замер по журналу действий нашёл три отметки мочи
+            // в 19:50:24, :26 и :27 одной прогулки и ещё две в 06:09:58
+            // и :59 другой — а настоящие повторы того же дня стоят
+            // в 36, 131 и 213 секундах.
+            //
+            // Сначала пачка, потом хранилище: отметки одной прогулки
+            // вставляются до `save`, и `recent` их не ищет. Все пять
+            // измеренных дублей лежали внутри пачки — только через
+            // хранилище покрытие не достало бы ни до одного.
+            if вставленные.contains(where: { DuplicateGuard.isDuplicate($0, event) })
+                || DuplicateGuard.recent(of: event.kind, dog: dog, at: event.date,
+                                         like: event, in: context) != nil {
+                // Молча не роняем: без этой строки путь не отличить
+                // в замере от того, где дублей не бывает.
+                UsageLog.note(.record, event.kind.rawValue, outcome: .duplicate)
+                continue
+            }
+
             event.dog = dog
             context.insert(event)
             вставленные.append(event)
+            принятые.append(mark)
         }
+
+        // Сводка — по принятым отметкам, а не по тапам.
+        //
+        // Иначе подпись прогулки говорит «пописал ×3» над одной записью,
+        // и расхождение читается как потеря записей. В живом дневнике
+        // эта пара стоит рядом и ровно так и выглядит: `пописал ×3`
+        // и три строки под ним, из которых настоящая одна.
+        walk.note = принятые.isEmpty ? nil : {
+            var итог = session
+            итог.marks = принятые
+            return итог.tally
+        }()
 
         // Прогулка с отметками — самая дорогая запись дня: человек
         // отмечал её двадцать минут. Не сохранилось — возвращаем
