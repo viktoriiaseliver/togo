@@ -207,11 +207,21 @@ struct TimeIndoorsIntent: AppIntent {
     /// Лечится `String(localized:)`: ключ собирается тот же самый.
     static func ответ(dogName: String, indoors: TimeInterval,
                       lastOutingEndedAt: Date?) -> String {
+        // Кличка приходит параметром, и пустой она быть может: эту
+        // функцию зовёт не только экран. До 07.10.2026 голос произносил
+        // « дома 3 ч с прошлого выхода.» — предложение без подлежащего,
+        // начинающееся с пустого места. На слух это не «нет клички»,
+        // а проглоченное слово.
+        //
+        // Ворота стоят ЗДЕСЬ, а не у вызывающего: функция чистая,
+        // её зовут тестом напрямую, и правило, поставленное снаружи,
+        // до этого вызова не дотянулось бы.
+        let кличка = Fmt.dogNameOrFallback(dogName)
         if let тишина = OutingSilence.start(indoors: indoors,
                                             lastOutingEndedAt: lastOutingEndedAt) {
             return String(localized: "Выходов нет с \(Fmt.shortDay(тишина))")
         }
-        return String(localized: "\(dogName) дома \(Fmt.duration(indoors)) с прошлого выхода.")
+        return String(localized: "\(кличка) дома \(Fmt.duration(indoors)) с прошлого выхода.")
     }
 }
 
