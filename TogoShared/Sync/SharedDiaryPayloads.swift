@@ -30,6 +30,15 @@ extension LogEvent {
             medicationID: medicationID,
             deletedAt: deletedAt,
             deletedBy: deletedBy,
+            askSignal: askSignalRaw,
+            isDayOnly: isDayOnly,
+            enteredAt: enteredAt,
+            editedBy: editedBy,
+            origin: originRaw,
+            reactionTrigger: reactionTriggerRaw,
+            reactionDistance: reactionDistanceRaw,
+            toldFamily: toldFamily,
+            trainingSessionID: trainingSessionID,
             changedAt: changedAt
         )
     }
@@ -53,6 +62,19 @@ extension LogEvent {
         medicationID = payload.medicationID
         deletedAt = payload.deletedAt
         deletedBy = payload.deletedBy
+        // Девять полей с 07.10.2026. Опциональность значит «прежняя
+        // версия этого не прислала» — тогда своё не трогаем. Иначе
+        // правка, приехавшая от старого телефона, стёрла бы «как
+        // попросил» и оговорку «часа не помню» у того, кто их ввёл.
+        if let сигнал = payload.askSignal { askSignalRaw = сигнал }
+        if let толькоДень = payload.isDayOnly { isDayOnly = толькоДень }
+        enteredAt = payload.enteredAt ?? enteredAt
+        editedBy = payload.editedBy ?? editedBy
+        if let откуда = payload.origin { originRaw = откуда }
+        if let повод = payload.reactionTrigger { reactionTriggerRaw = повод }
+        if let расстояние = payload.reactionDistance { reactionDistanceRaw = расстояние }
+        if let сказали = payload.toldFamily { toldFamily = сказали }
+        trainingSessionID = payload.trainingSessionID ?? trainingSessionID
         changedAt = payload.changedAt
     }
 }
@@ -215,6 +237,11 @@ extension Medication {
             prescriber: prescriber, cancelledAt: cancelledAt,
             cancelledNote: cancelledNote,
             prescriptionNumber: prescriptionNumber,
+            unitRaw: unitRaw, doseSlotsData: doseSlotsData,
+            courseEnd: courseEnd, expiry: expiry, openedAt: openedAt,
+            shelfAfterOpenDays: shelfAfterOpenDays,
+            remindBeforeExpiry: remindBeforeExpiry,
+            canGiveOutside: canGiveOutside,
             changedAt: changedAt
         )
     }
@@ -233,6 +260,18 @@ extension Medication {
         cancelledAt = payload.cancelledAt
         cancelledNote = payload.cancelledNote
         prescriptionNumber = payload.prescriptionNumber
+        // Девять полей с 07.10.2026. Опциональность в нагрузке значит
+        // «старый телефон этого не прислал» — тогда своё не трогаем,
+        // иначе правка приехавшая от прежней версии стёрла бы единицу
+        // дозы у того, кто её уже ввёл.
+        if let unitRaw = payload.unitRaw { self.unitRaw = unitRaw }
+        if let слоты = payload.doseSlotsData { doseSlotsData = слоты }
+        courseEnd = payload.courseEnd ?? courseEnd
+        expiry = payload.expiry ?? expiry
+        openedAt = payload.openedAt ?? openedAt
+        if let дней = payload.shelfAfterOpenDays { shelfAfterOpenDays = дней }
+        if let напоминать = payload.remindBeforeExpiry { remindBeforeExpiry = напоминать }
+        if let наУлице = payload.canGiveOutside { canGiveOutside = наУлице }
         changedAt = payload.changedAt
     }
 }

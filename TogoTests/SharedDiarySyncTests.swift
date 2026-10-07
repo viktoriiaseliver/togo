@@ -511,6 +511,247 @@ struct SharedClinicSyncTests {
     }
 }
 
+/// Семнадцать полей, которые числились «про семью» и не ехали.
+///
+/// **Найдены 07.10.2026 обобщённым сторожем, не глазом.** Пока он
+/// смотрел одну модель из семнадцати, девять полей ленты и восемь
+/// полей схемы лечения числились семейными и в нагрузке отсутствовали.
+///
+/// Два самых дорогих названы в тестах прямо:
+///
+/// ```
+/// Medication.unitRaw     «0,5» без единицы не значит ничего
+/// LogEvent.askSignalRaw  «как попросил» — заглавная строка продукта
+/// ```
+@Suite("Общий дневник · семнадцать полей, которые не ехали")
+@MainActor
+struct SharedLostFieldsTests {
+
+    private let zone = CKRecordZone.ID(zoneName: SharedDiary.zoneName, ownerName: "_owner")
+
+    private func телефон() throws -> (ModelContext, Dog) {
+        let container = try ModelContainer(
+            for: Dog.self,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+        )
+        let context = ModelContext(container)
+        let dog = Dog(name: "Стич", weightKg: 4.1)
+        context.insert(dog)
+        try context.save()
+        return (context, dog)
+    }
+
+    /// **Главный тест файла.** Единица дозы доезжает.
+    @Test("Единица дозы доезжает: «0,5» без неё — три разные дозы")
+    func единицаДозыДоезжает() throws {
+        let (мой, собака) = try телефон()
+        let схема = Medication(name: "Lévothyrox", doseText: "0,5", times: [420])
+        схема.unitRaw = MedUnit.ml.rawValue
+        схема.canGiveOutside = true
+        схема.expiry = Date(timeIntervalSince1970: 1_800_000_000)
+        схема.openedAt = Date(timeIntervalSince1970: 1_790_000_000)
+        схема.shelfAfterOpenDays = 28
+        схема.remindBeforeExpiry = true
+        схема.courseEnd = Date(timeIntervalSince1970: 1_795_000_000)
+        схема.doseSlotsData = [DoseSlot(minuteOfDay: 420, quantity: 0.5)]
+        схема.dog = собака
+        мой.insert(схема)
+        try мой.save()
+
+        let запись = SharedDiaryRecords.record(схема.payload, base: nil, in: zone)
+        let приехало = try #require(SharedDiaryRecords.medicationPayload(запись))
+
+        let (её, её_собака) = try телефон()
+        SharedDiaryInbox.accept(приехало, dog: её_собака, context: её)
+        let у_мамы = try #require(try её.fetch(FetchDescriptor<Medication>()).first)
+
+        #expect(у_мамы.unitRaw == MedUnit.ml.rawValue, """
+            единица дозы не доехала. «0,5» не значит ничего: половина \
+            таблетки, половина миллилитра и половина капли — три разные \
+            дозы. Это не путаница в дневнике, а передозировка.
+
+            Архив это поле возил правильно, а обмен нет: два пути для \
+            одних данных расходятся молча.
+            """)
+        #expect(у_мамы.canGiveOutside == true, """
+            «можно дать на улице» не доехало. Это ОТВЕТ ЧЕЛОВЕКА, \
+            а не наш вывод, и второй человек, собравшийся на прогулку \
+            с каплями в глаз, обязан видеть тот же ответ.
+            """)
+        #expect(у_мамы.expiry == схема.expiry, "срок годности не доехал")
+        #expect(у_мамы.openedAt == схема.openedAt, "дата вскрытия не доехала")
+        #expect(у_мамы.shelfAfterOpenDays == 28, """
+            срок после вскрытия не доехал. «Годен до» и «вскрыт, дальше \
+            N дней» — ДВА разных срока, и у человека с открытым флаконом \
+            капель подмена одного другим измеряется дозой.
+            """)
+        #expect(у_мамы.remindBeforeExpiry == true)
+        #expect(у_мамы.courseEnd == схема.courseEnd, "конец курса не доехал")
+        #expect(у_мамы.doseSlotsData.count == 1, """
+            слоты дозы не доехали — схема «дважды в день» у мамы \
+            не знает, сколько именно в каждый приём.
+            """)
+        #expect(у_мамы.doseSlotsData.first?.quantity == 0.5)
+    }
+
+    /// Запас таблеток не едет — и это решение, а не пропуск.
+    @Test("Запас таблеток не едет: у мамы своя упаковка")
+    func запасНеЕдет() throws {
+        let (мой, собака) = try телефон()
+        let схема = Medication(name: "Ветмедин", doseText: "1 таб", times: [480])
+        схема.stockLeft = 40
+        схема.stockTotal = 60
+        схема.dog = собака
+        мой.insert(схема)
+        try мой.save()
+
+        let запись = SharedDiaryRecords.record(схема.payload, base: nil, in: zone)
+        let (её, её_собака) = try телефон()
+        let у_неё = Medication(name: "Ветмедин", doseText: "1 таб", times: [480])
+        у_неё.stockLeft = 12
+        у_неё.dog = её_собака
+        её.insert(у_неё)
+        try её.save()
+
+        SharedDiaryInbox.accept(try #require(SharedDiaryRecords.medicationPayload(запись)),
+                                dog: её_собака, context: её)
+
+        #expect(try её.fetch(FetchDescriptor<Medication>()).contains { $0.stockLeft == 12 }, """
+            чужой запас перезаписал местный. Запас — про КОРОБКУ, \
+            которая лежит у кого-то дома: у мамы своя упаковка, \
+            и сложить два запаса в одно число значило бы сказать \
+            обоим неправду.
+            """)
+    }
+
+    /// **Второй главный тест.** «Как попросил» доезжает.
+    @Test("«Как попросил» доезжает — иначе второй видит «просится» без ответа")
+    func какПопросилДоезжает() throws {
+        let (мой, собака) = try телефон()
+        let запись_ленты = LogEvent(kind: .outing, date: Date(), authorName: "Виктория")
+        запись_ленты.askSignalRaw = AskSignal.scratchedDoor.rawValue
+        запись_ленты.isDayOnly = true
+        запись_ленты.enteredAt = Date(timeIntervalSince1970: 1_790_000_500)
+        запись_ленты.editedBy = "Виктория"
+        запись_ленты.originRaw = "виджет"
+        запись_ленты.reactionTriggerRaw = "собака"
+        запись_ленты.reactionDistanceRaw = "близко"
+        запись_ленты.toldFamily = true
+        запись_ленты.trainingSessionID = UUID()
+        запись_ленты.dog = собака
+        мой.insert(запись_ленты)
+        try мой.save()
+
+        let запись = SharedDiaryRecords.record(запись_ленты.payload, base: nil, in: zone)
+        let приехало = try #require(SharedDiaryRecords.eventPayload(запись))
+
+        let (её, её_собака) = try телефон()
+        SharedDiaryInbox.accept(приехало, dog: её_собака, context: её)
+        let у_мамы = try #require(try её.fetch(FetchDescriptor<LogEvent>()).first)
+
+        #expect(у_мамы.askSignalRaw == AskSignal.scratchedDoor.rawValue, """
+            «как попросил» не доехало. Это заглавная строка продукта — \
+            та самая, что стоит в описании App Store: второй человек \
+            видел «просится» и НЕ видел, чем именно — скулил, тёрся, \
+            стоял у двери. То есть ровно то, ради чего дневник ведут \
+            вдвоём.
+            """)
+        #expect(у_мамы.isDayOnly == true, """
+            оговорка «часа не помню» не доехала, и без неё число лжёт: \
+            `WalkRhythm` отбрасывает такие записи, считая обычное время \
+            выхода. Приехав без флага, запись попадёт в счёт как точная, \
+            и «обычно выходите в 7:15» соберётся из догадок.
+            """)
+        #expect(у_мамы.enteredAt == запись_ленты.enteredAt, """
+            время ВВОДА не доехало. Разница между ним и временем \
+            события — это и есть ответ на «вспомнил или записал сразу».
+            """)
+        #expect(у_мамы.editedBy == "Виктория", "кто правил — не доехало")
+        #expect(у_мамы.originRaw == "виджет", "откуда запись — не доехало")
+        #expect(у_мамы.reactionTriggerRaw == "собака", "повод реакции не доехал")
+        #expect(у_мамы.reactionDistanceRaw == "близко", "расстояние реакции не доехало")
+        #expect(у_мамы.toldFamily == true, "«сказали семье» не доехало")
+        #expect(у_мамы.trainingSessionID == запись_ленты.trainingSessionID,
+                "связь с занятием не доехала")
+    }
+
+    /// Запись от прежней версии не стирает то, чего не знает.
+    ///
+    /// **Это главное про опциональность в нагрузке.** У телефона
+    /// со старой сборкой этих полей в записи нет вовсе. Прочитай
+    /// отсутствие как «нет, не только день» — и правка оттуда стёрла бы
+    /// оговорку «часа не помню» у того, кто её поставил.
+    ///
+    /// > **Отсутствие поля и ответ «нет» — разные вещи, а `as? Bool`
+    /// > сводит их в одно.**
+    @Test("Правка от прежней версии не стирает «как попросил» и «часа не помню»")
+    func прежняяВерсияНеСтирает() throws {
+        let (её, её_собака) = try телефон()
+        let id = UUID()
+
+        // Своя запись: оговорка и сигнал заполнены.
+        let своя = LogEvent(kind: .outing, date: Date(), authorName: "Мама")
+        своя.id = id
+        своя.askSignalRaw = AskSignal.scratchedDoor.rawValue
+        своя.isDayOnly = true
+        своя.dog = её_собака
+        её.insert(своя)
+        try её.save()
+
+        // Приехала запись от старого телефона: полей нет вовсе.
+        let старая = CKRecord(recordType: SharedDiary.RecordType.event.rawValue,
+                              recordID: SharedDiaryRecords.recordID(id, in: zone))
+        старая["kind"] = LogKind.outing.rawValue
+        старая["date"] = своя.date
+        старая["authorName"] = "Виктория"
+        старая["changedAt"] = Date().addingTimeInterval(60)
+        let приехало = try #require(SharedDiaryRecords.eventPayload(старая))
+        #expect(приехало.askSignal == nil, "разбор выдумал сигнал, которого в записи нет")
+        #expect(приехало.isDayOnly == nil, """
+            отсутствие поля прочитано как ответ «нет». `as? Bool` \
+            сводит «не прислали» и «нет» в одно, и правка от прежней \
+            версии стёрла бы оговорку.
+            """)
+
+        SharedDiaryInbox.accept(приехало, dog: её_собака, context: её)
+        let после = try #require(try её.fetch(FetchDescriptor<LogEvent>()).first)
+        #expect(после.askSignalRaw == AskSignal.scratchedDoor.rawValue, """
+            правка от старого телефона стёрла «как попросил».
+            """)
+        #expect(после.isDayOnly == true, "правка от старого телефона стёрла оговорку")
+        #expect(после.authorName == "Виктория", "сама правка при этом обязана была приехать")
+    }
+
+    /// Ничья по времени не должна выигрываться версией без данных.
+    @Test("При ничьей выигрывает запись с «как попросил», а не без него")
+    func ничьяВПользуЗаполненной() {
+        let id = UUID()
+        let когда = Date()
+        func лента(_ сигнал: String?) -> EventPayload {
+            EventPayload(id: id, dogID: nil, kind: LogKind.outing.rawValue,
+                         date: когда, authorName: "Виктория", note: nil,
+                         outcome: nil, durationSeconds: nil, stoolForm: nil,
+                         stoolFlags: [], grams: nil, milliliters: nil,
+                         fromPortion: false, incidentKind: nil, incidentDetail: nil,
+                         walkEventID: nil, careTaskID: nil, medicationID: nil,
+                         deletedAt: nil, deletedBy: nil,
+                         askSignal: сигнал, isDayOnly: nil, enteredAt: nil,
+                         editedBy: nil, origin: nil, reactionTrigger: nil,
+                         reactionDistance: nil, toldFamily: nil,
+                         trainingSessionID: nil, changedAt: когда)
+        }
+        let сСигналом = лента(AskSignal.scratchedDoor.rawValue)
+        let безСигнала = лента(nil)
+
+        #expect(SharedDiaryMerge.resolve(local: безСигнала, remote: сСигналом) == сСигналом, """
+            ничья решилась в пользу записи без «как попросил». Часы двух \
+            телефонов расходятся на секунды, и при ничьей разумнее взять \
+            ту версию, где данных больше, — иначе расхождение часов \
+            стирает ответ человека.
+            """)
+    }
+}
+
 @Suite("Общий дневник · доза находит препарат")
 @MainActor
 struct SharedDoseMedicationTests {

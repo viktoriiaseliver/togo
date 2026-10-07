@@ -63,6 +63,22 @@ nonisolated enum SharedDiaryRecords {
         record["medicationID"] = payload.medicationID?.uuidString
         record["deletedAt"] = payload.deletedAt
         record["deletedBy"] = payload.deletedBy
+        // Девять полей ленты с 07.10.2026. `askSignal` — «как попросил»,
+        // заглавная строка продукта: второй человек видел «просится»
+        // и не видел, чем именно.
+        record["askSignal"] = payload.askSignal
+        record["enteredAt"] = payload.enteredAt
+        record["editedBy"] = payload.editedBy
+        record["origin"] = payload.origin
+        record["reactionTrigger"] = payload.reactionTrigger
+        record["reactionDistance"] = payload.reactionDistance
+        record["trainingSessionID"] = payload.trainingSessionID?.uuidString
+        // Логическое — числом, как `fromPortion` строкой выше, и через
+        // `nil`, а не через `0`: у записи от прежней версии поля нет
+        // вовсе, и ноль был бы прочитан как «точное время», то есть
+        // как ответ, которого никто не давал.
+        record["isDayOnly"] = payload.isDayOnly.map { $0 ? 1 : 0 }
+        record["toldFamily"] = payload.toldFamily.map { $0 ? 1 : 0 }
         record["changedAt"] = payload.changedAt
     }
 
@@ -94,6 +110,15 @@ nonisolated enum SharedDiaryRecords {
             medicationID: (record["medicationID"] as? String).flatMap(UUID.init),
             deletedAt: record["deletedAt"] as? Date,
             deletedBy: record["deletedBy"] as? String,
+            askSignal: record["askSignal"] as? String,
+            isDayOnly: (record["isDayOnly"] as? Int).map { $0 == 1 },
+            enteredAt: record["enteredAt"] as? Date,
+            editedBy: record["editedBy"] as? String,
+            origin: record["origin"] as? String,
+            reactionTrigger: record["reactionTrigger"] as? String,
+            reactionDistance: record["reactionDistance"] as? String,
+            toldFamily: (record["toldFamily"] as? Int).map { $0 == 1 },
+            trainingSessionID: (record["trainingSessionID"] as? String).flatMap(UUID.init),
             changedAt: changedAt
         )
     }
@@ -401,6 +426,28 @@ nonisolated enum SharedDiaryRecords {
         record["cancelledAt"] = payload.cancelledAt
         record["cancelledNote"] = payload.cancelledNote
         record["prescriptionNumber"] = payload.prescriptionNumber
+        // Девять полей, не ехавших до 07.10.2026. Самое опасное —
+        // `unitRaw`: «0,5» без единицы не значит ничего, и у второго
+        // человека схема приезжала без неё.
+        record["unitRaw"] = payload.unitRaw
+        record["courseEnd"] = payload.courseEnd
+        record["expiry"] = payload.expiry
+        record["openedAt"] = payload.openedAt
+        record["shelfAfterOpenDays"] = payload.shelfAfterOpenDays
+        record["remindBeforeExpiry"] = payload.remindBeforeExpiry
+        record["canGiveOutside"] = payload.canGiveOutside
+        // Слоты — массив структур, и в `CKRecord` такое не кладётся:
+        // годятся только скаляры, даты, строки и `Data`. Кодируем JSON,
+        // как и в архиве, то есть одним и тем же представлением —
+        // второе разошлось бы с первым молча.
+        //
+        // Тип объявлен явно: у `CKRecord` подписка перегружена,
+        // и выводить `Data?` из `flatMap` компилятор отказывается —
+        // `ambiguous use of subscript`. Это та самая цена, которую
+        // просят вперёд.
+        let слотыJSON: Data? = payload.doseSlotsData
+            .flatMap { try? JSONEncoder().encode($0) }
+        record["doseSlotsData"] = слотыJSON
         record["changedAt"] = payload.changedAt
     }
 
@@ -426,6 +473,15 @@ nonisolated enum SharedDiaryRecords {
             cancelledAt: record["cancelledAt"] as? Date,
             cancelledNote: record["cancelledNote"] as? String,
             prescriptionNumber: record["prescriptionNumber"] as? String,
+            unitRaw: record["unitRaw"] as? String,
+            doseSlotsData: (record["doseSlotsData"] as? Data)
+                .flatMap { try? JSONDecoder().decode([DoseSlot].self, from: $0) },
+            courseEnd: record["courseEnd"] as? Date,
+            expiry: record["expiry"] as? Date,
+            openedAt: record["openedAt"] as? Date,
+            shelfAfterOpenDays: record["shelfAfterOpenDays"] as? Int,
+            remindBeforeExpiry: record["remindBeforeExpiry"] as? Bool,
+            canGiveOutside: record["canGiveOutside"] as? Bool,
             changedAt: changedAt
         )
     }
