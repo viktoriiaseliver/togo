@@ -91,10 +91,16 @@ nonisolated enum Token {
         static let backgroundQuiet = Color(Dyn(dark: 0x181818, light: 0xECEDF0, darkHC: 0x181818, lightHC: 0xECEDF0))
         static let bar = Color(Dyn(dark: 0xA2C1FE, light: 0x0E14A1, darkHC: 0xA2C1FE, lightHC: 0x0E14A1))
         static let barOnDose = Color(Dyn(dark: 0x0B0D2E, light: 0xFFFFFF, darkHC: 0x0B0D2E, lightHC: 0xFFFFFF))
+        /// ТОЛЬКО НЕЙТРАЛЬНЫЙ БЛОК. На цветных — captionOnColor, на дозе — captionOnDose. В светлой на синем блоке даёт 1,10.
         static let caption = Color(Dyn(dark: 0xB2B2AE, light: 0x5A5D61, darkHC: 0xC8C8C4, lightHC: 0x45484C))
+        /// Подпись плаката на ЦВЕТНОМ блоке.
+        static let captionOnColor = Color(Dyn(dark: 0xB2B2AE, light: 0xFFFFFFE0, darkHC: 0xB2B2AE, lightHC: 0xFFFFFFE0))
         /// Подпись плаката на заливке дозы. Отдельная от caption потому, что доза — единственный режим дня со СВЕТЛОЙ подложкой: остальные четыре кладут текст на тёмный блок, и там caption честен. У плаката ПАКЕТА режима дозы нет вовсе — его bg всегда тёмный блок с белым текстом, — то есть инверсия наша, и цена её в том, что для неё нужен свой тихий цвет.
         static let captionOnDose = Color(Dyn(dark: 0x2E3866, light: 0xD9E3FC, darkHC: 0x2E3866, lightHC: 0xD9E3FC))
+        /// ТОЛЬКО НЕЙТРАЛЬНЫЙ БЛОК (backgroundQuiet). На цветных блоках берётся labelOnColor, на дозе labelOnDose: у плаката ТРИ семьи текста, а не одна. Замер 07.10.2026: этот токен на синем блоке в светлой даёт 3,15 — он честен только там, где подложка нейтральна.
         static let label = Color(Dyn(dark: 0xF4F4F2, light: 0x101112, darkHC: 0xF4F4F2, lightHC: 0x101112))
+        /// Заголовок плаката на ЦВЕТНОМ блоке: обычный, тревожный, натощак.
+        static let labelOnColor = Color(Dyn(dark: 0xF4F4F2, light: 0xFFFFFF, darkHC: 0xF4F4F2, lightHC: 0xFFFFFF))
         static let labelOnDose = Color(Dyn(dark: 0x0B0D2E, light: 0xFFFFFF, darkHC: 0x0B0D2E, lightHC: 0xFFFFFF))
     }
 

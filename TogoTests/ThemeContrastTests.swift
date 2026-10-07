@@ -73,10 +73,22 @@ struct ThemeContrastTests {
         .init(что: Token.Status.waitingText, на: Token.Surface.card, порог: 4.5, роль: "«ждём» словами"),
         .init(что: Token.Status.stockLowText, на: Token.Surface.card, порог: 4.5, роль: "запас ≤7 дней, текст на карточке"),
         .init(что: Token.Status.stockLowText, на: Token.Status.stockLowBg, порог: 4.5, роль: "запас ≤7 дней на своей плашке"),
-        .init(что: Token.Poster.label, на: Token.Poster.background, порог: 4.5, роль: "подпись плаката"),
-        .init(что: Token.Poster.labelOnDose, на: Token.Poster.backgroundDose, порог: 4.5, роль: "подпись плаката на дозе — ИНВЕРСИЯ"),
-        .init(что: Token.Poster.captionOnDose, на: Token.Poster.backgroundDose, порог: 4.5, роль: "тихая подпись плаката на дозе"),
-        .init(что: Token.Poster.caption, на: Token.Poster.background, порог: 4.5, роль: "тихая подпись плаката на тёмном блоке"),
+        // У плаката ТРИ семьи текста, и это нашёл не глаз, а эта таблица:
+        // первая редакция пар взяла `label`/`caption` ко всем блокам,
+        // и четыре режима·пары покраснели. Семьи разные потому, что
+        // блоки разные по устройству, а не по вкусу: четыре цветных
+        // остаются цветными в обеих темах, нейтральный следует за темой,
+        // а доза — единственная СВЕТЛАЯ подложка в тёмной теме.
+        .init(что: Token.Poster.labelOnColor, на: Token.Poster.background, порог: 4.5, роль: "заголовок на цветном блоке"),
+        .init(что: Token.Poster.captionOnColor, на: Token.Poster.background, порог: 4.5, роль: "подпись на цветном блоке"),
+        .init(что: Token.Poster.labelOnColor, на: Token.Poster.backgroundAlarm, порог: 4.5, роль: "заголовок на тревожном блоке"),
+        .init(что: Token.Poster.captionOnColor, на: Token.Poster.backgroundAlarm, порог: 4.5, роль: "подпись на тревожном блоке"),
+        .init(что: Token.Poster.labelOnColor, на: Token.Poster.backgroundFasting, порог: 4.5, роль: "заголовок на янтарном блоке"),
+        .init(что: Token.Poster.captionOnColor, на: Token.Poster.backgroundFasting, порог: 4.5, роль: "подпись на янтарном блоке"),
+        .init(что: Token.Poster.label, на: Token.Poster.backgroundQuiet, порог: 4.5, роль: "заголовок на нейтральном блоке"),
+        .init(что: Token.Poster.caption, на: Token.Poster.backgroundQuiet, порог: 4.5, роль: "подпись на нейтральном блоке"),
+        .init(что: Token.Poster.labelOnDose, на: Token.Poster.backgroundDose, порог: 4.5, роль: "показание на дозе — ИНВЕРСИЯ"),
+        .init(что: Token.Poster.captionOnDose, на: Token.Poster.backgroundDose, порог: 4.5, роль: "тихая подпись на дозе"),
     ]
 
     /// Непрохождения, **измеренные и названные**, с числом и хозяином.

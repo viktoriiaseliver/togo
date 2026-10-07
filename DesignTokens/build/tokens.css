@@ -67,6 +67,8 @@
   --primitive-color-posterAmber: #4A3A14;
   --primitive-color-posterClay: #5E2A22;
   --primitive-color-posterIndigo: #2A3670;
+  --primitive-color-posterInk: #F4F4F2;
+  --primitive-color-posterInkMuted: #B2B2AE;
   --primitive-color-scrim: #0000008C;
   --primitive-color-spruce: #5FBF93;
   --primitive-color-spruceText: #7FD3A8;
@@ -136,8 +138,10 @@
   --semantic-poster-bar: #A2C1FE;
   --semantic-poster-barOnDose: #0B0D2E;
   --semantic-poster-caption: #B2B2AE;
+  --semantic-poster-captionOnColor: #B2B2AE;
   --semantic-poster-captionOnDose: #2E3866;
   --semantic-poster-label: #F4F4F2;
+  --semantic-poster-labelOnColor: #F4F4F2;
   --semantic-poster-labelOnDose: #0B0D2E;
   --semantic-radius-capsule: 999px;
   --semantic-radius-card: 28px;
@@ -216,6 +220,8 @@
   --primitive-color-posterAmber: #8A640F;
   --primitive-color-posterClay: #B5402F;
   --primitive-color-posterIndigo: #3F5BC4;
+  --primitive-color-posterInk: #FFFFFF;
+  --primitive-color-posterInkMuted: #FFFFFFE0;
   --primitive-color-scrim: #10111252;
   --primitive-color-stockLow: #B85400;
   --primitive-color-stockLowBg: #FFEBD9;
@@ -231,8 +237,10 @@
   --semantic-poster-bar: #0E14A1;
   --semantic-poster-barOnDose: #FFFFFF;
   --semantic-poster-caption: #5A5D61;
+  --semantic-poster-captionOnColor: #FFFFFFE0;
   --semantic-poster-captionOnDose: #D9E3FC;
   --semantic-poster-label: #101112;
+  --semantic-poster-labelOnColor: #FFFFFF;
   --semantic-poster-labelOnDose: #FFFFFF;
   --semantic-status-doneText: #101112;
   --semantic-status-overdueBg: #F7D5CF;
@@ -314,6 +322,8 @@
   --primitive-color-posterAmber: #8A640F;
   --primitive-color-posterClay: #B5402F;
   --primitive-color-posterIndigo: #3F5BC4;
+  --primitive-color-posterInk: #FFFFFF;
+  --primitive-color-posterInkMuted: #FFFFFFE0;
   --primitive-color-scrim: #10111252;
   --primitive-color-stockLow: #B85400;
   --primitive-color-stockLowBg: #FFEBD9;
@@ -329,8 +339,10 @@
   --semantic-poster-bar: #0E14A1;
   --semantic-poster-barOnDose: #FFFFFF;
   --semantic-poster-caption: #45484C;
+  --semantic-poster-captionOnColor: #FFFFFFE0;
   --semantic-poster-captionOnDose: #D9E3FC;
   --semantic-poster-label: #101112;
+  --semantic-poster-labelOnColor: #FFFFFF;
   --semantic-poster-labelOnDose: #FFFFFF;
   --semantic-status-doneText: #101112;
   --semantic-status-overdueBg: #F7D5CF;
