@@ -58,6 +58,16 @@ SNAPSHOT_RENAMED = {
 # и перечень перестают читать.
 DEVICE_LOCAL_SOURCE = "TogoTests/DeviceLocalFieldTests.swift"
 
+# Реестр решений «в снимке нет НАМЕРЕННО» — тоже читается из сторожа,
+# а не копируется. Заведено 07.10.2026 после того, как собственное
+# решение («`awaitedMedicationID` не везём: восстановленная ссылка
+# указывала бы в никуда») этот инструмент назвал потерей — то есть
+# выдал за находку то, что решено минутой раньше.
+#
+# > Копия реестра расходится с реестром молча, а инструмент при этом
+# > докладывает уверенно.
+INTENTIONAL_SOURCE = "TogoTests/ArchiveParityTests.swift"
+
 # Классы полей, которые «не едут» по устройству формата, а не по
 # недосмотру. Их держат ОТДЕЛЬНО от настоящих потерь: пятнадцать
 # одинаковых «не едет id» хоронят одну настоящую находку, а после
@@ -312,6 +322,22 @@ def device_local(ref: str) -> set[str]:
     return set(re.findall(r'"(\w+\.\w+)"\s*:', m.group(1)))
 
 
+def intentional(ref: str) -> set[str]:
+    """Ключи `Модель.поле`, про которые ПРИНЯТО решение «в снимке нет
+    намеренно». Читается из сторожа паритета, а не повторяется копией:
+    копия расходится с реестром молча, а инструмент при этом докладывает
+    уверенно. Поймано на себе — собственное решение про
+    `awaitedMedicationID` этот инструмент назвал потерей."""
+    try:
+        text = read(ref, INTENTIONAL_SOURCE)
+    except Exception:
+        return set()
+    m = re.search(r'вСнимкеНетНамеренно[^=]*=\s*\[(.*?)\n\s*\]', text, re.S)
+    if not m:
+        return set()
+    return set(re.findall(r'"(\w+\.\w+)"\s*:', m.group(1)))
+
+
 def snapshot_name(model: str, snaps: dict[str, list[str]]) -> str | None:
     """Имя снимка выводится из исходника; руками — только переименования."""
     direct = f"{model}Snapshot"
@@ -325,6 +351,7 @@ def measure(ref: str) -> dict:
     archive = read(ref, ARCHIVE_PATH)
     snaps = bodies(archive, STRUCT_OPENER)
     local = device_local(ref)
+    решено = intentional(ref)
 
     models: dict[str, list[str]] = {}
     for path in list_files(ref, MODEL_GLOB):
@@ -337,6 +364,8 @@ def measure(ref: str) -> dict:
         def kind(n: str, t: str) -> str:
             if structural(n, t, model_names):
                 return "tree"
+            if f"{model}.{n}" in решено:
+                return "decided"
             if f"{model}.{n}" in local:
                 return "phone"
             if n in SERVICE_FIELDS:
@@ -346,6 +375,7 @@ def measure(ref: str) -> dict:
         data = [(n, t) for n, t in stored if kind(n, t) == "data"]
         service = [n for n, t in stored if kind(n, t) == "service"]
         phone = [n for n, t in stored if kind(n, t) == "phone"]
+        decided = [n for n, t in stored if kind(n, t) == "decided"]
         tree = [n for n, t in stored if kind(n, t) == "tree"]
 
         snap_name = snapshot_name(model, snaps)
@@ -353,6 +383,7 @@ def measure(ref: str) -> dict:
             rows.append({
                 "model": model, "snapshot": "—",
                 "data": data, "service": service, "phone": phone, "tree": tree,
+                "decided": decided,
                 "computed": computed,
                 "in_snapshot": [], "missing": [n for n, _ in data],
                 "missing_service": service, "no_snapshot": True,
@@ -363,6 +394,7 @@ def measure(ref: str) -> dict:
         rows.append({
             "model": model, "snapshot": snap_name,
             "data": data, "service": service, "phone": phone, "tree": tree,
+                "decided": decided,
             "computed": computed,
             "in_snapshot": snap_stored,
             "missing": [n for n, _ in data if base(n) not in have],
@@ -378,6 +410,7 @@ def measure(ref: str) -> dict:
     orphans = sorted(n for n in snaps
                      if n not in claimed and n != "BackupArchive")
     return {"rows": rows, "models": models, "snaps": snaps,
+            "decided_registry": решено,
             "orphan_snapshots": orphans, "device_local": local}
 
 
@@ -408,6 +441,11 @@ def blind(result: dict) -> list[str]:
             + ", ".join(result["orphan_snapshots"])
             + " — либо отображение имён неверно, либо модель исчезла; "
               "в обоих случаях перечень ниже неполон"
+        )
+    if not result.get("decided_registry"):
+        bad.append(
+            f"реестр «в снимке нет намеренно» ({INTENTIONAL_SOURCE}) прочитан "
+            "пустым — решённое будет названо потерей"
         )
     if not result["device_local"]:
         bad.append(

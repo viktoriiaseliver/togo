@@ -312,6 +312,19 @@ nonisolated struct BackupArchive: Codable, Sendable {
         // перенос.
         var expiry: Date?
         var shelfAfterOpenDays: Int?
+
+        /// Когда человек последний раз пересчитал запас.
+        ///
+        /// **Не метка времени, а НЕСУЩЕЕ поле.** `FoodStock.usedGrams(at:)`
+        /// на нём стоит: `guard let countedAt` и отсчёт дней от него.
+        /// Потеряв его, `usedGrams` отдаёт ноль, `remainingGrams` —
+        /// полный мешок, и человек на новом телефоне читает «хватит
+        /// на тридцать дней» там, где корм кончается завтра.
+        ///
+        /// То есть потеря этого поля — не потеря даты, а **неверное
+        /// число на экране**, и неверное в сторону спокойствия.
+        /// Добавлено 07.10.2026, `togo-1e`.
+        var countedAt: Date?
     }
 
     struct HeatSnapshot: Codable, Sendable {
@@ -531,6 +544,20 @@ nonisolated struct BackupArchive: Codable, Sendable {
         var skippedBy: String?
         var claimedBy: String?
         var claimedAt: Date?
+
+        /// Чего доза ждёт, если схема до неё ещё не доехала.
+        ///
+        /// Едет **только имя**, без `awaitedMedicationID`, и это
+        /// решение, а не недосмотр: `Medication.id` в архив не идёт
+        /// нарочно (`ArchiveParityTests`, «после восстановления это
+        /// другая запись»). Восстановленный `awaitedMedicationID`
+        /// указывал бы **в никуда** — и выглядел бы при этом валидным
+        /// UUID, то есть хуже отсутствия.
+        ///
+        /// Сшивка в `SharedDiaryPayloads:962` смотрит пару
+        /// «по id ИЛИ по имени»; после восстановления сработает имя.
+        /// Добавлено 07.10.2026, `togo-1e`.
+        var awaitedMedicationName: String?
     }
 
     struct TrainingStepSnapshot: Codable, Sendable {
@@ -587,6 +614,21 @@ nonisolated struct BackupArchive: Codable, Sendable {
         var endedAt: Date?
         var title: String
         var detail: String
+
+        /// Когда был последний инцидент эпизода.
+        ///
+        /// **Держит КОНЕЦ эпизода, а не его историю.** `isOngoing`
+        /// сравнивает `now − lastIncidentAt < 48 ч` (`Family:102`,
+        /// `EpisodeLifetime:52`), а в `init` это поле равно `startedAt`.
+        /// Значит у восстановленного эпизода тишина считалась бы
+        /// **от начала, а не от последнего инцидента**: эпизод,
+        /// у которого инциденты шли пять дней, объявился бы законченным
+        /// задним числом.
+        ///
+        /// Это обратная сторона дефекта, который чинили утром: тогда
+        /// эпизод не заканчивался никогда, здесь он кончался бы сразу.
+        /// Добавлено 07.10.2026, `togo-1e`.
+        var lastIncidentAt: Date?
     }
 
     /// Коротко для экрана: что именно уедет в файл.

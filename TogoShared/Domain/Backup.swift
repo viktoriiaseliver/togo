@@ -72,7 +72,8 @@ nonisolated enum BackupService {
             },
             episodes: episodes.map {
                 BackupArchive.EpisodeSnapshot(startedAt: $0.startedAt, endedAt: $0.endedAt,
-                                              title: $0.title, detail: $0.detail)
+                                              title: $0.title, detail: $0.detail,
+                                              lastIncidentAt: $0.lastIncidentAt)
             },
             procedureSkills: skills.map {
                 BackupArchive.ProcedureSkillSnapshot(
@@ -167,7 +168,8 @@ nonisolated enum BackupService {
                                                    givenBy: $0.givenBy, cancelledAt: $0.cancelledAt,
                                                    cancelReason: $0.cancelReason,
                                                    skippedAt: $0.skippedAt, skippedBy: $0.skippedBy,
-                                                   claimedBy: $0.claimedBy, claimedAt: $0.claimedAt)
+                                                   claimedBy: $0.claimedBy, claimedAt: $0.claimedAt,
+                                                   awaitedMedicationName: $0.awaitedMedicationName)
                     },
                     unitRaw: medication.unitRaw,
                     minutesAfterMeal: medication.minutesAfterMeal,
@@ -215,7 +217,8 @@ nonisolated enum BackupService {
                                             packGrams: $0.packGrams, packsLeft: $0.packsLeft,
                                             gramsPerDay: $0.gramsPerDay, openedAt: $0.openedAt,
                                             expiry: $0.expiry,
-                                            shelfAfterOpenDays: $0.shelfAfterOpenDays)
+                                            shelfAfterOpenDays: $0.shelfAfterOpenDays,
+                                            countedAt: $0.countedAt)
             },
             heats: heats.map {
                 BackupArchive.HeatSnapshot(startedAt: $0.startedAt, endedAt: $0.endedAt, note: $0.note)
@@ -494,6 +497,13 @@ nonisolated enum BackupService {
             for snapshot in archive.episodes {
                 let episode = Episode(title: snapshot.title, detail: snapshot.detail, startedAt: snapshot.startedAt)
                 episode.endedAt = snapshot.endedAt
+                // Последний инцидент держит КОНЕЦ эпизода: `isOngoing`
+                // сравнивает `now − lastIncidentAt` с сорока восьмью
+                // часами. В `init` это поле равно `startedAt`, поэтому
+                // без восстановления тишина считалась бы от начала —
+                // и эпизод, у которого инциденты шли пять дней,
+                // объявился бы законченным задним числом.
+                episode.lastIncidentAt = snapshot.lastIncidentAt ?? snapshot.startedAt
                 context.insert(episode)
             }
         }
@@ -734,6 +744,12 @@ nonisolated enum BackupService {
                 // «ни разу» вместо правды.
                 dose.skippedAt = doseSnapshot.skippedAt
                 dose.skippedBy = doseSnapshot.skippedBy
+                // Чего доза ждёт, если схема до неё не доехала.
+                // Едет только имя: `awaitedMedicationID` в архив
+                // не идёт нарочно — `Medication.id` тоже не идёт,
+                // и восстановленная ссылка указывала бы в никуда,
+                // выглядя при этом валидным UUID.
+                dose.awaitedMedicationName = doseSnapshot.awaitedMedicationName
                 dose.claimedBy = doseSnapshot.claimedBy
                 dose.claimedAt = doseSnapshot.claimedAt
                 dose.medication = medication
@@ -775,6 +791,13 @@ nonisolated enum BackupService {
             stock.expiry = stockSnapshot.expiry
             stock.shelfAfterOpenDays = stockSnapshot.shelfAfterOpenDays
                 ?? stock.shelfAfterOpenDays
+            // Дата пересчёта: от неё `usedGrams` отсчитывает съеденное.
+            // Без неё `usedGrams` отдаёт ноль, и восстановленный запас
+            // показывает полный мешок вместо «кончается завтра».
+            // Откат — на `init`, то есть «пересчитан сейчас»: у файлов,
+            // снятых до 07.10.2026, этого поля нет, и соврать «пересчитан
+            // год назад» нельзя.
+            stock.countedAt = stockSnapshot.countedAt ?? stock.countedAt
             stock.dog = dog
             context.insert(stock)
         }
