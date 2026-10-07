@@ -40,7 +40,7 @@ struct DogTab: View {
                     )
                 }
             }
-            .navigationTitle(dog?.name ?? "Собака")
+            .navigationTitle(dog.flatMap(\.nameIfAny) ?? String(localized: "Собака"))
             .usageScreen(.profile)
             .navigationBarTitleDisplayMode(.large)
             .toolbar { SettingsToolbarItem() }
@@ -56,7 +56,7 @@ struct DogTab: View {
                     TGAvatar(initial: dog.initial, image: dog.photo,
                              size: Token.Size.avatarMd, tint: Token.Action.doneQuiet)
                     VStack(alignment: .leading, spacing: Token.Space.s2) {
-                        Text(dog.name).textStyle(AppFont.cardTitle)
+                        Text(dog.displayName).textStyle(AppFont.cardTitle)
                         Text([dog.breed, dog.ageDescription, Fmt.weight(dog.weightKg)]
                             .compactMap { $0 }.joined(separator: " · "))
                             .textStyle(AppFont.caption)

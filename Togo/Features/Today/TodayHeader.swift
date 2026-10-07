@@ -33,7 +33,7 @@ struct TodayHeader: View {
         HStack(spacing: 12) {
             DogAvatar(dog: dog)
             VStack(alignment: .leading, spacing: 2) {
-                Text(dog?.name ?? "Собака")
+                Text(dog.flatMap(\.nameIfAny) ?? String(localized: "Собака"))
                     .textStyle(AppFont.cardTitle)
                     .foregroundStyle(Token.Ink.primary)
                 // В шапке — только то, что не меняется в течение дня.

@@ -65,7 +65,7 @@ enum QuickLog {
         // ими или путь размечен не был.
         UsageLog.note(.record, kind.rawValue, on: .other)
 
-        return String(localized: "Записала · \(kind.title.lowercased()) · \(dog.name)")
+        return String(localized: "Записала · \(kind.title.lowercased()) · \(dog.displayName)")
     }
 
     /// Можно ли этому телефону записывать голосом и кнопкой «Действие».
@@ -183,7 +183,7 @@ struct TimeIndoorsIntent: AppIntent {
         guard let indoors else { return .result(dialog: "Сегодня ещё не выходили.") }
 
         return .result(dialog: IntentDialog(stringLiteral: Self.ответ(
-            dogName: dog.name,
+            dogName: dog.displayName,
             indoors: indoors,
             lastOutingEndedAt: blocks.last(where: \.isOuting)?.endedAt
         )))

@@ -30,7 +30,7 @@ struct RootView: View {
                 .tag(Tab.today)
 
             DogTab()
-                .tabItem { Label(dog?.name ?? "Собака", systemImage: "pawprint") }
+                .tabItem { Label(dog.flatMap(\.nameIfAny) ?? String(localized: "Собака"), systemImage: "pawprint") }
                 .tag(Tab.dog)
 
             HistoryScreen()

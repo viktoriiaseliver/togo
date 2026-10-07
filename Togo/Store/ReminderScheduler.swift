@@ -132,7 +132,7 @@ enum ReminderScheduler {
         await NotificationCenterService.scheduleFastingEnd(
             id: "fasting-\(Int(window.until.timeIntervalSince1970))",
             at: window.until,
-            dogName: dog.name
+            dogName: dog.displayName
         )
     }
 }

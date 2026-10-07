@@ -76,9 +76,7 @@ extension DogPayload {
     /// SharedDiaryRecords`: у файла изоляция по умолчанию главная,
     /// и без этого слова правило не достаёт до разбора записи —
     /// то есть до того конца, которым оно и приехало.
-    nonisolated static func кличкаГодится(_ name: String) -> Bool {
-        !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-    }
+    nonisolated static func hasUsableName(_ name: String) -> Bool { Fmt.dogName(name) != nil }
 }
 
 @MainActor
@@ -340,7 +338,7 @@ enum SharedDiaryInbox {
         // Ворота после последнего действия, способного их нарушить
         // (сборка снимка), и перед первым, который на них опирается
         // (`Dog(name:)` и `apply`).
-        guard DogPayload.кличкаГодится(payload.name) else {
+        guard DogPayload.hasUsableName(payload.name) else {
             log.notice("общий дневник: снимок собаки без клички отклонён")
             return false
         }

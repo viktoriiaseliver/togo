@@ -75,7 +75,7 @@ enum LiveActivityController {
         let verdict = VerdictEngine.evaluate(signals)
 
         let snapshot = WidgetSnapshot(
-            dogName: dog.name,
+            dogName: dog.displayName,
             dogInitial: dog.initial,
             verdictTitle: verdict.title,
             verdictBadge: verdict.badge,

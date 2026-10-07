@@ -18,7 +18,7 @@ struct TripSetupScreen: View {
     @State private var lodging = ""
 
     var body: some View {
-        TGScreen(title: "Едем с \(dog?.name ?? "собакой")") {
+        TGScreen(title: "Едем с \(dog.flatMap(\.nameIfAny) ?? String(localized: "собакой"))") {
             TGExplainer(text: "Режим включится сам в день отъезда и выключится, когда вернётесь.")
 
             TGCard(spacing: 0) {

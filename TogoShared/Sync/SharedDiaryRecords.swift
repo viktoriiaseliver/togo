@@ -173,14 +173,14 @@ nonisolated enum SharedDiaryRecords {
     /// > **Проверка на отсутствие ключа выполняется и при пустом
     /// > значении, то есть при самом дефекте.**
     ///
-    /// Правило живёт в одном месте — `DogPayload.кличкаГодится`, —
+    /// Правило живёт в одном месте — `DogPayload.hasUsableName`, —
     /// и зовётся отсюда и из `SharedDiaryInbox.accept`. Два вызова
     /// одного правила, а не две независимые реализации: третья
     /// реализация у нас уже молчала в двух случаях из трёх.
     static func dogPayload(_ record: CKRecord) -> DogPayload? {
         guard let id = UUID(uuidString: record.recordID.recordName),
               let name = record["name"] as? String,
-              DogPayload.кличкаГодится(name),
+              DogPayload.hasUsableName(name),
               let changedAt = record["changedAt"] as? Date
         else { return nil }
 

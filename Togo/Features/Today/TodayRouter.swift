@@ -67,7 +67,7 @@ struct MoreSheet: View {
             } label: {
                 TGCard(padding: Token.Space.s14) {
                     TGListRow(title: "Всё про собаку",
-                              value: dog.map { .готовая($0.name) },
+                              value: dog.map { .готовая($0.displayName) },
                               systemImage: "pawprint")
                 }
             }

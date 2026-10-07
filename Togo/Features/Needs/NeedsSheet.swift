@@ -61,7 +61,7 @@ struct NeedsSheet: View {
                   .record(.outing, dog: dog, confirmation: nil)
         else { return }
         appState.startOuting(by: appState.currentUserName)
-        LiveActivityController.startWalk(dogName: dog.name, by: appState.currentUserName, at: event.date)
+        LiveActivityController.startWalk(dogName: dog.displayName, by: appState.currentUserName, at: event.date)
 
         // Спрашиваем не каждый раз: только при смене сигнала или раз в пять выходов.
         if Diary.shouldAskHowAsked(dog.events) {

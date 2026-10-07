@@ -98,6 +98,6 @@ enum AlarmThresholdAnalyzer {
         }
 
         let body = parts.joined(separator: ". ")
-        return "\(dog.name), \(Fmt.weight(dog.weightKg)). " + body.prefix(1).uppercased() + body.dropFirst() + "."
+        return "\(dog.displayName), \(Fmt.weight(dog.weightKg)). " + body.prefix(1).uppercased() + body.dropFirst() + "."
     }
 }

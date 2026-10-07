@@ -103,7 +103,7 @@ struct SharedDiaryScreen: View {
                 // Голая ссылка текстом при `publicPermission = .none` не
                 // открылась бы ни у кого.
                 ShareLink(item: invite,
-                          preview: SharePreview("Дневник · \(dog?.name ?? "собаки")",
+                          preview: SharePreview("Дневник · \(dog.flatMap(\.nameIfAny) ?? String(localized: "собаки"))",
                                                 image: Image(systemName: "pawprint.fill"))) {
                     TGListRow(title: "Пригласить человека", systemImage: "person.badge.plus",
                               accessory: .none)
@@ -186,7 +186,7 @@ struct SharedDiaryScreen: View {
         isWorking = true
         defer { isWorking = false }
         do {
-            let share = try await FamilyShare.invite(dogName: dog?.name ?? "собаки")
+            let share = try await FamilyShare.invite(dogName: dog.flatMap(\.nameIfAny) ?? String(localized: "собаки"))
             invite = DiaryInvite(share: share)
             participants = await FamilyShare.participants()
             UsageLog.note(.record, "invite", on: .sharedDiary)

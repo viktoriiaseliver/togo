@@ -53,7 +53,7 @@ struct TodayWidgetView: View {
                     .foregroundStyle(.white)
                     .frame(width: 20, height: 20)
                     .background(Token.Action.done, in: Circle())
-                Text(snapshot.dogName)
+                Text(Fmt.dogNameOrFallback(snapshot.dogName))
                     .font(.system(size: 13, weight: .semibold))
                     .foregroundStyle(Token.Ink.primary)
                 Spacer(minLength: 0)

@@ -55,7 +55,7 @@ struct DogEditorScreen: View {
                     TGButton(title: "Удалить собаку", variant: .destructive, size: .medium, systemImage: "trash") {
                         isConfirmingDelete = true
                     }
-                    TGExplainer(text: "Вместе с ней удалятся её записи, схемы лечения, занятия и поездки. Выгрузить дневник можно в «Настройки → Данные и приватность».")
+                    TGExplainer(text: "Вместе с ней исчезнет весь её дневник — одиннадцать видов записей: отметки, взвешивания, дела ухода, схемы лечения с дозами, шаги и занятия, поездки, документы, выезды, течки и запас корма. Выгрузить дневник можно в «Настройки → Данные и приватность».")
                 }
             }
         } bottom: {
@@ -64,11 +64,11 @@ struct DogEditorScreen: View {
         .navigationTitle(isNew ? "Новая собака" : "Профиль")
         .navigationBarTitleDisplayMode(.large)
         .task { load() }
-        .confirmationDialog("Удалить \(draft.name)?", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
+        .confirmationDialog("Удалить \(dog?.displayName ?? draft.name)?", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
             Button("Удалить", role: .destructive) { delete() }
             Button("Отмена", role: .cancel) {}
         } message: {
-            Text("Записи, схемы лечения и занятия будут стёрты. Это нельзя отменить.")
+            Text("Исчезнут все одиннадцать видов записей: отметки, взвешивания, дела ухода, схемы лечения с дозами, шаги и занятия, поездки, документы, выезды, течки и запас корма. Это нельзя отменить.")
         }
     }
 

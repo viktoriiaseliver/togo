@@ -190,7 +190,7 @@ struct FamilyScreen: View {
                 .buttonStyle(.plain)
             } else if let invite {
                 ShareLink(item: invite,
-                          preview: SharePreview("Дневник · \(dog?.name ?? "собаки")",
+                          preview: SharePreview("Дневник · \(dog.flatMap(\.nameIfAny) ?? String(localized: "собаки"))",
                                                 image: Image(systemName: "pawprint.fill"))) {
                     TGListRow(title: "Отправить приглашение",
                               systemImage: "square.and.arrow.up", accessory: .none)
@@ -218,7 +218,7 @@ struct FamilyScreen: View {
         inviteFailure = nil
         defer { isPreparingInvite = false }
         do {
-            let share = try await FamilyShare.invite(dogName: dog?.name ?? "собаки")
+            let share = try await FamilyShare.invite(dogName: dog.flatMap(\.nameIfAny) ?? String(localized: "собаки"))
             invite = DiaryInvite(share: share)
             UsageLog.note(.record, "invite", on: .family)
         } catch {
@@ -524,7 +524,7 @@ struct SitterPreviewScreen: View {
     let dog: Dog?
 
     var body: some View {
-        TGScreen(title: "\(dog?.name ?? "Собака") · ты помощник") {
+        TGScreen(title: "\(dog.flatMap(\.nameIfAny) ?? String(localized: "Собака")) · ты помощник") {
             TGExplainer(text: "Так экран выглядит у человека с ролью «помощник».")
 
             TGCard(spacing: 0) {

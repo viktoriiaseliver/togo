@@ -157,7 +157,7 @@ struct EmergencyScreen: View {
     private var brief: [(String, String)] {
         guard let dog else { return [] }
         var rows: [(String, String)] = [
-            ("Кличка", dog.name),
+            ("Кличка", dog.displayName),
             ("Вес", Fmt.weight(dog.weightKg)),
         ]
         if let breed = dog.breed { rows.append(("Порода", breed)) }
@@ -276,7 +276,7 @@ struct DocumentsScreen: View {
     }
 
     private var lostText: String? {
-        var parts = ["Потерялась собака: \(dog.name), \(dog.breed ?? "метис"), \(Fmt.weight(dog.weightKg))"]
+        var parts = ["Потерялась собака: \(dog.displayName), \(dog.breed ?? "метис"), \(Fmt.weight(dog.weightKg))"]
         if let age = dog.ageDescription { parts.append(String(localized: "Возраст: \(age)")) }
         if let chip = dog.chipNumber, !chip.isEmpty { parts.append(String(localized: "Чип: \(chip)")) }
         if let marks = dog.distinctiveMarks, !marks.isEmpty { parts.append(String(localized: "Приметы: \(marks)")) }

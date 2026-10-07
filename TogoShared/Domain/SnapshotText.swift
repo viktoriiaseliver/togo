@@ -116,9 +116,9 @@ nonisolated enum SnapshotText {
         // клички живёт на телефоне человека, и распределения мы
         // не знаем — и знать не должны.
         if snapshot.urineSilenceSince != nil {
-            return "\(String(localized: "нет отметок")) · \(snapshot.dogName)"
+            return "\(String(localized: "нет отметок")) · \(Fmt.dogNameOrFallback(snapshot.dogName))"
         }
-        guard let seconds = snapshot.sinceUrineSeconds else { return snapshot.dogName }
-        return "\(Fmt.duration(seconds)) · \(snapshot.dogName)"
+        guard let seconds = snapshot.sinceUrineSeconds else { return Fmt.dogNameOrFallback(snapshot.dogName) }
+        return "\(Fmt.duration(seconds)) · \(Fmt.dogNameOrFallback(snapshot.dogName))"
     }
 }

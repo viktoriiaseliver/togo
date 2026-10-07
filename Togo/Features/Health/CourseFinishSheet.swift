@@ -103,7 +103,7 @@ struct CourseFinishSheet: View {
                       detail: "История, вес и отчёт врачу остаются на месте.")
             TGIconRow(symbol: "arrow.uturn.backward",
                       title: "Вернуть — один тап",
-                      detail: "Тумблер «Собака на лечении» в профиле \(dog.name) оживит схему обратно.")
+                      detail: "Тумблер «Собака на лечении» в профиле \(dog.displayName) оживит схему обратно.")
         }
     }
 }

@@ -201,7 +201,7 @@ struct SettingsScreen: View {
                 NavigationLink {
                     ProfileScreen(dog: dog)
                 } label: {
-                    LabeledContent(dog.name, value: Fmt.weight(dog.weightKg))
+                    LabeledContent(dog.displayName, value: Fmt.weight(dog.weightKg))
                 }
             }
             if dogs.isEmpty || store.isPro {

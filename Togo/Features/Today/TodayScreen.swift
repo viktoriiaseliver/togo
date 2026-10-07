@@ -278,7 +278,7 @@ struct TodayScreen: View {
 
         // Единственная запись, которая меняет поведение, а не фиксирует
         // его. Показывается, только когда сигналов набралось достаточно.
-        AskSignalCard(events: events, dogName: dog?.name ?? "Он", now: now)
+        AskSignalCard(events: events, dogName: dog.flatMap(\.nameIfAny) ?? String(localized: "Он"), now: now)
     }
 
     private var планНаОстаток: some View {

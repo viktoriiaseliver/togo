@@ -47,7 +47,7 @@ private struct DogChip: View {
             TGAvatar(initial: dog.initial, image: dog.photo,
                      size: Token.Size.avatarSm,
                      tint: isActive ? Token.Action.doneQuiet : Token.Surface.sunken)
-            Text(dog.name)
+            Text(dog.displayName)
                 .textStyle(isActive ? AppFont.captionEmphasis : AppFont.caption)
                 .foregroundStyle(isActive ? Token.Ink.primary : Token.Ink.secondary)
         }
@@ -114,7 +114,7 @@ private struct DogRow: View {
             TGAvatar(initial: dog.initial, image: dog.photo,
                      size: Token.Size.avatarSm, tint: Token.Action.doneQuiet)
             VStack(alignment: .leading, spacing: Token.Space.s2) {
-                Text(dog.name).textStyle(AppFont.body)
+                Text(dog.displayName).textStyle(AppFont.body)
                 Text([dog.breed, dog.ageDescription].compactMap { $0 }.joined(separator: " · "))
                     .textStyle(AppFont.micro)
             }

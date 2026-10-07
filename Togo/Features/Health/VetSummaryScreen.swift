@@ -234,7 +234,7 @@ struct VetSummaryPresentation: View {
 
     var body: some View {
         TGScreen {
-            Text(dog.map { "\($0.name) · \(Fmt.weight($0.weightKg))" } ?? "")
+            Text(dog.map { "\($0.displayName) · \(Fmt.weight($0.weightKg))" } ?? "")
                 .textStyle(AppFont.cardTitle)
             Text("\(Fmt.shortDay(summary.from)) — \(Fmt.shortDay(summary.to))")
                 .textStyle(AppFont.caption)
@@ -282,7 +282,7 @@ nonisolated enum VetSummaryText {
     @MainActor
     static func plain(_ summary: VetSummary, delta: [String], dog: Dog?) -> String {
         var lines: [String] = []
-        if let dog { lines.append("\(dog.name), \(Fmt.weight(dog.weightKg))") }
+        if let dog { lines.append("\(dog.displayName), \(Fmt.weight(dog.weightKg))") }
         lines.append(String(localized: "Период: \(Fmt.shortDay(summary.from)) — \(Fmt.shortDay(summary.to))"))
 
         if let share = summary.onTimeShare {

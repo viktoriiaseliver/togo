@@ -29,7 +29,7 @@ struct SitterBriefingScreen: View {
     var body: some View {
         TGScreen {
             TGCard {
-                Text("Ты с \(dog?.name ?? "собакой")\(untilText)").textStyle(AppFont.cardTitle)
+                Text("Ты с \(dog.flatMap(\.nameIfAny) ?? String(localized: "собакой"))\(untilText)").textStyle(AppFont.cardTitle)
                 if let ownerName {
                     Text("\(ownerName) открыла доступ\(rangeText)").textStyle(AppFont.caption)
                 }
