@@ -195,24 +195,34 @@ struct SettingsScreen: View {
 
     // MARK: Собака
 
+    /// Показываем только то, что можно показать.
+    ///
+    /// **Ворота Pro считали безымянные записи наравне с собаками.**
+    /// `dogs.isEmpty || store.isPro` при восьми фантомах даёт `false`,
+    /// и человек без подписки видел «Добавить вторую собаку» с пейволлом
+    /// вместо «Добавить собаку» — то есть завести ПЕРВУЮ настоящую
+    /// собаку ему предлагали за деньги. Счётчик в заголовке врал
+    /// по той же причине.
+    private var показываемые: [Dog] { dogs.shownToPerson }
+
     private var dogSection: some View {
         Section {
-            ForEach(dogs) { dog in
+            ForEach(показываемые) { dog in
                 NavigationLink {
                     ProfileScreen(dog: dog)
                 } label: {
                     LabeledContent(dog.displayName, value: Fmt.weight(dog.weightKg))
                 }
             }
-            if dogs.isEmpty || store.isPro {
+            if показываемые.isEmpty || store.isPro {
                 NavigationLink("Добавить собаку") { DogEditorScreen() }
             } else {
                 Button("Добавить вторую собаку") { showPaywall = true }
             }
         } header: {
-            Text(dogs.count > 1 ? "собаки" : "собака")
+            Text(показываемые.count > 1 ? "собаки" : "собака")
         } footer: {
-            Text(dogs.isEmpty
+            Text(показываемые.isEmpty
                  ? "Без собаки приложению нечего считать — начни с неё."
                  : "Удалить собаку можно в её профиле, внизу.")
         }

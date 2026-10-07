@@ -80,10 +80,14 @@ struct DogsScreen: View {
         TGScreen {
             TGCard(spacing: 0) {
                 TGSectionHeader(title: "кого смотрим",
-                                subtitle: dogs.count > 1
+                                subtitle: dogs.shownToPerson.count > 1
                                     ? "весь дневник, план дня и напоминания — про выбранную"
                                     : nil)
-                ForEach(dogs) { dog in
+                // Фильтр один на весь показ — `shownToPerson`.
+                // Безымянная строка в переключателе хуже, чем в списке:
+                // на неё нажимают, и после нажатия весь дневник
+                // становится пустым.
+                ForEach(dogs.shownToPerson) { dog in
                     Button { appState.select(dog) } label: {
                         DogRow(dog: dog, isActive: dog.id == appState.activeDog(from: dogs)?.id)
                     }

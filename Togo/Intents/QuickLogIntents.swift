@@ -96,7 +96,11 @@ enum QuickLog {
     /// Та собака, что открыта в приложении. Дневники разных собак
     /// не смешиваются, и голосовая отметка не должна их путать.
     static func activeDog(in context: ModelContext) throws -> Dog? {
-        let dogs = try context.fetch(FetchDescriptor<Dog>())
+        // Второй резолвер активной собаки — для Siri и виджета.
+        // Фильтр тот же, что в `AppState.activeDog(from:)`: голос,
+        // попавший на безымянную запись, отметит кормление не той
+        // собаке и промолчит об этом.
+        let dogs = try context.fetch(FetchDescriptor<Dog>()).shownToPerson
         let selected = UserDefaults.standard.string(forKey: AppState.Keys.activeDog).flatMap(UUID.init)
         return dogs.first { $0.id == selected } ?? dogs.first
     }
