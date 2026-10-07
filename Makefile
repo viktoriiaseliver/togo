@@ -82,14 +82,15 @@ test: ## Прогнать модульные и UI-тесты
 		echo "xcodebuild: код возврата $$rc (полный лог — $$LOG)"; exit $$rc
 
 .PHONY: unit
-unit: ## Только модульные тесты — быстрая обратная связь
+unit: ## Только модульные тесты — быстрая обратная связь (решает сверка с эталоном)
 	@mkdir -p build/logs
 	@LOG=build/logs/unit-$$(date +%Y%m%d-%H%M%S)-$$$$.log; \
 		xcodebuild -project $(PROJECT) -scheme $(SCHEME) -configuration $(CONFIG) \
 		-derivedDataPath "$(DERIVED)" \
 		-destination "$(DESTINATION)" test -only-testing:TogoTests > $$LOG 2>&1; rc=$$?; \
 		grep -E "Test run|✘|error:|\*\* TEST|Restarting after unexpected exit|ВЫЧИТКА:" $$LOG || true; \
-		echo "xcodebuild: код возврата $$rc (полный лог — $$LOG)"; exit $$rc
+		echo "xcodebuild: код возврата $$rc (полный лог — $$LOG)"; \
+		python3 Tools/сверить_эталон.py --лог $$LOG
 
 .PHONY: device
 device: ## Поставить на подключённый iPhone: make device TEAM=XXXXXXXXXX [PERSONAL=1]
