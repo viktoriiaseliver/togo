@@ -31,7 +31,7 @@ enum WalkControl {
         let author = AppState.storedUserName
         let session = ActiveSession(kind: .walk, startedAt: now, startedBy: author)
         ActiveSessionStore.save(session)
-        LiveActivityController.startWalk(dogName: dog.name, by: author, at: now)
+        LiveActivityController.startWalk(dogName: dog.name, by: author, at: now)  // кличка-в-слот: вход живой активности кормит и именительный ярлык, и винительные подписи — падеж знает слот
         return session
     }
 

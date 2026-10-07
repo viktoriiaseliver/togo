@@ -24,6 +24,36 @@ struct WalkModeScreen: View {
 
     private var session: ActiveSession? { appState.session }
 
+    /// Есть ли что разбирать в итоге прогулки.
+    ///
+    /// Правило из ФИНАЛа, раздел 3 «Шторки и итоги»: **«Итог прогулки —
+    /// только если был срыв, инцидент или заметка».** Прогулка, где
+    /// ничего не случилось, не задаёт вопросов: человек только что
+    /// вернулся с холода, и показывать ему шторку ради строки «отметок
+    /// не было» — значит спрашивать, не имея вопроса.
+    ///
+    /// **Правило относится к ПРОГУЛКЕ, а не к выходу**, и это не
+    /// буквоедство: в словаре продукта это разные вещи —
+    /// `ActiveSession.Kind.outing` = «Выход», `.walk` = «Прогулка».
+    /// Поставь тот же гейт на «Как сходил?» (`TodayScreen.endOuting`) —
+    /// и главный вопрос короткого пути исчезнет: отметки в сессию кладут
+    /// только режим прогулки (`mark(_:)` ниже) и локскран
+    /// (`ActiveSession:205`, и тот лишь мочу и стул), так что на коротком
+    /// выходе срыва, заметки и инцидента быть НЕ МОЖЕТ — их нечем
+    /// поставить.
+    ///
+    /// > Правка собирается из двух верных половин: правило верное,
+    /// > место неверное. Проверяется не чтением правила, а перечислением
+    /// > того, кто вообще может создать его предмет.
+    ///
+    /// Моча и стул сюда не входят намеренно: они записываются сами
+    /// и уточнений не просят. Спрашивать здесь не о чем.
+    private func естьЧтоРазбирать(_ сессия: ActiveSession) -> Bool {
+        сессия.reactions > 0
+            || сессия.count(of: .incident) > 0
+            || сессия.count(of: .note) > 0
+    }
+
     var body: some View {
         Group {
             if let summary {
@@ -70,7 +100,7 @@ struct WalkModeScreen: View {
     private func start() {
         appState.startWalk(by: appState.currentUserName)
         if let dog {
-            LiveActivityController.startWalk(dogName: dog.name,
+            LiveActivityController.startWalk(dogName: dog.name,  // кличка-в-слот: вход живой активности кормит и именительный ярлык, и винительные подписи — падеж знает слот
                                              by: appState.currentUserName,
                                              at: Date())
         }
@@ -288,7 +318,7 @@ struct WalkModeScreen: View {
             // быть то же время, что и здесь.
             if let resumed = appState.session, let dog {
                 LiveActivityController.resumeWalk(
-                    dogName: dog.name, by: resumed.startedBy,
+                    dogName: dog.name, by: resumed.startedBy,  // кличка-в-слот: вход живой активности кормит и именительный ярлык, и винительные подписи — падеж знает слот
                     effectiveStart: Date().addingTimeInterval(-resumed.duration()),
                     tally: resumed.marks.isEmpty ? nil : resumed.tally
                 )
@@ -310,7 +340,7 @@ struct WalkModeScreen: View {
         Task { await LiveActivityController.finishWalk(outcome: finished.tally) }
 
         guard let dog else {
-            summary = finished
+            показатьИтог(finished)
             return
         }
 
@@ -330,6 +360,27 @@ struct WalkModeScreen: View {
             }
         }
 
+        показатьИтог(finished)
+    }
+
+    /// Показать итог — или закрыть прогулку молча.
+    ///
+    /// **Решение принимается здесь, а не в теле вида, и это не вкус.**
+    /// Первая редакция ставила условие прямо на `if let summary` —
+    /// и при пустой прогулке `Group` проваливался в `else`, где сессии
+    /// уже нет (её закрыл `finishSession()`), то есть человек после
+    /// прогулки видел СТАРТОВУЮ шторку «Прогулка · таймер пойдёт
+    /// сразу». Гейт, поставленный на показ, завёл бы дефект хуже того,
+    /// что убирал.
+    ///
+    /// > Условие, выключающее экран, ставится там, где решают
+    /// > его судьбу, а не там, где его рисуют: у отрисовки всегда
+    /// > есть «иначе», и оно редко то, что нужно.
+    private func показатьИтог(_ finished: ActiveSession) {
+        guard естьЧтоРазбирать(finished) else {
+            dismiss()
+            return
+        }
         summary = finished
     }
 }

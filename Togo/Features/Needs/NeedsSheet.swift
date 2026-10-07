@@ -61,7 +61,7 @@ struct NeedsSheet: View {
                   .record(.outing, dog: dog, confirmation: nil)
         else { return }
         appState.startOuting(by: appState.currentUserName)
-        LiveActivityController.startWalk(dogName: dog.name, by: appState.currentUserName, at: event.date)
+        LiveActivityController.startWalk(dogName: dog.name, by: appState.currentUserName, at: event.date)  // кличка-в-слот: вход живой активности кормит и именительный ярлык, и винительные подписи — падеж знает слот
 
         // Спрашиваем не каждый раз: только при смене сигнала или раз в пять выходов.
         if Diary.shouldAskHowAsked(dog.events) {

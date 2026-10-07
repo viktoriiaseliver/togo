@@ -83,13 +83,29 @@ public struct WalkActivityView: View {
     /// «острова» — в `docs/journal/2026-10-07.md`. Пробел виден сторожу
     /// охвата и потому имеет хозяина; литерал не видел никто.
     public var подпись: String {
-        tally ?? "\(startedBy) вывела \(Fmt.dogName(dogName) ?? String(localized: "собаку"))"
+        if let tally { return tally }
+        // **Две целые фразы, а не слово в дырке.** Откат словом —
+        // `… вывела \(кличка ?? "собаку")` — закрывает ключ и НЕ закрывает
+        // человека: замер 07.10 показал, что сама фраза собиралась
+        // обычным литералом и в каталог не шла вовсе, а готовый перевод
+        // ключа `%@ вывела %@` (fr `%@ a sorti %@`, uk `%@ вивела %@`)
+        // лежал и не вызывался ни разу. Француз читал русское
+        // предложение с французским словом внутри.
+        //
+        // Целая фраза несёт падеж сама, и во французском она другая
+        // не одним словом: `a sorti %@` против `a sorti le chien`.
+        // Обрывок «собаку» переводчик в падеж не поставит — ему нечего
+        // склонять.
+        guard let кличка = Fmt.dogName(dogName) else {
+            return String(localized: "\(startedBy) вывела собаку")
+        }
+        return String(localized: "\(startedBy) вывела \(кличка)")
     }
 
     public var body: some View {
         HStack(alignment: .center, spacing: 12) {
             VStack(alignment: .leading, spacing: 2) {
-                Text("выход идёт")
+                Text(String(localized: "выход идёт"))
                     .font(.system(size: 11, weight: .medium))
                     .foregroundStyle(Token.Action.primary)
                 Text(startedAt, style: .timer)
@@ -148,7 +164,11 @@ public enum WalkIslandView {
         /// Откат тот же и падеж тот же — винительный, «вывел кого»,
         /// и через каталог тем же ключом, что на локскране (07.10.2026).
         public var подпись: String {
-            tally ?? "вывел \(Fmt.dogName(dogName) ?? String(localized: "собаку"))"
+            if let tally { return tally }
+            guard let кличка = Fmt.dogName(dogName) else {
+                return String(localized: "вывел собаку")
+            }
+            return String(localized: "вывел \(кличка)")
         }
 
         public var body: some View {
@@ -189,6 +209,6 @@ public struct WalkMarkButtons: View {
         }
         .buttonStyle(.plain)
         .tint(Token.Action.primary)
-        .accessibilityLabel("Отметить: \(kind.title)")
+        .accessibilityLabel(String(localized: "Отметить: \(kind.title)"))
     }
 }
