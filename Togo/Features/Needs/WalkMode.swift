@@ -70,7 +70,7 @@ struct WalkModeScreen: View {
     private func start() {
         appState.startWalk(by: appState.currentUserName)
         if let dog {
-            LiveActivityController.startWalk(dogName: dog.displayName,
+            LiveActivityController.startWalk(dogName: dog.name,
                                              by: appState.currentUserName,
                                              at: Date())
         }
@@ -288,7 +288,7 @@ struct WalkModeScreen: View {
             // быть то же время, что и здесь.
             if let resumed = appState.session, let dog {
                 LiveActivityController.resumeWalk(
-                    dogName: dog.displayName, by: resumed.startedBy,
+                    dogName: dog.name, by: resumed.startedBy,
                     effectiveStart: Date().addingTimeInterval(-resumed.duration()),
                     tally: resumed.marks.isEmpty ? nil : resumed.tally
                 )
