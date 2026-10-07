@@ -57,7 +57,7 @@ struct ArchiveFieldValueTests {
                              packsLeft: 1, gramsPerDay: 100)
         stock.dog = dog
         context.insert(stock)
-        let archive = try Backup.archive(context: context, appVersion: "тест")
+        let archive = try BackupService.archive(context: context, appVersion: "тест")
         #expect(archive.dogs.count == 1)
         #expect(archive.dogs.first?.stocks?.isEmpty == false,
                 "запас в архив не попал — остальные проверки измеряли бы пустоту")
@@ -137,7 +137,7 @@ struct ArchiveFieldValueTests {
     /// в памяти и умерло бы в файле; а файл — это и есть то, что уезжает
     /// на новый телефон.
     private func кругом(context: ModelContext) throws -> BackupArchive {
-        let archive = try Backup.archive(context: context, appVersion: "тест")
+        let archive = try BackupService.archive(context: context, appVersion: "тест")
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
         let данные = try encoder.encode(archive)
