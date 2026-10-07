@@ -210,6 +210,77 @@ struct MedLayerDomainTests {
         #expect(Set(все.map(ControlWindow.word)).count == все.count)
     }
 
+    // MARK: Терапевтический коридор
+
+    private static let коридор = LabNorm.TherapeuticBand.totalT4
+
+    @Test("Т4 16,7 — в норме по референсу и НИЖЕ по коридору. Это и есть весь смысл")
+    func sameNumberTwoMeanings() {
+        // 07.09.2025, карта Стича: Т4 16,7 при заборе +3,5 ч.
+        // По референсу 12,9–51,5 — в норме. По коридору 27–69 — ниже,
+        // то есть доза не работает. Один результат, два вывода.
+        #expect(LabNorm.deviation(value: .measured(16.7), from: Self.т4) == .withinRange)
+
+        let вОкне = LabNorm.reading(value: .measured(16.7), reference: Self.т4,
+                                    band: Self.коридор, hoursAfterDose: 5)
+        #expect(вОкне == .byTherapeuticBand(.below))
+    }
+
+    @Test("Вне окна 4–6 ч читаем по референсу — и ГОВОРИМ, что коридор не про это время")
+    func outsideWindowFallsBackAndSaysSo() {
+        // 07.09.2025 тот же день: забор +11,5 ч дал Т4 10,3. Коридор
+        // к этому времени не относится — пик давно прошёл.
+        let поздно = LabNorm.reading(value: .measured(10.3), reference: Self.т4,
+                                     band: Self.коридор, hoursAfterDose: 11.5)
+        #expect(поздно == .byReferenceOutsideWindow(.below))
+        // И исход назван отдельным словом, а не склеен с «ниже нормы»:
+        #expect(LabNorm.readingWord(поздно) != LabNorm.word(.below))
+    }
+
+    @Test("Часов не записано — коридор НЕ применён, и это сам ответ, а не отказ")
+    func missingHoursIsTheAnswer() {
+        let безЧасов = LabNorm.reading(value: .measured(16.7), reference: Self.т4,
+                                       band: Self.коридор, hoursAfterDose: nil)
+        #expect(безЧасов == .bandNotApplied(.withinRange))
+        // Подставить «вероятно, 4–6» значило бы изобрести норму.
+        // От обратного: исход обязан отличаться от прочтения по коридору.
+        #expect(безЧасов != .byTherapeuticBand(.below))
+    }
+
+    @Test("Без лечения коридора не существует, и вопроса тоже")
+    func noTreatmentNoBand() {
+        let здоровая = LabNorm.reading(value: .measured(16.7), reference: Self.т4,
+                                       band: nil, hoursAfterDose: nil)
+        #expect(здоровая == .byReferenceNoTreatment(.withinRange))
+    }
+
+    @Test("Четыре исхода прочтения различимы словом, а не только видом")
+    func fourReadingsFourWords() {
+        let все: [LabNorm.Reading] = [
+            .byTherapeuticBand(.below),
+            .byReferenceOutsideWindow(.below),
+            .bandNotApplied(.withinRange),
+            .byReferenceNoTreatment(.withinRange),
+        ]
+        // Два исхода на одно слово — это «один текст на три причины».
+        #expect(Set(все.map(LabNorm.readingWord)).count == все.count)
+    }
+
+    @Test("Края окна включительно: ровно 4 и ровно 6 часов — это коридор")
+    func windowEdgesAreInclusive() {
+        for часы in [4.0, 6.0] {
+            let r = LabNorm.reading(value: .measured(30), reference: Self.т4,
+                                    band: Self.коридор, hoursAfterDose: часы)
+            #expect(r == .byTherapeuticBand(.withinRange))
+        }
+        // А 3,9 и 6,1 — уже нет, иначе окно не окно.
+        for часы in [3.9, 6.1] {
+            let r = LabNorm.reading(value: .measured(30), reference: Self.т4,
+                                    band: Self.коридор, hoursAfterDose: часы)
+            #expect(r == .byReferenceOutsideWindow(.withinRange))
+        }
+    }
+
     @Test("Набору было что проверять: домен медслоя")
     func suiteHadSomethingToCheck() {
         #expect(LabSampleTiming.comparableSpreadHours == 3)

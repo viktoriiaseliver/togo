@@ -59,6 +59,107 @@ nonisolated enum LabNorm {
         case indeterminate
     }
 
+    /// Терапевтический коридор — **вторая полоса, и у неё есть
+    /// условие.** Заведено 07.10.2026 по замеру карты Стича.
+    ///
+    /// В бланках лежат две разные величины, и путать их нельзя:
+    ///
+    /// ```
+    /// референс Т4 общий        12,9–51,5 нмоль/л    здоровая собака
+    /// терапевтический коридор    27–69 нмоль/л      собака НА ЛЕЧЕНИИ,
+    ///                                                и только через 4–6 ч
+    ///                                                после приёма
+    /// ```
+    ///
+    /// Т4 = 16,7 лежит **внутри референса и ниже коридора**. То есть
+    /// по одной мерке «в норме», по другой «доза не работает», и это
+    /// не придирка: ровно этим вопросом карта и велась.
+    ///
+    /// **Почему коридор живёт в норме, а не в схеме лечения.** Замер
+    /// по карте: из 127 результатов схема известна у **восьми**.
+    /// Положи коридор на схему — и остальные 119 молча откатятся
+    /// на референс, то есть приложение скажет «в норме» про 16,7.
+    /// **Ложное успокоение хуже молчания**, и в этом продукте
+    /// особенно: его читают, когда с собакой что-то не так. Довод
+    /// и число — `togo-05`, 07.10.
+    struct TherapeuticBand: Sendable, Equatable {
+        let low: Double
+        let high: Double
+        /// Окно после приёма, в котором коридор вообще что-то значит.
+        /// У Т4 это 4–6 часов — вне него пик уже прошёл или ещё
+        /// не наступил, и сравнивать с коридором нечего.
+        let fromHoursAfterDose: Double
+        let toHoursAfterDose: Double
+
+        init(low: Double, high: Double,
+             fromHoursAfterDose: Double, toHoursAfterDose: Double) {
+            self.low = low
+            self.high = high
+            self.fromHoursAfterDose = fromHoursAfterDose
+            self.toHoursAfterDose = toHoursAfterDose
+        }
+
+        /// Коридор Т4 из карты Стича. Числа из бланков, не из головы.
+        static let totalT4 = TherapeuticBand(low: 27, high: 69,
+                                             fromHoursAfterDose: 4,
+                                             toHoursAfterDose: 6)
+    }
+
+    /// Чем прочитан результат. **Третий случай обязателен и он
+    /// не отказ от ответа, а сам ответ.**
+    enum Reading: Sendable, Equatable {
+        /// Забор в окне коридора — читаем по коридору.
+        case byTherapeuticBand(Deviation)
+        /// Забор вне окна — читаем по референсу, и **говорим**, что
+        /// коридор не про это время. Молча отдать референс значило бы
+        /// выдать одну мерку за другую.
+        case byReferenceOutsideWindow(Deviation)
+        /// Часов не записано. Подставить «вероятно, 4–6» значило бы
+        /// изобрести норму — тоньше, чем из интернета, но так же:
+        /// из удобства.
+        case bandNotApplied(Deviation)
+        /// Лечения нет — коридора не существует, и вопроса тоже.
+        case byReferenceNoTreatment(Deviation)
+    }
+
+    /// Прочитать результат с учётом коридора.
+    ///
+    /// `hoursAfterDose` приходит из `LabSampleTiming` — там же, где
+    /// живут три состояния времени забора, и повторять их здесь
+    /// нельзя: два правила на одну мысль расходятся на второй правке.
+    static func reading(value: Value,
+                        reference: Reference,
+                        band: TherapeuticBand?,
+                        hoursAfterDose: Double?) -> Reading {
+        guard let band else {
+            return .byReferenceNoTreatment(deviation(value: value, from: reference))
+        }
+        guard let hours = hoursAfterDose else {
+            return .bandNotApplied(deviation(value: value, from: reference))
+        }
+        guard hours >= band.fromHoursAfterDose, hours <= band.toHoursAfterDose else {
+            return .byReferenceOutsideWindow(deviation(value: value, from: reference))
+        }
+        return .byTherapeuticBand(
+            deviation(value: value, from: .range(low: band.low, high: band.high)))
+    }
+
+    /// Чем прочитано — словом. Четыре исхода, четыре разные новости;
+    /// одним текстом их покрывать нельзя, за это у Togo уже заплачено
+    /// ступенью отката iCloud.
+    static func readingWord(_ reading: Reading) -> String {
+        switch reading {
+        case .byTherapeuticBand(let d):
+            word(d)
+        case .byReferenceOutsideWindow:
+            String(localized: "забор вне окна 4–6 ч — читается по обычной норме")
+        case .bandNotApplied:
+            String(localized: "не записано, через сколько часов после дозы")
+        case .byReferenceNoTreatment(let d):
+            word(d)
+        }
+    }
+
     /// Отклонение. Чистая функция — её можно спросить из теста.
     ///
     /// Порядок проверок — часть смысла: **сперва «есть ли норма»,
