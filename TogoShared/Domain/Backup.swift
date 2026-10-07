@@ -47,6 +47,8 @@ nonisolated enum BackupService {
         let allDaysOut = (try? context.fetch(FetchDescriptor<DayOut>())) ?? []
         let members = try context.fetch(FetchDescriptor<FamilyMember>())
         let episodes = try context.fetch(FetchDescriptor<Episode>())
+        // Навыки процедур — корневой список: связи с собакой у них нет.
+        let skills = (try? context.fetch(FetchDescriptor<ProcedureSkill>())) ?? []
 
         return BackupArchive(
             createdAt: Date(),
@@ -69,6 +71,12 @@ nonisolated enum BackupService {
             episodes: episodes.map {
                 BackupArchive.EpisodeSnapshot(startedAt: $0.startedAt, endedAt: $0.endedAt,
                                               title: $0.title, detail: $0.detail)
+            },
+            procedureSkills: skills.map {
+                BackupArchive.ProcedureSkillSnapshot(
+                    title: $0.title, detail: $0.detail, statusRaw: $0.statusRaw,
+                    targetDate: $0.targetDate, successes: $0.successes,
+                    attempts: $0.attempts)
             }
         )
     }
@@ -110,7 +118,15 @@ nonisolated enum BackupService {
                     stoolFlagsRaw: event.stoolFlagsRaw, grams: event.grams,
                     milliliters: event.milliliters, fromPortion: event.fromPortion,
                     incidentKindRaw: event.incidentKindRaw, incidentDetailRaw: event.incidentDetailRaw,
-                    toldFamily: event.toldFamily, deletedAt: event.deletedAt, deletedBy: event.deletedBy
+                    toldFamily: event.toldFamily, deletedAt: event.deletedAt, deletedBy: event.deletedBy,
+                    isDayOnly: event.isDayOnly, enteredAt: event.enteredAt,
+                    editedBy: event.editedBy,
+                    originRaw: event.originRaw,
+                    reactionTriggerRaw: event.reactionTriggerRaw,
+                    reactionDistanceRaw: event.reactionDistanceRaw,
+                    walkEventID: event.walkEventID, careTaskID: event.careTaskID,
+                    medicationID: event.medicationID,
+                    trainingSessionID: event.trainingSessionID
                 )
             },
             weights: dog.weights.map { BackupArchive.WeightSnapshot(date: $0.date, kg: $0.kg) },
@@ -182,7 +198,9 @@ nonisolated enum BackupService {
             stocks: stocks.map {
                 BackupArchive.StockSnapshot(kindRaw: $0.kindRaw, brand: $0.brand,
                                             packGrams: $0.packGrams, packsLeft: $0.packsLeft,
-                                            gramsPerDay: $0.gramsPerDay, openedAt: $0.openedAt)
+                                            gramsPerDay: $0.gramsPerDay, openedAt: $0.openedAt,
+                                            expiry: $0.expiry,
+                                            shelfAfterOpenDays: $0.shelfAfterOpenDays)
             },
             heats: heats.map {
                 BackupArchive.HeatSnapshot(startedAt: $0.startedAt, endedAt: $0.endedAt, note: $0.note)
@@ -256,9 +274,13 @@ nonisolated enum BackupService {
     @discardableResult
     static func restore(_ archive: BackupArchive, into context: ModelContext, strategy: Strategy) throws -> Int {
         if strategy == .replace {
+            // `ProcedureSkill` добавлен 07.10.2026 вместе с его снимком:
+            // без чистки «заменить» удвоило бы навыки, потому что
+            // опознать их при вставке нечем.
             for model in [LogEvent.self, WeightEntry.self, DoseRecord.self, Medication.self,
                           CareTask.self, TrainingSession.self, TrainingStep.self,
-                          Trip.self, Episode.self, FamilyMember.self, Dog.self] as [any PersistentModel.Type] {
+                          Trip.self, Episode.self, ProcedureSkill.self,
+                          FamilyMember.self, Dog.self] as [any PersistentModel.Type] {
                 try context.delete(model: model)
             }
         }
@@ -357,6 +379,20 @@ nonisolated enum BackupService {
         }
 
         if strategy == .replace {
+            // Навыки процедур: корневой список, собаки у них нет.
+            // В ветке «долить» не восстанавливаются по той же причине,
+            // что эпизоды, — опознать «тот же навык» нечем: ни `id`
+            // в снимке, ни связи, а склейка по названию собрала бы
+            // в одну группу всё, что названия не заполнило.
+            // Наш класс, оплаченный сегодня четырьмя случаями.
+            for snapshot in archive.procedureSkills ?? [] {
+                let skill = ProcedureSkill(title: snapshot.title, detail: snapshot.detail,
+                                           targetDate: snapshot.targetDate)
+                skill.statusRaw = snapshot.statusRaw
+                skill.successes = snapshot.successes
+                skill.attempts = snapshot.attempts
+                context.insert(skill)
+            }
             for snapshot in archive.episodes {
                 let episode = Episode(title: snapshot.title, detail: snapshot.detail, startedAt: snapshot.startedAt)
                 episode.endedAt = snapshot.endedAt
@@ -488,6 +524,20 @@ nonisolated enum BackupService {
             event.toldFamily = snapshot.toldFamily
             event.deletedAt = snapshot.deletedAt
             event.deletedBy = snapshot.deletedBy
+            // «Часа не помню» — оговорка, без которой число лжёт:
+            // `WalkRhythm` отбрасывает такие записи, считая обычное
+            // время выхода, и восстановленная без флага запись
+            // попадёт в счёт как точная.
+            event.isDayOnly = snapshot.isDayOnly ?? event.isDayOnly
+            event.enteredAt = snapshot.enteredAt ?? event.enteredAt
+            event.editedBy = snapshot.editedBy
+            event.originRaw = snapshot.originRaw
+            event.reactionTriggerRaw = snapshot.reactionTriggerRaw
+            event.reactionDistanceRaw = snapshot.reactionDistanceRaw
+            event.walkEventID = snapshot.walkEventID
+            event.careTaskID = snapshot.careTaskID
+            event.medicationID = snapshot.medicationID
+            event.trainingSessionID = snapshot.trainingSessionID
             event.dog = dog
             context.insert(event)
             count += 1
@@ -610,6 +660,9 @@ nonisolated enum BackupService {
                                   packsLeft: stockSnapshot.packsLeft,
                                   gramsPerDay: stockSnapshot.gramsPerDay)
             stock.openedAt = stockSnapshot.openedAt
+            stock.expiry = stockSnapshot.expiry
+            stock.shelfAfterOpenDays = stockSnapshot.shelfAfterOpenDays
+                ?? stock.shelfAfterOpenDays
             stock.dog = dog
             context.insert(stock)
         }
