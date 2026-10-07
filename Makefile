@@ -83,14 +83,28 @@ test: ## Прогнать модульные и UI-тесты
 
 .PHONY: unit
 unit: ## Только модульные тесты — быстрая обратная связь (решает сверка с эталоном)
+# Бандл результата, а не только лог. Имена упавших сверка берёт
+# из структуры: печать их портит (07.10.2026 — один байт кириллицы
+# уехал восьмеричным escape в сводной строке, и сверка доложила
+# фантомную регрессию). Лог при этом обязателен и дальше: по нему
+# и только по нему видно, СОСТОЯЛСЯ ли прогон.
+#
+# Путь бандла — с PID, как у лога: сессий на этом дереве несколько,
+# и общий путь отдавал бы одной сессии результат другой.
+#
+# Код возврата у цели — питоновский, НЕ xcodebuild. Это нарочно:
+# решает сверка с эталоном, а не 65 от трёх ожидаемо красных.
+# Но означает, что «exit 0» у вызывающего не равен зелёному прогону, —
+# приёмку снимать с текста, строка про код возврата печатается выше.
 	@mkdir -p build/logs
 	@LOG=build/logs/unit-$$(date +%Y%m%d-%H%M%S)-$$$$.log; \
+		BUNDLE=build/unit-$$$$.xcresult; rm -rf $$BUNDLE; \
 		xcodebuild -project $(PROJECT) -scheme $(SCHEME) -configuration $(CONFIG) \
-		-derivedDataPath "$(DERIVED)" \
+		-derivedDataPath "$(DERIVED)" -resultBundlePath $$BUNDLE \
 		-destination "$(DESTINATION)" test -only-testing:TogoTests > $$LOG 2>&1; rc=$$?; \
 		grep -E "Test run|✘|error:|\*\* TEST|Restarting after unexpected exit|ВЫЧИТКА:" $$LOG || true; \
 		echo "xcodebuild: код возврата $$rc (полный лог — $$LOG)"; \
-		python3 Tools/сверить_эталон.py --лог $$LOG
+		python3 Tools/сверить_эталон.py --лог $$LOG --бандл $$BUNDLE
 
 .PHONY: device
 device: ## Поставить на подключённый iPhone: make device TEAM=XXXXXXXXXX [PERSONAL=1]
