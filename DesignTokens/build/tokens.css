@@ -62,6 +62,9 @@
   --primitive-color-night3: #1F1F1F;
   --primitive-color-night4: #2C2C2C;
   --primitive-color-night5: #383838;
+  --primitive-color-posterAmber: #4A3A14;
+  --primitive-color-posterClay: #5E2A22;
+  --primitive-color-posterIndigo: #2A3670;
   --primitive-color-scrim: #0000008C;
   --primitive-color-spruce: #5FBF93;
   --primitive-color-spruceText: #7FD3A8;
@@ -121,6 +124,16 @@
   --semantic-action-primaryPressed: #7BA5FE;
   --semantic-action-primaryQuiet: #A2C1FE2E;
   --semantic-action-secondary: #2C2C2C;
+  --semantic-poster-background: #2A3670;
+  --semantic-poster-backgroundAlarm: #5E2A22;
+  --semantic-poster-backgroundDose: #A2C1FE;
+  --semantic-poster-backgroundFasting: #4A3A14;
+  --semantic-poster-backgroundQuiet: #181818;
+  --semantic-poster-bar: #A2C1FE;
+  --semantic-poster-barOnDose: #0B0D2E;
+  --semantic-poster-caption: #B2B2AE;
+  --semantic-poster-label: #F4F4F2;
+  --semantic-poster-labelOnDose: #0B0D2E;
   --semantic-radius-capsule: 999px;
   --semantic-radius-card: 28px;
   --semantic-radius-control: 24px;

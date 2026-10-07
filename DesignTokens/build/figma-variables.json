@@ -217,6 +217,39 @@
           }
         },
         {
+          "name": "color/posterAmber",
+          "type": "COLOR",
+          "description": "Подложка блока плаката, НАТОЩАК и только. `--poster-warn-bg`. Янтарь у нас разрешён единственному состоянию — правило дизайн-системы Togo, и подложка наследует это ограничение",
+          "value": {
+            "r": 0.2901960784313726,
+            "g": 0.22745098039215686,
+            "b": 0.0784313725490196,
+            "a": 1
+          }
+        },
+        {
+          "name": "color/posterClay",
+          "type": "COLOR",
+          "description": "Подложка блока плаката, ТРЕВОГА. `--poster-err-bg`. Терракот — инцидент, тревога и запас ≤3 дней; четвёртого статусного цвета у системы нет, поэтому «пора покупать» и «уже нечего дать» различает слово, а не оттенок",
+          "value": {
+            "r": 0.3686274509803922,
+            "g": 0.16470588235294117,
+            "b": 0.13333333333333333,
+            "a": 1
+          }
+        },
+        {
+          "name": "color/posterIndigo",
+          "type": "COLOR",
+          "description": "Подложка блока плаката, обычный режим. Пакет Graphite окт 2026, `--poster-bg` тёмной темы. Средний тон лестницы «фон → блок → статусный цвет → кнопка заливкой»: на нём основной текст даёт 11,28:1, а акцент как полоса — 4,55:1. Выводить из акцента нельзя: это отдельная ступень, у неё своя роль",
+          "value": {
+            "r": 0.16470588235294117,
+            "g": 0.21176470588235294,
+            "b": 0.4392156862745098,
+            "a": 1
+          }
+        },
+        {
           "name": "color/scrim",
           "type": "COLOR",
           "description": "Затемнение под шторкой. color.material.scrim, Dark — rgba(0,0,0,.55), альфа 0,55 = 8C (было A6, то есть 0,65: стало светлее)",
@@ -646,6 +679,76 @@
           "type": "COLOR",
           "description": "",
           "alias": "color/night4",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "poster/background",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/posterIndigo",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "poster/backgroundAlarm",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/posterClay",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "poster/backgroundDose",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/arctic",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "poster/backgroundFasting",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/posterAmber",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "poster/backgroundQuiet",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/night2",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "poster/bar",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/arctic",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "poster/barOnDose",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/arcticInk",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "poster/caption",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/inkMuted",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "poster/label",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/ink",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "poster/labelOnDose",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/arcticInk",
           "aliasCollection": "Primitive"
         },
         {

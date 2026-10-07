@@ -116,6 +116,7 @@ GROUPS = [
     ("semantic.status", "Status", "color", "Состояния: янтарь — «подожди», терракот — просрочка или кровь."),
     ("semantic.spacing", "Spacing", "dimension", "Отступы."),
     ("semantic.radius", "Radius", "dimension", "Радиусы."),
+    ("semantic.poster", "Poster", "color", "Плакат — верхняя треть «Сегодня» и «На улице». Цвет блока = РЕЖИМ ДНЯ, и правило выбора в `TogoShared/Domain/PosterMode.swift`, не во вью: его спрашивают экран, виджет и «остров». Шторки плаката не несут."),
     ("primitive.space", "Space", "dimension", "Шаг сетки. Прикладной код берёт Spacing, а не это."),
     ("primitive.size", "Size", "dimension", "Размеры контролов и иконок."),
     ("primitive.font.size", "FontSize", "dimension", "Кегли."),

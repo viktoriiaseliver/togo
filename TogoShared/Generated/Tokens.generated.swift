@@ -80,6 +80,20 @@ nonisolated enum Token {
         static let tile: CGFloat = 16
     }
 
+    /// Плакат — верхняя треть «Сегодня» и «На улице». Цвет блока = РЕЖИМ ДНЯ, и правило выбора в `TogoShared/Domain/PosterMode.swift`, не во вью: его спрашивают экран, виджет и «остров». Шторки плаката не несут.
+    enum Poster {
+        static let background = Color(hex: 0x2A3670)
+        static let backgroundAlarm = Color(hex: 0x5E2A22)
+        static let backgroundDose = Color(hex: 0xA2C1FE)
+        static let backgroundFasting = Color(hex: 0x4A3A14)
+        static let backgroundQuiet = Color(hex: 0x181818)
+        static let bar = Color(hex: 0xA2C1FE)
+        static let barOnDose = Color(hex: 0x0B0D2E)
+        static let caption = Color(hex: 0xB2B2AE)
+        static let label = Color(hex: 0xF4F4F2)
+        static let labelOnDose = Color(hex: 0x0B0D2E)
+    }
+
     /// Шаг сетки. Прикладной код берёт Spacing, а не это.
     enum Space {
         static let s10: CGFloat = 10
