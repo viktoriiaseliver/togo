@@ -38,8 +38,11 @@ struct PillSupplyTests {
         let three = try #require(PillSupplyAdvisor.supply(remaining: 6, packSize: 60, perDay: 2))
         let ten = try #require(PillSupplyAdvisor.supply(remaining: 20, packSize: 60, perDay: 2))
 
-        #expect(PillSupplyAdvisor.needsWarning(three), "аптека везёт два-три дня")
-        #expect(!PillSupplyAdvisor.needsWarning(ten))
+        // Через `level(_:)`, а не через снятую `needsWarning`: `Bool`
+        // не различал ступени, а на экране у них разный цвет. Теперь
+        // утверждение не «предупреждаем», а «предупреждаем ВОТ ТАК».
+        #expect(PillSupplyAdvisor.level(three) == .urgent, "аптека везёт два-три дня")
+        #expect(PillSupplyAdvisor.level(ten) == .ok)
     }
 
     @Test("Нехватки на курс достаточно для предупреждения")
@@ -48,7 +51,9 @@ struct PillSupplyTests {
         let supply = try #require(
             PillSupplyAdvisor.supply(remaining: 20, packSize: 60, perDay: 2, courseEnds: ends)
         )
-        #expect(PillSupplyAdvisor.needsWarning(supply))
+        // Запаса больше недели, но до конца курса не хватит: сказать
+        // стоит, пугать нечем — значит именно `.low`, а не `.urgent`.
+        #expect(PillSupplyAdvisor.level(supply) == .low)
     }
 
     // MARK: Ступени
@@ -80,10 +85,15 @@ struct PillSupplyTests {
     /// и промолчит, если оранжевого не станет на экране вовсе. Наш класс
     /// «значение может быть верным, а вызов — бессильным».
     ///
-    /// Проверяется **живым путём `level(_:)`**, а не `needsWarning`:
-    /// у `needsWarning` в доке прямо написано, что из приложения её
-    /// не зовут, — то есть все пять тестов выше идут мимо того, что
-    /// исполняется у человека.
+    /// Проверяется **живым путём `level(_:)`**. Прежде рядом жила
+    /// `needsWarning(_:)`, через которую ходили тесты выше, — и в её
+    /// доке прямо стояло, что из приложения её не зовут. То есть пять
+    /// тестов проверяли то, что у человека не исполняется.
+    ///
+    /// Снята 07.10.2026 вместе с переписыванием тех пяти на `level(_:)`:
+    /// она была `level(supply) != .ok`, то есть пересказом, а `Bool`
+    /// вдобавок **прятал** различие, которое на экране есть — у `.low`
+    /// и `.urgent` разный цвет.
     @Test("Три ступени различимы, и каждая берётся своим числом дней")
     func триСтупениРазличимы() throws {
         #expect(PillSupplyAdvisor.level(try запасНа(10)) == .ok)

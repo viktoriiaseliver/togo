@@ -248,9 +248,32 @@ nonisolated enum BackupService {
         var restored = 0
 
         for snapshot in archive.dogs {
-            if strategy == .merge, existingDogNames.contains(snapshot.name) {
+            // Слияние идёт по кличке — и **только по настоящей кличке**.
+            //
+            // **Нашлось замером 07.10.2026, искали другое.** Условие
+            // стояло `existingDogNames.contains(snapshot.name)` без
+            // проверки на пустоту. Если в хранилище лежит хоть одна
+            // безымянная запись, в наборе кличек есть `""` — и
+            // безымянная собака ИЗ АРХИВА сливалась с ней: её отметки,
+            // дозы и взвешивания приписывались чужой записи, про
+            // которую мы даже не знаем, что это.
+            //
+            // Две безымянные из архива при этом схлопывались в одну.
+            //
+            // У приёма снимка это правило записано прямо: «слияния
+            // по кличке быть не должно ни при каких условиях — две
+            // „Стич“ в одном доме это две собаки». Здесь слияние
+            // по кличке осмысленно (человек сам льёт свой же архив
+            // поверх своего же дневника), но **пустая кличка кличкой
+            // не является**, и склеивать по ней — то же, что склеивать
+            // по отсутствию признака.
+            //
+            // > **Группировка по полю со значением по умолчанию
+            // > собирает в одну группу всё, что это поле не заполнило.**
+            if strategy == .merge, let имя = Fmt.dogName(snapshot.name),
+               existingDogNames.contains(имя) {
                 // Собака уже есть — доливаем только новые записи к ней.
-                if let dog = try context.fetch(FetchDescriptor<Dog>()).first(where: { $0.name == snapshot.name }) {
+                if let dog = try context.fetch(FetchDescriptor<Dog>()).first(where: { $0.name == имя }) {
                     restored += attachEvents(snapshot.events, to: dog, skipping: existingEventIDs, context: context)
                 }
                 continue
