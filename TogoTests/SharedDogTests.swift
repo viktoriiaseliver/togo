@@ -22,10 +22,88 @@ struct SharedDogTests {
             foodBrand: "", portionGrams: 60, mealsPerDay: 2,
             mealTimes: [450, 1110], dailyNormGrams: nil, forbiddenFoods: [],
             wakeMinuteOfDay: 420, sleepMinuteOfDay: 1380,
-            isOnTreatment: false, chipNumber: nil, vetName: nil, vetPhone: nil,
+            isOnTreatment: false, chipNumber: nil,
+            passportNumber: nil, insuranceNumber: nil,
+            vetName: nil, vetPhone: nil,
             clinicName: nil, clinicPhone: nil, distinctiveMarks: nil,
+            sitterFood: "", sitterDose: "", sitterWalks: "",
+            sitterForbidden: "", sitterEscalation: "",
+            rewards: [], markerKind: MarkerKind.clicker.rawValue,
+            sessionLengthMinutes: 3, trainingFoodFromPortion: true,
             changedAt: изменено
         )
+    }
+
+    /// Лист ситтера доезжает — то, ради чего он вообще существует.
+    ///
+    /// **До 05.10.2026 на втором телефоне он был пуст.** Пять полей
+    /// хозяйка пишет один раз, ситтер только читает — а в нагрузке
+    /// обмена их не было, и читать было нечего. Функция не работала
+    /// в единственном сценарии, ради которого написана: в тот час,
+    /// когда хозяина нет рядом.
+    @Test("Лист ситтера приезжает к гостю целиком")
+    func листСиттераПриезжает() throws {
+        let context = ModelContext(Persistence.container())
+        var снимокСобаки = снимок()
+        снимокСобаки.sitterFood = "60 г утром и вечером, Acana ягнёнок"
+        снимокСобаки.sitterDose = "½ таблетки в 8:00, за полчаса до еды"
+        снимокСобаки.sitterWalks = "7:00, 13:00, 19:00 — по 30 минут"
+        снимокСобаки.sitterForbidden = "курица, кукуруза, чужие лакомства"
+        снимокСобаки.sitterEscalation = "кровь или рвота — звонить сразу"
+
+        SharedDiaryInbox.accept(снимокСобаки, context: context)
+
+        let собака = try #require(try context.fetch(FetchDescriptor<Dog>()).first)
+        #expect(собака.sitterFood == снимокСобаки.sitterFood)
+        #expect(собака.sitterDose == снимокСобаки.sitterDose)
+        #expect(собака.sitterWalks == снимокСобаки.sitterWalks)
+        #expect(собака.sitterForbidden == снимокСобаки.sitterForbidden)
+        #expect(собака.sitterEscalation == снимокСобаки.sitterEscalation, """
+            лист для догситтера пуст на втором телефоне. Это не «работает
+            частично»: лист существует ровно для того часа, когда хозяина
+            нет рядом.
+            """)
+    }
+
+    /// Два номера документов из трёх не ездили, а стояли в одной группе
+    /// одного экрана с третьим.
+    @Test("Номера паспорта и страховки приезжают вместе с чипом")
+    func номераДокументовПриезжают() throws {
+        let context = ModelContext(Persistence.container())
+        var снимокСобаки = снимок()
+        снимокСобаки.chipNumber = "250269606000000"
+        снимокСобаки.passportNumber = "FR 123456"
+        снимокСобаки.insuranceNumber = "POL-77-2026"
+
+        SharedDiaryInbox.accept(снимокСобаки, context: context)
+
+        let собака = try #require(try context.fetch(FetchDescriptor<Dog>()).first)
+        #expect(собака.chipNumber == снимокСобаки.chipNumber)
+        #expect(собака.passportNumber == снимокСобаки.passportNumber)
+        #expect(собака.insuranceNumber == снимокСобаки.insuranceNumber, """
+            номер страховки нужен ровно в тот час, когда с собакой
+            что-то случилось, а рядом не хозяин.
+            """)
+    }
+
+    /// Лакомства из порции — не про дрессировку, а про еду.
+    @Test("Гость считает дневную норму так же, как хозяйка")
+    func нормаСчитаетсяОдинаково() throws {
+        let context = ModelContext(Persistence.container())
+        var снимокСобаки = снимок()
+        снимокСобаки.trainingFoodFromPortion = false
+        снимокСобаки.rewards = ["сыр", "индейка"]
+        снимокСобаки.sessionLengthMinutes = 7
+
+        SharedDiaryInbox.accept(снимокСобаки, context: context)
+
+        let собака = try #require(try context.fetch(FetchDescriptor<Dog>()).first)
+        #expect(собака.trainingFoodFromPortion == false, """
+            без этого поля гость считает дневную норму иначе хозяйки,
+            и спорят они не о тренировке, а о том, сколько собака съела.
+            """)
+        #expect(собака.rewards == ["сыр", "индейка"])
+        #expect(собака.sessionLengthMinutes == 7)
     }
 
     // MARK: Приём
@@ -152,6 +230,15 @@ struct SharedDogTests {
             """)
     }
 
+    /// Ключа `name` нет вовсе.
+    ///
+    /// **Этот тест был один, и он отвечал не на то утверждение, рядом
+    /// с которым стоял.** Над `dogPayload` написано «кличка
+    /// обязательна… лучше не заводить вовсе, чем завести безымянной»,
+    /// а `guard let name = record["name"] as? String` спрашивает, **есть
+    /// ли ключ**. Пустая строка — ключ есть, тип верен — проходила
+    /// насквозь, и тест это подтверждал, потому что проверял отсутствие
+    /// ключа. Два соседа ниже закрывают оба края.
     @Test("Запись без клички не принимается")
     func безКличкиНеПринимается() {
         let зона = SharedDiaryRecords.zoneID()
@@ -161,6 +248,72 @@ struct SharedDogTests {
             собака без клички — это не «пустое имя», а запись, которую
             нечем показать в переключателе.
             """)
+    }
+
+    /// Отзыв TestFlight 06.10.2026, сборка 271: «Много пустых собак».
+    ///
+    /// На кадре в «Настройках» одна настоящая собака и **восемь строк
+    /// без подписи с „0,0 г“**. Это ровно `Dog` со значениями
+    /// по умолчанию (`name = ""`, `weightKg = 0`): подпись строки —
+    /// `dog.name`, а `Fmt.weight` при нуле печатает граммы, потому что
+    /// `Measurement` с `usage: .personWeight` сама меняет единицу.
+    ///
+    /// Путь приёма был открыт на обоих концах: `dogPayload` пускала
+    /// пустую кличку, `accept` заводила по ней собаку.
+    @Test("Пустая кличка — не кличка: запись не принимается")
+    func пустаяКличкаНеПринимается() {
+        let зона = SharedDiaryRecords.zoneID()
+
+        for пустая in ["", " ", "\n", "\u{00A0}"] {
+            let запись = SharedDiaryRecords.record(снимок(), in: зона)
+            запись["name"] = пустая
+            #expect(SharedDiaryRecords.dogPayload(запись) == nil, """
+                кличка \(пустая.debugDescription) принята как кличка.
+                Отзыв 06.10: «Много пустых собак» — восемь строк без
+                подписи с «0,0 г». Проверка «есть ли ключ» выполняется
+                и при пустом значении, то есть при самом дефекте.
+                """)
+        }
+    }
+
+    /// Вторая половина того же места, и она дороже первой.
+    ///
+    /// У существующей собаки `accept` идёт в слияние, где **побеждает
+    /// поздняя правка целиком**. Пустой снимок с более поздним
+    /// `changedAt` затирал кличку живой собаки — то есть пустые собаки
+    /// не только заводились, но и **делались из настоящих**.
+    ///
+    /// Проверка стоит на `accept`, а не на `dogPayload`: фильтр
+    /// на разборе записи закрывает дорогу из CloudKit, а обнуляет
+    /// собаку шаг вставки. Сторожить надо то место, где теряется
+    /// кличка, а не то, через которое она приехала.
+    @Test("Пустой снимок не обнуляет кличку живой собаки")
+    func пустойСнимокНеЗатираетКличку() throws {
+        let context = ModelContext(Persistence.container())
+        let живая = Dog(name: "Стич", weightKg: 4.7)
+        context.insert(живая)
+        try context.save()
+
+        var пустой = снимок()
+        пустой.id = живая.id
+        пустой.name = ""
+        пустой.weightKg = 0
+        пустой.changedAt = живая.changedAt.addingTimeInterval(3600)
+
+        SharedDiaryInbox.accept(пустой, context: context)
+
+        let собаки = try context.fetch(FetchDescriptor<Dog>())
+        #expect(собаки.count == 1, """
+            приехал снимок уже известной собаки, а их стало
+            \(собаки.count).
+            """)
+        #expect(собаки.first?.name == "Стич", """
+            кличка живой собаки обнулена приехавшим пустым снимком.
+            «Позже побеждает» верно для веса и порции — это факты,
+            которые уточняют. Для клички оно означает, что собака
+            у человека на экране пропадает без его участия.
+            """)
+        #expect(собаки.first?.weightKg == 4.7)
     }
 
     // MARK: Привязка ленты

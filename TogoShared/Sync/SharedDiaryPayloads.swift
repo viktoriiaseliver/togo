@@ -57,6 +57,30 @@ extension LogEvent {
     }
 }
 
+extension DogPayload {
+    /// Годится ли это в кличку. **Единственная реализация правила** —
+    /// её зовут разбор записи (`SharedDiaryRecords.dogPayload`)
+    /// и приём (`SharedDiaryInbox.accept`).
+    ///
+    /// Пробелы снимаются, и это не из осторожности: NBSP (U+00A0)
+    /// появляется в поле опечаткой с французской клавиатуры —
+    /// у нас им набрана вся французская типографика, — и строка
+    /// из одного неразрывного пробела рисуется на экране ровно так же
+    /// пусто, как `""`. Четыре значения проверены тестом: `""`, пробел,
+    /// перевод строки, NBSP.
+    ///
+    /// Чего это правило **не** делает: оно не решает, что делать
+    /// с уже заведёнными безымянными записями. Их у человека восемь
+    /// (отзыв 06.10.2026), и ворота на входе их не убирают.
+    /// `nonisolated`, потому что зовут из `nonisolated enum
+    /// SharedDiaryRecords`: у файла изоляция по умолчанию главная,
+    /// и без этого слова правило не достаёт до разбора записи —
+    /// то есть до того конца, которым оно и приехало.
+    nonisolated static func кличкаГодится(_ name: String) -> Bool {
+        !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+}
+
 @MainActor
 extension Dog {
     var payload: DogPayload {
@@ -80,11 +104,22 @@ extension Dog {
             sleepMinuteOfDay: sleepMinuteOfDay,
             isOnTreatment: isOnTreatment,
             chipNumber: chipNumber,
+            passportNumber: passportNumber,
+            insuranceNumber: insuranceNumber,
             vetName: vetName,
             vetPhone: vetPhone,
             clinicName: clinicName,
             clinicPhone: clinicPhone,
             distinctiveMarks: distinctiveMarks,
+            sitterFood: sitterFood,
+            sitterDose: sitterDose,
+            sitterWalks: sitterWalks,
+            sitterForbidden: sitterForbidden,
+            sitterEscalation: sitterEscalation,
+            rewards: rewards,
+            markerKind: markerKindRaw,
+            sessionLengthMinutes: sessionLengthMinutes,
+            trainingFoodFromPortion: trainingFoodFromPortion,
             changedAt: changedAt
         )
     }
@@ -111,11 +146,22 @@ extension Dog {
         sleepMinuteOfDay = payload.sleepMinuteOfDay
         isOnTreatment = payload.isOnTreatment
         chipNumber = payload.chipNumber
+        passportNumber = payload.passportNumber
+        insuranceNumber = payload.insuranceNumber
         vetName = payload.vetName
         vetPhone = payload.vetPhone
         clinicName = payload.clinicName
         clinicPhone = payload.clinicPhone
         distinctiveMarks = payload.distinctiveMarks
+        sitterFood = payload.sitterFood
+        sitterDose = payload.sitterDose
+        sitterWalks = payload.sitterWalks
+        sitterForbidden = payload.sitterForbidden
+        sitterEscalation = payload.sitterEscalation
+        rewards = payload.rewards
+        markerKindRaw = payload.markerKind
+        sessionLengthMinutes = payload.sessionLengthMinutes
+        trainingFoodFromPortion = payload.trainingFoodFromPortion
         changedAt = payload.changedAt
     }
 }
@@ -274,6 +320,31 @@ enum SharedDiaryInbox {
     /// живой дневник уже разошёлся пополам именно так.
     @discardableResult
     static func accept(_ payload: DogPayload, context: ModelContext) -> Bool {
+        // Пустая кличка не принимается ни на заведение, ни на слияние,
+        // и ворота стоят здесь, а не только в разборе записи.
+        //
+        // **Вторая половина дороже первой.** Фильтр в
+        // `SharedDiaryRecords.dogPayload` закрывает дорогу из CloudKit
+        // и ничего не говорит про уже заведённую собаку: ниже идёт
+        // `SharedDiaryMerge.resolve`, где побеждает поздняя правка
+        // ЦЕЛИКОМ. Пустой снимок с поздним `changedAt` затирал кличку
+        // живой собаки через `local.apply(merged)` — то есть пустые
+        // собаки не только заводились, но и делались из настоящих.
+        //
+        // «Позже побеждает» верно для веса и порции: это факты, которые
+        // уточняют. Для клички то же правило означает, что собака
+        // у человека на экране пропадает без его участия — а все
+        // одиннадцать связей `Dog` каскадные (`Dog.swift:128–158`),
+        // и безымянной она становится вместе со всем дневником за собой.
+        //
+        // Ворота после последнего действия, способного их нарушить
+        // (сборка снимка), и перед первым, который на них опирается
+        // (`Dog(name:)` и `apply`).
+        guard DogPayload.кличкаГодится(payload.name) else {
+            log.notice("общий дневник: снимок собаки без клички отклонён")
+            return false
+        }
+
         let id = payload.id
         let existing = try? context.fetch(
             FetchDescriptor<Dog>(predicate: #Predicate { $0.id == id })

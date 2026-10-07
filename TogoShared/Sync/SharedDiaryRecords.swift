@@ -135,20 +135,52 @@ nonisolated enum SharedDiaryRecords {
         record["sleepMinuteOfDay"] = payload.sleepMinuteOfDay
         record["isOnTreatment"] = payload.isOnTreatment ? 1 : 0
         record["chipNumber"] = payload.chipNumber
+        record["passportNumber"] = payload.passportNumber
+        record["insuranceNumber"] = payload.insuranceNumber
         record["vetName"] = payload.vetName
         record["vetPhone"] = payload.vetPhone
         record["clinicName"] = payload.clinicName
         record["clinicPhone"] = payload.clinicPhone
         record["distinctiveMarks"] = payload.distinctiveMarks
+        record["sitterFood"] = payload.sitterFood
+        record["sitterDose"] = payload.sitterDose
+        record["sitterWalks"] = payload.sitterWalks
+        record["sitterForbidden"] = payload.sitterForbidden
+        record["sitterEscalation"] = payload.sitterEscalation
+        record["rewards"] = payload.rewards
+        record["markerKind"] = payload.markerKind
+        record["sessionLengthMinutes"] = payload.sessionLengthMinutes
+        record["trainingFoodFromPortion"] = payload.trainingFoodFromPortion ? 1 : 0
         record["changedAt"] = payload.changedAt
     }
 
     /// Кличка обязательна: собака без клички — это не «пустое имя»,
     /// а запись, которую нечем показать в переключателе. Такую лучше
     /// не заводить вовсе, чем завести безымянной.
+    ///
+    /// **Полтора месяца здесь стояло `let name = record["name"] as? String`,
+    /// и это вопрос «есть ли ключ», а не «есть ли кличка».** Пустая
+    /// строка проходила насквозь: ключ есть, тип верен. Отзыв 06.10.2026
+    /// по сборке 271 — «Много пустых собак», восемь строк без подписи
+    /// с «0,0 г», то есть ровно `Dog` со значениями по умолчанию.
+    ///
+    /// Опровержение лежало **в двух строках выше дефекта**: абзац над
+    /// `guard` прямым текстом различает «без клички» и «пустое имя» —
+    /// и `guard` ловил только первое. Тест рядом (`SharedDogTests`)
+    /// подтверждал ответ на тот же слабый вопрос: он ставил
+    /// `record["name"] = nil`.
+    ///
+    /// > **Проверка на отсутствие ключа выполняется и при пустом
+    /// > значении, то есть при самом дефекте.**
+    ///
+    /// Правило живёт в одном месте — `DogPayload.кличкаГодится`, —
+    /// и зовётся отсюда и из `SharedDiaryInbox.accept`. Два вызова
+    /// одного правила, а не две независимые реализации: третья
+    /// реализация у нас уже молчала в двух случаях из трёх.
     static func dogPayload(_ record: CKRecord) -> DogPayload? {
         guard let id = UUID(uuidString: record.recordID.recordName),
               let name = record["name"] as? String,
+              DogPayload.кличкаГодится(name),
               let changedAt = record["changedAt"] as? Date
         else { return nil }
 
@@ -172,11 +204,31 @@ nonisolated enum SharedDiaryRecords {
             sleepMinuteOfDay: record["sleepMinuteOfDay"] as? Int ?? 23 * 60,
             isOnTreatment: (record["isOnTreatment"] as? Int ?? 0) == 1,
             chipNumber: record["chipNumber"] as? String,
+            passportNumber: record["passportNumber"] as? String,
+            insuranceNumber: record["insuranceNumber"] as? String,
             vetName: record["vetName"] as? String,
             vetPhone: record["vetPhone"] as? String,
             clinicName: record["clinicName"] as? String,
             clinicPhone: record["clinicPhone"] as? String,
             distinctiveMarks: record["distinctiveMarks"] as? String,
+            // Пусто вместо `nil`: у листа ситтера тип не опциональный,
+            // и запись старой сборки, этих ключей не знавшей, должна
+            // читаться как «не заполнено», а не падать.
+            sitterFood: record["sitterFood"] as? String ?? "",
+            sitterDose: record["sitterDose"] as? String ?? "",
+            sitterWalks: record["sitterWalks"] as? String ?? "",
+            sitterForbidden: record["sitterForbidden"] as? String ?? "",
+            sitterEscalation: record["sitterEscalation"] as? String ?? "",
+            rewards: record["rewards"] as? [String] ?? [],
+            markerKind: record["markerKind"] as? String ?? MarkerKind.clicker.rawValue,
+            // Откат — ровно значение по умолчанию у модели (`Dog.swift:75–77`:
+            // `true`, `.clicker`, 3), а не «ноль» и не круглое число.
+            // У `trainingFoodFromPortion` это решает: модель говорит
+            // «лакомства ИЗ порции», и откат в `false` сказал бы гостю
+            // обратное — он посчитал бы дневную норму иначе хозяйки,
+            // то есть ровно то расхождение, ради которого поле и поехало.
+            sessionLengthMinutes: record["sessionLengthMinutes"] as? Int ?? 3,
+            trainingFoodFromPortion: (record["trainingFoodFromPortion"] as? Int ?? 1) == 1,
             changedAt: changedAt
         )
     }
