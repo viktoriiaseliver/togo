@@ -55,12 +55,14 @@ struct EmptyStateFrameTests {
 
     /// Цвет токена в заданной теме.
     ///
-    /// **`UIColor(SwiftUI.Color)` теряет динамику.** Первая редакция
-    /// делала `UIColor(c).resolvedColor(with: UITraitCollection(...))`
-    /// и получала ТЁМНОЕ значение, когда просила светлое: преобразование
-    /// `Color` → `UIColor` запекает цвет по `UITraitCollection.current`
-    /// в момент преобразования, и `resolvedColor` потом разрешает уже
-    /// константу.
+    /// **Замер, а не механизм.** Первая редакция просила светлую тему
+    /// и получала тёмное значение: для `Token.Action.primary`
+    /// (`Dyn(dark: 0xA2C1FE, light: 0x0E14A1)`) она вернула `#A2C1FE`.
+    /// **Почему — не установлено:** соседний `resolvedHex` строит
+    /// `UIColor(self).resolvedColor(with:)` так же и отвечает верно.
+    /// Разница была где-то ещё, и выдумывать объяснение вместо замера
+    /// я не стал — сегодня это уже стоило одной ложной записи
+    /// в правилах.
     ///
     /// Цена ошибки была не в числе. Отрисовка уехала в тёмную тему
     /// ровно так же — и ожидание сошлось с кадром, потому что **обе
@@ -70,12 +72,19 @@ struct EmptyStateFrameTests {
     ///
     /// > Две половины проверки, сломанные одинаково, подтверждают
     /// > друг друга.
-    private func цвет(_ c: Color, _ схема: UIUserInterfaceStyle) -> UInt32 {
-        UITraitCollection(userInterfaceStyle: схема).performAsCurrent {
-            var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
-            UIColor(c).getRed(&r, green: &g, blue: &b, alpha: &a)
-            return (UInt32(r * 255) << 16) | (UInt32(g * 255) << 8) | UInt32(b * 255)
-        }
+    ///
+    /// **Разрешитель не свой.** `Color.resolvedHex(dark:highContrast:)`
+    /// завёлся в `00ac9a3` за четыре минуты до первой редакции этого
+    /// файла, и у него четыре режима и RGBA, а у моего было две темы
+    /// и отброшенная альфа. Половина тёмных токенов задана долей
+    /// белого — на полупрозрачном мой отдал бы цвет, которого на экране
+    /// нет.
+    ///
+    /// Форма дня: утром два разбора литералов сломались об одну
+    /// кавычку, к вечеру завелись два разрешителя цвета. Третья
+    /// реализация сломается так же — поэтому не своя.
+    private func цвет(_ c: Color, тёмная: Bool) -> UInt32 {
+        c.resolvedHex(dark: тёмная, highContrast: false) >> 8  // RGBA → RGB
     }
 
     /// Снять кадр вида и положить файлом. Возвращает путь и разбор.
@@ -85,18 +94,25 @@ struct EmptyStateFrameTests {
         // динамические `UIColor`, и разрешаются они по
         // `UITraitCollection.current`, а не по окружению SwiftUI.
         // Поэтому отрисовка идёт ВНУТРИ нужной коллекции.
+        // `performAsCurrent` возвращает `Void` — значение из него
+        // выносится переменной снаружи. Первая редакция ждала от него
+        // результат, и компилятор вместо прямой ошибки сказал
+        // «unable to type-check this expression in reasonable time»:
+        // он перебирал перегрузки, пытаясь согласовать `UIImage`
+        // с `Void`. Сообщение про время — СЛЕДСТВИЕ, а причина
+        // в строке, на которую оно не указывает.
         let стиль: UIUserInterfaceStyle = схема == .dark ? .dark : .light
-        let нарисованное: UIImage? = UITraitCollection(userInterfaceStyle: стиль)
-            .performAsCurrent {
-                let отрисовщик = ImageRenderer(
-                    content: вид
-                        .environment(\.colorScheme, схема)
-                        .frame(width: 360)
-                        .background(Color(white: схема == .dark ? 0.04 : 1))
-                )
-                отрисовщик.scale = 2
-                return отрисовщик.uiImage
-            }
+        var нарисованное: UIImage?
+        UITraitCollection(userInterfaceStyle: стиль).performAsCurrent {
+            let отрисовщик = ImageRenderer(
+                content: вид
+                    .environment(\.colorScheme, схема)
+                    .frame(width: 360)
+                    .background(Color(white: схема == .dark ? 0.04 : 1))
+            )
+            отрисовщик.scale = 2
+            нарисованное = отрисовщик.uiImage
+        }
 
         let картинка = try #require(нарисованное, "ImageRenderer не отдал картинку")
         let данные = try #require(картинка.pngData(), "картинка не превратилась в PNG")
@@ -197,7 +213,7 @@ struct EmptyStateFrameTests {
 
     @Test("Деталь иллюстрации нарисована АКЦЕНТОМ, а не чем попало")
     func детальАкцентом() throws {
-        let акцент = цвет(Token.Action.primary, .light)
+        let акцент = цвет(Token.Action.primary, тёмная: false)
         var доклад: [String] = []
 
         for (предмет, сцена) in сИллюстрацией {
@@ -230,7 +246,7 @@ struct EmptyStateFrameTests {
 
     @Test("Контур иллюстрации нарисован приглушёнными чернилами")
     func контурЧернилами() throws {
-        let контур = цвет(Token.Ink.secondary, .light)
+        let контур = цвет(Token.Ink.secondary, тёмная: false)
         for (предмет, _) in сИллюстрацией {
             let (путь, кадр) = try снять(карточка(предмет),
                                          имя: "\(предмет.rawValue)-light",
@@ -249,8 +265,8 @@ struct EmptyStateFrameTests {
     /// смысл двух слоёв-шаблонов вместо запечённого цвета.
     @Test("Смена акцента доезжает до детали без пересборки картинок")
     func акцентДоезжает() throws {
-        let акцент = цвет(Token.Action.primary, .light)
-        let лайм = цвет(Color(red: 0xD4 / 255, green: 0xF7 / 255, blue: 0x5F / 255), .light)
+        let акцент = цвет(Token.Action.primary, тёмная: false)
+        let лайм = цвет(Color(red: 0xD4 / 255, green: 0xF7 / 255, blue: 0x5F / 255), тёмная: false)
 
         let (путь, кадр) = try снять(карточка(.history), имя: "история-light", схема: .light)
 
