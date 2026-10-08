@@ -183,6 +183,15 @@ struct HealthScreen: View {
         return .готовая(Fmt.records(dog.labResults.count))
     }
 
+    /// Пусто, пока рисовать нечего: строка «График показателя» без
+    /// данных ведёт на «Рисовать пока нечего», и подпись об этом
+    /// честнее, чем молчание.
+    private var графикДоступен: LocalizedStringKey? {
+        guard let dog else { return nil }
+        let сЧислом = dog.labResults.filter { $0.value != nil }.count
+        return сЧислом >= 2 ? .готовая(Fmt.records(сЧислом)) : nil
+    }
+
     private var визитовВсего: LocalizedStringKey? {
         guard let dog, !dog.vetVisits.isEmpty else { return nil }
         return .готовая(Fmt.records(dog.vetVisits.count))
@@ -212,6 +221,11 @@ struct HealthScreen: View {
             // подключена на ноль мест. Сторож на эту строку —
             // `ДорогаКАнализамTests`, от запрета.
                         TGLink(title: "Анализы", value: анализовВсего, systemImage: "testtube.2") { LabResultsScreen(dog: dog) }
+            TGDivider()
+            // МЕСТО ВЫЗОВА графика. Без него экран существует
+            // и недостижим — то состояние, в котором весь медслой
+            // пролежал до 08.10.2026.
+                        TGLink(title: "График показателя", value: графикДоступен, systemImage: "chart.xyaxis.line") { LabChartScreen(dog: dog) }
             TGDivider()
                         TGLink(title: "Визиты к врачу", value: визитовВсего, systemImage: "stethoscope") { VetVisitsScreen(dog: dog) }
             TGDivider()
