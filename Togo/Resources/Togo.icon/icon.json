@@ -1,0 +1,80 @@
+{
+  "fill" : {
+    "solid" : "display-p3:0.00000,0.00000,0.00000,1.00000"
+  },
+  "groups" : [
+    {
+      "layers" : [
+        {
+          "hidden" : true,
+          "image-name-specializations" : [
+            {
+              "value" : "Overlay+Shadow+OverlayBlur.png"
+            },
+            {
+              "idiom" : "square",
+              "value" : "Overlay+Shadow+OverlayBlur.png"
+            }
+          ],
+          "name" : "Overlay+Shadow+OverlayBlur",
+          "position" : {
+            "scale" : 0.76,
+            "translation-in-points" : [
+              0.2999999999999545,
+              58.69999999999993
+            ]
+          }
+        },
+        {
+          "hidden" : true,
+          "image-name" : "Background+Shadow.png",
+          "name" : "Background+Shadow",
+          "position" : {
+            "scale" : 0.76,
+            "translation-in-points" : [
+              0.2999999999999545,
+              58.69999999999993
+            ]
+          }
+        },
+        {
+          "hidden" : true,
+          "image-name" : "Background+Shadow-1.png",
+          "name" : "Background+Shadow-1",
+          "position" : {
+            "scale" : 0.76,
+            "translation-in-points" : [
+              0.2999999999999545,
+              58.69999999999993
+            ]
+          }
+        },
+        {
+          "image-name" : "Container 4.png",
+          "name" : "Container 4",
+          "position" : {
+            "scale" : 0.76,
+            "translation-in-points" : [
+              0.2999999999999545,
+              58.69999999999993
+            ]
+          }
+        }
+      ],
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.3
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "circles" : [
+      "watchOS"
+    ],
+    "squares" : "shared"
+  }
+}

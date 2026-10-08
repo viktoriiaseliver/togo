@@ -428,7 +428,18 @@ d = dict(PROJ_COMMON); d.update({
 cfg(BC_PROJ_R, 'Release', FR_RELEASE, d)
 
 APP = {
-    'ASSETCATALOG_COMPILER_APPICON_NAME': 'AppIcon',
+    # Иконка — проект Icon Composer `Togo/Resources/Togo.icon`, а не
+    # `AppIcon.appiconset`. Имя здесь без расширения, как и у каталога.
+    #
+    # `Togo/` — синхронизированная группа, поэтому `.icon` попадает
+    # в таргет сам: отдельной записи в проекте не нужно, и править
+    # `project.pbxproj` руками не надо (он генерируется этим файлом).
+    #
+    # `AppIcon.appiconset` ОСТАВЛЕН рядом нарочно, не удалён: деплоймент
+    # у нас 17.0, а `.icon` — механизм iOS 26. Нужен ли классический
+    # каталог запасом для 17–25, чтением не выяснить — это решает
+    # сборка: смотреть, какие размеры `actool` положил в бандл.
+    'ASSETCATALOG_COMPILER_APPICON_NAME': 'Togo',
     'ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME': 'AccentColor',
     'CODE_SIGN_ENTITLEMENTS': 'Configuration/Togo$(ENTITLEMENTS_VARIANT).entitlements',
     'CODE_SIGN_STYLE': 'Automatic',
