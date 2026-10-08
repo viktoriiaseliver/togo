@@ -291,8 +291,13 @@ nonisolated final class ОнбордингНиз: XCTestCase {
         let безымянные = app.staticTexts.allElementsBoundByIndex.filter {
             $0.exists && $0.label.hasPrefix("0,0")
         }
-        print("ЗАМЕР собак: строк «0,0 …» на экране настроек — \(безымянные.count)")
-        XCTAssertEqual(безымянные.count, 0,
-                       "онбординг оставил безымянные записи: \(безымянные.map(\.label))")
+        // Подписи собираются замыканием, а не `map(\.label)`: ключевой
+        // путь к `label` в Swift 6 — ОШИБКА компиляции («cannot form key
+        // path to main actor-isolated property»), а то же обращение
+        // внутри замыкания — предупреждение. Поймано сборкой, не чтением.
+        let подписи = безымянные.map { $0.label }
+        print("ЗАМЕР собак: строк «0,0 …» на экране настроек — \(подписи.count)")
+        XCTAssertEqual(подписи.count, 0,
+                       "онбординг оставил безымянные записи: \(подписи)")
     }
 }
