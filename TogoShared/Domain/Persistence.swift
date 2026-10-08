@@ -238,8 +238,45 @@ nonisolated enum Persistence {
         }
 
         isUsingCloud = false
-        let local = storeURL.map { ModelConfiguration(schema: schema, url: $0) }
-            ?? ModelConfiguration(schema: schema)
+        // `cloudKitDatabase: .none` — ЯВНО, и это не перестраховка.
+        //
+        // **Замерено 08.10.2026 на отказе стенда, который трижды сорвал
+        // прогон на вершине.** Без этого параметра ветка называлась
+        // локальной и локальной НЕ БЫЛА:
+        //
+        // ```
+        // «права на iCloud нет — только локально»   × 8   наше решение
+        // «хранилище: локальное»                    × 6   наша запись
+        // NSCloudKitMirroringDelegate               × 182  что происходило
+        // CKAccountStatusNoAccount                  × 21
+        // «The store was removed before the mirroring
+        //  delegate could recover»
+        // → NSInternalInconsistencyException
+        //   'No eligible connection available'      × 8   смерть
+        // ```
+        //
+        // Стек называет подсистему прямо: `NSManagedObjectContext save:`
+        // → `NSSQLCoreDispatchManager routeStoreRequest:`
+        // → `NSSQLDefaultConnectionManager handleStoreRequest:`.
+        // Процесс в строках — `Togo`, не раннер; `ActivityKit`
+        // и `WidgetKit` в стеке не встречаются вовсе.
+        //
+        // > **Ветка отката называлась локальной и локальной не была.**
+        // > Решение принималось верно, в исполнение приводилось не то.
+        //
+        // Почему так вышло: право на iCloud в бандле есть
+        // (`Togo.entitlements:9`), а `ModelConfiguration(schema:url:)`
+        // без `cloudKitDatabase` зеркалирование не отключает — это
+        // измерено 182 вхождениями делегата при шести строках
+        // «локальное», а не выведено из документации.
+        //
+        // `hasCloudEntitlement` заведён РОВНО против этого класса: в его
+        // комментарии стоит «без ветки симулятора прогон уходил
+        // в бесконечное восстановление CloudKit без аккаунта и вис».
+        // Починили решение и не починили исполнение.
+        let local = storeURL.map {
+            ModelConfiguration(schema: schema, url: $0, cloudKitDatabase: .none)
+        } ?? ModelConfiguration(schema: schema, cloudKitDatabase: .none)
         do {
             let container = try ModelContainer(for: schema,
                                                migrationPlan: TogoMigrationPlan.self,
