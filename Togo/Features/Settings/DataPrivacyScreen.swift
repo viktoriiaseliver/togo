@@ -132,7 +132,11 @@ struct SupportScreen: View {
                 }
                 if let копияАдреса {
                     TGBanner(tone: .alarm, title: "Почта на телефоне не настроена",
-                             subtitle: .готовая("Адрес скопирован: \(копияАдреса). Напиши с любого другого устройства — и приложи три строки ниже."),
+                             // Второй случай того же класса, найден обходом
+                             // по `.готовая(` с кириллическим литералом,
+                             // а не сторожем: сторож назвал один файл,
+                             // а форма оказалась общая на два экрана.
+                             subtitle: .готовая(String(localized: "Адрес скопирован: \(копияАдреса). Напиши с любого другого устройства — и приложи три строки ниже.")),
                              systemImage: "envelope.badge.shield.half.filled")
                 }
             }
@@ -164,7 +168,11 @@ struct SupportScreen: View {
     }
 
     private func openMail() {
-        let subject = "Togo \(settings.appVersion) — вопрос"
+        // Тему человек видит в окне почты до отправки. Номер версии
+        // внутри ключа нарочно: он нужен поддержке, и отделять его
+        // в отдельную строку значило бы собирать тему из двух кусков
+        // в каждом языке — а порядок слов везде свой.
+        let subject = String(localized: "Togo \(settings.appVersion) — вопрос")
         let body = "\n\n---\n" + diagnostics
         var components = URLComponents(string: "mailto:\(Contacts.support)")
         components?.queryItems = [
