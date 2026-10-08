@@ -277,7 +277,9 @@
   --primitive-color-clay: #FFA696;
   --primitive-color-inkFaint: #8A8A86;
   --primitive-color-inkMuted: #C8C8C4;
+  --primitive-color-posterInkMuted: #C8C8C4;
   --semantic-poster-caption: #C8C8C4;
+  --semantic-poster-captionOnColor: #C8C8C4;
   --semantic-status-overdueText: #FFA696;
   --semantic-text-faint: #8A8A86;
   --semantic-text-secondary: #C8C8C4;
@@ -328,7 +330,7 @@
   --primitive-color-posterClay: #B5402F;
   --primitive-color-posterIndigo: #3F5BC4;
   --primitive-color-posterInk: #FFFFFF;
-  --primitive-color-posterInkMuted: #FFFFFFE0;
+  --primitive-color-posterInkMuted: #FFFFFF;
   --primitive-color-scrim: #10111252;
   --primitive-color-spruceText: #215940;
   --primitive-color-stockLow: #A34A00;
@@ -346,7 +348,7 @@
   --semantic-poster-bar: #0E14A1;
   --semantic-poster-barOnDose: #FFFFFF;
   --semantic-poster-caption: #45484C;
-  --semantic-poster-captionOnColor: #FFFFFFE0;
+  --semantic-poster-captionOnColor: #FFFFFF;
   --semantic-poster-captionOnDose: #D9E3FC;
   --semantic-poster-label: #101112;
   --semantic-poster-labelOnColor: #FFFFFF;
