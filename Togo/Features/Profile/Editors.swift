@@ -497,6 +497,7 @@ struct MedicationEditorSheet: View {
     /// хранится всегда в микрограммах — перевод случается здесь и больше
     /// нигде.
     @State private var массаТекст = ""
+    @State private var даётсяНаУлице = false
     @State private var массаЕдиница: ЕдиницаМассы = .мкг
     @State private var loaded = false
     @State private var isConfirmingDelete = false
@@ -613,6 +614,40 @@ struct MedicationEditorSheet: View {
                 TGExplainer(text: "Пока окно идёт, кнопка еды не исчезает — она объясняет причину и предлагает напомнить, когда можно.")
             }
 
+            // Писатель для `Medication.canGiveOutside` (`Care.swift:402`).
+            //
+            // **До 08.10.2026 у поля не было ни одного писателя в `Togo/`.**
+            // Оно есть в модели, ездит в обмене, хранится в архиве,
+            // и `WalkDose` его ЧИТАЕТ — то есть «эту можно дать
+            // на улице» не показалось бы никогда.
+            //
+            // > **Поле без писателя и отсутствующее поле — разные вещи,
+            // > и снаружи они неразличимы.** Второе видно как дыра,
+            // > первое — как работающая функция.
+            //
+            // **Спрашиваем, а НЕ выводим.** Ни из `fastingBefore`,
+            // ни из `dependsOnMeal`, ни из `unit == .ml`: таблетку
+            // с едой носят в кармане с кормом, сироп бывает шприцем
+            // в сумке.
+            //
+            // > **У выведенного признака две причины, которые нечем
+            // > различить: «мы посчитали» и «она так сказала» выглядят
+            // > одинаково.** Довод вырос из четырёх полей, которые
+            // > в этот же день оставили пустыми по той же причине, —
+            // > время забора, вес у рецепта, норма с бланка, предел
+            // > прибора.
+            //
+            // `false` по умолчанию верно и по цене ошибки: предложить
+            // дать дозу на улице там, где нельзя, дороже, чем
+            // не предложить там, где можно.
+            TGCard {
+                Toggle(isOn: $даётсяНаУлице) {
+                    Text("Можно дать на улице").textStyle(AppFont.body)
+                }
+                .frame(minHeight: Token.Size.tapTarget)
+                TGExplainer(text: "Включи, если носишь эту дозу с собой. Тогда в режиме прогулки появится «Дал» — и отметка не потеряется до дома. Не включай, если дозу дают только дома: приложение не станет предлагать.")
+            }
+
             if let medication {
                 TGCard {
                     Toggle(isOn: Binding(get: { medication.isPaused }, set: { medication.isPaused = $0 })) {
@@ -667,6 +702,7 @@ struct MedicationEditorSheet: View {
                 массаТекст = ЧислоСБланка.текст(мкг / 1000)
             }
         }
+        даётсяНаУлице = medication.canGiveOutside
         loaded = true
     }
 
@@ -684,6 +720,7 @@ struct MedicationEditorSheet: View {
         let былоНатощакДо = target.fastingBeforeMinutes
         let былВрач = target.prescriber
         let былаМасса = target.massPerUnitMcg
+        let былоНаУлице = target.canGiveOutside
 
         target.name = name
         target.doseText = doseText
@@ -700,6 +737,7 @@ struct MedicationEditorSheet: View {
         // единицы → микрограммы. Пустая строка даёт `nil` — «не
         // введено», а не ноль.
         target.massPerUnitMcg = ЧислоСБланка.разобрать(массаТекст).map { $0 * массаЕдиница.вМикрограммах }
+        target.canGiveOutside = даётсяНаУлице
         let новое = medication == nil
         if новое {
             target.dog = dog
@@ -718,6 +756,7 @@ struct MedicationEditorSheet: View {
                 target.fastingBeforeMinutes = былоНатощакДо
                 target.prescriber = былВрач
                 target.massPerUnitMcg = былаМасса
+                target.canGiveOutside = былоНаУлице
             }
         }) else {
             Haptics.warning()
