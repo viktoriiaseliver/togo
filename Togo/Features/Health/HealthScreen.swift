@@ -175,11 +175,28 @@ struct HealthScreen: View {
         Haptics.success()
     }
 
+    /// Сколько анализов у собаки — в строке раздела, а не внутри него.
+    /// Пусто, когда ни одного: «0» рядом с названием читается как
+    /// неисправность, а отсутствие числа — как «ещё не заводили».
+    private var анализовВсего: LocalizedStringKey? {
+        guard let dog, !dog.labResults.isEmpty else { return nil }
+        return .готовая(Fmt.records(dog.labResults.count))
+    }
+
     private var sectionsGrid: some View {
         TGCard(spacing: 0) {
                         TGLink(title: "Протокол контроля", value: "T0 / +4 / +6", systemImage: "timer") { ProtocolScreen(dog: dog) }
             TGDivider()
                         TGLink(title: "Вес и симптомы", value: dog.map { .готовая(Fmt.weight($0.weightKg)) }, systemImage: "scalemass") { WeightScreen(dog: dog) }
+            TGDivider()
+            // МЕСТО ВЫЗОВА. Без этой строки экран анализов существует
+            // и недостижим: до 08.10.2026 `LabResult` создавался только
+            // в `MedicalRecordGallery`, а она целиком под `#if DEBUG`.
+            // Модель, обмен, архив и карточки были, а человек не мог
+            // завести ни одной записи — то есть поверхность была
+            // подключена на ноль мест. Сторож на эту строку —
+            // `ДорогаКАнализамTests`, от запрета.
+                        TGLink(title: "Анализы", value: анализовВсего, systemImage: "testtube.2") { LabResultsScreen(dog: dog) }
             TGDivider()
                         TGLink(title: "Прививки и визиты", systemImage: "syringe") { CareScreen(dog: dog) }
             TGDivider()
