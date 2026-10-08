@@ -186,21 +186,50 @@ struct ПлакатЧерниламиTests {
 
         var найдено: [String] = []
         var осмотрено = 0
+        var вызовов = 0
         let обход = FileManager.default.enumerator(at: живые, includingPropertiesForKeys: nil)
         while let url = обход?.nextObject() as? URL {
             guard url.pathExtension == "swift" else { continue }
             guard let текст = try? String(contentsOf: url, encoding: .utf8) else { continue }
             осмотрено += 1
-            for (номер, строка) in текст.components(separatedBy: "\n").enumerated() {
-                let код = строка.components(separatedBy: "//")[0]
-                guard код.contains("progress:") else { continue }
-                // Косточки нет, пока передают `nil`. Всё остальное —
-                // живое значение, и тогда роль обязана быть под порогом.
-                guard !код.contains("progress: nil") else { continue }
-                найдено.append("  \(url.lastPathComponent):\(номер + 1): "
-                               + код.trimmingCharacters(in: .whitespaces))
+            let код = текст.components(separatedBy: "\n")
+                .map { $0.components(separatedBy: "//")[0] }
+
+            // **Считается АРГУМЕНТ вызова, а не слово.**
+            //
+            // Первая редакция искала `progress:` по всему каталогу
+            // и покраснела на `OnboardingFlow.swift:26` —
+            // `var progress: String?`, объявлении, которое к плакату
+            // отношения не имеет вовсе. То есть сторож ответил
+            // на вопрос «нет такой строки», а спрашивали «нет такого
+            // вызова», и это ровно тот класс, который он сам
+            // и сторожит.
+            //
+            // > **Ноль и единица от `grep` отвечают про текст.
+            // > Про вызов отвечает только разбор от места вызова.**
+            //
+            // Поэтому идём от `TGPoster(` и смотрим окно его
+            // аргументов: конструктор занимает несколько строк,
+            // но не десятки.
+            for (номер, строка) in код.enumerated() where строка.contains("TGPoster(") {
+                вызовов += 1
+                let окно = код[номер..<min(номер + 10, код.count)]
+                for (сдвиг, аргумент) in окно.enumerated()
+                where аргумент.contains("progress:") && !аргумент.contains("progress: nil") {
+                    найдено.append("  \(url.lastPathComponent):\(номер + сдвиг + 1): "
+                                   + аргумент.trimmingCharacters(in: .whitespaces))
+                }
             }
         }
+
+        // Счётчик ВЫЗОВОВ, а не файлов: каталог можно прочесть целиком
+        // и не найти в нём ни одного плаката — тогда ноль нарушений
+        // значит «нечего было смотреть», а не «чисто».
+        #expect(вызовов >= 1, """
+            в Togo/Features не нашлось ни одного `TGPoster(` при
+            \(осмотрено) прочитанных файлах. Сторож смотрит в пустоту:
+            плакат переименован, переехал или зовётся иначе.
+            """)
 
         // Своё зрение первым: каталог, который перестали находить,
         // молчит так же, как чистый.

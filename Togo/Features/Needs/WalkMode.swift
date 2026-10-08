@@ -190,20 +190,20 @@ struct WalkModeScreen: View {
         VStack(spacing: Token.Space.s10) {
             // Самое частое — большой кнопкой: за прогулку это жмут чаще всего.
             Button { mark(.urine) } label: {
-                markLabel(.urine, count: session?.count(of: .urine) ?? 0, на: .акцент)
+                markLabel(.urine, count: session?.count(of: .urine) ?? 0, на: .accent)
                     .frame(maxWidth: .infinity, minHeight: 88)
-                    .background(Заливка.акцент.цвет,
+                    .background(MarkFill.accent.color,
                                 in: RoundedRectangle(cornerRadius: Token.Radius.control, style: .continuous))
             }
             .buttonStyle(.plain)
 
             HStack(spacing: Token.Space.s10) {
                 ForEach([ActiveSession.Mark.Kind.stool, .reaction], id: \.self) { kind in
-                    let заливка: Заливка = kind == .reaction ? .ожидание : .тихая
+                    let заливка: MarkFill = kind == .reaction ? .waiting : .quiet
                     Button { mark(kind) } label: {
                         markLabel(kind, count: session?.count(of: kind) ?? 0, на: заливка)
                             .frame(maxWidth: .infinity, minHeight: 68)
-                            .background(заливка.цвет,
+                            .background(заливка.color,
                                         in: RoundedRectangle(cornerRadius: Token.Radius.tile, style: .continuous))
                     }
                     .buttonStyle(.plain)
@@ -243,89 +243,14 @@ struct WalkModeScreen: View {
         .opacity(session?.isPaused == true ? 0.4 : 1)
     }
 
-    /// Заливка под отметкой — и цвет текста, который на ней читается.
-    ///
-    /// **Одно место на обе величины, и это не стиль, а починка.**
-    /// До 08.10.2026 заливку выбирал вызывающий, а подпись красил
-    /// `markLabel` — один `Token.Ink.primary` на все три плитки. Для
-    /// двух тёмных это верно, для акцентной нет, и кнопка, которую
-    /// на прогулке жмут чаще всего, была нечитаемой:
-    ///
-    /// ```
-    ///                            dark    light   darkHC  lightHC   порог
-    /// «Пописал» · ink            1,64 ✗  1,47 ✗  1,64 ✗  1,47 ✗     4,5
-    /// счётчик «2 раза» · inkMuted 1,17 ✗  1,94 ✗  1,08 ✗  1,40 ✗
-    /// «Стул» · ink на night3    14,97   14,98   14,97   14,98
-    /// «Реакция» · ink на amberBg 11,10   16,10   11,10   16,10
-    /// ```
-    ///
-    /// Сломана была ровно одна плитка из трёх — та, у которой заливка
-    /// светлая. Числа сошлись с живым кадром (`1,47` и `1,64`
-    /// у `light-theme-togo-verification`), то есть арифметика и пиксель
-    /// говорят одно.
-    ///
-    /// **Это ТРЕТЬЯ поверхность одного правила.** Первую починили
-    /// у `BigAction` (`ActionGrid.swift:116-119`, сторож
-    /// `ButtonLabelOnFillTests`), и сторож остался зелёным здесь:
-    /// он смотрит в один файл. У Togo это записано классом — «починка
-    /// на одной поверхности из трёх», — и цена та же: подпись брала
-    /// светлый цвет на светлой заливке полгода, а тест на токен был
-    /// зелёным всё это время, потому что токен был верен и экран его
-    /// не звал.
-    ///
-    /// > **Заливку и подпись выбирает один тип.** Пока их выбирают
-    /// > двое, они разойдутся — и разойдутся молча, потому что
-    /// > компилятор не знает, что эти два цвета связаны.
-    /// Не `private` нарочно: сторож перебирает `allCases`, а не список
-    /// руками. Список руками знает только то, что в него положили, —
-    /// четвёртая заливка, добавленная завтра, в него не попадёт.
-    enum Заливка: CaseIterable {
-        /// Главная кнопка: та же заливка, что у `Button.Primary`.
-        case акцент
-        /// Тёмная плитка.
-        case тихая
-        /// Плитка «реакция» — жёлтая плашка ожидания.
-        case ожидание
-
-        /// Для сообщений сторожа: число без имени роли не чинится.
-        var имя: String {
-            switch self {
-            case .акцент: "акцентная кнопка прогулки"
-            case .тихая: "тёмная плитка прогулки"
-            case .ожидание: "плитка «реакция»"
-            }
-        }
-
-        var цвет: Color {
-            switch self {
-            case .акцент: Token.Component.Button.Primary.background
-            case .тихая: Token.Surface.sunken
-            case .ожидание: Token.Status.waitingBg
-            }
-        }
-
-        /// Подпись и значок. У акцента — компонентный токен кнопки,
-        /// тот же, что зовёт `BigAction`: один адрес на обе поверхности.
-        var подпись: Color {
-            switch self {
-            case .акцент: Token.Component.Button.Primary.label
-            case .тихая, .ожидание: Token.Ink.primary
-            }
-        }
-
-        /// Счётчик под подписью. Тише подписи, но читаемый: иерархия
-        /// «что отметили громче, сколько раз тише» держится на разнице
-        /// цветов, а не на размере одного.
-        var счётчик: Color {
-            switch self {
-            case .акцент: Token.Ink.onAccentQuiet
-            case .тихая, .ожидание: Token.Ink.secondary
-            }
-        }
-    }
+    // Заливка и цвет подписи живут в дизайн-системе — `MarkFill`.
+    // Перенесено туда 08.10.2026 по указанию чужого сторожа
+    // (`ComponentTokenScopeTests`): `Token.Component.*` — словарь
+    // дизайн-системы, и экран, который в него заглядывает, становится
+    // вторым местом, где решают, как выглядит кнопка.
 
     private func markLabel(_ kind: ActiveSession.Mark.Kind, count: Int,
-                           на заливка: Заливка) -> some View {
+                           на заливка: MarkFill) -> some View {
         VStack(spacing: Token.Space.s2) {
             Image(systemName: kind.symbol)
                 .font(.system(size: 20, weight: .medium))
@@ -335,13 +260,13 @@ struct WalkModeScreen: View {
             // `foregroundStyle` предка. Прежняя редакция ставила его
             // через `AppFont.cardTitle.color(…)` — тоже подстановкой,
             // и это было верно; неверен был сам цвет.
-            Text(kind.title).textStyle(AppFont.cardTitle, color: заливка.подпись)
+            Text(kind.title).textStyle(AppFont.cardTitle, color: заливка.label)
             if count > 0 {
                 Text(count == 1 ? "отмечено" : Fmt.times(count))
-                    .textStyle(AppFont.micro, color: заливка.счётчик)
+                    .textStyle(AppFont.micro, color: заливка.counter)
             }
         }
-        .foregroundStyle(заливка.подпись)
+        .foregroundStyle(заливка.label)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(kind.title)
         .accessibilityValue(count > 0 ? "отмечено \(count)" : "не отмечено")
