@@ -193,6 +193,11 @@ struct HealthScreen: View {
         return .готовая(Fmt.records(dog.diagnoses.count))
     }
 
+    private var назначенийВсего: LocalizedStringKey? {
+        guard let dog, !dog.prescriptions.isEmpty else { return nil }
+        return .готовая(Fmt.records(dog.prescriptions.count))
+    }
+
     private var sectionsGrid: some View {
         TGCard(spacing: 0) {
                         TGLink(title: "Протокол контроля", value: "T0 / +4 / +6", systemImage: "timer") { ProtocolScreen(dog: dog) }
@@ -211,6 +216,8 @@ struct HealthScreen: View {
                         TGLink(title: "Визиты к врачу", value: визитовВсего, systemImage: "stethoscope") { VetVisitsScreen(dog: dog) }
             TGDivider()
                         TGLink(title: "Диагнозы", value: диагнозовВсего, systemImage: "questionmark.circle") { DiagnosesScreen(dog: dog) }
+            TGDivider()
+                        TGLink(title: "Назначения", value: назначенийВсего, systemImage: "doc.text") { PrescriptionsScreen(dog: dog) }
             TGDivider()
                         TGLink(title: "Прививки и визиты", systemImage: "syringe") { CareScreen(dog: dog) }
             TGDivider()
