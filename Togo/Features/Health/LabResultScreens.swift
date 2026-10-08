@@ -349,18 +349,23 @@ struct LabResultEntryFlow: View {
                 } else {
                     LabeledField(label: "Число") {
                         TextField("12,9", text: $строка.число).keyboardType(.decimalPad)
+                            .autocorrectionDisabled()
                     }
                     TGDivider()
                     LabeledField(label: "Единица") {
                         TextField("нг/дл", text: $строка.единица)
+                            .autocorrectionDisabled()
+                            .textInputAutocapitalization(.never)
                     }
                     TGDivider()
                     LabeledField(label: "Норма от") {
                         TextField("12,9", text: $строка.нормаНиз).keyboardType(.decimalPad)
+                            .autocorrectionDisabled()
                     }
                     TGDivider()
                     LabeledField(label: "Норма до") {
                         TextField("51,5", text: $строка.нормаВерх).keyboardType(.decimalPad)
+                            .autocorrectionDisabled()
                     }
                 }
 
@@ -383,6 +388,21 @@ struct LabResultEntryFlow: View {
         TGCard {
             TGExplainer(text: "Норму приложение не подставляет: нет на бланке — скажет «норма не указана». Отклонение считается, а не вводится.")
         }
+
+        // Запас внизу шага 2, и он не косметический. Кадр 08.10.2026,
+        // снятый не автором: при ПОДНЯТОЙ КЛАВИАТУРЕ «Норма от» видно
+        // наполовину, «Норма до» не видно вовсе — поля уходят под
+        // закреплённую кнопку «Дальше».
+        //
+        // > **Экран, который влез без клавиатуры, не влез с клавиатурой.**
+        // > Проверка на узком экране и на крупном шрифте этого не ловит:
+        // > высоту съедает не шрифт, а то, что появляется от касания
+        // > по полю, то есть ТОЛЬКО во время ввода.
+        //
+        // Запас высотой в цель касания: меньше не даёт докрутить
+        // последнее поле, больше оставляет пустоту на экране без
+        // клавиатуры.
+        Spacer(minLength: Token.Size.tapTarget * 2)
     }
 
     private var шагВремя: some View {
@@ -399,7 +419,7 @@ struct LabResultEntryFlow: View {
 
             // Часы считаются НА ГЛАЗАХ — макет требует этого прямо:
             // «без них результат не сравнить с другими».
-            if let подпись = LabSampleTiming.caption(часыОтДозы) {
+            if let подпись = LabSampleTiming.captionExact(часыОтДозы) {
                 TGDivider()
                 Text(verbatim: подпись)
                     .textStyle(AppFont.body)
@@ -533,18 +553,23 @@ struct LabResultRowEditor: View {
                     TGDivider()
                     LabeledField(label: "Число") {
                         TextField("12,9", text: $черновик.число).keyboardType(.decimalPad)
+                            .autocorrectionDisabled()
                     }
                     TGDivider()
                     LabeledField(label: "Единица") {
                         TextField("нг/дл", text: $черновик.единица)
+                            .autocorrectionDisabled()
+                            .textInputAutocapitalization(.never)
                     }
                     TGDivider()
                     LabeledField(label: "Норма от") {
                         TextField("12,9", text: $черновик.нормаНиз).keyboardType(.decimalPad)
+                            .autocorrectionDisabled()
                     }
                     TGDivider()
                     LabeledField(label: "Норма до") {
                         TextField("51,5", text: $черновик.нормаВерх).keyboardType(.decimalPad)
+                            .autocorrectionDisabled()
                     }
                 }
             }
