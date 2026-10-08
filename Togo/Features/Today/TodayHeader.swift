@@ -22,6 +22,28 @@ struct TodayHeader: View {
     var день: ScreenDay?
     var листать: (Int) -> Void = { _ in }
 
+    /// На какой подложке мы стоим. Говорит её тот, кто её нарисовал
+    /// (`TGPoster`), а не тот, кто собирает экран: иначе у одного
+    /// экрана две копии одного значения.
+    ///
+    /// `nil` — мы не на плакате, цвет берёт роль текста.
+    @Environment(\.posterMode) private var подложка
+
+    /// Цвет заголовочного текста.
+    ///
+    /// **Было `Token.Ink.primary`, и это нечитаемо в 4 клетках из 20.**
+    /// Шапка рисуется ВНУТРИ цветного блока (`TGPoster` берёт её как
+    /// `trailing`, и там прямо написано: «она на цветном, а не над
+    /// ним»), а нейтральные чернила рассчитаны на фон и карточку.
+    /// `Tokens.generated.swift:155` это и запрещает: «ТОЛЬКО
+    /// НЕЙТРАЛЬНЫЙ БЛОК».
+    private var чернила: Color { PosterPaint.label(подложка) }
+
+    /// Цвет подписей. Хуже заголовка: `Ink.secondary` не проходил
+    /// **12 клеток из 20** — в светлой теме на всех четырёх цветных
+    /// подложках, то есть и на `.usual`, самом частом экране.
+    private var подпись: Color { PosterPaint.caption(подложка) }
+
     var body: some View {
         VStack(alignment: .leading, spacing: Token.Space.s8) {
             строкаСобаки
@@ -33,16 +55,21 @@ struct TodayHeader: View {
         HStack(spacing: 12) {
             DogAvatar(dog: dog)
             VStack(alignment: .leading, spacing: 2) {
+                // Цвет подставляется ВМЕСТО стилевого, а не поверх:
+                // `AppFont` несёт свой `color` и красит сам `Text`,
+                // то есть побеждает `.foregroundStyle` предка. Прежние
+                // две строки были не «верными и перекрытыми» — они
+                // совпадали значение в значение (`cardTitle.color ==
+                // Ink.primary`), и потому порядок модификаторов ничего
+                // не менял. С разными цветами он решал бы исход.
                 Text(dog.flatMap(\.nameIfAny) ?? String(localized: "Собака"))
-                    .textStyle(AppFont.cardTitle)
-                    .foregroundStyle(Token.Ink.primary)
+                    .textStyle(AppFont.cardTitle, color: чернила)
                 // В шапке — только то, что не меняется в течение дня.
                 // «Давно ли гуляли» переехало в героя: это ответ
                 // на главный вопрос, и мелкой строкой рядом с весом
                 // он не читался.
                 Text(identityLine)
-                    .textStyle(AppFont.caption)
-                    .foregroundStyle(Token.Ink.secondary)
+                    .textStyle(AppFont.caption, color: подпись)
                     // Две строки, а не одна: на крупном кегле строка
                     // обрывалась на «4,1 кг · дежурит…» и прятала ровно
                     // то, ради чего она есть, — ИМЯ дежурного. На обычном
@@ -72,9 +99,12 @@ struct TodayHeader: View {
     private func переключатель(_ день: ScreenDay) -> some View {
         HStack(spacing: Token.Space.s8) {
             кнопка(-1, "chevron.left", подпись: "Предыдущий день", включена: true)
+            // Сегодня — тише, другой день — громче; обе роли берут цвет
+            // у подложки, а не у нейтральной палитры. Это третья
+            // из трёх клеток матрицы и худшая по светлой теме (1,10:1
+            // на обычном индиго).
             Text(названиеДня(день))
-                .textStyle(AppFont.caption)
-                .foregroundStyle(день.этоСегодня ? Token.Ink.secondary : Token.Ink.primary)
+                .textStyle(AppFont.caption, color: день.этоСегодня ? подпись : чернила)
                 .frame(maxWidth: .infinity)
                 .accessibilityAddTraits(.isHeader)
             кнопка(+1, "chevron.right", подпись: "Следующий день", включена: день.можноВперёд)
@@ -96,9 +126,17 @@ struct TodayHeader: View {
                         подпись: LocalizedStringKey, включена: Bool) -> some View {
         if включена {
             Button { листать(шаг) } label: {
+                // **Четвёртый элемент на той же подложке, и в присланной
+                // матрице его не было.** Стрелки листания — графика
+                // (порог 3,0 по WCAG 1.4.11, а не 4,5), но единственный
+                // орган управления шапки: на дозе нейтральные чернила
+                // давали ту же 1,64:1, что и кличка.
+                //
+                // > Матрица меряет то, что в неё положили. Соседа
+                // > по той же подложке она не ищет.
                 Image(systemName: символ)
                     .font(.system(size: Token.Size.iconSm, weight: .semibold))
-                    .foregroundStyle(Token.Ink.primary)
+                    .foregroundStyle(чернила)
                     .frame(width: Token.Size.tapTarget, height: Token.Size.tapTarget)
                     .contentShape(Rectangle())
             }

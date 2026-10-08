@@ -91,6 +91,8 @@ nonisolated enum Token {
     enum Ink {
         static let faint = Общие.inkFaint
         static let onAccent = Общие.arcticInk
+        /// Тихий текст НА акцентной заливке: счётчик под подписью кнопки, подпись под показанием. Заведён 08.10.2026, потому что у роли не было адреса в семантике и единственным носителем значения был poster/captionOnDose — то есть кнопка режима прогулки обращалась бы к токену ПЛАКАТА. Значение то же (arcticSubtle), роль другая, и имя должно называть роль. Числа: 6,19:1 в тёмной и 10,01:1 в светлой против 10,43 и 12,86 у onAccent — читается и остаётся тише подписи, иерархия цела. Повышенного контраста у роли в пакете нет: darkHC равен dark.
+        static let onAccentQuiet = Общие.arcticSubtle
         static let primary = Общие.ink
         static let secondary = Общие.inkMuted
         static let silhouette = Общие.inkMuted

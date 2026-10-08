@@ -173,6 +173,7 @@
   --semantic-surface-sunken: #1F1F1F;
   --semantic-text-faint: #6D6D6D;
   --semantic-text-onAccent: #0B0D2E;
+  --semantic-text-onAccentQuiet: #2E3866;
   --semantic-text-primary: #F4F4F2;
   --semantic-text-secondary: #B2B2AE;
   --semantic-text-silhouette: #B2B2AE;
@@ -262,6 +263,7 @@
   --semantic-surface-sunken: #E3E5E8;
   --semantic-text-faint: #A1A4A8;
   --semantic-text-onAccent: #FFFFFF;
+  --semantic-text-onAccentQuiet: #D9E3FC;
   --semantic-text-primary: #101112;
   --semantic-text-secondary: #5A5D61;
   --semantic-text-silhouette: #5A5D61;
@@ -366,6 +368,7 @@
   --semantic-surface-sunken: #E3E5E8;
   --semantic-text-faint: #7D8085;
   --semantic-text-onAccent: #FFFFFF;
+  --semantic-text-onAccentQuiet: #D9E3FC;
   --semantic-text-primary: #101112;
   --semantic-text-secondary: #45484C;
   --semantic-text-silhouette: #45484C;

@@ -50,6 +50,108 @@ nonisolated enum PosterPaint {
         case .quiet: Token.Poster.backgroundQuiet
         }
     }
+
+    /// Цвет заголовочного текста по режиму. **У плаката три семьи
+    /// текста, а не одна** — развилка была и живёт здесь с 08.10.2026.
+    ///
+    /// ```
+    /// нейтральный блок   label        · caption   · bar
+    /// четыре цветных     labelOnColor · captionOnColor · bar
+    /// доза               labelOnDose  · captionOnDose  · barOnDose
+    /// ```
+    ///
+    /// **Переехала сюда из приватных свойств `TGPoster`, и повод
+    /// не косметический.** Шапка экрана (`TodayHeader`) рисуется
+    /// ВНУТРИ блока, на той же подложке, — и спрашивала нейтральные
+    /// `Token.Ink.primary` / `Ink.secondary`. Замер трёх её текстов
+    /// по пяти режимам и четырём темам: **16 клеток из 20 ниже порога
+    /// 4,5**, и худшее не там, где заметили:
+    ///
+    /// ```
+    ///                     dark    light   darkHC  lightHC
+    /// кличка на дозе       1,64 ✗  1,47 ✗  1,64 ✗  1,47 ✗
+    /// вес на обычном       5,31    1,10 ✗  6,73    1,53 ✗
+    /// вес на дозе          1,17 ✗  1,94 ✗  1,08 ✗  1,40 ✗
+    /// всё на тихом         8,35    5,65   10,58    7,85    ← чисто
+    /// ```
+    ///
+    /// То есть в СВЕТЛОЙ теме вес и полоса дат нечитаемы на всех
+    /// четырёх цветных подложках, включая `.usual` — самый частый
+    /// экран приложения.
+    ///
+    /// > **Развилку спрашивают, а не переписывают.** Второй `switch`
+    /// > по тому же режиму разошёлся бы с этим молча: у Togo правило
+    /// > цвета трижды оказывалось списанным по местам применения.
+    /// > Поэтому функции три и живут они в одном месте, а `TGPoster`
+    /// > и `TodayHeader` их зовут.
+    /// `nil` — **мы не на плакате**, и цвет берёт роль текста.
+    ///
+    /// Запас стоит здесь, а не у звонящего, нарочно: пока он лежал
+    /// в `TodayHeader` строкой `?? Token.Ink.primary`, запрет
+    /// «в шапке нет нейтральных чернил» краснел на самом запасе —
+    /// то есть сторож был прав по букве и мешал по делу. Запас
+    /// и развилка — одно решение, и живут они в одном месте.
+    static func label(_ mode: PosterMode?) -> Color {
+        guard let mode else { return Token.Ink.primary }
+        if mode.needsInverseLabel { return Token.Poster.labelOnDose }
+        // Нейтральный блок — тот, который не несёт цвета состояния.
+        // Спрашиваем у режима тем же предикатом, что и подпись:
+        // третья ветка к той же развилке, а не новая развилка.
+        if !mode.carriesStatusColour { return Token.Poster.label }
+        return Token.Poster.labelOnColor
+    }
+
+    /// Цвет подписи по режиму. Иерархия «показание громче подписи»
+    /// держится на том, что у дозы это `captionOnDose` (6,19:1), а не
+    /// `labelOnDose` (10,43:1): читаемы оба, но вторым подпись стала бы
+    /// того же цвета, что число.
+    static func caption(_ mode: PosterMode?) -> Color {
+        guard let mode else { return Token.Ink.secondary }
+        if mode.needsInverseLabel { return Token.Poster.captionOnDose }
+        if !mode.carriesStatusColour { return Token.Poster.caption }
+        return Token.Poster.captionOnColor
+    }
+
+    /// Цвет косточки и тонких полос. Порог у графики 3,0 (WCAG 1.4.11),
+    /// а не 4,5, и роль здесь написана словами именно поэтому.
+    ///
+    /// **Замер 08.10.2026 даёт по ней шесть клеток ниже порога**
+    /// (`usual` 2,15 · `fasting` 2,39 · `alarm` 2,29, обе светлые темы),
+    /// и это НЕ находка о продукте: косточку не рисует ни один живой
+    /// экран — единственный вызов плаката передаёт `progress: nil`
+    /// (`TodayScreen.swift:653`), а `bar` нужен только внутри `bone`.
+    /// Числа оставлены в `ПлакатЧерниламиTests` печатью, под порог
+    /// не поставлены, и условие, при котором их туда надо поставить,
+    /// сторожится отдельным тестом.
+    static func bar(_ mode: PosterMode?) -> Color {
+        guard let mode else { return Token.Ink.secondary }
+        return mode.needsInverseLabel ? Token.Poster.barOnDose : Token.Poster.bar
+    }
+}
+
+/// Какой режим плаката под нами — для видов, которые рисуются ВНУТРИ
+/// блока и не строят его сами.
+///
+/// **Среда, а не параметр, и это не удобство.** Шапку собирает
+/// `TodayScreen` и отдаёт блоку как `trailing`; передай режим вторым
+/// аргументом — и у одного экрана появятся две копии одного значения,
+/// которые разойдутся при первой правке. Публикует его тот, кто
+/// подложку и нарисовал, — и ошибиться в том, что под текстом, стало
+/// нечем.
+///
+/// `nil` значит «мы не на плакате»: тогда текст берёт нейтральные
+/// `Token.Ink.*`, как на любой карточке. Молчаливого умолчания
+/// `.usual` здесь нет нарочно — оно покрасило бы вид на белой
+/// карточке как на индиго.
+private struct PosterModeKey: EnvironmentKey {
+    static let defaultValue: PosterMode? = nil
+}
+
+extension EnvironmentValues {
+    var posterMode: PosterMode? {
+        get { self[PosterModeKey.self] }
+        set { self[PosterModeKey.self] = newValue }
+    }
 }
 
 struct TGPoster<Trailing: View>: View {
@@ -122,14 +224,7 @@ struct TGPoster<Trailing: View>: View {
     /// решение дизайна, и никаких `opacity` на тексте: `#666`
     /// под `0.85` это уже `#7D7D7D` и 4,12:1, а прозрачность
     /// съедает запас молча.
-    private var ink: Color {
-        if mode.needsInverseLabel { return Token.Poster.labelOnDose }
-        // Нейтральный блок — тот, который не несёт цвета состояния.
-        // Спрашиваем у режима тем же предикатом, что и подпись:
-        // третья ветка к той же развилке, а не новая развилка.
-        if !mode.carriesStatusColour { return Token.Poster.label }
-        return Token.Poster.labelOnColor
-    }
+    private var ink: Color { PosterPaint.label(mode) }
 
     /// Цвет подписей. **У плаката три семьи текста, а не одна.**
     ///
@@ -208,15 +303,9 @@ struct TGPoster<Trailing: View>: View {
     /// арифметика не видит. Приёмка — кадр с замером точки; разойдётся
     /// с арифметикой — права точка. У нас это оплачено кнопкой 1,68:1,
     /// которую месяцами «проверяли глазами» при верном токене.
-    private var subInk: Color {
-        if mode.needsInverseLabel { return Token.Poster.captionOnDose }
-        if !mode.carriesStatusColour { return Token.Poster.caption }
-        return Token.Poster.captionOnColor
-    }
+    private var subInk: Color { PosterPaint.caption(mode) }
 
-    private var barInk: Color {
-        mode.needsInverseLabel ? Token.Poster.barOnDose : Token.Poster.bar
-    }
+    private var barInk: Color { PosterPaint.bar(mode) }
 
     // MARK: Вид
 
@@ -233,6 +322,11 @@ struct TGPoster<Trailing: View>: View {
             if let next, !collapsed { nextRow(next) }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        // Кто нарисовал подложку, тот и говорит, какая она. Иначе вид,
+        // стоящий ВНУТРИ блока (`trailing` — это шапка экрана), узнаёт
+        // про цвет под собой из второго источника, и два источника
+        // расходятся молча: 16 клеток из 20 ровно так и разошлись.
+        .environment(\.posterMode, mode)
         .padding(.horizontal, Token.Space.s24)
         .padding(.bottom, collapsed ? Token.Space.s12 : Token.Space.s24)
         // **Цвет доходит до верха, содержимое — нет.** Подложка вынесена
