@@ -289,6 +289,31 @@ extension WeightEntry {
     }
 }
 
+@MainActor
+extension DogDocument {
+    var payload: DocumentPayload {
+        DocumentPayload(
+            id: id, dogID: dog?.id, title: title, kind: kindRaw,
+            number: number, issuedBy: issuedBy, validUntil: validUntil,
+            addedAt: addedAt, note: note, changedAt: changedAt
+        )
+    }
+
+    /// `image` не трогается ни в одну сторону: его в нагрузке нет,
+    /// и приехавшая правка не должна стирать скан, который человек
+    /// положил у себя.
+    func apply(_ payload: DocumentPayload) {
+        title = payload.title
+        kindRaw = payload.kind
+        number = payload.number
+        issuedBy = payload.issuedBy
+        validUntil = payload.validUntil
+        addedAt = payload.addedAt
+        note = payload.note
+        changedAt = payload.changedAt
+    }
+}
+
 // MARK: - Медкнижка
 //
 // У всех четырёх `clinic` НЕ ставится в `apply`: для поиска по id нужен
@@ -691,6 +716,43 @@ enum SharedDiaryInbox {
             local.apply(merged)
             if !context.persist(otherwise: { local.apply(былПрежний) }) {
                 log.error("общий дневник: слияние взвешивания не записалось")
+            }
+        }
+        return changed
+    }
+
+    /// Принять документ.
+    ///
+    /// **Скан местного телефона не трогается.** В нагрузке его нет,
+    /// и `apply` его не очищает: человек положил страницу паспорта
+    /// у себя, и чужая правка номера не имеет права её стереть.
+    @discardableResult
+    static func accept(_ payload: DocumentPayload, dog: Dog?, context: ModelContext) -> Bool {
+        let id = payload.id
+        let existing = try? context.fetch(
+            FetchDescriptor<DogDocument>(predicate: #Predicate { $0.id == id })
+        ).first
+
+        guard let local = existing else {
+            let документ = DogDocument(title: payload.title)
+            документ.id = payload.id
+            документ.apply(payload)
+            документ.dog = dog
+            context.insert(документ)
+            guard context.persist(otherwise: { context.delete(документ) }) else {
+                log.error("общий дневник: документ не записался")
+                return false
+            }
+            return false
+        }
+
+        let merged = SharedDiaryMerge.resolve(local: local.payload, remote: payload)
+        let changed = merged != payload
+        if merged != local.payload {
+            let былПрежний = local.payload
+            local.apply(merged)
+            if !context.persist(otherwise: { local.apply(былПрежний) }) {
+                log.error("общий дневник: слияние документа не записалось")
             }
         }
         return changed

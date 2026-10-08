@@ -752,6 +752,150 @@ struct SharedLostFieldsTests {
     }
 }
 
+/// Документы доезжают — подписью, без скана.
+///
+/// **До 07.10.2026 четыре поля (тип, номер, кем выдан, срок) ехали
+/// в архив и не ехали ко второму человеку вовсе.** Документы нужны
+/// тому, кто СЕГОДНЯ один с собакой: в клинике спрашивают номер,
+/// на границе — срок.
+///
+/// **Скан намеренно не едет**, и ущерб назван зеркалом к находке
+/// `togo-1e` про архив: там было «фотография без подписи», здесь
+/// наоборот — **подпись без фотографии**. Тест это проверяет прямо,
+/// а не подразумевает.
+@Suite("Общий дневник · документы")
+@MainActor
+struct SharedDocumentSyncTests {
+
+    private let zone = CKRecordZone.ID(zoneName: SharedDiary.zoneName, ownerName: "_owner")
+
+    private func телефон() throws -> (ModelContext, Dog) {
+        let container = try ModelContainer(
+            for: Dog.self,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+        )
+        let context = ModelContext(container)
+        let dog = Dog(name: "Стич", weightKg: 4.1)
+        context.insert(dog)
+        try context.save()
+        return (context, dog)
+    }
+
+    @Test("Четыре поля документа доезжают: тип, номер, кем выдан, срок")
+    func документДоезжает() throws {
+        let (мой, собака) = try телефон()
+        let паспорт = DogDocument(title: "Паспорт", image: Data([0xFF, 0xD8, 0xFF]),
+                                  note: "в синей папке")
+        паспорт.kindRaw = DocumentKind.passport.rawValue
+        паспорт.number = "FR-2024-88120"
+        паспорт.issuedBy = "Vet Riviera"
+        паспорт.validUntil = Date(timeIntervalSince1970: 1_900_000_000)
+        паспорт.dog = собака
+        мой.insert(паспорт)
+        try мой.save()
+
+        let запись = SharedDiaryRecords.record(паспорт.payload, base: nil, in: zone)
+        #expect(запись.recordType == SharedDiary.RecordType.document.rawValue)
+        let приехало = try #require(SharedDiaryRecords.documentPayload(запись))
+
+        let (её, её_собака) = try телефон()
+        SharedDiaryInbox.accept(приехало, dog: её_собака, context: её)
+        let у_мамы = try #require(try её.fetch(FetchDescriptor<DogDocument>()).first)
+
+        #expect(у_мамы.kindRaw == DocumentKind.passport.rawValue, "тип документа не доехал")
+        #expect(у_мамы.number == "FR-2024-88120", """
+            номер не доехал. Его спрашивают в клинике и в полиции — \
+            у того, кто привёл собаку, а не у владельца телефона.
+            """)
+        #expect(у_мамы.issuedBy == "Vet Riviera", "«кем выдан» не доехало")
+        #expect(у_мамы.validUntil == паспорт.validUntil, """
+            срок не доехал — то самое поле, из-за которого начинался \
+            шаг 0: у Стича срок бешенства истёк 03.10, и назвать это \
+            приложение не могло.
+            """)
+        #expect(у_мамы.title == "Паспорт")
+        #expect(у_мамы.note == "в синей папке")
+        #expect(у_мамы.dog?.name == "Стич", "документ приехал без собаки")
+
+        // **Скан НЕ доехал, и это проверяется прямо.** Без этой строки
+        // решение «не возим снимки» держалось бы на том, что никто
+        // не дописал поле, — то есть на невнимательности, а не
+        // на решении.
+        #expect(у_мамы.image == nil, """
+            скан приехал. Снимки не ездят решением брифа 22.09: они \
+            сделали бы обмен тяжёлым ровно там, где он должен быть \
+            мгновенным. Если это поменяли — менять надо `CKAsset`, \
+            а не поле записи.
+            """)
+    }
+
+    /// Приехавшая правка не стирает скан, который лежит у человека.
+    @Test("Чужая правка номера не стирает местный скан")
+    func чужаяПравкаНеСтираетСкан() throws {
+        let (её, её_собака) = try телефон()
+        let id = UUID()
+        let свой = DogDocument(title: "Паспорт", image: Data([0xFF, 0xD8, 0xFF]))
+        свой.id = id
+        свой.number = "старый"
+        свой.dog = её_собака
+        её.insert(свой)
+        try её.save()
+
+        let приехало = DocumentPayload(
+            id: id, dogID: её_собака.id, title: "Паспорт",
+            kind: DocumentKind.passport.rawValue, number: "FR-2024-88120",
+            issuedBy: nil, validUntil: nil, addedAt: Date(),
+            note: nil, changedAt: Date().addingTimeInterval(60))
+        SharedDiaryInbox.accept(приехало, dog: её_собака, context: её)
+
+        let после = try #require(try её.fetch(FetchDescriptor<DogDocument>()).first)
+        #expect(после.number == "FR-2024-88120", "правка номера не приехала")
+        #expect(после.image != nil, """
+            чужая правка стёрла местный скан. Поля в нагрузке нет — \
+            значит и трогать его нельзя: человек положил страницу \
+            паспорта у себя, и правка номера не имеет права её убрать. \
+            Тот же случай, что с фото собаки.
+            """)
+    }
+
+    /// У записи без типа умолчание — «прочее», а не паспорт.
+    @Test("Документ без типа читается как «прочее», а не как паспорт")
+    func умолчаниеТипаПрочее() throws {
+        let запись = CKRecord(recordType: SharedDiary.RecordType.document.rawValue,
+                              recordID: SharedDiaryRecords.recordID(UUID(), in: zone))
+        запись["title"] = "скан"
+        запись["changedAt"] = Date()
+        let приехало = try #require(SharedDiaryRecords.documentPayload(запись))
+        #expect(приехало.kind == DocumentKind.other.rawValue, """
+            запись без типа прочитана как конкретный вид документа. \
+            Тип — КЛЮЧ ГРУППИРОВКИ списка: подставив паспорт, мы \
+            собрали бы в группу «паспорта» всё, что вида не прислало.
+            """)
+    }
+
+    @Test("При ничьей выигрывает версия, где полей заполнено больше")
+    func ничьяВПользуЗаполненной() {
+        let id = UUID()
+        let когда = Date()
+        func документ(номер: String?, срок: Date?) -> DocumentPayload {
+            DocumentPayload(id: id, dogID: nil, title: "Паспорт",
+                            kind: DocumentKind.passport.rawValue, number: номер,
+                            issuedBy: nil, validUntil: срок, addedAt: когда,
+                            note: nil, changedAt: когда)
+        }
+        let полный = документ(номер: "FR-2024-88120", срок: когда)
+        let пустой = документ(номер: nil, срок: nil)
+
+        #expect(SharedDiaryMerge.resolve(local: пустой, remote: полный) == полный, """
+            ничья решилась в пользу пустой версии. Номер и срок вводят \
+            руками по одному разу, и терять набранное из-за расхождения \
+            часов на секунды нельзя.
+            """)
+        #expect(SharedDiaryMerge.resolve(local: полный, remote: пустой) == полный,
+                "исход зависит от того, с какой стороны спросили")
+    }
+}
+
 /// Взвешивания доезжают до второго человека.
 ///
 /// **Тип записи `WeightEntry` был объявлен с самого начала и

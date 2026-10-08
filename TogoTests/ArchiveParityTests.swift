@@ -134,6 +134,7 @@ struct ArchiveParityTests {
         "Dog.changedAt": "время правки на том телефоне; у восстановленной записи оно своё",
         "CareTask.changedAt": "см. Dog.changedAt",
         "WeightEntry.changedAt": "см. Dog.changedAt",
+        "DogDocument.changedAt": "см. Dog.changedAt",
         "Medication.changedAt": "см. Dog.changedAt",
         "DoseRecord.changedAt": "см. Dog.changedAt",
         // Обратные связи: они восстанавливаются привязкой к собаке

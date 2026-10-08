@@ -350,6 +350,57 @@ nonisolated enum SharedDiaryRecords {
         )
     }
 
+    // MARK: Документы
+
+    static func record(_ payload: DocumentPayload, base: CKRecord?, in zone: CKRecordZone.ID) -> CKRecord {
+        let id = recordID(payload.id, in: zone)
+        guard let base, base.recordID == id else {
+            let record = CKRecord(recordType: SharedDiary.RecordType.document.rawValue, recordID: id)
+            apply(payload, to: record)
+            return record
+        }
+        let merged = documentPayload(base).map { SharedDiaryMerge.resolve(local: payload, remote: $0) } ?? payload
+        apply(merged, to: base)
+        return base
+    }
+
+    /// Скан (`image`) здесь намеренно отсутствует — см. `RecordType.document`.
+    /// Если он однажды поедет, это будет `CKAsset`, а не поле записи.
+    static func apply(_ payload: DocumentPayload, to record: CKRecord) {
+        record["dogID"] = payload.dogID?.uuidString
+        record["title"] = payload.title
+        record["kind"] = payload.kind
+        record["number"] = payload.number
+        record["issuedBy"] = payload.issuedBy
+        record["validUntil"] = payload.validUntil
+        record["addedAt"] = payload.addedAt
+        record["note"] = payload.note
+        record["changedAt"] = payload.changedAt
+    }
+
+    static func documentPayload(_ record: CKRecord) -> DocumentPayload? {
+        guard let id = UUID(uuidString: record.recordID.recordName),
+              let changedAt = record["changedAt"] as? Date
+        else { return nil }
+
+        return DocumentPayload(
+            id: id,
+            dogID: (record["dogID"] as? String).flatMap(UUID.init),
+            title: record["title"] as? String ?? "",
+            // Умолчание — `.other`, а не паспорт: тип документа это
+            // КЛЮЧ ГРУППИРОВКИ списка, и подставив вместо неизвестного
+            // конкретный вид, мы собрали бы в группу «паспорта» всё,
+            // что вида не прислало.
+            kind: record["kind"] as? String ?? DocumentKind.other.rawValue,
+            number: record["number"] as? String,
+            issuedBy: record["issuedBy"] as? String,
+            validUntil: record["validUntil"] as? Date,
+            addedAt: record["addedAt"] as? Date ?? changedAt,
+            note: record["note"] as? String,
+            changedAt: changedAt
+        )
+    }
+
     // MARK: Взвешивания
 
     static func record(_ payload: WeightPayload, base: CKRecord?, in zone: CKRecordZone.ID) -> CKRecord {

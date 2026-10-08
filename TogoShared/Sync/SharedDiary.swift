@@ -78,6 +78,25 @@ nonisolated enum SharedDiary {
         case member = "FamilyMember"
         /// Справочник клиник — с 07.10.2026, шаг 0 медицинского слоя.
         case clinic = "Clinic"
+        /// Документы собаки — с 07.10.2026.
+        ///
+        /// **Скан не едет, едет подпись.** `DogDocument.image` остаётся
+        /// на телефоне по той же причине, что `Dog.photo`: решение
+        /// брифа 22.09 — снимки сделали бы обмен тяжёлым ровно там,
+        /// где он должен быть мгновенным. Скан паспорта тяжелее
+        /// аватарки, не легче.
+        ///
+        /// **Ущерб назван зеркалом к находке `togo-1e` про архив.**
+        /// Там было «фотография документа без подписи»; здесь выходит
+        /// наоборот — **подпись без фотографии**: второй человек видит
+        /// «Паспорт FR-2024-88120, годен до 03.10.2027» и не видит
+        /// страницы.
+        ///
+        /// Строго лучше нынешнего (сейчас он не видит ни того,
+        /// ни другого) и строго хуже полного. Полное — `CKAsset`,
+        /// отдельный механизм с отдельной ценой; он НЕ взят, и это
+        /// записано долгом с датой, а не прикрыто словом «поехало».
+        case document = "DogDocument"
         /// Медкнижка — с 07.10.2026.
         ///
         /// **Зачем она ездит, одной строкой:** в клинику собаку ведёт
@@ -376,6 +395,27 @@ nonisolated struct WeightPayload: Equatable, Sendable, Codable {
     var changedAt: Date
 }
 
+/// Документ собаки: паспорт, ветпаспорт, родословная, страховка.
+///
+/// **Зачем ездит.** Документы нужны тому, кто СЕГОДНЯ один с собакой:
+/// в клинике спрашивают номер, на границе — срок. До 07.10.2026
+/// четыре поля (тип, номер, кем выдан, срок) ехали в архив и не ехали
+/// ко второму человеку вовсе.
+///
+/// **`image` здесь нет нарочно** — см. `RecordType.document`.
+nonisolated struct DocumentPayload: Equatable, Sendable, Codable {
+    var id: UUID
+    var dogID: UUID?
+    var title: String
+    var kind: String
+    var number: String?
+    var issuedBy: String?
+    var validUntil: Date?
+    var addedAt: Date
+    var note: String?
+    var changedAt: Date
+}
+
 /// Строка анализа.
 ///
 /// **Три поля значения вместо одного, и это не избыточность.** `value` —
@@ -663,6 +703,30 @@ nonisolated enum SharedDiaryMerge {
         // а не мнение, и потерять его хуже, чем потерять правку названия.
         return (local.lastDone ?? .distantPast) >= (remote.lastDone ?? .distantPast)
             ? local : remote
+    }
+
+    /// Спор о документе.
+    ///
+    /// Побеждает правка, что позже; сильных полей нет — документ это
+    /// перепечатка бумаги, а не действие. При ничьей по времени —
+    /// версия, где полей заполнено больше: номер и срок вводят руками
+    /// по одному разу, и терять набранное из-за расхождения часов
+    /// на секунды нельзя.
+    static func resolve(local: DocumentPayload, remote: DocumentPayload) -> DocumentPayload {
+        precondition(local.id == remote.id)
+        if local.changedAt != remote.changedAt {
+            return local.changedAt > remote.changedAt ? local : remote
+        }
+        func заполнено(_ p: DocumentPayload) -> Int {
+            var счёт = 0
+            if Fmt.notBlank(p.title) != nil { счёт += 1 }
+            if p.number?.isEmpty == false { счёт += 1 }
+            if p.issuedBy?.isEmpty == false { счёт += 1 }
+            if p.validUntil != nil { счёт += 1 }
+            if p.note?.isEmpty == false { счёт += 1 }
+            return счёт
+        }
+        return заполнено(local) >= заполнено(remote) ? local : remote
     }
 
     /// Спор о взвешивании.

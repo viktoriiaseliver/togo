@@ -403,7 +403,7 @@ struct SchemaMigrationTests {
             // Шаг 0 медслоя, 07.10.2026: прививка получила партию, срок
             // и клинику; документ — тип, номер, кем выдан и срок.
             "CareTask": ["vaccineBatch", "vaccineValidUntil", "clinic"],
-            "DogDocument": ["kindRaw", "number", "issuedBy", "validUntil"],
+            "DogDocument": ["kindRaw", "number", "issuedBy", "validUntil", "changedAt"],
             // Обратные стороны связей к четырём медицинским сущностям.
             // Без них хранилище не открывается вовсе — зеркало CloudKit
             // требует обратной у каждой связи.
