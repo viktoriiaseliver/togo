@@ -45,50 +45,36 @@ struct FinalV2DomainTests {
         #expect(!NotificationPriming.needsSystemSettings(system: .granted))
     }
 
-    // MARK: След удалённой записи
-
-    @Test("Удалённая сегодня видна зачёркнутой, удалённая вчера — не видна")
-    func traceLivesUntilEndOfDay() {
-        var календарь = Calendar(identifier: .gregorian)
-        календарь.timeZone = TimeZone(identifier: "Europe/Paris")!
-        let сейчас = Date(timeIntervalSince1970: 1_791_000_000)
-        let сегодняРаньше = сейчас.addingTimeInterval(-3 * 3600)
-        let вчера = календарь.startOfDay(for: сейчас).addingTimeInterval(-3600)
-
-        #expect(DeletedTrace.visibility(deletedAt: сегодняРаньше, now: сейчас, calendar: календарь) == .struckThrough)
-        #expect(DeletedTrace.visibility(deletedAt: вчера, now: сейчас, calendar: календарь) == .gone)
-    }
-
-    @Test("Срок жизни следа — начало следующих суток, а не сутки с удаления")
-    func traceDiesAtMidnightNotAfter24h() {
-        var календарь = Calendar(identifier: .gregorian)
-        календарь.timeZone = TimeZone(identifier: "Europe/Paris")!
-        let сейчас = Date(timeIntervalSince1970: 1_791_000_000)
-        let полночь = календарь.startOfDay(for: сейчас)
-        let удалено = полночь.addingTimeInterval(23 * 3600 + 50 * 60)
-
-        let исчезнет = DeletedTrace.disappearsAt(deletedAt: удалено, now: удалено, calendar: календарь)
-        // Запись, удалённая в 23:50, обязана пропасть через десять минут,
-        // а не висеть зачёркнутой весь следующий день.
-        #expect(исчезнет == полночь.addingTimeInterval(24 * 3600))
-        if let исчезнет {
-            #expect(исчезнет.timeIntervalSince(удалено) < 3600)
-        }
-    }
-
-    @Test("У невидимого следа не спрашивают, когда он исчезнет")
-    func goneTraceHasNoDeadline() {
-        var календарь = Calendar(identifier: .gregorian)
-        календарь.timeZone = TimeZone(identifier: "Europe/Paris")!
-        let сейчас = Date(timeIntervalSince1970: 1_791_000_000)
-        let вчера = календарь.startOfDay(for: сейчас).addingTimeInterval(-3600)
-        #expect(DeletedTrace.disappearsAt(deletedAt: вчера, now: сейчас, calendar: календарь) == nil)
-    }
-
-    @Test("След не входит в счёт дня")
-    func traceNeverCounts() {
-        #expect(DeletedTrace.countsTowardDayTotals == false)
-    }
+    // MARK: След удалённой записи — СНЯТ 08.10.2026, решение Виктории
+    //
+    // Здесь стояли четыре теста на `DeletedTrace`: след «до конца дня».
+    // Модуль удалён вместе с ними, и причина важнее самого удаления.
+    //
+    // Правило «до конца дня» пришло из `Togo ФИНАЛ v2` и **было
+    // отменено живым использованием** — об этом написано там, где
+    // след работает на самом деле (`Diary.onDayWithTraces`,
+    // `Diary.swift:19-23`):
+    //
+    //     «След живёт ровно столько, сколько живёт отмена, — пять
+    //      секунд. Раньше зачёркнутая строка оставалась до конца дня,
+    //      и удалённое висело в ленте наравне с настоящим. Человек
+    //      не нашёл, где поправить граммы, удалил запись и записал
+    //      заново — а в ленте осталось и то и другое.»
+    //
+    // То есть след НЕ «не подключён»: он жив, его рисует
+    // `DayTimeline.swift:146`, зовут из `TodayScreen.swift:317`.
+    // Мёртв был только `DeletedTrace` — реализация отменённого окна.
+    //
+    // > **Зелёный тест без места вызова означает две разные вещи,
+    // > и снаружи они неразличимы: «не доделали» и «решили
+    // > не делать».** Здесь было второе, и именно поэтому модуль
+    // > удалён, а не подключён: пока он лежал покрытым тестами,
+    // > следующий читал его как недоделку — и подключение вернуло бы
+    // > дефект, уже найденный на живых данных.
+    //
+    // Решение «пять секунд, а не до конца дня» — Виктории, через
+    // менеджера смены. Модуль и тесты восстанавливаются из git
+    // одной командой, если решение переменится.
 
     // MARK: Матрица навыка
 
