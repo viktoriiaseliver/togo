@@ -106,6 +106,48 @@ final class FamilySync: NSObject {
             name: ModelContext.didSave, object: nil
         )
         await fetchNow()
+        await засеять()
+    }
+
+    /// Отправить второму человеку то, что уже лежало в хранилище.
+    ///
+    /// Сбор — в `SharedDiarySeed.изменения`, там же и почему он отдельно:
+    /// движок в тест не поставить, а решение «что считается накопленным»
+    /// проверяемо. Здесь только отправка и флаг.
+    ///
+    /// **`hasPendingUntrackedChanges` я сознательно НЕ ставлю.** Ручка
+    /// штатная и по названию ровно про наш случай — «учёт незасеянного
+    /// веду я сам», — но она для ДРУГОЙ стратегии: когда движку
+    /// не перечисляют изменения, а говорят «у меня есть что-то, спроси
+    /// меня». Мы перечисляем явно через `add(pendingRecordZoneChanges:)`,
+    /// а `nextRecordZoneChangeBatch` собирает батч ТОЛЬКО из очереди —
+    /// сверх неё отдать нечего. Выставить флаг значило бы обещать движку
+    /// то, чего он от нас не получит.
+    ///
+    /// Записано потому, что ручку нашла сверка документации и её легко
+    /// принять за обязательную половину.
+    private func засеять() async {
+        guard let engine = outgoingEngine else { return }
+        let owner = SharedZoneOwner.name
+        guard !SyncSeedState.засеяно(владелец: owner) else { return }
+
+        let changes = SharedDiarySeed.изменения(context: context, zone: zone)
+        guard !changes.isEmpty else {
+            // Пустое хранилище — засевать нечего, и это засев, а не отказ.
+            SyncSeedState.отметить(владелец: owner)
+            return
+        }
+
+        // Предел 250 записей на запрос держит сам движок: батч собирается
+        // через `RecordZoneChangeBatch(pendingChanges:recordProvider:)`
+        // в `nextRecordZoneChangeBatch` — проверено чтением, а не
+        // предположено. Очередь при этом любой длины: ограничен батч,
+        // а не очередь. Собранный руками батч на таком объёме упал бы
+        // с `limitExceeded`.
+        engine.state.add(pendingRecordZoneChanges: changes)
+        pending = engine.state.pendingRecordZoneChanges.count
+        SyncSeedState.отметить(владелец: owner)
+        log.notice("общий дневник: засев отправил \(changes.count) записей")
     }
 
     func stop() {
@@ -113,6 +155,12 @@ final class FamilySync: NSObject {
         privateEngine = nil
         sharedEngine = nil
         outbox.forgetAll()
+        // Выключили обмен — засев больше не считается сделанным.
+        // Иначе включённый заново обмен не отправит накопленное
+        // за время, пока он был выключен, и это молча: симптом тот же,
+        // что до появления засева. Чем флаг может соврать и что
+        // из этого выйдет — в `SyncSeedState`.
+        SyncSeedState.сбросить(владелец: SharedZoneOwner.name)
         state = .off
     }
 
