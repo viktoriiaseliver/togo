@@ -38,6 +38,42 @@ struct DogEditorScreen: View {
                 LabeledField(label: "Порода") {
                     TextField("можно пропустить", text: $draft.breed)
                 }
+                TGDivider()
+                // **Пол спрашивали ровно в одном месте — в онбординге.**
+                //
+                // Замер 08.10.2026 по живой выгрузке: у всех шестнадцати
+                // собак `sexRaw: unknown`, включая Стича. Поправить это
+                // было нечем: во всём `Togo/` пол упомянут трижды —
+                // дважды в онбординге и один раз комментарием.
+                //
+                // Дыра шире, чем «нельзя исправить»: этот экран заводит
+                // вторую и следующих собак (`:128`, `draft.makeDog()`),
+                // а пола в черновике задать было негде — значит собака,
+                // заведённая НЕ через онбординг, получала `unknown`
+                // навсегда. Само поле в `DogDraft` лежит с первого дня
+                // (`OnboardingFlow.swift:158`), не хватало только строки.
+                //
+                // > `OnboardingSteps.swift:87` обещает: «искать его потом
+                // > в профиле никто не будет» — и писалось это в уверенности,
+                // > что в профиле пол есть. Его там не было ни строкой.
+                HStack {
+                    Text("Кто это").textStyle(AppFont.body)
+                    Spacer(minLength: Token.Space.s8)
+                    Picker("Кто это", selection: $draft.sex) {
+                        ForEach(DogSex.allCases, id: \.self) { Text($0.title).tag($0) }
+                    }
+                    .pickerStyle(.menu)
+                    .tint(Token.Ink.secondary)
+                }
+                .frame(minHeight: Token.Size.tapTarget)
+                if draft.sex != .unknown {
+                    TGDivider()
+                    Toggle(isOn: $draft.isNeutered) {
+                        Text(draft.sex == .male ? "Кастрирован" : "Стерилизована")
+                            .textStyle(AppFont.body)
+                    }
+                    .frame(minHeight: Token.Size.tapTarget)
+                }
             }
 
             TGCard {
@@ -79,6 +115,8 @@ struct DogEditorScreen: View {
         draft.weight = String(dog.weightKg).replacingOccurrences(of: ".", with: ",")
         draft.breed = dog.breed ?? ""
         draft.isOnTreatment = dog.isOnTreatment
+        draft.sex = dog.sex
+        draft.isNeutered = dog.isNeutered
         loaded = true
     }
 
@@ -88,6 +126,8 @@ struct DogEditorScreen: View {
             let былВес = dog.weightKg
             let былаПорода = dog.breed
             let былоЛечение = dog.isOnTreatment
+            let былПол = dog.sex
+            let былаКастрация = dog.isNeutered
             // **Кличка триммится, потому что она КЛЮЧ, а не показ.**
             //
             // Соседняя ветка того же метода (`:102`, `draft.makeDog()`)
@@ -118,11 +158,20 @@ struct DogEditorScreen: View {
             dog.weightKg = draft.weightValue ?? dog.weightKg
             dog.breed = draft.breed.isEmpty ? nil : draft.breed
             dog.isOnTreatment = draft.isOnTreatment
+            dog.sex = draft.sex
+            // Кастрация привязана к полу и в показе, и в смысле: сняли
+            // пол обратно в «не знаю» — утверждение «кастрирован»
+            // осталось бы висеть без того, к чему относится, и уехало бы
+            // в сводку врачу молча. Строка исчезает с экрана вместе
+            // с полом, значит и значение не должно её пережить.
+            dog.isNeutered = draft.sex == .unknown ? false : draft.isNeutered
             guard context.persist(otherwise: {
                 dog.name = былоИмя
                 dog.weightKg = былВес
                 dog.breed = былаПорода
                 dog.isOnTreatment = былоЛечение
+                dog.sex = былПол
+                dog.isNeutered = былаКастрация
             }) else { return неСохранилось() }
         } else {
             let new = draft.makeDog()
