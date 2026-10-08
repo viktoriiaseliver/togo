@@ -25,6 +25,35 @@ enum NotificationCenterService {
         await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
     }
 
+    /// Системное состояние в том виде, в каком его ждёт правило
+    /// `NotificationPriming`.
+    ///
+    /// Перевод живёт здесь, а не в домене, нарочно: домен не ходит
+    /// в `UserNotifications` и потому проверяется тестом без
+    /// симулятора и без разрешений. Если бы он спрашивал систему сам,
+    /// мы проверяли бы одну реализацию наблюдениями за другой.
+    ///
+    /// `.provisional` считается разрешением: тихие уведомления уже
+    /// доставляются, и спрашивать второй раз незачем. `.ephemeral` —
+    /// App Clip, которого у Togo нет; обрабатывается как разрешение,
+    /// чтобы не спрашивать там, где системное окно не появится.
+    static func primingState() async -> NotificationPriming.SystemState {
+        switch await authorizationStatus() {
+        case .notDetermined:
+            return .notAsked
+        case .denied:
+            return .denied
+        case .authorized, .provisional, .ephemeral:
+            return .granted
+        @unknown default:
+            // Незнакомое состояние — НЕ `.notAsked`. Ошибка в эту
+            // сторону показала бы наше окно там, где системное уже
+            // отработало, то есть дала бы обещание, которого
+            // приложение выполнить не может.
+            return .granted
+        }
+    }
+
     /// Один пуш в выбранный час со всеми сроками сразу.
     static func scheduleMorningBrief(at hour: Int, lines: [String]) async {
         let center = UNUserNotificationCenter.current()
@@ -124,5 +153,66 @@ enum NotificationCenterService {
 
     static func cancelAll() {
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+    }
+
+    /// Что сейчас реально запланировано — списком, который можно
+    /// прочесть глазами.
+    ///
+    /// **Заводится вместе с подключением правила, а не после, и это
+    /// не вежливость к будущему.** Уведомления и разрешения кадром
+    /// не проверяются: экрана у них нет. Без пути, который смотрит
+    /// мимо показа, «запланировано» и «не запланировано» дают один
+    /// зелёный — ровно как у Togo «скрыто» и «не существует», где
+    /// решение «пустые записи не удаляем, а не показываем» сделало
+    /// любую проверку через интерфейс бессильной.
+    ///
+    /// Печатает и системное состояние: ноль запланированных при
+    /// `denied` — это «права нет», а при `granted` — находка. Одно
+    /// число без второго не отвечает ни на что.
+    static func отладочныйСписок() async -> String {
+        // День и час отдельными вызовами: `Fmt.dateTime` в проекте нет,
+        // и заводить его ради отладочной строки значило бы добавить
+        // формат, который завтра разойдётся с остальными.
+        func момент(_ дата: Date) -> String {
+            Fmt.shortDay(дата) + " " + Fmt.clock(дата)
+        }
+        let центр = UNUserNotificationCenter.current()
+        let состояние = await primingState()
+        let заявки = await центр.pendingNotificationRequests()
+
+        let право: String
+        switch состояние {
+        case .notAsked: право = "система ещё не спрашивала"
+        case .granted: право = "разрешено"
+        case .denied: право = "отказано"
+        }
+
+        guard !заявки.isEmpty else {
+            return """
+                Запланированных уведомлений: 0 · право: \(право).
+
+                Ноль при отказе — это «права нет», а не «не запланировали».
+                Ноль при разрешении — находка.
+                """
+        }
+
+        let строки = заявки
+            .map { заявка -> String in
+                let когда: String
+                if let t = заявка.trigger as? UNCalendarNotificationTrigger,
+                   let дата = t.nextTriggerDate() {
+                    когда = момент(дата) + (t.repeats ? " · повторяется" : "")
+                } else if let t = заявка.trigger as? UNTimeIntervalNotificationTrigger,
+                          let дата = t.nextTriggerDate() {
+                    когда = момент(дата)
+                } else {
+                    когда = "без срока"
+                }
+                return "\(заявка.identifier) · \(когда) · \(заявка.content.title)"
+            }
+            .sorted()
+
+        return "Запланировано: \(заявки.count) · право: \(право)\n"
+            + строки.joined(separator: "\n")
     }
 }

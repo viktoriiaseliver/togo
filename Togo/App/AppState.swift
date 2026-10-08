@@ -394,6 +394,40 @@ final class Settings {
     var notificationsAsked: Bool {
         didSet { UserDefaults.standard.set(notificationsAsked, forKey: Keys.notificationsAsked) }
     }
+    /// Показывали ли мы своё окно про уведомления хоть раз.
+    ///
+    /// **Отдельно от `notificationsAsked`, и это не дубль.** Старый флаг
+    /// значит «шаг онбординга пройден» — он встаёт и когда человек нажал
+    /// «Не сейчас», не дойдя ни до какого окна. Правило же нового
+    /// дизайна («спрашиваем в момент первой дозы, после отказа больше
+    /// не спрашиваем») различает эти два случая, и сложить их в один
+    /// флаг значит потерять запрет.
+    var notificationsPrimed: Bool {
+        didSet { UserDefaults.standard.set(notificationsPrimed, forKey: Keys.notificationsPrimed) }
+    }
+    /// Отказался ли человек у НАС, а не в системе.
+    ///
+    /// Системный отказ приходит из `UNUserNotificationCenter` и живёт
+    /// в системе; этот — наш, и переживает переустановку разрешений.
+    /// Спрашивать оба и хранить один значило бы проверять одну
+    /// реализацию наблюдениями за другой.
+    var notificationsDeclined: Bool {
+        didSet { UserDefaults.standard.set(notificationsDeclined, forKey: Keys.notificationsDeclined) }
+    }
+
+    /// Память правила в том виде, в каком её ждёт домен.
+    ///
+    /// Собирается здесь, а не во вью: правило живёт в
+    /// `NotificationPriming`, хранение — в настройках, и между ними
+    /// нужен один мост, а не по мосту на каждый экран. У Togo уже было
+    /// правило в трёх реализациях, и две молчали.
+    var primingMemory: NotificationPriming.Memory {
+        get { .init(didPrime: notificationsPrimed, didDecline: notificationsDeclined) }
+        set {
+            notificationsPrimed = newValue.didPrime
+            notificationsDeclined = newValue.didDecline
+        }
+    }
     var quietHoursStart: Int {
         didSet {
             UserDefaults.standard.set(quietHoursStart, forKey: Keys.quietHoursStart)
@@ -433,6 +467,8 @@ final class Settings {
         static let onboardingCompleted = "settings.onboardingCompleted"
         static let lastSeenVersion = "settings.lastSeenVersion"
         static let notificationsAsked = "settings.notificationsAsked"
+        static let notificationsPrimed = "settings.notificationsPrimed"
+        static let notificationsDeclined = "settings.notificationsDeclined"
         static let quietHoursStart = "settings.quietHoursStart"
         static let quietHoursEnd = "settings.quietHoursEnd"
         static let haptics = "settings.haptics"
@@ -445,6 +481,8 @@ final class Settings {
         onboardingCompleted = defaults.bool(forKey: Keys.onboardingCompleted)
         lastSeenVersion = defaults.string(forKey: Keys.lastSeenVersion) ?? ""
         notificationsAsked = defaults.bool(forKey: Keys.notificationsAsked)
+        notificationsPrimed = defaults.bool(forKey: Keys.notificationsPrimed)
+        notificationsDeclined = defaults.bool(forKey: Keys.notificationsDeclined)
         quietHoursStart = defaults.object(forKey: Keys.quietHoursStart) as? Int ?? 23
         quietHoursEnd = defaults.object(forKey: Keys.quietHoursEnd) as? Int ?? 7
         haptics = defaults.object(forKey: Keys.haptics) as? Bool ?? true
