@@ -493,6 +493,11 @@ struct MedicationEditorSheet: View {
     @State private var fastingMinutes = 0
     @State private var fastingBeforeMinutes = 0
     @State private var prescriber = ""
+    /// Масса вещества в одной единице формы. Вводится ЧИСЛОМ и ЕДИНИЦЕЙ,
+    /// хранится всегда в микрограммах — перевод случается здесь и больше
+    /// нигде.
+    @State private var массаТекст = ""
+    @State private var массаЕдиница: ЕдиницаМассы = .мкг
     @State private var loaded = false
     @State private var isConfirmingDelete = false
 
@@ -518,6 +523,31 @@ struct MedicationEditorSheet: View {
                 LabeledField(label: "Назначил") {
                     TextField("врач или клиника", text: $prescriber)
                 }
+            }
+
+            TGCard {
+                TGSectionHeader(title: "сколько вещества в одной единице")
+                HStack(spacing: Token.Space.s8) {
+                    TextField("66", text: $массаТекст)
+                        .keyboardType(.decimalPad)
+                        .autocorrectionDisabled()
+                        .textStyle(AppFont.body)
+                    Picker("Единица", selection: $массаЕдиница) {
+                        ForEach(ЕдиницаМассы.allCases) { Text(verbatim: $0.rawValue).tag($0) }
+                    }
+                    .pickerStyle(.segmented)
+                    .frame(maxWidth: 140)
+                }
+                .frame(minHeight: Token.Size.tapTarget)
+                // **Поле нужно графику, а не учёту запаса.** Без него
+                // линия Т4 и доза рядом не читаются: счёт таблеток
+                // не меняется, когда врач меняет силу таблетки,
+                // и рост дозы становится невидимым.
+                //
+                // Пусто оставить МОЖНО: это «не введено», а не ноль.
+                // Тогда график покажет точки без столбиков дозы
+                // и скажет об этом словами, а не нарисует ноль.
+                TGExplainer(text: "Нужно графику: по силе таблетки видно, росла ли доза. Можно оставить пустым — тогда график покажет анализы без дозы и скажет об этом.")
             }
 
             TGCard {
@@ -626,6 +656,17 @@ struct MedicationEditorSheet: View {
         // симметрично — показываем то же, что и применяем.
         fastingBeforeMinutes = medication.fastingBefore
         prescriber = medication.prescriber ?? ""
+        // Показываем в той единице, в которой число читается человеком,
+        // а храним всегда в микрограммах.
+        if let мкг = medication.massPerUnitMcg, мкг > 0 {
+            if мкг < 1000 {
+                массаЕдиница = .мкг
+                массаТекст = ЧислоСБланка.текст(мкг)
+            } else {
+                массаЕдиница = .мг
+                массаТекст = ЧислоСБланка.текст(мкг / 1000)
+            }
+        }
         loaded = true
     }
 
@@ -642,6 +683,7 @@ struct MedicationEditorSheet: View {
         let былоНатощак = target.fastingMinutes
         let былоНатощакДо = target.fastingBeforeMinutes
         let былВрач = target.prescriber
+        let былаМасса = target.massPerUnitMcg
 
         target.name = name
         target.doseText = doseText
@@ -649,6 +691,15 @@ struct MedicationEditorSheet: View {
         target.fastingMinutes = fastingMinutes
         target.fastingBeforeMinutes = fastingBeforeMinutes
         target.prescriber = prescriber.isEmpty ? nil : prescriber
+        // Разбор — `ЧислоСБланка`, уже заведённый для анализов: он терпит
+        // и запятую, и точку, и неразрывные пробелы из PDF. Второго
+        // разбора числа в проекте заводить нельзя — они разойдутся
+        // на второй правке.
+        //
+        // ЕДИНСТВЕННОЕ место перевода на вводе: число × множитель
+        // единицы → микрограммы. Пустая строка даёт `nil` — «не
+        // введено», а не ноль.
+        target.massPerUnitMcg = ЧислоСБланка.разобрать(массаТекст).map { $0 * массаЕдиница.вМикрограммах }
         let новое = medication == nil
         if новое {
             target.dog = dog
@@ -666,6 +717,7 @@ struct MedicationEditorSheet: View {
                 target.fastingMinutes = былоНатощак
                 target.fastingBeforeMinutes = былоНатощакДо
                 target.prescriber = былВрач
+                target.massPerUnitMcg = былаМасса
             }
         }) else {
             Haptics.warning()
