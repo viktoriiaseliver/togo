@@ -33,6 +33,11 @@ nonisolated enum DoseScheduler {
                 guard !exists else { continue }
 
                 let dose = DoseRecord(scheduledAt: scheduled)
+                // **Здесь это и было важнее всего.** Отметки заводятся
+                // лениво, на каждом телефоне своим открытием экрана —
+                // то есть именно тут рождались две записи на один приём.
+                dose.id = DoseRecord.устойчивыйID(medication: medication.id,
+                                                  scheduledAt: scheduled)
                 dose.medication = medication
                 context.insert(dose)
                 created += 1
@@ -131,6 +136,9 @@ nonisolated enum DoseScheduler {
         }
         let dose = существующая ?? {
             let new = DoseRecord(scheduledAt: scheduled)
+            // Тот же id, что у второго телефона: см. `устойчивыйID`.
+            new.id = DoseRecord.устойчивыйID(medication: medication.id,
+                                             scheduledAt: scheduled)
             new.medication = medication
             context.insert(new)
             return new
@@ -216,6 +224,9 @@ nonisolated enum DoseScheduler {
         }
         let dose = существующая ?? {
             let new = DoseRecord(scheduledAt: scheduled)
+            // Тот же id, что у второго телефона: см. `устойчивыйID`.
+            new.id = DoseRecord.устойчивыйID(medication: medication.id,
+                                             scheduledAt: scheduled)
             new.medication = medication
             context.insert(new)
             return new

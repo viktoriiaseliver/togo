@@ -734,6 +734,22 @@ nonisolated enum BackupService {
             medication.dog = dog
             context.insert(medication)
             for doseSnapshot in medicationSnapshot.doses {
+                // **`DoseRecord.устойчивыйID` здесь НЕ применяется, и это
+                // не недосмотр.** Он выводит id из `medication.id`,
+                // а `MedicationSnapshot` id схемы не несёт (см. ниже) —
+                // при восстановлении схема получает свежий `UUID()`.
+                // Значит выведенный id был бы функцией случайной
+                // величины: у двух телефонов, восстановивших ОДИН
+                // архив независимо, отметки всё равно разойдутся.
+                //
+                // Пока `MedicationSnapshot` не несёт устойчивый id схемы,
+                // независимое восстановление одного архива на двух
+                // телефонах даёт по две отметки на приём — тот же дефект,
+                // что чинит `устойчивыйID`, второй дорогой.
+                //
+                // Цена ниже, чем кажется: обычный путь — восстановили
+                // у одного, записи уехали обменом со своими id. Дефект
+                // достаётся только тем, кто восстановил архив ОБА.
                 let dose = DoseRecord(scheduledAt: doseSnapshot.scheduledAt)
                 dose.givenAt = doseSnapshot.givenAt
                 dose.givenBy = doseSnapshot.givenBy
