@@ -142,22 +142,34 @@ nonisolated enum DuplicateMerge {
     /// прогон CI упал ровно здесь. То есть «названо, не сделано»
     /// в применении к сборке означает «упадёт в следующий раз»,
     /// а не «записано на потом».
+    /// **Вторая редакция. Первая сняла отказ и не восстановила запас** —
+    /// замер `-warn-long-function-bodies=500` от 07.10.2026 дал здесь
+    /// **3356 мс**, второе место в проекте после сестринского метода
+    /// в `DuplicateDogCard`.
+    ///
+    /// Перебор не исчез от перехода к циклу, он переехал из `+`
+    /// в **литерал массива**: `[a?.count, b?.count, …]` из одиннадцати
+    /// элементов требует вывести общий тип элемента, и кандидатов
+    /// у каждого по-прежнему два.
+    ///
+    /// > **Отказ снят ≠ запас восстановлен.** Три с лишним секунды —
+    /// > та же близость к пределу, под которой этот файл упал
+    /// > на раннере CI; разница между машинами здесь загрузка,
+    /// > а не код.
     @MainActor
     private static func записейУ(_ собака: Dog) -> Int {
         var всего = 0
-        for связь in [собака.eventsStorage?.count,
-                      собака.weightsStorage?.count,
-                      собака.careTasksStorage?.count,
-                      собака.medicationsStorage?.count,
-                      собака.trainingStepsStorage?.count,
-                      собака.trainingSessionsStorage?.count,
-                      собака.tripsStorage?.count,
-                      собака.documentsStorage?.count,
-                      собака.daysOutStorage?.count,
-                      собака.heatsStorage?.count,
-                      собака.stocksStorage?.count] {
-            всего += связь ?? 0
-        }
+        всего += собака.eventsStorage?.count ?? 0
+        всего += собака.weightsStorage?.count ?? 0
+        всего += собака.careTasksStorage?.count ?? 0
+        всего += собака.medicationsStorage?.count ?? 0
+        всего += собака.trainingStepsStorage?.count ?? 0
+        всего += собака.trainingSessionsStorage?.count ?? 0
+        всего += собака.tripsStorage?.count ?? 0
+        всего += собака.documentsStorage?.count ?? 0
+        всего += собака.daysOutStorage?.count ?? 0
+        всего += собака.heatsStorage?.count ?? 0
+        всего += собака.stocksStorage?.count ?? 0
         return всего
     }
 }
