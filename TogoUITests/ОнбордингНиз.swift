@@ -187,6 +187,41 @@ nonisolated final class ОнбордингНиз: XCTestCase {
         return false
     }
 
+    /// Дождаться заголовка шага.
+    ///
+    /// **Сорок секунд, а не десять, и это замерено, а не на всякий
+    /// случай.** Первый прогон упал на `Что делаешь для ухода` с десятью:
+    /// весь проход занял 226 секунд там, где на свободной машине ушло бы
+    /// секунд тридцать. Короткое ожидание на занятой машине даёт отказ,
+    /// неотличимый от «экрана нет» — то есть превращает загрузку
+    /// в находку.
+    private func дождаться(_ заголовок: String, секунд: TimeInterval = 40) -> Bool {
+        app.staticTexts[заголовок].firstMatch.waitForExistence(timeout: секунд)
+    }
+
+    /// Убрать клавиатуру после ввода.
+    ///
+    /// **Из-за неё первый замер `:130` вышел негодным.** Клавиатура
+    /// поднимается на `typeText` и остаётся: вёрстка под ней едет,
+    /// нижний текст не встаёт никогда, и `дождатьсяПокоя` честно
+    /// сдаётся. То есть экран был ни при чём — мешал наш собственный
+    /// ввод.
+    ///
+    /// > **Стенд, оставивший после себя клавиатуру, меряет клавиатуру.**
+    ///
+    /// Закрывается нажатием по заголовку экрана: он не кнопка
+    /// и не поле, тап по нему только снимает фокус.
+    private func убратьКлавиатуру() {
+        guard app.keyboards.element.exists else { return }
+        let заголовок = app.staticTexts.allElementsBoundByIndex.first {
+            $0.exists && $0.isHittable
+        }
+        заголовок?.tap()
+        // Клавиатура уезжает анимацией; без ожидания следующий замер
+        // поймает её на полпути.
+        _ = app.keyboards.element.waitForNonExistence(timeout: 10)
+    }
+
     /// Замер одного экрана: доходит ли нижний текст до конца прокрутки.
     ///
     /// Возвращает перекрытие в точках: положительное — текст уходит
@@ -247,9 +282,9 @@ nonisolated final class ОнбордингНиз: XCTestCase {
         начать.tap()
 
         // Шаг 2 · «Кто у тебя живёт» — слот :130, запас был ровно нулевым.
-        XCTAssertTrue(app.staticTexts["Кто у тебя живёт"].waitForExistence(timeout: 10))
+        XCTAssertTrue(дождаться("Кто у тебя живёт"))
         let кличка = app.textFields["Стич"].firstMatch
-        if кличка.waitForExistence(timeout: 5) {
+        if кличка.waitForExistence(timeout: 20) {
             кличка.tap()
             кличка.typeText("Стич")
         }
@@ -258,6 +293,7 @@ nonisolated final class ОнбордингНиз: XCTestCase {
             вес.tap()
             вес.typeText("4,7")
         }
+        убратьКлавиатуру()
         замерить("130-кто-у-тебя-живёт", кнопка: "Дальше")
         app.buttons["Дальше"].firstMatch.tap()
 
@@ -265,26 +301,26 @@ nonisolated final class ОнбордингНиз: XCTestCase {
         // экран не падал ни до починки, ни после. Снимается тем же
         // прогоном нарочно: если обрезан и он, разница про способ
         // снимать, а не про экраны, и тогда остальным трём верить нельзя.
-        XCTAssertTrue(app.staticTexts["Режим дня"].waitForExistence(timeout: 10))
+        XCTAssertTrue(дождаться("Режим дня"))
         замерить("154-режим-дня-КОНТРОЛЬ", кнопка: "Дальше")
         app.buttons["Дальше"].firstMatch.tap()
 
         // Шаг 4 · уход — проходим насквозь, слот :205 не падал.
-        XCTAssertTrue(app.staticTexts["Что делаешь для ухода"].waitForExistence(timeout: 10))
-        let дальшеУход = app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Дальше' OR label == 'Пропустить'")).firstMatch
-        XCTAssertTrue(дальшеУход.waitForExistence(timeout: 5))
+        XCTAssertTrue(дождаться("Что делаешь для ухода"))
+        let дальшеУход = app.buttons.matching(
+            NSPredicate(format: "label BEGINSWITH 'Дальше' OR label == 'Пропустить'")).firstMatch
+        XCTAssertTrue(дальшеУход.waitForExistence(timeout: 20))
         дальшеУход.tap()
 
         // Шаг 5 · «Кто ещё за ним ходит» — слот :301, −6 pt.
         // Здесь обрывалась строка про то, что двое бесплатно, то есть
         // объяснение ровно на шаге приглашения.
-        XCTAssertTrue(app.staticTexts["Кто ещё за ним ходит"].waitForExistence(timeout: 10))
+        XCTAssertTrue(дождаться("Кто ещё за ним ходит"))
         замерить("301-кто-ещё-за-ним-ходит", кнопка: "Пока сама")
-
         app.buttons["Пока сама"].firstMatch.tap()
 
         // Шаг 6 · «Что будет прерывать» — слот :346, −6 pt.
-        XCTAssertTrue(app.staticTexts["Что будет прерывать"].waitForExistence(timeout: 10))
+        XCTAssertTrue(дождаться("Что будет прерывать"))
         замерить("346-что-будет-прерывать", кнопка: "Не сейчас")
     }
 
@@ -319,21 +355,40 @@ nonisolated final class ОнбордингНиз: XCTestCase {
         }
         let вес = app.textFields["4,1"].firstMatch
         if вес.exists { вес.tap(); вес.typeText("4,7") }
+        убратьКлавиатуру()
         app.buttons["Дальше"].firstMatch.tap()
 
         // Пройти остаток насквозь, ничего не выбирая.
-        for подпись in ["Дальше", "Пропустить", "Пока сама", "Не сейчас"] {
-            let кнопка = app.buttons[подпись].firstMatch
-            if кнопка.waitForExistence(timeout: 8) { кнопка.tap() }
+        //
+        // **Список подписей по порядку здесь не годится, и первый
+        // прогон это показал.** Шагов больше, чем подписей: «Дальше»
+        // встречается дважды подряд, а порядок зависит от того, что
+        // человек выбрал раньше. Проход списком один раз тапнул четыре
+        // кнопки из шести и встал посреди потока — а падение пришло
+        // позже и под именем «до настроек не дошли», то есть указало
+        // на конец, а не на место.
+        //
+        // Поэтому цикл: пока на экране есть любая кнопка «вперёд» —
+        // жать её. Выход по вкладке «Настройки», то есть по признаку
+        // ЦЕЛИ, а не по счёту шагов.
+        let вперёд = NSPredicate(format:
+            "label BEGINSWITH 'Дальше' OR label == 'Пропустить' "
+            + "OR label == 'Пока сама' OR label == 'Не сейчас' "
+            + "OR label == 'Вернуться к дневнику'")
+        for _ in 0..<10 {
+            if app.buttons["Настройки"].firstMatch.exists { break }
+            let кнопка = app.buttons.matching(вперёд).firstMatch
+            guard кнопка.waitForExistence(timeout: 20) else { break }
+            кнопка.tap()
         }
 
         // Настройки → секция «собаки».
         let настройки = app.buttons["Настройки"].firstMatch
-        XCTAssertTrue(настройки.waitForExistence(timeout: 20),
+        XCTAssertTrue(настройки.waitForExistence(timeout: 40),
                       "онбординг не завершился — до настроек не дошли")
         настройки.tap()
 
-        XCTAssertTrue(app.staticTexts["собаки"].waitForExistence(timeout: 10))
+        XCTAssertTrue(дождаться("собаки"))
         снять("после-онбординга-настройки-собаки")
 
         // Строка без клички показывает только вес. Их быть не должно
