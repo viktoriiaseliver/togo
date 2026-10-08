@@ -266,6 +266,22 @@ final class FamilySync: NSObject {
             guard let ids = notification.userInfo?[key] as? [PersistentIdentifier] else { continue }
             for id in ids {
                 if let event = ctx.model(for: id) as? LogEvent {
+                    // Ворота — ОБЩИЕ с засевом, той же функцией и по той
+                    // же причине, что у собаки ниже: запрет в одной двери
+                    // второй не знает.
+                    //
+                    // Ловят отладочную запись прогрева схемы. Замер
+                    // 08.10.2026 по выгрузке с телефона Виктории: из 182
+                    // записей одна с датой `2001-01-01` и автором
+                    // `ПРОГРЕВ СХЕМЫ`, у видимой собаки «Стич». Весь
+                    // `CloudKitSchemaWarmup` под `#if DEBUG` — в продуктовой
+                    // сборке она не создастся и **не удалится**, потому что
+                    // `remove()` тоже под `DEBUG`. Без ворот она уехала бы
+                    // маме первой записью истории.
+                    guard SharedDiaryOutgoing.sendable(event) else {
+                        log.notice("общий дневник: запись раньше приложения не отправляется")
+                        continue
+                    }
                     event.changedAt = now
                     stamped = true
                     changes.append(.saveRecord(SharedDiaryRecords.recordID(event.id, in: zone)))

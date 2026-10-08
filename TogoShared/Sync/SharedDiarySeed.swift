@@ -97,7 +97,12 @@ public enum SharedDiarySeed {
         // Своей копии условия здесь нет нарочно: два разбора одного
         // правила расходятся молча.
         собрать(Dog.self, { $0.id }, годится: { SharedDiaryOutgoing.sendable($0) })
-        собрать(LogEvent.self) { $0.id }
+        // Ворота на записи — те же, что у собак, и той же функцией.
+        // Ловят отладочную запись прогрева схемы: она лежит в живых
+        // данных (замер 08.10.2026 — одна из 182, дата 2001-01-01),
+        // а продуктовая сборка её не удаляет, потому что весь
+        // `CloudKitSchemaWarmup` под `#if DEBUG`.
+        собрать(LogEvent.self, { $0.id }, годится: { SharedDiaryOutgoing.sendable($0) })
         собрать(CareTask.self) { $0.id }
         собрать(Medication.self) { $0.id }
         собрать(DoseRecord.self) { $0.id }
