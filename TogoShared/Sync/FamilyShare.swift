@@ -297,12 +297,39 @@ enum ShareAcceptance {
         Task { @MainActor in
             do {
                 try await FamilyShare.accept(metadata)
-                accepted(ownerName: owner)
+                accepted(ownerName: owner, чьёИмя: чьёИмя(metadata))
             } catch {
                 handled.remove(key)
                 log.notice("Приглашение не принялось: \(error.localizedDescription)")
+                // Отказ идёт ТУДА ЖЕ, куда успех, и говорит другое.
+                //
+                // Пока он кончался одним `log.notice`, человек не узнавал
+                // ничего: приложение открывалось обычным, и мама считала,
+                // что вошла. Узнала бы обратное, не увидев ни одной
+                // записи и решив, что дневник пуст.
+                объявить(.причина(error))
             }
         }
+    }
+
+    /// Чем кончился последний приём — для того, кто покажет это человеку.
+    ///
+    /// Хранится здесь, а не передаётся в уведомлении: приём случается,
+    /// когда система открывает приложение ссылкой, и показать его
+    /// может быть пока некому. Исход дождётся того, кто подпишется.
+    public private(set) static var исход: ShareAcceptanceOutcome?
+
+    /// Исход прочитан и показан — больше не показывать.
+    ///
+    /// Без снятия тот же отказ всплыл бы на каждом следующем запуске:
+    /// человек прочитал, починил, вошёл — и снова видит старую жалобу.
+    public static func исходПрочитан() {
+        исход = nil
+    }
+
+    private static func объявить(_ новый: ShareAcceptanceOutcome) {
+        исход = новый
+        NotificationCenter.default.post(name: .familyShareAccepted, object: nil)
     }
 
     /// Приглашение принято: чей это дневник, включён ли обмен, и кому
@@ -310,9 +337,35 @@ enum ShareAcceptance {
     ///
     /// Отдельной функцией от `accept` — у неё на входе обычная строка,
     /// а не `CKShare.Metadata`, которую в тесте не собрать.
-    static func accepted(ownerName: String) {
+    /// - Parameters:
+    ///   - ownerName: имя зоны владельца — **непрозрачный
+    ///     идентификатор** вроде `_a1b2…`, человеку его показывать
+    ///     нельзя. Им адресуются записи, и только.
+    ///   - чьёИмя: имя владельца для человека. Приходит из
+    ///     `CKShare.Metadata` и **может отсутствовать**: CloudKit
+    ///     отдаёт `nameComponents` не всегда. Отсутствие названо
+    ///     отдельным текстом, а не заменено на «общий дневник».
+    static func accepted(ownerName: String, чьёИмя: String? = nil) {
         SharedZoneOwner.name = ownerName
         SharedDiarySettings.isOn = true
-        NotificationCenter.default.post(name: .familyShareAccepted, object: nil)
+        // Третье решение, появившееся 08.10.2026: сказать человеку,
+        // **чей** дневник он открыл. «Вы в общем дневнике» не отвечает
+        // на вопрос, в чьём именно, — а гость приходит по ссылке
+        // и видит чужие записи о чужой собаке.
+        объявить(.принято(чей: чьёИмя))
+    }
+
+    /// Имя владельца приглашения для человека — из метаданных.
+    ///
+    /// Тем же способом, что и состав семьи в `participants()`: имя
+    /// из `nameComponents`, иначе почта. Если нет ни того ни другого —
+    /// `nil`, и текст скажет об этом прямо.
+    static func чьёИмя(_ metadata: CKShare.Metadata) -> String? {
+        let identity = metadata.share.owner.userIdentity
+        if let components = identity.nameComponents {
+            let собрано = PersonNameComponentsFormatter().string(from: components)
+            if !собрано.isEmpty { return собрано }
+        }
+        return identity.lookupInfo?.emailAddress
     }
 }

@@ -174,8 +174,26 @@ struct TogoApp: App {
                 }
             }
             .task { await startSyncIfOn() }
+            // Одно место на оба исхода приёма приглашения, и говорят
+            // они разное.
+            //
+            // Пока отказ кончался записью в журнал, человек не узнавал
+            // ничего: приложение открывалось обычным, и гость считал,
+            // что вошёл. Успех при этом тоже молчал — «вы в общем
+            // дневнике» ему никто не говорил, а чей это дневник,
+            // не говорили тем более.
+            //
+            // Обмен поднимается ТОЛЬКО на успехе: на отказе поднимать
+            // нечего, зона не наша.
             .onReceive(NotificationCenter.default.publisher(for: .familyShareAccepted)) { _ in
-                Task { await startSyncIfOn() }
+                let исход = ShareAcceptance.исход
+                if исход?.принято_ли != false {
+                    Task { await startSyncIfOn() }
+                }
+                if let исход {
+                    appState.showUndo(исход.текст)
+                    ShareAcceptance.исходПрочитан()
+                }
             }
         }
     }
