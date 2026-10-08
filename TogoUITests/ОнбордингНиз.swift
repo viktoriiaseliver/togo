@@ -371,13 +371,19 @@ nonisolated final class ОнбордингНиз: XCTestCase {
         // Поэтому цикл: пока на экране есть любая кнопка «вперёд» —
         // жать её. Выход по вкладке «Настройки», то есть по признаку
         // ЦЕЛИ, а не по счёту шагов.
-        let вперёд = NSPredicate(format:
-            "label BEGINSWITH 'Дальше' OR label == 'Пропустить' "
-            + "OR label == 'Пока сама' OR label == 'Не сейчас' "
-            + "OR label == 'Вернуться к дневнику'")
+        // `NSPredicate` строится ВНУТРИ цикла, а не держится в локальной
+        // переменной снаружи. Вынесенный наружу, он даёт в Swift 6
+        // ошибку сборки `sending 'вперёд' risks causing data races`:
+        // `NSPredicate` не `Sendable`, и передача его в `matching`
+        // пересекает границу изоляции. Тот же код выражением на месте
+        // собирается — как и у ключевого пути к `label` часом раньше,
+        // разницу делает не смысл, а форма записи.
         for _ in 0..<10 {
             if app.buttons["Настройки"].firstMatch.exists { break }
-            let кнопка = app.buttons.matching(вперёд).firstMatch
+            let кнопка = app.buttons.matching(NSPredicate(format:
+                "label BEGINSWITH 'Дальше' OR label == 'Пропустить' "
+                + "OR label == 'Пока сама' OR label == 'Не сейчас' "
+                + "OR label == 'Вернуться к дневнику'")).firstMatch
             guard кнопка.waitForExistence(timeout: 20) else { break }
             кнопка.tap()
         }
