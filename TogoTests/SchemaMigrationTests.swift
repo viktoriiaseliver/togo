@@ -394,10 +394,19 @@ struct SchemaMigrationTests {
         // Пустое множество значит «не менялась ни одним полем».
         let приростПолей: [String: Set<String>] = [
             // Десять полей хендоффа + номер назначения (шаг 0 медслоя).
+            // Плюс `massPerUnitMcg` — числовая доза, `43f05a5` (08.10.2026).
+            // Причина взята у автора прироста, а не придумана здесь:
+            // счёт таблеток отвечал не на тот вопрос. Врач меняет силу
+            // таблетки с 0,05 на 0,1 мг — счёт остаётся «2», столбик
+            // не шевельнётся, а доза выросла вдвое. Масса хранится
+            // В ОДНОЙ единице (микрограммы) и НА ЕДИНИЦУ ФОРМЫ: пара
+            // «значение + единица» позволила бы сложить 0,1 мг с 50 мкг
+            // и получить 50,1. Снос базы разрешён её словом 08.10.2026
+            // под этот случай.
             "Medication": ["unitRaw", "doseSlotsData", "stockLeftAmount", "packAmount",
                            "courseEnd", "expiry", "openedAt", "shelfAfterOpenDays",
                            "remindBeforeExpiry", "canGiveOutside",
-                           "prescriptionNumber"],
+                           "prescriptionNumber", "massPerUnitMcg"],
             "FoodStock": ["expiry", "shelfAfterOpenDays"],
             "LogEvent": ["editedBy"],
             // Шаг 0 медслоя, 07.10.2026: прививка получила партию, срок
