@@ -405,6 +405,60 @@ Tools/submit_beta_review.sh:120  то же слово в слово
 свободной памяти, при обоих `xcodebuild` на **0,0 %** — это не занятость,
 а наш же прогон внутри симулятора. Гашение не освободило бы ничего.
 
+## Чем каждое утверждение выше проверяется за минуту
+
+Записи без способа проверки становятся преданием, а логи моих прогонов
+лежат в `/tmp` — то есть улика на этой машине есть улика нигде. Поэтому
+проверяемое не моими логами, а деревом и инструментами:
+
+```bash
+# «make build съедает код возврата» — форма воспроизводится игрушкой
+printf 'A:\n\t@false \\\n\t\t| tail -5\n' > /tmp/d.mk && make -f /tmp/d.mk A; echo $?
+#   даёт 0 на упавшей команде. Строка Makefile:51-52 — той же формы
+
+# «ворота архива держат» — на том, что лежит на диске, без подделки
+bash Tools/archive_fingerprint.sh build/Togo.xcarchive; echo "rc=$?"
+#   rc=3, «НОМЕР АРХИВА НЕ ТОТ»
+
+# «раздача берёт последнюю, а не ту»
+grep -n 'limit=1&sort=-uploadedDate' Tools/publish_beta.sh Tools/submit_beta_review.sh
+grep -c 'номер-сборки' Tools/publish_beta.sh Tools/submit_beta_review.sh   # 0 и 0
+
+# «заметки говорят про 274»
+head -1 fastlane/metadata/ru/testflight_whats_new.txt
+
+# «языки в ОБОИХ бандлах» — последнее звено, не каталог
+bash Tools/check_bundle_languages.sh <путь к .app или .xcarchive>
+
+# «у графика блокер в данных, а не исполнитель»
+sed -n '194,209p' Togo/Features/Health/LabChartScreen.swift
+grep -n 'LabChartScreen' Togo/Features/Health/HealthScreen.swift   # дорога есть
+
+# «RecallParser/Writer не зовутся вне тестов»
+grep -rn 'RecallParser\|RecallWriter' --include='*.swift' . | grep -v Tests
+
+# «свёртка меток мочи живёт и вызывается»
+grep -rn 'markGroups' --include='*.swift' Togo TogoShared
+
+# «ci_simulator сделан нарочно иначе» — довод в самом файле
+sed -n '69,72p' Tools/ci_simulator.py
+
+# «ArchiveFieldValueTests и так был последовательным» — опровержение
+# кандидата, лежащее в исходнике и не зависящее от флага
+grep -n '@Suite' TogoTests/ArchiveFieldValueTests.swift   # .serialized
+
+# «хранилище на диске создаёт сам тест, erase его не лечит»
+grep -n 'togo-migration' TogoTests/SchemaMigrationTests.swift
+```
+
+Чего этим списком проверить **нельзя** и о чём надо говорить прямо:
+числа самих прогонов (`rc=65`, перезапуски, счёт исключений) живут
+в логах `/tmp/togo-a5-2938/` и **уйдут вместе с машиной**. Они
+воспроизводятся только повтором прогона, и повтор может дать другие
+числа — флак стоит двух запусков и переживает изоляцию. Поэтому
+в записи важны не величины, а то, **что они опровергают**: признак,
+опровергнутый один раз, опровергнут.
+
 ## Чего в этой записи нет
 
 ASC я не трогал: замер держал `projects-95`, два GET-замера одного места
