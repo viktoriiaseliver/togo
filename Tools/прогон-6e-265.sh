@@ -51,34 +51,34 @@
 set -u
 set -o pipefail
 
-КОММИТ="${1:?первым аргументом — коммит, у числа должен быть адрес}"
-СЕССИЯ="6e"
+COMMIT="${1:?первым аргументом — коммит, у числа должен быть адрес}"
+SESSION="6e"
 PID=$$
-ИМЯ="togo-${СЕССИЯ}-${PID}"
-WT="/tmp/${ИМЯ}"
-DD="/tmp/${СЕССИЯ}-dd/dd-${СЕССИЯ}-${PID}"   # ВНЕ worktree
-ВЕРШИНА="$(pwd)"
-LOG="${ВЕРШИНА}/build/logs/unit-${СЕССИЯ}-265-${PID}.log"
-РАНТАЙМ="com.apple.CoreSimulator.SimRuntime.iOS-26-5"
-ТИП="com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro"
-СИМ="Togo-${СЕССИЯ}-${PID}"
+WTNAME="togo-${SESSION}-${PID}"
+WT="/tmp/${WTNAME}"
+DD="/tmp/${SESSION}-dd/dd-${SESSION}-${PID}"   # ВНЕ worktree
+ROOT="$(pwd)"
+LOG="${ROOT}/build/logs/unit-${SESSION}-265-${PID}.log"
+RUNTIME="com.apple.CoreSimulator.SimRuntime.iOS-26-5"
+DEVTYPE="com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro"
+SIMNAME="Togo-${SESSION}-${PID}"
 
 mkdir -p "$(dirname "$LOG")" "$DD"
 
-УСТР="$(xcrun simctl create "$СИМ" "$ТИП" "$РАНТАЙМ")"
-xcrun simctl erase "$УСТР"
+UDID="$(xcrun simctl create "$SIMNAME" "$DEVTYPE" "$RUNTIME")"
+xcrun simctl erase "$UDID"
 
-git worktree add --detach "$WT" "$КОММИТ" >/dev/null
+git worktree add --detach "$WT" "$COMMIT" >/dev/null
 
 {
-  echo "сессия        projects-${СЕССИЯ} (тестировщик №1) · предмет СТЕНД"
+  echo "сессия        projects-${SESSION} (тестировщик №1) · предмет СТЕНД"
   echo "наряд         projects-23: различитель рантайма 26.5"
   echo "коммит        $(git -C "$WT" rev-parse HEAD)"
   echo "коротко       $(git -C "$WT" rev-parse --short HEAD)"
   echo "ГРЯЗНЫХ       $(git -C "$WT" status --porcelain | wc -l | tr -d ' ')"
   echo "worktree      ${WT}"
   echo "DerivedData   ${DD}   <- ВНЕ worktree"
-  echo "симулятор     ${УСТР} (${СИМ} · iPhone 17 Pro · iOS 26.5) СОЗДАН и СТЁРТ"
+  echo "симулятор     ${UDID} (${SIMNAME} · iPhone 17 Pro · iOS 26.5) СОЗДАН и СТЁРТ"
   echo "предмет       -only-testing:TogoTests — единственный модульный таргет"
   echo "ЗАГРУЗКА В НАЧАЛЕ  $(sysctl -n vm.loadavg) · простой ЦП $(top -l 1 -n 0 | awk '/CPU usage/{print $7}')"
   echo "swap          $(sysctl -n vm.swapusage)"
@@ -90,7 +90,7 @@ git worktree add --detach "$WT" "$КОММИТ" >/dev/null
 cd "$WT"
 xcodebuild test \
   -project Togo.xcodeproj -scheme Togo \
-  -destination "platform=iOS Simulator,id=${УСТР}" \
+  -destination "platform=iOS Simulator,id=${UDID}" \
   -derivedDataPath "$DD" \
   -only-testing:TogoTests >> "$LOG" 2>&1
 RC=$?
@@ -104,19 +104,19 @@ RC=$?
 } >> "$LOG"
 
 # --- приёмка печатается ЗДЕСЬ, а не вспоминается потом ---
-УНИК_OK=$(grep -ao '✔ Test "[^"]*"' "$LOG" | sort -u | wc -l | tr -d ' ')
-УНИК_FAIL=$(grep -ao '✘ Test "[^"]*"' "$LOG" | sort -u | wc -l | tr -d ' ')
-ВЫПОЛНЕНО=$(( УНИК_OK + УНИК_FAIL ))
+UNIQ_OK=$(grep -ao '✔ Test "[^"]*"' "$LOG" | sort -u | wc -l | tr -d ' ')
+UNIQ_FAIL=$(grep -ao '✘ Test "[^"]*"' "$LOG" | sort -u | wc -l | tr -d ' ')
+DONE=$(( UNIQ_OK + UNIQ_FAIL ))
 
 echo "лог                 ${LOG}"
-echo "коммит              ${КОММИТ}"
+echo "коммит              ${COMMIT}"
 echo "rc самого xcodebuild ${RC}"
 echo
 echo "--- СОСТОЯЛАСЬ ЛИ УСТАНОВКА (это печатается ПЕРВЫМ нарочно) ---"
 echo "failed to install   $(grep -aic 'failed to install' "$LOG")"
 echo "locate promise      $(grep -aic 'Failed to locate promise' "$LOG")"
 echo "Placeholder/UUID    $(grep -aic 'Placeholder did not exist' "$LOG")"
-echo "ВЫПОЛНЕНО (уник)    ${ВЫПОЛНЕНО}  при пороге 800   (✔${УНИК_OK} ✘${УНИК_FAIL})"
+echo "ВЫПОЛНЕНО (уник)    ${DONE}  при пороге 800   (✔${UNIQ_OK} ✘${UNIQ_FAIL})"
 echo "строка итога        $(grep -ao 'Test run with [0-9]* tests in [0-9]* suites [a-z]*' "$LOG" | tail -1)"
 echo
 echo "--- ПРИЗНАКИ СТЕНДА ---"
@@ -154,9 +154,9 @@ echo
 echo "--- упавшие ИМЕНА (уникальные) ---"
 grep -ao '✘ Test "[^"]*"' "$LOG" | sort -u
 
-cd "$ВЕРШИНА"
-xcrun simctl shutdown "$УСТР" 2>/dev/null || true
-xcrun simctl delete "$УСТР" 2>/dev/null || true
+cd "$ROOT"
+xcrun simctl shutdown "$UDID" 2>/dev/null || true
+xcrun simctl delete "$UDID" 2>/dev/null || true
 git worktree remove --force "$WT" 2>/dev/null || true
 
 # Код возврата — САМОГО xcodebuild, и последней строкой, а не печатью.
