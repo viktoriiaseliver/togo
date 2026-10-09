@@ -126,7 +126,30 @@ echo "libc++abi               $(grep -aFc 'libc++abi' "$LOG")"
 echo "caught                  $(grep -aFc 'caught' "$LOG")"
 echo "Restarting              $(grep -aFc 'Restarting after unexpected exit' "$LOG")"
 echo "маркеры                 SUCCEEDED $(grep -aFc '** TEST SUCCEEDED **' "$LOG") · FAILED $(grep -aFc '** TEST FAILED **' "$LOG") · EXECUTE FAILED $(grep -aFc '** TEST EXECUTE FAILED **' "$LOG")"
-echo "ошибки компиляции       $(grep -acE '^[^ ]+:[0-9]+:[0-9]+: error: ' "$LOG")"
+echo
+echo "--- ОШИБКИ: ТРИ ФОРМЫ РАЗДЕЛЬНО (замер projects-53) ---"
+# Адресная форма ловит дефект кода и НЕ ЛОВИТ отказ инструмента:
+# он приходит как `<unknown>:0: error: error opening input file`,
+# где номер ОДИН, а не два, и шаблон мимо. Проверено на пробе:
+# адресный шаблон даёт 0 на строке <unknown>.
+#
+# Ноль по адресной при НЕнулевой <unknown> значит «инструмент
+# не состоялся», а не «ошибок нет». Это обратная сторона уже
+# записанного `grep -c "error:"` → 1921 при нуле настоящих: там
+# шаблон слишком широк, здесь слишком узок, и узкий опаснее —
+# он молчит.
+echo "адресных файл:стр:стлб  $(grep -acE '^[^ ]+:[0-9]+:[0-9]+: error: ' "$LOG")"
+echo "<unknown> (отказ инстр.) $(grep -acE '^<unknown>:[0-9]*: error: ' "$LOG")"
+echo "всех 'error:' (шум)     $(grep -aFc 'error:' "$LOG")   <- на живых логах 33-142 при нуле настоящих"
+echo
+echo "--- АРТЕФАКТ: решающий ОДИН, и это .xctestrun (замер 53 и 95) ---"
+# Правило свода опирается на пару «.xctestrun + Runner.app», но
+# на УПАВШЕЙ сборке Runner.app и Togo.app лежат ОБА — половина пары
+# ненадёжна. Решает .xctestrun.
+echo ".xctestrun              $(ls "$DD"/Build/Products/*.xctestrun 2>/dev/null | wc -l | tr -d ' ')"
+echo "объём работы (95)       SwiftCompile $(grep -aFc 'SwiftCompile' "$LOG") · CodeSign $(grep -aFc 'CodeSign' "$LOG")"
+echo "   <- «быстро и зелено» неотличимо от «ничего не собралось»;"
+echo "      различает ОБЪЁМ, а не код возврата"
 echo
 echo "--- упавшие ИМЕНА (уникальные) ---"
 grep -ao '✘ Test "[^"]*"' "$LOG" | sort -u
