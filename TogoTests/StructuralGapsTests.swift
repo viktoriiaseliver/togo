@@ -487,12 +487,27 @@ struct PrototypeV2Tests {
     func tokensMatchHandoff() {
         // Пакет передан как high-fidelity: «цвета, типографика, радиусы,
         // отступы и копирайтинг финальные — воспроизводить точно».
+        // **Трейты закрепляются, а не берутся у среды.** Прежняя
+        // редакция читала `UIColor(color).cgColor.components` — то есть
+        // значение по `UITraitCollection.current`, какой бы та ни была.
+        // У модульного прогона нет окна приложения, и текущая коллекция
+        // в нём не тёмная; а токены с 07.10.2026 **четырёхрежимные**
+        // (`night1`: dark `#050503`, light `#FFFFFF`). Приложение при
+        // этом тёмное и только тёмное (`UIUserInterfaceStyle = Dark`).
+        //
+        // > **Сторож сравнивал ожидаемое тёмное с тем, что отдала
+        // > неизвестная коллекция.** Пока прогон не доходил до конца,
+        // > этого не было видно: первый полный прогон за двое суток
+        // > состоялся 09.10 и предъявил расхождение.
+        //
+        // Разрешитель НЕ свой: `Color.resolvedHex(dark:highContrast:)`
+        // (`DynamicColor.swift:95`) заведён ровно как вход для приёмки,
+        // и его уже зовут `EmptyStateFrameTests:94`
+        // и `ThemeContrastTests:294`. Второй завести значило бы мерить
+        // одну реализацию наблюдениями за другой.
         func hex(_ color: Color) -> String {
-            let parts = UIColor(color).cgColor.components ?? []
-            guard parts.count >= 3 else { return "" }
-            return String(format: "#%02X%02X%02X",
-                          Int(parts[0] * 255 + 0.5), Int(parts[1] * 255 + 0.5),
-                          Int(parts[2] * 255 + 0.5))
+            let rgb = color.resolvedHex(dark: true, highContrast: false) >> 8
+            return String(format: "#%06X", rgb)
         }
         // Хендоф «ФИНАЛ» (Graphite), принят 05.10.2026, макет
         // sha256 d804c1ea…. Третье поколение: мята → «Лёд» (синий) →
@@ -512,13 +527,35 @@ struct PrototypeV2Tests {
         #expect(hex(Token.Surface.card) == "#181818")     // color.bg.primary
         #expect(hex(Token.Surface.sunken) == "#1F1F1F")   // color.fill.sunken
         #expect(hex(Token.Surface.control) == "#2C2C2C")  // color.fill.1
-        #expect(hex(Token.Action.primary) == "#D4F75F")   // accent.dark.fill, Lime
+        // **Копия ОТСТАЛА на поколение, и голова этого сторожа сама
+        // это предсказала** — «он краснеет на смене поколения… и это
+        // правильно». Она оказалась права дважды, и вторая правота
+        // дороже первой: она предсказала собственную красноту.
+        //
+        // Поколение Graphite, 07.10.2026: акцент ИНДИГО `#A2C1FE`.
+        // Решение записано не здесь и не в чате, а В САМОМ ТОКЕНЕ —
+        // `DesignTokens/tokens.json:87`: «ИНДИГО, поколение Graphite
+        // 07.10.2026… 11,26:1 на странице, 9,10:1 на карточке —
+        // измерено после смены, не перенесено. Прежнее поколение —
+        // лайм #D4F75F, снято решением „лайм больше не используется“».
+        //
+        // **Почему правка числа здесь не запрещена.** Запрет стоит
+        // против «число подняли ВМЕСТО работы». Здесь работа сделана
+        // и записана с датой, доводом и замером — значит число
+        // ОТСТАЛО, а не завышено. Различается за минуту: у индиго есть
+        // дата, довод и контраст, у лайма — «снято решением».
+        #expect(hex(Token.Action.primary) == "#A2C1FE")   // accent.dark.fill, Indigo
         #expect(hex(Token.Status.waitingText) == "#F7C75F") // color.status.warning
         #expect(hex(Token.Status.overdueText) == "#FF7A66") // color.status.error
         #expect(hex(Token.Status.stockLowText) == "#FFA15C") // togo.css --stock-low
         // Подпись на лаймовой заливке тёмная, и теперь это не «норма
         // не проходит», а «не видно вовсе»: белое на #D4F75F даёт 1,22:1.
-        #expect(hex(Token.Ink.onAccent) == "#111111")     // accent.dark.on
+        // Второе поколенческое число, тот же источник решения
+        // (`tokens.json:114`): «Текст на акцентной заливке, 10,43:1.
+        // accent.dark.on. Подпись на акценте обязана брать этот токен,
+        // а не `Color.white`: белый на индиго #A2C1FE даёт 1,63:1,
+        // то есть не читается».
+        #expect(hex(Token.Ink.onAccent) == "#0B0D2E")     // accent.dark.on, Indigo
         // «Сделано» НЕ перенесено: зелёного в поколении «финал» нет
         // вовсе (ноль success/done/green в colors.css и accents.css).
         // Подменять его акцентом значило бы решить продуктовый вопрос
