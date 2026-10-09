@@ -99,10 +99,14 @@ struct DayPlanActions {
 
     @discardableResult
     func checkPermission(for item: DayPlanItem) -> Bool {
+        // `showFailure`, а не `showUndo`: ветка кончается `return false`,
+        // то есть действие не состоялось. Здесь вибрации предупреждения
+        // нет вовсе — поэтому ось «Haptics.warning выше вызова», которой
+        // искали такие места, это место не нашла по устройству.
         guard appState.can(permission(for: item)) else {
-            appState.showUndo(item.kind == .dose
-                              ? "Дозы отмечает тот, кому это разрешено"
-                              : "Записывать может тот, кому это разрешено")
+            appState.showFailure(item.kind == .dose
+                                 ? "Дозы отмечает тот, кому это разрешено"
+                                 : "Записывать может тот, кому это разрешено")
             return false
         }
         return true

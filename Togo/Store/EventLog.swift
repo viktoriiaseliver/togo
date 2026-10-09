@@ -49,8 +49,17 @@ struct EventLog {
         // дверь, через которую в дневник попадает запись. Раньше `logBasics`
         // и `giveDose` не проверялись вовсе — то есть выданная роль
         // «только смотреть» всё равно позволяла записывать что угодно.
+        // Плашка — `showFailure`, а не `showUndo`: запись НЕ создана,
+        // ниже стоит `return nil`. Через `showUndo` это уезжало под
+        // галочку «готово» — то есть человек жал «покормила», в дневник
+        // не попадало ничего, и приложение подтверждало успех.
+        //
+        // Путь не краевой: до опознания из `CKShare` гость — `.observer`
+        // («читает всё, не пишет»), а `EventLog` — единственная дверь,
+        // которой запись попадает в дневник. Значит это основной путь
+        // второго человека, и он молча терял всё, что тот отмечал.
         guard appState.can(kind.requiredPermission) else {
-            appState.showUndo("Это записывает тот, кому разрешено")
+            appState.showFailure("Это записывает тот, кому разрешено")
             Haptics.warning()
             UsageLog.note(.record, kind.rawValue, outcome: .blocked)
             return nil
@@ -64,7 +73,10 @@ struct EventLog {
         if !allowDuplicate,
            let recent = DuplicateGuard.recent(of: kind, dog: dog, at: date,
                                              like: event, in: context) {
-            appState.showUndo(DuplicateGuard.message(kind, at: recent.date))
+            // Тот же знак, та же причина: сторож дублей кончается
+            // `return nil`, записи нет. «Уже записана в 15:23» под
+            // галочкой читается как «записал ещё раз», а не как отказ.
+            appState.showFailure(DuplicateGuard.message(kind, at: recent.date))
             Haptics.warning()
             UsageLog.note(.record, kind.rawValue, outcome: .duplicate)
             return nil
