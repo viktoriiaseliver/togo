@@ -172,6 +172,7 @@ nonisolated enum BackupService {
                                                    awaitedMedicationName: $0.awaitedMedicationName)
                     },
                     unitRaw: medication.unitRaw,
+                    massPerUnitMcg: medication.massPerUnitMcg,
                     minutesAfterMeal: medication.minutesAfterMeal,
                     dependsOnMeal: medication.dependsOnMeal,
                     doseSlots: medication.doseSlotsData,
@@ -708,6 +709,17 @@ nonisolated enum BackupService {
             // не значит ничего, а ошибка здесь не путаница в дневнике,
             // а передозировка.
             medication.unitRaw = medicationSnapshot.unitRaw ?? medication.unitRaw
+            // Сила единицы — то, от чего считается доза. Про единицу
+            // строкой выше подумали отдельно, про массу нет, и она
+            // не ехала вовсе: `Backup` 0 · `BackupArchive` 0.
+            //
+            // `??` здесь не косметика: у архивов, снятых ДО 09.10.2026,
+            // поля нет, и `nil` из такого снимка не должен затирать
+            // массу, введённую человеком после восстановления. Сама
+            // запись при этом выглядела полной — `doseText` и единица
+            // ездили, — поэтому потерю не замечал никто.
+            medication.massPerUnitMcg = medicationSnapshot.massPerUnitMcg
+                ?? medication.massPerUnitMcg
             medication.minutesAfterMeal = medicationSnapshot.minutesAfterMeal
                 ?? medication.minutesAfterMeal
             // `dependsOnMeal` — вычисляемое (get-only): оно выводится
