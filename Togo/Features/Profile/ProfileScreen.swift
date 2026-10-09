@@ -113,8 +113,33 @@ struct ProfileScreen: View {
                 HStack {
                     VStack(alignment: .leading, spacing: Token.Space.s2) {
                         Text("Вес").textStyle(AppFont.cardTitle)
-                        Text(dog.isWeightInRange ? "в коридоре, который назвал врач" : "вне коридора")
-                            .textStyle(AppFont.caption)
+                        // **Вторая поверхность той же лжи, и здесь она
+                        // была сильнее.** Наряд назвал `HealthScreen`;
+                        // эта строка нашлась замером мест вызова
+                        // предиката и врала хуже: при отсутствующем
+                        // коридоре она говорила «в коридоре, который
+                        // назвал ВРАЧ» — то есть приписывала
+                        // утверждение врачу, который ничего не называл.
+                        //
+                        // > Починка на одной поверхности из двух
+                        // > выглядит законченной. Предикат
+                        // > `isWeightInRange` зовут РОВНО два показа,
+                        // > и оба сваливали «коридора нет» в ветку
+                        // > «всё хорошо».
+                        //
+                        // Молчим при `.normUnknown` по той же причине,
+                        // что на «Здоровье»: нового слова под заморозкой
+                        // текстов не заводим, а ложного не говорим.
+                        switch dog.weightVerdict {
+                        case .withinRange:
+                            Text("в коридоре, который назвал врач")
+                                .textStyle(AppFont.caption)
+                        case .below, .above:
+                            Text("вне коридора")
+                                .textStyle(AppFont.caption)
+                        case .normUnknown, .indeterminate:
+                            EmptyView()
+                        }
                     }
                     Spacer()
                     Text(Fmt.weight(dog.weightKg)).textStyle(AppFont.numeric(22))

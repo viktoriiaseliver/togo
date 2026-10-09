@@ -458,10 +458,40 @@ struct WeightScreen: View {
                 HStack(alignment: .firstTextBaseline) {
                     Text(dog.map { Fmt.weight($0.weightKg) } ?? "—").textStyle(AppFont.display)
                     Spacer()
-                    if let dog, !dog.isWeightInRange {
-                        Text("вне коридора").textStyle(AppFont.caption.color(Token.Status.waitingText))
-                    } else {
-                        Text("в норме").textStyle(AppFont.caption.color(Token.Action.doneText))
+                    // **Три состояния, а не два.** Прежняя редакция
+                    // спрашивала `!dog.isWeightInRange` и всё остальное
+                    // сваливала в `else` — а предикат отвечает `true`
+                    // на ДВА разных состояния: «вес внутри коридора»
+                    // и «коридора не существует» (`Dog.swift:497`,
+                    // `guard … else { return true }`). У собаки без
+                    // назначенного врачом коридора под её весом стояло
+                    // зелёное «в норме».
+                    //
+                    // > **`else` ловил два состояния и говорил о них
+                    // > одно.** Утверждение, которого приложение
+                    // > сделать не может — и вес это та величина,
+                    // > от которой считается доза.
+                    //
+                    // Предикат не тронут: для ворот он прав. Спрашиваем
+                    // `weightVerdict`, и он построен на `LabNorm`, где
+                    // правило «нормы нет → так и скажи» уже живёт.
+                    //
+                    // **Коридора нет — МОЛЧИМ, а не придумываем слово.**
+                    // Новый ключ под заморозкой текстов дал бы русскую
+                    // строку французу ровно на медицинском экране;
+                    // а молчание согласовано с соседней строкой —
+                    // «цель … поставил врач» ниже показывается по тем же
+                    // двум полям, то есть вердикт и цель появляются
+                    // и исчезают вместе. Если решат словом — адрес здесь.
+                    if let dog {
+                        switch dog.weightVerdict {
+                        case .withinRange:
+                            Text("в норме").textStyle(AppFont.caption.color(Token.Action.doneText))
+                        case .below, .above:
+                            Text("вне коридора").textStyle(AppFont.caption.color(Token.Status.waitingText))
+                        case .normUnknown, .indeterminate:
+                            EmptyView()
+                        }
                     }
                 }
                 if let low = dog?.targetWeightLow, let high = dog?.targetWeightHigh {
