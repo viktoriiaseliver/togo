@@ -47,13 +47,39 @@ loc-import: ## Влить перевод обратно: make loc-import LOC=bui
 bootstrap: tokens project ## Собрать проект с нуля после клонирования
 
 .PHONY: build
+# Код возврата берётся у самого xcodebuild, а не у хвоста конвейера, —
+# и до 09.10.2026 это было написано НИЖЕ, у цели `test`, а здесь
+# по-прежнему стоял конвейер:
+#
+#     @xcodebuild … \
+#         -destination "$(DESTINATION)" build | tail -5
+#
+# `grep` когда-то заменили на `tail`, конец конвейера поменялся, код
+# возврата — нет. То есть правило было записано в трёх местах свода
+# и нарушено В ПРИМЕРЕ, КОТОРЫЙ ЕГО ОБЪЯСНЯЕТ: предупреждение стояло
+# двумя строками ниже дефекта.
+#
+# Замерено, а не прочитано. Форма воспроизводится игрушкой:
+#
+#     printf 'A:\n\t@false \\\n\t\t| tail -5\n' > /tmp/d.mk
+#     make -f /tmp/d.mk A; echo $$?      →  0  на УПАВШЕЙ команде
+#
+# `pipefail` здесь не годится: `make` зовёт `/bin/sh`, а `pipefail`
+# не POSIX — он либо будет проигнорирован, либо даст отказ, и оба
+# исхода хуже отсутствия правки. Поэтому лог плюс `rc=$$?` плюс
+# `exit $$rc`, ровно как у `test` ниже.
+#
+# Лог с датой и PID, а не фиксированный: над одним деревом работают
+# несколько сессий, и 28.09 в общем файле уже поймали два разных PID —
+# кто прочтёт хвост, возьмёт чужой зелёный за свой.
 build: ## Собрать приложение под симулятор
-	@xcodebuild -project $(PROJECT) -scheme $(SCHEME) -configuration $(CONFIG) \
-		-destination "$(DESTINATION)" build | tail -5
+	@mkdir -p build/logs
+	@LOG=build/logs/build-$$(date +%Y%m%d-%H%M%S)-$$$$.log; \
+		xcodebuild -project $(PROJECT) -scheme $(SCHEME) -configuration $(CONFIG) \
+		-destination "$(DESTINATION)" build > $$LOG 2>&1; rc=$$?; \
+		tail -5 $$LOG; \
+		echo "xcodebuild: код возврата $$rc (полный лог — $$LOG)"; exit $$rc
 
-# Код возврата берётся у самого xcodebuild, а не у хвоста конвейера.
-# Раньше здесь стоял `xcodebuild … | grep …`, и наружу уходил код grep:
-# прогон падал, а команда отвечала нулём. На этом сгорели дважды за день.
 #
 # Читать в выводе нужно строку «✔ Test run with N tests in M suites passed»:
 # тесты написаны на Swift Testing, и xcodebuild в конце честно печатает
