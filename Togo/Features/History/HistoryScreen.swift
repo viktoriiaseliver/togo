@@ -235,7 +235,7 @@ extension HistoryScreen {
             if былоАктивным { appState.activeEpisode = episode }
         }) else {
             Haptics.warning()
-            appState.showUndo("Не удалилось · нажми ещё раз")
+            appState.showFailure("Не удалилось · нажми ещё раз")
             return
         }
         Haptics.success()

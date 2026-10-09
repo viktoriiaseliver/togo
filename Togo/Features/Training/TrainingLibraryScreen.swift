@@ -147,7 +147,7 @@ struct TrainingLibraryScreen: View {
     /// а в хранилище осталось прежнее.
     private func неСохранилось(_ текст: String) {
         Haptics.warning()
-        appState.showUndo(текст)
+        appState.showFailure(текст)
     }
 
     // MARK: Удаление

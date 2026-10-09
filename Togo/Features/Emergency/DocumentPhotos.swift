@@ -108,7 +108,7 @@ struct DocumentPhotosCard: View {
     /// и «кажется, сохранил» здесь дороже обычного.
     private func неСохранилось(_ текст: String) {
         Haptics.warning()
-        appState.showUndo(текст)
+        appState.showFailure(текст)
     }
 }
 

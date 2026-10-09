@@ -535,7 +535,7 @@ struct WeightScreen: View {
         }
         guard context.persist(otherwise: { dog.weightKg = былВес }) else {
             Haptics.warning()
-            return appState.showUndo("Взвешивание не удалилось · попробуй ещё раз")
+            return appState.showFailure("Взвешивание не удалилось · попробуй ещё раз")
         }
         Haptics.warning()
         removing = nil
@@ -566,7 +566,7 @@ struct WeightScreen: View {
             задача?.lastDone = былоСделано
         }) else {
             Haptics.warning()
-            return appState.showUndo("Вес не записался · попробуй ещё раз")
+            return appState.showFailure("Вес не записался · попробуй ещё раз")
         }
         newWeight = ""
         Haptics.success()

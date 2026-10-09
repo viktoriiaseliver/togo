@@ -463,7 +463,7 @@ struct PrescriptionEditor: View {
             }
         }) else {
             Haptics.warning()
-            appState.showUndo("Не сохранилось · нажми ещё раз")
+            appState.showFailure("Не сохранилось · нажми ещё раз")
             return
         }
         Haptics.success()

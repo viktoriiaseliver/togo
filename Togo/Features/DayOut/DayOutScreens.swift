@@ -173,7 +173,7 @@ struct DayOutSummarySheet: View {
         context.delete(day)
         guard context.persistNothingToUndo() else {
             Haptics.warning()
-            appState.showUndo("Не удалилось · проверь после перезапуска")
+            appState.showFailure("Не удалилось · проверь после перезапуска")
             return
         }
         Haptics.success()

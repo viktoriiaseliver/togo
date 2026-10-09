@@ -102,7 +102,7 @@ struct SkillAttemptSheet: View {
     private func сохранить(иначе вернуть: () -> Void) -> Bool {
         guard context.persist(otherwise: вернуть) else {
             Haptics.warning()
-            appState.showUndo("Не записалось · нажми ещё раз")
+            appState.showFailure("Не записалось · нажми ещё раз")
             return false
         }
         return true

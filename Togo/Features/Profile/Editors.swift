@@ -198,7 +198,7 @@ struct DogEditorScreen: View {
     /// нажимает «Готово» ещё раз.
     private func неСохранилось() {
         Haptics.warning()
-        appState.showUndo("Не сохранилось · нажми «Готово» ещё раз")
+        appState.showFailure("Не сохранилось · нажми «Готово» ещё раз")
     }
 
     /// Удалить собаку.
@@ -215,7 +215,7 @@ struct DogEditorScreen: View {
         // решил бы, что удаление прошло.
         guard context.persist(otherwise: { appState.activeDogID = былВыбран }) else {
             Haptics.warning()
-            appState.showUndo("Не удалилось · нажми ещё раз")
+            appState.showFailure("Не удалилось · нажми ещё раз")
             return
         }
         Haptics.warning()
@@ -470,7 +470,7 @@ struct CareTaskEditorSheet: View {
             }
         }) else {
             Haptics.warning()
-            appState.showUndo("Не сохранилось · нажми «Готово» ещё раз")
+            appState.showFailure("Не сохранилось · нажми «Готово» ещё раз")
             return
         }
         Haptics.success()
@@ -760,7 +760,7 @@ struct MedicationEditorSheet: View {
             }
         }) else {
             Haptics.warning()
-            appState.showUndo("Не сохранилось · нажми «Готово» ещё раз")
+            appState.showFailure("Не сохранилось · нажми «Готово» ещё раз")
             return
         }
         Haptics.success()

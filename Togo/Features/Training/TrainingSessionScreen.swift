@@ -46,7 +46,7 @@ struct TrainingSessionScreen: View {
         context.insert(step)
         if !context.persist(otherwise: { context.delete(step) }) {
             Haptics.warning()
-            appState.showUndo("Шаг не завёлся · попробуй ещё раз")
+            appState.showFailure("Шаг не завёлся · попробуй ещё раз")
         }
     }
 
@@ -262,7 +262,7 @@ struct TrainingSessionScreen: View {
         context.insert(next)
         if !context.persist(otherwise: { context.delete(next) }) {
             Haptics.warning()
-            appState.showUndo("Следующий шаг не завёлся · попробуй ещё раз")
+            appState.showFailure("Следующий шаг не завёлся · попробуй ещё раз")
         }
     }
 

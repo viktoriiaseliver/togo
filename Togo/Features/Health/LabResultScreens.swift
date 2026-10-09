@@ -517,7 +517,7 @@ struct LabResultEntryFlow: View {
             }
         }) else {
             Haptics.warning()
-            appState.showUndo("Не сохранилось · нажми «Сохранить анализ» ещё раз")
+            appState.showFailure("Не сохранилось · нажми «Сохранить анализ» ещё раз")
             return
         }
         Haptics.success()
@@ -669,7 +669,7 @@ struct LabResultRowEditor: View {
             result.changedAt = былоИзменено
         }) else {
             Haptics.warning()
-            appState.showUndo("Не сохранилось · нажми «Сохранить» ещё раз")
+            appState.showFailure("Не сохранилось · нажми «Сохранить» ещё раз")
             return
         }
         Haptics.success()

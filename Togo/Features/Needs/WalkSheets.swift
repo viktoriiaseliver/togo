@@ -34,7 +34,7 @@ enum OutingFinisher {
             last.durationSeconds = былаДлительность
         }) else {
             Haptics.warning()
-            appState.showUndo("Ответ не записался · отметь ещё раз")
+            appState.showFailure("Ответ не записался · отметь ещё раз")
             return
         }
     }

@@ -182,7 +182,7 @@ struct CareScreen: View {
     /// а напоминание пришло бы в прежний срок.
     private func неСохранилось() {
         Haptics.warning()
-        appState.showUndo("Не сохранилось · попробуй ещё раз")
+        appState.showFailure("Не сохранилось · попробуй ещё раз")
     }
 
     private func subtitle(for kind: CareKind, group: [CareTask]) -> String? {

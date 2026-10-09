@@ -225,7 +225,7 @@ struct VetVisitEditor: View {
             }
         }) else {
             Haptics.warning()
-            appState.showUndo("Не сохранилось · нажми ещё раз")
+            appState.showFailure("Не сохранилось · нажми ещё раз")
             return
         }
         Haptics.success()
@@ -525,7 +525,7 @@ struct DiagnosisEditor: View {
             }
         }) else {
             Haptics.warning()
-            appState.showUndo("Не сохранилось · нажми ещё раз")
+            appState.showFailure("Не сохранилось · нажми ещё раз")
             return
         }
         Haptics.success()

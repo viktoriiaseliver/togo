@@ -86,7 +86,7 @@ struct IncidentSheet: View {
                 running.endedAt = былКонец
             }) else {
                 Haptics.warning()
-                appState.showUndo("Эпизод не продлился · отметь ещё раз")
+                appState.showFailure("Эпизод не продлился · отметь ещё раз")
                 return
             }
             return
@@ -107,7 +107,7 @@ struct IncidentSheet: View {
         // вместе с причиной, по которой приложение замолчало.
         guard context.persist(otherwise: { context.delete(episode) }) else {
             Haptics.warning()
-            appState.showUndo("Эпизод не завёлся · отметь ещё раз")
+            appState.showFailure("Эпизод не завёлся · отметь ещё раз")
             return
         }
         appState.activeEpisode = episode

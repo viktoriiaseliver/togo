@@ -562,7 +562,7 @@ struct EventEditSheet: View {
             }
         }) else {
             Haptics.warning()
-            return appState.showUndo("Удаление не сохранилось · попробуй ещё раз")
+            return appState.showFailure("Удаление не сохранилось · попробуй ещё раз")
         }
         Haptics.warning()
         UsageLog.note(.delete, event.kind.rawValue)
