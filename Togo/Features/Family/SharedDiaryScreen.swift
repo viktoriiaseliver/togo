@@ -18,6 +18,10 @@ struct SharedDiaryScreen: View {
     @State private var invite: DiaryInvite?
     @State private var participants: [String] = []
     @State private var failure: String?
+    /// Непочиненный отказ приёма приглашения — тот, что показывала
+    /// плашка пять секунд на холодном старте. Здесь он ждёт, пока
+    /// его починят.
+    @State private var отказПриёма: ShareAcceptanceOutcome?
     @State private var isWorking = false
     @State private var isStoppingShare = false
 
@@ -26,6 +30,21 @@ struct SharedDiaryScreen: View {
 
     var body: some View {
         TGScreen {
+            // Выше тумблера нарочно: это и есть ответ на вопрос «почему
+            // у меня пусто». Внутри `if isOn` он бы не показался вовсе —
+            // при неудавшемся приёме `accepted()` не звали, и обмен
+            // остался выключенным.
+            //
+            // Заголовок — СУЩЕСТВУЮЩИЙ ключ «Не получилось», тот же,
+            // что у соседнего баннера ниже. Свой («Приглашение
+            // не открылось») был бы новым ключом и завёл бы пробелы
+            // на en/fr/uk, а причину и так называет подзаголовок —
+            // одной из пяти написанных строк.
+            if let отказПриёма {
+                TGBanner(tone: .alarm, title: "Не получилось",
+                         subtitle: .готовая(отказПриёма.текст),
+                         systemImage: "exclamationmark.triangle")
+            }
             switchCard
             if isOn {
                 statusCard
@@ -39,7 +58,14 @@ struct SharedDiaryScreen: View {
         .posterHeader("Общий дневник")
         .navigationBarTitleDisplayMode(.large)
         .usageScreen(.sharedDiary)
-        .task { await refresh() }
+        .task {
+            // Читается ДО `refresh()` и вне его: у `refresh()` стоит
+            // `guard isOn, canInvite`, а неудавшийся приём оставляет
+            // обмен выключенным — то есть внутри него этот отказ
+            // не прочитался бы ни разу.
+            отказПриёма = НеудачаПриёма.текущая
+            await refresh()
+        }
     }
 
     // MARK: Включатель
@@ -169,6 +195,14 @@ struct SharedDiaryScreen: View {
         isOn = on
         SharedDiarySettings.isOn = on
         failure = nil
+        if on {
+            // Человек завёл дневник сам — прежняя жалоба про чужое
+            // приглашение устарела. Иначе баннер висел бы вечно:
+            // снимает его только успешный приём, а этого человек
+            // может уже и не делать.
+            НеудачаПриёма.текущая = nil
+            отказПриёма = nil
+        }
         Task {
             if on {
                 // Движок обмена создаётся в TogoApp по .familyShareAccepted;

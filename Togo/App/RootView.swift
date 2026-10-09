@@ -121,11 +121,31 @@ struct UndoToastView: View {
                 .textStyle(AppFont.caption)
                 .foregroundStyle(Token.Ink.primary)
                 .wraps()
+            // Кнопка — только когда есть что отменять. Без этого условия
+            // она стояла во всех плашках, а делала что-то в пяти
+            // из пятидесяти одной: у остальных `action` нет, и нажатие
+            // проваливалось в `case nil: break`.
+            //
+            // Это ровно тот дефект, который описан выше у `Action`
+            // и там же назван починенным — у удаления. Починка стояла
+            // у одной двери из пятидесяти одной.
             let отменить = Button("Отменить") { undo(toast) }
                 .textStyle(AppFont.captionEmphasis)
                 .foregroundStyle(Token.Status.overdueText)
                 .fixedSize()
                 .frame(minHeight: Token.Size.tapTarget)
+            let естьЧтоОтменять = toast.action != nil
+
+            // Знак берётся у тона, а не стоит безусловно. Галочка поверх
+            // «не сохранилось» читается раньше самой фразы: глаз берёт
+            // значок первым, и человек уходит уверенным, что записал.
+            let знак = Image(systemName: toast.tone == .успех
+                             ? "checkmark.circle.fill"
+                             : "exclamationmark.triangle.fill")
+                .foregroundStyle(toast.tone == .успех
+                                 ? Token.Action.doneText
+                                 : Token.Status.overdueText)
+                .accessibilityHidden(true)
 
             // Строка — пока текст и кнопка делят ширину. На крупной
             // системной настройке они её не делят: кадр 28.09 показал
@@ -137,22 +157,18 @@ struct UndoToastView: View {
                 if размерТекста.isAccessibilitySize {
                     VStack(alignment: .leading, spacing: Token.Space.s8) {
                         HStack(spacing: 12) {
-                            Image(systemName: "checkmark.circle.fill")
-                                .foregroundStyle(Token.Action.doneText)
-                                .accessibilityHidden(true)
+                            знак
                             текст
                         }
-                        отменить
+                        if естьЧтоОтменять { отменить }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                 } else {
                     HStack(spacing: 12) {
-                        Image(systemName: "checkmark.circle.fill")
-                            .foregroundStyle(Token.Action.doneText)
-                            .accessibilityHidden(true)
+                        знак
                         текст
                         Spacer(minLength: 8)
-                        отменить
+                        if естьЧтоОтменять { отменить }
                     }
                 }
             }

@@ -273,9 +273,33 @@ final class AppState {
             case restoreDeleted([UUID])
         }
 
+        /// Получилось или нет. Знак на плашке берётся отсюда, а не из
+        /// `action`: `action` отвечает на «есть ли что отменять», а это
+        /// другой вопрос — «сработало ли».
+        ///
+        /// Заведено 09.10.2026 по замеру: двадцать восемь сообщений
+        /// об отказе показывались с зелёной галочкой `checkmark.circle.fill`.
+        /// Приложение при этом **знало** про отказ — ставило
+        /// `Haptics.warning()` строкой выше во всех двадцати восьми, —
+        /// и до плашки это знание не доезжало.
+        ///
+        /// > Направление у нас не передаётся значком, только словом.
+        /// > Здесь была обратная ошибка: слово верное, а значок говорил
+        /// > противоположное — и говорил громче, потому что глаз берёт
+        /// > его раньше фразы.
+        ///
+        /// Умолчание — `.успех`: его ставят сорок три вызова из
+        /// пятидесяти одного, и менять их смысл молча нельзя.
+        /// Отказ называют явно, через `showFailure`.
+        enum Tone: Equatable {
+            case успех
+            case отказ
+        }
+
         let id = UUID()
         var message: String
         var action: Action?
+        var tone: Tone = .успех
     }
 
     // MARK: Идущая сессия
@@ -368,9 +392,21 @@ final class AppState {
         show(message, action: .restoreDeleted(eventIDs))
     }
 
-    private func show(_ message: String, action: UndoToast.Action?) {
+    /// Отказ: не сработало. Отменять нечего, и знак не должен обещать
+    /// обратное.
+    ///
+    /// Заводится отдельным именем, а не флагом у `showUndo`, нарочно:
+    /// у вызывающего и так есть эта развилка — он ставит
+    /// `Haptics.warning()` вместо `Haptics.tap()`. Отдельное имя делает
+    /// её видимой в коде, а не выводимой из четвёртого аргумента.
+    func showFailure(_ message: String) {
+        show(message, action: nil, tone: .отказ)
+    }
+
+    private func show(_ message: String, action: UndoToast.Action?,
+                      tone: UndoToast.Tone = .успех) {
         withAnimation(.spring(duration: 0.28)) {
-            undo = UndoToast(message: message, action: action)
+            undo = UndoToast(message: message, action: action, tone: tone)
         }
     }
 }
