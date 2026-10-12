@@ -1,8 +1,0 @@
-/* Graphite · системные поверхности iOS (Live Activity, Dynamic Island) — не зависят от темы. */
-:root {
-  --system-surface: #1C1C1E;
-  --system-island: #000000;
-  --system-text: #F4F4F2;
-  --system-text-2: #A3A39F;
-  --system-fill: rgba(255,255,255,.12);
-}

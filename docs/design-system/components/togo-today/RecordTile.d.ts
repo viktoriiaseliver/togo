@@ -1,2 +1,0 @@
-export interface RecordTileProps { icon: string; title: string; sub?: string; tone?: "default" | "incident"; onPress?: () => void; style?: React.CSSProperties; }
-export declare function RecordTile(p: RecordTileProps): JSX.Element;
