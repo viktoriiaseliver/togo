@@ -34,7 +34,7 @@
 не переносились.
 
 ```
-источник      docs/design-handoff/design/tokens/{colors,togo}.css
+источник      DesignTokens/ядро-дизайна/tokens/{colors,togo}.css
 инструмент    Tools/contrast_graphite.py
 режимов       4  ·  Dark · Light · Dark HC · Light HC
 измерено пар  124

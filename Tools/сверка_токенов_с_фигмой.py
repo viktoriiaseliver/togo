@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 """Сверка имён: `DesignTokens/tokens.json` против переменных Figma
-из хендоффа (`docs/design-handoff/design/tokens/figma-variables.json`).
+(`DesignTokens/ядро-дизайна/tokens/figma-variables.json`).
+
+Адрес сменился 12.10.2026: каталог звался `docs/design-handoff`, и это
+имя называло ПРОИСХОЖДЕНИЕ данных (выгрузка дизайна), а не их роль.
+Уборка, сносившая выгрузки дизайна, снесла бы вместе с ними вход этой
+сверки — и `grep` по имени каталога возражения не нашёл бы, потому
+что искать надо было по имени файла.
 
 Это сверка ИМЁН, а не значений. Значения поколений разные нарочно —
 в репозитории лайм, в пакете индиго, — и смена поколения решается
@@ -26,7 +32,7 @@ import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 REPO_TOKENS = ROOT / "DesignTokens/tokens.json"
-FIGMA_VARS = ROOT / "docs/design-handoff/design/tokens/figma-variables.json"
+FIGMA_VARS = ROOT / "DesignTokens/ядро-дизайна/tokens/figma-variables.json"
 
 # Порог «было что сверять». Числа — с коммита 65e6401; меньше —
 # разбор ослеп, и список «пары нет» читать нельзя.
