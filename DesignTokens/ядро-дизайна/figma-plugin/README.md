@@ -1,49 +1,93 @@
-# Graphite → Figma
+# Graphite → Figma · v5 (окт 2026)
 
-Плагин переносит дизайн-систему в ваш файл Figma (Togo). Запускается один раз; повторный запуск обновляет значения переменных и пересобирает страницы.
+**v5:** + медицинский слой — 30 экранов (`Togo Медслой.dc.html`) и компоненты LabResultRow (Deviation × Marker), LabChart v2, ChartLegend, PrescriptionCard, VisitRow, DiagnosisRow, ClinicPicker на странице «Togo · экраны-компоненты». Всего 97 экранов в 29 разделах.
 
-## Как запустить (Figma Desktop)
+Плагин собирает в файле Figma всю систему и всё приложение: переменные, стили, компоненты и 67 экранов чистовика (`Togo ФИНАЛ` + `Togo ФИНАЛ v2`). Повторный запуск обновляет переменные и пересобирает страницы Components, Variables, Togo · компоненты, Togo · смелее, Templates, Togo · экраны-компоненты, Screens · все экраны (ручные правки на этих страницах пропадут — держите свои макеты на других страницах).
 
-1. Скачайте папку `figma-plugin` и распакуйте.
-2. Откройте файл Togo в **приложении Figma** (в браузере плагины из папки не запускаются).
-3. Меню → **Plugins → Development → Import plugin from manifest…** → выберите `manifest.json`.
-4. **Plugins → Development → Graphite → Figma**. Через 10–30 секунд внизу появится итог.
+## Что нового в v4
 
-Шрифты до запуска: **SF Pro** (developer.apple.com/fonts) и **Material Symbols Rounded** (fonts.google.com/icons). Без них плагин подставит Inter и кружки вместо иконок и скажет об этом.
+- **Screens · все экраны** — 67 экранов в 21 разделе: онбординг, профиль, режимы, семья, дрессировка, поездки/течка/уход, экстренный, ветсводка, ситтер, подписка, настройки, шторки (вердикт, инцидент, «Вырвал», «Как сходил?», реакция), история (день, неделя, календарь, пусто), запас и препарат, правка и удаление, а также все доработки v2 (запуск, разрешения, MergeCard, след удаления, препарат, приглашение, вторая собака, матрица, эпизод, покупка, удаление аккаунта, офлайн). Каждый экран — auto layout из компонентов и переменных, тема задаётся режимом Theme на кадре; подпись над кадром, пояснение — под ним.
+- **Togo · экраны-компоненты** — ChoiceChip, FormField, PlanRow, GroupRow (Trailing × Subtitle × Tone, 48 вариантов), NoteRow, ActionCard (MergeCard / PermissionCard / EpisodeCard), HeroMetric, WeekChart, SkillMatrix, CalendarMonth, DogTagCard (жетон), Marker «Да!».
+- **TabBar** — вкладки как в чистовике: Сегодня · История · Здоровье · Собака, активная — стекло с акцентом.
+- **Переменные** — добавлены `color/system/*` (Live Activity, Dynamic Island), `color/accent/ring`, `type/weight/time`. Все CSS-переменные цвета, отступов, размеров и шрифта из `tokens/` теперь есть в Figma (кроме теней — это стили Elevation, и градиентов).
+- **Стили** — Body Emphasized, Title 3 Emphasized, Togo/Screen Title (Rounded 40 — заголовок шапки-плаката).
+- Экраны AX1 в Figma не строятся: Dynamic Type там не масштабируется (см. «Ограничения»).
 
-## Что создаётся
+## Запуск (Figma Desktop)
 
-**Variables — 9 коллекций, 130 переменных, с алиасами:**
+1. Скачайте папку `figma-plugin`.
+2. Откройте файл в **приложении Figma** (в браузере плагины из папки не запускаются).
+3. **Plugins → Development → Import plugin from manifest…** → `manifest.json`.
+4. **Plugins → Development → Graphite → Figma**. 20–60 секунд, итог внизу.
 
-| Коллекция | Режимы | Что |
-|---|---|---|
-| Accent | Lime · Orange · Sky · Pink | сырые значения акцента, скрыты из публикации |
-| Theme | Dark · Light · Dark HC · Light HC | `color/bg`, `fill`, `text`, `line`, `status`, `control`, `material`, `accent` → алиасы на Accent |
-| Togo | — | `color/togo/*` → алиасы на Theme, `color/system/*` |
-| Spacing | — | `space/0 … space/64`, шаг 4 |
-| Layout | — | `layout/gap-cards`, `pad-card`, `margin-compact` … → алиасы на Spacing |
-| Radius · Size · Type · Motion | — | радиусы, размеры касания, размеры шрифта, движение |
+Шрифты до запуска: **SF Pro** и **SF Pro Rounded** (developer.apple.com/fonts), **Material Symbols Rounded** (fonts.google.com/icons). Без них — Inter и кружки вместо иконок, плагин об этом скажет.
 
-У каждой переменной: scopes (цвет текста предлагается только для текста, отступы — только для gap и padding и т. д.) и code syntax — Web `var(--fill-1)` и iOS `Color("fill.1")`.
+## Что изменилось в v3 — новая система Graphite
 
-**Стили:** 15 текстовых (iOS/Large Title … Caption 2, Numbers/XL … S; размер привязан к переменной), эффекты Elevation/1, Elevation/2 (светлая тема) и Glass/Blur 20.
+- Цвета взяты из CSS новой системы Graphite (`tokens/colors.css`, `accents.css`): тёмная — графит #121211 → #262625 → #353534 → #474746; светлая v5 — белый с лёгким холодом (#ECEDF0, белые карточки, fill-2 #D7DBE0), новые error и warning со своими подложками.
+- Акценты: **Indigo** (по умолчанию, светлая #0E14A1 с белым текстом), **Orange** (коралл), **Pink** (роза). Lime и Sky убраны. Добавлен `color/accent/muted`. Грань `accent/*/edge` и `glass-tint` посчитаны для каждого акцента — грань кнопки меняется вместе с акцентом.
+- Тени Elevation/1 и /2 теперь переключаются темой: в тёмной — волосяная грань (белый 7 и 9 %), в светлой — графитовые тени, в HC — обводка. Цвета теней лежат в `color/effect/*`.
+- Слой Togo сохранён: запас `color/stock/*`, статусы `color/togo/*`, все компоненты и экраны «Сегодня».
+- `tokens/figma-variables.json` пересобран тем же набором (177 переменных).
 
-**Страница Components** — наборы вариантов, все заливки, отступы и радиусы привязаны к переменным:
-- Button — Variant (7) × Size (S, M, L, XL) × Content (Text, Icon + Text, Text + Icon, Icon) × State (Default, Pressed, Disabled), свойство Label;
-- Toggle, SelectCircle, Badge, Chip, TextField, SegmentedControl, Avatar, SyncStatus;
-- ListRow — Trailing (None, Value, Chevron, Toggle) × Subtitle;
-- SectionHeader, Card (+ CardHeader и ActionRow на инстансах кнопок), InlineAlert, Toast, NavBar, TabBar, Alert.
+## Что было в v2
 
-**Страница Variables** — колонки всех цветов в каждом режиме Theme и сетка «акцент × тема» с живыми инстансами: переключите режим у фрейма — всё перекрасится.
+- Переменные сверены с `tokens/colors.css`: светлая тема v3 (тёплый нейтральный, лайм #C6EF4E), грань `color/fill/edge`, `color/accent/edge`, `color/status/error-edge`, запас `color/stock/low · low-subtle · out · out-subtle`, `type/size/number-hero`, `effect/edge-height-s`. Caption — 13.
+- Новые стили: Callout / Subheadline Emphasized, Numbers/Reading 72 и Reading compact 34, Numbers/Unit, Footnote Rounded, Togo/Wordmark, Number Hero 96. Тени без синевы, стекло — блюр 24.
+- **Button · грань** — Primary, Secondary, Destructive filled × M / L / XL; грань снизу — тень 3–4 px цвета `*/edge`.
+- Страница **Togo · компоненты** и страница **Templates** с экранами по размерам (ниже).
 
-**Страница Templates** — экран «Сегодня» из инстансов: 390 тёмная, 390 светлая, 320 тёмная (поля привязаны к `layout/margin-*`).
+## Togo · смелее (новая страница)
 
-## Переключение темы и акцента в Figma
+| Компонент | Варианты |
+|---|---|
+| WalkRing · HeroRing | кольцо прогулки 96 (Walk · Fasting · Overdue) и кольцо-показание 320 для варианта 1a; доля — угол дуги слоя «Progress» |
+| PosterCard | **утверждённый** верх «Сегодня» (1b): цветной блок состояния с крупной косточкой — Normal · Fasting · Dose · Alarm |
+| VerdictCard | вердикт крупно, «Вывожу» первой |
+| LiveActivity | экран блокировки: Walk · Fasting |
+| Widget | Small · Medium (акцентная заливка целиком) |
+| EmptyState | иллюстрация + текст + кнопка: Feed · Treatment · Family |
+| OnboardingStep | иллюстрация «жетон», один вопрос, прогресс |
+| Paywall | Togo Pro: иллюстрация, три пункта, два тарифа |
+| Illustration | линейные иллюстрации «собака и один предмет», 240 × 160, Scene: feed · treat · family · offline · history · stock · onboarding · paywall; контур привязан к `text/secondary`, акцентная деталь — к `accent/fill` (перекрашиваются с темой) |
 
-Выделите фрейм → панель справа → **Layer → Mode**: Theme (Dark / Light / HC) и Accent (Lime / Orange / Sky / Pink).
+Экраны-источники — `Togo Смелее.dc.html`. На странице Templates экраны «Сегодня» собраны в стиле 1b (PosterCard), «Лента прокручена» и «Записать…» — в стиле T5+.
 
-## Чего плагин не делает
+## Togo · компоненты
 
-- Специальные компоненты Togo (VerdictCard, Timeline, LabChart, SkillMatrix и др.) и полные шаблоны — слишком сложная разметка для ручной сборки в плагине. Их можно перенести слоями через плагин **html.to.design**: попросите меня — я выдам ссылку на страницу «Дизайн-система Togo» или шаблоны для импорта (ссылка живёт 10 минут).
-- На тарифе Figma Starter у коллекции один режим: тогда Light и HC не создадутся, плагин об этом скажет.
-- Тени в тёмной теме не нужны (там глубина — ступенью заливки), поэтому эффекты помечены «светлая».
+| Компонент | Варианты |
+|---|---|
+| StatusBar | Island (54) · Classic (20) |
+| TodayHeader | кличка Wordmark · дата · колокольчик и настройки без подложек |
+| HomeIndicator | 34 |
+| StatusLine | Tone: Success · Warning (только натощак) · Error · Info · Neutral × Action |
+| ReadingCard | State: Expanded · Collapsed × Tone: Default · Fasting · Alarm. Косточка: длина заливки — ширина слоя «Fill» (растягивается пропорционально) |
+| FeedRow | Kind: Default · Walk · Incident · Fasting × Last. Нет количества — скрыть «Value» |
+| SwipeRow | строка, открытая свайпом: Изменить · Удалить |
+| ActionBar | Normal · Dose · Alarm × Stacked (AX3) |
+| RecordSheet | шторка «Записать…», инцидент первым |
+| StockCard | Level: OK · Low · Out; «Купил» только у Low и Out |
+
+Иконка — текстовый слой «Icon · …»: впишите имя глифа Material Symbols (`pets`, `restaurant`…), он сменится.
+
+## Templates · экраны по размерам
+
+Ряд 1 — «Обычный день», тёмная, все размеры: 320 × 568 (проверка 320), SE 375 × 667, 390 × 844, 393 × 852, 402 × 874, 430 × 932, 440 × 956.
+Ряды 2–3 — 402 × 874, тёмная и светлая: обычный день, натощак, доза, тревога, лента прокручена (карточка свёрнута), «Записать…» открыта.
+
+Каждый экран — вертикальный auto layout: StatusBar → Body (шапка, строка состояния, карточка, лента, кнопки) → таб-бар → HomeIndicator. Лента растягивается (Fill), поэтому:
+
+- **Нужный размер** — дублируйте ближайший экран (⌘D) и задайте W и H. Поля сами станут 16 (< 375) или 20: у Body привязаны `layout/margin-*` — для узкого экрана переключите переменную на `margin-compact`.
+- Лента обрезается снизу с затуханием (слой «Fade mask»). Высота экрана меньше — видно меньше записей, кнопки и таб-бар на месте.
+- Сетка 4 колонки с полями экрана — Shift + G.
+
+## Тема и акцент
+
+Выделите экран → правая панель → **Layer → Mode**: Theme (Dark / Light / Dark HC / Light HC), Accent (Indigo / Orange / Pink).
+
+## Ограничения
+
+- Dynamic Type в Figma не масштабируется: для AX-размеров используйте ActionBar Stacked и ReadingCard Collapsed.
+- На тарифе Starter у коллекции один режим — Light и HC не создадутся, плагин скажет.
+- Медицинский слой (анализы, назначения, визиты) ещё не нарисован — появится в плагине вместе с экранами.
+- Иллюстрации на экранах — экземпляры набора Illustration; если SVG не импортировался, плагин напишет об этом в итоге.
