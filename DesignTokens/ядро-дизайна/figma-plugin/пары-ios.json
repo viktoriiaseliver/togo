@@ -1,0 +1,21 @@
+{
+  "color/bg/page": "Token.Surface.screen",
+  "color/fill/2": "Token.Surface.pressed",
+  "color/fill/sunken": "Token.Surface.sunken",
+  "color/line/separator": "Token.Surface.hairline",
+  "color/material/glass": "Token.Surface.glass",
+  "color/material/scrim": "Token.Surface.scrim",
+  "color/poster/bg": "Token.Poster.background",
+  "color/poster/err-bg": "Token.Poster.backgroundAlarm",
+  "color/poster/warn-bg": "Token.Poster.backgroundFasting",
+  "color/status/error": "Token.Status.overdueText",
+  "color/status/error-subtle": "Token.Status.overdueBg",
+  "color/status/warning": "Token.Status.waitingText",
+  "color/status/warning-subtle": "Token.Status.waitingBg",
+  "color/stock/low-subtle": "Token.Status.stockLowBg",
+  "radius/card": "Token.Radius.card",
+  "radius/inner": "Token.Radius.tile",
+  "radius/pill": "Token.Radius.capsule",
+  "radius/row": "Token.Radius.control",
+  "radius/sheet": "Token.Radius.sheet"
+}

@@ -163,6 +163,52 @@ def данные_плагина(исходник: str):
 ИЗВЕСТНЫЕ_РАСХОЖДЕНИЯ: dict[str, str] = {}
 
 
+def найти_пары(repo, fig):
+    """Объявленные пары «наш токен ↔ переменная Figma».
+
+    Вынесено из `main` 13.10.2026, чтобы `Tools/пары_ios.py` строил
+    словарь code syntax ТЕМ ЖЕ разбором. Второй разбор того же правила
+    разошёлся бы молча — у нас это оплачено дважды: на литералах
+    с интерполяцией и на трёх поколениях `figma-variables.json`.
+
+    Два объявленных моста, оба читаются с двух сторон:
+
+      описание токена называет дотошное имя   «…color.bg.page, режим Dark»
+      описание токена называет CSS-переменную «togo.css --stock-low»
+
+    Границы имени: точка ПОСЛЕ имени допускается, если за ней не слово.
+    Первая редакция запрещала любую точку справа — и пропускала имя,
+    которым кончается предложение: «…15,53:1. accent.dark.on. БЕЛЫЙ…».
+    Пар выходило 14 вместо настоящих; дефект нашёлся, когда у токена
+    с явно написанным фигма-именем пары не оказалось.
+
+    Ищем самое длинное совпадение, иначе `color.fill.1` поймается
+    внутри `color.fill.12`.
+    """
+    by_dotted = sorted(fig, key=lambda v: -len(v["dotted"]))
+    by_css = {v["css"]: v for v in fig if v.get("css")}
+    pairs: list[tuple[str, dict, object]] = []
+    claimed_repo: set[str] = set()
+    claimed_fig: set[str] = set()
+    for path, value, desc in repo:
+        found = None
+        for v in by_dotted:
+            граница = rf'(?<![\w-])(?<!\.){re.escape(v["dotted"])}(?![\w-])(?!\.\w)'
+            if re.search(граница, desc):
+                found = v
+                break
+        if found is None:
+            for css in re.findall(r'--[a-z0-9-]+', desc):
+                if css in by_css:
+                    found = by_css[css]
+                    break
+        if found is not None:
+            pairs.append((path, found, value))
+            claimed_repo.add(path)
+            claimed_fig.add(found["name"])
+    return pairs, claimed_repo, claimed_fig
+
+
 def сверить_по_режимам(pairs, описания):
     """Расхождения значений у объявленных пар, по режимам.
 
@@ -276,39 +322,7 @@ def main() -> int:
               f"переменных {len(fig)} (ждал ≥{MIN_FIGMA_VARS})")
         return 2
 
-    # Пара объявлена, если дотошное имя переменной Figma встречается
-    # в описании токена репозитория. Ищем самое длинное совпадение,
-    # иначе `color.fill.1` поймается внутри `color.fill.12`.
-    by_dotted = sorted(fig, key=lambda v: -len(v["dotted"]))
-    pairs: list[tuple[str, dict, str]] = []
-    claimed_repo: set[str] = set()
-    claimed_fig: set[str] = set()
-    # Границы имени: точка ПОСЛЕ имени допускается, если за ней не слово.
-    # Первая редакция запрещала любую точку справа — и пропускала имя,
-    # которым кончается предложение: «…15,53:1. accent.dark.on. БЕЛЫЙ…».
-    # Пар выходило 14 вместо настоящих; дефект нашёлся, когда у токена
-    # с явно написанным фигма-именем пары не оказалось.
-    # Второй объявленный мост: наше описание называет CSS-переменную
-    # («togo.css --stock-low»), а у переменной Figma есть поле `css`.
-    # Объявлено с ДВУХ сторон, сверяется механически — и закрывает
-    # продуктовые цвета, у которых фигма-имени в описании нет.
-    by_css = {v["css"]: v for v in fig if v.get("css")}
-    for path, value, desc in repo:
-        found = None
-        for v in by_dotted:
-            граница = rf'(?<![\w-])(?<!\.){re.escape(v["dotted"])}(?![\w-])(?!\.\w)'
-            if re.search(граница, desc):
-                found = v
-                break
-        if found is None:
-            for css in re.findall(r'--[a-z0-9-]+', desc):
-                if css in by_css:
-                    found = by_css[css]
-                    break
-        if found is not None:
-            pairs.append((path, found, value))
-            claimed_repo.add(path)
-            claimed_fig.add(found["name"])
+    pairs, claimed_repo, claimed_fig = найти_пары(repo, fig)
 
     print(f"ПАР ПО ОБЪЯВЛЕНИЮ: {len(pairs)}")
     print(f"{'репозиторий':<34}{'Figma':<26}{'коллекция':<10} значение")

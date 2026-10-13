@@ -22,6 +22,12 @@ help: ## Показать список команд
 .PHONY: tokens
 tokens: ## Пересобрать токены из DesignTokens/tokens.json
 	@python3 Tools/generate_tokens.py
+	@python3 Tools/пары_ios.py
+
+.PHONY: figma-check
+figma-check: ## Сверить код с тем, что плагин отправит в Figma (имена, значения, code syntax)
+	@python3 Tools/сверка_токенов_с_фигмой.py | tail -40
+	@python3 Tools/пары_ios.py --проверить
 
 .PHONY: project
 project: ## Перегенерировать Togo.xcodeproj и схему
@@ -186,9 +192,12 @@ guard: ## Проверить сторожа подделкой в отдельн
 .PHONY: tokens-check
 tokens-check: ## Проверить, что сгенерированные токены не расходятся с tokens.json
 	@python3 Tools/generate_tokens.py >/dev/null
+	@python3 Tools/пары_ios.py >/dev/null
 	@git diff --quiet -- TogoShared/Generated DesignTokens/build \
-		|| (echo "Токены разошлись: запусти make tokens и закоммить результат" && exit 1)
-	@echo "Токены совпадают с источником"
+		DesignTokens/ядро-дизайна/figma-plugin/пары-ios.json \
+		DesignTokens/ядро-дизайна/figma-plugin/code.js \
+		|| (echo "Токены или пары iOS разошлись: запусти make tokens и закоммить результат" && exit 1)
+	@echo "Токены и пары iOS совпадают с источником"
 
 .PHONY: journal
 journal: ## Завести запись в журнале проекта за сегодня
