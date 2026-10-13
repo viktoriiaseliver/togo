@@ -148,8 +148,20 @@ nonisolated enum SyncSeedState {
         UserDefaults(suiteName: AppIdentifiers.appGroup) ?? .standard
     }
 
+    /// **Это не подпись, и `String(localized:)` здесь был бы дефектом,
+    /// а не починкой.** Слово уходит в ИМЯ КЛЮЧА: переведи его —
+    /// и ключ станет зависеть от языка (`sharedDiary.seeded.сам`
+    /// против `sharedDiary.seeded.soi`). Сменив язык, человек получил
+    /// бы флаг «не засеяно» и второй засев. Голова этого файла
+    /// объясняет, почему второй засев безопасен только из-за
+    /// устойчивых `id`, — а полагаться на это там, где можно просто
+    /// не ломать ключ, незачем.
+    ///
+    /// `Tools/эталон-прогона.json` до 13.10.2026 предписывал обратное
+    /// («лечится `?? String(localized: "сам")`»). Запись пережила свою
+    /// правду и стала нарядом на внесение дефекта.
     private static func key(_ owner: String?) -> String {
-        "sharedDiary.seeded." + (owner ?? "сам")
+        "sharedDiary.seeded." + (owner ?? "сам")  // внутреннее: суффикс ключа UserDefaults, перевод сбросил бы флаг засева
     }
 
     static func засеяно(владелец owner: String?) -> Bool {

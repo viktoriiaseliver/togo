@@ -71,7 +71,19 @@ struct LocalizationDebtTests {
     /// > зелен ровно на величину этих ошибок.
     private let долг: [String: Int] = [
         "AlarmThreshold.swift": 1, "CareMigration.swift": 14, "DayOutPlan.swift": 3,
-        "DogDocument.swift": 20, "FamilyShare.swift": 1, "FamilySync.swift": 3,
+        "DogDocument.swift": 20, "FamilySync.swift": 3,
+        // `FamilyShare.swift` стоял здесь с долгом 1 и ушёл 13.10.2026.
+        // Красное было 9 при 1, и девять делились 8 + 1, а не на глаз:
+        //  · восемь — коды состояния `нетСети`/`нетiCloud`/… в обе
+        //    стороны разбора `UserDefaults`. Это запись в хранилище,
+        //    и перевод обнулил бы причину отказа при смене языка.
+        //    Помечены строчно, с причиной.
+        //  · одна — `:137`, заголовок `CKShare`, который приглашённый
+        //    видит в СИСТЕМНОЙ шторке iOS. Присвоение `String`-полю
+        //    каталог не спрашивает; ключ «Дневник · %@» лежал
+        //    на четырёх языках всё это время.
+        // Эталон держал обе половины на причине «текст заморожен,
+        // носителя сегодня нет» — переводчик не был нужен ни одной.
         "Feeding.swift": 1, "ScheduleChange.swift": 1,
         "TimelineBuilder.swift": 1, "TreatmentCourse.swift": 5, "VetSummary.swift": 9, "WalkMarkIntent.swift": 6,
         // `WidgetSnapshot.swift` стоял здесь с долгом 3 и ушёл 07.10.2026:
