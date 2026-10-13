@@ -208,7 +208,19 @@ struct СвойствоМимоКаталогаTests {
         guard !код[..<диапазон.upperBound].contains("localized:") else { return false }
         let хвост = код[код.index(before: диапазон.upperBound)...]
         guard let литерал = Self.первыйЛитерал(String(хвост)) else { return false }
-        return литерал.contains(where: { $0.isCyrillic })
+        return естьКириллица(литерал)
+    }
+
+    /// Кириллица в строке.
+    ///
+    /// Своя, а не общая, и это не лень: `isCyrillic` уже объявлен
+    /// дважды — в `FallbackLiteralTests:366` и
+    /// `LocalizationDebtTests:482`, оба раза `fileprivate`. Третью
+    /// копию я завожу зная об этом; сводить три в одну — отдельная
+    /// уборка, и делать её попутно значило бы править два чужих файла
+    /// ради своего. Диапазон у всех трёх один и тот же: U+0400…U+04FF.
+    static func естьКириллица(_ строка: String) -> Bool {
+        строка.unicodeScalars.contains { (0x0400...0x04FF).contains($0.value) }
     }
 
     /// Первый литерал строки целиком, с учётом экранированных кавычек.
