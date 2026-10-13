@@ -61,7 +61,13 @@ enum NotificationCenterService {
         guard !lines.isEmpty else { return }
 
         let content = UNMutableNotificationContent()
-        content.title = "Togo · утренняя сводка"
+        // Через каталог: `content.title` — это `String`, и присвоение
+        // литерала каталог не спрашивает вовсе. Ключ в каталоге при
+        // этом есть и переведён — то есть сторож полноты всё это время
+        // отвечал «переведено» про строку, которая до перевода
+        // не доезжала. Пуш рисуется, когда приложение закрыто, и ни
+        // один кадр его не ловит.
+        content.title = String(localized: "Togo · утренняя сводка")
         content.body = lines.prefix(4).joined(separator: "\n")
         content.sound = .default
         content.interruptionLevel = .active

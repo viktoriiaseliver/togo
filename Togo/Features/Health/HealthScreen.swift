@@ -346,7 +346,11 @@ struct ProtocolScreen: View {
     private func recordDraw() {
         EventLog(context: context, appState: appState)
             .record(.note, dog: dog, confirmation: "Записано · забор крови") { event in
-                event.note = "Забор крови"
+                // Через каталог: заметку человек читает в ленте дня
+                // и в сводке врачу. `note` — `String`, присвоение
+                // литерала каталог не спрашивает, и у француза
+                // в собственном дневнике встало бы русское слово.
+                event.note = String(localized: "Забор крови")
             }
     }
 }
