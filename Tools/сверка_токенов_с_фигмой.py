@@ -39,6 +39,8 @@
 
 from __future__ import annotations
 
+import datetime
+import hashlib
 import json
 import pathlib
 import re
@@ -54,6 +56,24 @@ PLUGIN_JS = ROOT / "DesignTokens/ядро-дизайна/figma-plugin/code.js"
 # поколение несёт 199, и порог 180 пропустил бы возврат старого JSON.
 MIN_REPO_LEAVES = 150
 MIN_FIGMA_VARS = 195
+
+
+def паспорт_копии(path: pathlib.Path) -> str:
+    """Отпечаток входа: чтобы «расхождений ноль» нельзя было прочесть
+    как «сходится с тем, что сейчас нарисовано в Figma».
+
+    Печатается то, что **зависит от файла** — sha256 и время правки.
+    Имя версии из `README.md` плагина сюда не берётся нарочно: ярлык
+    печатается до работы и от её исхода не зависит, значит не может
+    оказаться неверным. Ровно так `generate_tokens.py:325` год отдавал
+    в Фигму `"modes": ["Light"]`, пока под ярлыком уезжала тёмная
+    палитра целиком.
+    """
+    данные = path.read_bytes()
+    отпечаток = hashlib.sha256(данные).hexdigest()[:12]
+    правлен = datetime.datetime.fromtimestamp(path.stat().st_mtime)
+    return (f"sha256 {отпечаток} · {len(данные) // 1024} КБ · "
+            f"правлен {правлен:%d.%m.%Y %H:%M}")
 
 
 def leaves(node, path=""):
@@ -314,6 +334,17 @@ def main() -> int:
     print(f"репозиторий   {REPO_TOKENS.relative_to(ROOT)}   листьев {len(repo)}")
     print(f"плагин        {PLUGIN_JS.relative_to(ROOT)}   переменных {len(fig)}"
           f" в {len(data['collections'])} коллекциях")
+    print(f"              {паспорт_копии(PLUGIN_JS)}")
+    print()
+    print("ГРАНИЦА ЭТОЙ СВЕРКИ — она сверяет КОПИЮ, а не живой файл.")
+    print("Плагин несёт то, что он ОТПРАВИТ в Figma. Что лежит в Figma")
+    print("сейчас, сверка не знает: файл правит Виктория, а REST")
+    print("к переменным на тарифе Professional недоступен (нужен")
+    print("Enterprise). Значит «расхождений ноль» читается как «код")
+    print("сходится с копией», и НЕ как «сходится с тем, что нарисовано».")
+    print("Замер 14.10.2026: в живом файле есть `--onb-title`, `--onb-line`")
+    print("и стили `Onboarding/*`, которых в этой копии нет ни одного, —")
+    print("и сверка молчала про них, потому что смотрит не туда.")
     print()
 
     if len(repo) < MIN_REPO_LEAVES or len(fig) < MIN_FIGMA_VARS:
