@@ -106,15 +106,127 @@ sostoyanie_mashiny "ДО"
 UDID="$(xcrun simctl list devices | grep -F "$SIM_NAME (" | head -1 \
         | sed -E 's/.*\(([0-9A-F-]{36})\).*/\1/')"
 if [ -z "$UDID" ]; then
-    RUNTIME="$(xcrun simctl list runtimes available \
-        | grep -oE 'com.apple.CoreSimulator.SimRuntime.iOS-[0-9-]+' | tail -1)"
+    # Рантайм НАЗЫВАЕТСЯ, а не выбирается «самый новый».
+    #
+    # До 14.10.2026 здесь стоял `| tail -1`, то есть новейший
+    # установленный. Сегодня новейший — iOS 27.0, где стенд Togo
+    # отказывает по устройству: `Cannot use staged migration with
+    # an unknown model version`, перезапуски, 10 тестов из 1074.
+    # Скрипт вёл новые прогоны ровно в сломанный рантайм и сам
+    # об этом не говорил — две потери уже оплачены, и обе выглядели
+    # как дефект продукта.
+    #
+    # Почему не «брать 26.5» одной строкой. Это снова условие,
+    # привязанное к ИНСТРУМЕНТУ — к тому, что сейчас стоит на машине, —
+    # и оно поменяет знак в момент успеха: выйдет 27.1, где стенд
+    # заработает, а прибитая 26.5 останется; уберут 26.5 при уборке —
+    # и `tail` снова возьмёт что попало. Условие привязывается
+    # к ПРАВИЛУ: версия задана явно, и если её нет, скрипт отказывает
+    # С ИМЕНЕМ, а не берёт ближайшую. Иначе следующий получит
+    # «staged migration» и третий день будет искать причину в коде.
+    RUNTIME_IOS="${RUNTIME_IOS:-26.5}"
+    RUNTIME="com.apple.CoreSimulator.SimRuntime.iOS-${RUNTIME_IOS//./-}"
+    if ! xcrun simctl list runtimes available | grep -qF "$RUNTIME"; then
+        cat >&2 <<KONEC
+
+ЗАМЕР НЕ СОСТОЯЛСЯ: рантайма iOS ${RUNTIME_IOS} на машине нет.
+
+Прогон идёт на НАЗВАННОЙ версии, а не на самой новой: на iOS 27.0
+стенд Togo отказывает (Cannot use staged migration), и прогон там
+умирает на тридцатом тесте из тысячи — внешне это неотличимо
+от дефекта продукта.
+
+Установлено сейчас:
+$(xcrun simctl list runtimes available | grep -F 'com.apple.CoreSimulator.SimRuntime.iOS-' | sed 's/^/  /')
+
+Поставить нужную версию (Xcode → Settings → Components) либо
+назвать другую осознанно: RUNTIME_IOS=27.0 Tools/прогон-ui.sh ...
+KONEC
+        exit 9
+    fi
     UDID="$(xcrun simctl create "$SIM_NAME" \
         com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro "$RUNTIME")"
-    echo "создан:     $UDID"
+    echo "создан:     $UDID (iOS $RUNTIME_IOS)"
 fi
 echo "udid:       $UDID"
 
 xcrun simctl bootstatus "$UDID" -b >/dev/null 2>&1
+
+# ПОЛОЖЕНИЕ СТЕНДА: тема, контраст, кегль — ЧИТАЮТСЯ ОБРАТНО,
+# а не объявляются.
+#
+# Замер 14.10.2026, живой симулятор `Togo-b6` посреди чужого прогона:
+#
+#     appearance        light
+#     increase_contrast enabled
+#     content_size      accessibility-extra-extra-extra-large
+#
+# Никто этого не задавал: `simctl ui` до сегодня не звал ни один наш
+# скрипт и ни одна цель `Makefile`. Положение осталось от прошлого
+# захода и ЛИПНЕТ к устройству, а кадры следующего прогона получают
+# имена, в которых о нём нет ни слова. Так у проекта и появились
+# «светлые кадры 12.10»: сняты не нарочно, а потому что стенд так стоял.
+#
+# Здесь две разные вещи, и вторая важнее первой:
+#
+#   TEMA / KONTRAST / KEGEL   задают положение. По умолчанию НЕ задают
+#                             ничего — ни один существующий вызов
+#                             не меняет поведения;
+#   чтение обратно            печатается ВСЕГДА, и при заданном
+#                             положении сверяется.
+#
+# Почему мало выставить. Выставить и поверить своему же аргументу —
+# это ярлык, напечатанный ДО работы: он не зависит от исхода и потому
+# не может оказаться неверным. У проекта это оплачено дважды —
+# `generate_tokens.py` год печатал в Фигму «modes: Light», отправляя
+# тёмную палитру, и `iosName()` печатала 135 имён, которых в Swift
+# не существует ни одного. Единственная защита — спросить у системы,
+# что она в итоге имеет, и сверить с тем, что просили.
+#
+# Имена переменных латиницей: кириллическое имя в bash не заводится
+# вовсе, и следующая строка выполняется как ни в чём не бывало.
+polozhenie_stenda() {
+    local kogda="$1"
+    echo "--- стенд ${kogda} ---"
+    echo "  тема:     $(xcrun simctl ui "$UDID" appearance 2>&1)"
+    echo "  контраст: $(xcrun simctl ui "$UDID" increase_contrast 2>&1)"
+    echo "  кегль:    $(xcrun simctl ui "$UDID" content_size 2>&1)"
+}
+
+# Сверка «просили → получили». Расхождение здесь — отказ стенда,
+# а не мелочь: кадр, снятый не в том положении, снаружи НЕ отличается
+# от снятого в том, и принять его может кто угодно. Поэтому выход
+# ненулевой, как у контроля лога приложения ниже.
+sverit_polozhenie() {
+    local chto="$1" prosili="$2" fakt
+    fakt="$(xcrun simctl ui "$UDID" "$chto" 2>&1)"
+    if [ "$fakt" != "$prosili" ]; then
+        cat >&2 <<KONEC
+
+ЗАМЕР НЕ СОСТОЯЛСЯ: просили ${chto}=«${prosili}», стенд отвечает «${fakt}».
+
+Это НЕ «тесты упали» — прогон даже не начинался. Кадр, снятый
+в непрошенном положении, снаружи неотличим от снятого в прошенном,
+и его примут. Чинить стенд (поднялось ли устройство, умеет ли
+рантайм эту настройку), а не считать результат.
+KONEC
+        exit 9
+    fi
+}
+
+TEMA="${TEMA:-}"
+KONTRAST="${KONTRAST:-}"
+KEGEL="${KEGEL:-}"
+
+[ -n "$TEMA" ]     && xcrun simctl ui "$UDID" appearance        "$TEMA"     >/dev/null 2>&1
+[ -n "$KONTRAST" ] && xcrun simctl ui "$UDID" increase_contrast "$KONTRAST" >/dev/null 2>&1
+[ -n "$KEGEL" ]    && xcrun simctl ui "$UDID" content_size      "$KEGEL"    >/dev/null 2>&1
+
+polozhenie_stenda "ДО"
+
+[ -n "$TEMA" ]     && sverit_polozhenie appearance        "$TEMA"
+[ -n "$KONTRAST" ] && sverit_polozhenie increase_contrast "$KONTRAST"
+[ -n "$KEGEL" ]    && sverit_polozhenie content_size      "$KEGEL"
 
 # Ловим вывод САМОГО приложения. Без этого весь прогон бессмыслен:
 # именно эта строка отличает инструмент от предыдущего захода.
