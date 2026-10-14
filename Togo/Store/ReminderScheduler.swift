@@ -170,8 +170,7 @@ enum ReminderScheduler {
             // (`DoseRecord.escalationStage`): пропуск это решение и запись,
             // а не пустота. Без этой оговорки человек нажимал
             // «пропустить» и всё равно получал пуш «Доза 21:30 не отмечена».
-            for dose in medication.doses
-            where !dose.isGiven && dose.skippedAt == nil && dose.cancelledAt == nil {
+            for dose in medication.doses where dose.ждётОтметки {
                 guard dose.scheduledAt > now else { continue }
 
                 // За десять минут — дежурному.
@@ -240,8 +239,11 @@ enum ReminderScheduler {
         for medication in dog.medications {
             let схемаЖдёт = лечениеИдёт && !medication.isPaused
             for dose in medication.doses {
-                let дозаЖдёт = !dose.isGiven && dose.skippedAt == nil && dose.cancelledAt == nil
-                guard !(схемаЖдёт && дозаЖдёт) else { continue }
+                // Определение «доза ждёт» переехало в модель
+                // (`DoseRecord.ждётОтметки`): его спрашивает ещё и приём
+                // чужой отметки в `FamilySync.apply`, а два разбора
+                // одного правила расходятся молча.
+                guard !(схемаЖдёт && dose.ждётОтметки) else { continue }
                 снимаем.append(doseID(dose, stage: "t-10"))
                 снимаем.append(doseID(dose, stage: "t+30"))
                 снимаем.append(doseID(dose, stage: "t+60"))
