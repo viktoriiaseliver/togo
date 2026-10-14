@@ -203,9 +203,36 @@ tokens-check: ## Проверить, что сгенерированные то�
 journal: ## Завести запись в журнале проекта за сегодня
 	@bash Tools/new_journal.sh
 
+# Issuer принимается под ОБОИМА именами, и это не вежливость.
+#
+# Замер 14.10.2026: `Gamut/.env.asc` — единственный файл, откуда ключи
+# попадают в окружение на этой машине, — экспортирует `ASC_ISSUER_ID`.
+# Здесь требовалось `ASC_ISSUER`. То есть штатная команда
+# `source Gamut/.env.asc && make beta` упиралась в НАШИ ЖЕ ворота,
+# хотя `Tools/publish_beta.sh:47-51` запустился бы: мост «оба имени»
+# стоит в трёх скриптах (`publish_beta.sh`, `submit_beta_review.sh`,
+# `upload_testflight.sh`) и отсутствовал ровно здесь.
+#
+# Отказ при этом звучал как «ключа нет», а беда была «ключ назван
+# иначе» — разные беды с разным лечением, и первое читается как второе.
+#
+# Проверка ворот оставлена, а не снята: без неё отказ приехал бы
+# из середины скрипта, уже после печати «── тексты».
+#
+# Склейка двух имён — это ПРОБА НА ПУСТОТУ, а не значение. Когда
+# заданы оба, выходит `iss-222id-111`, и наружу это не уходит никуда:
+# issuer скрипты берут из окружения сами, каждый своим мостом. Сказано
+# вслух потому, что склеенная строка на глаз читается как дефект,
+# а значением она не бывает ни разу.
+#
+# Приёмка 14.10.2026, пробный makefile с той же строкой ворот:
+#   пусто → rc=1 (отказ) · только ASC_ISSUER_ID → пропустил ·
+#   только ASC_ISSUER → пропустил · оба → пропустил
+ISSUER_ANY = $(ASC_ISSUER)$(ASC_ISSUER_ID)
+
 .PHONY: beta
 beta: ## Отдать последнюю сборку тестировщикам: тексты и раздача своим
-	@test -n "$(ASC_ISSUER)" || (echo "Укажи ASC_ISSUER=... — Issuer ID из App Store Connect" && exit 1)
+	@test -n "$(ISSUER_ANY)" || (echo "Укажи ASC_ISSUER=... (или ASC_ISSUER_ID) — Issuer ID из App Store Connect" && exit 1)
 	@bash Tools/publish_beta.sh
 
 .PHONY: site
@@ -214,7 +241,7 @@ site: ## Собрать и опубликовать страницы полит�
 
 .PHONY: subs
 subs: ## Настроить подписки в App Store Connect из subscriptions.json
-	@test -n "$(ASC_ISSUER)" || (echo "Укажи ASC_ISSUER=... — Issuer ID из App Store Connect" && exit 1)
+	@test -n "$(ISSUER_ANY)" || (echo "Укажи ASC_ISSUER=... (или ASC_ISSUER_ID) — Issuer ID из App Store Connect" && exit 1)
 	@bash Tools/setup_subscriptions.sh
 
 .PHONY: usage
