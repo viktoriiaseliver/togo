@@ -81,21 +81,43 @@ nonisolated final class ПриёмПриглашенияВидно: XCTestCase {
                       "приложение не поднялось — это отказ запуска, не показа")
         вкладка.tap()
 
-        // Не только `buttons`: `NavigationLink` с карточкой в метке
-        // может лечь в дерево доступности кнопкой, ячейкой или `other`.
-        // Спрашивать одну форму значит получить ответ про мерку.
-        let ссылка = app.descendants(matching: .any)
-            .containing(NSPredicate(format: "label CONTAINS %@", "Общий дневник"))
-            .firstMatch
-        for _ in 0..<6 where !ссылка.exists { app.swipeUp() }
-        XCTAssertTrue(ссылка.waitForExistence(timeout: 5),
-                      "ссылки «Общий дневник» нет — до экрана не дошли")
+        // Кандидаты по типам, а не `descendants(.any)`: `NavigationLink`
+        // с карточкой в метке SwiftUI волен сложить кнопкой, ячейкой
+        // или текстом, а запрос по всему дереву вернул бы контейнер —
+        // и `tap()` пришёлся бы в случайное место.
+        //
+        // Это уже стоило прогона 17:17: там стоял `containing(_:)`,
+        // который отбирает элементы с ПОТОМКОМ под предикат, то есть
+        // вернул корневое окно. Тест упал ниже и обвинил чужую правку,
+        // а кадр показал, что мы были на карточке участника «Мама».
+        let кандидаты = [
+            app.buttons["Общий дневник"].firstMatch,
+            app.cells["Общий дневник"].firstMatch,
+            app.staticTexts["Общий дневник"].firstMatch,
+        ]
+        var ссылка: XCUIElement?
+        for _ in 0..<6 {
+            if let найдено = кандидаты.first(where: { $0.exists && $0.isHittable }) {
+                ссылка = найдено
+                break
+            }
+            app.swipeUp()
+        }
+        guard let ссылка else {
+            XCTFail("ссылки «Общий дневник» нет — до экрана не дошли")
+            return
+        }
         ссылка.tap()
+
+        // Пришли ли ТУДА. Без этого кадры исходов снимались бы с любого
+        // экрана, на который увёл тап, и назывались бы именами исходов.
+        XCTAssertTrue(app.navigationBars["Общий дневник"].waitForExistence(timeout: 10),
+                      "после тапа мы не на экране общего дневника")
     }
 
     private func текстНаЭкране(_ app: XCUIApplication, _ кусок: String) -> Bool {
         app.staticTexts
-            .containing(NSPredicate(format: "label CONTAINS %@", кусок))
+            .matching(NSPredicate(format: "label CONTAINS %@", кусок))
             .firstMatch.waitForExistence(timeout: 5)
     }
 

@@ -111,7 +111,7 @@ nonisolated final class ГостьНеПишет: XCTestCase {
     /// ответ про мерку, а не про экран.
     private func плашкаОтказа(_ app: XCUIApplication) -> XCUIElement {
         app.staticTexts
-            .containing(NSPredicate(format: "label CONTAINS %@", отказ))
+            .matching(NSPredicate(format: "label CONTAINS %@", отказ))
             .firstMatch
     }
 
@@ -211,7 +211,7 @@ nonisolated final class ГостьНеПишет: XCTestCase {
         // и «сказано, что делать» — разные обещания, и второе
         // не следует из первого.
         let естьВыход = app.staticTexts
-            .containing(NSPredicate(format: "label CONTAINS %@", "Это я"))
+            .matching(NSPredicate(format: "label CONTAINS %@", "Это я"))
             .firstMatch.exists
 
         try снять(app, "гость-жмёт-еду")
@@ -280,7 +280,7 @@ nonisolated final class ГостьНеПишет: XCTestCase {
         let app = запустить(["-UITesting", "-ЧужаяЗона", "Виктория"])
 
         let пункт = app.descendants(matching: .any)
-            .containing(NSPredicate(format: "label BEGINSWITH %@", "Еда · "))
+            .matching(NSPredicate(format: "label BEGINSWITH %@", "Еда · "))
             .firstMatch
         guard пункт.waitForExistence(timeout: 15) else {
             XCTFail("""
@@ -295,7 +295,7 @@ nonisolated final class ГостьНеПишет: XCTestCase {
 
         let второй = "Записывать может тот, кому это разрешено"
         let естьВторойОтказ = app.staticTexts
-            .containing(NSPredicate(format: "label CONTAINS %@", второй))
+            .matching(NSPredicate(format: "label CONTAINS %@", второй))
             .firstMatch.waitForExistence(timeout: 5)
 
         try снять(app, "гость-жмёт-пункт-плана")
