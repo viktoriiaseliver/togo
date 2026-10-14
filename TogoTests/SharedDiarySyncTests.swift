@@ -118,10 +118,11 @@ struct SharedDiaryOutboxTests {
         let outbox = SharedDiaryOutbox()
         let server = serverRecord(UUID())
 
-        let again = outbox.retries(after: [(id: server.recordID, error: conflict(with: server))])
+        let разбор = outbox.retries(after: [(id: server.recordID, error: conflict(with: server))])
 
-        #expect(again == [server.recordID],
+        #expect(разбор.повторим == [server.recordID],
                 "прежде здесь была строка в журнале и потерянная навсегда отметка")
+        #expect(разбор.потеряно.isEmpty, "спор версий — не потеря: запись уходит во второй раз")
         #expect(outbox.base(for: server.recordID) === server,
                 "во второй раз идём с серверной версией — на ней стоит recordChangeTag")
     }
@@ -132,30 +133,93 @@ struct SharedDiaryOutboxTests {
         let server = serverRecord(UUID())
         outbox.remember(server)
 
-        let again = outbox.retries(after: [(id: server.recordID, error: failure(.unknownItem))])
+        let разбор = outbox.retries(after: [(id: server.recordID, error: failure(.unknownItem))])
 
-        #expect(again == [server.recordID])
+        #expect(разбор.повторим == [server.recordID])
+        #expect(разбор.потеряно.isEmpty)
         #expect(outbox.base(for: server.recordID) == nil, "старый тег указывает в пустоту")
     }
 
-    @Test("Чего повторить не умеем — то и не повторяем")
-    func otherFailuresAreNotRetried() {
+    /// **Этот тест заморозил дефект, и это видно по его прежнему имени.**
+    ///
+    /// Звался он «Чего повторить не умеем — то и не повторяем»
+    /// и проверял `.isEmpty`. Утверждение было верным и неполным:
+    /// «не повторяем» — половина ответа, вторая половина — «и никто
+    /// об этом не узнает». Пока тест спрашивал только про повтор,
+    /// он подтверждал как правильное то, что правка человека исчезает
+    /// молча.
+    ///
+    /// > Тест, проверяющий половину развилки, делает вторую половину
+    /// > решением — не потому, что кто-то так решил, а потому, что
+    /// > спросить о ней стало нечем.
+    @Test("Чего повторить не умеем — то и называем потерянным")
+    func otherFailuresAreReportedAsLost() {
         let outbox = SharedDiaryOutbox()
         let server = serverRecord(UUID())
 
-        #expect(outbox.retries(after: [(id: server.recordID, error: failure(.quotaExceeded))]).isEmpty)
-        #expect(outbox.retries(after: [(id: server.recordID, error: failure(.networkFailure))]).isEmpty)
+        for код in [CKError.Code.quotaExceeded, .networkFailure, .invalidArguments] {
+            let разбор = outbox.retries(after: [(id: server.recordID, error: failure(код))])
+
+            #expect(разбор.повторим.isEmpty, "повторить \(код.rawValue) мы по-прежнему не умеем")
+            #expect(разбор.потеряно.count == 1, """
+                отказ \(код.rawValue) не попал ни в повтор, ни в потери — \
+                значит он исчез, и человек увидит «Своё не уехало: 0» \
+                при пропавшей записи
+                """)
+            #expect(разбор.потеряно.first?.объявлено == false, """
+                потеря помечена объявленной, а довода в коде нет: \
+                объявленной она становится, только если рядом написано, \
+                ПОЧЕМУ повтора не будет
+                """)
+            #expect(разбор.потеряно.first?.код == код)
+        }
     }
 
-    @Test("Пропавшая зона обнуляет все теги")
+    /// `invalidArguments` среди кодов выше стоит не для полноты:
+    /// это ответ CloudKit на запись типа или поля, которых нет в схеме.
+    /// Именно он был у семи типов из двенадцати до выкладки схемы
+    /// 14.10.2026, и именно он уходил в `default: continue`.
+    @Test("Отказ не от CloudKit тоже называется потерей, а не исчезает")
+    func nonCloudKitFailureIsReportedAsLost() {
+        let outbox = SharedDiaryOutbox()
+        let server = serverRecord(UUID())
+        let чужой = NSError(domain: "мой.домен", code: 42, userInfo: [:])
+
+        let разбор = outbox.retries(after: [(id: server.recordID, error: чужой)])
+
+        // Пятый путь, который виден только из `guard` на входе, а не
+        // из `switch`: прежде `raw.domain == CKErrorDomain` отбрасывал
+        // такой отказ тем же `continue`, и снаружи он был неотличим
+        // от разобранного `default`.
+        #expect(разбор.повторим.isEmpty)
+        #expect(разбор.потеряно.count == 1, """
+            отказ, пришедший не от CloudKit, исчез до switch — \
+            это ПЯТЫЙ путь, и он молчит так же, как четвёртый
+            """)
+        #expect(разбор.потеряно.first?.код == nil, "кода CKError у него нет, и врать про него нельзя")
+        #expect(разбор.потеряно.first?.объявлено == false)
+    }
+
+    @Test("Пропавшая зона обнуляет все теги и считается ОБЪЯВЛЕННОЙ потерей")
     func lostZoneForgetsEverything() {
         let outbox = SharedDiaryOutbox()
         let server = serverRecord(UUID())
         outbox.remember(server)
 
-        _ = outbox.retries(after: [(id: server.recordID, error: failure(.zoneNotFound))])
+        let разбор = outbox.retries(after: [(id: server.recordID, error: failure(.zoneNotFound))])
 
         #expect(outbox.base(for: server.recordID) == nil)
+        // Повтора нет, но довод записан в коде: зону пересоздаёт движок.
+        // Поэтому `объявлено: true` — и в журнал это идёт `notice`,
+        // а не `error`. Вернётся ли запись после пересоздания зоны —
+        // НЕ ИЗМЕРЕНО, и различие уровней сделано ради того, чтобы
+        // этот вопрос был виден, а не ради тишины.
+        #expect(разбор.повторим.isEmpty)
+        #expect(разбор.потеряно.first?.объявлено == true, """
+            решение с доводом и дефект без довода помечены одинаково — \
+            значит в журнале их не различить, а различие и есть \
+            единственный способ найти второе
+            """)
     }
 
     @Test("Подтверждённая сервером запись запоминается")
