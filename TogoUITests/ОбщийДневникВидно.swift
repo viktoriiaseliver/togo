@@ -96,7 +96,17 @@ nonisolated final class ОбщийДневникВидно: XCTestCase {
                       "вкладки «Семья» нет — кадра нет, и это не «экрана нет»")
         вкладка.tap()
 
-        let ссылка = app.buttons["Общий дневник"].firstMatch
+        // Ищется НЕ только среди `buttons`, и это не перестраховка.
+        // `sharedDiaryLink` (`FamilyScreen.swift:247`) — это
+        // `NavigationLink` с карточкой в метке: в дереве доступности
+        // он может оказаться и кнопкой, и ячейкой, и `other`,
+        // в зависимости от того, как SwiftUI свернул карточку.
+        // `app.buttons[…]` ответил бы «нет» и тогда, когда ссылка
+        // на экране есть, — то есть ответил бы про мерку, а не
+        // про экран, и мы записали бы «карточки больше нет».
+        let ссылка = app.descendants(matching: .any)
+            .containing(NSPredicate(format: "label CONTAINS %@", "Общий дневник"))
+            .firstMatch
         for _ in 0..<6 where !ссылка.exists { app.swipeUp() }
         XCTAssertTrue(ссылка.waitForExistence(timeout: 5), """
             ссылки «Общий дневник» нет на экране семьи. Либо карточка

@@ -81,7 +81,12 @@ nonisolated final class ПриёмПриглашенияВидно: XCTestCase {
                       "приложение не поднялось — это отказ запуска, не показа")
         вкладка.tap()
 
-        let ссылка = app.buttons["Общий дневник"].firstMatch
+        // Не только `buttons`: `NavigationLink` с карточкой в метке
+        // может лечь в дерево доступности кнопкой, ячейкой или `other`.
+        // Спрашивать одну форму значит получить ответ про мерку.
+        let ссылка = app.descendants(matching: .any)
+            .containing(NSPredicate(format: "label CONTAINS %@", "Общий дневник"))
+            .firstMatch
         for _ in 0..<6 where !ссылка.exists { app.swipeUp() }
         XCTAssertTrue(ссылка.waitForExistence(timeout: 5),
                       "ссылки «Общий дневник» нет — до экрана не дошли")
