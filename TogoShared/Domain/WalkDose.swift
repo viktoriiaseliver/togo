@@ -97,8 +97,7 @@ nonisolated enum WalkDose {
 
         for схема in dog.medications where !схема.isPaused && схема.cancelledAt == nil {
             for доза in схема.doses {
-                guard доза.givenAt == nil, доза.skippedAt == nil, доза.cancelledAt == nil
-                else { continue }
+                guard доза.ждётОтметки else { continue }
                 let через = доза.scheduledAt.timeIntervalSince(now)
                 guard abs(через) <= window else { continue }
                 if let текущая = ближайшая, abs(текущая.через) <= abs(через) { continue }
