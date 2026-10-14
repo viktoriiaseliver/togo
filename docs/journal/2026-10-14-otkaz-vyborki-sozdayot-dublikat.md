@@ -326,6 +326,50 @@ exists-проверка :30   isDate(…, toGranularity: .minute) — тем ж�
 Догадку о её часовом поясе я намеренно не строю: подставить свой мотив
 здесь — дешёвый способ починить не то.
 
+## Риск закрыт: тестовый файл типизируется в одиночку, без стенда
+
+Весь день у меня висело «кладу непроверенное»: сторож закоммичен,
+а типизация не проверена, и слот стенда снят по новой оси. Закрылось
+не слотом, а тем, что **отказ инструмента трижды назвал сторону, а не
+мир**, и каждый раз надо было спросить инструмент про него самого.
+
+```
+1  swiftc -parse                     rc=0 — но это СИНТАКСИС, не типы
+2  swiftc -typecheck -sdk macosx     «no such module 'Testing'»
+                                     → нет пути к фреймворку, а не модуля
+3  + -F …/iPhoneSimulator…/Frameworks  «plugin for module 'TestingMacros'
+                                     not found» × 20 — ни одна ошибка
+                                     не про мой код, все про один
+                                     ненайденный плагин
+4  + -load-plugin-library libTestingMacros.dylib
+                                     rc=0 · ошибок 0 · предупреждений 0
+```
+
+Рецепт целиком, он переиспользуемый и занимает секунды:
+
+```bash
+SDK=$(xcrun --show-sdk-path --sdk iphonesimulator)
+FW=/Applications/Xcode.app/Contents/Developer/Platforms/\
+iPhoneSimulator.platform/Developer/Library/Frameworks
+PLUG=/Applications/Xcode.app/Contents/Developer/Toolchains/\
+XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing/libTestingMacros.dylib
+
+xcrun swiftc -typecheck -sdk "$SDK" -target arm64-apple-ios18.0-simulator \
+  -F "$FW" -load-plugin-library "$PLUG" <файл>.swift
+```
+
+> **Сторож, который не ссылается ни на один тип проекта, проверяется
+> без проекта.** Мой импортирует только `Foundation` и `Testing`
+> и читает файлы с диска — значит занимать общий стенд ради вопроса
+> «соберётся ли» не нужно было вовсе.
+
+**Границу называю.** Это отвечает на «не положу ли я красное всем
+семерым» и **не отвечает** на «проходит ли тест»: прогона не было.
+Долг у сторожа выставлен по замеру (`SharedDiaryPayloads` 15,
+`FamilySync` 12), то есть он рождается зелёным и затянутым, а не
+красным, — так что цена ошибки в этом различии сегодня нулевая,
+и завтра она ненулевая.
+
 ## Открытые вопросы
 
 - **Слот на стенде для Ш2** — пятнадцать адресов поимённо, форма
