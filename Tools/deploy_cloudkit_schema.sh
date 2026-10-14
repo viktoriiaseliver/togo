@@ -57,12 +57,19 @@ echo "Контейнер: $CONTAINER"
 #
 # Поэтому проверка, а не запись. В development CloudKit заводит типы
 # и поля сам при первой отправке, так что толкать их туда не нужно.
+# Проверяем ТОТ файл, который импортируется, а не прежний на два типа.
+#
+# `CloudKit/schema.ckdb` описывает `LogEvent` и `DoseRecord` — им этот
+# шаг говорил «✅ Schema is valid» и был прав про них. Живой файл
+# импорта — `CloudKit/схема-для-импорта.ckdb`: выгрузка контейнера плюс
+# дописанные семь типов и недостающие поля. Проверять надо его: у файла,
+# который никуда не едет, годность ничего не значит.
 echo "→ проверяю файл схемы"
 xcrun cktool validate-schema \
     --team-id "$TEAM" \
     --container-id "$CONTAINER" \
     --environment development \
-    --file CloudKit/schema.ckdb
+    --file CloudKit/схема-для-импорта.ckdb
 
 echo "→ проверяю production"
 PRODUCTION="$(xcrun cktool export-schema \
