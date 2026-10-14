@@ -15,12 +15,31 @@ import SwiftData
 /// занятия, поездки и документы не уезжали в iCloud ни у кого, а политика
 /// обещала «копия базы лежит в твоей приватной библиотеке iCloud».
 ///
+/// **Замер 14.10, и он больше первого: не заведено 83 поля.** Шестьдесят
+/// из них — пять типов медслоя (`Clinic`, `LabResult`, `VetVisit`,
+/// `Diagnosis`, `Prescription`) целиком: моделей стало 21, а этот список
+/// объектов остался на шестнадцати. То есть **вся медкнижка не имела
+/// резервной копии в iCloud вообще**, а политика обещала то же самое.
+///
+/// Два раза подряд одно и то же, и причина одна: **список объектов
+/// здесь — рукописная копия набора моделей.** Он не ломается и не
+/// краснеет, он просто отстаёт, и отставание видно только снаружи.
+/// Сторож (`make cloudkit-check`) с 14.10 берёт ось от схемы приложения
+/// и назовёт следующую пропажу по имени — но завести объект всё равно
+/// придётся сюда, рукой.
+///
 /// Порядок работы:
 /// 1. Отладочная сборка на устройстве с живым Apple ID, iCloud включён.
 /// 2. «Настройки» → «Отладка · завести зеркало в iCloud».
 /// 3. Подождать минуту при живой сети — зеркало отправит записи.
-/// 4. `Tools/deploy_cloudkit_schema.sh` — он скажет, каких типов ещё нет.
-/// 5. «Отладка · убрать прогрев», когда все шестнадцать на месте.
+/// 4. `make cloudkit-check` — он скажет, каких типов и полей ещё нет.
+/// 5. «Отладка · убрать прогрев», когда сверка зелёная.
+///
+///    **Числа здесь нет нарочно.** Прежде стояло «когда все шестнадцать
+///    на месте» — к 14.10.2026 моделей стало 21, и инструкция звала
+///    остановиться на пяти типах раньше, чем надо. Порог, записанный
+///    числом, переживает тот набор, про который написан; порог,
+///    записанный как «сверка зелёная», — нет.
 /// 6. Перенос development → production — кнопкой в дашборде.
 nonisolated enum CloudKitSchemaWarmup {
 
@@ -70,15 +89,16 @@ nonisolated enum CloudKitSchemaWarmup {
     @MainActor
     @discardableResult
     static func create(in context: ModelContext) throws -> Int {
+        // Клиника заводится первой: на неё ссылаются уход, приём врача
+        // и назначение, а связь в зеркале становится полем только когда
+        // ей есть на что указывать.
+        let клиника = клиникаСоВсемиПолями()
+
         let objects: [any PersistentModel] = [
             DayOut(startedAt: markerDate, plannedHours: 1),
-            DogDocument(title: markerTitle),
             DoseRecord(scheduledAt: markerDate),
             Episode(title: markerTitle, detail: markerTitle, startedAt: markerDate),
-            FoodStock(kind: .dry, brand: markerTitle, packGrams: 1, packsLeft: 1,
-                      gramsPerDay: 1, countedAt: markerDate),
             HeatRecord(startedAt: markerDate, note: markerTitle),
-            Medication(name: markerTitle, doseText: markerTitle, times: [0]),
             ProcedureSkill(title: markerTitle, detail: markerTitle),
             TrainingSession(cue: markerTitle, place: markerTitle, person: markerTitle,
                             distanceMeters: 0),
@@ -86,9 +106,19 @@ nonisolated enum CloudKitSchemaWarmup {
                          distanceMeters: 0),
             Trip(destination: markerTitle, startDate: markerDate, endDate: markerDate,
                  transport: .car),
+            клиника,
             собакаСоВсемиПолями(),
             участникСоВсемиПолями(),
             записьСоВсемиПолями(),
+            лекарствоСоВсемиПолями(),
+            документСоВсемиПолями(),
+            уходСоВсемиПолями(клиника),
+            запасСоВсемиПолями(),
+            взвешиваниеСоВсемиПолями(),
+            анализСоВсемиПолями(),
+            приёмВрачаСоВсемиПолями(клиника),
+            диагнозСоВсемиПолями(),
+            назначениеСоВсемиПолями(клиника),
         ]
         for object in objects { context.insert(object) }
         сохранённыеИдентификаторы = сохранённыеИдентификаторы.union(objects.compactMap(идентификатор))
@@ -137,7 +167,157 @@ nonisolated enum CloudKitSchemaWarmup {
         запись.milliliters = 1
         запись.originRaw = markerTitle
         запись.trainingSessionID = UUID()
+        запись.editedBy = markerTitle
         return запись
+    }
+
+    // MARK: Дописано 14.10.2026 — пять типов и восемнадцать полей
+    //
+    // **Замер, с которого это началось: не заведено 83 поля, а не 23.**
+    // Прежний отчёт сторожа зеркала считал цикл по типам, найденным
+    // в выгрузке, — значит о типе, которого нет вовсе, не говорил ничего.
+    // Пяти моделей медслоя (`Clinic`, `LabResult`, `VetVisit`,
+    // `Diagnosis`, `Prescription`) в зеркале не было, и это 60 полей
+    // из 83: вся медкнижка без резервной копии в iCloud, а не «частично».
+    //
+    // Почему их тут не было раньше: модели завели 07.10.2026, а прогрев
+    // писался 23.09 под шестнадцать моделей. Список объектов — **копия
+    // набора моделей, сделанная руками**, и она отстала ровно так же,
+    // как отстал `schema.ckdb` у общего дневника. Сторож теперь берёт
+    // ось от схемы приложения и назовёт любую следующую пропажу.
+    //
+    // `CareTask` и `WeightEntry` в списке не было вовсе — их типы
+    // завелись не прогревом, а посевом, и потому выглядели здоровыми.
+    //
+    // **Куда это пишется.** `Debug.xcconfig:7` — `APS_ENVIRONMENT =
+    // development`, `Release.xcconfig:11` — `production`, а весь этот
+    // файл под `#if DEBUG`. Значит прогрев физически не может положить
+    // запись туда, где второй человек: TestFlight — это Release.
+    // Проверять это надо **до** запуска, а не после, и потому замер
+    // записан здесь, а не в журнале.
+
+    /// Клиника: на неё ссылаются уход, приём врача и назначение.
+    @MainActor
+    private static func клиникаСоВсемиПолями() -> Clinic {
+        Clinic(name: markerTitle, detail: markerTitle, isLab: true, phone: markerTitle)
+    }
+
+    /// Лекарство со всем слоем запаса и сроков: одиннадцать полей
+    /// из двадцати трёх недостающих — здесь.
+    @MainActor
+    private static func лекарствоСоВсемиПолями() -> Medication {
+        let лекарство = Medication(name: markerTitle, doseText: markerTitle, times: [0])
+        лекарство.unitRaw = MedUnit.tab.rawValue
+        лекарство.massPerUnitMcg = 1
+        лекарство.stockLeftAmount = 1
+        лекарство.packAmount = 1
+        лекарство.courseEnd = markerDate
+        лекарство.expiry = markerDate
+        лекарство.openedAt = markerDate
+        лекарство.shelfAfterOpenDays = 1
+        лекарство.remindBeforeExpiry = true
+        лекарство.canGiveOutside = true
+        лекарство.prescriptionNumber = markerTitle
+        return лекарство
+    }
+
+    @MainActor
+    private static func документСоВсемиПолями() -> DogDocument {
+        let документ = DogDocument(title: markerTitle, note: markerTitle)
+        документ.kindRaw = DocumentKind.other.rawValue
+        документ.number = markerTitle
+        документ.issuedBy = markerTitle
+        документ.validUntil = markerDate
+        return документ
+    }
+
+    /// Уход с прививочными полями и связью на клинику.
+    @MainActor
+    private static func уходСоВсемиПолями(_ клиника: Clinic) -> CareTask {
+        let уход = CareTask(title: markerTitle, detail: markerTitle,
+                            lastDone: markerDate, scheduledDate: markerDate)
+        уход.vaccineBatch = markerTitle
+        уход.vaccineValidUntil = markerDate
+        уход.clinic = клиника
+        return уход
+    }
+
+    @MainActor
+    private static func запасСоВсемиПолями() -> FoodStock {
+        let запас = FoodStock(kind: .dry, brand: markerTitle, packGrams: 1,
+                              packsLeft: 1, gramsPerDay: 1, countedAt: markerDate)
+        запас.openedAt = markerDate
+        запас.expiry = markerDate
+        запас.shelfAfterOpenDays = 1
+        return запас
+    }
+
+    @MainActor
+    private static func взвешиваниеСоВсемиПолями() -> WeightEntry {
+        WeightEntry(date: markerDate, kg: 1)
+    }
+
+    /// Анализ. `labMark` и `method` заполняются здесь **меткой прогрева**,
+    /// а не правдоподобным значением, и это не мелочь: у обоих полей
+    /// есть красная линия показа (`Togo/CLAUDE.md`) — вердикт рядом
+    /// с подписью «кто сказал», и запрет рисовать одной линией значения,
+    /// снятые разными методами. Объект живёт до «убрать прогрев»
+    /// и в показ не попадает, но значение, похожее на настоящее,
+    /// однажды попало бы.
+    @MainActor
+    private static func анализСоВсемиПолями() -> LabResult {
+        let анализ = LabResult(sampledOn: markerDate, indicator: markerTitle,
+                               section: markerTitle, laboratory: markerTitle,
+                               reportNumber: markerTitle)
+        анализ.sampledAt = markerDate
+        анализ.value = 1
+        анализ.belowLimit = 1
+        анализ.aboveLimit = 1
+        анализ.textValue = markerTitle
+        анализ.unit = markerTitle
+        анализ.referenceLow = 1
+        анализ.referenceHigh = 2
+        анализ.method = markerTitle
+        анализ.labMark = markerTitle
+        анализ.note = markerTitle
+        return анализ
+    }
+
+    @MainActor
+    private static func приёмВрачаСоВсемиПолями(_ клиника: Clinic) -> VetVisit {
+        let приём = VetVisit(date: markerDate, doctor: markerTitle,
+                             reasonRaw: VisitReason.checkup.rawValue)
+        приём.clinic = клиника
+        приём.conclusion = markerTitle
+        return приём
+    }
+
+    @MainActor
+    private static func диагнозСоВсемиПолями() -> Diagnosis {
+        let диагноз = Diagnosis(wording: markerTitle, madeOn: markerDate,
+                                statusRaw: DiagnosisStatus.hypothesis.rawValue)
+        диагноз.madeBy = markerTitle
+        диагноз.evidence = markerTitle
+        return диагноз
+    }
+
+    @MainActor
+    private static func назначениеСоВсемиПолями(_ клиника: Clinic) -> Prescription {
+        let назначение = Prescription(number: markerTitle, date: markerDate,
+                                      medicationName: markerTitle)
+        назначение.clinic = клиника
+        назначение.doctor = markerTitle
+        назначение.dogWeightKg = 1
+        назначение.dosage = markerTitle
+        назначение.schedule = markerTitle
+        назначение.duration = markerTitle
+        назначение.pharmacyForm = markerTitle
+        назначение.controlFromWeeks = 1
+        назначение.controlToWeeks = 2
+        назначение.dispensed = markerTitle
+        назначение.instruction = markerTitle
+        назначение.source = markerTitle
+        return назначение
     }
 
     /// Убрать прогрев. Тип в схеме остаётся — он и был целью; уходят
@@ -165,6 +345,21 @@ nonisolated enum CloudKitSchemaWarmup {
         removed += delete(LogEvent.self, in: context) {
             $0.authorName == markerTitle || $0.date < доПрограммы || свои.contains($0.id)
         }
+        // Дописано 14.10.2026 вместе с созданием этих семи.
+        //
+        // **Создание и удаление правятся ОДНОЙ правкой, и это не стиль.**
+        // Заведи объект без своей строки здесь — и «убрать прогрев»
+        // скажет «удалено N», оставив его в хранилище. Число на экране
+        // при этом не соврёт: оно считает удалённое, а не оставшееся.
+        // Ловит это `остатки(in:)`, но только если и он знает про тип, —
+        // поэтому третья правка в `остатки` идёт той же рукой.
+        removed += delete(CareTask.self, in: context) { $0.title == markerTitle || свои.contains($0.id) }
+        removed += delete(WeightEntry.self, in: context) { $0.date < доПрограммы || свои.contains($0.id) }
+        removed += delete(Clinic.self, in: context) { $0.name == markerTitle || свои.contains($0.id) }
+        removed += delete(LabResult.self, in: context) { $0.laboratory == markerTitle || свои.contains($0.id) }
+        removed += delete(VetVisit.self, in: context) { $0.doctor == markerTitle || свои.contains($0.id) }
+        removed += delete(Diagnosis.self, in: context) { $0.wording == markerTitle || свои.contains($0.id) }
+        removed += delete(Prescription.self, in: context) { $0.number == markerTitle || свои.contains($0.id) }
         try context.save()
         // Список чистим только когда чистить больше нечего: иначе
         // второе нажатие потеряет опору и промахнётся так же, как
@@ -252,6 +447,19 @@ nonisolated enum CloudKitSchemaWarmup {
         учесть("LogEvent", count(LogEvent.self, in: context) {
             $0.authorName == markerTitle || $0.date < доПрограммы || свои.contains($0.id)
         })
+        // Семь типов дописаны 14.10.2026 той же рукой, что завела их
+        // в `create` и в `remove`. Предикаты здесь обязаны совпадать
+        // с предикатами удаления слово в слово: разойдутся — и остаток
+        // будет считаться не по тому признаку, по которому удалялся,
+        // то есть «ничего не осталось» станет утверждением про другой
+        // вопрос.
+        учесть("CareTask", count(CareTask.self, in: context) { $0.title == markerTitle || свои.contains($0.id) })
+        учесть("WeightEntry", count(WeightEntry.self, in: context) { $0.date < доПрограммы || свои.contains($0.id) })
+        учесть("Clinic", count(Clinic.self, in: context) { $0.name == markerTitle || свои.contains($0.id) })
+        учесть("LabResult", count(LabResult.self, in: context) { $0.laboratory == markerTitle || свои.contains($0.id) })
+        учесть("VetVisit", count(VetVisit.self, in: context) { $0.doctor == markerTitle || свои.contains($0.id) })
+        учесть("Diagnosis", count(Diagnosis.self, in: context) { $0.wording == markerTitle || свои.contains($0.id) })
+        учесть("Prescription", count(Prescription.self, in: context) { $0.number == markerTitle || свои.contains($0.id) })
         return найдено
     }
 
