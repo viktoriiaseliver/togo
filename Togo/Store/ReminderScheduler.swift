@@ -154,7 +154,15 @@ enum ReminderScheduler {
 
     /// Единственное, что имеет право на time-sensitive, плюс эскалация.
     static func scheduleDoses(dog: Dog?, at now: Date = Date()) async {
-        guard let dog, dog.isOnTreatment else { return }
+        guard let dog else { return }
+
+        // Снятие идёт ПЕРЕД постановкой и до ворот `isOnTreatment`:
+        // выключенное лечение — такая же причина снять запрос, как
+        // отметка. Иначе ворота возвращают управление раньше уборки,
+        // и запросы переживают само лечение.
+        снятьНеждущие(dog)
+
+        guard dog.isOnTreatment else { return }
 
         for medication in dog.medications where !medication.isPaused {
             // Пропущенная доза уведомлений не заводит — по той же причине,
@@ -196,6 +204,51 @@ enum ReminderScheduler {
     /// Снять напоминания по дозе: её отметили или отменили.
     static func cancelDose(_ dose: DoseRecord) {
         NotificationCenterService.cancel(ids: ["t-10", "t+30", "t+60"].map { doseID(dose, stage: $0) })
+    }
+
+    /// Снять запросы у доз, которые больше не ждут отметки.
+    ///
+    /// **Замер 14.10.2026: `cancelDose` во всём проекте звали из одного
+    /// места — `DayPlanActions:286`, то есть своей рукой.** Значит
+    /// снять запрос мог только тот человек, который и отмечал дозу.
+    /// Мама отмечает у себя — у Виктории телефон продолжает звонить
+    /// «Доза 21:30 не отмечена» и через час «пропущена».
+    ///
+    /// Почему починка здесь, а не на приёме чужой отметки. Приём живёт
+    /// в `TogoShared/Sync/`, а `TogoShared` синхронизированной группой
+    /// входит **в оба таргета** — `Togo` и `TogoWidgetsExtension`,
+    /// исключений членства в `project.pbxproj` ноль. `ReminderScheduler`
+    /// лежит в `Togo/Store/`, то есть только в приложении: вызов оттуда
+    /// не собрался бы в расширении. Это не стиль, это замер.
+    ///
+    /// И ось вышла лучше заказанной. Событие «приехала чужая отметка» —
+    /// один источник из нескольких; **состояние «доза больше не ждёт»**
+    /// покрывает их все разом: чужую отметку, восстановление из архива,
+    /// отмену схемы, паузу, выключенное лечение. Этого списка никто
+    /// не писал — он следует из условия.
+    ///
+    /// > Постановка уже умеет пропускать то, что не ждёт
+    /// > (`scheduleDoses:166`). Пропустить — не то же, что снять:
+    /// > пропуск оставляет в очереди запрос, поставленный прошлый раз.
+    ///
+    /// Снимаем по **всем** препаратам, включая поставленные на паузу:
+    /// цикл постановки их отфильтровывает, и значит их запросы иначе
+    /// не снял бы никто.
+    private static func снятьНеждущие(_ dog: Dog) {
+        var снимаем: [String] = []
+        let лечениеИдёт = dog.isOnTreatment
+        for medication in dog.medications {
+            let схемаЖдёт = лечениеИдёт && !medication.isPaused
+            for dose in medication.doses {
+                let дозаЖдёт = !dose.isGiven && dose.skippedAt == nil && dose.cancelledAt == nil
+                guard !(схемаЖдёт && дозаЖдёт) else { continue }
+                снимаем.append(doseID(dose, stage: "t-10"))
+                снимаем.append(doseID(dose, stage: "t+30"))
+                снимаем.append(doseID(dose, stage: "t+60"))
+            }
+        }
+        guard !снимаем.isEmpty else { return }
+        NotificationCenterService.cancel(ids: снимаем)
     }
 
     private static func doseID(_ dose: DoseRecord, stage: String) -> String {
