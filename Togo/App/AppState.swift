@@ -76,7 +76,20 @@ final class AppState {
 
     /// Экраны спрашивают про право, а не про роль: роль — это пресет,
     /// и владелец может его переопределить для любого участника.
-    var permissions: Set<Permission> { customPermissions ?? role.defaultPermissions }
+    /// Потолок гостя применяется **здесь**, а не в `adopt`: роль
+    /// и права кладутся в поля один раз при запуске, а гостем человек
+    /// может стать позже — приняв приглашение в уже открытом
+    /// приложении. Проверка в месте чтения переживает смену флага;
+    /// проверка в месте записи — нет.
+    ///
+    /// Само правило — одно, в `FamilyResolver.потолокГостя`: второй
+    /// вход (голос, кнопка «Действие», виджет) зовёт его же через
+    /// `FamilyResolver.права`. Там же записано, чем он заменится,
+    /// когда роль поедет по обмену.
+    var permissions: Set<Permission> {
+        FamilyResolver.потолокГостя(customPermissions ?? role.defaultPermissions,
+                                    гость: SharedZoneOwner.isGuest)
+    }
 
     func can(_ permission: Permission) -> Bool { permissions.contains(permission) }
 
