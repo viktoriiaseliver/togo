@@ -163,6 +163,15 @@ struct ScheduleStep: View {
 /// Здесь только предложения, из которых отмечают нужное — и шаг можно
 /// пропустить целиком.
 struct CareStep: View {
+    /// В просмотре — ложно, и тогда отмеченное никуда не уезжает.
+    ///
+    /// **Своя защита, а не общая с созданием собаки.** `saveDog()`
+    /// в просмотре молчит потому, что собаки нет; здесь собака ЕСТЬ —
+    /// настоящая, живая, та, у которой весь дневник. Без этого
+    /// параметра человек, заглянувший в онбординг со своего телефона,
+    /// получил бы на неё чужие дела ухода, а инструмент сверки макета
+    /// испортил бы ему данные.
+    var пишемВБазу: Bool = true
     var onNext: () -> Void
 
     @Environment(\.modelContext) private var context
@@ -221,7 +230,7 @@ struct CareStep: View {
     }
 
     private func save() {
-        guard let dog = dogs.first else { return }
+        guard пишемВБазу, let dog = dogs.first else { return }
         SeedData.addCare(chosen, to: dog, context: context)
     }
 }
@@ -265,6 +274,9 @@ struct LabeledField<Content: View>: View {
 // MARK: - Шаг 3 · кто ещё за ним ходит
 
 struct FamilyStep: View {
+    /// В просмотре — ложно: `invite()` ниже вставляет участника
+    /// в хранилище, и в чужом дневнике он остался бы навсегда.
+    var пишемВБазу: Bool = true
     var onSkip: () -> Void
     var onInvite: () -> Void
 
@@ -330,6 +342,7 @@ struct FamilyStep: View {
     }
 
     private func invite() {
+        guard пишемВБазу else { return }
         let member = FamilyMember(name: "Приглашение", role: role)
         member.inviteToken = UUID().uuidString
         member.inviteExpiresAt = Date().addingTimeInterval(24 * 3600)
@@ -342,6 +355,14 @@ struct FamilyStep: View {
 /// Разрешение спрашиваем не на старте, а когда уже понятно, за что оно.
 /// Отказ ничего не ломает: дневник работает целиком без уведомлений.
 struct NotificationsPrimingStep: View {
+    /// В просмотре — ложно, и тогда шаг ничего не меняет.
+    ///
+    /// Здесь не хранилище, а две вещи вне его, и обе необратимы
+    /// по-своему: `notificationsAsked` в `UserDefaults` и **системный
+    /// запрос разрешения**. Второй хуже: у человека он спросит
+    /// по-настоящему, а в прогоне поднимет модальный алерт, который
+    /// никто не ждёт и который останавливает весь дальнейший заход.
+    var пишемВБазу: Bool = true
     var onDone: () -> Void
 
     @Environment(Settings.self) private var settings
@@ -370,13 +391,17 @@ struct NotificationsPrimingStep: View {
                 Task { await request() }
             }
             TGButton(title: "Не сейчас", variant: .quiet, size: .medium) {
-                settings.notificationsAsked = true
+                if пишемВБазу { settings.notificationsAsked = true }
                 onDone()
             }
         }
     }
 
     private func request() async {
+        // В просмотре кнопка доводит до конца шага и ничего не просит:
+        // спрашивать разрешение у человека, который зашёл посмотреть,
+        // значит задать ему вопрос от его же имени.
+        guard пишемВБазу else { return onDone() }
         isRequesting = true
         _ = await NotificationCenterService.requestAuthorization()
         settings.notificationsAsked = true

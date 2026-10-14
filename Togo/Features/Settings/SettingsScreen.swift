@@ -6,6 +6,7 @@ import StoreKit
 /// и с медицинской частью, лежит здесь одним списком.
 struct SettingsScreen: View {
     @Environment(Settings.self) private var settings
+    @Environment(AppState.self) private var appState
     @Environment(SubscriptionStore.self) private var store
     @Environment(\.openURL) private var openURL
     @Environment(\.requestReview) private var requestReview
@@ -292,6 +293,18 @@ struct SettingsScreen: View {
                 LabeledContent("Версия", value: "\(settings.appVersion) (\(settings.buildNumber))")
             }
             #if DEBUG
+            // Не то же, что «Пройти онбординг заново» выше, и разница
+            // в том, ради чего оба существуют. Там человек ПЕРЕЧИТЫВАЕТ
+            // то, что ему один раз рассказали: собака уже есть, и шаги,
+            // которые её заводят, подменены справкой — иначе получилась
+            // бы вторая собака. Здесь человек СМОТРИТ, что увидит новый:
+            // шесть настоящих шагов подряд, и ни одной записи в базу.
+            //
+            // Сверять макет можно только со вторым. До этого пункта
+            // настоящие шаги нельзя было показать вовсе — ни человеку
+            // (флаг прохождения у него давно стоит), ни стенду
+            // (под `-UITesting` ворота закрыты всегда).
+            Button("Посмотреть онбординг как новый") { appState.просмотрОнбординга = true }
             NavigationLink("Библиотека компонентов") { ComponentGallery() }
             // Единственное место, где строки виджета можно УВИДЕТЬ:
             // сам виджет рисует SpringBoard, и кадром его не снять.

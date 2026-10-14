@@ -4,6 +4,14 @@ import SwiftData
 /// Онбординг · 90 секунд, аккаунт не нужен.
 /// Три шага и ни одного обязательного поля сверх клички и веса.
 struct OnboardingFlow: View {
+    /// Просмотр: показать настоящие шаги и ничего не записать.
+    ///
+    /// Отличается от повторного прохождения тем же, чем показ от установки:
+    /// повтор — это чтение справки человеком, который уже всё настроил,
+    /// просмотр — взгляд на то, что увидит новый. Сверять макет можно
+    /// только со вторым.
+    var просмотр: Bool = false
+
     @Environment(\.modelContext) private var context
     @Environment(Settings.self) private var settings
     @Environment(AppState.self) private var appState
@@ -17,7 +25,18 @@ struct OnboardingFlow: View {
 
     /// Онбординг можно пройти заново из настроек. Тогда собака уже есть,
     /// и шаги, которые её создают, надо пропустить — иначе получится вторая.
-    private var isReplay: Bool { !dogs.isEmpty }
+    ///
+    /// В просмотре собака тоже есть, а подменять шаги нельзя: смотрят
+    /// ровно их. Вместо подмены запись выключается ниже — `пишемВБазу`.
+    private var isReplay: Bool { !dogs.isEmpty && !просмотр }
+
+    /// Единственное место, где решается, трогать ли хранилище.
+    ///
+    /// Отдельным именем, а не третьим условием в `advance()`: запрет
+    /// на запись — это предмет, а не частность перехода. Ошибись здесь,
+    /// и просмотр заведёт человеку вторую собаку, то есть инструмент
+    /// сверки испортит её данные.
+    private var пишемВБазу: Bool { !isReplay && !skippedDog && !просмотр }
 
     enum Step: Int, CaseIterable {
         case welcome, dog, schedule, care, family, notifications
@@ -55,15 +74,23 @@ struct OnboardingFlow: View {
                     if isReplay {
                         HowItWorksReplayEnd(onDone: finish)
                     } else {
-                        CareStep(onNext: { advance() })
+                        CareStep(пишемВБазу: пишемВБазу, onNext: { advance() })
                     }
                 case .family:
                     if isReplay {
                         HowItWorksReplayEnd(onDone: finish)
                     } else {
-                        FamilyStep(onSkip: { advance() }, onInvite: { advance() })
+                        FamilyStep(пишемВБазу: пишемВБазу,
+                                   onSkip: { advance() }, onInvite: { advance() })
                     }
-                case .notifications: NotificationsPrimingStep(onDone: finish)
+                case .notifications:
+                    // Здесь `!просмотр`, а НЕ общий `пишемВБазу`, и это
+                    // не описка. `пишемВБазу` ложно и при «Пока без
+                    // собаки» — а человек, пропустивший собаку, проходит
+                    // настоящий онбординг, и разрешение на уведомления
+                    // у него надо спросить по-настоящему. Не спросить
+                    // значит отнять у него пуши молча.
+                    NotificationsPrimingStep(пишемВБазу: !просмотр, onDone: finish)
                 }
             }
             .background(Token.Surface.screen)
@@ -118,7 +145,7 @@ struct OnboardingFlow: View {
 
     private func advance() {
         // Повторное прохождение ничего не создаёт: это чтение, а не установка.
-        if step == .schedule, !isReplay, !skippedDog { saveDog() }
+        if step == .schedule, пишемВБазу { saveDog() }
         withAnimation(.easeInOut(duration: Token.Duration.quick)) {
             step = Step(rawValue: step.rawValue + 1) ?? .notifications
         }
@@ -144,6 +171,15 @@ struct OnboardingFlow: View {
     }
 
     private func finish() {
+        // Просмотр не «проходят» — из него выходят. Поставить здесь флаг
+        // значило бы записать человеку прохождение онбординга за то,
+        // что он посмотрел на него, а стенду — закрыть вторую партию
+        // кадров: `просмотрОнбординга` гасится, и следующий запуск
+        // в тот же онбординг уже не попадёт.
+        guard !просмотр else {
+            appState.просмотрОнбординга = false
+            return
+        }
         settings.onboardingCompleted = true
         settings.lastSeenVersion = settings.appVersion
     }
