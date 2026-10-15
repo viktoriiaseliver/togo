@@ -12,8 +12,8 @@
   --component-button-destructive-height: 50px;
   --component-button-destructive-label: #FF7A66;
   --component-button-destructive-radius: 24px;
-  --component-button-disabled-background: #2C2C2C;
-  --component-button-disabled-label: #6D6D6D;
+  --component-button-disabled-background: #383838;
+  --component-button-disabled-label: #B2B2AE;
   --component-button-finish-background: #A2C1FE2E;
   --component-button-finish-height: 50px;
   --component-button-finish-label: #F4F4F2;
@@ -183,9 +183,9 @@
   --component-actionTile-background: #FFFFFF;
   --component-button-destructive-background: #F7D5CF;
   --component-button-destructive-label: #AE2219;
-  --component-button-disabled-background: #FFFFFF;
-  --component-button-disabled-label: #A1A4A8;
-  --component-button-finish-background: #0E14A138;
+  --component-button-disabled-background: #D7DBE0;
+  --component-button-disabled-label: #5A5D61;
+  --component-button-finish-background: #1F4FFF38;
   --component-button-finish-label: #101112;
   --component-button-primary-background: #1F4FFF;
   --component-button-primary-label: #FFFFFF;
@@ -195,7 +195,7 @@
   --component-chip-alarmBackground: #F7D5CF;
   --component-chip-alarmLabel: #AE2219;
   --component-chip-restBackground: #FFFFFF;
-  --component-chip-selectedBackground: #0E14A138;
+  --component-chip-selectedBackground: #1F4FFF38;
   --component-sheet-background: #FFFFFF;
   --component-sheet-handleColor: #D6D9DD;
   --component-timeline-alarmMark: #AE2219;
@@ -206,7 +206,7 @@
   --primitive-color-arcticInk: #FFFFFF;
   --primitive-color-arcticPressed: #080679;
   --primitive-color-arcticSubtle: #D9E3FC;
-  --primitive-color-arcticTint: #0E14A138;
+  --primitive-color-arcticTint: #1F4FFF38;
   --primitive-color-clay: #AE2219;
   --primitive-color-clayBg: #F7D5CF;
   --primitive-color-glass: #FFFFFFD1;
@@ -231,7 +231,7 @@
   --semantic-action-doneText: #286B4C;
   --semantic-action-primary: #1F4FFF;
   --semantic-action-primaryPressed: #080679;
-  --semantic-action-primaryQuiet: #0E14A138;
+  --semantic-action-primaryQuiet: #1F4FFF38;
   --semantic-action-secondary: #FFFFFF;
   --semantic-poster-background: #3F5BC4;
   --semantic-poster-backgroundAlarm: #B5402F;
@@ -271,7 +271,7 @@
 
 [data-contrast="high"] {
   --component-button-destructive-label: #FFA696;
-  --component-button-disabled-label: #8A8A86;
+  --component-button-disabled-label: #C8C8C4;
   --component-chip-alarmLabel: #FFA696;
   --component-timeline-alarmMark: #FFA696;
   --primitive-color-clay: #FFA696;
@@ -290,8 +290,8 @@
   --component-actionTile-background: #FFFFFF;
   --component-button-destructive-background: #F7D5CF;
   --component-button-destructive-label: #9B100E;
-  --component-button-disabled-background: #FFFFFF;
-  --component-button-disabled-label: #7D8085;
+  --component-button-disabled-background: #D6D9DD;
+  --component-button-disabled-label: #45484C;
   --component-button-finish-background: #0E14A138;
   --component-button-finish-label: #101112;
   --component-button-primary-background: #0E14A1;

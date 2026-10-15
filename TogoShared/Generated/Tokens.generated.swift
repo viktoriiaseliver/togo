@@ -47,7 +47,7 @@ nonisolated enum Token {
         static let arcticInk = Color(Dyn(dark: 0x0B0D2E, light: 0xFFFFFF, darkHC: 0x0B0D2E, lightHC: 0xFFFFFF))
         static let arcticPressed = Color(Dyn(dark: 0x7BA5FE, light: 0x080679, darkHC: 0x7BA5FE, lightHC: 0x080679))
         static let arcticSubtle = Color(Dyn(dark: 0x2E3866, light: 0xD9E3FC, darkHC: 0x2E3866, lightHC: 0xD9E3FC))
-        static let arcticTint = Color(Dyn(dark: 0xA2C1FE2E, light: 0x0E14A138, darkHC: 0xA2C1FE2E, lightHC: 0x0E14A138))
+        static let arcticTint = Color(Dyn(dark: 0xA2C1FE2E, light: 0x1F4FFF38, darkHC: 0xA2C1FE2E, lightHC: 0x0E14A138))
         static let clay = Color(Dyn(dark: 0xFF7A66, light: 0xAE2219, darkHC: 0xFFA696, lightHC: 0x9B100E))
         static let clayBg = Color(Dyn(dark: 0x4D1F22, light: 0xF7D5CF, darkHC: 0x4D1F22, lightHC: 0xF7D5CF))
         static let glass = Color(Dyn(dark: 0x343434B8, light: 0xFFFFFFD1, darkHC: 0x343434B8, lightHC: 0xFFFFFFD1))
@@ -283,8 +283,10 @@ nonisolated enum Token {
                 static let radius: CGFloat = 24
             }
             enum Disabled {
-                static let background = Общие.night4
-                static let label = Общие.inkFaint
+                /// УСЛОВИЕ, КОТОРОЕ НАДО ПРОВЕРЯТЬ, А НЕ ПОМНИТЬ: эта роль и `semantic.surface.pressed` сидят на одном примитиве `night5`, и обязаны РАЗОЙТИСЬ в тот момент, когда у `Surface.pressed` появится первый читатель в Swift. Сегодня столкновения нет по замеру 15.10.2026: у `night5` одна производная (`Surface.pressed`) и у неё ЖИВЫХ ЧИТАТЕЛЕЙ НОЛЬ, как и у `Surface.skeleton`, `Chip.pressedBackground`, `Action.secondaryPressed` — при живом контроле `Surface.sunken` 17, `Surface.screen` 11, `Surface.card` 9. Но это «поле без читателя», а оно означает в двух случаях противоположное: появится читатель — нажатая кнопка и выключенная станут одного цвета, и обнаружится это у человека, а не у нас. Сторож на это условие стоит в `ThemeContrastTests`. Было `{semantic.surface.control}` = `night4`, то есть в светлой `#FFFFFF` — РОВНО фон экрана, байт в байт, 1,0000:1: плашки не существовало на экране, и человек видел слово «Дальше» без кнопки рядом с «Пока без собаки» того же вида. Сломано было означающее, а не контраст: подними контраст подписи на белой плашке — получишь два хорошо читаемых серых слова, между которыми по-прежнему не выбрать. Порог ≥3:1, под который эту шкалу сперва мерили, здесь не норма ничья: WCAG 1.4.11 исключает неактивные элементы, а системная рампа Apple держит выключенную заливку на 1,1–1,7:1 (systemGray4 1,52 · systemGray5 1,26). `night5` даёт 1,3909 в Light и 1,4162 в Light HC — внутри полосы Apple, и HC даёт БОЛЬШЕ, как и должен. Решение Виктории 15.10.2026, получено прямым вопросом.
+                static let background = Общие.night5
+                /// Было `{semantic.text.faint}` = `inkFaint`, и это НАРУШАЛО ЗАПРЕТ СВОЕГО ЖЕ ТОКЕНА: в `$description` у `inkFaint` стоит дословно «Только неактивное… Текстом и значками НЕ красится ни в каком кегле: запрет был верен и стал нужнее». А подпись кнопки и есть текст. Запрет и его нарушение жили в ОДНОМ файле, в двадцати строках друг от друга, и греп по токену находил оба — но запрет написан прозой, а нарушение значением. ПРОЗА НЕ ВЫПОЛНЯЕТСЯ. Замер 15.10.2026 по четырём режимам: `inkFaint` на новой плашке дал бы 1,80:1, то есть ХУЖЕ, чем на белом; `inkMuted` даёт Light 4,7583 · Light HC 6,4913 · Dark 5,5124 · Dark HC 6,9878 — порог 4,5 держат все четыре, и этим снимаются ВСЕ ЧЕТЫРЕ объявленных непрохождения, а не только светлые. `ink` брать нельзя: 13,59:1 прочтётся как ВКЛЮЧЁННАЯ кнопка.
+                static let label = Общие.inkMuted
             }
             enum Finish {
                 static let background = Общие.arcticTint
