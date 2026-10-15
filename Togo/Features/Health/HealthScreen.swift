@@ -456,6 +456,9 @@ struct WeightScreen: View {
     @Environment(AppState.self) private var appState
     @State private var newWeight = ""
 
+    /// Фокус поля веса — единственного `.decimalPad` на экране.
+    @FocusState private var весВФокусе: Bool
+
     var body: some View {
         TGScreen {
             TGCard {
@@ -508,6 +511,7 @@ struct WeightScreen: View {
                 HStack(spacing: Token.Space.s12) {
                     TextField("4,1", text: $newWeight)
                         .keyboardType(.decimalPad)
+                        .focused($весВФокусе)
                         .textStyle(AppFont.numeric(24))
                     Text("кг").textStyle(AppFont.caption)
                     TGButton(title: "Записать", size: .medium, fullWidth: false,
@@ -543,6 +547,9 @@ struct WeightScreen: View {
         .navigationTitle("Вес")
         .posterHeader("Вес")
         .navigationBarTitleDisplayMode(.large)
+        // Выход с цифровой клавиатуры: у `.decimalPad` своей клавиши
+        // возврата нет.
+        .готовоНадКлавиатурой { весВФокусе = false }
         .confirmationDialog("Удалить взвешивание?",
                             isPresented: Binding(get: { removing != nil },
                                                  set: { if !$0 { removing = nil } }),

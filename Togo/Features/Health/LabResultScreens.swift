@@ -229,6 +229,19 @@ struct LabResultEntryFlow: View {
     @State private var sampledAt = Date()
     @State private var спрашиваемПроВремя = false
 
+    /// Какое числовое поле в фокусе. **Несёт `id` строки, а не только
+    /// вид поля**, и это не перестраховка: показатели лежат
+    /// в `ForEach($показатели)`, то есть три поля существуют
+    /// в столько раз большем числе, сколько строк завёл человек.
+    /// Перечисление из трёх случаев без `id` склеило бы «Число» первой
+    /// строки с «Числом» второй, а два `.focused` с одним значением
+    /// дают неопределённое поведение.
+    private enum ПолеПоказателя: Hashable {
+        case число(UUID), нормаНиз(UUID), нормаВерх(UUID)
+    }
+
+    @FocusState private var фокус: ПолеПоказателя?
+
     private var заполненные: [ЧерновикПоказателя] { показатели.filter { !$0.пустой } }
 
     /// Лечение идёт, если у собаки есть хоть одна непаузированная схема.
@@ -286,6 +299,11 @@ struct LabResultEntryFlow: View {
             footerШага
         }
         .presentationDetents([.large])
+        // Выход с цифровой клавиатуры. Здесь полей `.decimalPad` больше
+        // всех в приложении — три на каждую строку бланка, — и человек
+        // набирает их подряд, то есть упирается в отсутствие выхода
+        // чаще, чем где-либо.
+        .готовоНадКлавиатурой { фокус = nil }
         .confirmationDialog("Сохранить без времени?",
                             isPresented: $спрашиваемПроВремя, titleVisibility: .visible) {
             Button("Сохранить так") { сохранить() }
@@ -361,6 +379,7 @@ struct LabResultEntryFlow: View {
                 } else {
                     LabeledField(label: "Число") {
                         TextField("12,9", text: $строка.число).keyboardType(.decimalPad)
+                            .focused($фокус, equals: .число(строка.id))
                             .autocorrectionDisabled()
                     }
                     TGDivider()
@@ -372,11 +391,13 @@ struct LabResultEntryFlow: View {
                     TGDivider()
                     LabeledField(label: "Норма от") {
                         TextField("12,9", text: $строка.нормаНиз).keyboardType(.decimalPad)
+                            .focused($фокус, equals: .нормаНиз(строка.id))
                             .autocorrectionDisabled()
                     }
                     TGDivider()
                     LabeledField(label: "Норма до") {
                         TextField("51,5", text: $строка.нормаВерх).keyboardType(.decimalPad)
+                            .focused($фокус, equals: .нормаВерх(строка.id))
                             .autocorrectionDisabled()
                     }
                 }
@@ -543,6 +564,14 @@ struct LabResultRowEditor: View {
     @State private var загружено = false
     @State private var удаляем = false
 
+    /// Какое числовое поле в фокусе. Здесь **без** `id`, в отличие
+    /// от `LabResultEntryFlow`: черновик один на весь лист, цикла нет,
+    /// и три случая различают поля однозначно. Форма условия названа
+    /// по тому, что есть, а не скопирована у соседа.
+    private enum ПолеСтроки: Hashable { case число, нормаНиз, нормаВерх }
+
+    @FocusState private var фокус: ПолеСтроки?
+
     var body: some View {
         TGSheet(title: .готовая(Fmt.notBlank(result.indicator) ?? String(localized: "Анализ")),
                 subtitle: "строка бланка",
@@ -565,6 +594,7 @@ struct LabResultRowEditor: View {
                     TGDivider()
                     LabeledField(label: "Число") {
                         TextField("12,9", text: $черновик.число).keyboardType(.decimalPad)
+                            .focused($фокус, equals: .число)
                             .autocorrectionDisabled()
                     }
                     TGDivider()
@@ -576,11 +606,13 @@ struct LabResultRowEditor: View {
                     TGDivider()
                     LabeledField(label: "Норма от") {
                         TextField("12,9", text: $черновик.нормаНиз).keyboardType(.decimalPad)
+                            .focused($фокус, equals: .нормаНиз)
                             .autocorrectionDisabled()
                     }
                     TGDivider()
                     LabeledField(label: "Норма до") {
                         TextField("51,5", text: $черновик.нормаВерх).keyboardType(.decimalPad)
+                            .focused($фокус, equals: .нормаВерх)
                             .autocorrectionDisabled()
                     }
                 }
@@ -593,6 +625,8 @@ struct LabResultRowEditor: View {
             TGButton(title: "Сохранить", isEnabled: !черновик.пустой) { сохранить() }
         }
         .presentationDetents([.large])
+        // Выход с цифровой клавиатуры.
+        .готовоНадКлавиатурой { фокус = nil }
         .task { загрузить() }
         .confirmationDialog("Удалить строку?", isPresented: $удаляем, titleVisibility: .visible) {
             Button("Удалить", role: .destructive) {

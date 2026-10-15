@@ -162,6 +162,8 @@ struct PrescriptionEditor: View {
     @State private var длительность = ""
     @State private var форма = ""
     @State private var вес = ""
+    /// Фокус поля веса — единственного `.decimalPad` в этом редакторе.
+    @FocusState private var весВФокусе: Bool
     @State private var срок: Срок = .четыреШесть
     @State private var своёОт = 4
     @State private var своёДо = 6
@@ -251,6 +253,7 @@ struct PrescriptionEditor: View {
                 TGSectionHeader(title: "вес, от которого считали дозу")
                 LabeledField(label: "Вес, кг") {
                     TextField(подсказкаВеса, text: $вес).keyboardType(.decimalPad)
+                        .focused($весВФокусе)
                 }
                 // Вес НЕ подставляется сам, и это не экономия на коде:
                 // рецепт часто заводят задним числом, а текущий вес
@@ -340,6 +343,11 @@ struct PrescriptionEditor: View {
             TGButton(title: новое ? "Добавить" : "Сохранить", isEnabled: можноСохранить) { сохранить() }
         }
         .presentationDetents([.large])
+        // Выход с цифровой клавиатуры. Тут он дороже обычного: вес,
+        // от которого считали дозу, НЕ подставляется сам (решение рядом
+        // с полем), то есть это единственное место, где число вводит
+        // человек и где потерять ввод значит потерять запись врача.
+        .готовоНадКлавиатурой { весВФокусе = false }
         .task { загрузить() }
         .fullScreenCover(isPresented: $показываемВАптеке) {
             PharmacyNumberScreen(номер: номер.trimmingCharacters(in: .whitespaces),

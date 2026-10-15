@@ -17,6 +17,15 @@ struct DogEditorScreen: View {
     @State private var isConfirmingDelete = false
     @State private var loaded = false
 
+    /// Фокус поля веса — единственного `.decimalPad` на экране.
+    ///
+    /// **Здесь это дороже, чем в онбординге.** Черновик тут локальный
+    /// `@State`, сохранения по выходу нет, и до 15.10 единственным
+    /// выходом с цифровой клавиатуры было «назад» — то есть выход
+    /// **выбрасывал только что набранный вес**. В онбординге тот же
+    /// жест введённое сохраняет.
+    @FocusState private var весВФокусе: Bool
+
     private var isNew: Bool { dog == nil }
 
     var body: some View {
@@ -31,6 +40,7 @@ struct DogEditorScreen: View {
                 LabeledField(label: "Вес") {
                     HStack(spacing: Token.Space.s4) {
                         TextField("4,1", text: $draft.weight).keyboardType(.decimalPad)
+                            .focused($весВФокусе)
                         Text("кг").textStyle(AppFont.caption)
                     }
                 }
@@ -100,6 +110,9 @@ struct DogEditorScreen: View {
         .navigationTitle(isNew ? "Новая собака" : "Профиль")
         .posterHeader(isNew ? "Новая собака" : "Профиль")
         .navigationBarTitleDisplayMode(.large)
+        // Выход с цифровой клавиатуры. Худший экран этого класса:
+        // см. причину у объявления `весВФокусе`.
+        .готовоНадКлавиатурой { весВФокусе = false }
         .task { load() }
         .confirmationDialog("Удалить \(dog?.displayName ?? draft.name)?", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
             Button("Удалить", role: .destructive) { delete() }
@@ -502,6 +515,9 @@ struct MedicationEditorSheet: View {
     @State private var loaded = false
     @State private var isConfirmingDelete = false
 
+    /// Фокус поля массы — единственного `.decimalPad` в этом листе.
+    @FocusState private var массаВФокусе: Bool
+
     private var isNew: Bool { medication == nil }
 
     var body: some View {
@@ -531,6 +547,7 @@ struct MedicationEditorSheet: View {
                 HStack(spacing: Token.Space.s8) {
                     TextField("66", text: $массаТекст)
                         .keyboardType(.decimalPad)
+                        .focused($массаВФокусе)
                         .autocorrectionDisabled()
                         .textStyle(AppFont.body)
                     Picker("Единица", selection: $массаЕдиница) {
@@ -664,6 +681,12 @@ struct MedicationEditorSheet: View {
                      isEnabled: !name.trimmingCharacters(in: .whitespaces).isEmpty) { save() }
         }
         .presentationDetents([.large])
+        // Выход с цифровой клавиатуры. Это ЛИСТ, а не экран: панель
+        // `.keyboard` привязана к клавиатуре, не к навигационной
+        // полосе, поэтому `NavigationStack` ей не нужен — но здесь
+        // это не измерено, а взято из устройства SwiftUI, и проверять
+        // лист надо отдельно от экрана.
+        .готовоНадКлавиатурой { массаВФокусе = false }
         .task { load() }
         .confirmationDialog("Удалить схему «\(name)»?", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
             Button("Удалить", role: .destructive) {
