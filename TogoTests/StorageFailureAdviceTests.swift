@@ -116,13 +116,27 @@ struct StorageFailureAdviceTests {
         let корень = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent().deletingLastPathComponent()
         var литералы: [String] = []
-        for каталог in ["TogoShared", "Togo", "TogoWidget"] {
+        var прочитано = 0
+        // `TogoWidgets`, а не `TogoWidget`. Каталога в единственном числе
+        // в дереве НЕТ НИКОГДА НЕ БЫЛО, и `enumerator` на нём отдаёт `nil`,
+        // а `guard … else { continue }` ниже пропускает это молча. Замер
+        // 15.10.2026: под сторожа не попадали три файла —
+        // `TodayWidget.swift`, `TogoWidgetBundle.swift`,
+        // `WalkLiveActivity.swift`, то есть ровно экран блокировки
+        // и «остров». Сторож при этом объявлял в своём имени, что смотрит
+        // на ТРИ поверхности, и зеленел, прочитав две.
+        //
+        // Отказ приходил в форме успеха: отсутствие каталога обходом
+        // не считается отказом, и отличить «обошёл и не нашёл»
+        // от «не обошёл» было нельзя ничем.
+        for каталог in ["TogoShared", "Togo", "TogoWidgets"] {
             let папка = корень.appendingPathComponent(каталог)
             guard let обход = FileManager.default.enumerator(at: папка,
                                                              includingPropertiesForKeys: nil)
             else { continue }
             for случай in обход {
                 guard let путь = случай as? URL, путь.pathExtension == "swift" else { continue }
+                прочитано += 1
                 // Файл с определением константы — единственное законное
                 // место, где литерал стоит.
                 if путь.lastPathComponent == "StorageFailureAdvice.swift" { continue }
@@ -136,6 +150,18 @@ struct StorageFailureAdviceTests {
                 }
             }
         }
+        // Страховка стоит ПЕРЕД выводом, потому что пустой улов и чистое
+        // дерево выглядят одинаково. Порог тупой нарочно: он ловит
+        // не рост дерева, а обход, который не состоялся. Замер 15.10.2026
+        // — 209 файлов (90 + 117 + 3, минус файл определения).
+        #expect(прочитано >= 150, """
+            обойдено \(прочитано) файлов .swift — обход не состоялся, \
+            и «литералов нет» ниже сказало бы про инструмент, а не про код.
+            Так этот сторож и зеленел: в списке каталогов стоял \
+            «TogoWidget», которого в дереве нет, и три файла виджета \
+            не читались никогда.
+            """)
+
         #expect(литералы.isEmpty, """
             признак облака написан литералом в \(литералы):
 
