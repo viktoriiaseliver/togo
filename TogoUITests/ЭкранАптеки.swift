@@ -55,6 +55,22 @@ nonisolated final class ЭкранАптеки: XCTestCase {
         app.launch()
     }
 
+    /// Имена записанных кадров. Печатаются в `tearDown` ВСЕГДА.
+    private var снято: [String] = []
+
+    override func tearDown() {
+        // Счёт печатается ВСЕГДА, в том числе после падения посреди
+        // прохода. Иначе «снято всё» и «упал на третьем» выглядят
+        // в логе ОДИНАКОВО: во втором случае строк `КАДР:` просто
+        // меньше, а отсутствия никто не ищет.
+        //
+        // Ожидаемого числа здесь НЕТ нарочно: вторая копия числа
+        // разошлась бы с первой молча. Сколько кадров должно быть,
+        // утверждает сам тест своей проверкой, а не эта печать.
+        print("КАДРОВ СНЯТО: \(снято.count) · \(name) · \(снято.joined(separator: ", "))")
+        super.tearDown()
+    }
+
     /// Кадр окна ПРИЛОЖЕНИЯ, а не экрана устройства.
     ///
     /// `app.screenshot()`, не `XCUIScreen.main.screenshot()`: экран
@@ -71,6 +87,7 @@ nonisolated final class ЭкранАптеки: XCTestCase {
                                                 withIntermediateDirectories: true)
         let путь = каталог.appendingPathComponent("\(имя).png")
         try кадр.pngRepresentation.write(to: путь)
+        снято.append(имя)
         print("КАДР: \(путь.path) · \(кадр.pngRepresentation.count) байт")
         return путь
     }

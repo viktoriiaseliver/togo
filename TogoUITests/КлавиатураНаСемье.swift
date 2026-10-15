@@ -65,6 +65,14 @@ nonisolated final class КлавиатураНаСемье: XCTestCase {
     /// стоит `ActiveSessionStore.save(nil)`: «прогулка переживает
     /// предыдущий тест».
     override func tearDown() {
+        // Счёт печатается ВСЕГДА, в том числе после падения посреди
+        // прохода, и ПЕРВОЙ строкой — ниже стоит `guard … else { return }`,
+        // то есть за ним печать уже не выполнилась бы.
+        //
+        // Иначе «снято всё» и «упал на третьем» выглядят в логе
+        // ОДИНАКОВО: строк `КАДР:` просто меньше, а отсутствия
+        // никто не ищет.
+        print("КАДРОВ СНЯТО: \(снято.count) · \(name) · \(снято.joined(separator: ", "))")
         guard app?.state == .runningForeground else { return }
         переключитьPro(в: false)
     }
@@ -156,6 +164,9 @@ nonisolated final class КлавиатураНаСемье: XCTestCase {
         return условие()
     }
 
+    /// Имена записанных кадров. Печатаются в `tearDown` ВСЕГДА.
+    private var снято: [String] = []
+
     /// Кадр окна файлом, а не `XCTAttachment`.
     ///
     /// Выгрузка вложений в этом проекте уже измерена: не сработала
@@ -168,6 +179,7 @@ nonisolated final class КлавиатураНаСемье: XCTestCase {
                                                 withIntermediateDirectories: true)
         let путь = каталог.appendingPathComponent("\(имя).png")
         try кадр.pngRepresentation.write(to: путь)
+        снято.append(имя)
         print("КАДР: \(путь.path) · \(кадр.pngRepresentation.count) байт")
         return путь
     }

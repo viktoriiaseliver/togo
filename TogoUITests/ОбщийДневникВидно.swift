@@ -71,6 +71,14 @@ nonisolated final class ОбщийДневникВидно: XCTestCase {
     /// поднимающийся `FamilySync` — и он будет ждать CloudKit там,
     /// где его никто не звал.
     override func tearDown() {
+        // Счёт печатается ВСЕГДА, в том числе после падения посреди
+        // прохода, и ПЕРВОЙ строкой — ниже стоит `guard … else { return }`,
+        // то есть за ним печать уже не выполнилась бы.
+        //
+        // Иначе «снято всё» и «упал на третьем» выглядят в логе
+        // ОДИНАКОВО: строк `КАДР:` просто меньше, а отсутствия
+        // никто не ищет.
+        print("КАДРОВ СНЯТО: \(снято.count) · \(name) · \(снято.joined(separator: ", "))")
         guard app?.state == .runningForeground else { return }
         if тумблер.exists, (тумблер.value as? String) == "1" { тумблер.tap() }
     }
@@ -79,6 +87,9 @@ nonisolated final class ОбщийДневникВидно: XCTestCase {
         app.switches.firstMatch
     }
 
+    /// Имена записанных кадров. Печатаются в `tearDown` ВСЕГДА.
+    private var снято: [String] = []
+
     @discardableResult
     private func снять(_ имя: String) throws -> URL {
         let кадр = app.screenshot()
@@ -86,6 +97,7 @@ nonisolated final class ОбщийДневникВидно: XCTestCase {
                                                 withIntermediateDirectories: true)
         let путь = каталог.appendingPathComponent("\(имя).png")
         try кадр.pngRepresentation.write(to: путь)
+        снято.append(имя)
         print("КАДР: \(путь.path) · \(кадр.pngRepresentation.count) байт")
         return путь
     }

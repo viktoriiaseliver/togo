@@ -121,6 +121,26 @@ nonisolated final class ПриёмПриглашенияВидно: XCTestCase {
             .firstMatch.waitForExistence(timeout: 5)
     }
 
+    /// Имена записанных КАДРОВ. Отдельно от местного `снято`
+    /// в самом тесте: то считает **видимые исходы**, то есть другой
+    /// предикат. Кадр пишется всегда, исход засчитывается только
+    /// при `виден` — складывать их в одно число значило бы отвечать
+    /// одним числом на два вопроса.
+    private var кадры: [String] = []
+
+    override func tearDown() {
+        // Счёт печатается ВСЕГДА, в том числе после падения посреди
+        // прохода. Здесь это не теория: `XCTAssertTrue(виден, …)` стоит
+        // внутри цикла по исходам, и на первом невидимом тест
+        // обрывается — а печать «СНЯТО ИСХОДОВ» лежит ПОСЛЕ цикла
+        // и в этом случае не выполняется вовсе.
+        //
+        // Ожидаемого числа здесь НЕТ нарочно: вторая копия числа
+        // разошлась бы с первой молча.
+        print("КАДРОВ СНЯТО: \(кадры.count) · \(name) · \(кадры.joined(separator: ", "))")
+        super.tearDown()
+    }
+
     @discardableResult
     private func снять(_ app: XCUIApplication, _ имя: String) throws -> URL {
         let кадр = app.screenshot()
@@ -128,6 +148,7 @@ nonisolated final class ПриёмПриглашенияВидно: XCTestCase {
                                                 withIntermediateDirectories: true)
         let путь = каталог.appendingPathComponent("\(имя).png")
         try кадр.pngRepresentation.write(to: путь)
+        кадры.append(имя)
         print("КАДР: \(путь.path) · \(кадр.pngRepresentation.count) байт")
         return путь
     }
