@@ -11,6 +11,7 @@
 
 - [15 октября 2026 — закрытие смены разработки](journal/2026-10-15-zakrytie-smeny-razrabotki.md) — закрытие смены разработки
 - [15 октября 2026 — закрытие смены: обмен и удаления](journal/2026-10-15-zakrytie-smeny-obmen-i-udaleniya.md) — закрытие смены: обмен и удаления
+- [15 октября 2026 — взяли у пакета значения и не взяли механизм](journal/2026-10-15-vzyali-znacheniya-ne-vzyali-mekhanizm.md) — взяли у пакета значения и не взяли механизм
 - [15 октября 2026 — vorota-pered-vygruzkoy-chitali-ogryzki](journal/2026-10-15-vorota-pered-vygruzkoy-chitali-ogryzki.md) — vorota-pered-vygruzkoy-chitali-ogryzki
 - [15 октября 2026 — удаление едет у одного типа из двенадцати, и наряд мерил не тот вид удаления](journal/2026-10-15-udalenie-edet-u-odnogo-tipa-iz-dvenadtsati.md) — удаление едет у одного типа из двенадцати, и наряд мерил не тот вид удаления
 - [15 октября 2026 — у сторожа прокси может быть ВХОД, а не ось](journal/2026-10-15-u-storozha-proksi-mozhet-byt-vkhod-a-ne-os.md) — у сторожа прокси может быть ВХОД, а не ось
