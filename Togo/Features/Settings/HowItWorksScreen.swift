@@ -6,11 +6,19 @@ import SwiftUI
 /// вопрос. Но онбординг проходят один раз и половину забывают, поэтому
 /// то же самое собрано здесь одним текстом.
 struct HowItWorksScreen: View {
+    /// **`title` и `body` — `LocalizedStringKey`, иначе глава не переводится.**
+    /// `Text(String)` рисует дословно. Тот же дефект чинили `956c6cd`
+    /// 23.09.2026 в компонентах дизайн-системы — этот файл тогда
+    /// пропустили, и девять глав показывались по-русски всем, при живом
+    /// переводе в каталоге.
+    ///
+    /// `systemImage` остаётся `String` по смыслу: это имя SF Symbol,
+    /// его не переводят.
     struct Chapter: Identifiable {
         let id = UUID()
         let systemImage: String
-        let title: String
-        let body: [String]
+        let title: LocalizedStringKey
+        let body: [LocalizedStringKey]
     }
 
     static let chapters: [Chapter] = [
