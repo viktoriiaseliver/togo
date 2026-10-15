@@ -152,13 +152,50 @@ struct DogStep: View {
                 }
                 TGExplainer(text: "Можно включить потом — вкладка «Здоровье» появится в тот же момент.")
             }
-        } bottom: {
-            TGButton(title: "Дальше", isEnabled: draft.isValid, action: onNext)
-            if let onSkip {
-                Button("Пока без собаки", action: onSkip)
-                    .textStyle(AppFont.caption)
-                    .frame(maxWidth: .infinity, minHeight: Token.Size.tapTarget)
+        }
+        // **Низ отдан системе, а не слоту `TGScreen`, и только здесь.**
+        //
+        // Слот каркаса считает запас от высоты САМОЙ панели
+        // (`TGScaffolds.swift:177` `запасПодНизом = высотаНиза + s24`),
+        // а панель в нём — сосед по `ZStack`, не inset. Клавиатура
+        // поднимает панель и высоту её не меняет: запас остаётся
+        // прежним, и содержимое уходит под панель. Замер с кадра:
+        // `minY` панели 446 против 772 у экрана без клавиатуры,
+        // Δ 326 pt содержимого недостижимо даже полной прокруткой.
+        // Здесь это «Дата рождения» и «Собака на лечении» — два
+        // последних блока формы.
+        //
+        // `safeAreaInset` складывается с клавиатурной безопасной
+        // областью, поэтому запас растёт вместе с ней сам.
+        //
+        // # Почему один экран, а не каркас
+        //
+        // `safeAreaInset` рядом с полем ввода в этом проекте
+        // не измерен ни разу: все четыре живых места
+        // (`TodayScreen:149`, `VetSummaryScreen:283`,
+        // `SitterBriefingScreen:58`, `OnboardingFlow:119`) — экраны
+        // БЕЗ полей ввода. Что сложение документировано Apple, здесь
+        // не равно «измерено». Правка стоит на одном экране нарочно:
+        // не сойдётся — вариант мёртв ценой одного адреса, а не
+        // четырнадцати слотов.
+        //
+        // # Вид не меняется ни на точку
+        //
+        // `VStack(spacing: s8)` и оба отступа — те же, что у слота
+        // (`TGScaffolds.swift:196-198`). Подложки нет и здесь: она
+        // у низа `TGScreen` — решение дизайна, и принимать его
+        // попутно нельзя.
+        .safeAreaInset(edge: .bottom) {
+            VStack(spacing: Token.Space.s8) {
+                TGButton(title: "Дальше", isEnabled: draft.isValid, action: onNext)
+                if let onSkip {
+                    Button("Пока без собаки", action: onSkip)
+                        .textStyle(AppFont.caption)
+                        .frame(maxWidth: .infinity, minHeight: Token.Size.tapTarget)
+                }
             }
+            .padding(.horizontal, Token.Spacing.screenPadding)
+            .padding(.bottom, Token.Space.s8)
         }
     }
 }
