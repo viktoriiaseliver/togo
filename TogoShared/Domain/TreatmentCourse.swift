@@ -38,12 +38,12 @@ nonisolated enum TreatmentCourse {
         by person: String?,
         context: ModelContext
     ) {
+        // Через метод модели, а не двумя присваиваниями: мимо него
+        // отмену нельзя выразить без паузы, а без паузы она не гасит
+        // напоминания ни у кого — вся уборка смотрит на `isPaused`.
+        // Разбор — `Medication.отменить(в:заметка:)`.
         for medication in activeMedications(dog) {
-            medication.cancelledAt = now
-            medication.isPaused = true
-            if medication.cancelledNote?.isEmpty ?? true {
-                medication.cancelledNote = "Курс завершён \(Fmt.shortDay(now))"
-            }
+            medication.отменить(в: now, заметка: "Курс завершён \(Fmt.shortDay(now))")
         }
 
         // Незакрытые отметки будущих доз — мусор: они бы всплыли завтра
@@ -109,10 +109,11 @@ nonisolated enum TreatmentCourse {
     /// «Курс завершён» становится кнопкой, которую боятся нажимать.
     @MainActor
     static func resume(_ dog: Dog, context: ModelContext) {
+        // Парный путь к отмене, и тоже через модель: возврат, снявший
+        // `cancelledAt` и забывший `isPaused`, оставил бы схему молча
+        // немой — живой на вид и без единого напоминания.
         for medication in dog.medications where medication.cancelledAt != nil {
-            medication.cancelledAt = nil
-            medication.cancelledNote = nil
-            medication.isPaused = false
+            medication.вернутьВСтрой()
         }
         dog.isOnTreatment = true
         // Возврат курса — отмена решения, и она обязана быть надёжной:
