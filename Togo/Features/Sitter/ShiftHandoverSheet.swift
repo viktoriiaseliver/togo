@@ -21,10 +21,23 @@ struct ShiftHandoverSheet: View {
             if summary.open.isEmpty { allClosedCard } else { openCard }
             TGExplainer(text: "«Принять смену» — явное действие, а не тишина: незакрытое не должно повиснуть ничьим.")
         } footer: {
-            TGButton(title: summary.open.isEmpty ? "Принять смену" : "Принять смену и \(summary.open.count) дело",
-                     systemImage: "hand.raised") {
-                onAccept()
-                dismiss()
+            // Кнопка есть только тогда, когда есть кому передать.
+            //
+            // Прежде она стояла всегда, и при единственном владельце человек
+            // жал «Принять смену», шторка закрывалась — и НЕ ПРОИСХОДИЛО
+            // НИЧЕГО: `passDuty` выходил молча, не найдя принимающего.
+            // Дежурство и напоминания оставались у того, кто только что
+            // прочитал «переходит». Это не редкий случай, а стартовый:
+            // состояние первого дня и состояние дневника с одним человеком.
+            if successor == nil {
+                TGExplainer(text: "Передавать некому: в семье нет второго человека, которому можно давать дозу. Смена останется твоей.")
+                TGButton(title: "Понятно", variant: .secondary, size: .medium) { dismiss() }
+            } else {
+                TGButton(title: summary.open.isEmpty ? "Принять смену" : "Принять смену и \(summary.open.count) дело",
+                         systemImage: "hand.raised") {
+                    onAccept()
+                    dismiss()
+                }
             }
         }
         .presentationDetents([.medium, .large])
@@ -64,7 +77,11 @@ struct ShiftHandoverSheet: View {
         if let successor {
             "переходит к \(successor) · \(summary.open.count)"
         } else {
-            "переходит · \(summary.open.count)"
+            // Было «переходит · N» — утверждение о переходе, которого
+            // не будет: без принимающего `passDuty` ничего не делает.
+            // Ключ «переходит · %lld» в каталоге оставлен нарочно, он
+            // оплачен переводом на en/fr/uk и может вернуться решением.
+            "остаётся у тебя · \(summary.open.count)"
         }
     }
 

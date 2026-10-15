@@ -16,7 +16,7 @@ struct FamilyScreen: View {
     @Query private var dogs: [Dog]
 
     @State private var showInvite = false
-    @State private var handingOver: FamilyMember?
+    @State private var handingOver: Передача?
     @State private var editingBriefing = false
     @State private var showPaywall = false
     @State private var invite: DiaryInvite?
@@ -85,10 +85,10 @@ struct FamilyScreen: View {
             .toolbar { SettingsToolbarItem() }
             .sheet(isPresented: $showInvite) { InviteSheet() }
             .sheet(isPresented: $editingBriefing) { SitterBriefingEditor(dog: dog) }
-            .sheet(item: $handingOver) { member in
-                ShiftHandoverSheet(summary: summary(for: member),
-                                   successor: successor(after: member)?.name) {
-                    passDuty(from: member)
+            .sheet(item: $handingOver) { передача in
+                ShiftHandoverSheet(summary: summary(for: передача.сдающий),
+                                   successor: передача.принимающий?.name) {
+                    passDuty(from: передача.сдающий, to: передача.принимающий)
                 }
             }
             .sheet(isPresented: $showPaywall) { NavigationStack { PaywallScreen() } }
@@ -96,6 +96,22 @@ struct FamilyScreen: View {
     }
 
     // MARK: Дежурство
+
+    /// Передача держит ОБОИХ: кому уходит смена, решено в момент открытия
+    /// шторки, а не в момент нажатия «Принять смену».
+    ///
+    /// Прежде подпись и действие спрашивали список дважды — шторка звала
+    /// `successor(after:)`, чтобы назвать имя, и `passDuty` звал его снова,
+    /// чтобы назначить. `@Query` участников идёт без дескриптора сортировки
+    /// (`:15`), и порядок воспроизведён разным трижды (08.10, 12.10, 14.10),
+    /// то есть между двумя вызовами список мог прийти иначе: шторка называла
+    /// Лею, дежурство уходило Тео. Расхождение молчит — обе строки верны
+    /// по отдельности.
+    private struct Передача: Identifiable {
+        let id: UUID
+        let сдающий: FamilyMember
+        let принимающий: FamilyMember?
+    }
 
     /// Карточка дежурства.
     ///
@@ -116,7 +132,10 @@ struct FamilyScreen: View {
                 Text(member.dutyUntil.map { "до \(Fmt.clock($0)) · напоминания идут ему" } ?? "напоминания идут ему")
                     .textStyle(AppFont.caption)
             }
-            let передать = Button("передать") { handingOver = member }
+            let передать = Button("передать") {
+                handingOver = Передача(id: member.id, сдающий: member,
+                                       принимающий: successor(after: member))
+            }
                 .textStyle(AppFont.captionEmphasis.color(Token.Action.doneText))
                 .frame(minHeight: Token.Size.tapTarget)
 
@@ -162,8 +181,12 @@ struct FamilyScreen: View {
 
     /// Передача дежурства — одно действие, а не форма. Но с явным
     /// «принять»: незакрытое не должно повиснуть ничьим.
-    private func passDuty(from current: FamilyMember) {
-        guard let next = successor(after: current) else { return }
+    private func passDuty(from current: FamilyMember, to next: FamilyMember?) {
+        // Принимающий приходит аргументом, а не ищется заново: иначе подпись
+        // в шторке и назначение читают список дважды. Пустым он здесь быть
+        // не должен — шторка без принимающего не показывает кнопку «Принять
+        // смену» вовсе (`ShiftHandoverSheet.swift`, ветка `successor == nil`).
+        guard let next else { return }
         current.isOnDuty = false
         next.isOnDuty = true
         next.dutyUntil = Calendar.current.date(bySettingHour: 22, minute: 0, second: 0, of: .now)
