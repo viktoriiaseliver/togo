@@ -43,7 +43,7 @@ nonisolated enum Token {
     fileprivate enum Общие {
         static let amber = Color(Dyn(dark: 0xF7C75F, light: 0x8A640F, darkHC: 0xF7C75F, lightHC: 0x6B4C0C))
         static let amberBg = Color(Dyn(dark: 0x4A300A, light: 0xFCEBCB, darkHC: 0x4A300A, lightHC: 0xFCEBCB))
-        static let arctic = Color(Dyn(dark: 0xA2C1FE, light: 0x0E14A1, darkHC: 0xA2C1FE, lightHC: 0x0E14A1))
+        static let arctic = Color(Dyn(dark: 0xA2C1FE, light: 0x1F4FFF, darkHC: 0xA2C1FE, lightHC: 0x0E14A1))
         static let arcticInk = Color(Dyn(dark: 0x0B0D2E, light: 0xFFFFFF, darkHC: 0x0B0D2E, lightHC: 0xFFFFFF))
         static let arcticPressed = Color(Dyn(dark: 0x7BA5FE, light: 0x080679, darkHC: 0x7BA5FE, lightHC: 0x080679))
         static let arcticSubtle = Color(Dyn(dark: 0x2E3866, light: 0xD9E3FC, darkHC: 0x2E3866, lightHC: 0xD9E3FC))
