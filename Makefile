@@ -240,8 +240,15 @@ cloudkit-check: ## Сверить схему CloudKit с тем, что пише
 	@bash Tools/deploy_cloudkit_schema.sh
 
 .PHONY: journal
-journal: ## Завести запись в журнале проекта за сегодня
-	@bash Tools/new_journal.sh
+journal: ## Завести запись в журнале проекта за сегодня (СЛАГ обязателен)
+	@test -n "$(СЛАГ)" || (echo "Как звать: make journal СЛАГ=<слаг-латиницей>" && exit 1)
+	@bash Tools/new_journal.sh "$(СЛАГ)"
+
+journal-index: ## Пересобрать docs/JOURNAL.md из файлов на диске
+	@python3 Tools/journal_index.py
+
+journal-check: ## Сходится ли оглавление с диском (звать ПЕРЕД коммитом)
+	@python3 Tools/journal_index.py --проверить
 
 # Issuer принимается под ОБОИМА именами, и это не вежливость.
 #
