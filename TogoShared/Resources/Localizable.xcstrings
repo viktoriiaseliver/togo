@@ -188,6 +188,18 @@
         }
       }
     },
+    " · повторяется" : {
+      "comment" : "trigger",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " · повторяется"
+          }
+        }
+      }
+    },
     " · сейчас %@" : {
       "localizations" : {
         "en" : {
@@ -266,6 +278,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : " до %@"
+          }
+        }
+      }
+    },
+    " з " : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " з "
           }
         }
       }
@@ -386,6 +410,54 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : " з "
+          }
+        }
+      }
+    },
+    "-ИсходПриёма" : {
+      "comment" : "args",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "-ИсходПриёма"
+          }
+        }
+      }
+    },
+    "-Онбординг" : {
+      "comment" : "Чем запуск стенда отличается от запуска у человека",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "-Онбординг"
+          }
+        }
+      }
+    },
+    "-Сценарий" : {
+      "comment" : "args",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "-Сценарий"
+          }
+        }
+      }
+    },
+    "-ЧужаяЗона" : {
+      "comment" : "args",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "-ЧужаяЗона"
           }
         }
       }
@@ -1539,6 +1611,16 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "%@ · ти помічник"
+          }
+        }
+      }
+    },
+    "%@ %@" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@"
           }
         }
       }
@@ -7099,6 +7181,18 @@
         }
       }
     },
+    "3 нед" : {
+      "comment" : "dog",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3 нед"
+          }
+        }
+      }
+    },
     "3 раза, не меньше 20 минут. С другими собаками — можно." : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -7141,8 +7235,44 @@
         }
       }
     },
+    "4–6 нед" : {
+      "comment" : "dog",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4–6 нед"
+          }
+        }
+      }
+    },
+    "4–8 нед" : {
+      "comment" : "dog",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4–8 нед"
+          }
+        }
+      }
+    },
     "4,1" : {
       "shouldTranslate" : false
+    },
+    "6 мес" : {
+      "comment" : "dog",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "6 мес"
+          }
+        }
+      }
     },
     "12,9" : {
 
@@ -7452,6 +7582,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "iCloud вимкнено обмеженнями телефона. Щоденник зберігається тільки тут — переносити доведеться файлом."
+          }
+        }
+      }
+    },
+    "iCloud не открылся" : {
+      "comment" : "title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud не открылся"
           }
         }
       }
@@ -8028,6 +8170,9 @@
         }
       }
     },
+    "Адрес вводить негде" : {
+
+    },
     "Адрес и строки запуска скопированы: %@. Напиши с другого устройства." : {
       "localizations" : {
         "en" : {
@@ -8158,6 +8303,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "активна"
+          }
+        }
+      }
+    },
+    "акцентная кнопка прогулки" : {
+      "comment" : "name",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "акцентная кнопка прогулки"
           }
         }
       }
@@ -8624,6 +8781,18 @@
         }
       }
     },
+    "без срока" : {
+      "comment" : "trigger",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "без срока"
+          }
+        }
+      }
+    },
     "без формулировки" : {
       "comment" : "diagnosesCard",
       "extractionState" : "manual",
@@ -8871,6 +9040,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "бланк спрашиваем один раз — он общий для всех строк"
+          }
+        }
+      }
+    },
+    "блюв" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "блюв"
           }
         }
       }
@@ -9804,6 +9985,18 @@
         }
       }
     },
+    "в чужой дневник" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "в чужой дневник"
+          }
+        }
+      }
+    },
     "В этот день записей нет." : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -9830,6 +10023,30 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "У цей день записів немає."
+          }
+        }
+      }
+    },
+    "вага " : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "вага "
+          }
+        }
+      }
+    },
+    "важить" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "важить"
           }
         }
       }
@@ -10344,6 +10561,30 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "вага на дату: %@"
+          }
+        }
+      }
+    },
+    "Вес не записался · попробуй ещё раз" : {
+      "comment" : "entry",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вес не записался · попробуй ещё раз"
+          }
+        }
+      }
+    },
+    "Вес, кг" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вес, кг"
           }
         }
       }
@@ -10952,6 +11193,18 @@
         }
       }
     },
+    "Взвешивание не удалилось · попробуй ещё раз" : {
+      "comment" : "rest",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Взвешивание не удалилось · попробуй ещё раз"
+          }
+        }
+      }
+    },
     "взрослая" : {
       "comment" : "title",
       "extractionState" : "manual",
@@ -10978,6 +11231,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "доросла"
+          }
+        }
+      }
+    },
+    "вигул" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "вигул"
           }
         }
       }
@@ -11132,6 +11397,18 @@
         }
       }
     },
+    "вийш" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "вийш"
+          }
+        }
+      }
+    },
     "Виноград и изюм" : {
       "comment" : "detail",
       "extractionState" : "manual",
@@ -11158,6 +11435,42 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Виноград і родзинки"
+          }
+        }
+      }
+    },
+    "випорожн" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "випорожн"
+          }
+        }
+      }
+    },
+    "вирвал" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "вирвал"
+          }
+        }
+      }
+    },
+    "виходи" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "виходи"
           }
         }
       }
@@ -12296,6 +12609,18 @@
         }
       }
     },
+    "Врач" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Врач"
+          }
+        }
+      }
+    },
     "Врач изменил дозу" : {
       "comment" : "medicationActions",
       "extractionState" : "manual",
@@ -13070,6 +13395,18 @@
         }
       }
     },
+    "все шесть шагов; ничего не записывается" : {
+      "comment" : "aboutSection",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "все шесть шагов; ничего не записывается"
+          }
+        }
+      }
+    },
     "Всё это лежит на телефоне и никуда не отправляется само." : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -13425,6 +13762,18 @@
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
+            "value" : "вчора"
+          }
+        }
+      }
+    },
+    "вчора" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "вчора"
           }
         }
@@ -14056,6 +14405,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "вигул"
+          }
+        }
+      }
+    },
+    "Выдано" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выдано"
           }
         }
       }
@@ -14911,6 +15272,18 @@
         }
       }
     },
+    "г\\\\b" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "г\\\\b"
+          }
+        }
+      }
+    },
     "где" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -15144,6 +15517,30 @@
         }
       }
     },
+    "годин" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "годин"
+          }
+        }
+      }
+    },
+    "годув" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "годув"
+          }
+        }
+      }
+    },
     "Голосом" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -15317,6 +15714,30 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Готове повідомлення: назва, доза і час пропуску."
+          }
+        }
+      }
+    },
+    "грам" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "грам"
+          }
+        }
+      }
+    },
+    "грамм" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "грамм"
           }
         }
       }
@@ -15567,6 +15988,18 @@
         }
       }
     },
+    "гуля" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "гуля"
+          }
+        }
+      }
+    },
     "гуляем" : {
       "comment" : "runningTitle",
       "extractionState" : "manual",
@@ -15799,6 +16232,18 @@
         }
       }
     },
+    "дав " : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "дав "
+          }
+        }
+      }
+    },
     "Давно" : {
       "comment" : "title",
       "extractionState" : "manual",
@@ -15945,6 +16390,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "дав"
+          }
+        }
+      }
+    },
+    "дал " : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "дал "
           }
         }
       }
@@ -16965,6 +17422,18 @@
         }
       }
     },
+    "Дело не в твоих настройках: права на iCloud нет у самой сборки. Записи целы и лежат на этом телефоне — сохрани файл, и они вернутся в следующей сборке." : {
+      "comment" : "detail",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дело не в твоих настройках: права на iCloud нет у самой сборки. Записи целы и лежат на этом телефоне — сохрани файл, и они вернутся в следующей сборке."
+          }
+        }
+      }
+    },
     "Дело не в твоих настройках: приложению не разрешено спрашивать App Store. Напиши нам." : {
       "comment" : "message",
       "extractionState" : "manual",
@@ -17437,6 +17906,18 @@
         }
       }
     },
+    "діаре" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "діаре"
+          }
+        }
+      }
+    },
     "Длина занятия" : {
       "comment" : "marker",
       "extractionState" : "manual",
@@ -17726,6 +18207,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Щоденник в iCloud"
+          }
+        }
+      }
+    },
+    "Дневник ездит через твой личный iCloud, а не через чужой сервер. Аккаунт в Togo не нужен." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дневник ездит через твой личный iCloud, а не через чужой сервер. Аккаунт в Togo не нужен."
           }
         }
       }
@@ -20073,6 +20566,9 @@
         }
       }
     },
+    "другого человека" : {
+
+    },
     "Другое" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -20440,6 +20936,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "їжі поки немає"
+          }
+        }
+      }
+    },
+    "Её присылают из Togo. Нажми прямо в переписке — телефон сам откроет приглашение и спросит, принимаешь ли ты его." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Её присылают из Togo. Нажми прямо в переписке — телефон сам откроет приглашение и спросит, принимаешь ли ты его."
           }
         }
       }
@@ -21666,6 +22174,9 @@
         }
       }
     },
+    "ещё не поднялся" : {
+
+    },
     "ещё не спрашивали" : {
       "comment" : "readableStatus",
       "extractionState" : "manual",
@@ -22034,6 +22545,30 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Журнал поки порожній"
+          }
+        }
+      }
+    },
+    "з " : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "з "
+          }
+        }
+      }
+    },
+    "з'їв" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "з'їв"
           }
         }
       }
@@ -22414,6 +22949,17 @@
         }
       }
     },
+    "заведена здесь" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "заведена здесь"
+          }
+        }
+      }
+    },
     "Заведи бланк — лабораторию, дату и показатели. Приложение само посчитает отклонение по норме с бланка и часы от дозы." : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -22494,6 +23040,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Заведи тих, хто теж за нею ходить: співвласника, доглядача, дитину або лікаря. Роль і права вибираєш ти — сам він їх не змінить."
+          }
+        }
+      }
+    },
+    "Заведи тех, кто тоже за ней ходит: совладельца, ситтера, ребёнка или врача. Роль и права выбираешь ты." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Заведи тех, кто тоже за ней ходит: совладельца, ситтера, ребёнка или врача. Роль и права выбираешь ты."
           }
         }
       }
@@ -23337,6 +23895,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Заняття не збережеться"
+          }
+        }
+      }
+    },
+    "Занятие не удалилось · попробуй ещё раз" : {
+      "comment" : "delete",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Занятие не удалилось · попробуй ещё раз"
           }
         }
       }
@@ -25319,7 +25889,20 @@
         }
       }
     },
+    "Записывать в этот дневник тебе не разрешено. Открой Togo, вкладку «Семья», и нажми «Это я»." : {
+      "comment" : "localizedStringResource",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Записывать в этот дневник тебе не разрешено. Открой Togo, вкладку «Семья», и нажми «Это я»."
+          }
+        }
+      }
+    },
     "Записывать в этот дневник тебе не разрешено. Спроси того, кто им делится." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -25755,6 +26338,18 @@
         }
       }
     },
+    "зваж" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "зваж"
+          }
+        }
+      }
+    },
     "Звони врачу сейчас" : {
       "comment" : "title",
       "extractionState" : "manual",
@@ -25811,6 +26406,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Звук"
+          }
+        }
+      }
+    },
+    "здесь" : {
+      "comment" : "id",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "здесь"
           }
         }
       }
@@ -27622,6 +28229,42 @@
         }
       }
     },
+    "їв " : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "їв "
+          }
+        }
+      }
+    },
+    "їжа" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "їжа"
+          }
+        }
+      }
+    },
+    "їсть" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "їсть"
+          }
+        }
+      }
+    },
     "к этому времени желудок должен быть пустым. " : {
       "comment" : "fastingCard",
       "extractionState" : "manual",
@@ -28252,6 +28895,18 @@
         }
       }
     },
+    "кака" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "кака"
+          }
+        }
+      }
+    },
     "какал" : {
       "comment" : "Языки",
       "extractionState" : "manual",
@@ -28338,6 +28993,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "який корм"
+          }
+        }
+      }
+    },
+    "калюж" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "калюж"
           }
         }
       }
@@ -28458,6 +29125,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "кг"
+          }
+        }
+      }
+    },
+    "Кем" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кем"
           }
         }
       }
@@ -29694,6 +30373,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Коридор"
+          }
+        }
+      }
+    },
+    "корм" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "корм"
           }
         }
       }
@@ -30951,6 +31642,18 @@
         }
       }
     },
+    "Лаборатория" : {
+      "comment" : "Шаги",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Лаборатория"
+          }
+        }
+      }
+    },
     "лаборатория: %@" : {
       "localizations" : {
         "en" : {
@@ -31284,6 +31987,18 @@
         }
       }
     },
+    "лечения в тот день не было" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "лечения в тот день не было"
+          }
+        }
+      }
+    },
     "Лимита на лакомства нет. Есть дневная норма, часть которой собака зарабатывает, — это и снимает конфликт между занятиями и весом." : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -31400,6 +32115,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "зайві учасники стануть спостерігачами, нікого не видалимо"
+          }
+        }
+      }
+    },
+    "ліки" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ліки"
           }
         }
       }
@@ -32232,6 +32959,30 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Менше норми"
+          }
+        }
+      }
+    },
+    "Меня позвали" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Меня позвали"
+          }
+        }
+      }
+    },
+    "Меня позвали в семью" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Меня позвали в семью"
           }
         }
       }
@@ -33844,6 +34595,18 @@
         }
       }
     },
+    "нагодув" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "нагодув"
+          }
+        }
+      }
+    },
     "Нажали то, что не разрешено" : {
       "comment" : "blocked",
       "extractionState" : "manual",
@@ -34930,6 +35693,18 @@
         }
       }
     },
+    "не CKError" : {
+      "comment" : "failures",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "не CKError"
+          }
+        }
+      }
+    },
     "не брал еду" : {
       "comment" : "title",
       "extractionState" : "manual",
@@ -35132,6 +35907,18 @@
         }
       }
     },
+    "не ел" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "не ел"
+          }
+        }
+      }
+    },
     "Не заменяет визит к ветеринару. Вердикт «просится» — это статистика по твоим же записям, а не заключение." : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -35188,6 +35975,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Не записалося · натисни ще раз"
+          }
+        }
+      }
+    },
+    "не записан в этот день" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "не записан в этот день"
           }
         }
       }
@@ -35278,6 +36077,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Не інтерпретує аналізи, не підбирає препарати і не коригує дозування."
+          }
+        }
+      }
+    },
+    "не їв" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "не їв"
           }
         }
       }
@@ -36208,6 +37019,54 @@
         }
       }
     },
+    "Не сохранилось · нажми «Сохранить анализ» ещё раз" : {
+      "comment" : "footer",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не сохранилось · нажми «Сохранить анализ» ещё раз"
+          }
+        }
+      }
+    },
+    "Не сохранилось · нажми «Сохранить» ещё раз" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не сохранилось · нажми «Сохранить» ещё раз"
+          }
+        }
+      }
+    },
+    "Не сохранилось · нажми ещё раз" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не сохранилось · нажми ещё раз"
+          }
+        }
+      }
+    },
+    "Не сохранилось · попробуй ещё раз" : {
+      "comment" : "setDate",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не сохранилось · попробуй ещё раз"
+          }
+        }
+      }
+    },
     "Не сохранять" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -36324,6 +37183,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Не видалилося · натисни ще раз"
+          }
+        }
+      }
+    },
+    "Не удалилось · проверь после перезапуска" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалилось · проверь после перезапуска"
           }
         }
       }
@@ -37010,6 +37881,30 @@
         }
       }
     },
+    "нетiCloud" : {
+      "comment" : "args",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "нетiCloud"
+          }
+        }
+      }
+    },
+    "нетСети" : {
+      "comment" : "args",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "нетСети"
+          }
+        }
+      }
+    },
     "неясно" : {
       "comment" : "badge",
       "extractionState" : "manual",
@@ -37628,6 +38523,30 @@
         }
       }
     },
+    "Номер" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Номер"
+          }
+        }
+      }
+    },
+    "Номер бланка" : {
+      "comment" : "Шаги",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Номер бланка"
+          }
+        }
+      }
+    },
     "Номер для аптеки" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -37976,6 +38895,18 @@
         }
       }
     },
+    "Норма до" : {
+      "comment" : "Шаги",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Норма до"
+          }
+        }
+      }
+    },
     "норма не указана" : {
       "comment" : "byReferenceNoTreatment",
       "extractionState" : "manual",
@@ -38002,6 +38933,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "норму не вказано"
+          }
+        }
+      }
+    },
+    "Норма от" : {
+      "comment" : "Шаги",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Норма от"
           }
         }
       }
@@ -38228,6 +39171,18 @@
         }
       }
     },
+    "нудил" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "нудил"
+          }
+        }
+      }
+    },
     "Нужен iCloud на обоих телефонах. Аккаунт в Togo по-прежнему не нужен — обмен идёт через личный iCloud, а не через чужой сервер." : {
       "comment" : "explainerCard",
       "extractionState" : "manual",
@@ -38254,6 +39209,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Потрібен iCloud на обох телефонах. Акаунт у Togo, як і раніше, не потрібен — обмін іде через особистий iCloud, а не через чужий сервер."
+          }
+        }
+      }
+    },
+    "Нужен iCloud на телефоне" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нужен iCloud на телефоне"
           }
         }
       }
@@ -38497,6 +39464,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Обмінюються стрічка і дози"
+          }
+        }
+      }
+    },
+    "обменом" : {
+      "comment" : "id",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "обменом"
           }
         }
       }
@@ -39924,6 +40903,9 @@
         }
       }
     },
+    "остаётся у тебя · %lld" : {
+
+    },
     "осталось" : {
       "comment" : "todayCard",
       "extractionState" : "manual",
@@ -40478,6 +41460,18 @@
         }
       }
     },
+    "отказано" : {
+      "comment" : "trigger",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "отказано"
+          }
+        }
+      }
+    },
     "откладывали %@" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -40767,6 +41761,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Відкрий «Команди» → «Автоматизація»"
+          }
+        }
+      }
+    },
+    "Открой ссылку из сообщения" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Открой ссылку из сообщения"
           }
         }
       }
@@ -41131,6 +42137,18 @@
         }
       }
     },
+    "Откуда взято" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Откуда взято"
+          }
+        }
+      }
+    },
     "откуда эта запись" : {
       "comment" : "originCard",
       "extractionState" : "manual",
@@ -41247,6 +42265,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Скасування живе в Apple, а не в нас: App Store → твій Apple ID → Підписки. Підписка допрацює до кінця оплаченого періоду."
+          }
+        }
+      }
+    },
+    "Отмена не сохранилась · попробуй ещё раз" : {
+      "comment" : "nil",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отмена не сохранилась · попробуй ещё раз"
           }
         }
       }
@@ -43435,6 +44465,18 @@
         }
       }
     },
+    "Передавать некому: в семье нет второго человека, которому можно давать дозу. Смена останется твоей." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Передавать некому: в семье нет второго человека, которому можно давать дозу. Смена останется твоей."
+          }
+        }
+      }
+    },
     "передать" : {
       "comment" : "dutyCard",
       "extractionState" : "manual",
@@ -43908,6 +44950,7 @@
       }
     },
     "переходит · %lld" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -44269,6 +45312,18 @@
         }
       }
     },
+    "плакат-главный" : {
+      "comment" : "Плакат — верхняя треть",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "плакат-главный"
+          }
+        }
+      }
+    },
     "план дня · всё сделано" : {
       "comment" : "header",
       "extractionState" : "manual",
@@ -44353,6 +45408,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "план дня · залишилось %lld з %lld"
+          }
+        }
+      }
+    },
+    "плитка «реакция»" : {
+      "comment" : "name",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "плитка «реакция»"
           }
         }
       }
@@ -45725,6 +46792,18 @@
         }
       }
     },
+    "позавчора" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "позавчора"
+          }
+        }
+      }
+    },
     "позвать в дневник" : {
       "comment" : "inviteCard",
       "extractionState" : "manual",
@@ -45901,6 +46980,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Пограю з ним"
+          }
+        }
+      }
+    },
+    "поїв" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "поїв"
           }
         }
       }
@@ -46411,6 +47502,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Поки сама"
+          }
+        }
+      }
+    },
+    "Пока ссылку не открыли, дневник остаётся только на этом телефоне." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пока ссылку не открыли, дневник остаётся только на этом телефоне."
           }
         }
       }
@@ -47386,6 +48489,18 @@
         }
       }
     },
+    "пописав" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "пописав"
+          }
+        }
+      }
+    },
     "пописал" : {
       "comment" : "Языки",
       "extractionState" : "manual",
@@ -47442,6 +48557,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Попісяв"
+          }
+        }
+      }
+    },
+    "попісяв" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "попісяв"
           }
         }
       }
@@ -48634,6 +49761,18 @@
         }
       }
     },
+    "Посмотреть онбординг как новый" : {
+      "comment" : "aboutSection",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Посмотреть онбординг как новый"
+          }
+        }
+      }
+    },
     "поставил на паузу" : {
       "comment" : "title",
       "extractionState" : "manual",
@@ -49412,6 +50551,18 @@
         }
       }
     },
+    "Право есть и вход в Apple ID есть, а библиотека не открылась — записи сейчас только на этом телефоне и в iCloud не уезжают. Перезапусти приложение; не поможет — сохрани файл и напиши в поддержку." : {
+      "comment" : "detail",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Право есть и вход в Apple ID есть, а библиотека не открылась — записи сейчас только на этом телефоне и в iCloud не уезжают. Перезапусти приложение; не поможет — сохрани файл и напиши в поддержку."
+          }
+        }
+      }
+    },
     "право на iCloud есть, пробую" : {
       "comment" : "groupURL",
       "extractionState" : "manual",
@@ -49648,6 +50799,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "препарат"
+          }
+        }
+      }
+    },
+    "Препарат" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Препарат"
           }
         }
       }
@@ -50131,6 +51294,18 @@
         }
       }
     },
+    "Приглашать третьего человека" : {
+      "comment" : "handle",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Приглашать третьего человека"
+          }
+        }
+      }
+    },
     "Приглашение" : {
       "comment" : "member",
       "extractionState" : "manual",
@@ -50471,6 +51646,17 @@
         }
       }
     },
+    "приехала обменом" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "приехала обменом"
+          }
+        }
+      }
+    },
     "Приложение — не медицинское устройство" : {
       "comment" : "legalSection",
       "extractionState" : "manual",
@@ -50710,6 +51896,9 @@
           }
         }
       }
+    },
+    "Приложение не спрашивает ссылку — её открывают в переписке, и дальше всё делает телефон." : {
+
     },
     "Приложение не ставит диагнозов. Оно умеет показать этот график врачу — вместе с датами еды и препаратов за те же дни." : {
       "comment" : "chartCard",
@@ -51227,6 +52416,18 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "причина не названа" : {
+      "comment" : "failures",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "причина не названа"
           }
         }
       }
@@ -51826,6 +53027,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Проміжки рівні і вдень, і вночі — собаці так найспокійніше."
+          }
+        }
+      }
+    },
+    "пронос" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "пронос"
           }
         }
       }
@@ -52606,6 +53819,18 @@
         }
       }
     },
+    "раз" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "раз"
+          }
+        }
+      }
+    },
     "раз в %@" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -52786,6 +54011,18 @@
         }
       }
     },
+    "Раздел" : {
+      "comment" : "Шаги",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Раздел"
+          }
+        }
+      }
+    },
     "Раздел, в который не зашли за две недели, — это либо лишний раздел, либо его не нашли. Второе чинится, первое убирается." : {
       "comment" : "screens",
       "extractionState" : "manual",
@@ -52872,6 +54109,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Дозвіл"
+          }
+        }
+      }
+    },
+    "разрешено" : {
+      "comment" : "trigger",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "разрешено"
           }
         }
       }
@@ -53722,6 +54971,42 @@
         }
       }
     },
+    "рідка" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "рідка"
+          }
+        }
+      }
+    },
+    "рідке" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "рідке"
+          }
+        }
+      }
+    },
+    "рідкий" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "рідкий"
+          }
+        }
+      }
+    },
     "ровно через %@" : {
       "comment" : "scheduleSubtitle",
       "extractionState" : "manual",
@@ -54336,6 +55621,18 @@
         }
       }
     },
+    "сам" : {
+      "comment" : "SharedDiarySeed",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "сам"
+          }
+        }
+      }
+    },
     "Сами записи — инциденты, стул, дозы — останутся: удаляется только объединение их в эпизод. Если инциденты повторятся, приложение поднимет эпизод заново." : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -54754,6 +56051,18 @@
         }
       }
     },
+    "своё" : {
+      "comment" : "dog",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "своё"
+          }
+        }
+      }
+    },
     "Своё дело" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -54814,6 +56123,9 @@
         }
       }
     },
+    "свой" : {
+
+    },
     "Свой вопрос…" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -54840,6 +56152,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Своє питання…"
+          }
+        }
+      }
+    },
+    "Свою собаку заводить не нужно — она появится сама, вместе с записями того, кто позвал." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Свою собаку заводить не нужно — она появится сама, вместе с записями того, кто позвал."
           }
         }
       }
@@ -55132,6 +56456,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "сеанси"
+          }
+        }
+      }
+    },
+    "себя в списке семьи не нашли — права наблюдателя" : {
+      "comment" : "adoptMe",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "себя в списке семьи не нашли — права наблюдателя"
           }
         }
       }
@@ -55846,6 +57182,18 @@
         }
       }
     },
+    "система ещё не спрашивала" : {
+      "comment" : "trigger",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "система ещё не спрашивала"
+          }
+        }
+      }
+    },
     "Системный San Francisco. Он уже загружен, умеет Dynamic Type и не требует лицензии." : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -56034,6 +57382,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "сколько вещества в одной единице"
+          }
+        }
+      }
+    },
+    "Сколько давать" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сколько давать"
           }
         }
       }
@@ -56700,6 +58060,18 @@
         }
       }
     },
+    "Следующий шаг не завёлся · попробуй ещё раз" : {
+      "comment" : "next",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Следующий шаг не завёлся · попробуй ещё раз"
+          }
+        }
+      }
+    },
     "Слизь" : {
       "comment" : "title",
       "extractionState" : "manual",
@@ -56906,6 +58278,30 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Знімок лежить на телефоні. Він потрапляє в резервну копію разом зі щоденником і більше нікуди не йде."
+          }
+        }
+      }
+    },
+    "Снимок не сохранился · попробуй ещё раз" : {
+      "comment" : "document",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Снимок не сохранился · попробуй ещё раз"
+          }
+        }
+      }
+    },
+    "Снимок не удалился · попробуй ещё раз" : {
+      "comment" : "delete",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Снимок не удалился · попробуй ещё раз"
           }
         }
       }
@@ -59228,6 +60624,18 @@
         }
       }
     },
+    "Ссылки нет? Попроси прислать её заново — приглашение отправляют из Togo: «Семья» → «Позвать в дневник»." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ссылки нет? Попроси прислать её заново — приглашение отправляют из Togo: «Семья» → «Позвать в дневник»."
+          }
+        }
+      }
+    },
     "Ставит отметку на идущей прогулке." : {
       "comment" : "WalkMarkIntent",
       "extractionState" : "manual",
@@ -59476,6 +60884,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Стоп"
+          }
+        }
+      }
+    },
+    "сторонаПриложения" : {
+      "comment" : "args",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "сторонаПриложения"
           }
         }
       }
@@ -60014,6 +61434,18 @@
         }
       }
     },
+    "Схема" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Схема"
+          }
+        }
+      }
+    },
     "Схема не собирается: %@" : {
       "comment" : "container",
       "extractionState" : "manual",
@@ -60070,6 +61502,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Схему міняє власник. Ти бачиш її і позначаєш прийоми."
+          }
+        }
+      }
+    },
+    "схемы лечения в тот день не было" : {
+      "comment" : "let",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "схемы лечения в тот день не было"
           }
         }
       }
@@ -60430,6 +61874,30 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "сир, індичка, м'ячик"
+          }
+        }
+      }
+    },
+    "сьогодні" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "сьогодні"
+          }
+        }
+      }
+    },
+    "т4" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "т4"
           }
         }
       }
@@ -60836,6 +62304,30 @@
         }
       }
     },
+    "те, кто уже в семье, остаются с прежними правами" : {
+      "comment" : "handle",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "те, кто уже в семье, остаются с прежними правами"
+          }
+        }
+      }
+    },
+    "Тебя позвали" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тебя позвали"
+          }
+        }
+      }
+    },
     "текст" : {
       "comment" : "id",
       "extractionState" : "manual",
@@ -61024,6 +62516,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "телефони і що сказати лікарю"
+          }
+        }
+      }
+    },
+    "тёмная плитка прогулки" : {
+      "comment" : "name",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "тёмная плитка прогулки"
           }
         }
       }
@@ -62210,6 +63714,18 @@
         }
       }
     },
+    "у справах" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "у справах"
+          }
+        }
+      }
+    },
     "У этой сборки нет права на iCloud" : {
       "comment" : "start",
       "extractionState" : "manual",
@@ -62810,6 +64326,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Видалення можна скасувати 5 секунд — потім запис піде зі стрічки зовсім. Щоб виправити, а не прибрати, міняй значення вище: вони зберігаються одразу."
+          }
+        }
+      }
+    },
+    "Удаление не сохранилось · попробуй ещё раз" : {
+      "comment" : "removed",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удаление не сохранилось · попробуй ещё раз"
           }
         }
       }
@@ -64106,6 +65634,18 @@
         }
       }
     },
+    "Українська" : {
+      "comment" : "needsRestart",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Українська"
+          }
+        }
+      }
+    },
     "Улица без собак" : {
       "comment" : "openNextStep",
       "extractionState" : "manual",
@@ -64676,6 +66216,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "вчиться"
+          }
+        }
+      }
+    },
+    "учора" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "учора"
           }
         }
       }
@@ -65274,6 +66826,18 @@
         }
       }
     },
+    "Формулировка" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Формулировка"
+          }
+        }
+      }
+    },
     "формулировка, статус и на чём основано" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -65312,6 +66876,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Фотографія видалиться з телефона. У галереї вона залишиться, якщо знімали через камеру."
+          }
+        }
+      }
+    },
+    "хв" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "хв"
           }
         }
       }
@@ -65735,6 +67311,18 @@
         }
       }
     },
+    "час" : {
+      "comment" : "Языки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "час"
+          }
+        }
+      }
+    },
     "Час" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -66106,6 +67694,9 @@
           }
         }
       }
+    },
+    "Чей дневник" : {
+
     },
     "Человек" : {
       "comment" : "title",
@@ -66593,6 +68184,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Числа пораховано за ним, а не за загальними таблицями. Дозування і все медичне звір із лікарем — застосунок тільки рахує і нагадує."
+          }
+        }
+      }
+    },
+    "Число" : {
+      "comment" : "Шаги",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Число"
           }
         }
       }
@@ -67869,6 +69472,18 @@
         }
       }
     },
+    "что сделать" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "что сделать"
+          }
+        }
+      }
+    },
     "Что сделать с тем, что уже есть?" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -68424,6 +70039,30 @@
         }
       }
     },
+    "Шаг не завёлся · попробуй ещё раз" : {
+      "comment" : "step",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Шаг не завёлся · попробуй ещё раз"
+          }
+        }
+      }
+    },
+    "Шаг не удалился · попробуй ещё раз" : {
+      "comment" : "delete",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Шаг не удалился · попробуй ещё раз"
+          }
+        }
+      }
+    },
     "шаги" : {
       "comment" : "stepsCard",
       "extractionState" : "manual",
@@ -68844,6 +70483,18 @@
         }
       }
     },
+    "Эпизод удалён · записи остались" : {
+      "comment" : "activeEpisodeFooter",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Эпизод удалён · записи остались"
+          }
+        }
+      }
+    },
     "эпизоды" : {
       "comment" : "episodesCard",
       "extractionState" : "manual",
@@ -68900,6 +70551,18 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "цей тиждень"
+          }
+        }
+      }
+    },
+    "Эта сборка без iCloud" : {
+      "comment" : "title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Эта сборка без iCloud"
           }
         }
       }
@@ -69425,6 +71088,18 @@
         }
       }
     },
+    "Это пометка, а не срок: сам доступ по ней не закроется. Убрать человека из семьи нужно руками." : {
+      "comment" : "next",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Это пометка, а не срок: сам доступ по ней не закроется. Убрать человека из семьи нужно руками."
+          }
+        }
+      }
+    },
     "Это предел прибора, а не результат. Приложение сохранит его пределом и не выдаст за измеренное число." : {
       "comment" : "Шаги",
       "extractionState" : "manual",
@@ -69895,1648 +71570,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Мов мало навмисно: машинний переклад у застосунку про здоров'я собаки гірший, ніж мова, зроблена цілком."
-          }
-        }
-      }
-    },
-    "акцентная кнопка прогулки" : {
-      "comment" : "name",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "акцентная кнопка прогулки"
-          }
-        }
-      }
-    },
-    "тёмная плитка прогулки" : {
-      "comment" : "name",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "тёмная плитка прогулки"
-          }
-        }
-      }
-    },
-    "плитка «реакция»" : {
-      "comment" : "name",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "плитка «реакция»"
-          }
-        }
-      }
-    },
-    "себя в списке семьи не нашли — права наблюдателя" : {
-      "comment" : "adoptMe",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "себя в списке семьи не нашли — права наблюдателя"
-          }
-        }
-      }
-    },
-    "Отмена не сохранилась · попробуй ещё раз" : {
-      "comment" : "nil",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Отмена не сохранилась · попробуй ещё раз"
-          }
-        }
-      }
-    },
-    "-Сценарий" : {
-      "comment" : "args",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "-Сценарий"
-          }
-        }
-      }
-    },
-    "-Онбординг" : {
-      "comment" : "Чем запуск стенда отличается от запуска у человека",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "-Онбординг"
-          }
-        }
-      }
-    },
-    "-ЧужаяЗона" : {
-      "comment" : "args",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "-ЧужаяЗона"
-          }
-        }
-      }
-    },
-    "-ИсходПриёма" : {
-      "comment" : "args",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "-ИсходПриёма"
-          }
-        }
-      }
-    },
-    "нетСети" : {
-      "comment" : "args",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "нетСети"
-          }
-        }
-      }
-    },
-    "нетiCloud" : {
-      "comment" : "args",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "нетiCloud"
-          }
-        }
-      }
-    },
-    "сторонаПриложения" : {
-      "comment" : "args",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "сторонаПриложения"
-          }
-        }
-      }
-    },
-    "Українська" : {
-      "comment" : "needsRestart",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Українська"
-          }
-        }
-      }
-    },
-    "Посмотреть онбординг как новый" : {
-      "comment" : "aboutSection",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Посмотреть онбординг как новый"
-          }
-        }
-      }
-    },
-    "все шесть шагов; ничего не записывается" : {
-      "comment" : "aboutSection",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "все шесть шагов; ничего не записывается"
-          }
-        }
-      }
-    },
-    "Не сохранилось · попробуй ещё раз" : {
-      "comment" : "setDate",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Не сохранилось · попробуй ещё раз"
-          }
-        }
-      }
-    },
-    "плакат-главный" : {
-      "comment" : "Плакат — верхняя треть",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "плакат-главный"
-          }
-        }
-      }
-    },
-    "Шаг не удалился · попробуй ещё раз" : {
-      "comment" : "delete",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Шаг не удалился · попробуй ещё раз"
-          }
-        }
-      }
-    },
-    "Занятие не удалилось · попробуй ещё раз" : {
-      "comment" : "delete",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Занятие не удалилось · попробуй ещё раз"
-          }
-        }
-      }
-    },
-    "Шаг не завёлся · попробуй ещё раз" : {
-      "comment" : "step",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Шаг не завёлся · попробуй ещё раз"
-          }
-        }
-      }
-    },
-    "Следующий шаг не завёлся · попробуй ещё раз" : {
-      "comment" : "next",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Следующий шаг не завёлся · попробуй ещё раз"
-          }
-        }
-      }
-    },
-    "Взвешивание не удалилось · попробуй ещё раз" : {
-      "comment" : "rest",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Взвешивание не удалилось · попробуй ещё раз"
-          }
-        }
-      }
-    },
-    "Вес не записался · попробуй ещё раз" : {
-      "comment" : "entry",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Вес не записался · попробуй ещё раз"
-          }
-        }
-      }
-    },
-    "6 мес" : {
-      "comment" : "dog",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "6 мес"
-          }
-        }
-      }
-    },
-    "лечения в тот день не было" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "лечения в тот день не было"
-          }
-        }
-      }
-    },
-    "не записан в этот день" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "не записан в этот день"
-          }
-        }
-      }
-    },
-    "схемы лечения в тот день не было" : {
-      "comment" : "let",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "схемы лечения в тот день не было"
-          }
-        }
-      }
-    },
-    "Лаборатория" : {
-      "comment" : "Шаги",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Лаборатория"
-          }
-        }
-      }
-    },
-    "Номер бланка" : {
-      "comment" : "Шаги",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Номер бланка"
-          }
-        }
-      }
-    },
-    "Раздел" : {
-      "comment" : "Шаги",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Раздел"
-          }
-        }
-      }
-    },
-    "Число" : {
-      "comment" : "Шаги",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Число"
-          }
-        }
-      }
-    },
-    "Норма от" : {
-      "comment" : "Шаги",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Норма от"
-          }
-        }
-      }
-    },
-    "Норма до" : {
-      "comment" : "Шаги",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Норма до"
-          }
-        }
-      }
-    },
-    "Не сохранилось · нажми «Сохранить анализ» ещё раз" : {
-      "comment" : "footer",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Не сохранилось · нажми «Сохранить анализ» ещё раз"
-          }
-        }
-      }
-    },
-    "Не сохранилось · нажми «Сохранить» ещё раз" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Не сохранилось · нажми «Сохранить» ещё раз"
-          }
-        }
-      }
-    },
-    "т4" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "т4"
-          }
-        }
-      }
-    },
-    "3 нед" : {
-      "comment" : "dog",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "3 нед"
-          }
-        }
-      }
-    },
-    "4–6 нед" : {
-      "comment" : "dog",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4–6 нед"
-          }
-        }
-      }
-    },
-    "4–8 нед" : {
-      "comment" : "dog",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4–8 нед"
-          }
-        }
-      }
-    },
-    "своё" : {
-      "comment" : "dog",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "своё"
-          }
-        }
-      }
-    },
-    "Номер" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Номер"
-          }
-        }
-      }
-    },
-    "Препарат" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Препарат"
-          }
-        }
-      }
-    },
-    "Схема" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Схема"
-          }
-        }
-      }
-    },
-    "Сколько давать" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Сколько давать"
-          }
-        }
-      }
-    },
-    "Врач" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Врач"
-          }
-        }
-      }
-    },
-    "Откуда взято" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Откуда взято"
-          }
-        }
-      }
-    },
-    "Вес, кг" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Вес, кг"
-          }
-        }
-      }
-    },
-    "Выдано" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Выдано"
-          }
-        }
-      }
-    },
-    "Не сохранилось · нажми ещё раз" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Не сохранилось · нажми ещё раз"
-          }
-        }
-      }
-    },
-    "Формулировка" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Формулировка"
-          }
-        }
-      }
-    },
-    "Кем" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Кем"
-          }
-        }
-      }
-    },
-    "Заведи тех, кто тоже за ней ходит: совладельца, ситтера, ребёнка или врача. Роль и права выбираешь ты." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Заведи тех, кто тоже за ней ходит: совладельца, ситтера, ребёнка или врача. Роль и права выбираешь ты."
-          }
-        }
-      }
-    },
-    "Это пометка, а не срок: сам доступ по ней не закроется. Убрать человека из семьи нужно руками." : {
-      "comment" : "next",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Это пометка, а не срок: сам доступ по ней не закроется. Убрать человека из семьи нужно руками."
-          }
-        }
-      }
-    },
-    "Снимок не сохранился · попробуй ещё раз" : {
-      "comment" : "document",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Снимок не сохранился · попробуй ещё раз"
-          }
-        }
-      }
-    },
-    "Снимок не удалился · попробуй ещё раз" : {
-      "comment" : "delete",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Снимок не удалился · попробуй ещё раз"
-          }
-        }
-      }
-    },
-    "Эпизод удалён · записи остались" : {
-      "comment" : "activeEpisodeFooter",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Эпизод удалён · записи остались"
-          }
-        }
-      }
-    },
-    "Удаление не сохранилось · попробуй ещё раз" : {
-      "comment" : "removed",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Удаление не сохранилось · попробуй ещё раз"
-          }
-        }
-      }
-    },
-    "Не удалилось · проверь после перезапуска" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Не удалилось · проверь после перезапуска"
-          }
-        }
-      }
-    },
-    "Передавать некому: в семье нет второго человека, которому можно давать дозу. Смена останется твоей." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Передавать некому: в семье нет второго человека, которому можно давать дозу. Смена останется твоей."
-          }
-        }
-      }
-    },
-    "Меня позвали в семью" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Меня позвали в семью"
-          }
-        }
-      }
-    },
-    "Тебя позвали" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Тебя позвали"
-          }
-        }
-      }
-    },
-    "в чужой дневник" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "в чужой дневник"
-          }
-        }
-      }
-    },
-    "Свою собаку заводить не нужно — она появится сама, вместе с записями того, кто позвал." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Свою собаку заводить не нужно — она появится сама, вместе с записями того, кто позвал."
-          }
-        }
-      }
-    },
-    "что сделать" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "что сделать"
-          }
-        }
-      }
-    },
-    "Открой ссылку из сообщения" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Открой ссылку из сообщения"
-          }
-        }
-      }
-    },
-    "Её присылают из Togo. Нажми прямо в переписке — телефон сам откроет приглашение и спросит, принимаешь ли ты его." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Её присылают из Togo. Нажми прямо в переписке — телефон сам откроет приглашение и спросит, принимаешь ли ты его."
-          }
-        }
-      }
-    },
-    "Нужен iCloud на телефоне" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Нужен iCloud на телефоне"
-          }
-        }
-      }
-    },
-    "Дневник ездит через твой личный iCloud, а не через чужой сервер. Аккаунт в Togo не нужен." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Дневник ездит через твой личный iCloud, а не через чужой сервер. Аккаунт в Togo не нужен."
-          }
-        }
-      }
-    },
-    "Ссылки нет? Попроси прислать её заново — приглашение отправляют из Togo: «Семья» → «Позвать в дневник»." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ссылки нет? Попроси прислать её заново — приглашение отправляют из Togo: «Семья» → «Позвать в дневник»."
-          }
-        }
-      }
-    },
-    "Пока ссылку не открыли, дневник остаётся только на этом телефоне." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Пока ссылку не открыли, дневник остаётся только на этом телефоне."
-          }
-        }
-      }
-    },
-    "Меня позвали" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Меня позвали"
-          }
-        }
-      }
-    },
-    "Записывать в этот дневник тебе не разрешено. Открой Togo, вкладку «Семья», и нажми «Это я»." : {
-      "comment" : "localizedStringResource",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Записывать в этот дневник тебе не разрешено. Открой Togo, вкладку «Семья», и нажми «Это я»."
-          }
-        }
-      }
-    },
-    "система ещё не спрашивала" : {
-      "comment" : "trigger",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "система ещё не спрашивала"
-          }
-        }
-      }
-    },
-    "разрешено" : {
-      "comment" : "trigger",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "разрешено"
-          }
-        }
-      }
-    },
-    "отказано" : {
-      "comment" : "trigger",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "отказано"
-          }
-        }
-      }
-    },
-    " · повторяется" : {
-      "comment" : "trigger",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " · повторяется"
-          }
-        }
-      }
-    },
-    "без срока" : {
-      "comment" : "trigger",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "без срока"
-          }
-        }
-      }
-    },
-    "Приглашать третьего человека" : {
-      "comment" : "handle",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Приглашать третьего человека"
-          }
-        }
-      }
-    },
-    "те, кто уже в семье, остаются с прежними правами" : {
-      "comment" : "handle",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "те, кто уже в семье, остаются с прежними правами"
-          }
-        }
-      }
-    },
-    "причина не названа" : {
-      "comment" : "failures",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "причина не названа"
-          }
-        }
-      }
-    },
-    "не CKError" : {
-      "comment" : "failures",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "не CKError"
-          }
-        }
-      }
-    },
-    "сам" : {
-      "comment" : "SharedDiarySeed",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "сам"
-          }
-        }
-      }
-    },
-    "заведена здесь" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "заведена здесь"
-          }
-        }
-      }
-    },
-    "приехала обменом" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "приехала обменом"
-          }
-        }
-      }
-    },
-    "здесь" : {
-      "comment" : "id",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "здесь"
-          }
-        }
-      }
-    },
-    "обменом" : {
-      "comment" : "id",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "обменом"
-          }
-        }
-      }
-    },
-    "Эта сборка без iCloud" : {
-      "comment" : "title",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Эта сборка без iCloud"
-          }
-        }
-      }
-    },
-    "iCloud не открылся" : {
-      "comment" : "title",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iCloud не открылся"
-          }
-        }
-      }
-    },
-    "Дело не в твоих настройках: права на iCloud нет у самой сборки. Записи целы и лежат на этом телефоне — сохрани файл, и они вернутся в следующей сборке." : {
-      "comment" : "detail",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Дело не в твоих настройках: права на iCloud нет у самой сборки. Записи целы и лежат на этом телефоне — сохрани файл, и они вернутся в следующей сборке."
-          }
-        }
-      }
-    },
-    "Право есть и вход в Apple ID есть, а библиотека не открылась — записи сейчас только на этом телефоне и в iCloud не уезжают. Перезапусти приложение; не поможет — сохрани файл и напиши в поддержку." : {
-      "comment" : "detail",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Право есть и вход в Apple ID есть, а библиотека не открылась — записи сейчас только на этом телефоне и в iCloud не уезжают. Перезапусти приложение; не поможет — сохрани файл и напиши в поддержку."
-          }
-        }
-      }
-    },
-    "не ел" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "не ел"
-          }
-        }
-      }
-    },
-    "дал " : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "дал "
-          }
-        }
-      }
-    },
-    "г\\\\b" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "г\\\\b"
-          }
-        }
-      }
-    },
-    "грамм" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "грамм"
-          }
-        }
-      }
-    },
-    "раз" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "раз"
-          }
-        }
-      }
-    },
-    "час" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "час"
-          }
-        }
-      }
-    },
-    "пронос" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "пронос"
-          }
-        }
-      }
-    },
-    "випорожн" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "випорожн"
-          }
-        }
-      }
-    },
-    "кака" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "кака"
-          }
-        }
-      }
-    },
-    "діаре" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "діаре"
-          }
-        }
-      }
-    },
-    "рідкий" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "рідкий"
-          }
-        }
-      }
-    },
-    "рідке" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "рідке"
-          }
-        }
-      }
-    },
-    "рідка" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "рідка"
-          }
-        }
-      }
-    },
-    "годув" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "годув"
-          }
-        }
-      }
-    },
-    "нагодув" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "нагодув"
-          }
-        }
-      }
-    },
-    "поїв" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "поїв"
-          }
-        }
-      }
-    },
-    "з'їв" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "з'їв"
-          }
-        }
-      }
-    },
-    "не їв" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "не їв"
-          }
-        }
-      }
-    },
-    "їв " : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "їв "
-          }
-        }
-      }
-    },
-    "їсть" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "їсть"
-          }
-        }
-      }
-    },
-    "їжа" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "їжа"
-          }
-        }
-      }
-    },
-    "корм" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "корм"
-          }
-        }
-      }
-    },
-    "дав " : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "дав "
-          }
-        }
-      }
-    },
-    "ліки" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ліки"
-          }
-        }
-      }
-    },
-    "гуля" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "гуля"
-          }
-        }
-      }
-    },
-    "вигул" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "вигул"
-          }
-        }
-      }
-    },
-    "виходи" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "виходи"
-          }
-        }
-      }
-    },
-    "вийш" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "вийш"
-          }
-        }
-      }
-    },
-    "попісяв" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "попісяв"
-          }
-        }
-      }
-    },
-    "пописав" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "пописав"
-          }
-        }
-      }
-    },
-    "у справах" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "у справах"
-          }
-        }
-      }
-    },
-    "блюв" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "блюв"
-          }
-        }
-      }
-    },
-    "вирвал" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "вирвал"
-          }
-        }
-      }
-    },
-    "нудил" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "нудил"
-          }
-        }
-      }
-    },
-    "калюж" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "калюж"
-          }
-        }
-      }
-    },
-    "важить" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "важить"
-          }
-        }
-      }
-    },
-    "зваж" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "зваж"
-          }
-        }
-      }
-    },
-    "вага " : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "вага "
-          }
-        }
-      }
-    },
-    "сьогодні" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "сьогодні"
-          }
-        }
-      }
-    },
-    "вчора" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "вчора"
-          }
-        }
-      }
-    },
-    "учора" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "учора"
-          }
-        }
-      }
-    },
-    "позавчора" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "позавчора"
-          }
-        }
-      }
-    },
-    " з " : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " з "
-          }
-        }
-      }
-    },
-    "з " : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "з "
-          }
-        }
-      }
-    },
-    "грам" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "грам"
-          }
-        }
-      }
-    },
-    "годин" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "годин"
-          }
-        }
-      }
-    },
-    "хв" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "хв"
           }
         }
       }
