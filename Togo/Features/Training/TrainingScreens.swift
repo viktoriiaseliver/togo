@@ -45,7 +45,7 @@ struct SessionSummarySheet: View {
     }
 
     private var verdictLine: String {
-        if !session.countsTowardProgress { return String(localized: "после трёх минут прогресс не пишем") }
+        if !session.countsTowardProgress { return String(localized: "дольше заданного — прогресс не пишем") }
         if session.isGoodSession { return String(localized: "получилось · шаг почти закрыт") }
         if session.isPoorSession { return String(localized: "тяжело — стоит вернуться на шаг назад") }
         return String(localized: "нормально · держим этот шаг")

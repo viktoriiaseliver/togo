@@ -7,8 +7,14 @@ import Foundation
 /// что маркер приходит в течение полусекунды после нужного действия.
 @Observable
 final class MarkerSession {
-    /// Три минуты — это ограничение, а не подсказка.
+    /// Длина занятия — ограничение, а не подсказка. Задаётся в профиле
+    /// собаки (2–5 минут, `Dog.sessionLengthMinutes`), по умолчанию три.
+    /// Тексты экрана берут её отсюда, а не пишут «три минуты» словами:
+    /// до 20.10.2026 при пяти минутах экран говорил «Три минуты прошли»
+    /// не вовремя.
     let limitSeconds: Int
+
+    var limitMinutes: Int { limitSeconds / 60 }
 
     private(set) var startedAt: Date?
     private(set) var actionAt: Date?
@@ -36,7 +42,7 @@ final class MarkerSession {
         max(0, Double(limitSeconds) - elapsed(at: now))
     }
 
-    /// После трёх минут приложение перестаёт называть это занятием
+    /// После заданной длины приложение перестаёт называть это занятием
     /// и не пишет прогресс: собака начинает угадывать, а не учиться.
     func isOvertime(at now: Date = Date()) -> Bool {
         elapsed(at: now) > Double(limitSeconds)
@@ -44,7 +50,7 @@ final class MarkerSession {
 
     func hint(at now: Date = Date()) -> String {
         if !isRunning { return String(localized: "коротко — это правильно") }
-        if isOvertime(at: now) { return String(localized: "три минуты прошли — заканчивай на удачном повторе") }
+        if isOvertime(at: now) { return String(localized: "время вышло — заканчивай на удачном повторе") }
         if isWaitingForMark { return String(localized: "маркируй прямо сейчас") }
         return String(localized: "норма 2–5 мин · дальше устаёт")
     }

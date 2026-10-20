@@ -84,6 +84,8 @@ final class FamilyMember {
 
     var isInvitePending: Bool { acceptedAt == nil && inviteToken != nil }
 
+    /// Вызовов нет (замер 20.10.2026): срок пишется и не читается.
+    /// Поставить его в условие — решение о механизме, не правка текста.
     func inviteIsValid(at date: Date = Date()) -> Bool {
         guard let inviteExpiresAt else { return false }
         return date < inviteExpiresAt

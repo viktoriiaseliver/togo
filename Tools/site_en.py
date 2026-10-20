@@ -26,7 +26,7 @@
 # отпечаток считается по НАБОРУ публикуемых документов, и рост набора
 # его сдвигает. Переводы дисклеймера были готовы заранее и сверены
 # построчно: разделов три, абзацев 3+2+3 в обоих языках.
-SOURCE_FINGERPRINT = "e07ecba5e1fe75a3"
+SOURCE_FINGERPRINT = "6355b3c71822668c"
 
 # Подписи вокруг текста: в шаблоне страницы их два языка.
 LABELS = {
@@ -42,7 +42,7 @@ DOCUMENTS = {
     "PrivacyPolicyScreen": {
         "file": "privacy.html",
         "title": "Privacy Policy",
-        "updated": "25 August 2026",
+        "updated": "22 September 2026",
         "intro": "The short version: the diary lives on your phone. We create no account, we collect no analytics about what you write down, and we pass nothing on to third parties.",
         "sections": [
             ("What is stored, and where", [

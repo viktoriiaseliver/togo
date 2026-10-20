@@ -67,7 +67,7 @@ struct TrainingSessionScreen: View {
             Button("Выйти без записи", role: .destructive) { dismiss() }
             Button("Вернуться к занятию", role: .cancel) {}
         } message: {
-            Text("Отметок уже \(session.delaysMs.count). Их можно записать — прогресс посчитается, если занятие уложилось в три минуты.")
+            Text("Отметок уже \(session.delaysMs.count). Их можно записать — прогресс посчитается, если занятие уложилось в \(Fmt.minutes(session.limitMinutes)).")
         }
     }
 
@@ -121,8 +121,8 @@ struct TrainingSessionScreen: View {
             Text(session.hint(at: now)).textStyle(AppFont.caption)
 
             if session.isOvertime(at: now) {
-                TGBanner(tone: .alarm, title: "Три минуты прошли",
-                         subtitle: "Дальше прогресс не пишем: после трёх минут собака угадывает, а не учится.",
+                TGBanner(tone: .alarm, title: "Прошло \(Fmt.minutes(session.limitMinutes))",
+                         subtitle: "Дальше прогресс не пишем: на затянутом занятии собака угадывает, а не учится.",
                          systemImage: "hourglass")
             }
         }

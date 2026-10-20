@@ -240,16 +240,21 @@ private struct IncidentDetailStep: View {
         )
     }
 
-    // MARK: Сказать остальным
+    // MARK: Отметить для семьи
+    //
+    // Флаг `toldFamily` пишется и уезжает в общий дневник, но **уведомления
+    // у второго человека нет** и показа флага нигде нет (замер 20.10.2026).
+    // Прежняя подпись «Сказать остальным» обещала, что семья узнает, —
+    // человек думал, что сказал. Теперь подпись говорит, что делает тумблер.
 
     private var tellFamilyToggle: some View {
         TGCard {
             Toggle(isOn: Binding(get: { event.toldFamily }, set: { event.toldFamily = $0 })) {
                 VStack(alignment: .leading, spacing: Token.Space.s2) {
-                    Text("Сказать остальным").textStyle(AppFont.body)
+                    Text("Отметить для семьи").textStyle(AppFont.body)
                     Text(kind.notifiesFamilyByDefault
-                         ? "для рвоты и крови включено по умолчанию"
-                         : "для лужи выключено: это не новость для семьи")
+                         ? "для рвоты и крови включено по умолчанию · уведомления семье не будет"
+                         : "для лужи выключено · уведомления семье не будет")
                         .textStyle(AppFont.caption)
                 }
             }

@@ -172,15 +172,21 @@ nonisolated enum TreatmentCourse {
     }
 
     /// Что сказать человеку перед подтверждением.
+    ///
+    /// Вкладка «Здоровье» после курса **остаётся** — её держит право
+    /// `.seeMedical`, а не лечение (`RootView.swift`, решение 08.10.2026).
+    /// До 20.10 здесь стояло «вкладка спрячется», и человек, завершив
+    /// курс, видел обещание, которого приложение не исполняет.
     @MainActor
     static func farewell(_ dog: Dog) -> String {
         let names = activeMedications(dog).map(\.name)
         let tail = String(localized: "Записи останутся в истории и в отчёте врачу.")
         switch names.count {
-        case 0: return String(localized: "Вкладка «Здоровье» спрячется. \(tail)")
-        case 1: return String(localized: "«\(names[0])» уйдёт из плана дня, вкладка «Здоровье» спрячется. \(tail)")
+        case 0: return String(localized: "Схема лечения закроется, вкладка «Здоровье» останется. \(tail)")
+        case 1: return String(localized: "«\(names[0])» уйдёт из плана дня, вкладка «Здоровье» останется. \(tail)")
         default:
-            return "\(names.joined(separator: ", ")) уйдут из плана дня, вкладка «Здоровье» спрячется. \(tail)"
+            let list = names.joined(separator: ", ")
+            return String(localized: "\(list) уйдут из плана дня, вкладка «Здоровье» останется. \(tail)")
         }
     }
 }
