@@ -7743,11 +7743,6 @@
     "IDEXX" : {
 
     },
-    "Lévothyrox" : {
-      "comment" : "подсказка поля «Название» у препарата. НЕ ПЕРЕВОДИТСЯ — решение Виктории 15.10.2026, прямым вопросом: «один бренд во всех языках». Было четыре РАЗНЫХ коммерческих продукта левотироксина в одном поле: fr Lévothyrox · ru Эутирокс · en Synthroid (needs_review) · uk L-тироксин (needs_review) — два варианта не подтверждал никто. Поле медицинское, запись потом читает врач, а подсказка в поле названия читается как «такое сюда пишут». Переводить нечего: бренд не слово. ВНИМАНИЕ: русский теперь видит Lévothyrox вместо Эутирокс — это и есть «один бренд», а не упущение. Увидишь непереведённое поле и захочешь починить — причина здесь, и возврат четырёх брендов будет регрессией, а не переводом.",
-      "extractionState" : "manual",
-      "shouldTranslate" : false
-    },
     "PDF-ордоннанс, письмо, со слов" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -8171,7 +8166,16 @@
       }
     },
     "Адрес вводить негде" : {
-
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Адрес вводить негде"
+          }
+        }
+      }
     },
     "Адрес и строки запуска скопированы: %@. Напиши с другого устройства." : {
       "localizations" : {
@@ -20567,7 +20571,16 @@
       }
     },
     "другого человека" : {
-
+      "comment" : "ownerTitle",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "другого человека"
+          }
+        }
+      }
     },
     "Другое" : {
       "comment" : "body",
@@ -22175,7 +22188,16 @@
       }
     },
     "ещё не поднялся" : {
-
+      "comment" : "stateTitle",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ещё не поднялся"
+          }
+        }
+      }
     },
     "ещё не спрашивали" : {
       "comment" : "readableStatus",
@@ -25320,7 +25342,7 @@
       }
     },
     "Записи останутся в истории и в отчёте врачу." : {
-      "comment" : "tail",
+      "comment" : "praise",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -51898,7 +51920,16 @@
       }
     },
     "Приложение не спрашивает ссылку — её открывают в переписке, и дальше всё делает телефон." : {
-
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Приложение не спрашивает ссылку — её открывают в переписке, и дальше всё делает телефон."
+          }
+        }
+      }
     },
     "Приложение не ставит диагнозов. Оно умеет показать этот график врачу — вместе с датами еды и препаратов за те же дни." : {
       "comment" : "chartCard",
@@ -56124,7 +56155,16 @@
       }
     },
     "свой" : {
-
+      "comment" : "ownerTitle",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "свой"
+          }
+        }
+      }
     },
     "Свой вопрос…" : {
       "comment" : "body",
@@ -67696,7 +67736,16 @@
       }
     },
     "Чей дневник" : {
-
+      "comment" : "statusCard",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Чей дневник"
+          }
+        }
+      }
     },
     "Человек" : {
       "comment" : "title",
