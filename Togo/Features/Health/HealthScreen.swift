@@ -1,7 +1,8 @@
 import SwiftUI
 import SwiftData
 
-/// Здоровье. Вкладки нет, пока лечение выключено.
+/// Здоровье. Вкладка держится правом `.seeMedical`, а не лечением
+/// (`RootView`, решение 08.10.2026) — её нет только у помощника.
 /// Схему меняет только владелец, остальные видят и исполняют.
 struct HealthScreen: View {
     @Environment(AppState.self) private var appState
@@ -152,15 +153,15 @@ struct HealthScreen: View {
     }
 
     /// Курс кончается здесь, а не тумблером в профиле, где его никто
-    /// не найдёт. Вместе с курсом уходит и вкладка — медицина не должна
-    /// занимать место у здоровой собаки.
+    /// не найдёт. Вкладка при этом НЕ уходит: с 08.10.2026 (`02c1e88`) её держит
+    /// право `.seeMedical`, а не курс, — иначе она исчезала ровно в день, когда
+    /// нужен отчёт врачу.
     @ViewBuilder
     private var finishCourse: some View {
         if canEdit, dog != nil {
             Button { isFinishing = true } label: {
                 TGCard {
-                    TGListRow(title: "Курс завершён", value: "спрячет вкладку",
-                              systemImage: "checkmark.seal")
+                    TGListRow(title: "Курс завершён", systemImage: "checkmark.seal")
                     TGExplainer(text: "Записи останутся в истории и в отчёте врачу. Вернуть курс можно в профиле.")
                 }
             }

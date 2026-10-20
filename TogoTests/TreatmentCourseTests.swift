@@ -31,8 +31,11 @@ struct TreatmentCourseTests {
         #expect(TreatmentCourse.isActive(dog))
     }
 
-    @Test("Курс завершён — вкладка прячется")
-    func finishHidesTab() throws {
+    // Имя до 20.10.2026 было «Курс завершён — вкладка прячется»: тело мерило
+    // `isActive`, а имя обещало про вкладку, которая с 08.10 держится правом
+    // и не прячется. Сторож по имени врал при верном теле.
+    @Test("Курс завершён — схема перестаёт быть активной")
+    func finishDeactivatesCourse() throws {
         let (context, dog, _) = try setup()
         TreatmentCourse.finish(dog, by: "Вика", context: context)
         #expect(!TreatmentCourse.isActive(dog))

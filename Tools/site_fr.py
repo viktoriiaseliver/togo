@@ -194,10 +194,10 @@ une réponse. Le bouton « Je le sors » reste en premier dans tous les cas :
 l'app ne sait pas mieux que toi.</p>
 
 <h3>Où est l'onglet « Santé »&#8239;?</h3>
-<p>Il arrive avec un traitement et repart avec lui : tu l'actives dans le
-profil du chien et tu le désactives avec « Traitement terminé », en bas de
-Santé. Les entrées restent dans l'historique et dans le compte rendu pour le
-vétérinaire.</p>
+<p>Il appartient à qui a le droit de voir le médical : un aidant ne l'a pas.
+Le traitement se termine avec « Traitement terminé », en bas de Santé : les
+entrées restent dans l'historique et dans le compte rendu pour le
+vétérinaire, et l'onglet reste lui aussi.</p>
 
 <h3>Deux personnes ont noté la même chose</h3>
 <p>Si deux personnes notent la même chose à moins de 20 minutes d'intervalle,

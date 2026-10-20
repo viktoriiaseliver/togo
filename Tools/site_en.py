@@ -171,9 +171,9 @@ him out” button stays first in every case: the app does not know better
 than you.</p>
 
 <h3>Where is the Health tab?</h3>
-<p>It arrives with a course of treatment and leaves with it: you switch it on
-in the dog’s profile and off with “Course finished” at the bottom of Health.
-The records stay in the history and in the vet report.</p>
+<p>It belongs to whoever is allowed to see medical records — a helper does not
+have it. You finish a course with “Course finished” at the bottom of Health:
+the records stay in the history and in the vet report, and the tab stays too.</p>
 
 <h3>Two people logged the same thing</h3>
 <p>If two people log the same thing within 20 minutes, the app shows both of

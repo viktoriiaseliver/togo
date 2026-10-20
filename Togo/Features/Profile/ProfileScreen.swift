@@ -213,10 +213,10 @@ struct ProfileScreen: View {
             )) {
                 VStack(alignment: .leading, spacing: Token.Space.s2) {
                     Text("Собака на лечении").textStyle(AppFont.body)
-                    Text("даёт вкладку «Здоровье», дозы, окно натощак и отчёты").textStyle(AppFont.caption)
+                    Text("включает дозы по часам, окно натощак и напоминания").textStyle(AppFont.caption)
                 }
             }
-            TGExplainer(text: "Выключишь — вкладка исчезнет, а записи останутся в истории.")
+            TGExplainer(text: "Выключишь — курс закроется, а записи останутся в истории.")
         }
         .disabled(!canEdit)
     }
