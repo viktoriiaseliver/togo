@@ -93,6 +93,14 @@ nonisolated enum CloudKitSchemaWarmup {
         // и назначение, а связь в зеркале становится полем только когда
         // ей есть на что указывать.
         let клиника = клиникаСоВсемиПолями()
+        // Собака — по той же причине, что клиника, и это замер 20.10.2026:
+        // у `CD_Diagnosis`, `CD_LabResult`, `CD_Prescription` и `CD_VetVisit`
+        // поля `dog` не было в контейнере именно потому, что `.dog`
+        // не присваивался ни одному объекту прогрева — связь в зеркале
+        // становится полем только когда ей есть на что указывать.
+        // Без этой строки один прогрев заводил 79 полей из 83, и за
+        // оставшимися четырьмя пришлось бы идти вторым заходом.
+        let собака = собакаСоВсемиПолями()
 
         let objects: [any PersistentModel] = [
             DayOut(startedAt: markerDate, plannedHours: 1),
@@ -107,7 +115,7 @@ nonisolated enum CloudKitSchemaWarmup {
             Trip(destination: markerTitle, startDate: markerDate, endDate: markerDate,
                  transport: .car),
             клиника,
-            собакаСоВсемиПолями(),
+            собака,
             участникСоВсемиПолями(),
             записьСоВсемиПолями(),
             лекарствоСоВсемиПолями(),
@@ -115,10 +123,10 @@ nonisolated enum CloudKitSchemaWarmup {
             уходСоВсемиПолями(клиника),
             запасСоВсемиПолями(),
             взвешиваниеСоВсемиПолями(),
-            анализСоВсемиПолями(),
-            приёмВрачаСоВсемиПолями(клиника),
-            диагнозСоВсемиПолями(),
-            назначениеСоВсемиПолями(клиника),
+            анализСоВсемиПолями(собака),
+            приёмВрачаСоВсемиПолями(клиника, собака),
+            диагнозСоВсемиПолями(собака),
+            назначениеСоВсемиПолями(клиника, собака),
         ]
         for object in objects { context.insert(object) }
         сохранённыеИдентификаторы = сохранённыеИдентификаторы.union(objects.compactMap(идентификатор))
@@ -289,7 +297,7 @@ nonisolated enum CloudKitSchemaWarmup {
     /// и в показ не попадает, но значение, похожее на настоящее,
     /// однажды попало бы.
     @MainActor
-    private static func анализСоВсемиПолями() -> LabResult {
+    private static func анализСоВсемиПолями(_ собака: Dog) -> LabResult {
         let анализ = LabResult(sampledOn: markerDate, indicator: markerTitle,
                                section: markerTitle, laboratory: markerTitle,
                                reportNumber: markerTitle)
@@ -304,29 +312,32 @@ nonisolated enum CloudKitSchemaWarmup {
         анализ.method = markerTitle
         анализ.labMark = markerTitle
         анализ.note = markerTitle
+        анализ.dog = собака
         return анализ
     }
 
     @MainActor
-    private static func приёмВрачаСоВсемиПолями(_ клиника: Clinic) -> VetVisit {
+    private static func приёмВрачаСоВсемиПолями(_ клиника: Clinic, _ собака: Dog) -> VetVisit {
         let приём = VetVisit(date: markerDate, doctor: markerTitle,
                              reasonRaw: VisitReason.checkup.rawValue)
         приём.clinic = клиника
         приём.conclusion = markerTitle
+        приём.dog = собака
         return приём
     }
 
     @MainActor
-    private static func диагнозСоВсемиПолями() -> Diagnosis {
+    private static func диагнозСоВсемиПолями(_ собака: Dog) -> Diagnosis {
         let диагноз = Diagnosis(wording: markerTitle, madeOn: markerDate,
                                 statusRaw: DiagnosisStatus.hypothesis.rawValue)
         диагноз.madeBy = markerTitle
         диагноз.evidence = markerTitle
+        диагноз.dog = собака
         return диагноз
     }
 
     @MainActor
-    private static func назначениеСоВсемиПолями(_ клиника: Clinic) -> Prescription {
+    private static func назначениеСоВсемиПолями(_ клиника: Clinic, _ собака: Dog) -> Prescription {
         let назначение = Prescription(number: markerTitle, date: markerDate,
                                       medicationName: markerTitle)
         назначение.clinic = клиника
@@ -341,6 +352,7 @@ nonisolated enum CloudKitSchemaWarmup {
         назначение.dispensed = markerTitle
         назначение.instruction = markerTitle
         назначение.source = markerTitle
+        назначение.dog = собака
         return назначение
     }
 
