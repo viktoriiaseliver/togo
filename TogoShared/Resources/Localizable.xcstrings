@@ -660,7 +660,7 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "« %@ » quittera le plan du jour, l'onglet « Santé » reste. %@"
           }
         },
@@ -9967,7 +9967,7 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Pendant les heures calmes, l'app ne demande pas le résultat de la sortie — elle le rassemble le matin sur une seule carte. La dose, la fenêtre à jeun et l'escalade sonnent quand même."
           }
         },
@@ -11487,7 +11487,7 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Le traitement sera clos, l'onglet « Santé » reste. %@"
           }
         },
@@ -13449,7 +13449,7 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tout ça arrive en un seul message à l'heure choisie, pas en huit d'affilée. Seules la dose, la fenêtre à jeun et l'escalade interrompent."
           }
         },
@@ -16590,7 +16590,7 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "On n'enregistre plus le progrès : dans une séance qui traîne, le chien devine au lieu d'apprendre."
           }
         },
@@ -17960,7 +17960,7 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "désactivé pour le pipi à la maison · la famille ne recevra pas de notification"
           }
         },
@@ -17990,7 +17990,7 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "activé par défaut pour les vomissements et le sang · la famille ne recevra pas de notification"
           }
         },
@@ -18355,7 +18355,7 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Le journal fonctionne entièrement sans notifications : elles ne servent qu'à la dose, à la fenêtre à jeun et à l'escalade. Elles arrivent sur ce téléphone."
           }
         },
@@ -21286,7 +21286,7 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "dose non cochée — encore après 30 et 60 minutes ; trois épisodes d'affilée — vérifier dans une heure"
           }
         },
@@ -25421,7 +25421,7 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Le traitement se clôt, les entrées et l'onglet restent."
           }
         },
@@ -42863,7 +42863,7 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Déjà %lld marques. Tu peux les enregistrer — le progrès comptera si la séance a tenu en %@."
           }
         },
@@ -49373,7 +49373,7 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "plus long que prévu — le progrès n'est pas noté"
           }
         },
@@ -50842,13 +50842,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Only a scheduled dose, a fasting window and escalation interrupt: a repeat for an unmarked dose and “How is he now?” an hour after three episodes. Everything else arrives in the morning, in one message."
+            "value" : "Only a scheduled dose, a fasting window and escalation interrupt: a repeat for an unmarked dose and “How is she now?” an hour after three episodes. Everything else arrives in the morning, in one message."
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Seules la dose à l'heure, la fenêtre à jeun et l'escalade interrompent : le rappel d'une dose non cochée et « Comment va-t-il ? » une heure après trois épisodes. Tout le reste arrive le matin, en un seul message."
+            "state" : "translated",
+            "value" : "Seules la dose à l'heure, la fenêtre à jeun et l'escalade interrompent : le rappel d'une dose non cochée et « Comment il va maintenant ? » une heure après trois épisodes. Tout le reste arrive le matin, en un seul message."
           }
         },
         "ru" : {
@@ -55755,7 +55755,7 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Via Raccourcis : sur iOS 18 et plus, un raccourci Togo peut aller dans le Centre de contrôle."
           }
         },
@@ -57196,7 +57196,7 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Marquer pour la famille"
           }
         },
@@ -59866,7 +59866,7 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "clôt le traitement"
           }
         },
@@ -63266,7 +63266,7 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "%@ écoulées"
           }
         },
@@ -63296,7 +63296,7 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "le temps est écoulé — finis sur une réussite"
           }
         },
@@ -71486,7 +71486,7 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "22 septembre 2026"
           }
         },

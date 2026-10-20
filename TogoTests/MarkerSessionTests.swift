@@ -135,7 +135,7 @@ struct CareAndDoseTests {
         #expect(!dose.claimIsActive(at: claimed.addingTimeInterval(46 * 60)))
     }
 
-    @Test("Лестница эскалации: −10 дежурному, +30 со-владельцам, +60 всем")
+    @Test("Лестница эскалации: ступени −10, +30, +60 по времени")
     func escalationLadder() {
         let scheduled = Date()
         let dose = DoseRecord(scheduledAt: scheduled)
