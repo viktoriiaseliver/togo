@@ -31,8 +31,8 @@ struct TreatmentCourseTests {
         #expect(TreatmentCourse.isActive(dog))
     }
 
-    @Test("Курс завершён — вкладка прячется")
-    func finishHidesTab() throws {
+    @Test("Курс завершён — лечение выключено")
+    func finishEndsTreatment() throws {
         let (context, dog, _) = try setup()
         TreatmentCourse.finish(dog, by: "Вика", context: context)
         #expect(!TreatmentCourse.isActive(dog))

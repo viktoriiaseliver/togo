@@ -471,7 +471,7 @@ final class AppState {
 /// Пользовательские настройки. Ничего из этого не уходит с телефона.
 @Observable
 final class Settings {
-    /// Один пуш в выбранный час. Прерывают только доза и окно натощак.
+    /// Один пуш в выбранный час. Прерывают только доза, окно натощак и эскалация.
     var briefHour: Int {
         didSet {
             UserDefaults.standard.set(briefHour, forKey: Keys.briefHour)
@@ -664,7 +664,9 @@ final class Settings {
     }
 
     /// В тихие часы приложение не спрашивает результат выхода —
-    /// собирает утром одной карточкой.
+    /// собирает утром одной карточкой. Уведомлений это не касается:
+    /// доза, окно натощак и эскалация звонят и в тихие часы, и экран
+    /// настроек говорит это прямо.
     func isQuietHour(_ date: Date = Date()) -> Bool {
         let hour = Calendar.current.component(.hour, from: date)
         return quietHoursStart <= quietHoursEnd

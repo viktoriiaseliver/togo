@@ -48,7 +48,7 @@ la double dose», «Données et confidentialité», «Je le sors», «Pas clair�
 # отпечаток считается по НАБОРУ публикуемых документов, и рост набора
 # его сдвигает. Переводы дисклеймера были готовы заранее и сверены
 # построчно: разделов три, абзацев 3+2+3 в обоих языках.
-SOURCE_FINGERPRINT = "e07ecba5e1fe75a3"
+SOURCE_FINGERPRINT = "6355b3c71822668c"
 
 # Подписи вокруг текста: в шаблоне страницы их два языка.
 LABELS = {
@@ -64,7 +64,7 @@ DOCUMENTS = {
     "PrivacyPolicyScreen": {
         "file": "privacy.html",
         "title": "Politique de confidentialité",
-        "updated": "25 août 2026",
+        "updated": "22 septembre 2026",
         "intro": "La version courte : le carnet vit sur ton téléphone. Nous ne créons pas de compte, nous ne collectons aucune statistique sur ce que tu notes, et nous ne transmettons rien à des tiers.",
         "sections": [
             ("Ce qui est conservé, et où", [

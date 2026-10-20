@@ -648,32 +648,32 @@
         }
       }
     },
-    "«%@» уйдёт из плана дня, вкладка «Здоровье» спрячется. %@" : {
+    "«%@» уйдёт из плана дня, вкладка «Здоровье» останется. %@" : {
       "comment" : "tail",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "“%@” will leave the day's plan, and the “Health” tab will hide itself. %@"
+            "value" : "“%@” will leave the day's plan; the “Health” tab stays. %@"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "«%@» quittera le plan du jour, l'onglet «Santé» se masquera. %@"
+            "state" : "needs_review",
+            "value" : "« %@ » quittera le plan du jour, l'onglet « Santé » reste. %@"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "«%@» уйдёт из плана дня, вкладка «Здоровье» спрячется. %@"
+            "value" : "«%@» уйдёт из плана дня, вкладка «Здоровье» останется. %@"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "«%@» піде із плану дня, вкладка «Здоров'я» сховається. %@"
+            "value" : "«%@» піде з плану дня, вкладка «Здоров'я» залишиться. %@"
           }
         }
       }
@@ -2934,32 +2934,32 @@
         }
       }
     },
-    "%@ уйдут из плана дня, вкладка «Здоровье» спрячется. %@" : {
+    "%@ уйдут из плана дня, вкладка «Здоровье» останется. %@" : {
       "comment" : "tail",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "%@ will leave the day's plan, and the “Health” tab will hide itself. %@"
+            "value" : "%@ will leave the day's plan; the “Health” tab stays. %@"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "%@ quitteront le plan du jour, l'onglet « Santé » se masquera. %@"
+            "value" : "%@ quitteront le plan du jour, l'onglet « Santé » reste. %@"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ уйдут из плана дня, вкладка «Здоровье» спрячется. %@"
+            "value" : "%@ уйдут из плана дня, вкладка «Здоровье» останется. %@"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "%@ підуть із плану дня, вкладка «Здоров'я» сховається. %@"
+            "value" : "%@ підуть з плану дня, вкладка «Здоров'я» залишиться. %@"
           }
         }
       }
@@ -9955,32 +9955,32 @@
         }
       }
     },
-    "В тихие часы приложение не спрашивает результат выхода — соберёт утром одной карточкой." : {
+    "В тихие часы приложение не спрашивает результат выхода — соберёт утром одной карточкой. Доза, окно натощак и эскалация звонят и в тихие часы." : {
       "comment" : "settings",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "During quiet hours the app doesn't ask how the outing went — it will gather everything into one card in the morning."
+            "value" : "During quiet hours the app doesn't ask how the outing went — it will gather it in the morning on one card. Doses, the fasting window and escalation still ring during quiet hours."
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pendant les heures calmes, l'app ne demande pas le résultat de la sortie : elle rassemblera tout le matin en une seule carte."
+            "state" : "needs_review",
+            "value" : "Pendant les heures calmes, l'app ne demande pas le résultat de la sortie — elle le rassemble le matin sur une seule carte. La dose, la fenêtre à jeun et l'escalade sonnent quand même."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "В тихие часы приложение не спрашивает результат выхода — соберёт утром одной карточкой."
+            "value" : "В тихие часы приложение не спрашивает результат выхода — соберёт утром одной карточкой. Доза, окно натощак и эскалация звонят и в тихие часы."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "У тихі години застосунок не питає результат виходу — збере вранці однією карткою."
+            "value" : "У тихі години застосунок не питає результат виходу — збере вранці однією карткою. Доза, вікно натщесерце й ескалація дзвонять і в тихі години."
           }
         }
       }
@@ -11475,32 +11475,32 @@
         }
       }
     },
-    "Вкладка «Здоровье» спрячется. %@" : {
+    "Схема лечения закроется, вкладка «Здоровье» останется. %@" : {
       "comment" : "tail",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "The “Health” tab will hide itself. %@"
+            "value" : "The treatment plan will close; the “Health” tab stays. %@"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "L'onglet «Santé» se masquera. %@"
+            "state" : "needs_review",
+            "value" : "Le traitement sera clos, l'onglet « Santé » reste. %@"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Вкладка «Здоровье» спрячется. %@"
+            "value" : "Схема лечения закроется, вкладка «Здоровье» останется. %@"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Вкладка «Здоров'я» сховається. %@"
+            "value" : "Схема лікування закриється, вкладка «Здоров'я» залишиться. %@"
           }
         }
       }
@@ -13437,32 +13437,32 @@
         }
       }
     },
-    "Всё это приходит одним сообщением в выбранный час, а не восемью подряд. Прерывают только доза и окно натощак." : {
+    "Всё это приходит одним сообщением в выбранный час, а не восемью подряд. Прерывают только доза, окно натощак и эскалация." : {
       "comment" : "footer",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "All of it arrives in a single message at the hour you choose, not in eight in a row. Only a dose and a fasting window interrupt you."
+            "value" : "All of it arrives in a single message at the hour you choose, not in eight in a row. Only a dose, the fasting window and escalation interrupt."
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tout ça arrive en un seul message à l'heure choisie, pas en huit d'affilée. Seules la dose et la fenêtre à jeun interrompent."
+            "state" : "needs_review",
+            "value" : "Tout ça arrive en un seul message à l'heure choisie, pas en huit d'affilée. Seules la dose, la fenêtre à jeun et l'escalade interrompent."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Всё это приходит одним сообщением в выбранный час, а не восемью подряд. Прерывают только доза и окно натощак."
+            "value" : "Всё это приходит одним сообщением в выбранный час, а не восемью подряд. Прерывают только доза, окно натощак и эскалация."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Усе це приходить одним повідомленням у вибрану годину, а не вісьмома поспіль. Переривають тільки доза і вікно натщесерце."
+            "value" : "Усе це приходить одним повідомленням у вибрану годину, а не вісьмома поспіль. Переривають тільки доза, вікно натщесерце й ескалація."
           }
         }
       }
@@ -16578,32 +16578,32 @@
         }
       }
     },
-    "Дальше прогресс не пишем: после трёх минут собака угадывает, а не учится." : {
+    "Дальше прогресс не пишем: на затянутом занятии собака угадывает, а не учится." : {
       "comment" : "clock",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "We stop recording progress here: after three minutes the dog is guessing, not learning."
+            "value" : "We stop recording progress here: in a drawn-out session the dog is guessing, not learning."
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "On n'enregistre plus le progrès : après trois minutes, le chien devine, il n'apprend plus."
+            "state" : "needs_review",
+            "value" : "On n'enregistre plus le progrès : dans une séance qui traîne, le chien devine au lieu d'apprendre."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Дальше прогресс не пишем: после трёх минут собака угадывает, а не учится."
+            "value" : "Дальше прогресс не пишем: на затянутом занятии собака угадывает, а не учится."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Далі прогрес не пишемо: після трьох хвилин собака вгадує, а не вчиться."
+            "value" : "Далі прогрес не пишемо: на затягнутому занятті собака вгадує, а не вчиться."
           }
         }
       }
@@ -17948,62 +17948,62 @@
         }
       }
     },
-    "для лужи выключено: это не новость для семьи" : {
+    "для лужи выключено · уведомления семье не будет" : {
       "comment" : "tellFamilyToggle",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "off for accidents indoors: that's no news to the family"
+            "value" : "off for accidents indoors · the family won't get a notification"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "désactivé pour le pipi à la maison : ce n'est pas une nouvelle pour la famille"
+            "state" : "needs_review",
+            "value" : "désactivé pour le pipi à la maison · la famille ne recevra pas de notification"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "для лужи выключено: это не новость для семьи"
+            "value" : "для лужи выключено · уведомления семье не будет"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "для калюжі вимкнено: це не новина для сім'ї"
+            "value" : "для калюжі вимкнено · сповіщення сім'ї не буде"
           }
         }
       }
     },
-    "для рвоты и крови включено по умолчанию" : {
+    "для рвоты и крови включено по умолчанию · уведомления семье не будет" : {
       "comment" : "tellFamilyToggle",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "on by default for vomiting and blood"
+            "value" : "on by default for vomiting and blood · the family won't get a notification"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "activé par défaut pour les vomissements et le sang"
+            "state" : "needs_review",
+            "value" : "activé par défaut pour les vomissements et le sang · la famille ne recevra pas de notification"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "для рвоты и крови включено по умолчанию"
+            "value" : "для рвоты и крови включено по умолчанию · уведомления семье не будет"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "для блювоти і крові увімкнено за замовчуванням"
+            "value" : "для блювоти і крові увімкнено за замовчуванням · сповіщення сім'ї не буде"
           }
         }
       }
@@ -18343,32 +18343,32 @@
         }
       }
     },
-    "Дневник работает целиком и без уведомлений: они нужны только дозе, окну натощак и эскалации." : {
+    "Дневник работает целиком и без уведомлений: они нужны только дозе, окну натощак и эскалации. Приходят на этот телефон." : {
       "comment" : "settings",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "The diary works in full without notifications: they're only needed for a dose, a fasting window and escalation."
+            "value" : "The diary works in full without notifications: they're only needed for doses, the fasting window and escalation. They arrive on this phone."
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Le journal fonctionne entièrement sans notifications : elles ne servent qu'à la dose, à la fenêtre à jeun et à l'escalade."
+            "state" : "needs_review",
+            "value" : "Le journal fonctionne entièrement sans notifications : elles ne servent qu'à la dose, à la fenêtre à jeun et à l'escalade. Elles arrivent sur ce téléphone."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Дневник работает целиком и без уведомлений: они нужны только дозе, окну натощак и эскалации."
+            "value" : "Дневник работает целиком и без уведомлений: они нужны только дозе, окну натощак и эскалации. Приходят на этот телефон."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Щоденник працює цілком і без сповіщень: вони потрібні тільки дозі, вікну натщесерце й ескалації."
+            "value" : "Щоденник працює цілком і без сповіщень: вони потрібні тільки дозі, вікну натщесерце й ескалації. Приходять на цей телефон."
           }
         }
       }
@@ -21274,32 +21274,32 @@
         }
       }
     },
-    "если дозу не отметили — сначала дежурному, потом остальным" : {
+    "не отметили дозу — ещё через 30 и 60 минут; три эпизода подряд — проверить через час" : {
       "comment" : "body",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "if a dose isn't marked — first the person on duty, then everyone else"
+            "value" : "dose not marked — again after 30 and 60 minutes; three episodes in a row — check in an hour"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "dose non cochée — d'abord la personne de garde, puis les autres"
+            "state" : "needs_review",
+            "value" : "dose non cochée — encore après 30 et 60 minutes ; trois épisodes d'affilée — vérifier dans une heure"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "если дозу не отметили — сначала дежурному, потом остальным"
+            "value" : "не отметили дозу — ещё через 30 и 60 минут; три эпизода подряд — проверить через час"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "якщо дозу не позначили — спершу черговому, потім решті"
+            "value" : "не позначили дозу — ще через 30 і 60 хвилин; три епізоди поспіль — перевірити за годину"
           }
         }
       }
@@ -25409,32 +25409,32 @@
         }
       }
     },
-    "Записи остаются, вкладка прячется." : {
+    "Схема закроется, записи и вкладка останутся." : {
       "comment" : "praise",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "The entries stay, the tab hides."
+            "value" : "The plan closes; the entries and the tab stay."
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Les entrées restent, l'onglet se cache."
+            "state" : "needs_review",
+            "value" : "Le traitement se clôt, les entrées et l'onglet restent."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Записи остаются, вкладка прячется."
+            "value" : "Схема закроется, записи и вкладка останутся."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Записи залишаються, вкладка ховається."
+            "value" : "Схема закриється, записи й вкладка залишаться."
           }
         }
       }
@@ -42851,132 +42851,32 @@
         }
       }
     },
-    "Отметок уже %@. Их можно записать — прогресс посчитается, если занятие уложилось в три минуты." : {
+    "Отметок уже %lld. Их можно записать — прогресс посчитается, если занятие уложилось в %@." : {
       "comment" : "body",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "%@ marks already. You can save them — progress counts if the session fitted into three minutes."
+            "value" : "%lld marks already. You can save them — progress counts if the session fit into %@."
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Déjà %@ marques. Tu peux les enregistrer — le progrès comptera si la séance a tenu en trois minutes."
+            "state" : "needs_review",
+            "value" : "Déjà %lld marques. Tu peux les enregistrer — le progrès comptera si la séance a tenu en %@."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Отметок уже %@. Их можно записать — прогресс посчитается, если занятие уложилось в три минуты."
+            "value" : "Отметок уже %lld. Их можно записать — прогресс посчитается, если занятие уложилось в %@."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Позначок уже %@. Їх можна записати — прогрес порахуємо, якщо заняття вклалося в три хвилини."
-          }
-        }
-      }
-    },
-    "Отметок уже %lld. Их можно записать — прогресс посчитается, если занятие уложилось в три минуты." : {
-      "localizations" : {
-        "en" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld mark already. You can save it — progress counts if the session fitted into three minutes."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld marks already. You can save them — progress counts if the session fitted into three minutes."
-                }
-              }
-            }
-          }
-        },
-        "fr" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Déjà %lld marqueur. Tu peux l'enregistrer — la progression compte si la séance a tenu en trois minutes."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Déjà %lld marqueurs. Tu peux les enregistrer — la progression compte si la séance a tenu en trois minutes."
-                }
-              }
-            }
-          }
-        },
-        "ru" : {
-          "variations" : {
-            "plural" : {
-              "few" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Уже %lld отметки. Их можно записать — прогресс посчитается, если занятие уложилось в три минуты."
-                }
-              },
-              "many" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Уже %lld отметок. Их можно записать — прогресс посчитается, если занятие уложилось в три минуты."
-                }
-              },
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Уже %lld отметка. Её можно записать — прогресс посчитается, если занятие уложилось в три минуты."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Уже %lld отметок. Их можно записать — прогресс посчитается, если занятие уложилось в три минуты."
-                }
-              }
-            }
-          }
-        },
-        "uk" : {
-          "variations" : {
-            "plural" : {
-              "few" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "Уже %lld позначки. Їх можна записати — прогрес порахується, якщо заняття вклалося у три хвилини."
-                }
-              },
-              "many" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "Уже %lld позначок. Їх можна записати — прогрес порахується, якщо заняття вклалося у три хвилини."
-                }
-              },
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "Уже %lld позначка. Її можна записати — прогрес порахується, якщо заняття вклалося у три хвилини."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "Уже %lld позначок. Їх можна записати — прогрес порахується, якщо заняття вклалося у три хвилини."
-                }
-              }
-            }
+            "value" : "Позначок уже %lld. Їх можна записати — прогрес порахуємо, якщо заняття вклалося в %@."
           }
         }
       }
@@ -49461,32 +49361,32 @@
         }
       }
     },
-    "после трёх минут прогресс не пишем" : {
+    "дольше заданного — прогресс не пишем" : {
       "comment" : "verdictLine",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "after three minutes we stop recording progress"
+            "value" : "longer than set — progress isn't recorded"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "après trois minutes, le progrès n'est plus noté"
+            "state" : "needs_review",
+            "value" : "plus long que prévu — le progrès n'est pas noté"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "после трёх минут прогресс не пишем"
+            "value" : "дольше заданного — прогресс не пишем"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "після трьох хвилин прогрес не пишемо"
+            "value" : "довше за задане — прогрес не пишемо"
           }
         }
       }
@@ -50935,32 +50835,32 @@
         }
       }
     },
-    "Прерывают только доза по часам, окно натощак и лестница эскалации. Всё остальное придёт утром, одним сообщением." : {
+    "Прерывают только доза по часам, окно натощак и эскалация: повтор по неотмеченной дозе и «Как он сейчас?» через час после трёх эпизодов. Всё остальное придёт утром, одним сообщением." : {
       "comment" : "settings",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Only a scheduled dose, a fasting window and escalation interrupt. Everything else arrives in the morning, in a single message."
+            "value" : "Only a scheduled dose, a fasting window and escalation interrupt: a repeat for an unmarked dose and “How is he now?” an hour after three episodes. Everything else arrives in the morning, in one message."
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Seules la dose à l'heure, la fenêtre à jeun et l'escalade interrompent. Tout le reste arrivera le matin, en un seul message."
+            "state" : "needs_review",
+            "value" : "Seules la dose à l'heure, la fenêtre à jeun et l'escalade interrompent : le rappel d'une dose non cochée et « Comment va-t-il ? » une heure après trois épisodes. Tout le reste arrive le matin, en un seul message."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Прерывают только доза по часам, окно натощак и лестница эскалации. Всё остальное придёт утром, одним сообщением."
+            "value" : "Прерывают только доза по часам, окно натощак и эскалация: повтор по неотмеченной дозе и «Как он сейчас?» через час после трёх эпизодов. Всё остальное придёт утром, одним сообщением."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Переривають тільки доза за годинами, вікно натщесерце і драбина ескалації. Усе інше прийде вранці, одним повідомленням."
+            "value" : "Переривають тільки доза за годинами, вікно натщесерце й ескалація: повтор щодо непозначеної дози і «Як він зараз?» за годину після трьох епізодів. Усе інше прийде вранці, одним повідомленням."
           }
         }
       }
@@ -55843,32 +55743,32 @@
         }
       }
     },
-    "Свайп и тап с заблокированного экрана." : {
+    "Через «Команды»: на iOS 18 и новее команду Togo можно вынести в Пункт управления." : {
       "comment" : "body",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "A swipe and a tap from the lock screen."
+            "value" : "Through Shortcuts: on iOS 18 and later a Togo shortcut can be added to Control Center."
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Un balayage et un tap depuis l'écran verrouillé."
+            "state" : "needs_review",
+            "value" : "Via Raccourcis : sur iOS 18 et plus, un raccourci Togo peut aller dans le Centre de contrôle."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Свайп и тап с заблокированного экрана."
+            "value" : "Через «Команды»: на iOS 18 и новее команду Togo можно вынести в Пункт управления."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Рух пальцем і дотик із заблокованого екрана."
+            "value" : "Через «Команди»: на iOS 18 і новіших команду Togo можна винести в Пункт керування."
           }
         }
       }
@@ -57284,32 +57184,32 @@
         }
       }
     },
-    "Сказать остальным" : {
+    "Отметить для семьи" : {
       "comment" : "tellFamilyToggle",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Tell the others"
+            "value" : "Mark for the family"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prévenir les autres"
+            "state" : "needs_review",
+            "value" : "Marquer pour la famille"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Сказать остальным"
+            "value" : "Отметить для семьи"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Сказати іншим"
+            "value" : "Позначити для сім'ї"
           }
         }
       }
@@ -59954,32 +59854,32 @@
         }
       }
     },
-    "спрячет вкладку" : {
+    "закроет схему" : {
       "comment" : "finishCourse",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "hides the tab"
+            "value" : "closes the plan"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "masque l'onglet"
+            "state" : "needs_review",
+            "value" : "clôt le traitement"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "спрячет вкладку"
+            "value" : "закроет схему"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "сховає вкладку"
+            "value" : "закриє схему"
           }
         }
       }
@@ -63354,62 +63254,62 @@
         }
       }
     },
-    "Три минуты прошли" : {
+    "Прошло %@" : {
       "comment" : "clock",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Three minutes are up"
+            "value" : "%@ are up"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trois minutes sont passées"
+            "state" : "needs_review",
+            "value" : "%@ écoulées"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Три минуты прошли"
+            "value" : "Прошло %@"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Три хвилини минули"
+            "value" : "Минуло %@"
           }
         }
       }
     },
-    "три минуты прошли — заканчивай на удачном повторе" : {
+    "время вышло — заканчивай на удачном повторе" : {
       "comment" : "hint",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "three minutes are up — finish on a successful repetition"
+            "value" : "time's up — finish on a successful repetition"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "trois minutes passées — finis sur une réussite"
+            "state" : "needs_review",
+            "value" : "le temps est écoulé — finis sur une réussite"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "три минуты прошли — заканчивай на удачном повторе"
+            "value" : "время вышло — заканчивай на удачном повторе"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "три хвилини минули — закінчуй на вдалому повторі"
+            "value" : "час вийшов — закінчуй на вдалому повторі"
           }
         }
       }
@@ -71570,6 +71470,36 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Мов мало навмисно: машинний переклад у застосунку про здоров'я собаки гірший, ніж мова, зроблена цілком."
+          }
+        }
+      }
+    },
+    "22 сентября 2026" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "September 22, 2026"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "22 septembre 2026"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "22 сентября 2026"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "22 вересня 2026"
           }
         }
       }

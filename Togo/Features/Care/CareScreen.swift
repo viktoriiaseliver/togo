@@ -205,7 +205,7 @@ struct CareScreen: View {
     }
 
     private var footer: some View {
-        TGExplainer(text: "Всё это приходит одним сообщением в выбранный час, а не восемью подряд. Прерывают только доза и окно натощак.")
+        TGExplainer(text: "Всё это приходит одним сообщением в выбранный час, а не восемью подряд. Прерывают только доза, окно натощак и эскалация.")
     }
 
     private func toggle(_ task: CareTask) {

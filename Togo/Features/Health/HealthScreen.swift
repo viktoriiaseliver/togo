@@ -152,14 +152,15 @@ struct HealthScreen: View {
     }
 
     /// Курс кончается здесь, а не тумблером в профиле, где его никто
-    /// не найдёт. Вместе с курсом уходит и вкладка — медицина не должна
-    /// занимать место у здоровой собаки.
+    /// не найдёт. Уходит схема и план доз; вкладка остаётся — её держит
+    /// право `.seeMedical`, а не лечение (решение 08.10.2026), потому что
+    /// отчёт врачу нужен как раз в день конца курса.
     @ViewBuilder
     private var finishCourse: some View {
         if canEdit, dog != nil {
             Button { isFinishing = true } label: {
                 TGCard {
-                    TGListRow(title: "Курс завершён", value: "спрячет вкладку",
+                    TGListRow(title: "Курс завершён", value: "закроет схему",
                               systemImage: "checkmark.seal")
                     TGExplainer(text: "Записи останутся в истории и в отчёте врачу. Вернуть курс можно в профиле.")
                 }
@@ -387,7 +388,11 @@ struct VetReportScreen: View {
 
     @State private var from = Calendar.current.date(byAdding: .month, value: -1, to: .now) ?? .now
     @State private var to = Date()
-    @State private var language = "RU"
+    // Сегмента «Язык · RU/FR/EN» здесь больше нет (20.10.2026): `Exporter.csv`
+    // языка не принимает, и нажатие не меняло ничего. Отчёт выходит на языке
+    // интерфейса; пользователю предлагается только русский
+    // (`AppState.предлагаемыеЯзыки`). Вернуть сегмент — вместе с параметром
+    // языка у экспортёра, не раньше.
 
     private var events: [LogEvent] {
         Diary.active(dog?.events ?? []).filter { $0.date >= from && $0.date <= to }
@@ -401,12 +406,6 @@ struct VetReportScreen: View {
                 TGDivider()
                 DatePicker("По", selection: $to, in: from..., displayedComponents: .date)
                     .frame(minHeight: Token.Size.tapTarget)
-                TGDivider()
-                Picker("Язык", selection: $language) {
-                    ForEach(["RU", "FR", "EN"], id: \.self) { Text($0).tag($0) }
-                }
-                .pickerStyle(.segmented)
-                .padding(.vertical, Token.Space.s8)
             }
 
             TGCard {

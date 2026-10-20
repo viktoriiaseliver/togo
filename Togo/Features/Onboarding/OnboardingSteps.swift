@@ -456,7 +456,7 @@ struct NotificationsPrimingStep: View {
                 InterruptRow(symbol: "clock.badge.exclamationmark", title: "Окно натощак",
                              detail: "еда внутри окна мешает всасыванию")
                 InterruptRow(symbol: "bell.badge", title: "Лестница эскалации",
-                             detail: "если дозу не отметили — сначала дежурному, потом остальным")
+                             detail: "не отметили дозу — ещё через 30 и 60 минут; три эпизода подряд — проверить через час")
             }
 
             TGCard {
