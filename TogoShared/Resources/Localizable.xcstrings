@@ -282,18 +282,6 @@
         }
       }
     },
-    " з " : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : " з "
-          }
-        }
-      }
-    },
     " и " : {
       "comment" : "clock",
       "extractionState" : "manual",
@@ -9053,18 +9041,6 @@
         }
       }
     },
-    "блюв" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "блюв"
-          }
-        }
-      }
-    },
     "Бодрствует" : {
       "comment" : "dayCard",
       "extractionState" : "manual",
@@ -10032,30 +10008,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "У цей день записів немає."
-          }
-        }
-      }
-    },
-    "вага " : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "вага "
-          }
-        }
-      }
-    },
-    "важить" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "важить"
           }
         }
       }
@@ -11244,18 +11196,6 @@
         }
       }
     },
-    "вигул" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "вигул"
-          }
-        }
-      }
-    },
     "Вид значения" : {
       "comment" : "Шаги",
       "extractionState" : "manual",
@@ -11406,18 +11346,6 @@
         }
       }
     },
-    "вийш" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "вийш"
-          }
-        }
-      }
-    },
     "Виноград и изюм" : {
       "comment" : "detail",
       "extractionState" : "manual",
@@ -11444,42 +11372,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Виноград і родзинки"
-          }
-        }
-      }
-    },
-    "випорожн" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "випорожн"
-          }
-        }
-      }
-    },
-    "вирвал" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "вирвал"
-          }
-        }
-      }
-    },
-    "виходи" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "виходи"
           }
         }
       }
@@ -13776,18 +13668,6 @@
         }
       }
     },
-    "вчора" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "вчора"
-          }
-        }
-      }
-    },
     "Выбери NFC и отсканируй метку" : {
       "comment" : "steps",
       "extractionState" : "manual",
@@ -15281,18 +15161,6 @@
         }
       }
     },
-    "г\\\\b" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "г\\\\b"
-          }
-        }
-      }
-    },
     "где" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -15526,30 +15394,6 @@
         }
       }
     },
-    "годин" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "годин"
-          }
-        }
-      }
-    },
-    "годув" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "годув"
-          }
-        }
-      }
-    },
     "Голосом" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -15723,30 +15567,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Готове повідомлення: назва, доза і час пропуску."
-          }
-        }
-      }
-    },
-    "грам" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "грам"
-          }
-        }
-      }
-    },
-    "грамм" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "грамм"
           }
         }
       }
@@ -15997,18 +15817,6 @@
         }
       }
     },
-    "гуля" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "гуля"
-          }
-        }
-      }
-    },
     "гуляем" : {
       "comment" : "runningTitle",
       "extractionState" : "manual",
@@ -16241,18 +16049,6 @@
         }
       }
     },
-    "дав " : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "дав "
-          }
-        }
-      }
-    },
     "Давно" : {
       "comment" : "title",
       "extractionState" : "manual",
@@ -16399,18 +16195,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "дав"
-          }
-        }
-      }
-    },
-    "дал " : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "дал "
           }
         }
       }
@@ -17911,18 +17695,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "дистанція — головна ручка: те, що рве за два метри, часто спокійно минає за двадцять"
-          }
-        }
-      }
-    },
-    "діаре" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "діаре"
           }
         }
       }
@@ -22576,30 +22348,6 @@
         }
       }
     },
-    "з " : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "з "
-          }
-        }
-      }
-    },
-    "з'їв" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "з'їв"
-          }
-        }
-      }
-    },
     "за всё время, не только за период" : {
       "comment" : "diagnosesCard",
       "extractionState" : "manual",
@@ -26365,18 +26113,6 @@
         }
       }
     },
-    "зваж" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "зваж"
-          }
-        }
-      }
-    },
     "Звони врачу сейчас" : {
       "comment" : "title",
       "extractionState" : "manual",
@@ -28256,42 +27992,6 @@
         }
       }
     },
-    "їв " : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "їв "
-          }
-        }
-      }
-    },
-    "їжа" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "їжа"
-          }
-        }
-      }
-    },
-    "їсть" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "їсть"
-          }
-        }
-      }
-    },
     "к этому времени желудок должен быть пустым. " : {
       "comment" : "fastingCard",
       "extractionState" : "manual",
@@ -28922,18 +28622,6 @@
         }
       }
     },
-    "кака" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "кака"
-          }
-        }
-      }
-    },
     "какал" : {
       "comment" : "Языки",
       "extractionState" : "manual",
@@ -29020,18 +28708,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "який корм"
-          }
-        }
-      }
-    },
-    "калюж" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "калюж"
           }
         }
       }
@@ -30400,18 +30076,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Коридор"
-          }
-        }
-      }
-    },
-    "корм" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "корм"
           }
         }
       }
@@ -32142,18 +31806,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "зайві учасники стануть спостерігачами, нікого не видалимо"
-          }
-        }
-      }
-    },
-    "ліки" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ліки"
           }
         }
       }
@@ -34622,18 +34274,6 @@
         }
       }
     },
-    "нагодув" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "нагодув"
-          }
-        }
-      }
-    },
     "Нажали то, что не разрешено" : {
       "comment" : "blocked",
       "extractionState" : "manual",
@@ -35934,18 +35574,6 @@
         }
       }
     },
-    "не ел" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "не ел"
-          }
-        }
-      }
-    },
     "Не заменяет визит к ветеринару. Вердикт «просится» — это статистика по твоим же записям, а не заключение." : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -36104,18 +35732,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Не інтерпретує аналізи, не підбирає препарати і не коригує дозування."
-          }
-        }
-      }
-    },
-    "не їв" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "не їв"
           }
         }
       }
@@ -39194,18 +38810,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Ніч довша за %@"
-          }
-        }
-      }
-    },
-    "нудил" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "нудил"
           }
         }
       }
@@ -46819,18 +46423,6 @@
         }
       }
     },
-    "позавчора" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "позавчора"
-          }
-        }
-      }
-    },
     "позвать в дневник" : {
       "comment" : "inviteCard",
       "extractionState" : "manual",
@@ -47007,18 +46599,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Пограю з ним"
-          }
-        }
-      }
-    },
-    "поїв" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "поїв"
           }
         }
       }
@@ -48516,20 +48096,8 @@
         }
       }
     },
-    "пописав" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "пописав"
-          }
-        }
-      }
-    },
     "пописал" : {
-      "comment" : "Языки",
+      "comment" : "title",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -48584,18 +48152,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Попісяв"
-          }
-        }
-      }
-    },
-    "попісяв" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "попісяв"
           }
         }
       }
@@ -53067,18 +52623,6 @@
         }
       }
     },
-    "пронос" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "пронос"
-          }
-        }
-      }
-    },
     "Пропуск — тоже запись: врач спросит именно про него." : {
       "comment" : "numbers",
       "extractionState" : "manual",
@@ -53851,18 +53395,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Рабочая гипотеза — полноценная запись. Снять её потом можно, стереть — нет: по ней видно, почему лечение было таким."
-          }
-        }
-      }
-    },
-    "раз" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "раз"
           }
         }
       }
@@ -55003,42 +54535,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Рисовать пока нечего"
-          }
-        }
-      }
-    },
-    "рідка" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "рідка"
-          }
-        }
-      }
-    },
-    "рідке" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "рідке"
-          }
-        }
-      }
-    },
-    "рідкий" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "рідкий"
           }
         }
       }
@@ -61923,18 +61419,6 @@
         }
       }
     },
-    "сьогодні" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "сьогодні"
-          }
-        }
-      }
-    },
     "т4" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -63755,18 +63239,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "У літньої собаки частіше міняються і вага, і режим виходів. Зважування раз на два тижні тут корисніше, ніж раз на місяць."
-          }
-        }
-      }
-    },
-    "у справах" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "у справах"
           }
         }
       }
@@ -66265,18 +65737,6 @@
         }
       }
     },
-    "учора" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "учора"
-          }
-        }
-      }
-    },
     "Уши" : {
       "comment" : "changed",
       "extractionState" : "manual",
@@ -66925,18 +66385,6 @@
         }
       }
     },
-    "хв" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "хв"
-          }
-        }
-      }
-    },
     "хватает" : {
       "comment" : "packs",
       "extractionState" : "manual",
@@ -67352,18 +66800,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "год"
-          }
-        }
-      }
-    },
-    "час" : {
-      "comment" : "Языки",
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "час"
           }
         }
       }
