@@ -214,18 +214,66 @@ struct СнятиеНапоминанийПодключеноTests {
     /// Тесты исключены нарочно — они заводят условия сами, и сторож,
     /// считающий их, нашёл бы «вторую копию правила» в собственной
     /// проверке.
+    /// **Симлинки снимаются у ОБОИХ путей, и это замер, а не осторожность.**
+    ///
+    /// `#filePath` даёт путь таким, каким его видел компилятор
+    /// (`/tmp/togo-<сессия>/…` при прогоне из `git worktree`), а
+    /// `FileManager.enumerator` отдаёт разрешённый — `/private/tmp/…`,
+    /// потому что `/tmp` на macOS это симлинк на `private/tmp`. Срезка
+    /// префикса тогда не совпадает ни на один символ, и сторож складывал:
+    ///
+    /// ```
+    /// основание из #filePath   /tmp/togo-d3b/Togo
+    /// адрес от enumerator      /private/tmp/togo-d3b/Togo/DesignSystem/Typography.swift
+    /// что выходило             Togo//privateDesignSystem/Typography.swift
+    /// открывается              НЕТ → Code=260 «такого файла не существует»
+    /// ```
+    ///
+    /// Падал он **на первом же файле обхода**, то есть не проверял ничего,
+    /// и в логе это выглядело дефектом продукта: «Caught error … Typography
+    /// .swift». Замер 21.10.2026.
+    ///
+    /// И главное — **условие отказа ровно то, которое предписывает свод**:
+    /// «мерить и собирать из `git worktree`». Из рабочего дерева
+    /// (`/Users/…`) сторож работает, из worktree в `/tmp` — не работает
+    /// никогда. Четыре теста проекта уже зовут `resolvingSymlinksInPath`
+    /// по этой же причине (`ArchiveFillTests`, `CaseSlotFallbackTests`,
+    /// `DogNameSubstitutionTests`, `WidgetBundleCatalogTests`).
     private static func исходники() throws -> [String] {
         var итог: [String] = []
         for каталог in ["Togo", "TogoShared", "TogoWidgets"] {
-            let основание = корень.appendingPathComponent(каталог)
+            let основание = корень.appendingPathComponent(каталог).resolvingSymlinksInPath()
             guard let обход = FileManager.default.enumerator(
                 at: основание, includingPropertiesForKeys: nil) else { continue }
             for случай in обход {
                 guard let адрес = случай as? URL, адрес.pathExtension == "swift" else { continue }
-                итог.append(каталог + "/" + адрес.path
-                    .replacingOccurrences(of: основание.path + "/", with: ""))
+                let относительный = адрес.resolvingSymlinksInPath().path
+                    .replacingOccurrences(of: основание.path + "/", with: "")
+                // Срезка не сработала — путь остался абсолютным. Молчать
+                // нельзя: именно так и получился `Togo//privateDesignSystem/…`,
+                // а дальше отказ чтения читался как дефект продукта.
+                guard !относительный.hasPrefix("/") else {
+                    throw ОшибкаОбхода.префиксНеСрезан(адрес: адрес.path,
+                                                        основание: основание.path)
+                }
+                итог.append(каталог + "/" + относительный)
             }
         }
         return итог
+    }
+
+    enum ОшибкаОбхода: Error, CustomStringConvertible {
+        case префиксНеСрезан(адрес: String, основание: String)
+
+        var description: String {
+            switch self {
+            case let .префиксНеСрезан(адрес, основание):
+                """
+                обход не смог сделать путь относительным, и сторож проверил бы \
+                не то: адрес «\(адрес)» не начинается с основания «\(основание)». \
+                Снимать симлинки у обоих путей — см. комментарий у `исходники()`.
+                """
+            }
+        }
     }
 }
