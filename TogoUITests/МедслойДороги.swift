@@ -174,13 +174,31 @@ nonisolated final class МедслойДороги: XCTestCase {
     /// Дойти до раздела «Здоровья» по имени строки.
     /// Возвращает, дошли ли, — но кадр снимается у вызывающего ДО
     /// суждения, иначе при падении кадра не будет вовсе.
+    /// **Предусловие — панель вкладок, а не кличка на «Сегодня»** —
+    /// замер 21.10.2026. Здесь стояло
+    /// `app.staticTexts["Стич"].waitForExistence(timeout: 20)`,
+    /// и это верно только на главном экране: хвост цикла оставляет
+    /// приложение на «Здоровье», где «Стич» существует **лишь как
+    /// кнопка таб-бара** (`Button identifier: 'pawprint'`), а не как
+    /// текст. Второй заход в «Анализы» ждал его двадцать секунд
+    /// впустую — при том, что сама строка «Анализы, 1 запись» была
+    /// на экране.
+    ///
+    /// Тест и этот помощник родились одним коммитом `b742fba` (08.10),
+    /// то есть второй заход не проходил **тринадцать дней**.
+    ///
+    /// И подпись строки составная: `«Анализы, 1 запись»` — поиск идёт
+    /// по началу, иначе точное совпадение промахнётся ровно после того,
+    /// как в разделе появится первая запись. Тот же класс, что
+    /// у кнопки просмотра онбординга.
     private func открытьРаздел(_ имя: String) -> Bool {
-        guard app.staticTexts["Стич"].firstMatch.waitForExistence(timeout: 20) else { return false }
         let вкладка = app.tabBars.buttons["Здоровье"]
-        guard вкладка.waitForExistence(timeout: 15) else { return false }
+        guard вкладка.waitForExistence(timeout: 20) else { return false }
         вкладка.tap()
         _ = app.navigationBars["Здоровье"].waitForExistence(timeout: 10)
-        let строка = app.buttons[имя].firstMatch
+        let строка = app.buttons
+            .matching(NSPredicate(format: "label BEGINSWITH %@", имя))
+            .firstMatch
         guard докрутить(до: строка) else { return false }
         строка.tap()
         return app.navigationBars[имя].waitForExistence(timeout: 10)
