@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>html,body{margin:0;background:#0A0A0B;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;-webkit-font-smoothing:antialiased}a{color:#A2C1FE}a:hover{color:#fff}</style>
+</helmet>
+<div style="max-width:1400px;margin:0 auto;padding:48px 32px 80px;display:flex;flex-direction:column;gap:32px">
+  <div style="display:flex;flex-direction:column;gap:6px">
+    <span style="font-size:13px;font-weight:600;color:#C7C7CC;text-transform:uppercase;letter-spacing:.04em">Togo · iOS 28 · тема «Кино» · RU v10</span>
+    <h1 style="margin:0;font-size:40px;font-weight:700;letter-spacing:-.03em">Скриншоты</h1>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(212px,1fr));gap:32px 24px">
+    <sc-for list="{{ shots }}" as="s" hint-placeholder-count="18">
+      <figure style="margin:0;display:flex;flex-direction:column;gap:10px">
+        <img src="{{ s.src }}" alt="{{ s.t }}" style="width:100%;height:auto;display:block">
+        <figcaption style="display:flex;gap:8px;align-items:baseline;font-size:14px;color:#C7C7CC"><span style="font-weight:600;color:#fff">{{ s.n }}</span>{{ s.t }}</figcaption>
+      </figure>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const S = [['01','Сегодня · обычный день'],['02','Сегодня · время дозы'],['03','Сегодня · натощак'],['04','Сегодня · кровь в стуле'],['05','Сегодня · ночь'],['06','Шторка «Записать»'],['07','Просится · вердикт'],['08','На улице'],['09','Стич'],['10','История'],['11','Здоровье'],['12','Семья'],['13','Питание и режим'],['14','Анализы Т4'],['15','Настройки · фон'],['16','Виджеты и Live Activity'],['17','Togo Pro'],['18','Онбординг']];
+class Component extends DCLogic {
+  renderVals() { return { shots: S.map(([n, t]) => ({ n, t, src: 'screenshots/' + n + '.png' })) }; }
+}
+</script>
+</body>
+</html>
