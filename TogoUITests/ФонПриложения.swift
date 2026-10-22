@@ -1,0 +1,115 @@
+import XCTest
+
+/// Кадр экрана «Фон приложения» и доказательство, что до него доходят.
+///
+/// **Зачем кадр, когда есть модульные тесты.** Модульные проверяют,
+/// верно ли посчитано; кадр — верно ли сказано. У правки, которая
+/// меняет то, что человек читает, приёмка только кадром, и зелёный
+/// набор её не заменяет.
+///
+/// **Эталонного кадра для сверки НЕТ.** `15.png` второго пакета
+/// хендоффа («Настройки · фон», 424×896) негоден: вместо экрана
+/// нарисована лавандовая пилюля во весь кадр, видны только края
+/// статус-бара и обрывок нижней строки. Это дефект выгрузки, а не
+/// дизайн. Экран построен по разделу «Фон приложения» в `README.md`
+/// и по прототипу `Togo-RU.dc.html` (ключ `togo-ios28-bg`), и сверять
+/// снятое не с чем.
+///
+/// **Что кадр доказывает, а что нет.** Доказывает: строка в настройках
+/// есть, она ведёт на экран, выбор режима виден галочкой, предпросмотр
+/// меняется, и настройки печатают новый режим подписью. Не доказывает:
+/// как выглядит фон со своим фото — `PhotosPicker` работает в отдельном
+/// процессе, и стенд туда не достаёт. Эта половина остаётся
+/// непроверяемой кадром, и лечится она не старанием.
+///
+/// **Куда пишет.** `build/кадры-фона/`, путь выведен из `#filePath`.
+/// `build/` в `.gitignore`: то, что нужно сохранить, выносится
+/// в `Дизайн/кадры-приёмки/` и коммитится отдельно.
+nonisolated final class ФонПриложения: XCTestCase {
+
+    private var app: XCUIApplication!
+    private var снято: [String] = []
+
+    private var каталог: URL {
+        URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("build/кадры-фона")
+    }
+
+    override func setUp() {
+        continueAfterFailure = false
+        app = XCUIApplication()
+        app.launchArguments = ["-UITesting"]
+        app.launch()
+    }
+
+    /// Счёт печатается ВСЕГДА и ПЕРВОЙ строкой, в том числе после
+    /// падения посреди прохода: «снято три» и «упал на втором» выглядят
+    /// в логе одинаково — строк про кадры просто меньше, а отсутствия
+    /// никто не ищет.
+    override func tearDown() {
+        print("КАДРОВ СНЯТО: \(снято.count) из 3 · \(name) · \(снято.joined(separator: ", "))")
+    }
+
+    func testФонДоступенИзНастроекИВиденИсход() throws {
+        let шестерёнка = app.buttons["Настройки"].firstMatch
+        XCTAssertTrue(шестерёнка.waitForExistence(timeout: 20),
+                      "приложение не поднялось или кнопки «Настройки» нет")
+        шестерёнка.tap()
+
+        // Строка названа предикатом, а не точным ярлыком: у `TGListRow`
+        // в метку озвучки склеиваются заголовок и значение, и
+        // `buttons["Фон приложения"]` не совпал бы — при живой строке
+        // на экране. «Не нашёл» прочиталось бы как «входа нет».
+        let строка = app.descendants(matching: .any).matching(
+            NSPredicate(format: "label BEGINSWITH %@", "Фон приложения")
+        ).firstMatch
+        for _ in 0..<8 where !строка.exists { app.swipeUp() }
+        XCTAssertTrue(строка.waitForExistence(timeout: 10),
+                      "в настройках нет строки «Фон приложения» — механизм без входа")
+        кадр("01-настройки-строка-фона")
+
+        строка.tap()
+        XCTAssertTrue(app.navigationBars["Фон приложения"].waitForExistence(timeout: 10),
+                      "строка есть, а экран за ней не открылся")
+        кадр("02-фон-как-задумано")
+
+        // Меняем режим: галочка обязана переехать, а предпросмотр —
+        // заговорить про другое. Без этого выбор — тумблер без исхода.
+        let вперемешку = app.descendants(matching: .any).matching(
+            NSPredicate(format: "label BEGINSWITH %@", "5 фото вперемешку")
+        ).firstMatch
+        XCTAssertTrue(вперемешку.waitForExistence(timeout: 10),
+                      "режима «5 фото вперемешку» на экране нет")
+        вперемешку.tap()
+        кадр("03-фон-вперемешку")
+
+        // И обратно в настройки: подпись строки обязана назвать то,
+        // что человек выбрал. Иначе исход виден только внутри экрана,
+        // с которого он уже ушёл.
+        app.navigationBars["Фон приложения"].buttons.firstMatch.tap()
+        let послеВыбора = app.descendants(matching: .any).matching(
+            NSPredicate(format: "label CONTAINS %@", "5 фото вперемешку")
+        ).firstMatch
+        XCTAssertTrue(послеВыбора.waitForExistence(timeout: 10),
+                      "настройки не называют выбранный режим — исход виден только изнутри")
+    }
+
+    private func кадр(_ имя: String) {
+        let снимок = app.screenshot()
+        let вложение = XCTAttachment(screenshot: снимок)
+        вложение.name = имя
+        вложение.lifetime = .keepAlways
+        add(вложение)
+        do {
+            try FileManager.default.createDirectory(at: каталог, withIntermediateDirectories: true)
+            try снимок.pngRepresentation.write(to: каталог.appendingPathComponent(имя + ".png"))
+            снято.append(имя)
+            print("КАДР: \(каталог.appendingPathComponent(имя + ".png").path)")
+        } catch {
+            // Не падаем на записи файла: кадр уже лежит вложением
+            // в `.xcresult`, и терять из-за этого проверку входа глупо.
+            print("КАДР НЕ ЛЁГ НА ДИСК: \(имя) · \(error.localizedDescription)")
+        }
+    }
+}
