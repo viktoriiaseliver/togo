@@ -6,6 +6,21 @@ import CloudKit
 /// Роли — не лестница: врач читает много и не пишет, ребёнок пишет бытовое
 /// и не видит медицинского.
 struct FamilyScreen: View {
+    /// Экран открыт **внутри** чужого `NavigationStack` — строкой
+    /// во вкладке собаки, а не своей вкладкой.
+    ///
+    /// Своей вкладки у «Семьи» нет с 22.10.2026 (решение Виктории,
+    /// `design_handoff_togo_ios28`, «Навигация (решено)»): она уехала
+    /// первой строкой во вкладку собаки. А вложенный
+    /// `NavigationStack` внутри другого — это два заголовка, две
+    /// панели и сломанный «назад», поэтому подложку надо уметь
+    /// не рисовать.
+    ///
+    /// Умолчание `false` оставлено нарочно: экран может понадобиться
+    /// корневым (своя шторка, свой маршрут), и тогда стек ему нужен.
+    /// Сегодня живой вход ровно один — `DogTab`.
+    var встроенный: Bool = false
+
     @Environment(AppState.self) private var appState
     @Environment(SubscriptionStore.self) private var store
     @Environment(\.modelContext) private var context
@@ -28,7 +43,16 @@ struct FamilyScreen: View {
     private var canManageFamily: Bool { appState.can(.manageFamily) }
 
     var body: some View {
-        NavigationStack {
+        if встроенный {
+            содержимое
+        } else {
+            NavigationStack { содержимое }
+        }
+    }
+
+    @ViewBuilder
+    private var содержимое: some View {
+        Group {
             TGScreen {
                 // Дубликат собаки — первым: пока он есть, всё остальное
                 // на этом экране человек читает неправильно.
@@ -82,7 +106,10 @@ struct FamilyScreen: View {
                 invite = await FamilyShare.existing().map(DiaryInvite.init)
             } }
             .navigationBarTitleDisplayMode(.large)
-            .toolbar { SettingsToolbarItem() }
+            // Шестерёнки здесь больше нет: настройки уехали в меню «…»
+            // вкладки собаки, из которой этот экран и открывается.
+            // Второй вход в настройки с пушнутого экрана — это та самая
+            // «кнопка в шапке», которых по решению 22.10 быть не должно.
             .sheet(isPresented: $showInvite) { InviteSheet() }
             .sheet(isPresented: $editingBriefing) { SitterBriefingEditor(dog: dog) }
             .sheet(item: $handingOver) { передача in

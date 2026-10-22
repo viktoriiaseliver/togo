@@ -12,11 +12,26 @@ import SwiftData
 ///
 /// Теперь это плоский список под своей вкладкой: до любого экрана
 /// два тапа вместо четырёх.
+///
+/// **С 22.10.2026 «Семья» — первая строка этого списка** (решение
+/// Виктории, `design_handoff_togo_ios28`, «Навигация (решено)»):
+/// своей вкладки у неё больше нет. Первой, а не в середине: семья —
+/// это про то, кто ещё ходит за собакой, и читается раньше запаса
+/// корма.
 struct DogTab: View {
+    /// Пришли по ссылке `togo://join/<token>` — открыть «Семью» сразу.
+    /// Вкладки у неё нет, и довести человека до экрана обязан тот,
+    /// кто поймал ссылку.
+    @Binding var открытьСемью: Bool
+
     @Query private var skills: [ProcedureSkill]
     @Environment(AppState.self) private var appState
     @Query private var dogs: [Dog]
     @Query private var trips: [Trip]
+    @Query private var members: [FamilyMember]
+
+    /// Настройки открываются из меню «…», а не шестерёнкой в шапке.
+    @State private var открытьНастройки = false
 
     private var dog: Dog? { appState.activeDog(from: dogs) }
 
@@ -26,11 +41,15 @@ struct DogTab: View {
                 if let dog {
                     DogSwitcher(dogs: dogs, active: dog)
                     header(dog)
+                    семьяСтрока
                     emergency(dog)
                     everyday(dog)
                     documents(dog)
                     travel(dog)
                 } else {
+                    // Семья нужна и без собаки: человека могли позвать
+                    // в чужой дневник, и собаку заводил не он.
+                    семьяСтрока
                     EmptyStateCard(
                         subject: .dog,
                         title: "Собаки пока нет",
@@ -44,8 +63,62 @@ struct DogTab: View {
             .posterHeader(.значение(dog.flatMap(\.nameIfAny) ?? String(localized: "Собака")))
             .usageScreen(.profile)
             .navigationBarTitleDisplayMode(.large)
-            .toolbar { SettingsToolbarItem() }
+            // Одна кнопка «…» вместо шестерёнки — решение 22.10.2026.
+            // «Семья» есть и пунктом меню, и первой строкой списка:
+            // хендофф называет оба места, и это не дубль по недосмотру.
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    HeaderMenu(настройки: { открытьНастройки = true },
+                               семья: { открытьСемью = true })
+                }
+            }
+            // Оба перехода — отсюда, а не из `Menu`: ссылка навигации
+            // внутри меню срабатывает не всегда.
+            .navigationDestination(isPresented: $открытьНастройки) {
+                SettingsScreen()
+            }
+            .navigationDestination(isPresented: $открытьСемью) {
+                FamilyScreen(встроенный: true)
+            }
         }
+    }
+
+    // MARK: Семья — первая строка
+
+    /// Первая строка списка. Ведёт на тот же экран, что и пункт меню,
+    /// и тем же способом — через `открытьСемью`, а не вторым
+    /// `NavigationLink`: два пути к одному экрану, собранные порознь,
+    /// расходятся молча, и у Togo это записано трижды.
+    private var семьяСтрока: some View {
+        Button {
+            UsageLog.note(.open, "family", on: .profile)
+            открытьСемью = true
+        } label: {
+            TGCard(padding: Token.Space.s14) {
+                TGListRow(title: "Семья",
+                          value: семьяПодпись,
+                          systemImage: "person.2")
+            }
+        }
+        .buttonStyle(.plain)
+    }
+
+    /// Кто дежурит — чтобы строка говорила о состоянии, а не была
+    /// просто дверью.
+    ///
+    /// Пусто, пока в семье никого, кроме хозяина: «1 человек» читается
+    /// упрёком, а не фактом, — то же правило, по которому
+    /// `procedureSummary` молчит на нуле попыток.
+    ///
+    /// Имя дежурного, а не число людей: число ничего не меняет в дне,
+    /// а «дежурит Тео» отвечает на вопрос «кому писать, если что».
+    private var семьяПодпись: LocalizedStringKey? {
+        if let duty = members.first(where: \.isOnDuty) {
+            return .готовая(String(localized: "дежурит \(duty.name)"))
+        }
+        let другие = members.filter { !$0.isMe }.count
+        guard другие > 0 else { return nil }
+        return .готовая(String(localized: "\(другие) кроме тебя"))
     }
 
     // MARK: Шапка
