@@ -178,6 +178,39 @@ def px(value):
     return float(str(value).replace("px", "").replace("ms", ""))
 
 
+def swift_number(value):
+    """Число без единицы измерения: `(': Int', '5')` либо `(': Double', '1.9')`.
+
+    Отдельный вид, а не `dimension`, по предметной причине: доля
+    насыщенности и счёт фотографий в точках не существуют. `CGFloat = 5`
+    на «до пяти фото» читается как размер, и однажды такое число
+    кто-нибудь умножит на масштаб экрана.
+    """
+    число = float(value)
+    if число.is_integer():
+        return (": Int", "%d" % int(число))
+    return (": Double", "%g" % число)
+
+
+def gradient_stops(value, indent):
+    """Стопы градиента → строки Swift.
+
+    Ожидается список `{"position": доля, "color": "#RRGGBBAA"}`. Второго
+    вида стопа (позиция → непрозрачность) нет нарочно: маска выражена
+    чёрным с альфой, см. описание `component.backdrop.mask` в токенах.
+    """
+    строки = []
+    for стоп in value:
+        if not isinstance(стоп, dict) or "position" not in стоп or "color" not in стоп:
+            raise SystemExit(
+                "tokens.json: стоп градиента должен быть {\"position\": …, \"color\": \"#RRGGBBAA\"}, "
+                "а пришло %r" % (стоп,)
+            )
+        строки.append("%s    GradientStop(position: %g, color: Color(hex: %s)),"
+                      % (indent, float(стоп["position"]), hex_literal(стоп["color"])))
+    return строки
+
+
 def camel(name):
     parts = re.split(r"[-_ ]+", name)
     head = parts[0]
@@ -210,11 +243,21 @@ GROUPS = [
     ("semantic.status", "Status", "color", "Состояния: янтарь — «подожди», терракот — просрочка или кровь."),
     ("semantic.spacing", "Spacing", "dimension", "Отступы."),
     ("semantic.radius", "Radius", "dimension", "Радиусы."),
+    ("semantic.glass", "Glass", "color",
+     "Стекло. **Значения отсюда — не то, чем рисуют.** Рекомендация 1 хендоффа "
+     "iOS 28: стекло — системные материалы (`glassEffect`), а не свои rgba. Эти "
+     "токены нужны веб-макету и запасному пути на iOS 17–25; Reduce Transparency "
+     "не берёт отсюда ничего и уходит на `Surface.raised` без блюра. Один "
+     "читатель на все три пути — `TGGlass`."),
     ("semantic.poster", "Poster", "color", "Плакат — верхняя треть «Сегодня» и «На улице». Цвет блока = РЕЖИМ ДНЯ, и правило выбора в `TogoShared/Domain/PosterMode.swift`, не во вью: его спрашивают экран, виджет и «остров». Шторки плаката не несут."),
     ("primitive.space", "Space", "dimension", "Шаг сетки. Прикладной код берёт Spacing, а не это."),
     ("primitive.size", "Size", "dimension", "Размеры контролов и иконок."),
     ("primitive.font.size", "FontSize", "dimension", "Кегли."),
     ("primitive.font.weight", "FontWeight", "fontWeight", "Начертания."),
+    ("primitive.font.tracking", "FontTracking", "dimension",
+     "Межбуквенное в ТОЧКАХ, а не в em. Хендофф задаёт его в em, и перевод сделан "
+     "в токенах, а не на месте вызова: `SwiftUI.tracking(_:)` принимает точки, "
+     "и −0,025 в них — сотая доля точки, то есть ничего."),
     ("primitive.duration", "Duration", "duration", "Длительности анимаций."),
 ]
 
@@ -318,14 +361,29 @@ def emit_swift(raw, flat):
             leaf = key[len(prefix) + 1:]
             resolved = resolve(flat, value)
             lines += doc(note, "        ")
-            if kind == "color":
+            # Тип берётся У ТОКЕНА, а группа — только запасной ответ.
+            #
+            # **Было наоборот, и это ограничивало не стиль, а состав.** Пока
+            # вид определяла строка `GROUPS`, в одну группу нельзя было
+            # положить два вида: `semantic.glass` несёт шесть цветов, радиус
+            # размытия и долю насыщенности, и по прежнему правилу семь
+            # из восьми напечатались бы цветом.
+            #
+            # Приёмка этой правки — НОЛЬ строк дифа у сгенерированного файла
+            # на прежнем `tokens.json`: `$type` наследуется от узла группы,
+            # и у всех живых токенов он уже совпадал с `kind`. Замер сделан
+            # отдельным прогоном до переноса хендоффа, а не выведен.
+            вид = _type or kind
+            if вид == "color":
                 lines.append("        static let %s = %s" % (swift_name(leaf), swift_color(resolved, палитра)))
-            elif kind == "dimension":
+            elif вид == "dimension":
                 lines.append("        static let %s: CGFloat = %g" % (swift_name(leaf), px(resolved)))
-            elif kind == "duration":
+            elif вид == "duration":
                 lines.append("        static let %s: Double = %g" % (swift_name(leaf), px(resolved) / 1000.0))
-            elif kind == "fontWeight":
+            elif вид == "fontWeight":
                 lines.append("        static let %s: Font.Weight = %s" % (swift_name(leaf), swift_weight(resolved)))
+            elif вид == "number":
+                lines.append("        static let %s%s = %s" % (swift_name(leaf), *swift_number(resolved)))
         lines.append("    }")
 
     # Тени
@@ -349,6 +407,25 @@ def emit_swift(raw, flat):
                 % (swift_name(leaf), hex_literal(v["color"]), float(v.get("alpha", 1)),
                    px(v["blur"]), px(v["offsetX"]), px(v["offsetY"]))
             )
+        lines.append("    }")
+
+    # Стоп градиента. Объявлен у `Token`, а не внутри компонента, который
+    # его употребляет: градиентов в токенах уже два (затемнение фото
+    # и маска его исчезновения), и два одинаковых типа в двух местах —
+    # это та самая вторая копия, которая расходится молча.
+    if any(t == "gradient" for t, _v, _n in flat.values()):
+        lines.append("")
+        lines += doc(
+            "Стоп градиента: доля высоты и цвет с альфой.\n"
+            "\n"
+            "Маска выражена ТЕМ ЖЕ типом — чёрным с альфой, а не парой\n"
+            "«позиция → непрозрачность». Второй тип завёл бы вторую\n"
+            "реализацию одного правила; разбор — в описании\n"
+            "`component.backdrop.mask`.",
+            "    ")
+        lines.append("    struct GradientStop: Sendable, Equatable {")
+        lines.append("        let position: CGFloat")
+        lines.append("        let color: Color")
         lines.append("    }")
 
     # Компонентный слой: component.button.primary.background -> Token.Component.Button.Primary.background
@@ -390,6 +467,23 @@ def emit_component_tree(tree, flat, indent, палитра):
                 lines.append("%sstatic let %s = %s" % (indent, camel(key), swift_color(resolved, палитра)))
             elif token_type == "dimension":
                 lines.append("%sstatic let %s: CGFloat = %g" % (indent, camel(key), px(resolved)))
+            elif token_type == "number":
+                lines.append("%sstatic let %s%s = %s" % (indent, camel(key), *swift_number(resolved)))
+            elif token_type == "gradient":
+                lines.append("%sstatic let %s: [GradientStop] = [" % (indent, camel(key)))
+                lines += gradient_stops(resolved, indent)
+                lines.append("%s]" % indent)
+            else:
+                # Молча пропущенный токен выглядит перенесённым, и это наш
+                # записанный класс: «источник правды содержит решение,
+                # которого не исполняет ни один читатель». Поэтому новый
+                # вид роняет сборку токенов, а не теряется.
+                raise SystemExit(
+                    "tokens.json: у `%s` вид `%s`, и печатать его генератор не умеет.\n"
+                    "Либо научи `emit_component_tree`, либо смени вид токена. Молча "
+                    "пропустить нельзя: пропущенный токен неотличим от перенесённого."
+                    % (node, token_type)
+                )
     return lines
 
 
@@ -417,11 +511,20 @@ def emit_css(flat):
         body = []
         for key in sorted(flat):
             token_type, value, _note = flat[key]
-            if token_type not in ("color", "dimension", "duration"):
+            if token_type not in ("color", "dimension", "duration", "number", "gradient"):
                 continue
             resolved = resolve(flat, value)
             name = "--" + key.replace(".", "-")
-            if is_modal(resolved):
+            if token_type == "gradient":
+                # Градиент режимов не имеет: стопы одни на все четыре.
+                # Печатается только в тёмном блоке, остальные наследуют
+                # каскадом — как и любое немодальное значение.
+                if mode != "dark":
+                    continue
+                стопы = ", ".join("%s %g%%" % (с["color"], float(с["position"]) * 100)
+                                  for с in resolved)
+                body.append("  %s: linear-gradient(to bottom, %s);" % (name, стопы))
+            elif is_modal(resolved):
                 # В блок режима попадает только то, что в нём ОТЛИЧАЕТСЯ
                 # от тёмной: иначе светлый блок повторит тёмную целиком,
                 # и человек не увидит в дифе, что именно меняет тема.
@@ -442,7 +545,14 @@ def emit_css(flat):
 
 # --------------------------------------------------------------- Figma
 
-FIGMA_TYPE = {"color": "COLOR", "dimension": "FLOAT", "duration": "FLOAT", "fontWeight": "FLOAT"}
+FIGMA_TYPE = {"color": "COLOR", "dimension": "FLOAT", "duration": "FLOAT",
+              "fontWeight": "FLOAT", "number": "FLOAT"}
+
+# Виды, которых в переменных Фигмы не бывает по устройству той стороны.
+# Перечислены ИМЕНЕМ и уезжают в выгрузку отдельным полем: молча
+# пропущенный токен выглядит перенесённым, и у дизайнера нет способа
+# узнать, что его в переменных не окажется.
+FIGMA_БЕЗ_ПЕРЕМЕННОЙ = ("gradient",)
 
 # Имена режимов на той стороне. Взяты у пакета дословно, а не придуманы:
 # файл уезжает в ту же Фигму, откуда пришли значения, и свои имена
@@ -466,8 +576,12 @@ def emit_figma(flat):
     """Три коллекции переменных — ровно те же три уровня, что и в JSON.
     Semantic и Component ссылаются на Primitive алиасами, а не копируют значения."""
     collections = {"Primitive": [], "Semantic": [], "Component": []}
+    не_уехали = []
     for key in sorted(flat):
         token_type, value, note = flat[key]
+        if token_type in FIGMA_БЕЗ_ПЕРЕМЕННОЙ:
+            не_уехали.append(key)
+            continue
         if token_type not in FIGMA_TYPE:
             continue
         top = key.split(".")[0]
@@ -524,6 +638,16 @@ def emit_figma(flat):
                      "Режимы перечислены сверху и относятся к цветам: "
                      "у цвета `values` по режимам, у размеров и длительностей "
                      "один `value`, годный во всех четырёх.",
+            # Что в переменные НЕ уехало и почему — именем, а не молчанием.
+            # Градиент переменной Фигмы быть не может: у неё нет такого
+            # вида. Дизайнер, не увидевший `backdrop/scrim` в списке,
+            # иначе прочтёт это как «забыли перенести».
+            "$notTransferred": {
+                "$note": "Переменной Фигмы такого вида не существует — значение "
+                         "живёт только в `tokens.json`, `tokens.css` и Swift. "
+                         "В макете это стиль заливки, а не переменная.",
+                "gradient": не_уехали,
+            },
             "collections": [
                 {"name": name, "variables": items} for name, items in collections.items()
             ],

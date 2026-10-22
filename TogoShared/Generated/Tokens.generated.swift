@@ -43,23 +43,30 @@ nonisolated enum Token {
     fileprivate enum Общие {
         static let amber = Color(Dyn(dark: 0xF7C75F, light: 0x8A640F, darkHC: 0xF7C75F, lightHC: 0x6B4C0C))
         static let amberBg = Color(Dyn(dark: 0x4A300A, light: 0xFCEBCB, darkHC: 0x4A300A, lightHC: 0xFCEBCB))
-        static let arctic = Color(Dyn(dark: 0xA2C1FE, light: 0x1F4FFF, darkHC: 0xA2C1FE, lightHC: 0x0E14A1))
-        static let arcticInk = Color(Dyn(dark: 0x0B0D2E, light: 0xFFFFFF, darkHC: 0x0B0D2E, lightHC: 0xFFFFFF))
-        static let arcticPressed = Color(Dyn(dark: 0x7BA5FE, light: 0x080679, darkHC: 0x7BA5FE, lightHC: 0x080679))
-        static let arcticSubtle = Color(Dyn(dark: 0x2E3866, light: 0xD9E3FC, darkHC: 0x2E3866, lightHC: 0xD9E3FC))
-        static let arcticTint = Color(Dyn(dark: 0xA2C1FE2E, light: 0x1F4FFF38, darkHC: 0xA2C1FE2E, lightHC: 0x0E14A138))
+        static let arctic = Color(Dyn(dark: 0xFFFFFF, light: 0x1F4FFF, darkHC: 0xFFFFFF, lightHC: 0x0E14A1))
+        static let arcticInk = Color(Dyn(dark: 0x111111, light: 0xFFFFFF, darkHC: 0x111111, lightHC: 0xFFFFFF))
+        static let arcticPressed = Color(Dyn(dark: 0xD1D1D6, light: 0x080679, darkHC: 0xD1D1D6, lightHC: 0x080679))
+        static let arcticSubtle = Color(Dyn(dark: 0x5A5D61, light: 0xD9E3FC, darkHC: 0x5A5D61, lightHC: 0xD9E3FC))
+        static let arcticTint = Color(Dyn(dark: 0xFFFFFF2E, light: 0x1F4FFF38, darkHC: 0xFFFFFF2E, lightHC: 0x0E14A138))
         static let clay = Color(Dyn(dark: 0xFF7A66, light: 0xAE2219, darkHC: 0xFFA696, lightHC: 0x9B100E))
         static let clayBg = Color(Dyn(dark: 0x4D1F22, light: 0xF7D5CF, darkHC: 0x4D1F22, lightHC: 0xF7D5CF))
-        static let glass = Color(Dyn(dark: 0x343434B8, light: 0xFFFFFFD1, darkHC: 0x343434B8, lightHC: 0xFFFFFFD1))
-        static let hairline = Color(Dyn(dark: 0x3A3A3A, light: 0xD6D9DD, darkHC: 0x3A3A3A, lightHC: 0x7D8085))
-        static let ink = Color(Dyn(dark: 0xF4F4F2, light: 0x101112, darkHC: 0xF4F4F2, lightHC: 0x101112))
-        static let inkFaint = Color(Dyn(dark: 0x6D6D6D, light: 0xA1A4A8, darkHC: 0x8A8A86, lightHC: 0x7D8085))
-        static let inkMuted = Color(Dyn(dark: 0xB2B2AE, light: 0x5A5D61, darkHC: 0xC8C8C4, lightHC: 0x45484C))
-        static let night1 = Color(Dyn(dark: 0x050503, light: 0xFFFFFF, darkHC: 0x050503, lightHC: 0xFFFFFF))
-        static let night2 = Color(Dyn(dark: 0x181818, light: 0xECEDF0, darkHC: 0x181818, lightHC: 0xECEDF0))
-        static let night3 = Color(Dyn(dark: 0x1F1F1F, light: 0xE3E5E8, darkHC: 0x1F1F1F, lightHC: 0xE3E5E8))
-        static let night4 = Color(Dyn(dark: 0x2C2C2C, light: 0xFFFFFF, darkHC: 0x2C2C2C, lightHC: 0xFFFFFF))
-        static let night5 = Color(Dyn(dark: 0x383838, light: 0xD7DBE0, darkHC: 0x383838, lightHC: 0xD6D9DD))
+        static let glass = Color(Dyn(dark: 0x1E1E2280, light: 0xFFFFFF9E, darkHC: 0x1E1E2280, lightHC: 0xFFFFFF9E))
+        static let glassCard = Color(Dyn(dark: 0x1C1C2094, light: 0xFFFFFFB8, darkHC: 0x1C1C2094, lightHC: 0xFFFFFFB8))
+        static let glassEdge = Color(Dyn(dark: 0xFFFFFF47, light: 0xFFFFFFF2, darkHC: 0xFFFFFF47, lightHC: 0xFFFFFFF2))
+        static let glassLine = Color(Dyn(dark: 0xFFFFFF1A, light: 0x0000000F, darkHC: 0xFFFFFF1A, lightHC: 0x0000000F))
+        static let glassShadow = Color(Dyn(dark: 0x00000073, light: 0x14192824, darkHC: 0x00000073, lightHC: 0x14192824))
+        static let glassStrong = Color(Dyn(dark: 0x141418CC, light: 0xFFFFFFDB, darkHC: 0x141418CC, lightHC: 0xFFFFFFDB))
+        static let hairline = Color(Dyn(dark: 0x3A3A3C, light: 0xD6D9DD, darkHC: 0x3A3A3C, lightHC: 0x7D8085))
+        static let indigo = Color(Dyn(dark: 0x1F4FFF, light: 0x1F4FFF, darkHC: 0x1F4FFF, lightHC: 0x0E14A1))
+        static let ink = Color(Dyn(dark: 0xFFFFFF, light: 0x101112, darkHC: 0xFFFFFF, lightHC: 0x101112))
+        static let inkFaint = Color(Dyn(dark: 0x8E8E93, light: 0xA1A4A8, darkHC: 0x8E8E93, lightHC: 0x7D8085))
+        static let inkMuted = Color(Dyn(dark: 0xC7C7CC, light: 0x5A5D61, darkHC: 0xC7C7CC, lightHC: 0x45484C))
+        static let night1 = Color(Dyn(dark: 0x000000, light: 0xFFFFFF, darkHC: 0x000000, lightHC: 0xFFFFFF))
+        static let night2 = Color(Dyn(dark: 0x1C1C1E, light: 0xECEDF0, darkHC: 0x1C1C1E, lightHC: 0xECEDF0))
+        static let night3 = Color(Dyn(dark: 0x2C2C2E, light: 0xE3E5E8, darkHC: 0x2C2C2E, lightHC: 0xE3E5E8))
+        static let night4 = Color(Dyn(dark: 0x2C2C2E, light: 0xFFFFFF, darkHC: 0x2C2C2E, lightHC: 0xFFFFFF))
+        static let night5 = Color(Dyn(dark: 0x3A3A3C, light: 0xD7DBE0, darkHC: 0x3A3A3C, lightHC: 0xD6D9DD))
+        static let nightPage = Color(Dyn(dark: 0x0A0A0B, light: 0xFFFFFF, darkHC: 0x0A0A0B, lightHC: 0xFFFFFF))
         static let posterAmber = Color(Dyn(dark: 0x4A3A14, light: 0x8A640F, darkHC: 0x4A3A14, lightHC: 0x8A640F))
         static let posterClay = Color(Dyn(dark: 0x5E2A22, light: 0xB5402F, darkHC: 0x5E2A22, lightHC: 0xB5402F))
         static let posterIndigo = Color(Dyn(dark: 0x2A3670, light: 0x3F5BC4, darkHC: 0x2A3670, lightHC: 0x3F5BC4))
@@ -78,9 +85,13 @@ nonisolated enum Token {
         /// Стекло таббара и круглых кнопок
         static let glass = Общие.glass
         /// Внутренний край стекла
-        static let glassEdge = Color(hex: 0xFFFFFF1A)
+        static let glassEdge = Общие.glassEdge
         static let hairline = Общие.hairline
+        /// Полотно под фоном-фото. От `screen` отличается одним шагом светлоты — стык затемнения фото и полотна виден глазом. Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`.
+        static let page = Общие.nightPage
         static let pressed = Общие.night5
+        /// Приподнятая сплошная поверхность — и ЗАМЕНА СТЕКЛА при Reduce Transparency (рекомендация 7 хендоффа). Единственный читатель, ради которого роль заведена: `TGGlass`. Совпадает по значению с `sunken`, но роль обратная, и разводить их именами обязательно: `sunken` уходит вглубь, `raised` всплывает. Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`.
+        static let raised = Общие.night3
         static let screen = Общие.night1
         /// Затемнение под шторкой
         static let scrim = Общие.scrim
@@ -90,6 +101,8 @@ nonisolated enum Token {
     /// Текст. `faint` — 2,5:1, текстом и значками НЕ красится ни в каком кегле: разрешение «только с 14pt» было неверным и развело его по двадцати четырём файлам.
     enum Ink {
         static let faint = Общие.inkFaint
+        /// Ссылка (`cinema.text.link`). Индиго ЗДЕСЬ ОСТАЛОСЬ: отменён индиговый АКЦЕНТ, а не значение. Акцент теперь белый, ссылка — нет. Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`.
+        static let link = Color(hex: 0xA2C1FE)
         static let onAccent = Общие.arcticInk
         /// Тихий текст НА акцентной заливке: счётчик под подписью кнопки, подпись под показанием. Заведён 08.10.2026, потому что у роли не было адреса в семантике и единственным носителем значения был poster/captionOnDose — то есть кнопка режима прогулки обращалась бы к токену ПЛАКАТА. Значение то же (arcticSubtle), роль другая, и имя должно называть роль. Числа: 6,19:1 в тёмной и 10,01:1 в светлой против 10,43 и 12,86 у onAccent — читается и остаётся тише подписи, иерархия цела. Повышенного контраста у роли в пакете нет: darkHC равен dark.
         static let onAccentQuiet = Общие.arcticSubtle
@@ -104,11 +117,15 @@ nonisolated enum Token {
         static let doneQuiet = Color(hex: 0x5FBF9326)
         /// «Сделано» СЛОВАМИ. Отдельный токен, потому что done — это тинт 15 %: как чернила он даёт 1,31:1 на карточке, вдвое хуже уже запрещённого faint. Та же пара, что waitingText и overdueText.
         static let doneText = Общие.spruceText
+        /// Подпись на тихой заливке (`cinema.action.onSubtle` = #FFFFFF). Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`.
+        static let onSubtle = Общие.posterInk
         static let primary = Общие.arctic
         /// Нажатое главное действие
         static let primaryPressed = Общие.arcticPressed
         static let primaryQuiet = Общие.arcticTint
         static let secondary = Общие.night4
+        /// Тихая индиговая заливка второй кнопки (`cinema.action.subtle`). Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`.
+        static let subtle = Color(hex: 0x2C3A66)
     }
 
     /// Состояния: янтарь — «подожди», терракот — просрочка или кровь.
@@ -136,7 +153,7 @@ nonisolated enum Token {
     enum Radius {
         /// Пилюля: главное действие, чип, тост, поле. Семантическое имя заведено 05.10 вечером ВТОРЫМ заходом — primitive.radius.capsule уже стоял 999, а Token.Radius.capsule не существовал, и сторож, написанный на него, уронил сборку. Тот же промах, что часом раньше со stockLow: генератор поднимает в Swift семантику, примитив без алиаса до слоя вида не доезжает
         static let capsule: CGFloat = 999
-        static let card: CGFloat = 28
+        static let card: CGFloat = 24
         static let control: CGFloat = 24
         /// Радиус нижних углов плаката. Макет: border-radius: 0 0 44px 44px.
         static let poster: CGFloat = 44
@@ -145,27 +162,48 @@ nonisolated enum Token {
         static let tile: CGFloat = 16
     }
 
+    /// Стекло. **Значения отсюда — не то, чем рисуют.** Рекомендация 1 хендоффа iOS 28: стекло — системные материалы (`glassEffect`), а не свои rgba. Эти токены нужны веб-макету и запасному пути на iOS 17–25; Reduce Transparency не берёт отсюда ничего и уходит на `Surface.raised` без блюра. Один читатель на все три пути — `TGGlass`.
+    enum Glass {
+        /// Радиус размытия запасного пути.
+        static let blur: CGFloat = 30
+        /// Карточка-стекло.
+        static let card = Общие.glassCard
+        /// Верхний блик, 1px inset.
+        static let highlight = Общие.glassEdge
+        /// Разделитель внутри стекла.
+        static let line = Общие.glassLine
+        /// Насыщенность запасного пути. ЧИСЛО, А НЕ РАЗМЕР: `.saturation(_:)` принимает долю, и 1,9 в точках не существует.
+        static let saturation: Double = 1.9
+        /// Тень плавающего.
+        static let shadow = Общие.glassShadow
+        /// Плотное стекло: панель показания.
+        static let strong = Общие.glassStrong
+    }
+
     /// Плакат — верхняя треть «Сегодня» и «На улице». Цвет блока = РЕЖИМ ДНЯ, и правило выбора в `TogoShared/Domain/PosterMode.swift`, не во вью: его спрашивают экран, виджет и «остров». Шторки плаката не несут.
     enum Poster {
         static let background = Общие.posterIndigo
         static let backgroundAlarm = Общие.posterClay
-        /// Плакат ЧАСА ДОЗЫ. И отдельно, потому что сверка с макетом без этого даёт ложный дефект: **это же значение — плакат ОНБОРДИНГА в макете Figma**. Замер 15.10.2026, побайтно: `Poster/Background` макета #A2C1FE/#1F4FFF = `arctic`; `Poster/Text` #0B0D2E/#FFFFFF = `arcticInk`; `Poster/On Action` и `Poster/Action` — та же пара. То есть онбординг стоит на АКЦЕНТЕ, и новых токенов плаката под него заводить НЕ НУЖНО — пара уже здесь. Две сессии 14.10 независимо прочли имя переменной макета `--poster-*` как роль и чуть не завели третью копию той же пары; разводить `semantic.poster.*` значило бы сделать это в третий раз. Наш `poster.background` (= `posterIndigo` #2A3670/#3F5BC4) — РЕЖИМ ДНЯ, другая роль, случайно похоже названная: 17 читателей и 45 вызовов `.posterHeader` в 33 файлах, трогать запрещено. ПРО lightHC: здесь #0E14A1, потому что следует за `arctic.lightHC`, который по решению Виктории 15.10 остался прежним. У макета повышенного контраста НЕТ ВОВСЕ — значит сверка этого режима с макетом невозможна, а не «расходится»: в HC наш плакат обязан быть грубее, и он грубее.
-        static let backgroundDose = Общие.arctic
+        /// Подложка плаката ЧАСА ДОЗЫ. С 22.10.2026 смотрит на `indigo`, а не на `arctic`: акцент стал белым, а тон дозы в хендоффе остался индиговым (`readingTone.dose.panel` rgba(31,79,255,.92)). В СВЕТЛЫХ режимах значение не изменилось ни на байт — там и было #1F4FFF / #0E14A1. Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`. Плакат ЧАСА ДОЗЫ. И отдельно, потому что сверка с макетом без этого даёт ложный дефект: **это же значение — плакат ОНБОРДИНГА в макете Figma**. Замер 15.10.2026, побайтно: `Poster/Background` макета #A2C1FE/#1F4FFF = `arctic`; `Poster/Text` #0B0D2E/#FFFFFF = `arcticInk`; `Poster/On Action` и `Poster/Action` — та же пара. То есть онбординг стоит на АКЦЕНТЕ, и новых токенов плаката под него заводить НЕ НУЖНО — пара уже здесь. Две сессии 14.10 независимо прочли имя переменной макета `--poster-*` как роль и чуть не завели третью копию той же пары; разводить `semantic.poster.*` значило бы сделать это в третий раз. Наш `poster.background` (= `posterIndigo` #2A3670/#3F5BC4) — РЕЖИМ ДНЯ, другая роль, случайно похоже названная: 17 читателей и 45 вызовов `.posterHeader` в 33 файлах, трогать запрещено. ПРО lightHC: здесь #0E14A1, потому что следует за `arctic.lightHC`, который по решению Виктории 15.10 остался прежним. У макета повышенного контраста НЕТ ВОВСЕ — значит сверка этого режима с макетом невозможна, а не «расходится»: в HC наш плакат обязан быть грубее, и он грубее.
+        static let backgroundDose = Общие.indigo
         static let backgroundFasting = Общие.posterAmber
         static let backgroundQuiet = Общие.night2
-        static let bar = Общие.arctic
-        static let barOnDose = Общие.arcticInk
+        /// Косточка обычного плаката. `readingTone.normal.bar` = #1F4FFF, то есть индиго, а не белый акцент. Переведена на `indigo` по той же причине, что подложка дозы. Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`. 
+        static let bar = Общие.indigo
+        /// Подпись на косточке плаката дозы — по той же причине, что показание. Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`. 
+        static let barOnDose = Общие.posterInk
         /// ТОЛЬКО НЕЙТРАЛЬНЫЙ БЛОК. На цветных — captionOnColor, на дозе — captionOnDose. В светлой на синем блоке даёт 1,10.
         static let caption = Общие.inkMuted
         /// Подпись плаката на ЦВЕТНОМ блоке.
         static let captionOnColor = Общие.posterInkMuted
-        /// Подпись плаката на заливке дозы. Отдельная от caption потому, что доза — единственный режим дня со СВЕТЛОЙ подложкой: остальные четыре кладут текст на тёмный блок, и там caption честен. У плаката ПАКЕТА режима дозы нет вовсе — его bg всегда тёмный блок с белым текстом, — то есть инверсия наша, и цена её в том, что для неё нужен свой тихий цвет.
-        static let captionOnDose = Общие.arcticSubtle
+        /// Тихая подпись на плакате дозы. Было `arcticSubtle`, который переехал на белую заливку (#5A5D61) и на индиго дал бы 1,5:1. ЭТО ТО САМОЕ САМОЕ УЗКОЕ МЕСТО, про которое в описании `arctic` записано «запас одна сотая»: прежняя пара давала 4,51 при пороге 4,5. Новая пара меряется заново — см. `Tools/contrast_graphite.py`, раздел «ПАРЫ РЕПОЗИТОРИЯ». Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`. Подпись плаката на заливке дозы. Отдельная от caption потому, что доза — единственный режим дня со СВЕТЛОЙ подложкой: остальные четыре кладут текст на тёмный блок, и там caption честен. У плаката ПАКЕТА режима дозы нет вовсе — его bg всегда тёмный блок с белым текстом, — то есть инверсия наша, и цена её в том, что для неё нужен свой тихий цвет.
+        static let captionOnDose = Общие.posterInkMuted
         /// ТОЛЬКО НЕЙТРАЛЬНЫЙ БЛОК (backgroundQuiet). На цветных блоках берётся labelOnColor, на дозе labelOnDose: у плаката ТРИ семьи текста, а не одна. Замер 07.10.2026: этот токен на синем блоке в светлой даёт 3,15 — он честен только там, где подложка нейтральна.
         static let label = Общие.ink
         /// Заголовок плаката на ЦВЕТНОМ блоке: обычный, тревожный, натощак.
         static let labelOnColor = Общие.posterInk
-        static let labelOnDose = Общие.arcticInk
+        /// Показание на плакате дозы. Было `arcticInk`, который стал #111111 — чёрная подпись на индиго нечитаема. `readingTone.dose.fg` = #FFFFFF, и `posterInk` ровно эта роль: текст НА ЦВЕТНОМ блоке. Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`. 
+        static let labelOnDose = Общие.posterInk
     }
 
     /// Шаг сетки. Прикладной код берёт Spacing, а не это.
@@ -189,6 +227,14 @@ nonisolated enum Token {
     enum Size {
         static let avatarMd: CGFloat = 40
         static let avatarSm: CGFloat = 26
+        /// Высота фона-фото на подэкране (`backdrop.height.sub`). Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`.
+        static let backdropSub: CGFloat = 360
+        /// Высота фона-фото на вкладке (`backdrop.height.tab`). Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`.
+        static let backdropTab: CGFloat = 420
+        /// Высота фона-фото на «Сегодня» (`backdrop.height.today`). Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`.
+        static let backdropToday: CGFloat = 640
+        /// Высота фона-фото на «На улице» (`backdrop.height.walk`). Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`.
+        static let backdropWalk: CGFloat = 520
         /// Высота косточки прогресса на плакате. Макет: height 16px. ПАРЫ В ПАКЕТЕ НЕТ: среди size/ шестнадцати нет вовсе, а space/16, radius/inner и type/size/callout равны шестнадцати СЛУЧАЙНО — по роли они косточке не родня. Взять любое из них значило бы завести связь, которой нет, и в день, когда иконки станут 18, косточка поехала бы за ними без причины.
         static let bone: CGFloat = 16
         /// Главное действие — капсула 60 pt. Только оно
@@ -197,12 +243,24 @@ nonisolated enum Token {
         static let controlL: CGFloat = 52
         static let controlM: CGFloat = 50
         static let controlXL: CGFloat = 54
+        /// Радиус размытия стекла (`glass.blur`). ВНИМАНИЕ НА РАСХОЖДЕНИЕ ВНУТРИ ХЕНДОФФА: в токенах 30 и насыщенность 190 %, а в прозе README про панель показания — «блюр 28 / 180 %». Взято число из ТОКЕНОВ, потому что таблица «Источник правды» самого README называет источником файл токенов, а не прозу. Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`.
+        static let glassBlur: CGFloat = 30
         static let hairline: CGFloat = 1
         static let handleH: CGFloat = 4
         static let handleW: CGFloat = 36
+        /// Высота панели показания (`size.hero`). При крупном кегле — `heroAX` 220. Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`.
+        static let hero: CGFloat = 360
+        /// Высота панели показания при крупном кегле (`size.heroAX`). Отдельная ось: панель ужимается, чтобы кнопки низа остались на экране. Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`.
+        static let heroAX: CGFloat = 220
         static let iconLg: CGFloat = 20
         static let iconMd: CGFloat = 16
         static let iconSm: CGFloat = 13
+        /// Минимальная высота строки ленты (`size.rowMin`). Своим номером, а не общим с капсулой 60: один номер на две роли уже один раз растил плитки заодно с кнопкой. Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`.
+        static let rowMin: CGFloat = 60
+        /// Высота таб-бара, 4 вкладки (`size.tabBar`). Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`.
+        static let tabBar: CGFloat = 64
+        /// Высота одной вкладки внутри бара (`size.tabItem`). Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`.
+        static let tabItem: CGFloat = 56
         static let tapTarget: CGFloat = 44
     }
 
@@ -227,6 +285,10 @@ nonisolated enum Token {
         /// Заголовок карточки
         static let section: CGFloat = 20
         static let title: CGFloat = 17
+        /// Крупный заголовок темы «Кино» (`cinema.titleLarge.size`). Ступень НОВАЯ: наш `screen` 34 не тронут, потому что у него свои читатели. Трекинг к ней — `primitive.font.tracking.titleLarge`. Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`.
+        static let titleLarge: CGFloat = 36
+        /// Таймер на «На улице» (`type.walkTimer.size`), SF Pro Rounded 300. Единственная ступень выше `hero` 56 — и единственное место, где она звана. Оси устройства у неё, как и у `hero`, нет. Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`.
+        static let walkTimer: CGFloat = 76
     }
 
     /// Начертания.
@@ -239,6 +301,12 @@ nonisolated enum Token {
         static let medium: Font.Weight = .medium
         static let regular: Font.Weight = .regular
         static let semibold: Font.Weight = .semibold
+    }
+
+    /// Межбуквенное в ТОЧКАХ, а не в em. Хендофф задаёт его в em, и перевод сделан в токенах, а не на месте вызова: `SwiftUI.tracking(_:)` принимает точки, и −0,025 в них — сотая доля точки, то есть ничего.
+    enum FontTracking {
+        /// Трекинг крупного заголовка. В хендоффе задан в em: `cinema.titleLarge.tracking` = −0,025em при кегле 36 → −0,9 pt. Пересчитано в точки, потому что `SwiftUI.tracking(_:)` принимает точки, а не em: оставить −0,025 значило бы дать заголовку трекинг в сотую долю точки. Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`.
+        static let titleLarge: CGFloat = -0.9
     }
 
     /// Длительности анимаций.
@@ -262,6 +330,17 @@ nonisolated enum Token {
         static let float = Shadow(color: Color(hex: 0x000000).opacity(0.12), radius: 14, x: 0, y: 4)
     }
 
+    /// Стоп градиента: доля высоты и цвет с альфой.
+    /// 
+    /// Маска выражена ТЕМ ЖЕ типом — чёрным с альфой, а не парой
+    /// «позиция → непрозрачность». Второй тип завёл бы вторую
+    /// реализацию одного правила; разбор — в описании
+    /// `component.backdrop.mask`.
+    struct GradientStop: Sendable, Equatable {
+        let position: CGFloat
+        let color: Color
+    }
+
     /// Слой компонентов — то, что в Figma лежит свойствами внутри самого
     /// компонента. Экран сюда не лезет: он выбирает вариант.
     enum Component {
@@ -270,11 +349,49 @@ nonisolated enum Token {
             static let minHeight: CGFloat = 52
             static let radius: CGFloat = 16
         }
+        enum Backdrop {
+            enum Height {
+                static let sub: CGFloat = 360
+                static let tab: CGFloat = 420
+                static let today: CGFloat = 640
+                static let walk: CGFloat = 520
+            }
+            /// Маска исчезновения фото (`backdrop.maskStops`). В хендоффе задана парами «позиция → непрозрачность» ([0.45,1],[0.92,0]); здесь те же две позиции выражены ЧЁРНЫМ С АЛЬФОЙ, а не вторым типом токена. Причина — не краткость: второй тип завёл бы вторую реализацию одного правила, а у нас записано, что третья реализация молчала в двух случаях из трёх. Чёрный с альфой и в CSS даёт дословно тот же `linear-gradient`, и в SwiftUI годится для `.mask` без перевода.
+            static let mask: [GradientStop] = [
+                GradientStop(position: 0.45, color: Color(hex: 0x000000FF)),
+                GradientStop(position: 0.92, color: Color(hex: 0x00000000)),
+            ]
+            /// До пяти своих фото (`backdrop.settings.maxPhotos`).
+            static let maxPhotos: Int = 5
+            /// Затемнение сверху вниз (`backdrop.scrimStops`). Восемь стопов, и плато между 30 % и 38 % — не лишний стоп: там лежит шапка, и затемнение там не растёт.
+            static let scrim: [GradientStop] = [
+                GradientStop(position: 0, color: Color(hex: 0x000000B3)),
+                GradientStop(position: 0.14, color: Color(hex: 0x00000073)),
+                GradientStop(position: 0.3, color: Color(hex: 0x00000026)),
+                GradientStop(position: 0.38, color: Color(hex: 0x00000026)),
+                GradientStop(position: 0.55, color: Color(hex: 0x000000BF)),
+                GradientStop(position: 0.7, color: Color(hex: 0x000000F7)),
+                GradientStop(position: 0.76, color: Color(hex: 0x000000FF)),
+                GradientStop(position: 1, color: Color(hex: 0x000000FF)),
+            ]
+            enum Tint {
+                static let alarm = Color(hex: 0xD5251999)
+                static let dose = Color(hex: 0x1F4FFF8C)
+                static let fasting = Color(hex: 0xFFC2338C)
+                static let night = Color(hex: 0x14143C99)
+            }
+        }
         enum Banner {
             static let padding: CGFloat = 14
-            static let radius: CGFloat = 28
+            static let radius: CGFloat = 24
             /// 28px в макете было мелко — плашку натощак можно было проскроллить.
             static let titleSize: CGFloat = 20
+        }
+        enum BottomBar {
+            /// Круглая «+» → шторка «Записать».
+            static let plusSize: CGFloat = 60
+            static let primaryHeight: CGFloat = 60
+            static let secondaryHeight: CGFloat = 60
         }
         enum Button {
             enum Destructive {
@@ -311,7 +428,33 @@ nonisolated enum Token {
         enum Card {
             static let background = Общие.night2
             static let padding: CGFloat = 16
-            static let radius: CGFloat = 28
+            static let radius: CGFloat = 24
+        }
+        enum CategoryBadge {
+            /// Уход и занятие — один цвет, так в хендоффе.
+            static let care = Color(hex: 0xC3A6FF)
+            static let dose = Color(hex: 0xFF8FBF)
+            /// Доза — скруглённый квадрат 12 (`category.doseShapeRadius`), а не круг. Единственный вид, у которого форма другая.
+            static let doseRadius: CGFloat = 12
+            static let food = Color(hex: 0xFF9A5C)
+            /// `category.incident` хендоффа = `status.error`, то есть наш терракот. Своего значения у инцидента нет и заводить его не надо.
+            static let incident = Общие.clay
+            /// Значок внутри кружка — #111 на любой заливке.
+            static let on = Color(hex: 0x111111)
+            /// Значок на терракоте — белый.
+            static let onIncident = Общие.posterInk
+            /// Тот же #A2C1FE, что ссылка.
+            static let poop = Color(hex: 0xA2C1FE)
+            /// Круг: 13 при 40.
+            static let radius: CGFloat = 13
+            /// Кружок 40 pt.
+            static let size: CGFloat = 40
+            static let train = Color(hex: 0xC3A6FF)
+            /// Лакомство и еда — один цвет, так в хендоффе.
+            static let treat = Color(hex: 0xFF9A5C)
+            static let walk = Color(hex: 0x7CE0A0)
+            static let water = Color(hex: 0x7FD3FF)
+            static let weight = Color(hex: 0xFFD43B)
         }
         enum Chip {
             static let alarmBackground = Общие.clayBg
@@ -321,12 +464,100 @@ nonisolated enum Token {
             static let restBackground = Общие.night4
             static let selectedBackground = Общие.arcticTint
         }
+        enum FeedRow {
+            static let background = Общие.night2
+            static let minHeight: CGFloat = 60
+            /// Колонка времени 44, по правому краю.
+            static let timeColumn: CGFloat = 44
+        }
+        enum Header {
+            static let buttonSize: CGFloat = 44
+            /// Крупный заголовок 36.
+            static let titleSize: CGFloat = 36
+            /// −0,9 pt при 36.
+            static let titleTracking: CGFloat = -0.9
+        }
+        enum ReadingPanel {
+            /// «с · до» 14 semibold.
+            static let captionSize: CGFloat = 14
+            /// Стеклянная панель внутри, 24.
+            static let glassRadius: CGFloat = 24
+            static let height: CGFloat = 360
+            /// При крупном кегле.
+            static let heightAX: CGFloat = 220
+            /// Панель целиком, 32.
+            static let radius: CGFloat = 32
+            /// Показание 56, SF Pro Rounded 300.
+            static let readingSize: CGFloat = 56
+        }
+        enum ReadingTone {
+            enum Alarm {
+                static let chip = Color(hex: 0xD52519)
+                /// Подпись на чипе тона. ВЫВЕДЕНО из цвета показания того же тона (`fg`): своих значений для подписи чипа хендофф не даёт. Кадр 02 подтверждает только час дозы — белым по индиго. Замер по кадрам второго пакета 22.10.2026: `~/Downloads/design_handoff_togo_ios28 2/screenshots/01.png` (обычный день) и `02.png` (час дозы), 424×896. Прочитано глазами, не из описания.
+                static let chipLabel = Общие.posterInk
+                static let fg = Общие.posterInk
+                static let panel = Color(hex: 0xD52519EB)
+                static let primaryButton = Color(hex: 0xD52519)
+            }
+            enum Dose {
+                static let chip = Общие.indigo
+                /// Подпись на чипе тона. ВЫВЕДЕНО из цвета показания того же тона (`fg`): своих значений для подписи чипа хендофф не даёт. Кадр 02 подтверждает только час дозы — белым по индиго. Замер по кадрам второго пакета 22.10.2026: `~/Downloads/design_handoff_togo_ios28 2/screenshots/01.png` (обычный день) и `02.png` (час дозы), 424×896. Прочитано глазами, не из описания.
+                static let chipLabel = Общие.posterInk
+                static let fg = Общие.posterInk
+                static let panel = Color(hex: 0x1F4FFFEB)
+                /// ЕДИНСТВЕННОЕ МЕСТО, ГДЕ ГЛАВНАЯ КНОПКА НЕ БЕЛАЯ: в час дозы она индиговая (`readingTone.dose.primaryButton` = #1F4FFF).
+                static let primaryButton = Общие.indigo
+            }
+            enum Fasting {
+                static let caption = Color(hex: 0x5A4300)
+                static let chip = Color(hex: 0xFFC233)
+                /// Подпись на чипе тона. ВЫВЕДЕНО из цвета показания того же тона (`fg`): своих значений для подписи чипа хендофф не даёт. Кадр 02 подтверждает только час дозы — белым по индиго. Замер по кадрам второго пакета 22.10.2026: `~/Downloads/design_handoff_togo_ios28 2/screenshots/01.png` (обычный день) и `02.png` (час дозы), 424×896. Прочитано глазами, не из описания.
+                static let chipLabel = Color(hex: 0x2A1D00)
+                static let fg = Color(hex: 0x2A1D00)
+                static let panel = Color(hex: 0xFFC233EB)
+            }
+            enum Night {
+                static let fg = Общие.ink
+                static let panel = Общие.glassStrong
+                /// Фото ночью: `brightness(.7)`.
+                static let photoBrightness: Double = 0.7
+                /// Фото ночью: `saturate(.3)`.
+                static let photoSaturation: Double = 0.3
+            }
+            enum Normal {
+                /// Косточка: индиго, не белый акцент.
+                static let bar = Общие.indigo
+                /// Чип состояния «Дома» на обычном дне — БЕЛАЯ пилюля, а не стекло. В токенах хендоффа чипа у тона `normal` нет вовсе: `readingTone.normal` несёт только panel, fg и bar. Значение взято С КАДРА. Замер по кадрам второго пакета 22.10.2026: `~/Downloads/design_handoff_togo_ios28 2/screenshots/01.png` (обычный день) и `02.png` (час дозы), 424×896. Прочитано глазами, не из описания.
+                static let chip = Общие.arctic
+                /// Подпись на белом чипе — #111111. Значение взято С КАДРА: в токенах хендоффа подписи чипа нет ни у одного тона. Замер по кадрам второго пакета 22.10.2026: `~/Downloads/design_handoff_togo_ios28 2/screenshots/01.png` (обычный день) и `02.png` (час дозы), 424×896. Прочитано глазами, не из описания.
+                static let chipLabel = Общие.arcticInk
+                static let fg = Общие.ink
+                /// Обычно — плотное стекло, а не цвет.
+                static let panel = Общие.glassStrong
+            }
+            enum Walk {
+                /// ВЫВЕДЕНО, НЕ ИЗМЕРЕНО: см. `panel`. Кнопки «Пописал» и «Стул» на этом экране СПЛОШНЫЕ (`surface.raised`), а не стеклянные — так в хендоффе.
+                static let fg = Общие.ink
+                /// ВЫВЕДЕНО, НЕ ИЗМЕРЕНО: своих значений у шестого тона в хендоффе нет.
+                static let panel = Общие.glassStrong
+            }
+        }
         enum Sheet {
             static let background = Общие.night1
             static let handleColor = Общие.hairline
             static let handleHeight: CGFloat = 4
             static let handleWidth: CGFloat = 36
             static let radius: CGFloat = 36
+        }
+        enum TabBar {
+            /// Активная вкладка — ИНДИГО, и на обычном дне тоже, где главная кнопка белая. Это и есть граница решения «индиго отменено»: отменён индиговый АКЦЕНТ ПО УМОЛЧАНИЮ (главная кнопка), а не индиго как значение. На кадре 01 белая кнопка «Просится» и синяя вкладка «Сегодня» стоят в одном кадре — читать их как одно решение нельзя. Замер по кадрам второго пакета 22.10.2026: `~/Downloads/design_handoff_togo_ios28 2/screenshots/01.png` (обычный день) и `02.png` (час дозы), 424×896. Прочитано глазами, не из описания.
+            static let active = Общие.indigo
+            /// Таб-бар стеклянный.
+            static let background = Общие.glass
+            static let height: CGFloat = 64
+            /// Неактивная вкладка. Замер по кадрам второго пакета 22.10.2026: `~/Downloads/design_handoff_togo_ios28 2/screenshots/01.png` (обычный день) и `02.png` (час дозы), 424×896. Прочитано глазами, не из описания.
+            static let inactive = Общие.inkMuted
+            static let item: CGFloat = 56
         }
         enum Timeline {
             static let alarmMark = Общие.clay

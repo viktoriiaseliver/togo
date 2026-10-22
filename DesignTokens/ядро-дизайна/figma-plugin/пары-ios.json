@@ -1,7 +1,6 @@
 {
   "color/bg/page": "Token.Surface.screen",
   "color/fill/2": "Token.Surface.pressed",
-  "color/fill/sunken": "Token.Surface.sunken",
   "color/line/separator": "Token.Surface.hairline",
   "color/material/glass": "Token.Surface.glass",
   "color/material/scrim": "Token.Surface.scrim",
