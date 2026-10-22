@@ -21,6 +21,7 @@ struct SettingsScreen: View {
     var body: some View {
         List {
             subscriptionSection
+            appearanceSection
             notificationsSection
             dogSection
             dataSection
@@ -195,6 +196,41 @@ struct SettingsScreen: View {
             TGBanner(tone: .alarm, title: "Не получилось",
                      subtitle: store.lastError.map { .готовая($0) },
                      systemImage: "exclamationmark.triangle")
+        }
+    }
+
+    // MARK: Как выглядит
+
+    /// Единственный вход в «Фон приложения».
+    ///
+    /// Строка стоит второй, сразу под подпиской, — так её ставит хендофф
+    /// дизайна. Отдельной секцией, а не внутри «о приложении»: фон
+    /// меняют, чтобы посмотреть, а не чтобы прочитать про версию.
+    ///
+    /// **Без этой строки `BackgroundStore` — механизм без входа.** Он
+    /// компилируется, покрыт тестами и недостижим: ни одного другого
+    /// пути в `BackgroundScreen` в приложении нет, и компилятор про это
+    /// молчит. Сторож на вход — `BackgroundStoreTests.входСНастроекЕсть`.
+    private var appearanceSection: some View {
+        Section {
+            NavigationLink {
+                BackgroundScreen()
+            } label: {
+                TGListRow(title: "Фон приложения",
+                          value: фонПодпись,
+                          systemImage: "photo.on.rectangle.angled")
+            }
+        } header: {
+            Text("как выглядит")
+        }
+    }
+
+    /// Что стоит сейчас — словами, а не «настроено».
+    private var фонПодпись: LocalizedStringKey {
+        switch BackgroundStore.shared.choice.mode {
+        case .auto: "как задумано"
+        case .single: "одно фото для всех"
+        case .random: "5 фото вперемешку"
         }
     }
 

@@ -1,5 +1,6 @@
 import WidgetKit
 import SwiftUI
+import UIKit
 
 /// Виджет локскрина и главного экрана: три скорости на один и тот же путь —
 /// новичок идёт через кнопки в приложении, опытный смотрит сюда.
@@ -7,7 +8,9 @@ struct TodayWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: "TodayWidget", provider: SnapshotProvider()) { entry in
             TodayWidgetEntry(snapshot: entry.snapshot)
-                .containerBackground(Token.Surface.screen, for: .widget)
+                .containerBackground(for: .widget) {
+                    WidgetBackdrop(photo: entry.photo)
+                }
         }
         .configurationDisplayName("Togo · просится")
         .description("Когда кормили и сколько он не писал — не открывая приложение.")
@@ -18,23 +21,58 @@ struct TodayWidget: Widget {
 struct SnapshotEntry: TimelineEntry {
     let date: Date
     let snapshot: WidgetSnapshot
+    /// Фото фона — то же самое, что у экранов приложения.
+    ///
+    /// Читается **здесь**, при сборке ленты, а не в `body`: тело вида
+    /// виджета рисуется системой когда угодно и сколько угодно раз,
+    /// и чтение файла из него — это диск в каждом кадре. Заодно так
+    /// фото попадает в заглушку, то есть в галерею выбора виджета.
+    var photo: BackgroundPhoto?
 }
 
 struct SnapshotProvider: TimelineProvider {
     func placeholder(in context: Context) -> SnapshotEntry {
-        SnapshotEntry(date: .now, snapshot: .empty)
+        SnapshotEntry(date: .now, snapshot: .empty, photo: nil)
     }
 
     func getSnapshot(in context: Context, completion: @escaping (SnapshotEntry) -> Void) {
-        completion(SnapshotEntry(date: .now, snapshot: WidgetBridge.read()))
+        completion(SnapshotEntry(date: .now,
+                                 snapshot: WidgetBridge.read(),
+                                 photo: BackgroundBridge.photo(for: .widget)))
     }
 
     /// Обновляемся раз в пятнадцать минут: чаще незачем — интервалы у собаки
     /// измеряются часами.
     func getTimeline(in context: Context, completion: @escaping (Timeline<SnapshotEntry>) -> Void) {
-        let entry = SnapshotEntry(date: .now, snapshot: WidgetBridge.read())
+        let entry = SnapshotEntry(date: .now,
+                                  snapshot: WidgetBridge.read(),
+                                  photo: BackgroundBridge.photo(for: .widget))
         let next = Date().addingTimeInterval(15 * 60)
         completion(Timeline(entries: [entry], policy: .after(next)))
+    }
+}
+
+/// Подложка виджета: фото человека или обычный фон.
+///
+/// **Затемнение обязательно, и это не украшение.** Поверх фотографии
+/// лежат белые чернила `Token.Ink.primary`; на светлом снимке — снеге,
+/// песке, белой шерсти — они пропадают, и виджет становится пустым
+/// прямоугольником. Проверяется это не на нашем фото, а на самом
+/// светлом, какое человек может положить.
+struct WidgetBackdrop: View {
+    let photo: BackgroundPhoto?
+
+    var body: some View {
+        ZStack {
+            Token.Surface.screen
+            if let photo, let image = UIImage(data: photo.data) {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFill()
+                Token.Surface.scrim
+            }
+        }
+        .accessibilityHidden(true)
     }
 }
 
