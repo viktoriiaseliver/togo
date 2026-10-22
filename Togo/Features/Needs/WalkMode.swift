@@ -109,167 +109,272 @@ struct WalkModeScreen: View {
 
     // MARK: Прогулка идёт
 
-    /// Отметки закреплены, список прокручивается.
+    /// Экран прогулки по кадру 08 хендоффа `design_handoff_togo_ios28`.
     ///
-    /// Было наоборот: сетка отметок уезжала вверх вместе с прокруткой,
-    /// а «Пауза» и «Закончить» оставались приколоты внизу. То есть самые
-    /// частые кнопки убегали от пальца, а самые редкие занимали лучшее
-    /// место — на морозе одной рукой это просто не работает.
+    /// Сверху вниз, как на кадре: строка «с 17:55» → **тост сверху** →
+    /// фото собаки в круге на фоне-фотографии → таймер крупно и подпись
+    /// «пока без отметок» → кнопки. Таб-бара на кадре нет вовсе: режим
+    /// занимает экран целиком.
+    ///
+    /// **Порядок кнопок взят с кадра, а не из README.** README говорит
+    /// «„Пописал“ / „Стул“ — сплошные `surface-raised`»; на кадре
+    /// «Пописал» **белая во всю ширину** (главная кнопка темы «Кино»),
+    /// а `surface-raised` только «Стул». Мерено по кадру.
+    ///
+    /// Отметки закреплены, список прокручивается. Было наоборот: сетка
+    /// уезжала вверх вместе с прокруткой, а «Пауза» оставалась внизу —
+    /// самые частые кнопки убегали от пальца. На морозе одной рукой это
+    /// просто не работает.
     private func walkSheet(_ session: ActiveSession) -> some View {
         VStack(spacing: 0) {
-            TGSheetHandle()
             header(session)
 
             if session.marks.isEmpty {
                 Spacer(minLength: 0)
+                WalkRing(dog: dog)
+                таймер(session)
+                Spacer(minLength: 0)
             } else {
                 ScrollView {
-                    marksList(session)
-                        .padding(.horizontal, Token.Spacing.screenPadding)
-                        .padding(.bottom, Token.Space.s10)
+                    VStack(spacing: Token.Space.s16) {
+                        WalkRing(dog: dog)
+                        таймер(session)
+                        marksList(session)
+                            .padding(.horizontal, Token.Spacing.screenPadding)
+                    }
+                    .padding(.bottom, Token.Space.s10)
                 }
                 .scrollBounceBehavior(.basedOnSize)
             }
 
-            VStack(spacing: Token.Space.s10) {
-                markGrid
-                HStack(spacing: Token.Space.s10) {
-                    // Пауза обратима и ничего не записывает — ей хватает
-                    // камня. Горчицей её красить нельзя: этот цвет занят
-                    // окном натощак и больше нигде не появляется.
-                    TGButton(title: session.isPaused ? "Продолжить" : "Пауза",
-                             variant: .secondary, size: .medium,
-                             systemImage: session.isPaused ? "play.fill" : "pause.fill",
-                             fullWidth: true) {
-                        togglePause()
-                    }
-                    // Завершение — шалфей: оно закрывает начатое, а кирпич
-                    // на этом экране уже занят отметкой, которую жмут
-                    // десять раз за прогулку.
-                    TGButton(title: "Закончить", variant: .finish, size: .medium,
-                             systemImage: "checkmark", fullWidth: true) {
-                        finish()
-                    }
-                }
-            }
-            .padding(.horizontal, Token.Spacing.screenPadding)
-            .padding(.top, Token.Space.s10)
-            .padding(.bottom, Token.Space.s8)
-            .background(.regularMaterial)
+            кнопки(session)
         }
-        .background(Token.Surface.screen)
+        .background(фон)
+        // **Тост — СВЕРХУ.** Хендофф: «Тост — сверху (740 pt от низа
+        // в кадре 874), не перекрывает кнопки».
+        //
+        // И вторая половина, которой в хендоффе нет: `UndoToastView`
+        // висит **только** на `RootView:75`, снизу у `TabView`. Режим
+        // прогулки показывается шторкой — значит до сегодня тост
+        // от «Пописал» рисовался ПОД шторкой, то есть человек, отметивший
+        // на улице, не видел подтверждения вовсе. Своя плашка здесь
+        // не строится: тот же `UndoToastView`, просто сверху.
+        .overlay(alignment: .top) {
+            UndoToastView()
+                .padding(.top, Token.Space.s8)
+        }
     }
 
-    /// Часы и сводка — то, на что смотрят, но не нажимают.
-    private func header(_ session: ActiveSession) -> some View {
-        HStack(alignment: .top, spacing: Token.Space.s12) {
-            VStack(alignment: .leading, spacing: Token.Space.s4) {
-                TGStopwatch(session: session, now: now, style: AppFont.screenTitle)
-                Text((session.isPaused ? session.kind.pausedTitle : session.kind.runningTitle)
-                     + " · " + session.tally)
-                    .textStyle(AppFont.caption)
-                    .wraps()
+    /// Фон — фотография собаки, растворяющаяся в чёрный.
+    ///
+    /// На кадре маска не доходит до низа: нижняя треть чёрная, иначе
+    /// под белой кнопкой «Пописал» просвечивал бы мех. Высоту хендофф
+    /// задаёт токеном `backdrop.height.walk` = 520, которого у нас нет;
+    /// пока фото занимает верх и гасится градиентом.
+    @ViewBuilder
+    private var фон: some View {
+        ZStack(alignment: .top) {
+            Token.Surface.screen
+            if let photo = dog?.photo, let image = UIImage(data: photo) {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(maxWidth: .infinity)
+                    .containerRelativeFrame(.vertical) { высота, _ in
+                        высота * Self.доляФона
+                    }
+                    .clipped()
+                    .overlay {
+                        LinearGradient(colors: [Token.Surface.scrim,
+                                                Color.clear,
+                                                Token.Surface.screen],
+                                       startPoint: .top, endPoint: .bottom)
+                    }
+                    .accessibilityHidden(true)
             }
+        }
+        .ignoresSafeArea()
+    }
+
+    /// Какую долю высоты занимает фото. Доля, а не точки: 520 из кадра
+    /// 874 — это 0,59 экрана, и на SE точки соврали бы.
+    private static let доляФона: CGFloat = 0.59
+
+    /// Таймер и что под ним.
+    ///
+    /// «пока без отметок» — пустое состояние с кадра: до первой отметки
+    /// сводка `tally` и так говорит ровно это, поэтому строка одна,
+    /// а не две.
+    private func таймер(_ session: ActiveSession) -> some View {
+        VStack(spacing: Token.Space.s4) {
+            TGStopwatch(session: session, now: now, style: Self.стильТаймера)
+            Text(session.isPaused
+                 ? String(localized: "на паузе · \(session.tally)")
+                 : session.tally)
+                .textStyle(AppFont.caption)
+                .wraps()
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, Token.Spacing.screenPadding)
+    }
+
+    /// Крупная цифра прогулки: SF Rounded, светлое начертание.
+    ///
+    /// Хендофф задаёт 76 (`type.walkTimer`), такой ступени у нас нет —
+    /// `Token.FontSize.hero` = 56 самая крупная. Берём её, и 76 назван
+    /// в отчёте как недостающий токен. Выдумывать число нельзя: оно
+    /// уедет дизайнеру тем же именем и разойдётся с макетом молча.
+    private static var стильТаймера: TextStyleToken {
+        TextStyleToken(size: Token.FontSize.hero,
+                       weight: Token.FontWeight.light,
+                       color: Token.Ink.primary,
+                       rounded: true,
+                       monospacedDigits: true,
+                       relativeTo: .largeTitle)
+    }
+
+    /// Строка «с 17:55» и возврат на главный экран.
+    ///
+    /// «Свернуть» оставлена, хотя на кадре её нет: у нас прогулка —
+    /// шторка, и без неё единственный выход остаётся смахиванием.
+    /// Когда показ переедет на `fullScreenCover` (как на кадре),
+    /// кнопка станет единственным выходом, а не запасным.
+    private func header(_ session: ActiveSession) -> some View {
+        HStack(alignment: .center, spacing: Token.Space.s8) {
+            Circle()
+                .fill(session.isPaused ? Token.Ink.secondary : Token.Action.primary)
+                .frame(width: Token.Size.handleH, height: Token.Size.handleH)
+                .accessibilityHidden(true)
+            Text("с \(Fmt.clock(session.startedAt))")
+                .textStyle(AppFont.micro)
             Spacer(minLength: 0)
             TGCloseButton(title: "Свернуть") { dismiss() }
-                .padding(.trailing, -Token.Space.s6)
-                .padding(.top, -Token.Space.s6)
         }
         .padding(.horizontal, Token.Spacing.screenPadding)
         .padding(.top, Token.Space.s8)
-        .padding(.bottom, Token.Space.s12)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Прогулка с \(Fmt.clock(session.startedAt))")
     }
 
-    @ViewBuilder
-    private var markGrid: some View {
-        if session?.isPaused == true {
-            TGBanner(tone: .waiting, title: "Прогулка на паузе",
-                     subtitle: "Время не идёт. Нажми «Продолжить», когда пойдёте дальше.",
-                     systemImage: "pause.circle")
-        }
+    /// Кнопки по кадру 08: две широких, ряд плиток и низ со слайдером.
+    ///
+    /// **«Закончить» заменена слайдером «Домой»** — хендофф, раздел
+    /// «На улице». Прогулку заканчивают один раз, а отмечают десять,
+    /// и случайный тап по «Закончить» стоил записи; слайдер промахом
+    /// не срабатывает.
+    private func кнопки(_ session: ActiveSession) -> some View {
         VStack(spacing: Token.Space.s10) {
-            // Самое частое — большой кнопкой: за прогулку это жмут чаще всего.
-            Button { mark(.urine) } label: {
-                markLabel(.urine, count: session?.count(of: .urine) ?? 0, на: .accent)
-                    .frame(maxWidth: .infinity, minHeight: 88)
-                    .background(MarkFill.accent.color,
-                                in: RoundedRectangle(cornerRadius: Token.Radius.control, style: .continuous))
-            }
-            .buttonStyle(.plain)
-
-            HStack(spacing: Token.Space.s10) {
-                ForEach([ActiveSession.Mark.Kind.stool, .reaction], id: \.self) { kind in
-                    let заливка: MarkFill = kind == .reaction ? .waiting : .quiet
-                    Button { mark(kind) } label: {
-                        markLabel(kind, count: session?.count(of: kind) ?? 0, на: заливка)
-                            .frame(maxWidth: .infinity, minHeight: 68)
-                            .background(заливка.color,
-                                        in: RoundedRectangle(cornerRadius: Token.Radius.tile, style: .continuous))
-                    }
-                    .buttonStyle(.plain)
-                }
+            if session.isPaused {
+                TGBanner(tone: .waiting, title: "Прогулка на паузе",
+                         subtitle: "Время не идёт. Нажми «Продолжить», когда пойдёте дальше.",
+                         systemImage: "pause.circle")
             }
 
+            VStack(spacing: Token.Space.s10) {
+                // Самое частое — главной кнопкой экрана. В теме «Кино»
+                // она белая; роль та же, что у `Button.Primary`.
+                широкая(.urine, на: .accent, высота: Token.Size.capsule)
+                широкая(.stool, на: .quiet, высота: Token.Size.controlL)
+
+                // Инцидент первым и красным — порядок с кадра и из
+                // шторки «Записать»: то, о чём жалеют, что не записали.
+                плитки([.incident, .treat, .note])
+                // Срыва и занятия на кадре нет, и убрать их нельзя:
+                // отметку срыва ставит ТОЛЬКО этот экран, а на ней
+                // стоит карточка «на что сорвался» в итоге прогулки.
+                // Убери кнопку — и карточка станет недостижимой,
+                // то есть механизмом без входа.
+                плитки([.reaction, .training])
+            }
+            .disabled(session.isPaused)
+            .opacity(session.isPaused ? 0.4 : 1)
+
             HStack(spacing: Token.Space.s10) {
-                ForEach([ActiveSession.Mark.Kind.treat, .training, .incident, .note], id: \.self) { kind in
-                    Button { mark(kind) } label: {
-                        // `TGTile` вместо своего прямоугольника: при
-                        // `isSelected` и `tone: .alarm` компонент даёт
-                        // ровно `Token.Status.overdueBg`, иначе
-                        // `Token.Surface.sunken` — то же, что считала
-                        // здешняя тернарная пара, плюс `.themeSurface`,
-                        // которого у ручной копии не было.
-                        TGTile(isSelected: kind == .incident,
-                               tone: .alarm,
-                               minHeight: Token.Size.tapTarget + 8) {
-                            VStack(spacing: Token.Space.s4) {
-                                Image(systemName: kind.symbol)
-                                    .font(.system(size: 15, weight: .medium))
-                                    .accessibilityHidden(true)
-                                Text(kind.title)
-                                    .font(.system(size: 11, weight: .medium))
-                                    .lineLimit(1)
-                                    .minimumScaleFactor(0.7)
-                            }
-                            .foregroundStyle(kind == .incident ? Token.Status.overdueText : Token.Ink.primary)
-                        }
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(kind.title)
+                // Пауза обратима и ничего не записывает — ей хватает
+                // камня. Горчицей её красить нельзя: этот цвет занят
+                // окном натощак и больше нигде не появляется.
+                TGButton(title: session.isPaused ? "Продолжить" : "Пауза",
+                         variant: .secondary, size: .medium,
+                         systemImage: session.isPaused ? "play.fill" : "pause.fill",
+                         fullWidth: false) {
+                    togglePause()
                 }
+                WalkHomeSlider { finish() }
             }
         }
-        .disabled(session?.isPaused == true)
-        .opacity(session?.isPaused == true ? 0.4 : 1)
+        .padding(.horizontal, Token.Spacing.screenPadding)
+        .padding(.top, Token.Space.s10)
+        .padding(.bottom, Token.Space.s8)
     }
 
-    // Заливка и цвет подписи живут в дизайн-системе — `MarkFill`.
-    // Перенесено туда 08.10.2026 по указанию чужого сторожа
-    // (`ComponentTokenScopeTests`): `Token.Component.*` — словарь
-    // дизайн-системы, и экран, который в него заглядывает, становится
-    // вторым местом, где решают, как выглядит кнопка.
-
-    private func markLabel(_ kind: ActiveSession.Mark.Kind, count: Int,
-                           на заливка: MarkFill) -> some View {
-        VStack(spacing: Token.Space.s2) {
-            Image(systemName: kind.symbol)
-                .font(.system(size: 20, weight: .medium))
-                .accessibilityHidden(true)
-            // Цвет ВМЕСТО стилевого, а не поверх: `AppFont` несёт свой
-            // `color` и красит сам `Text`, то есть побеждает
-            // `foregroundStyle` предка. Прежняя редакция ставила его
-            // через `AppFont.cardTitle.color(…)` — тоже подстановкой,
-            // и это было верно; неверен был сам цвет.
-            Text(kind.title).textStyle(AppFont.cardTitle, color: заливка.label)
-            if count > 0 {
-                Text(count == 1 ? "отмечено" : Fmt.times(count))
-                    .textStyle(AppFont.micro, color: заливка.counter)
+    /// Широкая кнопка отметки: значок и подпись в строку, счётчик — хвостом.
+    ///
+    /// Счётчик приписывается к подписи («Стул · 2»), как в прототипе,
+    /// а не стоит второй строкой: на кадре кнопка в одну строку, и вторая
+    /// строка меняла бы её высоту от числа отметок.
+    private func широкая(_ kind: ActiveSession.Mark.Kind,
+                         на заливка: MarkFill, высота: CGFloat) -> some View {
+        let count = session?.count(of: kind) ?? 0
+        return Button { mark(kind) } label: {
+            HStack(spacing: Token.Space.s8) {
+                Image(systemName: kind.symbol)
+                    .font(.system(size: Token.Size.iconLg, weight: Token.FontWeight.medium))
+                    .accessibilityHidden(true)
+                // Цвет ВМЕСТО стилевого, а не поверх: `AppFont` несёт свой
+                // `color` и красит сам `Text`, то есть побеждает
+                // `foregroundStyle` предка.
+                Text(count > 0 ? kind.title + " · \(count)" : kind.title)
+                    .textStyle(AppFont.cardTitle, color: заливка.label)
             }
+            .foregroundStyle(заливка.label)
+            .frame(maxWidth: .infinity, minHeight: высота)
+            .background(заливка.color,
+                        in: RoundedRectangle(cornerRadius: Token.Radius.capsule, style: .continuous))
         }
-        .foregroundStyle(заливка.label)
+        .buttonStyle(.plain)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(kind.title)
         .accessibilityValue(count > 0 ? "отмечено \(count)" : "не отмечено")
+    }
+
+    /// Ряд плиток. Инцидент красный — единственный, кто красится.
+    private func плитки(_ kinds: [ActiveSession.Mark.Kind]) -> some View {
+        HStack(spacing: Token.Space.s10) {
+            ForEach(kinds, id: \.self) { kind in
+                let count = session?.count(of: kind) ?? 0
+                Button { mark(kind) } label: {
+                    // `TGTile` вместо своего прямоугольника: при
+                    // `isSelected` и `tone: .alarm` компонент даёт ровно
+                    // `Token.Status.overdueBg`, иначе `Token.Surface.sunken`,
+                    // плюс `.themeSurface`, которого у ручной копии не было.
+                    TGTile(isSelected: count > 0,
+                           tone: kind == .incident ? .alarm : .neutral,
+                           minHeight: Token.Size.tapTarget) {
+                        HStack(spacing: Token.Space.s6) {
+                            Image(systemName: kind.symbol)
+                                .font(.system(size: Token.Size.iconSm,
+                                              weight: Token.FontWeight.medium))
+                                .accessibilityHidden(true)
+                            Text(count > 0 ? kind.title + " · \(count)" : kind.title)
+                                .textStyle(AppFont.captionEmphasis, color: подпись(kind))
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.7)
+                        }
+                        .foregroundStyle(подпись(kind))
+                        .padding(.horizontal, Token.Space.s8)
+                    }
+                }
+                .buttonStyle(.plain)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(kind.title)
+                .accessibilityValue(count > 0 ? "отмечено \(count)" : "не отмечено")
+            }
+        }
+    }
+
+    private func подпись(_ kind: ActiveSession.Mark.Kind) -> Color {
+        kind == .incident ? Token.Status.overdueText : Token.Ink.primary
     }
 
     private func marksList(_ session: ActiveSession) -> some View {
