@@ -3,19 +3,45 @@ import UIKit
 
 /// Лента дня.
 ///
-/// Переделана по трём претензиям, которые видно глазами дизайнера:
+/// Переписана 22.10.2026 под хендофф `design_handoff_togo_ios28`, раздел
+/// «Лента дня», решением Виктории «перепиши всё под дизайн».
 ///
-/// 1. **Цвет опять ничего не значил.** Точки на рельсе были все
-///    сине-зелёные — то есть цвет был украшением, как та галочка
-///    синхронизации. Теперь маркер нейтральный, а терракот получает
-///    только то, что его правда заслуживает: кровь и инциденты.
-/// 2. **Иконка дублировала подпись.** Рядом со словом «Еда» стояла вилка,
-///    и то и другое в одной строке. Иконка переехала на сам рельс
-///    и стала маркером — так делают Apple в «Дневнике» и «Кошельке».
-/// 3. **Промежутки были не видны.** Всё приложение про интервалы —
-///    «не писал 5 ч 20 мин», — а на ленте они не показывались нигде.
-///    Теперь промежуток стоит между записями, в колонке времени.
-///    Это то, ради чего ленту вообще читают.
+/// ## Что изменил хендофф
+///
+/// Строка была рельсом: колонка времени 48, вертикальная линия, кружок 24
+/// на ней. Стало — **сплошные строки `surface-card`**: время 44 справа,
+/// кружок категории 40, заголовок 17, подпись 14. Рельса нет: сквозь него
+/// (и сквозь стекло, которым его сперва рисовали) просвечивали кнопки
+/// свайпа, и строка переставала читаться как строка.
+///
+/// ## Что от прежней редакции осталось нарочно
+///
+/// Каждое из этого оплачено кадром или отзывом, и хендофф ни одного
+/// не отменяет:
+///
+/// * **Промежуток «дома N» между выходами.** Всё приложение про интервалы;
+///   хендофф просит ровно это («Между выходами — строка „дома 3 ч“»), и
+///   считает их по-прежнему `TimelineBuilder.timeIndoors` — от выхода
+///   до выхода, не сбиваясь о еду посередине.
+/// * **Отметки прогулки — своими строками под ней.** Это части одного
+///   события, а не соседние события.
+/// * **Строка — кнопка, а не жест.** Жест не даёт ни отклика, ни имени
+///   для озвучки.
+/// * **Ширина колонки времени масштабируется.** При плоских 44 на крупной
+///   системной настройке «07:00» печаталось как «07:0» — кадр 28.09.
+///   Число, обрезанное на последней цифре, читается как другое число.
+/// * **Погашенная строка, пока висит тост.** Это вторая половина кнопки
+///   «Отменить».
+///
+/// ## Свайпа здесь нет, и это стык, а не упущение
+///
+/// Хендофф просит `List` со `swipeActions`. `DayTimeline` стоит внутри
+/// `ScrollView` у обоих хозяев (`TodayScreen.swift:123` и `TGSheet`
+/// в `HistoryScreen`), а `List` внутри `ScrollView` не живёт: своей высоты
+/// он не считает. Поэтому `List`-редакция лежит отдельно —
+/// `DayTimelineList`, — и включается тем, кто владеет хозяином.
+/// Собственный свайп взамен не писан нарочно: хендофф его прямо
+/// не рекомендует, а прежняя попытка и дала ту самую просвечивающую строку.
 struct DayTimeline: View {
     let events: [LogEvent]
     let now: Date
@@ -28,58 +54,51 @@ struct DayTimeline: View {
     private static let gapThreshold: TimeInterval = 60 * 60
 
     var body: some View {
-        TGCard {
+        TGCard(padding: 0, spacing: 0) {
             Text(Fmt.dayTitle(now))
                 .textStyle(AppFont.micro)
                 .textCase(.lowercase)
-                .foregroundStyle(Token.Ink.secondary)
                 .accessibilityAddTraits(.isHeader)
+                .padding(.horizontal, Token.Spacing.cardPadding)
+                .padding(.top, Token.Spacing.cardPadding)
+                .padding(.bottom, Token.Space.s8)
 
             if blocks.isEmpty {
                 EmptyDayState()
+                    .padding(.horizontal, Token.Spacing.cardPadding)
+                    .padding(.bottom, Token.Spacing.cardPadding)
             } else {
-                VStack(spacing: 0) {
-                    ForEach(Array(blocks.enumerated()), id: \.element.id) { index, block in
-                        // Промежуток стоит перед выходом, а не после
-                        // предыдущей записи: он отвечает на вопрос
-                        // «сколько он терпел до этого раза».
-                        if let indoors = TimelineBuilder.timeIndoors(
-                            before: index, in: blocks, threshold: Self.gapThreshold) {
-                            TimelineGap(interval: indoors)
-                        }
-
-                        // Кнопка, а не жест: строка отвечает на нажатие
-                        // и становится кнопкой для голоса. Жест не делает
-                        // ни того, ни другого.
-                        Button { onTap(block.event) } label: {
-                            TimelineRow(
-                                block: block,
-                                isFirst: index == 0,
-                                showsAuthor: showsAuthor
-                            )
-                        }
-                        .buttonStyle(TimelineRowButtonStyle())
-
-                        // Отметки внутри прогулки — своими строками, но
-                        // под ней и с её же рельса: это части одного
-                        // события, а не соседние события.
-                        ForEach(block.markGroups) { group in
-                            Button {
-                                // Одна отметка открывается сама. У группы
-                                // «какая из трёх» — вопрос без смысла,
-                                // ровно по той же причине, по которой у неё
-                                // нет и времени: открываем прогулку.
-                                onTap(group.count == 1 ? group.representative : block.event)
-                            } label: {
-                                TimelineMarkRow(group: group)
-                            }
-                            .buttonStyle(TimelineRowButtonStyle())
-                        }
-
+                ForEach(Array(blocks.enumerated()), id: \.element.id) { index, block in
+                    // Промежуток стоит ПЕРЕД выходом, а не после предыдущей
+                    // записи: он отвечает на «сколько он терпел до этого раза».
+                    if let indoors = TimelineBuilder.timeIndoors(
+                        before: index, in: blocks, threshold: Self.gapThreshold) {
+                        DayTimelineGapRow(interval: indoors)
+                    } else if index > 0 {
+                        TGDivider(inset: DayTimelineRow.separatorInset)
                     }
-                    if showsNow {
-                        NowMarker(now: now, sinceLast: sinceLastEntry)
+
+                    Button { onTap(block.event) } label: {
+                        DayTimelineRow(block: block, showsAuthor: showsAuthor)
                     }
+                    .buttonStyle(DayTimelineRowButtonStyle())
+
+                    ForEach(block.markGroups) { group in
+                        Button {
+                            // Одна отметка открывается сама. У группы «какая
+                            // из трёх» — вопрос без смысла, ровно по той же
+                            // причине, по которой у неё нет и времени.
+                            onTap(group.count == 1 ? group.representative : block.event)
+                        } label: {
+                            DayTimelineMarkRow(group: group)
+                        }
+                        .buttonStyle(DayTimelineRowButtonStyle())
+                    }
+                }
+                if showsNow {
+                    NowMarker(now: now, sinceLast: sinceLastEntry)
+                        .padding(.horizontal, Token.Spacing.cardPadding)
+                        .padding(.bottom, Token.Spacing.cardPadding)
                 }
             }
         }
@@ -95,47 +114,14 @@ struct DayTimeline: View {
     }
 }
 
-/// Геометрия рельса. В одном месте, иначе маркеры разъезжаются на пиксель —
-/// и это видно.
-enum TimelineRail {
-    static let timeWidth: CGFloat = 48
-
-    /// Та же колонка, умноженная на системную настройку размера текста.
-    /// Само время рисуется `AppFont.numeric`, то есть масштабируется, —
-    /// а ширина под ним оставалась прежней.
-    static var scaledTimeWidth: CGFloat {
-        UIFontMetrics(forTextStyle: .body).scaledValue(for: timeWidth)
-    }
-    static let railWidth: CGFloat = 30
-    static let markerSize: CGFloat = 24
-    static let nowDotSize: CGFloat = 12
-    static let lineWidth: CGFloat = 1.5
-    /// Отрезок над маркером — чтобы линия шла непрерывно.
-    static let topStub: CGFloat = 4
-}
-
-/// По чему выравнивается строка ленты.
+/// Строка ленты дня.
 ///
-/// Раньше время, кружок и заголовок разъезжались по вертикали: у каждого
-/// стоял свой отступ сверху, подобранный на глаз под один размер шрифта.
-/// Стоило системному шрифту стать крупнее — и кружок уезжал ниже
-/// собственной подписи.
-///
-/// Теперь все трое объявляют одну и ту же точку — свой вертикальный
-/// центр, — и стек считает отступы сам, при любом размере текста.
-extension VerticalAlignment {
-    private enum TimelineMarkerID: AlignmentID {
-        static func defaultValue(in dimensions: ViewDimensions) -> CGFloat {
-            dimensions[VerticalAlignment.top]
-        }
-    }
-
-    static let timelineMarker = VerticalAlignment(TimelineMarkerID.self)
-}
-
-struct TimelineRow: View {
+/// Геометрия из хендоффа: время 44 справа-выровнено 15 semibold · кружок
+/// категории 40 · заголовок 17 + подпись 14. Выносится отдельным типом,
+/// потому что её рисуют два контейнера — карточка (`DayTimeline`) и список
+/// со свайпом (`DayTimelineList`), — и расходиться им нельзя.
+struct DayTimelineRow: View {
     let block: TimelineBlock
-    var isFirst: Bool = false
     /// В семье из одного человека подпись автора — шум: и так понятно, кто.
     var showsAuthor: Bool = false
 
@@ -145,56 +131,77 @@ struct TimelineRow: View {
     /// это вторая половина кнопки «Отменить». Уехал тост — ушла и строка.
     private var isCancelled: Bool { event.deletedAt != nil }
 
+    /// Отступ разделителя: он начинается там, где начинается текст, —
+    /// то есть за колонкой времени и кружком. Разделитель во всю ширину
+    /// резал бы строку под кружком пополам.
+    static var separatorInset: CGFloat {
+        Token.Spacing.cardPadding + timeWidth + Token.Space.s12
+            + Token.Size.avatarMd + Token.Space.s12
+    }
+
+    /// Колонка времени. Хендофф задаёт 44 — берём `Token.Size.tapTarget`,
+    /// это та же величина с именем.
+    static var timeWidth: CGFloat {
+        UIFontMetrics(forTextStyle: .body).scaledValue(for: Token.Size.tapTarget)
+    }
+
     var body: some View {
-        HStack(alignment: .timelineMarker, spacing: Token.Space.s6) {
-            time
-            marker
+        HStack(alignment: .top, spacing: Token.Space.s12) {
+            время
+            CategoryBadge(kind: event.kind,
+                          raisesAlarm: event.raisesAlarm,
+                          isDeleted: isCancelled)
 
             VStack(alignment: .leading, spacing: Token.Space.s2) {
                 HStack(spacing: Token.Space.s8) {
+                    // Цвет ВМЕСТО стилевого, а не поверх: `AppFont` несёт
+                    // свой `color` и красит сам `Text`, то есть побеждает
+                    // `foregroundStyle`. Прежняя редакция этой строки
+                    // накладывала цвет сверху — на `bodyEmphasis` это
+                    // сходило с рук только потому, что цвета совпадали.
                     Text(isCancelled ? event.kind.title + " · отменено" : event.kind.title)
-                        .textStyle(AppFont.bodyEmphasis)
-                        .foregroundStyle(isCancelled ? Token.Ink.secondary : event.titleColor)
+                        .textStyle(AppFont.bodyEmphasis,
+                                   color: isCancelled ? Token.Ink.secondary : event.titleColor)
                         .strikethrough(isCancelled, color: Token.Ink.secondary)
-                        .alignmentGuide(.timelineMarker) { $0[VerticalAlignment.center] }
                     Spacer(minLength: 0)
                     if showsAuthor {
                         TGAuthorMark(author: event.authorName)
                     }
                 }
-                if let subtitle {
-                    Text(subtitle)
-                        .textStyle(AppFont.caption)
-                        .foregroundStyle(Token.Ink.secondary)
+                if let подпись {
+                    Text(подпись)
+                        .textStyle(AppFont.micro)
                         .wraps()
                 }
             }
-            .padding(.bottom, block.hasMarks ? Token.Space.s4 : Token.Space.s10)
         }
+        .padding(.horizontal, Token.Spacing.cardPadding)
+        .padding(.vertical, Token.Space.s10)
+        // Цель касания у строки не меньше 44: `ПолКегляTests` и
+        // рекомендация хендоффа 4 требуют этого от всего, что нажимают.
+        .frame(minHeight: Token.Size.tapTarget)
         .accessibilityElement(children: .combine)
     }
 
     /// У события с длительностью в колонке времени стоит интервал,
     /// а не только начало: прогулка — это отрезок, и человек ищет глазами
     /// именно «с и до».
-    private var time: some View {
-        VStack(alignment: .leading, spacing: 0) {
+    private var время: some View {
+        VStack(alignment: .trailing, spacing: 0) {
             Text(Fmt.clock(block.startedAt))
-                .textStyle(AppFont.numeric(13, weight: .medium))
-                .foregroundStyle(Token.Ink.secondary)
-                .alignmentGuide(.timelineMarker) { $0[VerticalAlignment.center] }
+                .textStyle(AppFont.numeric(Token.FontSize.meta,
+                                           weight: Token.FontWeight.semibold),
+                           color: isCancelled ? Token.Ink.secondary : Token.Ink.primary)
             if block.isSpan {
                 Text(Fmt.clock(block.endedAt))
-                    .textStyle(AppFont.numeric(13, weight: .medium))
-                    .foregroundStyle(Token.Ink.secondary)
+                    .textStyle(AppFont.numeric(Token.FontSize.meta,
+                                               weight: Token.FontWeight.regular),
+                               color: Token.Ink.secondary)
             }
         }
         .fixedSize()
-        // Колонка времени растёт вместе с кеглем. При фиксированных
-        // сорока восьми точках на крупной системной настройке «07:00»
-        // печаталось как «07:0» — кадр 28.09. Число, обрезанное
-        // на последней цифре, читается как другое число.
-        .frame(width: TimelineRail.scaledTimeWidth, alignment: .leading)
+        // Ширина растёт вместе с кеглем — см. голову файла про «07:0».
+        .frame(width: Self.timeWidth, alignment: .trailing)
     }
 
     /// Что писать под названием.
@@ -202,101 +209,58 @@ struct TimelineRow: View {
     /// У события с длительностью — сколько оно шло. Итог прогулки
     /// («пописал · стул») здесь не повторяем: он и так стоит строками
     /// ниже, и раньше одно и то же было написано дважды.
-    private var subtitle: String? {
+    private var подпись: String? {
         if isCancelled { return String(localized: "след остаётся") }
         guard block.isSpan else { return event.subtitle }
         let minutes = Int(block.endedAt.timeIntervalSince(block.startedAt)) / 60
         return String(localized: "\(minutes) минут")
     }
-
-    private var markerTint: Color {
-        if isCancelled { return Token.Ink.secondary }
-        return event.raisesAlarm ? Token.Status.overdueText : Token.Ink.primary
-    }
-
-    /// Маркер — это и есть иконка записи. Кружок нейтральный; терракот
-    /// достаётся только тому, что его заслуживает.
-    private var marker: some View {
-        VStack(spacing: 0) {
-            Rectangle()
-                .fill(isFirst ? Color.clear : Token.Surface.hairline)
-                .frame(width: TimelineRail.lineWidth, height: TimelineRail.topStub)
-
-            Image(systemName: event.kind.symbol)
-                .font(.system(size: 11, weight: .semibold))
-                .foregroundStyle(markerTint)
-                .frame(width: TimelineRail.markerSize, height: TimelineRail.markerSize)
-                .background(
-                    Circle().fill(isCancelled ? Token.Surface.sunken
-                                  : (event.raisesAlarm ? Token.Status.overdueBg : Token.Surface.control))
-                )
-                .alignmentGuide(.timelineMarker) { $0[VerticalAlignment.center] }
-
-            Rectangle()
-                .fill(Token.Surface.hairline)
-                .frame(width: TimelineRail.lineWidth)
-        }
-        .frame(width: TimelineRail.railWidth)
-        .accessibilityHidden(true)
-    }
 }
 
 /// Отметка внутри прогулки: то, что собака сделала, пока гуляли.
 ///
-/// Отдельной строкой, но подчинённой — с отступом, мельче и без своего
-/// маркера на рельсе. Это часть прогулки, а не соседнее событие.
+/// Отдельной строкой, но подчинённой — без своего кружка и мельче.
+/// Это часть прогулки, а не соседнее событие.
 ///
 /// Название берётся своё, а не общее имя вида записи: «пописал» вместо
 /// «Выход». Раньше отметка внутри прогулки называлась ровно так же, как
 /// самостоятельный выход по нужде, — одно слово на два разных события.
-struct TimelineMarkRow: View {
+struct DayTimelineMarkRow: View {
     let group: MarkGroup
 
     var body: some View {
-        HStack(alignment: .top, spacing: Token.Space.s6) {
-            // Времени здесь нет намеренно.
-            //
-            // Внутри прогулки его уже задаёт сама прогулка: «18:12 — 18:45».
-            // Мелкая метка у отметки не добавляла ничего — в живом дневнике
-            // три «пописал» стояли в 06:34, 06:38 и 06:39, и человек
-            // не узнавал из этих цифр ничего, чего не знал бы из «×3».
-            // Точное время осталось в самой записи: тап её открывает.
+        HStack(alignment: .top, spacing: Token.Space.s12) {
+            // Времени здесь нет намеренно: внутри прогулки его задаёт сама
+            // прогулка («18:12 — 18:45»). В живом дневнике три «пописал»
+            // стояли в 06:34, 06:38 и 06:39, и человек не узнавал из этих
+            // цифр ничего, чего не знал бы из «×3».
             Color.clear
-                .frame(width: TimelineRail.timeWidth, height: 1)
+                .frame(width: DayTimelineRow.timeWidth, height: Token.Size.hairline)
 
-            // Рельс продолжается, но кружка на нём нет: событие одно.
-            //
-            // Ширина — та же, что у колонки маркера. С `markerSize`
-            // линия под каждой прогулкой уезжала на три точки влево,
-            // и рельс шёл ступеньками.
-            Rectangle()
-                .fill(Token.Surface.hairline)
-                .frame(width: TimelineRail.lineWidth)
-                .frame(width: TimelineRail.railWidth)
+            Image(systemName: group.kind.symbol)
+                .font(.system(size: Token.Size.iconSm, weight: Token.FontWeight.semibold))
+                .foregroundStyle(цвет)
+                .frame(width: Token.Size.avatarMd)
+                .accessibilityHidden(true)
 
-            HStack(spacing: Token.Space.s6) {
-                Image(systemName: group.kind.symbol)
-                    .font(.system(size: 11, weight: .semibold))
-                    .foregroundStyle(tint)
-                Text(label)
-                    .textStyle(AppFont.caption)
-                    .foregroundStyle(tint)
-                    .wraps()
-                Spacer(minLength: 0)
-            }
-            .padding(.top, 1)
-            .padding(.bottom, Token.Space.s6)
+            Text(подпись)
+                .textStyle(AppFont.micro, color: цвет)
+                .wraps()
+            Spacer(minLength: 0)
         }
+        .padding(.horizontal, Token.Spacing.cardPadding)
+        .padding(.bottom, Token.Space.s8)
+        .frame(minHeight: Token.Size.tapTarget)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(label)
+        .accessibilityLabel(подпись)
     }
 
-    private var tint: Color {
+    private var цвет: Color {
         group.raisesAlarm ? Token.Status.overdueText : Token.Ink.secondary
     }
 
     /// «пописал ×3» вместо трёх одинаковых строк.
-    private var label: String {
+    private var подпись: String {
         var text = group.title
         if group.count > 1 { text += " ×\(group.count)" }
         if let detail = group.detail { text += " " + detail }
@@ -306,66 +270,59 @@ struct TimelineMarkRow: View {
 
 /// Нажатие видно: строка на мгновение подсвечивается. Без этого тап
 /// по ленте ощущается как промах.
-struct TimelineRowButtonStyle: ButtonStyle {
+struct DayTimelineRowButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .contentShape(Rectangle())
-            .background(
-                RoundedRectangle(cornerRadius: Token.Radius.small, style: .continuous)
-                    .fill(Token.Surface.sunken)
-                    .opacity(configuration.isPressed ? 1 : 0)
-                    .padding(.horizontal, -Token.Space.s6)
-            )
+            .background(Token.Surface.sunken.opacity(configuration.isPressed ? 1 : 0))
             .animation(.easeOut(duration: Token.Duration.instant), value: configuration.isPressed)
     }
 }
 
-/// Промежуток между записями.
-///
-/// Единственное, что отличает эту ленту от списка строк: всё приложение
-/// про интервалы, и здесь они наконец видны.
 /// Сколько собака была дома между выходами.
 ///
-/// Раньше здесь стояла голая цифра между любыми соседними строками,
-/// и о чём она — приходилось догадываться. Считать промежутки между
-/// кормлениями смысла нет: их человек и так примерно знает. А вот
-/// «сколько он уже терпит» — то, ради чего в ленту вообще смотрят.
-struct TimelineGap: View {
+/// Единственное, что отличает эту ленту от списка строк: всё приложение
+/// про интервалы, и здесь они наконец видны. Хендофф просит эту строку
+/// со значком `home` — в SF Symbols это `house`.
+///
+/// Считать промежутки между кормлениями смысла нет: их человек и так
+/// примерно знает. А вот «сколько он уже терпит» — то, ради чего в ленту
+/// вообще смотрят.
+struct DayTimelineGapRow: View {
     let interval: TimeInterval
     /// Промежуток открыт: собака дома прямо сейчас.
     var isOpen: Bool = false
 
     var body: some View {
-        HStack(alignment: .center, spacing: Token.Space.s6) {
-            // По левому краю — как все часы в этой колонке. С выравниванием
-            // вправо промежуток стоял не под временем, а сам по себе,
-            // и колонка выглядела рваной.
+        HStack(alignment: .center, spacing: Token.Space.s12) {
             Text(Fmt.gap(interval))
                 .textStyle(AppFont.micro)
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)
-                .frame(width: TimelineRail.timeWidth, alignment: .leading)
+                .frame(width: DayTimelineRow.timeWidth, alignment: .trailing)
 
-            Rectangle()
-                .fill(Token.Surface.hairline)
-                .frame(width: TimelineRail.lineWidth)
-                .frame(width: TimelineRail.railWidth)
+            Image(systemName: "house")
+                .font(.system(size: Token.Size.iconSm, weight: Token.FontWeight.medium))
+                .foregroundStyle(Token.Ink.secondary)
+                .frame(width: Token.Size.avatarMd)
+                .accessibilityHidden(true)
 
             Text(isOpen ? "дома с прошлого выхода" : "дома между выходами")
-                .textStyle(AppFont.micro.color(Token.Ink.secondary))
+                .textStyle(AppFont.micro)
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)
             Spacer(minLength: 0)
         }
-        .frame(height: 22)
+        .padding(.horizontal, Token.Spacing.cardPadding)
+        .padding(.vertical, Token.Space.s8)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("дома \(Fmt.duration(interval)) с прошлого выхода")
     }
 }
 
-/// «Сейчас» — живая точка на том же рельсе.
+/// «Сейчас» — живая точка в той же колонке.
 ///
-/// Единственная охряная вещь в ленте: охра означает действие и текущий
+/// Единственная акцентная вещь в ленте: акцент означает действие и текущий
 /// момент, и больше ничего.
 struct NowMarker: View {
     let now: Date
@@ -374,26 +331,21 @@ struct NowMarker: View {
     var body: some View {
         VStack(spacing: 0) {
             if let sinceLast {
-                TimelineGap(interval: sinceLast, isOpen: true)
+                DayTimelineGapRow(interval: sinceLast, isOpen: true)
             }
 
-            HStack(alignment: .center, spacing: Token.Space.s6) {
+            HStack(alignment: .center, spacing: Token.Space.s12) {
                 Text(Fmt.clock(now))
-                    .textStyle(AppFont.numeric(13, weight: .semibold))
-                    .foregroundStyle(Token.Ink.primary)
+                    .textStyle(AppFont.numeric(Token.FontSize.meta,
+                                               weight: Token.FontWeight.semibold),
+                               color: Token.Ink.primary)
                     .fixedSize()
-                    .frame(width: TimelineRail.timeWidth, alignment: .leading)
+                    .frame(width: DayTimelineRow.timeWidth, alignment: .trailing)
 
-                ZStack {
-                    Circle()
-                        .fill(Token.Action.primaryQuiet)
-                        .frame(width: TimelineRail.nowDotSize + 10,
-                               height: TimelineRail.nowDotSize + 10)
-                    Circle()
-                        .fill(Token.Ink.primary)
-                        .frame(width: TimelineRail.nowDotSize, height: TimelineRail.nowDotSize)
-                }
-                .frame(width: TimelineRail.railWidth)
+                Circle()
+                    .fill(Token.Component.Timeline.nowMarker)
+                    .frame(width: Token.Size.handleH, height: Token.Size.handleH)
+                    .frame(width: Token.Size.avatarMd)
 
                 Text("сейчас")
                     .textStyle(AppFont.micro.color(Token.Ink.primary))
@@ -411,22 +363,18 @@ struct NowMarker: View {
 /// вместо «нет данных».
 struct EmptyDayState: View {
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: Token.Space.s8) {
             Image(systemName: "sun.horizon")
-                .font(.system(size: 28, weight: .light))
+                .font(.system(size: Token.Size.iconLg, weight: Token.FontWeight.light))
                 .foregroundStyle(Token.Ink.silhouette)
-                .padding(.bottom, 2)
+                .padding(.bottom, Token.Space.s2)
                 .accessibilityHidden(true)
-            Text("Пока пусто").textStyle(AppFont.cardTitle).foregroundStyle(Token.Ink.primary)
+            Text("Пока пусто").textStyle(AppFont.cardTitle, color: Token.Ink.primary)
             Text("Нажми «Просится», когда он подойдёт к двери. Через день здесь появится его режим — и станет видно, когда он правда хочет на улицу.")
-                .textStyle(AppFont.caption)
-                .foregroundStyle(Token.Ink.secondary)
+                .textStyle(AppFont.caption, color: Token.Ink.secondary)
             Text("Ничего заполнять заранее не надо.")
-                .textStyle(AppFont.caption)
-                .foregroundStyle(Token.Ink.secondary)
+                .textStyle(AppFont.caption, color: Token.Ink.secondary)
         }
-        .padding(.vertical, 8)
+        .padding(.vertical, Token.Space.s8)
     }
 }
-
-// MARK: - Режим дня
