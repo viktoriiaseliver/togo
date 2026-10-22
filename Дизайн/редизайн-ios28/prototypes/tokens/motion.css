@@ -1,0 +1,20 @@
+/* Graphite · движение. Тени и стекло — в colors.css (зависят от темы). */
+:root {
+  --press-scale: 0.96; /* @kind other */
+  --press-scale-icon: 0.94; /* @kind other */
+  --dur-press: 0.15s; /* @kind other */
+  --dur-move: 0.3s; /* @kind other */
+  --ease-out: cubic-bezier(.2, .8, .2, 1); /* @kind other */
+  --blur-glass: 24px;
+  --glass-saturate: 180%; /* @kind other */
+  --edge-height: 4px; /* @kind spacing */
+  --edge-height-s: 3px; /* @kind spacing */
+  --toast-duration: 5s; /* @kind other */
+}
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --press-scale: 1; /* @kind other */
+    --press-scale-icon: 1; /* @kind other */
+    --dur-move: 0.2s; /* @kind other */
+  }
+}

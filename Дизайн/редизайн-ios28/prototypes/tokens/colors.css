@@ -1,0 +1,83 @@
+/* Graphite · совместимость. Цвета — в palette.css; здесь старые имена ссылаются на новые, чтобы экраны работали без правок.
+   Новые макеты пишите новыми именами (--surface-card, --action-primary…). Алиасы объявлены на каждом узле темы, чтобы пересчитываться. */
+:root, [data-theme], [data-contrast] {
+  --page: var(--surface-page);
+  --bg-primary: var(--surface-background);
+  --fill-sunken: var(--surface-sunken);
+  --fill-1: var(--surface-card);
+  --fill-track: var(--surface-card);
+  --fill-2: var(--surface-raised);
+  --glass: var(--surface-raised);
+  --glass-regular: var(--surface-raised);
+  --fill-3: var(--surface-pressed);
+  --glass-clear: var(--surface-pressed);
+  --fill-selected: var(--surface-selected);
+  --fill-tab-active: var(--surface-selected-strong);
+  --fill-inverse: var(--surface-inverse);
+  --fill-on-inverse: var(--surface-inverse-raised);
+  --on-inverse: var(--text-on-inverse);
+  --accent-text: var(--text-link);
+  --separator: var(--line-separator);
+  --fill-edge: var(--line-edge);
+  --accent: var(--action-primary);
+  --accent-pressed: var(--action-primary-pressed);
+  --accent-edge: var(--action-primary-edge);
+  --on-accent: var(--action-on-primary);
+  --accent-subtle: var(--action-subtle);
+  --glass-tint-accent: var(--action-subtle);
+  --accent-subtle-text: var(--action-on-subtle);
+  --accent-muted: var(--action-muted);
+  --accent-knob: var(--action-knob);
+  --toggle-off: var(--control-toggle-off);
+  --toggle-off-knob: var(--control-toggle-off-knob);
+  --control-knob: var(--control-knob-color);
+  --on-scrim: var(--control-knob-color);
+  --on-error: var(--status-on-error);
+  --error-subtle: var(--status-error-subtle);
+  --error-edge: var(--status-error-edge);
+  --warning-subtle: var(--status-warning-subtle);
+  --stock-low: var(--status-stock-low);
+  --stock-low-subtle: var(--status-stock-low-subtle);
+  --poster-bg: var(--poster-background);
+  --poster-fg: var(--poster-text);
+  --poster-sub: var(--poster-text);
+  --poster-bar: var(--poster-action);
+  --poster-on-bar: var(--poster-on-action);
+  --poster-edge: var(--poster-action-edge);
+  --poster-warn-bg: var(--poster-fasting-background);
+  --poster-warn-sub: var(--poster-fasting-text);
+  --poster-warn-bar: var(--poster-fasting-action);
+  --poster-err-bg: var(--poster-alarm-background);
+  --poster-err-sub: var(--poster-alarm-text);
+  --poster-err-bar: var(--poster-alarm-action);
+  --poster-err-on-bar: var(--poster-alarm-on-action);
+  --fill-on-color: var(--poster-dose-track);
+  --inverse-edge: var(--poster-inverse-edge);
+  --border: transparent; /* обводки нет; в повышенном контрасте — --line-border */
+  --accent-ring: transparent;
+  --toggle-marks: none; /* @kind other */
+}
+[data-contrast="high"] { --border: var(--line-border); --accent-ring: var(--text-link); }
+
+/* Эффекты — не цвета. Тени и затемнение по природе прозрачные. */
+:root {
+  --scrim: rgba(0,0,0,.55); /* затемнение под шторкой — системное, iOS рисует само */
+  --elev-1: inset 0 0 0 1px var(--line-separator);
+  --elev-2: inset 0 0 0 1px var(--line-edge);
+  --glass-shadow: inset 0 1px 0 var(--surface-pressed), 0 0 0 1px var(--line-edge), 0 8px 32px rgba(0,0,0,.6);
+  --shadow-knob: 0 1px 4px rgba(0,0,0,.3);
+}
+[data-theme="light"] {
+  --scrim: rgba(16,17,18,.32);
+  --elev-1: 0 0 0 1px var(--line-separator), 0 1px 2px rgba(10,12,16,.06), 0 6px 16px rgba(10,12,16,.06);
+  --elev-2: 0 0 0 1px var(--line-separator), 0 10px 30px rgba(10,12,16,.14);
+  --glass-shadow: 0 0 0 1px var(--line-separator), 0 8px 32px rgba(10,12,16,.12);
+}
+[data-contrast="high"] { --elev-1: inset 0 0 0 1px var(--line-border); --elev-2: inset 0 0 0 1px var(--line-border); --glass-shadow: inset 0 0 0 1px var(--line-border); }
+
+/* Различать без цвета: метки I/O в тумблере. */
+[data-differentiate] { --toggle-marks: block; /* @kind other */ }
+
+/* Фактура и затемнение фото — эффекты-градиенты. */
+:root { --texture-graphite: repeating-linear-gradient(135deg, rgba(255,255,255,.035) 0 1px, transparent 1px 7px); /* @kind color */ --photo-scrim: linear-gradient(180deg, rgba(0,0,0,0) 35%, rgba(0,0,0,.62) 100%); /* @kind color */ }
+[data-theme="light"] { --texture-graphite: repeating-linear-gradient(135deg, rgba(10,12,16,.045) 0 1px, transparent 1px 7px); /* @kind color */ }

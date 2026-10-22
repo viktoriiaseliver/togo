@@ -1,0 +1,67 @@
+/* Graphite · типографика. SF Pro (системный), размеры Dynamic Type «L» (по умолчанию iOS). */
+/* SF Pro Text — файлы в fonts/ (300–800, прямой и курсив); установленный в системе берётся первым через local(). SF Pro Rounded — только системный. */
+@font-face { font-family: "SF Pro Text"; src: local("SF Pro Text Light"), local("SFProText-Light"), url("../fonts/SFProText-Light.ttf") format("truetype"); font-weight: 300; font-style: normal; font-display: swap; }
+@font-face { font-family: "SF Pro Text"; src: local("SF Pro Text Light Italic"), local("SFProText-LightItalic"), url("../fonts/SFProText-LightItalic.ttf") format("truetype"); font-weight: 300; font-style: italic; font-display: swap; }
+@font-face { font-family: "SF Pro Text"; src: local("SF Pro Text Regular"), local("SFProText-Regular"), url("../fonts/SFProText-Regular.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "SF Pro Text"; src: local("SF Pro Text Regular Italic"), local("SFProText-RegularItalic"), url("../fonts/SFProText-RegularItalic.ttf") format("truetype"); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: "SF Pro Text"; src: local("SF Pro Text Medium"), local("SFProText-Medium"), url("../fonts/SFProText-Medium.ttf") format("truetype"); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "SF Pro Text"; src: local("SF Pro Text Medium Italic"), local("SFProText-MediumItalic"), url("../fonts/SFProText-MediumItalic.ttf") format("truetype"); font-weight: 500; font-style: italic; font-display: swap; }
+@font-face { font-family: "SF Pro Text"; src: local("SF Pro Text Semibold"), local("SFProText-Semibold"), url("../fonts/SFProText-Semibold.ttf") format("truetype"); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: "SF Pro Text"; src: local("SF Pro Text Semibold Italic"), local("SFProText-SemiboldItalic"), url("../fonts/SFProText-SemiboldItalic.ttf") format("truetype"); font-weight: 600; font-style: italic; font-display: swap; }
+@font-face { font-family: "SF Pro Text"; src: local("SF Pro Text Bold"), local("SFProText-Bold"), url("../fonts/SFProText-Bold.ttf") format("truetype"); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "SF Pro Text"; src: local("SF Pro Text Bold Italic"), local("SFProText-BoldItalic"), url("../fonts/SFProText-BoldItalic.ttf") format("truetype"); font-weight: 700; font-style: italic; font-display: swap; }
+@font-face { font-family: "SF Pro Text"; src: local("SF Pro Text Heavy"), local("SFProText-Heavy"), url("../fonts/SFProText-Heavy.ttf") format("truetype"); font-weight: 800; font-style: normal; font-display: swap; }
+@font-face { font-family: "SF Pro Text"; src: local("SF Pro Text Heavy Italic"), local("SFProText-HeavyItalic"), url("../fonts/SFProText-HeavyItalic.ttf") format("truetype"); font-weight: 800; font-style: italic; font-display: swap; }
+@font-face { font-family: "SF Pro Rounded"; src: local("SF Pro Rounded"), local("SFProRounded-Regular"); font-weight: 100 900; font-display: swap; }
+:root {
+  --font-text: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro", system-ui, "Segoe UI", sans-serif;
+  --font-rounded: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-icon: "Material Symbols Rounded";
+
+  --fs-large-title: 34px;
+  --fs-title-1: 28px;
+  --fs-title-2: 22px;
+  --fs-title-3: 20px;
+  --fs-headline: 17px;
+  --fs-body: 17px;
+  --fs-callout: 16px;
+  --fs-subheadline: 15px;
+  --fs-footnote: 13px;
+  --fs-caption-1: 13px;
+  --fs-caption-2: 13px;  /* минимум 13 — читаемость */
+
+  /* Крупные цифры: SF Pro Rounded 300, растут максимум до 150 % */
+  --fs-number-hero: 96px;      /* показание «Сегодня», iPhone 402; SE и разворот — xl 80; iPad — 112 */
+  --fs-number-hero-pad: 112px;
+  --fs-number-xl: 80px;
+  --fs-number-l: 56px;
+  --fs-number-m: 44px;
+  --fs-number-s: 30px;
+
+  --fw-regular: 400; /* @kind font */
+  --fw-medium: 500; /* @kind font */
+  --fw-semibold: 600; /* @kind font */
+  --fw-number: 300; /* @kind font */
+  --lh-tight: 1.1; /* @kind font */
+  --lh-body: 1.35; /* @kind font */
+
+  --icon-size: 24px;
+  --icon-size-s: 20px;
+  --icon-weight: 300;
+}
+
+/* Жирный шрифт (Настройки → Универсальный доступ → Жирный шрифт). В SwiftUI — системный, здесь — для макетов и тестов. */
+[data-bold-text] {
+  --fw-regular: 600; /* @kind font */
+  --fw-medium: 650; /* @kind font */
+  --fw-semibold: 700; /* @kind font */
+  --fw-number: 500; /* @kind font */
+  --icon-weight: 500;
+}
+
+/* Размеры Dynamic Type для проверки. Apple: Larger Text = текст до 200 % и больше (AX3 ≈ 235 %, AX5 ≈ 310 %). caption-2 не меньше caption-1. */
+[data-text-size="ax1"] { --fs-large-title: 44px; --fs-title-1: 38px; --fs-title-2: 34px; --fs-title-3: 31px; --fs-headline: 28px; --fs-body: 28px; --fs-callout: 26px; --fs-subheadline: 25px; --fs-footnote: 23px; --fs-caption-1: 22px; --fs-caption-2: 22px; }
+[data-text-size="ax3"] { --fs-large-title: 52px; --fs-title-1: 48px; --fs-title-2: 44px; --fs-title-3: 43px; --fs-headline: 40px; --fs-body: 40px; --fs-callout: 38px; --fs-subheadline: 36px; --fs-footnote: 33px; --fs-caption-1: 32px; --fs-caption-2: 32px; }
+[data-text-size="ax5"] { --fs-large-title: 60px; --fs-title-1: 58px; --fs-title-2: 56px; --fs-title-3: 55px; --fs-headline: 53px; --fs-body: 53px; --fs-callout: 51px; --fs-subheadline: 49px; --fs-footnote: 44px; --fs-caption-1: 43px; --fs-caption-2: 43px; }
+/* Крупные цифры уже крупные: растут до 150 % и дальше не идут. */
+[data-text-size^="ax"] { --fs-number-hero: 144px; --fs-number-xl: 120px; --fs-number-l: 84px; --fs-number-m: 66px; --fs-number-s: 45px; }

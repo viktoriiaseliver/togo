@@ -1,0 +1,21 @@
+/* Продуктовый слой Togo. Цвета — в palette.css; здесь только смысловые алиасы. Объявлены на каждом узле темы, чтобы пересчитываться. */
+:root, [data-theme], [data-contrast] {
+  --status-done: var(--action-subtle);
+  --status-done-text: var(--action-on-subtle);
+  --status-waiting: var(--status-warning);           /* только окно натощак */
+  --status-waiting-subtle: var(--status-warning-subtle);
+  --status-overdue: var(--status-error);             /* пропущенная доза, кровь, удаление */
+  --status-overdue-subtle: var(--status-error-subtle);
+  --stock-out: var(--status-error);                  /* запас ≤ 3 дней */
+  --stock-out-subtle: var(--status-error-subtle);
+  --poster-edge: var(--poster-action-edge);
+}
+
+/* Время и важные значения (окт 2026): всегда semibold, цифры табличные. Крупные показания (Rounded 300) — исключение. */
+:root {
+  --fw-time: var(--fw-semibold); /* @kind font */
+}
+
+/* «Сегодня» · плакат: цвет блока = режим.
+   Обычный — Poster/*, натощак — Poster/Fasting/*, тревога — Poster/Alarm/*, доза — Poster/Dose/* (самый громкий: инверсный).
+   Ночь и первый день — Surface/Card. Цифры на блоке — Poster/Text (≥ 8:1), кнопка — Poster/Action. */

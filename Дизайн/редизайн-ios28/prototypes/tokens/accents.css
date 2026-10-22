@@ -1,0 +1,50 @@
+/* Альтернативные акценты: data-accent="orange|pink" на <html> (коралл, роза). По умолчанию — индиго.
+   Все шкалы одной кривой OKLCH: подложка 900/50 → плашка 800/100 → заливка 300 (тёмная) / 600 (светлая). */
+[data-accent="orange"] {
+  --accent: #FFA884;
+  --accent-pressed: #FD7E47;
+  --accent-text: #FECAB5;
+  --on-accent: #111111;
+  --accent-subtle: #4A2E22;
+  --accent-muted: #613A2B;
+  --accent-subtle-text: #FCE4D9;
+  --accent-knob: #2E1A12;
+}
+[data-theme="light"][data-accent="orange"],
+[data-theme="light"] [data-accent="orange"] {
+  --accent: #B2430F;
+  --accent-pressed: #8B3109;
+  --accent-text: #B2430F;
+  --on-accent: #FFFFFF;
+  --accent-subtle: #F9DCCD;
+  --accent-muted: #F5C7B1;
+  --accent-subtle-text: #611E04;
+  --accent-knob: #FFFFFF;
+}
+[data-accent="pink"] {
+  --accent: #FF9FC8;
+  --accent-pressed: #F675B1;
+  --accent-text: #FEC5DC;
+  --on-accent: #111111;
+  --accent-subtle: #4A2838;
+  --accent-muted: #603447;
+  --accent-subtle-text: #FCE1EC;
+  --accent-knob: #2E1622;
+}
+[data-theme="light"][data-accent="pink"],
+[data-theme="light"] [data-accent="pink"] {
+  --accent: #B13573;
+  --accent-pressed: #921159;
+  --accent-text: #B13573;
+  --on-accent: #FFFFFF;
+  --accent-subtle: #F9D8E6;
+  --accent-muted: #F4C2D7;
+  --accent-subtle-text: #66063B;
+  --accent-knob: #FFFFFF;
+}
+
+/* Повышенный контраст */
+[data-contrast="high"][data-accent="orange"] { --accent-subtle: #5A3627; --accent-text: #FCE4D9; --accent-subtle-text: #FCE4D9; }
+[data-theme="light"][data-contrast="high"][data-accent="orange"] { --accent-subtle: #F9DCCD; --accent-text: #8B3109; --accent-subtle-text: #471201; }
+[data-contrast="high"][data-accent="pink"] { --accent-subtle: #58304A; --accent-text: #FCE1EC; --accent-subtle-text: #FCE1EC; }
+[data-theme="light"][data-contrast="high"][data-accent="pink"] { --accent-subtle: #F9D8E6; --accent-text: #921159; --accent-subtle-text: #4A0329; }

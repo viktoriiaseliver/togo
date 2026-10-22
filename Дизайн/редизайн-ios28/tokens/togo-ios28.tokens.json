@@ -1,0 +1,43 @@
+{
+  "$description": "Togo iOS 28 — новые токены поверх Graphite. Имена совпадают с tokens/togo-ios28.css. Модель: Asset Catalog (Any / Dark / Cinema).",
+  "glass": {
+    "dark":   { "bg": "rgba(40,40,42,0.55)", "highlight": "rgba(255,255,255,0.18)", "shadow": "rgba(0,0,0,0.40)", "card": "rgba(255,255,255,0.07)", "line": "rgba(255,255,255,0.08)", "strong": "rgba(28,28,30,0.78)" },
+    "light":  { "bg": "rgba(255,255,255,0.62)", "highlight": "rgba(255,255,255,0.95)", "shadow": "rgba(20,25,40,0.14)", "card": "rgba(255,255,255,0.72)", "line": "rgba(0,0,0,0.06)", "strong": "rgba(255,255,255,0.86)" },
+    "cinema": { "bg": "rgba(30,30,34,0.50)", "highlight": "rgba(255,255,255,0.28)", "shadow": "rgba(0,0,0,0.45)", "card": "rgba(28,28,32,0.58)", "line": "rgba(255,255,255,0.10)", "strong": "rgba(20,20,24,0.80)" },
+    "blur": 30, "saturation": 1.9,
+    "swiftui": "dark/cinema → .ultraThinMaterial + glassEffect(); light → .regularMaterial. Reduce Transparency → surface-raised без блюра."
+  },
+  "cinema": {
+    "surface": { "background": "#000000", "page": "#0A0A0B", "card": "#1C1C1E", "raised": "#2C2C2E", "pressed": "#3A3A3C" },
+    "text": { "primary": "#FFFFFF", "secondary": "#C7C7CC", "disabled": "#8E8E93", "link": "#A2C1FE" },
+    "line": { "separator": "#3A3A3C" },
+    "action": { "primary": "#FFFFFF", "onPrimary": "#111111", "subtle": "#2C3A66", "onSubtle": "#FFFFFF" },
+    "titleLarge": { "size": 36, "tracking": -0.025 }
+  },
+  "backdrop": {
+    "height": { "today": 640, "tab": 420, "sub": 360, "walk": 520 },
+    "scrimStops": [[0,"rgba(0,0,0,0.70)"],[0.14,"rgba(0,0,0,0.45)"],[0.30,"rgba(0,0,0,0.15)"],[0.38,"rgba(0,0,0,0.15)"],[0.55,"rgba(0,0,0,0.75)"],[0.70,"rgba(0,0,0,0.97)"],[0.76,"#000000"],[1,"#000000"]],
+    "maskStops": [[0.45,1],[0.92,0]],
+    "tint": { "blend": "softLight", "dose": "rgba(31,79,255,0.55)", "fasting": "rgba(255,194,51,0.55)", "alarm": "rgba(213,37,25,0.60)", "night": "rgba(20,20,60,0.60)" },
+    "settings": { "modes": ["auto", "single", "random"], "maxPhotos": 5, "storageKey": "togo-ios28-bg", "random": "хэш(экран + seed запуска) % число фото" }
+  },
+  "readingTone": {
+    "normal": { "panel": "glass.strong", "fg": "text.primary", "bar": "#1F4FFF" },
+    "fasting": { "panel": "rgba(255,194,51,0.92)", "fg": "#2A1D00", "sub": "#5A4300", "chip": "#FFC233" },
+    "dose": { "panel": "rgba(31,79,255,0.92)", "fg": "#FFFFFF", "chip": "#1F4FFF", "primaryButton": "#1F4FFF" },
+    "alarm": { "panel": "rgba(213,37,25,0.92)", "fg": "#FFFFFF", "chip": "#D52519", "primaryButton": "#D52519" },
+    "night": { "panel": "glass.strong", "photoFilter": "saturate(0.3) brightness(0.7)" }
+  },
+  "category": {
+    "walk": "#7CE0A0", "poop": "#A2C1FE", "food": "#FF9A5C", "treat": "#FF9A5C", "water": "#7FD3FF",
+    "dose": "#FF8FBF", "train": "#C3A6FF", "care": "#C3A6FF", "weight": "#FFD43B",
+    "on": "#111111", "incident": "status.error", "onIncident": "#FFFFFF", "doseShapeRadius": 12,
+    "note": "Новые, вне Graphite. В светлой теме проверить контраст значка (#111 на заливке ≥ 4.5:1 — проходит)."
+  },
+  "size": {
+    "hitMin": 44, "buttonPrimary": 60, "buttonSecondary": 52, "plus": 60, "tabBar": 64, "tabItem": 56, "headerButton": 44,
+    "hero": 360, "heroAX": 220, "heroRadius": 32, "heroPanelRadius": 24, "cardRadius": 24, "rowMin": 60, "rowIcon": 40, "rowIconRadius": 13,
+    "feedTimeColumn": 44, "sheetRadius": 36
+  },
+  "type": { "min": 12, "secondary": 14, "body": 17, "reading": { "size": 56, "weight": 300, "family": "SF Pro Rounded" }, "walkTimer": { "size": 76, "weight": 300 } }
+}

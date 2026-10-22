@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>html,body{margin:0;background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;-webkit-font-smoothing:antialiased}a{color:#A2C1FE}a:hover{color:#fff}</style>
+</helmet>
+<div style="max-width:880px;margin:0 auto;padding:48px 24px 80px;display:flex;flex-direction:column;gap:32px">
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <span style="font-size:13px;font-weight:600;color:#C7C7CC;text-transform:uppercase;letter-spacing:.04em">Togo · iOS 28 · v5</span>
+    <h1 style="margin:0;font-size:44px;font-weight:700;letter-spacing:-.035em">Покрытие функций</h1>
+    <p style="margin:0;font-size:17px;line-height:1.45;color:#C7C7CC;text-wrap:pretty">Сверка экранов из кода (<code>Togo/Features</code>, 82 файла) с прототипом. Открыть любой экран — панель «Все экраны» в <a href="Togo iOS 28 - прототип v5.dc.html">прототипе v5</a>.</p>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px">
+    <div style="background:#1C1C1E;border-radius:24px;padding:20px;display:flex;flex-direction:column;gap:4px"><span style="font-size:44px;font-weight:300;line-height:1">74</span><span style="font-size:13px;color:#C7C7CC">есть в прототипе</span></div>
+    <div style="background:#1C1C1E;border-radius:24px;padding:20px;display:flex;flex-direction:column;gap:4px"><span style="font-size:44px;font-weight:300;line-height:1;color:#FF9533">5</span><span style="font-size:13px;color:#C7C7CC">частично</span></div>
+    <div style="background:#1C1C1E;border-radius:24px;padding:20px;display:flex;flex-direction:column;gap:4px"><span style="font-size:44px;font-weight:300;line-height:1">3</span><span style="font-size:13px;color:#C7C7CC">служебные, без экрана</span></div>
+  </div>
+
+  <sc-for list="{{ groups }}" as="g" hint-placeholder-count="8">
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <span style="font-size:13px;font-weight:600;color:#C7C7CC;text-transform:uppercase;letter-spacing:.04em;padding:0 4px">{{ g.title }}</span>
+      <div style="background:#1C1C1E;border-radius:24px;overflow:hidden">
+        <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="4">
+          <div style="display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) 96px;gap:12px;align-items:center;min-height:52px;padding:8px 16px;border-top:{{ r.bt }}">
+            <span style="font-size:15px">{{ r.f }}</span>
+            <span style="font-size:13px;color:#C7C7CC">{{ r.where }}</span>
+            <span style="justify-self:end;font-size:13px;font-weight:600;color:{{ r.c }}">{{ r.st }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </sc-for>
+
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <span style="font-size:13px;font-weight:600;color:#C7C7CC;text-transform:uppercase;letter-spacing:.04em;padding:0 4px">Что сделано с текстом</span>
+    <div style="background:#1C1C1E;border-radius:24px;padding:20px;display:flex;flex-direction:column;gap:10px;font-size:15px;line-height:1.45">
+      <span>Убрано 14 поясняющих абзацев — это были заметки для разработки («удаление шага предупредит…», «все поверхности показывают…»).</span>
+      <span>Сокращено около 90 подписей: остаётся факт, без объяснений, зачем он показан. Пример: «коридор врач не называл — приложение молчит, а не пишет „в норме“» → «Коридор врач не называл».</span>
+      <span>Подписи, которые повторяли заголовок, удалены.</span>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const OK = ['есть', '#7CE0A0'], PART = ['частично', '#FF9533'], SYS = ['служебное', '#C7C7CC'];
+const G = [
+  ['Сегодня', [['TodayScreen · Hero · Header', 'Сегодня, 14 состояний', OK], ['DayPlan · DayPlanBuilder', 'План дня', OK], ['DayTimeline', 'Лента дня', OK], ['ActionGrid · SummaryStrip', 'Сетка действий, три числа', OK], ['DoseLockSheet', 'Доза · «взяла на себя»', OK], ['GivenAtSheet', 'Доза · «Дал раньше»', OK], ['TodayRouter', 'порядок состояний', SYS]]],
+  ['Просится и прогулка', [['NeedsSheet', 'Просится · вердикт', OK], ['AskSignalCard', 'Как он просит', OK], ['WalkMode · WalkSheets', 'На улице, итог', OK], ['WalkRhythmCard', 'Ритм выходов', OK], ['DayOutScreens', 'Со мной весь день', OK]]],
+  ['Записи', [['LogSheets', 'Ещё · формы', OK], ['IncidentSheet', 'Инцидент', OK], ['HistoryScreen', 'История, фильтры, день', OK]]],
+  ['Здоровье', [['HealthScreen · MedicalRecordCards', 'Здоровье', OK], ['LabChartScreen', 'Анализы Т4', OK], ['LabResultScreens', 'Ввод анализа', OK], ['LabNumberParsing', 'разбор «<0,1»', SYS], ['PillSupplyScreen', 'Запас таблеток', OK], ['PrescriptionScreens', 'Рецепт', OK], ['ScheduleChangeSheet', 'Врач изменил дозу', OK], ['MissedDoseSheet', 'Доза не отмечена', OK], ['DoseGateSheet', 'Доза ждёт еды', OK], ['CourseFinishSheet', 'Курс завершён', OK], ['VisitDiagnosisScreens', 'Визит и диагнозы', OK], ['VetSummaryScreen', 'Сводка врачу', OK], ['AlarmThresholdScreen', 'Повторы · состояние', PART]]],
+  ['Собака', [['DogTab · ProfileScreen', 'Стич, профиль', OK], ['Editors', 'формы веса и режимов', PART], ['ScheduleScreen · Editor', 'Расписание', OK], ['DogSwitcher · DuplicateDogCard', 'Собаки · дубль', OK], ['FeedingScreen · FoodStockScreen', 'Питание', OK], ['CareScreen', 'Уход', OK], ['HeatScreen', 'Цикл', OK], ['EmergencyScreen', 'Экстренный', OK], ['DocumentPhotos', 'Документы', PART], ['TripScreens', 'Поездка', OK]]],
+  ['Занятия', [['TrainingScreens', 'Шаги', OK], ['TrainingSessionScreen · MarkerEngine', 'Занятие · «Да!»', OK], ['TrainingLibraryScreen', 'Библиотека навыков', OK], ['SkillAttemptSheet', 'Процедуры · попытка', OK], ['Матрица переноса', 'Перенос навыка · Pro', OK]]],
+  ['Семья и ситтер', [['FamilyScreen', 'Семья, роли', OK], ['SharedDiaryScreen · ПозвалиВСемью', 'Меня позвали', OK], ['SitterBriefingScreen', 'Брифинг ситтеру', OK], ['ShiftHandoverSheet', 'Передать дежурство', OK], ['Вид ситтера', 'состояние «Вид ситтера»', OK]]],
+  ['Настройки и подписка', [['SettingsScreen', 'Настройки', OK], ['BackupScreen', 'Копия и файл', OK], ['DataPrivacyScreen', 'Данные и доступ', OK], ['DoorTagScreen', 'Бирка у двери', OK], ['HowItWorksScreen', 'Как это работает', OK], ['LanguageScreen', 'Язык', OK], ['LegalScreens', 'Правила', OK], ['UsageLogScreen', 'Журнал действий', OK], ['PaywallScreen', 'Togo Pro', OK], ['DowngradeScreen', 'Что будет при отмене', OK]]],
+  ['Вне приложения', [['Widgets', 'Виджеты, 4 размера', PART], ['LiveActivity', 'Dynamic Island, Live Activity', OK], ['Intents', 'Siri, Пункт управления', PART], ['Onboarding', 'Онбординг, 4 шага', OK], ['Sync · CloudKit', 'нет сети, хранилище', SYS]]]
+];
+class Component extends DCLogic {
+  renderVals() {
+    return { groups: G.map(([title, rows]) => ({ title, rows: rows.map(([f, where, s], i) => ({ f, where, st: s[0], c: s[1], bt: i ? '1px solid #2C2C2E' : 'none' })) })) };
+  }
+}
+</script>
+</body>
+</html>
