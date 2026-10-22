@@ -61,6 +61,7 @@ nonisolated enum Token {
         static let ink = Color(Dyn(dark: 0xFFFFFF, light: 0x101112, darkHC: 0xFFFFFF, lightHC: 0x101112))
         static let inkFaint = Color(Dyn(dark: 0x8E8E93, light: 0xA1A4A8, darkHC: 0x8E8E93, lightHC: 0x7D8085))
         static let inkMuted = Color(Dyn(dark: 0xC7C7CC, light: 0x5A5D61, darkHC: 0xC7C7CC, lightHC: 0x45484C))
+        static let link = Color(Dyn(dark: 0xA2C1FE, light: 0x1F4FFF, darkHC: 0xA2C1FE, lightHC: 0x0E14A1))
         static let night1 = Color(Dyn(dark: 0x000000, light: 0xFFFFFF, darkHC: 0x000000, lightHC: 0xFFFFFF))
         static let night2 = Color(Dyn(dark: 0x1C1C1E, light: 0xECEDF0, darkHC: 0x1C1C1E, lightHC: 0xECEDF0))
         static let night3 = Color(Dyn(dark: 0x2C2C2E, light: 0xE3E5E8, darkHC: 0x2C2C2E, lightHC: 0xE3E5E8))
@@ -102,7 +103,7 @@ nonisolated enum Token {
     enum Ink {
         static let faint = Общие.inkFaint
         /// Ссылка (`cinema.text.link`). Индиго ЗДЕСЬ ОСТАЛОСЬ: отменён индиговый АКЦЕНТ, а не значение. Акцент теперь белый, ссылка — нет. Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`.
-        static let link = Color(hex: 0xA2C1FE)
+        static let link = Общие.link
         static let onAccent = Общие.arcticInk
         /// Тихий текст НА акцентной заливке: счётчик под подписью кнопки, подпись под показанием. Заведён 08.10.2026, потому что у роли не было адреса в семантике и единственным носителем значения был poster/captionOnDose — то есть кнопка режима прогулки обращалась бы к токену ПЛАКАТА. Значение то же (arcticSubtle), роль другая, и имя должно называть роль. Числа: 6,19:1 в тёмной и 10,01:1 в светлой против 10,43 и 12,86 у onAccent — читается и остаётся тише подписи, иерархия цела. Повышенного контраста у роли в пакете нет: darkHC равен dark.
         static let onAccentQuiet = Общие.arcticSubtle
@@ -197,7 +198,7 @@ nonisolated enum Token {
         /// Подпись плаката на ЦВЕТНОМ блоке.
         static let captionOnColor = Общие.posterInkMuted
         /// Тихая подпись на плакате дозы. Было `arcticSubtle`, который переехал на белую заливку (#5A5D61) и на индиго дал бы 1,5:1. ЭТО ТО САМОЕ САМОЕ УЗКОЕ МЕСТО, про которое в описании `arctic` записано «запас одна сотая»: прежняя пара давала 4,51 при пороге 4,5. Новая пара меряется заново — см. `Tools/contrast_graphite.py`, раздел «ПАРЫ РЕПОЗИТОРИЯ». Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`. Подпись плаката на заливке дозы. Отдельная от caption потому, что доза — единственный режим дня со СВЕТЛОЙ подложкой: остальные четыре кладут текст на тёмный блок, и там caption честен. У плаката ПАКЕТА режима дозы нет вовсе — его bg всегда тёмный блок с белым текстом, — то есть инверсия наша, и цена её в том, что для неё нужен свой тихий цвет.
-        static let captionOnDose = Общие.posterInkMuted
+        static let captionOnDose = Color(hex: 0xFFFFFFE0)
         /// ТОЛЬКО НЕЙТРАЛЬНЫЙ БЛОК (backgroundQuiet). На цветных блоках берётся labelOnColor, на дозе labelOnDose: у плаката ТРИ семьи текста, а не одна. Замер 07.10.2026: этот токен на синем блоке в светлой даёт 3,15 — он честен только там, где подложка нейтральна.
         static let label = Общие.ink
         /// Заголовок плаката на ЦВЕТНОМ блоке: обычный, тревожный, натощак.
@@ -441,8 +442,8 @@ nonisolated enum Token {
             static let incident = Общие.clay
             /// Значок внутри кружка — #111 на любой заливке.
             static let on = Color(hex: 0x111111)
-            /// Значок на терракоте — белый.
-            static let onIncident = Общие.posterInk
+            /// Значок на терракоте: #111 там, где заливка светлая, белый там, где тёмная. Разбор и числа — в описании `primitive.color.catOnIncident`.
+            static let onIncident = Общие.arcticInk
             /// Тот же #A2C1FE, что ссылка.
             static let poop = Color(hex: 0xA2C1FE)
             /// Круг: 13 при 40.

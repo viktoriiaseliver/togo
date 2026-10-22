@@ -165,7 +165,7 @@ def разрешить(значение, таблица, глубина=0):
 
 
 def в_rgb(цвет):
-    """#RGB/#RRGGBB → (r,g,b). rgba(...) → (r,g,b,a). Иначе None."""
+    """#RGB/#RRGGBB → (r,g,b). #RRGGBBAA и rgba(...) → (r,g,b,a). Иначе None."""
     if не_цвет(цвет):
         return None
     цвет = цвет.strip()
@@ -173,6 +173,18 @@ def в_rgb(цвет):
         h = цвет[1:]
         if len(h) == 3:
             h = ''.join(c * 2 for c in h)
+        # Восьмизначный хекс РАЗБИРАЕТСЯ, а не отбрасывается.
+        #
+        # Прежде здесь стоял `return None`, и это давало не ошибку,
+        # а ТИШИНУ: пара с полупрозрачным токеном уходила в список
+        # «не разобран цвет» и в итог не попадала. Пока таких токенов
+        # было два, цена была нулевой; с темой «Кино» их девятнадцать —
+        # всё стекло, все панели тонов и весь тон фото заданы долей.
+        # Молчаливое «не разобран» на двух третях новых токенов
+        # выглядело бы как измеренный аудит.
+        if len(h) == 8:
+            r, g, b, a = (int(h[i:i + 2], 16) for i in (0, 2, 4, 6))
+            return (r, g, b, a / 255)
         if len(h) != 6:
             return None
         return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
@@ -283,6 +295,229 @@ def контраст(a, b):
 }
 
 
+# ─────────────────────────────────────────────────────────────────────
+# ВТОРОЙ АУДИТ: пары РЕПОЗИТОРИЯ, по `DesignTokens/tokens.json`
+# ─────────────────────────────────────────────────────────────────────
+#
+# **Зачем он появился и почему отдельным разделом.** Всё, что выше,
+# меряет ПАКЕТ `ядро-дизайна` — чужой CSS, который мы не правим. Числа
+# «124 пары, 8 непрохождений» живут в `CLAUDE.md` и в красных линиях
+# проекта именно как число про пакет, и трогать его нельзя: сравнивать
+# «до» и «после» можно только с неподвижной мерой.
+#
+# Но тема «Кино» сменила палитру в `tokens.json`, а не в пакете, и
+# прогон этого файла ДО и ПОСЛЕ переноса дал бы **одинаковые 124/8** —
+# то есть зелёный отчёт о работе, которой инструмент не касался.
+#
+# > Инструмент, не изменивший своего числа, отвечает «я не менялся»,
+# > а читается как «ничего не сломалось». Это наш класс «инструмент
+# > отвечает про себя»: ложный ноль, совпавший с ожидаемым ответом.
+#
+# Поэтому второй аудит берёт ДРУГОЙ ИСТОЧНИК (`tokens.json`), считает
+# ДРУГИЕ пары и печатает СВОЙ итог. Он не складывается с первым и
+# не заменяет его.
+РЕЖИМЫ_РЕПО = ("dark", "light", "darkHC", "lightHC")
+
+# (что, на чём, порог, зачем, подложка, требование?)
+# Подложка нужна там, где «на чём» полупрозрачно: стекло и панели тонов
+# лежат на фоне экрана, потому что затемнение фото уходит в него.
+ПАРЫ_РЕПО = [
+    ("semantic.text.primary", "semantic.surface.screen", 4.5, "текст на фоне", None, True),
+    ("semantic.text.primary", "semantic.surface.card", 4.5, "текст на карточке", None, True),
+    ("semantic.text.primary", "semantic.surface.raised", 4.5, "текст на приподнятом", None, True),
+    ("semantic.text.secondary", "semantic.surface.screen", 4.5, "вторичный на фоне", None, True),
+    ("semantic.text.secondary", "semantic.surface.card", 4.5, "вторичный на карточке", None, True),
+    ("semantic.text.faint", "semantic.surface.screen", 3.0,
+     "неактивное — WCAG 1.4.3 его НЕ требует", None, False),
+    ("semantic.surface.hairline", "semantic.surface.screen", 3.0,
+     "разделитель — украшение, 1.4.11 не требует", None, False),
+
+    # Главное отступление темы «Кино»: белая кнопка.
+    ("semantic.text.onAccent", "semantic.action.primary", 4.5,
+     "подпись на ГЛАВНОЙ КНОПКЕ (в тёмной она белая)", None, True),
+    ("semantic.text.onAccentQuiet", "semantic.action.primary", 4.5,
+     "тихая подпись на главной кнопке", None, True),
+    ("semantic.action.primary", "semantic.surface.screen", 3.0,
+     "главная кнопка как графика на фоне", None, True),
+    ("semantic.action.onSubtle", "semantic.action.subtle", 4.5,
+     "подпись на тихой индиговой кнопке", None, True),
+
+    # Индиго, оставшееся значением: ссылка.
+    ("semantic.text.link", "semantic.surface.screen", 4.5, "ссылка на фоне", None, True),
+    ("semantic.text.link", "semantic.surface.card", 4.5, "ссылка на карточке", None, True),
+
+    # Плакат ЧАСА ДОЗЫ — то самое узкое место «запас одна сотая».
+    ("semantic.poster.labelOnDose", "semantic.poster.backgroundDose", 4.5,
+     "показание на плакате дозы", None, True),
+    ("semantic.poster.captionOnDose", "semantic.poster.backgroundDose", 4.5,
+     "ТИХАЯ ПОДПИСЬ НА ПЛАКАТЕ ДОЗЫ — прежде 4,51 при пороге 4,5", None, True),
+    ("semantic.poster.barOnDose", "semantic.poster.bar", 4.5, "подпись на косточке дозы", None, True),
+    # **Пара к `label`/`caption` — ТИХИЙ плакат, а не цветной, и первая
+    # редакция этого списка ошиблась именно здесь.** Я поставил их против
+    # `background` (= индиго режима дня) и получил четыре провала:
+    # 3,15 и 1,10 в светлой, 3,15 и 1,53 в повышенном. Они выглядели как
+    # находка о палитре, а были находкой о моём списке: на ЦВЕТНОМ блоке
+    # текст берут `labelOnColor`/`captionOnColor`, и имена токенов это
+    # говорят прямо. `label`/`caption` стоят на `backgroundQuiet`.
+    #
+    # > Ложная находка дороже пропущенной: после неё сторожа перестают
+    # > читать. Это записано двадцатью строками выше про подложку плаката,
+    # > и я наступил на то же место, читая тот же файл.
+    ("semantic.poster.label", "semantic.poster.backgroundQuiet", 4.5,
+     "показание на ТИХОМ плакате", None, True),
+    ("semantic.poster.caption", "semantic.poster.backgroundQuiet", 4.5,
+     "подпись на ТИХОМ плакате", None, True),
+    ("semantic.poster.labelOnColor", "semantic.poster.background", 4.5,
+     "показание на ЦВЕТНОМ плакате режима", None, True),
+    ("semantic.poster.captionOnColor", "semantic.poster.background", 4.5,
+     "подпись на ЦВЕТНОМ плакате режима", None, True),
+
+    ("semantic.status.overdueText", "semantic.surface.screen", 4.5, "просрочка на фоне", None, True),
+    ("semantic.status.waitingText", "semantic.surface.screen", 4.5, "ожидание на фоне", None, True),
+    ("semantic.status.stockLowText", "semantic.surface.screen", 4.5, "запас на фоне", None, True),
+
+    # Тона показания. Панели полупрозрачны — лежат на фоне экрана.
+    ("component.readingTone.normal.fg", "component.readingTone.normal.panel", 4.5,
+     "показание на стекле, тон «обычно»", "semantic.surface.screen", True),
+    ("component.readingTone.normal.bar", "component.readingTone.normal.panel", 3.0,
+     "косточка на стекле (графика)", "semantic.surface.screen", True),
+    ("component.readingTone.fasting.fg", "component.readingTone.fasting.panel", 4.5,
+     "показание на янтаре, НАТОЩАК", "semantic.surface.screen", True),
+    ("component.readingTone.fasting.caption", "component.readingTone.fasting.panel", 4.5,
+     "подпись на янтаре, НАТОЩАК", "semantic.surface.screen", True),
+    ("component.readingTone.dose.fg", "component.readingTone.dose.panel", 4.5,
+     "показание на индиго, ЧАС ДОЗЫ", "semantic.surface.screen", True),
+    ("component.readingTone.alarm.fg", "component.readingTone.alarm.panel", 4.5,
+     "показание на терракоте, ТРЕВОГА", "semantic.surface.screen", True),
+    ("component.readingTone.normal.chipLabel", "component.readingTone.normal.chip", 4.5,
+     "подпись на белом чипе состояния", None, True),
+    ("component.readingTone.fasting.chipLabel", "component.readingTone.fasting.chip", 4.5,
+     "подпись на чипе НАТОЩАК", None, True),
+    ("component.readingTone.dose.chipLabel", "component.readingTone.dose.chip", 4.5,
+     "подпись на чипе ЧАС ДОЗЫ", None, True),
+    ("component.readingTone.alarm.chipLabel", "component.readingTone.alarm.chip", 4.5,
+     "подпись на чипе ТРЕВОГА", None, True),
+
+    ("component.tabBar.active", "component.tabBar.background", 3.0,
+     "активная вкладка (графика)", "semantic.surface.screen", True),
+    ("component.tabBar.inactive", "component.tabBar.background", 4.5,
+     "неактивная вкладка", "semantic.surface.screen", True),
+
+    # Рекомендация 9 хендоффа ДОСЛОВНО: «перед релизом проверить контраст
+    # новых --cat-* в светлой теме и повышенном контрасте». Это она.
+    ("component.categoryBadge.on", "component.categoryBadge.walk", 4.5, "значок на кружке «выход»", None, True),
+    ("component.categoryBadge.on", "component.categoryBadge.poop", 4.5, "значок на кружке «стул»", None, True),
+    ("component.categoryBadge.on", "component.categoryBadge.food", 4.5, "значок на кружке «еда»", None, True),
+    ("component.categoryBadge.on", "component.categoryBadge.water", 4.5, "значок на кружке «вода»", None, True),
+    ("component.categoryBadge.on", "component.categoryBadge.dose", 4.5, "значок на кружке «доза»", None, True),
+    ("component.categoryBadge.on", "component.categoryBadge.train", 4.5, "значок на кружке «занятие»", None, True),
+    ("component.categoryBadge.on", "component.categoryBadge.weight", 4.5, "значок на кружке «вес»", None, True),
+    ("component.categoryBadge.onIncident", "component.categoryBadge.incident", 4.5,
+     "значок на кружке ИНЦИДЕНТА", None, True),
+]
+
+
+def _плоско(узел, путь, итог):
+    if isinstance(узел, dict) and "$value" in узел:
+        итог[".".join(путь)] = узел["$value"]
+        return итог
+    if isinstance(узел, dict):
+        for ключ, дитя in узел.items():
+            if not ключ.startswith("$"):
+                _плоско(дитя, путь + [ключ], итог)
+    return итог
+
+
+def _разрешить_режим(плоско, значение, режим, глубина=0):
+    """Значение токена в одном режиме. Ссылки разворачиваются."""
+    if глубина > 10:
+        return None
+    if isinstance(значение, str):
+        м = re.fullmatch(r"\{([^}]+)\}", значение.strip())
+        if м:
+            цель = м.group(1)
+            if цель not in плоско:
+                return None
+            return _разрешить_режим(плоско, плоско[цель], режим, глубина + 1)
+        return значение
+    if isinstance(значение, dict):
+        # Режимный словарь. Вложенная ссылка внутри режима тоже
+        # разворачивается — иначе роль, собранная из чужих столбцов,
+        # молча вернула бы словарь вместо цвета.
+        вн = значение.get(режим)
+        return _разрешить_режим(плоско, вн, режим, глубина + 1) if вн is not None else None
+    return None
+
+
+def аудит_репозитория():
+    """Контраст по `DesignTokens/tokens.json`. Возвращает (пар, провалов)."""
+    import json
+    try:
+        данные = json.loads(_ТОКЕНЫ.read_text(encoding="utf-8"))
+    except Exception as отказ:                       # noqa: BLE001
+        print(f"ПАРЫ РЕПОЗИТОРИЯ: прочитать {_ТОКЕНЫ.name} не удалось "
+              f"({отказ.__class__.__name__}) — замер НЕ СОСТОЯЛСЯ, а не «ноль провалов».",
+              file=sys.stderr)
+        return (0, None)
+    плоско = _плоско(данные, [], {})
+
+    print()
+    print("=" * 62)
+    print("ПАРЫ РЕПОЗИТОРИЯ — DesignTokens/tokens.json, тема «Кино»")
+    print("Другой источник, другие пары, СВОЙ итог. С числами пакета выше")
+    print("не складывается и их не заменяет.")
+    print("=" * 62)
+
+    всего = провалов = 0
+    неизмеренные = []
+    for режим in РЕЖИМЫ_РЕПО:
+        print(f"\n=== {режим} " + "=" * (56 - len(режим)))
+        for перед, зад, порог, зачем, подложка_имя, требование in ПАРЫ_РЕПО:
+            if перед not in плоско or зад not in плоско:
+                неизмеренные.append((режим, перед, зад, "токена нет в tokens.json"))
+                continue
+            ц_перед = в_rgb(_разрешить_режим(плоско, плоско[перед], режим))
+            ц_зад = в_rgb(_разрешить_режим(плоско, плоско[зад], режим))
+            if ц_перед is None or ц_зад is None:
+                неизмеренные.append((режим, перед, зад, "цвет не разобран"))
+                continue
+            если_под = плоско.get(подложка_имя) if подложка_имя else None
+            подложка = в_rgb(_разрешить_режим(плоско, если_под, режим)) if если_под else (0, 0, 0)
+            подложка = наложить(подложка or (0, 0, 0), (0, 0, 0))
+            ц_зад = наложить(ц_зад, подложка)
+            ц_перед = наложить(ц_перед, ц_зад)
+            к = контраст(ц_перед, ц_зад)
+            всего += 1
+            ок = к >= порог
+            if требование:
+                провалов += 0 if ок else 1
+                знак = "✔" if ок else "✘"
+            else:
+                знак = "·"
+            короткое = lambda и: и.replace("semantic.", "").replace("component.", "")
+            print(f"  {знак} {к:5.2f}:1  (порог {порог})  {короткое(перед)} / {короткое(зад)}")
+            print(f"      {зачем}" + ("" if требование else "   [справочно, не провал]"))
+
+    print()
+    print(f"ПАРЫ РЕПОЗИТОРИЯ: ИЗМЕРЕНО {всего} · НЕ ПРОХОДЯТ ПОРОГ: {провалов}")
+    if неизмеренные:
+        print(f"НЕИЗМЕРЕННЫЕ: {len(неизмеренные)}")
+        for режим, п, з, почему in неизмеренные:
+            print(f"  {режим}: {п} / {з} — {почему}")
+    print("""
+ГРАНИЦА ВТОРОГО АУДИТА:
+· это ЗНАЧЕНИЯ токенов, а не кадр. «Значение верное, вызов бессильный»
+  он не ловит: `opacity` на тексте, фото под стеклом, градиент
+  затемнения — всё это видно только на пикселе;
+· панели тонов и стекло наложены на ФОН ЭКРАНА, потому что затемнение
+  фото уходит в него к 76 % высоты. Над светлым местом фотографии
+  те же пары дадут ДРУГИЕ числа, и этого замера здесь нет;
+· столбцы `light` и `lightHC` остались от Graphite: значений светлого
+  «Кино» хендофф не даёт вовсе. Их числа описывают ПРЕЖНЮЮ тему
+  и держатся только до решения Виктории о светлой.""")
+    return (всего, провалов)
+
+
 def main():
     если_нет = [f for f in ("colors.css", "togo.css") if not (ПАКЕТ / f).exists()]
     if если_нет:
@@ -364,7 +599,20 @@ def main():
   стилем, градиент под подписью — всё это видно только на пикселе;
 · пары взяты из ролей слоя и обещаний `togo.css`. Пара, которой
   в списке нет, не проверена — не «хороша».""")
-    return 1 if (провалов or нарушенные_обещания) else 0
+
+    пар_репо, провалов_репо = аудит_репозитория()
+
+    print()
+    print("=" * 62)
+    print("ИТОГ ДВУМЯ ЧИСЛАМИ, И ОНИ НЕ СКЛАДЫВАЮТСЯ:")
+    print(f"  пакет `ядро-дизайна`  : {всего} пар · {провалов} непрохождений")
+    if провалов_репо is None:
+        print(f"  репозиторий tokens.json: ЗАМЕР НЕ СОСТОЯЛСЯ (см. stderr)")
+    else:
+        print(f"  репозиторий tokens.json: {пар_репо} пар · {провалов_репо} непрохождений")
+    print("Первое число неподвижно нарочно — им меряют, сломал ли перенос")
+    print("пакет. Второе меряет НАШУ палитру, и у темы «Кино» меняется оно.")
+    return 1 if (провалов or нарушенные_обещания or провалов_репо) else 0
 
 
 if __name__ == "__main__":

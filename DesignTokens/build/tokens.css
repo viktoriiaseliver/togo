@@ -49,7 +49,7 @@
   --component-categoryBadge-food: #FF9A5C;
   --component-categoryBadge-incident: #FF7A66;
   --component-categoryBadge-on: #111111;
-  --component-categoryBadge-onIncident: #F4F4F2;
+  --component-categoryBadge-onIncident: #111111;
   --component-categoryBadge-poop: #A2C1FE;
   --component-categoryBadge-radius: 13px;
   --component-categoryBadge-size: 40px;
@@ -130,12 +130,14 @@
   --primitive-color-catDose: #FF8FBF;
   --primitive-color-catFood: #FF9A5C;
   --primitive-color-catOn: #111111;
+  --primitive-color-catOnIncident: #111111;
   --primitive-color-catTrain: #C3A6FF;
   --primitive-color-catWalk: #7CE0A0;
   --primitive-color-catWater: #7FD3FF;
   --primitive-color-catWeight: #FFD43B;
   --primitive-color-clay: #FF7A66;
   --primitive-color-clayBg: #4D1F22;
+  --primitive-color-doseInkMuted: #FFFFFFE0;
   --primitive-color-glass: #1E1E2280;
   --primitive-color-glassCard: #1C1C2094;
   --primitive-color-glassEdge: #FFFFFF47;
@@ -149,6 +151,7 @@
   --primitive-color-ink: #FFFFFF;
   --primitive-color-inkFaint: #8E8E93;
   --primitive-color-inkMuted: #C7C7CC;
+  --primitive-color-link: #A2C1FE;
   --primitive-color-night1: #000000;
   --primitive-color-night2: #1C1C1E;
   --primitive-color-night3: #2C2C2E;
@@ -262,7 +265,7 @@
   --semantic-poster-barOnDose: #F4F4F2;
   --semantic-poster-caption: #C7C7CC;
   --semantic-poster-captionOnColor: #B2B2AE;
-  --semantic-poster-captionOnDose: #B2B2AE;
+  --semantic-poster-captionOnDose: #FFFFFFE0;
   --semantic-poster-label: #FFFFFF;
   --semantic-poster-labelOnColor: #F4F4F2;
   --semantic-poster-labelOnDose: #F4F4F2;
@@ -349,6 +352,7 @@
   --primitive-color-arcticPressed: #080679;
   --primitive-color-arcticSubtle: #D9E3FC;
   --primitive-color-arcticTint: #1F4FFF38;
+  --primitive-color-catOnIncident: #FFFFFF;
   --primitive-color-clay: #AE2219;
   --primitive-color-clayBg: #F7D5CF;
   --primitive-color-glass: #FFFFFF9E;
@@ -361,6 +365,7 @@
   --primitive-color-ink: #101112;
   --primitive-color-inkFaint: #A1A4A8;
   --primitive-color-inkMuted: #5A5D61;
+  --primitive-color-link: #1F4FFF;
   --primitive-color-night1: #FFFFFF;
   --primitive-color-night2: #ECEDF0;
   --primitive-color-night3: #E3E5E8;
@@ -394,7 +399,6 @@
   --semantic-poster-barOnDose: #FFFFFF;
   --semantic-poster-caption: #5A5D61;
   --semantic-poster-captionOnColor: #FFFFFFE0;
-  --semantic-poster-captionOnDose: #FFFFFFE0;
   --semantic-poster-label: #101112;
   --semantic-poster-labelOnColor: #FFFFFF;
   --semantic-poster-labelOnDose: #FFFFFF;
@@ -417,6 +421,7 @@
   --semantic-surface-scrim: #10111252;
   --semantic-surface-sunken: #E3E5E8;
   --semantic-text-faint: #A1A4A8;
+  --semantic-text-link: #1F4FFF;
   --semantic-text-onAccent: #FFFFFF;
   --semantic-text-onAccentQuiet: #D9E3FC;
   --semantic-text-primary: #101112;
@@ -432,7 +437,6 @@
   --primitive-color-clay: #FFA696;
   --primitive-color-posterInkMuted: #C8C8C4;
   --semantic-poster-captionOnColor: #C8C8C4;
-  --semantic-poster-captionOnDose: #C8C8C4;
   --semantic-status-overdueText: #FFA696;
 }
 
@@ -485,6 +489,7 @@
   --primitive-color-arcticPressed: #080679;
   --primitive-color-arcticSubtle: #D9E3FC;
   --primitive-color-arcticTint: #0E14A138;
+  --primitive-color-catOnIncident: #FFFFFF;
   --primitive-color-clay: #9B100E;
   --primitive-color-clayBg: #F7D5CF;
   --primitive-color-glass: #FFFFFF9E;
@@ -498,6 +503,7 @@
   --primitive-color-ink: #101112;
   --primitive-color-inkFaint: #7D8085;
   --primitive-color-inkMuted: #45484C;
+  --primitive-color-link: #0E14A1;
   --primitive-color-night1: #FFFFFF;
   --primitive-color-night2: #ECEDF0;
   --primitive-color-night3: #E3E5E8;
@@ -533,7 +539,6 @@
   --semantic-poster-barOnDose: #FFFFFF;
   --semantic-poster-caption: #45484C;
   --semantic-poster-captionOnColor: #FFFFFF;
-  --semantic-poster-captionOnDose: #FFFFFF;
   --semantic-poster-label: #101112;
   --semantic-poster-labelOnColor: #FFFFFF;
   --semantic-poster-labelOnDose: #FFFFFF;
@@ -556,6 +561,7 @@
   --semantic-surface-scrim: #10111252;
   --semantic-surface-sunken: #E3E5E8;
   --semantic-text-faint: #7D8085;
+  --semantic-text-link: #0E14A1;
   --semantic-text-onAccent: #FFFFFF;
   --semantic-text-onAccentQuiet: #D9E3FC;
   --semantic-text-primary: #101112;
