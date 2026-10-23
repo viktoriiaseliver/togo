@@ -1,9 +1,41 @@
 import SwiftUI
 import StoreKit
 
-/// Экран подписки. Всё, что требует App Store Review 3.1.2, стоит на своих
-/// местах: что входит, сколько стоит, на какой срок, автопродление,
-/// восстановление покупок и ссылки на условия и политику.
+/// Экран подписки в теме «Кино» — эталон `Дизайн/эталонные-кадры/ios28-кино-22.10/screenshots/17.png`.
+///
+/// Всё, что требует App Store Review 3.1.2, стоит на своих местах: что
+/// входит, сколько стоит, на какой срок, автопродление, восстановление
+/// покупок и ссылки на условия и политику.
+///
+/// # Чего в макете есть, а здесь нет — названо, а не пропущено молча
+///
+/// ```
+/// пять аватаров семей + «Семьи Боба, Люси, Тобика и ещё 1 200 собак»
+///   НЕ СДЕЛАНО. Две причины, и каждая отдельная:
+///   · фото в макете — плейсхолдеры Unsplash, README пакета говорит
+///     дословно «в продукт не включать»;
+///   · «1 200 собак» — утверждение о мире, которого никто не мерил.
+///     Число установок в ASC на 23.10 не сверялось, и подставить
+///     правдоподобное значило бы продать выдумку. Решает Виктория.
+///
+/// значок строки в заливке (`--action-subtle` под `--action-on-subtle`)
+///   НЕ СДЕЛАНО: строка набрана `TGIconRow`, у него значок без плашки,
+///   а `Togo/DesignSystem/**` этой смене не открыт. Пятую копию строки
+///   рядом с четырьмя разошедшимися заводить нельзя — об этом написано
+///   в голове самого `TGIconRow`.
+///
+/// восстановление покупок · автопродление · условия и политика
+///   В МАКЕТЕ ИХ НЕТ, и они ОСТАВЛЕНЫ. Это не вкус: без них отказ
+///   по 3.1.2, и он уже был. Макет про ревью не знает.
+/// ```
+///
+/// # Что Pro открывает
+///
+/// Три вещи, и список выводится из `ProFeature`, а не лежит здесь
+/// копией. **Трогать подписи нельзя, не прочитав
+/// `Дизайн/РЕШЕНИЯ-ДИЗАЙНА.md`, раздел «Что Pro открывает, и чего
+/// в подписи обещать нельзя»**: оттуда трижды убирали обещание
+/// без дороги в коде, и на третий раз оно вернулось через макет.
 struct PaywallScreen: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(SubscriptionStore.self) private var store
@@ -19,7 +51,9 @@ struct PaywallScreen: View {
     @State private var trialEligible: [String: Bool] = [:]
 
     var body: some View {
-        TGScreen(title: "Togo Pro") {
+        TGScreen {
+            шапка
+
             if store.isPro {
                 TGBanner(tone: .done, title: "Подписка активна",
                          subtitle: "Спасибо. Управлять ей можно в настройках App Store.",
@@ -57,26 +91,21 @@ struct PaywallScreen: View {
             TGButton(title: .готовая(buyTitle), isEnabled: selected != nil && !store.isPro) {
                 Task { await buy() }
             }
-            HStack(spacing: Token.Space.s16) {
-                // Шесть нажатий в одну секунду 22.09 — все с отказом.
-                // Пока идёт запрос, кнопка занята и это видно.
-                Button {
-                    Task { await store.restore() }
-                } label: {
-                    if store.isRestoring {
-                        HStack(spacing: Token.Space.s8) {
-                            ProgressView()
-                            Text("Спрашиваю магазин…")
-                        }
-                    } else {
-                        Text("Восстановить покупки")
-                    }
-                }
-                .disabled(store.isRestoring)
-                Button("Закрыть") { dismiss() }
+            // «Не сейчас», а не «Закрыть»: в макете это ссылка под
+            // кнопкой, и слово там другое. Отказ от покупки — не выход
+            // с экрана, и называть его надо тем, что человек делает.
+            Button("Не сейчас") { dismiss() }
+                .textStyle(AppFont.bodyEmphasis.color(Token.Ink.link))
+                .frame(maxWidth: .infinity, minHeight: Token.Size.tapTarget)
+            восстановление
+        }
+        // «Отмена» слева в шапке — ровно как на кадре 17. Второй выход
+        // рядом с «Не сейчас» не лишний: шторку закрывают и свайпом,
+        // и кнопкой, и человек ищет её там, где она стоит в системе.
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button("Отмена") { dismiss() }
             }
-            .textStyle(AppFont.caption)
-            .frame(maxWidth: .infinity)
         }
         .usageScreen(.paywall)
         .task {
@@ -86,6 +115,26 @@ struct PaywallScreen: View {
                 trialEligible[product.id] = await product.subscription?.isEligibleForIntroOffer ?? false
             }
         }
+    }
+
+    /// Шапка листа: название и чем он является одной строкой.
+    ///
+    /// Подзаголовок «ровно три вещи» — не украшение. Он держит то же
+    /// утверждение, что `ProFeature`: вещей ровно три, и четвёртая
+    /// не может появиться в подписи, не появившись в воротах.
+    private var шапка: some View {
+        VStack(spacing: Token.Space.s2) {
+            Text("Togo Pro")
+                .textStyle(AppFont.cardTitle)
+                .accessibilityAddTraits(.isHeader)
+            // **Отдельным элементом, а не склейкой с заголовком.**
+            // `.accessibilityElement(children: .combine)` здесь стояло
+            // и было снято: склейка убирает обе подписи из дерева,
+            // а на «ровно три вещи» стоит якорь `ScreenshotTests`,
+            // по которому он узнаёт, что пейволл открылся.
+            Text("ровно три вещи").textStyle(AppFont.caption)
+        }
+        .frame(maxWidth: .infinity)
     }
 
     /// Почему цен нет — по тому, что ответил магазин.
@@ -107,38 +156,69 @@ struct PaywallScreen: View {
         }
     }
 
+    /// Подпись главной кнопки.
+    ///
+    /// Макет пишет «Togo Pro · 2,99 € в месяц» — название плюс цена,
+    /// а не глагол. Цена приходит из StoreKit (`displayPrice`), а не
+    /// из макета: «2,99 €» в кадре — это French storefront прототипа,
+    /// и вписать его числом значило бы показать чужую валюту тому,
+    /// у кого другая.
     private var buyTitle: String {
         guard let selected, let period = selected.subscription?.subscriptionPeriod else { return String(localized: "Выбери план") }
         let price = "\(selected.displayPrice) \(Self.billing(period))"
         if let trial = trialLength(selected) {
             return String(localized: "\(trial) бесплатно · дальше \(price)")
         }
-        return String(localized: "Подписаться · \(price)")
+        return String(localized: "Togo Pro · \(price)")
     }
 
+    /// Три строки одной карточкой с разделителями — как на кадре.
+    ///
+    /// По индексам, а не `id: \.1` по кортежу: **ключевого пути
+    /// к элементу кортежа в Swift не существует**, и прежняя форма
+    /// держалась на том, что `ForEach` выводил его сам. Разделитель
+    /// между строками требует знать, какая по счёту, — а значит индекс
+    /// нужен в любом случае.
     private var featureList: some View {
-        TGCard {
-            TGSectionHeader(title: "что открывает")
-            ForEach(SubscriptionStore.proFeatures, id: \.1) { symbol, title, detail in
-                TGIconRow(symbol: symbol, title: .готовая(title), detail: .готовая(detail))
+        let вещи = SubscriptionStore.proFeatures
+        return TGCard(spacing: 0) {
+            ForEach(вещи.indices, id: \.self) { индекс in
+                if индекс > 0 { TGDivider() }
+                TGIconRow(symbol: вещи[индекс].0,
+                          title: .готовая(вещи[индекс].1),
+                          detail: .готовая(вещи[индекс].2),
+                          tint: Token.Ink.link)
+                    .padding(.vertical, Token.Space.s12)
             }
         }
     }
 
+    /// Бесплатное — одной строкой под списком, как на кадре.
+    ///
+    /// **Список берётся из `SubscriptionStore.freeForever`, а не
+    /// печатается здесь.** На кадре названы три пункта из пяти
+    /// («окно натощак, защита от двойной дозы, отчёт врачу»); взять
+    /// три значило бы завести вторую копию списка, которая разойдётся
+    /// с первой молча. Отчёт врачу в этом списке не упомянут потому,
+    /// что он не «бесплатная часть подписки», а то, чего в подписке
+    /// нет вовсе: ворот у экспорта не существует ни одних.
+    ///
+    /// > **Строки `freeForever` — обычные `String`, и в каталог они
+    /// > не уезжают** (`Text(String)` рисует дословно). То есть француз
+    /// > читает их по-русски, и было так и до редизайна. Правка —
+    /// > не здесь, а в `Subscriptions.swift`, и она задевает ещё
+    /// > `DowngradeScreen`; названо, а не починено попутно.
     private var freeList: some View {
-        TGCard {
-            TGSectionHeader(title: "бесплатно навсегда",
-                            subtitle: "без этого приложение молча вредит собаке, поэтому это не продаётся")
-            ForEach(SubscriptionStore.freeForever, id: \.self) { line in
-                HStack(spacing: Token.Space.s8) {
-                    Image(systemName: "checkmark")
-                        .font(.system(size: Token.Size.iconSm, weight: .bold))
-                        .foregroundStyle(Token.Action.doneText)
-                    Text(line).textStyle(AppFont.body)
-                    Spacer(minLength: 0)
-                }
-            }
+        VStack(spacing: Token.Space.s4) {
+            Text("бесплатно навсегда")
+                .textStyle(AppFont.caps)
+                .textCase(.uppercase)
+            Text(verbatim: SubscriptionStore.freeForever.joined(separator: " · "))
+                .textStyle(AppFont.caption)
+                .multilineTextAlignment(.center)
+                .wraps()
         }
+        .frame(maxWidth: .infinity)
     }
 
     private var planPicker: some View {
@@ -147,16 +227,16 @@ struct PaywallScreen: View {
                 Button { selected = product } label: {
                     // Выбор передан кольцом и заливкой; VoiceOver узнаёт о нём
                     // только из трейта — иначе человек не слышит, что покупает.
-                    TGTile(isSelected: selected?.id == product.id, minHeight: 68) {
+                    TGTile(isSelected: selected?.id == product.id, minHeight: Token.Size.capsule) {
                         HStack(spacing: Token.Space.s12) {
                             Image(systemName: selected?.id == product.id ? "largecircle.fill.circle" : "circle")
-                                .foregroundStyle(Token.Status.doneText)
+                                .foregroundStyle(Token.Ink.link)
                             VStack(alignment: .leading, spacing: Token.Space.s2) {
                                 Text(product.displayName).textStyle(AppFont.bodyEmphasis)
                                 Text(subscriptionCaption(product)).textStyle(AppFont.caption)
                             }
                             Spacer(minLength: 0)
-                            Text(product.displayPrice).textStyle(AppFont.numeric(17))
+                            Text(product.displayPrice).textStyle(AppFont.numeric(Token.FontSize.body))
                         }
                         .padding(.horizontal, Token.Space.s14)
                     }
@@ -165,6 +245,27 @@ struct PaywallScreen: View {
                 .accessibilityAddTraits(selected?.id == product.id ? .isSelected : [])
             }
         }
+    }
+
+    /// Восстановление покупок. В макете его нет — в ревью оно есть.
+    private var восстановление: some View {
+        // Шесть нажатий в одну секунду 22.09 — все с отказом.
+        // Пока идёт запрос, кнопка занята и это видно.
+        Button {
+            Task { await store.restore() }
+        } label: {
+            if store.isRestoring {
+                HStack(spacing: Token.Space.s8) {
+                    ProgressView()
+                    Text("Спрашиваю магазин…")
+                }
+            } else {
+                Text("Восстановить покупки")
+            }
+        }
+        .disabled(store.isRestoring)
+        .textStyle(AppFont.caption)
+        .frame(maxWidth: .infinity, minHeight: Token.Size.tapTarget)
     }
 
     private var legalText: some View {
