@@ -156,9 +156,43 @@ struct TrainingSessionScreen: View {
             .buttonStyle(.plain)
             .disabled(!session.isWaitingForMark)
 
-            Button("Не получилось") { session.markMiss() }
-                .textStyle(AppFont.caption)
-                .disabled(!session.isRunning)
+            // Третий исход занятия — и он обязан выглядеть нажимаемым.
+            //
+            // Здесь стоял голый `Button("Не получилось")` с
+            // `.textStyle(AppFont.caption)`, и на кадре
+            // `Дизайн/кадры-приёмки/витрина-редизайн-23.10/04-training.png`
+            // он выходил подписью по центру: плашки нет, нажимаемым
+            // не выглядит, рядом с двумя плитками читается как заголовок
+            // следующей секции.
+            //
+            // Хуже видимого: `.textStyle` красит сам `Text` и побеждает
+            // то, чем система гасит выключённое, — поэтому выключенная
+            // кнопка рисовалась ЯРЧЕ двух соседних плиток, которые в тот
+            // же момент честно потускнели. Замер по тому же кадру,
+            // занятие не начато, то есть все три исхода выключены:
+            //
+            // ```
+            // «Он сделал»     заголовок #8B8B8B  подпись #6F6F72   ← погасло
+            // «Клик»          заголовок #8B8B8B  подпись #6F6F72   ← погасло
+            // «Не получилось» подпись   #C7C7CC                    ← НЕ погасло
+            // ```
+            //
+            // `TGButton` закрывает обе половины разом: плашка приходит
+            // из `Component.Button.Secondary`, а выключенное состояние
+            // идёт через `isEnabled` — то есть через `TGButtonStyle`,
+            // который красит и заливку, и подпись. Те же слова и тот же
+            // вариант уже стоят на втором исходе процедуры —
+            // `SkillAttemptSheet.swift:45`.
+            //
+            // Эталонного кадра у этого экрана нет: в
+            // `Дизайн/эталонные-кадры/ios28-кино-22.10/` восемнадцать
+            // кадров, и занятия среди них нет ни одного. Значит
+            // решением дизайна прежний вид не был — его просто никто
+            // не сверял.
+            TGButton(title: "Не получилось", variant: .secondary, size: .medium,
+                     systemImage: "xmark", isEnabled: session.isRunning) {
+                session.markMiss()
+            }
         }
     }
 
@@ -169,25 +203,52 @@ struct TrainingSessionScreen: View {
 
     // MARK: Последние отметки
 
+    /// Лента задержек — и то, что стоит на её месте, пока отметок нет.
+    ///
+    /// **Пустое место — не пустое состояние.** Полоски лежали в `HStack`
+    /// с жёстким `.frame(height: 48)`, и при нуле отметок этот `HStack`
+    /// оставался пустым, а высоту держал. Замер по кадру
+    /// `Дизайн/кадры-приёмки/витрина-редизайн-23.10/04-training.png`,
+    /// по строкам без единого пикселя ярче `#464646` внутри карточки:
+    ///
+    /// ```
+    /// дыра между «0 из 0 в момент» и «Ниже — быстрее…»
+    ///   y 1739…1978 = 239 px при 3× = 79,7 pt    ← ничего не нарисовано
+    /// ```
+    ///
+    /// Заодно уходят две величины, которые при нуле отметок ничего
+    /// не измеряют: «среднее 0 мс» и «0 из 0 в момент». Ноль, посчитанный
+    /// из пустого списка, выглядит как результат занятия.
+    ///
+    /// Образец пустого состояния — свой, не придуманный: «Пока не с чем
+    /// сравнивать» на кадре `08-feeding.png` (`Feeding.swift:31`) —
+    /// заголовок плюс объяснение, без шапки секции.
     private var recentMarks: some View {
         TGCard {
-            HStack {
-                TGSectionHeader(title: "последние отметки")
-                Spacer()
-                Text("среднее \(session.averageDelayMs) мс").textStyle(AppFont.micro)
-            }
-            Text("\(session.onTimeCount) из \(session.delaysMs.count) в момент")
-                .textStyle(AppFont.numeric(20))
-            HStack(spacing: Token.Space.s4) {
-                ForEach(Array(session.delaysMs.suffix(12).enumerated()), id: \.offset) { _, ms in
-                    Capsule()
-                        .fill(MarkAccuracy.from(delayMilliseconds: ms).color)
-                        .frame(height: CGFloat(min(48, max(6, ms / 25))))
-                        .frame(maxWidth: .infinity)
+            if session.delaysMs.isEmpty {
+                Text("Отметок пока нет")
+                    .textStyle(AppFont.cardTitle)
+                    .wraps()
+                TGExplainer(text: "Первая полоска появится, когда нажмёшь «Клик». Ниже — быстрее: до полусекунды собака связывает маркер со своим действием, после секунды она уже делает что-то другое.")
+            } else {
+                HStack {
+                    TGSectionHeader(title: "последние отметки")
+                    Spacer()
+                    Text("среднее \(session.averageDelayMs) мс").textStyle(AppFont.micro)
                 }
+                Text("\(session.onTimeCount) из \(session.delaysMs.count) в момент")
+                    .textStyle(AppFont.numeric(20))
+                HStack(spacing: Token.Space.s4) {
+                    ForEach(Array(session.delaysMs.suffix(12).enumerated()), id: \.offset) { _, ms in
+                        Capsule()
+                            .fill(MarkAccuracy.from(delayMilliseconds: ms).color)
+                            .frame(height: CGFloat(min(48, max(6, ms / 25))))
+                            .frame(maxWidth: .infinity)
+                    }
+                }
+                .frame(height: 48, alignment: .bottom)
+                TGExplainer(text: "Ниже — быстрее. До полусекунды собака связывает маркер со своим действием. После секунды она уже делает что-то другое — и отмечаешь ты именно это.")
             }
-            .frame(height: 48, alignment: .bottom)
-            TGExplainer(text: "Ниже — быстрее. До полусекунды собака связывает маркер со своим действием. После секунды она уже делает что-то другое — и отмечаешь ты именно это.")
         }
     }
 

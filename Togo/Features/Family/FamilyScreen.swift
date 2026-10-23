@@ -770,6 +770,12 @@ struct MemberScreen: View {
 
 /// Одно право — один переключатель. Выключенное право видно и объяснено,
 /// а не просто отсутствует в списке.
+///
+/// **`TGSwitch`, а не голый `Toggle`,** и это не стиль ради стиля:
+/// общий тинт окна в теме «Кино» белый, системный ползунок белый тоже,
+/// и на кадре `09-permissions.png` все три переключателя вышли сплошными
+/// белыми капсулами — ползунка в них нет ни одним пикселем (1,00:1).
+/// Разбор и замер — в голове `TGSwitch`.
 private struct PermissionToggle: View {
     let permission: Permission
     let isOn: Bool
@@ -777,7 +783,7 @@ private struct PermissionToggle: View {
     let onChange: (Bool) -> Void
 
     var body: some View {
-        Toggle(isOn: Binding(get: { isOn }, set: onChange)) {
+        TGSwitch(isOn: Binding(get: { isOn }, set: onChange)) {
             VStack(alignment: .leading, spacing: Token.Space.s2) {
                 Text(permission.title)
                     .textStyle(AppFont.body)
