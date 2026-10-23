@@ -45,6 +45,58 @@ struct FamilyScreenCopyTests {
         return try String(contentsOf: адрес, encoding: .utf8)
     }
 
+    /// Текст файла **без комментариев**.
+    ///
+    /// **Это починка, пойманная подделкой, а не предосторожность.**
+    /// Первая редакция искала «Пять ролей, восемь прав» по всему файлу
+    /// и прошла подделку насквозь:
+    ///
+    /// ```
+    /// заменил на экране  Text("Шесть ролей, восемь прав")
+    /// сторож             ✔ 4 из 4 passed, rc=0
+    /// почему             над этой же строкой стоит доккомментарий
+    ///                    «/// «Пять ролей, восемь прав» — кадр 12.»,
+    ///                    и `contains` нашёл ЕГО
+    /// ```
+    ///
+    /// То есть сторож мерил **прозу о коде вместо кода** — класс,
+    /// который у Того уже выстрелил дважды, и оба раза комментарий
+    /// с именем предмета красил сторожа зелёным. Запрещать писать
+    /// про строку в том же файле нельзя: этим мы и заняты.
+    ///
+    /// > **Сторож, рождённый зелёным, учит не верить зелёному.
+    /// > Отличить «ловит» от «не умеет» может только подделка.**
+    private static func безКомментариев(_ текст: String) -> String {
+        var вне = ""
+        var вБлоке = false
+        for строка in текст.components(separatedBy: .newlines) {
+            var s = Substring(строка)
+            if вБлоке {
+                guard let конец = s.range(of: "*/") else { continue }
+                s = s[конец.upperBound...]
+                вБлоке = false
+            }
+            if let начало = s.range(of: "/*") {
+                if let конец = s.range(of: "*/", range: начало.upperBound..<s.endIndex) {
+                    s = s[s.startIndex..<начало.lowerBound] + s[конец.upperBound...]
+                } else {
+                    s = s[s.startIndex..<начало.lowerBound]
+                    вБлоке = true
+                }
+            }
+            if let черта = s.range(of: "//") {
+                s = s[s.startIndex..<черта.lowerBound]
+            }
+            вне += s + "\n"
+        }
+        return вне
+    }
+
+    /// Код экрана «Семья» без прозы.
+    private static func кодЭкрана() throws -> String {
+        безКомментариев(try текст("Togo/Features/Family/FamilyScreen.swift"))
+    }
+
     /// Пропись для чисел, которые у нас на экране бывают.
     ///
     /// Словарь, а не алгоритм: числительных здесь ровно столько, сколько
@@ -59,7 +111,7 @@ struct FamilyScreenCopyTests {
 
     @Test("«Пять ролей, восемь прав» — это счёт перечислений, а не слоган")
     func числаВКарточкеРолейСходятся() throws {
-        let экран = try Self.текст("Togo/Features/Family/FamilyScreen.swift")
+        let экран = try Self.кодЭкрана()
 
         let ролей = FamilyRole.allCases.count
         let прав = Permission.allCases.count
@@ -119,7 +171,7 @@ struct FamilyScreenCopyTests {
             в FamilyScreen.swift, либо объяснить лишнее поле здесь.
             """)
 
-        let экран = try Self.текст("Togo/Features/Family/FamilyScreen.swift")
+        let экран = try Self.кодЭкрана()
         #expect(экран.contains("пять строк без диагноза"),
                 "подпись брифинга с кадра 12 пропала с экрана")
     }
@@ -130,7 +182,7 @@ struct FamilyScreenCopyTests {
     /// у Togo это записано трижды, и трижды число было заниженным.
     @Test("Пилюли ролей берутся из FamilyRole.allCases")
     func пилюлиИзПеречисления() throws {
-        let экран = try Self.текст("Togo/Features/Family/FamilyScreen.swift")
+        let экран = try Self.кодЭкрана()
         #expect(экран.contains("ForEach(FamilyRole.allCases"), """
             пилюли ролей собраны не из перечисления. Рукописный список \
             разойдётся с FamilyRole молча: добавленная роль просто \
