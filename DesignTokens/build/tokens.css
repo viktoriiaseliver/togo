@@ -70,6 +70,19 @@
   --component-header-buttonSize: 44px;
   --component-header-titleSize: 36px;
   --component-header-titleTracking: -0.9px;
+  --component-metric-bars-color: #A2C1FE;
+  --component-metric-bars-gap: 3px;
+  --component-metric-bars-height: 48px;
+  --component-metric-bars-marginTop: 6px;
+  --component-metric-bars-radius: 3px;
+  --component-metric-gap: 6px;
+  --component-metric-normLine-color: #8E8E93;
+  --component-metric-normLine-width: 2px;
+  --component-metric-number-size: 48px;
+  --component-metric-pad: 16px;
+  --component-metric-radius: 24px;
+  --component-metric-unit-gapToNumber: 8px;
+  --component-metric-unit-size: 17px;
   --component-readingPanel-captionSize: 14px;
   --component-readingPanel-glassRadius: 24px;
   --component-readingPanel-height: 360px;
@@ -185,6 +198,7 @@
   --primitive-font-size-display: 34px;
   --primitive-font-size-hero: 56px;
   --primitive-font-size-meta: 15px;
+  --primitive-font-size-metric: 48px;
   --primitive-font-size-micro: 14px;
   --primitive-font-size-poster: 40;
   --primitive-font-size-screen: 34px;
@@ -193,6 +207,7 @@
   --primitive-font-size-titleLarge: 36px;
   --primitive-font-size-walkTimer: 76px;
   --primitive-font-tracking-titleLarge: -0.9px;
+  --primitive-radius-bar: 3px;
   --primitive-radius-capsule: 999px;
   --primitive-radius-card: 24px;
   --primitive-radius-hero: 32px;
@@ -224,6 +239,9 @@
   --primitive-size-iconLg: 20px;
   --primitive-size-iconMd: 16px;
   --primitive-size-iconSm: 13px;
+  --primitive-size-metricBarGap: 3px;
+  --primitive-size-metricBars: 48px;
+  --primitive-size-metricNormLine: 2px;
   --primitive-size-rowMin: 60px;
   --primitive-size-tabBar: 64px;
   --primitive-size-tabItem: 56px;
@@ -250,6 +268,18 @@
   --semantic-action-primaryQuiet: #FFFFFF2E;
   --semantic-action-secondary: #3A3A3C;
   --semantic-action-subtle: #2C3A66;
+  --semantic-category-care: #C3A6FF;
+  --semantic-category-dose: #FF8FBF;
+  --semantic-category-food: #FF9A5C;
+  --semantic-category-incident: #FF7A66;
+  --semantic-category-on: #111111;
+  --semantic-category-onIncident: #111111;
+  --semantic-category-poop: #A2C1FE;
+  --semantic-category-train: #C3A6FF;
+  --semantic-category-treat: #FF9A5C;
+  --semantic-category-walk: #7CE0A0;
+  --semantic-category-water: #7FD3FF;
+  --semantic-category-weight: #FFD43B;
   --semantic-glass-blur: 30px;
   --semantic-glass-card: #1C1C2094;
   --semantic-glass-highlight: #FFFFFF47;
@@ -270,6 +300,7 @@
   --semantic-poster-label: #FFFFFF;
   --semantic-poster-labelOnColor: #F4F4F2;
   --semantic-poster-labelOnDose: #F4F4F2;
+  --semantic-radius-bar: 3px;
   --semantic-radius-capsule: 999px;
   --semantic-radius-card: 24px;
   --semantic-radius-control: 24px;
@@ -329,6 +360,8 @@
   --component-chip-restBackground: #FFFFFF;
   --component-chip-selectedBackground: #1F4FFF38;
   --component-feedRow-background: #ECEDF0;
+  --component-metric-bars-color: #1F4FFF;
+  --component-metric-normLine-color: #A1A4A8;
   --component-readingTone-alarm-chipLabel: #FFFFFF;
   --component-readingTone-alarm-fg: #FFFFFF;
   --component-readingTone-dose-chipLabel: #FFFFFF;
@@ -390,6 +423,8 @@
   --semantic-action-primaryPressed: #080679;
   --semantic-action-primaryQuiet: #1F4FFF38;
   --semantic-action-secondary: #FFFFFF;
+  --semantic-category-incident: #AE2219;
+  --semantic-category-onIncident: #FFFFFF;
   --semantic-glass-card: #FFFFFFB8;
   --semantic-glass-highlight: #FFFFFFF2;
   --semantic-glass-line: #0000000F;
@@ -444,6 +479,8 @@
   --component-chip-alarmLabel: #FFA696;
   --component-chip-restBackground: #48484A;
   --component-feedRow-background: #242426;
+  --component-metric-bars-color: #C2D6FF;
+  --component-metric-normLine-color: #AEAEB2;
   --component-readingTone-night-panel: #141418F0;
   --component-readingTone-normal-panel: #141418F0;
   --component-readingTone-walk-panel: #141418F0;
@@ -471,6 +508,7 @@
   --primitive-color-posterInkMuted: #C8C8C4;
   --semantic-action-secondary: #48484A;
   --semantic-action-subtle: #3A4C85;
+  --semantic-category-incident: #FFA696;
   --semantic-glass-card: #242426E6;
   --semantic-glass-highlight: #FFFFFF66;
   --semantic-glass-line: #FFFFFF38;
@@ -515,6 +553,8 @@
   --component-chip-restBackground: #FFFFFF;
   --component-chip-selectedBackground: #0E14A138;
   --component-feedRow-background: #ECEDF0;
+  --component-metric-bars-color: #0E14A1;
+  --component-metric-normLine-color: #7D8085;
   --component-readingTone-alarm-chipLabel: #FFFFFF;
   --component-readingTone-alarm-fg: #FFFFFF;
   --component-readingTone-dose-chip: #0E14A1;
@@ -581,6 +621,8 @@
   --semantic-action-primaryPressed: #080679;
   --semantic-action-primaryQuiet: #0E14A138;
   --semantic-action-secondary: #FFFFFF;
+  --semantic-category-incident: #9B100E;
+  --semantic-category-onIncident: #FFFFFF;
   --semantic-glass-card: #FFFFFFB8;
   --semantic-glass-highlight: #FFFFFFF2;
   --semantic-glass-line: #0000000F;

@@ -1518,6 +1518,12 @@
           "value": 15.0
         },
         {
+          "name": "font/size/metric",
+          "type": "FLOAT",
+          "description": "Число блока «Metric» (`metric.number.size`), SF Pro Rounded 300 с табличными цифрами. Ступень НОВАЯ: между `poster` 40 и `hero` 56, и ни тем, ни другим быть не может — `hero` это ответ на главный вопрос экрана, один на экран, а блоков «Metric» на «Здоровье» несколько. Семейство и табличные цифры токенами не выражены: типов под них у генератора нет, и ставит их место вызова (`КиноМетрика.стильЧисла`). Ответ дизайна на круг 2, 23.10.2026 (`Дизайн/редизайн-ios28/ОТВЕТЫ-круг-2.md`, пункт 4).",
+          "value": 48.0
+        },
+        {
           "name": "font/size/micro",
           "type": "FLOAT",
           "description": "Было 12. Ниже четырнадцати в системе не существует — и с 15.10.2026 это правило ИСПОЛНЯЕТСЯ, а не только записано. Решение Виктории того же дня, прямым вопросом: «Пол 14, макет поправить». ЧТО БЫЛО ДО: стиль `AppFont.micro` брал `font.size.meta` = 15px, то есть эту ступень в приложении НЕ ЗВАЛ НИКТО — живых читателей `Token.FontSize.micro` в Swift ноль. Решение было названо автором стиля в доккомментарии («мета сведена к пятнадцати»), но у него была неизмеренная цена: ступень УЕЗЖАЕТ ДИЗАЙНЕРУ — `--primitive-font-size-micro: 14px` в `tokens.css` и `font/size/micro` в `figma-variables.json` вместе с этим описанием, которое читает плагин в Фигме, — а доккомментарий Swift в Фигму не уезжает. Значит дизайнер, применивший `font/size/micro`, получал 14 в макете и 15 в приложении: одно имя, два значения, по разные стороны границы. ИСТОЧНИК ПРАВДЫ МОЖЕТ СОДЕРЖАТЬ РЕШЕНИЕ, КОТОРОГО НЕ ИСПОЛНЯЕТ НИ ОДИН ЧИТАТЕЛЬ, и грепом это не видно: имя находится, значение находится, а вызова по имени нет — опусти её назад до 12, и на экране не изменилось бы ничего. Теперь привязка сделана (`Typography.swift`, `AppFont.micro`), радиус 50 вызовов в 34 файлах, и держат её ДВА сторожа в `ПолКегляTests` — по значению и по имени в исходнике: проверка только по значению слепа к подмене равнозначной ступенью (`caption` тоже 14), и это доказано подделкой, а не предположено. Макет онбординга просит для подписей полей 12px (`onb/fs-caption`) — ровно то, что отсюда убрали; её решение «макет поправить», то есть 12 не возвращаем.",
@@ -1600,6 +1606,12 @@
           "type": "FLOAT",
           "description": "",
           "value": 600.0
+        },
+        {
+          "name": "radius/bar",
+          "type": "FLOAT",
+          "description": "Столбик полосы в блоке «Metric» (`metric.bars.radius`). Своим номером, а не `icon` 12: при ширине столбика в несколько точек двенадцать превратили бы его в пилюлю. Ответ дизайна на круг 2, 23.10.2026 (`Дизайн/редизайн-ios28/ОТВЕТЫ-круг-2.md`, пункт 4).",
+          "value": 3.0
         },
         {
           "name": "radius/capsule",
@@ -1760,7 +1772,7 @@
         {
           "name": "size/hero",
           "type": "FLOAT",
-          "description": "Высота панели показания (`size.hero`). При крупном кегле — `heroAX` 220. Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`.",
+          "description": "Высота панели показания (`size.hero`). При крупном кегле — `heroAX` 220. ЭТО КАРТОЧКА-ГЕРОЙ, А НЕ ПОДЛОЖКА: высоту фона-фото брать `backdropToday/Tab/Sub/Walk`, их четыре и они по типу экрана. Прямой ответ дизайна на круг 2, 23.10.2026, пункт 3: «`size.hero` (360) — карточка-герой, к подложке не относится. Подложку от него отвязать». До 23.10 `CinemaBackdrop` брал отсюда, и на вкладке плато фото уезжало на 54 pt вверх под шапку. Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`.",
           "value": 360.0
         },
         {
@@ -1786,6 +1798,24 @@
           "type": "FLOAT",
           "description": "",
           "value": 13.0
+        },
+        {
+          "name": "size/metricBarGap",
+          "type": "FLOAT",
+          "description": "Зазор между столбиками полосы «Metric» (`metric.bars.gap`). Трёх в шаге сетки нет и быть не должно: сетка начинается с двойки и идёт по чётным, а здесь зазор ВНУТРИ графика, а не между элементами раскладки. Ответ дизайна на круг 2, 23.10.2026.",
+          "value": 3.0
+        },
+        {
+          "name": "size/metricBars",
+          "type": "FLOAT",
+          "description": "Высота полосы столбиков в блоке «Metric» (`metric.bars.height`). Совпадает по числу с кеглем числа метрики (`font.size.metric` 48) и НЕ берётся у него: это высота в точках, а то — кегль, и смена одного не должна тащить другое. Ответ дизайна на круг 2, 23.10.2026.",
+          "value": 48.0
+        },
+        {
+          "name": "size/metricNormLine",
+          "type": "FLOAT",
+          "description": "Толщина линии нормы в блоке «Metric» (`metric.normLine.width`). Не `hairline` 1: дизайн назвал два и отдельно отменил прозрачность, которая была у линии в прототипе («прозрачности на линиях нет», ОТВЕТЫ-круг-2, пункт 4). ЧИТАТЕЛЕЙ У НЕЁ НОЛЬ: линию нормы не рисует ни `КиноМетрика`, ни `КиноСтолбики` — замер 23.10.2026, `grep -n \"metricNormLine\" --include=*.swift` по `Togo TogoShared` при живом контроле `metricBars`. Поле без читателя грепом находится один раз, в объявлении, и выглядит работающим; здесь это названо, а не умолчано. Полоса нормы на `LabChartScreen` — ДРУГОЙ предмет (прямоугольник Swift Charts, не линия) и этого токена не берёт.",
+          "value": 2.0
         },
         {
           "name": "size/rowMin",
@@ -1958,6 +1988,90 @@
           "aliasCollection": "Primitive"
         },
         {
+          "name": "category/care",
+          "type": "COLOR",
+          "description": "Уход и занятие — один цвет, так в хендоффе.",
+          "alias": "color/catTrain",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "category/dose",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/catDose",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "category/food",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/catFood",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "category/incident",
+          "type": "COLOR",
+          "description": "`category.incident` хендоффа = `status.error`, то есть наш терракот. Своего значения у инцидента нет и заводить его не надо.",
+          "alias": "status/overdueText",
+          "aliasCollection": "Semantic"
+        },
+        {
+          "name": "category/on",
+          "type": "COLOR",
+          "description": "Значок НА заливке категории — #111 на любой из них (`category.on`). Не `Ink.onAccent`: тот ходит за акцентом и в светлой теме станет белым, а заливки категории одинаковы во всех режимах. Белый значок на мяте #7CE0A0 даёт 1,54:1 — то есть не виден; #111 на ней же 13,2:1.",
+          "alias": "color/catOn",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "category/onIncident",
+          "type": "COLOR",
+          "description": "Значок на терракоте: #111 там, где заливка светлая, белый там, где тёмная. Разбор и числа — в описании `primitive.color.catOnIncident`.",
+          "alias": "color/catOnIncident",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "category/poop",
+          "type": "COLOR",
+          "description": "Стул. Тот же #A2C1FE, что `text.link`, — одно значение, две роли, и это хендофф, а не экономия.",
+          "alias": "color/indigoSoft",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "category/train",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/catTrain",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "category/treat",
+          "type": "COLOR",
+          "description": "Лакомство и еда — один цвет, так в хендоффе.",
+          "alias": "color/catFood",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "category/walk",
+          "type": "COLOR",
+          "description": "Прогулка и выход по нужде. `outing` в хендоффе не назван и приписан к прогулке словарём продукта: `TimelineBlock.isOuting` считает выходом оба, и строка «дома 3 ч» меряется между ними.",
+          "alias": "color/catWalk",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "category/water",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/catWater",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "category/weight",
+          "type": "COLOR",
+          "description": "",
+          "alias": "color/catWeight",
+          "aliasCollection": "Primitive"
+        },
+        {
           "name": "glass/blur",
           "type": "FLOAT",
           "description": "Радиус размытия запасного пути.",
@@ -2094,6 +2208,13 @@
           "type": "COLOR",
           "description": "Показание на плакате дозы. Было `arcticInk`, который стал #111111 — чёрная подпись на индиго нечитаема. `readingTone.dose.fg` = #FFFFFF, и `posterInk` ровно эта роль: текст НА ЦВЕТНОМ блоке. Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`. ",
           "alias": "color/posterInk",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "radius/bar",
+          "type": "FLOAT",
+          "description": "Столбик полосы «Metric», 3 (`metric.bars.radius`). Семантическое имя заведено СРАЗУ, а не вторым заходом: генератор поднимает в Swift семантику, и примитив без алиаса до слоя вида не доезжает — на этом уже дважды спотыкались (`capsule`, `stockLow`).",
+          "alias": "radius/bar",
           "aliasCollection": "Primitive"
         },
         {
@@ -2636,15 +2757,15 @@
           "name": "categoryBadge/care",
           "type": "COLOR",
           "description": "Уход и занятие — один цвет, так в хендоффе.",
-          "alias": "color/catTrain",
-          "aliasCollection": "Primitive"
+          "alias": "category/care",
+          "aliasCollection": "Semantic"
         },
         {
           "name": "categoryBadge/dose",
           "type": "COLOR",
           "description": "",
-          "alias": "color/catDose",
-          "aliasCollection": "Primitive"
+          "alias": "category/dose",
+          "aliasCollection": "Semantic"
         },
         {
           "name": "categoryBadge/doseRadius",
@@ -2657,36 +2778,36 @@
           "name": "categoryBadge/food",
           "type": "COLOR",
           "description": "",
-          "alias": "color/catFood",
-          "aliasCollection": "Primitive"
+          "alias": "category/food",
+          "aliasCollection": "Semantic"
         },
         {
           "name": "categoryBadge/incident",
           "type": "COLOR",
           "description": "`category.incident` хендоффа = `status.error`, то есть наш терракот. Своего значения у инцидента нет и заводить его не надо.",
-          "alias": "status/overdueText",
+          "alias": "category/incident",
           "aliasCollection": "Semantic"
         },
         {
           "name": "categoryBadge/on",
           "type": "COLOR",
           "description": "Значок внутри кружка — #111 на любой заливке.",
-          "alias": "color/catOn",
-          "aliasCollection": "Primitive"
+          "alias": "category/on",
+          "aliasCollection": "Semantic"
         },
         {
           "name": "categoryBadge/onIncident",
           "type": "COLOR",
           "description": "Значок на терракоте: #111 там, где заливка светлая, белый там, где тёмная. Разбор и числа — в описании `primitive.color.catOnIncident`.",
-          "alias": "color/catOnIncident",
-          "aliasCollection": "Primitive"
+          "alias": "category/onIncident",
+          "aliasCollection": "Semantic"
         },
         {
           "name": "categoryBadge/poop",
           "type": "COLOR",
           "description": "Тот же #A2C1FE, что ссылка.",
-          "alias": "color/indigoSoft",
-          "aliasCollection": "Primitive"
+          "alias": "category/poop",
+          "aliasCollection": "Semantic"
         },
         {
           "name": "categoryBadge/radius",
@@ -2706,36 +2827,36 @@
           "name": "categoryBadge/train",
           "type": "COLOR",
           "description": "",
-          "alias": "color/catTrain",
-          "aliasCollection": "Primitive"
+          "alias": "category/train",
+          "aliasCollection": "Semantic"
         },
         {
           "name": "categoryBadge/treat",
           "type": "COLOR",
           "description": "Лакомство и еда — один цвет, так в хендоффе.",
-          "alias": "color/catFood",
-          "aliasCollection": "Primitive"
+          "alias": "category/treat",
+          "aliasCollection": "Semantic"
         },
         {
           "name": "categoryBadge/walk",
           "type": "COLOR",
           "description": "",
-          "alias": "color/catWalk",
-          "aliasCollection": "Primitive"
+          "alias": "category/walk",
+          "aliasCollection": "Semantic"
         },
         {
           "name": "categoryBadge/water",
           "type": "COLOR",
           "description": "",
-          "alias": "color/catWater",
-          "aliasCollection": "Primitive"
+          "alias": "category/water",
+          "aliasCollection": "Semantic"
         },
         {
           "name": "categoryBadge/weight",
           "type": "COLOR",
           "description": "",
-          "alias": "color/catWeight",
-          "aliasCollection": "Primitive"
+          "alias": "category/weight",
+          "aliasCollection": "Semantic"
         },
         {
           "name": "chip/alarmBackground",
@@ -2819,6 +2940,97 @@
           "type": "FLOAT",
           "description": "−0,9 pt при 36.",
           "alias": "font/tracking/titleLarge",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "metric/bars/color",
+          "type": "COLOR",
+          "description": "Столбики красятся ссылкой (`metric.bars.color` = `text.link`), а не акцентом: акцент в «Кино» белый, и четырнадцать белых столбиков на чёрном были бы сплошной заливкой.",
+          "alias": "text/link",
+          "aliasCollection": "Semantic"
+        },
+        {
+          "name": "metric/bars/gap",
+          "type": "FLOAT",
+          "description": "",
+          "alias": "size/metricBarGap",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "metric/bars/height",
+          "type": "FLOAT",
+          "description": "",
+          "alias": "size/metricBars",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "metric/bars/marginTop",
+          "type": "FLOAT",
+          "description": "Отступ полосы от пояснения, 6.",
+          "alias": "space/6",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "metric/bars/radius",
+          "type": "FLOAT",
+          "description": "",
+          "alias": "radius/bar",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "metric/gap",
+          "type": "FLOAT",
+          "description": "Зазор между строками блока, 6 (`metric.gap`).",
+          "alias": "space/6",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "metric/normLine/color",
+          "type": "COLOR",
+          "description": "ЛИНИЯ НОРМЫ СПЛОШНАЯ — прозрачность ОТМЕНЕНА дизайном: в прототипе она была `text-secondary` с opacity .5, ответ круга 2 говорит «прозрачности на линиях нет». Цвет — `text.faint` (#8E8E93 в тёмной), он же `text.disabled` хендоффа. Запрет `Ink.faint` (`InkContrastTests`) этим НЕ нарушен: он стоит на ТЕКСТЕ и ЗНАЧКАХ, а здесь двухточечная линия, которой порог 4,5:1 не адресован. ЧИТАТЕЛЕЙ У ОБОИХ ПОЛЕЙ НОЛЬ — линию нормы не рисует ни один живой экран; разбор в описании `primitive.size.metricNormLine`.",
+          "alias": "text/faint",
+          "aliasCollection": "Semantic"
+        },
+        {
+          "name": "metric/normLine/width",
+          "type": "FLOAT",
+          "description": "",
+          "alias": "size/metricNormLine",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "metric/number/size",
+          "type": "FLOAT",
+          "description": "48, SF Pro Rounded 300, табличные цифры.",
+          "alias": "font/size/metric",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "metric/pad",
+          "type": "FLOAT",
+          "description": "Поле карточки, 16 (`metric.pad`).",
+          "alias": "space/16",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "metric/radius",
+          "type": "FLOAT",
+          "description": "Радиус блока = `size.cardRadius` 24, своего у него нет.",
+          "alias": "radius/card",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "metric/unit/gapToNumber",
+          "type": "FLOAT",
+          "description": "Зазор от числа до единицы, 8.",
+          "alias": "space/8",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "metric/unit/size",
+          "type": "FLOAT",
+          "description": "Единица 17/600.",
+          "alias": "font/size/body",
           "aliasCollection": "Primitive"
         },
         {

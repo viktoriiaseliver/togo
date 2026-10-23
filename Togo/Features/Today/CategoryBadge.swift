@@ -23,7 +23,24 @@ import SwiftUI
 ///
 /// > Утверждение «токенов нет» было верным в момент записи и протухло
 /// > за несколько часов. Поэтому сюда вписан не вывод, а **способ
-/// > проверить**: `grep -n "enum CategoryBadge" TogoShared/Generated/Tokens.generated.swift`.
+/// > проверить**: `grep -n "enum Category {" TogoShared/Generated/Tokens.generated.swift`.
+///
+/// **И протухло второй раз, в другую сторону: 23.10 цвета УЕХАЛИ
+/// из компонентного слоя в семантический** (`Token.Category.*`) — ответ
+/// дизайна на круг 2, пункт 5. Причина не косметическая: цвет вида
+/// записи спрашивают кружок, **виджет и живая активность**, а
+/// `Token.Component.*` за пределами дизайн-системы запрещён
+/// (`ComponentTokenScopeTests`) — то есть из компонентного слоя двое
+/// из трёх достать его не могли и подставляли суррогат (живая
+/// активность взяла `Action.doneText`, «сделано»). Дизайн назвал это
+/// прямо: «`Action.doneText` для выхода не использовать: это другая
+/// роль». `Token.Component.CategoryBadge.*` остался и ссылается
+/// на семантику; там теперь только геометрия кружка.
+///
+/// > **Токен, который нельзя позвать оттуда, где он нужен, —
+/// > не токен, а запись.** До 23.10 все девять цветов существовали,
+/// > были верны и не красили ни одного пикселя: этот кружок до сегодня
+/// > заливал все девять видов одним `Surface.control`.
 ///
 /// Литералом цвет не вписан ни разу: `DesignLiteralTests` держит его
 /// в слое вида на строгом нуле, и продуктовый цвет, записанный литералом,
@@ -84,35 +101,53 @@ struct CategoryBadge: View {
     /// токенов, не моя, и до неё погашенное берёт `sunken`.
     private var заливка: Color {
         if isDeleted { return Token.Surface.sunken }
-        if kind == .incident || raisesAlarm { return Token.Status.overdueBg }
-        return ждётТокена
+        if kind == .incident || raisesAlarm { return Token.Category.incident }
+        return пара.заливка
     }
 
+    /// Значок НА заливке.
+    ///
+    /// **`Token.Category.on` (#111), а не `Ink.primary`, и это замер,
+    /// а не вкус.** `Ink.primary` в тёмной теме белый, а заливки
+    /// категории одинаковы во всех четырёх режимах и все светлые:
+    /// белый значок на мяте `#7CE0A0` даёт **1,54:1** — то есть его
+    /// не видно вовсе, — а `#111111` на ней же 13,2:1. До 23.10 кружок
+    /// стоял на `Surface.control`, где белое читалось, и подмена заливки
+    /// на цвет вида перевернула бы знак молча, если бы значок остался
+    /// прежним.
+    ///
+    /// Инцидент и тревога берут `Category.onIncident`, а не `on`:
+    /// у терракота значение четырёхрежимное (в тёмной заливка тёмная,
+    /// в светлой светлая), и чернила обязаны ходить за ним.
     private var значок: Color {
         if isDeleted { return Token.Ink.secondary }
-        if kind == .incident || raisesAlarm { return Token.Status.overdueText }
-        return Token.Ink.primary
+        if kind == .incident || raisesAlarm { return Token.Category.onIncident }
+        return пара.чернила
     }
 
-    /// Заливка на время, пока цвета категории не заведены.
+    /// Заливка и чернила вида записи — **одним решением, а не двумя**.
     ///
-    /// Перечисление **полное и нарочно без `default`**: придёт
-    /// `Token.Category.*` — компилятор приведёт сюда по одному случаю
-    /// за раз. С `default` новый вид записи молча получил бы серый,
-    /// и это читалось бы как «цвет у него такой», а не «цвета нет».
+    /// Пара, а не два свойства: у девяти видов заливка цветная и значок
+    /// обязан быть тёмным, у четырёх заливка утопленная и значок обязан
+    /// остаться светлым. Два списка разошлись бы молча — и разошлись бы
+    /// в сторону, которой не видно на кадре светлой записи: #111 на
+    /// `Surface.sunken` это 1,4:1. Компилятор на два списка не жалуется,
+    /// на один неполный — жалуется.
     ///
-    /// Имена справа — то, что ждёт каждый случай
-    /// (`togo-ios28.tokens.json`, ключ `category`):
+    /// Перечисление **полное и нарочно без `default`**: новый вид записи
+    /// обязан привести компилятор сюда, а не получить молча серый —
+    /// это читалось бы как «цвет у него такой», а не «цвета нет».
     ///
-    ///     walk · outing   category.walk    #7CE0A0
-    ///     stool           category.poop    #A2C1FE
-    ///     meal            category.food    #FF9A5C
-    ///     treat           category.treat   #FF9A5C
-    ///     water           category.water   #7FD3FF
-    ///     dose            category.dose    #FF8FBF
-    ///     training        category.train   #C3A6FF
-    ///     care            category.care    #C3A6FF
-    ///     weight          category.weight  #FFD43B
+    /// # Токены приехали 23.10.2026, и заливка больше не временная
+    ///
+    /// Прежняя редакция звалась `ждётТокена` и красила все девять видов
+    /// одним `Surface.control`, потому что цвета лежали в
+    /// `Token.Component.CategoryBadge.*`, а `Token.Component.*` за
+    /// пределами дизайн-системы запрещён (`ComponentTokenScopeTests`).
+    /// Ответ дизайна на круг 2 (пункт 5) перевёл их в семантику:
+    /// «`category.*` переводим в семантику… Виджету и Live Activity —
+    /// можно». Способ проверить за минуту:
+    /// `grep -n "enum Category {" TogoShared/Generated/Tokens.generated.swift`.
     ///
     /// Четыре вида записи в хендоффе не названы вовсе — `reaction`,
     /// `travelStop`, `note` и `incident` (у последнего цвет есть, но
@@ -126,13 +161,22 @@ struct CategoryBadge: View {
     /// считает выходом и прогулку, и выход по нужде, и строка «дома 3 ч»
     /// меряется между ними обоими. Оставить выход серым значило бы
     /// покрасить половину одного домена.
-    private var ждётТокена: Color {
+    private var пара: (заливка: Color, чернила: Color) {
         switch kind {
-        case .walk, .outing, .stool, .meal, .treat, .water,
-             .dose, .training, .care, .weight:
-            Token.Surface.control
+        case .walk, .outing: (Token.Category.walk, Token.Category.on)
+        case .stool: (Token.Category.poop, Token.Category.on)
+        case .meal: (Token.Category.food, Token.Category.on)
+        case .treat: (Token.Category.treat, Token.Category.on)
+        case .water: (Token.Category.water, Token.Category.on)
+        case .dose: (Token.Category.dose, Token.Category.on)
+        case .training: (Token.Category.train, Token.Category.on)
+        case .care: (Token.Category.care, Token.Category.on)
+        case .weight: (Token.Category.weight, Token.Category.on)
+        // Сюда же `.incident`: цвет у него есть, но ветка выше
+        // перехватывает его раньше. Случай назван ради полноты
+        // перечисления, а не ради исхода.
         case .reaction, .travelStop, .note, .incident:
-            Token.Surface.sunken
+            (Token.Surface.sunken, Token.Ink.primary)
         }
     }
 }
