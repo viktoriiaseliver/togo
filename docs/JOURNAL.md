@@ -12,6 +12,7 @@
 - [23 октября 2026 — 23.10.2026](journal/2026-10-23-snos-plakata-doveden-i-os-perevedena.md) — 23.10.2026
 - [23 октября 2026 — onbording-i-pro-pod-kino](journal/2026-10-23-onbording-i-pro-pod-kino.md) — onbording-i-pro-pod-kino
 - [23 октября 2026 — nastroyki-pod-kino](journal/2026-10-23-nastroyki-pod-kino.md) — nastroyki-pod-kino
+- [23 октября 2026 — dorogi-kadrov-vitriny-posle-redizayna](journal/2026-10-23-dorogi-kadrov-vitriny-posle-redizayna.md) — dorogi-kadrov-vitriny-posle-redizayna
 - [23 октября 2026 — devyat-krasnykh-sverkh-etalona](journal/2026-10-23-devyat-krasnykh-sverkh-etalona.md) — devyat-krasnykh-sverkh-etalona
 - [23 октября 2026 — chetyre-hvosta-nazvannykh-avtorami](journal/2026-10-23-chetyre-hvosta-nazvannykh-avtorami.md) — chetyre-hvosta-nazvannykh-avtorami
 - [22 октября 2026 — редизайн iOS 28 внесён, и два решения сняты](journal/2026-10-22-redizayn-ios28-vnesyon-i-dva-resheniya-snyaty.md) — хендофф в git дословно (35 файлов + 18 кадров), «Кино» вместо Graphite, индиго отменено, витрина 1.0 на пяти языках; три адреса коммитов в «утверждённых решениях» вели не туда
