@@ -567,7 +567,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "«%@» est deux fois dans le journal, et les entrées se sont séparées : une partie sur une fiche, une partie sur l'autre."
+            "value" : "« %@ » est deux fois dans le journal, et les entrées se sont séparées : une partie sur une fiche, une partie sur l'autre."
           }
         },
         "uk" : {
@@ -591,7 +591,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "«%@» disparaîtra avec toutes les tentatives enregistrées. Tu pourras remettre les modèles quand la liste sera vide."
+            "value" : "« %@ » disparaîtra avec toutes les tentatives enregistrées. Tu pourras remettre les modèles quand la liste sera vide."
           }
         },
         "ru" : {
@@ -621,7 +621,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "«%@» quittera le plan du jour, l'onglet «Santé» se masquera. %@"
+            "value" : "« %@ » quittera le plan du jour, l'onglet « Santé » se masquera. %@"
           }
         },
         "ru" : {
@@ -651,7 +651,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "«Togo : promenade» — Siri comprend aussi sur la montre."
+            "value" : "« Togo : promenade » — Siri comprend aussi sur la montre."
           }
         },
         "ru" : {
@@ -681,7 +681,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "«Comme d'habitude» n'apparaît que si les quatre dernières entrées sont identiques."
+            "value" : "« Comme d'habitude » n'apparaît que si les quatre dernières entrées sont identiques."
           }
         },
         "ru" : {
@@ -741,7 +741,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "«Réglages → chien → Alimentation et routine». L'app comparera ça à ce que tu donnes vraiment et te dira si le chien mange trop."
+            "value" : "« Réglages → chien → Alimentation et routine ». L'app comparera ça à ce que tu donnes vraiment et te dira si le chien mange trop."
           }
         },
         "ru" : {
@@ -771,7 +771,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "«N'a pas pris la friandise» dans la séance"
+            "value" : "« N'a pas pris la friandise » dans la séance"
           }
         },
         "ru" : {
@@ -813,7 +813,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "«Alimentation et routine» montre ce que le chien mange vraiment et à quelle heure. Si ça dépasse la ration du jour, l'app proposera une nouvelle portion pour tous les repas d'un coup : la portion est la même pour toute la journée."
+            "value" : "« Alimentation et routine » montre ce que le chien mange vraiment et à quelle heure. Si ça dépasse la ration du jour, l'app proposera une nouvelle portion pour tous les repas d'un coup : la portion est la même pour toute la journée."
           }
         },
         "ru" : {
@@ -843,7 +843,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "«Prendre le relais» est un geste explicite, pas un silence : ce qui reste ouvert ne doit rester à personne."
+            "value" : "« Prendre le relais » est un geste explicite, pas un silence : ce qui reste ouvert ne doit rester à personne."
           }
         },
         "ru" : {
@@ -8523,7 +8523,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sans «Envie de sortir ?»"
+            "value" : "Sans « Envie de sortir ? »"
           }
         },
         "ru" : {
@@ -9703,7 +9703,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le compte rendu aura la ligne «dose → prise de sang : %@». C'est justement son absence qui a déjà faussé deux fois la lecture des analyses."
+            "value" : "Le compte rendu aura la ligne « dose → prise de sang : %@ ». C'est justement son absence qui a déjà faussé deux fois la lecture des analyses."
           }
         },
         "uk" : {
@@ -11499,7 +11499,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L'onglet «Santé» se masquera. %@"
+            "value" : "L'onglet « Santé » se masquera. %@"
           }
         },
         "ru" : {
@@ -11529,7 +11529,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L'onglet apparaît avec un traitement et disparaît avec «Traitement terminé». Pour un chien en bonne santé, il n'y a rien de médical sur l'écran principal."
+            "value" : "L'onglet apparaît avec un traitement et disparaît avec « Traitement terminé ». Pour un chien en bonne santé, il n'y a rien de médical sur l'écran principal."
           }
         },
         "ru" : {
@@ -11697,7 +11697,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "active l'onglet «Santé», les doses et la fenêtre à jeun"
+            "value" : "active l'onglet « Santé », les doses et la fenêtre à jeun"
           }
         },
         "ru" : {
@@ -11937,7 +11937,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ses entrées, traitements, séances et voyages seront supprimés avec lui. Tu peux exporter le journal dans «Réglages → Données et confidentialité»."
+            "value" : "Ses entrées, traitements, séances et voyages seront supprimés avec lui. Tu peux exporter le journal dans « Réglages → Données et confidentialité »."
           }
         },
         "ru" : {
@@ -13749,7 +13749,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Un deuxième incident dans la journée ouvre un épisode : les verdicts «Envie de sortir ?» sont en pause jusqu'à ce qu'on comprenne ce qui se passe."
+            "value" : "Un deuxième incident dans la journée ouvre un épisode : les verdicts « Envie de sortir ? » sont en pause jusqu'à ce qu'on comprenne ce qui se passe."
           }
         },
         "ru" : {
@@ -17046,7 +17046,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deux incidents en 24 h. Les verdicts «Envie de sortir ?» sont en pause tant qu'on ne comprend pas ce qui se passe."
+            "value" : "Deux incidents en 24 h. Les verdicts « Envie de sortir ? » sont en pause tant qu'on ne comprend pas ce qui se passe."
           }
         },
         "ru" : {
@@ -18643,7 +18643,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les jours sans entrées ne comptent pas dans la moyenne : un jour vide veut dire «journal pas tenu», pas «il n'a pas mangé»."
+            "value" : "Les jours sans entrées ne comptent pas dans la moyenne : un jour vide veut dire « journal pas tenu », pas « il n'a pas mangé »."
           }
         },
         "ru" : {
@@ -19263,7 +19263,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ajoute l'action «Promenade par l'étiquette»"
+            "value" : "Ajoute l'action « Promenade par l'étiquette »"
           }
         },
         "ru" : {
@@ -21666,7 +21666,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Si l'un coche la prise, l'autre voit un verrou. Quand deux téléphones se contredisent, «donnée» gagne toujours — un verrou de trop est plus sûr qu'un deuxième comprimé."
+            "value" : "Si l'un coche la prise, l'autre voit un verrou. Quand deux téléphones se contredisent, « donnée » gagne toujours — un verrou de trop est plus sûr qu'un deuxième comprimé."
           }
         },
         "ru" : {
@@ -24253,7 +24253,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "les séances et «n'a pas pris la friandise» restent"
+            "value" : "les séances et « n'a pas pris la friandise » restent"
           }
         },
         "ru" : {
@@ -25452,7 +25452,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Les entrées de la journée — repas, sorties, doses — resteront : seule la «journée avec le chien» disparaît, avec sa trace dans les observations de l'historique."
+            "value" : "Les entrées de la journée — repas, sorties, doses — resteront : seule la « journée avec le chien » disparaît, avec sa trace dans les observations de l'historique."
           }
         },
         "ru" : {
@@ -25661,7 +25661,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les entrées resteront dans l'historique. Le verdict «Envie de sortir ?» se calculera à nouveau sur les intervalles habituels — pendant un épisode, il n'est pas calculé du tout."
+            "value" : "Les entrées resteront dans l'historique. Le verdict « Envie de sortir ? » se calculera à nouveau sur les intervalles habituels — pendant un épisode, il n'est pas calculé du tout."
           }
         },
         "ru" : {
@@ -26356,7 +26356,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Noté tout de suite, sans «pourquoi» ni «à qui la faute». Tu pourras préciser plus tard en touchant la ligne dans le fil."
+            "value" : "Noté tout de suite, sans « pourquoi » ni « à qui la faute ». Tu pourras préciser plus tard en touchant la ligne dans le fil."
           }
         },
         "ru" : {
@@ -27118,7 +27118,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L'ibuprofène et le paracétamol sont toxiques pour les chiens. Ne les donne jamais de toi-même, même «une moitié»."
+            "value" : "L'ibuprofène et le paracétamol sont toxiques pour les chiens. Ne les donne jamais de toi-même, même « une moitié »."
           }
         },
         "ru" : {
@@ -29621,7 +29621,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le bouton «Je le sors» vient en premier dans les quatre cas. L'app n'en sait pas plus que toi et ne t'empêche pas de sortir le chien."
+            "value" : "Le bouton « Je le sors » vient en premier dans les quatre cas. L'app n'en sait pas plus que toi et ne t'empêche pas de sortir le chien."
           }
         },
         "ru" : {
@@ -29651,7 +29651,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bouton «Action»"
+            "value" : "Bouton « Action »"
           }
         },
         "ru" : {
@@ -32969,7 +32969,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le marqueur est toujours le même et ne veut rien dire d'autre. «C'est bien» ne convient pas : on le dit toute la journée."
+            "value" : "Le marqueur est toujours le même et ne veut rien dire d'autre. « C'est bien » ne convient pas : on le dit toute la journée."
           }
         },
         "ru" : {
@@ -33917,7 +33917,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tu peux l'activer plus tard — l'onglet «Santé» apparaîtra aussitôt."
+            "value" : "Tu peux l'activer plus tard — l'onglet « Santé » apparaîtra aussitôt."
           }
         },
         "ru" : {
@@ -34967,7 +34967,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Une compétence n'est pas «acquise» ou «pas acquise». «Viens» à la maison et «viens» dehors à côté d'un autre chien, ce sont deux compétences différentes."
+            "value" : "Une compétence n'est pas « acquise » ou « pas acquise ». « Viens » à la maison et « viens » dehors à côté d'un autre chien, ce sont deux compétences différentes."
           }
         },
         "ru" : {
@@ -35057,7 +35057,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Appuie sur «Envie de sortir ?» quand il va vers la porte. Dès demain, sa routine apparaîtra ici, et tu verras quand il a vraiment besoin de sortir."
+            "value" : "Appuie sur « Envie de sortir ? » quand il va vers la porte. Dès demain, sa routine apparaîtra ici, et tu verras quand il a vraiment besoin de sortir."
           }
         },
         "ru" : {
@@ -35351,7 +35351,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cherche Togo dans la liste. Désactive «Demander avant d'exécuter» — sinon ça perd son sens : il faudra confirmer."
+            "value" : "Cherche Togo dans la liste. Désactive « Demander avant d'exécuter » — sinon ça perd son sens : il faudra confirmer."
           }
         },
         "ru" : {
@@ -36345,7 +36345,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Elle ne remplace pas une visite chez le vétérinaire. Le verdict «Envie de sortir ?» est une statistique sur tes propres entrées, pas une conclusion."
+            "value" : "Elle ne remplace pas une visite chez le vétérinaire. Le verdict « Envie de sortir ? » est une statistique sur tes propres entrées, pas une conclusion."
           }
         },
         "ru" : {
@@ -39135,7 +39135,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La ration est de %@ g par jour, les aliments donnent %@ g. Ça arrive : corrige la répartition ici, ou la ration elle-même dans «Repas»."
+            "value" : "La ration est de %@ g par jour, les aliments donnent %@ g. Ça arrive : corrige la répartition ici, ou la ration elle-même dans « Repas »."
           }
         },
         "ru" : {
@@ -39163,7 +39163,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La ration est de %lld g par jour, les aliments donnent %lld g. Ça arrive : corrige la répartition ici, ou la ration elle-même dans «Repas»."
+            "value" : "La ration est de %lld g par jour, les aliments donnent %lld g. Ça arrive : corrige la répartition ici, ou la ration elle-même dans « Repas »."
           }
         },
         "ru" : {
@@ -40468,7 +40468,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Un seul tap si tout est comme d'habitude : la forme est notée tout de suite, pas besoin d'«Enregistrer». Tu peux annuler en bas de l'écran."
+            "value" : "Un seul tap si tout est comme d'habitude : la forme est notée tout de suite, pas besoin d'« Enregistrer ». Tu peux annuler en bas de l'écran."
           }
         },
         "ru" : {
@@ -40928,7 +40928,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La fenêtre à jeun, la protection contre la double dose, «comment il a demandé» et la ligne sur la punition sont gratuits pour toujours et ne font pas partie de l'abonnement."
+            "value" : "La fenêtre à jeun, la protection contre la double dose, « comment il a demandé » et la ligne sur la punition sont gratuits pour toujours et ne font pas partie de l'abonnement."
           }
         },
         "ru" : {
@@ -40958,7 +40958,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La fenêtre à jeun, la protection contre la double dose, «comment il a demandé», «n'a pas pris la friandise» et l'avertissement sur la punition après un pipi à la maison sont gratuits pour toujours et ne font pas partie de l'abonnement."
+            "value" : "La fenêtre à jeun, la protection contre la double dose, « comment il a demandé », « n'a pas pris la friandise » et l'avertissement sur la punition après un pipi à la maison sont gratuits pour toujours et ne font pas partie de l'abonnement."
           }
         },
         "ru" : {
@@ -41610,7 +41610,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "C'est l'heure de la dose qui donne la fenêtre à jeun et la protection contre la double dose ; l'heure du repas, elle, donne le «faut-il nourrir». C'est pour ça qu'on demande, au lieu de prendre l'heure de l'appui."
+            "value" : "C'est l'heure de la dose qui donne la fenêtre à jeun et la protection contre la double dose ; l'heure du repas, elle, donne le « faut-il nourrir ». C'est pour ça qu'on demande, au lieu de prendre l'heure de l'appui."
           }
         },
         "ru" : {
@@ -44755,7 +44755,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les trois ou quatre premiers jours, elle répond honnêtement «pas clair» : elle ne connaît pas encore les intervalles. Ce n'est pas un bug."
+            "value" : "Les trois ou quatre premiers jours, elle répond honnêtement « pas clair » : elle ne connaît pas encore les intervalles. Ce n'est pas un bug."
           }
         },
         "ru" : {
@@ -44815,7 +44815,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le premier était à %@. L'app mettra les verdicts «Envie de sortir ?» en pause jusqu'au soir et proposera un compte rendu s'il y en a un troisième."
+            "value" : "Le premier était à %@. L'app mettra les verdicts « Envie de sortir ? » en pause jusqu'au soir et proposera un compte rendu s'il y en a un troisième."
           }
         },
         "ru" : {
@@ -44845,7 +44845,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le premier tap note, le deuxième précise. L'app ne demande ni «pourquoi» ni «à qui la faute»."
+            "value" : "Le premier tap note, le deuxième précise. L'app ne demande ni « pourquoi » ni « à qui la faute »."
           }
         },
         "ru" : {
@@ -45059,7 +45059,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "sélecteur dans l'onglet «Chien»"
+            "value" : "sélecteur dans l'onglet « Chien »"
           }
         },
         "ru" : {
@@ -45792,7 +45792,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Repas, soins, documents et «En cas de problème» vivent dans l'onglet Chien — deux taps depuis n'importe quel écran."
+            "value" : "Repas, soins, documents et « En cas de problème » vivent dans l'onglet Chien — deux taps depuis n'importe quel écran."
           }
         },
         "ru" : {
@@ -48534,7 +48534,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La matrice complète de généralisation fait partie de l'abonnement. L'apprentissage lui-même, «n'a pas pris la friandise» et la règle d'un seul changement à la fois restent gratuits."
+            "value" : "La matrice complète de généralisation fait partie de l'abonnement. L'apprentissage lui-même, « n'a pas pris la friandise » et la règle d'un seul changement à la fois restent gratuits."
           }
         },
         "ru" : {
@@ -48939,7 +48939,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Compris, ouvrir «Aujourd'hui»"
+            "value" : "Compris, ouvrir « Aujourd'hui »"
           }
         },
         "ru" : {
@@ -49623,7 +49623,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La portion du profil est reprise dans le bouton «Repas» : un seul appui suffit."
+            "value" : "La portion du profil est reprise dans le bouton « Repas » : un seul appui suffit."
           }
         },
         "ru" : {
@@ -52275,7 +52275,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L'app Raccourcis est préinstallée sur le téléphone. En bas, l'onglet «Automatisation», puis le bouton «+»."
+            "value" : "L'app Raccourcis est préinstallée sur le téléphone. En bas, l'onglet « Automatisation », puis le bouton « + »."
           }
         },
         "ru" : {
@@ -52365,7 +52365,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L'app mesure le délai entre «il l'a fait» et le marqueur. Moins d'une demi-seconde, c'est «pile au moment» ; après une seconde, le chien a déjà fait autre chose."
+            "value" : "L'app mesure le délai entre « il l'a fait » et le marqueur. Moins d'une demi-seconde, c'est « pile au moment » ; après une seconde, le chien a déjà fait autre chose."
           }
         },
         "ru" : {
@@ -56188,7 +56188,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Avec ton rôle, tu peux ajouter tes entrées, mais pas modifier ce qui est déjà noté. Les droits sont donnés par le propriétaire dans «Famille»."
+            "value" : "Avec ton rôle, tu peux ajouter tes entrées, mais pas modifier ce qui est déjà noté. Les droits sont donnés par le propriétaire dans « Famille »."
           }
         },
         "ru" : {
@@ -56260,7 +56260,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Les entrées elles-mêmes resteront. Seule la marque indiquant que le chien est resté avec toi toute la journée disparaîtra — et les observations «après de longues journées» cesseront de compter ce jour-là."
+            "value" : "Les entrées elles-mêmes resteront. Seule la marque indiquant que le chien est resté avec toi toute la journée disparaîtra — et les observations « après de longues journées » cesseront de compter ce jour-là."
           }
         },
         "ru" : {
@@ -56290,7 +56290,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pour un chien qui a des soins réguliers, le plus utile n'est pas «au panier», mais donner la patte calmement, rester debout pendant l'examen et entrer de lui-même dans la caisse de transport."
+            "value" : "Pour un chien qui a des soins réguliers, le plus utile n'est pas « au panier », mais donner la patte calmement, rester debout pendant l'examen et entrer de lui-même dans la caisse de transport."
           }
         },
         "ru" : {
@@ -57560,7 +57560,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Pour l'instant : %@. «Ça marche», c'est 4 fois sur 5."
+            "value" : "Pour l'instant : %@. « Ça marche », c'est 4 fois sur 5."
           }
         },
         "uk" : {
@@ -58376,7 +58376,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trace d'une séance. La séance elle-même est dans «Séances et étapes» — c'est là qu'on peut la retirer."
+            "value" : "Trace d'une séance. La séance elle-même est dans « Séances et étapes » — c'est là qu'on peut la retirer."
           }
         },
         "ru" : {
@@ -58798,7 +58798,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "le mot «oui»"
+            "value" : "le mot « oui »"
           }
         },
         "ru" : {
@@ -59752,7 +59752,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Elle assemble le compte rendu pour le vétérinaire à partir de ce qui est déjà noté, sans aucun champ «à remplir pour le vétérinaire»."
+            "value" : "Elle assemble le compte rendu pour le vétérinaire à partir de ce qui est déjà noté, sans aucun champ « à remplir pour le vétérinaire »."
           }
         },
         "ru" : {
@@ -63240,7 +63240,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le téléphone te demandera d'approcher l'étiquette et de lui donner un nom — par exemple «porte»."
+            "value" : "Le téléphone te demandera d'approcher l'étiquette et de lui donner un nom — par exemple « porte »."
           }
         },
         "ru" : {
@@ -63738,7 +63738,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Seulement les noms des actions : «noté · repas · fait». Ni grammes, ni notes, ni nom du chien, ni prénoms — le registre ne permet de reconstituer aucune entrée du journal."
+            "value" : "Seulement les noms des actions : « noté · repas · fait ». Ni grammes, ni notes, ni nom du chien, ni prénoms — le registre ne permet de reconstituer aucune entrée du journal."
           }
         },
         "ru" : {
@@ -63828,7 +63828,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le même texte se trouve dans «Réglages → Comment ça marche». Pas d'aide à part : les explications sont là où la question se pose."
+            "value" : "Le même texte se trouve dans « Réglages → Comment ça marche ». Pas d'aide à part : les explications sont là où la question se pose."
           }
         },
         "ru" : {
@@ -64146,7 +64146,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trois adresses, pas une carte avec cent points : il faut une seule réponse à «où aller maintenant»."
+            "value" : "Trois adresses, pas une carte avec cent points : il faut une seule réponse à « où aller maintenant »."
           }
         },
         "ru" : {
@@ -64236,7 +64236,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L'interrupteur «Chien sous traitement» dans le profil de %@ réactivera le traitement."
+            "value" : "L'interrupteur « Chien sous traitement » dans le profil de %@ réactivera le traitement."
           }
         },
         "ru" : {
@@ -64296,7 +64296,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tu peux arrêter d'utiliser l'app à tout moment. Nous pouvons cesser de maintenir une version en le signalant dans la section «Nouveautés»."
+            "value" : "Tu peux arrêter d'utiliser l'app à tout moment. Nous pouvons cesser de maintenir une version en le signalant dans la section « Nouveautés »."
           }
         },
         "ru" : {
@@ -65428,7 +65428,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Supprimer «%@» ?"
+            "value" : "Supprimer « %@ » ?"
           }
         },
         "ru" : {
@@ -66116,7 +66116,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Supprimer le traitement «%@» ?"
+            "value" : "Supprimer le traitement « %@ » ?"
           }
         },
         "ru" : {
@@ -66990,7 +66990,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "un membre s'ajoute dans «Famille»"
+            "value" : "un membre s'ajoute dans « Famille »"
           }
         },
         "ru" : {
@@ -67258,7 +67258,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tu peux mettre le fichier dans «Fichiers», te l'envoyer par messagerie ou l'enregistrer sur iCloud Drive. Dedans, c'est du simple JSON — lisible à l'œil nu."
+            "value" : "Tu peux mettre le fichier dans « Fichiers », te l'envoyer par messagerie ou l'enregistrer sur iCloud Drive. Dedans, c'est du simple JSON — lisible à l'œil nu."
           }
         },
         "ru" : {
@@ -67518,7 +67518,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le drapeau «n'a pas pris la friandise» arrête la séance et retire la note. Refuser la nourriture veut dire qu'apprendre est impossible pour l'instant."
+            "value" : "Le drapeau « n'a pas pris la friandise » arrête la séance et retire la note. Refuser la nourriture veut dire qu'apprendre est impossible pour l'instant."
           }
         },
         "ru" : {
@@ -71464,7 +71464,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ces numéros apparaîtront sur l'écran «En cas de problème»"
+            "value" : "ces numéros apparaîtront sur l'écran « En cas de problème »"
           }
         },
         "ru" : {
@@ -72099,7 +72099,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "C'est une coïncidence, pas une cause : l'app ne pose pas de diagnostic. Mais montrer cette ligne au vétérinaire est plus utile que dire «elle est parfois apathique»."
+            "value" : "C'est une coïncidence, pas une cause : l'app ne pose pas de diagnostic. Mais montrer cette ligne au vétérinaire est plus utile que dire « elle est parfois apathique »."
           }
         },
         "ru" : {
@@ -73068,7 +73068,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Jour passé · ajout via «+»"
+            "value" : "Jour passé · ajout via « + »"
           }
         },
         "kk" : {
