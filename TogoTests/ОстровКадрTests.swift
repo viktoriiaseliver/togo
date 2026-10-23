@@ -21,9 +21,17 @@ import UIKit
 ///
 /// ## Чего этот кадр НЕ доказывает
 ///
-/// `.activityBackgroundTint(Token.Surface.card)` — это **просьба**,
+/// `.activityBackgroundTint(Token.Surface.screen)` — это **просьба**,
 /// а не результат: поверх неё система рисует «остров» вибрантным
 /// монохромом по-своему, и предсказать итог автор токенов не берётся.
+///
+/// > **До 23.10.2026 здесь и ниже стоял `Surface.card`, и это было
+/// > утверждение о чужом коде, устаревшее молча.** Редизайн «Кино»
+/// > сменил просьбу на `Surface.screen` (`WalkLiveActivity.swift`,
+/// > замер пикселя дал чистый чёрный), а два упоминания в этом тесте
+/// > остались от прежней темы — то есть кадр снимался на подложке,
+/// > которой приложение больше не просит. Проверка за минуту:
+/// > `grep -n activityBackgroundTint TogoWidgets/WalkLiveActivity.swift`.
 ///
 /// > **Кадр здесь не подтверждает число, а показывает результат.**
 /// > Если выйдет нечитаемо — это решение дизайна, а не дефект,
@@ -64,10 +72,10 @@ struct ОстровКадрTests {
                     .environment(\.colorScheme, схема)
                     .frame(width: 360)
                     // Фон — то, что ПРОСИТ приложение у «острова»:
-                    // `.activityBackgroundTint(Token.Surface.card)`.
+                    // `.activityBackgroundTint(Token.Surface.screen)`.
                     // Система поверх него рисует своё, и кадр об этом
                     // не знает.
-                    .background(Token.Surface.card)
+                    .background(Token.Surface.screen)
             )
             отрисовщик.scale = 2
             нарисованное = отрисовщик.uiImage
