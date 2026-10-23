@@ -20,6 +20,8 @@
 [data-look="cinema"][data-theme] {
   --surface-background:#000000; --surface-page:#0A0A0B; --surface-card:#1C1C1E;
   --surface-raised:#2C2C2E; --surface-pressed:#3A3A3C;
+  --surface-sunken:#2C2C2E;   /* утопленная область — как было, 23 места */
+  --surface-control:#3A3A3C; --surface-control-pressed:#48484A; /* плашка контрола — отдельно от sunken */
   --text-primary:#FFFFFF; --text-secondary:#C7C7CC; --text-disabled:#8E8E93;
   --line-separator:#3A3A3C;
   --action-primary:#FFFFFF; --action-on-primary:#111111;
@@ -30,6 +32,19 @@
   --title-large: 36px; --title-tracking: -.025em;
 }
 
+/* ── Кино · повышенный контраст (iOS «Повысить контраст») ── */
+[data-look="cinema"][data-theme][data-contrast="high"] {
+  --surface-background:#000000; --surface-page:#000000; --surface-card:#242426;
+  --surface-raised:#363638; --surface-pressed:#48484A;
+  --surface-sunken:#363638; --surface-control:#48484A; --surface-control-pressed:#5A5A5E;
+  --text-primary:#FFFFFF; --text-secondary:#EBEBF0; --text-disabled:#AEAEB2;
+  --line-separator:#6D6D72;
+  --action-subtle:#3A4C85; --text-link:#C2D6FF;
+  --g-bg:rgba(30,30,34,.82); --g-card:rgba(36,36,38,.9); --g-strong:rgba(20,20,24,.94);
+  --g-line:rgba(255,255,255,.22); --g-hi:rgba(255,255,255,.4);
+  --bd-header-scrim-a: .70;
+}
+
 /* ── Фон-фото ──────────────────────────────────────────── */
 :root {
   --bd-height-today: 640px; --bd-height-tab: 420px; --bd-height-sub: 360px; --bd-height-walk: 520px;
@@ -37,6 +52,11 @@
   --bd-scrim: linear-gradient(to bottom, rgba(0,0,0,.7) 0%, rgba(0,0,0,.45) 14%, rgba(0,0,0,.15) 30%,
               rgba(0,0,0,.15) 38%, rgba(0,0,0,.75) 55%, rgba(0,0,0,.97) 70%, #000 76%, #000 100%);
   --bd-mask: linear-gradient(to bottom, #000 45%, transparent 92%);
+  /* затемнение шапки — отдельный слой, привязан к шапке (не к фото, не в %):
+     от верха экрана до низа последнего текста шапки ровно α, затем спад к 0 за 48 pt.
+     α .55 → белый текст ≥ 4.7:1 на чисто белом кадре (блендинг в sRGB). HC — .70 → 8.5:1. */
+  --bd-header-scrim-a: .55; --bd-header-scrim-fade: 48px;
+  --on-photo-text: #FFFFFF;   /* любой текст на фото — только он, вторичный не используется */
   /* тон состояния поверх фото, mix-blend-mode: soft-light */
   --bd-tint-dose: rgba(31,79,255,.55); --bd-tint-fast: rgba(255,194,51,.55);
   --bd-tint-alarm: rgba(213,37,25,.6); --bd-tint-night: rgba(20,20,60,.6);

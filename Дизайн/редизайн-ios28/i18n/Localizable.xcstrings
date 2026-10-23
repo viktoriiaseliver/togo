@@ -1760,13 +1760,13 @@
         "kk": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Қонақ емдеуді өзгертпейді. Ситтер медицинаны көрмейді."
+            "value": "Қонақ емдеуді өзгертпейді. Күтуші медицинаны көрмейді."
           }
         },
         "uk": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Гість не змінює лікування. Ситер не бачить медицину."
+            "value": "Гість не змінює лікування. Доглядач не бачить медицину."
           }
         }
       }
@@ -3152,13 +3152,13 @@
         "kk": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "ситтер дәріні шатастырмайды"
+            "value": "күтуші дәріні шатастырмайды"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "ситер не плутає таблетки"
+            "value": "доглядач не плутає таблетки"
           }
         }
       }
@@ -6197,7 +6197,7 @@
         "kk": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Ветпаспорт"
+            "value": "Мал төлқұжаты"
           }
         },
         "uk": {
@@ -7711,7 +7711,7 @@
         "uk": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "кров у випорожненнях"
+            "value": "кров у калі"
           }
         }
       }
@@ -8349,7 +8349,7 @@
         "uk": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Кров у випорожненнях"
+            "value": "Кров у калі"
           }
         }
       }
@@ -9300,13 +9300,13 @@
         "kk": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Ситтерде · Аня"
+            "value": "Күтушіде · Аня"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "У ситера · Аня"
+            "value": "У доглядача · Аня"
           }
         }
       }
@@ -14230,7 +14230,7 @@
         "kk": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Ветпаспорт · чип"
+            "value": "Мал төлқұжаты · чип"
           }
         },
         "uk": {
@@ -15013,13 +15013,13 @@
         "kk": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "чип · паспорт · сақтандыру"
+            "value": "чип · төлқұжат · сақтандыру"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "чип · паспорт · страховка"
+            "value": "чип · паспорт · страхування"
           }
         }
       }
@@ -15361,13 +15361,13 @@
         "kk": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "ситтер · медицинасыз"
+            "value": "күтуші · медицинасыз"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "ситер · без медицини"
+            "value": "доглядач · без медицини"
           }
         }
       }
@@ -16057,7 +16057,7 @@
         "kk": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Ситтер"
+            "value": "Күтуші"
           }
         },
         "uk": {
@@ -20320,7 +20320,7 @@
         "kk": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "паспорт, екпелер"
+            "value": "төлқұжат, екпелер"
           }
         },
         "uk": {
@@ -20355,7 +20355,7 @@
         "uk": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Страховка"
+            "value": "Страхування"
           }
         }
       }
@@ -25540,13 +25540,13 @@
         "kk": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "ситтерге — медицинасыз"
+            "value": "күтушіге — медицинасыз"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "ситеру — без медицини"
+            "value": "доглядачу — без медицини"
           }
         }
       }
@@ -26004,7 +26004,7 @@
         "kk": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Паспорт · 1"
+            "value": "Төлқұжат · 1"
           }
         },
         "uk": {
@@ -26033,7 +26033,7 @@
         "kk": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Паспорт · 2"
+            "value": "Төлқұжат · 2"
           }
         },
         "uk": {
@@ -26323,7 +26323,7 @@
         "kk": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Паспорт"
+            "value": "Төлқұжат"
           }
         },
         "uk": {
@@ -28237,13 +28237,13 @@
         "kk": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Отбасы және ситтер"
+            "value": "Отбасы және күтуші"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Родина і ситер"
+            "value": "Родина і доглядач"
           }
         }
       }
@@ -28266,13 +28266,13 @@
         "kk": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Ситтерге нұсқаулық"
+            "value": "Күтушіге нұсқаулық"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Інструкція ситеру"
+            "value": "Інструкція доглядачу"
           }
         }
       }
@@ -30035,13 +30035,13 @@
         "kk": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Ситтер көрінісі (Аня)"
+            "value": "Күтуші көрінісі (Аня)"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Вигляд ситера (Аня)"
+            "value": "Вигляд доглядача (Аня)"
           }
         }
       }
