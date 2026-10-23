@@ -2,7 +2,7 @@
 /* Те же токены для веб-макета: .dc.html и Figma читают одно и то же. */
 
 :root {
-  --component-actionTile-background: #2C2C2E;
+  --component-actionTile-background: #3A3A3C;
   --component-actionTile-minHeight: 52px;
   --component-actionTile-radius: 16px;
   --component-backdrop-height-sub: 360px;
@@ -36,7 +36,7 @@
   --component-button-primary-height: 60px;
   --component-button-primary-label: #111111;
   --component-button-primary-radius: 999px;
-  --component-button-secondary-background: #2C2C2E;
+  --component-button-secondary-background: #3A3A3C;
   --component-button-secondary-height: 50px;
   --component-button-secondary-label: #FFFFFF;
   --component-button-secondary-radius: 24px;
@@ -62,7 +62,7 @@
   --component-chip-alarmLabel: #FF7A66;
   --component-chip-height: 44px;
   --component-chip-radius: 16px;
-  --component-chip-restBackground: #2C2C2E;
+  --component-chip-restBackground: #3A3A3C;
   --component-chip-selectedBackground: #FFFFFF2E;
   --component-feedRow-background: #1C1C1E;
   --component-feedRow-minHeight: 60px;
@@ -155,8 +155,9 @@
   --primitive-color-night1: #000000;
   --primitive-color-night2: #1C1C1E;
   --primitive-color-night3: #2C2C2E;
-  --primitive-color-night4: #2C2C2E;
+  --primitive-color-night4: #3A3A3C;
   --primitive-color-night5: #3A3A3C;
+  --primitive-color-nightControlPressed: #48484A;
   --primitive-color-nightPage: #0A0A0B;
   --primitive-color-posterAmber: #4A3A14;
   --primitive-color-posterClay: #5E2A22;
@@ -247,7 +248,7 @@
   --semantic-action-primary: #FFFFFF;
   --semantic-action-primaryPressed: #D1D1D6;
   --semantic-action-primaryQuiet: #FFFFFF2E;
-  --semantic-action-secondary: #2C2C2E;
+  --semantic-action-secondary: #3A3A3C;
   --semantic-action-subtle: #2C3A66;
   --semantic-glass-blur: 30px;
   --semantic-glass-card: #1C1C2094;
@@ -288,7 +289,8 @@
   --semantic-status-waitingBg: #4A300A;
   --semantic-status-waitingText: #F7C75F;
   --semantic-surface-card: #1C1C1E;
-  --semantic-surface-control: #2C2C2E;
+  --semantic-surface-control: #3A3A3C;
+  --semantic-surface-controlPressed: #48484A;
   --semantic-surface-glass: #1E1E2280;
   --semantic-surface-glassEdge: #FFFFFF47;
   --semantic-surface-hairline: #3A3A3C;
@@ -371,6 +373,7 @@
   --primitive-color-night3: #E3E5E8;
   --primitive-color-night4: #FFFFFF;
   --primitive-color-night5: #D7DBE0;
+  --primitive-color-nightControlPressed: #D7DBE0;
   --primitive-color-nightPage: #FFFFFF;
   --primitive-color-posterAmber: #8A640F;
   --primitive-color-posterClay: #B5402F;
@@ -411,6 +414,7 @@
   --semantic-status-waitingText: #8A640F;
   --semantic-surface-card: #ECEDF0;
   --semantic-surface-control: #FFFFFF;
+  --semantic-surface-controlPressed: #D7DBE0;
   --semantic-surface-glass: #FFFFFF9E;
   --semantic-surface-glassEdge: #FFFFFFF2;
   --semantic-surface-hairline: #D6D9DD;
@@ -430,14 +434,65 @@
 }
 
 [data-contrast="high"] {
+  --component-actionTile-background: #48484A;
   --component-button-destructive-label: #FFA696;
+  --component-button-disabled-background: #48484A;
+  --component-button-disabled-label: #EBEBF0;
+  --component-button-secondary-background: #48484A;
+  --component-card-background: #242426;
   --component-categoryBadge-incident: #FFA696;
   --component-chip-alarmLabel: #FFA696;
+  --component-chip-restBackground: #48484A;
+  --component-feedRow-background: #242426;
+  --component-readingTone-night-panel: #141418F0;
+  --component-readingTone-normal-panel: #141418F0;
+  --component-readingTone-walk-panel: #141418F0;
+  --component-sheet-handleColor: #6D6D72;
+  --component-tabBar-background: #1E1E22D1;
+  --component-tabBar-inactive: #EBEBF0;
   --component-timeline-alarmMark: #FFA696;
   --primitive-color-clay: #FFA696;
+  --primitive-color-glass: #1E1E22D1;
+  --primitive-color-glassCard: #242426E6;
+  --primitive-color-glassEdge: #FFFFFF66;
+  --primitive-color-glassLine: #FFFFFF38;
+  --primitive-color-glassStrong: #141418F0;
+  --primitive-color-hairline: #6D6D72;
+  --primitive-color-indigoSubtle: #3A4C85;
+  --primitive-color-inkFaint: #AEAEB2;
+  --primitive-color-inkMuted: #EBEBF0;
+  --primitive-color-link: #C2D6FF;
+  --primitive-color-night2: #242426;
+  --primitive-color-night3: #363638;
+  --primitive-color-night4: #48484A;
+  --primitive-color-night5: #48484A;
+  --primitive-color-nightControlPressed: #5A5A5E;
+  --primitive-color-nightPage: #000000;
   --primitive-color-posterInkMuted: #C8C8C4;
+  --semantic-action-secondary: #48484A;
+  --semantic-action-subtle: #3A4C85;
+  --semantic-glass-card: #242426E6;
+  --semantic-glass-highlight: #FFFFFF66;
+  --semantic-glass-line: #FFFFFF38;
+  --semantic-glass-strong: #141418F0;
+  --semantic-poster-backgroundQuiet: #242426;
+  --semantic-poster-caption: #EBEBF0;
   --semantic-poster-captionOnColor: #C8C8C4;
   --semantic-status-overdueText: #FFA696;
+  --semantic-surface-card: #242426;
+  --semantic-surface-control: #48484A;
+  --semantic-surface-controlPressed: #5A5A5E;
+  --semantic-surface-glass: #1E1E22D1;
+  --semantic-surface-glassEdge: #FFFFFF66;
+  --semantic-surface-hairline: #6D6D72;
+  --semantic-surface-page: #000000;
+  --semantic-surface-pressed: #48484A;
+  --semantic-surface-raised: #363638;
+  --semantic-surface-sunken: #363638;
+  --semantic-text-faint: #AEAEB2;
+  --semantic-text-link: #C2D6FF;
+  --semantic-text-secondary: #EBEBF0;
+  --semantic-text-silhouette: #EBEBF0;
 }
 
 [data-theme="light"][data-contrast="high"] {
@@ -509,6 +564,7 @@
   --primitive-color-night3: #E3E5E8;
   --primitive-color-night4: #FFFFFF;
   --primitive-color-night5: #D6D9DD;
+  --primitive-color-nightControlPressed: #D6D9DD;
   --primitive-color-nightPage: #FFFFFF;
   --primitive-color-posterAmber: #8A640F;
   --primitive-color-posterClay: #B5402F;
@@ -551,6 +607,7 @@
   --semantic-status-waitingText: #6B4C0C;
   --semantic-surface-card: #ECEDF0;
   --semantic-surface-control: #FFFFFF;
+  --semantic-surface-controlPressed: #D6D9DD;
   --semantic-surface-glass: #FFFFFF9E;
   --semantic-surface-glassEdge: #FFFFFFF2;
   --semantic-surface-hairline: #7D8085;

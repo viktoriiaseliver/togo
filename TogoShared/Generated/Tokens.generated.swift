@@ -50,24 +50,26 @@ nonisolated enum Token {
         static let arcticTint = Color(Dyn(dark: 0xFFFFFF2E, light: 0x1F4FFF38, darkHC: 0xFFFFFF2E, lightHC: 0x0E14A138))
         static let clay = Color(Dyn(dark: 0xFF7A66, light: 0xAE2219, darkHC: 0xFFA696, lightHC: 0x9B100E))
         static let clayBg = Color(Dyn(dark: 0x4D1F22, light: 0xF7D5CF, darkHC: 0x4D1F22, lightHC: 0xF7D5CF))
-        static let glass = Color(Dyn(dark: 0x1E1E2280, light: 0xFFFFFF9E, darkHC: 0x1E1E2280, lightHC: 0xFFFFFF9E))
-        static let glassCard = Color(Dyn(dark: 0x1C1C2094, light: 0xFFFFFFB8, darkHC: 0x1C1C2094, lightHC: 0xFFFFFFB8))
-        static let glassEdge = Color(Dyn(dark: 0xFFFFFF47, light: 0xFFFFFFF2, darkHC: 0xFFFFFF47, lightHC: 0xFFFFFFF2))
-        static let glassLine = Color(Dyn(dark: 0xFFFFFF1A, light: 0x0000000F, darkHC: 0xFFFFFF1A, lightHC: 0x0000000F))
+        static let glass = Color(Dyn(dark: 0x1E1E2280, light: 0xFFFFFF9E, darkHC: 0x1E1E22D1, lightHC: 0xFFFFFF9E))
+        static let glassCard = Color(Dyn(dark: 0x1C1C2094, light: 0xFFFFFFB8, darkHC: 0x242426E6, lightHC: 0xFFFFFFB8))
+        static let glassEdge = Color(Dyn(dark: 0xFFFFFF47, light: 0xFFFFFFF2, darkHC: 0xFFFFFF66, lightHC: 0xFFFFFFF2))
+        static let glassLine = Color(Dyn(dark: 0xFFFFFF1A, light: 0x0000000F, darkHC: 0xFFFFFF38, lightHC: 0x0000000F))
         static let glassShadow = Color(Dyn(dark: 0x00000073, light: 0x14192824, darkHC: 0x00000073, lightHC: 0x14192824))
-        static let glassStrong = Color(Dyn(dark: 0x141418CC, light: 0xFFFFFFDB, darkHC: 0x141418CC, lightHC: 0xFFFFFFDB))
-        static let hairline = Color(Dyn(dark: 0x3A3A3C, light: 0xD6D9DD, darkHC: 0x3A3A3C, lightHC: 0x7D8085))
+        static let glassStrong = Color(Dyn(dark: 0x141418CC, light: 0xFFFFFFDB, darkHC: 0x141418F0, lightHC: 0xFFFFFFDB))
+        static let hairline = Color(Dyn(dark: 0x3A3A3C, light: 0xD6D9DD, darkHC: 0x6D6D72, lightHC: 0x7D8085))
         static let indigo = Color(Dyn(dark: 0x1F4FFF, light: 0x1F4FFF, darkHC: 0x1F4FFF, lightHC: 0x0E14A1))
+        static let indigoSubtle = Color(Dyn(dark: 0x2C3A66, light: 0x2C3A66, darkHC: 0x3A4C85, lightHC: 0x2C3A66))
         static let ink = Color(Dyn(dark: 0xFFFFFF, light: 0x101112, darkHC: 0xFFFFFF, lightHC: 0x101112))
-        static let inkFaint = Color(Dyn(dark: 0x8E8E93, light: 0xA1A4A8, darkHC: 0x8E8E93, lightHC: 0x7D8085))
-        static let inkMuted = Color(Dyn(dark: 0xC7C7CC, light: 0x5A5D61, darkHC: 0xC7C7CC, lightHC: 0x45484C))
-        static let link = Color(Dyn(dark: 0xA2C1FE, light: 0x1F4FFF, darkHC: 0xA2C1FE, lightHC: 0x0E14A1))
+        static let inkFaint = Color(Dyn(dark: 0x8E8E93, light: 0xA1A4A8, darkHC: 0xAEAEB2, lightHC: 0x7D8085))
+        static let inkMuted = Color(Dyn(dark: 0xC7C7CC, light: 0x5A5D61, darkHC: 0xEBEBF0, lightHC: 0x45484C))
+        static let link = Color(Dyn(dark: 0xA2C1FE, light: 0x1F4FFF, darkHC: 0xC2D6FF, lightHC: 0x0E14A1))
         static let night1 = Color(Dyn(dark: 0x000000, light: 0xFFFFFF, darkHC: 0x000000, lightHC: 0xFFFFFF))
-        static let night2 = Color(Dyn(dark: 0x1C1C1E, light: 0xECEDF0, darkHC: 0x1C1C1E, lightHC: 0xECEDF0))
-        static let night3 = Color(Dyn(dark: 0x2C2C2E, light: 0xE3E5E8, darkHC: 0x2C2C2E, lightHC: 0xE3E5E8))
-        static let night4 = Color(Dyn(dark: 0x2C2C2E, light: 0xFFFFFF, darkHC: 0x2C2C2E, lightHC: 0xFFFFFF))
-        static let night5 = Color(Dyn(dark: 0x3A3A3C, light: 0xD7DBE0, darkHC: 0x3A3A3C, lightHC: 0xD6D9DD))
-        static let nightPage = Color(Dyn(dark: 0x0A0A0B, light: 0xFFFFFF, darkHC: 0x0A0A0B, lightHC: 0xFFFFFF))
+        static let night2 = Color(Dyn(dark: 0x1C1C1E, light: 0xECEDF0, darkHC: 0x242426, lightHC: 0xECEDF0))
+        static let night3 = Color(Dyn(dark: 0x2C2C2E, light: 0xE3E5E8, darkHC: 0x363638, lightHC: 0xE3E5E8))
+        static let night4 = Color(Dyn(dark: 0x3A3A3C, light: 0xFFFFFF, darkHC: 0x48484A, lightHC: 0xFFFFFF))
+        static let night5 = Color(Dyn(dark: 0x3A3A3C, light: 0xD7DBE0, darkHC: 0x48484A, lightHC: 0xD6D9DD))
+        static let nightControlPressed = Color(Dyn(dark: 0x48484A, light: 0xD7DBE0, darkHC: 0x5A5A5E, lightHC: 0xD6D9DD))
+        static let nightPage = Color(Dyn(dark: 0x0A0A0B, light: 0xFFFFFF, darkHC: 0x000000, lightHC: 0xFFFFFF))
         static let posterAmber = Color(Dyn(dark: 0x4A3A14, light: 0x8A640F, darkHC: 0x4A3A14, lightHC: 0x8A640F))
         static let posterClay = Color(Dyn(dark: 0x5E2A22, light: 0xB5402F, darkHC: 0x5E2A22, lightHC: 0xB5402F))
         static let posterIndigo = Color(Dyn(dark: 0x2A3670, light: 0x3F5BC4, darkHC: 0x2A3670, lightHC: 0x3F5BC4))
@@ -82,7 +84,10 @@ nonisolated enum Token {
     /// Поверхности: бумага, карточка, утопленное, хайрлайн.
     enum Surface {
         static let card = Общие.night2
+        /// Плашка контрола. РАЗВЕДЕНА С `sunken` 23.10.2026 ответом дизайна: «`surface-control` #3A3A3C, нажатие #48484A. `surface-sunken` остаётся #2C2C2E. Совпадение не задумано». До этого дня обе роли давали в тёмной #2C2C2E байт в байт, и утопленная область с плашкой контрола были на экране неразличимы. Двигалась ТОЛЬКО эта роль: `semantic.surface.sunken` не тронут ни одним символом, 20 его вхождений в Swift стоят как стояли.
         static let control = Общие.night4
+        /// Нажатая плашка контрола (`cinema.surface.controlPressed`). Заведена 23.10.2026 ответом дизайна. ЧИТАТЕЛЕЙ В SWIFT НОЛЬ — названо здесь нарочно, чтобы роль не выглядела подключённой: ни одно из четырёх мест показа `Surface.control` нажатого состояния не рисует. Подробности и единственный готовый претендент — в `primitive.color.nightControlPressed`.
+        static let controlPressed = Общие.nightControlPressed
         /// Стекло таббара и круглых кнопок
         static let glass = Общие.glass
         /// Внутренний край стекла
@@ -126,7 +131,7 @@ nonisolated enum Token {
         static let primaryQuiet = Общие.arcticTint
         static let secondary = Общие.night4
         /// Тихая индиговая заливка второй кнопки (`cinema.action.subtle`). Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`.
-        static let subtle = Color(hex: 0x2C3A66)
+        static let subtle = Общие.indigoSubtle
     }
 
     /// Состояния: янтарь — «подожди», терракот — просрочка или кровь.
