@@ -81009,38 +81009,38 @@
         }
       }
     },
-    "Удаление уберёт запись из отчёта врачу. «Снять» оставит её в истории — обычно нужно именно это." : {
+    "Удаление уберёт запись из отчёта врачу. «Снять диагноз» оставит её в истории — обычно нужно именно это." : {
       "comment" : "body",
       "extractionState" : "manual",
       "localizations" : {
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Удаление уберёт запись из отчёта врачу. «Снять» оставит её в истории — обычно нужно именно это."
+            "value" : "Удаление уберёт запись из отчёта врачу. «Снять диагноз» оставит её в истории — обычно нужно именно это."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Deleting removes the entry from the vet report. “Resolve” keeps it in the history — that's usually what you want."
+            "value" : "Deleting removes the entry from the vet report. “Resolve diagnosis” keeps it in the history — that's usually what you want."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Supprimer retire la note du compte rendu véto. « Lever » la garde dans l'historique — c'est généralement ce qu'il faut."
+            "value" : "Supprimer retire la note du compte rendu véto. « Lever le diagnostic » la garde dans l'historique — c'est généralement ce qu'il faut."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Видалення прибере запис зі звіту лікарю. «Зняти» лишить його в історії — зазвичай потрібно саме це."
+            "value" : "Видалення прибере запис зі звіту лікарю. «Зняти діагноз» лишить його в історії — зазвичай потрібно саме це."
           }
         },
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Жою жазбаны дәрігерге есептен алып тастайды. «Алып тастау» оны тарихта қалдырады — әдетте дәл осы қажет."
+            "value" : "Жою жазбаны дәрігерге есептен алып тастайды. «Диагнозды алып тастау» оны тарихта қалдырады — әдетте дәл осы қажет."
           }
         }
       }
