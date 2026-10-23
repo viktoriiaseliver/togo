@@ -4490,9 +4490,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%lld банка"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld банка"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld банка"
+                }
+              }
+            }
           }
         }
       }
@@ -4597,9 +4609,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%lld шығу"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld шығу"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld шығу"
+                }
+              }
+            }
           }
         }
       }
@@ -4788,9 +4812,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%lld әрекет"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld әрекет"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld әрекет"
+                }
+              }
+            }
           }
         }
       }
@@ -4895,9 +4931,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%lld күн"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld күн"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld күн"
+                }
+              }
+            }
           }
         }
       }
@@ -5002,9 +5050,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%lld күнге"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld күнге"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld күнге"
+                }
+              }
+            }
           }
         }
       }
@@ -5109,9 +5169,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%lld доза"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld доза"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld доза"
+                }
+              }
+            }
           }
         }
       }
@@ -5216,9 +5288,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%lld сабақ"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld сабақ"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld сабақ"
+                }
+              }
+            }
           }
         }
       }
@@ -5323,9 +5407,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%lld жазба"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld жазба"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld жазба"
+                }
+              }
+            }
           }
         }
       }
@@ -5430,9 +5526,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%lld жазба енгізілді"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld жазба енгізілді"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld жазба енгізілді"
+                }
+              }
+            }
           }
         }
       }
@@ -5701,9 +5809,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%lld оқиға"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld оқиға"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld оқиға"
+                }
+              }
+            }
           }
         }
       }
@@ -5808,9 +5928,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%lld тамақтандыру"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld тамақтандыру"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld тамақтандыру"
+                }
+              }
+            }
           }
         }
       }
@@ -5915,9 +6047,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%lld жыл"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld жыл"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld жыл"
+                }
+              }
+            }
           }
         }
       }
@@ -6050,9 +6194,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%lld ай"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld ай"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld ай"
+                }
+              }
+            }
           }
         }
       }
@@ -6157,9 +6313,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%lld қап"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld қап"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld қап"
+                }
+              }
+            }
           }
         }
       }
@@ -6292,9 +6460,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%lld минут"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld минут"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld минут"
+                }
+              }
+            }
           }
         }
       }
@@ -6455,9 +6635,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%lld еске салу күтіп тұр"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld еске салу күтіп тұр"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld еске салу күтіп тұр"
+                }
+              }
+            }
           }
         }
       }
@@ -6562,9 +6754,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%lld апта"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld апта"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld апта"
+                }
+              }
+            }
           }
         }
       }
@@ -6669,9 +6873,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%lld талпыныс"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld талпыныс"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld талпыныс"
+                }
+              }
+            }
           }
         }
       }
@@ -6775,9 +6991,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "аптада %lld сұраным"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "аптада %lld сұраным"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "аптада %lld сұраным"
+                }
+              }
+            }
           }
         }
       }
@@ -6882,9 +7110,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%lld рет"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld рет"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld рет"
+                }
+              }
+            }
           }
         }
       }
@@ -6989,9 +7229,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%lld рет кіші дәрет"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld рет кіші дәрет"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld рет кіші дәрет"
+                }
+              }
+            }
           }
         }
       }
@@ -7096,9 +7348,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%lld рет"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld рет"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld рет"
+                }
+              }
+            }
           }
         }
       }
@@ -7203,9 +7467,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%lld сеанс"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld сеанс"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld сеанс"
+                }
+              }
+            }
           }
         }
       }
@@ -7307,9 +7583,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%lld ауысумен"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld ауысумен"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld ауысумен"
+                }
+              }
+            }
           }
         }
       }
@@ -7365,9 +7653,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%lld ауысумен · %lld өткізілді"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld ауысумен · %lld өткізілді"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld ауысумен · %lld өткізілді"
+                }
+              }
+            }
           }
         }
       }
@@ -7472,9 +7772,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%lld ит"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld ит"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld ит"
+                }
+              }
+            }
           }
         }
       }
@@ -7579,9 +7891,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%lld іркіліс"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld іркіліс"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld іркіліс"
+                }
+              }
+            }
           }
         }
       }
@@ -7686,9 +8010,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%lld сағат"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld сағат"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld сағат"
+                }
+              }
+            }
           }
         }
       }
@@ -7793,9 +8129,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%lld адам"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld адам"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld адам"
+                }
+              }
+            }
           }
         }
       }
@@ -27373,9 +27721,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "әлі %lld талпыныс — сосын шығатынын көреміз"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "әлі %lld талпыныс — сосын шығатынын көреміз"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "әлі %lld талпыныс — сосын шығатынын көреміз"
+                }
+              }
+            }
           }
         }
       }
@@ -27479,9 +27839,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Әлі %lld талпыныс, сосын көрінеді. Шығады — бұл 5-тен 4 рет, үйрену қадамындағы сияқты."
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Әлі %lld талпыныс, сосын көрінеді. Шығады — бұл 5-тен 4 рет, үйрену қадамындағы сияқты."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Әлі %lld талпыныс, сосын көрінеді. Шығады — бұл 5-тен 4 рет, үйрену қадамындағы сияқты."
+                }
+              }
+            }
           }
         }
       }
@@ -34122,9 +34494,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%lld тамақтандырудан"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld тамақтандырудан"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld тамақтандырудан"
+                }
+              }
+            }
           }
         }
       }
@@ -52173,9 +52557,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%lld рет кейінге шегерілді"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld рет кейінге шегерілді"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "%lld рет кейінге шегерілді"
+                }
+              }
+            }
           }
         }
       }
@@ -53899,9 +54295,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Белгі әлдеқашан %lld. Оларды жазуға болады — сабақ үш минутқа сыйса, прогресс есептеледі."
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Белгі әлдеқашан %lld. Оларды жазуға болады — сабақ үш минутқа сыйса, прогресс есептеледі."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Белгі әлдеқашан %lld. Оларды жазуға болады — сабақ үш минутқа сыйса, прогресс есептеледі."
+                }
+              }
+            }
           }
         }
       }
@@ -65705,9 +66113,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Кезекті және %lld істі алу"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Кезекті және %lld істі алу"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Кезекті және %lld істі алу"
+                }
+              }
+            }
           }
         }
       }
@@ -81972,9 +82392,21 @@
           }
         },
         "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Серуенді және %lld белгіні жою"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Серуенді және %lld белгіні жою"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "Серуенді және %lld белгіні жою"
+                }
+              }
+            }
           }
         }
       }
