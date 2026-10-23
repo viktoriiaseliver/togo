@@ -20,6 +20,7 @@ struct SettingsScreen: View {
 
     var body: some View {
         List {
+            шапка
             subscriptionSection
             appearanceSection
             notificationsSection
@@ -33,15 +34,18 @@ struct SettingsScreen: View {
         }
         .listStyle(.insetGrouped)
         .scrollContentBackground(.hidden)
-        .background(Token.Surface.screen)
         .navigationTitle("Настройки")
-        // Шапка-плакат НАД `navigationTitle`, а не вместо него.
+        // Шапка «Кино» НАД `navigationTitle`, а не вместо него.
         //
         // Заголовок нужен системе и после того, как его перестали
         // показывать: по нему подписана кнопка «назад» на дочерних
         // экранах и по нему же экран называет себя VoiceOver.
         // Сними `navigationTitle` — и дети получат безымянную стрелку.
-        .posterHeader("Настройки", subtitle: "Язык, уведомления, перенос")
+        //
+        // Было `.posterHeader(…)` — индиговая полоса плаката. Снята
+        // решением Виктории 22.10.2026: «Кино» ЗАМЕНЯЕТ Graphite,
+        // а не ложится третьим набором.
+        .cinemaScreen(экран: .sub("settings"))
         // Панель вкладок на настройках не нужна и мешает.
         //
         // Настройки — не вкладка, а место, куда ушли с вкладки. Пока
@@ -55,6 +59,29 @@ struct SettingsScreen: View {
         .sheet(isPresented: $showPaywall) {
             NavigationStack { PaywallScreen() }
         }
+    }
+
+    // MARK: Шапка
+
+    /// Крупный заголовок едет ПЕРВОЙ СТРОКОЙ СПИСКА, а не закреплён
+    /// сверху, — и это снято с прототипа, а не выбрано на вкус.
+    /// В `Togo-RU.dc.html` шапка страницы лежит внутри прокручиваемого
+    /// контейнера, а фотография — отдельным слоем под ним
+    /// (`position:absolute;top:0;height:360px`). То есть заголовок
+    /// уезжает, фото остаётся.
+    ///
+    /// Закреплённая шапка здесь была бы хуже не видом, а поведением:
+    /// под прозрачной шапкой проезжали бы строки списка, и название
+    /// экрана читалось бы поверх чужого текста.
+    private var шапка: some View {
+        Section {
+            CinemaHeader("Настройки",
+                         надпись: "язык, уведомления, перенос",
+                         экран: .sub("settings"))
+        }
+        .listRowInsets(EdgeInsets())
+        .listRowBackground(Color.clear)
+        .listRowSeparator(.hidden)
     }
 
     // MARK: Подписка
@@ -417,6 +444,15 @@ struct NotificationSettingsScreen: View {
 
         List {
             Section {
+                CinemaHeader("Уведомления",
+                             надпись: "что прерывает",
+                             экран: .sub("notifications"))
+            }
+            .listRowInsets(EdgeInsets())
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+
+            Section {
                 Picker("Час сводки", selection: $settings.briefHour) {
                     ForEach(5...12, id: \.self) { hour in
                         Text(Fmt.clock(minuteOfDay: hour * 60)).tag(hour)
@@ -457,10 +493,13 @@ struct NotificationSettingsScreen: View {
             }
         }
         .navigationTitle("Уведомления")
-        .posterHeader("Уведомления")
-        .navigationBarTitleDisplayMode(.inline)
+        // Стиль списка назван, а не оставлен «автоматическим»: решает
+        // его иначе не тема, а контекст показа, и экран, собранный
+        // одинаково, выглядел бы по-разному в зависимости от того,
+        // откуда его открыли.
+        .listStyle(.insetGrouped)
         .scrollContentBackground(.hidden)
-        .background(Token.Surface.screen)
+        .cinemaScreen(экран: .sub("notifications"))
         .task { status = await readableStatus() }
     }
 
