@@ -151,6 +151,7 @@ struct LabChartScreen: View {
 
     var body: some View {
         TGScreen {
+            CinemaHeader("График", отступы: false)
             if доступныеПоказатели.isEmpty {
                 EmptyStateCard(
                     subject: .health,
@@ -164,8 +165,7 @@ struct LabChartScreen: View {
             }
         }
         .navigationTitle("График")
-        .posterHeader("График")
-        .navigationBarTitleDisplayMode(.large)
+        .cinemaScreen()
         .sheet(item: $выбраннаяТочка) { точка in
             ТочкаКарточка(точка: точка,
                           дозаЧислом: дозаЧислом(на: точка.дата),

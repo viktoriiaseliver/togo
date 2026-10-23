@@ -554,6 +554,7 @@ struct ProtocolScreen: View {
 
     var body: some View {
         TGScreen {
+            CinemaHeader("Протокол", отступы: false)
             if let dose = lastDose, let givenAt = dose.givenAt {
                 TGCard {
                     Text("T+\(Fmt.duration(now.timeIntervalSince(givenAt)))").textStyle(AppFont.display)
@@ -589,8 +590,7 @@ struct ProtocolScreen: View {
             }
         }
         .navigationTitle("Протокол")
-        .posterHeader("Протокол")
-        .navigationBarTitleDisplayMode(.large)
+        .cinemaScreen()
         .onReceive(tick) { now = $0 }
     }
 
@@ -646,6 +646,7 @@ struct VetReportScreen: View {
 
     var body: some View {
         TGScreen {
+            CinemaHeader("Отчёт", отступы: false)
             TGCard(spacing: 0) {
                 DatePicker("С", selection: $from, displayedComponents: .date)
                     .frame(minHeight: Token.Size.tapTarget)
@@ -684,8 +685,7 @@ struct VetReportScreen: View {
             .buttonStyle(.plain)
         }
         .navigationTitle("Отчёт")
-        .posterHeader("Отчёт")
-        .navigationBarTitleDisplayMode(.large)
+        .cinemaScreen()
     }
 
     private var contents: [(String, Int)] {
@@ -712,6 +712,7 @@ struct WeightScreen: View {
 
     var body: some View {
         TGScreen {
+            CinemaHeader("Вес", отступы: false)
             TGCard {
                 HStack(alignment: .firstTextBaseline) {
                     Text(dog.map { Fmt.weight($0.weightKg) } ?? "—").textStyle(AppFont.display)
@@ -796,8 +797,7 @@ struct WeightScreen: View {
             }
         }
         .navigationTitle("Вес")
-        .posterHeader("Вес")
-        .navigationBarTitleDisplayMode(.large)
+        .cinemaScreen()
         // Выход с цифровой клавиатуры: у `.decimalPad` своей клавиши
         // возврата нет.
         .готовоНадКлавиатурой { весВФокусе = false }

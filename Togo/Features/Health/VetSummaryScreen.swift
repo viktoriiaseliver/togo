@@ -40,6 +40,7 @@ struct VetSummaryScreen: View {
 
     var body: some View {
         TGScreen {
+            CinemaHeader("Сводка", отступы: false)
             periodCard
             numbersCard
             weightCard
@@ -57,9 +58,8 @@ struct VetSummaryScreen: View {
             shareCard
         }
         .navigationTitle("Сводка")
-        .posterHeader("Сводка")
+        .cinemaScreen()
         .usageScreen(.vetSummary)
-        .navigationBarTitleDisplayMode(.large)
         .fullScreenCover(isPresented: $isPresenting) {
             VetSummaryPresentation(summary: summary, delta: deltaLines, dog: dog)
         }

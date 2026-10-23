@@ -40,6 +40,7 @@ struct PrescriptionsScreen: View {
 
     var body: some View {
         TGScreen {
+            CinemaHeader("Назначения", отступы: false)
             if назначения.isEmpty {
                 EmptyStateCard(
                     subject: .health,
@@ -71,8 +72,7 @@ struct PrescriptionsScreen: View {
             }
         }
         .navigationTitle("Назначения")
-        .posterHeader("Назначения")
-        .navigationBarTitleDisplayMode(.large)
+        .cinemaScreen()
         .toolbar {
             if canEdit, dog != nil {
                 ToolbarItem(placement: .topBarTrailing) {

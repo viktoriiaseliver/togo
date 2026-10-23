@@ -45,6 +45,7 @@ struct VetVisitsScreen: View {
 
     var body: some View {
         TGScreen {
+            CinemaHeader("Визиты к врачу", отступы: false)
             if визиты.isEmpty {
                 EmptyStateCard(
                     subject: .health,
@@ -75,8 +76,7 @@ struct VetVisitsScreen: View {
             }
         }
         .navigationTitle("Визиты к врачу")
-        .posterHeader("Визиты к врачу")
-        .navigationBarTitleDisplayMode(.large)
+        .cinemaScreen()
         .toolbar {
             if canEdit, dog != nil {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -266,6 +266,7 @@ struct DiagnosesScreen: View {
 
     var body: some View {
         TGScreen {
+            CinemaHeader("Диагнозы", отступы: false)
             if диагнозы.isEmpty {
                 EmptyStateCard(
                     subject: .health,
@@ -334,8 +335,7 @@ struct DiagnosesScreen: View {
             }
         }
         .navigationTitle("Диагнозы")
-        .posterHeader("Диагнозы")
-        .navigationBarTitleDisplayMode(.large)
+        .cinemaScreen()
         .toolbar {
             if canEdit, dog != nil {
                 ToolbarItem(placement: .topBarTrailing) {
