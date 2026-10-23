@@ -249,9 +249,17 @@ struct SettingsScreen: View {
             NavigationLink {
                 BackgroundScreen()
             } label: {
+                // **Шевронов на строке было ДВА**, и видно это стало
+                // только на кадре 23.10.2026: свой рисует `TGListRow`
+                // (у него `accessory` по умолчанию `.chevron`), второй
+                // добавляет сам `NavigationLink`. Прогон такого
+                // не ловит по устройству — оба элемента законны
+                // по отдельности. Убран наш: системный ставит ссылка,
+                // и он же пропадёт, если строка перестанет быть ссылкой.
                 TGListRow(title: "Фон приложения",
                           value: фонПодпись,
-                          systemImage: "photo.on.rectangle.angled")
+                          systemImage: "photo.on.rectangle.angled",
+                          accessory: .none)
             }
         } header: {
             Text("как выглядит")
