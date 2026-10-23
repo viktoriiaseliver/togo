@@ -25,5 +25,16 @@
 		<key>NSExtensionPointIdentifier</key>
 		<string>com.apple.widgetkit-extension</string>
 	</dict>
+	<!-- UIUserInterfaceStyle=Dark поставлен 23.10.2026 ВМЕСТЕ с таким же
+	     ключом в `Togo-Info.plist`. Решение Виктории: «Кино. Одна тема».
+
+	     Один ключ из двух — это ДЕФЕКТ, а не половина работы, и он уже
+	     был: в сборке 273 ключ стоял только у приложения, а здесь нет,
+	     и на светлом телефоне человек видел СВЕТЛЫЙ ВИДЖЕТ и тёмное
+	     приложение. Разбор — в комментарии `Togo-Info.plist`.
+
+	     Правятся вместе или не правятся вовсе. -->
+	<key>UIUserInterfaceStyle</key>
+	<string>Dark</string>
 </dict>
 </plist>
