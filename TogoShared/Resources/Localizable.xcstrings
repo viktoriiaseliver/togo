@@ -30086,6 +30086,12 @@
             "value" : "quand elles claquent sur le sol"
           }
         },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "еденді тоқылдатқанда"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -31818,6 +31824,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "poulet, maïs"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "тауық, жүгері"
           }
         },
         "ru" : {
@@ -38508,6 +38520,12 @@
             "value" : "Nice → Lyon"
           }
         },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ницца → Лион"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -41845,6 +41863,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "hôtel, chiens acceptés"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "қонақ үй, итпен кіруге болады"
           }
         },
         "ru" : {
@@ -60903,6 +60927,12 @@
             "value" : "validité, délivré par qui"
           }
         },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "жарамдылық мерзімі, кім берген"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -62611,6 +62641,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "fromage, dinde, balle"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ірімшік, күркетауық, доп"
           }
         },
         "ru" : {
