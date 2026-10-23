@@ -23,6 +23,9 @@ struct LabResultsScreen: View {
     var dog: Dog?
 
     @Environment(AppState.self) private var appState
+    /// Схемы лечения нужны верхнему блоку: без них не посчитать часы
+    /// от дозы до забора, а они на кадре 14 стоят рядом с нормой.
+    @Query private var медикаменты: [Medication]
     @State private var вводИдёт = false
     @State private var правка: LabResult?
     /// Настройки открываются из меню «…»: других кнопок в шапке нет.
@@ -173,18 +176,41 @@ struct LabResultsScreen: View {
     /// формулировки у экрана быть не должно, иначе про забор напишут
     /// по-разному в трёх местах.
     ///
-    /// **Часы от дозы здесь не считаются, и это названо.** Для них нужна
-    /// «последняя доза до забора», а она сегодня живёт двумя копиями —
-    /// `LabChartScreen.последняяДоза` и такая же в `LabResultEntryFlow`.
-    /// Третья копия — это способ, которым правило расходится молча;
-    /// вынос её в домен записан отдельным пунктом отчёта.
+    /// **Часы от дозы СЧИТАЮТСЯ с 23.10.2026** — это и есть третий
+    /// читатель, ради которого сводили копии.
+    ///
+    /// Прежняя редакция говорила: «часы здесь не считаются, и это
+    /// названо; для них нужна „последняя доза до забора", а она живёт
+    /// двумя копиями — `LabChartScreen.последняяДоза` и такая же
+    /// в `LabResultEntryFlow`; третья копия — способ, которым правило
+    /// расходится молча». Решение было верным, и платил за него
+    /// **человек**: на эталонном кадре 14 верхний блок читается
+    /// «Норма 1,0–4,5 · забор через 5 ч после дозы», а экран показывал
+    /// одну норму.
+    ///
+    /// > **Отказ размножать правило — это долг показа, а не экономия.**
+    /// > Пока счёт жил копиями, честный выбор был «не показывать»,
+    /// > и выглядел он как аккуратность.
+    ///
+    /// Теперь счёт один (`DoseScheduler.sampleTiming`), а решение
+    /// о точности подписи остаётся за экраном: здесь `caption`
+    /// (округление до получаса, как в макете), не `captionExact`.
+    ///
+    /// **И «не указано» теперь говорится не всегда, когда времени нет.**
+    /// Прежде строка печаталась при пустом `sampledAt` безусловно —
+    /// то есть и здоровой собаке, у которой часам неоткуда взяться.
+    /// `LabSampleTiming` различает это сам: `.noTreatment` подписи
+    /// не даёт, и так записано в его голове с самого начала. Правило
+    /// существовало, исполнять его было нечему.
     private func подПоказателем(_ анализ: LabResult) -> String? {
         var части: [String] = []
         if let низ = анализ.referenceLow, let верх = анализ.referenceHigh {
             части.append(String(localized: "норма \(ЧислоСБланка.показать(низ))–\(ЧислоСБланка.показать(верх))"))
         }
-        if анализ.sampledAt == nil {
-            части.append(LabSampleTiming.caption(.unknownDuringTreatment) ?? "")
+        let время = DoseScheduler.sampleTiming(sampledAt: анализ.sampledAt,
+                                               of: dog, among: медикаменты)
+        if let подпись = LabSampleTiming.caption(время) {
+            части.append(подпись)
         }
         let живые = части.filter { !$0.isEmpty }
         return живые.isEmpty ? nil : живые.joined(separator: " · ")
@@ -369,25 +395,25 @@ struct LabResultEntryFlow: View {
     /// Лечение идёт, если у собаки есть хоть одна непаузированная схема.
     /// От этого зависит, молча ли пропускается шаг 3.
     private var активноеЛечение: Bool {
-        guard let dog else { return false }
-        return медикаменты.contains {
-            $0.dog?.persistentModelID == dog.persistentModelID && !$0.isPaused
-        }
+        !DoseScheduler.activeSchedules(of: dog, among: медикаменты).isEmpty
     }
 
-    /// Последняя доза ДО забора — из часов схемы на день забора.
-    /// Чистая арифметика по расписанию: журнала приёмов здесь не спрашиваем,
-    /// потому что бланк могли вводить задним числом.
+    /// Последняя доза ДО забора — **из домена, а не отсюда**.
+    ///
+    /// Здесь стоял свой расчёт, дословно такой же, как
+    /// в `LabChartScreen`. 23.10.2026 обе копии сведены
+    /// в `DoseScheduler.lastDose(before:among:)`; это свойство осталось
+    /// только ради подзаголовка шага 3 («Доза была в 07:30»), которому
+    /// нужен сам ЧАС, а не вывод о нём.
+    ///
+    /// `времяИзвестно` проверяется здесь, а не в домене: домен не знает
+    /// про шаги формы, а для подписи «доза была в …» вопрос осмыслен
+    /// только после того, как человек назвал время забора.
     private var последняяДоза: Date? {
-        guard let dog, времяИзвестно else { return nil }
-        let свои = медикаменты.filter {
-            $0.dog?.persistentModelID == dog.persistentModelID && !$0.isPaused
-        }
-        let начало = Calendar.current.startOfDay(for: sampledAt)
-        let времена = свои.flatMap(\.times).compactMap {
-            Calendar.current.date(byAdding: .minute, value: $0, to: начало)
-        }
-        return времена.filter { $0 <= sampledAt }.max()
+        guard времяИзвестно else { return nil }
+        return DoseScheduler.lastDose(
+            before: sampledAt,
+            among: DoseScheduler.activeSchedules(of: dog, among: медикаменты))
     }
 
     /// Первый вызов `LabSampleTiming` в приложении.
@@ -395,10 +421,11 @@ struct LabResultEntryFlow: View {
     /// **Замер 08.10.2026: у него не было ни одного места вызова** —
     /// чистая функция написана, покрыта смыслом и не звалась ниоткуда.
     /// Тот же класс, что сам `LabResult` без формы ввода.
+    ///
+    /// С 23.10.2026 вызовов три, и считает их один `DoseScheduler`.
     private var часыОтДозы: LabSampleTiming.Timing {
-        LabSampleTiming.timing(sampledAt: времяИзвестно ? sampledAt : nil,
-                               lastDoseAt: последняяДоза,
-                               hasActiveTreatment: активноеЛечение)
+        DoseScheduler.sampleTiming(sampledAt: времяИзвестно ? sampledAt : nil,
+                                   of: dog, among: медикаменты)
     }
 
     var body: some View {

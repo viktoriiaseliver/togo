@@ -101,26 +101,17 @@ struct LabChartScreen: View {
 
     private var выбранный: String? { показатель ?? доступныеПоказатели.first }
 
-    private var активноеЛечение: Bool {
-        guard let dog else { return false }
-        return медикаменты.contains {
-            $0.dog?.persistentModelID == dog.persistentModelID && !$0.isPaused
-        }
-    }
-
-    /// Последняя доза ДО забора — арифметикой по расписанию схемы
-    /// на день забора. Журнал приёмов не спрашиваем: бланк могли
-    /// вводить задним числом.
-    private func последняяДоза(до момент: Date) -> Date? {
-        guard let dog else { return nil }
-        let свои = медикаменты.filter {
-            $0.dog?.persistentModelID == dog.persistentModelID && !$0.isPaused
-        }
-        let начало = Calendar.current.startOfDay(for: момент)
-        let времена = свои.flatMap(\.times).compactMap {
-            Calendar.current.date(byAdding: .minute, value: $0, to: начало)
-        }
-        return времена.filter { $0 <= момент }.max()
+    /// Время забора относительно последней дозы — **из домена**.
+    ///
+    /// Здесь стояли два своих расчёта: «идёт ли лечение» и «последняя
+    /// доза до забора». Второй был дословной копией такого же
+    /// в `LabResultEntryFlow`, и копии хватило, чтобы третий экран
+    /// (список анализов) часы от дозы не показывал вовсе. С 23.10.2026
+    /// счёт один — `DoseScheduler.sampleTiming`, и заодно он берёт час
+    /// приёма DST-безопасно; разбор — в голове той функции.
+    private func времяЗабора(_ анализ: LabResult) -> LabSampleTiming.Timing {
+        DoseScheduler.sampleTiming(sampledAt: анализ.sampledAt,
+                                   of: dog, among: медикаменты)
     }
 
     private var точки: [Точка] {
@@ -133,17 +124,13 @@ struct LabChartScreen: View {
             .filter { порог == nil || $0.sampledOn >= порог! }
             .compactMap { анализ -> Точка? in
                 guard let значение = анализ.value else { return nil }
-                let время = LabSampleTiming.timing(
-                    sampledAt: анализ.sampledAt,
-                    lastDoseAt: анализ.sampledAt.flatMap { последняяДоза(до: $0) },
-                    hasActiveTreatment: активноеЛечение)
                 return Точка(
                     id: анализ.id,
                     дата: анализ.sampledOn,
                     значение: значение,
                     единица: анализ.unit,
                     вердикт: LabNorm.deviation(value: .measured(значение), from: анализ.reference),
-                    время: время,
+                    время: времяЗабора(анализ),
                     норма: анализ.reference)
             }
             .sorted { $0.дата < $1.дата }
@@ -215,10 +202,7 @@ struct LabChartScreen: View {
     /// числовая доза с единицей массы. Это правка ФОРМЫ ХРАНИЛИЩА,
     /// и она отдельным решением.
     private func дозаТекстом(на дата: Date) -> String? {
-        guard let dog else { return nil }
-        let свои = медикаменты.filter {
-            $0.dog?.persistentModelID == dog.persistentModelID && !$0.isPaused
-        }
+        let свои = DoseScheduler.activeSchedules(of: dog, among: медикаменты)
         let строки = свои.compactMap { лекарство -> String? in
             guard let доза = Fmt.notBlank(лекарство.doseText) else { return nil }
             let имя = Fmt.notBlank(лекарство.name) ?? ""
@@ -239,11 +223,8 @@ struct LabChartScreen: View {
     /// Нулевой столбик был бы утверждением «дозы не было», а это
     /// другое: мы просто не знаем силу таблетки.
     private func дозаЧислом(на дата: Date) -> Double? {
-        guard let dog else { return nil }
-        let свои = медикаменты.filter {
-            $0.dog?.persistentModelID == dog.persistentModelID && !$0.isPaused
-        }
-        let суммы = свои.compactMap(\.dailyMassMcg)
+        let суммы = DoseScheduler.activeSchedules(of: dog, among: медикаменты)
+            .compactMap(\.dailyMassMcg)
         guard !суммы.isEmpty else { return nil }
         return суммы.reduce(0, +)
     }
