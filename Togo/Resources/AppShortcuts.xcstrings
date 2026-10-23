@@ -13,7 +13,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "${applicationName} : dernière promenade"
+            "value" : "${applicationName} : dernière promenade"
           }
         },
         "kk" : {
@@ -48,7 +48,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "${applicationName} : nourri"
+            "value" : "${applicationName} : nourri"
           }
         },
         "kk" : {
@@ -83,7 +83,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "${applicationName} : pipi"
+            "value" : "${applicationName} : pipi"
           }
         },
         "kk" : {
@@ -118,7 +118,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "${applicationName} : promenade"
+            "value" : "${applicationName} : promenade"
           }
         },
         "kk" : {
@@ -153,7 +153,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "${applicationName} : selles"
+            "value" : "${applicationName} : selles"
           }
         },
         "kk" : {
