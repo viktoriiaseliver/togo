@@ -191,10 +191,19 @@ struct ReadingPanel<Шапка: View>: View {
     /// Заголовок рисуем **сами**, а не `navigationTitle`: по кадру он
     /// лежит поверх фотографии и делит строку с пилюлей, чего системный
     /// заголовок не умеет.
+    ///
+    /// **Цвет — `Poster.labelOnColor`, и это починка, а не вкус**
+    /// (замер кадром 23.10.2026, `ЧернилаНаФотоКадрTests`). Здесь стоял
+    /// `Ink.onAccent`, и в теме «Кино» он равен **#111111**: акцент стал
+    /// белым, а `onAccent` — чернилами НА нём. Заголовок же лежит
+    /// не на акценте, а на фотографии, и чёрным по ней давал
+    /// **3,08 · 1,67 · 1,11** на трёх светлотах снимка при пороге 4,5.
+    /// Ту же пару уже носит `CinemaHeader` (`наФото ? Poster.labelOnColor`),
+    /// и её держит зелёный сторож `ШапкаНаФотоTests`, заказанный дизайном.
     private var строкаЗаголовка: some View {
         HStack(alignment: .firstTextBaseline, spacing: Token.Space.s8) {
             Text("Сегодня")
-                .textStyle(AppFont.screenTitle, color: Token.Ink.onAccent)
+                .textStyle(AppFont.screenTitle, color: Token.Poster.labelOnColor)
                 .wraps()
             Spacer(minLength: Token.Space.s8)
             if let пилюля { пилюляВида(пилюля) }
@@ -361,17 +370,32 @@ struct ReadingPanel<Шапка: View>: View {
 
     /// Чернила показания.
     ///
-    /// На крашеной панели их диктует тон (`#2A1D00` на янтаре, белый
-    /// на синем и терракоте); на стекле — `onAccent`, потому что под
-    /// стеклом фотография, и нейтральные чернила там нечитаемы.
-    /// Это ровно тот случай, который `TodayHeader` уже оплатил:
-    /// `Ink.primary` не проходил 12 клеток из 20.
+    /// Три случая, а не два, и разводит их **чем закрыта панель**:
+    ///
+    /// ```
+    /// натощак          янтарь кроет панель       Ink.primary
+    /// доза и тревога   заливка кроет панель      Ink.onAccent — чернила НА заливке
+    /// обычный/ночь/    под панелью ФОТОГРАФИЯ    Poster.labelOnColor
+    /// прогулка
+    /// ```
+    ///
+    /// **Третья строка была `Ink.onAccent`, и это ломалось молча.**
+    /// Прежняя проза объясняла выбор так: «на стекле — `onAccent`,
+    /// потому что под стеклом фотография, и нейтральные чернила там
+    /// нечитаемы». Довод верен, а токен перестал ему соответствовать:
+    /// в «Кино» акцент стал белым, и `Ink.onAccent` = **#111111**.
+    /// Замер кадром 23.10.2026 (`ЧернилаНаФотоКадрTests`): показание
+    /// и подпись давали 1,1…3,2 при пороге 4,5 на трёх светлотах снимка.
+    /// `Poster.labelOnColor` / `captionOnColor` — роль «текст НА цветном
+    /// блоке», та же пара, что носит `CinemaHeader` на фото.
     private var чернила: Color {
-        tone == .fasting ? Token.Ink.primary : Token.Ink.onAccent
+        if tone == .fasting { return Token.Ink.primary }
+        return tone.paintsPanel ? Token.Ink.onAccent : Token.Poster.labelOnColor
     }
 
     private var чернилаПодписи: Color {
-        tone == .fasting ? Token.Ink.primary : Token.Ink.onAccent
+        if tone == .fasting { return Token.Ink.primary }
+        return tone.paintsPanel ? Token.Ink.onAccent : Token.Poster.captionOnColor
     }
 
     private var чернилаПолосы: Color {
