@@ -55,9 +55,11 @@ struct КиноЭкран<Содержимое: View>: View {
         ScrollView {
             VStack(alignment: .leading, spacing: Token.Spacing.stack) {
                 шапка
-                содержимое
+                VStack(alignment: .leading, spacing: Token.Spacing.stack) {
+                    содержимое
+                }
+                .padding(.horizontal, Token.Spacing.screenPadding)
             }
-            .padding(.horizontal, Token.Spacing.screenPadding)
             .padding(.bottom, Token.Space.s28)
         }
         .scrollBounceBehavior(.basedOnSize)
@@ -70,16 +72,26 @@ struct КиноЭкран<Содержимое: View>: View {
 
     /// Шапка и «…» в одной строке — как на кадрах 10, 11 и 14.
     ///
-    /// `отступы: false`, потому что боковой отступ уже положен колонкой
-    /// содержимого; второй дал бы двойной.
+    /// **Боковой отступ кладёт САМА `CinemaHeader`, и это замер,
+    /// а не догадка.** Первая редакция звала её с `отступы: false` —
+    /// такой параметр у неё есть **в рабочем дереве и нет в git**
+    /// (`git show HEAD:…/CinemaHeader.swift` — безусловный
+    /// `.padding(.horizontal, Token.Spacing.screenPadding)`), и сборка
+    /// схемы сказала «extra argument». Ровно тот класс, что записан
+    /// в своде: текст в рабочем дереве выглядит как текст в git,
+    /// различитель один — `git show`, и его не делает никто, потому что
+    /// файл «вот же он». Поэтому содержимое отступ получает своей
+    /// колонкой, а шапка — от соседа, и ей остаётся только правый край
+    /// под кнопку.
     private var шапка: some View {
         HStack(alignment: .center, spacing: Token.Space.s8) {
-            CinemaHeader(заголовок, надпись: кикер, экран: экран, отступы: false)
+            CinemaHeader(заголовок, надпись: кикер, экран: экран)
             HeaderMenu(настройки: настройки)
                 .tint(Token.Poster.labelOnColor)
                 .foregroundStyle(Token.Poster.labelOnColor)
                 .стекло(.плавающее, радиус: Token.Size.tapTarget / 2)
         }
+        .padding(.trailing, Token.Spacing.screenPadding)
     }
 }
 
