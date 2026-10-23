@@ -89070,13 +89070,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "no “Needs out”"
+            "value" : "no “Needs to go out?”"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "sans « Veut sortir »"
+            "value" : "sans « Envie de sortir ? »"
           }
         },
         "kk" : {
@@ -89813,7 +89813,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "хвилини · «Пописав» · «Додому»"
+            "value" : "хвилини · «Попісяв» · «Додому»"
           }
         }
       }
@@ -90033,7 +90033,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "+ « ensuite » et « Sortir »"
+            "value" : "+ « suivant » et « Promener »"
           }
         },
         "kk" : {
@@ -94725,13 +94725,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "“Needs out” → “Taking out”"
+            "value" : "“Needs to go out?” → “Taking her out”"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "« Veut sortir » → « Je le sors »"
+            "value" : "« Envie de sortir ? » → « Je le sors »"
           }
         },
         "kk" : {
@@ -94789,7 +94789,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "bouton « Sortir »"
+            "value" : "bouton « Promener »"
           }
         },
         "kk" : {
@@ -98008,7 +98008,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Pas encore de notes. Touchez « Sortir » en partant."
+            "value" : "Pas encore de notes. Touchez « Promener » en partant."
           }
         },
         "kk" : {
