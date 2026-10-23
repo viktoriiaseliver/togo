@@ -394,35 +394,49 @@ struct ModeStep: View {
 /// `spokenLabel` — для случаев, когда видимая подпись коротка нарочно
 /// («Телефон» под заголовком «Ветеринар»), а вслух нужна полная.
 ///
-/// > **`ViewThatFits` здесь ЗАПРЕЩЁН красной линией проекта и всё ещё
-/// > стоит.** Он держит в дереве обе раскладки, и озвучка находит две
-/// > копии поля. Снять его отсюда нельзя попутно: `LabeledField` зовут
-/// > девятнадцать мест в `Health`, `Family` и `Profile`, а эти каталоги
-/// > смене редизайна онбординга не открыты. Названо, чтобы следующий
-/// > не принял молчание за отсутствие долга.
+/// > **`ViewThatFits` отсюда СНЯТ 23.10.2026** — он запрещён красной
+/// > линией проекта: держал в дереве обе раскладки, и озвучка находила
+/// > две копии поля. Раскладка выбирается явным `if`
+/// > по `dynamicTypeSize`, как в `UndoToastView` и `TGListRow`.
+/// >
+/// > Прежняя редакция этой головы говорила, что снять его «нельзя
+/// > попутно: `LabeledField` зовут девятнадцать мест в `Health`,
+/// > `Family` и `Profile`». **Довод был не про тот предмет.** Подпись
+/// > типа не меняется ни на символ — меняется только внутренняя
+/// > раскладка, — поэтому места вызова не правятся вовсе, и открытость
+/// > их каталогов для этой замены не требуется. Девятнадцать вызовов
+/// > были доводом за приёмку кадром, а не против починки.
 struct LabeledField<Content: View>: View {
+    /// Настройка размера текста: от неё зависит, строкой или столбцом
+    /// раскладывать подпись и поле.
+    @Environment(\.dynamicTypeSize) private var размерТекста
+
     let label: String
     var spokenLabel: String? = nil
     @ViewBuilder var content: Content
 
     var body: some View {
-        ViewThatFits(in: .horizontal) {
-            HStack {
-                Text(label).textStyle(AppFont.body).fixedSize()
-                Spacer(minLength: Token.Space.s12)
-                content
-                    .multilineTextAlignment(.trailing)
-                    .textStyle(AppFont.body)
-                    .accessibilityLabel(spokenLabel ?? label)
-            }
-            // При крупном шрифте подпись и поле перестают помещаться рядом —
-            // тогда поле уезжает под подпись, а не сжимается в щель.
-            VStack(alignment: .leading, spacing: Token.Space.s4) {
-                Text(label).textStyle(AppFont.caption)
-                content
-                    .multilineTextAlignment(.leading)
-                    .textStyle(AppFont.body)
-                    .accessibilityLabel(spokenLabel ?? label)
+        Group {
+            if размерТекста.isAccessibilitySize {
+                // При крупной системной настройке подпись и поле
+                // перестают помещаться рядом — тогда поле уезжает под
+                // подпись, а не сжимается в щель.
+                VStack(alignment: .leading, spacing: Token.Space.s4) {
+                    Text(label).textStyle(AppFont.caption)
+                    content
+                        .multilineTextAlignment(.leading)
+                        .textStyle(AppFont.body)
+                        .accessibilityLabel(spokenLabel ?? label)
+                }
+            } else {
+                HStack {
+                    Text(label).textStyle(AppFont.body).fixedSize()
+                    Spacer(minLength: Token.Space.s12)
+                    content
+                        .multilineTextAlignment(.trailing)
+                        .textStyle(AppFont.body)
+                        .accessibilityLabel(spokenLabel ?? label)
+                }
             }
         }
         .frame(minHeight: Token.Size.tapTarget)
