@@ -59,17 +59,33 @@ private struct DogChip: View {
 
     var body: some View {
         HStack(spacing: Token.Space.s6) {
+            // **Тинт аватара белым НЕ красится, хотя пилюля белая.**
+            // `TGAvatar` рисует букву `Token.Ink.primary`'ом жёстко
+            // (`TGRows.swift`, «в тёмном наборе все аватарные фоны
+            // тёмные»), то есть белым. Белая буква на белом круге —
+            // это 1:1, и первый же кадр показал на месте пилюли пустое
+            // белое пятно. Кружок здесь — слот под фотографию, а не
+            // признак выбора; выбор показывает заливка пилюли.
             TGAvatar(initial: dog.initial, image: dog.photo,
                      size: Token.Size.avatarSm,
-                     tint: isActive ? Token.Action.primary : Token.Surface.sunken)
+                     tint: Token.Surface.raised)
+            // Цвет подставляется ВМЕСТО стилевого, а не поверх него.
+            //
+            // `AppFont.captionEmphasis` несёт свой `color`
+            // (`Token.Ink.primary`, то есть белый), и `textStyle` красит
+            // сам `Text` — соседний `.foregroundStyle` его не перебивает.
+            // Так уже было: главная кнопка приложения давала 1,68:1
+            // при зелёном тесте, который проверял ровно это место.
+            // Здесь та же форма дала белое по белому, и поймал её кадр.
+            //
+            // Белая заливка с тёмной подписью — решение Виктории
+            // 22.10.2026, «главная кнопка белая #FFFFFF с текстом
+            // #111111». Прежняя пара (зелёный тинт `doneQuiet`
+            // + `doneText`) осталась от Graphite, и на кадре `09` её нет.
             Text(dog.displayName)
-                .textStyle(isActive ? AppFont.captionEmphasis : AppFont.caption)
-                // Выбранная пилюля — белая заливка с тёмной подписью:
-                // решение Виктории 22.10.2026, «главная кнопка белая
-                // #FFFFFF с текстом #111111». Прежняя пара (зелёный тинт
-                // `doneQuiet` + `doneText`) осталась от Graphite и на кадре
-                // `09` её нет.
-                .foregroundStyle(isActive ? Token.Ink.onAccent : Token.Ink.secondary)
+                .textStyle(isActive
+                           ? AppFont.captionEmphasis.color(Token.Ink.onAccent)
+                           : AppFont.caption.color(Token.Ink.secondary))
         }
         .padding(.leading, Token.Space.s4)
         .padding(.trailing, Token.Space.s12)
