@@ -17,7 +17,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "  où : %@"
+            "value" : "  où : %@"
           }
         },
         "ru" : {
@@ -567,7 +567,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "« %@ » est deux fois dans le journal, et les entrées se sont séparées : une partie sur une fiche, une partie sur l'autre."
+            "value" : "« %@ » est deux fois dans le journal, et les entrées se sont séparées : une partie sur une fiche, une partie sur l'autre."
           }
         },
         "uk" : {
@@ -591,7 +591,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "« %@ » disparaîtra avec toutes les tentatives enregistrées. Tu pourras remettre les modèles quand la liste sera vide."
+            "value" : "« %@ » disparaîtra avec toutes les tentatives enregistrées. Tu pourras remettre les modèles quand la liste sera vide."
           }
         },
         "ru" : {
@@ -621,7 +621,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "« %@ » quittera le plan du jour, l'onglet « Santé » se masquera. %@"
+            "value" : "« %@ » quittera le plan du jour, l'onglet « Santé » se masquera. %@"
           }
         },
         "ru" : {
@@ -651,7 +651,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "« Togo : promenade » — Siri comprend aussi sur la montre."
+            "value" : "« Togo : promenade » — Siri comprend aussi sur la montre."
           }
         },
         "ru" : {
@@ -681,7 +681,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "« Comme d'habitude » n'apparaît que si les quatre dernières entrées sont identiques."
+            "value" : "« Comme d'habitude » n'apparaît que si les quatre dernières entrées sont identiques."
           }
         },
         "ru" : {
@@ -711,7 +711,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "« Comment il a demandé »"
+            "value" : "« Comment il a demandé »"
           }
         },
         "ru" : {
@@ -741,7 +741,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "« Réglages → chien → Alimentation et routine ». L'app comparera ça à ce que tu donnes vraiment et te dira si le chien mange trop."
+            "value" : "« Réglages → chien → Alimentation et routine ». L'app comparera ça à ce que tu donnes vraiment et te dira si le chien mange trop."
           }
         },
         "ru" : {
@@ -771,7 +771,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "« N'a pas pris la friandise » dans la séance"
+            "value" : "« N'a pas pris la friandise » dans la séance"
           }
         },
         "ru" : {
@@ -813,7 +813,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "« Alimentation et routine » montre ce que le chien mange vraiment et à quelle heure. Si ça dépasse la ration du jour, l'app proposera une nouvelle portion pour tous les repas d'un coup : la portion est la même pour toute la journée."
+            "value" : "« Alimentation et routine » montre ce que le chien mange vraiment et à quelle heure. Si ça dépasse la ration du jour, l'app proposera une nouvelle portion pour tous les repas d'un coup : la portion est la même pour toute la journée."
           }
         },
         "ru" : {
@@ -843,7 +843,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "« Prendre le relais » est un geste explicite, pas un silence : ce qui reste ouvert ne doit rester à personne."
+            "value" : "« Prendre le relais » est un geste explicite, pas un silence : ce qui reste ouvert ne doit rester à personne."
           }
         },
         "ru" : {
@@ -1658,7 +1658,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ %@ : dose sautée "
+            "value" : "%@ %@ : dose sautée "
           }
         },
         "ru" : {
@@ -1688,7 +1688,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ %@ : le chien n'a pas mangé, la dose ne s'ouvre pas selon la condition. Que faire ?"
+            "value" : "%@ %@ : le chien n'a pas mangé, la dose ne s'ouvre pas selon la condition. Que faire ?"
           }
         },
         "ru" : {
@@ -2133,7 +2133,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "%@ : dose sautée"
+            "value" : "%@ : dose sautée"
           }
         },
         "uk" : {
@@ -2907,7 +2907,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "%@ quitteront le plan du jour, l'onglet « Santé » se masquera. %@"
+            "value" : "%@ quitteront le plan du jour, l'onglet « Santé » se masquera. %@"
           }
         },
         "ru" : {
@@ -3235,7 +3235,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ : %@ %@ par mois"
+            "value" : "%@ : %@ %@ par mois"
           }
         },
         "ru" : {
@@ -3263,7 +3263,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ : %lld %@ par mois"
+            "value" : "%@ : %lld %@ par mois"
           }
         },
         "ru" : {
@@ -3293,7 +3293,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ : dernière sortie"
+            "value" : "%@ : dernière sortie"
           }
         },
         "ru" : {
@@ -3323,7 +3323,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ : nourri"
+            "value" : "%@ : nourri"
           }
         },
         "ru" : {
@@ -3353,7 +3353,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ : pipi"
+            "value" : "%@ : pipi"
           }
         },
         "ru" : {
@@ -3383,7 +3383,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ : promenade"
+            "value" : "%@ : promenade"
           }
         },
         "ru" : {
@@ -3413,7 +3413,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ : calme %@, aboiement %@"
+            "value" : "%@ : calme %@, aboiement %@"
           }
         },
         "ru" : {
@@ -3441,7 +3441,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ : calme %lld, aboiement %lld"
+            "value" : "%@ : calme %lld, aboiement %lld"
           }
         },
         "ru" : {
@@ -3471,7 +3471,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ : selles"
+            "value" : "%@ : selles"
           }
         },
         "ru" : {
@@ -7523,7 +7523,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud, c'est ton espace, pas le nôtre : l'app n'a ni serveurs ni accès à tes entrées."
+            "value" : "iCloud, c'est ton espace, pas le nôtre : l'app n'a ni serveurs ni accès à tes entrées."
           }
         },
         "ru" : {
@@ -8074,7 +8074,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Togo est construit sur les frameworks système d'Apple, sans dépendances tierces : SwiftUI, SwiftData, StoreKit 2, WidgetKit, ActivityKit, UserNotifications, Charts."
+            "value" : "Togo est construit sur les frameworks système d'Apple, sans dépendances tierces : SwiftUI, SwiftData, StoreKit 2, WidgetKit, ActivityKit, UserNotifications, Charts."
           }
         },
         "ru" : {
@@ -8177,7 +8177,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Adresse et lignes de démarrage copiées : %@. Écris depuis un autre appareil."
+            "value" : "Adresse et lignes de démarrage copiées : %@. Écris depuis un autre appareil."
           }
         },
         "uk" : {
@@ -8199,7 +8199,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Adresse copiée : %@. Écris depuis n'importe quel autre appareil et joins les trois lignes ci-dessous."
+            "value" : "Adresse copiée : %@. Écris depuis n'importe quel autre appareil et joins les trois lignes ci-dessous."
           }
         },
         "uk" : {
@@ -8523,7 +8523,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sans « Envie de sortir ? »"
+            "value" : "Sans « Envie de sortir ? »"
           }
         },
         "ru" : {
@@ -8787,7 +8787,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sans chien, l'app n'a rien à calculer : commence par lui."
+            "value" : "Sans chien, l'app n'a rien à calculer : commence par lui."
           }
         },
         "ru" : {
@@ -8859,7 +8859,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sans ces éléments, l'app nuirait au chien en silence : ils ne sont donc pas à vendre et resteront après la résiliation."
+            "value" : "Sans ces éléments, l'app nuirait au chien en silence : ils ne sont donc pas à vendre et resteront après la résiliation."
           }
         },
         "ru" : {
@@ -8919,7 +8919,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aucune dose sûre connue : chez certains chiens, quelques grains suffisent à bloquer les reins."
+            "value" : "Aucune dose sûre connue : chez certains chiens, quelques grains suffisent à bloquer les reins."
           }
         },
         "ru" : {
@@ -9674,7 +9674,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Le compte rendu aura la ligne « dose → prise de sang : %@ ». Sans elle, les analyses ont déjà été mal lues deux fois."
+            "value" : "Le compte rendu aura la ligne « dose → prise de sang : %@ ». Sans elle, les analyses ont déjà été mal lues deux fois."
           }
         },
         "ru" : {
@@ -9703,7 +9703,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le compte rendu aura la ligne « dose → prise de sang : %@ ». C'est justement son absence qui a déjà faussé deux fois la lecture des analyses."
+            "value" : "Le compte rendu aura la ligne « dose → prise de sang : %@ ». C'est justement son absence qui a déjà faussé deux fois la lecture des analyses."
           }
         },
         "uk" : {
@@ -10003,7 +10003,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pendant les heures calmes, l'app ne demande pas le résultat de la sortie : elle rassemblera tout le matin en une seule carte."
+            "value" : "Pendant les heures calmes, l'app ne demande pas le résultat de la sortie : elle rassemblera tout le matin en une seule carte."
           }
         },
         "ru" : {
@@ -10583,7 +10583,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "poids à la date : %@"
+            "value" : "poids à la date : %@"
           }
         },
         "uk" : {
@@ -10643,7 +10643,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Poids : %@"
+            "value" : "Poids : %@"
           }
         },
         "ru" : {
@@ -10673,7 +10673,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Poids : %@."
+            "value" : "Poids : %@."
           }
         },
         "ru" : {
@@ -10949,7 +10949,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vétérinaire : %@"
+            "value" : "Vétérinaire : %@"
           }
         },
         "ru" : {
@@ -11009,7 +11009,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La portion du soir est déjà réduite de %@ g : les croquettes des séances viennent du repas, pas en plus."
+            "value" : "La portion du soir est déjà réduite de %@ g : les croquettes des séances viennent du repas, pas en plus."
           }
         },
         "ru" : {
@@ -11037,7 +11037,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La portion du soir est déjà réduite de %lld g : les croquettes des séances viennent du repas, pas en plus."
+            "value" : "La portion du soir est déjà réduite de %lld g : les croquettes des séances viennent du repas, pas en plus."
           }
         },
         "uk" : {
@@ -11499,7 +11499,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L'onglet « Santé » se masquera. %@"
+            "value" : "L'onglet « Santé » se masquera. %@"
           }
         },
         "ru" : {
@@ -11529,7 +11529,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L'onglet apparaît avec un traitement et disparaît avec « Traitement terminé ». Pour un chien en bonne santé, il n'y a rien de médical sur l'écran principal."
+            "value" : "L'onglet apparaît avec un traitement et disparaît avec « Traitement terminé ». Pour un chien en bonne santé, il n'y a rien de médical sur l'écran principal."
           }
         },
         "ru" : {
@@ -11625,7 +11625,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Active — et une deuxième personne notera depuis son téléphone. Les entrées se rejoignent dans un seul fil, chacune avec son auteur. Ce sont les entrées qui voyagent, pas les réglages : chacun crée le profil du chien chez soi."
+            "value" : "Active — et une deuxième personne notera depuis son téléphone. Les entrées se rejoignent dans un seul fil, chacune avec son auteur. Ce sont les entrées qui voyagent, pas les réglages : chacun crée le profil du chien chez soi."
           }
         },
         "ru" : {
@@ -11697,7 +11697,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "active l'onglet « Santé », les doses et la fenêtre à jeun"
+            "value" : "active l'onglet « Santé », les doses et la fenêtre à jeun"
           }
         },
         "ru" : {
@@ -11877,7 +11877,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La pâtée, c'est surtout de l'eau : le même chiffre sur la balance donne nettement moins de nourriture que les croquettes. Prends la ration sur l'emballage ou chez le vétérinaire, ne la reporte pas depuis les croquettes."
+            "value" : "La pâtée, c'est surtout de l'eau : le même chiffre sur la balance donne nettement moins de nourriture que les croquettes. Prends la ration sur l'emballage ou chez le vétérinaire, ne la reporte pas depuis les croquettes."
           }
         },
         "ru" : {
@@ -11907,7 +11907,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Tout son journal disparaît avec elle — onze types d'entrées : repères, pesées, soins, schémas de traitement avec doses, étapes et séances, voyages, documents, sorties, chaleurs et stock de nourriture. Tu peux exporter le journal dans Réglages → Données et confidentialité."
+            "value" : "Tout son journal disparaît avec elle — onze types d'entrées : repères, pesées, soins, schémas de traitement avec doses, étapes et séances, voyages, documents, sorties, chaleurs et stock de nourriture. Tu peux exporter le journal dans Réglages → Données et confidentialité."
           }
         },
         "ru" : {
@@ -11937,7 +11937,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ses entrées, traitements, séances et voyages seront supprimés avec lui. Tu peux exporter le journal dans « Réglages → Données et confidentialité »."
+            "value" : "Ses entrées, traitements, séances et voyages seront supprimés avec lui. Tu peux exporter le journal dans « Réglages → Données et confidentialité »."
           }
         },
         "ru" : {
@@ -12315,7 +12315,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Âge : %@"
+            "value" : "Âge : %@"
           }
         },
         "ru" : {
@@ -13041,7 +13041,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le temps ne tourne pas. Appuie sur « Reprendre » quand vous repartez."
+            "value" : "Le temps ne tourne pas. Appuie sur « Reprendre » quand vous repartez."
           }
         },
         "ru" : {
@@ -13749,7 +13749,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Un deuxième incident dans la journée ouvre un épisode : les verdicts « Envie de sortir ? » sont en pause jusqu'à ce qu'on comprenne ce qui se passe."
+            "value" : "Un deuxième incident dans la journée ouvre un épisode : les verdicts « Envie de sortir ? » sont en pause jusqu'à ce qu'on comprenne ce qui se passe."
           }
         },
         "ru" : {
@@ -13809,7 +13809,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L'app ne mettra pas de seconde coche : deux doses séparées, ce n'est pas une confusion dans le journal, c'est un surdosage."
+            "value" : "L'app ne mettra pas de seconde coche : deux doses séparées, ce n'est pas une confusion dans le journal, c'est un surdosage."
           }
         },
         "ru" : {
@@ -13959,7 +13959,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Choisis à qui : ta mère, ton conjoint, le pet-sitter. Seule cette personne pourra l'ouvrir, depuis son iCloud, et il lui faut Togo sur son téléphone."
+            "value" : "Choisis à qui : ta mère, ton conjoint, le pet-sitter. Seule cette personne pourra l'ouvrir, depuis son iCloud, et il lui faut Togo sur son téléphone."
           }
         },
         "ru" : {
@@ -14403,7 +14403,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tu peux tout exporter en CSV et supprimer toutes les données dans « Réglages → Données et confidentialité », sans courrier ni attente."
+            "value" : "Tu peux tout exporter en CSV et supprimer toutes les données dans « Réglages → Données et confidentialité », sans courrier ni attente."
           }
         },
         "ru" : {
@@ -14835,7 +14835,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sortie aux longs arrêts, eau plus souvent que d'habitude : l'air du wagon est sec."
+            "value" : "Sortie aux longs arrêts, eau plus souvent que d'habitude : l'air du wagon est sec."
           }
         },
         "ru" : {
@@ -15440,7 +15440,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Où est l'onglet « Santé » ?"
+            "value" : "Où est l'onglet « Santé » ?"
           }
         },
         "ru" : {
@@ -15500,7 +15500,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "où : "
+            "value" : "où : "
           }
         },
         "ru" : {
@@ -15554,7 +15554,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le bouton principal. L'app regarde les intervalles entre pipi, selles, repas et sorties, et répond l'une de quatre choses : urgent, sûrement envie, pas clair, plutôt de l'attention."
+            "value" : "Le bouton principal. L'app regarde les intervalles entre pipi, selles, repas et sorties, et répond l'une de quatre choses : urgent, sûrement envie, pas clair, plutôt de l'attention."
           }
         },
         "ru" : {
@@ -15796,7 +15796,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Message prêt : nom, dose et heure de l'oubli."
+            "value" : "Message prêt : nom, dose et heure de l'oubli."
           }
         },
         "ru" : {
@@ -16400,7 +16400,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "donne l'onglet « Santé », les doses, la fenêtre à jeun et les comptes rendus"
+            "value" : "donne l'onglet « Santé », les doses, la fenêtre à jeun et les comptes rendus"
           }
         },
         "ru" : {
@@ -16770,7 +16770,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les doses données et sautées, on n'y touche pas : l'historique des prises ne doit pas devenir faux après coup."
+            "value" : "Les doses données et sautées, on n'y touche pas : l'historique des prises ne doit pas devenir faux après coup."
           }
         },
         "ru" : {
@@ -17046,7 +17046,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deux incidents en 24 h. Les verdicts « Envie de sortir ? » sont en pause tant qu'on ne comprend pas ce qui se passe."
+            "value" : "Deux incidents en 24 h. Les verdicts « Envie de sortir ? » sont en pause tant qu'on ne comprend pas ce qui se passe."
           }
         },
         "ru" : {
@@ -17466,7 +17466,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Actions : %@ · entrées : %@ · sessions : %@"
+            "value" : "Actions : %@ · entrées : %@ · sessions : %@"
           }
         },
         "ru" : {
@@ -17494,7 +17494,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Actions : %lld · entrées : %lld · sessions : %lld"
+            "value" : "Actions : %lld · entrées : %lld · sessions : %lld"
           }
         },
         "ru" : {
@@ -17536,7 +17536,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Ce ne sont pas tes réglages : l'app n'a pas le droit d'interroger l'App Store. Écris-nous."
+            "value" : "Ce ne sont pas tes réglages : l'app n'a pas le droit d'interroger l'App Store. Écris-nous."
           }
         },
         "ru" : {
@@ -17870,7 +17870,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pas de diagnostic ici : il n'aidera pas le pet-sitter, et il n'a rien à faire sur un écran étranger."
+            "value" : "Pas de diagnostic ici : il n'aidera pas le pet-sitter, et il n'a rien à faire sur un écran étranger."
           }
         },
         "ru" : {
@@ -17990,7 +17990,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "la distance est le réglage principal : ce qui le fait exploser à deux mètres passe souvent calmement à vingt"
+            "value" : "la distance est le réglage principal : ce qui le fait exploser à deux mètres passe souvent calmement à vingt"
           }
         },
         "ru" : {
@@ -18331,7 +18331,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Journal remplacé par le contenu du fichier : %@."
+            "value" : "Journal remplacé par le contenu du fichier : %@."
           }
         },
         "ru" : {
@@ -18451,7 +18451,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le journal fonctionne entièrement sans notifications : elles ne servent qu'à la dose, à la fenêtre à jeun et à l'escalade."
+            "value" : "Le journal fonctionne entièrement sans notifications : elles ne servent qu'à la dose, à la fenêtre à jeun et à l'escalade."
           }
         },
         "ru" : {
@@ -18643,7 +18643,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les jours sans entrées ne comptent pas dans la moyenne : un jour vide veut dire « journal pas tenu », pas « n'a pas mangé »."
+            "value" : "Les jours sans entrées ne comptent pas dans la moyenne : un jour vide veut dire « journal pas tenu », pas « n'a pas mangé »."
           }
         },
         "ru" : {
@@ -19239,7 +19239,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nouvelles entrées ajoutées : %lld. Ce qui était déjà là n'a pas bougé."
+            "value" : "Nouvelles entrées ajoutées : %lld. Ce qui était déjà là n'a pas bougé."
           }
         },
         "uk" : {
@@ -19263,7 +19263,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ajoute l'action « Promenade par l'étiquette »"
+            "value" : "Ajoute l'action « Promenade par l'étiquette »"
           }
         },
         "ru" : {
@@ -19353,7 +19353,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ajoute ce que tu donnes : le sec se compte en sacs, l'humide en boîtes. Tu donnes les deux — ajoute les deux et indique les grammes par jour pour chacun."
+            "value" : "Ajoute ce que tu donnes : le sec se compte en sacs, l'humide en boîtes. Tu donnes les deux — ajoute les deux et indique les grammes par jour pour chacun."
           }
         },
         "ru" : {
@@ -19473,7 +19473,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Doses à l'heure : %@ % sur %@"
+            "value" : "Doses à l'heure : %@ % sur %@"
           }
         },
         "ru" : {
@@ -20290,7 +20290,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Un long jeûne donne chez certains chiens des vomissements de bile le matin. Décale le dernier repas plus tard ou ajoutes-en un. C'est une observation, pas une prescription : vérifie avec le vétérinaire."
+            "value" : "Un long jeûne donne chez certains chiens des vomissements de bile le matin. Décale le dernier repas plus tard ou ajoutes-en un. C'est une observation, pas une prescription : vérifie avec le vétérinaire."
           }
         },
         "ru" : {
@@ -21606,7 +21606,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Si cela n'a pas aidé, réinstalle. Le journal reviendra d'iCloud : les lancements précédents y étaient envoyés."
+            "value" : "Si cela n'a pas aidé, réinstalle. Le journal reviendra d'iCloud : les lancements précédents y étaient envoyés."
           }
         },
         "ru" : {
@@ -21666,7 +21666,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Si l'un coche la prise, l'autre voit un verrou. Quand deux téléphones se contredisent, « donnée » gagne toujours — un verrou de trop est plus sûr qu'un deuxième comprimé."
+            "value" : "Si l'un coche la prise, l'autre voit un verrou. Quand deux téléphones se contredisent, « donnée » gagne toujours — un verrou de trop est plus sûr qu'un deuxième comprimé."
           }
         },
         "ru" : {
@@ -23236,7 +23236,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Ajoute ceux qui s'en occupent aussi : co-propriétaire, pet-sitter, enfant ou vétérinaire. Le rôle et les droits, c'est toi qui les choisis — la personne ne peut pas les changer."
+            "value" : "Ajoute ceux qui s'en occupent aussi : co-propriétaire, pet-sitter, enfant ou vétérinaire. Le rôle et les droits, c'est toi qui les choisis — la personne ne peut pas les changer."
           }
         },
         "ru" : {
@@ -24253,7 +24253,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "les séances et « n'a pas pris la friandise » restent"
+            "value" : "les séances et « n'a pas pris la friandise » restent"
           }
         },
         "ru" : {
@@ -24577,7 +24577,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Noté : %@"
+            "value" : "Noté : %@"
           }
         },
         "ru" : {
@@ -25213,7 +25213,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Entrées par jour : %@"
+            "value" : "Entrées par jour : %@"
           }
         },
         "ru" : {
@@ -25452,7 +25452,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Les entrées de la journée — repas, sorties, doses — resteront : seule la « journée avec le chien » disparaît, avec sa trace dans les observations de l'historique."
+            "value" : "Les entrées de la journée — repas, sorties, doses — resteront : seule la « journée avec le chien » disparaît, avec sa trace dans les observations de l'historique."
           }
         },
         "ru" : {
@@ -25661,7 +25661,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les entrées resteront dans l'historique. Le verdict « Envie de sortir ? » se calculera à nouveau sur les intervalles habituels — pendant un épisode, il n'est pas calculé du tout."
+            "value" : "Les entrées resteront dans l'historique. Le verdict « Envie de sortir ? » se calculera à nouveau sur les intervalles habituels — pendant un épisode, il n'est pas calculé du tout."
           }
         },
         "ru" : {
@@ -25841,7 +25841,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les notes de la famille ne sont pas arrivées : %@"
+            "value" : "Les notes de la famille ne sont pas arrivées : %@"
           }
         },
         "ru" : {
@@ -26356,7 +26356,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Noté tout de suite, sans « pourquoi » ni « à qui la faute ». Tu pourras préciser plus tard en touchant la ligne dans le fil."
+            "value" : "Noté tout de suite, sans « pourquoi » ni « à qui la faute ». Tu pourras préciser plus tard en touchant la ligne dans le fil."
           }
         },
         "ru" : {
@@ -26590,7 +26590,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La protection anti-doublon a joué, mais le vrai sujet, c'est le retour : après le tap, rien ne montre qu'il est passé."
+            "value" : "La protection anti-doublon a joué, mais le vrai sujet, c'est le retour : après le tap, rien ne montre qu'il est passé."
           }
         },
         "ru" : {
@@ -26692,7 +26692,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ici, tu crées un membre : son nom deviendra l'auteur des entrées, ses droits décideront de ce qu'il peut faire. Ça marche aussi avec un seul téléphone pour toute la famille, s'il passe de main en main."
+            "value" : "Ici, tu crées un membre : son nom deviendra l'auteur des entrées, ses droits décideront de ce qu'il peut faire. Ça marche aussi avec un seul téléphone pour toute la famille, s'il passe de main en main."
           }
         },
         "ru" : {
@@ -27118,7 +27118,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L'ibuprofène et le paracétamol sont toxiques pour les chiens. Ne les donne jamais de toi-même, même « une moitié »."
+            "value" : "L'ibuprofène et le paracétamol sont toxiques pour les chiens. Ne les donne jamais de toi-même, même « une moitié »."
           }
         },
         "ru" : {
@@ -27356,7 +27356,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Épisode en cours : deux incidents en 24 h. Tant qu'il dure, l'application ne donne pas de verdict — sors-le au premier signe."
+            "value" : "Épisode en cours : deux incidents en 24 h. Tant qu'il dure, l'application ne donne pas de verdict — sors-le au premier signe."
           }
         },
         "ru" : {
@@ -28273,7 +28273,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Incidents stables : %@, autant que sur la période précédente."
+            "value" : "Incidents stables : %@, autant que sur la période précédente."
           }
         },
         "ru" : {
@@ -28303,7 +28303,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Incidents : %@"
+            "value" : "Incidents : %@"
           }
         },
         "ru" : {
@@ -28331,7 +28331,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Incidents : %lld"
+            "value" : "Incidents : %lld"
           }
         },
         "uk" : {
@@ -28481,7 +28481,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Les onze types d'entrées disparaîtront : repères, pesées, soins, schémas de traitement avec doses, étapes et séances, voyages, documents, sorties, chaleurs et stock de nourriture. C'est irréversible."
+            "value" : "Les onze types d'entrées disparaîtront : repères, pesées, soins, schémas de traitement avec doses, étapes et séances, voyages, documents, sorties, chaleurs et stock de nourriture. C'est irréversible."
           }
         },
         "ru" : {
@@ -29621,7 +29621,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le bouton « Je le sors » vient en premier dans les quatre cas. L'app n'en sait pas plus que toi et ne t'empêche pas de sortir le chien."
+            "value" : "Le bouton « Je le sors » vient en premier dans les quatre cas. L'app n'en sait pas plus que toi et ne t'empêche pas de sortir le chien."
           }
         },
         "ru" : {
@@ -29651,7 +29651,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bouton « Action »"
+            "value" : "Bouton « Action »"
           }
         },
         "ru" : {
@@ -30423,7 +30423,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Un jour précis : vaccin, visite. On te prévient à l'avance et on décale la date à la prochaine fois."
+            "value" : "Un jour précis : vaccin, visite. On te prévient à l'avance et on décale la date à la prochaine fois."
           }
         },
         "ru" : {
@@ -30767,7 +30767,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Répartis les croquettes dans des sachets zip par jour et étiquette-les. Un sachet en bagage cabine : si la valise part ailleurs, le chien aura quand même son dîner."
+            "value" : "Répartis les croquettes dans des sachets zip par jour et étiquette-les. Un sachet en bagage cabine : si la valise part ailleurs, le chien aura quand même son dîner."
           }
         },
         "ru" : {
@@ -31043,7 +31043,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les repas sont répartis à égalité entre le premier et le dernier, mais la nuit reste plus longue : un pas régulier ne tient pas dans la journée. Pour équilibrer, un seul moyen — se lever plus tôt ou se coucher plus tard."
+            "value" : "Les repas sont répartis à égalité entre le premier et le dernier, mais la nuit reste plus longue : un pas régulier ne tient pas dans la journée. Pour équilibrer, un seul moyen — se lever plus tôt ou se coucher plus tard."
           }
         },
         "ru" : {
@@ -31073,7 +31073,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version courte : le journal vit sur ton téléphone. Nous ne créons pas de compte, ne collectons pas d'analytique sur ce que tu notes et ne transmettons pas de données à des tiers."
+            "value" : "Version courte : le journal vit sur ton téléphone. Nous ne créons pas de compte, ne collectons pas d'analytique sur ce que tu notes et ne transmettons pas de données à des tiers."
           }
         },
         "ru" : {
@@ -31391,7 +31391,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Le propriétaire voit qui est dans le carnet et peut retirer n'importe qui. Les entrées déjà reçues restent chez celui qui les a reçues : iCloud ne sait pas reprendre ce qu'il a montré."
+            "value" : "Le propriétaire voit qui est dans le carnet et peut retirer n'importe qui. Les entrées déjà reçues restent chez celui qui les a reçues : iCloud ne sait pas reprendre ce qu'il a montré."
           }
         },
         "ru" : {
@@ -31994,7 +31994,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "laboratoire : %@"
+            "value" : "laboratoire : %@"
           }
         },
         "uk" : {
@@ -32443,7 +32443,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le superflu : tape et supprime."
+            "value" : "Le superflu : tape et supprime."
           }
         },
         "ru" : {
@@ -32533,7 +32533,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "le local ne s'ouvre pas : %@"
+            "value" : "le local ne s'ouvre pas : %@"
           }
         },
         "ru" : {
@@ -32747,7 +32747,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "L'App Store ne donne pas les abonnements. Ce n'est ni la connexion ni ton téléphone : les achats ne sont pas encore activés du côté d'Apple. Tout ce qui compte pour la sécurité du chien est gratuit pour toujours."
+            "value" : "L'App Store ne donne pas les abonnements. Ce n'est ni la connexion ni ton téléphone : les achats ne sont pas encore activés du côté d'Apple. Tout ce qui compte pour la sécurité du chien est gratuit pour toujours."
           }
         },
         "ru" : {
@@ -32969,7 +32969,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le marqueur est toujours le même et ne veut rien dire d'autre. « C'est bien » ne convient pas : on le dit toute la journée."
+            "value" : "Le marqueur est toujours le même et ne veut rien dire d'autre. « C'est bien » ne convient pas : on le dit toute la journée."
           }
         },
         "ru" : {
@@ -33233,7 +33233,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Moins de %@ secondes entre l'entrée et « Annuler » — c'est un doigt qui a glissé, pas une décision. Regarde ce qu'il y a à côté de ce bouton."
+            "value" : "Moins de %@ secondes entre l'entrée et « Annuler » — c'est un doigt qui a glissé, pas une décision. Regarde ce qu'il y a à côté de ce bouton."
           }
         },
         "ru" : {
@@ -33407,7 +33407,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Change une seule chose à la fois : nouveau lieu, reviens à une courte distance."
+            "value" : "Change une seule chose à la fois : nouveau lieu, reviens à une courte distance."
           }
         },
         "ru" : {
@@ -33467,7 +33467,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les droits peuvent être modifiés par celui qui a le droit « Inviter et changer les rôles ». En général, c'est le propriétaire."
+            "value" : "Les droits peuvent être modifiés par celui qui a le droit « Inviter et changer les rôles ». En général, c'est le propriétaire."
           }
         },
         "ru" : {
@@ -33617,7 +33617,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L'étiquette ne sait rien de toi : elle ne contient qu'un numéro qui permet à Raccourcis de reconnaître l'autocollant. Togo ne demande pas du tout ta position."
+            "value" : "L'étiquette ne sait rien de toi : elle ne contient qu'un numéro qui permet à Raccourcis de reconnaître l'autocollant. Togo ne demande pas du tout ta position."
           }
         },
         "ru" : {
@@ -33917,7 +33917,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tu peux l'activer plus tard — l'onglet « Santé » apparaîtra aussitôt."
+            "value" : "Tu peux l'activer plus tard — l'onglet « Santé » apparaîtra aussitôt."
           }
         },
         "ru" : {
@@ -34967,7 +34967,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Une compétence n'est pas « acquise » ou « pas acquise ». « Viens » à la maison et « viens » dehors à côté d'un autre chien, ce sont deux compétences différentes."
+            "value" : "Une compétence n'est pas « acquise » ou « pas acquise ». « Viens » à la maison et « viens » dehors à côté d'un autre chien, ce sont deux compétences différentes."
           }
         },
         "ru" : {
@@ -34997,7 +34997,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les compétences pour les soins ont été retirées. Tu peux remettre les modèles : les trois plus utiles sont donner la patte, rester debout pendant l'examen et entrer dans la caisse de transport."
+            "value" : "Les compétences pour les soins ont été retirées. Tu peux remettre les modèles : les trois plus utiles sont donner la patte, rester debout pendant l'examen et entrer dans la caisse de transport."
           }
         },
         "ru" : {
@@ -35057,7 +35057,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Appuie sur « Envie de sortir ? » quand il va vers la porte. Dès demain, sa routine apparaîtra ici, et tu verras quand il a vraiment besoin de sortir."
+            "value" : "Appuie sur « Envie de sortir ? » quand il va vers la porte. Dès demain, sa routine apparaîtra ici, et tu verras quand il a vraiment besoin de sortir."
           }
         },
         "ru" : {
@@ -35351,7 +35351,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cherche Togo dans la liste. Désactive « Demander avant d'exécuter » — sinon ça perd son sens : il faudra confirmer."
+            "value" : "Cherche Togo dans la liste. Désactive « Demander avant d'exécuter » — sinon ça perd son sens : il faudra confirmer."
           }
         },
         "ru" : {
@@ -36261,7 +36261,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "La fusion n'a pas marché : %@"
+            "value" : "La fusion n'a pas marché : %@"
           }
         },
         "uk" : {
@@ -36315,7 +36315,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "On n'a pas réussi à joindre l'App Store. C'est souvent la connexion. L'app marche aussi sans abonnement : tout ce qui compte pour la sécurité du chien est gratuit pour toujours."
+            "value" : "On n'a pas réussi à joindre l'App Store. C'est souvent la connexion. L'app marche aussi sans abonnement : tout ce qui compte pour la sécurité du chien est gratuit pour toujours."
           }
         },
         "ru" : {
@@ -36345,7 +36345,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Elle ne remplace pas une visite chez le vétérinaire. Le verdict « Envie de sortir ? » est une statistique sur tes propres entrées, pas une conclusion."
+            "value" : "Elle ne remplace pas une visite chez le vétérinaire. Le verdict « Envie de sortir ? » est une statistique sur tes propres entrées, pas une conclusion."
           }
         },
         "ru" : {
@@ -36417,7 +36417,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "non noté : combien d'heures après la dose"
+            "value" : "non noté : combien d'heures après la dose"
           }
         },
         "ru" : {
@@ -36918,7 +36918,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ne pas ouvrir la porte pendant l'aboiement : attendre une ou deux secondes de silence, puis ouvrir. La porte s'ouvre après le silence — c'est le silence qui se renforce. Pas besoin de gronder : l'aboiement n'est pas une faute, c'est ce qui marchait."
+            "value" : "Ne pas ouvrir la porte pendant l'aboiement : attendre une ou deux secondes de silence, puis ouvrir. La porte s'ouvre après le silence — c'est le silence qui se renforce. Pas besoin de gronder : l'aboiement n'est pas une faute, c'est ce qui marchait."
           }
         },
         "ru" : {
@@ -36948,7 +36948,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "rien ne s'ouvre : %@"
+            "value" : "rien ne s'ouvre : %@"
           }
         },
         "ru" : {
@@ -37007,7 +37007,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Ne réinstalle pas. L'app n'a trouvé aucune trace d'un envoi du journal vers iCloud, et il n'y a aucun moyen de l'exporter maintenant : l'export lit le même stockage qui ne s'est pas ouvert. Écris au support, les lignes de démarrage sont juste en dessous."
+            "value" : "Ne réinstalle pas. L'app n'a trouvé aucune trace d'un envoi du journal vers iCloud, et il n'y a aucun moyen de l'exporter maintenant : l'export lit le même stockage qui ne s'est pas ouvert. Écris au support, les lignes de démarrage sont juste en dessous."
           }
         },
         "ru" : {
@@ -37037,7 +37037,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pas de pipi depuis %@ : plus long que d'habitude."
+            "value" : "Pas de pipi depuis %@ : plus long que d'habitude."
           }
         },
         "ru" : {
@@ -37421,7 +37421,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Pas enregistré · appuie encore sur « OK »"
+            "value" : "Pas enregistré · appuie encore sur « OK »"
           }
         },
         "ru" : {
@@ -38835,7 +38835,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Il ne recevra plus les nouvelles entrées. Ce qu'il a déjà reçu reste sur son téléphone : iCloud ne sait pas reprendre ce qui a été montré."
+            "value" : "Il ne recevra plus les nouvelles entrées. Ce qu'il a déjà reçu reste sur son téléphone : iCloud ne sait pas reprendre ce qui a été montré."
           }
         },
         "ru" : {
@@ -39135,7 +39135,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La ration est de %@ g par jour, les aliments donnent %@ g. Ça arrive : corrige la répartition ici, ou la ration elle-même dans « Repas »."
+            "value" : "La ration est de %@ g par jour, les aliments donnent %@ g. Ça arrive : corrige la répartition ici, ou la ration elle-même dans « Repas »."
           }
         },
         "ru" : {
@@ -39163,7 +39163,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La ration est de %lld g par jour, les aliments donnent %lld g. Ça arrive : corrige la répartition ici, ou la ration elle-même dans « Repas »."
+            "value" : "La ration est de %lld g par jour, les aliments donnent %lld g. Ça arrive : corrige la répartition ici, ou la ration elle-même dans « Repas »."
           }
         },
         "ru" : {
@@ -39305,7 +39305,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ration d'eau ≈ %@ ml par jour. Par forte chaleur, regarde cette ligne en premier : c'est là que le changement d'eau et de nourriture pose le plus souvent problème."
+            "value" : "Ration d'eau ≈ %@ ml par jour. Par forte chaleur, regarde cette ligne en premier : c'est là que le changement d'eau et de nourriture pose le plus souvent problème."
           }
         },
         "ru" : {
@@ -39333,7 +39333,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Eau : ≈ %lld ml par jour. Par forte chaleur, regarde cette ligne en premier : c'est ici qu'un changement d'eau ou de croquettes dérape le plus souvent."
+            "value" : "Eau : ≈ %lld ml par jour. Par forte chaleur, regarde cette ligne en premier : c'est ici qu'un changement d'eau ou de croquettes dérape le plus souvent."
           }
         },
         "uk" : {
@@ -39471,7 +39471,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La ration vient du vétérinaire ou de l'emballage, l'app ne l'invente pas. Pour la pâtée, les grammes changent : elle est aux trois quarts de l'eau."
+            "value" : "La ration vient du vétérinaire ou de l'emballage, l'app ne l'invente pas. Pour la pâtée, les grammes changent : elle est aux trois quarts de l'eau."
           }
         },
         "ru" : {
@@ -39513,7 +39513,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L'app n'invente pas la ration : c'est le vétérinaire qui la fixe, l'app compare seulement ce qui est noté avec elle."
+            "value" : "L'app n'invente pas la ration : c'est le vétérinaire qui la fixe, l'app compare seulement ce qui est noté avec elle."
           }
         },
         "ru" : {
@@ -39633,7 +39633,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud est nécessaire sur les deux téléphones. Toujours pas de compte Togo : l'échange passe par ton iCloud personnel, pas par un serveur tiers."
+            "value" : "iCloud est nécessaire sur les deux téléphones. Toujours pas de compte Togo : l'échange passe par ton iCloud personnel, pas par un serveur tiers."
           }
         },
         "ru" : {
@@ -40228,7 +40228,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "En général autour de %@. Redouble d'attention en promenade : les mâles la sentent à un kilomètre, et ça n'a rien à voir avec l'éducation."
+            "value" : "En général autour de %@. Redouble d'attention en promenade : les mâles la sentent à un kilomètre, et ça n'a rien à voir avec l'éducation."
           }
         },
         "ru" : {
@@ -40288,7 +40288,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "C'est souvent la connexion. L'app marche aussi sans abonnement : tout ce qui compte pour la sécurité du chien est gratuit pour toujours."
+            "value" : "C'est souvent la connexion. L'app marche aussi sans abonnement : tout ce qui compte pour la sécurité du chien est gratuit pour toujours."
           }
         },
         "ru" : {
@@ -40348,7 +40348,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pas de limite de friandises. Il y a une ration du jour, dont le chien gagne une partie : c'est ce qui lève le conflit entre les séances et le poids."
+            "value" : "Pas de limite de friandises. Il y a une ration du jour, dont le chien gagne une partie : c'est ce qui lève le conflit entre les séances et le poids."
           }
         },
         "ru" : {
@@ -40468,7 +40468,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Un seul tap si tout est comme d'habitude : la forme est notée tout de suite, pas besoin d'« Enregistrer ». Tu peux annuler en bas de l'écran."
+            "value" : "Un seul tap si tout est comme d'habitude : la forme est notée tout de suite, pas besoin d'« Enregistrer ». Tu peux annuler en bas de l'écran."
           }
         },
         "ru" : {
@@ -40558,7 +40558,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Une seule action dans les deux sens : pas de promenade en cours, elle commence ; une en cours, elle se termine et se note."
+            "value" : "Une seule action dans les deux sens : pas de promenade en cours, elle commence ; une en cours, elle se termine et se note."
           }
         },
         "ru" : {
@@ -40588,7 +40588,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Un seul contact marche dans les deux sens : pas de promenade en cours — elle démarre, promenade en cours — elle se termine et se note. À la porte, pas besoin de se rappeler quoi appuyer."
+            "value" : "Un seul contact marche dans les deux sens : pas de promenade en cours — elle démarre, promenade en cours — elle se termine et se note. À la porte, pas besoin de se rappeler quoi appuyer."
           }
         },
         "ru" : {
@@ -40928,7 +40928,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La fenêtre à jeun, la protection contre la double dose, « comment il a demandé » et la ligne sur la punition sont gratuits pour toujours et ne font pas partie de l'abonnement."
+            "value" : "La fenêtre à jeun, la protection contre la double dose, « comment il a demandé » et la ligne sur la punition sont gratuits pour toujours et ne font pas partie de l'abonnement."
           }
         },
         "ru" : {
@@ -40958,7 +40958,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La fenêtre à jeun, la protection contre la double dose, « comment il a demandé », « n'a pas pris la friandise » et l'avertissement sur la punition après un pipi à la maison sont gratuits pour toujours et ne font pas partie de l'abonnement."
+            "value" : "La fenêtre à jeun, la protection contre la double dose, « comment il a demandé », « n'a pas pris la friandise » et l'avertissement sur la punition après un pipi à la maison sont gratuits pour toujours et ne font pas partie de l'abonnement."
           }
         },
         "ru" : {
@@ -41018,7 +41018,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Il n'a pas pris la friandise : la tâche était trop difficile. Ce n'est pas le chien qui est en cause."
+            "value" : "Il n'a pas pris la friandise : la tâche était trop difficile. Ce n'est pas le chien qui est en cause."
           }
         },
         "ru" : {
@@ -41108,7 +41108,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Il arrive avec un traitement et repart avec lui — en bas de « Santé », il y a « Traitement terminé ». Les entrées restent dans l'historique et dans le compte rendu pour le vétérinaire."
+            "value" : "Il arrive avec un traitement et repart avec lui — en bas de « Santé », il y a « Traitement terminé ». Les entrées restent dans l'historique et dans le compte rendu pour le vétérinaire."
           }
         },
         "ru" : {
@@ -41570,7 +41570,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Un arrêt toutes les 2 heures : de l'eau et cinq minutes de marche. L'app te le rappelle et note l'arrêt en un tap."
+            "value" : "Un arrêt toutes les 2 heures : de l'eau et cinq minutes de marche. L'app te le rappelle et note l'arrêt en un tap."
           }
         },
         "ru" : {
@@ -41610,7 +41610,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "C'est l'heure de la dose qui donne la fenêtre à jeun et la protection contre la double dose ; l'heure du repas, elle, donne le « faut-il nourrir ». C'est pour ça qu'on demande, au lieu de prendre l'heure de l'appui."
+            "value" : "C'est l'heure de la dose qui donne la fenêtre à jeun et la protection contre la double dose ; l'heure du repas, elle, donne le « faut-il nourrir ». C'est pour ça qu'on demande, au lieu de prendre l'heure de l'appui."
           }
         },
         "ru" : {
@@ -42365,7 +42365,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ouvert : %@ jusqu'à %@"
+            "value" : "Ouvert : %@ jusqu'à %@"
           }
         },
         "ru" : {
@@ -42725,7 +42725,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L'annulation se fait chez Apple, pas chez nous : App Store → ton compte Apple → Abonnements. L'abonnement reste actif jusqu'à la fin de la période payée."
+            "value" : "L'annulation se fait chez Apple, pas chez nous : App Store → ton compte Apple → Abonnements. L'abonnement reste actif jusqu'à la fin de la période payée."
           }
         },
         "ru" : {
@@ -43133,7 +43133,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cocher : %@"
+            "value" : "Cocher : %@"
           }
         },
         "ru" : {
@@ -43163,7 +43163,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Si tu coches une particularité, une confirmation apparaît : cette entrée part dans la partie santé et dans le compte rendu pour le vétérinaire. Le sang est la seule chose que l'app affiche en couleur d'alerte."
+            "value" : "Si tu coches une particularité, une confirmation apparaît : cette entrée part dans la partie santé et dans le compte rendu pour le vétérinaire. Le sang est la seule chose que l'app affiche en couleur d'alerte."
           }
         },
         "ru" : {
@@ -43473,7 +43473,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Coche dans Togo : donnée ou sautée."
+            "value" : "Coche dans Togo : donnée ou sautée."
           }
         },
         "ru" : {
@@ -43593,7 +43593,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Rien à noter : repas, sorties et doses se comptent par chien. Ajoute-le — il suffit du nom et du poids."
+            "value" : "Rien à noter : repas, sorties et doses se comptent par chien. Ajoute-le — il suffit du nom et du poids."
           }
         },
         "ru" : {
@@ -43711,7 +43711,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "cochées : %lld"
+            "value" : "cochées : %lld"
           }
         },
         "uk" : {
@@ -43825,7 +43825,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ce qui est coché, presque tous en ont besoin. Les dents, c'est chaque jour : la plaque durcit en 24 h. Le reste dépend du chien et se change à tout moment."
+            "value" : "Ce qui est coché, presque tous en ont besoin. Les dents, c'est chaque jour : la plaque durcit en 24 h. Le reste dépend du chien et se change à tout moment."
           }
         },
         "ru" : {
@@ -44041,7 +44041,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le compte part de cette note, pas de l'horaire : repas plus tard — injection décalée d'autant."
+            "value" : "Le compte part de cette note, pas de l'horaire : repas plus tard — injection décalée d'autant."
           }
         },
         "ru" : {
@@ -44167,7 +44167,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le compte rendu pour le vétérinaire se construit à partir de ce qui est déjà noté : rien à remplir pour lui."
+            "value" : "Le compte rendu pour le vétérinaire se construit à partir de ce qui est déjà noté : rien à remplir pour lui."
           }
         },
         "ru" : {
@@ -44197,7 +44197,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Le compte rendu pour le vétérinaire, l'export CSV et l'invitation au carnet partagé ne partent que lorsque tu appuies toi-même sur « Partager », et uniquement vers la personne choisie dans la fenêtre système."
+            "value" : "Le compte rendu pour le vétérinaire, l'export CSV et l'invitation au carnet partagé ne partent que lorsque tu appuies toi-même sur « Partager », et uniquement vers la personne choisie dans la fenêtre système."
           }
         },
         "ru" : {
@@ -44347,7 +44347,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Journée très longue. Demain, allège : sorties courtes, pas de séance ni d'invités. Si après-demain elle est encore amorphe ou ne mange pas, c'est le moment d'aller chez le vétérinaire."
+            "value" : "Journée très longue. Demain, allège : sorties courtes, pas de séance ni d'invités. Si après-demain elle est encore amorphe ou ne mange pas, c'est le moment d'aller chez le vétérinaire."
           }
         },
         "ru" : {
@@ -44755,7 +44755,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les trois ou quatre premiers jours, elle répond honnêtement « pas clair » : elle ne connaît pas encore les intervalles. Ce n'est pas un bug."
+            "value" : "Les trois ou quatre premiers jours, elle répond honnêtement « pas clair » : elle ne connaît pas encore les intervalles. Ce n'est pas un bug."
           }
         },
         "ru" : {
@@ -44815,7 +44815,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le premier était à %@. L'app mettra les verdicts « Envie de sortir ? » en pause jusqu'au soir et proposera un compte rendu s'il y en a un troisième."
+            "value" : "Le premier était à %@. L'app mettra les verdicts « Envie de sortir ? » en pause jusqu'au soir et proposera un compte rendu s'il y en a un troisième."
           }
         },
         "ru" : {
@@ -44845,7 +44845,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le premier tap note, le deuxième précise. L'app ne demande ni « pourquoi » ni « à qui la faute »."
+            "value" : "Le premier tap note, le deuxième précise. L'app ne demande ni « pourquoi » ni « à qui la faute »."
           }
         },
         "ru" : {
@@ -45059,7 +45059,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "sélecteur dans l'onglet « Chien »"
+            "value" : "sélecteur dans l'onglet « Chien »"
           }
         },
         "ru" : {
@@ -45117,7 +45117,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Entrées déplacées : %lld. Le journal est de nouveau unique."
+            "value" : "Entrées déplacées : %lld. Le journal est de nouveau unique."
           }
         },
         "uk" : {
@@ -45267,7 +45267,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Il n'y a pas et n'y aura pas de messagerie dans l'app. Ce qu'il faut faire si quelque chose ne va pas, le maître l'écrit lui-même — dans le briefing, à la ligne « En cas de souci »."
+            "value" : "Il n'y a pas et n'y aura pas de messagerie dans l'app. Ce qu'il faut faire si quelque chose ne va pas, le maître l'écrit lui-même — dans le briefing, à la ligne « En cas de souci »."
           }
         },
         "ru" : {
@@ -45630,7 +45630,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Période : %@ — %@"
+            "value" : "Période : %@ — %@"
           }
         },
         "ru" : {
@@ -45660,7 +45660,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pêche, prune, avocat : le contenu du noyau et le risque d'occlusion."
+            "value" : "Pêche, prune, avocat : le contenu du noyau et le risque d'occlusion."
           }
         },
         "ru" : {
@@ -45690,7 +45690,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A fait pipi il y a %@. Peut-être qu'il s'ennuie, peut-être le ventre. Sors-le si tu hésites : l'app n'en sait pas plus que toi."
+            "value" : "A fait pipi il y a %@. Peut-être qu'il s'ennuie, peut-être le ventre. Sors-le si tu hésites : l'app n'en sait pas plus que toi."
           }
         },
         "ru" : {
@@ -45792,7 +45792,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Repas, soins, documents et « En cas de problème » vivent dans l'onglet Chien — deux taps depuis n'importe quel écran."
+            "value" : "Repas, soins, documents et « En cas de problème » vivent dans l'onglet Chien — deux taps depuis n'importe quel écran."
           }
         },
         "ru" : {
@@ -46212,7 +46212,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "selon notre intervalle : %@"
+            "value" : "selon notre intervalle : %@"
           }
         },
         "uk" : {
@@ -46360,7 +46360,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "selon le rôle « %@ »"
+            "value" : "selon le rôle « %@ »"
           }
         },
         "ru" : {
@@ -46462,7 +46462,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Refais exactement la même chose : une séance réussie ne fait pas une compétence."
+            "value" : "Refais exactement la même chose : une séance réussie ne fait pas une compétence."
           }
         },
         "ru" : {
@@ -47440,7 +47440,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Appeler : %@"
+            "value" : "Appeler : %@"
           }
         },
         "ru" : {
@@ -47590,7 +47590,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tant qu'il est désactivé, le membre n'est qu'un nom dans le champ « auteur » : il ne peut noter que depuis ce téléphone."
+            "value" : "Tant qu'il est désactivé, le membre n'est qu'un nom dans le champ « auteur » : il ne peut noter que depuis ce téléphone."
           }
         },
         "ru" : {
@@ -47740,7 +47740,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rien à enregistrer pour l'instant : ajoute un chien et note au moins une sortie."
+            "value" : "Rien à enregistrer pour l'instant : ajoute un chien et note au moins une sortie."
           }
         },
         "ru" : {
@@ -48052,7 +48052,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pour l'instant c'est un repère, pas un calcul : une chienne adulte a ses chaleurs environ tous les six mois. Après la deuxième entrée, l'application calculera l'intervalle d'après ses dates."
+            "value" : "Pour l'instant c'est un repère, pas un calcul : une chienne adulte a ses chaleurs environ tous les six mois. Après la deuxième entrée, l'application calculera l'intervalle d'après ses dates."
           }
         },
         "ru" : {
@@ -48534,7 +48534,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La matrice complète de généralisation fait partie de l'abonnement. L'apprentissage lui-même, « n'a pas pris la friandise » et la règle d'un seul changement à la fois restent gratuits."
+            "value" : "La matrice complète de généralisation fait partie de l'abonnement. L'apprentissage lui-même, « n'a pas pris la friandise » et la règle d'un seul changement à la fois restent gratuits."
           }
         },
         "ru" : {
@@ -48564,7 +48564,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jours complets avec des entrées : %@, il en faut au moins %@, sinon la moyenne ment. Continue à noter les repas, l'app calculera le reste toute seule."
+            "value" : "Jours complets avec des entrées : %@, il en faut au moins %@, sinon la moyenne ment. Continue à noter les repas, l'app calculera le reste toute seule."
           }
         },
         "ru" : {
@@ -48592,7 +48592,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jours complets avec des entrées : %lld, il en faut au moins %lld, sinon la moyenne ment. Continue à noter les repas, l'app calculera le reste toute seule."
+            "value" : "Jours complets avec des entrées : %lld, il en faut au moins %lld, sinon la moyenne ment. Continue à noter les repas, l'app calculera le reste toute seule."
           }
         },
         "ru" : {
@@ -48621,7 +48621,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jours complets avec entrées : %lld. Il en faut au moins %lld, sinon la moyenne ment. Continue juste à noter les repas — l'app se mettra à compter toute seule."
+            "value" : "Jours complets avec entrées : %lld. Il en faut au moins %lld, sinon la moyenne ment. Continue juste à noter les repas — l'app se mettra à compter toute seule."
           }
         },
         "ru" : {
@@ -48783,7 +48783,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "En utilisant Togo, tu acceptes ces conditions. Si quelque chose ne te convient pas, tu peux supprimer l'application : les données restent chez toi."
+            "value" : "En utilisant Togo, tu acceptes ces conditions. Si quelque chose ne te convient pas, tu peux supprimer l'application : les données restent chez toi."
           }
         },
         "ru" : {
@@ -48939,7 +48939,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Compris, ouvrir « Aujourd'hui »"
+            "value" : "Compris, ouvrir « Aujourd'hui »"
           }
         },
         "ru" : {
@@ -48969,7 +48969,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ira dans la fiche de garde et dans le rappel avant le voyage. Combien et à quelle heure le chien mange : sur l'écran « Repas »."
+            "value" : "Ira dans la fiche de garde et dans le rappel avant le voyage. Combien et à quelle heure le chien mange : sur l'écran « Repas »."
           }
         },
         "ru" : {
@@ -49469,7 +49469,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le seuil vient d'un compte, pas d'une intuition : %@ épisodes en %@ heures. L'app ne pose pas de diagnostic — la décision revient toujours au vétérinaire."
+            "value" : "Le seuil vient d'un compte, pas d'une intuition : %@ épisodes en %@ heures. L'app ne pose pas de diagnostic — la décision revient toujours au vétérinaire."
           }
         },
         "ru" : {
@@ -49497,7 +49497,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le seuil vient d'un compte, pas d'une intuition : %lld épisodes en %lld heures. L'app ne pose pas de diagnostic — la décision revient toujours au vétérinaire."
+            "value" : "Le seuil vient d'un compte, pas d'une intuition : %lld épisodes en %lld heures. L'app ne pose pas de diagnostic — la décision revient toujours au vétérinaire."
           }
         },
         "ru" : {
@@ -49563,7 +49563,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La portion, c'est la ration du jour divisée par le nombre de repas : ajoute un repas et c'est la portion qui baisse, pas la quantité du jour. La ration vient du vétérinaire ou du paquet, l'app ne l'invente pas. Pour la pâtée, les grammes sont différents : elle est aux trois quarts de l'eau."
+            "value" : "La portion, c'est la ration du jour divisée par le nombre de repas : ajoute un repas et c'est la portion qui baisse, pas la quantité du jour. La ration vient du vétérinaire ou du paquet, l'app ne l'invente pas. Pour la pâtée, les grammes sont différents : elle est aux trois quarts de l'eau."
           }
         },
         "ru" : {
@@ -49623,7 +49623,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La portion du profil est reprise dans le bouton « Repas » : un seul appui suffit."
+            "value" : "La portion du profil est reprise dans le bouton « Repas » : un seul appui suffit."
           }
         },
         "ru" : {
@@ -49743,7 +49743,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Après une sortie, l'app demande parfois comment il a demandé exactement. Pas à chaque fois : quand le signal change, ou environ une sortie sur cinq."
+            "value" : "Après une sortie, l'app demande parfois comment il a demandé exactement. Pas à chaque fois : quand le signal change, ou environ une sortie sur cinq."
           }
         },
         "ru" : {
@@ -49983,7 +49983,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Après un pipi à la maison, elle montre l'heure qui a précédé — l'eau, le temps seul, la dernière sortie — et dit clairement : ne le punis pas. Mettre le nez dedans n'apprend pas la propreté, ça apprend à se cacher."
+            "value" : "Après un pipi à la maison, elle montre l'heure qui a précédé — l'eau, le temps seul, la dernière sortie — et dit clairement : ne le punis pas. Mettre le nez dedans n'apprend pas la propreté, ça apprend à se cacher."
           }
         },
         "ru" : {
@@ -50551,7 +50551,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Chien perdu : %@, %@, %@"
+            "value" : "Chien perdu : %@, %@, %@"
           }
         },
         "ru" : {
@@ -50671,7 +50671,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "On dirait que vous avez noté la même chose tous les deux. L'une des entrées est arrivée plus tard : son auteur était sans doute hors ligne."
+            "value" : "On dirait que vous avez noté la même chose tous les deux. L'une des entrées est arrivée plus tard : son auteur était sans doute hors ligne."
           }
         },
         "ru" : {
@@ -50737,7 +50737,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pourquoi le verdict dit « Pas clair » ?"
+            "value" : "Pourquoi le verdict dit « Pas clair » ?"
           }
         },
         "ru" : {
@@ -50947,7 +50947,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "pas de droit iCloud — local uniquement (profil : %@)"
+            "value" : "pas de droit iCloud — local uniquement (profil : %@)"
           }
         },
         "ru" : {
@@ -51097,7 +51097,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le droit « Exporter les données et les comptes rendus » est donné par le propriétaire dans « Famille »."
+            "value" : "Le droit « Exporter les données et les comptes rendus » est donné par le propriétaire dans « Famille »."
           }
         },
         "ru" : {
@@ -51696,7 +51696,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Une habitude. Pas de retard, juste une série de jours d'affilée. Les dents se brossent chaque jour : la plaque durcit en 24 h."
+            "value" : "Une habitude. Pas de retard, juste une série de jours d'affilée. Les dents se brossent chaque jour : la plaque durcit en 24 h."
           }
         },
         "ru" : {
@@ -51924,7 +51924,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Une invitation au carnet partagé est un partage iCloud. Seule la personne nommée dans la fenêtre système « Partager » peut l'ouvrir : personne ne peut entrer avec une adresse transférée."
+            "value" : "Une invitation au carnet partagé est un partage iCloud. Seule la personne nommée dans la fenêtre système « Partager » peut l'ouvrir : personne ne peut entrer avec une adresse transférée."
           }
         },
         "ru" : {
@@ -52275,7 +52275,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L'app Raccourcis est préinstallée sur le téléphone. En bas, l'onglet « Automatisation », puis le bouton « + »."
+            "value" : "L'app Raccourcis est préinstallée sur le téléphone. En bas, l'onglet « Automatisation », puis le bouton « + »."
           }
         },
         "ru" : {
@@ -52365,7 +52365,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L'app mesure le délai entre « il l'a fait » et le marqueur. Moins d'une demi-seconde, c'est « pile au moment » ; après une seconde, le chien a déjà fait autre chose."
+            "value" : "L'app mesure le délai entre « il l'a fait » et le marqueur. Moins d'une demi-seconde, c'est « pile au moment » ; après une seconde, le chien a déjà fait autre chose."
           }
         },
         "ru" : {
@@ -52425,7 +52425,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L'application n'est pas destinée à être utilisée seule par des enfants de moins de 13 ans. Le rôle « assistant » est prévu pour un enfant qui utilise le téléphone d'un adulte."
+            "value" : "L'application n'est pas destinée à être utilisée seule par des enfants de moins de 13 ans. Le rôle « assistant » est prévu pour un enfant qui utilise le téléphone d'un adulte."
           }
         },
         "ru" : {
@@ -52527,7 +52527,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L'app ne connaît pas encore ses intervalles. Sors-le si tu hésites : il n'y a des entrées que sur %@, c'est peu."
+            "value" : "L'app ne connaît pas encore ses intervalles. Sors-le si tu hésites : il n'y a des entrées que sur %@, c'est peu."
           }
         },
         "ru" : {
@@ -52557,7 +52557,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L'app montre le conflit mais ne déplace rien elle-même : ça se règle avec le vétérinaire."
+            "value" : "L'app montre le conflit mais ne déplace rien elle-même : ça se règle avec le vétérinaire."
           }
         },
         "ru" : {
@@ -52767,7 +52767,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Signes distinctifs : %@"
+            "value" : "Signes distinctifs : %@"
           }
         },
         "ru" : {
@@ -53280,7 +53280,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Une promenade ou une séance est restée ouverte — le bouton « terminer » n'est pas là où on le cherche."
+            "value" : "Une promenade ou une séance est restée ouverte — le bouton « terminer » n'est pas là où on le cherche."
           }
         },
         "ru" : {
@@ -53640,7 +53640,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Une dose sautée est aussi une entrée : c'est justement ce que le vétérinaire demandera."
+            "value" : "Une dose sautée est aussi une entrée : c'est justement ce que le vétérinaire demandera."
           }
         },
         "ru" : {
@@ -53766,7 +53766,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sautées volontairement : %@. Ce sont des entrées, pas des trous — on voit qui et quand."
+            "value" : "Sautées volontairement : %@. Ce sont des entrées, pas des trous — on voit qui et quand."
           }
         },
         "ru" : {
@@ -53794,7 +53794,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sautées volontairement : %lld. Ce sont des entrées, pas des trous — on voit qui et quand."
+            "value" : "Sautées volontairement : %lld. Ce sont des entrées, pas des trous — on voit qui et quand."
           }
         },
         "uk" : {
@@ -53914,7 +53914,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "en retard : %@"
+            "value" : "en retard : %@"
           }
         },
         "ru" : {
@@ -53942,7 +53942,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "en retard : %lld"
+            "value" : "en retard : %lld"
           }
         },
         "uk" : {
@@ -54368,7 +54368,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cinq lignes qu'il lira en une minute : repas, dose, promenades, interdits, escalade."
+            "value" : "Cinq lignes qu'il lira en une minute : repas, dose, promenades, interdits, escalade."
           }
         },
         "ru" : {
@@ -54824,7 +54824,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Impossible de cocher avant l'heure. C'est voulu : %@ est une condition de la prescription."
+            "value" : "Impossible de cocher avant l'heure. C'est voulu : %@ est une condition de la prescription."
           }
         },
         "ru" : {
@@ -55400,7 +55400,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Des aboiements ou une agitation à la porte apparus d'un coup : ce n'est peut-être pas du comportement, mais de l'inconfort."
+            "value" : "Des aboiements ou une agitation à la porte apparus d'un coup : ce n'est peut-être pas du comportement, mais de l'inconfort."
           }
         },
         "ru" : {
@@ -55616,7 +55616,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Un intervalle régulier entre les repas compte plus que l'heure exacte : le chien s'habitue à l'écart, pas au chiffre sur l'horloge. La nuit compte comme le jour."
+            "value" : "Un intervalle régulier entre les repas compte plus que l'heure exacte : le chien s'habitue à l'écart, pas au chiffre sur l'horloge. La nuit compte comme le jour."
           }
         },
         "ru" : {
@@ -56188,7 +56188,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Avec ton rôle, tu peux ajouter tes entrées, mais pas modifier ce qui est déjà noté. Les droits sont donnés par le propriétaire dans « Famille »."
+            "value" : "Avec ton rôle, tu peux ajouter tes entrées, mais pas modifier ce qui est déjà noté. Les droits sont donnés par le propriétaire dans « Famille »."
           }
         },
         "ru" : {
@@ -56230,7 +56230,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Les entrées elles-mêmes — incidents, selles, doses — resteront : seul leur regroupement en épisode disparaît. Si les incidents reviennent, l'app rouvrira un épisode."
+            "value" : "Les entrées elles-mêmes — incidents, selles, doses — resteront : seul leur regroupement en épisode disparaît. Si les incidents reviennent, l'app rouvrira un épisode."
           }
         },
         "ru" : {
@@ -56260,7 +56260,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Les entrées elles-mêmes resteront. Seule la marque indiquant que le chien est resté avec toi toute la journée disparaîtra — et les observations « après de longues journées » cesseront de compter ce jour-là."
+            "value" : "Les entrées elles-mêmes resteront. Seule la marque indiquant que le chien est resté avec toi toute la journée disparaîtra — et les observations « après de longues journées » cesseront de compter ce jour-là."
           }
         },
         "ru" : {
@@ -56290,7 +56290,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pour un chien qui a des soins réguliers, le plus utile n'est pas « au panier », mais donner la patte calmement, rester debout pendant l'examen et entrer de lui-même dans la caisse de transport."
+            "value" : "Pour un chien qui a des soins réguliers, le plus utile n'est pas « au panier », mais donner la patte calmement, rester debout pendant l'examen et entrer de lui-même dans la caisse de transport."
           }
         },
         "ru" : {
@@ -56988,7 +56988,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Session moyenne : %@"
+            "value" : "Session moyenne : %@"
           }
         },
         "ru" : {
@@ -57560,7 +57560,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Pour l'instant : %@. « Ça marche », c'est 4 fois sur 5."
+            "value" : "Pour l'instant : %@. « Ça marche », c'est 4 fois sur 5."
           }
         },
         "uk" : {
@@ -57710,7 +57710,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Famille : noms, rôles et droits accordés"
+            "value" : "Famille : noms, rôles et droits accordés"
           }
         },
         "ru" : {
@@ -58376,7 +58376,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trace d'une séance. La séance elle-même est dans « Séances et étapes » — c'est là qu'on peut la retirer."
+            "value" : "Trace d'une séance. La séance elle-même est dans « Séances et étapes » — c'est là qu'on peut la retirer."
           }
         },
         "ru" : {
@@ -58466,7 +58466,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La prochaine reste à l'heure prévue : une prise par jour."
+            "value" : "La prochaine reste à l'heure prévue : une prise par jour."
           }
         },
         "ru" : {
@@ -58696,7 +58696,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prochaine étape : une seule"
+            "value" : "Prochaine étape : une seule"
           }
         },
         "ru" : {
@@ -58798,7 +58798,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "le mot « oui »"
+            "value" : "le mot « oui »"
           }
         },
         "ru" : {
@@ -59122,7 +59122,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Décocher : %@"
+            "value" : "Décocher : %@"
           }
         },
         "ru" : {
@@ -59284,7 +59284,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le chien peut partir à tout moment. S'il part, c'est que la tâche était trop difficile, et non que le chien est mauvais. Ne le retiens jamais de force : une seule fois suffit à perdre des semaines de travail."
+            "value" : "Le chien peut partir à tout moment. S'il part, c'est que la tâche était trop difficile, et non que le chien est mauvais. Ne le retiens jamais de force : une seule fois suffit à perdre des semaines de travail."
           }
         },
         "ru" : {
@@ -59314,7 +59314,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Le chien peut partir à tout moment. S'il part, c'est que l'exercice était trop dur — pas que le chien est mauvais. C'est une tentative aussi, et elle vaut la peine d'être notée : elle montre qu'il faut simplifier l'étape."
+            "value" : "Le chien peut partir à tout moment. S'il part, c'est que l'exercice était trop dur — pas que le chien est mauvais. C'est une tentative aussi, et elle vaut la peine d'être notée : elle montre qu'il faut simplifier l'étape."
           }
         },
         "ru" : {
@@ -59530,7 +59530,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chien : nom, poids, race, portion, rythme des repas, ton marqueur"
+            "value" : "Chien : nom, poids, race, portion, rythme des repas, ton marqueur"
           }
         },
         "ru" : {
@@ -59752,7 +59752,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Elle assemble le compte rendu pour le vétérinaire à partir de ce qui est déjà noté, sans aucun champ « à remplir pour le vétérinaire »."
+            "value" : "Elle assemble le compte rendu pour le vétérinaire à partir de ce qui est déjà noté, sans aucun champ « à remplir pour le vétérinaire »."
           }
         },
         "ru" : {
@@ -60316,7 +60316,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La liste est courte exprès : une longue, personne ne la lit jusqu'au bout. Si ce n'est pas dedans mais que le chien va mal, appelle quand même."
+            "value" : "La liste est courte exprès : une longue, personne ne la lit jusqu'au bout. Si ce n'est pas dedans mais que le chien va mal, appelle quand même."
           }
         },
         "ru" : {
@@ -60434,7 +60434,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "On ne demande pas à chaque fois : seulement quand le signal change, ou une fois toutes les quelques sorties."
+            "value" : "On ne demande pas à chaque fois : seulement quand le signal change, ou une fois toutes les quelques sorties."
           }
         },
         "ru" : {
@@ -61752,7 +61752,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lignes en échec : "
+            "value" : "Lignes en échec : "
           }
         },
         "ru" : {
@@ -62232,7 +62232,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le schéma ne se construit pas : %@"
+            "value" : "Le schéma ne se construit pas : %@"
           }
         },
         "ru" : {
@@ -62424,7 +62424,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le compte suit les prises cochées : moins un à chaque fois. Rien d'autre à tenir."
+            "value" : "Le compte suit les prises cochées : moins un à chaque fois. Rien d'autre à tenir."
           }
         },
         "ru" : {
@@ -62934,7 +62934,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Voici l'écran tel que le voit une personne avec le rôle « assistant »."
+            "value" : "Voici l'écran tel que le voit une personne avec le rôle « assistant »."
           }
         },
         "ru" : {
@@ -63240,7 +63240,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le téléphone te demandera d'approcher l'étiquette et de lui donner un nom — par exemple « porte »."
+            "value" : "Le téléphone te demandera d'approcher l'étiquette et de lui donner un nom — par exemple « porte »."
           }
         },
         "ru" : {
@@ -63498,7 +63498,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La même chose que l'introduction, mais en entier. Il n'y a pas d'aide séparée : les explications sont là où la question se pose."
+            "value" : "La même chose que l'introduction, mais en entier. Il n'y a pas d'aide séparée : les explications sont là où la question se pose."
           }
         },
         "ru" : {
@@ -63738,7 +63738,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Seulement les noms des actions : « noté · repas · fait ». Ni grammes, ni notes, ni nom du chien, ni prénoms — le registre ne permet de reconstituer aucune entrée du journal."
+            "value" : "Seulement les noms des actions : « noté · repas · fait ». Ni grammes, ni notes, ni nom du chien, ni prénoms — le registre ne permet de reconstituer aucune entrée du journal."
           }
         },
         "ru" : {
@@ -63768,7 +63768,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trois choses seulement : la dose à l'heure, la fenêtre à jeun et l'escalade en cas de dose sautée."
+            "value" : "Trois choses seulement : la dose à l'heure, la fenêtre à jeun et l'escalade en cas de dose sautée."
           }
         },
         "ru" : {
@@ -63828,7 +63828,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le même texte se trouve dans « Réglages → Comment ça marche ». Pas d'aide à part : les explications sont là où la question se pose."
+            "value" : "Le même texte se trouve dans « Réglages → Comment ça marche ». Pas d'aide à part : les explications sont là où la question se pose."
           }
         },
         "ru" : {
@@ -63870,7 +63870,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pas besoin d'être précis : une date approximative suffit à l'app pour calculer la prochaine échéance. Tu peux corriger à tout moment."
+            "value" : "Pas besoin d'être précis : une date approximative suffit à l'app pour calculer la prochaine échéance. Tu peux corriger à tout moment."
           }
         },
         "ru" : {
@@ -63930,7 +63930,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pas besoin d'être précis : le chiffre sert à calculer la nourriture et à ne pas rappeler l'eau toutes les dix minutes. Si tu rentres plus tard, le mode continue simplement."
+            "value" : "Pas besoin d'être précis : le chiffre sert à calculer la nourriture et à ne pas rappeler l'eau toutes les dix minutes. Si tu rentres plus tard, le mode continue simplement."
           }
         },
         "ru" : {
@@ -64146,7 +64146,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trois adresses, pas une carte avec cent points : il faut une seule réponse à « où aller maintenant »."
+            "value" : "Trois adresses, pas une carte avec cent points : il faut une seule réponse à « où aller maintenant »."
           }
         },
         "ru" : {
@@ -64236,7 +64236,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L'interrupteur « Chien sous traitement » dans le profil de %@ réactivera le traitement."
+            "value" : "L'interrupteur « Chien sous traitement » dans le profil de %@ réactivera le traitement."
           }
         },
         "ru" : {
@@ -64296,7 +64296,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tu peux arrêter d'utiliser l'app à tout moment. Nous pouvons cesser de maintenir une version en le signalant dans la section « Nouveautés »."
+            "value" : "Tu peux arrêter d'utiliser l'app à tout moment. Nous pouvons cesser de maintenir une version en le signalant dans la section « Nouveautés »."
           }
         },
         "ru" : {
@@ -64416,7 +64416,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "On ne peut pas retirer au propriétaire la gestion de la famille : sinon, plus personne ne pourrait attribuer les droits."
+            "value" : "On ne peut pas retirer au propriétaire la gestion de la famille : sinon, plus personne ne pourrait attribuer les droits."
           }
         },
         "ru" : {
@@ -64446,7 +64446,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chaque chien a les siens : un schipperke ne se lave pas souvent, mais les dents, c'est tous les chiens et tous les jours. Choisis dans la liste ce que tu fais — ou ajoute le tien."
+            "value" : "Chaque chien a les siens : un schipperke ne se lave pas souvent, mais les dents, c'est tous les chiens et tous les jours. Choisis dans la liste ce que tu fais — ou ajoute le tien."
           }
         },
         "ru" : {
@@ -65428,7 +65428,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Supprimer « %@ » ?"
+            "value" : "Supprimer « %@ » ?"
           }
         },
         "ru" : {
@@ -66116,7 +66116,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Supprimer le traitement « %@ » ?"
+            "value" : "Supprimer le traitement « %@ » ?"
           }
         },
         "ru" : {
@@ -66960,7 +66960,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "soins réparés : %@"
+            "value" : "soins réparés : %@"
           }
         },
         "ru" : {
@@ -66990,7 +66990,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "un membre s'ajoute dans « Famille »"
+            "value" : "un membre s'ajoute dans « Famille »"
           }
         },
         "ru" : {
@@ -67198,7 +67198,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "le fichier du carnet existe mais ne s'ouvre pas — « Le journal ne s'est pas ouvert »"
+            "value" : "le fichier du carnet existe mais ne s'ouvre pas — « Le journal ne s'est pas ouvert »"
           }
         },
         "ru" : {
@@ -67258,7 +67258,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tu peux mettre le fichier dans « Fichiers », te l'envoyer par messagerie ou l'enregistrer sur iCloud Drive. Dedans, c'est du simple JSON — lisible à l'œil nu."
+            "value" : "Tu peux mettre le fichier dans « Fichiers », te l'envoyer par messagerie ou l'enregistrer sur iCloud Drive. Dedans, c'est du simple JSON — lisible à l'œil nu."
           }
         },
         "ru" : {
@@ -67346,7 +67346,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Fichier créé le %@, dedans : %@."
+            "value" : "Fichier créé le %@, dedans : %@."
           }
         },
         "ru" : {
@@ -67518,7 +67518,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le drapeau « n'a pas pris la friandise » arrête la séance et retire la note. Refuser la nourriture veut dire qu'apprendre est impossible pour l'instant."
+            "value" : "Le drapeau « n'a pas pris la friandise » arrête la séance et retire la note. Refuser la nourriture veut dire qu'apprendre est impossible pour l'instant."
           }
         },
         "ru" : {
@@ -67876,7 +67876,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La maîtresse n'a pas encore écrit d'instructions. Demande-lui — ou note comme ça vient : l'app te guidera d'après la routine du jour."
+            "value" : "La maîtresse n'a pas encore écrit d'instructions. Demande-lui — ou note comme ça vient : l'app te guidera d'après la routine du jour."
           }
         },
         "ru" : {
@@ -67935,7 +67935,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "stockage : iCloud"
+            "value" : "stockage : iCloud"
           }
         },
         "ru" : {
@@ -67965,7 +67965,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "stockage : en mémoire, les entrées ne seront pas conservées"
+            "value" : "stockage : en mémoire, les entrées ne seront pas conservées"
           }
         },
         "ru" : {
@@ -67995,7 +67995,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "stockage : local"
+            "value" : "stockage : local"
           }
         },
         "ru" : {
@@ -69001,7 +69001,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Puce : %@"
+            "value" : "Puce : %@"
           }
         },
         "ru" : {
@@ -69073,7 +69073,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "brosser tous les jours : la plaque durcit en 24 h"
+            "value" : "brosser tous les jours : la plaque durcit en 24 h"
           }
         },
         "ru" : {
@@ -70771,7 +70771,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Pour qu'il note depuis son téléphone, active le carnet partagé et envoie l'invitation — « inviter au carnet » dans la liste de la famille."
+            "value" : "Pour qu'il note depuis son téléphone, active le carnet partagé et envoie l'invitation — « inviter au carnet » dans la liste de la famille."
           }
         },
         "ru" : {
@@ -70864,7 +70864,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Une étape est acquise quand ça a réussi 4 fois sur 5 dans deux séances de suite. Alors on change une condition : le lieu, la personne ou la distance — une seule."
+            "value" : "Une étape est acquise quand ça a réussi 4 fois sur 5 dans deux séances de suite. Alors on change une condition : le lieu, la personne ou la distance — une seule."
           }
         },
         "ru" : {
@@ -70894,7 +70894,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Étape acquise. Change une condition : le lieu, la personne ou la distance — mais une seule à la fois."
+            "value" : "Étape acquise. Change une condition : le lieu, la personne ou la distance — mais une seule à la fois."
           }
         },
         "ru" : {
@@ -71128,7 +71128,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Un chiot a besoin de plus de repas par jour et de moins d'effort à la fois. Le nombre de repas se règle dans « Routine »."
+            "value" : "Un chiot a besoin de plus de repas par jour et de moins d'effort à la fois. Le nombre de repas se règle dans « Routine »."
           }
         },
         "ru" : {
@@ -71464,7 +71464,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ces numéros apparaîtront sur l'écran « En cas de problème »"
+            "value" : "ces numéros apparaîtront sur l'écran « En cas de problème »"
           }
         },
         "ru" : {
@@ -71524,7 +71524,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "C'est une question pour le vétérinaire, pas pour l'app : on ne pique pas à jeun, et sauter une prescription est une décision du vétérinaire."
+            "value" : "C'est une question pour le vétérinaire, pas pour l'app : on ne pique pas à jeun, et sauter une prescription est une décision du vétérinaire."
           }
         },
         "ru" : {
@@ -71853,7 +71853,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rien n'est perdu : les entrées sont là, mais l'app n'arrive pas à les atteindre pour l'instant."
+            "value" : "Rien n'est perdu : les entrées sont là, mais l'app n'arrive pas à les atteindre pour l'instant."
           }
         },
         "ru" : {
@@ -71943,7 +71943,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ce sont des repères tirés de ses propres entrées, pas un horaire. S'il demande plus tôt, sors-le plus tôt : le verdict et ces heures ne contredisent jamais l'humain."
+            "value" : "Ce sont des repères tirés de ses propres entrées, pas un horaire. S'il demande plus tôt, sors-le plus tôt : le verdict et ces heures ne contredisent jamais l'humain."
           }
         },
         "ru" : {
@@ -72099,7 +72099,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "C'est une coïncidence, pas une cause : l'app ne pose pas de diagnostic. Mais montrer cette ligne au vétérinaire est plus utile que dire « elle est parfois apathique »."
+            "value" : "C'est une coïncidence, pas une cause : l'app ne pose pas de diagnostic. Mais montrer cette ligne au vétérinaire est plus utile que dire « elle est parfois apathique »."
           }
         },
         "ru" : {
@@ -72231,7 +72231,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ça suffit pour un couple : le traitement, la fenêtre à jeun et la protection contre la double dose. On ne fait pas payer la sécurité du chien."
+            "value" : "Ça suffit pour un couple : le traitement, la fenêtre à jeun et la protection contre la double dose. On ne fait pas payer la sécurité du chien."
           }
         },
         "ru" : {
@@ -72399,7 +72399,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La langue s'appliquera au prochain lancement : iOS ne sait pas redessiner toute l'application à la volée, et on ne va pas faire semblant."
+            "value" : "La langue s'appliquera au prochain lancement : iOS ne sait pas redessiner toute l'application à la volée, et on ne va pas faire semblant."
           }
         },
         "ru" : {
@@ -72459,7 +72459,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Peu de langues, et c'est voulu : dans une app sur la santé d'un chien, une traduction automatique vaut moins qu'une langue faite entièrement."
+            "value" : "Peu de langues, et c'est voulu : dans une app sur la santé d'un chien, une traduction automatique vaut moins qu'une langue faite entièrement."
           }
         },
         "ru" : {
@@ -73068,7 +73068,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Jour passé · ajout via « + »"
+            "value" : "Jour passé · ajout via « + »"
           }
         },
         "kk" : {
@@ -73271,7 +73271,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Pas une norme, un miroir : comparez avec lui il y a un mois — c'était"
+            "value" : "Pas une norme, un miroir : comparez avec lui il y a un mois — c'était"
           }
         },
         "kk" : {
@@ -73329,7 +73329,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Après des écarts de plus de 7 h : selles molles — 2 fois, vomi — 1. Montrez au véto."
+            "value" : "Après des écarts de plus de 7 h : selles molles — 2 fois, vomi — 1. Montrez au véto."
           }
         },
         "kk" : {
@@ -73677,7 +73677,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Forme du point = heure du prélèvement : ● heures après la dose connues · ✕ non notées · ■ pas de traitement ce jour-là."
+            "value" : "Forme du point = heure du prélèvement : ● heures après la dose connues · ✕ non notées · ■ pas de traitement ce jour-là."
           }
         },
         "kk" : {
@@ -74170,7 +74170,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Noté : pipi à"
+            "value" : "Noté : pipi à"
           }
         },
         "kk" : {
@@ -74373,7 +74373,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Gratuit pour toujours : fenêtre à jeun, anti-double dose, rapport véto."
+            "value" : "Gratuit pour toujours : fenêtre à jeun, anti-double dose, rapport véto."
           }
         },
         "kk" : {
@@ -74431,7 +74431,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "pour vous, Maman et Anya : sorties, repas, selles, doses, analyses, visites, ordonnances, soins, éducation, voyages, documents. Vous pouvez d'abord exporter le carnet."
+            "value" : "pour vous, Maman et Anya : sorties, repas, selles, doses, analyses, visites, ordonnances, soins, éducation, voyages, documents. Vous pouvez d'abord exporter le carnet."
           }
         },
         "kk" : {
@@ -75852,7 +75852,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Un accident est un signal, pas une faute. Que s'est-il passé une heure avant ?"
+            "value" : "Un accident est un signal, pas une faute. Que s'est-il passé une heure avant ?"
           }
         },
         "kk" : {
@@ -76200,7 +76200,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Question suivante — à quelle distance : tout près · ≈ 5 m · loin."
+            "value" : "Question suivante — à quelle distance : tout près · ≈ 5 m · loin."
           }
         },
         "kk" : {
@@ -77012,7 +77012,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "étape « Attendre à la porte »"
+            "value" : "étape « Attendre à la porte »"
           }
         },
         "kk" : {
@@ -78404,7 +78404,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "je demanderai « comment va-t-il ? » dans une heure"
+            "value" : "je demanderai « comment va-t-il ? » dans une heure"
           }
         },
         "kk" : {
@@ -78926,7 +78926,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Pas notée ?"
+            "value" : "Pas notée ?"
           }
         },
         "kk" : {
@@ -79448,7 +79448,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Combien de croquettes donner ?"
+            "value" : "Combien de croquettes donner ?"
           }
         },
         "kk" : {
@@ -79506,7 +79506,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "C'est vous qui donnez le cachet ?"
+            "value" : "C'est vous qui donnez le cachet ?"
           }
         },
         "kk" : {
@@ -79535,7 +79535,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Il a vomi — que faire ?"
+            "value" : "Il a vomi — que faire ?"
           }
         },
         "kk" : {
@@ -79796,7 +79796,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "« Il tirait vers les chats »"
+            "value" : "« Il tirait vers les chats »"
           }
         },
         "kk" : {
@@ -80057,7 +80057,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "ce n'est pas « "
+            "value" : "ce n'est pas « "
           }
         },
         "kk" : {
@@ -80521,7 +80521,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "cette semaine : dehors 7 · alèse 3"
+            "value" : "cette semaine : dehors 7 · alèse 3"
           }
         },
         "kk" : {
@@ -80608,7 +80608,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Qui d'autre le nourrit ?"
+            "value" : "Qui d'autre le nourrit ?"
           }
         },
         "kk" : {
@@ -80782,7 +80782,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Deux notes « "
+            "value" : "Deux notes « "
           }
         },
         "kk" : {
@@ -81159,7 +81159,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Éducation · « Attendre à la porte »"
+            "value" : "Éducation · « Attendre à la porte »"
           }
         },
         "kk" : {
@@ -81188,7 +81188,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "3 min · marqueur « oui »"
+            "value" : "3 min · marqueur « oui »"
           }
         },
         "kk" : {
@@ -82609,7 +82609,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Traitement clos · « Santé » reste"
+            "value" : "Traitement clos · « Santé » reste"
           }
         },
         "kk" : {
@@ -83537,7 +83537,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "prochain : griffes dans 5 j"
+            "value" : "prochain : griffes dans 5 j"
           }
         },
         "kk" : {
@@ -83566,7 +83566,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "vermifuge !"
+            "value" : "vermifuge !"
           }
         },
         "kk" : {
@@ -83624,7 +83624,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "marqueur « oui » · 3 min"
+            "value" : "marqueur « oui » · 3 min"
           }
         },
         "kk" : {
@@ -84871,7 +84871,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "carte « une étape suivante »"
+            "value" : "carte « une étape suivante »"
           }
         },
         "kk" : {
@@ -86698,7 +86698,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Ajouté : 1 sac de 3 kg"
+            "value" : "Ajouté : 1 sac de 3 kg"
           }
         },
         "kk" : {
@@ -86959,7 +86959,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Dans la fourchette du véto : 7,8–8,6."
+            "value" : "Dans la fourchette du véto : 7,8–8,6."
           }
         },
         "kk" : {
@@ -87336,7 +87336,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "« oui »"
+            "value" : "« oui »"
           }
         },
         "kk" : {
@@ -87539,7 +87539,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "essais aujourd'hui : 2"
+            "value" : "essais aujourd'hui : 2"
           }
         },
         "kk" : {
@@ -87655,7 +87655,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "essais : 0"
+            "value" : "essais : 0"
           }
         },
         "kk" : {
@@ -87713,7 +87713,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "essais : 1"
+            "value" : "essais : 1"
           }
         },
         "kk" : {
@@ -89076,7 +89076,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "sans « Envie de sortir ? »"
+            "value" : "sans « Envie de sortir ? »"
           }
         },
         "kk" : {
@@ -89801,7 +89801,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "minutes · « Pipi » · « Maison »"
+            "value" : "minutes · « Pipi » · « Maison »"
           }
         },
         "kk" : {
@@ -89859,7 +89859,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "10 min avant · « Donné »"
+            "value" : "10 min avant · « Donné »"
           }
         },
         "kk" : {
@@ -89917,7 +89917,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "jusqu'à « on peut nourrir »"
+            "value" : "jusqu'à « on peut nourrir »"
           }
         },
         "kk" : {
@@ -90033,7 +90033,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "+ « suivant » et « Promener »"
+            "value" : "+ « suivant » et « Promener »"
           }
         },
         "kk" : {
@@ -90149,7 +90149,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "heure et « suivant »"
+            "value" : "heure et « suivant »"
           }
         },
         "kk" : {
@@ -90787,7 +90787,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "3 · toutes marquées « sautée »"
+            "value" : "3 · toutes marquées « sautée »"
           }
         },
         "kk" : {
@@ -90874,7 +90874,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Oui !"
+            "value" : "Oui !"
           }
         },
         "kk" : {
@@ -91628,7 +91628,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Togo compare l'heure avec les jours passés. Les 4 premiers jours, la réponse est « pas clair »."
+            "value" : "Togo compare l'heure avec les jours passés. Les 4 premiers jours, la réponse est « pas clair »."
           }
         },
         "kk" : {
@@ -92092,7 +92092,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "approchez le téléphone : la sortie commence ou se termine"
+            "value" : "approchez le téléphone : la sortie commence ou se termine"
           }
         },
         "kk" : {
@@ -93223,7 +93223,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "« Cycle » apparaîtra"
+            "value" : "« Cycle » apparaîtra"
           }
         },
         "kk" : {
@@ -93629,7 +93629,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Photo « "
+            "value" : "Photo « "
           }
         },
         "kk" : {
@@ -93658,7 +93658,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : " » ajoutée"
+            "value" : " » ajoutée"
           }
         },
         "kk" : {
@@ -94731,7 +94731,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "« Envie de sortir ? » → « Je le sors »"
+            "value" : "« Envie de sortir ? » → « Je le sors »"
           }
         },
         "kk" : {
@@ -94789,7 +94789,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "bouton « Promener »"
+            "value" : "bouton « Promener »"
           }
         },
         "kk" : {
@@ -95717,7 +95717,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "marqueur « oui »"
+            "value" : "marqueur « oui »"
           }
         },
         "kk" : {
@@ -95775,7 +95775,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Séance · marqueur « Oui ! »"
+            "value" : "Séance · marqueur « Oui ! »"
           }
         },
         "kk" : {
@@ -97196,7 +97196,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "un seul message : « on peut nourrir »"
+            "value" : "un seul message : « on peut nourrir »"
           }
         },
         "kk" : {
@@ -98008,7 +98008,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Pas encore de notes. Touchez « Promener » en partant."
+            "value" : "Pas encore de notes. Touchez « Promener » en partant."
           }
         },
         "kk" : {
@@ -98820,7 +98820,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "ou « non noté »"
+            "value" : "ou « non noté »"
           }
         },
         "kk" : {
