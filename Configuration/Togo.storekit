@@ -11,7 +11,24 @@
   "subscriptionGroups" : [
     {
       "id" : "21500001",
-      "localizations" : [],
+      "localizations" : [
+        {
+          "locale" : "ru_RU",
+          "name" : "Togo Pro"
+        },
+        {
+          "locale" : "en_US",
+          "name" : "Togo Pro"
+        },
+        {
+          "locale" : "fr_FR",
+          "name" : "Togo Pro"
+        },
+        {
+          "locale" : "uk_UA",
+          "name" : "Togo Pro"
+        }
+      ],
       "name" : "Togo Pro",
       "subscriptions" : [
         {
@@ -28,9 +45,24 @@
           },
           "localizations" : [
             {
-              "description" : "Матрица переноса навыка, вторая и следующие собаки, семья больше двух человек.",
+              "description" : "Вторая собака, семья, матрица навыка",
               "displayName" : "Togo Pro · месяц",
               "locale" : "ru_RU"
+            },
+            {
+              "description" : "Second dog, family, generalization matrix",
+              "displayName" : "Togo Pro · monthly",
+              "locale" : "en_US"
+            },
+            {
+              "description" : "Deuxième chien, famille, matrice de transfert",
+              "displayName" : "Togo Pro · mensuel",
+              "locale" : "fr_FR"
+            },
+            {
+              "description" : "Друга собака, сім'я, матриця перенесення",
+              "displayName" : "Togo Pro · місяць",
+              "locale" : "uk_UA"
             }
           ],
           "productID" : "app.togo.diary.pro.monthly",
@@ -54,9 +86,24 @@
           },
           "localizations" : [
             {
-              "description" : "То же самое, оплата раз в год.",
+              "description" : "Вторая собака, семья, матрица навыка",
               "displayName" : "Togo Pro · год",
               "locale" : "ru_RU"
+            },
+            {
+              "description" : "Second dog, family, generalization matrix",
+              "displayName" : "Togo Pro · yearly",
+              "locale" : "en_US"
+            },
+            {
+              "description" : "Deuxième chien, famille, matrice de transfert",
+              "displayName" : "Togo Pro · annuel",
+              "locale" : "fr_FR"
+            },
+            {
+              "description" : "Друга собака, сім'я, матриця перенесення",
+              "displayName" : "Togo Pro · рік",
+              "locale" : "uk_UA"
             }
           ],
           "productID" : "app.togo.diary.pro.yearly",
