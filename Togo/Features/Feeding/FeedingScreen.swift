@@ -226,7 +226,19 @@ struct FeedingScreen: View {
                         .wraps()
                 }
 
-                столбикиДвухНедель
+                // Один столбик — это не «две недели».
+                //
+                // **Правка по кадру приёмки 23.10.2026.** На засеянных
+                // данных `report.days` отдал ОДИН день, `BarMark`
+                // с `unit: .day` растянул его во всю ширину карточки,
+                // и блок, обещающий две недели, показывал одну широкую
+                // плашку. Прежняя вёрстка делала ровно то же — просто
+                // под заголовком «Две недели», и выглядело это графиком
+                // без данных, а не данными без графика.
+                if report.days.count > 1 {
+                    столбикиДвухНедель
+                    TGExplainer(text: "Дни без записей в среднее не попадают: пустой день — это «дневник не вели», а не «не ел».")
+                }
 
                 TGDivider()
 
@@ -353,23 +365,31 @@ struct FeedingScreen: View {
 
                 режимСтрока(symbol: "clock",
                             title: часыСтрокой(dog.mealTimes),
-                            subtitleKey: "план",
+                            subtitle: "план",
                             value: report.observedMealTimes.isEmpty
                                 ? Self.нечегоСказать
                                 : часыСтрокой(report.observedMealTimes))
 
                 TGDivider()
 
+                // **Значения у этой строки нет, и это правка по кадру
+                // приёмки 23.10.2026.** Первая редакция ставила сюда
+                // дневной интервал — и на двух кормлениях он совпал
+                // с ночным перерывом до цифры: строка читалась
+                // «Ночь 12 ч … 12 ч», два числа разных величин под одним
+                // видом. Это наш класс «две величины одного имени»,
+                // и лечится он не разными цветами, а осью, названной
+                // В ТОЙ ЖЕ СТРОКЕ. На кадре 13 у этой строки значения
+                // тоже нет.
                 режимСтрока(symbol: "moon.zzz",
                             title: String(localized: "Ночь \(Fmt.duration(Double(план.nightGap) * 60))"),
-                            subtitleKey: план.hasLongNight
-                                ? "утром возможна рвота желчью"
-                                : "ночной перерыв",
+                            subtitle: .готовая(план.hasLongNight
+                                ? String(localized: "утром возможна рвота желчью")
+                                : дневнойИнтервал(план)),
                             subtitleTone: план.hasLongNight
                                 ? Token.Status.stockLowText
                                 : Token.Ink.secondary,
-                            value: план.dayInterval.map { Fmt.duration(Double($0) * 60) }
-                                ?? Self.нечегоСказать)
+                            value: "")
 
                 if report.observedMealTimes.isEmpty {
                     TGExplainer(text: "Записей о еде пока нет. Отметь пару кормлений — и приложение увидит его режим само.")
@@ -390,6 +410,18 @@ struct FeedingScreen: View {
                 TGExplainer(text: "Ровный интервал между кормлениями важнее точного часа: собака привыкает к промежутку, а не к цифре на часах. Ночь считается так же, как день.")
             }
         }
+    }
+
+    /// «днём между едой 12 ч» — число вместе с осью, в одной строке.
+    ///
+    /// Ось называется рядом с числом нарочно: у нас записано, чем стоит
+    /// её отрыв — две величины одного имени прочлись как одна и дали
+    /// «разницу в семь раз», которой нет.
+    private func дневнойИнтервал(_ план: MealSchedule.Plan) -> String {
+        guard let интервал = план.dayInterval else {
+            return String(localized: "ночной перерыв")
+        }
+        return String(localized: "днём между едой \(Fmt.duration(Double(интервал) * 60))")
     }
 
     /// «8:30 и 19:30» — часы человеческим перечислением, а не массивом.
@@ -493,7 +525,7 @@ struct FeedingScreen: View {
     /// быть не должно — общий компонент назван в отчёте.
     private func режимСтрока(symbol: String,
                              title: String,
-                             subtitleKey: LocalizedStringKey,
+                             subtitle: LocalizedStringKey,
                              subtitleTone: Color = Token.Ink.secondary,
                              value: String) -> some View {
         HStack(spacing: Token.Space.s12) {
@@ -505,13 +537,15 @@ struct FeedingScreen: View {
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: Token.Space.s2) {
                 Text(verbatim: title).textStyle(AppFont.bodyEmphasis).wraps()
-                Text(subtitleKey).textStyle(AppFont.caption.color(subtitleTone)).wraps()
+                Text(subtitle).textStyle(AppFont.caption.color(subtitleTone)).wraps()
             }
             Spacer(minLength: Token.Space.s8)
-            Text(verbatim: value)
-                .textStyle(AppFont.numeric(15))
-                .multilineTextAlignment(.trailing)
-                .wraps()
+            if !value.isEmpty {
+                Text(verbatim: value)
+                    .textStyle(AppFont.numeric(15))
+                    .multilineTextAlignment(.trailing)
+                    .wraps()
+            }
         }
         .frame(minHeight: Token.Size.rowMin)
         .accessibilityElement(children: .combine)
