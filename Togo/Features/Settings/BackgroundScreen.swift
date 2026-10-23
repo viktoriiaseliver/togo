@@ -327,15 +327,46 @@ nonisolated enum ФонФото {
     static let maxSide: CGFloat = 1000
     static let quality: CGFloat = 0.8
 
+    /// **Меряет и рисует в ПИКСЕЛЯХ, а не в точках.** Обе половины этого
+    /// — починка, а не осторожность; замер 23.10.2026, прогон поймал:
+    ///
+    /// ```
+    /// просили ужать до 1000   получили 3000   ровно ×3, масштаб экрана
+    /// ```
+    ///
+    /// `UIImage.size` — **точки**, а `UIGraphicsImageRenderer(size:)` без
+    /// формата рисует в масштабе устройства (на iPhone 3×). Прежняя
+    /// редакция складывала обе ошибки в одну сторону: мерила точки,
+    /// сравнивала их с пределом в пикселях и рендерила втрое крупнее
+    /// запрошенного. Обещание «до 1000 точек» нарушалось втрое, а вес
+    /// файла — примерно вдевятеро, и уезжал он в App Group, откуда
+    /// его читает ещё и виджет.
+    ///
+    /// > **Ни компилятор, ни глаз этого не видят:** картинка выглядит
+    /// > правильной, просто она в девять раз тяжелее. Поймало только
+    /// > число в тесте.
+    ///
+    /// `format.scale = 1` делает пиксель выхода равным запрошенной
+    /// единице, поэтому дальше вся арифметика — одна система координат.
     static func ужать(_ data: Data) -> Data? {
         guard let image = UIImage(data: data) else { return nil }
-        let сторона = max(image.size.width, image.size.height)
-        guard сторона > maxSide else { return image.jpegData(compressionQuality: quality) ?? data }
+        // Пиксели, а не точки: у снимка из `PhotosPicker` масштаб бывает
+        // любым, и `size` о нём не говорит.
+        let ширина = image.size.width * image.scale
+        let высота = image.size.height * image.scale
+        let сторона = max(ширина, высота)
+        guard сторона > maxSide else {
+            // Маленькое не растягиваем — но перекодируем в JPEG, иначе
+            // PNG от `PhotosPicker` занял бы втрое больше при том же виде.
+            return image.jpegData(compressionQuality: quality) ?? data
+        }
 
         let масштаб = maxSide / сторона
-        let размер = CGSize(width: image.size.width * масштаб,
-                            height: image.size.height * масштаб)
-        let renderer = UIGraphicsImageRenderer(size: размер)
+        let размер = CGSize(width: ширина * масштаб, height: высота * масштаб)
+        let формат = UIGraphicsImageRendererFormat.default()
+        формат.scale = 1
+        формат.opaque = true
+        let renderer = UIGraphicsImageRenderer(size: размер, format: формат)
         let ужатое = renderer.image { _ in image.draw(in: CGRect(origin: .zero, size: размер)) }
         return ужатое.jpegData(compressionQuality: quality)
     }
