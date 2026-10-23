@@ -6,12 +6,48 @@ import XCTest
 ///   xcodebuild ... test -only-testing:TogoUITests/ScreenshotTests \
 ///     -resultBundlePath build/Screens.xcresult
 ///   Tools/extract_screenshots.sh build/Screens.xcresult fastlane/screenshots
+///
+/// **Язык прогона ставить только полным `xcodebuild test -testLanguage`.**
+/// Через `test-without-building -xctestrun` ключ даёт `rc=0`, «passed»
+/// и один выполненный тест — **а кадр выходит русским** (замер 23.10.2026).
+/// И после прогона на чужом языке кадр открывают глазами: «тест зелёный»
+/// про язык надписи не говорит ничего.
+///
+/// ## Шесть дорог переписаны 23.10.2026 под редизайн iOS 28
+///
+/// Отказы были не про язык и не про вёрстку: исчезли два входа.
+///
+/// ```
+/// было   шестерёнка «Настройки» на каждой вкладке · пять вкладок с «Семьёй»
+/// стало  одна кнопка «…» в шапке · четыре вкладки, семья первой строкой
+///        во вкладке собаки · запись ушла в шторку круглой «+»
+/// ```
+///
+/// Куда именно они уехали — установлено **деревом элементов**, зондом
+/// на живом симуляторе; замеры лежат рядом с каждой дорогой ниже.
 nonisolated final class ScreenshotTests: XCTestCase {
     private var app: XCUIApplication!
 
     /// Подписи на языке прогона. Русский остаётся русским, французский
     /// берётся из каталога приложения — см. `Подписи`.
     private let т = Подписи()
+
+    /// Что успели снять. Печатается в `tearDown` всегда — см. ниже.
+    private var снято: [String] = []
+
+    /// Второй адрес кадра, кроме вложения в `.xcresult`.
+    ///
+    /// Вложение достаётся `Tools/extract_screenshots.sh`, и для витрины
+    /// нужно именно оно. Но выгрузка вложений в этом проекте измерена
+    /// и срабатывает не всегда (`ВкладкаСобакиИСемья`: пять отказов
+    /// из девяти), а кадр, который не выгрузился, — это кадр, которого
+    /// нет. Поэтому тот же PNG кладётся файлом; `build/` в `.gitignore`,
+    /// нужное выносится в `Дизайн/кадры-приёмки/` и коммитится.
+    private var каталог: URL {
+        URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("build/кадры-витрины")
+    }
 
     override func setUp() {
         continueAfterFailure = false
@@ -25,11 +61,133 @@ nonisolated final class ScreenshotTests: XCTestCase {
                       "приложение не поднялось на языке «\(т.язык)»")
     }
 
+    /// Счёт печатается ВСЕГДА — в том числе после падения посреди прохода.
+    ///
+    /// **Это закрывает дыру, которую сам набор и предъявил 23.10.2026.**
+    /// Прогон сказал «12 тестов, 6 отказов», а вложений в логе было
+    /// пять: шестой зелёный тест (`test04Занятие`) выходил по `guard …
+    /// else { return }` и не снимал ничего. «Прошло шесть» и «кадров
+    /// пять» расходились ровно на него, и заметить это можно было
+    /// только сложив два разных числа из двух разных мест лога.
+    ///
+    /// > **Зелёный тест, который ничего не снял, сообщает «проверено»
+    /// > там, где не смотрели.** Строки про кадр просто нет, а её
+    /// > отсутствия никто не ищет.
+    override func tearDown() {
+        print("КАДРОВ СНЯТО: \(снято.count) · \(name) · \(снято.joined(separator: ", "))")
+    }
+
     private func capture(_ name: String) {
-        let shot = XCTAttachment(screenshot: app.screenshot())
-        shot.name = name
-        shot.lifetime = .keepAlways
-        add(shot)
+        let shot = app.screenshot()
+        let вложение = XCTAttachment(screenshot: shot)
+        вложение.name = name
+        вложение.lifetime = .keepAlways
+        add(вложение)
+        снято.append(name)
+        do {
+            try FileManager.default.createDirectory(at: каталог,
+                                                    withIntermediateDirectories: true)
+            let путь = каталог.appendingPathComponent("\(name).png")
+            try shot.pngRepresentation.write(to: путь)
+            print("КАДР: \(путь.path) · \(shot.pngRepresentation.count) байт")
+        } catch {
+            // Не падаем на записи файла: вложение уже добавлено,
+            // и терять из-за диска проверку дороги глупо.
+            print("КАДР НЕ ЛЁГ НА ДИСК: \(name) · \(error.localizedDescription)")
+        }
+    }
+
+    // MARK: Дороги, переписанные под редизайн 22–23.10.2026
+
+    /// Вход в настройки — только через шапку-меню «…».
+    ///
+    /// **Шестерёнки на «Сегодня» больше нет** (решение Виктории
+    /// 22.10.2026, `f4b5db9`; хендофф `design_handoff_togo_ios28`,
+    /// «Навигация (решено)»: «Шапка: одна кнопка „…" (меню)»). Здесь
+    /// стояло `app.buttons[т("Настройки")].tap()` сразу после запуска —
+    /// то есть пункт ЗАКРЫТОГО меню, и три теста падали на первой
+    /// строке.
+    ///
+    /// **Замер дерева 23.10.2026, а не догадка.** Зонд на «Сегодня»:
+    ///
+    /// ```
+    /// вкладок в таб-баре                4 · Сегодня · Стич · История · Здоровье
+    /// кнопок на экране                  19, среди них «Ещё» id=«шапка-меню»
+    /// buttons[«Настройки»].exists       false
+    /// buttons[«шапка-меню»].exists      true,  elementType = 9 (.button)
+    /// popUpButtons[«шапка-меню»].exists false          ← контроль в том же замере
+    /// после тапа кнопок                 21: прибавились «Настройки» и «Другой день»
+    /// ```
+    ///
+    /// > Прежняя сессия записала «зонд дал `PopUpButton`, и по тапу
+    /// > иерархия не менялась». **Оба утверждения сняты замером выше:**
+    /// > тип — `.button`, иерархия меняется на два пункта. Контроль
+    /// > `popUpButtons` стоял в той же команде, что и предмет.
+    private func открытьНастройки() {
+        let меню = app.buttons["шапка-меню"].firstMatch
+        XCTAssertTrue(меню.waitForExistence(timeout: 10), """
+            на «Сегодня» нет кнопки «…» (`шапка-меню`) — дорога в настройки \
+            снова изменилась. Это не «настроек нет»: кнопка «Настройки» \
+            на главном экране убрана редизайном 22.10.2026.
+            """)
+        меню.tap()
+
+        let пункт = app.buttons[т("Настройки")].firstMatch
+        XCTAssertTrue(пункт.waitForExistence(timeout: 10),
+                      "меню «…» открылось, а пункта «Настройки» в нём нет")
+        пункт.tap()
+        XCTAssertTrue(app.navigationBars[т("Настройки")].waitForExistence(timeout: 10),
+                      "пункт нажат, а экран настроек не открылся")
+    }
+
+    /// Шторка «Записать» — круглая «+» в низу «Сегодня».
+    ///
+    /// Кнопки «Стул» на главном экране больше нет: низ стал «главная ·
+    /// вторая · +» (`TodayBottom.swift`, кадры `01.png`/`02.png`),
+    /// а запись переехала в шторку — «Инцидент · Стул · Еда · Ещё».
+    /// Ищем по **идентификатору** `низ-записать`, а не по подписи:
+    /// озвучка у «+» называется «Записать», и это слово переводится.
+    private func открытьЗапись() {
+        let плюс = app.buttons["низ-записать"].firstMatch
+        XCTAssertTrue(плюс.waitForExistence(timeout: 10), """
+            в низу «Сегодня» нет круглой «+» (`низ-записать`) — записи \
+            взяться неоткуда. Прямых кнопок записи на главном нет \
+            с редизайна 22.10.2026.
+            """)
+        плюс.tap()
+    }
+
+    /// Вкладка собаки → «Семья и дежурство» → экран «Семья».
+    ///
+    /// **Вкладки «Семья» в таб-баре нет** — решение Виктории
+    /// 22.10.2026: было пять вкладок, стало четыре, а семья уехала
+    /// первой строкой во вкладку собаки (`RootView.swift`, голова
+    /// модуля; `DogTab.swift:303`). Входов у экрана два — эта строка
+    /// и пункт «Семья» в меню «…» той же вкладки.
+    ///
+    /// Вкладка берётся **по порядку**, а не по имени: её имя — кличка
+    /// собаки, то есть данные. Подставь «Стич» — и тест начнёт падать
+    /// в день переименования демо-собаки, причём падать на «вкладки
+    /// нет», а не на «кличка другая».
+    private func открытьСемью() {
+        let бар = app.tabBars.firstMatch
+        XCTAssertTrue(бар.waitForExistence(timeout: 10),
+                      "таб-бара нет — приложение не дошло до главного экрана")
+        XCTAssertEqual(бар.buttons.count, 4, """
+            вкладок \(бар.buttons.count), а решением 22.10.2026 их четыре: \
+            Сегодня · {кличка} · История · Здоровье. Кадр ниже снимал бы не тот экран.
+            """)
+        бар.buttons.element(boundBy: 1).tap()
+
+        let строка = найти(т("Семья и дежурство"), в: app)
+        XCTAssertTrue(строка.waitForExistence(timeout: 10), """
+            во вкладке собаки нет строки «Семья и дежурство» — единственного \
+            входа в семью, кроме пункта меню «…». Своей вкладки у «Семьи» \
+            нет с 22.10.2026.
+            """)
+        строка.tap()
+        XCTAssertTrue(app.navigationBars[т("Семья")].waitForExistence(timeout: 10),
+                      "строка нажата, а экран «Семья» не открылся")
     }
 
     func test01Сегодня() {
@@ -42,20 +200,61 @@ nonisolated final class ScreenshotTests: XCTestCase {
         capture("02-needs-verdict")
     }
 
+    /// Стул записывается из шторки «+», а не с главного экрана.
+    ///
+    /// Прежняя дорога (`app.buttons[т("Стул")]` сразу после запуска)
+    /// умерла с редизайном низа: на «Сегодня» теперь три органа —
+    /// «Просится» · «Гулять» · «+», и ни одного прямого входа записи.
+    /// Замер дерева 23.10.2026: 19 кнопок главного экрана, «Стул»
+    /// среди них нет.
     func test03Стул() {
-        app.buttons[т("Стул")].firstMatch.tap()
-        _ = app.staticTexts[т("Колбаска")].waitForExistence(timeout: 5)
+        открытьЗапись()
+        let стул = app.buttons.matching(
+            NSPredicate(format: "label BEGINSWITH %@", т("Стул"))
+        ).firstMatch
+        XCTAssertTrue(стул.waitForExistence(timeout: 5),
+                      "в шторке «Записать» нет строки «Стул»")
+        стул.tap()
+        XCTAssertTrue(app.staticTexts[т("Колбаска")].waitForExistence(timeout: 5),
+                      "лист стула открылся не тот: шкалы формы на нём нет")
         capture("03-stool")
     }
 
+    /// Занятие лежит на два шага глубже: «+» → «Ещё» → «Занятие · N мин».
+    ///
+    /// **Здесь был молчаливый выход, и он был хуже падения.** Тест
+    /// жал `app.buttons[т("Ещё")]` сразу после запуска и, не найдя
+    /// «Занятие», выходил по `guard … else { return }` — зелёным
+    /// и без кадра. Прогон 23.10 печатал «12 тестов, 6 отказов»
+    /// и **пять** вложений: шестой зелёный не снял ничего.
+    ///
+    /// Хуже того, тап при этом в пустоту не уходил. После редизайна
+    /// `buttons["Ещё"]` на «Сегодня» существует — это озвучка
+    /// шапки-меню «…» (`HeaderMenu.swift:82`, `accessibilityLabel("Ещё")`).
+    /// То есть тест открывал МЕНЮ НАСТРОЕК, не находил там занятия
+    /// и уходил довольным.
+    ///
+    /// > **Совпадение имён — не «кнопки нет», а худшее: кнопка есть,
+    /// > и она чужая.** Различает только идентификатор, и поэтому
+    /// > строка шторки ищется с явным `identifier != "шапка-меню"`.
     func test04Занятие() {
-        app.buttons[т("Ещё")].firstMatch.tap()
-        let занятие = app.buttons.containing(
+        открытьЗапись()
+        let ещё = app.buttons.matching(
+            NSPredicate(format: "label BEGINSWITH %@ AND identifier != %@",
+                        т("Ещё"), "шапка-меню")
+        ).firstMatch
+        XCTAssertTrue(ещё.waitForExistence(timeout: 5),
+                      "в шторке «Записать» нет строки «Ещё» — занятие за ней")
+        ещё.tap()
+
+        let занятие = app.buttons.matching(
             NSPredicate(format: "label BEGINSWITH %@", т("Занятие"))
         ).firstMatch
-        guard занятие.waitForExistence(timeout: 5) else { return }
+        XCTAssertTrue(занятие.waitForExistence(timeout: 5),
+                      "в шторке «Ещё» нет строки «Занятие»")
         занятие.tap()
-        _ = app.staticTexts[т("Он сделал")].waitForExistence(timeout: 5)
+        XCTAssertTrue(app.staticTexts[т("Он сделал")].waitForExistence(timeout: 5),
+                      "занятие открылось не то: кнопки разметки на экране нет")
         capture("04-training")
     }
 
@@ -66,8 +265,7 @@ nonisolated final class ScreenshotTests: XCTestCase {
     }
 
     func test06Семья() {
-        app.tabBars.buttons[т("Семья")].tap()
-        _ = app.navigationBars[т("Семья")].waitForExistence(timeout: 5)
+        открытьСемью()
         capture("06-family")
     }
 
@@ -94,26 +292,29 @@ nonisolated final class ScreenshotTests: XCTestCase {
     }
 
     func test09Права() {
-        app.tabBars.buttons[т("Семья")].tap()
+        открытьСемью()
         // «Мама» — имя участника из демо-данных, такая же данность, как
         // кличка. В каталоге оно есть и «переведено» как Maman, но
         // приложение показывает литерал из SeedData.
         найти("Мама", в: app).tap()
-        _ = app.staticTexts[т.прописными("что разрешено")].waitForExistence(timeout: 5)
+        XCTAssertTrue(app.staticTexts[т.прописными("что разрешено")].waitForExistence(timeout: 5),
+                      "карточка участника открылась, а раздела прав в ней нет")
         capture("09-permissions")
     }
 
     func test10Перенос() {
-        app.buttons[т("Настройки")].tap()
+        открытьНастройки()
         найти(т("Перенос и восстановление"), в: app).tap()
-        _ = app.navigationBars[т("Перенос")].waitForExistence(timeout: 5)
+        XCTAssertTrue(app.navigationBars[т("Перенос")].waitForExistence(timeout: 5),
+                      "строка «Перенос и восстановление» есть, а экран за ней не открылся")
         capture("10-backup")
     }
 
     func test11Язык() {
-        app.buttons[т("Настройки")].tap()
+        открытьНастройки()
         найти(т("Язык"), в: app).tap()
-        _ = app.navigationBars[т("Язык")].waitForExistence(timeout: 5)
+        XCTAssertTrue(app.navigationBars[т("Язык")].waitForExistence(timeout: 5),
+                      "строка «Язык» есть, а экран за ней не открылся")
         capture("11-language")
     }
 
@@ -146,7 +347,7 @@ nonisolated final class ScreenshotTests: XCTestCase {
     /// его из командной строки не нашлось. Неисключённое объяснение одно:
     /// формат `.storekit` version 4.0 против Xcode 27.
     func test07Подписка() {
-        app.buttons[т("Настройки")].tap()
+        открытьНастройки()
         // Кнопку, а не любой элемент с этим именем.
         //
         // Прежде здесь стоял `descendants(matching: .any)`, и первым
