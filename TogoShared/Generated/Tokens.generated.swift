@@ -41,44 +41,44 @@ nonisolated enum Token {
     /// `Color.resolvedHex(dark:highContrast:)`: он отдаёт то, что
     /// система даст тому, кто рисует, и в четырёх режимах порознь.
     fileprivate enum Общие {
-        static let amber = Color(Dyn(dark: 0xF7C75F, light: 0x8A640F, darkHC: 0xF7C75F, lightHC: 0x6B4C0C))
-        static let amberBg = Color(Dyn(dark: 0x4A300A, light: 0xFCEBCB, darkHC: 0x4A300A, lightHC: 0xFCEBCB))
-        static let arctic = Color(Dyn(dark: 0xFFFFFF, light: 0x1F4FFF, darkHC: 0xFFFFFF, lightHC: 0x0E14A1))
-        static let arcticInk = Color(Dyn(dark: 0x111111, light: 0xFFFFFF, darkHC: 0x111111, lightHC: 0xFFFFFF))
-        static let arcticPressed = Color(Dyn(dark: 0xD1D1D6, light: 0x080679, darkHC: 0xD1D1D6, lightHC: 0x080679))
-        static let arcticSubtle = Color(Dyn(dark: 0x5A5D61, light: 0xD9E3FC, darkHC: 0x5A5D61, lightHC: 0xD9E3FC))
+        static let amber = Color(Dyn(dark: 0xF7C75FFF, light: 0x8A640FFF, darkHC: 0xF7C75FFF, lightHC: 0x6B4C0CFF))
+        static let amberBg = Color(Dyn(dark: 0x4A300AFF, light: 0xFCEBCBFF, darkHC: 0x4A300AFF, lightHC: 0xFCEBCBFF))
+        static let arctic = Color(Dyn(dark: 0xFFFFFFFF, light: 0x1F4FFFFF, darkHC: 0xFFFFFFFF, lightHC: 0x0E14A1FF))
+        static let arcticInk = Color(Dyn(dark: 0x111111FF, light: 0xFFFFFFFF, darkHC: 0x111111FF, lightHC: 0xFFFFFFFF))
+        static let arcticPressed = Color(Dyn(dark: 0xD1D1D6FF, light: 0x080679FF, darkHC: 0xD1D1D6FF, lightHC: 0x080679FF))
+        static let arcticSubtle = Color(Dyn(dark: 0x5A5D61FF, light: 0xD9E3FCFF, darkHC: 0x5A5D61FF, lightHC: 0xD9E3FCFF))
         static let arcticTint = Color(Dyn(dark: 0xFFFFFF2E, light: 0x1F4FFF38, darkHC: 0xFFFFFF2E, lightHC: 0x0E14A138))
-        static let clay = Color(Dyn(dark: 0xFF7A66, light: 0xAE2219, darkHC: 0xFFA696, lightHC: 0x9B100E))
-        static let clayBg = Color(Dyn(dark: 0x4D1F22, light: 0xF7D5CF, darkHC: 0x4D1F22, lightHC: 0xF7D5CF))
+        static let clay = Color(Dyn(dark: 0xFF7A66FF, light: 0xAE2219FF, darkHC: 0xFFA696FF, lightHC: 0x9B100EFF))
+        static let clayBg = Color(Dyn(dark: 0x4D1F22FF, light: 0xF7D5CFFF, darkHC: 0x4D1F22FF, lightHC: 0xF7D5CFFF))
         static let glass = Color(Dyn(dark: 0x1E1E2280, light: 0xFFFFFF9E, darkHC: 0x1E1E22D1, lightHC: 0xFFFFFF9E))
         static let glassCard = Color(Dyn(dark: 0x1C1C2094, light: 0xFFFFFFB8, darkHC: 0x242426E6, lightHC: 0xFFFFFFB8))
         static let glassEdge = Color(Dyn(dark: 0xFFFFFF47, light: 0xFFFFFFF2, darkHC: 0xFFFFFF66, lightHC: 0xFFFFFFF2))
         static let glassLine = Color(Dyn(dark: 0xFFFFFF1A, light: 0x0000000F, darkHC: 0xFFFFFF38, lightHC: 0x0000000F))
         static let glassShadow = Color(Dyn(dark: 0x00000073, light: 0x14192824, darkHC: 0x00000073, lightHC: 0x14192824))
         static let glassStrong = Color(Dyn(dark: 0x141418CC, light: 0xFFFFFFDB, darkHC: 0x141418F0, lightHC: 0xFFFFFFDB))
-        static let hairline = Color(Dyn(dark: 0x3A3A3C, light: 0xD6D9DD, darkHC: 0x6D6D72, lightHC: 0x7D8085))
-        static let indigo = Color(Dyn(dark: 0x1F4FFF, light: 0x1F4FFF, darkHC: 0x1F4FFF, lightHC: 0x0E14A1))
-        static let indigoSubtle = Color(Dyn(dark: 0x2C3A66, light: 0x2C3A66, darkHC: 0x3A4C85, lightHC: 0x2C3A66))
-        static let ink = Color(Dyn(dark: 0xFFFFFF, light: 0x101112, darkHC: 0xFFFFFF, lightHC: 0x101112))
-        static let inkFaint = Color(Dyn(dark: 0x8E8E93, light: 0xA1A4A8, darkHC: 0xAEAEB2, lightHC: 0x7D8085))
-        static let inkMuted = Color(Dyn(dark: 0xC7C7CC, light: 0x5A5D61, darkHC: 0xEBEBF0, lightHC: 0x45484C))
-        static let link = Color(Dyn(dark: 0xA2C1FE, light: 0x1F4FFF, darkHC: 0xC2D6FF, lightHC: 0x0E14A1))
-        static let night1 = Color(Dyn(dark: 0x000000, light: 0xFFFFFF, darkHC: 0x000000, lightHC: 0xFFFFFF))
-        static let night2 = Color(Dyn(dark: 0x1C1C1E, light: 0xECEDF0, darkHC: 0x242426, lightHC: 0xECEDF0))
-        static let night3 = Color(Dyn(dark: 0x2C2C2E, light: 0xE3E5E8, darkHC: 0x363638, lightHC: 0xE3E5E8))
-        static let night4 = Color(Dyn(dark: 0x3A3A3C, light: 0xFFFFFF, darkHC: 0x48484A, lightHC: 0xFFFFFF))
-        static let night5 = Color(Dyn(dark: 0x3A3A3C, light: 0xD7DBE0, darkHC: 0x48484A, lightHC: 0xD6D9DD))
-        static let nightControlPressed = Color(Dyn(dark: 0x48484A, light: 0xD7DBE0, darkHC: 0x5A5A5E, lightHC: 0xD6D9DD))
-        static let nightPage = Color(Dyn(dark: 0x0A0A0B, light: 0xFFFFFF, darkHC: 0x000000, lightHC: 0xFFFFFF))
-        static let posterAmber = Color(Dyn(dark: 0x4A3A14, light: 0x8A640F, darkHC: 0x4A3A14, lightHC: 0x8A640F))
-        static let posterClay = Color(Dyn(dark: 0x5E2A22, light: 0xB5402F, darkHC: 0x5E2A22, lightHC: 0xB5402F))
-        static let posterIndigo = Color(Dyn(dark: 0x2A3670, light: 0x3F5BC4, darkHC: 0x2A3670, lightHC: 0x3F5BC4))
-        static let posterInk = Color(Dyn(dark: 0xF4F4F2, light: 0xFFFFFF, darkHC: 0xF4F4F2, lightHC: 0xFFFFFF))
-        static let posterInkMuted = Color(Dyn(dark: 0xB2B2AE, light: 0xFFFFFFE0, darkHC: 0xC8C8C4, lightHC: 0xFFFFFF))
+        static let hairline = Color(Dyn(dark: 0x3A3A3CFF, light: 0xD6D9DDFF, darkHC: 0x6D6D72FF, lightHC: 0x7D8085FF))
+        static let indigo = Color(Dyn(dark: 0x1F4FFFFF, light: 0x1F4FFFFF, darkHC: 0x1F4FFFFF, lightHC: 0x0E14A1FF))
+        static let indigoSubtle = Color(Dyn(dark: 0x2C3A66FF, light: 0x2C3A66FF, darkHC: 0x3A4C85FF, lightHC: 0x2C3A66FF))
+        static let ink = Color(Dyn(dark: 0xFFFFFFFF, light: 0x101112FF, darkHC: 0xFFFFFFFF, lightHC: 0x101112FF))
+        static let inkFaint = Color(Dyn(dark: 0x8E8E93FF, light: 0xA1A4A8FF, darkHC: 0xAEAEB2FF, lightHC: 0x7D8085FF))
+        static let inkMuted = Color(Dyn(dark: 0xC7C7CCFF, light: 0x5A5D61FF, darkHC: 0xEBEBF0FF, lightHC: 0x45484CFF))
+        static let link = Color(Dyn(dark: 0xA2C1FEFF, light: 0x1F4FFFFF, darkHC: 0xC2D6FFFF, lightHC: 0x0E14A1FF))
+        static let night1 = Color(Dyn(dark: 0x000000FF, light: 0xFFFFFFFF, darkHC: 0x000000FF, lightHC: 0xFFFFFFFF))
+        static let night2 = Color(Dyn(dark: 0x1C1C1EFF, light: 0xECEDF0FF, darkHC: 0x242426FF, lightHC: 0xECEDF0FF))
+        static let night3 = Color(Dyn(dark: 0x2C2C2EFF, light: 0xE3E5E8FF, darkHC: 0x363638FF, lightHC: 0xE3E5E8FF))
+        static let night4 = Color(Dyn(dark: 0x3A3A3CFF, light: 0xFFFFFFFF, darkHC: 0x48484AFF, lightHC: 0xFFFFFFFF))
+        static let night5 = Color(Dyn(dark: 0x3A3A3CFF, light: 0xD7DBE0FF, darkHC: 0x48484AFF, lightHC: 0xD6D9DDFF))
+        static let nightControlPressed = Color(Dyn(dark: 0x48484AFF, light: 0xD7DBE0FF, darkHC: 0x5A5A5EFF, lightHC: 0xD6D9DDFF))
+        static let nightPage = Color(Dyn(dark: 0x0A0A0BFF, light: 0xFFFFFFFF, darkHC: 0x000000FF, lightHC: 0xFFFFFFFF))
+        static let posterAmber = Color(Dyn(dark: 0x4A3A14FF, light: 0x8A640FFF, darkHC: 0x4A3A14FF, lightHC: 0x8A640FFF))
+        static let posterClay = Color(Dyn(dark: 0x5E2A22FF, light: 0xB5402FFF, darkHC: 0x5E2A22FF, lightHC: 0xB5402FFF))
+        static let posterIndigo = Color(Dyn(dark: 0x2A3670FF, light: 0x3F5BC4FF, darkHC: 0x2A3670FF, lightHC: 0x3F5BC4FF))
+        static let posterInk = Color(Dyn(dark: 0xF4F4F2FF, light: 0xFFFFFFFF, darkHC: 0xF4F4F2FF, lightHC: 0xFFFFFFFF))
+        static let posterInkMuted = Color(Dyn(dark: 0xB2B2AEFF, light: 0xFFFFFFE0, darkHC: 0xC8C8C4FF, lightHC: 0xFFFFFFFF))
         static let scrim = Color(Dyn(dark: 0x0000008C, light: 0x10111252, darkHC: 0x0000008C, lightHC: 0x10111252))
-        static let spruceText = Color(Dyn(dark: 0x7FD3A8, light: 0x286B4C, darkHC: 0x7FD3A8, lightHC: 0x215940))
-        static let stockLow = Color(Dyn(dark: 0xFFA15C, light: 0xB85400, darkHC: 0xFFA15C, lightHC: 0xA34A00))
-        static let stockLowBg = Color(Dyn(dark: 0x4A2A10, light: 0xFFEBD9, darkHC: 0x4A2A10, lightHC: 0xFFEBD9))
+        static let spruceText = Color(Dyn(dark: 0x7FD3A8FF, light: 0x286B4CFF, darkHC: 0x7FD3A8FF, lightHC: 0x215940FF))
+        static let stockLow = Color(Dyn(dark: 0xFFA15CFF, light: 0xB85400FF, darkHC: 0xFFA15CFF, lightHC: 0xA34A00FF))
+        static let stockLowBg = Color(Dyn(dark: 0x4A2A10FF, light: 0xFFEBD9FF, darkHC: 0x4A2A10FF, lightHC: 0xFFEBD9FF))
     }
 
     /// Поверхности: бумага, карточка, утопленное, хайрлайн.
@@ -151,24 +151,24 @@ nonisolated enum Token {
     /// Цвет вида записи. **Семантика, а не компонент, и это решение дизайна от 23.10.2026** (ОТВЕТЫ-круг-2, пункт 5): цвет спрашивают кружок ленты, ВИДЖЕТ и ЖИВАЯ АКТИВНОСТЬ, а `Token.Component.*` за пределами дизайн-системы запрещён (`ComponentTokenScopeTests`) — то есть из компонентного слоя двое из трёх достать его не могли и подставляли суррогат. Значение одно во всех четырёх режимах. `Category.on` — значок НА заливке, #111 на любой из них.
     enum Category {
         /// Уход и занятие — один цвет, так в хендоффе.
-        static let care = Color(hex: 0xC3A6FF)
-        static let dose = Color(hex: 0xFF8FBF)
-        static let food = Color(hex: 0xFF9A5C)
+        static let care = Color(hex: 0xC3A6FFFF)
+        static let dose = Color(hex: 0xFF8FBFFF)
+        static let food = Color(hex: 0xFF9A5CFF)
         /// `category.incident` хендоффа = `status.error`, то есть наш терракот. Своего значения у инцидента нет и заводить его не надо.
         static let incident = Общие.clay
         /// Значок НА заливке категории — #111 на любой из них (`category.on`). Не `Ink.onAccent`: тот ходит за акцентом и в светлой теме станет белым, а заливки категории одинаковы во всех режимах. Числа замерены `Tools/contrast_graphite.py` 23.10.2026, не выведены: белое на мяте #7CE0A0 — 1,61:1, на весе #FFD43B — 1,43:1, на еде #FF9A5C — 2,09:1; #111 на тех же трёх — 11,71 · 13,25 · 9,02. ПЕРВАЯ РЕДАКЦИЯ ЭТОЙ СТРОКИ ГОВОРИЛА «1,54 и 13,2» — оба числа были написаны по памяти и оба неверны: 13,25 это ВЕС, а не мята. Поймал не глаз, а прогон инструмента рядом с записью.
-        static let on = Color(hex: 0x111111)
+        static let on = Color(hex: 0x111111FF)
         /// Значок на терракоте: #111 там, где заливка светлая, белый там, где тёмная. Разбор и числа — в описании `primitive.color.catOnIncident`.
         static let onIncident = Общие.arcticInk
         /// Стул. Тот же #A2C1FE, что `text.link`, — одно значение, две роли, и это хендофф, а не экономия.
-        static let poop = Color(hex: 0xA2C1FE)
-        static let train = Color(hex: 0xC3A6FF)
+        static let poop = Color(hex: 0xA2C1FEFF)
+        static let train = Color(hex: 0xC3A6FFFF)
         /// Лакомство и еда — один цвет, так в хендоффе.
-        static let treat = Color(hex: 0xFF9A5C)
+        static let treat = Color(hex: 0xFF9A5CFF)
         /// Прогулка и выход по нужде. `outing` в хендоффе не назван и приписан к прогулке словарём продукта: `TimelineBlock.isOuting` считает выходом оба, и строка «дома 3 ч» меряется между ними.
-        static let walk = Color(hex: 0x7CE0A0)
-        static let water = Color(hex: 0x7FD3FF)
-        static let weight = Color(hex: 0xFFD43B)
+        static let walk = Color(hex: 0x7CE0A0FF)
+        static let water = Color(hex: 0x7FD3FFFF)
+        static let weight = Color(hex: 0xFFD43BFF)
     }
 
     /// Отступы.
@@ -365,8 +365,8 @@ nonisolated enum Token {
             let x: CGFloat
             let y: CGFloat
         }
-        static let card = Shadow(color: Color(hex: 0x000000).opacity(0.05), radius: 10, x: 0, y: 3)
-        static let float = Shadow(color: Color(hex: 0x000000).opacity(0.12), radius: 14, x: 0, y: 4)
+        static let card = Shadow(color: Color(hex: 0x000000FF).opacity(0.05), radius: 10, x: 0, y: 3)
+        static let float = Shadow(color: Color(hex: 0x000000FF).opacity(0.12), radius: 14, x: 0, y: 4)
     }
 
     /// Стоп градиента: доля высоты и цвет с альфой.
@@ -471,29 +471,29 @@ nonisolated enum Token {
         }
         enum CategoryBadge {
             /// Уход и занятие — один цвет, так в хендоффе.
-            static let care = Color(hex: 0xC3A6FF)
-            static let dose = Color(hex: 0xFF8FBF)
+            static let care = Color(hex: 0xC3A6FFFF)
+            static let dose = Color(hex: 0xFF8FBFFF)
             /// Доза — скруглённый квадрат 12 (`category.doseShapeRadius`), а не круг. Единственный вид, у которого форма другая.
             static let doseRadius: CGFloat = 12
-            static let food = Color(hex: 0xFF9A5C)
+            static let food = Color(hex: 0xFF9A5CFF)
             /// `category.incident` хендоффа = `status.error`, то есть наш терракот. Своего значения у инцидента нет и заводить его не надо.
             static let incident = Общие.clay
             /// Значок внутри кружка — #111 на любой заливке.
-            static let on = Color(hex: 0x111111)
+            static let on = Color(hex: 0x111111FF)
             /// Значок на терракоте: #111 там, где заливка светлая, белый там, где тёмная. Разбор и числа — в описании `primitive.color.catOnIncident`.
             static let onIncident = Общие.arcticInk
             /// Тот же #A2C1FE, что ссылка.
-            static let poop = Color(hex: 0xA2C1FE)
+            static let poop = Color(hex: 0xA2C1FEFF)
             /// Круг: 13 при 40.
             static let radius: CGFloat = 13
             /// Кружок 40 pt.
             static let size: CGFloat = 40
-            static let train = Color(hex: 0xC3A6FF)
+            static let train = Color(hex: 0xC3A6FFFF)
             /// Лакомство и еда — один цвет, так в хендоффе.
-            static let treat = Color(hex: 0xFF9A5C)
-            static let walk = Color(hex: 0x7CE0A0)
-            static let water = Color(hex: 0x7FD3FF)
-            static let weight = Color(hex: 0xFFD43B)
+            static let treat = Color(hex: 0xFF9A5CFF)
+            static let walk = Color(hex: 0x7CE0A0FF)
+            static let water = Color(hex: 0x7FD3FFFF)
+            static let weight = Color(hex: 0xFFD43BFF)
         }
         enum Chip {
             static let alarmBackground = Общие.clayBg
@@ -563,12 +563,12 @@ nonisolated enum Token {
         }
         enum ReadingTone {
             enum Alarm {
-                static let chip = Color(hex: 0xD52519)
+                static let chip = Color(hex: 0xD52519FF)
                 /// Подпись на чипе тона. ВЫВЕДЕНО из цвета показания того же тона (`fg`): своих значений для подписи чипа хендофф не даёт. Кадр 02 подтверждает только час дозы — белым по индиго. Замер по кадрам второго пакета 22.10.2026: `~/Downloads/design_handoff_togo_ios28 2/screenshots/01.png` (обычный день) и `02.png` (час дозы), 424×896. Прочитано глазами, не из описания.
                 static let chipLabel = Общие.posterInk
                 static let fg = Общие.posterInk
                 static let panel = Color(hex: 0xD52519EB)
-                static let primaryButton = Color(hex: 0xD52519)
+                static let primaryButton = Color(hex: 0xD52519FF)
             }
             enum Dose {
                 static let chip = Общие.indigo
@@ -580,11 +580,11 @@ nonisolated enum Token {
                 static let primaryButton = Общие.indigo
             }
             enum Fasting {
-                static let caption = Color(hex: 0x5A4300)
-                static let chip = Color(hex: 0xFFC233)
+                static let caption = Color(hex: 0x5A4300FF)
+                static let chip = Color(hex: 0xFFC233FF)
                 /// Подпись на чипе тона. ВЫВЕДЕНО из цвета показания того же тона (`fg`): своих значений для подписи чипа хендофф не даёт. Кадр 02 подтверждает только час дозы — белым по индиго. Замер по кадрам второго пакета 22.10.2026: `~/Downloads/design_handoff_togo_ios28 2/screenshots/01.png` (обычный день) и `02.png` (час дозы), 424×896. Прочитано глазами, не из описания.
-                static let chipLabel = Color(hex: 0x2A1D00)
-                static let fg = Color(hex: 0x2A1D00)
+                static let chipLabel = Color(hex: 0x2A1D00FF)
+                static let fg = Color(hex: 0x2A1D00FF)
                 static let panel = Color(hex: 0xFFC233EB)
             }
             enum Night {
