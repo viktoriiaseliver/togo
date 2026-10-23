@@ -3,9 +3,35 @@ import SwiftData
 
 // Экраны шагов онбординга. Сам порядок шагов и черновик собаки живут
 // в `OnboardingFlow` — здесь только то, что человек видит на каждом шаге.
-// Разделено при рефакторинг-чеке: в одном файле было больше пятисот строк,
-// и правка одного шага заставляла листать все остальные.
+//
+// Редизайн iOS 28 «Кино», 23.10.2026: шагов стало четыре вместо шести.
+// Что снято и почему — в голове `OnboardingFlow`, там же названо
+// и то, чего из макета здесь нет.
 
+/// Приветствие — эталон `Дизайн/эталонные-кадры/ios28-кино-22.10/screenshots/18.png`.
+///
+/// Снизу вверх по кадру: три кнопки, подзаголовок «Дневник собаки для
+/// всей семьи.», логотип «Togo», и всё это поверх фотографии во весь
+/// экран.
+///
+/// # Чем этот экран отличается от кадра, и это не забывчивость
+///
+/// ```
+/// фото во весь экран      нет: плейсхолдеры Unsplash в продукт
+///                         не включаются (README пакета), а своего
+///                         фото у человека на первом запуске нет
+///                         по построению. Вместо него иллюстрация
+///                         «линия», сцена `onboarding`
+/// лента семей с цитатами  нет: отзывы несуществующих людей
+/// кнопка «С примером»     нет: демо-дневник некуда положить —
+///                         `SeedData` строит контейнер в памяти
+///                         и живёт только под `-UITesting`
+/// «Меня позвали» белым    подпись берёт `Token.Ink.secondary`
+///                         (вариант `.quiet` под стеклом). Белая
+///                         подпись у кнопки без заливки — это роль,
+///                         которой в `TGButton` нет, а `DesignSystem`
+///                         этой смене не открыт
+/// ```
 struct WelcomeStep: View {
     var isReplay: Bool = false
     var onNext: () -> Void
@@ -22,64 +48,65 @@ struct WelcomeStep: View {
     /// без потери своего.
     var onJoin: (() -> Void)?
 
-    private let promises = [
-        ("figure.walk.departure", "Выход и прогулка — разные вещи"),
-        ("person.2", "Все в семье считают одно и то же"),
-        ("cross.case", "Медкнижка включается, если понадобится"),
-    ]
+    /// Иллюстрация прячется на крупном кегле.
+    ///
+    /// Не «для красоты»: экран собран без прокрутки — так он собран
+    /// в макете, — и на AX-ступенях текст с тремя кнопками занимает
+    /// высоту целиком. Рисунок, оставленный там же, выдавил бы кнопки
+    /// за нижний край, и человек с крупным шрифтом не нашёл бы
+    /// «Начать» вовсе.
+    @Environment(\.dynamicTypeSize) private var кегль
 
     var body: some View {
-        TGScreen {
-            VStack(alignment: .leading, spacing: Token.Space.s6) {
-                Text("Дневник").textStyle(AppFont.display)
-                Text("твоей собаки").textStyle(AppFont.display.color(Token.Action.primary))
+        VStack(alignment: .leading, spacing: Token.Space.s10) {
+            if !кегль.isAccessibilitySize {
+                Spacer(minLength: 0)
+                TGIllustration(scene: .onboarding)
+                    .frame(maxWidth: .infinity)
             }
-            .padding(.top, Token.Space.s32)
+            Spacer(minLength: 0)
 
-            Text("Когда выводили, когда кормили, каким был стул. Два тапа — и вечером никто ничего не выясняет.")
+            Text("Togo").textStyle(AppFont.wordmark)
+            Text("Дневник собаки для всей семьи.")
                 .textStyle(AppFont.body.color(Token.Ink.secondary))
+                .wraps()
+                .padding(.bottom, Token.Space.s8)
 
-            VStack(spacing: Token.Space.s8) {
-                ForEach(promises, id: \.1) { symbol, text in
-                    TGCard(padding: Token.Space.s14) {
-                        HStack(spacing: Token.Space.s12) {
-                            Image(systemName: symbol)
-                                .font(.system(size: Token.Size.iconMd, weight: .medium))
-                                .foregroundStyle(Token.Action.doneText)
-                                .frame(width: Token.Space.s24)
-                            Text(text).textStyle(AppFont.body)
-                            Spacer(minLength: 0)
-                        }
-                    }
-                }
-            }
-            .padding(.top, Token.Space.s8)
-        } bottom: {
-            TGButton(title: isReplay ? "Перечитать" : "Добавить собаку",
-                     systemImage: isReplay ? "book" : "plus",
+            TGButton(title: isReplay ? "Перечитать" : "Начать",
                      action: onNext)
             // Вторая дорога, а не вторая кнопка того же действия:
-            // «Добавить собаку» заводит СВОЙ дневник, «Меня позвали» —
+            // «Начать» заводит СВОЙ дневник, «Меня позвали» —
             // присоединяет к чужому. Форма у них разная нарочно
-            // (главная кнопка против текстовой), потому что два
-            // одинаково выглядящих действия на одном экране мы уже
-            // проходили: 22.09 человек нажал видимое «Пригласить
-            // человека» и завёл участника вместо приглашения.
+            // (белая заливка против стекла), потому что два одинаково
+            // выглядящих действия на одном экране мы уже проходили:
+            // 22.09 человек нажал видимое «Пригласить человека»
+            // и завёл участника вместо приглашения.
             if !isReplay, let onJoin {
-                Button("Меня позвали в семью", action: onJoin)
-                    .textStyle(AppFont.bodyEmphasis.color(Token.Action.primary))
-                    .frame(maxWidth: .infinity)
-                    .padding(.top, Token.Space.s4)
+                TGButton(title: "Меня позвали", variant: .quiet,
+                         size: .medium, action: onJoin)
+                    .стекло(радиус: Token.Radius.capsule)
             }
             Text("Всё считается на телефоне. Аккаунт не нужен.")
                 .textStyle(AppFont.micro)
                 .frame(maxWidth: .infinity)
         }
+        .padding(.horizontal, Token.Spacing.screenPadding)
+        .padding(.bottom, Token.Space.s24)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+        .background(Token.Surface.screen.ignoresSafeArea())
     }
 }
 
-// MARK: - Шаг 2 · кто у тебя живёт
+// MARK: - Шаг 1 · кличка и вес
 
+/// Кличка и вес, и больше ничего.
+///
+/// **Порода, пол, кастрация и дата рождения сняты** — в макете iOS 28
+/// на этом шаге их нет. Они не потеряны: те же поля стоят в профиле
+/// собаки, и заполняются там в любой момент. Онбординг спрашивает
+/// ровно то, без чего не работает ни одна подсказка: кличку, чтобы
+/// звать собаку по имени, и вес, из которого считается порция
+/// и сбор в дорогу.
 struct DogStep: View {
     @Binding var draft: DogDraft
     var onNext: () -> Void
@@ -88,109 +115,70 @@ struct DogStep: View {
     var onSkip: (() -> Void)?
 
     /// Фокус поля веса — единственного `.decimalPad` на этом шаге.
-    /// `Bool`, а не перечисление: на экране одно числовое поле, и форма
-    /// условия названа по тому, что есть, а не по тому, что может быть.
     @FocusState private var весВФокусе: Bool
 
     var body: some View {
         TGScreen(title: "Кто у тебя живёт") {
-            TGExplainer(text: "Обязательны только кличка и вес. Остальное можно пропустить и заполнить когда угодно.")
-
-            TGCard(spacing: 0) {
-                LabeledField(label: "Кличка") {
-                    TextField("Стич", text: $draft.name)
-                        .textInputAutocapitalization(.words)
-                }
-                TGDivider()
-                LabeledField(label: "Вес") {
-                    HStack(spacing: Token.Space.s4) {
-                        TextField("4,1", text: $draft.weight).keyboardType(.decimalPad)
-                            .focused($весВФокусе)
-                        Text("кг").textStyle(AppFont.caption)
-                    }
-                }
-                TGDivider()
-                LabeledField(label: "Порода") {
-                    TextField("можно пропустить", text: $draft.breed)
-                }
-                TGDivider()
-                // Спрашиваем здесь: без пола не появится календарь цикла,
-                // а искать его потом в профиле никто не будет.
-                HStack {
-                    Text("Кто это").textStyle(AppFont.body)
-                    Spacer(minLength: Token.Space.s8)
-                    Picker("Кто это", selection: $draft.sex) {
-                        ForEach(DogSex.allCases, id: \.self) { Text($0.title).tag($0) }
-                    }
-                    .pickerStyle(.menu)
-                    .tint(Token.Ink.secondary)
-                }
-                .frame(minHeight: Token.Size.tapTarget)
-                if draft.sex != .unknown {
-                    TGDivider()
-                    Toggle(isOn: $draft.isNeutered) {
-                        Text(draft.sex == .male ? "Кастрирован" : "Стерилизована")
-                            .textStyle(AppFont.body)
-                    }
-                    .frame(minHeight: Token.Size.tapTarget)
-                }
-                TGDivider()
-                Toggle(isOn: $draft.hasBirthDate) {
-                    Text("Дата рождения").textStyle(AppFont.body)
-                }
-                .frame(minHeight: Token.Size.tapTarget)
-                if draft.hasBirthDate {
-                    DatePicker("Когда родился",
-                               selection: Binding(get: { draft.birthDate ?? Date() },
-                                                  set: { draft.birthDate = $0 }),
-                               displayedComponents: .date)
-                    .datePickerStyle(.compact)
-                    .frame(minHeight: Token.Size.tapTarget)
-                }
+            // **Подсказка — слово «Кличка», а НЕ кличка.** До 23.10.2026
+            // здесь стояло `TextField("Стич", …)`, и это уезжало
+            // в каталог ключом: `TextField(_ titleKey:)` принимает
+            // `LocalizedStringKey`, поэтому ЛЮБОЙ литерал-подсказка
+            // переводится (замер: 47 из 47). Кличка Стич переводилась
+            // как «Stitch»/«Стіч», а у человека, назвавшего собаку
+            // так же, совпадало с ключом и переводилось уже его
+            // СОБСТВЕННОЕ слово — живой отзыв `AEXYTDmy` «Где-то stitch
+            // а где то Стич».
+            //
+            // Решение требовало «не кличка», и исполнено оно должно
+            // быть именно так, а не «другая кличка»: другая кличка —
+            // тот же класс, просто ещё не встреченный.
+            TGCard {
+                TextField("Кличка", text: $draft.name)
+                    .textInputAutocapitalization(.words)
+                    .textStyle(AppFont.screenTitle.weight(Token.FontWeight.medium))
+                    .frame(minHeight: Token.Size.capsule)
             }
 
             TGCard {
-                Toggle(isOn: $draft.isOnTreatment) {
-                    VStack(alignment: .leading, spacing: Token.Space.s2) {
-                        Text("Собака на лечении").textStyle(AppFont.body)
-                        Text("включит медкнижку, схемы и окно натощак").textStyle(AppFont.caption)
+                HStack(spacing: Token.Space.s12) {
+                    шаг(значок: "minus", на: -0.1)
+                    Spacer(minLength: 0)
+                    HStack(alignment: .firstTextBaseline, spacing: Token.Space.s6) {
+                        // Поле ввода, а не только шаговик, и это замер,
+                        // а не вкус: в прототипе вес меняется ТОЛЬКО
+                        // кнопками по 0,1 кг от 8,4. Для сорокакилограммовой
+                        // собаки это триста с лишним нажатий, а такие
+                        // собаки у нас в отзывах есть. Шаговик оставлен
+                        // для подгонки, ввод — для первого числа.
+                        TextField("4,1", text: $draft.weight)
+                            .keyboardType(.decimalPad)
+                            .focused($весВФокусе)
+                            .multilineTextAlignment(.center)
+                            .textStyle(AppFont.numeric(Token.FontSize.poster,
+                                                       weight: Token.FontWeight.light))
+                            .accessibilityLabel("Вес")
+                        Text("кг").textStyle(AppFont.body.color(Token.Ink.secondary))
                     }
+                    Spacer(minLength: 0)
+                    шаг(значок: "plus", на: 0.1)
                 }
-                TGExplainer(text: "Можно включить потом — вкладка «Здоровье» появится в тот же момент.")
+                Text("Для порции и сборов в дорогу.")
+                    .textStyle(AppFont.caption)
+                    .wraps()
             }
         }
         // **Низ отдан системе, а не слоту `TGScreen`, и только здесь.**
         //
         // Слот каркаса считает запас от высоты САМОЙ панели
-        // (`TGScaffolds.swift:177` `запасПодНизом = высотаНиза + s24`),
+        // (`TGScaffolds.swift` `запасПодНизом = высотаНиза + s24`),
         // а панель в нём — сосед по `ZStack`, не inset. Клавиатура
         // поднимает панель и высоту её не меняет: запас остаётся
         // прежним, и содержимое уходит под панель. Замер с кадра:
         // `minY` панели 446 против 772 у экрана без клавиатуры,
         // Δ 326 pt содержимого недостижимо даже полной прокруткой.
-        // Здесь это «Дата рождения» и «Собака на лечении» — два
-        // последних блока формы.
         //
         // `safeAreaInset` складывается с клавиатурной безопасной
         // областью, поэтому запас растёт вместе с ней сам.
-        //
-        // # Почему один экран, а не каркас
-        //
-        // `safeAreaInset` рядом с полем ввода в этом проекте
-        // не измерен ни разу: все четыре живых места
-        // (`TodayScreen:149`, `VetSummaryScreen:283`,
-        // `SitterBriefingScreen:58`, `OnboardingFlow:119`) — экраны
-        // БЕЗ полей ввода. Что сложение документировано Apple, здесь
-        // не равно «измерено». Правка стоит на одном экране нарочно:
-        // не сойдётся — вариант мёртв ценой одного адреса, а не
-        // четырнадцати слотов.
-        //
-        // # Вид не меняется ни на точку
-        //
-        // `VStack(spacing: s8)` и оба отступа — те же, что у слота
-        // (`TGScaffolds.swift:196-198`). Подложки нет и здесь: она
-        // у низа `TGScreen` — решение дизайна, и принимать его
-        // попутно нельзя.
         .safeAreaInset(edge: .bottom) {
             VStack(spacing: Token.Space.s8) {
                 TGButton(title: "Дальше", isEnabled: draft.isValid, action: onNext)
@@ -207,119 +195,183 @@ struct DogStep: View {
         // возврата, и до 15.10 убрать её на этом шаге было нечем:
         // человек, набравший вес, упирался в экран, у которого две
         // последние строки формы под панелью.
-        //
-        // Стоит ПОСЛЕ `safeAreaInset` нарочно: это две разные правки
-        // одного шага, и проверяются они одним кадром — выход без
-        // вёрстки оставляет человека без «Даты рождения», вёрстка без
-        // выхода оставляет его с клавиатурой навсегда.
         .готовоНадКлавиатурой { весВФокусе = false }
+    }
+
+    /// Круглая кнопка подгонки веса.
+    ///
+    /// Шаг 0,1 кг — как в макете. Нижняя граница 0,1, а не 0: вес нуль
+    /// это не «маленькая собака», это «веса нет», и порция от него
+    /// посчиталась бы нулевой.
+    ///
+    /// **Пока поле пусто, кнопки выключены, и это не придирка.**
+    /// Шаговик подгоняет число, которое уже есть; от пустоты «плюс»
+    /// дал бы 0,1 кг — то есть ПОДСТАВИЛ БЫ ВЕС, которого человек
+    /// не называл. Подставить 4,1 «для удобства» нельзя по той же
+    /// причине, по которой у нас пусты время забора и норма с бланка:
+    /// подсказку человек подтверждает, подстановку — нет, а вес
+    /// потом читает врач.
+    private func шаг(значок: String, на дельта: Double) -> some View {
+        Button {
+            guard let текущий = draft.weightValue else { return }
+            draft.weight = Fmt.decimal(max(0.1, текущий + дельта))
+            Haptics.tap()
+        } label: {
+            Image(systemName: значок)
+                .font(.system(size: Token.Size.iconLg, weight: .semibold))
+                // `Ink.secondary`, а НЕ `Ink.faint`: у последнего в его
+                // же описании стоит «текстом и значками не красится
+                // ни в каком кегле», и `InkContrastTests` это держит.
+                .foregroundStyle(draft.weightValue == nil ? Token.Ink.secondary : Token.Ink.primary)
+                .frame(width: Token.Size.controlM, height: Token.Size.controlM)
+        }
+        .disabled(draft.weightValue == nil)
+        .стекло(радиус: Token.Radius.capsule)
+        .accessibilityLabel(дельта > 0 ? "Больше" : "Меньше")
     }
 }
 
-// MARK: - Шаг 3 · режим дня и питания
+// MARK: - Шаг 2 · режим дня
 
-/// Сколько раз ест, во сколько встаёт, сколько граммов за раз.
-/// Спрашиваем сразу: без этого приложение не сможет ни подсказать время
-/// кормления, ни заметить, что собака переедает.
-struct ScheduleStep: View {
-    @Binding var draft: ScheduleDraft
+/// Режим одной фразой: сколько ест, когда встаёт, пьёт ли лекарства.
+///
+/// # Чем это отличается от прежнего шага и от макета
+///
+/// Прежде здесь стоял `ScheduleEditor` целиком — четыре карточки:
+/// подъём и отбой, число кормлений, дневная норма в граммах, времена
+/// кормлений. Макет iOS 28 сводит шаг к одной фразе с тремя
+/// подчёркнутыми местами, и это снято не «для красоты»: человек
+/// на третьей минуте знакомства не знает дневную норму в граммах,
+/// а приложение всё равно сверит её с тем, как он кормит на самом
+/// деле, и поправит.
+///
+/// ```
+/// макет    «{кличка} ест 2 раза в день, ходит на улице,
+///           лекарства не пьёт.» — сплошная фраза, слова подчёркнуты
+/// здесь    три строки, у каждой вопрос и подчёркнутый ответ
+/// ```
+///
+/// **Почему не сплошная фраза.** Подчёркнутое слово внутри абзаца —
+/// цель касания размером со слово, а у нас записано «цели ≥ 44 pt».
+/// Сделать её строкой — единственный способ соблюсти это, не ломая
+/// перенос на длинной кличке.
+///
+/// **«ходит на улице» НЕ СДЕЛАНО, и дело не в вёрстке.** Такого поля
+/// нет нигде: `пелёнк|лоток|ходит дома` — ноль вхождений во всём
+/// дереве (замер 23.10.2026). Нарисовать выбор, которому некуда
+/// записаться, значит завести вход без механизма. Вместо него —
+/// подъём (`wakeMinuteOfDay`), из которого раскладываются кормления
+/// и выходы, то есть место с дорогой.
+///
+/// **Граммы и отбой остались умолчанием** `ScheduleDraft` (120 г,
+/// 23:00) и правятся в «Режиме дня» профиля. Это ровно то, что
+/// получал человек, нажимавший «Дальше» не меняя полей, — то есть
+/// почти каждый; разница в том, что теперь он их не видел. Названо
+/// здесь, а не умолчано.
+struct ModeStep: View {
+    @Binding var draft: DogDraft
+    @Binding var schedule: ScheduleDraft
     var onNext: () -> Void
+
+    private var кличка: String { Fmt.dogNameOrFallback(draft.name) }
 
     var body: some View {
         TGScreen(title: "Режим дня") {
-            TGExplainer(text: "Приблизительно — приложение сверит это с тем, как ты кормишь на самом деле, и поправит.")
-            ScheduleEditor(draft: $draft, isVerbose: true)
+            TGCard(spacing: 0) {
+                строка(вопрос: "Ест",
+                       ответ: String(localized: "\(Fmt.times(schedule.mealsPerDay)) в день")) {
+                    ForEach(Self.сколькоРаз, id: \.self) { сколько in
+                        Button(.готовая(Fmt.times(сколько))) { schedule.mealsPerDay = сколько }
+                    }
+                }
+                TGDivider()
+                строка(вопрос: "Встаёт",
+                       ответ: Fmt.clock(minuteOfDay: schedule.wakeMinuteOfDay)) {
+                    ForEach(Self.подъём, id: \.self) { минута in
+                        Button(.готовая(Fmt.clock(minuteOfDay: минута))) {
+                            schedule.wakeMinuteOfDay = минута
+                        }
+                    }
+                }
+                TGDivider()
+                строка(вопрос: "Лекарства",
+                       ответ: draft.isOnTreatment ? String(localized: "пьёт")
+                                                  : String(localized: "не пьёт")) {
+                    Button("не пьёт") { draft.isOnTreatment = false }
+                    Button("пьёт") { draft.isOnTreatment = true }
+                }
+            }
+
+            TGExplainer(text: "Нажми подчёркнутое, чтобы поменять. Приблизительно — приложение сверит это с тем, как ты кормишь на самом деле, и поправит.")
+
+            if draft.isOnTreatment {
+                TGCard {
+                    Text("Медкнижка включится").textStyle(AppFont.cardTitle)
+                    Text("Появится вкладка «Здоровье», окно натощак и защита от двойной дозы. Препарат добавишь потом — схему и часы спросим там.")
+                        .textStyle(AppFont.caption)
+                        .wraps()
+                }
+            }
         } bottom: {
             TGButton(title: "Дальше", action: onNext)
         }
     }
-}
 
-// MARK: - Шаг 4 · уход
+    /// Сколько раз в день кормят. Четыре — потолок не наш: больше
+    /// четырёх раз кормят щенков, и у них свой расчёт, которого
+    /// в приложении пока нет.
+    private static let сколькоРаз = [1, 2, 3, 4]
 
-/// Уход приложение не заводит за человека: у каждой собаки он свой.
-/// Здесь только предложения, из которых отмечают нужное — и шаг можно
-/// пропустить целиком.
-struct CareStep: View {
-    /// В просмотре — ложно, и тогда отмеченное никуда не уезжает.
+    /// Часы подъёма получасовым шагом с пяти до одиннадцати.
+    /// Границы — не круглое число, а то, за чем режим перестаёт быть
+    /// режимом: раньше пяти это смена, позже одиннадцати — не подъём.
+    private static let подъём: [Int] = stride(from: 5 * 60, through: 11 * 60, by: 30).map { $0 }
+
+    /// Строка «вопрос — подчёркнутый ответ».
     ///
-    /// **Своя защита, а не общая с созданием собаки.** `saveDog()`
-    /// в просмотре молчит потому, что собаки нет; здесь собака ЕСТЬ —
-    /// настоящая, живая, та, у которой весь дневник. Без этого
-    /// параметра человек, заглянувший в онбординг со своего телефона,
-    /// получил бы на неё чужие дела ухода, а инструмент сверки макета
-    /// испортил бы ему данные.
-    var пишемВБазу: Bool = true
-    var onNext: () -> Void
-
-    @Environment(\.modelContext) private var context
-    @Query private var dogs: [Dog]
-    @State private var chosen: Set<String> = []
-    @State private var loaded = false
-
-    var body: some View {
-        TGScreen(title: "Что делаешь для ухода") {
-            TGExplainer(text: "Отмечено то, что нужно почти всем. Зубы — каждый день: налёт твердеет за сутки. Остальное у каждой собаки своё и меняется когда угодно.")
-
-            ForEach(CareKind.allCases, id: \.self) { kind in
-                let group = SeedData.careSuggestions.filter { $0.kind == kind }
-                TGCard(spacing: 0) {
-                    TGSectionHeader(title: .готовая(kind.sectionTitle))
-                    ForEach(group) { suggestion in
-                        Button { toggle(suggestion) } label: {
-                            HStack(spacing: Token.Space.s12) {
-                                Image(systemName: chosen.contains(suggestion.id)
-                                      ? "checkmark.circle.fill" : "circle")
-                                    .font(.system(size: 22))
-                                    .foregroundStyle(chosen.contains(suggestion.id)
-                                                     ? Token.Action.doneText : Token.Ink.secondary)
-                                VStack(alignment: .leading, spacing: Token.Space.s2) {
-                                    Text(suggestion.title).textStyle(AppFont.body)
-                                    Text(suggestion.detail)
-                                        .textStyle(AppFont.caption)
-                                        .wraps()
-                                }
-                                Spacer(minLength: 0)
-                            }
-                            .frame(minHeight: Token.Size.tapTarget)
-                            .contentShape(Rectangle())
-                        }
-                        .buttonStyle(.plain)
-                        if suggestion.id != group.last?.id { TGDivider() }
-                    }
+    /// Вся строка целиком и есть цель касания: подчёркнуто слово,
+    /// нажимается строка. Так и подпись читается как в макете,
+    /// и цель остаётся не меньше `tapTarget`.
+    private func строка<Пункты: View>(вопрос: LocalizedStringKey, ответ: String,
+                                      @ViewBuilder пункты: () -> Пункты) -> some View {
+        Menu {
+            пункты()
+        } label: {
+            HStack(spacing: Token.Space.s12) {
+                VStack(alignment: .leading, spacing: Token.Space.s2) {
+                    Text(вопрос).textStyle(AppFont.caps).textCase(.uppercase)
+                    Text(.готовая(ответ))
+                        .textStyle(AppFont.cardTitle.color(Token.Ink.link))
+                        .underline()
+                        .wraps()
                 }
+                Spacer(minLength: 0)
+                Image(systemName: "chevron.up.chevron.down")
+                    .font(.system(size: Token.Size.iconSm, weight: .semibold))
+                    .foregroundStyle(Token.Ink.secondary)
+                    .accessibilityHidden(true)
             }
-        } bottom: {
-            TGButton(title: chosen.isEmpty ? "Пропустить" : "Дальше · \(chosen.count)") {
-                save()
-                onNext()
-            }
+            .frame(minHeight: Token.Size.tapTarget)
+            .contentShape(Rectangle())
         }
-        .task {
-            guard !loaded else { return }
-            chosen = Set(SeedData.careSuggestions.filter(\.isDefault).map(\.id))
-            loaded = true
-        }
-    }
-
-    private func toggle(_ suggestion: SeedData.CareSuggestion) {
-        if chosen.contains(suggestion.id) { chosen.remove(suggestion.id) } else { chosen.insert(suggestion.id) }
-        Haptics.tap()
-    }
-
-    private func save() {
-        guard пишемВБазу, let dog = dogs.first else { return }
-        SeedData.addCare(chosen, to: dog, context: context)
+        .buttonStyle(.plain)
     }
 }
 
 /// Строка «подпись — поле». Вынесена, потому что повторяется на трёх экранах.
 ///
 /// Подпись отдаётся полю и как accessibility-имя: без этого VoiceOver
-/// называет поле плейсхолдером («Стич», «4,1», «+33…»), а два телефона
-/// подряд на экране «Если что-то случилось» звучат одинаково.
+/// называет поле плейсхолдером («4,1», «+33…»), а два телефона подряд
+/// на экране «Если что-то случилось» звучат одинаково.
 /// `spokenLabel` — для случаев, когда видимая подпись коротка нарочно
 /// («Телефон» под заголовком «Ветеринар»), а вслух нужна полная.
+///
+/// > **`ViewThatFits` здесь ЗАПРЕЩЁН красной линией проекта и всё ещё
+/// > стоит.** Он держит в дереве обе раскладки, и озвучка находит две
+/// > копии поля. Снять его отсюда нельзя попутно: `LabeledField` зовут
+/// > девятнадцать мест в `Health`, `Family` и `Profile`, а эти каталоги
+/// > смене редизайна онбординга не открыты. Названо, чтобы следующий
+/// > не принял молчание за отсутствие долга.
 struct LabeledField<Content: View>: View {
     let label: String
     var spokenLabel: String? = nil
@@ -349,89 +401,27 @@ struct LabeledField<Content: View>: View {
     }
 }
 
-// MARK: - Шаг 3 · кто ещё за ним ходит
-
-struct FamilyStep: View {
-    /// В просмотре — ложно: `invite()` ниже вставляет участника
-    /// в хранилище, и в чужом дневнике он остался бы навсегда.
-    var пишемВБазу: Bool = true
-    var onSkip: () -> Void
-    var onInvite: () -> Void
-
-    @Environment(\.modelContext) private var context
-    @State private var role: FamilyRole = .coOwner
-
-    /// Ссылки-приглашения пока нет: показывать её на онбординге —
-    /// значит обещать обмен между телефонами, которого ещё не существует.
-    private var inviteLink: String { String(localized: "участник заводится в «Семье»") }
-
-    var body: some View {
-        TGScreen(title: "Кто ещё за ним ходит") {
-            TGExplainer(text: "Можно пропустить и позвать позже.")
-
-            TGCard {
-                TGSectionHeader(title: "ссылка-приглашение")
-                Text(inviteLink).textStyle(AppFont.numeric(17))
-                TGDivider()
-                TGSectionHeader(title: "роль")
-                TGChipGroup(
-                    items: [FamilyRole.coOwner, .caregiver, .helper],
-                    title: \.title,
-                    subtitle: { $0.permissionSummary },
-                    isSelected: { $0 == role }
-                ) { role = $0 }
-                // Строка снята целиком 08.10.2026: она несла ДВА обещания,
-                // и ни одно не исполнено.
-                //
-                // «принявший не сможет её поменять» — обещание про ЧУЖОЙ
-                // телефон. Слой обмена о правах не спрашивает вовсе
-                // (`Permission`/`FamilyRole`/`can(` — ноль вхождений во всех
-                // девяти файлах `TogoShared/Sync/`), а на своём телефоне
-                // гость заводит себе карточку со-владельца и жмёт «Это я»:
-                // ворот на права нет ни у «Добавить человека»
-                // (`FamilyScreen:55`, только `ProGate`), ни у «Это я» (`:420`).
-                //
-                // «Ссылка живёт 24 часа» — тоже не исполнено: `CKShare` сам
-                // не истекает, срок пришлось бы хранить у себя, и
-                // `accessExpiresAt` человеком не пишется нигде.
-                //
-                // Снято, а не переписано, нарочно: правка литерала завела бы
-                // новый ключ и пробелы на en/fr/uk, а у француза русская
-                // строка читается как решение, а не как пропуск. Снятие
-                // возвращает в каталог уже оплаченный перевод (ключ был
-                // переведён на все четыре языка) и уменьшает долг.
-                //
-                // Вернуть эту строку можно после того, как срок начнут
-                // хранить у себя, а роль — опознавать из `CKShare`.
-            }
-
-            TGCard {
-                Text("Бесплатно — одна собака и два человека").textStyle(AppFont.cardTitle)
-                Text("Этого хватает паре: и лечение, и окно натощак, и защита от двойной дозы. За безопасность собаки денег не берём.")
-                    .textStyle(AppFont.caption)
-            }
-        } bottom: {
-            TGButton(title: "Отправить ссылку", systemImage: "square.and.arrow.up") {
-                invite()
-                onInvite()
-            }
-            TGButton(title: "Пока сама", variant: .quiet, size: .medium, action: onSkip)
-        }
-    }
-
-    private func invite() {
-        guard пишемВБазу else { return }
-        let member = FamilyMember(name: "Приглашение", role: role)
-        member.inviteToken = UUID().uuidString
-        member.inviteExpiresAt = Date().addingTimeInterval(24 * 3600)
-        context.insert(member)
-    }
-}
-
-// MARK: - Шаг 4 · разрешение на уведомления
+// MARK: - Шаг 3 · разрешение на уведомления
 
 /// Разрешение спрашиваем не на старте, а когда уже понятно, за что оно.
 /// Отказ ничего не ломает: дневник работает целиком без уведомлений.
+///
+/// # Третьей строки макета здесь нет, и это запрет, а не пропуск
+///
+/// Прототип показывает три строки: «Доза по часам», «Окно натощак»
+/// и **«Тревога · кровь, рвота — со звуком»**. Третьей дороги в коде
+/// НЕТ: у `NotificationCenterService.Category` четыре случая —
+/// `morningBrief`, `dose`, `fasting`, `escalation`, — и тревоги среди
+/// них нет вовсе (замер 23.10.2026). Нарисовать её значило бы обещать
+/// уведомление, которое не придёт в тот единственный раз, когда оно
+/// нужнее всего.
+///
+/// Поэтому третьей строкой остаётся лестница эскалации — у неё
+/// категория есть. **Её подпись не тронута ни словом, и это тоже
+/// решение:** «сначала дежурному, потом остальным» обещает адресатов,
+/// а пуши у нас локальные (`CKSubscription` — ноль вхождений). Долг
+/// открыт, наряд — `docs/спринт-канал-эскалации.md`; усиливать
+/// обещание нельзя, чинить его — не эта работа.
 struct NotificationsPrimingStep: View {
     /// В просмотре — ложно, и тогда шаг ничего не меняет.
     ///
@@ -465,10 +455,14 @@ struct NotificationsPrimingStep: View {
                     .textStyle(AppFont.caption)
             }
         } bottom: {
-            TGButton(title: "Разрешить уведомления", systemImage: "bell", isEnabled: !isRequesting) {
+            TGButton(title: "Разрешить", systemImage: "bell", isEnabled: !isRequesting) {
                 Task { await request() }
             }
-            TGButton(title: "Не сейчас", variant: .quiet, size: .medium) {
+            // «Потом, в настройках», а не «Не сейчас»: дорога есть
+            // и названа — «Настройки → Уведомления», оттуда же открывается
+            // системный экран разрешений. Отказ без адреса читается как
+            // «больше не спросят».
+            TGButton(title: "Потом, в настройках", variant: .quiet, size: .medium) {
                 if пишемВБазу { settings.notificationsAsked = true }
                 onDone()
             }
@@ -500,7 +494,6 @@ struct InterruptRow: View {
         }
     }
 }
-
 
 /// Конец повторного прохождения: ничего не создаём, просто выпускаем обратно.
 struct HowItWorksReplayEnd: View {
