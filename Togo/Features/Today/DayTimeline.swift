@@ -342,8 +342,26 @@ struct NowMarker: View {
                     .fixedSize()
                     .frame(width: DayTimelineRow.timeWidth, alignment: .trailing)
 
+                // **`Token.Action.primary`, а не `Component.Timeline.nowMarker`** —
+                // красная линия проекта: в `Togo/Features` только `Token.*`
+                // и `TG*`, компонентные токены принадлежат дизайн-системе.
+                // Храповик `ComponentTokenScopeTests` поймал это как
+                // одиннадцатое обращение при записанных десяти.
+                //
+                // Пикселя правка не двигает: шапка `Tokens.generated.swift:20`
+                // объявляет `Timeline.nowMarker == Action.primary`, оба сидят
+                // на примитиве `arctic`. В «Кино» это `#FFFFFF` в тёмной
+                // и `#1F4FFF` в светлой.
+                //
+                // > **Следствие названо, а не замолчано: у
+                // > `Component.Timeline.nowMarker` теперь НОЛЬ живых
+                // > читателей в Swift.** Это наш класс «поле без читателя»:
+                // > грепом оно находится один раз, в объявлении, и выглядит
+                // > работающим. Если метка «сейчас» должна когда-нибудь
+                // > разойтись с акцентом — расходиться ей придётся через
+                // > семантику, а не через этот токен.
                 Circle()
-                    .fill(Token.Component.Timeline.nowMarker)
+                    .fill(Token.Action.primary)
                     .frame(width: Token.Size.handleH, height: Token.Size.handleH)
                     .frame(width: Token.Size.avatarMd)
 
