@@ -36,10 +36,11 @@ import sys
 import site_en
 import site_fr
 import site_uk
+import site_kk
 
 # Переводы: язык → модуль. Русский здесь не нужен — он источник,
 # его текст читается из LegalScreens.swift.
-TRANSLATIONS = {"en": site_en, "fr": site_fr, "uk": site_uk}
+TRANSLATIONS = {"en": site_en, "fr": site_fr, "uk": site_uk, "kk": site_kk}
 
 def проверить_языки():
     """Язык заводится в ТРЁХ местах, и ни одно не знает об остальных.
@@ -96,7 +97,7 @@ PERSISTENCE = os.path.join(ROOT, "TogoShared/Domain/Persistence.swift")
 # СЛУЧАЙНО: пока `site_uk` не стоит в `TRANSLATIONS`, сторож его не читает
 # вовсе. Полная копия без сторожа выглядит снаружи ровно как копия
 # под сторожем. Подключать оба места разом.
-LANGS = ("en", "fr", "ru", "uk")
+LANGS = ("en", "fr", "kk", "ru", "uk")
 
 
 def contact(name):
@@ -366,7 +367,7 @@ def switcher(lang, file, titles):
 
 
 LANGUAGE_NAMES = {"ru": "Русский", "en": "English", "fr": "Français",
-                  "uk": "Українська"}
+                  "uk": "Українська", "kk": "Қазақша"}
 
 
 def linkify(text):
@@ -497,7 +498,7 @@ def render_support(lang):
 # языке, на который ведёт: человек, не читающий двух других, должен
 # узнать свою строку.
 IN_LANGUAGE = {"en": "in English", "ru": "по-русски", "fr": "en français",
-               "uk": "українською"}
+               "uk": "українською", "kk": "қазақша"}
 
 
 def render_stub(file, titles):
