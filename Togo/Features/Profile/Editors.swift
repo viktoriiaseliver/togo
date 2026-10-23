@@ -30,6 +30,7 @@ struct DogEditorScreen: View {
 
     var body: some View {
         TGScreen {
+            CinemaHeader(isNew ? "Новая собака" : "Профиль", отступы: false)
             TGExplainer(text: "Обязательны только кличка и вес. Остальное можно пропустить и заполнить когда угодно.")
 
             TGCard(spacing: 0) {
@@ -140,8 +141,7 @@ struct DogEditorScreen: View {
             .padding(.bottom, Token.Space.s8)
         }
         .navigationTitle(isNew ? "Новая собака" : "Профиль")
-        .posterHeader(isNew ? "Новая собака" : "Профиль")
-        .navigationBarTitleDisplayMode(.large)
+        .cinemaScreen()
         // Выход с цифровой клавиатуры. Худший экран этого класса:
         // см. причину у объявления `весВФокусе`.
         .готовоНадКлавиатурой { весВФокусе = false }

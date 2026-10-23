@@ -32,8 +32,7 @@ struct ScheduleScreen: View {
             }
         }
         .navigationTitle("Режим")
-        .posterHeader("Режим")
-        .navigationBarTitleDisplayMode(.large)
+        .cinemaScreen()
         .task {
             guard !loaded else { return }
             draft = ScheduleDraft.from(dog)

@@ -30,6 +30,7 @@ struct TrainingLibraryScreen: View {
 
     var body: some View {
         TGScreen {
+            CinemaHeader("Занятия и шаги", отступы: false)
             if steps.isEmpty && sessions.isEmpty {
                 EmptyStateCard(
                     subject: .trainingLibrary,
@@ -44,8 +45,7 @@ struct TrainingLibraryScreen: View {
             }
         }
         .navigationTitle("Занятия и шаги")
-        .posterHeader("Занятия и шаги")
-        .navigationBarTitleDisplayMode(.large)
+        .cinemaScreen()
         .confirmationDialog("Удалить шаг?",
                             isPresented: Binding(get: { removingStep != nil },
                                                  set: { if !$0 { removingStep = nil } }),

@@ -19,6 +19,7 @@ struct TripSetupScreen: View {
 
     var body: some View {
         TGScreen(title: "Едем с \(dog.flatMap(\.nameIfAny) ?? String(localized: "собакой"))") {
+            CinemaHeader("Поездка", отступы: false)
             TGExplainer(text: "Режим включится сам в день отъезда и выключится, когда вернётесь.")
 
             TGCard(spacing: 0) {
@@ -62,9 +63,8 @@ struct TripSetupScreen: View {
             TGButton(title: "Включить режим", systemImage: "car", isEnabled: !destination.isEmpty) { save() }
         }
         .navigationTitle("Поездка")
-        .posterHeader("Поездка")
+        .cinemaScreen()
         .usageScreen(.trip)
-        .navigationBarTitleDisplayMode(.large)
     }
 
     private var dayCount: Int {

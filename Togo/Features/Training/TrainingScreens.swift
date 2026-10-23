@@ -101,6 +101,7 @@ struct TransferMatrixScreen: View {
 
     var body: some View {
         TGScreen {
+            CinemaHeader("Перенос навыка", отступы: false)
             TGExplainer(text: "Навык не «выучен» или «не выучен». «Ко мне» дома и «ко мне» на улице рядом с другой собакой — два разных навыка.")
 
             axisCard(title: "где", values: places)
@@ -117,8 +118,7 @@ struct TransferMatrixScreen: View {
             }
         }
         .navigationTitle("Перенос навыка")
-        .posterHeader("Перенос навыка")
-        .navigationBarTitleDisplayMode(.large)
+        .cinemaScreen()
         .sheet(isPresented: $showPaywall) { NavigationStack { PaywallScreen() } }
     }
 
@@ -216,6 +216,7 @@ struct ProcedurePrepScreen: View {
 
     var body: some View {
         TGScreen {
+            CinemaHeader("Процедуры", отступы: false)
             TGExplainer(text: "Самое ценное обучение для собаки с регулярными процедурами — не «место», а спокойно дать лапу, стоять при осмотре и самой залезать в переноску.")
 
             if skills.isEmpty {
@@ -277,8 +278,7 @@ struct ProcedurePrepScreen: View {
             }
         }
         .navigationTitle("Процедуры")
-        .posterHeader("Процедуры")
-        .navigationBarTitleDisplayMode(.large)
+        .cinemaScreen()
         .task { seedOnce() }
         .sheet(item: $открыт) { skill in
             SkillAttemptSheet(skill: skill) { удалить in

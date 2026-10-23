@@ -28,6 +28,7 @@ struct SitterBriefingScreen: View {
 
     var body: some View {
         TGScreen {
+            CinemaHeader("Инструкция", отступы: false)
             TGCard {
                 Text("Ты с \(dog.flatMap(\.nameIfAny) ?? String(localized: "собакой"))\(untilText)").textStyle(AppFont.cardTitle)
                 if let ownerName {
@@ -52,7 +53,7 @@ struct SitterBriefingScreen: View {
             TGExplainer(text: "Это всё, что нужно знать. Диагнозов и истории болезни здесь нет — они хозяйке, не тебе.")
         }
         .navigationTitle("Инструкция")
-        .posterHeader("Инструкция")
+        .cinemaScreen()
         .usageScreen(.sitter)
         .navigationBarTitleDisplayMode(.inline)
         .safeAreaInset(edge: .bottom) {

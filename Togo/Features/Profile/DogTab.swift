@@ -498,8 +498,7 @@ struct TripScreen: View {
                      size: .medium, systemImage: "trash") { isConfirmingDelete = true }
         }
         .navigationTitle(trip.destination)
-        .posterHeader(.значение(trip.destination))
-        .navigationBarTitleDisplayMode(.large)
+        .cinemaScreen()
         .confirmationDialog("Убрать поездку?", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
             Button("Убрать", role: .destructive) {
                 context.delete(trip)
