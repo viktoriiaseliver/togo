@@ -74064,35 +74064,6 @@
         }
       }
     },
-    "Стич · дальше" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Stitch · next"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Stitch · ensuite"
-          }
-        },
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Стич · әрі қарай"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Стіч · далі"
-          }
-        }
-      }
-    },
     "Блокировка и Dynamic Island" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -74122,35 +74093,6 @@
         }
       }
     },
-    "Прогулка · Стич" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Walk · Stitch"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Sortie · Stitch"
-          }
-        },
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Серуен · Стич"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Прогулянка · Стіч"
-          }
-        }
-      }
-    },
     "вышли в 19:52" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -74176,35 +74118,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "вийшли о 19:52"
-          }
-        }
-      }
-    },
-    "«Togo, Стич пописал»" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "“Togo, Stitch peed”"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "« Togo, Stitch a fait pipi »"
-          }
-        },
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "«Togo, Стич кіші дәретке шықты»"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "«Togo, Стіч пописав»"
           }
         }
       }
@@ -99348,35 +99261,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Одне фото для всіх екранів"
-          }
-        }
-      }
-    },
-    "первое из твоих или Стич" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "your first photo or Stitch"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "votre première photo ou Stitch"
-          }
-        },
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "сенің бірінші суретің немесе Стич"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "перше з твоїх або Стіч"
           }
         }
       }
