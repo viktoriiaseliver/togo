@@ -670,6 +670,7 @@ struct MemberScreen: View {
 
     var body: some View {
         TGScreen {
+            CinemaHeader(значение: member.name, отступы: false)
             TGCard {
                 TGSectionHeader(title: "роль", subtitle: "это пресет прав, а не потолок")
                 TGChipGroup(
@@ -763,8 +764,7 @@ struct MemberScreen: View {
             }
         }
         .navigationTitle(member.name)
-        .posterHeader(.значение(member.name))
-        .navigationBarTitleDisplayMode(.large)
+        .cinemaScreen()
     }
 }
 
@@ -869,6 +869,7 @@ struct SitterPreviewScreen: View {
 
     var body: some View {
         TGScreen(title: "\(dog.flatMap(\.nameIfAny) ?? String(localized: "Собака")) · ты помощник") {
+            CinemaHeader("Вид ситтера", отступы: false)
             TGExplainer(text: "Так экран выглядит у человека с ролью «помощник».")
 
             TGCard(spacing: 0) {
@@ -902,8 +903,7 @@ struct SitterPreviewScreen: View {
             }
         }
         .navigationTitle("Вид ситтера")
-        .posterHeader("Вид ситтера")
-        .navigationBarTitleDisplayMode(.large)
+        .cinemaScreen()
     }
 
     private var plan: [(String, String)] {

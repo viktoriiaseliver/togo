@@ -15,15 +15,15 @@ struct EmergencyScreen: View {
 
     var body: some View {
         TGScreen {
+            CinemaHeader("Если что-то случилось", отступы: false)
             disclaimer
             contactsCard
             toxicCard
             vetBriefCard
         }
         .navigationTitle("Если что-то случилось")
-        .posterHeader("Если что-то случилось")
+        .cinemaScreen()
         .usageScreen(.emergency)
-        .navigationBarTitleDisplayMode(.large)
     }
 
     // MARK: Главное
@@ -195,6 +195,7 @@ struct DocumentsScreen: View {
 
     var body: some View {
         TGScreen {
+            CinemaHeader("Документы", отступы: false)
             TGCard(spacing: 0) {
                 TGSectionHeader(title: "номера")
                 LabeledField(label: "Чип") {
@@ -266,8 +267,7 @@ struct DocumentsScreen: View {
             TGExplainer(text: "Всё это лежит на телефоне и никуда не отправляется само.")
         }
         .navigationTitle("Документы")
-        .posterHeader("Документы")
-        .navigationBarTitleDisplayMode(.large)
+        .cinemaScreen()
     }
 
     private func binding(_ keyPath: ReferenceWritableKeyPath<Dog, String?>) -> Binding<String> {

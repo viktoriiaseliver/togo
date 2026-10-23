@@ -27,6 +27,7 @@ struct CareScreen: View {
 
     var body: some View {
         TGScreen {
+            CinemaHeader("Уход", отступы: false)
             if tasks.isEmpty {
                 emptyState
             } else {
@@ -38,9 +39,8 @@ struct CareScreen: View {
             }
         }
         .navigationTitle("Уход")
-        .posterHeader("Уход")
+        .cinemaScreen()
         .usageScreen(.care)
-        .navigationBarTitleDisplayMode(.large)
         .toolbar {
             if dog != nil {
                 ToolbarItem(placement: .topBarTrailing) {

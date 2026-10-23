@@ -27,6 +27,7 @@ struct HeatScreen: View {
 
     var body: some View {
         TGScreen {
+            CinemaHeader("Цикл", отступы: false)
             if let ongoing = records.first, ongoing.isOngoing {
                 ongoingCard(ongoing)
             }
@@ -45,8 +46,7 @@ struct HeatScreen: View {
             disclaimer
         }
         .navigationTitle("Цикл")
-        .posterHeader("Цикл")
-        .navigationBarTitleDisplayMode(.large)
+        .cinemaScreen()
         .toolbar {
             if canEdit {
                 ToolbarItem(placement: .topBarTrailing) {

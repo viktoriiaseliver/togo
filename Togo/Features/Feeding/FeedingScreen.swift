@@ -111,6 +111,7 @@ struct FeedingScreen: View {
 
     var body: some View {
         TGScreen {
+            CinemaHeader("Питание", надпись: "норма и часы", отступы: false)
             if dog == nil {
                 EmptyStateCard(
                     subject: .feeding,
@@ -130,9 +131,8 @@ struct FeedingScreen: View {
             }
         }
         .navigationTitle("Питание")
-        .posterHeader("Питание", subtitle: "норма и часы")
+        .cinemaScreen()
         .usageScreen(.feeding)
-        .navigationBarTitleDisplayMode(.large)
         .task {
             now = Date()
             rebuildReport()

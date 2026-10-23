@@ -30,6 +30,7 @@ struct SharedDiaryScreen: View {
 
     var body: some View {
         TGScreen {
+            CinemaHeader("Общий дневник", отступы: false)
             // Выше тумблера нарочно: это и есть ответ на вопрос «почему
             // у меня пусто». Внутри `if isOn` он бы не показался вовсе —
             // при неудавшемся приёме `accepted()` не звали, и обмен
@@ -55,8 +56,7 @@ struct SharedDiaryScreen: View {
             limitsCard
         }
         .navigationTitle("Общий дневник")
-        .posterHeader("Общий дневник")
-        .navigationBarTitleDisplayMode(.large)
+        .cinemaScreen()
         .usageScreen(.sharedDiary)
         .task {
             // Читается ДО `refresh()` и вне его: у `refresh()` стоит

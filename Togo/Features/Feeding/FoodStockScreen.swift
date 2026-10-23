@@ -78,6 +78,7 @@ struct FoodStockScreen: View {
 
     var body: some View {
         TGScreen {
+            CinemaHeader("Чем кормим", отступы: false)
             if stocks.isEmpty {
                 EmptyStateCard(
                     subject: .foodStock,
@@ -109,9 +110,8 @@ struct FoodStockScreen: View {
             }
         }
         .navigationTitle("Чем кормим")
-        .posterHeader("Чем кормим")
+        .cinemaScreen()
         .usageScreen(.foodStock)
-        .navigationBarTitleDisplayMode(.large)
         .sheet(isPresented: $isAdding) { FoodStockEditorSheet(dog: dog) }
         .sheet(item: $editing) { stock in FoodStockEditorSheet(stock: stock, dog: dog) }
     }
