@@ -224,6 +224,12 @@ struct DogTab: View {
     ///
     /// Ужимает `ФонФото.ужать` — тот же, что у фона приложения: 1000 px
     /// по длинной стороне, JPEG 0,8. Своего числа здесь нет нарочно.
+    ///
+    /// **С 23.10.2026 вход не один.** Второй — пустой жетон в шапке
+    /// «Сегодня» (`ЖетонСобаки`), решение дизайна, пункт 9. Разбор
+    /// снимка у обоих общий — `ФотоСобаки.положить`, — и это не уборка,
+    /// а требование: фото собаки стало подложкой по умолчанию, его
+    /// читает виджет, и вход без ужатия убил бы расширение по памяти.
     private var кнопкаСнимка: some View {
         PhotosPicker(selection: $выбранныйСнимок, matching: .images,
                      photoLibrary: .shared()) {
@@ -248,19 +254,11 @@ struct DogTab: View {
         кладуСнимок = true
         Task {
             defer { кладуСнимок = false; выбранныйСнимок = nil }
-            guard let сырое = try? await item.loadTransferable(type: Data.self),
-                  let ужатое = ФонФото.ужать(сырое)
-            else {
-                return appState.showFailure(String(localized: "Снимок не открылся · попробуй другой"))
-            }
-            dog.photo = ужатое
-            guard context.persist(otherwise: {}) else {
-                Haptics.warning()
-                UsageLog.note(.record, "dogPhoto", on: .profile, outcome: .failed)
-                return
-            }
-            UsageLog.note(.record, "dogPhoto", on: .profile, outcome: .done)
-            Haptics.success()
+            // Разбор, ужатие, запись и журнал — в `ФотоСобаки.положить`:
+            // у второго входа (жетон «Сегодня») тот же вызов, а не
+            // такой же код.
+            await ФотоСобаки.положить(item, в: dog, context: context,
+                                      appState: appState, экран: .profile)
         }
     }
 
