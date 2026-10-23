@@ -1,10 +1,34 @@
 import SwiftUI
 import SwiftData
-import Charts
 
-/// История · календарь, день, графики.
-/// Точка на дне: сине-зелёная — обычный день, терракот — инцидент или кровь,
-/// серо-коричневая — медицинское событие.
+/// История · фильтры-чипы, полоса выходов, ритм, календарь, эпизоды.
+///
+/// **Переписано под дизайн iOS 28, тема «Кино»** — решение Виктории
+/// 22.10.2026. Эталон — `Дизайн/эталонные-кадры/ios28-кино-22.10/10.png`,
+/// и ниже исполнен **кадр**, а не проза README: где они расходятся,
+/// расхождение названо в отчёте.
+///
+/// Что поменялось в показе и почему:
+///
+/// ```
+/// было                        стало (кадр 10)
+/// шапка-плакат, синяя полоса  фото под шапкой, кикер «ВСЁ · 30 ДНЕЙ»,
+///                             заголовок 36 и одна кнопка «…»
+/// шестерёнка в баре           её нет: «Настройки» — пункт меню «…»
+/// сегментированный выбор      чипы-пилюли с прокруткой вбок
+/// график Swift Charts с осями полоса столбиков без осей
+/// ```
+///
+/// **Сегментированный выбор убран не по вкусу.** У него измеренный
+/// дефект: он делит ширину поровну и **обрезает**, а не переносит —
+/// кадр 28.09 показал «Симпто…». Прежняя починка разводила два органа
+/// управления по размеру текста (`.menu` на доступных кеглях). Чипы
+/// закрывают тот же дефект одним органом: они не делят ширину,
+/// подпись переносится целиком, а лишние уезжают за край прокруткой.
+///
+/// Точка на дне календаря: сине-зелёная — обычный день, терракот —
+/// инцидент или кровь, серо-коричневая — медицинское событие; форма
+/// значка разная, потому что цветом одним день не различить.
 struct HistoryScreen: View {
     @Query private var dogs: [Dog]
     @Query private var episodes: [Episode]
@@ -13,22 +37,26 @@ struct HistoryScreen: View {
 
     @Environment(\.modelContext) private var context
     @Environment(AppState.self) private var appState
-    /// Настройка размера текста: от неё зависит не только кегль,
-    /// но и то, каким органом управления показывать выбор.
-    @Environment(\.dynamicTypeSize) private var размерТекста
     @State private var closing: Episode?
     /// Эпизод, который человек собрался удалить.
     @State private var удаляемый: Episode?
     @State private var month: Date = Calendar.current.startOfMonth(for: .now)
     @State private var filter: HistoryFilter = .all
     @State private var selectedDay: Date?
+    /// Настройки открываются из меню «…» — шестерёнки в шапке больше нет.
+    /// Переход делает хозяин экрана: `NavigationLink` внутри `Menu`
+    /// срабатывает непредсказуемо (разбор у `HeaderMenu`).
+    @State private var показатьНастройки = false
 
     private var dog: Dog? { appState.activeDog(from: dogs) }
     private var events: [LogEvent] { Diary.active(dog?.events ?? []) }
 
     var body: some View {
         NavigationStack {
-            TGScreen {
+            КиноЭкран(экран: .history,
+                      кикер: .готовая(кикер),
+                      заголовок: "История",
+                      настройки: { показатьНастройки = true }) {
                 if events.isEmpty {
                     EmptyStateCard(
                         subject: .history,
@@ -38,19 +66,19 @@ struct HistoryScreen: View {
                         action: nil
                     )
                 } else {
-                    filterPicker
-                    WalkRhythmCard(rhythm: WalkRhythmAnalyzer.rhythm(events: events))
+                    чипыФильтра
+                    полосаВыходов
+                    ритмВыходов
                     dayOutCard
+                    месяцШапкой
                     MonthCalendar(month: $month, events: filtered, onSelect: { selectedDay = $0 })
-                    chartCard
                     episodesCard
                 }
             }
-            .navigationTitle("История")
-            .posterHeader("История")
             .usageScreen(.history)
-            .navigationBarTitleDisplayMode(.large)
-            .toolbar { SettingsToolbarItem() }
+            .navigationDestination(isPresented: $показатьНастройки) {
+                SettingsScreen()
+            }
             .sheet(item: Binding(get: { selectedDay.map(DayRef.init) },
                                  set: { selectedDay = $0?.date })) { ref in
                 DayReadingScreen(day: ref.date, events: events,
@@ -82,6 +110,107 @@ struct HistoryScreen: View {
         }
     }
 
+    /// Кикер шапки: что выбрано и за какой срок. На кадре 10 — «ВСЁ · 30 ДНЕЙ».
+    ///
+    /// Собирается точкой-разделителем, а не грамматикой: склейки фраз
+    /// хендофф переносить запрещает, а « · » между двумя готовыми
+    /// строками переводить нечем и не нужно.
+    private var кикер: String {
+        [filter.title, String(localized: "30 дней")].joined(separator: " · ")
+    }
+
+    /// Чипы-пилюли с прокруткой вбок. Выбранный — белый с тёмной
+    /// подписью, как главная кнопка темы «Кино».
+    private var чипыФильтра: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: Token.Space.s8) {
+                ForEach(HistoryFilter.allCases, id: \.self) { вид in
+                    КиноЧип(подпись: .готовая(вид.title),
+                            выбран: вид == filter) {
+                        filter = вид
+                    }
+                }
+            }
+            .padding(.vertical, Token.Space.s2)
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Фильтр")
+    }
+
+    private var filtered: [LogEvent] {
+        events.filter(filter.matches)
+    }
+
+    // MARK: Полоса за тридцать дней
+
+    /// Кадр 10: заголовок слева, срок справа, столбики без осей,
+    /// пояснение под ними.
+    ///
+    /// **Осей нет нарочно.** У столбика без подписи единственный смысл —
+    /// «выше или ниже соседнего», и ось месяца этого не добавляла:
+    /// на тридцати днях подписи всё равно рисовались через одну.
+    /// Что именно на полосе — говорит строка под ней, а не ось.
+    private var полосаВыходов: some View {
+        TGCard {
+            HStack(alignment: .firstTextBaseline, spacing: Token.Space.s8) {
+                Text(.готовая(filter.chartName)).textStyle(AppFont.cardTitle).wraps()
+                Spacer(minLength: Token.Space.s8)
+                Text("30 дней").textStyle(AppFont.caption).wraps()
+            }
+            КиноСтолбики(значения: chartPoints.map(\.value),
+                         тревожные: тревожныеДни)
+            Text(filter.chartExplainer).textStyle(AppFont.caption).wraps()
+            TGDivider()
+            Text("Приложение не ставит диагнозов. Оно умеет показать этот график врачу — вместе с датами еды и препаратов за те же дни.")
+                .textStyle(AppFont.caption)
+                .wraps()
+        }
+    }
+
+    private var тревожныеДни: Set<Int> {
+        Set(chartPoints.enumerated().compactMap { $1.isAlarm ? $0 : nil })
+    }
+
+    /// График строится только по дням без активного эпизода.
+    private var chartPoints: [HistoryPoint] {
+        let calendar = Calendar.current
+        let start = calendar.date(byAdding: .day, value: -29, to: calendar.startOfDay(for: .now)) ?? .now
+        return (0..<30).compactMap { offset in
+            guard let day = calendar.date(byAdding: .day, value: offset, to: start) else { return nil }
+            let dayEvents = Diary.onDay(filtered, day)
+            return HistoryPoint(day: day, value: filter.value(for: dayEvents),
+                                isAlarm: dayEvents.contains(where: \.raisesAlarm))
+        }
+    }
+
+    // MARK: Ритм
+
+    /// «Как часто гуляете» блоком Metric — кадр 10: крупное число,
+    /// единица рядом, зеркало под ним.
+    ///
+    /// **`WalkRhythmCard` здесь больше не зовётся**, и это названо,
+    /// а не скрыто: её полная (не `compact`) ветка осталась без
+    /// единственного места вызова. Файл чужой (`Features/Needs`),
+    /// решение «переписать её под «Кино» или снять» — не моё.
+    @ViewBuilder
+    private var ритмВыходов: some View {
+        let ритм = WalkRhythmAnalyzer.rhythm(events: events)
+        if ритм.isReliable {
+            КиноМетрика(
+                шапка: "как часто гуляете",
+                число: Fmt.decimal(ритм.outingsPerDay),
+                единица: .готовая([String(localized: "выходов в день"),
+                                   String(localized: "2 недели")].joined(separator: " · ")),
+                пояснение: "Это не норма, а зеркало: сравнивать стоит не с чужой собакой, а с собой месяц назад."
+            )
+        } else {
+            TGCard {
+                TGSectionHeader(title: "как часто гуляете")
+                TGExplainer(text: "Нужно хотя бы \(Fmt.days(WalkRhythm.minimumDays)) с записями — пока их \(ритм.days). Просто продолжай отмечать выходы.")
+            }
+        }
+    }
+
     /// Что бывает после долгих дней с собакой.
     ///
     /// Причинность приложение не утверждает: оно показывает совпадение
@@ -94,8 +223,10 @@ struct HistoryScreen: View {
                                          norm: dog?.dailyGrams ?? 0)
         if !trace.findings.isEmpty {
             TGCard {
-                TGSectionHeader(title: "после долгих дней",
-                                subtitle: "по \(String(localized: "\(trace.longDays) дням")), где она была с тобой дольше \(Int(DayOut.longDayHours)) часов")
+                Text("После долгих дней дома").textStyle(AppFont.cardTitle).wraps()
+                Text("по \(String(localized: "\(trace.longDays) дням")), где она была с тобой дольше \(Int(DayOut.longDayHours)) часов")
+                    .textStyle(AppFont.caption)
+                    .wraps()
                 ForEach(trace.findings, id: \.self) { line in
                     Text("• " + line).textStyle(AppFont.caption).wraps()
                 }
@@ -105,58 +236,41 @@ struct HistoryScreen: View {
         }
     }
 
-    private var filtered: [LogEvent] {
-        events.filter(filter.matches)
+    // MARK: Календарь
+
+    /// Месяц прописными над карточкой — кадр 10 («ОКТЯБРЬ 2026 Г»).
+    /// Стрелки остались: без них из октября не выйти, а листание месяца
+    /// это единственный способ дойти до прошлого года.
+    private var месяцШапкой: some View {
+        HStack(spacing: Token.Space.s8) {
+            Text(verbatim: month.formatted(.dateTime.month(.wide).year()))
+                .textStyle(AppFont.caps)
+                .textCase(.uppercase)
+                .wraps()
+            Spacer(minLength: Token.Space.s8)
+            Button { shiftMonth(-1) } label: {
+                Image(systemName: "chevron.left")
+                    .font(.system(size: Token.Size.iconSm, weight: .semibold))
+                    .frame(width: Token.Size.tapTarget, height: Token.Size.tapTarget)
+                    .contentShape(Rectangle())
+            }
+            .accessibilityLabel("Предыдущий месяц")
+            Button { shiftMonth(1) } label: {
+                Image(systemName: "chevron.right")
+                    .font(.system(size: Token.Size.iconSm, weight: .semibold))
+                    .frame(width: Token.Size.tapTarget, height: Token.Size.tapTarget)
+                    .contentShape(Rectangle())
+            }
+            .accessibilityLabel("Следующий месяц")
+            .disabled(Calendar.current.isDate(month, equalTo: .now, toGranularity: .month))
+        }
+        .buttonStyle(.plain)
+        .foregroundStyle(Token.Ink.secondary)
     }
 
-    /// Фильтр. Сегменты — пока подписи в них помещаются.
-    ///
-    /// Сегментированный выбор делит ширину поровну и **обрезает**,
-    /// а не переносит: на крупной системной настройке кадр 28.09
-    /// показал «Симпто…». Обрезанное название фильтра не говорит,
-    /// что фильтр делает, — то есть орган управления перестаёт
-    /// сообщать о себе.
-    ///
-    /// На доступных размерах — выпадающий список: он показывает
-    /// выбранное целиком и даёт прочесть остальные, не угадывая.
-    @ViewBuilder
-    private var filterPicker: some View {
-        let выбор = Picker("Фильтр", selection: $filter) {
-            ForEach(HistoryFilter.allCases, id: \.self) { Text($0.title).tag($0) }
-        }
-        if размерТекста.isAccessibilitySize {
-            выбор.pickerStyle(.menu)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .frame(minHeight: Token.Size.tapTarget)
-        } else {
-            выбор.pickerStyle(.segmented)
-        }
-    }
-
-    // MARK: График
-
-    /// График строится только по дням без активного эпизода.
-    private var chartCard: some View {
-        TGCard {
-            Text(filter.chartTitle).textStyle(AppFont.cardTitle)
-            HistoryChart(points: chartPoints, filter: filter)
-                .frame(height: 140)
-            Text(filter.chartExplainer).textStyle(AppFont.caption)
-            TGDivider()
-            Text("Приложение не ставит диагнозов. Оно умеет показать этот график врачу — вместе с датами еды и препаратов за те же дни.")
-                .textStyle(AppFont.caption)
-        }
-    }
-
-    private var chartPoints: [HistoryPoint] {
-        let calendar = Calendar.current
-        let start = calendar.date(byAdding: .day, value: -29, to: calendar.startOfDay(for: .now)) ?? .now
-        return (0..<30).compactMap { offset in
-            guard let day = calendar.date(byAdding: .day, value: offset, to: start) else { return nil }
-            let dayEvents = Diary.onDay(filtered, day)
-            return HistoryPoint(day: day, value: filter.value(for: dayEvents),
-                                isAlarm: dayEvents.contains(where: \.raisesAlarm))
-        }
+    private func shiftMonth(_ months: Int) {
+        guard let next = Calendar.current.date(byAdding: .month, value: months, to: month) else { return }
+        withAnimation(.easeInOut(duration: Token.Duration.quick)) { month = next }
     }
 
     // MARK: Эпизоды
@@ -287,14 +401,23 @@ nonisolated enum HistoryFilter: String, CaseIterable, Sendable {
         }
     }
 
-    var chartTitle: String {
+    /// Имя полосы БЕЗ срока: на кадре 10 срок стоит отдельной строкой
+    /// справа, а не внутри заголовка.
+    ///
+    /// `chartTitle` оставлен рядом и не удалён: он склеивает имя
+    /// со сроком и годится там, где строка одна (озвучка, отчёт).
+    var chartName: String {
         switch self {
-        case .all: String(localized: "Выходы · 30 дней")
-        case .stool: String(localized: "Стул · 30 дней")
-        case .symptoms: String(localized: "Инциденты · 30 дней")
-        case .reactions: String(localized: "Срывы · 30 дней")
-        case .weight: String(localized: "Вес · 30 дней")
+        case .all: String(localized: "Выходы")
+        case .stool: String(localized: "Стул")
+        case .symptoms: String(localized: "Инциденты")
+        case .reactions: String(localized: "Срывы")
+        case .weight: String(localized: "Вес")
         }
+    }
+
+    var chartTitle: String {
+        [chartName, String(localized: "30 дней")].joined(separator: " · ")
     }
 
     var chartExplainer: String {
@@ -325,27 +448,12 @@ nonisolated struct HistoryPoint: Identifiable, Sendable {
     var id: Date { day }
 }
 
-/// Столбиковый график на системном Charts — своей отрисовки не пишем.
-struct HistoryChart: View {
-    let points: [HistoryPoint]
-    let filter: HistoryFilter
-
-    var body: some View {
-        Chart(points) { point in
-            BarMark(
-                x: .value("День", point.day, unit: .day),
-                y: .value(filter.title, point.value)
-            )
-            .foregroundStyle(point.isAlarm ? Token.Status.overdueText : Token.Ink.silhouette)
-            .cornerRadius(2)
-        }
-        .tgChartAxes()
-    }
-}
-
 // MARK: - Календарь
 
 /// Месяц с точкой на день. Тап открывает таймлайн этого дня в режиме чтения.
+///
+/// Шапка с названием месяца уехала наружу (кадр 10: «ОКТЯБРЬ 2026 Г»
+/// прописными **над** карточкой) — здесь осталась только сетка.
 struct MonthCalendar: View {
     @Binding var month: Date
     let events: [LogEvent]
@@ -356,7 +464,6 @@ struct MonthCalendar: View {
 
     var body: some View {
         TGCard {
-            header
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: Token.Space.s4), count: 7),
                       spacing: Token.Space.s6) {
                 ForEach(weekdays, id: \.self) { day in
@@ -368,25 +475,6 @@ struct MonthCalendar: View {
                 }
             }
         }
-    }
-
-    private var header: some View {
-        HStack {
-            Button { shift(-1) } label: { Image(systemName: "chevron.left") }
-                .accessibilityLabel("Предыдущий месяц")
-            Spacer()
-            Text(month.formatted(.dateTime.month(.wide).year())).textStyle(AppFont.cardTitle)
-            Spacer()
-            Button { shift(1) } label: { Image(systemName: "chevron.right") }
-                .accessibilityLabel("Следующий месяц")
-                .disabled(calendar.isDate(month, equalTo: .now, toGranularity: .month))
-        }
-        .tint(Token.Ink.secondary)
-    }
-
-    private func shift(_ months: Int) {
-        guard let next = calendar.date(byAdding: .month, value: months, to: month) else { return }
-        withAnimation(.easeInOut(duration: Token.Duration.quick)) { month = next }
     }
 
     /// Сетка всегда начинается с понедельника — чтобы недели не разъезжались.
@@ -471,7 +559,7 @@ private struct DayCell: View {
                     Color.clear
                 }
             }
-            .frame(height: markerSize + 2)
+            .frame(height: markerSize + Token.Space.s2)
             .accessibilityHidden(true)
         }
         // Ячейку календаря нажимают пальцем — значит, не меньше 44.

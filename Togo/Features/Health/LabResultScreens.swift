@@ -25,6 +25,8 @@ struct LabResultsScreen: View {
     @Environment(AppState.self) private var appState
     @State private var вводИдёт = false
     @State private var правка: LabResult?
+    /// Настройки открываются из меню «…»: других кнопок в шапке нет.
+    @State private var показатьНастройки = false
 
     /// Правит тот же, кто правит лечение: анализ — медицинская запись.
     private var canEdit: Bool { appState.can(.editTreatment) }
@@ -49,7 +51,10 @@ struct LabResultsScreen: View {
     }
 
     var body: some View {
-        TGScreen {
+        КиноЭкран(экран: .sub("labs"),
+                  кикер: кикер.map { .готовая($0) },
+                  заголовок: "Анализы",
+                  настройки: { показатьНастройки = true }) {
             if анализы.isEmpty {
                 EmptyStateCard(
                     subject: .health,
@@ -59,6 +64,8 @@ struct LabResultsScreen: View {
                     action: canEdit ? { вводИдёт = true } : nil
                 )
             } else {
+                верхнийПоказатель
+                TGSectionHeader(title: "анализы")
                 ForEach(бланки, id: \.ключ) { бланк in
                     TGCard(spacing: 0) {
                         TGSectionHeader(title: .готовая(заголовок(бланк.строки)))
@@ -77,24 +84,139 @@ struct LabResultsScreen: View {
                     }
                 }
 
+                добавить
+
                 TGCard {
                     TGExplainer(text: "Отклонение приложение считает само по норме с бланка. Нормы нет — так и скажет: «норма не указана», а не «в норме».")
                 }
             }
         }
-        .navigationTitle("Анализы")
-        .posterHeader("Анализы")
-        .navigationBarTitleDisplayMode(.large)
-        .toolbar {
-            if canEdit, dog != nil {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button { вводИдёт = true } label: { Image(systemName: "plus") }
-                        .accessibilityLabel("Добавить анализ")
-                }
-            }
+        .navigationDestination(isPresented: $показатьНастройки) {
+            SettingsScreen()
         }
         .sheet(isPresented: $вводИдёт) { LabResultEntryFlow(dog: dog) }
         .sheet(item: $правка) { анализ in LabResultRowEditor(result: анализ) }
+    }
+
+    // MARK: Шапка и верхний блок — кадр 14
+
+    /// Кикер: какой показатель последний и сколько всего записей.
+    private var кикер: String? {
+        guard let последний = последнийСЧислом else { return nil }
+        let имя = Fmt.notBlank(последний.indicator) ?? String(localized: "показатель")
+        return [имя, Fmt.records(анализы.count)].joined(separator: " · ")
+    }
+
+    /// Последний анализ с ЧИСЛОМ. Предел прибора (`<0,1`) сюда не входит:
+    /// нарисовав его столбиком, мы превратили бы «меньше, чем прибор
+    /// различает» в число.
+    private var последнийСЧислом: LabResult? {
+        анализы.first { $0.value != nil }
+    }
+
+    /// Блок «Metric» с кадра 14: показатель и месяц прописными, число
+    /// крупно, единица и ход рядом, норма и час забора строкой,
+    /// полоса ряда.
+    ///
+    /// **Три красные линии стреляют ровно здесь, и ни одна не согнута:**
+    /// число печатает `ЧислоСБланка.показать`, а не `Fmt.decimal`
+    /// (`16,75` не становится `16,8`); нормы нет на бланке — строки
+    /// про норму нет вовсе, и «в норме» приложение не говорит;
+    /// `labMark` — отметку лаборатории — этот блок не показывает,
+    /// потому что рядом нет ни нашего вердикта, ни подписи «кто сказал».
+    @ViewBuilder
+    private var верхнийПоказатель: some View {
+        if let последний = последнийСЧислом, let значение = последний.value {
+            КиноМетрика(
+                шапка: .готовая(шапкаПоказателя(последний)),
+                число: ЧислоСБланка.показать(значение),
+                единица: единицаСХодом(последний).map { .готовая($0) },
+                пояснение: подПоказателем(последний).map { .готовая($0) },
+                столбики: ряд(последний)
+            )
+        }
+    }
+
+    private func шапкаПоказателя(_ анализ: LabResult) -> String {
+        let имя = Fmt.notBlank(анализ.indicator) ?? String(localized: "показатель")
+        return [имя, анализ.sampledOn.formatted(.dateTime.month(.abbreviated))]
+            .joined(separator: " · ")
+    }
+
+    /// «нмоль/л ↑ с 2,9». Стрелка и прежнее число — **только когда
+    /// есть с чем сравнивать**: первая запись показателя сравнивается
+    /// не с нулём, а ни с чем.
+    private func единицаСХодом(_ анализ: LabResult) -> String? {
+        let части = [Fmt.notBlank(анализ.unit), ход(анализ)].compactMap { $0 }
+        return части.isEmpty ? nil : части.joined(separator: " ")
+    }
+
+    private func ход(_ анализ: LabResult) -> String? {
+        guard let новое = анализ.value,
+              let прежнее = предыдущее(анализ), прежнее != новое else { return nil }
+        let было = ЧислоСБланка.показать(прежнее)
+        return новое > прежнее
+            ? String(localized: "↑ с \(было)")
+            : String(localized: "↓ с \(было)")
+    }
+
+    private func предыдущее(_ анализ: LabResult) -> Double? {
+        анализы
+            .filter { $0.indicator == анализ.indicator && $0.sampledOn < анализ.sampledOn }
+            .max { $0.sampledOn < $1.sampledOn }?
+            .value
+    }
+
+    /// «Норма 1,0–4,5 · время забора не указано».
+    ///
+    /// Вторая половина — `LabSampleTiming.caption` и только он: своей
+    /// формулировки у экрана быть не должно, иначе про забор напишут
+    /// по-разному в трёх местах.
+    ///
+    /// **Часы от дозы здесь не считаются, и это названо.** Для них нужна
+    /// «последняя доза до забора», а она сегодня живёт двумя копиями —
+    /// `LabChartScreen.последняяДоза` и такая же в `LabResultEntryFlow`.
+    /// Третья копия — это способ, которым правило расходится молча;
+    /// вынос её в домен записан отдельным пунктом отчёта.
+    private func подПоказателем(_ анализ: LabResult) -> String? {
+        var части: [String] = []
+        if let низ = анализ.referenceLow, let верх = анализ.referenceHigh {
+            части.append(String(localized: "норма \(ЧислоСБланка.показать(низ))–\(ЧислоСБланка.показать(верх))"))
+        }
+        if анализ.sampledAt == nil {
+            части.append(LabSampleTiming.caption(.unknownDuringTreatment) ?? "")
+        }
+        let живые = части.filter { !$0.isEmpty }
+        return живые.isEmpty ? nil : живые.joined(separator: " · ")
+    }
+
+    private func ряд(_ анализ: LabResult) -> [Double] {
+        анализы
+            .filter { $0.indicator == анализ.indicator && $0.value != nil }
+            .sorted { $0.sampledOn < $1.sampledOn }
+            .suffix(КиноРазмеры.днейВПолосе)
+            .compactMap(\.value)
+    }
+
+    /// Раздел «ДОБАВИТЬ» с кадра 14 — **он же замена кнопке «+»
+    /// в шапке**, которой по дизайну больше нет.
+    ///
+    /// Снять «+», не переселив вход, значило бы завести у себя ровно
+    /// то, что у нас называется «механизм без входа»: форма ввода
+    /// существует, а дороги к ней нет.
+    @ViewBuilder
+    private var добавить: some View {
+        if canEdit, dog != nil {
+            TGSectionHeader(title: "добавить")
+            Button { вводИдёт = true } label: {
+                TGCard {
+                    TGListRow(title: "Ввести с бланка",
+                              value: "как на бланке",
+                              systemImage: "square.and.pencil")
+                }
+            }
+            .buttonStyle(.plain)
+        }
     }
 
     /// Заголовок группы: дата · лаборатория · номер — как в макете.

@@ -4,6 +4,32 @@ import SwiftData
 /// Здоровье. Вкладка держится правом `.seeMedical`, а не лечением
 /// (`RootView`, решение 08.10.2026) — её нет только у помощника.
 /// Схему меняет только владелец, остальные видят и исполняют.
+///
+/// **Переписано под дизайн iOS 28, тема «Кино»** — решение Виктории
+/// 22.10.2026. Эталон — `Дизайн/эталонные-кадры/ios28-кино-22.10/11.png`.
+///
+/// ```
+/// было                       стало (кадр 11)
+/// шапка-плакат «Здоровье»    фото, кикер «СХЕМА · ЗАПАС · АНАЛИЗЫ»,
+///                            заголовок 36 и одна кнопка «…»
+/// шестерёнка + «+» в баре    кнопок в шапке нет вовсе; «Настройки» —
+///                            пункт меню, «Добавить препарат» — строка
+///                            в списке разделов
+/// карточка «название/схема»  та же карточка плюс отметки доз чипами
+///                            и кнопка «Врач изменил» справа
+/// строка «Запас · на N дн.»  своя карточка: срок крупно, «хватит до»,
+///                            полоса и белая кнопка «Купил»
+/// ```
+///
+/// **Чего с кадра НЕ взято, и это названо, а не обойдено.** На `11.png`
+/// под карточкой лечения стоят три кнопки: «Курс», «Доза ждёт еды»,
+/// «Пропуск». Первая сделана (она же «Курс завершён»). Двух других
+/// здесь нет: шторки `DoseGateSheet` и `MissedDoseSheet` требуют
+/// **конкретную дозу** — `GatedDose` и `MissedDoseTarget`, — а на этом
+/// экране дозы в руках нет, она есть на «Сегодня». Кнопка, ведущая
+/// в никуда, хуже отсутствующей: механизм без входа у нас уже считают
+/// неработающим, а вход без механизма — это отказ, который выглядит
+/// нашей виной. Решать, откуда брать дозу, — не правка показа.
 struct HealthScreen: View {
     @Environment(AppState.self) private var appState
     @Query private var dogs: [Dog]
@@ -15,6 +41,10 @@ struct HealthScreen: View {
     @State private var isFinishing = false
     @State private var changingSchedule: Medication?
     @State private var countingPills: Medication?
+    /// Настройки открываются из меню «…». Переход делает хозяин экрана:
+    /// `NavigationLink` внутри `Menu` срабатывает непредсказуемо
+    /// (разбор у `HeaderMenu`).
+    @State private var показатьНастройки = false
 
     private var dog: Dog? { appState.activeDog(from: dogs) }
 
@@ -25,7 +55,10 @@ struct HealthScreen: View {
 
     var body: some View {
         NavigationStack {
-            TGScreen {
+            КиноЭкран(экран: .health,
+                      кикер: "Схема · Запас · Анализы",
+                      заголовок: "Здоровье",
+                      настройки: { показатьНастройки = true }) {
                 if medications.isEmpty {
                     EmptyStateCard(
                         subject: .health,
@@ -36,34 +69,19 @@ struct HealthScreen: View {
                     )
                 } else {
                     ForEach(medications) { medication in
-                        VStack(spacing: Token.Space.s8) {
-                            Button { if canEdit { editing = medication } } label: {
-                                MedicationCard(medication: medication, canEdit: canEdit)
-                            }
-                            .buttonStyle(.plain)
-                            .disabled(!canEdit)
-
-                            if canEdit { medicationActions(medication) }
-                        }
+                        карточкаЛечения(medication)
+                        карточкаЗапаса(medication)
                     }
                 }
 
+                показательКарточка
                 sectionsGrid
                 finishCourse
                 disclaimer
             }
-            .navigationTitle("Здоровье")
-            .posterHeader("Здоровье")
             .usageScreen(.health)
-            .navigationBarTitleDisplayMode(.large)
-            .toolbar {
-                SettingsToolbarItem()
-                if canEdit, dog != nil {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button { isAdding = true } label: { Image(systemName: "plus") }
-                            .accessibilityLabel("Добавить препарат")
-                    }
-                }
+            .navigationDestination(isPresented: $показатьНастройки) {
+                SettingsScreen()
             }
             .sheet(isPresented: $isAdding) { MedicationEditorSheet(dog: dog) }
             .sheet(item: $editing) { medication in
@@ -94,29 +112,171 @@ struct HealthScreen: View {
     /// Схему меняет только владелец. Остальные видят её и отмечают приёмы.
     private var canEdit: Bool { appState.can(.editTreatment) }
 
+    /// Карточка лечения по кадру 11: название и доза крупно, схема
+    /// подписью, «Врач изменил» справа, отметки доз чипами, «Курс» внизу.
+    ///
     /// Два действия, ради которых чаще всего и открывают препарат:
     /// врач поменял схему и таблетки кончаются. Оба лежали глубоко
     /// в форме правки — то есть их не было.
     @ViewBuilder
-    private func medicationActions(_ medication: Medication) -> some View {
-        HStack(spacing: Token.Space.s8) {
-            Button { changingSchedule = medication } label: {
-                TGCard { TGListRow(title: "Врач изменил дозу",
-                                   systemImage: "arrow.triangle.swap", accessory: .none) }
-            }
-            .buttonStyle(.plain)
+    private func карточкаЛечения(_ medication: Medication) -> some View {
+        TGCard {
+            HStack(alignment: .top, spacing: Token.Space.s12) {
+                Button { if canEdit { editing = medication } } label: {
+                    VStack(alignment: .leading, spacing: Token.Space.s2) {
+                        Text(verbatim: "\(medication.name) \(medication.doseText)")
+                            .textStyle(AppFont.cardTitle)
+                            .wraps()
+                        Text(verbatim: medication.scheduleSummary)
+                            .textStyle(AppFont.caption)
+                            .wraps()
+                        if medication.isPaused {
+                            Text("на паузе")
+                                .textStyle(AppFont.micro.color(Token.Status.waitingText))
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .disabled(!canEdit)
 
-            let уровень = PillSupplyAdvisor.level(supply(medication))
-            Button { countingPills = medication } label: {
-                TGCard {
-                    TGListRow(title: "Запас",
-                              value: .готовая(supplyValue(medication)),
-                              systemImage: "shippingbox",
-                              accessory: .none,
-                              tone: уровень == .ok ? Token.Ink.primary : уровень.цветТекста)
+                if canEdit {
+                    КиноЧип(подпись: "Врач изменил") { changingSchedule = medication }
                 }
             }
-            .buttonStyle(.plain)
+
+            отметкиДоз(medication)
+
+            if let note = medication.cancelledNote {
+                TGDivider()
+                Text(verbatim: note).textStyle(AppFont.caption).wraps()
+            }
+            if !canEdit {
+                TGExplainer(text: "Схему меняет владелец. Ты видишь её и отмечаешь приёмы.")
+            }
+        }
+    }
+
+    /// Отметки доз за сегодня — чипами, как на кадре 11: «✓ 8:00 · дал»
+    /// и «20:00».
+    ///
+    /// **Это отметка, а не кнопка, и нажатия у неё нет нарочно.** Дозу
+    /// отмечают на «Сегодня», где рядом стоят окно натощак, защита
+    /// от двойной дозы и «беру на себя». Вторая поверхность отметки
+    /// завела бы вторую реализацию тех же ворот — у Того это уже
+    /// стоило трёх молчавших реализаций правила «не кормить».
+    @ViewBuilder
+    private func отметкиДоз(_ medication: Medication) -> some View {
+        let слоты = medication.schedule
+        if !слоты.isEmpty {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: Token.Space.s8) {
+                    ForEach(слоты, id: \.minuteOfDay) { слот in
+                        let дано = датьВремя(medication, слот.minuteOfDay)
+                        КиноЧип(подпись: .готовая(подписьДозы(слот, дано: дано)),
+                                значок: дано == nil ? "clock" : "checkmark",
+                                выбран: дано != nil)
+                    }
+                }
+                .padding(.vertical, Token.Space.s2)
+            }
+        }
+    }
+
+    /// Когда дозу этого часа отметили сегодня. Пусто — ещё не отмечена.
+    private func датьВремя(_ medication: Medication, _ минута: Int) -> Date? {
+        let календарь = Calendar.current
+        return medication.doses.first { запись in
+            guard запись.isGiven, календарь.isDateInToday(запись.scheduledAt) else { return false }
+            let час = календарь.component(.hour, from: запись.scheduledAt)
+            let мин = календарь.component(.minute, from: запись.scheduledAt)
+            return час * 60 + мин == минута
+        }?.givenAt
+    }
+
+    /// «8:00 · дал» либо просто «20:00». Разделитель точкой, а не
+    /// грамматикой: склейки фраз хендофф переносить запрещает.
+    private func подписьДозы(_ слот: DoseSlot, дано: Date?) -> String {
+        дано == nil
+            ? слот.clock
+            : [слот.clock, String(localized: "дал")].joined(separator: " · ")
+    }
+
+    /// Карточка запаса по кадру 11: срок крупно, «хватит до» тем же
+    /// цветом, полоса и белая кнопка «Купил».
+    ///
+    /// Кнопка ведёт в `PillSupplyScreen` — туда, где лежит «новая пачка».
+    /// Второго писателя остатка не заводим: у `PillSupplyScreen` прямо
+    /// записано, что размер упаковки поднимает только он, и повторить
+    /// это здесь значило бы развести две арифметики запаса.
+    @ViewBuilder
+    private func карточкаЗапаса(_ medication: Medication) -> some View {
+        if let запас = supply(medication) {
+            let уровень = PillSupplyAdvisor.level(запас)
+            let цвет = уровень == .ok ? Token.Ink.primary : уровень.цветТекста
+            TGCard {
+                TGSectionHeader(title: .готовая(
+                    [String(localized: "запас"), medication.name].joined(separator: " · ")))
+                Text(verbatim: Fmt.days(запас.days))
+                    .textStyle(TextStyleToken(size: КиноРазмеры.метрика,
+                                              weight: Token.FontWeight.light,
+                                              color: цвет,
+                                              monospacedDigits: true,
+                                              relativeTo: .title2))
+                    .wraps()
+                if let последний = запас.lastDay {
+                    Text("хватит до \(Fmt.shortDay(последний))")
+                        .textStyle(AppFont.captionEmphasis.color(цвет))
+                        .wraps()
+                }
+                if let нехватка = запас.shortfallDays, let конец = medication.courseEnd {
+                    Text("Курс идёт до \(Fmt.shortDay(конец)) — не хватит \(Fmt.days(нехватка)). Аптеки везут 2–3 дня.")
+                        .textStyle(AppFont.caption.color(цвет))
+                        .wraps()
+                }
+                КиноПолосаЗапаса(доля: запас.packSize > 0 ? запас.remaining / запас.packSize : 0,
+                                 цвет: цвет)
+                остаток(запас)
+                // **«Курс кончится раньше — не покупать».** Правило
+                // записано в `DECISIONS.md` и живёт в `courseEndsFirst`;
+                // без этой ветки кнопка «Купил» звала бы в аптеку
+                // за препаратом, который завтра отменят.
+                if запас.courseEndsFirst {
+                    TGExplainer(text: "Курс кончится раньше запаса — покупать не надо.")
+                } else if canEdit {
+                    TGButton(title: "Купил", systemImage: "bag") {
+                        countingPills = medication
+                    }
+                }
+            }
+        } else if canEdit {
+            TGCard {
+                TGSectionHeader(title: .готовая(
+                    [String(localized: "запас"), medication.name].joined(separator: " · ")))
+                TGExplainer(text: "Счёт не включён. Скажи, сколько таблеток в пачке — дальше приложение вычитает по одной с каждой отметки и предупредит за три дня до конца.")
+                TGButton(title: "Включить счёт", variant: .secondary, size: .medium) {
+                    countingPills = medication
+                }
+            }
+        }
+    }
+
+    /// «11 из 30» — целыми числами и **теми же двумя ключами, что
+    /// в шторке запаса**.
+    ///
+    /// Один склеенный ключ `«N из M»` был бы новым: в каталоге его нет,
+    /// и у француза он откатился бы на русское «из». Числа целые
+    /// по той же причине, что в `PillSupplyScreen`: ключи счётных строк
+    /// стоят на `%lld`, дробь завела бы новые ключи с пустыми
+    /// переводами на четырёх языках.
+    @ViewBuilder
+    private func остаток(_ запас: PillSupply) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: Token.Space.s6) {
+            Text(verbatim: "\(Int(запас.remaining.rounded(.down)))")
+                .textStyle(AppFont.captionEmphasis)
+            Text("из \(Int(запас.packSize.rounded(.down)))")
+                .textStyle(AppFont.caption)
         }
     }
 
@@ -147,9 +307,78 @@ struct HealthScreen: View {
                                  courseEnds: medication.courseEnd)
     }
 
-    private func supplyValue(_ medication: Medication) -> String {
-        guard let supply = supply(medication) else { return String(localized: "не считаем") }
-        return String(localized: "на \(Fmt.days(supply.days))")
+    // MARK: Показатель
+
+    /// Карточка последнего показателя — кадр 11, «Т4 · протокол контроля»
+    /// с нормой справа, и кадр 14, где тот же блок стоит крупно.
+    ///
+    /// **Нормы приложение не придумывает.** `referenceLow` / `referenceHigh`
+    /// приходят с бланка; нет их — строка про норму не печатается вовсе.
+    /// «Норма не указана» и «в норме» — разные новости, и вторую
+    /// приложение сказать не может.
+    ///
+    /// **Число показывается `ЧислоСБланка.показать`, а не `Fmt.decimal`.**
+    /// Округление до одного знака писано для веса: `16,75 нмоль/л`
+    /// как `16,8` — потеря данных в медицинском числе.
+    @ViewBuilder
+    private var показательКарточка: some View {
+        if let dog, let последний = последнийПоказатель(dog) {
+            NavigationLink { LabChartScreen(dog: dog) } label: {
+                TGCard {
+                    HStack(alignment: .firstTextBaseline, spacing: Token.Space.s8) {
+                        Text(verbatim: Fmt.notBlank(последний.indicator)
+                             ?? String(localized: "показатель")).textStyle(AppFont.cardTitle).wraps()
+                        Spacer(minLength: Token.Space.s8)
+                        if let норма = нормаСтрокой(последний) {
+                            Text(verbatim: норма).textStyle(AppFont.caption).wraps()
+                        }
+                    }
+                    HStack(alignment: .firstTextBaseline, spacing: Token.Space.s8) {
+                        Text(verbatim: ЧислоСБланка.показать(последний.value ?? 0))
+                            .textStyle(TextStyleToken(size: КиноРазмеры.метрика,
+                                                      weight: Token.FontWeight.light,
+                                                      color: Token.Ink.link,
+                                                      monospacedDigits: true,
+                                                      relativeTo: .title2))
+                            .wraps()
+                        if let единица = Fmt.notBlank(последний.unit) {
+                            Text(verbatim: единица)
+                                .textStyle(AppFont.bodyEmphasis.color(Token.Ink.link))
+                                .wraps()
+                        }
+                    }
+                    КиноСтолбики(значения: рядПоказателя(dog, like: последний))
+                    Text("Смотреть надо не на одно число, а на то, куда идёт ряд. Открой график.")
+                        .textStyle(AppFont.caption)
+                        .wraps()
+                }
+            }
+            .buttonStyle(.plain)
+        }
+    }
+
+    /// Последний анализ с ЧИСЛОМ. Предел прибора (`<0,1`) сюда
+    /// не попадает нарочно: его нельзя нарисовать столбиком, не превратив
+    /// «меньше, чем прибор различает» в число.
+    private func последнийПоказатель(_ dog: Dog) -> LabResult? {
+        dog.labResults
+            .filter { $0.value != nil }
+            .max { $0.sampledOn < $1.sampledOn }
+    }
+
+    /// Ряд того же показателя по датам — для полосы столбиков.
+    private func рядПоказателя(_ dog: Dog, like образец: LabResult) -> [Double] {
+        dog.labResults
+            .filter { $0.indicator == образец.indicator && $0.value != nil }
+            .sorted { $0.sampledOn < $1.sampledOn }
+            .suffix(КиноРазмеры.днейВПолосе)
+            .compactMap(\.value)
+    }
+
+    /// «норма 1,0–4,5» с бланка. Пусто — нормы на бланке не было.
+    private func нормаСтрокой(_ анализ: LabResult) -> String? {
+        guard let низ = анализ.referenceLow, let верх = анализ.referenceHigh else { return nil }
+        return String(localized: "норма \(ЧислоСБланка.показать(низ))–\(ЧислоСБланка.показать(верх))")
     }
 
     /// Курс кончается здесь, а не тумблером в профиле, где его никто
@@ -210,6 +439,19 @@ struct HealthScreen: View {
 
     private var sectionsGrid: some View {
         TGCard(spacing: 0) {
+            // **ВХОД ВЗАМЕН «+» В ШАПКЕ.** Кадр 11 не даёт в шапке
+            // ни одной кнопки, кроме «…», — и вместе с «+» исчезал
+            // единственный способ завести ВТОРОЙ препарат: пустое
+            // состояние со своей кнопкой показывается только пока
+            // препаратов ноль. Убрать кнопку, не переселив вход, значило
+            // бы сделать то, что у нас называется «механизм без входа».
+            if canEdit, dog != nil {
+                Button { isAdding = true } label: {
+                    TGListRow(title: "Добавить препарат", systemImage: "plus")
+                }
+                .buttonStyle(.plain)
+                TGDivider()
+            }
                         TGLink(title: "Протокол контроля", value: "T0 / +4 / +6", systemImage: "timer") { ProtocolScreen(dog: dog) }
             TGDivider()
                         TGLink(title: "Вес и симптомы", value: dog.map { .готовая(Fmt.weight($0.weightKg)) }, systemImage: "scalemass") { WeightScreen(dog: dog) }
@@ -258,30 +500,38 @@ struct HealthScreen: View {
     }
 }
 
-private struct MedicationCard: View {
-    let medication: Medication
-    let canEdit: Bool
+/// Полоса запаса по кадру 11: четырнадцать отрезков, залитых
+/// пропорционально остатку.
+///
+/// **Отрезки — это способ нарисовать долю, а не единица измерения.**
+/// Их всегда четырнадцать, сколько бы таблеток ни было в пачке:
+/// тридцать отрезков на тридцать таблеток слиплись бы в сплошную
+/// полосу, а «сколько штук» говорит строка под ней. Если однажды
+/// отрезок захотят читать как таблетку — это другая величина, и она
+/// требует другого имени, а не правки этого вида.
+private struct КиноПолосаЗапаса: View {
+    /// Сколько осталось от пачки, 0…1.
+    let доля: Double
+    let цвет: Color
+
+    private var залито: Int {
+        let целых = (Double(КиноРазмеры.днейВПолосе) * max(0, min(1, доля))).rounded()
+        // Пока осталась хоть капля, хотя бы один отрезок горит: ноль
+        // отрезков при ненулевом остатке читается как «кончилось».
+        return доля > 0 ? max(1, Int(целых)) : 0
+    }
 
     var body: some View {
-        TGCard {
-            HStack(alignment: .top) {
-                VStack(alignment: .leading, spacing: Token.Space.s2) {
-                    Text("\(medication.name) \(medication.doseText)").textStyle(AppFont.cardTitle)
-                    Text(medication.scheduleSummary).textStyle(AppFont.caption)
-                }
-                Spacer(minLength: Token.Space.s8)
-                if medication.isPaused {
-                    Text("на паузе").textStyle(AppFont.micro.color(Token.Status.waitingText))
-                }
-            }
-            if let note = medication.cancelledNote {
-                TGDivider()
-                Text(note).textStyle(AppFont.caption)
-            }
-            if !canEdit {
-                TGExplainer(text: "Схему меняет владелец. Ты видишь её и отмечаешь приёмы.")
+        HStack(spacing: Token.Space.s4) {
+            ForEach(0..<КиноРазмеры.днейВПолосе, id: \.self) { номер in
+                Capsule()
+                    .fill(номер < залито ? цвет : Token.Surface.raised)
+                    .frame(height: КиноРазмеры.минимумСтолбика * 2)
             }
         }
+        // Долю голосом читает строка остатка, стоящая рядом: «11 из 30»
+        // точнее, чем «полоса заполнена на треть».
+        .accessibilityHidden(true)
     }
 }
 
