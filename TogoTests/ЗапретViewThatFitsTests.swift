@@ -38,10 +38,26 @@ struct ЗапретViewThatFitsTests {
 
     // MARK: - Чтение дерева
 
+    /// Корень репозитория, выведенный из `#filePath`.
+    ///
+    /// **Симлинки развёрнуты, и это не аккуратность, а замер
+    /// 23.10.2026.** Первый прогон этого сторожа шёл из
+    /// `git worktree` в `/tmp/togo-vtf`, а `/tmp` на macOS — симлинк
+    /// на `/private/tmp`. `#filePath` отдаёт путь таким, каким его
+    /// видел компилятор (`/tmp/…`), а `FileManager.enumerator`
+    /// возвращает развёрнутый (`/private/tmp/…`). Обрезка префикса
+    /// молча не совпадала, все пути оставались абсолютными,
+    /// и сверка по имени файла не находила ничего.
+    ///
+    /// > **Поймал это не запрет, а проверка «было что проверять».**
+    /// > `ниОдногоЖивогоВызова` был ЗЕЛЁНЫМ в том же прогоне: он
+    /// > читает текст, а не путь, и про сломанную адресацию сказать
+    /// > не мог. Сломайся сам обход — он позеленел бы так же.
     private static var корень: URL {
         URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent()   // TogoTests
             .deletingLastPathComponent()   // корень репозитория
+            .resolvingSymlinksInPath()
     }
 
     /// Пути и содержимое всех исходников приложения.
@@ -60,8 +76,11 @@ struct ЗапретViewThatFitsTests {
                 guard let url = случай as? URL, url.pathExtension == "swift",
                       let текст = try? String(contentsOf: url, encoding: .utf8)
                 else { continue }
-                собрано.append((url.path.replacingOccurrences(
-                    of: корень.path + "/", with: ""), текст))
+                // Симлинки разворачиваются с ОБЕИХ сторон: иначе
+                // обрезка префикса не совпадает и путь остаётся
+                // абсолютным — см. замер в `корень`.
+                собрано.append((url.resolvingSymlinksInPath().path
+                    .replacingOccurrences(of: корень.path + "/", with: ""), текст))
             }
         }
         return собрано
