@@ -87,6 +87,11 @@ enum LiveActivityController {
             lastWalkSummary: signals.lastWalk.map { "гулял \(Fmt.duration(now.timeIntervalSince($0))) назад" },
             walkStartedAt: appState.walkStartedAt,
             walkStartedBy: appState.walkStartedBy,
+            // Та же величина, из которой рядом собирается
+            // `lastWalkSummary`, — но датой. Строку виджет показать
+            // может, а считать по ней время не может: она застывает
+            // в момент публикации.
+            lastWalkAt: signals.lastWalk,
             fastingEndsAt: fastingEnd(for: dog, now: now),
             lastMealAt: мяЕда(events, now: now).0,
             mealsToday: мяЕда(events, now: now).1,
