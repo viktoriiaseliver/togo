@@ -54,8 +54,6 @@ struct ReadingPanel<Шапка: View>: View {
     var докуда: String?
     /// Насколько заполнена полоса-косточка, 0…1. Пусто — полосы нет.
     var доля: Double?
-    /// Фото собаки. Пусто — фона нет, остаётся заливка.
-    var фото: Data?
     /// Шапка: аватар, кличка, «вес · дежурит», кнопка «…».
     @ViewBuilder var шапка: Шапка
 
@@ -63,6 +61,10 @@ struct ReadingPanel<Шапка: View>: View {
     /// Прозрачность выключена в системе — блюра не будет, будет
     /// сплошная поверхность (хендофф, «Рекомендации» 7).
     @Environment(\.accessibilityReduceTransparency) private var безПрозрачности
+    /// Уровень контраста системы: от него зависит плотность слоя
+    /// затемнения под шапкой (.55 против .70) — те же числа, что
+    /// у `CinemaHeader.плотностьШапки`.
+    @Environment(\.colorSchemeContrast) private var контраст
 
     /// Чип состояния — светлый на обычном дне, цветной на дозе.
     struct Чип {
@@ -117,13 +119,22 @@ struct ReadingPanel<Шапка: View>: View {
         ZStack(alignment: .topLeading) {
             фон
             VStack(alignment: .leading, spacing: Token.Space.s8) {
-                шапка
-                строкаЗаголовка
-                чипСостояния
+                // Шапка, заголовок и чип лежат ПРЯМО НА ФОТОГРАФИИ —
+                // стекла под ними нет. Поэтому у них свой слой
+                // затемнения, привязанный к тексту; разбор — у
+                // `слойШапки`.
+                VStack(alignment: .leading, spacing: Token.Space.s8) {
+                    шапка
+                    строкаЗаголовка
+                    чипСостояния
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, Token.Spacing.screenPadding)
+                .background(alignment: .top) { слойШапки }
                 Spacer(minLength: Token.Space.s12)
                 стекляннаяПанель
+                    .padding(.horizontal, Token.Spacing.screenPadding)
             }
-            .padding(.horizontal, Token.Spacing.screenPadding)
             .padding(.bottom, Token.Space.s16)
         }
         .frame(minHeight: высота)
@@ -137,41 +148,91 @@ struct ReadingPanel<Шапка: View>: View {
 
     // MARK: Фон
 
-    /// Фото под всем блоком, затемнённое к низу и подкрашенное тоном.
+    /// Подкраска блока тоном.
+    ///
+    /// **Фотографии и затемнения здесь больше НЕТ, и это снятие второго
+    /// механизма, а не упрощение** (23.10.2026). Панель рисовала свой
+    /// снимок из `dog?.photo`, мимо `BackgroundStore` — то есть мимо
+    /// выбора человека на экране «Фон приложения», — и рисовала его
+    /// ВНУТРИ `ScrollView`, где `.ignoresSafeArea` за обрезку прокрутки
+    /// не выходит. Отсюда и бралась полоса под статус-баром, которую
+    /// экран закрашивал отдельно `PosterPaint.background` — индиго.
+    ///
+    /// Теперь подложку «Сегодня» рисует `CinemaBackdrop(экран: .today)`
+    /// у экрана, под прокруткой и под статус-баром: тот же вид, что
+    /// у вкладок и подэкранов, тот же хозяин снимка
+    /// (`BackgroundStore`), та же цепочка `запомнитьФотоСобаки`.
     ///
     /// **Тон красит ФОТО, а не только панель** — это видно на кадре 02:
     /// при дозе синим залит весь верх экрана, не один прямоугольник.
     /// В токенах это `backdrop.tint` (`softLight`, 55–60 % прозрачности).
+    /// Граница названа: подкраска кроет РАМКУ БЛОКА (360 pt), а подложка
+    /// экрана выше — 640 pt (`Token.Size.backdropToday`). Ниже блока
+    /// фотография остаётся неподкрашенной, и это расхождение с кадром,
+    /// а не решение: перенос подкраски в `CinemaBackdrop` означал бы
+    /// отдать тону «Сегодня» чужой общий вид.
     private var фон: some View {
         ZStack {
-            Token.Surface.screen
-            if let фото, let картинка = UIImage(data: фото) {
-                Image(uiImage: картинка)
-                    .resizable()
-                    .scaledToFill()
-            }
-            // Затемнение к низу: без него текст показания ложится
-            // на светлое место фотографии и пропадает. Это `--bd-scrim`.
-            LinearGradient(
-                colors: [Token.Surface.scrim.opacity(0.70),
-                         Token.Surface.scrim.opacity(0.15),
-                         Token.Surface.scrim],
-                startPoint: .top,
-                endPoint: .bottom
-            )
             if let подкраска {
                 подкраска.opacity(0.55).blendMode(.softLight)
             }
             // Ночь: `saturate(.3) brightness(.7)` — приглушается ФОТО,
             // а не панель.
             if tone.dimsPhoto {
-                Token.Surface.scrim.opacity(0.30)
+                Token.Surface.screen.opacity(0.30)
             }
         }
-        .clipped()
         // Фото — оформление. Голосом его читать нечем, а подпись
         // к нему была бы выдумкой: мы не знаем, что на фотографии.
         .accessibilityHidden(true)
+    }
+
+    /// Лежит ли под блоком фотография **сейчас**.
+    ///
+    /// Спрашивается у того же хозяина и с той же оговоркой про сниженную
+    /// прозрачность, что в `CinemaHeader.наФото` и `CinemaBackdrop`:
+    /// второй ответ на тот же вопрос разошёлся бы молча.
+    private var наФото: Bool {
+        guard !безПрозрачности else { return false }
+        return BackgroundStore.shared.background(for: .today) != nil
+    }
+
+    /// Ровное затемнение под шапкой, заголовком и чипом плюс спад под
+    /// ними — **только когда под блоком есть фотография**.
+    ///
+    /// **Слой обязателен, и это замер, а не осторожность.** Восьми
+    /// стопов `--bd-scrim` для контраста не хватает — прямой ответ
+    /// дизайна 23.10.2026 (`943de49`, решение 3): «на белом кадре
+    /// на 10 % высоты α .52 → 4,3:1, на 25 % α .24 → 1,8:1. Гарантию
+    /// даёт отдельный слой, привязанный к шапке». У шапки подэкранов
+    /// это стоило **1,89:1** (`CinemaHeader.слойШапки`), и здесь тот же
+    /// текст на том же снимке: `Poster.labelOnColor` без слоя даёт
+    /// на светлой фотографии 2,4 при пороге 4,5.
+    ///
+    /// Числа и форма — те же, что у `CinemaHeader`: `backdrop.headerScrim`
+    /// α `.55`, в повышенном контрасте `.70`, спад `fadePt` = 48. Токена
+    /// у них пока нет, хозяин — сессия токенов; когда токен появится,
+    /// три шапки переводятся вместе (`CinemaHeader`, `ФотоШапка`, эта).
+    @ViewBuilder
+    private var слойШапки: some View {
+        if наФото {
+            VStack(spacing: 0) {
+                Token.Surface.screen.opacity(плотностьШапки)
+                LinearGradient(
+                    colors: [Token.Surface.screen.opacity(плотностьШапки),
+                             Token.Surface.screen.opacity(0)],
+                    startPoint: .top, endPoint: .bottom
+                )
+                .frame(height: 48)
+            }
+            .padding(.bottom, -48)
+            .accessibilityHidden(true)
+        }
+    }
+
+    /// `backdrop.headerScrim.alpha` = .55, `alphaHC` = .70.
+    private var плотностьШапки: Double {
+        контраст == .increased ? 0.70 : 0.55
     }
 
     /// Подкраска фото по тону. Пусто — фото остаётся как есть.

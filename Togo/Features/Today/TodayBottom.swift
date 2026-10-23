@@ -119,19 +119,65 @@ struct TodayBottomBar: View {
     }
 
     /// Заливка главной кнопки — у тона; второй — всегда тихая.
+    ///
+    /// # Две роли были перепутаны местами, и кадр это показал
+    ///
+    /// Замер по `Дизайн/кадры-приёмки/витрина-редизайн-23.10/01-today.png`
+    /// (23.10.2026): главная кнопка обычного дня вышла ТЁМНОЙ, подпись
+    /// на ней почти не читается. Причина — не правило, а пара токенов:
+    ///
+    /// ```
+    /// Token.Action.primary  = arctic    тёмная #FFFFFF  ← САМ АКЦЕНТ
+    /// Token.Ink.onAccent    = arcticInk тёмная #111111  ← чернила НА нём
+    /// ```
+    ///
+    /// То есть «белая кнопка» стояла как `Ink.onAccent` — это чернила,
+    /// а не заливка, — и в теме «Кино» дала `#111111` на `#000000`
+    /// полотне (1,1:1). Тот же обмен ролями уже оплачен рядом, у
+    /// заголовка панели (`ReadingPanel.строкаЗаголовка`, замер
+    /// `ЧернилаНаФотоКадрTests`): после того как акцент стал белым,
+    /// `onAccent` перестал означать «светлый».
+    ///
+    /// И у дозы была обратная половина той же ошибки: `Action.primary`
+    /// в «Кино» белый, то есть синей кнопка дозы не была ни разу.
+    /// Синий живёт в `Token.Poster.backgroundDose` (`#1F4FFF`) — у него
+    /// в описании прямо сказано, что он остался индиговым, когда акцент
+    /// побелел.
     private func заливка(_ главнаяЛи: Bool) -> Color {
         guard главнаяЛи else { return Token.Surface.card }
         switch tone {
-        case .dose: return Token.Action.primary
+        // `readingTone.dose.primaryButton` = #1F4FFF.
+        case .dose: return Token.Poster.backgroundDose
         case .alarm: return Token.Status.overdueText
         // Белая с текстом #111 — обычное состояние, ночь, натощак, выход.
-        case .normal, .fasting, .night, .walk: return Token.Ink.onAccent
+        case .normal, .fasting, .night, .walk: return Token.Action.primary
         }
     }
 
+    /// Чернила главной кнопки.
+    ///
+    /// Три случая, а не два, и разводит их **светлота заливки**:
+    ///
+    /// ```
+    /// обычный, ночь,   белая #FFFFFF   Ink.onAccent  = #111111
+    /// натощак, выход
+    /// доза             синяя #1F4FFF   Poster.labelOnDose = #F4F4F2
+    /// тревога          терракот #FF7A66 Ink.onAccent = #111111
+    /// ```
+    ///
+    /// Терракот у нас светлый (`clay`, тёмная #FF7A66), и белым по нему
+    /// выходит 2,6:1. То же решение уже записано у `Category.onIncident`:
+    /// «#111 там, где заливка светлая, белый там, где тёмная».
+    /// Перечисление полное нарочно, а не `tone == .dose`: добавят
+    /// седьмой тон — компилятор потребует решить, какие у него чернила,
+    /// а не подставит чужие молча. Тем же приёмом защищена `заливка`
+    /// и `PosterPaint.background`.
     private func чернила(_ главнаяЛи: Bool) -> Color {
         guard главнаяЛи else { return Token.Ink.primary }
-        return tone.tintsPrimaryButton ? Token.Ink.onAccent : Token.Surface.screen
+        switch tone {
+        case .dose: return Token.Poster.labelOnDose
+        case .alarm, .normal, .fasting, .night, .walk: return Token.Ink.onAccent
+        }
     }
 }
 
