@@ -53,6 +53,56 @@ struct RootView: View {
 
     enum Tab: Hashable { case today, dog, history, health }
 
+    /// Значки вкладок — **из пакета дизайна, а не по смыслу**.
+    ///
+    /// Источник: `Дизайн/КОНТРАКТ-ПАКЕТА.md:242`, таблица
+    /// «Material → SF Symbols», и эталонный кадр
+    /// `Дизайн/эталонные-кадры/ios28-кино-22.10/screenshots/10.png`,
+    /// прочитанный увеличением таб-бара. Два источника сошлись
+    /// на трёх значках из четырёх:
+    ///
+    /// ```
+    ///            было          контракт               кадр 10
+    /// Сегодня    sun.horizon   calendar               календарь    ✗ было не то
+    /// {кличка}   pawprint      pawprint               лапа         ✓ совпадало
+    /// История    calendar      clock.arrow.circlepath часы со стрелкой ✗
+    /// Здоровье   cross.case    heart.text.square      СЕРДЦЕ       ✗ расходятся
+    /// ```
+    ///
+    /// **Календарь стоял на «Истории», а должен на «Сегодня»** — два
+    /// значка поменялись смыслами, и `sun.horizon` в пакете не назван
+    /// вовсе.
+    ///
+    /// **`cross.case` — чужой значок.** Контракт отдаёт его
+    /// `emergency_home`, то есть экстренной карточке, а не медслою.
+    /// Он был взят «по смыслу» и обоими источниками опровергается.
+    ///
+    /// **Расхождение по «Здоровью» названо, а не усреднено.** Контракт
+    /// говорит `heart.text.square` (квадрат с сердцем и строками),
+    /// кадр `10.png` рисует **простое сердце без рамки** — это разные
+    /// глифы, а не разрешение растра. Взят кадр: правило этого
+    /// редизайна записано в головах `КиноЭкран` и `HistoryScreen`
+    /// дословно — «исполнен **кадр**, а не проза README: где они
+    /// расходятся, расхождение названо в отчёте». Если Виктория
+    /// выберет контракт — это одно слово здесь.
+    ///
+    /// > И рядом то, чему этот контракт **уже не хозяин**: та же
+    /// > страница (`:46`) говорит «„Здоровье" появляется, только если
+    /// > включено лечение». Решением 08.10.2026 вкладку держит право
+    /// > `.seeMedical`, и это решение не отменено (разбор — голова
+    /// > этого файла). То есть пакет местами старше кода, и ссылаться
+    /// > на него целиком нельзя.
+    ///
+    /// Приёмка здесь — **кадр, а не компиляция**: несуществующее имя
+    /// символа даёт пустое место, а не ошибку сборки. Снято после
+    /// правки, `Дизайн/кадры-приёмки/низ-и-верх-кино-23.10/`.
+    private enum Значок {
+        static let today = "calendar"
+        static let dog = "pawprint"
+        static let history = "clock.arrow.circlepath"
+        static let health = "heart"
+    }
+
     private var dog: Dog? { appState.activeDog(from: dogs) }
 
     /// На «Сегодня» под тостом стоит нижняя полоса — её высоту надо
@@ -75,15 +125,15 @@ struct RootView: View {
         TabView(selection: $selection) {
             TodayScreen(onOpenDog: { selection = .dog },
                         открытьПрогулку: $открытьПрогулку)
-                .tabItem { Label("Сегодня", systemImage: "sun.horizon") }
+                .tabItem { Label("Сегодня", systemImage: Значок.today) }
                 .tag(Tab.today)
 
             DogTab(открытьСемью: $открытьСемью)
-                .tabItem { Label(dog.flatMap(\.nameIfAny) ?? String(localized: "Собака"), systemImage: "pawprint") }
+                .tabItem { Label(dog.flatMap(\.nameIfAny) ?? String(localized: "Собака"), systemImage: Значок.dog) }
                 .tag(Tab.dog)
 
             HistoryScreen()
-                .tabItem { Label("История", systemImage: "calendar") }
+                .tabItem { Label("История", systemImage: Значок.history) }
                 .tag(Tab.history)
 
             // Вкладку держит ПРАВО, и только оно. Решение Виктории
@@ -104,7 +154,7 @@ struct RootView: View {
             // Разбор по всем пяти ролям — docs/матрица-ролей.md.
             if appState.can(.seeMedical) {
                 HealthScreen()
-                    .tabItem { Label("Здоровье", systemImage: "cross.case") }
+                    .tabItem { Label("Здоровье", systemImage: Значок.health) }
                     .tag(Tab.health)
             }
         }
