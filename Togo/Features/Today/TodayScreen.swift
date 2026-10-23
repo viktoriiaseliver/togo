@@ -8,6 +8,23 @@ struct TodayScreen: View {
     /// Куда уводить, когда речь про собаку целиком: вкладка, а не шторка.
     var onOpenDog: () -> Void = {}
 
+    /// Пришли тапом по живой активности (`togo://walk`) — открыть
+    /// «На улице» сразу.
+    ///
+    /// **Вторая половина цепочки дизайна** (круг 3 §1 и круг 2 §6: «тап
+    /// по активности открывает „На улице"»). Первая половина —
+    /// `WalkLiveActivity.тапВедёт`, она стояла в дереве одна, и
+    /// `RootView.handle` знал ровно один хост, `join`. Отказа человек
+    /// не видел: неизвестный хост `handle` молча пропускал, и тап
+    /// открывал просто приложение.
+    ///
+    /// Вход тем же способом, что у «Семьи» (`DogTab.открытьСемью`),
+    /// и по той же причине: у `WalkModeScreen` нет вкладки, довести
+    /// до него обязан тот, кто поймал ссылку. Маршрут тот же самый,
+    /// которым экран открывается изнутри (`route = .walk` у карточки
+    /// активной сессии) — второй путь показа разошёлся бы с первым молча.
+    @Binding var открытьПрогулку: Bool
+
     @Environment(AppState.self) private var appState
     @Environment(Settings.self) private var settings
     @Environment(\.modelContext) private var context
@@ -518,6 +535,20 @@ struct TodayScreen: View {
         содержимое
             .sheet(item: $route) { route in
                 TodayRouter(route: route, dog: dog, now: now, onOpenDog: onOpenDog)
+            }
+            // Тап по живой активности. Флаг снимается здесь же: иначе
+            // второй тап при уже стоящем `true` не даст `onChange`,
+            // и шторка откроется один раз за запуск.
+            //
+            // `initial: true` — ссылка приходит ДО появления экрана,
+            // когда приложение было выгружено: `onOpenURL` у `RootView`
+            // срабатывает на старте сцены, а `TodayScreen` в этот момент
+            // ещё не подписан. Без этого холодный запуск по ссылке
+            // открывал бы просто приложение — ровно то, что мы и чиним.
+            .onChange(of: открытьПрогулку, initial: true) { _, просят in
+                guard просят else { return }
+                route = .walk
+                открытьПрогулку = false
             }
             .sheet(item: $finishingDayOut) { day in
                 DayOutSummarySheet(day: day)
