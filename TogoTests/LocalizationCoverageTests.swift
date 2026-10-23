@@ -504,8 +504,15 @@ struct LocalizationCoverageTests {
             contentsOf: корень.appendingPathComponent("Configuration/Togo-Info.plist"),
             encoding: .utf8)
         let массив = try #require(
-            plist.range(of: "<key>CFBundleLocalizations</key>\\s*<array>(.*?)</array>",
-                        options: [.regularExpression, .dotMatchesLineSeparators])
+            // `[\s\S]` вместо `.` НАРОЧНО: у `String.CompareOptions` члена
+            // `.dotMatchesLineSeparators` нет вовсе — он живёт
+            // у `NSRegularExpression.Options`. Первая редакция звала его
+            // здесь и валила СБОРКУ ТЕСТ-ТАРГЕТА (замер 22.10.2026,
+            // `** TEST BUILD FAILED **`, rc=65), а рецепт «собирается ли»
+            // тест-таргеты не берёт — см. вторую границу в `CLAUDE.md`.
+            // Класс переносов внутри класса символов обходится без опции.
+            plist.range(of: "<key>CFBundleLocalizations</key>[\\s\\S]*?<array>([\\s\\S]*?)</array>",
+                        options: [.regularExpression])
                 .map { String(plist[$0]) },
             """
             в `Configuration/Togo-Info.plist` нет `CFBundleLocalizations` —
