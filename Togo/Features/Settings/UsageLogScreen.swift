@@ -18,6 +18,7 @@ struct UsageLogScreen: View {
 
     var body: some View {
         TGScreen {
+            CinemaHeader("Журнал действий", отступы: false)
             if report.isEmpty {
                 TGBanner(tone: .waiting, title: "Журнал пока пуст",
                          subtitle: isOn
@@ -37,8 +38,7 @@ struct UsageLogScreen: View {
             privacy
         }
         .navigationTitle("Журнал действий")
-        .posterHeader("Журнал действий")
-        .navigationBarTitleDisplayMode(.large)
+        .cinemaScreen()
         .task { await reload() }
         .usageScreen(.usageLog)
         .confirmationDialog("Очистить журнал?", isPresented: $isConfirmingClear,

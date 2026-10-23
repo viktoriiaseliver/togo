@@ -88,6 +88,13 @@ struct LanguageScreen: View {
     var body: some View {
         List {
             Section {
+                CinemaHeader("Язык", надпись: "язык интерфейса", экран: .sub("language"))
+            }
+            .listRowInsets(EdgeInsets())
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+
+            Section {
                 // Подпись ряда и имя языка — разные вещи, и разделены
                 // они здесь намеренно. «Как в системе» и «перевод
                 // готовится» — ключи каталога, и приходить на экран
@@ -140,10 +147,16 @@ struct LanguageScreen: View {
         }
         .listStyle(.insetGrouped)
         .scrollContentBackground(.hidden)
-        .background(Token.Surface.screen)
         .navigationTitle("Язык")
-        .posterHeader("Язык")
-        .navigationBarTitleDisplayMode(.large)
+        // Было `.posterHeader("Язык")`, а строкой НИЖЕ —
+        // `.navigationBarTitleDisplayMode(.large)`, то есть режим
+        // заголовка назначался дважды и разными значениями: плакат
+        // ставит себе `.inline` внутри, экран поверх просил `.large`.
+        // **Чем это кончалось на экране, я не мерил** — кадра «до»
+        // у меня нет, и выдавать рассуждение за замер нельзя. Снято
+        // вместе с плакатом: у шапки «Кино» режим один и назначается
+        // в одном месте.
+        .cinemaScreen(экран: .sub("language"))
     }
 
     private var systemLanguageName: String? {

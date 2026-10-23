@@ -26,6 +26,7 @@ struct DoorTagScreen: View {
 
     var body: some View {
         TGScreen {
+            CinemaHeader("Метка у двери", отступы: false)
             TGCard {
                 Text("Приложил — пошли").textStyle(AppFont.cardTitle)
                 Text("Одно касание работает в обе стороны: прогулка не идёт — начнётся, идёт — закончится и запишется. У двери не надо вспоминать, что сейчас нажать.")
@@ -65,7 +66,6 @@ struct DoorTagScreen: View {
             TGExplainer(text: "Метка не знает о тебе ничего: в ней записан только номер, по которому «Команды» узнают наклейку. Геопозицию Togo не спрашивает вовсе.")
         }
         .navigationTitle("Метка у двери")
-        .posterHeader("Метка у двери")
-        .navigationBarTitleDisplayMode(.large)
+        .cinemaScreen()
     }
 }

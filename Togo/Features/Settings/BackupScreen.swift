@@ -31,6 +31,12 @@ struct BackupScreen: View {
 
     var body: some View {
         TGScreen {
+            // Заголовок — тот же ключ, что и у `navigationTitle`.
+            // Новых строк шапка не заводит нарочно: каталог
+            // `TogoShared/Resources/Localizable.xcstrings` сегодня
+            // правит другая сессия (вычитка пяти языков), и каждый
+            // новый литерал — её работа, а не моя.
+            CinemaHeader("Перенос", отступы: false)
             iCloudCard
             exportCard
             importCard
@@ -38,9 +44,13 @@ struct BackupScreen: View {
             formatCard
         }
         .navigationTitle("Перенос")
-        .posterHeader("Перенос")
+        // Фотографии под шапкой здесь НЕТ, и это не забывчивость:
+        // `TGScreen` рисует свою непрозрачную подложку, сквозь неё фон
+        // не виден. Пустить фото на эти экраны — значит править каркас
+        // в `Togo/DesignSystem`, а там сегодня чужая работа. Названо
+        // в отчёте открытым пунктом, а не сделано молча.
+        .cinemaScreen()
         .usageScreen(.backup)
-        .navigationBarTitleDisplayMode(.large)
         .task {
             rebuild()
             isBuilding = false

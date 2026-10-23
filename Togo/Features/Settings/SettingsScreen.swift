@@ -55,7 +55,6 @@ struct SettingsScreen: View {
         // должен быть один и понятный, а не два с разным смыслом.
         .toolbar(.hidden, for: .tabBar)
         .usageScreen(.settings)
-        .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showPaywall) {
             NavigationStack { PaywallScreen() }
         }
@@ -75,8 +74,15 @@ struct SettingsScreen: View {
     /// экрана читалось бы поверх чужого текста.
     private var шапка: some View {
         Section {
+            // Строка надписи — ТОТ ЖЕ ключ, что стоял подзаголовком
+            // плаката: «Язык, уведомления, перенос». Прописными её
+            // делает `.textCase(.uppercase)` в самой шапке, а не другой
+            // литерал. Строчная копия была бы НОВЫМ ключом каталога
+            // (замер 23.10: у прежнего есть ru/en/fr/uk, у строчного
+            // нет ничего), то есть переводом с нуля на пяти языках —
+            // и работой чужой сессии, которая каталог сейчас вычитывает.
             CinemaHeader("Настройки",
-                         надпись: "язык, уведомления, перенос",
+                         надпись: "Язык, уведомления, перенос",
                          экран: .sub("settings"))
         }
         .listRowInsets(EdgeInsets())

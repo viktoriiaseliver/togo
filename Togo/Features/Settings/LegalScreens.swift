@@ -36,7 +36,7 @@ struct LegalDocument: View {
     var body: some View {
         TGScreen {
             VStack(alignment: .leading, spacing: Token.Space.s4) {
-                Text(title).textStyle(AppFont.screenTitle)
+                CinemaHeader(title, отступы: false)
                 Text("обновлено \(updated)").textStyle(AppFont.micro)
             }
             .padding(.top, Token.Space.s4)
@@ -57,13 +57,14 @@ struct LegalDocument: View {
             }
         }
         .navigationTitle(title)
-        // Было `.значение(title)` — перегрузка для текста ИЗ ДАННЫХ
-        // (кличка, город, имя участника), который каталог не знает
-        // по смыслу и рисует дословно. «Политика конфиденциальности» —
-        // не данные, а ключ: плакат печатал его по-русски даже тогда,
-        // когда перевод заголовка в каталоге был.
-        .posterHeader(title)
-        .navigationBarTitleDisplayMode(.inline)
+        // Заголовок приходит сюда `LocalizedStringKey`, а не `String`,
+        // и это условие перевода, а не стиль. У плаката, который здесь
+        // стоял до 23.10.2026, была перегрузка `.значение(_:)` для текста
+        // ИЗ ДАННЫХ (кличка, город, имя участника) — и однажды «Политика
+        // конфиденциальности» уехала в неё: ключ печатался по-русски
+        // при живом переводе в каталоге. У `CinemaHeader` разведение
+        // то же самое и по той же причине.
+        .cinemaScreen()
     }
 }
 

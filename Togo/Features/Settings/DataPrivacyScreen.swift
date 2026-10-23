@@ -16,6 +16,7 @@ struct DataPrivacyScreen: View {
 
     var body: some View {
         TGScreen {
+            CinemaHeader("Данные", отступы: false)
             TGCard {
                 Text("Всё лежит на телефоне").textStyle(AppFont.cardTitle)
                 Text("Аккаунта нет, серверов у нас нет. Записи хранятся в базе приложения и в общем хранилище с виджетами.")
@@ -71,9 +72,8 @@ struct DataPrivacyScreen: View {
             }
         }
         .navigationTitle("Данные")
-        .posterHeader("Данные")
+        .cinemaScreen()
         .usageScreen(.dataPrivacy)
-        .navigationBarTitleDisplayMode(.large)
         .confirmationDialog("Удалить все данные?", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
             Button("Удалить всё", role: .destructive) { deleteEverything() }
             Button("Отмена", role: .cancel) {}
@@ -123,6 +123,7 @@ struct SupportScreen: View {
 
     var body: some View {
         TGScreen {
+            CinemaHeader("Поддержка", отступы: false)
             TGCard {
                 Text("Отвечает человек").textStyle(AppFont.cardTitle)
                 Text("Обычно в течение двух рабочих дней. Если что-то в приложении мешает ухаживать за собакой — пиши сразу, это важнее фич.")
@@ -163,8 +164,7 @@ struct SupportScreen: View {
             }
         }
         .navigationTitle("Поддержка")
-        .posterHeader("Поддержка")
-        .navigationBarTitleDisplayMode(.large)
+        .cinemaScreen()
     }
 
     private func openMail() {
@@ -218,6 +218,7 @@ struct AboutScreen: View {
 
     var body: some View {
         TGScreen {
+            CinemaHeader("О приложении", отступы: false)
             VStack(spacing: Token.Space.s8) {
                 Image(systemName: "pawprint.fill")
                     .font(.system(size: 44))
@@ -250,8 +251,7 @@ struct AboutScreen: View {
             }
         }
         .navigationTitle("О приложении")
-        .posterHeader("О приложении")
-        .navigationBarTitleDisplayMode(.large)
+        .cinemaScreen()
     }
 
     private let principles = [
@@ -284,6 +284,7 @@ struct WhatsNewScreen: View {
 
     var body: some View {
         TGScreen {
+            CinemaHeader("Что нового", отступы: false)
             ForEach(Self.releases) { release in
                 TGCard {
                     HStack {
@@ -299,6 +300,6 @@ struct WhatsNewScreen: View {
             }
         }
         .navigationTitle("Что нового")
-        .navigationBarTitleDisplayMode(.large)
+        .cinemaScreen()
     }
 }

@@ -9,6 +9,7 @@ struct DowngradeScreen: View {
 
     var body: some View {
         TGScreen {
+            CinemaHeader("Отключить Pro", отступы: false)
             TGCard {
                 Text("Ничего не пропадёт").textStyle(AppFont.cardTitle)
                 Text("Записи, занятия, история и схемы лечения останутся на месте. Закроется только часть экранов — и откроется обратно, если снова включить подписку.")
@@ -51,7 +52,6 @@ struct DowngradeScreen: View {
             }
         }
         .navigationTitle("Отключить Pro")
-        .posterHeader("Отключить Pro")
-        .navigationBarTitleDisplayMode(.large)
+        .cinemaScreen()
     }
 }
