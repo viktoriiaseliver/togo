@@ -8,6 +8,9 @@ import XCTest
 nonisolated final class DynamicTypeScreenshotTests: XCTestCase {
     private var app: XCUIApplication!
 
+    /// Что успели снять. Печатается в `tearDown` всегда — см. ниже.
+    private var снято: [String] = []
+
     override func setUp() {
         continueAfterFailure = false
         app = XCUIApplication()
@@ -17,7 +20,22 @@ nonisolated final class DynamicTypeScreenshotTests: XCTestCase {
             "UICTContentSizeCategoryAccessibilityXL",
         ]
         app.launch()
-        _ = app.staticTexts["Стич"].waitForExistence(timeout: 10)
+        // 30 с, а не 10: первый тест партии платит за установку бандла
+        // и первую сборку демо-данных. Замер 23.10.2026 на соседнем
+        // наборе — десяти секунд не хватило ровно первому тесту прогона
+        // и хватило одиннадцати следующим.
+        _ = app.staticTexts["Стич"].waitForExistence(timeout: 30)
+    }
+
+    /// Счёт печатается ВСЕГДА, в том числе после падения посреди прохода.
+    ///
+    /// «Снято шесть» и «упал на третьем, снято два» выглядят в логе
+    /// одинаково: строк про кадры просто меньше, а их отсутствия никто
+    /// не ищет. Набор снимает по два кадра в тесте (до прокрутки
+    /// и после), и без счёта «упал на `swipeUp`» молчит так же, как
+    /// полный проход.
+    override func tearDown() {
+        print("КАДРОВ СНЯТО: \(снято.count) · \(name) · \(снято.joined(separator: ", "))")
     }
 
     private func capture(_ name: String) {
@@ -25,6 +43,7 @@ nonisolated final class DynamicTypeScreenshotTests: XCTestCase {
         shot.name = name
         shot.lifetime = .keepAlways
         add(shot)
+        снято.append(name)
     }
 
     func testXL01Сегодня() {
