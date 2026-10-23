@@ -92457,35 +92457,6 @@
         }
       }
     },
-    "«Стич» уже есть у мамы · объединить дневники" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "“Stitch” already exists in Mom's account · merge diaries"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "« Stitch » existe déjà chez Maman · fusionner les carnets"
-          }
-        },
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "«Стич» анаңда бар · күнделіктерді біріктіру"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "«Стіч» уже є в мами · об'єднати щоденники"
-          }
-        }
-      }
-    },
     "Когда позвать всех" : {
       "extractionState" : "manual",
       "localizations" : {
