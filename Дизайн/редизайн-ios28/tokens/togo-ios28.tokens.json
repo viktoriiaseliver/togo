@@ -65,7 +65,8 @@
       "today": 640,
       "tab": 420,
       "sub": 360,
-      "walk": 520
+      "walk": 520,
+      "note": "Требование, по типу экрана: today 640 · tab 420 · sub 360 · walk 520. Не равно size.hero (это карточка-герой, не подложка)."
     },
     "scrimStops": [
       [
@@ -134,7 +135,7 @@
       "fadePt": 48,
       "anchor": "header",
       "textColor": "#FFFFFF",
-      "guarantee": "белый текст ≥ 4.5:1 (4.76) на однотонном белом кадре, HC ≥ 7:1 (8.52); блендинг в sRGB, α — без учёта общего scrimStops",
+      "guarantee": "белый текст ≥ 4.5:1 (4.74) на однотонном белом кадре, HC ≥ 7:1 (8.45); блендинг в sRGB, канал округлён до 8 бит",
       "note": "Отдельный слой поверх scrimStops. Высота = от верха экрана до низа последнего текста шапки (кличка, подпись, надзаголовок, большой заголовок, пилюля) + fade."
     }
   },
@@ -181,7 +182,8 @@
     "incident": "status.error",
     "onIncident": "#FFFFFF",
     "doseShapeRadius": 12,
-    "note": "Новые, вне Graphite. В светлой теме проверить контраст значка (#111 на заливке ≥ 4.5:1 — проходит)."
+    "note": "Семантика Category/* — доступна экранам, виджету и Live Activity. Одно значение во всех режимах (на #000 ≥ 11:1).",
+    "level": "semantic"
   },
   "size": {
     "hitMin": 44,
@@ -250,5 +252,49 @@
       "highlight": "rgba(255,255,255,0.40)"
     },
     "note": "Отдельная шкала, не равна cinema. Включается UIAccessibility.isDarkerSystemColorsEnabled / colorSchemeContrast == .increased."
+  },
+  "metric": {
+    "pad": 16,
+    "gap": 6,
+    "radius": "size.cardRadius",
+    "number": {
+      "size": 48,
+      "weight": 300,
+      "family": "SF Pro Rounded",
+      "monospacedDigits": true
+    },
+    "unit": {
+      "size": 17,
+      "weight": 600,
+      "gapToNumber": 8
+    },
+    "bars": {
+      "count": 14,
+      "height": 48,
+      "gap": 3,
+      "radius": 3,
+      "marginTop": 6,
+      "color": "cinema.text.link"
+    },
+    "normLine": {
+      "width": 2,
+      "color": "cinema.text.disabled",
+      "note": "сплошной, без opacity; позиция — по значению нормы"
+    }
+  },
+  "liveActivity": {
+    "title": "Прогулка · {кличка}",
+    "subtitle": "кто вывел (не время — время в таймере)",
+    "lockScreenActions": [
+      "Пописал",
+      "Стул"
+    ],
+    "noEndAction": "«Домой» только в приложении: тап по активности открывает «На улице»",
+    "sinceFormat": "словами: «47 мин», «2 ч 11 мин»",
+    "islandCompact": {
+      "icon": "figure.walk",
+      "text": "На улице",
+      "valueColor": "category.walk"
+    }
   }
 }

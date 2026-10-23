@@ -54,7 +54,7 @@
   --bd-mask: linear-gradient(to bottom, #000 45%, transparent 92%);
   /* затемнение шапки — отдельный слой, привязан к шапке (не к фото, не в %):
      от верха экрана до низа последнего текста шапки ровно α, затем спад к 0 за 48 pt.
-     α .55 → белый текст ≥ 4.7:1 на чисто белом кадре (блендинг в sRGB). HC — .70 → 8.5:1. */
+     α .55 → белый текст 4.74:1 на чисто белом кадре (блендинг в sRGB). HC — .70 → 8.45:1 (канал округлён до 8 бит). */
   --bd-header-scrim-a: .55; --bd-header-scrim-fade: 48px;
   --on-photo-text: #FFFFFF;   /* любой текст на фото — только он, вторичный не используется */
   /* тон состояния поверх фото, mix-blend-mode: soft-light */
@@ -70,12 +70,22 @@
   --tone-night-filter: saturate(.3) brightness(.7);
 }
 
-/* ── Категории ленты: кружок 40 pt, значок #111 ─────────── */
+/* ── Категории — СЕМАНТИКА (Category/*), не компонентные: их берут экраны, виджет, Live Activity ── */
 :root {
   --cat-walk:#7CE0A0; --cat-poop:#A2C1FE; --cat-food:#FF9A5C; --cat-treat:#FF9A5C; --cat-water:#7FD3FF;
   --cat-dose:#FF8FBF; --cat-train:#C3A6FF; --cat-care:#C3A6FF; --cat-weight:#FFD43B;
   --cat-on:#111111; --cat-incident: var(--status-error); --cat-on-incident:#FFFFFF;
   --cat-dose-radius: 12px; /* доза — скруглённый квадрат, остальные — круг */
+}
+
+/* ── Блок Metric: число + столбики за 14 дней ─────────── */
+:root {
+  --metric-pad: 16px; --metric-gap: 6px; --metric-radius: var(--card-radius);
+  --metric-num-size: 48px; --metric-num-weight: 300;   /* SF Pro Rounded, табличные */
+  --metric-unit-size: 17px; --metric-unit-weight: 600; --metric-num-unit-gap: 8px;
+  --metric-bars-count: 14; --metric-bars-h: 48px; --metric-bars-gap: 3px; --metric-bar-radius: 3px;
+  --metric-bars-top: 6px; --metric-bar-color: var(--text-link);
+  --metric-norm-line: 2px; --metric-norm-color: var(--text-disabled); /* сплошной, без opacity */
 }
 
 /* ── Размеры и формы ───────────────────────────────────── */
