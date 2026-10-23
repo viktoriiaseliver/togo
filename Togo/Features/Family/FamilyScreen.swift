@@ -3,8 +3,31 @@ import SwiftData
 import CloudKit
 
 /// Семья · роли, дежурство, вид ситтера.
-/// Роли — не лестница: врач читает много и не пишет, ребёнок пишет бытовое
-/// и не видит медицинского.
+/// Роли — не лестница: наблюдатель читает и не пишет, помощник пишет
+/// бытовое и не видит медицинского.
+///
+/// **С 23.10.2026 экран переписан под тему «Кино».** Эталон — кадр
+/// `Дизайн/эталонные-кадры/ios28-кино-22.10/screenshots/12.png`, мерено
+/// по нему. Что изменилось против прежней редакции:
+///
+/// ```
+/// плоская полоса `.posterHeader`    → фото 360 pt, надстрочник, «Семья» 36
+/// карточка дежурства в потоке       → стеклом на фотографии
+/// «Сегодня дежурит Вика» одной      → «Дежурит сегодня» / имя / «до 22:55 ·
+///   строкой, «передать» текстом       пуши дозы приходят тебе» + «Передать»
+/// «участники · N» внутри карточки   → заголовком над карточкой
+/// в строке участника нет «это я»    → пилюля «это я»
+/// «Роли — не лестница» прозой       → «Пять ролей, восемь прав» + пилюли ролей
+/// «Инструкция ситтеру · написана»   → «Брифинг для {имя}» + кнопка «Открыть»
+/// ```
+///
+/// **Кнопки «…» в шапке этого экрана НЕТ, хотя на кадре она есть.**
+/// Кадр `12` рисует «Семью» экраном верхнего уровня — в прототипе
+/// у неё своя вкладка. У нас её нет с 22.10: экран пушится из вкладки
+/// собаки, и у него есть «назад». Решение того же дня говорит дословно
+/// «Больше кнопок в шапке нет», а второй вход в настройки с пушнутого
+/// экрана — ровно та кнопка, которую решение запрещает. Расхождение
+/// с кадром здесь **следствие нашей навигации**, а не недоделка.
 struct FamilyScreen: View {
     /// Экран открыт **внутри** чужого `NavigationStack` — строкой
     /// во вкладке собаки, а не своей вкладкой.
@@ -54,8 +77,9 @@ struct FamilyScreen: View {
     private var содержимое: some View {
         Group {
             TGScreen {
-                // Дубликат собаки — первым: пока он есть, всё остальное
-                // на этом экране человек читает неправильно.
+                герой
+                // Дубликат собаки — сразу под шапкой: пока он есть, всё
+                // остальное на этом экране человек читает неправильно.
                 DuplicateDogCard()
                 if let conflict = mergeConflict {
                     MergeConflictCard(left: conflict.0, right: conflict.1)
@@ -77,12 +101,11 @@ struct FamilyScreen: View {
                         action: nil
                     )
                 }
-                if let duty { dutyCard(duty) }
                 membersCard
+                rolesExplainer
+                sitterBriefingLink
                 if canManageFamily { inviteCard }
                 sharedDiaryLink
-                sitterBriefingLink
-                rolesExplainer
             } bottom: {
                 TGButton(title: "Добавить человека", systemImage: "person.badge.plus") {
                     UsageLog.note(.open, "addMember", on: .family)
@@ -97,7 +120,9 @@ struct FamilyScreen: View {
                 }
             }
             .navigationTitle("Семья")
-            .posterHeader("Семья")
+            // Плоской полосы `.posterHeader` здесь больше нет: в «Кино»
+            // под шапкой лежит фотография. Разбор — `ФотоШапка.swift`.
+            .фотоШапкаЭкрана()
             .usageScreen(.family)
             // Приглашение живёт в облаке, а не в `@State`: без этой
             // строки человек, уже создавший ссылку, возвращался
@@ -105,7 +130,6 @@ struct FamilyScreen: View {
             .task { if invite == nil, canManageFamily, SharedDiarySettings.isOn {
                 invite = await FamilyShare.existing().map(DiaryInvite.init)
             } }
-            .navigationBarTitleDisplayMode(.large)
             // Шестерёнки здесь больше нет: настройки уехали в меню «…»
             // вкладки собаки, из которой этот экран и открывается.
             // Второй вход в настройки с пушнутого экрана — это та самая
@@ -120,6 +144,53 @@ struct FamilyScreen: View {
             }
             .sheet(isPresented: $showPaywall) { NavigationStack { PaywallScreen() } }
         }
+    }
+
+    // MARK: Шапка с фотографией
+
+    /// Блок `Hero` кадра `12`: фото, «3 человека · дежурит Вика»
+    /// надстрочником, «Семья» крупно, карточка дежурства стеклом внизу.
+    ///
+    /// Высота — `backdropSub` (360): «Семья» у нас подэкран, а не вкладка.
+    private var герой: some View {
+        ФотоШапка(фото: фотоЭкрана,
+                  высота: Token.Size.backdropSub,
+                  надстрочник: надстрочник,
+                  заголовок: .ключ("Семья")) {
+            if let duty { dutyCard(duty) }
+        }
+        .padding(.horizontal, -Token.Spacing.screenPadding)
+    }
+
+    /// Фото подэкрана спрашивается у `BackgroundStore`, как просит
+    /// хендофф («экраны спрашивают `background(for: ScreenKey)`»).
+    ///
+    /// **`ScreenKey.sub(_:)` до 23.10.2026 не звал никто** — замер
+    /// `git grep ScreenKey` давал одни только настройки фона и сам
+    /// домен. То есть ветка «подэкран» существовала и ни разу
+    /// не исполнялась.
+    ///
+    /// Запасное — фото собаки: в режиме «как задумано» хранилище
+    /// отвечает `nil` нарочно («фон берёт не отсюда»), и без запасного
+    /// у всех, кроме выбравших «одно фото для всех», шапка была бы
+    /// пустым полотном.
+    private var фотоЭкрана: Data? {
+        BackgroundStore.shared.background(for: .sub("family"))?.data ?? dog?.photo
+    }
+
+    /// «3 ЧЕЛОВЕКА · ДЕЖУРИТ ВИКА» — дословно с кадра `12`.
+    ///
+    /// Собирается `String`'ом: в нём имя человека, а `.готовая(…)` —
+    /// это обычный ключ каталога, и поиск по каталогу он выполняет
+    /// (разбор — `Подпись.swift`). Рисует `Text(verbatim:)`.
+    ///
+    /// Форма «человека» уедет в каталог ключом с подстановкой, и
+    /// множественное число ему даёт вычитка каталога — тем же способом,
+    /// что у `Fmt.days`. Склонять здесь нечем и не надо.
+    private var надстрочник: String? {
+        var части = [String(localized: "\(members.count) человека")]
+        if let duty { части.append(String(localized: "дежурит \(duty.name)")) }
+        return части.joined(separator: " · ")
     }
 
     // MARK: Дежурство
@@ -152,20 +223,36 @@ struct FamilyScreen: View {
     /// Ужать было нечем — это уже шрифт, который человек и увеличивал.
     /// Тот же ответ, что у ряда плиток на главном: не ужимать, а менять
     /// раскладку.
+    /// **Три строки вместо одной, и это кадр, а не вкус.** На `12`
+    /// карточка читается сверху вниз: «Дежурит сегодня» — тихо, имя —
+    /// крупно, срок и следствие — подписью. Прежняя редакция склеивала
+    /// глагол с именем в заголовок («Сегодня дежурит Вика»), и имя
+    /// терялось в предложении — а отвечает карточка именно на вопрос
+    /// «кто».
+    ///
+    /// **«пуши дозы приходят тебе» или «ему» — по тому, чья это
+    /// карточка.** На кадре стоит «тебе», потому что дежурит Вика
+    /// и Вика же смотрит. Прежняя строка говорила «ему» всегда: мужской
+    /// род дежурной женщине и «ему» самому себе. Третьего лица в этой
+    /// фразе больше нет, когда дежуришь ты.
     private func dutyCard(_ member: FamilyMember) -> some View {
-        TGCard {
-            let текст = VStack(alignment: .leading, spacing: Token.Space.s2) {
-                Text("Сегодня дежурит \(member.name)").textStyle(AppFont.cardTitle)
-                Text(member.dutyUntil.map { "до \(Fmt.clock($0)) · напоминания идут ему" } ?? "напоминания идут ему")
-                    .textStyle(AppFont.caption)
-            }
-            let передать = Button("передать") {
-                handingOver = Передача(id: member.id, сдающий: member,
-                                       принимающий: successor(after: member))
-            }
-                .textStyle(AppFont.captionEmphasis.color(Token.Action.doneText))
-                .frame(minHeight: Token.Size.tapTarget)
+        let текст = VStack(alignment: .leading, spacing: Token.Space.s2) {
+            Text("Дежурит сегодня").textStyle(AppFont.caption)
+            Text(member.name).textStyle(AppFont.cardTitle)
+            Text(подписьДежурства(member))
+                .textStyle(AppFont.caption)
+                .wraps()
+        }
+        let передать = Button("Передать") {
+            handingOver = Передача(id: member.id, сдающий: member,
+                                   принимающий: successor(after: member))
+        }
+            .textStyle(AppFont.captionEmphasis.color(Token.Ink.primary))
+            .padding(.horizontal, Token.Space.s16)
+            .frame(minHeight: Token.Size.tapTarget)
+            .background(Capsule().fill(Token.Surface.raised))
 
+        return Group {
             if размерТекста.isAccessibilitySize {
                 VStack(alignment: .leading, spacing: Token.Space.s8) {
                     HStack(spacing: Token.Space.s12) {
@@ -184,6 +271,19 @@ struct FamilyScreen: View {
                 }
             }
         }
+        .padding(Token.Spacing.cardPadding)
+        .стекло(.плавающее, радиус: Token.Radius.card)
+    }
+
+    /// «до 22:55 · пуши дозы приходят тебе».
+    ///
+    /// Срок пропускается, когда его нет: «до — · …» хуже, чем без срока.
+    private func подписьДежурства(_ member: FamilyMember) -> LocalizedStringKey {
+        let кому = member.isMe
+            ? String(localized: "пуши дозы приходят тебе")
+            : String(localized: "пуши дозы приходят ему")
+        guard let до = member.dutyUntil else { return .готовая(кому) }
+        return .готовая(String(localized: "до \(Fmt.clock(до))") + " · " + кому)
     }
 
     /// Итог смены собирается из режима дня, а не из своего учёта:
@@ -222,15 +322,19 @@ struct FamilyScreen: View {
 
     // MARK: Участники
 
+    /// Заголовок секции **над** карточкой, а не внутри неё: так на кадре
+    /// `12` и так же переписан список вкладки собаки.
     private var membersCard: some View {
-        TGCard(spacing: 0) {
+        VStack(alignment: .leading, spacing: Token.Space.s8) {
             TGSectionHeader(title: "участники · \(members.count)")
-            ForEach(members) { member in
-                NavigationLink { MemberScreen(member: member) } label: {
-                    MemberRow(member: member)
+            TGCard(spacing: 0) {
+                ForEach(members) { member in
+                    NavigationLink { MemberScreen(member: member) } label: {
+                        MemberRow(member: member)
+                    }
+                    .buttonStyle(.plain)
+                    if member.id != members.last?.id { TGDivider(inset: 38) }
                 }
-                .buttonStyle(.plain)
-                if member.id != members.last?.id { TGDivider(inset: 38) }
             }
         }
     }
@@ -318,16 +422,22 @@ struct FamilyScreen: View {
     /// Инструкция: хозяйка пишет, ситтер читает. Одна и та же строка —
     /// потому что это одно и то же место, а не два разных экрана
     /// в разных концах приложения.
+    ///
+    /// **Заголовок называет человека, как на кадре `12` («Брифинг для
+    /// Ани»), и только когда такой человек есть.** Адресат — участник
+    /// без права видеть медицинское: ему брифинг и написан. Нет такого
+    /// в семье — остаётся безличное «Инструкция ситтеру», а не имя
+    /// наугад.
+    ///
+    /// Подпись «пять строк без диагноза» — замер, а не слоган: полей
+    /// ровно пять (`sitterFood`, `sitterDose`, `sitterWalks`,
+    /// `sitterForbidden`, `sitterEscalation` в `TogoShared/Models/Dog.swift`),
+    /// и диагноза среди них нет. Держит это `FamilyScreenCopyTests`.
     @ViewBuilder
     private var sitterBriefingLink: some View {
         if appState.can(.manageFamily) {
             Button { editingBriefing = true } label: {
-                TGCard {
-                    TGListRow(title: "Инструкция ситтеру",
-                              value: hasBriefing ? "написана" : "не написана",
-                              systemImage: "list.bullet.rectangle")
-                    TGExplainer(text: "Пять строк, которые он прочтёт за минуту: еда, доза, прогулки, запреты, эскалация.")
-                }
+                брифингКарточка(действие: "Открыть")
             }
             .buttonStyle(.plain)
         } else {
@@ -341,19 +451,74 @@ struct FamilyScreen: View {
         }
     }
 
+    private func брифингКарточка(действие: LocalizedStringKey) -> some View {
+        TGCard {
+            HStack(spacing: Token.Space.s12) {
+                Image(systemName: "list.bullet.rectangle")
+                    .font(.system(size: Token.Size.iconLg, weight: .medium))
+                    .foregroundStyle(Token.Ink.secondary)
+                    .frame(width: Token.Size.avatarMd, height: Token.Size.avatarMd)
+                    .background(RoundedRectangle(cornerRadius: Token.Radius.small,
+                                                 style: .continuous)
+                        .fill(Token.Surface.raised))
+                    .accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: Token.Space.s2) {
+                    Text(заголовокБрифинга).textStyle(AppFont.bodyEmphasis).wraps()
+                    Text(hasBriefing ? "пять строк без диагноза" : "пять строк, ещё не написаны")
+                        .textStyle(AppFont.caption)
+                        .wraps()
+                }
+                Spacer(minLength: Token.Space.s8)
+                Text(действие)
+                    .textStyle(AppFont.captionEmphasis.color(Token.Ink.primary))
+                    .padding(.horizontal, Token.Space.s16)
+                    .frame(minHeight: Token.Size.tapTarget)
+                    .background(Capsule().fill(Token.Surface.raised))
+            }
+        }
+    }
+
+    /// «Брифинг для Ани» — имя того, кто его прочтёт.
+    private var заголовокБрифинга: LocalizedStringKey {
+        guard let читатель = members.first(where: { !$0.isMe && !$0.can(.seeMedical) })
+        else { return "Инструкция ситтеру" }
+        return .готовая(String(localized: "Брифинг для \(читатель.name)"))
+    }
+
     private var hasBriefing: Bool {
         guard let dog else { return false }
         return !dog.sitterFood.isEmpty || !dog.sitterDose.isEmpty || !dog.sitterWalks.isEmpty
             || !dog.sitterForbidden.isEmpty || !dog.sitterEscalation.isEmpty
     }
 
+    /// «Пять ролей, восемь прав» — кадр `12`.
+    ///
+    /// **Оба числа написаны словами и оба измерены**: `FamilyRole.allCases`
+    /// пять случаев, `Permission.allCases` восемь. Два числа в тексте —
+    /// это две копии, которые разойдутся молча в тот день, когда роль
+    /// добавят, поэтому у них есть хозяин: `FamilyScreenCopyTests`
+    /// сверяет пропись со счётом перечислений и краснеет первым.
+    ///
+    /// Пилюли берутся из самого перечисления, а не печатаются рукой:
+    /// список, набранный руками, знает только то, что в него положили.
+    ///
+    /// **Фраза под пилюлями названа нашими ролями.** На кадре стоит
+    /// «Гость не меняет лечение. Ситтер не видит медицины», а ролей
+    /// «гость» и «ситтер» у нас нет вовсе — перенести её дословно
+    /// значило бы пообещать человеку то, чего он в списке не найдёт.
+    /// Сказанное здесь проверено по `defaultPermissions`: у наблюдателя
+    /// `[.seeMedical, .exportData]` — читает и не пишет; у помощника
+    /// `[.logBasics]` — медицинского не видит; `.editTreatment`
+    /// по умолчанию только у владельца.
     private var rolesExplainer: some View {
         TGCard {
-            Text("Роли — не лестница").textStyle(AppFont.cardTitle)
-            Text("Врач читает много и не пишет; ребёнок пишет бытовое и не видит медицинского. Дежурный получает напоминания — и только он.")
+            Text("Пять ролей, восемь прав").textStyle(AppFont.cardTitle)
+            ПилюлиРолей()
+            Text("Наблюдатель читает и не пишет. Помощник не видит медицинского. Схему лечения по умолчанию меняет только владелец.")
                 .textStyle(AppFont.caption)
+                .wraps()
             NavigationLink("Как выглядит вид ситтера") { SitterPreviewScreen(dog: dog) }
-                .textStyle(AppFont.captionEmphasis.color(Token.Action.doneText))
+                .textStyle(AppFont.captionEmphasis.color(Token.Ink.link))
         }
     }
 
@@ -364,21 +529,84 @@ struct FamilyScreen: View {
     }
 }
 
+/// Пилюли ролей на карточке «Пять ролей, восемь прав» (кадр `12`).
+///
+/// **Не `TGChipGroup`.** Тот собран из `TGChip`, а `TGChip` — кнопка:
+/// у неё есть `action`, трейт `.isButton` и выбранное состояние.
+/// Здесь ролей не выбирают, здесь их перечисляют. Пилюля, которая
+/// выглядит кнопкой и не нажимается, — это обещание без механизма,
+/// и ловится оно не тестом, а пальцем.
+///
+/// Перенос — `LazyVGrid(.adaptive)`, как у `TGChipGroup`, и ширина
+/// колонки растёт вместе с кеглем по той же причине: на крупной
+/// системной настройке «Ухажива / ющий» перестаёт читаться как роль.
+private struct ПилюлиРолей: View {
+
+    /// Ширина колонки сетки.
+    ///
+    /// **Это ЛИТЕРАЛ, и он назван, а не спрятан.** Токена под ширину
+    /// колонки чипов в проекте нет; единственное место, где это число
+    /// живёт, — `TGChipGroup.minimumWidth`, и там оно тоже 120
+    /// и тоже литералом. Завести общий токен значит править
+    /// `DesignTokens/tokens.json`, а он на 23.10.2026 отдан другой
+    /// сессии. Выводить его из соседнего (`backdropSub / 3` даёт ровно
+    /// 120) было бы хуже литерала: это связь, которой нет, и в день,
+    /// когда подэкранное фото станет 420, пилюли поехали бы за ним
+    /// без причины.
+    ///
+    /// `DesignLiteralTests` это число не ловит: его шаблон «размер»
+    /// смотрит на `\.frame(width:…`, а не на `GridItem`. То есть
+    /// защиты здесь нет и запись в доккомментарии — единственный след.
+    private var ширинаКолонки: CGFloat {
+        UIFontMetrics(forTextStyle: .body).scaledValue(for: 120)
+    }
+
+    var body: some View {
+        LazyVGrid(
+            columns: [GridItem(.adaptive(minimum: ширинаКолонки), spacing: Token.Space.s8)],
+            alignment: .leading,
+            spacing: Token.Space.s8
+        ) {
+            ForEach(FamilyRole.allCases, id: \.self) { роль in
+                // Заголовок роли уже переведён `String(localized:)`
+                // внутри перечисления — второй раз переводить нельзя.
+                Text(verbatim: роль.title.lowercased())
+                    .textStyle(AppFont.caption.color(Token.Ink.primary))
+                    .padding(.horizontal, Token.Space.s12)
+                    .padding(.vertical, Token.Space.s8)
+                    .background(Capsule().fill(Token.Surface.raised))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+        }
+        .accessibilityElement(children: .combine)
+    }
+}
+
 private struct MemberRow: View {
     let member: FamilyMember
 
     var body: some View {
         HStack(spacing: Token.Space.s12) {
-            TGAvatar(initial: member.initial, tint: member.isMe ? Token.Action.doneQuiet : Token.Action.done)
+            TGAvatar(initial: member.initial, tint: member.isMe ? Token.Action.primary : Token.Surface.raised)
             VStack(alignment: .leading, spacing: Token.Space.s2) {
                 Text(member.name).textStyle(AppFont.bodyEmphasis)
-                Text(member.hasCustomPermissions
-                     ? "\(member.role.title.lowercased()) · права изменены"
-                     : "\(member.role.title.lowercased()) · \(member.role.permissionSummary)")
+                Text(подпись)
                     .textStyle(AppFont.caption)
                     .lineLimit(2)
             }
             Spacer(minLength: Token.Space.s8)
+            // «это я» с кадра `12`. Пилюля, а не галочка: на телефоне
+            // семьи карточек несколько, и вопрос «которая моя» задаётся
+            // каждый раз. `isMe` приезжает из общего дневника и однажды
+            // уже указывал на того, кто заводил семью, — цена ошибки
+            // здесь не косметическая.
+            if member.isMe {
+                Text("это я")
+                    .textStyle(AppFont.micro.color(Token.Ink.primary))
+                    .padding(.horizontal, Token.Space.s10)
+                    .padding(.vertical, Token.Space.s4)
+                    .background(Capsule().fill(Token.Action.subtle))
+            }
             // Локальный токен не знает ничего о том, принято ли
             // приглашение: принимают через CKShare, по iCloud-личности.
             // Поэтому «ждёт» было обещанием, а «истекло» через сутки —
@@ -392,8 +620,22 @@ private struct MemberRow: View {
                 .font(.system(size: Token.Size.iconSm, weight: .semibold))
                 .foregroundStyle(Token.Ink.secondary)
         }
-        .frame(minHeight: 54)
+        .frame(minHeight: Token.Size.controlXL)
         .contentShape(Rectangle())
+    }
+
+    /// «владелец · ведёт лечение · дежурит» — кадр `12`.
+    ///
+    /// Дежурство дописывается третьим, а не заменяет сводку прав:
+    /// на кадре у Вики стоят обе половины, и это разные вопросы —
+    /// «что ему можно вообще» и «кто отвечает сегодня».
+    private var подпись: LocalizedStringKey {
+        var части = [member.role.title.lowercased()]
+        части.append(member.hasCustomPermissions
+                     ? String(localized: "права изменены")
+                     : member.role.permissionSummary)
+        if member.isOnDuty { части.append(String(localized: "дежурит")) }
+        return .готовая(части.joined(separator: " · "))
     }
 }
 

@@ -7,8 +7,21 @@ import SwiftData
 /// и вся арифметика написаны на многих, — но экраны брали первую попавшуюся.
 /// То есть вторую собаку можно было завести и негде было открыть.
 ///
-/// Показывается, только когда собак больше одной: у большинства она одна,
-/// и лишний ряд в шапке ей ни к чему.
+/// **С 23.10.2026 ряд показывается ВСЕГДА, а не только при двух собаках,
+/// и причина — кадр.** `Дизайн/эталонные-кадры/ios28-кино-22.10/screenshots/09.png`
+/// рисует под описью две пилюли: выбранная собака белым и «+ Вторая
+/// собака» тёмным. То есть ряд на кадре есть у человека с одной собакой,
+/// и несёт он не переключение, а **вход**.
+///
+/// Прежнее условие `dogs.count > 1` было верным для своего довода
+/// («лишний ряд ей ни к чему») и ложным для кадра: с ним пилюля
+/// «+ Вторая собака» не показывалась бы никогда — ровно тому, кому
+/// она адресована.
+///
+/// Дверь не вторая: «+ Вторая собака» ведёт в тот же `DogsScreen`, что
+/// и строка списка «Завести ещё собаку». Два пути к одному экрану,
+/// собранные порознь, расходятся молча — здесь они собраны одним
+/// назначением.
 struct DogSwitcher: View {
     let dogs: [Dog]
     let active: Dog?
@@ -16,7 +29,7 @@ struct DogSwitcher: View {
     @Environment(AppState.self) private var appState
 
     var body: some View {
-        if dogs.count > 1 {
+        if !dogs.isEmpty {
             ScrollView(.horizontal) {
                 HStack(spacing: Token.Space.s8) {
                     ForEach(dogs) { dog in
@@ -25,6 +38,8 @@ struct DogSwitcher: View {
                         }
                         .buttonStyle(.plain)
                     }
+                    NavigationLink { DogsScreen() } label: { ЕщёСобакаChip() }
+                        .buttonStyle(.plain)
                 }
                 .padding(.horizontal, Token.Spacing.screenPadding)
             }
@@ -46,23 +61,55 @@ private struct DogChip: View {
         HStack(spacing: Token.Space.s6) {
             TGAvatar(initial: dog.initial, image: dog.photo,
                      size: Token.Size.avatarSm,
-                     tint: isActive ? Token.Action.doneQuiet : Token.Surface.sunken)
+                     tint: isActive ? Token.Action.primary : Token.Surface.sunken)
             Text(dog.displayName)
                 .textStyle(isActive ? AppFont.captionEmphasis : AppFont.caption)
-                .foregroundStyle(isActive ? Token.Ink.primary : Token.Ink.secondary)
+                // Выбранная пилюля — белая заливка с тёмной подписью:
+                // решение Виктории 22.10.2026, «главная кнопка белая
+                // #FFFFFF с текстом #111111». Прежняя пара (зелёный тинт
+                // `doneQuiet` + `doneText`) осталась от Graphite и на кадре
+                // `09` её нет.
+                .foregroundStyle(isActive ? Token.Ink.onAccent : Token.Ink.secondary)
         }
         .padding(.leading, Token.Space.s4)
         .padding(.trailing, Token.Space.s12)
         .frame(minHeight: Token.Size.tapTarget)
         .background(
-            Capsule().fill(isActive ? Token.Action.doneQuiet : Token.Surface.card)
+            Capsule().fill(isActive ? Token.Action.primary : Token.Surface.card)
         )
         .overlay(
-            Capsule().stroke(isActive ? Token.Action.doneText : Token.Surface.hairline,
-                             lineWidth: isActive ? 1.5 : 1)
+            Capsule().stroke(isActive ? Token.Action.primary : Token.Surface.hairline,
+                             lineWidth: Token.Size.hairline)
         )
         .contentShape(Capsule())
         .accessibilityAddTraits(isActive ? [.isSelected, .isButton] : .isButton)
+    }
+}
+
+/// «+ Вторая собака» с кадра `09`.
+///
+/// Надпись не считает собак нарочно. «Третья собака» на кадре не бывает,
+/// а подставлять порядковое числительное на пяти языках значило бы
+/// завести склонение там, где у двери одно и то же дело: завести ещё
+/// одну. Число живёт в строке списка («Собаки · 2»), и там оно к месту.
+private struct ЕщёСобакаChip: View {
+    var body: some View {
+        HStack(spacing: Token.Space.s6) {
+            Image(systemName: "plus")
+                .font(.system(size: Token.Size.iconSm, weight: .semibold))
+                .foregroundStyle(Token.Ink.secondary)
+                .frame(width: Token.Size.avatarSm, height: Token.Size.avatarSm)
+                .accessibilityHidden(true)
+            Text("Вторая собака")
+                .textStyle(AppFont.caption)
+                .foregroundStyle(Token.Ink.primary)
+        }
+        .padding(.leading, Token.Space.s4)
+        .padding(.trailing, Token.Space.s12)
+        .frame(minHeight: Token.Size.tapTarget)
+        .background(Capsule().fill(Token.Surface.card))
+        .overlay(Capsule().stroke(Token.Surface.hairline, lineWidth: Token.Size.hairline))
+        .contentShape(Capsule())
     }
 }
 

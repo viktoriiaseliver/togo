@@ -1,0 +1,227 @@
+import SwiftUI
+
+/// Блок `Hero` темы «Кино»: фото во всю ширину, надстрочник, крупный
+/// заголовок и прижатая к низу карточка.
+///
+/// Эталоны — `Дизайн/эталонные-кадры/ios28-кино-22.10/screenshots/09.png`
+/// (вкладка собаки) и `12.png` («Семья»). Решение Виктории 22.10.2026,
+/// `Дизайн/РЕШЕНИЯ-ДИЗАЙНА.md`, раздел «РЕДИЗАЙН iOS 28»: «Фото под
+/// шапкой на каждом экране, высота 640 (Сегодня) / 420 (вкладка) /
+/// 360 (подэкран)».
+///
+/// **Это НЕ `TGPosterHeader`.** Тот — плоская цветная полоса `--poster-bg`
+/// из поколения Graphite, и на двух этих экранах он снят: в «Кино» под
+/// шапкой лежит фотография, а не заливка. `TGPosterHeader` остаётся
+/// живым у остальных сорока с лишним экранов, и трогать его отсюда
+/// нельзя — `Togo/DesignSystem/**` правит другая сессия.
+///
+/// # Почему блок живёт в `Togo/Features`, а не в дизайн-системе
+///
+/// Правильное место для него — `Togo/DesignSystem/Components/`, рядом
+/// с `TGPosterHeader`. Он там и должен оказаться, и это **открытый
+/// вопрос, а не умолчание**: на 23.10.2026 `Togo/DesignSystem/**` отдан
+/// другой сессии, и заводить туда файл значит класть правку в чужое
+/// незакоммиченное.
+///
+/// Цена переезда названа здесь, чтобы её не искали: при переезде тип
+/// переименовывается в `TGBackdrop` и забирает себе
+/// `Token.Component.Backdrop.*` — см. следующий раздел.
+///
+/// # Чего этот блок НЕ рисует, и это замер, а не упрощение
+///
+/// Дизайн задаёт затемнение фотографии **восемью стопами** с плато
+/// между 30 % и 38 % («там лежит шапка, и затемнение там не растёт»)
+/// плюс отдельную маску исчезновения на двух позициях. Оба значения
+/// в проекте есть и лежат в `Token.Component.Backdrop.scrim` и `.mask`.
+///
+/// **Позвать их отсюда нельзя по устройству храповика.** Замер
+/// 23.10.2026, `git grep` по `*.swift` вне `Generated`:
+///
+/// ```
+/// Token.Component.Backdrop     0 читателей
+/// Token.FontSize.titleLarge    0 читателей
+/// Token.FontTracking.titleLarge 0 читателей
+/// контроль Token.FontSize.poster  найден (Typography.swift, 2 вхождения)
+/// ```
+///
+/// `ComponentTokenScopeTests` запрещает `Token.Component.*` в
+/// `Togo/Features` — и запрещает правильно: «если компонентный токен
+/// спрашивает экран, значит экран пересобирает компонент». Компонента,
+/// которому эти стопы принадлежат, **не существует**, а место, где ему
+/// положено быть, мне закрыто. Поэтому здесь двухстоповое затемнение
+/// на семантическом `Token.Surface.scrim`, и расхождение с макетом
+/// названо, а не замазано.
+///
+/// > **Источник правды содержит решение, которого не исполняет ни один
+/// > читатель.** Ровно тот же случай, что `Token.FontSize.micro = 14`
+/// > при живом `AppFont.micro = 15`: имя есть, значение есть, вызова
+/// > по имени нет. Опусти стопы до двух — не покраснеет ничто.
+///
+/// Кегль заголовка — `Token.FontSize.titleLarge` (36) с трекингом
+/// `Token.FontTracking.titleLarge` (−0,9 pt). Стиля под них в `AppFont`
+/// нет, поэтому `TextStyleToken` собирается здесь; завести стиль
+/// в `Typography.swift` — тот же закрытый каталог.
+struct ФотоШапка<Низ: View>: View {
+
+    /// Снимок, который показывается фоном. Пусто — остаётся полотно:
+    /// это честное состояние, а не ошибка. У человека, который фото
+    /// не клал, его и нет.
+    let фото: Data?
+
+    /// Высота блока. Приходит `Token.Size.backdropTab` или
+    /// `.backdropSub` — числа отсюда не берутся нарочно, у них один дом.
+    let высота: CGFloat
+
+    /// Надстрочник: «ШИППЕРКЕ · 3 ГОДА», «3 ЧЕЛОВЕКА · ДЕЖУРИТ ВИКА».
+    ///
+    /// `String`, а не `LocalizedStringKey`, и рисуется `Text(verbatim:)`.
+    /// Причина — замер, записанный в `Подпись.swift`: `.готовая(строка)`
+    /// это обычный ключ каталога, и поиск по каталогу он **выполняет**.
+    /// В надстрочнике стоят кличка и имя человека; собранный ключ
+    /// однажды совпал с данными побуквенно, и живой отзыв `AEXYTDmy`
+    /// сказал «где-то stitch а где-то Стич». Перевод берётся
+    /// `String(localized:)` на месте сборки.
+    let надстрочник: String?
+
+    /// Заголовок. Случай `.значение` — для клички: её переводить нечем.
+    let заголовок: TGPosterHeader.Название
+
+    /// Карточка, прижатая к низу фотографии. На кадре `09` это опись
+    /// собаки, на `12` — карточка дежурства.
+    @ViewBuilder let низ: Низ
+
+    var body: some View {
+        ZStack(alignment: .bottom) {
+            подложка
+            VStack(alignment: .leading, spacing: Token.Space.s12) {
+                шапка
+                Spacer(minLength: Token.Space.s16)
+                низ
+            }
+            .padding(.horizontal, Token.Spacing.screenPadding)
+            .padding(.top, Token.Space.s8)
+            .padding(.bottom, Token.Space.s16)
+        }
+        .frame(maxWidth: .infinity)
+        .frame(height: высота)
+        .clipped()
+        // Заголовок экрана озвучивается один раз: `navigationTitle`
+        // у этих двух экранов остаётся ради кнопки «назад», а читает
+        // человек то, что нарисовано.
+        .accessibilityElement(children: .contain)
+    }
+
+    // MARK: Фон
+
+    private var подложка: some View {
+        ZStack {
+            // Полотно под фотографией. Оно же — весь фон, когда фото нет.
+            Token.Surface.page
+            if let фото, let снимок = UIImage(data: фото) {
+                Image(uiImage: снимок)
+                    .resizable()
+                    .scaledToFill()
+            }
+            затемнение
+        }
+        // Фотография шире блока: без обрезки `scaledToFill` вылезает
+        // за края и наезжает на соседей по прокрутке.
+        .clipped()
+        .accessibilityHidden(true)
+    }
+
+    /// Два стопа вместо восьми — см. разбор в голове типа.
+    ///
+    /// Низ уходит в `Token.Surface.screen`, а не в `page`: ниже блока
+    /// рисует `TGScreen`, и полотно там именно `screen`. Увести низ
+    /// в `page` значило бы завести видимый стык там, где его сейчас
+    /// нет, — то самое, от чего `page` и отличается от `screen`
+    /// «одним шагом светлоты».
+    private var затемнение: some View {
+        LinearGradient(
+            stops: [
+                .init(color: Token.Surface.scrim, location: 0),
+                .init(color: Token.Surface.screen.opacity(0), location: 0.38),
+                .init(color: Token.Surface.screen, location: 1),
+            ],
+            startPoint: .top,
+            endPoint: .bottom
+        )
+    }
+
+    // MARK: Надпись
+
+    private var шапка: some View {
+        VStack(alignment: .leading, spacing: Token.Space.s4) {
+            if let надстрочник, !надстрочник.isEmpty {
+                Text(verbatim: надстрочник)
+                    .textStyle(AppFont.caps.color(Token.Poster.captionOnColor))
+                    .textCase(.uppercase)
+                    .wraps()
+            }
+            Group {
+                switch заголовок {
+                case .ключ(let ключ): Text(ключ)
+                case .значение(let строка): Text(verbatim: строка)
+                }
+            }
+            .textStyle(крупный)
+            .tracking(Token.FontTracking.titleLarge)
+            .wraps()
+            .accessibilityAddTraits(.isHeader)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    /// Крупный заголовок «Кино»: 36 / −0,025em, белый на фотографии.
+    ///
+    /// `relativeTo: .largeTitle`, как у `AppFont.screenTitle`: у крупного
+    /// заголовка свой темп роста при Dynamic Type, иначе шапка выдавит
+    /// карточку за нижний край блока.
+    private var крупный: TextStyleToken {
+        TextStyleToken(size: Token.FontSize.titleLarge,
+                       weight: Token.FontWeight.bold,
+                       color: Token.Poster.labelOnColor,
+                       relativeTo: .largeTitle)
+    }
+}
+
+extension ФотоШапка where Низ == EmptyView {
+    init(фото: Data?, высота: CGFloat, надстрочник: String?,
+         заголовок: TGPosterHeader.Название) {
+        self.init(фото: фото, высота: высота, надстрочник: надстрочник,
+                  заголовок: заголовок, низ: { EmptyView() })
+    }
+}
+
+// MARK: - Как блок ставится в экран
+
+extension View {
+
+    /// Снять подложку навигационной панели, чтобы фотография читалась
+    /// до самого верха.
+    ///
+    /// **Титул в панели гасится подменой, а не снятием** — приём взят
+    /// у `posterHeader` вместе с его замером: `navigationTitle` нужен
+    /// кнопке «назад» на дочерних экранах и озвучке, поэтому гасится
+    /// показ, а не значение. `EmptyView()` в `ToolbarItem` SwiftUI
+    /// считает отсутствием пункта — подмены не происходит вовсе,
+    /// и живой кадр показал название экрана дважды.
+    ///
+    /// Рамки `1×1` у подменыша здесь нет, и это не небрежность:
+    /// `DesignLiteralTests` держит храповик на `\.frame(width: N`,
+    /// вид «размер» объявлен красным (42 при долге 36, хозяин назван),
+    /// и два новых литерала сделали бы объявленное красное хуже.
+    /// Озвучку закрывает `accessibilityHidden`, а не размер.
+    func фотоШапкаЭкрана() -> some View {
+        self
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Color.clear.accessibilityHidden(true)
+                }
+            }
+            .toolbarBackground(.hidden, for: .navigationBar)
+            .toolbarColorScheme(.dark, for: .navigationBar)
+    }
+}
