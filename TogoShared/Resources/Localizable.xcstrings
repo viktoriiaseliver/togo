@@ -5703,7 +5703,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "%lld оқыс жағдай"
+            "value" : "%lld оқиға"
           }
         }
       }
@@ -8886,7 +8886,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "iCloud — біздің емес, сенің сақтауың: қолданбада сервер жоқ және сенің жазбаларыңа қолжетім жоқ."
+            "value" : "iCloud — біздің емес, сенің қоймаң: қолданбада сервер жоқ және сенің жазбаларыңа қолжетім жоқ."
           }
         }
       }
@@ -12154,7 +12154,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "dans le carnet de quelqu'un d'autre"
+            "value" : "dans le journal de quelqu'un d'autre"
           }
         },
         "uk" : {
@@ -14364,7 +14364,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "active le carnet de santé, les traitements et la fenêtre à jeun"
+            "value" : "active le journal de santé, les traitements et la fenêtre à jeun"
           }
         },
         "ru" : {
@@ -14400,7 +14400,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Activer le carnet partagé"
+            "value" : "Activer le journal partagé"
           }
         },
         "ru" : {
@@ -16002,7 +16002,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "жк"
+            "value" : "жс"
           }
         }
       }
@@ -16650,7 +16650,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "сн"
+            "value" : "сс"
           }
         }
       }
@@ -16830,7 +16830,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Тәулік ішіндегі екінші оқыс жағдай эпизод көтереді: не болып жатқаны белгілі болғанша «сұранып тұр» шешімдері кідіртіледі."
+            "value" : "Тәулік ішіндегі екінші оқиға эпизод көтереді: не болып жатқаны белгілі болғанша «сұранып тұр» шешімдері кідіртіледі."
           }
         }
       }
@@ -18558,7 +18558,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Шығулар, тамақ, нәжіс, серуендер, оқыс жағдайлар және қабылдау белгілері — күн ішінде қолмен белгіленетін бәрі. Профильді, күтім кестесін, сабақтарды, сапарларды және суреттерді әркім өзінде жасайды."
+            "value" : "Шығулар, тамақ, нәжіс, серуендер, оқиғалар және қабылдау белгілері — күн ішінде қолмен белгіленетін бәрі. Профильді, күтім кестесін, сабақтарды, сапарларды және суреттерді әркім өзінде жасайды."
           }
         }
       }
@@ -19292,7 +19292,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "C'est fait : tu es dans le carnet — %@."
+            "value" : "C'est fait : tu es dans le journal — %@."
           }
         },
         "uk" : {
@@ -19328,7 +19328,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "C'est fait : tu es dans le carnet partagé. À qui il appartient, l'app ne le sait pas encore."
+            "value" : "C'est fait : tu es dans le journal partagé. À qui il appartient, l'app ne le sait pas encore."
           }
         },
         "uk" : {
@@ -20944,7 +20944,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Тәулік ішінде екі оқыс жағдай. Не болып жатқаны белгілі болғанша «сұранып тұр» шешімдері кідіртілген."
+            "value" : "Тәулік ішінде екі оқиға. Не болып жатқаны белгілі болғанша «сұранып тұр» шешімдері кідіртілген."
           }
         }
       }
@@ -22505,7 +22505,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Le carnet passe par ton iCloud personnel, pas par le serveur d'un tiers. Aucun compte Togo n'est nécessaire."
+            "value" : "Le journal passe par ton iCloud personnel, pas par le serveur d'un tiers. Aucun compte Togo n'est nécessaire."
           }
         },
         "uk" : {
@@ -22661,7 +22661,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Күнделік сақтауды ашалмады — қазір жазылған нәрсе қайта іске қосқанда жоғалады. Қолданбаны қайта іске қос; көмектеспесе — қолдауға жаз, ескі жазбалар бүтін."
+            "value" : "Күнделік қойманы аша алмады — қазір жазылған нәрсе қайта іске қосқанда жоғалады. Қолданбаны қайта іске қос; көмектеспесе — қолдауға жаз, ескі жазбалар бүтін."
           }
         }
       }
@@ -25239,7 +25239,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "at home there's always water, outdoors there isn't — and the dog waits without a word"
+            "value" : "at home there's always water, outside there isn't — and the dog waits without a word"
           }
         },
         "fr" : {
@@ -25257,13 +25257,13 @@
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "вдома вода є завжди, надворі її немає — і собака терпить мовчки"
+            "value" : "вдома вода є завжди, на вулиці її немає — і собака терпить мовчки"
           }
         },
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "үйде су әрқашан бар, далада ол жоқ — ит үнсіз шыдайды"
+            "value" : "үйде су әрқашан бар, көшеде ол жоқ — ит үнсіз шыдайды"
           }
         }
       }
@@ -30702,7 +30702,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Жазылды · Тіскебасар %@ г"
+            "value" : "Жазылды · Тәттілік %@ г"
           }
         }
       }
@@ -31528,7 +31528,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Ит туралы жазбалар — шығулар, тамақ, су, нәжіс, оқыс жағдайлар, сабақтар, салмақ, емдеу схемалары — құрылғыдағы дерекқорда және қолданба мен оның виджеттерінің ортақ сақтауында тұрады."
+            "value" : "Ит туралы жазбалар — шығулар, тамақ, су, нәжіс, оқиғалар, сабақтар, салмақ, емдеу схемалары — құрылғыдағы дерекқорда және қолданба мен оның виджеттерінің ортақ сақтауында тұрады."
           }
         }
       }
@@ -32236,7 +32236,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Tu n'as pas le droit d'écrire dans ce carnet. Ouvre Togo, l'onglet « Famille », et appuie sur « C'est moi »."
+            "value" : "Tu n'as pas le droit d'écrire dans ce journal. Ouvre Togo, l'onglet « Famille », et appuie sur « C'est moi »."
           }
         },
         "uk" : {
@@ -33781,7 +33781,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Эпизод жүріп тұр: тәулік ішінде екі оқыс жағдай. Ол бітпегенше қолданба шешім есептемейді — бірінші белгі бойынша шығар."
+            "value" : "Эпизод жүріп тұр: тәулік ішінде екі оқиға. Ол бітпегенше қолданба шешім есептемейді — бірінші белгі бойынша шығар."
           }
         }
       }
@@ -34800,7 +34800,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Оқыс жағдайлар · 30 күн"
+            "value" : "Оқиғалар · 30 күн"
           }
         }
       }
@@ -34836,7 +34836,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Оқыс жағдайлар %@ — өткен кезеңдегі %@ қарсы %@."
+            "value" : "Оқиғалар %@ — өткен кезеңдегі %@ қарсы %@."
           }
         }
       }
@@ -34872,7 +34872,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Оқыс жағдайлар тұрақты: %@, өткен кезеңде де сонша."
+            "value" : "Оқиғалар тұрақты: %@, өткен кезеңде де сонша."
           }
         }
       }
@@ -34908,7 +34908,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Оқыс жағдайлар: %@"
+            "value" : "Оқиғалар: %@"
           }
         }
       }
@@ -34936,7 +34936,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Оқыс жағдайлар: %lld"
+            "value" : "Оқиғалар: %lld"
           }
         }
       }
@@ -36232,7 +36232,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Макетті қарап, тіскебасар есептегішінің үйренуге неге зиян екенін түсіндірген кинологтарға."
+            "value" : "Макетті қарап, тәттілік есептегішінің үйренуге неге зиян екенін түсіндірген кинологтарға."
           }
         }
       }
@@ -38614,7 +38614,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Le propriétaire voit qui est dans le carnet et peut retirer n'importe qui. Les entrées déjà reçues restent chez celui qui les a reçues : iCloud ne sait pas reprendre ce qu'il a montré."
+            "value" : "Le propriétaire voit qui est dans le journal et peut retirer n'importe qui. Les entrées déjà reçues restent chez celui qui les a reçues : iCloud ne sait pas reprendre ce qu'il a montré."
           }
         },
         "ru" : {
@@ -39028,7 +39028,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Тіскебасар есептегіші қайда кетті?"
+            "value" : "Тәттілік есептегіші қайда кетті?"
           }
         }
       }
@@ -39136,7 +39136,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Тауық, сүйек, базардағы тіскебасар. Жол жанында жетектен босатпау."
+            "value" : "Тауық, сүйек, базардағы тәттіліктер. Жол жанында жетектен босатпау."
           }
         }
       }
@@ -39846,7 +39846,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Тіскебасарға шек жоқ. Күндік норма бар, оның бір бөлігін ит еңбегімен табады — бұл сабақ пен салмақ арасындағы қарама-қайшылықты шешеді."
+            "value" : "Тәттілікке шек жоқ. Күндік норма бар, оның бір бөлігін ит еңбегімен табады — бұл сабақ пен салмақ арасындағы қарама-қайшылықты шешеді."
           }
         }
       }
@@ -40834,7 +40834,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le carnet de santé s'active si besoin"
+            "value" : "Le journal de santé s'active si besoin"
           }
         },
         "ru" : {
@@ -41062,7 +41062,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Мене покликали в сім'ю"
+            "value" : "Мене запросили в сім'ю"
           }
         },
         "kk" : {
@@ -41770,7 +41770,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Can be given outdoors"
+            "value" : "Can be given outside"
           }
         },
         "fr" : {
@@ -41782,13 +41782,13 @@
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Можна дати надворі"
+            "value" : "Можна дати на вулиці"
           }
         },
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Далада беруге болады"
+            "value" : "Көшеде беруге болады"
           }
         }
       }
@@ -42520,7 +42520,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "outdoors"
+            "value" : "outside"
           }
         },
         "fr" : {
@@ -42544,7 +42544,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "надворі"
+            "value" : "на вулиці"
           }
         }
       }
@@ -42574,13 +42574,13 @@
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "надворі були"
+            "value" : "на вулиці були"
           }
         },
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "далада болды"
+            "value" : "көшеде болды"
           }
         }
       }
@@ -42610,13 +42610,13 @@
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Надворі були %@ тому. "
+            "value" : "На вулиці були %@ тому. "
           }
         },
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Далада %@ бұрын болды. "
+            "value" : "Көшеде %@ бұрын болды. "
           }
         }
       }
@@ -43024,7 +43024,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "A skill isn't “learned” or “not learned”. “Come” at home and “come” outdoors next to another dog are two different skills."
+            "value" : "A skill isn't “learned” or “not learned”. “Come” at home and “come” outside next to another dog are two different skills."
           }
         },
         "fr" : {
@@ -43042,13 +43042,13 @@
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Навичка не «вивчена» чи «не вивчена». «До мене» вдома і «до мене» надворі поряд з іншою собакою — дві різні навички."
+            "value" : "Навичка не «вивчена» чи «не вивчена». «До мене» вдома і «до мене» на вулиці поряд з іншою собакою — дві різні навички."
           }
         },
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Дағды «үйренілген» немесе «үйренілмеген» болмайды. Үйдегі «Маған кел» және далада басқа иттің жанындағы «Маған кел» — екі басқа дағды."
+            "value" : "Дағды «үйренілген» немесе «үйренілмеген» болмайды. Үйдегі «Маған кел» және көшеде басқа иттің жанындағы «Маған кел» — екі басқа дағды."
           }
         }
       }
@@ -46552,7 +46552,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Сақтауды ашу болмады"
+            "value" : "Қойманы ашу болмады"
           }
         }
       }
@@ -50043,7 +50043,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Тіскебасарға шектеу жоқ. Күндік норма бар, оның бір бөлігін ит еңбегімен табады — бұл сабақ пен салмақ арасындағы қарама-қайшылықты шешеді."
+            "value" : "Тәттілікке шектеу жоқ. Күндік норма бар, оның бір бөлігін ит еңбегімен табады — бұл сабақ пен салмақ арасындағы қарама-қайшылықты шешеді."
           }
         }
       }
@@ -50635,7 +50635,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Аш қарын терезесі"
+            "value" : "Ашқарын терезесі"
           }
         },
         "ru" : {
@@ -52499,7 +52499,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "сақтауды ашып жатырмын"
+            "value" : "қойманы ашып жатырмын"
           }
         }
       }
@@ -54775,7 +54775,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Le compte rendu pour le vétérinaire, l'export CSV et l'invitation au carnet partagé ne partent que lorsque tu appuies toi-même sur « Partager », et uniquement vers la personne choisie dans la fenêtre système."
+            "value" : "Le compte rendu pour le vétérinaire, l'export CSV et l'invitation au journal partagé ne partent que lorsque tu appuies toi-même sur « Partager », et uniquement vers la personne choisie dans la fenêtre système."
           }
         },
         "ru" : {
@@ -58654,7 +58654,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "inviter au carnet"
+            "value" : "inviter au journal"
           }
         },
         "ru" : {
@@ -59176,7 +59176,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Әзірше бірде-біреуі жоқ. Эпизод өздігінен көтеріледі: тәулік ішінде екі оқыс жағдай немесе қатарынан бірнеше күн сұйық нәжіс."
+            "value" : "Әзірше бірде-біреуі жоқ. Эпизод өздігінен көтеріледі: тәулік ішінде екі оқиға немесе қатарынан бірнеше күн сұйық нәжіс."
           }
         }
       }
@@ -59488,7 +59488,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Tant que le lien n'est pas ouvert, le carnet reste uniquement sur ce téléphone."
+            "value" : "Tant que le lien n'est pas ouvert, le journal reste uniquement sur ce téléphone."
           }
         },
         "uk" : {
@@ -61725,7 +61725,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Ұзақ күндерден кейін оқыс жағдайлар болды — %@ / %@."
+            "value" : "Ұзақ күндерден кейін оқиғалар болды — %@ / %@."
           }
         }
       }
@@ -64296,7 +64296,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Une invitation au carnet partagé est un partage iCloud. Seule la personne nommée dans la fenêtre système « Partager » peut l'ouvrir : personne ne peut entrer avec une adresse transférée."
+            "value" : "Une invitation au journal partagé est un partage iCloud. Seule la personne nommée dans la fenêtre système « Partager » peut l'ouvrir : personne ne peut entrer avec une adresse transférée."
           }
         },
         "ru" : {
@@ -64512,7 +64512,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "L'invitation passe par le carnet partagé — tant qu'il est désactivé, il n'y a rien à envoyer."
+            "value" : "L'invitation passe par le journal partagé — tant qu'il est désactivé, il n'y a rien à envoyer."
           }
         },
         "ru" : {
@@ -69706,7 +69706,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Жазбалардың өзі — оқыс жағдайлар, нәжіс, дозалар — қалады: тек олардың эпизодқа біріктірілуі жойылады. Оқыс жағдайлар қайталанса, қолданба эпизодты қайта көтереді."
+            "value" : "Жазбалардың өзі — оқиғалар, нәжіс, дозалар — қалады: тек олардың эпизодқа біріктірілуі жойылады. Оқиғалар қайталанса, қолданба эпизодты қайта көтереді."
           }
         }
       }
@@ -69850,7 +69850,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "сн"
+            "value" : "сб"
           }
         }
       }
@@ -70382,7 +70382,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Свою собаку заводити не потрібно — вона з'явиться сама, разом із записами того, хто покликав."
+            "value" : "Свою собаку заводити не потрібно — вона з'явиться сама, разом із записами того, хто запросив."
           }
         },
         "kk" : {
@@ -76176,7 +76176,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Pas de lien ? Demande qu'on te le renvoie — l'invitation s'envoie depuis Togo : « Famille » → « Inviter dans le carnet »."
+            "value" : "Pas de lien ? Demande qu'on te le renvoie — l'invitation s'envoie depuis Togo : « Famille » → « Inviter dans le journal »."
           }
         },
         "uk" : {
@@ -76476,7 +76476,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Баған бар — оқыс жағдай болды. Бос — жақсы."
+            "value" : "Баған бар — оқиға болды. Бос — жақсы."
           }
         }
       }
@@ -78414,7 +78414,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Тебе покликали"
+            "value" : "Тебе запросили"
           }
         },
         "kk" : {
@@ -80292,7 +80292,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "бұрынғы құрастырудың сақтауы алынды"
+            "value" : "бұрынғы құрастырудың қоймасы алынды"
           }
         }
       }
@@ -83560,7 +83560,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "le fichier du carnet existe mais ne s'ouvre pas — « Le journal ne s'est pas ouvert »"
+            "value" : "le fichier du journal existe mais ne s'ouvre pas — « Le journal ne s'est pas ouvert »"
           }
         },
         "ru" : {
@@ -84531,7 +84531,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "сақтау: iCloud"
+            "value" : "қойма: iCloud"
           }
         }
       }
@@ -84567,7 +84567,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "сақтау: жадыда, жазбалар сақталмайды"
+            "value" : "қойма: жадыда, жазбалар сақталмайды"
           }
         }
       }
@@ -84603,7 +84603,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "сақтау: жергілікті"
+            "value" : "қойма: жергілікті"
           }
         }
       }
@@ -85275,7 +85275,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "À qui est le carnet"
+            "value" : "À qui est le journal"
           }
         },
         "uk" : {
@@ -88039,7 +88039,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Pour qu'il note depuis son téléphone, active le carnet partagé et envoie l'invitation — « inviter au carnet » dans la liste de la famille."
+            "value" : "Pour qu'il note depuis son téléphone, active le journal partagé et envoie l'invitation — « inviter au journal » dans la liste de la famille."
           }
         },
         "ru" : {
@@ -89974,7 +89974,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "This one can be given outdoors"
+            "value" : "This one can be given outside"
           }
         },
         "fr" : {
@@ -89986,13 +89986,13 @@
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Цю можна дати надворі"
+            "value" : "Цю можна дати на вулиці"
           }
         },
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Мұны далада беруге болады"
+            "value" : "Мұны көшеде беруге болады"
           }
         }
       }
@@ -90406,7 +90406,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Le carnet du chien pour toute la famille."
+            "value" : "Le journal du chien pour toute la famille."
           }
         },
         "kk" : {
@@ -90586,7 +90586,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Тек доза, аш қарын терезесі және дабыл үшін мазалаймыз."
+            "value" : "Тек доза, ашқарын терезесі және дабыл үшін мазалаймыз."
           }
         },
         "uk" : {
@@ -92094,7 +92094,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Мәңгі тегін: аш қарын терезесі, қос дозадан қорғау, дәрігерге есеп."
+            "value" : "Мәңгі тегін: ашқарын терезесі, қос дозадан қорғау, дәрігерге есеп."
           }
         },
         "uk" : {
@@ -92146,7 +92146,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "pour vous, Maman et Anya : sorties, repas, selles, doses, analyses, visites, ordonnances, soins, éducation, voyages, documents. Vous pouvez d'abord exporter le carnet."
+            "value" : "pour vous, Maman et Anya : sorties, repas, selles, doses, analyses, visites, ordonnances, soins, éducation, voyages, documents. Vous pouvez d'abord exporter le journal."
           }
         },
         "kk" : {
@@ -94849,7 +94849,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "тек аш қарын терезесі жылжиды"
+            "value" : "тек ашқарын терезесі жылжиды"
           }
         },
         "uk" : {
@@ -95139,7 +95139,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "тамақтан кейін, аш қарынға емес"
+            "value" : "тамақтан кейін, ашқарынға емес"
           }
         },
         "uk" : {
@@ -96328,7 +96328,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "аш қарын"
+            "value" : "ашқарын"
           }
         },
         "uk" : {
@@ -96386,7 +96386,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Аш қарын · тамақ бермеу"
+            "value" : "Ашқарын · тамақ бермеу"
           }
         },
         "uk" : {
@@ -98474,7 +98474,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "аш қарын · 30 мин тамақ бермеу"
+            "value" : "ашқарын · 30 мин тамақ бермеу"
           }
         },
         "uk" : {
@@ -102644,7 +102644,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Fichier du carnet"
+            "value" : "Fichier du journal"
           }
         },
         "kk" : {
@@ -103636,7 +103636,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "аш қарын терезесі жабық"
+            "value" : "ашқарын терезесі жабық"
           }
         },
         "uk" : {
@@ -106913,7 +106913,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "күніне 2 рет · аш қарынға"
+            "value" : "күніне 2 рет · ашқарынға"
           }
         },
         "uk" : {
@@ -107319,7 +107319,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Аш қарын · тамақ 8:30-да"
+            "value" : "Ашқарын · тамақ 8:30-да"
           }
         },
         "uk" : {
@@ -108850,7 +108850,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Victoria · carnet depuis mars 2026"
+            "value" : "Victoria · journal depuis mars 2026"
           }
         },
         "kk" : {
@@ -109146,7 +109146,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "доза · аш қарын · дабыл"
+            "value" : "доза · ашқарын · дабыл"
           }
         },
         "uk" : {
@@ -112771,7 +112771,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "левотироксин 20:00-де · аш қарынға"
+            "value" : "левотироксин 20:00-де · ашқарынға"
           }
         },
         "uk" : {
@@ -112968,7 +112968,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "carnet partagé"
+            "value" : "journal partagé"
           }
         },
         "kk" : {
@@ -114163,7 +114163,7 @@
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Аш қарын"
+            "value" : "Ашқарын"
           }
         },
         "uk" : {
