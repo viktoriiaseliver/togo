@@ -26,14 +26,6 @@
 	     витрину не чинит и не ломает — он объявляет языки системе
 	     и делает состав читаемым в одном месте. Убрать его можно;
 	     убрать вместе со сторожем — нельзя. -->
-	<key>CFBundleLocalizations</key>
-	<array>
-		<string>ru</string>
-		<string>en</string>
-		<string>fr</string>
-		<string>kk</string>
-		<string>uk</string>
-	</array>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
