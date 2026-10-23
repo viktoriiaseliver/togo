@@ -711,7 +711,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "« Comment il a demandé »"
+            "value" : "« Comment il a demandé »"
           }
         },
         "ru" : {
@@ -2907,7 +2907,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "%@ quitteront le plan du jour, l'onglet « Santé » se masquera. %@"
+            "value" : "%@ quitteront le plan du jour, l'onglet « Santé » se masquera. %@"
           }
         },
         "ru" : {
@@ -9674,7 +9674,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Le compte rendu aura la ligne « dose → prise de sang : %@ ». Sans elle, les analyses ont déjà été mal lues deux fois."
+            "value" : "Le compte rendu aura la ligne « dose → prise de sang : %@ ». Sans elle, les analyses ont déjà été mal lues deux fois."
           }
         },
         "ru" : {
@@ -13041,7 +13041,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le temps ne tourne pas. Appuie sur « Reprendre » quand vous repartez."
+            "value" : "Le temps ne tourne pas. Appuie sur « Reprendre » quand vous repartez."
           }
         },
         "ru" : {
@@ -14403,7 +14403,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tu peux tout exporter en CSV et supprimer toutes les données dans « Réglages → Données et confidentialité », sans courrier ni attente."
+            "value" : "Tu peux tout exporter en CSV et supprimer toutes les données dans « Réglages → Données et confidentialité », sans courrier ni attente."
           }
         },
         "ru" : {
@@ -15440,7 +15440,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Où est l'onglet « Santé » ?"
+            "value" : "Où est l'onglet « Santé » ?"
           }
         },
         "ru" : {
@@ -16400,7 +16400,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "donne l'onglet « Santé », les doses, la fenêtre à jeun et les comptes rendus"
+            "value" : "donne l'onglet « Santé », les doses, la fenêtre à jeun et les comptes rendus"
           }
         },
         "ru" : {
@@ -18637,13 +18637,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Days with no entries don't count toward the average: an empty day means “nobody kept the diary”, not “she didn't eat”."
+            "value" : "Days with no entries don't count toward the average: an empty day means “nobody kept the diary”, not “didn't eat”."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les jours sans entrées ne comptent pas dans la moyenne : un jour vide veut dire « journal pas tenu », pas « il n'a pas mangé »."
+            "value" : "Les jours sans entrées ne comptent pas dans la moyenne : un jour vide veut dire « journal pas tenu », pas « n'a pas mangé »."
           }
         },
         "ru" : {
@@ -33233,7 +33233,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Moins de %@ secondes entre l'entrée et « Annuler » — c'est un doigt qui a glissé, pas une décision. Regarde ce qu'il y a à côté de ce bouton."
+            "value" : "Moins de %@ secondes entre l'entrée et « Annuler » — c'est un doigt qui a glissé, pas une décision. Regarde ce qu'il y a à côté de ce bouton."
           }
         },
         "ru" : {
@@ -33467,7 +33467,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les droits peuvent être modifiés par celui qui a le droit « Inviter et changer les rôles ». En général, c'est le propriétaire."
+            "value" : "Les droits peuvent être modifiés par celui qui a le droit « Inviter et changer les rôles ». En général, c'est le propriétaire."
           }
         },
         "ru" : {
@@ -37421,7 +37421,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Pas enregistré · appuie encore sur « OK »"
+            "value" : "Pas enregistré · appuie encore sur « OK »"
           }
         },
         "ru" : {
@@ -41108,7 +41108,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Il arrive avec un traitement et repart avec lui — en bas de « Santé », il y a « Traitement terminé ». Les entrées restent dans l'historique et dans le compte rendu pour le vétérinaire."
+            "value" : "Il arrive avec un traitement et repart avec lui — en bas de « Santé », il y a « Traitement terminé ». Les entrées restent dans l'historique et dans le compte rendu pour le vétérinaire."
           }
         },
         "ru" : {
@@ -44197,7 +44197,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Le compte rendu pour le vétérinaire, l'export CSV et l'invitation au carnet partagé ne partent que lorsque tu appuies toi-même sur « Partager », et uniquement vers la personne choisie dans la fenêtre système."
+            "value" : "Le compte rendu pour le vétérinaire, l'export CSV et l'invitation au carnet partagé ne partent que lorsque tu appuies toi-même sur « Partager », et uniquement vers la personne choisie dans la fenêtre système."
           }
         },
         "ru" : {
@@ -45267,7 +45267,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Il n'y a pas et n'y aura pas de messagerie dans l'app. Ce qu'il faut faire si quelque chose ne va pas, le maître l'écrit lui-même — dans le briefing, à la ligne « En cas de souci »."
+            "value" : "Il n'y a pas et n'y aura pas de messagerie dans l'app. Ce qu'il faut faire si quelque chose ne va pas, le maître l'écrit lui-même — dans le briefing, à la ligne « En cas de souci »."
           }
         },
         "ru" : {
@@ -46360,7 +46360,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "selon le rôle « %@ »"
+            "value" : "selon le rôle « %@ »"
           }
         },
         "ru" : {
@@ -47590,7 +47590,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tant qu'il est désactivé, le membre n'est qu'un nom dans le champ « auteur » : il ne peut noter que depuis ce téléphone."
+            "value" : "Tant qu'il est désactivé, le membre n'est qu'un nom dans le champ « auteur » : il ne peut noter que depuis ce téléphone."
           }
         },
         "ru" : {
@@ -48969,7 +48969,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ira dans la fiche de garde et dans le rappel avant le voyage. Combien et à quelle heure le chien mange : sur l'écran « Repas »."
+            "value" : "Ira dans la fiche de garde et dans le rappel avant le voyage. Combien et à quelle heure le chien mange : sur l'écran « Repas »."
           }
         },
         "ru" : {
@@ -50737,7 +50737,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pourquoi le verdict dit « Pas clair » ?"
+            "value" : "Pourquoi le verdict dit « Pas clair » ?"
           }
         },
         "ru" : {
@@ -51097,7 +51097,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le droit « Exporter les données et les comptes rendus » est donné par le propriétaire dans « Famille »."
+            "value" : "Le droit « Exporter les données et les comptes rendus » est donné par le propriétaire dans « Famille »."
           }
         },
         "ru" : {
@@ -51924,7 +51924,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Une invitation au carnet partagé est un partage iCloud. Seule la personne nommée dans la fenêtre système « Partager » peut l'ouvrir : personne ne peut entrer avec une adresse transférée."
+            "value" : "Une invitation au carnet partagé est un partage iCloud. Seule la personne nommée dans la fenêtre système « Partager » peut l'ouvrir : personne ne peut entrer avec une adresse transférée."
           }
         },
         "ru" : {
@@ -52425,7 +52425,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L'application n'est pas destinée à être utilisée seule par des enfants de moins de 13 ans. Le rôle « assistant » est prévu pour un enfant qui utilise le téléphone d'un adulte."
+            "value" : "L'application n'est pas destinée à être utilisée seule par des enfants de moins de 13 ans. Le rôle « assistant » est prévu pour un enfant qui utilise le téléphone d'un adulte."
           }
         },
         "ru" : {
@@ -53280,7 +53280,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Une promenade ou une séance est restée ouverte — le bouton « terminer » n'est pas là où on le cherche."
+            "value" : "Une promenade ou une séance est restée ouverte — le bouton « terminer » n'est pas là où on le cherche."
           }
         },
         "ru" : {
@@ -62928,13 +62928,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "This is how the screen looks to someone with the “Helper” role."
+            "value" : "This is how the screen looks to someone with the “helper” role."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Voici l'écran tel que le voit une personne avec le rôle « assistant »."
+            "value" : "Voici l'écran tel que le voit une personne avec le rôle « assistant »."
           }
         },
         "ru" : {
@@ -67198,7 +67198,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "le fichier du carnet existe mais ne s'ouvre pas — « Le journal ne s'est pas ouvert »"
+            "value" : "le fichier du carnet existe mais ne s'ouvre pas — « Le journal ne s'est pas ouvert »"
           }
         },
         "ru" : {
@@ -70771,7 +70771,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Pour qu'il note depuis son téléphone, active le carnet partagé et envoie l'invitation — « inviter au carnet » dans la liste de la famille."
+            "value" : "Pour qu'il note depuis son téléphone, active le carnet partagé et envoie l'invitation — « inviter au carnet » dans la liste de la famille."
           }
         },
         "ru" : {
@@ -71128,7 +71128,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Un chiot a besoin de plus de repas par jour et de moins d'effort à la fois. Le nombre de repas se règle dans « Routine »."
+            "value" : "Un chiot a besoin de plus de repas par jour et de moins d'effort à la fois. Le nombre de repas se règle dans « Routine »."
           }
         },
         "ru" : {
@@ -77012,7 +77012,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "étape « Attendre à la porte »"
+            "value" : "étape « Attendre à la porte »"
           }
         },
         "kk" : {
@@ -78404,7 +78404,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "je demanderai « comment va-t-il ? » dans une heure"
+            "value" : "je demanderai « comment va-t-il ? » dans une heure"
           }
         },
         "kk" : {
@@ -79796,7 +79796,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "« Il tirait vers les chats »"
+            "value" : "« Il tirait vers les chats »"
           }
         },
         "kk" : {
@@ -80057,7 +80057,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "ce n'est pas « "
+            "value" : "ce n'est pas « "
           }
         },
         "kk" : {
@@ -80782,7 +80782,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Deux notes « "
+            "value" : "Deux notes « "
           }
         },
         "kk" : {
@@ -81159,7 +81159,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Éducation · « Attendre à la porte »"
+            "value" : "Éducation · « Attendre à la porte »"
           }
         },
         "kk" : {
@@ -81188,7 +81188,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "3 min · marqueur « oui »"
+            "value" : "3 min · marqueur « oui »"
           }
         },
         "kk" : {
@@ -82603,13 +82603,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Course closed · Health stays"
+            "value" : "Course closed · “Health” stays"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Traitement clos · Santé reste"
+            "value" : "Traitement clos · « Santé » reste"
           }
         },
         "kk" : {
@@ -83624,7 +83624,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "marqueur « oui » · 3 min"
+            "value" : "marqueur « oui » · 3 min"
           }
         },
         "kk" : {
@@ -84465,7 +84465,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "aide"
+            "value" : "assistant"
           }
         },
         "kk" : {
@@ -84477,7 +84477,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "помічниця"
+            "value" : "помічник"
           }
         }
       }
@@ -84871,7 +84871,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "carte « une étape suivante »"
+            "value" : "carte « une étape suivante »"
           }
         },
         "kk" : {
@@ -87336,7 +87336,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "« oui »"
+            "value" : "« oui »"
           }
         },
         "kk" : {
@@ -89076,7 +89076,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "sans « Envie de sortir ? »"
+            "value" : "sans « Envie de sortir ? »"
           }
         },
         "kk" : {
@@ -89801,7 +89801,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "minutes · « Pipi » · « Maison »"
+            "value" : "minutes · « Pipi » · « Maison »"
           }
         },
         "kk" : {
@@ -89859,7 +89859,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "10 min avant · « Donné »"
+            "value" : "10 min avant · « Donné »"
           }
         },
         "kk" : {
@@ -89917,7 +89917,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "jusqu'à « on peut nourrir »"
+            "value" : "jusqu'à « on peut nourrir »"
           }
         },
         "kk" : {
@@ -90033,7 +90033,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "+ « suivant » et « Promener »"
+            "value" : "+ « suivant » et « Promener »"
           }
         },
         "kk" : {
@@ -90149,7 +90149,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "heure et « ensuite »"
+            "value" : "heure et « suivant »"
           }
         },
         "kk" : {
@@ -90787,7 +90787,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "3 · toutes marquées « sautée »"
+            "value" : "3 · toutes marquées « sautée »"
           }
         },
         "kk" : {
@@ -91216,13 +91216,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Leave food"
+            "value" : "Didn't take food"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Laisser la nourriture"
+            "value" : "N'a pas pris la friandise"
           }
         },
         "kk" : {
@@ -91234,7 +91234,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Не брав їжу"
+            "value" : "Не брав ласощі"
           }
         }
       }
@@ -91628,7 +91628,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Togo compare l'heure avec les jours passés. Les 4 premiers jours, la réponse est « pas clair »."
+            "value" : "Togo compare l'heure avec les jours passés. Les 4 premiers jours, la réponse est « pas clair »."
           }
         },
         "kk" : {
@@ -93223,7 +93223,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "« Cycle » apparaîtra"
+            "value" : "« Cycle » apparaîtra"
           }
         },
         "kk" : {
@@ -93629,7 +93629,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Photo « "
+            "value" : "Photo « "
           }
         },
         "kk" : {
@@ -93658,7 +93658,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : " » ajoutée"
+            "value" : " » ajoutée"
           }
         },
         "kk" : {
@@ -94731,7 +94731,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "« Envie de sortir ? » → « Je le sors »"
+            "value" : "« Envie de sortir ? » → « Je le sors »"
           }
         },
         "kk" : {
@@ -94789,7 +94789,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "bouton « Promener »"
+            "value" : "bouton « Promener »"
           }
         },
         "kk" : {
@@ -95717,7 +95717,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "marqueur « oui »"
+            "value" : "marqueur « oui »"
           }
         },
         "kk" : {
@@ -95775,7 +95775,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Séance · marqueur « Oui ! »"
+            "value" : "Séance · marqueur « Oui ! »"
           }
         },
         "kk" : {
@@ -97196,7 +97196,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "un seul message : « on peut nourrir »"
+            "value" : "un seul message : « on peut nourrir »"
           }
         },
         "kk" : {
@@ -98008,7 +98008,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Pas encore de notes. Touchez « Promener » en partant."
+            "value" : "Pas encore de notes. Touchez « Promener » en partant."
           }
         },
         "kk" : {
@@ -98820,7 +98820,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "ou « non noté »"
+            "value" : "ou « non noté »"
           }
         },
         "kk" : {
