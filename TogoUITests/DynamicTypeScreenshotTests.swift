@@ -38,12 +38,78 @@ nonisolated final class DynamicTypeScreenshotTests: XCTestCase {
         print("КАДРОВ СНЯТО: \(снято.count) · \(name) · \(снято.joined(separator: ", "))")
     }
 
+    /// Кадры ложатся и вложением, и файлом в `build/кадры-крупный-кегль/`.
+    /// Выгрузка вложений в этом проекте измерена и срабатывает не всегда,
+    /// а кадр, который не выгрузился, — это кадр, которого нет.
+    private var каталог: URL {
+        URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("build/кадры-крупный-кегль")
+    }
+
     private func capture(_ name: String) {
-        let shot = XCTAttachment(screenshot: app.screenshot())
+        let снимок = app.screenshot()
+        let shot = XCTAttachment(screenshot: снимок)
         shot.name = name
         shot.lifetime = .keepAlways
         add(shot)
         снято.append(name)
+        do {
+            try FileManager.default.createDirectory(at: каталог,
+                                                    withIntermediateDirectories: true)
+            try снимок.pngRepresentation.write(to: каталог.appendingPathComponent("\(name).png"))
+        } catch {
+            print("КАДР НЕ ЛЁГ НА ДИСК: \(name) · \(error.localizedDescription)")
+        }
+    }
+
+    // MARK: Дороги, переписанные под редизайн 22–23.10.2026
+
+    /// Шторка записи — круглая «+» в низу «Сегодня».
+    ///
+    /// **Прямых кнопок записи на главном экране больше нет.** Низ стал
+    /// «главная · вторая · +» (`TodayBottom.swift`), а «Инцидент ·
+    /// Стул · Еда · Ещё» уехали в шторку за «+». Три теста ниже жали
+    /// кнопки, которых на экране нет с 22.10.2026, и падали на первой
+    /// строке со словами «Failed to tap … No matches found».
+    ///
+    /// Ищем по **идентификатору**: озвучка у «+» — «Записать», и это
+    /// слово в приложении носит ещё и кнопка внутри листа еды.
+    private func открытьЗапись() {
+        let плюс = app.buttons["низ-записать"].firstMatch
+        XCTAssertTrue(плюс.waitForExistence(timeout: 10),
+                      "в низу «Сегодня» нет круглой «+» (`низ-записать`)")
+        плюс.tap()
+        XCTAssertTrue(app.staticTexts["Записать"].firstMatch.waitForExistence(timeout: 5),
+                      "«+» нажата, а шторка «Записать» не поднялась")
+    }
+
+    /// Строка шторки по началу подписи.
+    ///
+    /// **Почему `firstMatch` здесь безопасен — это замер, а не вера.**
+    /// Зонд дерева 23.10.2026 при поднятой шторке: её четыре строки
+    /// стоят индексами 1–4, а содержимое «Сегодня» начинается с пятого.
+    /// То есть `BEGINSWITH «Еда»` берёт строку шторки («Еда, 60 г»),
+    /// а не план дня («Еда · 60 г, 18:30 · Acana ягнёнок»), который
+    /// тоже начинается с этого слова и лежит ниже.
+    ///
+    /// > И контроль из того же замера: `app.sheets.count = 0` —
+    /// > **ограничить запрос контейнером шторки нельзя**, такого
+    /// > элемента в дереве нет вовсе. Попытка «сделать правильнее»
+    /// > через `app.sheets` дала бы ложный ноль.
+    private func строкаЗаписи(_ начало: String) -> XCUIElement {
+        app.buttons.matching(
+            NSPredicate(format: "label BEGINSWITH %@ AND identifier != %@",
+                        начало, "низ-записать")
+        ).firstMatch
+    }
+
+    /// Кнопка «Записать» внутри листа — не круглая «+» с тем же голосом.
+    private var кнопкаЗаписатьВЛисте: XCUIElement {
+        app.buttons.matching(
+            NSPredicate(format: "label == %@ AND identifier != %@",
+                        "Записать", "низ-записать")
+        ).firstMatch
     }
 
     func testXL01Сегодня() {
@@ -167,10 +233,15 @@ nonisolated final class DynamicTypeScreenshotTests: XCTestCase {
     }
 
     func testXL09ЛистЕды() {
-        app.buttons["Еда"].firstMatch.tap()
-        // Шторка поднимается не мгновенно; ждём её содержимое,
+        открытьЗапись()
+        let еда = строкаЗаписи("Еда")
+        XCTAssertTrue(еда.waitForExistence(timeout: 5),
+                      "в шторке «Записать» нет строки «Еда»")
+        еда.tap()
+        // Лист поднимается не мгновенно; ждём его содержимое,
         // а не таймаут — иначе кадр снимется на анимации.
-        _ = app.buttons["Записать"].firstMatch.waitForExistence(timeout: 5)
+        XCTAssertTrue(кнопкаЗаписатьВЛисте.waitForExistence(timeout: 5),
+                      "лист еды не поднялся: кнопки «Записать» в нём нет")
         capture("xl-09-meal-sheet")
     }
 
@@ -180,27 +251,65 @@ nonisolated final class DynamicTypeScreenshotTests: XCTestCase {
     /// Снимается при обычном кегле — это не про размер текста, а про
     /// то, куда попадает запись. Лежит здесь, потому что здесь уже
     /// собрана оснастка кадров; переедет, когда их станет больше.
+    /// **Листалка дня уехала за пункт меню «Другой день».** По кадру 01
+    /// её в шапке нет вовсе (`TodayScreen.swift:66`), но убрать совсем
+    /// было нельзя: это единственный путь записать вчерашнюю еду.
+    /// Значит шагов теперь три, а не один: «…» → «Другой день» →
+    /// «Предыдущий день». Замер дерева 23.10.2026 — после пункта меню
+    /// `buttons["Предыдущий день"]` появляется.
     func testВчераЗапись() {
-        app.buttons["Предыдущий день"].firstMatch.tap()
-        _ = app.staticTexts["В сегодня"].waitForExistence(timeout: 3)
+        let меню = app.buttons["шапка-меню"].firstMatch
+        XCTAssertTrue(меню.waitForExistence(timeout: 10),
+                      "на «Сегодня» нет кнопки «…» (`шапка-меню`)")
+        меню.tap()
+        let другойДень = app.buttons["Другой день"].firstMatch
+        XCTAssertTrue(другойДень.waitForExistence(timeout: 5),
+                      "в меню «…» нет пункта «Другой день» — листалку не показать")
+        другойДень.tap()
+
+        let назад = app.buttons["Предыдущий день"].firstMatch
+        XCTAssertTrue(назад.waitForExistence(timeout: 5), """
+            пункт «Другой день» нажат, а листалки нет. Это не «кнопки \
+            не существует»: в шапке её нет по кадру 01, показывает её \
+            только этот пункт.
+            """)
+        назад.tap()
+        XCTAssertTrue(app.staticTexts["В сегодня"].waitForExistence(timeout: 5),
+                      "листнули назад, а экран не сказал, что день не сегодняшний")
         capture("вчера-01-экран")
-        app.buttons["Еда"].firstMatch.tap()
-        _ = app.buttons["Записать"].firstMatch.waitForExistence(timeout: 5)
-        app.buttons["Записать"].firstMatch.tap()
+
+        открытьЗапись()
+        let еда = строкаЗаписи("Еда")
+        XCTAssertTrue(еда.waitForExistence(timeout: 5),
+                      "в шторке «Записать» нет строки «Еда»")
+        еда.tap()
+        XCTAssertTrue(кнопкаЗаписатьВЛисте.waitForExistence(timeout: 5),
+                      "лист еды не поднялся: кнопки «Записать» в нём нет")
+        кнопкаЗаписатьВЛисте.tap()
         capture("вчера-02-подтверждение")
     }
 
     func testXL10Стул() {
-        app.buttons["Стул"].firstMatch.tap()
-        _ = app.staticTexts["форма"].firstMatch.waitForExistence(timeout: 5)
+        открытьЗапись()
+        let стул = строкаЗаписи("Стул")
+        XCTAssertTrue(стул.waitForExistence(timeout: 5),
+                      "в шторке «Записать» нет строки «Стул»")
+        стул.tap()
+        XCTAssertTrue(app.staticTexts["Колбаска"].firstMatch.waitForExistence(timeout: 5),
+                      "лист стула открылся не тот: шкалы формы на нём нет")
         capture("xl-10-stool")
         app.swipeUp()
         capture("xl-10-stool-scrolled")
     }
 
     func testXL11Инцидент() {
-        app.buttons["Инцидент"].firstMatch.tap()
-        _ = app.staticTexts["что случилось"].firstMatch.waitForExistence(timeout: 5)
+        открытьЗапись()
+        let инцидент = строкаЗаписи("Инцидент")
+        XCTAssertTrue(инцидент.waitForExistence(timeout: 5),
+                      "в шторке «Записать» нет строки «Инцидент»")
+        инцидент.tap()
+        XCTAssertTrue(app.staticTexts["что случилось"].firstMatch.waitForExistence(timeout: 5),
+                      "лист инцидента открылся не тот")
         capture("xl-11-incident")
     }
 
@@ -241,9 +350,30 @@ nonisolated final class DynamicTypeScreenshotTests: XCTestCase {
         capture("навык-03-после")
     }
 
+    /// **Вкладки «Семья» в таб-баре нет** — решение Виктории
+    /// 22.10.2026: было пять вкладок, стало четыре, а семья уехала
+    /// первой строкой во вкладку собаки (`RootView.swift`,
+    /// `DogTab.swift:303`). Входов два, оба замерены 23.10.2026:
+    /// эта строка и пункт «Семья» в меню «…» той же вкладки.
+    ///
+    /// Вкладка берётся по порядку, а не по имени: её имя — кличка,
+    /// то есть данные.
     func testXL04Семья() {
-        app.tabBars.buttons["Семья"].tap()
-        _ = app.navigationBars["Семья"].waitForExistence(timeout: 5)
+        let бар = app.tabBars.firstMatch
+        XCTAssertTrue(бар.waitForExistence(timeout: 10),
+                      "таб-бара нет — приложение не дошло до главного экрана")
+        XCTAssertEqual(бар.buttons.count, 4, """
+            вкладок \(бар.buttons.count), а решением 22.10.2026 их четыре: \
+            Сегодня · {кличка} · История · Здоровье.
+            """)
+        бар.buttons.element(boundBy: 1).tap()
+
+        let строка = найти("Семья и дежурство", в: app)
+        XCTAssertTrue(строка.waitForExistence(timeout: 10),
+                      "во вкладке собаки нет строки «Семья и дежурство» — входа в семью")
+        строка.tap()
+        XCTAssertTrue(app.navigationBars["Семья"].waitForExistence(timeout: 10),
+                      "строка нажата, а экран «Семья» не открылся")
         capture("xl-04-family")
         let первый = app.descendants(matching: .any)
             .matching(NSPredicate(format: "label BEGINSWITH %@", "Виктория"))
