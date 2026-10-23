@@ -246,11 +246,17 @@ nonisolated final class ПроситсяКиноUITests: XCTestCase {
     /// и то, что за сгибом: кадр тогда снимался бы «для состояния»,
     /// которого на картинке нет. Это ровно тот случай, где
     /// «мне сказали да» и «я это вижу» — разные вопросы.
+    ///
+    /// **Предикат строится ВНУТРИ цикла, и это не стиль.** Вынесенный
+    /// наружу, он уезжает через `app.swipeUp()` в другой контекст
+    /// изоляции, и сборка схемы падает «sending 'предикат' risks causing
+    /// data races» — ровно та ошибка, на которой 14.10 сосед потерял
+    /// прогон, разбирая её как свой дефект.
     private func прокрутитьДо(_ подпись: String, шагов: Int = 14) -> XCUIElement? {
-        let предикат = NSPredicate(format: "label BEGINSWITH %@", подпись)
         for шаг in 0...шагов {
             let элемент = app.descendants(matching: .any)
-                .matching(предикат).firstMatch
+                .matching(NSPredicate(format: "label BEGINSWITH %@", подпись))
+                .firstMatch
             if элемент.exists, наЭкране(элемент) { return элемент }
             if шаг < шагов { app.swipeUp() }
         }
