@@ -197,6 +197,24 @@
             "state" : "translated",
             "value" : " · повторяется"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : " · repeats"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : " · se répète"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : " · повторюється"
+          }
         }
       }
     },
@@ -796,6 +814,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "«Откуда взято» решает споры: назначение, известное только письмом, иначе не отличить от бланка."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "“Where it came from” settles arguments: a prescription known only from a letter is otherwise indistinguishable from a form."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "« D'où ça vient » tranche les désaccords : une ordonnance connue seulement par courrier ne se distingue pas d'une fiche."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "«Звідки взято» вирішує суперечки: призначення, відоме лише з листа, інакше не відрізнити від бланка."
           }
         }
       }
@@ -7162,6 +7198,24 @@
             "state" : "translated",
             "value" : "3 месяца"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "3 months"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "3 mois"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "3 місяці"
+          }
         }
       }
     },
@@ -7173,6 +7227,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "3 нед"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "3 wks"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "3 sem"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "3 тиж"
           }
         }
       }
@@ -7216,6 +7288,24 @@
             "state" : "translated",
             "value" : "4 таблетки"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "4 tablets"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "4 comprimés"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "4 таблетки"
+          }
         }
       }
     },
@@ -7228,6 +7318,24 @@
             "state" : "translated",
             "value" : "4–6 нед"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "4–6 wks"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "4–6 sem"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "4–6 тиж"
+          }
         }
       }
     },
@@ -7239,6 +7347,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "4–8 нед"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "4–8 wks"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "4–8 sem"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "4–8 тиж"
           }
         }
       }
@@ -7254,6 +7380,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "6 мес"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "6 mos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "6 mois"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "6 міс"
           }
         }
       }
@@ -7579,6 +7723,24 @@
             "state" : "translated",
             "value" : "iCloud не открылся"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "iCloud didn't open"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "iCloud ne s'est pas ouvert"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "iCloud не відкрився"
+          }
         }
       }
     },
@@ -7725,7 +7887,26 @@
       }
     },
     "IDEXX" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "IDEXX"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "IDEXX"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "IDEXX"
+          }
+        }
+      }
     },
     "Lévothyrox" : {
       "comment" : "подсказка поля «Название» у препарата. НЕ ПЕРЕВОДИТСЯ — решение Виктории 15.10.2026, прямым вопросом: «один бренд во всех языках». Было четыре РАЗНЫХ коммерческих продукта левотироксина в одном поле: fr Lévothyrox · ru Эутирокс · en Synthroid (needs_review) · uk L-тироксин (needs_review) — два варианта не подтверждал никто. Поле медицинское, запись потом читает врач, а подсказка в поле названия читается как «такое сюда пишут». Переводить нечего: бренд не слово. ВНИМАНИЕ: русский теперь видит Lévothyrox вместо Эутирокс — это и есть «один бренд», а не упущение. Увидишь непереведённое поле и захочешь починить — причина здесь, и возврат четырёх брендов будет регрессией, а не переводом.",
@@ -7740,6 +7921,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "PDF-ордоннанс, письмо, со слов"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "PDF prescription, letter, told by vet"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ordonnance PDF, courrier, de vive voix"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "PDF-рецепт, лист, зі слів"
           }
         }
       }
@@ -8092,7 +8291,26 @@
       }
     },
     "VF120682" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "VF120682"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "VF120682"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "VF120682"
+          }
+        }
+      }
     },
     "август 2026" : {
       "comment" : "items",
@@ -8162,6 +8380,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Адрес вводить негде"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "There's nowhere to enter an address"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aucun champ pour l'adresse"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Адресу вводити ніде"
           }
         }
       }
@@ -8309,6 +8545,24 @@
             "state" : "translated",
             "value" : "акцентная кнопка прогулки"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "accent walk button"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "bouton promenade accentué"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "акцентна кнопка прогулянки"
+          }
         }
       }
     },
@@ -8357,6 +8611,24 @@
             "state" : "translated",
             "value" : "Анализ будет помечен «время не указано» и на графике встанет пустым кружком."
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The lab will be marked “time not given” and will show as an empty circle on the chart."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L'analyse sera marquée « heure non indiquée » et apparaîtra comme un cercle vide sur le graphique."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Аналіз буде позначено «час не вказано» і на графіку стане порожнім кружком."
+          }
         }
       }
     },
@@ -8368,6 +8640,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Анализов пока нет"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "No lab tests yet"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pas encore d'analyses"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Аналізів поки немає"
           }
         }
       }
@@ -8416,6 +8706,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "анализы, осмотр, симптомы"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "lab tests, examination, symptoms"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "analyses, examen, symptômes"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "аналізи, огляд, симптоми"
           }
         }
       }
@@ -8549,6 +8857,24 @@
             "state" : "translated",
             "value" : "Без времени так и запишем — «время не указано». Это честнее, чем угадать: подставь мы «вероятно, утром», запись сказала бы врачу то, чего ты не вводил."
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Without a time we'll write exactly that — “time not given”. It's more honest than guessing: if we filled in “probably morning”, the entry would tell your vet something you never entered."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sans heure, nous écrirons exactement cela — « heure non indiquée ». C'est plus honnête que de deviner : si nous mettions « sans doute le matin », la note dirait au vétérinaire ce que tu n'as pas saisi."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Без часу так і запишемо — «час не вказано». Це чесніше, ніж вгадати: підстав ми «ймовірно, вранці», запис сказав би лікарю те, чого ти не вводила."
+          }
         }
       }
     },
@@ -8619,6 +8945,24 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
+            "value" : "без номера"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "no number"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "sans numéro"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
             "value" : "без номера"
           }
         }
@@ -8812,6 +9156,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "без срока"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "no deadline"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "sans échéance"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "без терміну"
           }
         }
       }
@@ -9075,6 +9437,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "бланк спрашиваем один раз — он общий для всех строк"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "we ask for the form once — it's shared by every line"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "la fiche n'est demandée qu'une fois — elle vaut pour toutes les lignes"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "бланк питаємо один раз — він спільний для всіх рядків"
           }
         }
       }
@@ -9987,6 +10367,24 @@
             "state" : "translated",
             "value" : "в сутки"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "per day"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "par jour"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "на добу"
+          }
         }
       }
     },
@@ -10028,6 +10426,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "в чужой дневник"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "into someone else's diary"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "dans le carnet de quelqu'un d'autre"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "у чужий щоденник"
           }
         }
       }
@@ -10353,6 +10769,24 @@
             "state" : "translated",
             "value" : "верх нормы"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "upper limit"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "limite haute"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "верх норми"
+          }
         }
       }
     },
@@ -10603,6 +11037,24 @@
             "state" : "translated",
             "value" : "Вес не записался · попробуй ещё раз"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Weight wasn't saved · try again"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le poids n'a pas été noté · réessaie"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Вагу не записано · спробуй ще раз"
+          }
         }
       }
     },
@@ -10615,6 +11067,24 @@
             "state" : "translated",
             "value" : "Вес, кг"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Weight, kg"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Poids, kg"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Вага, кг"
+          }
         }
       }
     },
@@ -10626,6 +11096,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "вес, от которого считали дозу"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "the weight the dose was calculated from"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "le poids ayant servi au calcul de la dose"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "вага, від якої рахували дозу"
           }
         }
       }
@@ -11243,6 +11731,24 @@
             "state" : "translated",
             "value" : "Взвешивание не удалилось · попробуй ещё раз"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The weigh-in wasn't deleted · try again"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "La pesée n'a pas été supprimée · réessaie"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Зважування не видалилося · спробуй ще раз"
+          }
         }
       }
     },
@@ -11284,6 +11790,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Вид значения"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Value type"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Type de valeur"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Вид значення"
           }
         }
       }
@@ -11399,6 +11923,24 @@
             "state" : "translated",
             "value" : "Визит уйдёт из истории и из отчёта врачу. Диагнозы и назначения останутся."
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The visit will leave the history and the vet report. Diagnoses and prescriptions stay."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "La visite quittera l'historique et le compte rendu véto. Les diagnostics et les ordonnances restent."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Візит зникне з історії та зі звіту лікарю. Діагнози і призначення залишаться."
+          }
         }
       }
     },
@@ -11410,6 +11952,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Визитов пока нет"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "No visits yet"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pas encore de visites"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Візитів поки немає"
           }
         }
       }
@@ -11452,6 +12012,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Визиты к врачу"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Vet visits"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Visites chez le véto"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Візити до лікаря"
           }
         }
       }
@@ -11680,6 +12258,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Включи, если носишь эту дозу с собой. Тогда в режиме прогулки появится «Дал» — и отметка не потеряется до дома. Не включай, если дозу дают только дома: приложение не станет предлагать."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Turn this on if you carry the dose with you. Then “Given” appears during a walk — and the mark won't be lost on the way home. Leave it off if the dose is only given at home: the app won't offer it."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Active si tu emportes cette dose. « Donné » apparaîtra alors en mode promenade — et la note ne se perdra pas avant la maison. N'active pas si la dose se donne seulement à la maison : l'app ne la proposera pas."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Увімкни, якщо носиш цю дозу з собою. Тоді в режимі прогулянки з'явиться «Дав» — і позначка не загубиться до дому. Не вмикай, якщо дозу дають лише вдома: застосунок не пропонуватиме."
           }
         }
       }
@@ -11962,6 +12558,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Вместе с рецептом уйдёт и напоминание о контроле. Записи анализов и визиты останутся."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The follow-up reminder goes with the prescription. Lab entries and visits stay."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le rappel de contrôle part avec l'ordonnance. Les analyses et les visites restent."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Разом із рецептом зникне й нагадування про контроль. Записи аналізів і візити залишаться."
           }
         }
       }
@@ -12959,6 +13573,24 @@
             "state" : "translated",
             "value" : "Время забора известно"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sample time is known"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L'heure du prélèvement est connue"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Час забору відомий"
+          }
         }
       }
     },
@@ -13492,6 +14124,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "все шесть шагов; ничего не записывается"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "all six steps; nothing is saved"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "les six étapes ; rien n'est enregistré"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "усі шість кроків; нічого не записується"
           }
         }
       }
@@ -14519,6 +15169,24 @@
             "state" : "translated",
             "value" : "Выдано"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Issued"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Délivré"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Видано"
+          }
         }
       }
     },
@@ -14530,6 +15198,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "выделен штамм стафилококка"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "a staph strain was isolated"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "une souche de staphylocoque a été isolée"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "виділено штам стафілокока"
           }
         }
       }
@@ -15526,6 +16212,24 @@
             "state" : "translated",
             "value" : "гипотеза"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "hypothesis"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "hypothèse"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "гіпотеза"
+          }
         }
       }
     },
@@ -15537,6 +16241,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "гипотиреоз"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "hypothyroidism"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "hypothyroïdie"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "гіпотиреоз"
           }
         }
       }
@@ -15669,6 +16391,24 @@
             "state" : "translated",
             "value" : "гормоны"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "hormones"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "hormones"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "гормони"
+          }
         }
       }
     },
@@ -15769,7 +16509,26 @@
       }
     },
     "Готово: ты в дневнике — %@." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Done: you're in the diary — %@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "C'est fait : tu es dans le carnet — %@."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Готово: ти в щоденнику — %@."
+          }
+        }
+      }
     },
     "Готово: ты в общем дневнике. Чей он — приложение пока не знает." : {
       "comment" : "ShareAcceptanceOutcome",
@@ -15779,6 +16538,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Готово: ты в общем дневнике. Чей он — приложение пока не знает."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Done: you're in the shared diary. Whose it is, the app doesn't know yet."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "C'est fait : tu es dans le carnet partagé. À qui il appartient, l'app ne le sait pas encore."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Готово: ти в спільному щоденнику. Чий він — застосунок поки не знає."
           }
         }
       }
@@ -15942,6 +16719,24 @@
             "state" : "translated",
             "value" : "График"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Chart"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Graphique"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Графік"
+          }
         }
       }
     },
@@ -15954,6 +16749,24 @@
             "state" : "translated",
             "value" : "График показателя"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Marker chart"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Graphique du paramètre"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Графік показника"
+          }
         }
       }
     },
@@ -15965,6 +16778,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "График появится, когда будет хотя бы один анализ с числом. Бактериология и описания в график не идут — им нечего рисовать."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The chart appears once there's at least one lab with a number. Bacteriology and descriptions don't go on the chart — there's nothing to plot."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le graphique apparaîtra dès qu'il y aura au moins une analyse chiffrée. La bactériologie et les descriptions n'y figurent pas — il n'y a rien à tracer."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Графік з'явиться, коли буде хоча б один аналіз із числом. Бактеріологія та описи в графік не йдуть — їм нічого малювати."
           }
         }
       }
@@ -16862,6 +17693,24 @@
             "state" : "translated",
             "value" : "Дата забора"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sample date"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Date du prélèvement"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Дата забору"
+          }
         }
       }
     },
@@ -16909,6 +17758,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "дата, повод и заключение — то, что спросят в следующий раз"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "date, reason and conclusion — what you'll be asked next time"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "date, motif et conclusion — ce qu'on te demandera la prochaine fois"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "дата, привід і висновок — те, що спитають наступного разу"
           }
         }
       }
@@ -17520,6 +18387,24 @@
             "state" : "translated",
             "value" : "Дело не в твоих настройках: права на iCloud нет у самой сборки. Записи целы и лежат на этом телефоне — сохрани файл, и они вернутся в следующей сборке."
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "It's not your settings: the build itself has no iCloud entitlement. Your entries are intact and stored on this phone — save the file and they'll come back in the next build."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ce ne sont pas tes réglages : c'est la version elle-même qui n'a pas le droit iCloud. Tes notes sont intactes et restent sur ce téléphone — enregistre le fichier, elles reviendront dans la prochaine version."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Річ не в твоїх налаштуваннях: права на iCloud немає в самої збірки. Записи цілі й лежать на цьому телефоні — збережи файл, і вони повернуться в наступній збірці."
+          }
         }
       }
     },
@@ -17896,6 +18781,24 @@
             "state" : "translated",
             "value" : "Диагнозов пока нет"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "No diagnoses yet"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pas encore de diagnostics"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Діагнозів поки немає"
+          }
         }
       }
     },
@@ -17943,6 +18846,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Диапазоном, а не датой: Togo не выбирает срок за врача. Напомним в начале окна и в последний день."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "A range, not a date: Togo doesn't pick the deadline for your vet. We'll remind you at the start of the window and on the last day."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Une plage, pas une date : Togo ne choisit pas l'échéance à la place du vétérinaire. Nous rappellerons au début de la fenêtre et le dernier jour."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Діапазоном, а не датою: Togo не обирає термін за лікаря. Нагадаємо на початку вікна і в останній день."
           }
         }
       }
@@ -18314,6 +19235,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Дневник ездит через твой личный iCloud, а не через чужой сервер. Аккаунт в Togo не нужен."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The diary travels through your own iCloud, not someone else's server. No Togo account needed."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le carnet passe par ton iCloud personnel, pas par le serveur d'un tiers. Aucun compte Togo n'est nécessaire."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Щоденник їздить через твій особистий iCloud, а не через чужий сервер. Акаунт у Togo не потрібен."
           }
         }
       }
@@ -18789,6 +19728,24 @@
             "state" : "translated",
             "value" : "до, недель"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "to, weeks"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "à, semaines"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "до, тижнів"
+          }
         }
       }
     },
@@ -18919,6 +19876,24 @@
             "state" : "translated",
             "value" : "Добавить анализ"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Add a lab"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ajouter une analyse"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Додати аналіз"
+          }
         }
       }
     },
@@ -18930,6 +19905,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Добавить визит"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Add a visit"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ajouter une visite"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Додати візит"
           }
         }
       }
@@ -19033,6 +20026,24 @@
             "state" : "translated",
             "value" : "Добавить диагноз"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Add a diagnosis"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ajouter un diagnostic"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Додати діагноз"
+          }
         }
       }
     },
@@ -19074,6 +20085,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Добавить назначение"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Add a prescription"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ajouter une ordonnance"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Додати призначення"
           }
         }
       }
@@ -19653,11 +20682,48 @@
             "state" : "new",
             "value" : "Доза была %1$@ назад · %2$@"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dose was %@ ago · %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dose il y a %@ · %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Доза була %@ тому · %@"
+          }
         }
       }
     },
     "Доза была в %@." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The dose was at %@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "La dose était à %@."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Доза була о %@."
+          }
+        }
+      }
     },
     "Доза в сутки" : {
       "comment" : "График",
@@ -19667,6 +20733,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Доза в сутки"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dose per day"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dose par jour"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Доза на добу"
           }
         }
       }
@@ -19991,6 +21075,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Доза показана так, как её ввёл человек: числа дозы в миллиграммах приложение не хранит и не считает само. Вес берётся за тот же день — не за ближайший."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The dose is shown exactly as a person entered it: the app neither stores nor calculates dose figures in milligrams. The weight is taken from the same day — not the nearest one."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "La dose est affichée telle qu'une personne l'a saisie : l'app ne stocke ni ne calcule les valeurs en milligrammes. Le poids est celui du même jour — pas du jour le plus proche."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Доза показана так, як її ввела людина: чисел дози в міліграмах застосунок не зберігає і не рахує сам. Вага береться за той самий день — не за найближчий."
           }
         }
       }
@@ -20748,6 +21850,24 @@
             "state" : "translated",
             "value" : "другого человека"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "another person's"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "d'une autre personne"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "іншої людини"
+          }
         }
       }
     },
@@ -21072,6 +22192,24 @@
             "state" : "translated",
             "value" : "Единица"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Unit"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Unité"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Одиниця"
+          }
         }
       }
     },
@@ -21148,6 +22286,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Её присылают из Togo. Нажми прямо в переписке — телефон сам откроет приглашение и спросит, принимаешь ли ты его."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "It's sent from Togo. Tap it right in the chat — your phone will open the invitation and ask whether you accept."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Elle est envoyée depuis Togo. Appuie directement dans la conversation — le téléphone ouvrira l'invitation et demandera si tu l'acceptes."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Її надсилають із Togo. Натисни просто в листуванні — телефон сам відкриє запрошення і спитає, чи приймаєш ти його."
           }
         }
       }
@@ -22058,6 +23214,24 @@
             "state" : "translated",
             "value" : "Есть одна точка. График начнёт говорить со второй: он про то, как величина меняется, а не какая она сейчас."
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "There's one point. The chart starts speaking at the second: it's about how a value changes, not what it is right now."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Il y a un point. Le graphique commencera à parler au deuxième : il montre comment une valeur évolue, pas ce qu'elle vaut maintenant."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Є одна точка. Графік почне говорити з другої: він про те, як величина змінюється, а не яка вона зараз."
+          }
         }
       }
     },
@@ -22395,6 +23569,24 @@
             "state" : "translated",
             "value" : "ещё не поднялся"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "hasn't come up yet"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ne s'est pas encore posé"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ще не піднявся"
+          }
         }
       }
     },
@@ -22466,6 +23658,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ещё показатель"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Another marker"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Autre paramètre"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ще показник"
           }
         }
       }
@@ -22851,6 +24061,24 @@
             "state" : "translated",
             "value" : "За выбранный период анализов с числом нет. Поменяй период — или заведи анализ."
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "No labs with a number in the selected period. Change the period — or add a lab."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aucune analyse chiffrée sur la période choisie. Change la période — ou ajoute une analyse."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "За вибраний період аналізів із числом немає. Зміни період — або заведи аналіз."
+          }
         }
       }
     },
@@ -23043,6 +24271,24 @@
             "state" : "translated",
             "value" : "Забор во сколько?"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sample taken at what time?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Prélèvement à quelle heure ?"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Забір о котрій?"
+          }
         }
       }
     },
@@ -23166,6 +24412,24 @@
             "state" : "translated",
             "value" : "заведена здесь"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "created here"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "créée ici"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "заведена тут"
+          }
         }
       }
     },
@@ -23177,6 +24441,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Заведи бланк — лабораторию, дату и показатели. Приложение само посчитает отклонение по норме с бланка и часы от дозы."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Add a form — the lab, the date and the markers. The app will work out the deviation from the range on the form and the hours since the dose."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Crée une fiche — le laboratoire, la date et les paramètres. L'app calculera l'écart par rapport à l'intervalle de la fiche et les heures depuis la dose."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Заведи бланк — лабораторію, дату і показники. Застосунок сам порахує відхилення за нормою з бланка і години від дози."
           }
         }
       }
@@ -23220,6 +24502,24 @@
             "state" : "translated",
             "value" : "Заведи рецепт — номер, что выписано и срок контроля. По сроку приложение напомнит: в начале окна и в последний день."
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Add a prescription — the number, what was prescribed and the follow-up window. The app will remind you: at the start of the window and on the last day."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Crée une ordonnance — le numéro, ce qui est prescrit et la fenêtre de contrôle. L'app rappellera : au début de la fenêtre et le dernier jour."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Заведи рецепт — номер, що виписано і термін контролю. За терміном застосунок нагадає: на початку вікна і в останній день."
+          }
         }
       }
     },
@@ -23261,6 +24561,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Заведи тех, кто тоже за ней ходит: совладельца, ситтера, ребёнка или врача. Роль и права выбираешь ты."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Add the people who also look after her: a co-owner, a sitter, a child or your vet. You choose the role and the rights."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ajoute ceux qui s'occupent aussi de lui : un copropriétaire, un pet-sitter, un enfant ou le vétérinaire. Tu choisis le rôle et les droits."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Заведи тих, хто теж за нею ходить: співвласника, доглядача, дитину або лікаря. Роль і права обираєш ти."
           }
         }
       }
@@ -23423,6 +24741,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "заключение"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "conclusion"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "conclusion"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "висновок"
           }
         }
       }
@@ -24140,6 +25476,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Занятие не удалилось · попробуй ещё раз"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The session wasn't deleted · try again"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "La séance n'a pas été supprimée · réessaie"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Заняття не видалилося · спробуй ще раз"
           }
         }
       }
@@ -26167,6 +27521,24 @@
             "state" : "translated",
             "value" : "Записывать в этот дневник тебе не разрешено. Открой Togo, вкладку «Семья», и нажми «Это я»."
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "You're not allowed to write in this diary. Open Togo, the “Family” tab, and tap “That's me”."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tu n'as pas le droit d'écrire dans ce carnet. Ouvre Togo, l'onglet « Famille », et appuie sur « C'est moi »."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Записувати в цей щоденник тобі не дозволено. Відкрий Togo, вкладку «Сім'я», і натисни «Це я»."
+          }
         }
       }
     },
@@ -26382,6 +27754,24 @@
             "state" : "translated",
             "value" : "Запиши осмотр или консультацию — дата, врач и заключение. Они войдут в отчёт врачу и останутся, даже когда курс закончится."
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Note an examination or a consultation — the date, the vet and the conclusion. They go into the vet report and stay there after the course ends."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Note un examen ou une consultation — la date, le vétérinaire et la conclusion. Ils entreront dans le compte rendu véto et y resteront après la fin du traitement."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Запиши огляд або консультацію — дата, лікар і висновок. Вони увійдуть у звіт лікарю і залишаться, навіть коли курс закінчиться."
+          }
         }
       }
     },
@@ -26393,6 +27783,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Запиши, что предполагает врач и на чём это основано. Рабочая гипотеза — тоже запись: по ней видно, почему лечение именно такое."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Note what your vet suspects and what it rests on. A working hypothesis is an entry too: it shows why the treatment is what it is."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Note ce que suppose le vétérinaire et sur quoi il s'appuie. Une hypothèse de travail est aussi une note : elle montre pourquoi le traitement est celui-là."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Запиши, що припускає лікар і на чому це ґрунтується. Робоча гіпотеза — теж запис: за нею видно, чому лікування саме таке."
           }
         }
       }
@@ -26676,6 +28084,24 @@
             "state" : "translated",
             "value" : "здесь"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "here"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ici"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "тут"
+          }
         }
       }
     },
@@ -26874,6 +28300,24 @@
             "state" : "translated",
             "value" : "значение"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "value"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "valeur"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "значення"
+          }
         }
       }
     },
@@ -26885,6 +28329,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "значения нет"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "no value"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "pas de valeur"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "значення немає"
           }
         }
       }
@@ -27908,6 +29370,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "инструкция"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "instructions"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "notice"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "інструкція"
           }
         }
       }
@@ -29383,6 +30863,24 @@
             "state" : "translated",
             "value" : "Кем"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "By whom"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Par qui"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ким"
+          }
         }
       }
     },
@@ -29935,6 +31433,24 @@
             "state" : "translated",
             "value" : "Когда и где"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "When and where"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Quand et où"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Коли і де"
+          }
         }
       }
     },
@@ -30036,6 +31552,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Когда поставлен"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "When it was made"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Quand il a été posé"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Коли поставлено"
           }
         }
       }
@@ -30507,6 +32041,24 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
+            "value" : "контроль через"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "follow-up in"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "contrôle dans"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
             "value" : "контроль через"
           }
         }
@@ -31189,6 +32741,24 @@
             "state" : "translated",
             "value" : "Кочубина"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kochubina"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kotchoubina"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Кочубіна"
+          }
         }
       }
     },
@@ -31446,6 +33016,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "кто назначил"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "who prescribed it"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "qui l'a prescrit"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "хто призначив"
           }
         }
       }
@@ -31980,6 +33568,24 @@
             "state" : "translated",
             "value" : "Лаборатория"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Laboratory"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Laboratoire"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Лабораторія"
+          }
         }
       }
     },
@@ -32360,6 +33966,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "лечения в тот день не было"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "no treatment that day"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "pas de traitement ce jour-là"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "лікування того дня не було"
           }
         }
       }
@@ -33145,6 +34769,24 @@
             "state" : "translated",
             "value" : "мг"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "mg"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "mg"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "мг"
+          }
         }
       }
     },
@@ -33156,6 +34798,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "мг/сут"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "mg/day"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "mg/jour"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "мг/добу"
           }
         }
       }
@@ -33390,6 +35050,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Меня позвали в семью"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "I was invited to a family"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "On m'a invité dans une famille"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Мене покликали в сім'ю"
           }
         }
       }
@@ -33859,6 +35537,24 @@
             "state" : "translated",
             "value" : "мкг"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "mcg"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "µg"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "мкг"
+          }
         }
       }
     },
@@ -33870,6 +35566,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "мкг/сут"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "mcg/day"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "µg/jour"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "мкг/добу"
           }
         }
       }
@@ -33942,6 +35656,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Можно дать на улице"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Can be given outdoors"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Peut être donné dehors"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Можна дати надворі"
           }
         }
       }
@@ -34681,6 +36413,24 @@
             "state" : "translated",
             "value" : "на чём основано"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "what it rests on"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "sur quoi cela repose"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "на чому ґрунтується"
+          }
         }
       }
     },
@@ -35275,6 +37025,24 @@
             "state" : "translated",
             "value" : "Назначений пока нет"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "No prescriptions yet"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pas encore d'ordonnances"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Призначень поки немає"
+          }
         }
       }
     },
@@ -35406,6 +37174,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "нанести между лопатками, не купать 24 ч"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "apply between the shoulder blades, no bathing for 24 h"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "appliquer entre les omoplates, ne pas baigner pendant 24 h"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "нанести між лопатками, не купати 24 год"
           }
         }
       }
@@ -36115,6 +37901,24 @@
             "state" : "translated",
             "value" : "нг/дл"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ng/dL"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ng/dL"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "нг/дл"
+          }
         }
       }
     },
@@ -36125,6 +37929,24 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
+            "value" : "не CKError"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "not a CKError"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "pas une CKError"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
             "value" : "не CKError"
           }
         }
@@ -36400,6 +38222,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "не записан в этот день"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "not recorded that day"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "non noté ce jour-là"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "не записано того дня"
           }
         }
       }
@@ -37093,6 +38933,24 @@
             "state" : "translated",
             "value" : "Не подставляем сам: рецепт часто заводят задним числом, а вес с тех пор изменился. Сегодняшний — в подсказке."
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "We don't fill it in for you: prescriptions are often added after the fact, and the weight has changed since. Today's is in the hint."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nous ne le remplissons pas à ta place : une ordonnance se saisit souvent après coup, et le poids a changé depuis. Celui d'aujourd'hui est dans l'indication."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Не підставляємо самі: рецепт часто заводять заднім числом, а вага відтоді змінилася. Сьогоднішня — у підказці."
+          }
         }
       }
     },
@@ -37447,6 +39305,24 @@
             "state" : "translated",
             "value" : "Не сохранилось · нажми «Сохранить анализ» ещё раз"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Not saved · tap “Save lab” again"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Non enregistré · appuie encore sur « Enregistrer l'analyse »"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Не збереглося · натисни «Зберегти аналіз» ще раз"
+          }
         }
       }
     },
@@ -37458,6 +39334,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Не сохранилось · нажми «Сохранить» ещё раз"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Not saved · tap “Save” again"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Non enregistré · appuie encore sur « Enregistrer »"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Не збереглося · натисни «Зберегти» ще раз"
           }
         }
       }
@@ -37471,6 +39365,24 @@
             "state" : "translated",
             "value" : "Не сохранилось · нажми ещё раз"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Not saved · tap again"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Non enregistré · appuie encore"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Не збереглося · натисни ще раз"
+          }
         }
       }
     },
@@ -37482,6 +39394,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Не сохранилось · попробуй ещё раз"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Not saved · try again"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Non enregistré · réessaie"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Не збереглося · спробуй ще раз"
           }
         }
       }
@@ -37614,6 +39544,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Не удалилось · проверь после перезапуска"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Not deleted · check after a restart"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Non supprimé · vérifie après un redémarrage"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Не видалилося · перевір після перезапуску"
           }
         }
       }
@@ -38327,6 +40275,24 @@
             "state" : "translated",
             "value" : "нетiCloud"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "noiCloud"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "pasiCloud"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "немаєiCloud"
+          }
         }
       }
     },
@@ -38338,6 +40304,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "нетСети"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "noNetwork"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "pasDeRéseau"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "немаєМережі"
           }
         }
       }
@@ -38500,6 +40484,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "низ нормы"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "lower limit"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "limite basse"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "низ норми"
           }
         }
       }
@@ -38789,6 +40791,24 @@
             "state" : "translated",
             "value" : "Новое назначение"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "New prescription"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nouvelle ordonnance"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Нове призначення"
+          }
         }
       }
     },
@@ -38861,6 +40881,24 @@
             "state" : "translated",
             "value" : "Новый визит"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "New visit"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nouvelle visite"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Новий візит"
+          }
         }
       }
     },
@@ -38872,6 +40910,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Новый диагноз"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "New diagnosis"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nouveau diagnostic"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Новий діагноз"
           }
         }
       }
@@ -38975,6 +41031,24 @@
             "state" : "translated",
             "value" : "Номер"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Number"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Numéro"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Номер"
+          }
         }
       }
     },
@@ -38985,6 +41059,24 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
+            "value" : "Номер бланка"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Form number"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Numéro de fiche"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
             "value" : "Номер бланка"
           }
         }
@@ -38999,6 +41091,24 @@
             "state" : "translated",
             "value" : "Номер для аптеки"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Number for the pharmacy"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Numéro pour la pharmacie"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Номер для аптеки"
+          }
         }
       }
     },
@@ -39011,6 +41121,24 @@
             "state" : "translated",
             "value" : "Номер нужен в аптеке — он же стоит первым в списке."
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The pharmacy needs the number — it's also what comes first in the list."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "La pharmacie a besoin du numéro — c'est aussi lui qui vient en premier dans la liste."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Номер потрібен в аптеці — він же стоїть першим у списку."
+          }
         }
       }
     },
@@ -39022,6 +41150,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Номер связывает строки одного бланка между собой — в списке они встанут вместе."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The number ties the lines of one form together — they'll stand together in the list."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le numéro relie entre elles les lignes d'une même fiche — elles apparaîtront groupées dans la liste."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Номер пов'язує рядки одного бланка між собою — у списку вони стануть разом."
           }
         }
       }
@@ -39353,6 +41499,24 @@
             "state" : "translated",
             "value" : "Норма до"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Range to"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Intervalle jusqu'à"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Норма до"
+          }
         }
       }
     },
@@ -39394,6 +41558,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Норма от"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Range from"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Intervalle à partir de"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Норма від"
           }
         }
       }
@@ -39496,6 +41678,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Норму приложение не подставляет: нет на бланке — скажет «норма не указана». Отклонение считается, а не вводится."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The app doesn't fill the range in for you: if it isn't on the form, it will say “range not given”. The deviation is calculated, not typed."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L'app ne remplit pas l'intervalle : s'il n'est pas sur la fiche, elle dira « intervalle non indiqué ». L'écart est calculé, pas saisi."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Норму застосунок не підставляє: немає на бланку — скаже «норму не вказано». Відхилення рахується, а не вводиться."
           }
         }
       }
@@ -39659,6 +41859,24 @@
             "state" : "translated",
             "value" : "Нужен iCloud на телефоне"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "iCloud is needed on the phone"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "iCloud est nécessaire sur le téléphone"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Потрібен iCloud на телефоні"
+          }
         }
       }
     },
@@ -39723,6 +41941,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Нужно графику: по силе таблетки видно, росла ли доза. Можно оставить пустым — тогда график покажет анализы без дозы и скажет об этом."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The chart needs it: the tablet strength shows whether the dose went up. You can leave it empty — then the chart will show labs without a dose and say so."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le graphique en a besoin : le dosage du comprimé montre si la dose a augmenté. Tu peux laisser vide — le graphique affichera alors les analyses sans dose et le signalera."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Потрібно графіку: за силою таблетки видно, чи зростала доза. Можна лишити порожнім — тоді графік покаже аналізи без дози і скаже про це."
           }
         }
       }
@@ -39913,6 +42149,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "обменом"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "by sharing"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "par partage"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "обміном"
           }
         }
       }
@@ -40816,6 +43070,24 @@
             "state" : "translated",
             "value" : "Окно контроля"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Follow-up window"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Fenêtre de contrôle"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Вікно контролю"
+          }
         }
       }
     },
@@ -41200,6 +43472,24 @@
             "state" : "translated",
             "value" : "Онлайн-консультация — такой же визит: он тоже попадает в отчёт врачу."
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "An online consultation is a visit too: it also goes into the vet report."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Une téléconsultation est une visite comme une autre : elle entre aussi dans le compte rendu véto."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Онлайн-консультація — такий самий візит: він теж потрапляє у звіт лікарю."
+          }
         }
       }
     },
@@ -41353,7 +43643,26 @@
       }
     },
     "остаётся у тебя · %lld" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "stays with you · %lld"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "reste chez toi · %lld"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "лишається в тебе · %lld"
+          }
+        }
+      }
     },
     "осталось" : {
       "comment" : "todayCard",
@@ -41594,6 +43903,24 @@
             "state" : "new",
             "value" : "ось дозы — %1$@; наибольшая %2$@"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "dose axis — %@; highest %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "axe des doses — %@ ; la plus haute %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "вісь дози — %@; найбільша %@"
+          }
         }
       }
     },
@@ -41665,6 +43992,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "от, недель"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "from, weeks"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "à partir de, semaines"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "від, тижнів"
           }
         }
       }
@@ -41924,6 +44269,24 @@
             "state" : "translated",
             "value" : "отказано"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "denied"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "refusé"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "відмовлено"
+          }
         }
       }
     },
@@ -42097,6 +44460,24 @@
             "state" : "translated",
             "value" : "Отклонение приложение считает само по норме с бланка. Нормы нет — так и скажет: «норма не указана», а не «в норме»."
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The app works out the deviation itself from the range on the form. No range — it will say exactly that: “range not given”, not “normal”."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L'app calcule elle-même l'écart à partir de l'intervalle de la fiche. Pas d'intervalle — elle le dira : « intervalle non indiqué », et non « dans la norme »."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Відхилення застосунок рахує сам за нормою з бланка. Норми немає — так і скаже: «норму не вказано», а не «у нормі»."
+          }
         }
       }
     },
@@ -42228,6 +44609,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Открой ссылку из сообщения"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Open the link from the message"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ouvre le lien du message"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Відкрий посилання з повідомлення"
           }
         }
       }
@@ -42613,6 +45012,24 @@
             "state" : "translated",
             "value" : "Откуда взято"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Where it came from"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "D'où ça vient"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Звідки взято"
+          }
         }
       }
     },
@@ -42750,6 +45167,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Отмена не сохранилась · попробуй ещё раз"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The undo wasn't saved · try again"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L'annulation n'a pas été enregistrée · réessaie"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Скасування не збереглося · спробуй ще раз"
           }
         }
       }
@@ -44983,6 +47418,24 @@
             "state" : "translated",
             "value" : "Передавать некому: в семье нет второго человека, которому можно давать дозу. Смена останется твоей."
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "There's no one to hand over to: the family has no second person who can give the dose. The shift stays yours."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Personne à qui passer le relais : la famille n'a pas de deuxième personne pouvant donner la dose. Le tour reste le tien."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Передавати нікому: у сім'ї немає другої людини, якій можна давати дозу. Зміна лишиться твоєю."
+          }
         }
       }
     },
@@ -45584,6 +48037,24 @@
             "state" : "translated",
             "value" : "Период"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Period"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Période"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Період"
+          }
         }
       }
     },
@@ -45848,6 +48319,24 @@
             "state" : "translated",
             "value" : "плакат-главный"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "poster-main"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "affiche-principale"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "плакат-головний"
+          }
         }
       }
     },
@@ -45947,6 +48436,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "плитка «реакция»"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "“reaction” tile"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "tuile « réaction »"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "плитка «реакція»"
           }
         }
       }
@@ -46077,6 +48584,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "по датам"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "by date"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "par date"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "за датами"
           }
         }
       }
@@ -46231,6 +48756,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "по нему видно, сколько прошло от таблетки до забора"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "it shows how long passed from the tablet to the sample"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "il montre le temps écoulé entre le comprimé et le prélèvement"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "за ним видно, скільки минуло від таблетки до забору"
           }
         }
       }
@@ -46445,6 +48988,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Повод"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Reason"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Motif"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Привід"
           }
         }
       }
@@ -48036,6 +50597,24 @@
             "state" : "translated",
             "value" : "Пока ссылку не открыли, дневник остаётся только на этом телефоне."
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Until the link is opened, the diary stays on this phone only."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tant que le lien n'est pas ouvert, le carnet reste uniquement sur ce téléphone."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Поки посилання не відкрили, щоденник лишається тільки на цьому телефоні."
+          }
         }
       }
     },
@@ -48130,6 +50709,24 @@
             "state" : "translated",
             "value" : "Показатели"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Markers"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Paramètres"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Показники"
+          }
         }
       }
     },
@@ -48178,6 +50775,24 @@
             "state" : "translated",
             "value" : "показатель не указан"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "marker not given"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "paramètre non indiqué"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "показник не вказано"
+          }
         }
       }
     },
@@ -48189,6 +50804,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Показать в аптеке"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Show at the pharmacy"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Montrer à la pharmacie"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Показати в аптеці"
           }
         }
       }
@@ -48646,6 +51279,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Полоса — норма с бланка. Форма точки — время забора: круг — часы от дозы известны, крест — не записаны, квадрат — лечения в тот день не было."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The band is the range from the form. The point shape is the sample time: a circle — hours since the dose are known, a cross — not recorded, a square — there was no treatment that day."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "La bande est l'intervalle de la fiche. La forme du point indique l'heure du prélèvement : cercle — les heures depuis la dose sont connues, croix — non notées, carré — pas de traitement ce jour-là."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Смуга — норма з бланка. Форма точки — час забору: коло — години від дози відомі, хрест — не записані, квадрат — лікування того дня не було."
           }
         }
       }
@@ -50009,6 +52660,24 @@
             "state" : "translated",
             "value" : "После приёма"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "After the dose"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Après la prise"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Після прийому"
+          }
         }
       }
     },
@@ -50326,6 +52995,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Посмотреть онбординг как новый"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "View onboarding as new"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Revoir l'intro comme au premier lancement"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Переглянути онбординг як новий"
           }
         }
       }
@@ -51123,6 +53810,24 @@
             "state" : "translated",
             "value" : "Право есть и вход в Apple ID есть, а библиотека не открылась — записи сейчас только на этом телефоне и в iCloud не уезжают. Перезапусти приложение; не поможет — сохрани файл и напиши в поддержку."
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The entitlement is there and you're signed in to Apple ID, but the library didn't open — your entries are on this phone only right now and aren't going to iCloud. Restart the app; if that doesn't help, save the file and write to support."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le droit est là et la connexion à l'identifiant Apple aussi, mais la bibliothèque ne s'est pas ouverte — tes notes sont pour l'instant uniquement sur ce téléphone et ne partent pas vers iCloud. Redémarre l'app ; si cela ne suffit pas, enregistre le fichier et écris au support."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Право є і вхід в Apple ID є, а бібліотека не відкрилася — записи зараз тільки на цьому телефоні й в iCloud не їдуть. Перезапусти застосунок; не допоможе — збережи файл і напиши в підтримку."
+          }
         }
       }
     },
@@ -51373,6 +54078,24 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
+            "value" : "Препарат"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Medicine"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Médicament"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
             "value" : "Препарат"
           }
         }
@@ -51872,6 +54595,24 @@
             "state" : "translated",
             "value" : "Приглашать третьего человека"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Invite a third person"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inviter une troisième personne"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Запрошувати третю людину"
+          }
         }
       }
     },
@@ -51950,6 +54691,24 @@
             "state" : "translated",
             "value" : "Приглашение не открылось, и дело не в твоих настройках — это на нашей стороне. Напиши нам, пожалуйста."
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The invitation didn't open, and it's not your settings — it's on our side. Please write to us."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L'invitation ne s'est pas ouverte, et ce ne sont pas tes réglages — c'est de notre côté. Écris-nous, s'il te plaît."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Запрошення не відкрилося, і річ не в твоїх налаштуваннях — це на нашому боці. Напиши нам, будь ласка."
+          }
         }
       }
     },
@@ -51961,6 +54720,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Приглашение не открылось, и мы не знаем почему. Попробуй ещё раз; если повторится — напиши нам."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The invitation didn't open and we don't know why. Try again; if it happens again, write to us."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L'invitation ne s'est pas ouverte et nous ignorons pourquoi. Réessaie ; si cela se reproduit, écris-nous."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Запрошення не відкрилося, і ми не знаємо чому. Спробуй ще раз; якщо повториться — напиши нам."
           }
         }
       }
@@ -51974,6 +54751,24 @@
             "state" : "translated",
             "value" : "Приглашение не открылось: на телефоне не выполнен вход в iCloud. Войди и нажми ссылку снова."
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The invitation didn't open: this phone isn't signed in to iCloud. Sign in and tap the link again."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L'invitation ne s'est pas ouverte : ce téléphone n'est pas connecté à iCloud. Connecte-toi et appuie de nouveau sur le lien."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Запрошення не відкрилося: на телефоні не виконано вхід в iCloud. Увійди і натисни посилання знову."
+          }
         }
       }
     },
@@ -51985,6 +54780,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Приглашение не открылось: нет связи. Попробуй ещё раз, когда появится интернет."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The invitation didn't open: no connection. Try again when you're back online."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L'invitation ne s'est pas ouverte : pas de connexion. Réessaie quand tu auras internet."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Запрошення не відкрилося: немає зв'язку. Спробуй ще раз, коли з'явиться інтернет."
           }
         }
       }
@@ -52228,6 +55041,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "приехала обменом"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "arrived by sharing"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "arrivée par partage"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "приїхала обміном"
           }
         }
       }
@@ -52480,6 +55311,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Приложение не спрашивает ссылку — её открывают в переписке, и дальше всё делает телефон."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The app doesn't ask for the link — you open it in the chat, and the phone does the rest."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L'app ne demande pas le lien — on l'ouvre dans la conversation, et le téléphone fait le reste."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Застосунок не питає посилання — його відкривають у листуванні, і далі все робить телефон."
           }
         }
       }
@@ -53018,6 +55867,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "причина не названа"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "no reason given"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "raison non indiquée"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "причину не названо"
           }
         }
       }
@@ -54424,6 +57291,24 @@
             "state" : "translated",
             "value" : "Рабочая гипотеза — полноценная запись. Снять её потом можно, стереть — нет: по ней видно, почему лечение было таким."
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "A working hypothesis is a full entry. You can resolve it later, but not erase it: it shows why the treatment was what it was."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Une hypothèse de travail est une note à part entière. On peut la lever plus tard, mais pas l'effacer : elle montre pourquoi le traitement était celui-là."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Робоча гіпотеза — повноцінний запис. Зняти її потім можна, стерти — ні: за нею видно, чому лікування було таким."
+          }
         }
       }
     },
@@ -54616,6 +57501,24 @@
             "state" : "translated",
             "value" : "Раздел"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Section"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Rubrique"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Розділ"
+          }
         }
       }
     },
@@ -54717,6 +57620,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "разрешено"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "allowed"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "autorisé"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "дозволено"
           }
         }
       }
@@ -55486,6 +58407,24 @@
             "state" : "translated",
             "value" : "результат словами"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "result in words"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "résultat en toutes lettres"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "результат словами"
+          }
         }
       }
     },
@@ -55496,6 +58435,24 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
+            "value" : "рецепт без номера"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "prescription without a number"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ordonnance sans numéro"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
             "value" : "рецепт без номера"
           }
         }
@@ -55569,6 +58526,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Рисовать пока нечего"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nothing to plot yet"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Rien à tracer pour l'instant"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Малювати поки нічого"
           }
         }
       }
@@ -56214,6 +59189,24 @@
             "state" : "translated",
             "value" : "сам"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "on your own"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "soi-même"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "сам"
+          }
         }
       }
     },
@@ -56656,6 +59649,24 @@
             "state" : "translated",
             "value" : "своё"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "your own"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "le tien"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "своє"
+          }
         }
       }
     },
@@ -56728,6 +59739,24 @@
             "state" : "translated",
             "value" : "свой"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "yours"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "le tien"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "свій"
+          }
         }
       }
     },
@@ -56769,6 +59798,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Свою собаку заводить не нужно — она появится сама, вместе с записями того, кто позвал."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "You don't need to add your own dog — she'll appear on her own, together with the entries of whoever invited you."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inutile d'ajouter ton propre chien — il apparaîtra tout seul, avec les notes de celui qui t'a invité."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Свою собаку заводити не потрібно — вона з'явиться сама, разом із записами того, хто покликав."
           }
         }
       }
@@ -57073,6 +60120,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "себя в списке семьи не нашли — права наблюдателя"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "we didn't find you in the family list — viewer rights"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "nous ne t'avons pas trouvé dans la liste de la famille — droits d'observateur"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "себе в списку сім'ї не знайшли — права спостерігача"
           }
         }
       }
@@ -57832,6 +60897,24 @@
             "state" : "translated",
             "value" : "система ещё не спрашивала"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "the system hasn't asked yet"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "le système n'a pas encore demandé"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "система ще не питала"
+          }
         }
       }
     },
@@ -58030,6 +61113,24 @@
             "state" : "translated",
             "value" : "сколько вещества в одной единице"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "how much substance is in one unit"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "quelle quantité de substance dans une unité"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "скільки речовини в одній одиниці"
+          }
         }
       }
     },
@@ -58041,6 +61142,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Сколько давать"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "How much to give"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Quelle quantité donner"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Скільки давати"
           }
         }
       }
@@ -58203,6 +61322,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "сколько строк на бланке, столько и добавь"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "add as many lines as there are on the form"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ajoute autant de lignes qu'il y en a sur la fiche"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "скільки рядків на бланку, стільки й додай"
           }
         }
       }
@@ -58520,6 +61657,24 @@
             "state" : "new",
             "value" : "Следующая по схеме — в %1$@, через %2$@. Схема не сдвигается."
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Next on the plan — at %@, in %@. The plan doesn't shift."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Prochaine selon le plan — à %@, dans %@. Le plan ne bouge pas."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Наступна за схемою — о %@, через %@. Схема не зсувається."
+          }
         }
       }
     },
@@ -58529,6 +61684,24 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Следующая по схеме — в %1$@, через %2$@. Это ближе обычного: схема не сдвигается."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Next on the plan — at %@, in %@. That's sooner than usual: the plan doesn't shift."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Prochaine selon le plan — à %@, dans %@. C'est plus tôt que d'habitude : le plan ne bouge pas."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Наступна за схемою — о %@, через %@. Це ближче за звичайне: схема не зсувається."
           }
         }
       }
@@ -58721,6 +61894,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Следующий шаг не завёлся · попробуй ещё раз"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The next step wasn't created · try again"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L'étape suivante n'a pas été créée · réessaie"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Наступний крок не завівся · спробуй ще раз"
           }
         }
       }
@@ -58944,6 +62135,24 @@
             "state" : "translated",
             "value" : "Снимок не сохранился · попробуй ещё раз"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The photo wasn't saved · try again"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "La photo n'a pas été enregistrée · réessaie"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Знімок не зберігся · спробуй ще раз"
+          }
         }
       }
     },
@@ -58955,6 +62164,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Снимок не удалился · попробуй ещё раз"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The photo wasn't deleted · try again"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "La photo n'a pas été supprimée · réessaie"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Знімок не видалився · спробуй ще раз"
           }
         }
       }
@@ -59064,6 +62291,24 @@
             "state" : "translated",
             "value" : "Снятый диагноз остаётся в списке и в отчёте: он объясняет, почему лечили именно так."
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "A resolved diagnosis stays in the list and in the report: it explains why the treatment was what it was."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Un diagnostic levé reste dans la liste et dans le compte rendu : il explique pourquoi le traitement a été celui-là."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Знятий діагноз лишається в списку і у звіті: він пояснює, чому лікували саме так."
+          }
         }
       }
     },
@@ -59075,6 +62320,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Снять диагноз"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Resolve diagnosis"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lever le diagnostic"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Зняти діагноз"
           }
         }
       }
@@ -60096,6 +63359,24 @@
             "state" : "translated",
             "value" : "Сохранить анализ"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Save lab"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Enregistrer l'analyse"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Зберегти аналіз"
+          }
         }
       }
     },
@@ -60107,6 +63388,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Сохранить без времени?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Save without a time?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Enregistrer sans heure ?"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Зберегти без часу?"
           }
         }
       }
@@ -60209,6 +63508,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Сохранить так"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Save as is"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Enregistrer ainsi"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Зберегти так"
           }
         }
       }
@@ -60736,6 +64053,24 @@
             "state" : "translated",
             "value" : "Сравнивать пока не с чем"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nothing to compare with yet"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Rien à comparer pour l'instant"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Порівнювати поки немає з чим"
+          }
         }
       }
     },
@@ -60956,6 +64291,24 @@
             "state" : "translated",
             "value" : "Срок контроля"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Follow-up window"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Échéance de contrôle"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Термін контролю"
+          }
         }
       }
     },
@@ -60968,6 +64321,24 @@
             "state" : "translated",
             "value" : "срок контроля — главное поле: по нему приложение напомнит"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "the follow-up window is the key field: the app reminds you by it"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "l'échéance de contrôle est le champ principal : c'est par elle que l'app rappelle"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "термін контролю — головне поле: за ним застосунок нагадає"
+          }
         }
       }
     },
@@ -60979,6 +64350,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Срок контроля — диапазоном, а не датой: три врача называют три разных интервала, и выбирать за них приложение не будет. Напомним в начале окна и в последний день."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The follow-up window is a range, not a date: three vets name three different intervals, and the app won't choose for them. We'll remind you at the start of the window and on the last day."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L'échéance de contrôle est une plage, pas une date : trois vétérinaires donnent trois intervalles différents, et l'app ne choisira pas à leur place. Nous rappellerons au début de la fenêtre et le dernier jour."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Термін контролю — діапазоном, а не датою: три лікарі називають три різні інтервали, і обирати за них застосунок не буде. Нагадаємо на початку вікна і в останній день."
           }
         }
       }
@@ -61370,6 +64759,24 @@
             "state" : "translated",
             "value" : "Ссылки нет? Попроси прислать её заново — приглашение отправляют из Togo: «Семья» → «Позвать в дневник»."
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "No link? Ask for it again — the invitation is sent from Togo: “Family” → “Invite to the diary”."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pas de lien ? Demande qu'on te le renvoie — l'invitation s'envoie depuis Togo : « Famille » → « Inviter dans le carnet »."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Посилання немає? Попроси надіслати його знову — запрошення відправляють із Togo: «Сім'я» → «Покликати в щоденник»."
+          }
         }
       }
     },
@@ -61440,6 +64847,24 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
+            "value" : "Статус"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Status"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Statut"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
             "value" : "Статус"
           }
         }
@@ -61646,6 +65071,24 @@
             "state" : "translated",
             "value" : "сторонаПриложения"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "appSide"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "côtéApplication"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "сторонаЗастосунку"
+          }
         }
       }
     },
@@ -61694,6 +65137,24 @@
             "state" : "translated",
             "value" : "строка бланка"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "form line"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ligne de fiche"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "рядок бланка"
+          }
         }
       }
     },
@@ -61735,6 +65196,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Строка уйдёт из списка и из отчёта врачу. Остальные строки этого бланка останутся."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The line will leave the list and the vet report. The other lines of this form stay."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "La ligne quittera la liste et le compte rendu véto. Les autres lignes de cette fiche restent."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Рядок зникне зі списку і зі звіту лікарю. Решта рядків цього бланка залишаться."
           }
         }
       }
@@ -62216,6 +65695,24 @@
             "state" : "translated",
             "value" : "Схема"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Plan"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Plan"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Схема"
+          }
         }
       }
     },
@@ -62287,6 +65784,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "схемы лечения в тот день не было"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "there was no treatment plan that day"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "il n'y avait pas de plan de traitement ce jour-là"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "схеми лікування того дня не було"
           }
         }
       }
@@ -62671,6 +66186,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "т4"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "T4"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "T4"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Т4"
           }
         }
       }
@@ -63110,6 +66643,24 @@
             "state" : "translated",
             "value" : "те, кто уже в семье, остаются с прежними правами"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "those already in the family keep their current rights"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ceux qui sont déjà dans la famille gardent leurs droits actuels"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ті, хто вже в сім'ї, лишаються з попередніми правами"
+          }
         }
       }
     },
@@ -63122,6 +66673,24 @@
             "state" : "translated",
             "value" : "Тебя позвали"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "You've been invited"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "On t'a invité"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Тебе покликали"
+          }
         }
       }
     },
@@ -63132,6 +66701,24 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
+            "value" : "текст"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "text"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "texte"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
             "value" : "текст"
           }
         }
@@ -63325,6 +66912,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "тёмная плитка прогулки"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "dark walk tile"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "tuile promenade sombre"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "темна плитка прогулянки"
           }
         }
       }
@@ -63853,6 +67458,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Точки сняты в разное время после дозы — такие значения рядом не сравнивают без оговорки. Время забора у каждой строки выше."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The points were taken at different times after the dose — such values aren't compared side by side without a caveat. The sample time for each line is above."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Les points ont été prélevés à des moments différents après la dose — on ne compare pas de telles valeurs côte à côte sans réserve. L'heure du prélèvement de chaque ligne figure plus haut."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Точки зняті в різний час після дози — такі значення поряд не порівнюють без застереження. Час забору в кожного рядка вище."
           }
         }
       }
@@ -65076,6 +68699,24 @@
             "state" : "translated",
             "value" : "Убрать строку"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Remove line"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Retirer la ligne"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Прибрати рядок"
+          }
         }
       }
     },
@@ -65154,6 +68795,24 @@
             "state" : "translated",
             "value" : "Удаление не сохранилось · попробуй ещё раз"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The deletion wasn't saved · try again"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "La suppression n'a pas été enregistrée · réessaie"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Видалення не збереглося · спробуй ще раз"
+          }
         }
       }
     },
@@ -65225,6 +68884,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Удаление уберёт запись из отчёта врачу. «Снять» оставит её в истории — обычно нужно именно это."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Deleting removes the entry from the vet report. “Resolve” keeps it in the history — that's usually what you want."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Supprimer retire la note du compte rendu véto. « Lever » la garde dans l'historique — c'est généralement ce qu'il faut."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Видалення прибере запис зі звіту лікарю. «Зняти» лишить його в історії — зазвичай потрібно саме це."
           }
         }
       }
@@ -65514,6 +69191,24 @@
             "state" : "translated",
             "value" : "Удалить визит"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Delete visit"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Supprimer la visite"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Видалити візит"
+          }
         }
       }
     },
@@ -65525,6 +69220,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Удалить визит?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Delete the visit?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Supprimer la visite ?"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Видалити візит?"
           }
         }
       }
@@ -65634,6 +69347,24 @@
             "state" : "translated",
             "value" : "Удалить диагноз"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Delete diagnosis"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Supprimer le diagnostic"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Видалити діагноз"
+          }
         }
       }
     },
@@ -65645,6 +69376,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Удалить диагноз?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Delete the diagnosis?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Supprimer le diagnostic ?"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Видалити діагноз?"
           }
         }
       }
@@ -65748,6 +69497,24 @@
             "state" : "translated",
             "value" : "Удалить назначение"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Delete prescription"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Supprimer l'ordonnance"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Видалити призначення"
+          }
         }
       }
     },
@@ -65759,6 +69526,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Удалить назначение?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Delete the prescription?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Supprimer l'ordonnance ?"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Видалити призначення?"
           }
         }
       }
@@ -66058,6 +69843,24 @@
             "state" : "translated",
             "value" : "Удалить строку"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Delete line"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Supprimer la ligne"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Видалити рядок"
+          }
         }
       }
     },
@@ -66069,6 +69872,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Удалить строку?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Delete the line?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Supprimer la ligne ?"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Видалити рядок?"
           }
         }
       }
@@ -66434,6 +70255,24 @@
             "state" : "translated",
             "value" : "Указать время"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Set a time"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Indiquer l'heure"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Вказати час"
+          }
         }
       }
     },
@@ -66787,6 +70626,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "утром натощак"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "in the morning on an empty stomach"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "le matin à jeun"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "вранці натщесерце"
           }
         }
       }
@@ -67604,6 +71461,24 @@
             "state" : "translated",
             "value" : "Форма стоит у рецепта, а не у схемы лечения: вопрос обычно ретроспективный — какая форма была в тот месяц, когда что-то пошло не так."
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The form belongs to the prescription, not to the treatment plan: the question is usually retrospective — which form was in use the month something went wrong."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "La forme appartient à l'ordonnance, pas au plan de traitement : la question est généralement rétrospective — quelle forme était utilisée le mois où quelque chose a dérapé."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Форма стоїть у рецепта, а не у схеми лікування: питання зазвичай ретроспективне — яка форма була того місяця, коли щось пішло не так."
+          }
         }
       }
     },
@@ -67698,6 +71573,24 @@
             "state" : "translated",
             "value" : "Формулировка"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Wording"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Formulation"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Формулювання"
+          }
         }
       }
     },
@@ -67709,6 +71602,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "формулировка, статус и на чём основано"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "wording, status and what it rests on"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "formulation, statut et sur quoi cela repose"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "формулювання, статус і на чому ґрунтується"
           }
         }
       }
@@ -68327,6 +72238,24 @@
             "state" : "translated",
             "value" : "Часы от дозы приложение считает само — вводить их не нужно."
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The app works out the hours since the dose itself — you don't need to enter them."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L'app calcule elle-même les heures depuis la dose — inutile de les saisir."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Години від дози застосунок рахує сам — вводити їх не потрібно."
+          }
         }
       }
     },
@@ -68548,6 +72477,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Чей дневник"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Whose diary"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "À qui est le carnet"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Чий щоденник"
           }
         }
       }
@@ -68798,6 +72745,24 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Через %1$@ доза · %2$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dose in %@ · %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dose dans %@ · %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Через %@ доза · %@"
           }
         }
       }
@@ -69055,6 +73020,24 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
+            "value" : "Число"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Number"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Valeur"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
             "value" : "Число"
           }
         }
@@ -69488,6 +73471,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "что выписано"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "what was prescribed"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ce qui est prescrit"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "що виписано"
           }
         }
       }
@@ -70341,6 +74342,24 @@
             "state" : "translated",
             "value" : "что сделать"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "what to do"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "que faire"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "що зробити"
+          }
         }
       }
     },
@@ -70412,6 +74431,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "что сказал врач"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "what the vet said"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ce qu'a dit le vétérinaire"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "що сказав лікар"
           }
         }
       }
@@ -70849,7 +74886,26 @@
       }
     },
     "Шаг %lld из 3" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Step %lld of 3"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Étape %lld sur 3"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Крок %lld з 3"
+          }
+        }
+      }
     },
     "Шаг закрыт, когда получилось 4 раза из 5 в двух занятиях подряд. Тогда меняем одно условие: место, человека или дистанцию — что-то одно." : {
       "comment" : "body",
@@ -70920,6 +74976,24 @@
             "state" : "translated",
             "value" : "Шаг не завёлся · попробуй ещё раз"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The step wasn't created · try again"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L'étape n'a pas été créée · réessaie"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Крок не завівся · спробуй ще раз"
+          }
         }
       }
     },
@@ -70931,6 +75005,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Шаг не удалился · попробуй ещё раз"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The step wasn't deleted · try again"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L'étape n'a pas été supprimée · réessaie"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Крок не видалився · спробуй ще раз"
           }
         }
       }
@@ -71376,6 +75468,24 @@
             "state" : "translated",
             "value" : "Эпизод удалён · записи остались"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Episode deleted · entries kept"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Épisode supprimé · les notes restent"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Епізод видалено · записи лишилися"
+          }
         }
       }
     },
@@ -71447,6 +75557,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Эта сборка без iCloud"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "This build has no iCloud"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Cette version est sans iCloud"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ця збірка без iCloud"
           }
         }
       }
@@ -71969,6 +76097,24 @@
             "state" : "translated",
             "value" : "Это поле отвечает на вопрос «почему так решили» через полгода, когда никто не помнит."
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "This field answers “why was it decided this way” six months later, when nobody remembers."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ce champ répond à la question « pourquoi avoir décidé ainsi » six mois plus tard, quand personne ne s'en souvient."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Це поле відповідає на питання «чому так вирішили» через пів року, коли ніхто не пам'ятає."
+          }
         }
       }
     },
@@ -71981,6 +76127,24 @@
             "state" : "translated",
             "value" : "Это пометка, а не срок: сам доступ по ней не закроется. Убрать человека из семьи нужно руками."
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "It's a note, not a deadline: access won't close by itself. Removing a person from the family is done by hand."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "C'est une note, pas une échéance : l'accès ne se fermera pas tout seul. Retirer une personne de la famille se fait à la main."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Це позначка, а не термін: сам доступ за нею не закриється. Прибрати людину із сім'ї потрібно руками."
+          }
         }
       }
     },
@@ -71992,6 +76156,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Это предел прибора, а не результат. Приложение сохранит его пределом и не выдаст за измеренное число."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "This is the instrument's limit, not a result. The app will store it as a limit and won't pass it off as a measured number."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "C'est la limite de l'appareil, pas un résultat. L'app l'enregistrera comme limite et ne la fera pas passer pour une valeur mesurée."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Це межа приладу, а не результат. Застосунок збереже її межею і не видасть за виміряне число."
           }
         }
       }
@@ -72256,6 +76438,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Эту можно дать на улице"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "This one can be given outdoors"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Celle-ci peut être donnée dehors"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Цю можна дати надворі"
           }
         }
       }
