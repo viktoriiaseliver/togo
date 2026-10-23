@@ -105,15 +105,43 @@ struct BackgroundScreen: View {
 
     // MARK: Свои снимки
 
+    /// **Ярлык `PhotosPicker` — `@Sendable`-замыкание**, и это замер,
+    /// а не осторожность. Сборка схемы 22.10.2026 упала здесь:
+    ///
+    /// ```
+    /// BackgroundScreen.swift:116:39: error: non-Sendable
+    /// 'LocalizedStringKey'-typed result can not be returned from main
+    /// actor-isolated static method 'готовая' to nonisolated context
+    /// ```
+    ///
+    /// `LocalizedStringKey` не `Sendable`, а `.готовая` изолирован
+    /// `MainActor` по умолчанию таргета. Поэтому внутрь замыкания
+    /// уезжает только `String` — он `Sendable`, — а ключ каталога
+    /// строится уже там, системным `init`, у которого изоляции нет.
+    /// `.готовая` остаётся снаружи, где контекст `MainActor`.
+    ///
+    /// > **`-typecheck` из рецепта «собирается ли» этого НЕ ВИДИТ.**
+    /// > Он зовётся без `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor`,
+    /// > а ошибка возникает **именно из-за** этого умолчания: без него
+    /// > `.готовая` неизолирована и законна. Рецепт ответил «чисто»
+    /// > верно — на свой вопрос, и вопрос был не тот. Для всего, что
+    /// > трогает изоляцию, честная проверка одна: **сборка схемы**.
+    ///
+    /// Счёт и оба признака считаются до замыкания ещё и затем, чтобы
+    /// `store` в него не попадал: чтение `MainActor`-свойства оттуда
+    /// даёт предупреждение, которое завтра станет ошибкой.
     private var снимки: some View {
-        Section {
-            if store.сколькоМоих > 0 {
+        let счёт = String(localized: "\(store.сколькоМоих) из \(BackgroundChoice.maxPhotos)")
+        let естьМои = store.сколькоМоих > 0
+        let местоЕсть = store.естьМесто
+        return Section {
+            if естьМои {
                 полоскаСнимков
             }
-            if store.естьМесто {
+            if местоЕсть {
                 PhotosPicker(selection: $picked, matching: .images, photoLibrary: .shared()) {
                     TGListRow(title: "Добавить фото",
-                              value: .готовая(String(localized: "\(store.сколькоМоих) из \(BackgroundChoice.maxPhotos)")),
+                              value: LocalizedStringKey(счёт),
                               systemImage: "photo.badge.plus",
                               accessory: .none,
                               tone: Token.Action.primary)
@@ -122,12 +150,12 @@ struct BackgroundScreen: View {
                 .disabled(кладу)
             } else {
                 TGListRow(title: "Больше пяти не положить",
-                          value: .готовая(String(localized: "\(store.сколькоМоих) из \(BackgroundChoice.maxPhotos)")),
+                          value: .готовая(счёт),
                           systemImage: "photo.badge.plus",
                           accessory: .none,
                           tone: Token.Ink.secondary)
             }
-            if store.сколькоМоих > 0 {
+            if естьМои {
                 Button(role: .destructive) {
                     store.убратьМои()
                     Haptics.warning()
