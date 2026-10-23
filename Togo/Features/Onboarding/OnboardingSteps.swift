@@ -150,10 +150,18 @@ struct DogStep: View {
                         // собаки это триста с лишним нажатий, а такие
                         // собаки у нас в отзывах есть. Шаговик оставлен
                         // для подгонки, ввод — для первого числа.
+                        // `.fixedSize()` — по кадру приёмки 23.10.2026.
+                        // Без него поле жадно забирает всю ширину между
+                        // кнопками, число встаёт по центру, а «кг»
+                        // уезжает к плюсу: на кадре они читались как две
+                        // разные вещи, а не как «4,1 кг». Ширина берётся
+                        // от содержимого, то есть от подсказки, пока
+                        // не введено своё.
                         TextField("4,1", text: $draft.weight)
                             .keyboardType(.decimalPad)
                             .focused($весВФокусе)
-                            .multilineTextAlignment(.center)
+                            .multilineTextAlignment(.trailing)
+                            .fixedSize()
                             .textStyle(AppFont.numeric(Token.FontSize.poster,
                                                        weight: Token.FontWeight.light))
                             .accessibilityLabel("Вес")
@@ -351,6 +359,11 @@ struct ModeStep: View {
                     .foregroundStyle(Token.Ink.secondary)
                     .accessibilityHidden(true)
             }
+            // Воздух по вертикали — по кадру приёмки 23.10.2026: без него
+            // `minHeight` не делает ничего (две строки, 20 + 14, и так
+            // выше сорока четырёх), разделитель прилипает к подчёркнутому
+            // ответу, и три строки читаются как одна слипшаяся.
+            .padding(.vertical, Token.Space.s10)
             .frame(minHeight: Token.Size.tapTarget)
             .contentShape(Rectangle())
         }

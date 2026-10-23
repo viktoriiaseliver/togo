@@ -86,18 +86,44 @@ struct PaywallScreen: View {
                          systemImage: "exclamationmark.triangle")
             }
 
-            legalText
-        } bottom: {
-            TGButton(title: .готовая(buyTitle), isEnabled: selected != nil && !store.isPro) {
-                Task { await buy() }
-            }
-            // «Не сейчас», а не «Закрыть»: в макете это ссылка под
-            // кнопкой, и слово там другое. Отказ от покупки — не выход
-            // с экрана, и называть его надо тем, что человек делает.
-            Button("Не сейчас") { dismiss() }
-                .textStyle(AppFont.bodyEmphasis.color(Token.Ink.link))
-                .frame(maxWidth: .infinity, minHeight: Token.Size.tapTarget)
             восстановление
+            legalText
+        }
+        // **Низ отдан системе, а не слоту `TGScreen`, и это починка
+        // по кадру, а не вкус.** Первый кадр приёмки 23.10.2026
+        // (`Дизайн/кадры-приёмки/редизайн-онбординга-и-pro-23.10/`)
+        // показал белую кнопку поверх абзаца про автопродление
+        // и «Не сейчас» поверх «Политики конфиденциальности»:
+        // у слота `TGScreen` подложки нет вовсе (решение дизайна,
+        // записано в самом каркасе), поэтому содержимое просвечивает
+        // сквозь панель на любом положении прокрутки.
+        //
+        // `safeAreaInset` отдаёт панели настоящую подложку и сам
+        // добавляет отступ в прокрутку, то есть под панель не уходит
+        // ничего и ни при какой прокрутке. Тот же приём уже стоит
+        // в `DogStep` и в ветке повтора `OnboardingFlow` — третьим
+        // местом, а не изобретением.
+        //
+        // Подложку выбирать нельзя произвольно: правовой текст
+        // и «Восстановить покупки» требуются ревью, и если их закрыть
+        // полупрозрачной панелью, отказ придёт не по вёрстке,
+        // а по 3.1.2.
+        .safeAreaInset(edge: .bottom) {
+            VStack(spacing: Token.Space.s8) {
+                TGButton(title: .готовая(buyTitle), isEnabled: selected != nil && !store.isPro) {
+                    Task { await buy() }
+                }
+                // «Не сейчас», а не «Закрыть»: в макете это ссылка под
+                // кнопкой, и слово там другое. Отказ от покупки — не выход
+                // с экрана, и называть его надо тем, что человек делает.
+                Button("Не сейчас") { dismiss() }
+                    .textStyle(AppFont.bodyEmphasis.color(Token.Ink.link))
+                    .frame(maxWidth: .infinity, minHeight: Token.Size.tapTarget)
+            }
+            .padding(.horizontal, Token.Spacing.screenPadding)
+            .padding(.top, Token.Space.s10)
+            .padding(.bottom, Token.Space.s8)
+            .background(.regularMaterial)
         }
         // «Отмена» слева в шапке — ровно как на кадре 17. Второй выход
         // рядом с «Не сейчас» не лишний: шторку закрывают и свайпом,
@@ -272,7 +298,15 @@ struct PaywallScreen: View {
         VStack(alignment: .leading, spacing: Token.Space.s8) {
             Text("Подписка продлевается сама, пока её не отменить — не позже чем за 24 часа до конца периода. Оплата спишется с Apple ID при подтверждении покупки. Отменить можно в настройках App Store.")
                 .textStyle(AppFont.micro.color(Token.Ink.secondary))
-            HStack(spacing: Token.Space.s16) {
+                .wraps()
+            // **Столбиком, а не в строку, и это тоже кадр.** В строку
+            // две ссылки влезают по-английски и не влезают по-русски:
+            // «Политика конфиденциальности» переносится на вторую
+            // строку и наезжает на соседку. У французского и казахского
+            // подписи ещё на четверть длиннее — то есть строка не
+            // «почти помещается», она не помещается нигде, кроме
+            // языка разработки.
+            VStack(alignment: .leading, spacing: Token.Space.s8) {
                 NavigationLink("Условия использования") { TermsScreen() }
                 NavigationLink("Политика конфиденциальности") { PrivacyPolicyScreen() }
             }
