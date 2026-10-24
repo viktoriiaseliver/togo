@@ -326,11 +326,24 @@ private struct CareTaskRow: View {
         .contentShape(Rectangle())
         .onTapGesture(perform: onEdit)
         .accessibilityAction(named: "Поправить", onEdit)
-        .swipeActions(edge: .leading, allowsFullSwipe: false) {
-            if let onSnooze {
-                Button("Потом", action: onSnooze).tint(Token.Status.waitingText)
-            }
-        }
+        // Здесь до 24.10.2026 стоял `.swipeActions(edge: .leading)` с кнопкой
+        // «Потом». Он не срабатывал НИ РАЗУ по устройству: `.swipeActions`
+        // живёт только на строке внутри `List`, а `CareTaskRow` лежит
+        // в `TGCard { ForEach }` (:82–92). `List` в этом файле не встречается
+        // ни разу (замер 24.10.2026: 0 вхождений при контроле
+        // `DayTimelineList.swift` — 9), и попасть в другой контейнер строка
+        // не может: `CareTaskRow` объявлен `private` (:269) и за пределами
+        // файла не конструируется.
+        //
+        // Снято, а не переведено на `List`: перевод ленты на `List` — чужая
+        // раскладка и отдельное решение, у которого есть свой адрес
+        // (`DayTimelineList.swift`, сознательный долг). Записано долгом:
+        // «жест откладывания на экране ухода» ждёт того же решения про `List`.
+        //
+        // Функция при этом НЕ ПОТЕРЯНА: ровно то же действие живёт ниже
+        // через `.accessibilityActions`, и озвучке оно доступно сегодня.
+        // Потерян был только жест — у тех, кто его искал пальцем.
+        //
         // Действие предлагается, только если строку правда можно отложить:
         // пункт в ротере, который ничего не делает, хуже отсутствующего.
         .accessibilityActions {
