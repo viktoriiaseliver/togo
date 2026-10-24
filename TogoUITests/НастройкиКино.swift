@@ -34,7 +34,7 @@ nonisolated final class НастройкиКино: XCTestCase {
 
     private var app: XCUIApplication!
     private var снято: [String] = []
-    private static let всегоКадров = 5
+    private static let всегоКадров = 6
 
     private var каталог: URL {
         URL(fileURLWithPath: #filePath)
@@ -71,6 +71,50 @@ nonisolated final class НастройкиКино: XCTestCase {
         // до самой политики целиком проходит
         // `TodayFlowUITests.testНастройкиСодержатОбязательныеРазделы`.
         подэкран("Правила", бар: "Правила", кадр: "05-правила")
+        переносСCSV()
+    }
+
+    /// Кадр «Переноса» снимается НЕ через `подэкран`, и причина
+    /// не в удобстве: предмет кадра лежит **ниже сгиба**.
+    ///
+    /// CSV — третья карточка экрана (эталон
+    /// `v10-прототип-24.10/screenshots/45-screens.jpg`, строка
+    /// «CSV · 14 столбцов»), а `подэкран` снимает сразу после открытия.
+    /// Кадр верхней части экрана доказал бы, что экран открылся,
+    /// и ничего — про строку, ради которой он снят.
+    ///
+    /// Поэтому строка **сперва ищется**, и только потом щёлкает затвор:
+    /// у нас записано, что «кадр существует, когда он снят и на него
+    /// посмотрели», а кадр без предмета — это кадр, на который смотреть
+    /// нечего.
+    private func переносСCSV() {
+        let строка = app.descendants(matching: .any).matching(
+            NSPredicate(format: "label BEGINSWITH %@", "Перенос и восстановление")
+        ).firstMatch
+        for _ in 0..<10 where !строка.exists { app.swipeUp() }
+        XCTAssertTrue(строка.waitForExistence(timeout: 10),
+                      "в настройках нет строки «Перенос и восстановление»")
+        строка.tap()
+
+        // Ярлык шапки («Перенос») и ярлык строки («Перенос
+        // и восстановление») — разные нарочно, и это не опечатка:
+        // `navigationTitle` у `BackupScreen` короткий.
+        XCTAssertTrue(app.navigationBars["Перенос"].waitForExistence(timeout: 10),
+                      "строка нажата, а экран «Перенос» не открылся")
+
+        let csv = app.descendants(matching: .any).matching(
+            NSPredicate(format: "label BEGINSWITH %@", "CSV")
+        ).firstMatch
+        for _ in 0..<8 where !csv.exists { app.swipeUp() }
+        XCTAssertTrue(csv.waitForExistence(timeout: 5), """
+            на экране «Перенос» нет строки CSV. Надстрочник экрана \
+            обещает «iCloud · JSON · CSV» три слова — дорог должно быть три.
+            """)
+        кадр("06-перенос-csv")
+
+        app.navigationBars["Перенос"].buttons.firstMatch.tap()
+        XCTAssertTrue(app.navigationBars["Настройки"].waitForExistence(timeout: 10),
+                      "с экрана «Перенос» не вышло вернуться в настройки")
     }
 
     // MARK: Дорога
