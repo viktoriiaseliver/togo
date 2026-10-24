@@ -91,9 +91,7 @@ struct SessionSummarySheet: View {
 struct TransferMatrixScreen: View {
     let dog: Dog?
 
-    @Environment(SubscriptionStore.self) private var store
     @Query private var steps: [TrainingStep]
-    @State private var showPaywall = false
 
     private var mySteps: [TrainingStep] {
         steps.filter { $0.dog?.persistentModelID == dog?.persistentModelID }
@@ -108,18 +106,24 @@ struct TransferMatrixScreen: View {
             axisCard(title: "кто просит", values: people)
             distanceCard
 
-            // Ворота — через `ProGate`, а не `store.isPro` на месте:
-            // «Pro открывает ровно три вещи» проверяемо только там, где
-            // эти три перечислены. См. `Togo/Store/ProGate.swift`.
-            if ProGate.isOpen(.skillMatrix, isPro: store.isPro) {
-                nextStepCard
-            } else {
-                lockedCard
-            }
+            // ВОРОТА СНЯТЫ 24.10.2026, решение Виктории: «убери обещание
+            // и матрицу, это просто помощь». Перенос навыка открыт всем.
+            //
+            // Снято вместе с обещанием, а не вместо него: пейволл обещал
+            // «Матрицу переноса навыка · кто просит × где просят × что
+            // вокруг», то есть СЕТКУ навык × контекст (эталон v10,
+            // `29-screens.jpg`), а здесь три отдельных списка — где,
+            // кто просит, дистанция. Пересечений, ради которых матрица
+            // и нужна, не было нигде, и платили за них.
+            //
+            // > **Снять ворота, не сняв обещание, было бы хуже обоих:**
+            // > строка в пейволле продавала бы то, что стало бесплатным.
+            // > Разбор — `Togo/Store/ProGate.swift`, решение —
+            // > `Дизайн/РЕШЕНИЯ-ДИЗАЙНА.md`, где его прочтёт автор макета.
+            nextStepCard
         }
         .navigationTitle("Перенос навыка")
         .cinemaScreen()
-        .sheet(isPresented: $showPaywall) { NavigationStack { PaywallScreen() } }
     }
 
     private var places: [(String, SkillStatus)] {
@@ -178,19 +182,6 @@ struct TransferMatrixScreen: View {
             Text("Следующий шаг — один").textStyle(AppFont.cardTitle)
             Text("Меняй за раз что-то одно: новое место — верни короткую дистанцию.")
                 .textStyle(AppFont.caption)
-        }
-    }
-
-    private var lockedCard: some View {
-        TGCard {
-            HStack {
-                Text("Матрица человек × место × отвлечения").textStyle(AppFont.cardTitle)
-                Spacer()
-                Text("Pro").textStyle(AppFont.micro.color(Token.Status.doneText))
-            }
-            Text("Полная матрица переноса — в подписке. Само обучение, «не брал еду» и правило одного изменения за раз остаются бесплатными.")
-                .textStyle(AppFont.caption)
-            TGButton(title: "Что входит в Pro", variant: .secondary, size: .medium) { showPaywall = true }
         }
     }
 }
