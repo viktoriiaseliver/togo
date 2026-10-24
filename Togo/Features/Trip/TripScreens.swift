@@ -212,10 +212,16 @@ struct TripTodayBlock: View {
         }
     }
 
-    /// Момент выезда: начало дня отъезда плюс заданная минута.
+    /// Момент выезда: минута выезда на дне отъезда.
+    ///
+    /// Через `Calendar.date(minuteOfDay:on:)` (`DayTime.swift:20`), а не
+    /// сложением секунд с началом дня: в сутках перевода часов не 24 часа,
+    /// и выезд в 09:00 оказывался в 08:00 или в 10:00. Промах здесь стоит
+    /// дороже часа — от этого момента отсчитываются ВСЕ окна «до выезда»
+    /// («−2 ч последняя еда», «−20 м выход перед машиной»), и им же
+    /// решается, показывать список сборов или советы на месте.
     private var departure: Date {
-        Calendar.current.startOfDay(for: trip.startDate)
-            .addingTimeInterval(Double(trip.departureMinuteOfDay) * 60)
+        Calendar.current.date(minuteOfDay: trip.departureMinuteOfDay, on: trip.startDate)
     }
 
     private var departureWindows: some View {

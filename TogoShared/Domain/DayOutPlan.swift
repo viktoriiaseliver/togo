@@ -35,7 +35,12 @@ nonisolated enum DayOutPlan {
             // И сегодня, и завтра: длинный день переваливает за полночь.
             for dayOffset in 0...1 {
                 guard let day = calendar.date(byAdding: .day, value: dayOffset, to: startOfDay) else { continue }
-                let at = day.addingTimeInterval(Double(minute) * 60)
+                // Через `Calendar.date(minuteOfDay:on:)` (`DayTime.swift:20`),
+                // а не сложением секунд: в сутки перевода часов начало дня
+                // плюс 450 минут даёт не 07:30, и кормление у края окна
+                // то теряется, то считается дважды — то есть корма берут
+                // на порцию меньше или больше.
+                let at = calendar.date(minuteOfDay: minute, on: day)
                 if window.contains(at) { meals += 1 }
             }
         }
