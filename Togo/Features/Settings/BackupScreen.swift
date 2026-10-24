@@ -11,7 +11,9 @@ import UniformTypeIdentifiers
 struct BackupScreen: View {
     @Environment(\.modelContext) private var context
     @Environment(Settings.self) private var settings
+    @Environment(AppState.self) private var appState
     @Query private var dogs: [Dog]
+    @Query private var events: [LogEvent]
 
     @State private var archive: BackupArchive?
     @State private var fileData: Data?
@@ -39,6 +41,7 @@ struct BackupScreen: View {
             CinemaHeader("Перенос", надпись: "iCloud · JSON · CSV", отступы: false)
             iCloudCard
             exportCard
+            csvCard
             importCard
             if let message { messageCard(message) }
             formatCard
@@ -129,6 +132,54 @@ struct BackupScreen: View {
 
     private func sizeText(_ data: Data) -> String {
         ByteCountFormatter.string(fromByteCount: Int64(data.count), countStyle: .file)
+    }
+
+    // MARK: CSV
+
+    /// Третья строка экрана с кадра `45-screens`: «CSV · 14 столбцов».
+    ///
+    /// **Второго экспорта здесь нет и не заводится.** Таблицу строит тот же
+    /// `Exporter.csv`, который зовут `HealthScreen:678`, `VetSummaryScreen:182`
+    /// и `DataPrivacyScreen:44`. Надстрочник экрана весь год обещал «iCloud ·
+    /// JSON · CSV» — три слова, две дороги: CSV с этого экрана не уходил
+    /// никуда.
+    ///
+    /// **Строки взяты из каталога, а не заведены.** «14 столбцов» и
+    /// «14 столбцов · Numbers и Excel» лежат в `Localizable.xcstrings`
+    /// переведёнными на четыре языка и до сегодня не имели в Swift ни одного
+    /// читателя — то есть строку планировали, текст заказали и перевели,
+    /// а экран не построили. Наш разобранный класс «поле без читателя».
+    ///
+    /// **Право спрашивается, потому что рядом оно спрашивается.**
+    /// `DataPrivacyScreen` отдаёт тот же CSV только с правом `.exportData`
+    /// (`:58`). Вторая дверь к той же выгрузке без этого вопроса сделала бы
+    /// право необязательным, а запрет — видимостью. Отдельно и не мной:
+    /// **JSON с этого экрана правом НЕ закрыт** (`exportCard`), и это
+    /// расхождение старше моей правки — названо в отчёте, не починено молча.
+    private var csvCard: some View {
+        TGCard {
+            // Заголовок — существующий ключ «выгрузить» (его же носит
+            // карточка CSV в `DataPrivacyScreen`), а не новое слово:
+            // каждый новый кириллический литерал — работа каталога,
+            // а каталог сегодня не мой. Единственное новое слово на
+            // экране — «CSV», и оно латиницей: `Tools/extract_texts.py`
+            // собирает кириллицу, латинский литерал в каталог не едет
+            // и без него показывается собой во всех пяти языках.
+            TGSectionHeader(title: "выгрузить")
+            ShareLink(
+                item: CSVFile(name: "togo-dnevnik.csv",
+                              text: Exporter.csv(events: Diary.active(events))),
+                preview: SharePreview("Дневник Togo · CSV")
+            ) {
+                TGListRow(title: "CSV",
+                          value: "14 столбцов",
+                          systemImage: "tablecells",
+                          accessory: .none)
+            }
+            .buttonStyle(.plain)
+            TGExplainer(text: "14 столбцов · Numbers и Excel")
+        }
+        .disabled(!appState.can(.exportData))
     }
 
     // MARK: Загрузка
