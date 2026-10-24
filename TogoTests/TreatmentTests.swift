@@ -7,8 +7,21 @@ import SwiftData
 @MainActor
 struct DoseGateTests {
 
+    /// Час сегодняшнего дня — **календарём, а не сложением секунд**.
+    ///
+    /// Правка 24.10.2026, в день перевода часов. Прежняя редакция
+    /// складывала `startOfDay + час*3600` и в сутки с лишним часом
+    /// промахивалась ровно на него: «девять утра» выходило восемью.
+    /// Это ровно то, что запрещает `TogoShared/Domain/DayTime.swift`
+    /// («в сутках перевода часов не 24 часа, а 23 или 25»), — а код,
+    /// который эти тесты стерегут, правило как раз исполняет.
+    ///
+    /// > **Сторож нарушал правило, предмет которого стережёт.** Видно
+    /// > это два дня в году, и оба раза выглядит как регрессия продукта.
     private func at(_ hour: Int, _ minute: Int = 0) -> Date {
-        Calendar.current.startOfDay(for: Date()).addingTimeInterval(Double(hour * 60 + minute) * 60)
+        let сегодня = Calendar.current.startOfDay(for: Date())
+        return Calendar.current.date(bySettingHour: hour, minute: minute, second: 0, of: сегодня)
+            ?? сегодня.addingTimeInterval(Double(hour * 60 + minute) * 60)
     }
 
     private func инсулин() -> Medication {
@@ -74,8 +87,11 @@ struct DoseGateTests {
 @MainActor
 struct MissedDoseTests {
 
+    /// Час сегодняшнего дня календарём — разбор у близнеца в `DoseGateTests`.
     private func at(_ hour: Int, _ minute: Int = 0) -> Date {
-        Calendar.current.startOfDay(for: Date()).addingTimeInterval(Double(hour * 60 + minute) * 60)
+        let сегодня = Calendar.current.startOfDay(for: Date())
+        return Calendar.current.date(bySettingHour: hour, minute: minute, second: 0, of: сегодня)
+            ?? сегодня.addingTimeInterval(Double(hour * 60 + minute) * 60)
     }
 
     private func дважды() -> Medication {
@@ -109,17 +125,45 @@ struct MissedDoseTests {
         #expect(missed.timeToNext(from: at(12, 40)) == Double(8 * 3600 + 20 * 60))
     }
 
+    /// # Почему здесь не стоит `12 * 3600`, и это замер 24.10.2026
+    ///
+    /// Стояло `#expect(missed.intervalIfGivenNow == Double(12 * 3600))`,
+    /// и в ночь перевода часов тест краснел **на верном коде**.
+    ///
+    /// ```
+    /// 24.10 → 25.10, Europe/Paris, переход +02 → +01
+    ///   способ ТЕСТА  21:00 +0200 → 25.10 08:00 +0100 = 12 ч  ← строил 08:00
+    ///   способ КОДА   21:00 +0200 → 25.10 09:00 +0100 = 13 ч  ← строит 09:00
+    /// контроль 23→24 и 26→27: оба способа дают 12 ч
+    /// ```
+    ///
+    /// **Прав код.** От девяти вечера до девяти утра в сутки с лишним
+    /// часом проходит тринадцать астрономических часов, и доза, которую
+    /// человек даёт «утром», сдвигается ровно на это. Ожидание «ровно
+    /// двенадцать» описывало не расписание, а обычные сутки.
+    ///
+    /// Тест строил время сложением секунд с полуночью — ровно тем
+    /// способом, который запрещает доккомментарий `DayTime.swift`
+    /// («в сутках перевода часов не 24 часа, а 23 или 25»). То есть
+    /// **сторож нарушал правило, предмет которого стережёт**, и видно
+    /// это было два дня в году.
+    ///
+    /// Различитель, которым это отделено от регрессии: тот же тест
+    /// прогнан на коммите `4625bc6`, вчерашней вершине, где вечером
+    /// он был зелёным, — упал одинаково. Код тот же, время другое.
     @Test("У вечерней дозы следующая — завтрашняя утренняя")
     func eveningLooksToTomorrow() throws {
+        let вечерняя = at(21)
         let missed = try #require(
-            MissedDoseAdvisor.evaluate(medication: дважды(), scheduledAt: at(21), now: at(23))
+            MissedDoseAdvisor.evaluate(medication: дважды(), scheduledAt: вечерняя, now: at(23))
         )
         let завтра = try #require(
             Calendar.current.date(byAdding: .day, value: 1, to: at(9))
         )
         #expect(missed.nextScheduled == завтра,
                 "вечернюю пропускают чаще всего — именно здесь строка «до следующей» и пропадала")
-        #expect(missed.intervalIfGivenNow == Double(12 * 3600))
+        #expect(missed.intervalIfGivenNow == завтра.timeIntervalSince(вечерняя),
+                "интервал — расстояние до следующей точки расписания, а не «двенадцать часов»: в сутки перевода их тринадцать")
     }
 
     @Test("У дозы раз в день следующая тоже есть — завтра")
