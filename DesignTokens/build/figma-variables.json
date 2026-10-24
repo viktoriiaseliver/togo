@@ -1548,12 +1548,6 @@
           "value": 20.0
         },
         {
-          "name": "font/size/title",
-          "type": "FLOAT",
-          "description": "",
-          "value": 17.0
-        },
-        {
           "name": "font/size/titleLarge",
           "type": "FLOAT",
           "description": "Крупный заголовок темы «Кино» (`cinema.titleLarge.size`). Ступень НОВАЯ: наш `screen` 34 не тронут, потому что у него свои читатели. Трекинг к ней — `primitive.font.tracking.titleLarge`. Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`.",
@@ -1576,12 +1570,6 @@
           "type": "FLOAT",
           "description": "",
           "value": 700.0
-        },
-        {
-          "name": "font/weight/heavy",
-          "type": "FLOAT",
-          "description": "Только SF Pro Rounded в главной цифре, кличке и заголовке экрана",
-          "value": 800.0
         },
         {
           "name": "font/weight/light",

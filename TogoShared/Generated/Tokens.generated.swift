@@ -323,7 +323,6 @@ nonisolated enum Token {
         static let screen: CGFloat = 34
         /// Заголовок карточки
         static let section: CGFloat = 20
-        static let title: CGFloat = 17
         /// Крупный заголовок темы «Кино» (`cinema.titleLarge.size`). Ступень НОВАЯ: наш `screen` 34 не тронут, потому что у него свои читатели. Трекинг к ней — `primitive.font.tracking.titleLarge`. Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`.
         static let titleLarge: CGFloat = 36
         /// Таймер на «На улице» (`type.walkTimer.size`), SF Pro Rounded 300. Единственная ступень выше `hero` 56 — и единственное место, где она звана. Оси устройства у неё, как и у `hero`, нет. Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`.
@@ -333,8 +332,6 @@ nonisolated enum Token {
     /// Начертания.
     enum FontWeight {
         static let bold: Font.Weight = .bold
-        /// Только SF Pro Rounded в главной цифре, кличке и заголовке экрана
-        static let heavy: Font.Weight = .heavy
         /// Крупные цифры, и только они. Поколение «финал» 05.10: --fw-number 300, SF Pro Rounded. До этого главная цифра рисовалась bold 700 — вес противоположный, и это самое заметное глазом расхождение кода с макетом
         static let light: Font.Weight = .light
         static let medium: Font.Weight = .medium
@@ -366,7 +363,6 @@ nonisolated enum Token {
             let y: CGFloat
         }
         static let card = Shadow(color: Color(hex: 0x000000FF).opacity(0.05), radius: 10, x: 0, y: 3)
-        static let float = Shadow(color: Color(hex: 0x000000FF).opacity(0.12), radius: 14, x: 0, y: 4)
     }
 
     /// Стоп градиента: доля высоты и цвет с альфой.
