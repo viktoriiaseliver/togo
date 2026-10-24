@@ -1,0 +1,395 @@
+[
+ {
+  "title": "Состояния дня · тема «Кино»",
+  "items": [
+   {
+    "src": "screenshots/v10/01-kino.jpg",
+    "label": "Обычный день"
+   },
+   {
+    "src": "screenshots/v10/02-kino.jpg",
+    "label": "Время дозы"
+   },
+   {
+    "src": "screenshots/v10/03-kino.jpg",
+    "label": "Мама взяла дозу"
+   },
+   {
+    "src": "screenshots/v10/04-kino.jpg",
+    "label": "Доза не отмечена"
+   },
+   {
+    "src": "screenshots/v10/05-kino.jpg",
+    "label": "Натощак"
+   },
+   {
+    "src": "screenshots/v10/06-kino.jpg",
+    "label": "Кровь"
+   },
+   {
+    "src": "screenshots/v10/07-kino.jpg",
+    "label": "Пора звонить"
+   },
+   {
+    "src": "screenshots/v10/08-kino.jpg",
+    "label": "Эпизод"
+   },
+   {
+    "src": "screenshots/v10/09-kino.jpg",
+    "label": "Долго без выходов"
+   },
+   {
+    "src": "screenshots/v10/10-kino.jpg",
+    "label": "Поездка"
+   },
+   {
+    "src": "screenshots/v10/11-kino.jpg",
+    "label": "Со мной весь день"
+   },
+   {
+    "src": "screenshots/v10/12-kino.jpg",
+    "label": "Вид ситтера (Аня)"
+   },
+   {
+    "src": "screenshots/v10/13-kino.jpg",
+    "label": "Хранилище"
+   },
+   {
+    "src": "screenshots/v10/14-kino.jpg",
+    "label": "Ночь"
+   },
+   {
+    "src": "screenshots/v10/15-kino.jpg",
+    "label": "Дубль"
+   },
+   {
+    "src": "screenshots/v10/16-kino.jpg",
+    "label": "Первый день"
+   },
+   {
+    "src": "screenshots/v10/17-kino.jpg",
+    "label": "AX1 крупный текст"
+   }
+  ]
+ },
+ {
+  "title": "Онбординг",
+  "items": [
+   {
+    "src": "screenshots/v10/01-onb-themes.jpg",
+    "label": "Онбординг · запуск"
+   },
+   {
+    "src": "screenshots/v10/02-onb-themes.jpg",
+    "label": "Онбординг · собака (пусто)"
+   },
+   {
+    "src": "screenshots/v10/03-onb-themes.jpg",
+    "label": "Онбординг · кличка введена"
+   },
+   {
+    "src": "screenshots/v10/04-onb-themes.jpg",
+    "label": "Онбординг · режим"
+   },
+   {
+    "src": "screenshots/v10/05-onb-themes.jpg",
+    "label": "Онбординг · уведомления"
+   },
+   {
+    "src": "screenshots/v10/06-onb-themes.jpg",
+    "label": "Первый день после онбординга"
+   }
+  ]
+ },
+ {
+  "title": "Все экраны и шторки · «Кино»",
+  "items": [
+   {
+    "src": "screenshots/v10/01-screens.jpg",
+    "label": "Сегодня"
+   },
+   {
+    "src": "screenshots/v10/02-screens.jpg",
+    "label": "Стич"
+   },
+   {
+    "src": "screenshots/v10/03-screens.jpg",
+    "label": "История"
+   },
+   {
+    "src": "screenshots/v10/04-screens.jpg",
+    "label": "Здоровье"
+   },
+   {
+    "src": "screenshots/v10/05-screens.jpg",
+    "label": "Семья"
+   },
+   {
+    "src": "screenshots/v10/06-screens.jpg",
+    "label": "Ещё · записать"
+   },
+   {
+    "src": "screenshots/v10/07-screens.jpg",
+    "label": "Просится · вердикт"
+   },
+   {
+    "src": "screenshots/v10/08-screens.jpg",
+    "label": "Togo Pro"
+   },
+   {
+    "src": "screenshots/v10/09-screens.jpg",
+    "label": "Сводка врачу"
+   },
+   {
+    "src": "screenshots/v10/10-screens.jpg",
+    "label": "Врач изменил дозу"
+   },
+   {
+    "src": "screenshots/v10/11-screens.jpg",
+    "label": "Доза ждёт еды"
+   },
+   {
+    "src": "screenshots/v10/12-screens.jpg",
+    "label": "Анализы Т4"
+   },
+   {
+    "src": "screenshots/v10/13-screens.jpg",
+    "label": "Ввод анализа"
+   },
+   {
+    "src": "screenshots/v10/14-screens.jpg",
+    "label": "Запас таблеток"
+   },
+   {
+    "src": "screenshots/v10/15-screens.jpg",
+    "label": "Расписание"
+   },
+   {
+    "src": "screenshots/v10/16-screens.jpg",
+    "label": "Курс завершён"
+   },
+   {
+    "src": "screenshots/v10/17-screens.jpg",
+    "label": "Пороги тревоги"
+   },
+   {
+    "src": "screenshots/v10/18-screens.jpg",
+    "label": "Брифинг ситтеру"
+   },
+   {
+    "src": "screenshots/v10/19-screens.jpg",
+    "label": "Передать дежурство"
+   },
+   {
+    "src": "screenshots/v10/20-screens.jpg",
+    "label": "Меня позвали"
+   },
+   {
+    "src": "screenshots/v10/21-screens.jpg",
+    "label": "Собаки · дубль"
+   },
+   {
+    "src": "screenshots/v10/22-screens.jpg",
+    "label": "Питание и режим"
+   },
+   {
+    "src": "screenshots/v10/23-screens.jpg",
+    "label": "Уход"
+   },
+   {
+    "src": "screenshots/v10/24-screens.jpg",
+    "label": "Вес"
+   },
+   {
+    "src": "screenshots/v10/25-screens.jpg",
+    "label": "Шаги"
+   },
+   {
+    "src": "screenshots/v10/26-screens.jpg",
+    "label": "Процедуры"
+   },
+   {
+    "src": "screenshots/v10/27-screens.jpg",
+    "label": "Занятие · маркер «Да!»"
+   },
+   {
+    "src": "screenshots/v10/28-screens.jpg",
+    "label": "Библиотека навыков"
+   },
+   {
+    "src": "screenshots/v10/29-screens.jpg",
+    "label": "Матрица переноса"
+   },
+   {
+    "src": "screenshots/v10/30-screens.jpg",
+    "label": "Порог реакций"
+   },
+   {
+    "src": "screenshots/v10/31-screens.jpg",
+    "label": "Визит и диагнозы"
+   },
+   {
+    "src": "screenshots/v10/32-screens.jpg",
+    "label": "Рецепт"
+   },
+   {
+    "src": "screenshots/v10/33-screens.jpg",
+    "label": "Экстренный"
+   },
+   {
+    "src": "screenshots/v10/34-screens.jpg",
+    "label": "Цикл"
+   },
+   {
+    "src": "screenshots/v10/35-screens.jpg",
+    "label": "Документы"
+   },
+   {
+    "src": "screenshots/v10/36-screens.jpg",
+    "label": "Снимки документов"
+   },
+   {
+    "src": "screenshots/v10/37-screens.jpg",
+    "label": "Правка профиля"
+   },
+   {
+    "src": "screenshots/v10/38-screens.jpg",
+    "label": "Поездка"
+   },
+   {
+    "src": "screenshots/v10/39-screens.jpg",
+    "label": "Профиль"
+   },
+   {
+    "src": "screenshots/v10/40-screens.jpg",
+    "label": "Настройки"
+   },
+   {
+    "src": "screenshots/v10/41-screens.jpg",
+    "label": "Виджеты и Live Activity"
+   },
+   {
+    "src": "screenshots/v10/42-screens.jpg",
+    "label": "Бирка у двери"
+   },
+   {
+    "src": "screenshots/v10/43-screens.jpg",
+    "label": "Как это работает"
+   },
+   {
+    "src": "screenshots/v10/44-screens.jpg",
+    "label": "Язык"
+   },
+   {
+    "src": "screenshots/v10/45-screens.jpg",
+    "label": "Копия и файл"
+   },
+   {
+    "src": "screenshots/v10/46-screens.jpg",
+    "label": "Данные и доступ"
+   },
+   {
+    "src": "screenshots/v10/47-screens.jpg",
+    "label": "Правила"
+   },
+   {
+    "src": "screenshots/v10/48-screens.jpg",
+    "label": "Журнал действий"
+   },
+   {
+    "src": "screenshots/v10/49-screens.jpg",
+    "label": "На улице"
+   }
+  ]
+ },
+ {
+  "title": "Тема «Светлая»",
+  "items": [
+   {
+    "src": "screenshots/v10/07-onb-themes.jpg",
+    "label": "Сегодня"
+   },
+   {
+    "src": "screenshots/v10/08-onb-themes.jpg",
+    "label": "Время дозы"
+   },
+   {
+    "src": "screenshots/v10/09-onb-themes.jpg",
+    "label": "Натощак"
+   },
+   {
+    "src": "screenshots/v10/10-onb-themes.jpg",
+    "label": "Кровь"
+   },
+   {
+    "src": "screenshots/v10/11-onb-themes.jpg",
+    "label": "Стич"
+   },
+   {
+    "src": "screenshots/v10/12-onb-themes.jpg",
+    "label": "История"
+   },
+   {
+    "src": "screenshots/v10/13-onb-themes.jpg",
+    "label": "Здоровье"
+   },
+   {
+    "src": "screenshots/v10/14-onb-themes.jpg",
+    "label": "Семья"
+   },
+   {
+    "src": "screenshots/v10/15-onb-themes.jpg",
+    "label": "Ещё · записать"
+   },
+   {
+    "src": "screenshots/v10/16-onb-themes.jpg",
+    "label": "На улице"
+   }
+  ]
+ },
+ {
+  "title": "Тема «Тёмная»",
+  "items": [
+   {
+    "src": "screenshots/v10/17-onb-themes.jpg",
+    "label": "Сегодня"
+   },
+   {
+    "src": "screenshots/v10/18-onb-themes.jpg",
+    "label": "Время дозы"
+   },
+   {
+    "src": "screenshots/v10/19-onb-themes.jpg",
+    "label": "Натощак"
+   },
+   {
+    "src": "screenshots/v10/20-onb-themes.jpg",
+    "label": "Кровь"
+   },
+   {
+    "src": "screenshots/v10/21-onb-themes.jpg",
+    "label": "Стич"
+   },
+   {
+    "src": "screenshots/v10/22-onb-themes.jpg",
+    "label": "История"
+   },
+   {
+    "src": "screenshots/v10/23-onb-themes.jpg",
+    "label": "Здоровье"
+   },
+   {
+    "src": "screenshots/v10/24-onb-themes.jpg",
+    "label": "Семья"
+   },
+   {
+    "src": "screenshots/v10/25-onb-themes.jpg",
+    "label": "Ещё · записать"
+   },
+   {
+    "src": "screenshots/v10/26-onb-themes.jpg",
+    "label": "На улице"
+   }
+  ]
+ }
+]
