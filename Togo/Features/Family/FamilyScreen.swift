@@ -107,16 +107,44 @@ struct FamilyScreen: View {
                 if canManageFamily { inviteCard }
                 sharedDiaryLink
             } bottom: {
-                TGButton(title: "Добавить человека", systemImage: "person.badge.plus") {
-                    UsageLog.note(.open, "addMember", on: .family)
-                    // Порог «двое бесплатно» живёт в `ProLimit`, а не
-                    // числом здесь: см. `Togo/Store/ProGate.swift`.
-                    if ProGate.isOpen(.familyBeyondTwo(familyMembers: members.count),
-                                      isPro: store.isPro) {
-                        showInvite = true
-                    } else {
-                        showPaywall = true
+                // Гостю этой кнопки НЕТ, и это не косметика.
+                //
+                // `потолокГостя` снимает `manageFamily` безусловно
+                // (`FamilyResolver.swift:125`) — то есть пригласить
+                // человека гость не может никогда, ни за деньги,
+                // ни с чужого разрешения. Карточка приглашения выше
+                // закрыта тем же правом с самого начала; главная
+                // кнопка экрана осталась открытой всем, потому что
+                // живёт в другом слоте и проверку обошла.
+                //
+                // Замер 24.10.2026, проход в симуляторе: у гостя
+                // «Добавить человека» белая, то есть ГЛАВНАЯ кнопка
+                // экрана. Нажми — и получишь отказ.
+                //
+                // > **Отказ был бы НАШ, а не его.** Это наш оплаченный
+                // > класс «вход есть, механизма нет»: нарисовано то,
+                // > чего не бывает.
+                //
+                // Выбрано «убрать», а не «выключить»: выключенная
+                // кнопка обещает, что право можно получить, — а его
+                // не выдаст и владелец. Вместо неё гость видит строку
+                // о своей роли (`гостевоеПояснение` ниже): человек
+                // узнаёт, ЧТО он здесь может, а не упирается в молчащий
+                // орган.
+                if canManageFamily {
+                    TGButton(title: "Добавить человека", systemImage: "person.badge.plus") {
+                        UsageLog.note(.open, "addMember", on: .family)
+                        // Порог «двое бесплатно» живёт в `ProLimit`, а не
+                        // числом здесь: см. `Togo/Store/ProGate.swift`.
+                        if ProGate.isOpen(.familyBeyondTwo(familyMembers: members.count),
+                                          isPro: store.isPro) {
+                            showInvite = true
+                        } else {
+                            showPaywall = true
+                        }
                     }
+                } else {
+                    гостевоеПояснение
                 }
             }
             .navigationTitle("Семья")
@@ -258,14 +286,35 @@ struct FamilyScreen: View {
                 .textStyle(AppFont.caption)
                 .wraps()
         }
-        let передать = Button("Передать") {
-            handingOver = Передача(id: member.id, сдающий: member,
-                                   принимающий: successor(after: member))
+        // Передача дежурства — действие над составом семьи, значит
+        // `manageFamily`, и гостю его не выдаст никто (`потолокГостя`
+        // снимает это право безусловно).
+        //
+        // Карточка дежурного остаётся видимой всем: кто сегодня
+        // дежурит — это сведение, а не действие, и гостю оно нужнее
+        // всех. Уходит только кнопка.
+        //
+        // Замер 24.10.2026: у гостя «Передать» нажималась. Нажатие
+        // открыло бы лист передачи, где он выбрал бы преемника
+        // и получил отказ на записи — то есть отказ в самом конце
+        // дороги, когда человек уже всё решил.
+        @ViewBuilder var передать: some View {
+            // `canManageFamily`, а не `canManage`: второй объявлен
+            // в `MemberScreen` ниже по файлу и отсюда недоступен.
+            // Два имени одного права в одном файле — сами по себе
+            // находка, но разводить их здесь не буду: это чужая
+            // структура.
+            if canManageFamily {
+                Button("Передать") {
+                    handingOver = Передача(id: member.id, сдающий: member,
+                                           принимающий: successor(after: member))
+                }
+                .textStyle(AppFont.captionEmphasis.color(Token.Ink.primary))
+                .padding(.horizontal, Token.Space.s16)
+                .frame(minHeight: Token.Size.tapTarget)
+                .background(Capsule().fill(Token.Surface.raised))
+            }
         }
-            .textStyle(AppFont.captionEmphasis.color(Token.Ink.primary))
-            .padding(.horizontal, Token.Space.s16)
-            .frame(minHeight: Token.Size.tapTarget)
-            .background(Capsule().fill(Token.Surface.raised))
 
         return Group {
             if размерТекста.isAccessibilitySize {
@@ -525,6 +574,26 @@ struct FamilyScreen: View {
     /// `[.seeMedical, .exportData]` — читает и не пишет; у помощника
     /// `[.logBasics]` — медицинского не видит; `.editTreatment`
     /// по умолчанию только у владельца.
+    /// Что здесь может тот, кому нельзя приглашать.
+    ///
+    /// Стоит на месте главной кнопки — **там же, куда человек
+    /// смотрит**, а не внизу карточкой, которую он пролистает.
+    ///
+    /// Текст называет не запрет, а **границу**: «читаешь, не пишешь»
+    /// понятнее, чем «нет права `manageFamily`», и не обещает, что
+    /// право можно выпросить. Гость не получит его никогда —
+    /// `потолокГостя` снимает его безусловно.
+    ///
+    /// > **Выключенная кнопка обещает, что препятствие временное.**
+    /// > Здесь оно постоянное, поэтому органа нет вовсе, а на его
+    /// > месте — объяснение.
+    private var гостевоеПояснение: some View {
+        TGBanner(tone: .waiting,
+                 title: "Ты в этом дневнике гость",
+                 subtitle: "Читаешь всё, отмечать и приглашать может владелец. Попроси его выдать роль — она придёт на этот же телефон.",
+                 systemImage: "eye")
+    }
+
     private var rolesExplainer: some View {
         TGCard {
             Text("Пять ролей, восемь прав").textStyle(AppFont.cardTitle)
