@@ -94,6 +94,27 @@ struct DataPrivacyScreen: View {
                       Dog.self] as [any PersistentModel.Type] {
             try? context.delete(model: model)
         }
+
+        // Отметки в UserDefaults стираются ТОЖЕ, и это решение Виктории
+        // 24.10.2026: «как при первой установке».
+        //
+        // Без этого «удалить все данные» стирало шестнадцать моделей
+        // и не трогало в UserDefaults ничего. Заготовки навыков уезжали
+        // вместе с `ProcedureSkill`, а галочка «заготовки уже созданы»
+        // оставалась `true` — и человек после полного удаления оставался
+        // **без навыков и без того, что их когда-то заводили**.
+        //
+        // > **Данные и отметка о данных жили в разных хранилищах,
+        // > и стирало их разное.** Флаг переживал удаление по устройству,
+        // > а не по решению: `@AppStorage` просто не входит в `context`.
+        //
+        // Список поимённый, а не `removePersistentDomain`: тот снёс бы
+        // и выбранный язык, и согласия, и настройки уведомлений — всё,
+        // что человек про удаление данных не просил.
+        for ключ in ["procedureSkills.seeded"] {
+            UserDefaults.standard.removeObject(forKey: ключ)
+        }
+
         NotificationCenterService.cancelAll()
         deleted = true
         Haptics.warning()
