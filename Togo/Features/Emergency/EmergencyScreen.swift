@@ -15,7 +15,7 @@ struct EmergencyScreen: View {
 
     var body: some View {
         TGScreen {
-            CinemaHeader("Если что-то случилось", отступы: false)
+            CinemaHeader("Если что-то случилось", надпись: "одно касание", отступы: false)
             disclaimer
             contactsCard
             toxicCard
@@ -195,7 +195,7 @@ struct DocumentsScreen: View {
 
     var body: some View {
         TGScreen {
-            CinemaHeader("Документы", отступы: false)
+            CinemaHeader("Документы", надпись: "когда спросят", отступы: false)
             TGCard(spacing: 0) {
                 TGSectionHeader(title: "номера")
                 LabeledField(label: "Чип") {

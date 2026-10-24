@@ -18,7 +18,7 @@ struct UsageLogScreen: View {
 
     var body: some View {
         TGScreen {
-            CinemaHeader("Журнал действий", отступы: false)
+            CinemaHeader("Журнал действий", надпись: "кто что сделал", отступы: false)
             if report.isEmpty {
                 TGBanner(tone: .waiting, title: "Журнал пока пуст",
                          subtitle: isOn

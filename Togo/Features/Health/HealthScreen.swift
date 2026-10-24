@@ -712,7 +712,7 @@ struct WeightScreen: View {
 
     var body: some View {
         TGScreen {
-            CinemaHeader("Вес", отступы: false)
+            CinemaHeader("Вес", надпись: "коридор врача", отступы: false)
             TGCard {
                 HStack(alignment: .firstTextBaseline) {
                     Text(dog.map { Fmt.weight($0.weightKg) } ?? "—").textStyle(AppFont.display)

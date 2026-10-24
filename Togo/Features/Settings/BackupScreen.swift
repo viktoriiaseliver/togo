@@ -36,7 +36,7 @@ struct BackupScreen: View {
             // `TogoShared/Resources/Localizable.xcstrings` сегодня
             // правит другая сессия (вычитка пяти языков), и каждый
             // новый литерал — её работа, а не моя.
-            CinemaHeader("Перенос", отступы: false)
+            CinemaHeader("Перенос", надпись: "iCloud · JSON · CSV", отступы: false)
             iCloudCard
             exportCard
             importCard

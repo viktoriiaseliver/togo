@@ -141,7 +141,7 @@ struct DogsScreen: View {
 
     var body: some View {
         TGScreen {
-            CinemaHeader("Собаки", отступы: false)
+            CinemaHeader("Собаки", надпись: "переключение", отступы: false)
             TGCard(spacing: 0) {
                 TGSectionHeader(title: "кого смотрим",
                                 subtitle: dogs.shownToPerson.count > 1

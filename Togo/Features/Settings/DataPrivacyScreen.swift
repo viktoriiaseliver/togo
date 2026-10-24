@@ -16,7 +16,7 @@ struct DataPrivacyScreen: View {
 
     var body: some View {
         TGScreen {
-            CinemaHeader("Данные", отступы: false)
+            CinemaHeader("Данные", надпись: "где и кто видит", отступы: false)
             TGCard {
                 Text("Всё лежит на телефоне").textStyle(AppFont.cardTitle)
                 Text("Аккаунта нет, серверов у нас нет. Записи хранятся в базе приложения и в общем хранилище с виджетами.")

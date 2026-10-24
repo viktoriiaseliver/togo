@@ -27,7 +27,7 @@ struct HeatScreen: View {
 
     var body: some View {
         TGScreen {
-            CinemaHeader("Цикл", отступы: false)
+            CinemaHeader("Цикл", надпись: "календарь", отступы: false)
             if let ongoing = records.first, ongoing.isOngoing {
                 ongoingCard(ongoing)
             }

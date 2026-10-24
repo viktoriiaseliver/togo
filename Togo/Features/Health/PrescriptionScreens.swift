@@ -40,7 +40,7 @@ struct PrescriptionsScreen: View {
 
     var body: some View {
         TGScreen {
-            CinemaHeader("Назначения", отступы: false)
+            CinemaHeader("Назначения", надпись: "для аптеки", отступы: false)
             if назначения.isEmpty {
                 EmptyStateCard(
                     subject: .health,

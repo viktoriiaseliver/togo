@@ -26,7 +26,7 @@ struct DoorTagScreen: View {
 
     var body: some View {
         TGScreen {
-            CinemaHeader("Метка у двери", отступы: false)
+            CinemaHeader("Метка у двери", надпись: "NFC", отступы: false)
             TGCard {
                 Text("Приложил — пошли").textStyle(AppFont.cardTitle)
                 Text("Одно касание работает в обе стороны: прогулка не идёт — начнётся, идёт — закончится и запишется. У двери не надо вспоминать, что сейчас нажать.")

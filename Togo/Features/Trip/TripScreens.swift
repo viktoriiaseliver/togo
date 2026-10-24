@@ -19,7 +19,7 @@ struct TripSetupScreen: View {
 
     var body: some View {
         TGScreen(title: "Едем с \(dog.flatMap(\.nameIfAny) ?? String(localized: "собакой"))") {
-            CinemaHeader("Поездка", отступы: false)
+            CinemaHeader("Поездка", надпись: "сборы и дорога", отступы: false)
             TGExplainer(text: "Режим включится сам в день отъезда и выключится, когда вернётесь.")
 
             TGCard(spacing: 0) {

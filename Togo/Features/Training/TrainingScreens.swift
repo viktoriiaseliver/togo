@@ -207,7 +207,7 @@ struct ProcedurePrepScreen: View {
 
     var body: some View {
         TGScreen {
-            CinemaHeader("Процедуры", отступы: false)
+            CinemaHeader("Процедуры", надпись: "по попытке", отступы: false)
             TGExplainer(text: "Самое ценное обучение для собаки с регулярными процедурами — не «место», а спокойно дать лапу, стоять при осмотре и самой залезать в переноску.")
 
             if skills.isEmpty {

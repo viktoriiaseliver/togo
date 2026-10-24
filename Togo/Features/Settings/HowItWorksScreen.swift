@@ -72,7 +72,7 @@ struct HowItWorksScreen: View {
 
     var body: some View {
         TGScreen {
-            CinemaHeader("Как это работает", отступы: false)
+            CinemaHeader("Как это работает", надпись: "вердикт и правила", отступы: false)
             TGExplainer(text: "То же, что рассказывает онбординг, только целиком. Отдельной справки нет — объяснения стоят там, где возникает вопрос.")
 
             ForEach(Self.chapters) { chapter in

@@ -27,7 +27,7 @@ struct CareScreen: View {
 
     var body: some View {
         TGScreen {
-            CinemaHeader("Уход", отступы: false)
+            CinemaHeader("Уход", надпись: "от последнего раза", отступы: false)
             if tasks.isEmpty {
                 emptyState
             } else {
