@@ -1,6 +1,38 @@
 import SwiftUI
 import SwiftData
 
+/// Куда ведёт каждая кнопка. Одно перечисление на весь главный экран —
+/// так видно, что путей ровно столько, сколько кнопок.
+///
+/// Переехало сюда 24.10.2026 из `ActionGrid.swift`, удалённого как сирота.
+/// Перечисление живое и к сиротству отношения не имело: восемь файлов
+/// продуктового кода его читают (`TodayRouter`, `TodayScreen`, `TodayBottom`,
+/// `ReadingTone`, `WalkMode`, `AppState`, `Подпись`), а объявление было
+/// ровно одно — в удаляемом файле. Место выбрано по читателю: здесь стоит
+/// единственный `switch` по всем случаям, и новый случай без ветки тут
+/// не компилируется.
+enum TodayRoute: Identifiable, Hashable {
+    case needs
+    case walk
+    case walkResult
+    case stool
+    case meal
+    case treat
+    case incident
+    case note
+    case training
+    case more
+    case dayOut
+    case edit(UUID)
+
+    var id: String {
+        switch self {
+        case .edit(let id): "edit-\(id)"
+        default: String(describing: self)
+        }
+    }
+}
+
 /// Одно место, где решается, что показать по каждой кнопке главного экрана.
 struct TodayRouter: View {
     let route: TodayRoute
