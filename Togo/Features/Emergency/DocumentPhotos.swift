@@ -36,23 +36,9 @@ struct DocumentPhotosCard: View {
 
             if documents.isEmpty {
                 TGExplainer(text: "Пока ничего не сфотографировано. Снимки лежат на телефоне и никуда не отправляются.")
-            } else {
-                ForEach(documents) { document in
-                    Button { viewing = document } label: {
-                        DocumentRow(document: document)
-                    }
-                    .buttonStyle(.plain)
-                    TGDivider()
-                }
             }
 
-            if canEdit {
-                PhotosPicker(selection: $picked, matching: .images, photoLibrary: .shared()) {
-                    TGListRow(title: documents.isEmpty ? "Сфотографировать документ" : "Ещё документ",
-                              systemImage: "camera")
-                }
-                .buttonStyle(.plain)
-            }
+            сетка
         }
         .onChange(of: picked) { _, item in load(item) }
         .sheet(item: Binding(get: { pendingImage.map(PendingPhoto.init) },
@@ -64,6 +50,63 @@ struct DocumentPhotosCard: View {
         .sheet(item: $viewing) { document in
             DocumentViewerSheet(document: document) { delete(document) }
         }
+    }
+
+    // MARK: Сетка снимков
+
+    /// Сетка 3 в ряд из плиток-фотографий плюс плитка «Снять».
+    ///
+    /// # Почему сетка, а не список
+    ///
+    /// Эталон v10, `36-screens.jpg`: шесть плиток по три в ряд, подпись
+    /// лежит НА снимке слева внизу, последняя плитка — тёмная, со
+    /// значком камеры и словом «Снять». У нас тут стоял вертикальный
+    /// список строк с миниатюрой 44×44.
+    ///
+    /// Разница не в красоте. Снимок документа ищут **в спешке и глазами**
+    /// — у врача, на границе, в гостинице, — и ищут по тому, КАК
+    /// страница выглядит, а не по тому, как её назвали при съёмке.
+    /// Миниатюра 44 pt этого не даёт: на ней не отличить страницу
+    /// паспорта от страницы прививок. Шесть строк по 44 занимают
+    /// столько же места, сколько шесть плиток, на которых видно.
+    ///
+    /// # Форма взята, а не придумана
+    ///
+    /// `LazyVGrid` в проекте живёт в четырёх местах; ближайшее
+    /// по смыслу — `IncidentSheet:29`: `GridItem(.flexible())`,
+    /// повторённый по числу колонок, с одинаковым зазором по обеим осям.
+    /// Здесь то же самое, колонок три.
+    ///
+    /// # «Снять» — плитка сетки, а не строка под ней
+    ///
+    /// Так на кадре, и так же она ведёт себя правильно при нуле
+    /// снимков: сетка из одной плитки «Снять» — это и есть пустое
+    /// состояние, у которого вход виден. Отдельная строка под сеткой
+    /// при нуле снимков оставляла бы пустую сетку и строку, то есть
+    /// два пустых места вместо одного действия.
+    @ViewBuilder
+    private var сетка: some View {
+        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: Token.Space.s8),
+                                 count: 3),
+                  spacing: Token.Space.s8) {
+            ForEach(documents) { document in
+                Button { viewing = document } label: {
+                    ПлиткаСнимка(документ: document)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(Text(verbatim: document.title))
+                .accessibilityAddTraits(.isButton)
+            }
+
+            if canEdit {
+                PhotosPicker(selection: $picked, matching: .images, photoLibrary: .shared()) {
+                    ПлиткаСнять()
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Сфотографировать документ")
+            }
+        }
+        .padding(.top, Token.Space.s8)
     }
 
     // MARK: Действия
@@ -118,43 +161,104 @@ private struct PendingPhoto: Identifiable {
     var id: Int { data.hashValue }
 }
 
-private struct DocumentRow: View {
-    let document: DogDocument
+/// Плитка сетки: сам снимок, подпись лежит НА нём слева внизу.
+///
+/// **Подпись не под плиткой, а на ней — и это не вкус.** Под плиткой
+/// она задавала бы высоту ряда по самому длинному названию
+/// («Ветпаспорт» против «Чип»), и три плитки в ряду разъезжались бы
+/// по высоте от слов. На снимке подпись стоит на своей подложке
+/// и высоту ряда не трогает вовсе.
+///
+/// Подложка под подписью обязательна по той же причине, что слой
+/// затемнения у `CinemaHeader`: белый текст на СНИМКЕ — это текст
+/// на неизвестном фоне, и светлая страница паспорта съедает его
+/// целиком. Здесь фон под подписью свой и непрозрачный, поэтому пара
+/// считается без снимка.
+///
+/// `Text(verbatim:)` у названия — потому что название **вводит
+/// человек** (чипами в `DocumentTitleSheet` либо своим словом):
+/// это значение, а не ключ каталога, и `Text(ключ)` искал бы перевод
+/// для «Ветпаспорт Стича».
+private struct ПлиткаСнимка: View {
+    let документ: DogDocument
 
     var body: some View {
-        HStack(spacing: Token.Space.s12) {
-            DocumentThumbnail(data: document.image)
-            VStack(alignment: .leading, spacing: Token.Space.s2) {
-                Text(document.title).textStyle(AppFont.body)
-                Text(Fmt.shortDay(document.addedAt)).textStyle(AppFont.micro)
-            }
-            Spacer(minLength: 0)
-            Image(systemName: "chevron.right")
-                .font(.system(size: 12, weight: .semibold))
-                .foregroundStyle(Token.Ink.secondary)
+        // **Пропорцию держит `Color.clear`, а не содержимое.**
+        // `.aspectRatio(_:contentMode: .fit)`, надетый на стопку
+        // с текстом, вписывает в пропорцию СОДЕРЖИМОЕ и размера клетке
+        // не задаёт — ряд разъезжается от длины подписи. Гибкая пустая
+        // подложка принимает предложенную ширину и из неё считает
+        // высоту, а снимок и подпись ложатся на неё слоями.
+        Color.clear
+            .aspectRatio(4.0 / 5.0, contentMode: .fit)
+            .overlay { снимок }
+            .overlay(alignment: .bottomLeading) { подпись }
+            .clipShape(RoundedRectangle(cornerRadius: Token.Radius.tile, style: .continuous))
+            .contentShape(RoundedRectangle(cornerRadius: Token.Radius.tile, style: .continuous))
+    }
+
+    @ViewBuilder
+    private var снимок: some View {
+        if let data = документ.image, let image = UIImage(data: data) {
+            Image(uiImage: image)
+                .resizable()
+                .scaledToFill()
+                .accessibilityHidden(true)
+        } else {
+            // Снимка нет — плитка остаётся плиткой, а не схлопывается
+            // в полоску: пустое место в сетке читалось бы как «тут
+            // ничего нет», а запись есть и её открывают.
+            Token.Surface.sunken
+                .overlay {
+                    Image(systemName: "doc.text.image")
+                        .font(.system(size: Token.Size.iconLg, weight: Token.FontWeight.medium))
+                        .foregroundStyle(Token.Ink.secondary)
+                }
+                .accessibilityHidden(true)
         }
-        .frame(minHeight: Token.Size.tapTarget)
-        .contentShape(Rectangle())
+    }
+
+    private var подпись: some View {
+        Text(verbatim: документ.title)
+            .textStyle(AppFont.micro, color: Token.Poster.labelOnColor)
+            .lineLimit(1)
+            .minimumScaleFactor(0.7)
+            .padding(.horizontal, Token.Space.s6)
+            .padding(.vertical, Token.Space.s2)
+            .background(Token.Surface.sunken,
+                        in: RoundedRectangle(cornerRadius: Token.Radius.small,
+                                             style: .continuous))
+            .padding(Token.Space.s6)
     }
 }
 
-private struct DocumentThumbnail: View {
-    let data: Data?
-
+/// Плитка «Снять» — такая же клетка сетки, как снимки, с камерой.
+///
+/// Стоит последней и в том же ряду: так на кадре `36-screens.jpg`,
+/// и так вход в механизм виден там, где человек уже смотрит.
+private struct ПлиткаСнять: View {
     var body: some View {
-        Group {
-            if let data, let image = UIImage(data: data) {
-                Image(uiImage: image).resizable().scaledToFill()
-            } else {
-                Image(systemName: "doc.text.image")
-                    .foregroundStyle(Token.Ink.secondary)
+        // Пропорцию держит та же пустая подложка, что у плитки снимка,
+        // и по той же причине: иначе клетка «Снять» встала бы по высоте
+        // своего текста, а не по высоте ряда, и выпала бы из сетки.
+        Color.clear
+            .aspectRatio(4.0 / 5.0, contentMode: .fit)
+            .overlay {
+                VStack(spacing: Token.Space.s6) {
+                    Image(systemName: "camera")
+                        .font(.system(size: Token.Size.iconLg, weight: Token.FontWeight.medium))
+                        .accessibilityHidden(true)
+                    Text("Снять")
+                        .textStyle(AppFont.micro, color: Token.Ink.primary)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+                }
+                .foregroundStyle(Token.Ink.primary)
+                .padding(.horizontal, Token.Space.s4)
             }
-        }
-        .frame(width: 44, height: 44)
-        .clipShape(RoundedRectangle(cornerRadius: Token.Radius.small, style: .continuous))
-        .background(Token.Surface.sunken,
-                    in: RoundedRectangle(cornerRadius: Token.Radius.small, style: .continuous))
-        .accessibilityHidden(true)
+            .background(Token.Surface.sunken,
+                        in: RoundedRectangle(cornerRadius: Token.Radius.tile, style: .continuous))
+            .contentShape(RoundedRectangle(cornerRadius: Token.Radius.tile, style: .continuous))
     }
 }
 
