@@ -269,7 +269,50 @@ struct TreatmentCourseTests {
         let summary = TreatmentCourse.summary(dog, now: now)
         #expect(summary.dosesGiven == 3)
         #expect(summary.dosesOnTime == 2, "два часа опоздания — уже не вовремя")
-        #expect(summary.span >= 4 * 86400)
+        #expect(summary.days >= 4)
+    }
+
+    /// Ровно четырнадцать суток через воскресенье перевода часов.
+    ///
+    /// **Сторож на само расхождение, а не на форму записи.** Форму держит
+    /// `КалендарьПротивСекундTests`; здесь — исход на экране, и он
+    /// воспроизводится только в конкретном часовом поясе и конкретную
+    /// ночь, поэтому пояс и даты названы числом, а не взяты у машины.
+    ///
+    /// Европа/Париж, ночь с 28 на 29 марта 2026 года: часы переводят
+    /// вперёд, в сутках 23 часа. От 15 марта 12:00 до 29 марта 12:00
+    /// по стенным часам ровно 14 суток, а в секундах — 13 суток 23 часа.
+    /// `Int(span / 86400)` отрезал это до 13, ветка `days >= 14`
+    /// не бралась, и «2 недели позади» становилось «13 дней позади».
+    ///
+    /// Три замера в одной команде: прежняя форма (обязана дать 13),
+    /// новая (обязана дать 14) и исход на экране. Без первого тест
+    /// зелен и в том случае, если даты выбраны мимо перевода часов.
+    @Test("Четырнадцать суток через перевод часов остаются двумя неделями")
+    func двеНеделиЧерезПереводЧасов() throws {
+        var календарь = Calendar(identifier: .gregorian)
+        календарь.timeZone = try #require(TimeZone(identifier: "Europe/Paris"))
+        var начало = DateComponents()
+        начало.year = 2026
+        начало.month = 3
+        начало.day = 15
+        начало.hour = 12
+        let старт = try #require(календарь.date(from: начало))
+        let финиш = try #require(календарь.date(byAdding: .day, value: 14, to: старт))
+
+        #expect(Int(финиш.timeIntervalSince(старт) / 86_400) == 13,
+                """
+                Прежняя форма обязана дать здесь 13 — на этом стоит тест. \
+                Дала другое: значит даты выбраны мимо воскресенья перевода \
+                часов, и замер не состоялся.
+                """)
+        #expect(TreatmentCourse.суток(от: старт, до: финиш, календарь: календарь) == 14,
+                "календарь обязан назвать 14 суток там, где секунд 13,96")
+
+        let итог = TreatmentCourse.Summary(days: 14, dosesGiven: 28,
+                                           dosesOnTime: 28, skipped: 0)
+        #expect(итог.headline == "2 недели позади",
+                "ветка «недели» не взялась — человек читает «13 дней» про две недели лечения")
     }
 
     @Test("Без отметок процента не бывает")
@@ -282,14 +325,14 @@ struct TreatmentCourseTests {
 
     @Test("Длинный курс называется неделями")
     func headlineInWeeks() throws {
-        let summary = TreatmentCourse.Summary(span: 42 * 86400, dosesGiven: 82,
+        let summary = TreatmentCourse.Summary(days: 42, dosesGiven: 82,
                                               dosesOnTime: 77, skipped: 1)
         #expect(summary.headline == "6 недель позади")
     }
 
     @Test("Короткий курс называется днями")
     func headlineInDays() throws {
-        let summary = TreatmentCourse.Summary(span: 5 * 86400, dosesGiven: 10,
+        let summary = TreatmentCourse.Summary(days: 5, dosesGiven: 10,
                                               dosesOnTime: 10, skipped: 0)
         #expect(summary.headline == "5 дней позади")
     }
