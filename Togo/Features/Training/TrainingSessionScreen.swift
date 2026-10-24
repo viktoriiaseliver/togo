@@ -83,14 +83,29 @@ struct TrainingSessionScreen: View {
                 ? { isConfirmingExit = true }
                 : nil
         ) {
-            clock
+            // **Маркер первым, часы вторыми — порядок с эталона v10,
+            // `27-screens.jpg`.** На кадре белая карточка маркера стоит
+            // над всем остальным, а числа занятия («Идёт», «Успехов»,
+            // «Лакомство») лежат под ней списком. Прежний порядок ставил
+            // первыми часы: самое нажимаемое на экране оказывалось
+            // за крупным секундомером, который не нажимают ни разу.
             markerPad
+            clock
             recentMarks
             markerKindRow
             observations
         } footer: {
             if session.isRunning {
-                TGButton(title: "Закончить на удаче", variant: .finish,
+                // **Белая, а не шалфейная — замер, а не вкус.**
+                // `.finish` это `Button.Finish.background` =
+                // `arcticTint` = `#FFFFFF2E`, то есть белый под α .18:
+                // на чёрном «Кино» он читается тусклой серой плашкой.
+                // На эталоне v10 (`27-screens.jpg`) кнопка завершения
+                // занятия **белая сплошная**, как `Button.Primary`
+                // (`arctic` = `#FFFFFF`). Правило «кирпич один на экран»
+                // не нарушено: пока занятие идёт, других `.primary`
+                // в этом подвале нет — рядом только `.quiet`.
+                TGButton(title: "Закончить на удаче", variant: .primary,
                      systemImage: "checkmark") { finish() }
                 TGButton(title: "Сбросить отметки", variant: .quiet, size: .medium) { session.reset() }
             } else {
@@ -130,8 +145,84 @@ struct TrainingSessionScreen: View {
 
     // MARK: Два тапа — вся точность
 
+    /// Маркер: белая карточка во всю ширину, первой на экране.
+    ///
+    /// # Почему это вообще правка, а не вкусовщина
+    ///
+    /// Эталон v10, `27-screens.jpg`: маркер — **белая карточка первым
+    /// элементом во всю ширину**, подпись «жми, когда сделал». У нас он
+    /// был третьей плиткой среди равных по 72–92 pt, и ранг нёс только
+    /// цвет, который появляется на полсекунды. А нажимают из всего
+    /// экрана именно его: маркер работает, если попасть в полсекунды
+    /// после действия собаки, и **искать его глазами значит
+    /// промахнуться** — промах тут не косметика, он портит ту самую
+    /// величину, ради которой занятие и идёт.
+    ///
+    /// # Заливку и подпись выбирает ОДИН тип, и это не новый код
+    ///
+    /// `MarkFill` заведён ровно под эту развилку у прогулки
+    /// (`MarkFill.swift`), и взят он здесь не ради переиспользования,
+    /// а потому что прежний код наступил на то, от чего `MarkFill`
+    /// и защищает:
+    ///
+    /// ```
+    /// было  .background(isWaitingForMark ? Action.primary : …)
+    ///       Text("Клик").textStyle(AppFont.cardTitle)
+    /// ```
+    ///
+    /// `AppFont.cardTitle` несёт свой `color` (`Token.Ink.primary`),
+    /// `textStyle` красит сам `Text` и побеждает `foregroundStyle`
+    /// предка — то есть в состоянии ОЖИДАНИЯ МАРКЕРА, единственном,
+    /// где эту кнопку читают, светлая подпись ложилась на белую
+    /// заливку. Заливку меняли, подпись — нет. Цвет здесь подставлен
+    /// ВМЕСТО стилевого (`textStyle(_:color:)`), а не поверх.
+    ///
+    /// # Почему карточка НЕ белая постоянно, хотя на кадре она белая
+    ///
+    /// `MarkerEngine.markMarker()` начинается с
+    /// `guard let actionAt else { return nil }` — без первого тапа
+    /// («Он сделал») маркер **не делает ничего и не может**: измеряется
+    /// промежуток между двумя тапами, и мерить не от чего. Белая
+    /// карточка, которая выглядит главным действием и молчит
+    /// на нажатие, была бы хуже тусклой: это наш класс «молчаливый
+    /// путь», только с приглашением.
+    ///
+    /// > Прототип рисует ОДИН тап, у нас их два, и это не исполнение,
+    /// > а устройство: вся точность живёт в промежутке. Сведение двух
+    /// > тапов в один — решение Виктории, не исполнителя; расхождение
+    /// > названо здесь и в отчёте, а не замазано цветом.
+    private var маркер: some View {
+        let заливка: MarkFill = session.isWaitingForMark ? .accent : .quiet
+        return Button { mark() } label: {
+            HStack(spacing: Token.Space.s12) {
+                Image(systemName: "pawprint.fill")
+                    .font(.system(size: Token.Size.iconLg, weight: Token.FontWeight.medium))
+                    .accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: Token.Space.s2) {
+                    Text(dog?.markerKind.title ?? String(localized: "маркер"))
+                        .textStyle(AppFont.cardTitle, color: заливка.label)
+                        .wraps()
+                    Text("жми, когда сделал")
+                        .textStyle(AppFont.caption, color: заливка.counter)
+                        .wraps()
+                }
+                Spacer(minLength: 0)
+            }
+            .foregroundStyle(заливка.label)
+            .padding(.horizontal, Token.Space.s16)
+            .padding(.vertical, Token.Space.s8)
+            .frame(maxWidth: .infinity, minHeight: Token.Size.capsule, alignment: .leading)
+            .background(заливка.color,
+                        in: RoundedRectangle(cornerRadius: Token.Radius.tile, style: .continuous))
+        }
+        .buttonStyle(.plain)
+        .disabled(!session.isWaitingForMark)
+    }
+
     private var markerPad: some View {
         VStack(spacing: Token.Space.s10) {
+            маркер
+
             Button { session.markAction(); Haptics.tap() } label: {
                 VStack(spacing: Token.Space.s2) {
                     Text("Он сделал").textStyle(AppFont.cardTitle)
@@ -143,18 +234,6 @@ struct TrainingSessionScreen: View {
             }
             .buttonStyle(.plain)
             .disabled(!session.isRunning || session.isWaitingForMark)
-
-            Button { mark() } label: {
-                VStack(spacing: Token.Space.s2) {
-                    Text("Клик").textStyle(AppFont.cardTitle)
-                    Text(dog?.markerKind.title ?? "маркер").textStyle(AppFont.caption)
-                }
-                .frame(maxWidth: .infinity, minHeight: 92)
-                .background(session.isWaitingForMark ? Token.Action.primary : Token.Action.primaryQuiet,
-                            in: RoundedRectangle(cornerRadius: Token.Radius.tile, style: .continuous))
-            }
-            .buttonStyle(.plain)
-            .disabled(!session.isWaitingForMark)
 
             // Третий исход занятия — и он обязан выглядеть нажимаемым.
             //
@@ -251,7 +330,14 @@ struct TrainingSessionScreen: View {
                 Text("Отметок пока нет")
                     .textStyle(AppFont.cardTitle)
                     .wraps()
-                TGExplainer(text: "Первая полоска появится, когда нажмёшь «Клик». Ниже — быстрее: до полусекунды собака связывает маркер со своим действием, после секунды она уже делает что-то другое.")
+                // **Цитата снята вместе с кнопкой, которую она цитировала.**
+                // Кнопка больше не подписана «Клик»: на ней стоит сам
+                // маркер — «кликер», «слово „да“» или «щелчок языком»,
+                // то есть подпись меняется от настройки собаки. Цитировать
+                // можно только НЕИЗМЕННУЮ подпись; здесь её нет, значит
+                // верной цитаты не существует, и кнопка названа ролью.
+                // Тот же дефект и то же лечение, что у пейволла сегодня же.
+                TGExplainer(text: "Первая полоска появится, когда нажмёшь маркер. Ниже — быстрее: до полусекунды собака связывает маркер со своим действием, после секунды она уже делает что-то другое.")
             } else {
                 HStack {
                     TGSectionHeader(title: "последние отметки")
