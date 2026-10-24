@@ -81,12 +81,42 @@ nonisolated final class TodayFlowUITests: XCTestCase {
                       "каждая запись отменяется тостом")
     }
 
+    /// Дорога App Review до политики и условий — целиком, а не по частям.
+    ///
+    /// **Правка 24.10.2026.** Политика и условия больше не лежат строками
+    /// в настройках: четыре правовые строки собраны в экран «Правила»
+    /// (эталон `v10-прототип-24.10/screenshots/47-screens.jpg`). Тест,
+    /// искавший их прямо в настройках, после этого покраснел бы — и
+    /// покраснел бы **верно**: дорога правда изменилась.
+    ///
+    /// Поэтому он теперь её и проходит — открывает «Правила» и смотрит
+    /// внутрь. Проверять наличие строки на экране, с которого она ушла,
+    /// значит стеречь прокси вместо предмета: предмет здесь — «ревьюер
+    /// Apple доходит до политики», а не «строка лежит в том же списке».
     func testНастройкиСодержатОбязательныеРазделы() {
         app.buttons["Настройки"].tap()
         XCTAssertTrue(app.navigationBars["Настройки"].waitForExistence(timeout: 5))
 
-        for раздел in ["Данные и приватность", "Политика конфиденциальности", "Условия использования"] {
-            let элемент = app.descendants(matching: .any).matching(identifier: раздел).firstMatch
+        let данные = app.descendants(matching: .any)
+            .matching(identifier: "Данные и приватность").firstMatch
+        if !данные.exists { app.swipeUp() }
+        XCTAssertTrue(данные.waitForExistence(timeout: 3),
+                      "«Данные и приватность» — обязательный раздел для App Store")
+
+        let правила = app.descendants(matching: .any).matching(
+            NSPredicate(format: "label BEGINSWITH %@", "Правила")
+        ).firstMatch
+        for _ in 0..<10 where !правила.exists { app.swipeUp() }
+        XCTAssertTrue(правила.waitForExistence(timeout: 3),
+                      "в настройках нет строки «Правила» — за ней политика и условия")
+        правила.tap()
+        XCTAssertTrue(app.navigationBars["Правила"].waitForExistence(timeout: 5),
+                      "строка «Правила» есть, а экран за ней не открылся")
+
+        for раздел in ["Политика конфиденциальности", "Условия"] {
+            let элемент = app.descendants(matching: .any).matching(
+                NSPredicate(format: "label BEGINSWITH %@", раздел)
+            ).firstMatch
             if !элемент.exists { app.swipeUp() }
             XCTAssertTrue(элемент.waitForExistence(timeout: 3),
                           "\(раздел) — обязательный раздел для App Store")

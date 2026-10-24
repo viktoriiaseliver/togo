@@ -352,12 +352,24 @@ struct SettingsScreen: View {
 
     // MARK: Правовое
 
+    /// Одна дверь вместо четырёх — как на эталоне `47-screens`.
+    ///
+    /// Здесь стояли четыре `NavigationLink` подряд: политика, условия,
+    /// дисклеймер, открытый код. Четыре строки правового среди двух
+    /// десятков строк настроек, и **смотрит сюда App Review**: он ищет
+    /// политику и условия глазами по списку. Теперь они за одним словом
+    /// «Правила», а сам раздел — `LegalScreen` в `LegalScreens.swift`.
+    ///
+    /// Двери не исчезли и не переименованы: `PrivacyPolicyScreen`,
+    /// `TermsScreen`, `MedicalDisclaimerScreen`, `AcknowledgementsScreen`
+    /// открываются теми же типами, на шаг глубже. Ссылки из текстов
+    /// («Настройки → Данные и приватность») этой правкой не задеты —
+    /// они ведут в `dataSection`, а не сюда.
     private var legalSection: some View {
-        Section("правовое") {
-            NavigationLink("Политика конфиденциальности") { PrivacyPolicyScreen() }
-            NavigationLink("Условия использования") { TermsScreen() }
-            NavigationLink("Приложение — не медицинское устройство") { MedicalDisclaimerScreen() }
-            NavigationLink("Открытый код и благодарности") { AcknowledgementsScreen() }
+        Section {
+            NavigationLink("Правила") { LegalScreen() }
+        } header: {
+            Text("правовое")
         }
     }
 
