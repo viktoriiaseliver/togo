@@ -221,7 +221,7 @@ struct FeedingScreen: View {
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel(Text("Норма \(dog.dailyGrams) грамм на \(dog.mealsPerDay) кормлений — \(dog.servingGrams) грамм за раз"))
                 } else {
-                    нормаНеЗаписана(dog)
+                    нормаНеЗаписана
                 }
 
                 if report.averageGramsPerDay > 0 {
@@ -310,7 +310,7 @@ struct FeedingScreen: View {
     /// за человеком, и только оно это говорит. Заголовок при этом
     /// **меняется**: «норма врача» над прочерком была бы той же ложью
     /// в мягкой форме — она утверждает, что врач тут при чём.
-    private func нормаНеЗаписана(_ dog: Dog) -> some View {
+    private var нормаНеЗаписана: some View {
         VStack(alignment: .leading, spacing: Token.Space.s8) {
             TGSectionHeader(title: "норму ещё не записали",
                             subtitle: "её называет врач или упаковка")
