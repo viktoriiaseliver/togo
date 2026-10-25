@@ -36,7 +36,11 @@ nonisolated final class ВиджетПодТишиной: XCTestCase {
         app.launch()
         XCTAssertTrue(app.staticTexts["Стич"].waitForExistence(timeout: 10),
                       "приложение не поднялось на языке «\(т.язык)»")
-        app.buttons[т("Настройки")].firstMatch.tap()
+        // Через помощника: шестерёнка ушла в меню «…» (22.10), а дети
+        // `Menu` не существуют в дереве доступности, пока меню
+        // не открыто.
+        XCTAssertTrue(открытьНастройки(в: app),
+                      "в настройки не попасть ни прямой кнопкой, ни через «…»")
         XCTAssertTrue(app.navigationBars[т("Настройки")].waitForExistence(timeout: 5),
                       "не открылись настройки")
 
