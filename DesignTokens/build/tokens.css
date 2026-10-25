@@ -306,11 +306,14 @@
   --semantic-poster-bar: #1F4FFF;
   --semantic-poster-barOnDose: #F4F4F2;
   --semantic-poster-caption: #C7C7CC;
+  --semantic-poster-captionOnAlarm: #FFFFFFE0;
   --semantic-poster-captionOnColor: #B2B2AE;
   --semantic-poster-captionOnDose: #FFFFFFE0;
+  --semantic-poster-captionOnFasting: #5A4300;
   --semantic-poster-label: #FFFFFF;
   --semantic-poster-labelOnColor: #F4F4F2;
   --semantic-poster-labelOnDose: #F4F4F2;
+  --semantic-poster-labelOnFasting: #2A1D00;
   --semantic-radius-bar: 3px;
   --semantic-radius-capsule: 999px;
   --semantic-radius-card: 24px;
