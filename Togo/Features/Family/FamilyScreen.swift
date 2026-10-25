@@ -60,6 +60,12 @@ struct FamilyScreen: View {
     @State private var invite: DiaryInvite?
     @State private var inviteFailure: String?
     @State private var isPreparingInvite = false
+    /// Роль, которую получит тот, кто войдёт по этой ссылке.
+    ///
+    /// **Владельца в списке нет намеренно:** приглашают не себя,
+    /// а роль `.owner` по ссылке отдала бы дневник целиком — включая
+    /// право позвать следующего. Такого решения никто не принимал.
+    @State private var рольНовичка: FamilyRole = .caregiver
 
     private var dog: Dog? { appState.activeDog(from: dogs) }
     private var duty: FamilyMember? { members.first(where: \.isOnDuty) }
@@ -488,6 +494,43 @@ struct FamilyScreen: View {
                 .buttonStyle(.plain)
                 TGExplainer(text: "Выбери, кому: маме, мужу, ситтеру. Откроет только он, со своего iCloud, и ему нужен Togo на телефоне.")
             } else {
+                // **Роль выбирается ДО отправки, и это вход, которого
+                // не было.** 25.10.2026 канал назначения приехал готовым
+                // (`FamilyShare.назначитьНовичкам`), и его не звал никто:
+                // механизм без входа — наш оплаченный класс, который
+                // «отличить от рабочего нельзя ни тестом, ни
+                // компилятором».
+                //
+                // Место выбрано здесь, а не после отправки, потому что
+                // дизайн уже назвал роль в самом приглашении: круг 5,
+                // п. 2 — «Виктория зовёт тебя в дневник Стича · ты
+                // сможешь смотреть всё, отмечать будет Виктория».
+                // Чтобы это написать, роль надо знать до того, как
+                // ссылка ушла.
+                //
+                // > **Одна роль на всех приглашённых по этой ссылке.**
+                // > Поимённо — нельзя: связи «карточка ↔ участник
+                // > CloudKit» в проекте нет, и завести её значит сменить
+                // > форму схемы. Разбор — `FamilyShare:320`.
+                VStack(alignment: .leading, spacing: Token.Space.s8) {
+                    Text("Кем он войдёт").textStyle(AppFont.caption)
+                    Picker("Кем он войдёт", selection: $рольНовичка) {
+                        ForEach(FamilyRole.allCases.filter { $0 != .owner }, id: \.self) {
+                            Text($0.title).tag($0)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    .tint(Token.Ink.link)
+                    // `permissionSummary` УЖЕ БЫЛ — я чуть не завела
+                    // второй такой же под именем `подписьПрав`.
+                    // Две подписи одних прав разошлись бы молча,
+                    // и обе были бы «верными».
+                    Text(.готовая(рольНовичка.permissionSummary))
+                        .textStyle(AppFont.caption)
+                        .wraps()
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+
                 TGButton(title: isPreparingInvite ? "Готовлю…" : "Создать приглашение",
                          systemImage: "person.badge.plus",
                          isEnabled: !isPreparingInvite) {
@@ -509,6 +552,27 @@ struct FamilyScreen: View {
         defer { isPreparingInvite = false }
         do {
             let share = try await FamilyShare.invite(dogName: dog.flatMap(\.nameIfAny) ?? String(localized: "собаки"))
+            // Наряд кладётся ДО того, как ссылка ушла человеку.
+            //
+            // Порядок важен: приглашение и назначение — две разные
+            // записи в облаке, и принявший читает наряд при входе.
+            // Отправь ссылку раньше наряда — и быстрый человек войдёт
+            // наблюдателем, а роль приедет ему потом, вторым заходом
+            // `FamilySync.fetchNow`. Лишняя минута, в которую он видит
+            // не то, что ему выдали.
+            //
+            // Отказ назначения НЕ отменяет приглашения: ссылка уже
+            // создана в облаке, и выбрасывать её значит отрезать тех,
+            // кто принял раньше. Человек войдёт наблюдателем — это
+            // состояние, которое было до всей этой работы, и оно
+            // безопасное. Владелец поменяет роль, и она доедет
+            // следующим обменом.
+            do {
+                try await FamilyShare.назначитьНовичкам(рольНовичка)
+            } catch {
+                UsageLog.note(.record, "invite:роль:\(FamilyShare.причина(error))",
+                              on: .family, outcome: .failed)
+            }
             invite = DiaryInvite(share: share)
             UsageLog.note(.record, "invite", on: .family)
         } catch {
