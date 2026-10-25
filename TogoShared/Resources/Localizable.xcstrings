@@ -2081,6 +2081,7 @@
       }
     },
     "%@ %@" : {
+      "shouldTranslate" : false,
       "extractionState" : "stale",
       "localizations" : {
         "kk" : {
@@ -8678,6 +8679,7 @@
       }
     },
     "<" : {
+      "shouldTranslate" : false,
       "localizations" : {
         "kk" : {
           "stringUnit" : {
@@ -8688,6 +8690,7 @@
       }
     },
     "=" : {
+      "shouldTranslate" : false,
       "localizations" : {
         "kk" : {
           "stringUnit" : {
@@ -8755,6 +8758,7 @@
       }
     },
     ">" : {
+      "shouldTranslate" : false,
       "localizations" : {
         "kk" : {
           "stringUnit" : {
@@ -10902,6 +10906,7 @@
       }
     },
     "12,9" : {
+      "shouldTranslate" : false,
       "localizations" : {
         "kk" : {
           "stringUnit" : {
@@ -11303,6 +11308,7 @@
       }
     },
     "51,5" : {
+      "shouldTranslate" : false,
       "localizations" : {
         "kk" : {
           "stringUnit" : {
@@ -11342,6 +11348,7 @@
       }
     },
     "66" : {
+      "shouldTranslate" : false,
       "localizations" : {
         "kk" : {
           "stringUnit" : {
@@ -11511,6 +11518,7 @@
       }
     },
     "8935331" : {
+      "shouldTranslate" : false,
       "localizations" : {
         "kk" : {
           "stringUnit" : {
