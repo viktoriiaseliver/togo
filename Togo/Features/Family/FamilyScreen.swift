@@ -392,6 +392,17 @@ struct FamilyScreen: View {
         VStack(alignment: .leading, spacing: Token.Space.s8) {
             TGSectionHeader(title: "участники · \(members.count)")
             TGCard(spacing: 0) {
+                // Второе из трёх мест, где человек узнаёт свою роль
+                // (ОТВЕТЫ-круг-5, п. 2): **своя строка первой**.
+                //
+                // Строка, а не карточка внизу: список семьи — первое
+                // место, куда идёт человек с вопросом «а что мне здесь
+                // можно», и ответ обязан стоять там, где он начинает
+                // читать, а не там, докуда долистает.
+                if let своя {
+                    свояСтрока(своя)
+                    if !members.isEmpty { TGDivider(inset: 38) }
+                }
                 ForEach(members) { member in
                     NavigationLink { MemberScreen(member: member) } label: {
                         MemberRow(member: member)
@@ -401,6 +412,51 @@ struct FamilyScreen: View {
                 }
             }
         }
+    }
+
+    /// Своя роль — когда её неоткуда взять из списка.
+    ///
+    /// **Условие — отсутствие своей карточки, а не гостевой флаг.**
+    /// У гостя своей карточки в чужом дневнике нет по построению:
+    /// `FamilyResolver.меня(…, гость: true)` возвращает её только
+    /// по запомненному на ЭТОМ телефоне `id`, а приглашённый ничего
+    /// не заводил. Нарисовать строку по флагу значило бы у опознанного
+    /// гостя показать его дважды — своей карточкой и этой строкой.
+    ///
+    /// У владельца своя карточка есть (её ставит онбординг), поэтому
+    /// здесь ему ничего не добавится, и это проверяется тем же
+    /// условием, а не отдельной веткой.
+    private var своя: РольВДневнике? {
+        guard FamilyResolver.меня(среди: members,
+                                  запомненный: appState.myMemberID,
+                                  гость: SharedZoneOwner.isGuest) == nil
+        else { return nil }
+        return РольВДневнике.текущая(роль: appState.role, среди: members)
+    }
+
+    /// «Ты · наблюдатель» / «смотришь всё · отмечает владелец».
+    ///
+    /// Собрана как `MemberRow` — две строки рядом с кружком, — но
+    /// **без шеврона и без `NavigationLink`**: открывать нечего.
+    /// Карточки, в которую можно было бы войти, у этого человека нет
+    /// вовсе — он потому эту строку и видит. Шеврон над строкой,
+    /// которая никуда не ведёт, это «вход есть, механизма нет»
+    /// в миниатюре, и отказ был бы наш.
+    private func свояСтрока(_ роль: РольВДневнике) -> some View {
+        HStack(spacing: Token.Space.s12) {
+            Image(systemName: "eye")
+                .font(.system(size: Token.Size.iconMd, weight: .medium))
+                .foregroundStyle(Token.Ink.secondary)
+                .frame(width: Token.Size.avatarMd, height: Token.Size.avatarMd)
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: Token.Space.s2) {
+                Text(.готовая(роль.ты)).textStyle(AppFont.bodyEmphasis).wraps()
+                Text(.готовая(роль.чтоМогу)).textStyle(AppFont.caption).wraps()
+            }
+            Spacer(minLength: Token.Space.s8)
+        }
+        .frame(minHeight: Token.Size.controlXL)
+        .accessibilityElement(children: .combine)
     }
 
     /// Отправить приглашение — здесь, а не только внутри «Общего дневника».
