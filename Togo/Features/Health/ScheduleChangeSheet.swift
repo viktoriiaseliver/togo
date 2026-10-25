@@ -77,7 +77,7 @@ struct ScheduleChangeSheet: View {
             HStack {
                 Text("Доза").textStyle(AppFont.body)
                 Spacer()
-                TextField("16 мг", text: $doseText)
+                TextField("доза с единицей", text: $doseText)
                     .multilineTextAlignment(.trailing)
                     .textStyle(AppFont.body)
             }

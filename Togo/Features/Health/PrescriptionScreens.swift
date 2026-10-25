@@ -216,7 +216,12 @@ struct PrescriptionEditor: View {
                 }
                 TGDivider()
                 LabeledField(label: "Доза") {
-                    TextField("0,1 мг", text: $доза)
+                    // «0,1 мг» был примером дозы живого назначения.
+                    // Информации в нём ровно одна — что единицу пишут
+                    // в том же поле, — и она сказана словами. Тот же
+                    // ключ стоит у «66 мкг» (Editors) и «16 мг»
+                    // (ScheduleChangeSheet): три примера, один формат.
+                    TextField("доза с единицей", text: $доза)
                 }
                 TGDivider()
                 LabeledField(label: "Схема") {
@@ -224,7 +229,7 @@ struct PrescriptionEditor: View {
                 }
                 TGDivider()
                 LabeledField(label: "Сколько давать") {
-                    TextField("3 месяца", text: $длительность)
+                    TextField("срок", text: $длительность)
                 }
                 TGDivider()
                 LabeledField(label: "Форма") {
@@ -308,7 +313,7 @@ struct PrescriptionEditor: View {
 
             TGCard(spacing: 0) {
                 LabeledField(label: "Выдано") {
-                    TextField("4 таблетки", text: $выдано)
+                    TextField("сколько и чего", text: $выдано)
                 }
                 TGDivider()
                 TGSectionHeader(title: "инструкция")

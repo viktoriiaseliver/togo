@@ -578,7 +578,7 @@ struct LabResultEntryFlow: View {
                         .frame(minHeight: Token.Size.tapTarget)
                 } else {
                     LabeledField(label: "Число") {
-                        TextField("12,9", text: $строка.число).keyboardType(.decimalPad)
+                        TextField("с бланка", text: $строка.число).keyboardType(.decimalPad)
                             .focused($фокус, equals: .число(строка.id))
                             .autocorrectionDisabled()
                     }
@@ -590,13 +590,13 @@ struct LabResultEntryFlow: View {
                     }
                     TGDivider()
                     LabeledField(label: "Норма от") {
-                        TextField("12,9", text: $строка.нормаНиз).keyboardType(.decimalPad)
+                        TextField("с бланка", text: $строка.нормаНиз).keyboardType(.decimalPad)
                             .focused($фокус, equals: .нормаНиз(строка.id))
                             .autocorrectionDisabled()
                     }
                     TGDivider()
                     LabeledField(label: "Норма до") {
-                        TextField("51,5", text: $строка.нормаВерх).keyboardType(.decimalPad)
+                        TextField("с бланка", text: $строка.нормаВерх).keyboardType(.decimalPad)
                             .focused($фокус, equals: .нормаВерх(строка.id))
                             .autocorrectionDisabled()
                     }
@@ -793,7 +793,7 @@ struct LabResultRowEditor: View {
                 } else {
                     TGDivider()
                     LabeledField(label: "Число") {
-                        TextField("12,9", text: $черновик.число).keyboardType(.decimalPad)
+                        TextField("с бланка", text: $черновик.число).keyboardType(.decimalPad)
                             .focused($фокус, equals: .число)
                             .autocorrectionDisabled()
                     }
@@ -805,13 +805,13 @@ struct LabResultRowEditor: View {
                     }
                     TGDivider()
                     LabeledField(label: "Норма от") {
-                        TextField("12,9", text: $черновик.нормаНиз).keyboardType(.decimalPad)
+                        TextField("с бланка", text: $черновик.нормаНиз).keyboardType(.decimalPad)
                             .focused($фокус, equals: .нормаНиз)
                             .autocorrectionDisabled()
                     }
                     TGDivider()
                     LabeledField(label: "Норма до") {
-                        TextField("51,5", text: $черновик.нормаВерх).keyboardType(.decimalPad)
+                        TextField("с бланка", text: $черновик.нормаВерх).keyboardType(.decimalPad)
                             .focused($фокус, equals: .нормаВерх)
                             .autocorrectionDisabled()
                     }

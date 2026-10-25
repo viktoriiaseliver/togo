@@ -590,7 +590,7 @@ struct MedicationEditorSheet: View {
                 }
                 TGDivider()
                 LabeledField(label: "Доза") {
-                    TextField("66 мкг", text: $doseText)
+                    TextField("доза с единицей", text: $doseText)
                 }
                 TGDivider()
                 LabeledField(label: "Назначил") {
@@ -601,7 +601,10 @@ struct MedicationEditorSheet: View {
             TGCard {
                 TGSectionHeader(title: "сколько вещества в одной единице")
                 HStack(spacing: Token.Space.s8) {
-                    TextField("66", text: $массаТекст)
+                    // Единица выбирается Picker'ом СПРАВА, поэтому
+                    // подсказка говорит ровно то, чего пример «66»
+                    // не говорил: единицу сюда не писать.
+                    TextField("только число", text: $массаТекст)
                         .keyboardType(.decimalPad)
                         .focused($массаВФокусе)
                         .autocorrectionDisabled()
