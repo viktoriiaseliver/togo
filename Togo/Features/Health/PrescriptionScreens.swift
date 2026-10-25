@@ -41,6 +41,11 @@ struct PrescriptionsScreen: View {
     var body: some View {
         TGScreen {
             CinemaHeader("Назначения", надпись: "для аптеки", отступы: false)
+            // Плашка — ДО первого отказа: строки рецептов выключены `.disabled(!canEdit)` (`:65`),
+            // а `.disabled` молчит по устройству. Правило дизайна
+            // круга 5, п. 1; разбор и причина одного типа на все
+            // экраны — `ПлашкаПрава`.
+            if !canEdit { ПлашкаПрава(право: .editTreatment) }
             if назначения.isEmpty {
                 EmptyStateCard(
                     subject: .health,
@@ -348,7 +353,18 @@ struct PrescriptionEditor: View {
             // экран, ни крупный шрифт этого не ловят.
             Spacer(minLength: Token.Size.tapTarget * 2)
         } footer: {
-            TGButton(title: новое ? "Добавить" : "Сохранить", isEnabled: можноСохранить) { сохранить() }
+            // Правило дизайна круга 5, п. 1: выключенная кнопка
+            // допустима, только если рядом словом сказано, чего
+            // не хватает. Форма — по образцу запаса корма (`d569d01`):
+            // строка над кнопкой, на ТОЙ ЖЕ величине, что ворота.
+            VStack(spacing: Token.Space.s8) {
+                if !можноСохранить {
+                    Text("Назови препарат — по нему назначение и ищут")
+                        .textStyle(AppFont.caption.color(Token.Status.overdueText))
+                        .wraps()
+                }
+                TGButton(title: новое ? "Добавить" : "Сохранить", isEnabled: можноСохранить) { сохранить() }
+            }
         }
         .presentationDetents([.large])
         // Выход с цифровой клавиатуры. Тут он дороже обычного: вес,

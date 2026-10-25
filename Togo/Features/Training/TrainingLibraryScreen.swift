@@ -31,6 +31,11 @@ struct TrainingLibraryScreen: View {
     var body: some View {
         TGScreen {
             CinemaHeader("Занятия и шаги", отступы: false)
+            // Плашка — ДО первого отказа: строки шагов выключены `.disabled(!canEdit)` (`:143`),
+            // а `.disabled` молчит по устройству. Правило дизайна
+            // круга 5, п. 1; разбор и причина одного типа на все
+            // экраны — `ПлашкаПрава`.
+            if !canEdit { ПлашкаПрава(право: .editProfile) }
             if steps.isEmpty && sessions.isEmpty {
                 EmptyStateCard(
                     subject: .trainingLibrary,

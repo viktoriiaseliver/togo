@@ -54,6 +54,12 @@ struct BackupScreen: View {
             // правит другая сессия (вычитка пяти языков), и каждый
             // новый литерал — её работа, а не моя.
             CinemaHeader("Копия", надпись: "iCloud · JSON · CSV", отступы: false)
+            // Выгрузка выключена `.disabled(!appState.can(.exportData))`
+            // (`:205`). Образец плашки стоял экраном левее
+            // (`DataPrivacyScreen:35`) с самого начала — здесь его
+            // не было. Новых строк это не заводит: заголовок и подпись
+            // строит `ПлашкаПрава` из `Permission`.
+            if !appState.can(.exportData) { ПлашкаПрава(право: .exportData) }
             iCloudCard
             exportCard
             csvCard

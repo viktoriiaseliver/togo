@@ -46,6 +46,11 @@ struct VetVisitsScreen: View {
     var body: some View {
         TGScreen {
             CinemaHeader("Визиты к врачу", отступы: false)
+            // Плашка — ДО первого отказа: строки визитов выключены `.disabled(!canEdit)` (`:73`),
+            // а `.disabled` молчит по устройству. Правило дизайна
+            // круга 5, п. 1; разбор и причина одного типа на все
+            // экраны — `ПлашкаПрава`.
+            if !canEdit { ПлашкаПрава(право: .editTreatment) }
             if визиты.isEmpty {
                 EmptyStateCard(
                     subject: .health,
@@ -271,6 +276,11 @@ struct DiagnosesScreen: View {
     var body: some View {
         TGScreen {
             CinemaHeader("Диагнозы", отступы: false)
+            // Плашка — ДО первого отказа: строки диагнозов выключены `.disabled(!canEdit)` (`:332`),
+            // а `.disabled` молчит по устройству. Правило дизайна
+            // круга 5, п. 1; разбор и причина одного типа на все
+            // экраны — `ПлашкаПрава`.
+            if !canEdit { ПлашкаПрава(право: .editTreatment) }
             if диагнозы.isEmpty {
                 EmptyStateCard(
                     subject: .health,
@@ -462,7 +472,18 @@ struct DiagnosisEditor: View {
                 }
             }
         } footer: {
-            TGButton(title: новый ? "Добавить" : "Сохранить", isEnabled: можноСохранить) { сохранить() }
+            // Правило дизайна круга 5, п. 1: выключенная кнопка
+            // допустима, только если рядом словом сказано, чего
+            // не хватает. Форма — по образцу запаса корма (`d569d01`):
+            // строка над кнопкой, на ТОЙ ЖЕ величине, что ворота.
+            VStack(spacing: Token.Space.s8) {
+                if !можноСохранить {
+                    Text("Напиши формулировку — хотя бы рабочую гипотезу")
+                        .textStyle(AppFont.caption.color(Token.Status.overdueText))
+                        .wraps()
+                }
+                TGButton(title: новый ? "Добавить" : "Сохранить", isEnabled: можноСохранить) { сохранить() }
+            }
         }
         .presentationDetents([.large])
         .task { загрузить() }

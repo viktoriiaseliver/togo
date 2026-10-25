@@ -15,11 +15,11 @@ struct ScheduleScreen: View {
 
     var body: some View {
         TGScreen {
-            if !canEdit {
-                TGBanner(tone: .waiting, title: "Только чтение",
-                         subtitle: "Режим питания меняет тот, кому владелец выдал право на профиль.",
-                         systemImage: "lock")
-            }
+            // Плашка была, права не называла — тот же случай, что
+            // в `ProfileScreen`, и тем же лечением. «Право на профиль»
+            // в списке «Семьи» не значится: там оно зовётся «Менять
+            // профиль и уход».
+            if !canEdit { ПлашкаПрава(право: .editProfile) }
             ScheduleEditor(draft: $draft)
                 .disabled(!canEdit)
         } bottom: {

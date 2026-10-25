@@ -892,6 +892,10 @@ struct MemberScreen: View {
     var body: some View {
         TGScreen {
             CinemaHeader(значение: member.name, отступы: false)
+            // Плашка одна на ДВА выключенных органа этого экрана:
+            // чипы роли (`:908`) и переключатели прав
+            // (`PermissionToggle`, `:1017`). Оба молчали.
+            if !canManage { ПлашкаПрава(право: .manageFamily) }
             TGCard {
                 TGSectionHeader(title: "роль", subtitle: "это пресет прав, а не потолок")
                 TGChipGroup(
@@ -1056,9 +1060,20 @@ struct InviteSheet: View {
                 TGExplainer(text: "Чтобы он отмечал со своего телефона, включи общий дневник и отправь приглашение — «позвать в дневник» в списке семьи.")
             }
         } footer: {
-            TGButton(title: "Добавить", isEnabled: !name.trimmingCharacters(in: .whitespaces).isEmpty) {
-                create()
-                dismiss()
+            // Правило дизайна круга 5, п. 1: выключенная кнопка
+            // допустима, только если рядом словом сказано, чего
+            // не хватает. Форма — по образцу запаса корма (`d569d01`):
+            // строка над кнопкой, на ТОЙ ЖЕ величине, что ворота.
+            VStack(spacing: Token.Space.s8) {
+                if name.trimmingCharacters(in: .whitespaces).isEmpty {
+                    Text("Напиши, как его зовут — имя станет автором его записей")
+                        .textStyle(AppFont.caption.color(Token.Status.overdueText))
+                        .wraps()
+                }
+                TGButton(title: "Добавить", isEnabled: !name.trimmingCharacters(in: .whitespaces).isEmpty) {
+                    create()
+                    dismiss()
+                }
             }
         }
         .presentationDetents([.large])

@@ -272,13 +272,31 @@ struct NoteSheet: View {
                     .scrollContentBackground(.hidden)
             }
         } footer: {
-            TGButton(title: "Записать",
-                     isEnabled: !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty) {
+            // Правило круга 5, п. 1: выключенная кнопка обязана
+            // сказать, чего не хватает.
+            //
+            // **И тут же названо расхождение, которое я НЕ чиню:**
+            // ворота кнопки режут `.whitespacesAndNewlines`, а
+            // `hasUnsavedChanges` выше (`:261`) — только
+            // `.whitespaces`. Заметка из одного перевода строки даёт
+            // «есть несохранённое» при выключенной кнопке. Величина
+            // одна, предикатов два; свести их — правка поведения
+            // закрытия листа, названа открытым пунктом, а строка
+            // ниже стоит на той величине, что в воротах.
+            VStack(spacing: Token.Space.s8) {
+                if text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    Text("Напиши заметку — пустую записывать нечего")
+                        .textStyle(AppFont.caption.color(Token.Status.overdueText))
+                        .wraps()
+                }
+                TGButton(title: "Записать",
+                         isEnabled: !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty) {
                 EventLog(context: context, appState: appState)
                     .record(.note, dog: dog, confirmation: "Записано · Заметка") { event in
                         event.note = text
                     }
-                dismiss()
+                    dismiss()
+                }
             }
         }
         .presentationDetents([.medium])
@@ -330,11 +348,12 @@ struct EventEditSheet: View {
                       // обмена между устройствами пока нет, и говорить о нём
                       // нельзя.
                       subtitle: event.map { "Записала \($0.authorName) в \(Fmt.clock($0.date))" }) {
-            if !canEdit {
-                TGBanner(tone: .waiting, title: "Только чтение",
-                         subtitle: "С твоей ролью можно записывать своё, но не править уже записанное. Права выдаёт владелец в разделе «Семья».",
-                         systemImage: "lock")
-            }
+            // Плашка была и адрес называла верно («Семья»), а имя
+            // права — нет. Из трёх таких плашек в дереве ни одна
+            // не называла права по имени каталога, и все три написаны
+            // своими словами — то есть разошлись бы молча ещё и между
+            // собой.
+            if !canEdit { ПлашкаПрава(право: .editRecords) }
             if let event {
                 TGCard(padding: 4) {
                     VStack(spacing: 0) {
