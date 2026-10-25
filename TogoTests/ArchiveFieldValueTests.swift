@@ -39,7 +39,8 @@ struct ArchiveFieldValueTests {
         try ModelContainer(
             for: Persistence.schema,
             configurations: ModelConfiguration(schema: Persistence.schema,
-                                               isStoredInMemoryOnly: true)
+                                               isStoredInMemoryOnly: true,
+                                               cloudKitDatabase: .none)
         )
     }
 

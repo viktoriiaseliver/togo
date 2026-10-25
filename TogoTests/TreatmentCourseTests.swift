@@ -12,7 +12,7 @@ struct TreatmentCourseTests {
     private func setup() throws -> (ModelContext, Dog, Medication) {
         let container = try ModelContainer(
             for: Dog.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         )
         let context = ModelContext(container)
         let dog = Dog(name: "Того", weightKg: 12)

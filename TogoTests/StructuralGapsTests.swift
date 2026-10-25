@@ -17,7 +17,7 @@ struct PermissionGapTests {
     private func setup() throws -> (ModelContext, Dog, AppState) {
         let container = try ModelContainer(
             for: Dog.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         )
         let context = ModelContext(container)
         let dog = Dog(name: "Стич", weightKg: 12)
@@ -182,7 +182,7 @@ struct DocumentGapTests {
         // на новом телефоне паспорт исчезал молча.
         let container = try ModelContainer(
             for: Dog.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         )
         let context = ModelContext(container)
 
@@ -206,7 +206,7 @@ struct DocumentGapTests {
     func oldArchiveStillDecodes() throws {
         let container = try ModelContainer(
             for: Dog.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         )
         let context = ModelContext(container)
         context.insert(Dog(name: "Стич", weightKg: 12))
@@ -251,7 +251,7 @@ struct TrainingGapTests {
     private func setup() throws -> (ModelContext, Dog) {
         let container = try ModelContainer(
             for: Dog.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         )
         let context = ModelContext(container)
         let dog = Dog(name: "Стич", weightKg: 12)
@@ -357,7 +357,7 @@ struct MultipleDogsTests {
     private func setup() throws -> (ModelContext, Dog, Dog, AppState) {
         let container = try ModelContainer(
             for: Dog.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         )
         let context = ModelContext(container)
         let stitch = Dog(name: "Стич", weightKg: 4.7)
@@ -704,7 +704,7 @@ struct PrototypeV2Tests {
     func doubleDoseIsImpossible() throws {
         let container = try ModelContainer(
             for: Dog.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         )
         let context = ModelContext(container)
         let dog = Dog(name: "Бим", weightKg: 12)
@@ -732,7 +732,7 @@ struct PrototypeV2Tests {
     func lockIsReversible() throws {
         let container = try ModelContainer(
             for: Dog.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         )
         let context = ModelContext(container)
         let dog = Dog(name: "Бим", weightKg: 12)

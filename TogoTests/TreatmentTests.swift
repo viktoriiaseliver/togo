@@ -261,7 +261,7 @@ struct SkippedDoseTests {
     private func setup() throws -> (ModelContext, Medication) {
         let container = try ModelContainer(
             for: Dog.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         )
         let context = ModelContext(container)
         let dog = Dog(name: "Бим", weightKg: 12)

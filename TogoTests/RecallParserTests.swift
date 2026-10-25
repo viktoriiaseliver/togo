@@ -154,7 +154,7 @@ struct RecallByDayTests {
 
     private func контекст() throws -> (ModelContext, Dog) {
         let container = try ModelContainer(
-            for: Dog.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            for: Dog.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         )
         let context = ModelContext(container)
         let dog = Dog(name: "Стич", weightKg: 4.73)

@@ -164,7 +164,7 @@ struct SharedDiaryInboxTests {
     private func setup() throws -> (ModelContext, Dog) {
         let container = try ModelContainer(
             for: Dog.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         )
         let context = ModelContext(container)
         let dog = Dog(name: "Стич", weightKg: 4.1)

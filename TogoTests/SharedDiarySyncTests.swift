@@ -367,7 +367,7 @@ struct SharedClinicSyncTests {
     private func телефон() throws -> (ModelContext, Dog) {
         let container = try ModelContainer(
             for: Dog.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         )
         let context = ModelContext(container)
         let dog = Dog(name: "Стич", weightKg: 4.1)
@@ -596,7 +596,7 @@ struct SharedLostFieldsTests {
     private func телефон() throws -> (ModelContext, Dog) {
         let container = try ModelContainer(
             for: Dog.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         )
         let context = ModelContext(container)
         let dog = Dog(name: "Стич", weightKg: 4.1)
@@ -836,7 +836,7 @@ struct SharedDocumentSyncTests {
     private func телефон() throws -> (ModelContext, Dog) {
         let container = try ModelContainer(
             for: Dog.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         )
         let context = ModelContext(container)
         let dog = Dog(name: "Стич", weightKg: 4.1)
@@ -982,7 +982,7 @@ struct SharedWeightSyncTests {
     private func телефон() throws -> (ModelContext, Dog) {
         let container = try ModelContainer(
             for: Dog.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         )
         let context = ModelContext(container)
         let dog = Dog(name: "Стич", weightKg: 4.1)
@@ -1093,7 +1093,7 @@ struct SharedMedicalSyncTests {
     private func телефон() throws -> (ModelContext, Dog) {
         let container = try ModelContainer(
             for: Dog.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         )
         let context = ModelContext(container)
         let dog = Dog(name: "Стич", weightKg: 4.1)
@@ -1420,7 +1420,7 @@ struct SharedDoseMedicationTests {
     private func setup() throws -> (ModelContext, Dog) {
         let container = try ModelContainer(
             for: Dog.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         )
         let context = ModelContext(container)
         let dog = Dog(name: "Стич", weightKg: 4.1)
@@ -1569,7 +1569,7 @@ struct SharedDiaryUndoTests {
     private func setup() throws -> (ModelContext, Dog) {
         let container = try ModelContainer(
             for: Dog.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         )
         let context = ModelContext(container)
         let dog = Dog(name: "Стич", weightKg: 4.1)

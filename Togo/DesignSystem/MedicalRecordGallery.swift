@@ -77,7 +77,8 @@ struct MedicalRecordGallery: View {
         guard контейнер == nil else { return }
         guard let хранилище = try? ModelContainer(
             for: Dog.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true,
+                                               cloudKitDatabase: .none)
         ) else { return }
         контейнер = хранилище
         let контекст = ModelContext(хранилище)

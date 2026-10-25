@@ -735,7 +735,7 @@ struct FoodSourceOfTruthTests {
         // продолжает считать по старой цифре.
         let container = try ModelContainer(
             for: Dog.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         )
         let context = ModelContext(container)
 
@@ -760,7 +760,7 @@ struct FoodSourceOfTruthTests {
     func mixedFeedingKeepsSplit() throws {
         let container = try ModelContainer(
             for: Dog.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         )
         let context = ModelContext(container)
 

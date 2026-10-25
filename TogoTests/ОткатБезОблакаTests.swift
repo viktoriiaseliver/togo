@@ -193,4 +193,127 @@ struct ОткатБезОблакаTests {
             и запрет выше выполняется на пустоте.
             """)
     }
+
+    // MARK: - Весь репозиторий, а не один файл
+
+    /// Все `.swift` дерева, кроме самого сторожа.
+    ///
+    /// **Почему сторож исключает себя, и это не поблажка.** Разбор ниже
+    /// ищет текст `ModelConfiguration(` и читает его аргументы. В этом
+    /// файле такой текст есть внутри строкового литерала
+    /// (`range(of: "ModelConfiguration(")`), и после вырезания
+    /// комментариев он остаётся кодом. Разбор прочёл бы литерал
+    /// как вызов без `cloudKitDatabase` и покраснел бы на самом себе —
+    /// красный, у которого нет предмета. Исключение именное и одно.
+    private func файлыДерева() -> [URL] {
+        let корень = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        var итог: [URL] = []
+        for каталог in ["Togo", "TogoShared", "TogoTests", "TogoUITests", "TogoWidgets"] {
+            let путь = корень.appendingPathComponent(каталог)
+            guard let обход = FileManager.default.enumerator(
+                at: путь, includingPropertiesForKeys: nil) else { continue }
+            for случай in обход {
+                guard let url = случай as? URL, url.pathExtension == "swift" else { continue }
+                if url.lastPathComponent == URL(fileURLWithPath: #filePath).lastPathComponent {
+                    continue
+                }
+                итог.append(url)
+            }
+        }
+        return итог
+    }
+
+    private func безКомментариев(_ текст: String) -> String {
+        текст.split(separator: "\n", omittingEmptySubsequences: false)
+            .map { String($0.components(separatedBy: "//")[0]) }
+            .joined(separator: "\n")
+    }
+
+    /// Вызовы `ModelConfiguration(` файла и их аргументы — тем же
+    /// разбором по скобкам, что и у `Persistence.swift` выше.
+    private func вызовыКонфигураций(_ код: String) -> [String] {
+        var найдено: [String] = []
+        var остаток = Substring(код)
+        while let начало = остаток.range(of: "ModelConfiguration(") {
+            var глубина = 0
+            var конец = начало.upperBound
+            var индекс = начало.lowerBound
+            var внутри = Substring("")
+            while индекс < остаток.endIndex {
+                let символ = остаток[индекс]
+                if символ == "(" { глубина += 1 }
+                if символ == ")" {
+                    глубина -= 1
+                    if глубина == 0 {
+                        конец = остаток.index(after: индекс)
+                        внутри = остаток[начало.upperBound..<индекс]
+                        break
+                    }
+                }
+                индекс = остаток.index(after: индекс)
+            }
+            найдено.append(String(внутри))
+            остаток = остаток[конец...]
+        }
+        return найдено
+    }
+
+    /// **Почему запрет нужен на всё дерево, а не на один файл.**
+    ///
+    /// Сторож выше читал только `Persistence.swift` — и 25.10.2026
+    /// выяснилось, чего это стоило: двадцать семь конфигураций в памяти
+    /// жили в одиннадцати файлах `TogoTests`, ещё по одной
+    /// в `ArchiveFieldValueTests` и в `MedicalRecordGallery` (это уже
+    /// код приложения, не тест). Замер одного `make unit` на `2576ed9`:
+    /// **213 разных `NSCloudKitMirroringDelegate` за прогон**, и все
+    /// названные ими хранилища — `file:///dev/null`, то есть в памяти.
+    ///
+    /// Правка только `Persistence.container()` убрала 213 → 20,
+    /// то есть 90 % приходило оттуда — и оставшиеся 20 показывают,
+    /// что сторож на один файл закрывал один вход из тринадцати.
+    @Test("Ни один файл дерева не заводит хранилище, умалчивая про облако")
+    func нетУмолчанийВоВсёмДереве() throws {
+        var умолчали: [String] = []
+        var всегоВызовов = 0
+        var прочитаноФайлов = 0
+
+        for url in файлыДерева() {
+            guard let текст = try? String(contentsOf: url, encoding: .utf8) else { continue }
+            прочитаноФайлов += 1
+            for вызов in вызовыКонфигураций(безКомментариев(текст)) {
+                всегоВызовов += 1
+                if !вызов.contains("cloudKitDatabase") {
+                    умолчали.append("\(url.lastPathComponent): \(вызов.prefix(70))…")
+                }
+            }
+        }
+
+        // Контроль ПЕРВЫМ и в том же замере, что предмет: обход,
+        // переставший находить файлы, молчит так же, как дерево без
+        // нарушений. Числа здесь — нижние границы, не точные значения.
+        #expect(прочитаноФайлов > 200, """
+            Обход прочитал \(прочитаноФайлов) файлов `.swift` — это
+            не дерево Того. Запрет ниже выполняется на пустоте.
+            """)
+        #expect(всегоВызовов >= 10, """
+            Вызовов `ModelConfiguration(` во всём дереве найдено
+            \(всегоВызовов). Их там десятки. Разбор ослеп.
+            """)
+
+        #expect(умолчали.isEmpty, """
+            Конфигураций хранилища без `cloudKitDatabase` — \(умолчали.count):
+
+            \(умолчали.joined(separator: "\n"))
+
+            `isStoredInMemoryOnly` зеркалирование НЕ отключает: замер
+            25.10.2026 дал 213 разных `NSCloudKitMirroringDelegate`
+            за один `make unit`, и все названные хранилища были
+            `file:///dev/null`. Каждый такой делегат не находит iCloud,
+            не восстанавливается и убирает хранилище из координатора —
+            а дальше таймер автосохранения SwiftData падает в `brk #1`
+            внутри `-[ModelContext checkAutosaveConditions]`.
+            """)
+    }
 }
