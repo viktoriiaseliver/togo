@@ -83,7 +83,18 @@ struct FallbackLiteralTests {
         "BackupScreen.swift": 1,
         "TodayScreen.swift": 1,
         "DayTimeline.swift": 1,
-        "TrainingSessionScreen.swift": 4,
+        // Было 4, стало 3 по замеру прогона 25.10.2026: тест покраснел
+        // не на переборе, а на `протухшие` — «долг числит больше, чем
+        // в файле есть». Четвёртое место закрыл `d70c4f7` (24.10.2026,
+        // «Маркер „Да!" — белой карточкой первым элементом»):
+        // `Text(dog?.markerKind.title ?? "маркер")` стало
+        // `?? String(localized: "маркер")`. Починка настоящая, а число
+        // осталось прежним — и запись, пережившая свои строки, разрешала
+        // вернуть в файл один литерал молча.
+        //
+        // Живые три: :78 «поставь руку один раз…», :443 «Занятие»,
+        // :444 «дома».
+        "TrainingSessionScreen.swift": 3,
         "AlarmThresholdScreen.swift": 1,
         "PillSupplyScreen.swift": 1,
         "LogSheets.swift": 1,
