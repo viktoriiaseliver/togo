@@ -253,13 +253,40 @@ struct TreatmentCourseTests {
         #expect(dog.events.contains { $0.kind == .dose })
     }
 
+    /// **Сутки отсчитываются календарём, опоздание — секундами, и это
+    /// две разные величины.** До 25.10.2026 дозы строились здесь
+    /// `now.addingTimeInterval(Double(offset) * 86400)`, а проверялось
+    /// `summary.days`, которое с `d5b9976` (24.10.2026) считает
+    /// КАЛЕНДАРНЫЕ сутки. Триста шестьдесят три дня в году эти два
+    /// способа совпадают. Замер 25.10.2026, Europe/Paris, в сутках
+    /// 25 часов:
+    ///
+    /// ```
+    /// now − 4 × 86400 секунд     2026-10-21 13:52 GMT+2 → суток 3   ← предмет
+    /// now − 4 суток календарём   2026-10-21 12:52 GMT+2 → суток 4   ← контроль
+    /// ```
+    ///
+    /// `summary.days` вернул 3 при ожидании ≥ 4, и код был прав:
+    /// по стенным часам от 21-го 13:52 до 25-го 12:52 действительно
+    /// неполные четверо суток. Неверен был вход теста.
+    ///
+    /// > **Починка в одной единице делает ложным замер, построенный
+    /// > в другой.** `d5b9976` перевёл показ на календарь и этим снял
+    /// > посылку, на которой стоял этот тест с 27.08.2026 (`7c764c1`), —
+    /// > а покраснело оно только в воскресенье перевода часов, через
+    /// > сутки после починки.
+    ///
+    /// Опоздание (900 и 7200 секунд) остаётся секундами нарочно:
+    /// `onTimeWindow` — это отрезок в 3600 секунд, а не сутки.
     @Test("Итог курса считает дозы и долю вовремя")
     func summaryCountsDoses() throws {
         let (context, dog, medication) = try setup()
+        let календарь = Calendar.current
         let now = Date()
 
         for (offset, lateness) in [(-4, 0.0), (-3, 900.0), (-2, 7200.0)] as [(Int, Double)] {
-            let dose = DoseRecord(scheduledAt: now.addingTimeInterval(Double(offset) * 86400))
+            let назначено = try #require(календарь.date(byAdding: .day, value: offset, to: now))
+            let dose = DoseRecord(scheduledAt: назначено)
             dose.givenAt = dose.scheduledAt.addingTimeInterval(lateness)
             dose.medication = medication
             context.insert(dose)
