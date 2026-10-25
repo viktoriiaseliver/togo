@@ -1,0 +1,448 @@
+import Foundation
+import SwiftData
+import SwiftUI
+import Testing
+import UIKit
+@testable import Togo
+
+/// Помещается ли картинка в рамку, которую ей дали, — **кадром
+/// с приметами**, а не однотонным снимком.
+///
+/// # Почему ни один прежний кадр этого увидеть не мог
+///
+/// У Togo четыре набора снимают фотографию (`ШапкаНаФотоTests`,
+/// `ЧернилаНаФотоКадрTests`, `КиноВиджетКадрTests`, `ОстровКадрTests`),
+/// и все четыре кладут в `dog.photo` **однотонный** снимок — нарочно
+/// и по верному доводу: их предмет контраст, а узор дал бы разброс
+/// фона внутри строки.
+///
+/// > **Однотонное фото обрезается в себя самого.** Срежь ему верх,
+/// > низ, бока, переверни его или сделай из круга эллипс — кадр
+/// > не изменится ни на пиксель. Вопрос «помещается ли» в стенде
+/// > не задавал никто, и ответа на него не было ни зелёного,
+/// > ни красного.
+///
+/// Здесь снимок **вертикальный и с приметами**: красная полоса сверху,
+/// синяя снизу, зелёная слева, жёлтая справа, белое перекрестье
+/// в центре. Срез любого края виден и глазом, и числом.
+///
+/// # КРУПНЫЙ КЕГЛЬ: `.dynamicTypeSize()` ОДНОГО НЕ ХВАТАЕТ, И ЭТО ЗАМЕР
+///
+/// Первая редакция снимала «обычный» и «AX» одним только модификатором
+/// `.dynamicTypeSize(.accessibility3)`. Замер 25.10.2026:
+///
+/// ```
+/// 03-шапка-обычный.png   91 874 Б   md5 281873e7…
+/// 04-шапка-AX-XL.png     91 874 Б   md5 281873e7…   ПОБАЙТОВО ТО ЖЕ
+/// 06-пустое-обычный.png  48 864 Б   md5 64c551e4…
+/// 07-пустое-AX-XL.png    48 864 Б   md5 64c551e4…   ПОБАЙТОВО ТО ЖЕ
+/// ```
+///
+/// Два кадра из двух совпали хешем — значит кегль не доехал вовсе.
+/// Причина та же, что у контраста в `ШапкаНаФотоTests`: шрифты
+/// разрешаются через `UIFont` по `UITraitCollection.current`,
+/// а `ImageRenderer` окружение SwiftUI в признаки UIKit не переносит.
+///
+/// > **Поймал не глаз, а контроль:** «AX» выглядел правдоподобно сам
+/// > по себе. Отличить «крупный кегль ничего не ломает» от «крупного
+/// > кегля не было» можно только сравнением с обычным кадром, и это
+/// > сравнение обязано быть в том же замере.
+///
+/// Поэтому ставятся **обе** половины и они отвечают на разные вопросы:
+///
+/// ```
+/// preferredContentSizeCategory  чем разрешаются ШРИФТЫ (UIFont)
+/// .dynamicTypeSize(…)           что читают ВИДЫ (@Environment),
+///                               например число колонок сетки снимков
+/// ```
+///
+/// # Чего этот набор НЕ доказывает
+///
+/// 1. **Что так выйдет на устройстве.** `ImageRenderer` — не телефон:
+///    материал (`.ultraThinMaterial`) он рисует не так, как система,
+///    безопасных зон и тулбара не знает вовсе.
+/// 2. **Как выглядит ЧУЖАЯ фотография.** Снимок синтетический.
+///    Он отвечает на «куда делись края», а не на «красиво ли вышло».
+/// 3. **Состояние `BackgroundScreen.окно`** — вид приватный, а экран,
+///    который его строит, `ImageRenderer` не рисует вовсе: замер
+///    25.10.2026 отдал кадр 402 × 760 с единственным знаком запрета
+///    на жёлтом — заглушкой SwiftUI «этот вид отрисовать нельзя»
+///    (в экране живёт `PhotosPicker`). Кадр при этом СОСТОЯЛСЯ:
+///    файл записан, счёт напечатан, прогон зелёный.
+///
+///    > **Отказ отрисовки приходит в виде кадра.** Отличить «нарисовал»
+///    > от «нарисовал заглушку» можно только посмотрев на картинку;
+///    > ни `nil`, ни красного теста при этом нет. Тест снят, потому что
+///    > кадр-заглушка хуже отсутствия кадра: он выглядит приёмкой.
+///
+///    Поэтому цепочка модификаторов проверяется повтором
+///    (`порядокОверлеяИРамки`), и повтор назван повтором.
+@MainActor
+@Suite("Картинка в рамке: что срезалось")
+struct КартинкиВРамкеКадрTests {
+
+    /// iPhone 16 Pro. Число стенда, а не продукта.
+    private static let ширина: CGFloat = 402
+
+    private static var каталог: URL {
+        URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()   // TogoTests
+            .deletingLastPathComponent()   // корень
+            .appendingPathComponent("build/кадры-картинки-в-рамке")
+    }
+
+    /// Счёт печатается всегда, в том числе после падения.
+    private func печатьСчёта(_ имена: [String], ожидалось: Int) {
+        print("КАДРОВ СНЯТО: \(имена.count) из \(ожидалось) · \(имена.joined(separator: ", "))")
+    }
+
+    // MARK: - Снимок с приметами
+
+    /// Четыре края четырёх цветов плюс перекрестье. Вертикальный 3 : 4 —
+    /// то же отношение, что у снимка с телефона в портрет.
+    private static func сПриметами(ширина: CGFloat = 600,
+                                   высота: CGFloat = 800) throws -> Data {
+        let размер = CGSize(width: ширина, height: высота)
+        let полоса = ширина * 0.12
+        let формат = UIGraphicsImageRendererFormat.default()
+        формат.scale = 1          // иначе помощник врёт о своём размере
+        let картинка = UIGraphicsImageRenderer(size: размер, format: формат).image { ctx in
+            UIColor(white: 0.5, alpha: 1).setFill()
+            ctx.fill(CGRect(origin: .zero, size: размер))
+            UIColor.red.setFill()
+            ctx.fill(CGRect(x: 0, y: 0, width: ширина, height: полоса))
+            UIColor.blue.setFill()
+            ctx.fill(CGRect(x: 0, y: высота - полоса, width: ширина, height: полоса))
+            UIColor.green.setFill()
+            ctx.fill(CGRect(x: 0, y: 0, width: полоса, height: высота))
+            UIColor.yellow.setFill()
+            ctx.fill(CGRect(x: ширина - полоса, y: 0, width: полоса, height: высота))
+            UIColor.white.setFill()
+            ctx.fill(CGRect(x: ширина / 2 - 4, y: 0, width: 8, height: высота))
+            ctx.fill(CGRect(x: 0, y: высота / 2 - 4, width: ширина, height: 8))
+        }
+        return try #require(картинка.pngData(), "снимок с приметами не стал PNG")
+    }
+
+    /// Обе половины крупного кегля — см. разбор в голове набора.
+    private static func признаки(_ кегль: UIContentSizeCategory) -> UITraitCollection {
+        UITraitCollection(traitsFrom: [
+            UITraitCollection(userInterfaceStyle: .dark),
+            UITraitCollection(preferredContentSizeCategory: кегль),
+        ])
+    }
+
+    private static let обычный: (UIContentSizeCategory, DynamicTypeSize) = (.large, .large)
+    private static let крупный: (UIContentSizeCategory, DynamicTypeSize) =
+        (.accessibilityExtraLarge, .accessibility3)
+
+    @discardableResult
+    private func снять(_ вид: some View, имя: String,
+                       кегль: (UIContentSizeCategory, DynamicTypeSize),
+                       высота: CGFloat? = nil,
+                       счёт: inout [String]) throws -> UIImage {
+        var нарисованное: UIImage?
+        Self.признаки(кегль.0).performAsCurrent {
+            let отрисовщик = ImageRenderer(
+                content: вид
+                    .environment(\.colorScheme, .dark)
+                    .dynamicTypeSize(кегль.1)
+                    .frame(width: Self.ширина, height: высота)
+            )
+            отрисовщик.scale = 2
+            нарисованное = отрисовщик.uiImage
+        }
+        let картинка = try #require(нарисованное, "ImageRenderer не отдал «\(имя)»")
+        let данные = try #require(картинка.pngData(), "«\(имя)» не стал PNG")
+        try FileManager.default.createDirectory(at: Self.каталог,
+                                                withIntermediateDirectories: true)
+        try данные.write(to: Self.каталог.appendingPathComponent("\(имя).png"))
+        счёт.append(имя)
+        print("КАДР: \(имя).png · \(Int(картинка.size.width))×\(Int(картинка.size.height)) pt · \(данные.count) байт · md5 \(Self.отпечаток(данные))")
+        return картинка
+    }
+
+    /// Дешёвый отпечаток: два кадра одного вида, совпавшие по нему,
+    /// значат, что различитель не сработал.
+    private static func отпечаток(_ данные: Data) -> String {
+        var хеш: UInt64 = 1469598103934665603
+        for байт in данные {
+            хеш = (хеш ^ UInt64(байт)) &* 1099511628211
+        }
+        return String(хеш, radix: 16)
+    }
+
+    // MARK: - Разбор кадра
+
+    private static func пиксели(_ картинка: UIImage) throws -> (ш: Int, в: Int, байты: [UInt8]) {
+        let cg = try #require(картинка.cgImage, "у кадра нет cgImage")
+        let ш = cg.width, в = cg.height
+        var байты = [UInt8](repeating: 0, count: ш * в * 4)
+        let простор = CGColorSpaceCreateDeviceRGB()
+        let контекст = try #require(CGContext(data: &байты, width: ш, height: в,
+                                              bitsPerComponent: 8, bytesPerRow: ш * 4,
+                                              space: простор,
+                                              bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue),
+                                    "контекст не создался")
+        контекст.draw(cg, in: CGRect(x: 0, y: 0, width: ш, height: в))
+        return (ш, в, байты)
+    }
+
+    private static func сколько(_ картинка: UIImage,
+                                близко цель: (Double, Double, Double),
+                                допуск: Double = 0.12) throws -> Int {
+        let (_, _, байты) = try пиксели(картинка)
+        var счёт = 0
+        for i in stride(from: 0, to: байты.count, by: 4) {
+            let a = Double(байты[i + 3]) / 255
+            guard a > 0.9 else { continue }
+            let r = Double(байты[i]) / 255, g = Double(байты[i + 1]) / 255, b = Double(байты[i + 2]) / 255
+            if abs(r - цель.0) < допуск, abs(g - цель.1) < допуск, abs(b - цель.2) < допуск {
+                счёт += 1
+            }
+        }
+        return счёт
+    }
+
+    private static func рамкаНеполотна(_ картинка: UIImage,
+                                       полотно: (Double, Double, Double) = (0, 0, 0),
+                                       допуск: Double = 0.08) throws -> (ш: Int, в: Int) {
+        let (ш, в, байты) = try пиксели(картинка)
+        var минX = ш, максX = -1, минY = в, максY = -1
+        for y in 0..<в {
+            for x in 0..<ш {
+                let i = (y * ш + x) * 4
+                let r = Double(байты[i]) / 255, g = Double(байты[i + 1]) / 255, b = Double(байты[i + 2]) / 255
+                let этоПолотно = abs(r - полотно.0) < допуск && abs(g - полотно.1) < допуск && abs(b - полотно.2) < допуск
+                if !этоПолотно {
+                    минX = min(минX, x); максX = max(максX, x)
+                    минY = min(минY, y); максY = max(максY, y)
+                }
+            }
+        }
+        guard максX >= 0 else { return (0, 0) }
+        return (максX - минX + 1, максY - минY + 1)
+    }
+
+    // MARK: - Стенд
+
+    private static func собакаСФото(_ фото: Data) -> Dog {
+        let собака = Dog(name: "Стич", weightKg: 8.1)
+        собака.photo = фото
+        собака.breed = "шипперке"
+        return собака
+    }
+
+    // MARK: - Кадры
+
+    @Test("Портрет прогулки: круг обязан быть кругом и при вертикальном фото")
+    func кругПрогулки() throws {
+        var счёт: [String] = []
+        defer { печатьСчёта(счёт, ожидалось: 2) }
+        let фото = try Self.сПриметами()
+        let собака = Self.собакаСФото(фото)
+
+        let обычный = try снять(WalkRing(dog: собака).padding(),
+                                имя: "01-круг-прогулки-обычный",
+                                кегль: Self.обычный, счёт: &счёт)
+        try снять(WalkRing(dog: nil).padding(),
+                  имя: "02-круг-прогулки-без-фото",
+                  кегль: Self.обычный, счёт: &счёт)
+
+        let рамка = try Self.рамкаНеполотна(обычный)
+        let перекос = abs(рамка.ш - рамка.в)
+        print("РАМКА ПОРТРЕТА: \(рамка.ш)×\(рамка.в) px, перекос \(перекос) px — круг выходит: \(перекос <= 4 ? "да" : "НЕТ")")
+    }
+
+    @Test("Шапка собаки: вертикальное фото не съедает кикер и заголовок")
+    func шапкаСобаки() throws {
+        var счёт: [String] = []
+        defer { печатьСчёта(счёт, ожидалось: 2) }
+        let фото = try Self.сПриметами()
+
+        func шапка() -> some View {
+            ФотоШапка(фото: фото,
+                      высота: Token.Size.backdropTab,
+                      надстрочник: "ШИППЕРКЕ · 3 ГОДА",
+                      заголовок: .значение("Стич")) {
+                TGCard { Text(verbatim: "опись собаки").textStyle(AppFont.caption) }
+            }
+        }
+        let а = try снять(шапка(), имя: "03-шапка-собаки-обычный",
+                          кегль: Self.обычный, счёт: &счёт)
+        let б = try снять(шапка(), имя: "04-шапка-собаки-AX-XL",
+                          кегль: Self.крупный, счёт: &счёт)
+        print("ШАПКА: обычный \(Int(а.size.height)) pt, крупный \(Int(б.size.height)) pt. КЕГЛЬ ШРИФТА В КАДРЕ ОТРИСОВЩИКА НЕ МЕНЯЕТСЯ — см. голову набора")
+    }
+
+    @Test("Аватар: вертикальное фото в круге")
+    func аватар() throws {
+        var счёт: [String] = []
+        defer { печатьСчёта(счёт, ожидалось: 1) }
+        let фото = try Self.сПриметами()
+        try снять(HStack(spacing: 16) {
+                      TGAvatar(initial: "С", image: фото, size: Token.Size.avatarMd)
+                      TGAvatar(initial: "С", image: фото, size: Token.Size.avatarSm)
+                      TGAvatar(initial: "С", image: nil, size: Token.Size.avatarMd)
+                  }.padding(),
+                  имя: "05-аватары", кегль: Self.обычный, счёт: &счёт)
+    }
+
+    @Test("Пустое состояние: иллюстрация не выдавливает текст и кнопку")
+    func пустоеСостояние() throws {
+        var счёт: [String] = []
+        defer { печатьСчёта(счёт, ожидалось: 2) }
+        func карточка() -> some View {
+            EmptyStateCard(subject: .history,
+                           title: "Пока пусто",
+                           message: "Здесь появятся прогулки, кормления и дозы — всё, что отметили за день.",
+                           actionTitle: "Отметить первое",
+                           action: {})
+            .padding()
+        }
+        let а = try снять(карточка(), имя: "06-пустое-обычный",
+                          кегль: Self.обычный, счёт: &счёт)
+        let б = try снять(карточка(), имя: "07-пустое-AX-XL",
+                          кегль: Self.крупный, счёт: &счёт)
+        print("ПУСТОЕ: обычный \(Int(а.size.height)) pt, крупный \(Int(б.size.height)) pt. КЕГЛЬ ШРИФТА В КАДРЕ ОТРИСОВЩИКА НЕ МЕНЯЕТСЯ — см. голову набора; этот кадр про РАСКЛАДКУ, не про рост букв")
+    }
+
+    /// Откуда полоса исчезала: **порядок `overlay` и `frame`**, три окна
+    /// в одном кадре — прежний порядок, нынешний и контроль.
+    ///
+    /// Повтор цепочки, а не продукт, и назван повтором: он доказывает
+    /// поведение модификаторов. Контроль (третье окно, та же полоса
+    /// на заливке без снимка) ломался бы вместе с предметом — без него
+    /// «полосы нет» у окна неотличимо от «полосы не рисует отрисовщик».
+    ///
+    /// Цвет полосы литеральный, а не токен: токен в кадре отрисовщика
+    /// разрешается не так, как на экране, и «полосы не видно» стало бы
+    /// отчётом о токене, а не о геометрии.
+    @Test("Порядок overlay и frame: куда уезжает полоса при вертикальном снимке")
+    func порядокОверлеяИРамки() throws {
+        var счёт: [String] = []
+        defer { печатьСчёта(счёт, ожидалось: 1) }
+        let фото = try Self.сПриметами()
+        let снимок = try #require(UIImage(data: фото))
+        let ш = Token.Size.capsule, в = Token.Size.controlM
+
+        var полоса: some View {
+            VStack(spacing: 0) {
+                Spacer(minLength: 0)
+                Rectangle().fill(Color(red: 1, green: 0, blue: 1))
+                    .frame(height: Token.Space.s16)
+            }
+        }
+
+        let прежний = Image(uiImage: снимок)
+            .resizable().scaledToFill()
+            .overlay(полоса)                      // ← ДО рамки, как было
+            .frame(width: ш, height: в)
+            .clipShape(RoundedRectangle(cornerRadius: Token.Radius.small, style: .continuous))
+
+        let нынешний = Image(uiImage: снимок)
+            .resizable().scaledToFill()
+            .frame(width: ш, height: в)
+            .clipped()
+            .overlay(полоса)                      // ← ПОСЛЕ рамки, как стало
+            .clipShape(RoundedRectangle(cornerRadius: Token.Radius.small, style: .continuous))
+
+        let контроль = Token.Surface.sunken
+            .frame(width: ш, height: в)
+            .overlay(полоса)
+            .clipShape(RoundedRectangle(cornerRadius: Token.Radius.small, style: .continuous))
+
+        let кадр = try снять(HStack(spacing: 24) { прежний; нынешний; контроль }
+                                .padding().background(Color.black),
+                             имя: "11-порядок-overlay-и-frame",
+                             кегль: Self.обычный, счёт: &счёт)
+
+        let всего = try Self.сколько(кадр, близко: (1, 0, 1))
+        let уОдного = Int(ш) * Int(Token.Space.s16) * 4   // scale 2 → площадь ×4
+        print("ПОЛОСА: пурпурных пикселей \(всего); у ОДНОГО целого окна ≈ \(уОдного)")
+        print("ПОЛОС ЦЕЛЫХ ≈ \(String(format: "%.2f", Double(всего) / Double(max(уОдного, 1)))) из трёх окон (прежний · нынешний · контроль)")
+        // Порог 1,7 полосы, а не 2,0: скруглённые углы окна срезают
+        // у каждой полосы около 5 % пикселей, и ровная двойка была бы
+        // числом из головы. Прежний порядок даёт заведомо меньше
+        // половины полосы — между 1,7 и 1,0 зазор в полполосы.
+        #expect(всего >= уОдного * 17 / 10, """
+            контроль и нынешний порядок обязаны дать почти две целые \
+            полосы; получено \(всего) из ожидаемых \(уОдного * 17 / 10) — \
+            значит сломан сам замер, и про прежний порядок он не говорит \
+            ничего.
+            """)
+        #expect(всего < уОдного * 3 * 9 / 10, """
+            полос вышло почти три — значит и ПРЕЖНИЙ порядок показывает \
+            полосу целиком, и находка, ради которой стоит этот кадр, \
+            не воспроизводится.
+            """)
+    }
+
+    @Test("Сетка снимков документов: длинная подпись и крупный кегль")
+    func сеткаСнимков() throws {
+        var счёт: [String] = []
+        defer { печатьСчёта(счёт, ожидалось: 2) }
+        let фото = try Self.сПриметами()
+        let контейнер = Persistence.container()
+        let контекст = ModelContext(контейнер)
+        let собака = Dog(name: "Стич", weightKg: 8.1)
+        контекст.insert(собака)
+        for имя in ["Ветеринарный паспорт международного образца",
+                    "Чип", "Прививки", "Анализы крови от 14 октября", "Назначение"] {
+            let документ = DogDocument(title: имя, image: фото)
+            документ.dog = собака
+            контекст.insert(документ)
+        }
+        try? контекст.save()
+
+        func карточка() -> some View {
+            DocumentPhotosCard(dog: собака)
+                .padding()
+                .modelContainer(контейнер)
+                .environment(AppState())
+        }
+        let а = try снять(карточка(), имя: "09-сетка-снимков-обычный",
+                          кегль: Self.обычный, счёт: &счёт)
+        let б = try снять(карточка(), имя: "10-сетка-снимков-AX-XL",
+                          кегль: Self.крупный, счёт: &счёт)
+        print("СЕТКА: обычный \(Int(а.size.height)) pt (3 колонки), крупный \(Int(б.size.height)) pt (2 колонки)")
+    }
+
+    /// **Ужатие снимка документа — в пикселях, а не на слово.**
+    ///
+    /// Сторож на это уже стоял и был зелёным (`StructuralGapsTests:226`:
+    /// `DocumentPhoto.maxSide == 1600`) — он спрашивал **объявленную
+    /// константу вместо выхода помощника**, то есть прокси вместо
+    /// предмета, и гасился самим фактом существования константы.
+    @Test("Снимок документа ужимается до 1600 пикселей, а не точек")
+    func ужатиеДокумента() throws {
+        let большой = try Self.сПриметами(ширина: 3000, высота: 4000)
+        let ужатое = try #require(DocumentPhoto.shrink(большой))
+        let картинка = try #require(UIImage(data: ужатое))
+        let пикселейШ = картинка.size.width * картинка.scale
+        let пикселейВ = картинка.size.height * картинка.scale
+        let сторона = max(пикселейШ, пикселейВ)
+        print("""
+            УЖАТИЕ ДОКУМЕНТА: просили \(Int(DocumentPhoto.maxSide)) px \
+            по длинной стороне, получили \(Int(сторона)) px \
+            (\(Int(пикселейШ))×\(Int(пикселейВ))), \
+            вес \(ужатое.count) Б против исходных \(большой.count) Б
+            """)
+        #expect(сторона <= DocumentPhoto.maxSide, """
+            просили ужать до \(Int(DocumentPhoto.maxSide)) px, \
+            получили \(Int(сторона)) px — это \
+            \(String(format: "%.1f", сторона / DocumentPhoto.maxSide))×. \
+            UIGraphicsImageRenderer без `format.scale = 1` рисует \
+            в масштабе устройства; тот же дефект чинён 23.10.2026 \
+            у ФонФото.ужать.
+            """)
+
+        // Контроль в том же замере: у соседа, где это чинено, сходится.
+        let уСоседа = try #require(ФонФото.ужать(большой))
+        let сКартинка = try #require(UIImage(data: уСоседа))
+        let сСторона = max(сКартинка.size.width * сКартинка.scale,
+                           сКартинка.size.height * сКартинка.scale)
+        print("КОНТРОЛЬ (ФонФото.ужать, чинено 23.10): просили \(Int(ФонФото.maxSide)) px, получили \(Int(сСторона)) px")
+        #expect(сСторона <= ФонФото.maxSide, "контроль сам сломан — замер выше ничего не значит")
+    }
+}
