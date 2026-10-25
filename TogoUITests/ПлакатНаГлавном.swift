@@ -130,8 +130,34 @@ nonisolated final class ПлакатНаГлавномUITests: XCTestCase {
         // > `children: .contain` делает рамку шире предмета. Прежние
         // > две редакции мерили долю экрана и верхний угол; обе
         // > поправки были верны и обе оставили рамку БЛОКА.
-        let панель = app.otherElements["панель-показания"].firstMatch
-        guard панель.waitForExistence(timeout: 10), панель.frame.width > 0 else { return nil }
+        // **Запрос по ЛЮБОМУ типу, а не `otherElements`, и это замер.**
+        // Блок `плакат-главный` через `otherElements` находился, панель
+        // — нет: прогон на `ad4cdf3` дал «замерено 0 сценариев из пяти»
+        // при поднявшемся экране. Тип элемента, который XCUITest даёт
+        // вложенному `children: .contain`, мы не выбираем и угадать
+        // не можем, а `otherElements` — утверждение о типе.
+        //
+        // > Пустой результат запроса по типу отвечает «такого ТИПА
+        // > с таким именем нет» и читается как «такого имени нет».
+        let панель = app.descendants(matching: .any)
+            .matching(identifier: "панель-показания").firstMatch
+        guard панель.waitForExistence(timeout: 10), панель.frame.width > 0 else {
+            // Диагностика на месте отказа: без неё следующий заход
+            // снова получит «0 из пяти» и снова не узнает, почему.
+            let блок = app.descendants(matching: .any)
+                .matching(identifier: "плакат-главный").firstMatch
+            print("ПАНЕЛЬ НЕ НАЙДЕНА · панель.exists=\(панель.exists) "
+                  + "rect=\(панель.exists ? "\(панель.frame)" : "—") · "
+                  + "блок.exists=\(блок.exists) "
+                  + "rect=\(блок.exists ? "\(блок.frame)" : "—")")
+            return nil
+        }
+        // Обе рамки в лог: промах замера трижды оказывался промахом
+        // РАМКИ, и каждый раз это выяснялось отдельным заходом.
+        let блок = app.descendants(matching: .any)
+            .matching(identifier: "плакат-главный").firstMatch
+        print("РАМКИ · панель \(панель.frame) · блок "
+              + "\(блок.exists ? "\(блок.frame)" : "нет")")
         let кадр = app.screenshot()
         let картинка = кадр.image
         guard let cg = картинка.cgImage else { return nil }
