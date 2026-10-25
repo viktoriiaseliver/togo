@@ -16,6 +16,11 @@ struct WalkModeScreen: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
     @Environment(AppState.self) private var appState
+    /// Системный кегль. Читается, а не задаётся: `\.dynamicTypeSize`
+    /// приезжает сюда от настройки **процесса**, и на этом же месте
+    /// его подменяет аргумент запуска `-UIPreferredContentSizeCategoryName`
+    /// у прогона.
+    @Environment(\.dynamicTypeSize) private var размерТекста
 
     @State private var now = Date()
     @State private var summary: ActiveSession?
@@ -130,10 +135,43 @@ struct WalkModeScreen: View {
             header(session)
 
             if session.marks.isEmpty {
-                Spacer(minLength: 0)
-                WalkRing(dog: dog)
-                таймер(session)
-                Spacer(minLength: 0)
+                // **Пока отметок нет, середина стояла БЕЗ прокрутки** —
+                // два `Spacer` вокруг портрета и таймера. На обычном
+                // кегле это верно: портрет 0,46 ширины и таймер
+                // помещаются с запасом. На `AccessibilityXXXL`
+                // не помещаются, а деться им некуда: `Spacer` схлопнется
+                // в ноль и упрётся, после чего сжимать начнёт
+                // САМ ТАЙМЕР и низ под ним.
+                //
+                // Ветка с отметками уже прокручивается — там `ScrollView`
+                // стоит с рождения. То есть дефект виден только
+                // в начале прогулки: ровно тогда, когда человек
+                // на улице и смотрит на экран первый раз.
+                // Раскладка выбирается явным `if` по той же причине,
+                // что и в низу «Сегодня»: `ViewThatFits` запрещён.
+                //
+                // **Прокрутка включается только на крупном кегле, и это
+                // не осторожность, а сохранение обычного вида:**
+                // в `ScrollView` содержимое прижимается к верху,
+                // а здесь портрет с таймером стоят ПО ЦЕНТРУ — их
+                // центрируют как раз эти два `Spacer`. Завернуть ветку
+                // целиком значило бы сдвинуть вверх экран, который
+                // сегодня правильный.
+                if размерТекста.isAccessibilitySize {
+                    ScrollView {
+                        VStack(spacing: 0) {
+                            WalkRing(dog: dog)
+                            таймер(session)
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
+                    .scrollBounceBehavior(.basedOnSize)
+                } else {
+                    Spacer(minLength: 0)
+                    WalkRing(dog: dog)
+                    таймер(session)
+                    Spacer(minLength: 0)
+                }
             } else {
                 ScrollView {
                     VStack(spacing: Token.Space.s16) {
@@ -165,55 +203,17 @@ struct WalkModeScreen: View {
         }
     }
 
-    /// Фон — фотография, растворяющаяся в чёрный.
+    /// Фон — фотография собаки, растворяющаяся в чёрный.
     ///
     /// На кадре маска не доходит до низа: нижняя треть чёрная, иначе
-    /// под белой кнопкой «Пописал» просвечивал бы мех.
-    ///
-    /// **Фото берётся из `BackgroundStore`, а не у собаки напрямую —
-    /// починка 25.10.2026, и это ТОТ ЖЕ дефект, что уже закрыли
-    /// у вкладки собаки** (`DogTab.фотоЭкрана`: «ключ был объявлен,
-    /// предпросмотр в настройках его рисовал, а живого экрана за ним
-    /// не стояло»). `.walk` при той уборке пропустили.
-    ///
-    /// Замер на `5d37f74`, рисующие читатели шести ключей
-    /// `ScreenKey.основные`:
-    ///
-    /// ```
-    /// today    CinemaBackdrop(экран: .today)          TodayScreen:159
-    /// dog      background(for: .dog) ?? dog.photo     DogTab:146
-    /// history  КиноЭкран(экран: .history, …)          HistoryScreen:56
-    /// health   КиноЭкран(экран: .health, …)           HealthScreen:58
-    /// widget   BackgroundBridge.photo(for: .widget)    TodayWidget:41,49
-    /// walk     НОЛЬ                                   ← предмет
-    /// ```
-    ///
-    /// Контроль в том же замере — пять живых ключей из шести: нуль
-    /// у `walk` поэтому про предмет, а не про мой `grep`.
-    ///
-    /// Человек, выбравший своё фото, видел его на пяти поверхностях
-    /// из шести, а предпросмотр обещал ему шесть: окно «На улице»
-    /// рисовало снимок и подпись «твоё фото № N». **Обещание без
-    /// исполнителя**, и видно его только тому, кто сравнит экран
-    /// с предпросмотром.
-    ///
-    /// Запасное — фото собаки, ровно как у `DogTab`: в режиме
-    /// «как задумано» хранилище отвечает `nil` нарочно, и без запасного
-    /// прогулка осталась бы чёрной у всех, кто своих снимков
-    /// не добавлял. То есть прежнее поведение — частный случай нового.
-    ///
-    /// Высота по-прежнему доля, а не `Token.Size.backdropWalk` (520):
-    /// ~~токена «у нас нет»~~ — **токен есть** (`Tokens.generated:271`,
-    /// читает `CinemaBackdrop.высота` в случае `.walk`), устарело
-    /// утверждение, а не число. Доля оставлена сознательно: 520 из кадра
-    /// 874 — это 0,59 экрана, и на SE точки соврали бы. Свести их
-    /// в одно — решение с хозяином-дизайном, не уборка здесь.
+    /// под белой кнопкой «Пописал» просвечивал бы мех. Высоту хендофф
+    /// задаёт токеном `backdrop.height.walk` = 520, которого у нас нет;
+    /// пока фото занимает верх и гасится градиентом.
     @ViewBuilder
     private var фон: some View {
         ZStack(alignment: .top) {
             Token.Surface.screen
-            if let photo = BackgroundStore.shared.background(for: .walk)?.data ?? dog?.photo,
-               let image = UIImage(data: photo) {
+            if let photo = dog?.photo, let image = UIImage(data: photo) {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFill()
@@ -295,6 +295,22 @@ struct WalkModeScreen: View {
         .accessibilityLabel("Прогулка с \(Fmt.clock(session.startedAt))")
     }
 
+    /// Пауза обратима и ничего не записывает — ей хватает камня.
+    /// Горчицей её красить нельзя: этот цвет занят окном натощак
+    /// и больше нигде не появляется.
+    ///
+    /// `fullWidth` по раскладке: в строке кнопка держит свою ширину,
+    /// столбцом — тянется во всю, иначе столбец из узкой кнопки
+    /// и широкого слайдера читается как две разные вещи.
+    private func кнопкаПаузы(_ session: ActiveSession) -> some View {
+        TGButton(title: session.isPaused ? "Продолжить" : "Пауза",
+                 variant: .secondary, size: .medium,
+                 systemImage: session.isPaused ? "play.fill" : "pause.fill",
+                 fullWidth: размерТекста.isAccessibilitySize) {
+            togglePause()
+        }
+    }
+
     /// Кнопки по кадру 08: две широких, ряд плиток и низ со слайдером.
     ///
     /// **«Закончить» заменена слайдером «Домой»** — хендофф, раздел
@@ -362,17 +378,29 @@ struct WalkModeScreen: View {
             .disabled(session.isPaused)
             .opacity(session.isPaused ? 0.4 : 1)
 
-            HStack(spacing: Token.Space.s10) {
-                // Пауза обратима и ничего не записывает — ей хватает
-                // камня. Горчицей её красить нельзя: этот цвет занят
-                // окном натощак и больше нигде не появляется.
-                TGButton(title: session.isPaused ? "Продолжить" : "Пауза",
-                         variant: .secondary, size: .medium,
-                         systemImage: session.isPaused ? "play.fill" : "pause.fill",
-                         fullWidth: false) {
-                    togglePause()
+            // Два органа в строку — и на крупном кегле они туда
+            // не помещаются ПО УСТРОЙСТВУ. Кадр 25.10.2026
+            // (`06-выгул-ax5.png`, `AccessibilityXXXL`): «Пауза»
+            // переносится на «Пау / за» и **вылезает за капсулу
+            // сверху и снизу**, потому что ширины у кнопки остаётся
+            // треть ряда, а слайдер рядом держит свою.
+            //
+            // Раскладка выбирается явным `if`, а не `ViewThatFits`:
+            // он в проекте запрещён — держит в дереве обе ветки,
+            // и озвучка находит два «Домой». Форма взята у соседа,
+            // который это уже решил, — `TodayBottom:53`.
+            Group {
+                if размерТекста.isAccessibilitySize {
+                    VStack(spacing: Token.Space.s10) {
+                        кнопкаПаузы(session)
+                        WalkHomeSlider { finish() }
+                    }
+                } else {
+                    HStack(spacing: Token.Space.s10) {
+                        кнопкаПаузы(session)
+                        WalkHomeSlider { finish() }
+                    }
                 }
-                WalkHomeSlider { finish() }
             }
         }
         .padding(.horizontal, Token.Spacing.screenPadding)
@@ -408,6 +436,25 @@ struct WalkModeScreen: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(kind.title)
         .accessibilityValue(count > 0 ? "отмечено \(count)" : "не отмечено")
+        // **Признак кнопки приходится ставить руками, и это замер.**
+        // `.accessibilityElement(children: .ignore)` заводит НОВЫЙ
+        // элемент вместо поддерева — признаки `Button` у него
+        // не наследуются, хотя снаружи это `Button` и нажимается
+        // он как кнопка. Озвучка читала «Пописал, не отмечено»
+        // без слова «кнопка»: человеку с VoiceOver нечем было узнать,
+        // что по ней жмут.
+        //
+        // Замер 25.10.2026: `app.buttons["отметка-urine"]` не находит
+        // ничего при открытом режиме выгула (15 с, оба кегля),
+        // а `descendants(matching: .any)` находит — то есть в дереве
+        // элемент лежит как `Other`. На этой же строке красен
+        // `DynamicTypeScreenshotTests.testXL13РежимВыгула`
+        // (прогон 25.10, 1 тест, 1 отказ) — и красен он был
+        // ДО этой правки, своим прогоном на `8822698`.
+        //
+        // Слайдер «Домой» рядом признак ставит явно
+        // (`WalkControls.swift`) — там это заметили, здесь нет.
+        .accessibilityAddTraits(.isButton)
         .accessibilityIdentifier(Self.имяОтметки(kind))
     }
 
@@ -441,8 +488,34 @@ struct WalkModeScreen: View {
     }
 
     /// Ряд плиток. Инцидент красный — единственный, кто красится.
+    ///
+    /// **На крупном кегле ряд превращается в столбец.** Кадр
+    /// `06-выгул-ax5` от 25.10.2026: три плитки в строку дали
+    /// «Ин… · Лак… · Зам…» — от трёх слов осталось по три буквы,
+    /// и «Инцидент» с «Лакомством» на `AccessibilityXXXL` различаются
+    /// только длиной огрызка. Это не теснота оформления: человек
+    /// на улице не может прочитать, что он отмечает.
+    ///
+    /// Ширины тут не хватает ПО УСТРОЙСТВУ — треть экрана минус
+    /// значок на слово из девяти букв кеглем под пятьдесят. Поэтому
+    /// столбцом, той же формой, что у соседей (`TodayBottom:53`,
+    /// и ряд «Пауза + Домой» выше в этом файле).
+    @ViewBuilder
     private func плитки(_ kinds: [ActiveSession.Mark.Kind]) -> some View {
-        HStack(spacing: Token.Space.s10) {
+        if размерТекста.isAccessibilitySize {
+            VStack(spacing: Token.Space.s10) {
+                плиткиСодержимое(kinds)
+            }
+        } else {
+            HStack(spacing: Token.Space.s10) {
+                плиткиСодержимое(kinds)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func плиткиСодержимое(_ kinds: [ActiveSession.Mark.Kind]) -> some View {
+        Group {
             ForEach(kinds, id: \.self) { kind in
                 let count = session?.count(of: kind) ?? 0
                 Button { mark(kind) } label: {
@@ -471,6 +544,11 @@ struct WalkModeScreen: View {
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel(kind.title)
                 .accessibilityValue(count > 0 ? "отмечено \(count)" : "не отмечено")
+                // Та же правка, что у широкой отметки выше, и по той же
+                // измеренной причине: `children: .ignore` не наследует
+                // признак `Button`. Плитки «Инцидент · Лакомство ·
+                // Замечание · Сорвался» озвучка читала текстом.
+                .accessibilityAddTraits(.isButton)
                 .accessibilityIdentifier(Self.имяОтметки(kind))
             }
         }
