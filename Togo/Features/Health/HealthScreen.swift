@@ -36,6 +36,10 @@ struct HealthScreen: View {
     @Query private var allMedications: [Medication]
 
     @Environment(\.modelContext) private var context
+    /// Системный кегль. Читается, а не задаётся: сюда он приезжает
+    /// от настройки **процесса**, и на этом же месте его подменяет
+    /// аргумент запуска `-UIPreferredContentSizeCategoryName`.
+    @Environment(\.dynamicTypeSize) private var размерТекста
     @State private var editing: Medication?
     @State private var isAdding = false
     @State private var isFinishing = false
@@ -141,28 +145,42 @@ struct HealthScreen: View {
     @ViewBuilder
     private func карточкаЛечения(_ medication: Medication) -> some View {
         TGCard {
-            HStack(alignment: .top, spacing: Token.Space.s12) {
-                Button { if canEdit { editing = medication } } label: {
-                    VStack(alignment: .leading, spacing: Token.Space.s2) {
-                        Text(verbatim: "\(medication.name) \(medication.doseText)")
-                            .textStyle(AppFont.cardTitle)
-                            .wraps()
-                        Text(verbatim: medication.scheduleSummary)
-                            .textStyle(AppFont.caption)
-                            .wraps()
-                        if medication.isPaused {
-                            Text("на паузе")
-                                .textStyle(AppFont.micro.color(Token.Status.waitingText))
-                        }
+            // **На крупном кегле ряд становится столбцом, и это
+            // медицинский экран, а не косметика.** Кадр 25.10.2026
+            // (`до-правки/04-здоровье-ax5.png`, `AccessibilityXXXL`):
+            // чип «Врач изменил» — это `Capsule` с `minHeight: 44`
+            // и текстом под `.wraps()`. Текст в нём встаёт в три
+            // строки, капсула вырастает до почти круга, и своей
+            // идеальной шириной съедает две трети ряда. Название
+            // препарата остаётся в трети и ломается ПОСРЕДИ СЛОВА:
+            // «Левот / ирокс / ин ½ / табле / тки».
+            //
+            // Человек открывает этот экран, чтобы прочитать, какое
+            // лекарство давать. «Левотироксин», разорванный на пять
+            // огрызков рядом с кругом, — это не теснота оформления:
+            // название читается по буквам или не читается вовсе.
+            //
+            // Ширины тут не хватает ПО УСТРОЙСТВУ: два слова чипа
+            // кеглем под сорок плюс название препарата в одну строку
+            // в четырёхстах точках не помещаются. Поэтому столбцом —
+            // той же формой, которой это уже решено у соседей
+            // (`TodayBottom:53`, `FamilyScreen.dutyCard:326`,
+            // `WalkMode` после `78c5425`).
+            //
+            // Раскладка выбирается явным `if`, а не `ViewThatFits`:
+            // он в проекте запрещён — держал в дереве обе ветки,
+            // и озвучка находила два одинаковых органа.
+            Group {
+                if размерТекста.isAccessibilitySize {
+                    VStack(alignment: .leading, spacing: Token.Space.s8) {
+                        названиеИСхема(medication)
+                        чипВрачИзменил(medication)
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-                .disabled(!canEdit)
-
-                if canEdit {
-                    КиноЧип(подпись: "Врач изменил") { changingSchedule = medication }
+                } else {
+                    HStack(alignment: .top, spacing: Token.Space.s12) {
+                        названиеИСхема(medication)
+                        чипВрачИзменил(medication)
+                    }
                 }
             }
 
@@ -175,6 +193,38 @@ struct HealthScreen: View {
             if !canEdit {
                 TGExplainer(text: "Схему меняет владелец. Ты видишь её и отмечаешь приёмы.")
             }
+        }
+    }
+
+    /// Название, доза и схема. Вынесено из `карточкаЛечения`, чтобы
+    /// у двух раскладок были **буквально одни и те же дети**: разойдись
+    /// они — и ветка, которую реже видят, тихо отстанет.
+    @ViewBuilder
+    private func названиеИСхема(_ medication: Medication) -> some View {
+        Button { if canEdit { editing = medication } } label: {
+            VStack(alignment: .leading, spacing: Token.Space.s2) {
+                Text(verbatim: "\(medication.name) \(medication.doseText)")
+                    .textStyle(AppFont.cardTitle)
+                    .wraps()
+                Text(verbatim: medication.scheduleSummary)
+                    .textStyle(AppFont.caption)
+                    .wraps()
+                if medication.isPaused {
+                    Text("на паузе")
+                        .textStyle(AppFont.micro.color(Token.Status.waitingText))
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .disabled(!canEdit)
+    }
+
+    @ViewBuilder
+    private func чипВрачИзменил(_ medication: Medication) -> some View {
+        if canEdit {
+            КиноЧип(подпись: "Врач изменил") { changingSchedule = medication }
         }
     }
 

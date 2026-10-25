@@ -307,10 +307,26 @@ struct DayTimelineGapRow: View {
                 .frame(width: Token.Size.avatarMd)
                 .accessibilityHidden(true)
 
+            // **`lineLimit(1)` здесь резал подпись, а не ужимал её.**
+            // Кадр 25.10.2026 (`до-правки/01b-сегодня-низ-ax5.png`,
+            // `AccessibilityXXXL`): от «дома между выходами» осталось
+            // **«дома м…»**. Ужимать ниже 0,8 этой строке запрещал
+            // сам `minimumScaleFactor`, и дальше оставалось только
+            // многоточие.
+            //
+            // Строка переносится свободно: у ряда нет определённой
+            // высоты — ни `frame(height:)`, ни `GeometryReader`, —
+            // то есть расти вниз ему можно, и перенос здесь остаётся
+            // переносом, а не обрезом. Этим он отличается от слайдера
+            // «Домой» (`WalkControls`), где высота обязана быть числом
+            // и выбран был `minimumScaleFactor`.
+            //
+            // На обычном кегле подпись как помещалась в строку,
+            // так и помещается: приёмка — пара кадров `01b-…-обычный`
+            // до и после, они обязаны совпасть побайтово.
             Text(isOpen ? "дома с прошлого выхода" : "дома между выходами")
                 .textStyle(AppFont.micro)
-                .lineLimit(1)
-                .minimumScaleFactor(0.8)
+                .wraps()
             Spacer(minLength: 0)
         }
         .padding(.horizontal, Token.Spacing.cardPadding)

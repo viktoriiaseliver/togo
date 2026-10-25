@@ -58,6 +58,10 @@ struct FeedingScreen: View {
     let dog: Dog?
 
     @Environment(\.modelContext) private var context
+    /// Системный кегль. Читается, а не задаётся: сюда он приезжает
+    /// от настройки **процесса**, и на этом же месте его подменяет
+    /// аргумент запуска `-UIPreferredContentSizeCategoryName`.
+    @Environment(\.dynamicTypeSize) private var размерТекста
     @Query private var allStocks: [FoodStock]
     @State private var now = Date()
 
@@ -207,16 +211,51 @@ struct FeedingScreen: View {
                 if dog.dailyGrams > 0 {
                     TGSectionHeader(title: "норма врача ÷ кормления")
 
-                    HStack(alignment: .firstTextBaseline, spacing: Token.Space.s8) {
-                        Text(verbatim: "\(dog.dailyGrams) ÷ \(dog.mealsPerDay)")
-                            .textStyle(AppFont.hero)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.5)
-                        Text("= \(dog.servingGrams) г")
-                            .textStyle(AppFont.cardTitle)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.6)
-                        Spacer(minLength: 0)
+                    // **Обрезанное ЧИСЛО опаснее обрезанного слова.**
+                    // Кадр 25.10.2026 (`до-правки/03-питание-ax5.png`,
+                    // `AccessibilityXXXL`): «120 ÷ 2 = 60 г» вышло
+                    // как **«120… = 60 г»**. Делитель съело многоточие,
+                    // и формула стала утверждать, что из ста двадцати
+                    // граммов выходит шестьдесят неизвестно как.
+                    // Слово человек достроит по огрызку, число —
+                    // подставит, а это норма еды, которую назначил врач.
+                    //
+                    // Виноват не кегль сам по себе, а `lineLimit(1)`
+                    // на обеих половинах: ужимать `hero` ниже половины
+                    // некуда, и `minimumScaleFactor` упирается,
+                    // после чего остаётся только резать.
+                    //
+                    // На доступных размерах формула разворачивается
+                    // столбцом и переносится СВОБОДНО — без
+                    // `lineLimit`. Из двух исходов, «целая формула
+                    // в две строки» и «половина формулы в одну»,
+                    // выбран первый: ужимать текст человеку, который
+                    // нарочно попросил крупный, значит отнимать
+                    // ровно то, зачем он его включил.
+                    Group {
+                        if размерТекста.isAccessibilitySize {
+                            VStack(alignment: .leading, spacing: Token.Space.s2) {
+                                Text(verbatim: "\(dog.dailyGrams) ÷ \(dog.mealsPerDay)")
+                                    .textStyle(AppFont.hero)
+                                    .wraps()
+                                Text("= \(dog.servingGrams) г")
+                                    .textStyle(AppFont.cardTitle)
+                                    .wraps()
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        } else {
+                            HStack(alignment: .firstTextBaseline, spacing: Token.Space.s8) {
+                                Text(verbatim: "\(dog.dailyGrams) ÷ \(dog.mealsPerDay)")
+                                    .textStyle(AppFont.hero)
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.5)
+                                Text("= \(dog.servingGrams) г")
+                                    .textStyle(AppFont.cardTitle)
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.6)
+                                Spacer(minLength: 0)
+                            }
+                        }
                     }
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel(Text("Норма \(dog.dailyGrams) грамм на \(dog.mealsPerDay) кормлений — \(dog.servingGrams) грамм за раз"))
@@ -248,25 +287,20 @@ struct FeedingScreen: View {
 
                 // «Что сейчас» — на кадре этого нет, и оно остаётся:
                 // девять из десяти заходов сюда именно за этим.
-                HStack(spacing: 0) {
-                    TGStat(value: "\(report.todayGrams) г",
-                           caption: report.normGramsPerDay > 0 ? "из \(report.normGramsPerDay)" : "съел")
-                    TGStat(value: "\(report.todayMeals)",
-                           caption: report.normMealsPerDay > 0
-                               ? .готовая(String(localized: "из \(report.normMealsPerDay) кормлений"))
-                               : "кормлений")
-                    // **«Осталось 0 г» читается как «уже наелся».**
-                    // `remainingGramsToday` это `max(0, норма − съеденное)`,
-                    // то есть при ненаписанной норме он ноль **по
-                    // устройству** — и ноль тут отвечал про отсутствие
-                    // нормы, а читался про собаку. Две соседние подписи
-                    // этого же ряда ось уже знали (`норма > 0`), третья
-                    // не знала.
-                    TGStat(value: report.normGramsPerDay > 0
-                               ? "\(report.remainingGramsToday) г"
-                               : Self.нечегоСказать,
-                           caption: "осталось")
-                }
+                // **Три числа в строку на доступных размерах не живут.**
+                // Это долг, названный 28.09.2026 в самом компоненте
+                // (`TGRows.swift`, «ряду из трёх чисел нужна другая
+                // раскладка — столбцом»), и кадр 25.10 показал его цену:
+                // «из 2 кормлени / й» — перенос посреди слова, а «60 г»
+                // и «осталось» разъезжаются по разным уровням.
+                //
+                // Чинится здесь, у места вызова, а не в `TGStat`:
+                // раскладку ряда знает ряд, а не его клетка. Остальные
+                // одиннадцать мест с тем же рядом — отдельная работа
+                // и отдельный замер; переносить правило без проверки
+                // устройства тут нельзя, рядов из двух чисел это
+                // не касается.
+                стрелкаЧиселСегодня
 
                 if let next = nextMealTime {
                     Text("Следующее кормление примерно в \(Fmt.clock(minuteOfDay: next)).")
@@ -281,6 +315,38 @@ struct FeedingScreen: View {
                 TGExplainer(text: "Норму называет врач или упаковка — приложение её не выдумывает. Для влажного корма граммы другие: он на три четверти вода.")
             }
         }
+    }
+
+    /// Ряд «съел · кормлений · осталось» — столбцом на доступных размерах.
+    @ViewBuilder
+    private var стрелкаЧиселСегодня: some View {
+        if размерТекста.isAccessibilitySize {
+            VStack(spacing: Token.Space.s10) { числаСегодня }
+        } else {
+            HStack(spacing: 0) { числаСегодня }
+        }
+    }
+
+    /// Дети у обеих раскладок — буквально одни и те же. Разойдись они,
+    /// и ветка, которую реже видят, отстанет молча.
+    @ViewBuilder
+    private var числаСегодня: some View {
+        TGStat(value: "\(report.todayGrams) г",
+               caption: report.normGramsPerDay > 0 ? "из \(report.normGramsPerDay)" : "съел")
+        TGStat(value: "\(report.todayMeals)",
+               caption: report.normMealsPerDay > 0
+                   ? .готовая(String(localized: "из \(report.normMealsPerDay) кормлений"))
+                   : "кормлений")
+        // **«Осталось 0 г» читается как «уже наелся».**
+        // `remainingGramsToday` это `max(0, норма − съеденное)`,
+        // то есть при ненаписанной норме он ноль **по устройству** —
+        // и ноль тут отвечал про отсутствие нормы, а читался про
+        // собаку. Две соседние подписи этого же ряда ось уже знали
+        // (`норма > 0`), третья не знала.
+        TGStat(value: report.normGramsPerDay > 0
+                   ? "\(report.remainingGramsToday) г"
+                   : Self.нечегоСказать,
+               caption: "осталось")
     }
 
     /// Нормы нет — и экран говорит это словами, а не числом.
