@@ -121872,6 +121872,30 @@
             "state" : "translated",
             "value" : "Записать норму и режим"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Record the norm and schedule"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Enregistrer la norme et le rythme"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Нормасы мен режимін жазу"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Записати норму та режим"
+          }
         }
       }
     },
@@ -121883,6 +121907,30 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "норму ещё не записали"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "the norm has not been recorded yet"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "la norme n'a pas encore été enregistrée"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "норма әлі жазылмаған"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "норму ще не записали"
           }
         }
       }
@@ -121896,6 +121944,30 @@
             "state" : "translated",
             "value" : "её называет врач или упаковка"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "the vet or the packaging names it"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "c'est le vétérinaire ou l'emballage qui la fixe"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "оны дәрігер немесе қаптама айтады"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "її називає лікар або упаковка"
+          }
         }
       }
     },
@@ -121907,6 +121979,30 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "г в день"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "g per day"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "g par jour"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "г/тәулік"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "г на день"
           }
         }
       }
@@ -121920,6 +122016,30 @@
             "state" : "translated",
             "value" : "Норма не записана. Приложение её не подставляет"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The norm is not recorded. The app does not fill it in"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "La norme n'est pas enregistrée. L'application ne la remplit pas"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Норма жазылмаған. Қолданба оны өзі қоймайды"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Норма не записана. Застосунок її не підставляє"
+          }
         }
       }
     },
@@ -121931,6 +122051,30 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Пока нормы нет, приложение не считает ни порцию, ни перерасход — от неё считается всё остальное. Подставить своё число оно не может: получилось бы назначение, которого никто не делал."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Until there is a norm, the app calculates neither the portion nor the overfeeding — everything else is derived from it. It cannot fill in a number of its own: that would be a prescription nobody made."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tant qu'il n'y a pas de norme, l'application ne calcule ni la portion ni le dépassement : tout le reste en découle. Elle ne peut pas inventer un chiffre : ce serait une prescription que personne n'a faite."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Норма болмағанша, қолданба бір реттік үлесті де, артық берілгенді де есептемейді — қалғанының бәрі осыдан шығады. Өз санын қоя алмайды: ол ешкім жасамаған тағайындау болып шығады."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Поки норми немає, застосунок не рахує ні порцію, ні перевитрату — від неї рахується все інше. Підставити своє число він не може: вийшло б призначення, якого ніхто не робив."
           }
         }
       }
@@ -121944,6 +122088,30 @@
             "state" : "translated",
             "value" : "Из чего делить, приложение не знает: дневная норма не записана."
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The app does not know what to divide: the daily norm is not recorded."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L'application ne sait pas quoi diviser : la norme journalière n'est pas enregistrée."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Қолданба неден бөлетінін білмейді: тәуліктік норма жазылмаған."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Застосунок не знає, з чого ділити: добова норма не записана."
+          }
         }
       }
     },
@@ -121956,6 +122124,30 @@
             "state" : "translated",
             "value" : "Это зеркало дневной нормы, а она не записана. Запиши её в режиме питания — и расход запаса начнёт считаться."
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "This mirrors the daily norm, and the norm is not recorded. Record it in the feeding schedule, and the stock usage will start being counted."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ceci reflète la norme journalière, et celle-ci n'est pas enregistrée. Enregistre-la dans le rythme des repas, et la consommation du stock sera comptée."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Бұл — тәуліктік норманың айнасы, ал ол жазылмаған. Оны тамақтану режимінде жаз — сонда қордың жұмсалуы есептеле бастайды."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Це дзеркало добової норми, а вона не записана. Запиши її в режимі харчування — і витрата запасу почне рахуватися."
+          }
         }
       }
     },
@@ -121966,6 +122158,30 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
+            "value" : "норма не записана"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "the norm is not recorded"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "la norme n'est pas enregistrée"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "норма жазылмаған"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
             "value" : "норма не записана"
           }
         }
@@ -121980,6 +122196,30 @@
             "state" : "translated",
             "value" : "Записать норму"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Record the norm"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Enregistrer la norme"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Норманы жазу"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Записати норму"
+          }
         }
       }
     },
@@ -121991,6 +122231,30 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Пока норма не записана, приложение не считает ни порцию, ни перерасход: от неё считается всё остальное. Нажми — и шаговик встанет на сто двадцать граммов, откуда удобно докрутить до того, что назвал врач. Это подсказка, а не назначение."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Until the norm is recorded, the app calculates neither the portion nor the overfeeding: everything else is derived from it. Tap, and the stepper will sit at one hundred and twenty grams, a convenient place to dial up to whatever the vet named. This is a hint, not a prescription."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tant que la norme n'est pas enregistrée, l'application ne calcule ni la portion ni le dépassement : tout le reste en découle. Appuie, et le sélecteur se placera sur cent vingt grammes, un point pratique pour monter jusqu'à ce que le vétérinaire a indiqué. C'est une suggestion, pas une prescription."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Норма жазылмағанша, қолданба бір реттік үлесті де, артық берілгенді де есептемейді: қалғанының бәрі осыдан шығады. Бас — қадамдық жүз жиырма грамға тұрады, одан дәрігер айтқан санға дейін бұрау қолайлы. Бұл — кеңес, тағайындау емес."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Поки норма не записана, застосунок не рахує ні порцію, ні перевитрату: від неї рахується все інше. Натисни — і кроковик стане на сто двадцять грамів, звідки зручно докрутити до того, що назвав лікар. Це підказка, а не призначення."
           }
         }
       }
@@ -122004,6 +122268,30 @@
             "state" : "translated",
             "value" : "норма не записана — корм посчитать нечем"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "the norm is not recorded — there is nothing to count the food by"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "la norme n'est pas enregistrée — rien ne permet de compter la nourriture"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "норма жазылмаған — жемді есептейтін нәрсе жоқ"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "норма не записана — корм порахувати нічим"
+          }
         }
       }
     },
@@ -122015,6 +122303,30 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "сначала запиши дневную норму в режиме питания — из неё считается всё"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "first record the daily norm in the feeding schedule — everything is derived from it"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "enregistre d’abord la norme journalière dans le rythme des repas — tout en découle"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "алдымен тәуліктік норманы тамақтану режимінде жаз — бәрі осыдан есептеледі"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "спочатку запиши добову норму в режимі харчування — з неї рахується все"
           }
         }
       }
@@ -122028,6 +122340,30 @@
             "state" : "translated",
             "value" : "Порцию подставить не из чего: дневная норма не записана. Накрути сколько положил — или запиши норму в режиме питания, и дальше она будет подставляться сама."
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "There is nothing to derive the portion from: the daily norm is not recorded. Dial in however much you put out — or record the norm in the feeding schedule, and from then on it will be filled in automatically."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Il n'y a rien pour en déduire la portion : la norme journalière n'est pas enregistrée. Indique la quantité que tu as servie — ou enregistre la norme dans le rythme des repas, et elle sera ensuite remplie toute seule."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Үлесті неден алатын нәрсе жоқ: тәуліктік норма жазылмаған. Қанша салғаныңды бұрап қой — немесе норманы тамақтану режимінде жаз, әрі қарай ол өзі қойылады."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Порцію підставити ні з чого: добова норма не записана. Накрути скільки поклав — або запиши норму в режимі харчування, і далі вона підставлятиметься сама."
+          }
         }
       }
     },
@@ -122039,6 +122375,30 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%.1f %@ · расход не задан"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%.1f %@ · usage not set"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%.1f %@ · consommation non définie"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%.1f %@ · жұмсалуы белгіленбеген"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%.1f %@ · витрата не задана"
           }
         }
       }
