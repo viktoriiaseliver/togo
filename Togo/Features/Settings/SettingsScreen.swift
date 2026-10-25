@@ -83,7 +83,8 @@ struct SettingsScreen: View {
             // и работой чужой сессии, которая каталог сейчас вычитывает.
             CinemaHeader("Настройки",
                          надпись: "Язык, уведомления, перенос",
-                         экран: .sub("settings"))
+                         экран: .sub("settings"),
+                         отступы: false)
         }
         .listRowInsets(EdgeInsets())
         .listRowBackground(Color.clear)
@@ -488,7 +489,8 @@ struct NotificationSettingsScreen: View {
             Section {
                 CinemaHeader("Уведомления",
                              надпись: "что прерывает",
-                             экран: .sub("notifications"))
+                             экран: .sub("notifications"),
+                             отступы: false)
             }
             .listRowInsets(EdgeInsets())
             .listRowBackground(Color.clear)

@@ -62,7 +62,8 @@ struct BackgroundScreen: View {
         Section {
             CinemaHeader("Фон приложения",
                          надпись: "чьё фото видно за экранами",
-                         экран: .sub("background"))
+                         экран: .sub("background"),
+                         отступы: false)
         }
         .listRowInsets(EdgeInsets())
         .listRowBackground(Color.clear)

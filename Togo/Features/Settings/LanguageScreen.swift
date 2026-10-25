@@ -99,7 +99,8 @@ struct LanguageScreen: View {
                 // друг под другом — одна и та же строка дважды, с
                 // разницей в регистре. Экран читается, а не считается:
                 // прогон такого не ловит по устройству.
-                CinemaHeader("Язык", надпись: "кличка не переводится", экран: .sub("language"))
+                CinemaHeader("Язык", надпись: "кличка не переводится", экран: .sub("language"),
+                             отступы: false)
             }
             .listRowInsets(EdgeInsets())
             .listRowBackground(Color.clear)
