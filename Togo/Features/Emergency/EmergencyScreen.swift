@@ -284,7 +284,18 @@ struct DocumentsScreen: View {
     }
 
     private var lostText: String? {
-        var parts = ["Потерялась собака: \(dog.displayName), \(dog.breed ?? "метис"), \(Fmt.weight(dog.weightKg))"]
+        // ДВА КЛЮЧА, А НЕ ПРОЧЕРК В ОДНОМ (замер 25.10.2026).
+        //
+        // `Fmt.weight(0)` печатал «0,0 г», и плакат уходил чужим людям
+        // с ложным весом; прочерк на его месте — «Потерялась собака:
+        // Стич, метис, —» — читается как обрыв, а не как «не записано».
+        // Этот текст человек отправляет незнакомым, и читают его один
+        // раз, без права переспросить.
+        //
+        // Трёхместный ключ остаётся живым: когда вес записан, едет он.
+        var parts = [Fmt.weightIfKnown(dog.weightKg).map {
+            String(localized: "Потерялась собака: \(dog.displayName), \(dog.breed ?? "метис"), \($0)")
+        } ?? String(localized: "Потерялась собака: \(dog.displayName), \(dog.breed ?? "метис")")]
         if let age = dog.ageDescription { parts.append(String(localized: "Возраст: \(age)")) }
         if let chip = dog.chipNumber, !chip.isEmpty { parts.append(String(localized: "Чип: \(chip)")) }
         if let marks = dog.distinctiveMarks, !marks.isEmpty { parts.append(String(localized: "Приметы: \(marks)")) }

@@ -83705,6 +83705,42 @@
         }
       }
     },
+    "Потерялась собака: %@, %@" : {
+      "comment" : "parts",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lost dog: %@, %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Chien perdu : %@, %@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ит жоғалды: %@, %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Потерялась собака: %@, %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Загубилася собака: %@, %@"
+          }
+        }
+      }
+    },
     "Потом" : {
       "comment" : "body",
       "extractionState" : "manual",

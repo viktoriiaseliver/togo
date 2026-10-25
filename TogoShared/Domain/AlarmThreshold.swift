@@ -98,6 +98,12 @@ enum AlarmThresholdAnalyzer {
         }
 
         let body = parts.joined(separator: ". ")
-        return "\(dog.displayName), \(Fmt.weight(dog.weightKg)). " + body.prefix(1).uppercased() + body.dropFirst() + "."
+        // Вес выпадает из шапки, когда не записан: «Стич, —. Ел
+        // в 14:00» читается как обрыв строки. Ключа в каталоге
+        // у этой фразы нет — она собирается конкатенацией,
+        // поэтому правка новых строк не заводит (замер 25.10.2026).
+        let шапка = [dog.displayName, Fmt.weightIfKnown(dog.weightKg)]
+            .compactMap { $0 }.joined(separator: ", ")
+        return "\(шапка). " + body.prefix(1).uppercased() + body.dropFirst() + "."
     }
 }

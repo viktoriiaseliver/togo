@@ -193,7 +193,12 @@ struct DogTab: View {
     /// которые в опись не влезут, и читают его не здесь, а в документах.
     private func приметы(_ dog: Dog) -> String {
         let чип = dog.chipNumber == nil ? nil : String(localized: "чип есть")
-        return [dog.breed, dog.ageDescription, Fmt.weight(dog.weightKg), чип]
+        // `weightIfKnown`, а не `weight`: массив уже `compactMap`,
+        // и незаписанный вес просто выпадает из описи. Прочерк
+        // посреди «метис · 2 года · — · чип есть» читался бы как
+        // пропуск вёрстки, а не как «не записано» (замер 25.10.2026).
+        return [dog.breed, dog.ageDescription,
+                Fmt.weightIfKnown(dog.weightKg), чип]
             .compactMap { $0 }
             .joined(separator: " · ")
     }
