@@ -26,12 +26,40 @@ struct DogEditorScreen: View {
     /// жест введённое сохраняет.
     @FocusState private var весВФокусе: Bool
 
+    /// Фокус поля клички. Отдельным свойством, а не общим
+    /// перечислением: `весВФокусе` читает `.готовоНадКлавиатурой`,
+    /// и менять его тип значило бы трогать выход с клавиатуры,
+    /// у которого своя причина и свой разбор выше.
+    @FocusState private var кличкаВФокусе: Bool
+
+    /// «Готово» нажали при пустой кличке.
+    ///
+    /// Поле состояния, а не вычисление из пустоты: строка появляется
+    /// **по нажатию**. Пустое поле свежей формы — это начало работы,
+    /// а не ошибка человека.
+    @State private var кличкаНеНазвана = false
+
+    private var кличкаПуста: Bool {
+        draft.name.trimmingCharacters(in: .whitespaces).isEmpty
+    }
+
     private var isNew: Bool { dog == nil }
 
     var body: some View {
         TGScreen {
             CinemaHeader(isNew ? "Новая собака" : "Профиль", отступы: false)
-            TGExplainer(text: "Обязательны только кличка и вес. Остальное можно пропустить и заполнить когда угодно.")
+            // **Было «Обязательны только кличка и вес» — и это ЛОЖЬ
+            // с двух сторон сразу.**
+            //
+            // Со стороны решения: вес необязателен (ОТВЕТЫ-круг-5,
+            // п. 1 — «на шаге „собака" обязательна только кличка»).
+            // Со стороны кода: `save()` (`:226`) пишет
+            // `dog.weightKg = draft.weightValue ?? dog.weightKg`,
+            // то есть пустой вес он переживает без единого слова.
+            //
+            // Обещание в шапке формы читают до ввода, а отказ кнопки —
+            // после, и сходились они только случайно.
+            TGExplainer(text: "Обязательна только кличка. Остальное можно пропустить и заполнить когда угодно.")
 
             TGCard(spacing: 0) {
                 LabeledField(label: "Кличка") {
@@ -55,7 +83,24 @@ struct DogEditorScreen: View {
                     // > **Починка по адресу из отзыва закрывает адрес,
                     // > а не класс.** Искать надо было форму
                     // > `TextField("<слово>"`, а не слово «Стич».
-                    TextField("Кличка", text: $draft.name).textInputAutocapitalization(.words)
+                    TextField("Кличка", text: $draft.name)
+                        .textInputAutocapitalization(.words)
+                        .focused($кличкаВФокусе)
+                }
+                // Отказ — ЗДЕСЬ, под своим полем, а не у кнопки:
+                // человек смотрит туда, где надо исправлять
+                // (ОТВЕТЫ-круг-5, п. 1). Ключ тот же, что у шага
+                // онбординга, — два экрана об одном говорят одним
+                // словом, и перевод у них один.
+                if кличкаНеНазвана {
+                    Text("Напиши кличку — так её будет звать дневник")
+                        .textStyle(AppFont.micro.color(Token.Status.overdueText))
+                        .wraps()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.bottom, Token.Space.s8)
+                        // Озвучке отказ приходит сменой текста,
+                        // а не цветом: цвета она не читает вовсе.
+                        .accessibilityAddTraits(.isStaticText)
                 }
                 TGDivider()
                 LabeledField(label: "Вес") {
@@ -159,12 +204,36 @@ struct DogEditorScreen: View {
         // записей; человек, набирающий вес, его не видит.
         .safeAreaInset(edge: .bottom) {
             VStack(spacing: Token.Space.s8) {
-                TGButton(title: isNew ? "Добавить собаку" : "Сохранить", isEnabled: draft.isValid) { save() }
+                // # Кнопка была выключена ВЕСОМ, а сохранение вес не спрашивало
+                //
+                // Стояло `isEnabled: draft.isValid`, а `isValid` это
+                // «кличка непуста **И** `weightValue != nil`»
+                // (`OnboardingFlow.swift:376`). Сохранение рядом,
+                // `:226`, пишет `dog.weightKg = draft.weightValue
+                // ?? dog.weightKg` — пустой вес оно переживает,
+                // оставляя прежний.
+                //
+                // > **Условие и действие смотрели на разные величины.**
+                // > Тот же класс, что у запаса корма (`d569d01`),
+                // > и он дороже отсутствующей надписи: человек, стёрший
+                // > вес, чтобы перенабрать, не мог сохранить и ПРАВКУ
+                // > КЛИЧКИ — молчащая кнопка не говорила, какое из
+                // > шести полей её держит.
+                //
+                // Сведено к одной величине, и величина эта — кличка:
+                // так решено дизайном (ОТВЕТЫ-круг-5, п. 1) и так же
+                // ведёт себя `save()`. Кнопка при этом **не
+                // выключается вовсе** — правило того же пункта:
+                // «иначе кнопка включена и объясняет при нажатии».
+                TGButton(title: isNew ? "Добавить собаку" : "Сохранить") { готово() }
             }
             .padding(.horizontal, Token.Spacing.screenPadding)
             .padding(.bottom, Token.Space.s8)
         }
         .navigationTitle(isNew ? "Новая собака" : "Профиль")
+        // Строка отказа живёт до первой правки клички, а не до непустой:
+        // человек уже начал исправлять, ругать его по дороге незачем.
+        .onChange(of: draft.name) { _, _ in кличкаНеНазвана = false }
         .cinemaScreen()
         // Выход с цифровой клавиатуры. Худший экран этого класса:
         // см. причину у объявления `весВФокусе`.
@@ -176,6 +245,23 @@ struct DogEditorScreen: View {
         } message: {
             Text("Исчезнут все одиннадцать видов записей: отметки, взвешивания, дела ухода, схемы лечения с дозами, шаги и занятия, поездки, документы, выезды, течки и запас корма. Это нельзя отменить.")
         }
+    }
+
+    /// Что делает «Готово».
+    ///
+    /// Отказ из трёх частей, и ни одна не заменяет другие: **слово**
+    /// (строка под полем), **место** (фокус уезжает в кличку)
+    /// и хаптика `.warning` — для того, кто смотрит не на экран.
+    /// Та же тройка, что на шаге онбординга (`OnboardingSteps.swift`).
+    private func готово() {
+        guard !кличкаПуста else {
+            кличкаНеНазвана = true
+            кличкаВФокусе = true
+            Haptics.warning()
+            return
+        }
+        кличкаНеНазвана = false
+        save()
     }
 
     private func load() {
@@ -201,8 +287,9 @@ struct DogEditorScreen: View {
             //
             // Соседняя ветка того же метода (`:102`, `draft.makeDog()`)
             // триммит с первого дня, эта — нет. Пустую кличку сюда
-            // не пустят ворота кнопки (`isEnabled: draft.isValid`,
-            // и `isValid` сам триммит), но «Стич » с хвостовым пробелом
+            // не пустят ворота `готово()` (`кличкаПуста` сам триммит;
+            // до 25.10 это звалось `draft.isValid` и требовало заодно
+            // вес), но «Стич » с хвостовым пробелом
             // доедет до базы целиком. А `Dog.name` дальше идёт ключом
             // группировки — `DuplicateMerge.swift:38` и карточка
             // дублей, — то есть «Стич» и «Стич » станут двумя собаками,
@@ -439,8 +526,19 @@ struct CareTaskEditorSheet: View {
                 }
             }
         } footer: {
-            TGButton(title: isNew ? "Добавить" : "Сохранить",
-                     isEnabled: !title.trimmingCharacters(in: .whitespaces).isEmpty) { save() }
+            // Правило дизайна круга 5, п. 1: выключенная кнопка
+            // допустима, только если рядом словом сказано, чего
+            // не хватает. Образец формы — запас корма (`d569d01`):
+            // строка над кнопкой, той же величиной, что и ворота.
+            VStack(spacing: Token.Space.s8) {
+                if title.trimmingCharacters(in: .whitespaces).isEmpty {
+                    Text("Назови напоминание — под этим именем оно встанет в список")
+                        .textStyle(AppFont.caption.color(Token.Status.overdueText))
+                        .wraps()
+                }
+                TGButton(title: isNew ? "Добавить" : "Сохранить",
+                         isEnabled: !title.trimmingCharacters(in: .whitespaces).isEmpty) { save() }
+            }
         }
         .presentationDetents([.large])
         .task { load() }
@@ -736,8 +834,19 @@ struct MedicationEditorSheet: View {
                 }
             }
         } footer: {
-            TGButton(title: isNew ? "Добавить" : "Сохранить",
-                     isEnabled: !name.trimmingCharacters(in: .whitespaces).isEmpty) { save() }
+            // Правило дизайна круга 5, п. 1: выключенная кнопка
+            // допустима, только если рядом словом сказано, чего
+            // не хватает. Форма — по образцу запаса корма (`d569d01`):
+            // строка над кнопкой, на ТОЙ ЖЕ величине, что ворота.
+            VStack(spacing: Token.Space.s8) {
+                if name.trimmingCharacters(in: .whitespaces).isEmpty {
+                    Text("Назови препарат — остальное можно заполнить потом")
+                        .textStyle(AppFont.caption.color(Token.Status.overdueText))
+                        .wraps()
+                }
+                TGButton(title: isNew ? "Добавить" : "Сохранить",
+                         isEnabled: !name.trimmingCharacters(in: .whitespaces).isEmpty) { save() }
+            }
         }
         .presentationDetents([.large])
         // Выход с цифровой клавиатуры. Это ЛИСТ, а не экран: панель
