@@ -391,19 +391,51 @@ struct DocumentViewerSheet: View {
 nonisolated enum DocumentPhoto {
     static let commonTitles = ["Паспорт", "Прививки", "Чип", "Анализы", "Назначение", "Другое"]
 
-    /// Длинная сторона, до которой ужимаем. 1600 точек хватает, чтобы
+    /// Длинная сторона, до которой ужимаем. 1600 пикселей хватает, чтобы
     /// прочитать номер и печать, и в двадцать раз меньше исходника.
     static let maxSide: CGFloat = 1600
     static let quality: CGFloat = 0.7
 
+    /// **Меряет и рисует в ПИКСЕЛЯХ, а не в точках.** Это та же починка,
+    /// что сделана у соседа (`ФонФото.ужать`) 23.10.2026, и сюда она
+    /// не доехала: ужимателей в проекте два, а правили один.
+    ///
+    /// Замер 25.10.2026 (`КартинкиВРамкеКадрTests.ужатиеДокумента`),
+    /// снимок 3000 × 4000:
+    ///
+    /// ```
+    /// просили 1600 px   получили 4800 px   ровно ×3, масштаб устройства
+    /// вес после «ужатия» 332 370 Б против исходных 304 360 Б
+    ///                                      — то есть ТЯЖЕЛЕЕ оригинала
+    /// контроль, ФонФото.ужать: просили 1000 px, получили 1000 px
+    /// ```
+    ///
+    /// `UIGraphicsImageRenderer(size:)` без формата рисует в масштабе
+    /// устройства (на iPhone 3×), поэтому запрошенная тысяча шестьсот
+    /// превращалась в четыре тысячи восемьсот, а вес — примерно
+    /// в девять раз. `UIImage.size` при этом точки, а не пиксели:
+    /// `UIImage(data:)` даёт `scale == 1`, и на этой дороге обе величины
+    /// совпадают, — но умножение на `scale` поставлено всё равно,
+    /// потому что дорога к `shrink` может появиться вторая, а разойтись
+    /// две половины одного числа могут молча.
+    ///
+    /// > **Сторож на это стоял и был зелёным.** `StructuralGapsTests`
+    /// > проверял `DocumentPhoto.maxSide == 1600` — то есть **объявленную
+    /// > константу вместо выхода помощника**: прокси вместо предмета.
+    /// > Удовлетворить его можно, не ужав ни одного снимка.
     static func shrink(_ data: Data) -> Data? {
         guard let image = UIImage(data: data) else { return nil }
-        let side = max(image.size.width, image.size.height)
+        let widthPx = image.size.width * image.scale
+        let heightPx = image.size.height * image.scale
+        let side = max(widthPx, heightPx)
         guard side > maxSide else { return image.jpegData(compressionQuality: quality) ?? data }
 
         let scale = maxSide / side
-        let size = CGSize(width: image.size.width * scale, height: image.size.height * scale)
-        let renderer = UIGraphicsImageRenderer(size: size)
+        let size = CGSize(width: widthPx * scale, height: heightPx * scale)
+        let format = UIGraphicsImageRendererFormat.default()
+        format.scale = 1
+        format.opaque = true
+        let renderer = UIGraphicsImageRenderer(size: size, format: format)
         let resized = renderer.image { _ in image.draw(in: CGRect(origin: .zero, size: size)) }
         return resized.jpegData(compressionQuality: quality)
     }
