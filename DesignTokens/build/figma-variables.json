@@ -2462,6 +2462,34 @@
           "aliasCollection": "Primitive"
         },
         {
+          "name": "poster/tintAlarm",
+          "type": "COLOR",
+          "description": "ПОДКРАСКА ФОТОГРАФИИ при тревоге. Прежде бралась `Status.overdueText` (#FF7A66) — светлее её #D52519 на две ступени.",
+          "alias": "color/backdropTintAlarm",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "poster/tintDose",
+          "type": "COLOR",
+          "description": "ПОДКРАСКА ФОТОГРАФИИ в час дозы — `softLight` поверх снимка собаки, по кадру 02 при дозе синим залит весь верх экрана. Заводится потому, что `component.backdrop.tint.dose` экранам закрыт (ратчет `ComponentTokenScopeTests`), а живого читателя у него нет ни одного: `ReadingPanel.подкраска` брала `Action.primary`, и в теме «Кино» это **#FFFFFF** — фото получало БЕЛУЮ засветку вместо синей. Замер 25.10.2026, прочёсывание всех 145 сгенерированных токенов: 63 без читателей, и 28 из них это `ReadingTone` и `Backdrop.Tint` — слой с её значениями, которым не красит никто.",
+          "alias": "color/backdropTintDose",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "poster/tintFasting",
+          "type": "COLOR",
+          "description": "ПОДКРАСКА ФОТОГРАФИИ натощак. Прежде бралась `Status.waitingText` (#F7C75F) — токен ТЕКСТА в роли заливки, и без альфы: у подкраски она своя (.55), и две прозрачности перемножались бы молча.",
+          "alias": "color/backdropTintFasting",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "poster/tintNight",
+          "type": "COLOR",
+          "description": "ПОДКРАСКА ФОТОГРАФИИ ночью. У ночи подкраски не было ВОВСЕ: `ReadingPanel.подкраска` возвращала `nil` для `.night`, и ночь отличалась от обычного дня только затемнением фото на 30 %. Токен с её значением существовал всё это время.",
+          "alias": "color/backdropTintNight",
+          "aliasCollection": "Primitive"
+        },
+        {
           "name": "radius/bar",
           "type": "FLOAT",
           "description": "Столбик полосы «Metric», 3 (`metric.bars.radius`). Семантическое имя заведено СРАЗУ, а не вторым заходом: генератор поднимает в Swift семантику, и примитив без алиаса до слоя вида не доезжает — на этом уже дважды спотыкались (`capsule`, `stockLow`).",

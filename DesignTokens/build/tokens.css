@@ -323,6 +323,10 @@
   --semantic-poster-panelAlarm: #D52519EB;
   --semantic-poster-panelDose: #1F4FFFEB;
   --semantic-poster-panelFasting: #FFC233EB;
+  --semantic-poster-tintAlarm: #D5251999;
+  --semantic-poster-tintDose: #1F4FFF8C;
+  --semantic-poster-tintFasting: #FFC2338C;
+  --semantic-poster-tintNight: #14143C99;
   --semantic-radius-bar: 3px;
   --semantic-radius-capsule: 999px;
   --semantic-radius-card: 24px;
