@@ -120641,7 +120641,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Open Family"
+            "value" : "Open \u201cFamily\u201d"
           }
         },
         "fr" : {
@@ -121287,7 +121287,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "The Health tab appears, along with the fasting window and double-dose protection. You'll add the medication later — we'll ask about the plan and times there."
+            "value" : "The \u201cHealth\u201d tab appears, along with the fasting window and double-dose protection. You'll add the medication later — we'll ask about the plan and times there."
           }
         },
         "fr" : {
