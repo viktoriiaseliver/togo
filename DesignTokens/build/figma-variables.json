@@ -2357,6 +2357,13 @@
           "aliasCollection": "Primitive"
         },
         {
+          "name": "poster/buttonAlarm",
+          "type": "COLOR",
+          "description": "ЗАЛИВКА главной кнопки при тревоге (`readingTone.alarm.primaryButton`). Прежде `status.overdueText` #FF7A66 — снова токен ТЕКСТА в роли заливки, и на две ступени светлее её #D52519. Оба читаемы (7,40 против 4,64), расходится не контраст, а цвет: у кнопки дозы тот же токен, что у неё (`indigo` #1F4FFF), и тревога осталась единственной не по хендоффу.",
+          "alias": "color/toneAlarmChip",
+          "aliasCollection": "Primitive"
+        },
+        {
           "name": "poster/caption",
           "type": "COLOR",
           "description": "ТОЛЬКО НЕЙТРАЛЬНЫЙ БЛОК. На цветных — captionOnColor, на дозе — captionOnDose. В светлой на синем блоке даёт 1,10.",
@@ -2396,6 +2403,41 @@
           "type": "COLOR",
           "description": "Подпись НА янтарной панели натощак. ЗАВЕДЕНО 25.10.2026 ПО УЖЕ СУЩЕСТВУЮЩЕМУ ОБРАЗЦУ — рядом живут `labelOnDose`, `barOnDose`, `captionOnDose`, то есть роли «текст НА блоке такого-то цвета» в этом слое уже есть. Нового ЗНАЧЕНИЯ не заводится ни одного: все три ссылаются на примитивы, которые дизайн уже назвал. ЗАЧЕМ: панель показания на «Сегодня» красит себя тоном состояния, а чернила брала ОБЩИЕ — `Ink.onAccent` у дозы и тревоги, `Ink.primary` у натощак. Замер 25.10.2026, тёмная тема, порог 4,5: натощак 1,92 · доза 2,86 · тревога 3,23. Это большая цифра показания на главном экране. ПРИЧИНА БЫЛА НЕ В НЕДОСМОТРЕ: значения дизайна лежат в `component.readingTone.*`, а `Token.Component.*` экранам запрещён (`ComponentTokenScopeTests`) — то есть экран не мог их достать и подставлял суррогат. Это ровно тот случай, который Виктория уже решала 23.10.2026 про `semantic.category`: «цвет спрашивают кружок ленты, ВИДЖЕТ и ЖИВАЯ АКТИВНОСТЬ, а Component за пределами дизайн-системы запрещён — то есть из компонентного слоя двое из трёх достать его не могли и подставляли суррогат». Решение то же и по той же причине. 4,89 при пороге 4,5, и тише показания (8,59) — иерархия цела.",
           "alias": "color/toneFastingCaption",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "poster/chipAlarm",
+          "type": "COLOR",
+          "description": "ЗАЛИВКА чипа состояния на панели тревоги. Прежде #FFFFFF при белых чернилах — контраст 1,00. С её значением 4,64.",
+          "alias": "color/toneAlarmChip",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "poster/chipDose",
+          "type": "COLOR",
+          "description": "ЗАЛИВКА чипа состояния на панели дозы. Прежде #FFFFFF при белых чернилах — контраст 1,00, чип не виден вовсе. С её значением 5,27.",
+          "alias": "color/indigo",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "poster/chipFasting",
+          "type": "COLOR",
+          "description": "ЗАЛИВКА чипа состояния на панели натощак. До 25.10.2026 чип всех трёх тонов красился `action.primary`, а в «Кино» это #FFFFFF — у натощак выходило читаемо (16,48) и неверно по цвету, у дозы и тревоги БЕЛОЕ ПО БЕЛОМУ.",
+          "alias": "color/toneFastingChip",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "poster/chipLabelFasting",
+          "type": "COLOR",
+          "description": "Текст чипа на янтарной заливке натощак. 10,22 — то же чернило, что у показания, и здесь это верно: обе поверхности янтарные.",
+          "alias": "color/toneFastingInk",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "poster/chipLabelOnTone",
+          "type": "COLOR",
+          "description": "Текст чипа на цветной заливке дозы и тревоги (`readingTone.*.chipLabel`). Прежде брались `чернила` панели — то есть цвет, рассчитанный на ПАНЕЛЬ, а не на чип: на белом чипе он и дал 1,00. Одно имя отвечало за две разные поверхности.",
+          "alias": "color/posterInk",
           "aliasCollection": "Primitive"
         },
         {

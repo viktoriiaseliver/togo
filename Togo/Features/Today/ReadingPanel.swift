@@ -632,12 +632,47 @@ struct ReadingPanel<Шапка: View>: View {
     /// Подставить туда чернила тона значило бы покрасить белым
     /// по светлому: починка одной ветки сломала бы вторую, и это
     /// тот класс, который в проекте уже стоил кадра.
+    /// **Чернила и заливка чипа берутся ПАРОЙ и от тона, замер
+    /// 25.10.2026.** Прежде заливка была одна на все тоны —
+    /// `Action.primary`, а в «Кино» это `#FFFFFF`, — а чернила брались
+    /// у ПАНЕЛИ:
+    ///
+    /// ```
+    ///           было                        стало по её токенам
+    /// натощак   #2A1D00 на #FFFFFF  16,48   #2A1D00 на #FFC233  10,22
+    /// доза      #FFFFFF на #FFFFFF   1,00   #F4F4F2 на #1F4FFF   5,27
+    /// тревога   #FFFFFF на #FFFFFF   1,00   #F4F4F2 на #D52519   4,64
+    /// ```
+    ///
+    /// У дозы и тревоги чип был **не виден вовсе**. У натощак выходило
+    /// читаемо — и потому молчало: одна ветка из трёх держала
+    /// правдоподобие.
+    ///
+    /// > **Чернила панели и чернила чипа — разные поверхности под
+    /// > одним именем.** Пока панель и чип красились одинаково, это
+    /// > было незаметно; как только у панели появился свой цвет,
+    /// > общее имя стало красить чип цветом соседа.
     private var чернилаЧипа: Color {
         guard чип.цветной else { return Token.Ink.primary }
-        return tone.paintsPanel ? чернила : Token.Ink.onAccent
+        guard tone.paintsPanel else { return Token.Ink.onAccent }
+        return tone == .fasting ? Token.Poster.chipLabelFasting
+                                : Token.Poster.chipLabelOnTone
     }
 
+    /// Ветка «чип не цветной» не тронута нарочно: там фон `arctic`,
+    /// он светлый, и `Ink.onAccent` (#111111) на нём верен. Подставить
+    /// туда цвет тона значило бы покрасить белым по светлому —
+    /// починка одной ветки сломала бы вторую.
     private var заливкаЧипа: Color {
-        чип.цветной ? Token.Action.primary : Token.Surface.card
+        guard чип.цветной else { return Token.Surface.card }
+        switch tone {
+        case .fasting: return Token.Poster.chipFasting
+        case .dose: return Token.Poster.chipDose
+        case .alarm: return Token.Poster.chipAlarm
+        // Прогулка и ночь панель не красят — чип остаётся светлым,
+        // и `Ink.onAccent` на нём читается. Перечисление полное
+        // нарочно: добавят тон — компилятор потребует решить.
+        case .normal, .night, .walk: return Token.Action.primary
+        }
     }
 }

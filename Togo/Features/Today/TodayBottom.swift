@@ -146,9 +146,15 @@ struct TodayBottomBar: View {
     private func заливка(_ главнаяЛи: Bool) -> Color {
         guard главнаяЛи else { return Token.Surface.card }
         switch tone {
-        // `readingTone.dose.primaryButton` = #1F4FFF.
+        // `readingTone.dose.primaryButton` = #1F4FFF; `backgroundDose`
+        // указывает на тот же `indigo`, то есть совпадает с хендоффом.
         case .dose: return Token.Poster.backgroundDose
-        case .alarm: return Token.Status.overdueText
+        // **Было `Status.overdueText` #FF7A66 — токен ТЕКСТА в роли
+        // заливки и на две ступени светлее хендоффа** (`#D52519`,
+        // `readingTone.alarm.primaryButton`). Читаемы оба (7,40 против
+        // 4,64), расходится не контраст, а цвет: кнопка дозы брала
+        // её значение, и тревога оставалась единственной не по макету.
+        case .alarm: return Token.Poster.buttonAlarm
         // Белая с текстом #111 — обычное состояние, ночь, натощак, выход.
         case .normal, .fasting, .night, .walk: return Token.Action.primary
         }
@@ -176,7 +182,19 @@ struct TodayBottomBar: View {
         guard главнаяЛи else { return Token.Ink.primary }
         switch tone {
         case .dose: return Token.Poster.labelOnDose
-        case .alarm, .normal, .fasting, .night, .walk: return Token.Ink.onAccent
+        // **Тревога уехала из общей ветки вместе со своей заливкой.**
+        // Пара меняется целиком, и это замер, а не симметрия:
+        //
+        // ```
+        // было     #FF7A66 + Ink.onAccent #111111   7,40
+        // сменить ТОЛЬКО заливку на #D52519          3,69  НЕ ХВАТАЕТ
+        // её пара  #D52519 + posterInk #F4F4F2       4,64
+        // ```
+        //
+        // Правка одной половины увела бы кнопку ниже порога — ровно
+        // то, что случилось с панелью показания и стоило 1,35.
+        case .alarm: return Token.Poster.labelOnDose
+        case .normal, .fasting, .night, .walk: return Token.Ink.onAccent
         }
     }
 }
