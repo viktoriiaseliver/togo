@@ -315,11 +315,18 @@ nonisolated enum Persistence {
         // нечего. Дневник не сохранится, но человек увидит приложение
         // и сможет выгрузить то, что запишет; про это говорит плашка
         // на главном экране.
+        //
+        // `cloudKitDatabase: .none` — ЯВНО, по той же причине, что
+        // у локальной ветки выше, и это НЕ перестраховка: см. замер
+        // 25.10.2026 у `container()` ниже. Хранилище в памяти
+        // зеркалирование не отключает.
         do {
             let container = try ModelContainer(
                 for: schema,
                 migrationPlan: TogoMigrationPlan.self,
-                configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
+                configurations: ModelConfiguration(schema: schema,
+                                                   isStoredInMemoryOnly: true,
+                                                   cloudKitDatabase: .none)
             )
             isEphemeral = true
             StartupLog.note("хранилище: в памяти, записи не сохранятся")
@@ -335,12 +342,41 @@ nonisolated enum Persistence {
     /// Аргумент `inMemory` здесь был всегда, но ни на что не влиял:
     /// хранилище получалось в памяти и при `false`. Обещание, которое
     /// не выполняется, хуже отсутствующего — поэтому его больше нет.
+    ///
+    /// **`cloudKitDatabase: .none` — ЯВНО, и это замер 25.10.2026,
+    /// а не перестраховка.** Сторож `ОткатБезОблакаTests` до этого дня
+    /// пропускал любую конфигурацию со словом `isStoredInMemoryOnly`
+    /// с доводом «в памяти облака нет по устройству: хранилища на диске
+    /// нет, зеркалить нечего» — и сам назвал условие, при котором довод
+    /// перестаёт быть верным: «если в логе прогона с ним появится
+    /// `NSCloudKitMirroringDelegate`». Условие проверено грепом по логу
+    /// одного `make unit` (`unit-20261025-144557-98906.log`):
+    ///
+    /// ```
+    /// разных NSCloudKitMirroringDelegate за прогон        213
+    /// из них с названным хранилищем                        24, ВСЕ file:///dev/null
+    /// строк «store was removed …»                         770
+    /// адрес базы приложения (App Group) в тех же строках    0  ← контроль
+    /// ```
+    ///
+    /// `file:///dev/null` — это и есть хранилище в памяти. То есть
+    /// довод был ложен, а его собственный опровергатель был записан
+    /// рядом и не запускался ни разу.
+    ///
+    /// Чем это платится: каждый такой делегат не находит учётной записи
+    /// iCloud, не восстанавливается и **убирает хранилище
+    /// из координатора**. Контекст при этом жив, у `mainContext`
+    /// автосохранение включено по устройству SwiftData, и его таймер
+    /// падает в `-[ModelContext checkAutosaveConditions]` с `brk #1`.
+    /// Разбор — в журнале за 25.10.2026.
     static func container() -> ModelContainer {
         do {
             return try ModelContainer(
                 for: schema,
                 migrationPlan: TogoMigrationPlan.self,
-                configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
+                configurations: ModelConfiguration(schema: schema,
+                                                   isStoredInMemoryOnly: true,
+                                                   cloudKitDatabase: .none)
             )
         } catch {
             // Хранилище в памяти не открывается только если сломана схема,
