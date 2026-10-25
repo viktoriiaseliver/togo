@@ -56534,6 +56534,42 @@
         }
       }
     },
+    "метис" : {
+      "comment" : "parts",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "mixed breed"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "croisé"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "араласқан тұқым"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "метис"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "метис"
+          }
+        }
+      }
+    },
     "Месяц назад" : {
       "comment" : "title",
       "extractionState" : "manual",

@@ -294,8 +294,8 @@ struct DocumentsScreen: View {
         //
         // Трёхместный ключ остаётся живым: когда вес записан, едет он.
         var parts = [Fmt.weightIfKnown(dog.weightKg).map {
-            String(localized: "Потерялась собака: \(dog.displayName), \(dog.breed ?? "метис"), \($0)")
-        } ?? String(localized: "Потерялась собака: \(dog.displayName), \(dog.breed ?? "метис")")]
+            String(localized: "Потерялась собака: \(dog.displayName), \(dog.breed ?? String(localized: "метис")), \($0)")
+        } ?? String(localized: "Потерялась собака: \(dog.displayName), \(dog.breed ?? String(localized: "метис"))")]
         if let age = dog.ageDescription { parts.append(String(localized: "Возраст: \(age)")) }
         if let chip = dog.chipNumber, !chip.isEmpty { parts.append(String(localized: "Чип: \(chip)")) }
         if let marks = dog.distinctiveMarks, !marks.isEmpty { parts.append(String(localized: "Приметы: \(marks)")) }
