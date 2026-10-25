@@ -506,6 +506,7 @@
   --component-metric-normLine-color: #AEAEB2;
   --component-readingTone-alarm-panel: #A11A10;
   --component-readingTone-dose-panel: #1238D6;
+  --component-readingTone-fasting-panel: #FFC233;
   --component-readingTone-night-panel: #141418F0;
   --component-readingTone-normal-panel: #141418F0;
   --component-readingTone-walk-panel: #141418F0;
@@ -537,6 +538,7 @@
   --primitive-color-toneAlarmPanel: #A11A10;
   --primitive-color-toneDoseCaption: #C7D3FF;
   --primitive-color-toneDosePanel: #1238D6;
+  --primitive-color-toneFastingPanel: #FFC233;
   --semantic-action-secondary: #48484A;
   --semantic-action-subtle: #3A4C85;
   --semantic-category-incident: #FFA696;
@@ -551,6 +553,7 @@
   --semantic-poster-captionOnDoseTone: #C7D3FF;
   --semantic-poster-panelAlarm: #A11A10;
   --semantic-poster-panelDose: #1238D6;
+  --semantic-poster-panelFasting: #FFC233;
   --semantic-status-overdueText: #FFA696;
   --semantic-surface-card: #242426;
   --semantic-surface-control: #48484A;
@@ -596,6 +599,7 @@
   --component-readingTone-dose-chipLabel: #FFFFFF;
   --component-readingTone-dose-fg: #FFFFFF;
   --component-readingTone-dose-primaryButton: #0E14A1;
+  --component-readingTone-fasting-panel: #FFC233;
   --component-readingTone-night-fg: #101112;
   --component-readingTone-night-panel: #FFFFFFDB;
   --component-readingTone-normal-bar: #0E14A1;
@@ -652,6 +656,7 @@
   --primitive-color-stockLow: #A34A00;
   --primitive-color-stockLowBg: #FFEBD9;
   --primitive-color-toggleOff: #D6D9DD;
+  --primitive-color-toneFastingPanel: #FFC233;
   --semantic-action-doneText: #215940;
   --semantic-action-onSubtle: #FFFFFF;
   --semantic-action-primary: #0E14A1;
@@ -677,6 +682,7 @@
   --semantic-poster-label: #101112;
   --semantic-poster-labelOnColor: #FFFFFF;
   --semantic-poster-labelOnDose: #FFFFFF;
+  --semantic-poster-panelFasting: #FFC233;
   --semantic-status-doneText: #101112;
   --semantic-status-overdueBg: #F7D5CF;
   --semantic-status-overdueText: #9B100E;

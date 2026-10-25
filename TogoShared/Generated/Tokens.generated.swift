@@ -84,6 +84,7 @@ nonisolated enum Token {
         static let toneAlarmPanel = Color(Dyn(dark: 0xD52519EB, light: 0xD52519EB, darkHC: 0xA11A10FF, lightHC: 0xD52519EB))
         static let toneDoseCaption = Color(Dyn(dark: 0xFFFFFFE0, light: 0xFFFFFFE0, darkHC: 0xC7D3FFFF, lightHC: 0xFFFFFFE0))
         static let toneDosePanel = Color(Dyn(dark: 0x1F4FFFEB, light: 0x1F4FFFEB, darkHC: 0x1238D6FF, lightHC: 0x1F4FFFEB))
+        static let toneFastingPanel = Color(Dyn(dark: 0xFFC233EB, light: 0xFFC233EB, darkHC: 0xFFC233FF, lightHC: 0xFFC233FF))
     }
 
     /// Поверхности: бумага, карточка, утопленное, хайрлайн.
@@ -261,7 +262,7 @@ nonisolated enum Token {
         /// ЗАЛИВКА панели показания в час дозы. Пара к `captionOnDoseTone`. Прежде читалась `action.primary` — наш индиго, не её `#1F4FFF`; HC-значение (`#1238D6`) у общего токена выразить было нечем.
         static let panelDose = Общие.toneDosePanel
         /// ЗАЛИВКА панели показания при голодании. Пара к `labelOnFasting`/`captionOnFasting`, и заводится она ради этой парности. Прежде заливка читала `status.waitingBg` (`#4A300A`, тёмно-коричневый), а чернила уже уехали на палитру Виктории (`#2A1D00`, рассчитанные на ЯРКИЙ янтарь): контраст пары был 1,35 — хуже тех 1,92, которые правка объявила исправленными. Половина пары перевелась, половина осталась, и обе стороны по отдельности выглядели верными. Приёмка — `ЧернилаПанелиПарныеЗаливкеTests`: она считает КОНТРАСТ ПАРЫ из этого файла, а не каждую сторону отдельно.
-        static let panelFasting = Color(hex: 0xFFC233EB)
+        static let panelFasting = Общие.toneFastingPanel
     }
 
     /// Шаг сетки. Прикладной код берёт Spacing, а не это.
@@ -627,7 +628,7 @@ nonisolated enum Token {
                 /// Подпись на чипе тона. ВЫВЕДЕНО из цвета показания того же тона (`fg`): своих значений для подписи чипа хендофф не даёт. Кадр 02 подтверждает только час дозы — белым по индиго. Замер по кадрам второго пакета 22.10.2026: `~/Downloads/design_handoff_togo_ios28 2/screenshots/01.png` (обычный день) и `02.png` (час дозы), 424×896. Прочитано глазами, не из описания.
                 static let chipLabel = Color(hex: 0x2A1D00FF)
                 static let fg = Color(hex: 0x2A1D00FF)
-                static let panel = Color(hex: 0xFFC233EB)
+                static let panel = Общие.toneFastingPanel
             }
             enum Night {
                 static let fg = Общие.ink
