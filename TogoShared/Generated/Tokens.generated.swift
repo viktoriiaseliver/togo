@@ -80,6 +80,10 @@ nonisolated enum Token {
         static let stockLow = Color(Dyn(dark: 0xFFA15CFF, light: 0xB85400FF, darkHC: 0xFFA15CFF, lightHC: 0xA34A00FF))
         static let stockLowBg = Color(Dyn(dark: 0x4A2A10FF, light: 0xFFEBD9FF, darkHC: 0x4A2A10FF, lightHC: 0xFFEBD9FF))
         static let toggleOff = Color(Dyn(dark: 0x767676FF, light: 0xD7DBE0FF, darkHC: 0x8E8E93FF, lightHC: 0xD6D9DDFF))
+        static let toneAlarmCaption = Color(Dyn(dark: 0xFFFFFFE0, light: 0xFFFFFFE0, darkHC: 0xFFE3E0FF, lightHC: 0xFFFFFFE0))
+        static let toneAlarmPanel = Color(Dyn(dark: 0xD52519EB, light: 0xD52519EB, darkHC: 0xA11A10FF, lightHC: 0xD52519EB))
+        static let toneDoseCaption = Color(Dyn(dark: 0xFFFFFFE0, light: 0xFFFFFFE0, darkHC: 0xC7D3FFFF, lightHC: 0xFFFFFFE0))
+        static let toneDosePanel = Color(Dyn(dark: 0x1F4FFFEB, light: 0x1F4FFFEB, darkHC: 0x1238D6FF, lightHC: 0x1F4FFFEB))
     }
 
     /// Поверхности: бумага, карточка, утопленное, хайрлайн.
@@ -234,12 +238,14 @@ nonisolated enum Token {
         static let barOnDose = Общие.posterInk
         /// ТОЛЬКО НЕЙТРАЛЬНЫЙ БЛОК. На цветных — captionOnColor, на дозе — captionOnDose. В светлой на синем блоке даёт 1,10.
         static let caption = Общие.inkMuted
-        /// Подпись НА терракотовой панели тревоги. ЗАВЕДЕНО 25.10.2026 ПО УЖЕ СУЩЕСТВУЮЩЕМУ ОБРАЗЦУ — рядом живут `labelOnDose`, `barOnDose`, `captionOnDose`, то есть роли «текст НА блоке такого-то цвета» в этом слое уже есть. Нового ЗНАЧЕНИЯ не заводится ни одного: все три ссылаются на примитивы, которые дизайн уже назвал. ЗАЧЕМ: панель показания на «Сегодня» красит себя тоном состояния, а чернила брала ОБЩИЕ — `Ink.onAccent` у дозы и тревоги, `Ink.primary` у натощак. Замер 25.10.2026, тёмная тема, порог 4,5: натощак 1,92 · доза 2,86 · тревога 3,23. Это большая цифра показания на главном экране. ПРИЧИНА БЫЛА НЕ В НЕДОСМОТРЕ: значения дизайна лежат в `component.readingTone.*`, а `Token.Component.*` экранам запрещён (`ComponentTokenScopeTests`) — то есть экран не мог их достать и подставлял суррогат. Это ровно тот случай, который Виктория уже решала 23.10.2026 про `semantic.category`: «цвет спрашивают кружок ленты, ВИДЖЕТ и ЖИВАЯ АКТИВНОСТЬ, а Component за пределами дизайн-системы запрещён — то есть из компонентного слоя двое из трёх достать его не могли и подставляли суррогат». Решение то же и по той же причине. ПОЧЕМУ НЕ `captionOnColor`: тот несёт `posterInkMuted` #B2B2AE, и на терракоте он даёт 2,75 — ниже порога. `doseInkMuted` (#FFFFFFE0) даёт 4,78 и остаётся тише показания (5,31). Имя примитива говорит «dose», и это расхождение названо здесь, а не сглажено: значение подходит обеим панелям, переименование примитива — отдельная правка с отдельной ценой.
-        static let captionOnAlarm = Color(hex: 0xFFFFFFE0)
+        /// Подпись на ПАНЕЛИ ПОКАЗАНИЯ при тревоге. Заменяет `captionOnAlarm`, заведённую этим же днём несколькими часами раньше: у той был один читатель — эта панель, — и общий примитив с дозой, который HC-значения двух тонов выразить не может.
+        static let captionOnAlarmTone = Общие.toneAlarmCaption
         /// Подпись плаката на ЦВЕТНОМ блоке.
         static let captionOnColor = Общие.posterInkMuted
         /// Тихая подпись на плакате дозы. Было `arcticSubtle`, который переехал на белую заливку (#5A5D61) и на индиго дал бы 1,5:1. ЭТО ТО САМОЕ САМОЕ УЗКОЕ МЕСТО, про которое в описании `arctic` записано «запас одна сотая»: прежняя пара давала 4,51 при пороге 4,5. Новая пара меряется заново — см. `Tools/contrast_graphite.py`, раздел «ПАРЫ РЕПОЗИТОРИЯ». Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`. Подпись плаката на заливке дозы. Отдельная от caption потому, что доза — единственный режим дня со СВЕТЛОЙ подложкой: остальные четыре кладут текст на тёмный блок, и там caption честен. У плаката ПАКЕТА режима дозы нет вовсе — его bg всегда тёмный блок с белым текстом, — то есть инверсия наша, и цена её в том, что для неё нужен свой тихий цвет.
         static let captionOnDose = Color(hex: 0xFFFFFFE0)
+        /// Подпись на ПАНЕЛИ ПОКАЗАНИЯ в час дозы — не на плакате. ОТДЕЛЬНО ОТ `captionOnDose` НАРОЧНО: ту читает шапка-плакат (`TGPoster.swift:114`), и на неё стоит сторож `ThemeContrastTests:91`. Перенаправь её — и поедет плакат, которого дизайн в этом пункте не касался. Разные читатели, разные роли.
+        static let captionOnDoseTone = Общие.toneDoseCaption
         /// Подпись НА янтарной панели натощак. ЗАВЕДЕНО 25.10.2026 ПО УЖЕ СУЩЕСТВУЮЩЕМУ ОБРАЗЦУ — рядом живут `labelOnDose`, `barOnDose`, `captionOnDose`, то есть роли «текст НА блоке такого-то цвета» в этом слое уже есть. Нового ЗНАЧЕНИЯ не заводится ни одного: все три ссылаются на примитивы, которые дизайн уже назвал. ЗАЧЕМ: панель показания на «Сегодня» красит себя тоном состояния, а чернила брала ОБЩИЕ — `Ink.onAccent` у дозы и тревоги, `Ink.primary` у натощак. Замер 25.10.2026, тёмная тема, порог 4,5: натощак 1,92 · доза 2,86 · тревога 3,23. Это большая цифра показания на главном экране. ПРИЧИНА БЫЛА НЕ В НЕДОСМОТРЕ: значения дизайна лежат в `component.readingTone.*`, а `Token.Component.*` экранам запрещён (`ComponentTokenScopeTests`) — то есть экран не мог их достать и подставлял суррогат. Это ровно тот случай, который Виктория уже решала 23.10.2026 про `semantic.category`: «цвет спрашивают кружок ленты, ВИДЖЕТ и ЖИВАЯ АКТИВНОСТЬ, а Component за пределами дизайн-системы запрещён — то есть из компонентного слоя двое из трёх достать его не могли и подставляли суррогат». Решение то же и по той же причине. 4,89 при пороге 4,5, и тише показания (8,59) — иерархия цела.
         static let captionOnFasting = Color(hex: 0x5A4300FF)
         /// ТОЛЬКО НЕЙТРАЛЬНЫЙ БЛОК (backgroundQuiet). На цветных блоках берётся labelOnColor, на дозе labelOnDose: у плаката ТРИ семьи текста, а не одна. Замер 07.10.2026: этот токен на синем блоке в светлой даёт 3,15 — он честен только там, где подложка нейтральна.
@@ -597,7 +603,7 @@ nonisolated enum Token {
                 /// Подпись на чипе тона. ВЫВЕДЕНО из цвета показания того же тона (`fg`): своих значений для подписи чипа хендофф не даёт. Кадр 02 подтверждает только час дозы — белым по индиго. Замер по кадрам второго пакета 22.10.2026: `~/Downloads/design_handoff_togo_ios28 2/screenshots/01.png` (обычный день) и `02.png` (час дозы), 424×896. Прочитано глазами, не из описания.
                 static let chipLabel = Общие.posterInk
                 static let fg = Общие.posterInk
-                static let panel = Color(hex: 0xD52519EB)
+                static let panel = Общие.toneAlarmPanel
                 static let primaryButton = Color(hex: 0xD52519FF)
             }
             enum Dose {
@@ -605,7 +611,7 @@ nonisolated enum Token {
                 /// Подпись на чипе тона. ВЫВЕДЕНО из цвета показания того же тона (`fg`): своих значений для подписи чипа хендофф не даёт. Кадр 02 подтверждает только час дозы — белым по индиго. Замер по кадрам второго пакета 22.10.2026: `~/Downloads/design_handoff_togo_ios28 2/screenshots/01.png` (обычный день) и `02.png` (час дозы), 424×896. Прочитано глазами, не из описания.
                 static let chipLabel = Общие.posterInk
                 static let fg = Общие.posterInk
-                static let panel = Color(hex: 0x1F4FFFEB)
+                static let panel = Общие.toneDosePanel
                 /// ЕДИНСТВЕННОЕ МЕСТО, ГДЕ ГЛАВНАЯ КНОПКА НЕ БЕЛАЯ: в час дозы она индиговая (`readingTone.dose.primaryButton` = #1F4FFF).
                 static let primaryButton = Общие.indigo
             }

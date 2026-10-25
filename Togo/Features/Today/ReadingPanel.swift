@@ -517,8 +517,12 @@ struct ReadingPanel<Шапка: View>: View {
     private var чернилаПодписи: Color {
         switch tone {
         case .fasting: Token.Poster.captionOnFasting
-        case .dose: Token.Poster.captionOnDose
-        case .alarm: Token.Poster.captionOnAlarm
+        // Роли ПАНЕЛИ, а не плаката: у двух тонов в повышенном
+        // контрасте значения РАЗНЫЕ (#C7D3FF против #FFE3E0),
+        // и `captionOnDose` трогать нельзя — её читает шапка-плакат,
+        // и на неё стоит сторож.
+        case .dose: Token.Poster.captionOnDoseTone
+        case .alarm: Token.Poster.captionOnAlarmTone
         default: Token.Poster.captionOnColor
         }
     }

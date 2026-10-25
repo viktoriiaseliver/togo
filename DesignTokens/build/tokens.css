@@ -189,8 +189,10 @@
   --primitive-color-stockLow: #FFA15C;
   --primitive-color-stockLowBg: #4A2A10;
   --primitive-color-toggleOff: #767676;
+  --primitive-color-toneAlarmCaption: #FFFFFFE0;
   --primitive-color-toneAlarmChip: #D52519;
   --primitive-color-toneAlarmPanel: #D52519EB;
+  --primitive-color-toneDoseCaption: #FFFFFFE0;
   --primitive-color-toneDosePanel: #1F4FFFEB;
   --primitive-color-toneFastingCaption: #5A4300;
   --primitive-color-toneFastingChip: #FFC233;
@@ -306,9 +308,10 @@
   --semantic-poster-bar: #1F4FFF;
   --semantic-poster-barOnDose: #F4F4F2;
   --semantic-poster-caption: #C7C7CC;
-  --semantic-poster-captionOnAlarm: #FFFFFFE0;
+  --semantic-poster-captionOnAlarmTone: #FFFFFFE0;
   --semantic-poster-captionOnColor: #B2B2AE;
   --semantic-poster-captionOnDose: #FFFFFFE0;
+  --semantic-poster-captionOnDoseTone: #FFFFFFE0;
   --semantic-poster-captionOnFasting: #5A4300;
   --semantic-poster-label: #FFFFFF;
   --semantic-poster-labelOnColor: #F4F4F2;
@@ -498,6 +501,8 @@
   --component-feedRow-background: #242426;
   --component-metric-bars-color: #C2D6FF;
   --component-metric-normLine-color: #AEAEB2;
+  --component-readingTone-alarm-panel: #A11A10;
+  --component-readingTone-dose-panel: #1238D6;
   --component-readingTone-night-panel: #141418F0;
   --component-readingTone-normal-panel: #141418F0;
   --component-readingTone-walk-panel: #141418F0;
@@ -525,6 +530,10 @@
   --primitive-color-nightPage: #000000;
   --primitive-color-posterInkMuted: #C8C8C4;
   --primitive-color-toggleOff: #8E8E93;
+  --primitive-color-toneAlarmCaption: #FFE3E0;
+  --primitive-color-toneAlarmPanel: #A11A10;
+  --primitive-color-toneDoseCaption: #C7D3FF;
+  --primitive-color-toneDosePanel: #1238D6;
   --semantic-action-secondary: #48484A;
   --semantic-action-subtle: #3A4C85;
   --semantic-category-incident: #FFA696;
@@ -534,7 +543,9 @@
   --semantic-glass-strong: #141418F0;
   --semantic-poster-backgroundQuiet: #242426;
   --semantic-poster-caption: #EBEBF0;
+  --semantic-poster-captionOnAlarmTone: #FFE3E0;
   --semantic-poster-captionOnColor: #C8C8C4;
+  --semantic-poster-captionOnDoseTone: #C7D3FF;
   --semantic-status-overdueText: #FFA696;
   --semantic-surface-card: #242426;
   --semantic-surface-control: #48484A;
