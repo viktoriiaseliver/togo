@@ -35,6 +35,17 @@ struct ScheduleChangeSheet: View {
             startCard
             consequenceCard
         } footer: {
+            // Правило круга 5, п. 1. Ворота здесь особенные: кнопка
+            // выключена не из-за пустого поля, а потому что менять
+            // пока НЕЧЕГО — доза и часы те же, что были. Из тусклой
+            // кнопки это читается как поломка, а не как «ты ещё
+            // ничего не изменил»; «с какого момента» в ворота
+            // не входит нарочно — сам по себе он ничего не меняет.
+            if !isChanged {
+                Text("Поменяй дозу или часы — пока менять нечего")
+                    .textStyle(AppFont.caption.color(Token.Status.overdueText))
+                    .wraps()
+            }
             TGButton(title: "Сохранить новую схему", isEnabled: isChanged) { save() }
             TGButton(title: "Отменить", variant: .secondary, size: .medium) { dismiss() }
         }

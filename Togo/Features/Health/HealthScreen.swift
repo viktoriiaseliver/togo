@@ -789,6 +789,20 @@ struct WeightScreen: View {
                     TGButton(title: "Записать", size: .medium, fullWidth: false,
                              isEnabled: parsedWeight != nil) { save() }
                 }
+                // Правило круга 5, п. 1. Условие и действие здесь
+                // смотрят на ОДНУ величину (`parsedWeight` читают оба,
+                // `:790` и `:864`) — проверено, и это не тот класс,
+                // что в запасе корма. Не хватало только слова.
+                //
+                // Строка говорит про ФОРМАТ, а не про пустоту:
+                // выключенной кнопка остаётся и при набранном
+                // «4,1 кг» или «4.1.2» — то есть при непустом поле,
+                // и вот тогда тишина и непонятна.
+                if parsedWeight == nil, !newWeight.isEmpty {
+                    Text("Нужно одно число — например 4,1")
+                        .textStyle(AppFont.caption.color(Token.Status.overdueText))
+                        .wraps()
+                }
             }
 
             TGCard {

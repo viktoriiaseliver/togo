@@ -71,7 +71,23 @@ struct TripSetupScreen: View {
 
             if let dog { PackingListCard(dog: dog, days: dayCount) }
         } bottom: {
-            TGButton(title: "Включить режим", systemImage: "car", isEnabled: !destination.isEmpty) { save() }
+            // Правило дизайна круга 5, п. 1: выключенная кнопка
+            // допустима, только если рядом словом сказано, чего
+            // не хватает. Форма — по образцу запаса корма (`d569d01`):
+            // строка над кнопкой, на ТОЙ ЖЕ величине, что ворота.
+            //
+            // Триммить условие тут нельзя молча: `save()` берёт
+            // `destination` как есть, и свести величины надо было бы
+            // в обе стороны сразу. Названо открытым пунктом, а строка
+            // ставится на ту величину, что в воротах СЕЙЧАС.
+            VStack(spacing: Token.Space.s8) {
+                if destination.isEmpty {
+                    Text("Напиши, откуда и куда — по этому собираются вещи")
+                        .textStyle(AppFont.caption.color(Token.Status.overdueText))
+                        .wraps()
+                }
+                TGButton(title: "Включить режим", systemImage: "car", isEnabled: !destination.isEmpty) { save() }
+            }
         }
         .navigationTitle("Поездка")
         .cinemaScreen()
