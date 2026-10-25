@@ -24,7 +24,18 @@ struct TripSetupScreen: View {
 
             TGCard(spacing: 0) {
                 LabeledField(label: "Куда") {
-                    TextField("Ницца → Лион", text: $destination)
+                    // Был настоящий маршрут владелицы, и он переводился:
+                    // `en/fr Nice → Lyon`, `uk Ніцца → Ліон`. Стрелка —
+                    // единственное, что пример сообщал о форме поля;
+                    // «откуда и куда» сообщает её словами.
+                    //
+                    // Прежнее решение в `PlaceholderOriginTests` звало
+                    // это `.пример` («города только пример»). Оно снято
+                    // мной 25.10.2026 и было без хозяина и без даты —
+                    // в отличие от соседнего решения Виктории
+                    // про `Lévothyrox` (15.10.2026, `4e836a2`),
+                    // которое не тронуто.
+                    TextField("откуда и куда", text: $destination)
                 }
                 TGDivider()
                 DatePicker("Когда", selection: $start, displayedComponents: .date)

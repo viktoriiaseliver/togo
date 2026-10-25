@@ -198,7 +198,10 @@ struct PrescriptionEditor: View {
                 hasUnsavedChanges: новое && (можноСохранить || !номер.isEmpty)) {
             TGCard(spacing: 0) {
                 LabeledField(label: "Номер") {
-                    TextField("8935331", text: $номер)
+                    // Был номер живого рецепта. Ярлык «Номер» не говорит,
+                    // какого именно, — слово-роль говорит и ничего не
+                    // выносит наружу. Разбор — `ПодсказкаНеДанныеTests`.
+                    TextField("номер рецепта", text: $номер)
                 }
                 TGDivider()
                 DatePicker("Дата", selection: $дата, displayedComponents: .date)
@@ -233,7 +236,7 @@ struct PrescriptionEditor: View {
             TGCard(spacing: 0) {
                 TGSectionHeader(title: "кто назначил")
                 LabeledField(label: "Врач") {
-                    TextField("Кочубина", text: $врач)
+                    TextField("фамилия врача", text: $врач)
                 }
                 TGDivider()
                 Picker("Клиника", selection: $клиника) {

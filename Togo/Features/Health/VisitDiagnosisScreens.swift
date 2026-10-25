@@ -136,7 +136,11 @@ struct VetVisitEditor: View {
                     .frame(minHeight: Token.Size.tapTarget)
                 TGDivider()
                 LabeledField(label: "Врач") {
-                    TextField("Кочубина", text: $врач)
+                    // Была фамилия живого врача. `TextField(_ titleKey:)` —
+                    // `LocalizedStringKey`, и она уехала переводчику:
+                    // в каталоге лежали `en Kochubina`, `fr Kotchoubina`,
+                    // `uk Кочубіна`. Разбор — `ПодсказкаНеДанныеTests`.
+                    TextField("фамилия врача", text: $врач)
                 }
                 TGDivider()
                 // Клиника выбирается из уже заведённых, а не печатается:
