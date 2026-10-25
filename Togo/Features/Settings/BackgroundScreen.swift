@@ -192,7 +192,11 @@ struct BackgroundScreen: View {
             }
             if местоЕсть {
                 PhotosPicker(selection: $picked, matching: .images, photoLibrary: .shared()) {
-                    TGListRow(title: "Добавить фото",
+                    // Пока снимок ужимается и пишется, строка
+                    // выключена (`:201`) — и до 25.10 молчала.
+                    // Правило круга 5, п. 1; занятость говорится
+                    // словом в заголовке, без плашки.
+                    TGListRow(title: кладу ? "Кладу фото…" : "Добавить фото",
                               value: LocalizedStringKey(счёт),
                               systemImage: "photo.badge.plus",
                               accessory: .none,
