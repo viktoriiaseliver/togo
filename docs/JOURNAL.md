@@ -12,6 +12,7 @@
 - [25 октября 2026 — vyklyuchennye-knopki-krug-5](journal/2026-10-25-vyklyuchennye-knopki-krug-5.md) — vyklyuchennye-knopki-krug-5
 - [25 октября 2026](journal/2026-10-25-sborka-279-sobrana.md) — Смена на 127 коммитов за двое суток
 - [25 октября 2026 — plavayushchiy-krash-avtosohraneniya](journal/2026-10-25-plavayushchiy-krash-avtosohraneniya.md) — plavayushchiy-krash-avtosohraneniya
+- [25 октября 2026 — kartinki-v-ramke](journal/2026-10-25-kartinki-v-ramke.md) — kartinki-v-ramke
 - [25 октября 2026 — chetyre-krasnyh-vne-etalona](journal/2026-10-25-chetyre-krasnyh-vne-etalona.md) — chetyre-krasnyh-vne-etalona
 - [23 октября 2026 — 23.10.2026](journal/2026-10-23-snos-plakata-doveden-i-os-perevedena.md) — 23.10.2026
 - [23 октября 2026 — onbording-i-pro-pod-kino](journal/2026-10-23-onbording-i-pro-pod-kino.md) — onbording-i-pro-pod-kino
