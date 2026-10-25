@@ -199,6 +199,7 @@
   --primitive-font-size-caption: 14px;
   --primitive-font-size-display: 34px;
   --primitive-font-size-hero: 56px;
+  --primitive-font-size-marker: 22px;
   --primitive-font-size-meta: 15px;
   --primitive-font-size-metric: 48px;
   --primitive-font-size-micro: 14px;
@@ -219,6 +220,7 @@
   --primitive-radius-rowIcon: 13px;
   --primitive-radius-sheet: 36px;
   --primitive-radius-sheetFloating: 44px;
+  --primitive-radius-stamp: 8px;
   --primitive-radius-tile: 16px;
   --primitive-size-avatarMd: 40px;
   --primitive-size-avatarSm: 26px;
@@ -240,10 +242,13 @@
   --primitive-size-iconLg: 20px;
   --primitive-size-iconMd: 16px;
   --primitive-size-iconSm: 13px;
+  --primitive-size-iconXL: 28px;
+  --primitive-size-markerCard: 92px;
   --primitive-size-metricBarGap: 3px;
   --primitive-size-metricBars: 48px;
   --primitive-size-metricNormLine: 2px;
   --primitive-size-rowMin: 60px;
+  --primitive-size-stampMin: 28px;
   --primitive-size-tabBar: 64px;
   --primitive-size-tabItem: 56px;
   --primitive-size-tapTarget: 44px;
@@ -308,6 +313,7 @@
   --semantic-radius-poster: 44px;
   --semantic-radius-sheet: 36px;
   --semantic-radius-small: 12px;
+  --semantic-radius-stamp: 8px;
   --semantic-radius-tile: 16px;
   --semantic-spacing-cardPadding: 16px;
   --semantic-spacing-screenPadding: 18px;

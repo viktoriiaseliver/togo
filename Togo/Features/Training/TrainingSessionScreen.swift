@@ -191,16 +191,57 @@ struct TrainingSessionScreen: View {
     /// > а устройство: вся точность живёт в промежутке. Сведение двух
     /// > тапов в один — решение Виктории, не исполнителя; расхождение
     /// > названо здесь и в отчёте, а не замазано цветом.
+    /// # Числа — ответ дизайна 25.10.2026, круг 5, пункт 6
+    ///
+    /// Дословно: «`action.primary` #FFFFFF, текст #111111, высота 92,
+    /// во всю ширину, радиус пилюли, значок `pets` 28, подпись 22 / 600,
+    /// под ней 13 „жми, когда сделал"; хаптика `.impact(.medium)`
+    /// на нажатие».
+    ///
+    /// ```
+    /// высота            60 (`capsule`)  →  92 (`markerCard`)   сделано
+    /// радиус            16 (`tile`)     →  пилюля              сделано
+    /// значок            20 (`iconLg`)   →  28 (`iconXL`)       сделано
+    /// подпись           17 (cardTitle)  →  22/600 (`marker`)   сделано
+    /// хаптика           .rigid 1.0      →  .impact(.medium)    БЫЛА, НЕ ТРОНУТА
+    /// «жми, когда…»     15 (caption)    →  13                  НЕ СДЕЛАНО
+    /// заливка всегда    только в ожидании                      НЕ СДЕЛАНО
+    /// ```
+    ///
+    /// **Хаптика была до ответа и осталась прежней — сознательно.**
+    /// `Haptics.marker()` это `.rigid` при intensity 1,0, то есть
+    /// РЕЗЧЕ и СИЛЬНЕЕ, чем просимый `.medium`, и у выбора записана
+    /// причина: «телефон в кармане, обе руки заняты кормом
+    /// и поводком» (`Haptics.swift:7`). Понижать до `.medium` значило
+    /// бы сделать маркер хуже слышным ровно там, где его и ловят
+    /// вслепую. Просьба дизайна читается как «хаптика тут нужна» —
+    /// она есть; расхождение в стиле названо, а не исполнено.
+    ///
+    /// **Тринадцать ниже пола 14** (решение Виктории 15.10.2026, «Пол
+    /// 14, макет поправить»), разбор с числами — в `$description`
+    /// у `font.size.micro` в `tokens.json`. Остаётся 15.
+    ///
+    /// **«Главная и единственная заливка экрана» исполнена наполовину
+    /// нарочно,** и причина — ниже, в разделе про два тапа: белая
+    /// карточка, которая выглядит главным действием и молчит
+    /// на нажатие, хуже тусклой.
     private var маркер: some View {
         let заливка: MarkFill = session.isWaitingForMark ? .accent : .quiet
         return Button { mark() } label: {
             HStack(spacing: Token.Space.s12) {
                 Image(systemName: "pawprint.fill")
-                    .font(.system(size: Token.Size.iconLg, weight: Token.FontWeight.medium))
+                    .font(.system(size: Token.Size.iconXL, weight: Token.FontWeight.medium))
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: Token.Space.s2) {
+                    // `AppFont.cardTitle` несёт свой `color`, `textStyle`
+                    // красит сам `Text` и побеждает `foregroundStyle`
+                    // предка — поэтому цвет подставлен ВМЕСТО стилевого,
+                    // а не поверх. Та же ловушка дала однажды 1,68:1
+                    // на главной кнопке.
                     Text(dog?.markerKind.title ?? String(localized: "маркер"))
-                        .textStyle(AppFont.cardTitle, color: заливка.label)
+                        .font(.system(size: Token.FontSize.marker,
+                                      weight: Token.FontWeight.semibold))
+                        .foregroundStyle(заливка.label)
                         .wraps()
                     Text("жми, когда сделал")
                         .textStyle(AppFont.caption, color: заливка.counter)
@@ -211,9 +252,9 @@ struct TrainingSessionScreen: View {
             .foregroundStyle(заливка.label)
             .padding(.horizontal, Token.Space.s16)
             .padding(.vertical, Token.Space.s8)
-            .frame(maxWidth: .infinity, minHeight: Token.Size.capsule, alignment: .leading)
+            .frame(maxWidth: .infinity, minHeight: Token.Size.markerCard, alignment: .leading)
             .background(заливка.color,
-                        in: RoundedRectangle(cornerRadius: Token.Radius.tile, style: .continuous))
+                        in: RoundedRectangle(cornerRadius: Token.Radius.capsule, style: .continuous))
         }
         .buttonStyle(.plain)
         .disabled(!session.isWaitingForMark)

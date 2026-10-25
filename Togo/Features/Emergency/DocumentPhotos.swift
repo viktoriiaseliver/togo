@@ -23,6 +23,10 @@ struct DocumentPhotosCard: View {
     @State private var pendingImage: Data?
     @State private var viewing: DogDocument?
 
+    /// Крупный системный кегль сужает сетку. Ответ дизайна 25.10.2026,
+    /// круг 5, пункт 6: «3 колонки… при AX-размерах — 2 колонки».
+    @Environment(\.dynamicTypeSize) private var размер
+
     private var documents: [DogDocument] {
         allDocuments.filter { $0.dog?.persistentModelID == dog.persistentModelID }
     }
@@ -87,7 +91,7 @@ struct DocumentPhotosCard: View {
     @ViewBuilder
     private var сетка: some View {
         LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: Token.Space.s8),
-                                 count: 3),
+                                 count: Сетка.колонок(размер)),
                   spacing: Token.Space.s8) {
             ForEach(documents) { document in
                 Button { viewing = document } label: {
@@ -177,6 +181,36 @@ private struct PendingPhoto: Identifiable {
 ///
 /// `Text(verbatim:)` у названия — потому что название **вводит
 /// человек** (чипами в `DocumentTitleSheet` либо своим словом):
+/// Числа сетки — одно место на обе плитки.
+///
+/// Ответ дизайна 25.10.2026, круг 5, пункт 6: «3 колонки, зазор 8,
+/// ячейка 3 : 4, радиус 16; при AX-размерах — 2 колонки».
+///
+/// **Пропорция была 4 : 5 и стала 3 : 4, и разница не косметическая:**
+/// при трёх колонках на 402 pt клетка 118 pt шириной даёт высоту 147
+/// против 157 — ряд становится ниже на десять точек, и четвёртый ряд
+/// на экран помещается там, где раньше помещалось три с половиной.
+/// Число 3 : 4 — пропорция бумажного листа ближе, чем 4 : 5, а в сетке
+/// лежат именно листы: паспорт, справка, выписка.
+///
+/// **Две колонки при AX — не «красивее», а единственный способ
+/// оставить подпись читаемой:** у штампа есть пол высоты 28 и поля
+/// 4 × 8, и на трети ширины при AX5 в него не влезает ни одно слово
+/// целиком. Порог взят у системы (`DynamicTypeSize.isAccessibilitySize`),
+/// а не числом точек: число точек пришлось бы держать в согласии
+/// с системной шкалой руками.
+private enum Сетка {
+    /// `aspectRatio` принимает ОТНОШЕНИЕ ШИРИНЫ К ВЫСОТЕ, и 3 : 4
+    /// здесь значит «уже, чем выше», то есть 0,75. Записано дробью,
+    /// а не числом 0.75, чтобы в коде читалось то же, что в ответе
+    /// дизайна: прочитанное как 4 : 3 перевернуло бы клетку набок.
+    static let пропорция = 3.0 / 4.0
+
+    static func колонок(_ размер: DynamicTypeSize) -> Int {
+        размер.isAccessibilitySize ? 2 : 3
+    }
+}
+
 /// это значение, а не ключ каталога, и `Text(ключ)` искал бы перевод
 /// для «Ветпаспорт Стича».
 private struct ПлиткаСнимка: View {
@@ -190,7 +224,7 @@ private struct ПлиткаСнимка: View {
         // подложка принимает предложенную ширину и из неё считает
         // высоту, а снимок и подпись ложатся на неё слоями.
         Color.clear
-            .aspectRatio(4.0 / 5.0, contentMode: .fit)
+            .aspectRatio(Сетка.пропорция, contentMode: .fit)
             .overlay { снимок }
             .overlay(alignment: .bottomLeading) { подпись }
             .clipShape(RoundedRectangle(cornerRadius: Token.Radius.tile, style: .continuous))
@@ -218,17 +252,31 @@ private struct ПлиткаСнимка: View {
         }
     }
 
+    /// Числа — ответ дизайна 25.10.2026, круг 5, пункт 6, дословно:
+    /// «подпись на снимке: стекло, отступ от краёв 8 (было 6), радиус 8
+    /// (16 − 8), высота от 28, поля 4 × 8, 12 / 600».
+    ///
+    /// Четыре величины из пяти сделаны. **Кегль НЕ сделан, и это
+    /// не забывчивость:** 12 ниже пола 14, поставленного решением
+    /// Виктории 15.10.2026 («Пол 14, макет поправить»). Её
+    /// формулировка называет и сторону починки — правится макет.
+    /// Разбор с числами — в `$description` у `font.size.micro`
+    /// в `DesignTokens/tokens.json`. Здесь остаётся `AppFont.micro`,
+    /// то есть 14/400 против названных 12/600.
+    ///
+    /// «Было 6» в ответе дизайна — наш код, а не их макет: они
+    /// смотрели сюда. Значит и остальные четыре числа читать надо
+    /// как правку по месту, а не как общий стиль.
     private var подпись: some View {
         Text(verbatim: документ.title)
             .textStyle(AppFont.micro, color: Token.Poster.labelOnColor)
             .lineLimit(1)
             .minimumScaleFactor(0.7)
-            .padding(.horizontal, Token.Space.s6)
-            .padding(.vertical, Token.Space.s2)
-            .background(Token.Surface.sunken,
-                        in: RoundedRectangle(cornerRadius: Token.Radius.small,
-                                             style: .continuous))
-            .padding(Token.Space.s6)
+            .padding(.horizontal, Token.Space.s8)
+            .padding(.vertical, Token.Space.s4)
+            .frame(minHeight: Token.Size.stampMin)
+            .стекло(радиус: Token.Radius.stamp)
+            .padding(Token.Space.s8)
     }
 }
 
@@ -242,12 +290,14 @@ private struct ПлиткаСнять: View {
         // и по той же причине: иначе клетка «Снять» встала бы по высоте
         // своего текста, а не по высоте ряда, и выпала бы из сетки.
         Color.clear
-            .aspectRatio(4.0 / 5.0, contentMode: .fit)
+            .aspectRatio(Сетка.пропорция, contentMode: .fit)
             .overlay {
                 VStack(spacing: Token.Space.s6) {
                     Image(systemName: "camera")
-                        .font(.system(size: Token.Size.iconLg, weight: Token.FontWeight.medium))
+                        .font(.system(size: Token.Size.iconXL, weight: Token.FontWeight.medium))
                         .accessibilityHidden(true)
+                    // Дизайн просит 13/600, стоит 14/400: тринадцать
+                    // ниже пола 14. См. `подпись` у плитки снимка.
                     Text("Снять")
                         .textStyle(AppFont.micro, color: Token.Ink.primary)
                         .lineLimit(1)
@@ -256,8 +306,7 @@ private struct ПлиткаСнять: View {
                 .foregroundStyle(Token.Ink.primary)
                 .padding(.horizontal, Token.Space.s4)
             }
-            .background(Token.Surface.sunken,
-                        in: RoundedRectangle(cornerRadius: Token.Radius.tile, style: .continuous))
+            .стекло(радиус: Token.Radius.tile)
             .contentShape(RoundedRectangle(cornerRadius: Token.Radius.tile, style: .continuous))
     }
 }
