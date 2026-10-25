@@ -504,6 +504,76 @@
         }
       }
     },
+    "%1$@ зовёт тебя в дневник %2$@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ invites you to %2$@'s diary"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ t'invite dans le journal de %2$@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ сені %2$@ күнделігіне шақырып тұр"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ зовёт тебя в дневник %2$@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ кличе тебе до щоденника %2$@"
+          }
+        }
+      }
+    },
+    "%@ зовёт тебя в общий дневник" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ invites you to a shared diary"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ t'invite dans un journal partagé"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ сені ортақ күнделікке шақырып тұр"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ зовёт тебя в общий дневник"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ кличе тебе до спільного щоденника"
+          }
+        }
+      }
+    },
     "-ИсходПриёма" : {
       "comment" : "АРГУМЕНТ ЗАПУСКА, А НЕ ТЕКСТ. НЕ ПЕРЕВОДИТСЯ. TogoApp.swift:195 — `args.firstIndex(of: \"-ИсходПриёма\")`. В каталог приехал извлечением: `Tools/extract_texts.py` собирает ВСЕ кириллические литералы, а этот сравнивается с `ProcessInfo.arguments` — каталог его не спрашивает никогда. Пометка стоит не ради сегодняшнего вреда (перевод тут безвреден и мёртв), а ради завтрашнего: четыре таких ключа числились пробелами перевода на каждом языке, то есть счёт долга показывал работу, которой нет. И хуже счёта — ловушка: кто-нибудь «починит» сравнение через `String(localized:)`, и стенд перестанет заводиться на казахском и украинском телефоне, а отказ придёт в форме «онбординг не показывается». Замер 22.10.2026.",
       "extractionState" : "manual",
@@ -555,6 +625,146 @@
         }
       },
       "shouldTranslate" : false
+    },
+    "Тебя зовут в дневник %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "You're invited to %@'s diary"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "On t'invite dans le journal de %@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Сені %@ күнделігіне шақырып тұр"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тебя зовут в дневник %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Тебе кличуть до щоденника %@"
+          }
+        }
+      }
+    },
+    "Ты · %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "You · %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Toi · %@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Сен · %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ты · %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ти · %@"
+          }
+        }
+      }
+    },
+    "Ты смотришь дневник · отмечает %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "You're viewing the diary · %@ logs"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tu consultes le journal · %@ note"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Сен күнделікті қарайсың · %@ белгілейді"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ты смотришь дневник · отмечает %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ти дивишся щоденник · відмічає %@"
+          }
+        }
+      }
+    },
+    "ты сможешь смотреть всё · отмечать будет %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "you'll see everything · %@ will log"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "tu verras tout · %@ notera"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "сен бәрін көре аласың · белгілеуді %@ жасайды"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ты сможешь смотреть всё · отмечать будет %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ти зможеш бачити все · відмічати буде %@"
+          }
+        }
+      }
     },
     "— · не записано в этот день" : {
       "extractionState" : "manual",
