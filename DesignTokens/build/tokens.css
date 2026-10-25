@@ -16,9 +16,13 @@
   --component-backdrop-tint-dose: #1F4FFF8C;
   --component-backdrop-tint-fasting: #FFC2338C;
   --component-backdrop-tint-night: #14143C99;
+  --component-banner-chevronSize: 22px;
+  --component-banner-iconSizeLoud: 28px;
   --component-banner-padding: 14px;
+  --component-banner-paddingX: 16px;
   --component-banner-radius: 24px;
   --component-banner-titleSize: 20px;
+  --component-banner-titleSizeLoud: 17px;
   --component-bottomBar-plusSize: 60px;
   --component-bottomBar-primaryHeight: 60px;
   --component-bottomBar-secondaryHeight: 60px;
@@ -230,6 +234,7 @@
   --primitive-size-backdropWalk: 520px;
   --primitive-size-bone: 16px;
   --primitive-size-capsule: 60px;
+  --primitive-size-chevron: 22px;
   --primitive-size-controlL: 52px;
   --primitive-size-controlM: 50px;
   --primitive-size-controlXL: 54px;

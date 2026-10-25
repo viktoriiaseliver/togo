@@ -55,16 +55,76 @@ struct TGBanner: View {
     private var чернила: Color { сплошная?.чернила ?? tone.foreground }
     private var подложка: Color { сплошная?.заливка ?? tone.background }
 
+    /// Громкая плашка — та же развилка, что у `сплошная`, одним словом.
+    ///
+    /// Отдельным свойством, а не вторым `guard emphasis == .solid`:
+    /// две копии одного условия разошлись бы молча, и разошлись бы
+    /// в ту сторону, где заливка громкая, а геометрия тихая.
+    private var громкая: Bool { сплошная != nil }
+
+    /// # Геометрия громкой плашки — ответ дизайна 25.10.2026, круг 5, п. 6
+    ///
+    /// Дословно: «радиус 24, поля 14 × 16, зазор 12; значок 28, шеврон
+    /// 22; заголовок 17 / 600, подпись 13 / 400 без прозрачности».
+    ///
+    /// ```
+    /// радиус           24                было 24         сошлось
+    /// зазор            12                было 12         сошлось
+    /// подпись без opacity                было так        сошлось
+    /// поля             14 × 16           было 14 × 14    СДЕЛАНО
+    /// значок           28                было 18         СДЕЛАНО
+    /// шеврон           22                НЕ БЫЛО ВОВСЕ   СДЕЛАНО
+    /// заголовок        17 / 600          было 20 / 600   СДЕЛАНО
+    /// подпись          13 / 400          было 15 / 400   НЕ СДЕЛАНО
+    /// заливка #FF5F52  у нас #FF7A66                     НЕ СДЕЛАНО
+    /// ```
+    ///
+    /// **Правка не трогает 48 плашек из 49, и это замер, а не
+    /// осторожность.** `TGBanner` зовут из 49 мест; `emphasis: .solid`
+    /// стоит ровно в одном — `DogTab.swift:375`, та самая плашка
+    /// «Если что-то случилось». Все четыре сделанных числа взяты
+    /// за ветку `громкая`, тихие остались как были.
+    ///
+    /// **Подпись 13 не сделана: ниже пола 14**, решение Виктории
+    /// 15.10.2026 («Пол 14, макет поправить»). Разбор с числами —
+    /// `$description` у `font.size.micro` в `tokens.json`.
+    ///
+    /// **Заливка не сменена, и это находка, а не пропуск.** Дизайн
+    /// просит `status.error` `#FF5F52`; у нас она берётся
+    /// `Token.Category.incident` = `clay`, в тёмной `#FF7A66`.
+    /// Два довода, оба мерены 25.10.2026:
+    ///
+    /// ```
+    /// #111111 на #FF7A66 (наше)    7,40:1
+    /// #111111 на #FF5F52 (просят)  6,30:1   ← дизайн сам называет 6,3
+    /// ```
+    ///
+    /// Первое: замена УХУДШАЕТ пару на 1,1 — то есть просимое число
+    /// хуже стоящего, и дизайн называет его сам, не зная нашего.
+    /// Второе и главное: `#FF5F52` живёт не в «Кино», а в прототипной
+    /// палитре «Чистый» (`prototypes/tokens/palette.css:37`) — другое
+    /// поколение, — а `clay` обслуживает ШЕСТЬ ролей (просрочка словами
+    /// и плашкой, инцидент, значок категории, метка ленты, подпись
+    /// разрушающей кнопки). Завести второй красный рядом с первым —
+    /// решение о палитре; увести `clay` на `#FF5F52` — тем более.
+    /// Хозяин Виктория, вопрос назван в отчёте.
     var body: some View {
         HStack(alignment: .top, spacing: Token.Space.s12) {
             Image(systemName: systemImage)
-                .font(.system(size: Token.Size.iconLg - 2, weight: .semibold))
+                .font(.system(size: громкая ? Token.Component.Banner.iconSizeLoud
+                                            : Token.Size.iconLg - 2,
+                              weight: .semibold))
                 .foregroundStyle(чернила)
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: Token.Space.s2) {
-                // Кегль поднят до section: мелкую плашку натощак можно было проскроллить.
+                // Тихой кегль поднят до section: мелкую плашку натощак
+                // можно было проскроллить. Громкой он НИЖЕ — её видно
+                // заливкой во всю ширину, и крупный кегль поверх неё
+                // начинал спорить с заголовком экрана.
                 Text(title)
-                    .font(.system(size: Token.Component.Banner.titleSize, weight: Token.FontWeight.semibold))
+                    .font(.system(size: громкая ? Token.Component.Banner.titleSizeLoud
+                                                : Token.Component.Banner.titleSize,
+                                  weight: Token.FontWeight.semibold))
                     .foregroundStyle(чернила)
                     .wraps()
                 if let subtitle {
@@ -74,8 +134,22 @@ struct TGBanner: View {
                 }
             }
             Spacer(minLength: 0)
+            // Шеврон ТОЛЬКО у громкой, и это не вкус: тихие плашки
+            // в 48 остальных местах никуда не ведут, а шеврон обещает
+            // переход. Громкая лежит в `NavigationLink` (`DogTab:374`)
+            // и до 25.10 не показывала этого ничем — единственной
+            // подсказкой было то, что она нажимается.
+            if громкая {
+                Image(systemName: "chevron.right")
+                    .font(.system(size: Token.Component.Banner.chevronSize,
+                                  weight: .semibold))
+                    .foregroundStyle(чернила)
+                    .accessibilityHidden(true)
+            }
         }
-        .padding(Token.Component.Banner.padding)
+        .padding(.vertical, Token.Component.Banner.padding)
+        .padding(.horizontal, громкая ? Token.Component.Banner.paddingX
+                                      : Token.Component.Banner.padding)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(подложка, in: RoundedRectangle(cornerRadius: Token.Component.Banner.radius, style: .continuous))
         .accessibilityElement(children: .combine)
