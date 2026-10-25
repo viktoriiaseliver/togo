@@ -189,9 +189,25 @@ struct TGButtonStyle: ButtonStyle {
                 // красным: его ось — равенство байт у двух ЗАЛИВОК, и обводку
                 // он не видит вовсе (сказано в самой записи эталона). Снимать
                 // запись надо по КАДРУ, а не по тесту, и кадра пока нет.
+                // # ЦВЕТ КОНТУРА — СЛОВО ДИЗАЙНА, круг 6, пункт 6
+                //
+                // Было `Ink.secondary` (мой выбор 25.10). Отклонён
+                // с названной причиной: «6,74:1 спорит с белой главной
+                // кнопкой и с кольцом фокуса» — то есть орган второго
+                // порядка начинал выглядеть первым. Дефект был не в числе.
+                //
+                // Стало `Line.control` = `toggleOff` = `#767676` в тёмной,
+                // `#8E8E93` в повышенном контрасте. **Нового цвета нет:**
+                // то же значение держит дорожку выключенного переключателя,
+                // утверждённую кругом 5. Числа сверены в одном заходе
+                // с контролем на документированной границе W3C — разбор
+                // в описании `semantic.line.control`.
+                //
+                // `Token.Size.hairline` — 1 pt, тоже слово дизайна
+                // («контур 1 pt»).
                 if variant == .secondary, isEnabled {
                     RoundedRectangle(cornerRadius: Token.Radius.control, style: .continuous)
-                        .strokeBorder(Token.Ink.secondary, lineWidth: Token.Size.hairline)
+                        .strokeBorder(Token.Line.control, lineWidth: Token.Size.hairline)
                 }
             }
             .opacity(configuration.isPressed ? 0.82 : 1)
