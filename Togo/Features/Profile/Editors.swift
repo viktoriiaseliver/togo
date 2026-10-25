@@ -35,12 +35,36 @@ struct DogEditorScreen: View {
 
             TGCard(spacing: 0) {
                 LabeledField(label: "Кличка") {
-                    TextField("Стич", text: $draft.name).textInputAutocapitalization(.words)
+                    // **Подсказка — слово, а не кличка.** Второе место
+                    // того же дефекта: в онбординге его закрыли 23.10
+                    // (`OnboardingSteps.swift:190`), здесь он дожил
+                    // до 25.10.
+                    //
+                    // `TextField(_ titleKey:)` принимает
+                    // `LocalizedStringKey`, поэтому ЛЮБОЙ
+                    // литерал-подсказка уезжает в каталог и переводится.
+                    // Замер 25.10 по каталогу: ключ `Стич` имеет
+                    // переводы `en: Stitch` и `fr: Stitch` — то есть
+                    // у француза в поле клички стояло **Stitch**,
+                    // а в демо-данных рядом **Стич**.
+                    //
+                    // Это живой отзыв `AEXYTDmy` от 23.09: «Где-то
+                    // stitch а где то Стич». Починили одно место
+                    // из двух, и отзыв остался живым ещё на месяц.
+                    //
+                    // > **Починка по адресу из отзыва закрывает адрес,
+                    // > а не класс.** Искать надо было форму
+                    // > `TextField("<слово>"`, а не слово «Стич».
+                    TextField("Кличка", text: $draft.name).textInputAutocapitalization(.words)
                 }
                 TGDivider()
                 LabeledField(label: "Вес") {
                     HStack(spacing: Token.Space.s4) {
-                        TextField("4,1", text: $draft.weight).keyboardType(.decimalPad)
+                        // «4,1» — то же самое: подсказка про ФОРМАТ,
+                        // а не пример веса. У числа перевода нет,
+                        // но ключ в каталоге заводится всё равно
+                        // и зря просит вычитки на четырёх языках.
+                        TextField("Вес", text: $draft.weight).keyboardType(.decimalPad)
                             .focused($весВФокусе)
                         Text("кг").textStyle(AppFont.caption)
                     }
