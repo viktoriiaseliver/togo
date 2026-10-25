@@ -24,8 +24,14 @@ nonisolated enum DayPlanBuilder {
                                               startOfDay: startOfDay)
         for (index, minute) in mealMinutes.enumerated() {
             let at = cal.date(minuteOfDay: minute, on: startOfDay)
+            // Граммов в заголовке нет, пока нормы нет: порция считается
+            // из неё, и выдуманное число в плане дня человек выполняет
+            // не задумываясь — это самый короткий путь от умолчания
+            // до миски.
             items.append(DayPlanItem(id: "meal-\(minute)", time: at,
-                                     title: "Еда · \(dog.servingGrams) г",
+                                     title: dog.servingGrams > 0
+                                         ? "Еда · \(dog.servingGrams) г"
+                                         : String(localized: "Еда"),
                                      hint: dog.foodBrand, kind: .meal, isDone: mealDone[index]))
         }
         // Уход — такой же пункт дня, как еда и доза. Отдельной карточкой

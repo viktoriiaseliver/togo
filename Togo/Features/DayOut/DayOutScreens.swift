@@ -45,9 +45,14 @@ struct DayOutStartSheet: View {
         TGCard(spacing: 0) {
             TGSectionHeader(title: "что взять",
                             subtitle: "посчитано по её расписанию, а не на глаз")
+            // Три разных ответа, и до 25.10 два последних сливались
+            // в «0 г и запас»: ноль граммов при живых кормлениях —
+            // это ненаписанная норма, а не «корм не нужен».
             row("Корм", packing.meals == 0
                 ? "не понадобится — кормления в это окно не попадают"
-                : "\(packing.totalGrams) г · \(String(localized: "\(packing.meals) кормлений")) и запас")
+                : packing.totalGrams == 0
+                    ? "\(String(localized: "\(packing.meals) кормлений")) — сколько, скажет дневная норма, а она не записана"
+                    : "\(packing.totalGrams) г · \(String(localized: "\(packing.meals) кормлений")) и запас")
             TGDivider()
             row("Вода", "предлагать каждые \(Fmt.duration(DayOutPlan.waterEvery))")
             TGDivider()

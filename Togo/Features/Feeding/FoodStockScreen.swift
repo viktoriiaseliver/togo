@@ -330,14 +330,25 @@ struct FoodStockEditorSheet: View {
     /// что в сумме получается ровно норма, а не считать в уме.
     @ViewBuilder
     private var splitRow: some View {
-        HStack(alignment: .top) {
-            Text("Из \(dog.dailyGrams) г в день").textStyle(AppFont.caption)
-            Spacer(minLength: Token.Space.s8)
-            Text(splitStatus)
-                .textStyle(AppFont.caption.color(unassignedGrams == 0 ? Token.Action.doneText : Token.Status.waitingText))
-                .multilineTextAlignment(.trailing)
+        if dog.dailyGrams > 0 {
+            HStack(alignment: .top) {
+                Text("Из \(dog.dailyGrams) г в день").textStyle(AppFont.caption)
+                Spacer(minLength: Token.Space.s8)
+                Text(splitStatus)
+                    .textStyle(AppFont.caption.color(unassignedGrams == 0 ? Token.Action.doneText : Token.Status.waitingText))
+                    .multilineTextAlignment(.trailing)
+            }
+            .frame(minHeight: Token.Size.tapTarget)
+        } else {
+            // Делить нечего: `unassignedGrams` это `норма − разложенное`,
+            // и при ненаписанной норме он выходил отрицательным — строка
+            // говорила «перебор на столько-то», то есть упрекала человека
+            // числом, выведенным из нашего же пробела.
+            Text("Из чего делить, приложение не знает: дневная норма не записана.")
+                .textStyle(AppFont.caption)
+                .wraps()
+                .frame(minHeight: Token.Size.tapTarget)
         }
-        .frame(minHeight: Token.Size.tapTarget)
     }
 
     private var splitStatus: String {
@@ -378,10 +389,15 @@ struct FoodStockEditorSheet: View {
                 HStack {
                     Text("В день").textStyle(AppFont.body)
                     Spacer()
-                    Text("\(dog.dailyGrams) г").textStyle(AppFont.numeric(17))
+                    // Прочерк, а не «0 г»: это зеркало дневной нормы,
+                    // и ноль в нём читался как «кормить нечем».
+                    Text(verbatim: dog.dailyGrams > 0 ? String(localized: "\(dog.dailyGrams) г") : "—")
+                        .textStyle(AppFont.numeric(17))
                 }
                 .frame(minHeight: Token.Size.tapTarget)
-                TGExplainer(text: "Это дневная норма из режима питания — здесь её не дублируем. Добавишь второй корм, и появится, как поделить норму между ними.")
+                TGExplainer(text: dog.dailyGrams > 0
+                    ? "Это дневная норма из режима питания — здесь её не дублируем. Добавишь второй корм, и появится, как поделить норму между ними."
+                    : "Это зеркало дневной нормы, а она не записана. Запиши её в режиме питания — и расход запаса начнёт считаться.")
             } else {
                 Stepper(value: $gramsPerDay, in: 0...2000, step: kind == .wet ? 25 : 5) {
                     HStack {

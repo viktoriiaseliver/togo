@@ -158,7 +158,9 @@ struct PackingListCard: View {
     var body: some View {
         TGCard {
             TGSectionHeader(title: "что взять на \(Fmt.days(days))",
-                            subtitle: "посчитано из веса \(Fmt.weight(dog.weightKg)) и порции \(dog.servingGrams) г")
+                            subtitle: dog.servingGrams > 0
+                                ? "посчитано из веса \(Fmt.weight(dog.weightKg)) и порции \(dog.servingGrams) г"
+                                : "норма не записана — корм посчитать нечем")
             ForEach(items, id: \.0) { title, amount, note in
                 VStack(alignment: .leading, spacing: Token.Space.s2) {
                     HStack {
@@ -178,11 +180,25 @@ struct PackingListCard: View {
     }
 
     /// Запас — два кормления сверх поездки, вода в жару в полтора раза больше.
+    ///
+    /// **Без нормы строка корма — прочерк, а не ноль.** Арифметика
+    /// `норма × дни` при ненаписанной норме даёт ноль, и «Корм 0 г»
+    /// в списке сборов человек читает как «корма не надо». Это худший
+    /// из возможных нулей: его видно в аэропорту, а не на экране,
+    /// где можно переспросить.
     private var items: [(String, String, String)] {
         let food = dog.dailyGrams * days + dog.servingGrams * 2
         let water = Double(dog.waterNormMl * days) * 1.5 / 1000
         return [
-            ("Корм", "\(food) г", "\(dog.dailyGrams * days) г на дни плюс запас на два кормления"),
+            ("Корм",
+             dog.dailyGrams > 0 ? "\(food) г" : "—",
+             dog.dailyGrams > 0
+                 ? "\(dog.dailyGrams * days) г на дни плюс запас на два кормления"
+                 // Имя экрана НЕ цитируется: цитата обязана дословно
+                 // совпасть с переводом своего ключа в каталоге, и
+                 // сторож цитат ловил это трижды за сутки. Дорога
+                 // названа словами, а не подписью кнопки.
+                 : "сначала запиши дневную норму в режиме питания — из неё считается всё"),
             ("Вода в дорогу", String(format: "%.1f л", water), "его норма ≈ \(dog.waterNormMl) мл в день, в жару больше · складная поилка"),
             ("Пакеты", "\(days * 4) шт", "по четыре на день, с запасом"),
         ]

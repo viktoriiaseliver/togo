@@ -204,21 +204,25 @@ struct FeedingScreen: View {
     private var нормаКарточка: some View {
         if let dog {
             TGCard {
-                TGSectionHeader(title: "норма врача ÷ кормления")
+                if dog.dailyGrams > 0 {
+                    TGSectionHeader(title: "норма врача ÷ кормления")
 
-                HStack(alignment: .firstTextBaseline, spacing: Token.Space.s8) {
-                    Text(verbatim: "\(dog.dailyGrams) ÷ \(dog.mealsPerDay)")
-                        .textStyle(AppFont.hero)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.5)
-                    Text("= \(dog.servingGrams) г")
-                        .textStyle(AppFont.cardTitle)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.6)
-                    Spacer(minLength: 0)
+                    HStack(alignment: .firstTextBaseline, spacing: Token.Space.s8) {
+                        Text(verbatim: "\(dog.dailyGrams) ÷ \(dog.mealsPerDay)")
+                            .textStyle(AppFont.hero)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
+                        Text("= \(dog.servingGrams) г")
+                            .textStyle(AppFont.cardTitle)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.6)
+                        Spacer(minLength: 0)
+                    }
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(Text("Норма \(dog.dailyGrams) грамм на \(dog.mealsPerDay) кормлений — \(dog.servingGrams) грамм за раз"))
+                } else {
+                    нормаНеЗаписана(dog)
                 }
-                .accessibilityElement(children: .ignore)
-                .accessibilityLabel(Text("Норма \(dog.dailyGrams) грамм на \(dog.mealsPerDay) кормлений — \(dog.servingGrams) грамм за раз"))
 
                 if report.averageGramsPerDay > 0 {
                     Text("В среднем \(Int(report.averageGramsPerDay)) г в день за две недели.")
@@ -251,7 +255,17 @@ struct FeedingScreen: View {
                            caption: report.normMealsPerDay > 0
                                ? .готовая(String(localized: "из \(report.normMealsPerDay) кормлений"))
                                : "кормлений")
-                    TGStat(value: "\(report.remainingGramsToday) г", caption: "осталось")
+                    // **«Осталось 0 г» читается как «уже наелся».**
+                    // `remainingGramsToday` это `max(0, норма − съеденное)`,
+                    // то есть при ненаписанной норме он ноль **по
+                    // устройству** — и ноль тут отвечал про отсутствие
+                    // нормы, а читался про собаку. Две соседние подписи
+                    // этого же ряда ось уже знали (`норма > 0`), третья
+                    // не знала.
+                    TGStat(value: report.normGramsPerDay > 0
+                               ? "\(report.remainingGramsToday) г"
+                               : Self.нечегоСказать,
+                           caption: "осталось")
                 }
 
                 if let next = nextMealTime {
@@ -260,11 +274,60 @@ struct FeedingScreen: View {
                         .wraps()
                 }
 
-                TGLink(title: "Поменять норму и режим", systemImage: "slider.horizontal.3") {
+                TGLink(title: dog.dailyGrams > 0 ? "Поменять норму и режим" : "Записать норму и режим",
+                       systemImage: "slider.horizontal.3") {
                     ScheduleScreen(dog: dog)
                 }
                 TGExplainer(text: "Норму называет врач или упаковка — приложение её не выдумывает. Для влажного корма граммы другие: он на три четверти вода.")
             }
+        }
+    }
+
+    /// Нормы нет — и экран говорит это словами, а не числом.
+    ///
+    /// **Выбран прочерк с объяснением, а не скрытие блока и не ноль.**
+    /// Цена ошибки в каждую сторону считалась так:
+    ///
+    /// ```
+    /// показать 120 (как было)   человек читает умолчание как
+    ///                           назначение врача и кормит по нему;
+    ///                           от нормы считается порция, и ошибка
+    ///                           уезжает в каждое кормление
+    /// показать 0                «врач назначил ноль» — такое же
+    ///                           утверждение, только абсурдное, и
+    ///                           «осталось 0 г» читается как «наелся»
+    /// спрятать блок             экран, куда заходят за вопросом
+    ///                           «сколько класть», молчит о нём вовсе;
+    ///                           отсутствие блока и отсутствие нормы
+    ///                           неотличимы, и человек не узнает,
+    ///                           что надо что-то ввести
+    /// прочерк с дорогой         человек видит, что числа нет, почему
+    ///                           его нет и где оно берётся. Цена —
+    ///                           лишняя строка на экране
+    /// ```
+    ///
+    /// Четвёртое дешевле трёх: три первых молчат о том, что действие
+    /// за человеком, и только оно это говорит. Заголовок при этом
+    /// **меняется**: «норма врача» над прочерком была бы той же ложью
+    /// в мягкой форме — она утверждает, что врач тут при чём.
+    private func нормаНеЗаписана(_ dog: Dog) -> some View {
+        VStack(alignment: .leading, spacing: Token.Space.s8) {
+            TGSectionHeader(title: "норму ещё не записали",
+                            subtitle: "её называет врач или упаковка")
+
+            HStack(alignment: .firstTextBaseline, spacing: Token.Space.s8) {
+                Text(verbatim: Self.нечегоСказать)
+                    .textStyle(AppFont.hero)
+                Text("г в день")
+                    .textStyle(AppFont.cardTitle)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+                Spacer(minLength: 0)
+            }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text("Норма не записана. Приложение её не подставляет"))
+
+            TGExplainer(text: "Пока нормы нет, приложение не считает ни порцию, ни перерасход — от неё считается всё остальное. Подставить своё число оно не может: получилось бы назначение, которого никто не делал.")
         }
     }
 
@@ -281,7 +344,12 @@ struct FeedingScreen: View {
                     x: .value("День", day.date, unit: .day),
                     y: .value("Граммы", day.grams)
                 )
-                .foregroundStyle(day.grams > report.normGramsPerDay
+                // Цвет — это тоже утверждение, и при ненаписанной норме
+                // оно выходило само собой: `норма == 0` делала «больше
+                // нормы» истинным для **каждого** дня, и две недели
+                // окрашивались тревожным. Сравнение есть только тогда,
+                // когда есть с чем сравнивать.
+                .foregroundStyle(report.normGramsPerDay > 0 && day.grams > report.normGramsPerDay
                                  ? Token.Status.waitingText
                                  : Token.Ink.link)
                 .cornerRadius(2)
@@ -296,7 +364,11 @@ struct FeedingScreen: View {
         .chartXAxis(.hidden)
         .chartYAxis(.hidden)
         .accessibilityLabel(Text("Сколько ел последние две недели"))
-        .accessibilityValue(Text("В среднем \(Int(report.averageGramsPerDay)) г в день при норме \(report.normGramsPerDay) г"))
+        // Озвучка не называет нормы, которой нет: «при норме 0 г»
+        // звучит как назначение, а не как её отсутствие.
+        .accessibilityValue(report.normGramsPerDay > 0
+            ? Text("В среднем \(Int(report.averageGramsPerDay)) г в день при норме \(report.normGramsPerDay) г")
+            : Text("В среднем \(Int(report.averageGramsPerDay)) г в день, норма не записана"))
     }
 
     /// На кадре столбики занимают около восьмой части экрана. Своя
@@ -320,11 +392,22 @@ struct FeedingScreen: View {
     private var statusCard: some View {
         switch report.status {
         case .notEnoughData(let days):
-            TGCard {
-                Text(verbatim: report.status.title).textStyle(AppFont.cardTitle)
-                Text("Полных дней с записями: \(days), нужно хотя бы \(FeedingAnalyzer.minimumCompleteDays) — иначе среднее врёт. Продолжай отмечать еду, дальше приложение посчитает само.")
-                    .textStyle(AppFont.caption)
-                    .wraps()
+            // **Причина молчания называется та, которая есть.**
+            // `FeedingAnalyzer.status` отдаёт `notEnoughData` по ДВУМ
+            // разным причинам — мало полных дней ИЛИ нормы нет вовсе
+            // (`norm > 0` в его же `guard`), — а карточка объясняла
+            // всегда первой. У собаки без нормы человек читал «нужно
+            // хотя бы три дня», отмечал три дня и не получал ничего:
+            // объяснение было придумано к верному замеру и наследовало
+            // его достоверность. Про отсутствие нормы говорит блок
+            // выше, и второй причины тут быть не должно.
+            if report.normGramsPerDay > 0 {
+                TGCard {
+                    Text(verbatim: report.status.title).textStyle(AppFont.cardTitle)
+                    Text("Полных дней с записями: \(days), нужно хотя бы \(FeedingAnalyzer.minimumCompleteDays) — иначе среднее врёт. Продолжай отмечать еду, дальше приложение посчитает само.")
+                        .textStyle(AppFont.caption)
+                        .wraps()
+                }
             }
         case .onNorm:
             EmptyView()

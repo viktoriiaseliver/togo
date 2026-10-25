@@ -385,7 +385,17 @@ struct DogTab: View {
 
     private func everyday(_ dog: Dog) -> some View {
         секция("каждый день") {
-                        TGLink(title: "Питание и режим", value: "\(dog.dailyGrams) г в день", systemImage: "fork.knife") { FeedingScreen(dog: dog) }
+                        // Значение строки — это утверждение, и при
+                        // ненаписанной норме оно было чужим словом:
+                        // «120 г в день» из умолчания черновика,
+                        // «0 г в день» из его отсутствия. Строка видна
+                        // раньше самого экрана питания, то есть
+                        // неверное число человек прочитывал первым.
+                        TGLink(title: "Питание и режим",
+                               value: dog.dailyGrams > 0
+                                   ? .готовая(String(localized: "\(dog.dailyGrams) г в день"))
+                                   : "норма не записана",
+                               systemImage: "fork.knife") { FeedingScreen(dog: dog) }
             TGDivider()
                         TGLink(title: "Уход", value: careSummary(dog).map { .готовая($0) }, systemImage: "scissors") { CareScreen(dog: dog) }
             TGDivider()

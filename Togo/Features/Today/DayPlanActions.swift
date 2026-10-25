@@ -264,7 +264,13 @@ struct DayPlanActions {
                     confirmation: "Записано · \(item.title)") { event in
                 switch item.kind {
                 case .meal:
-                    event.grams = dog.servingGrams
+                    // **Выдуманных граммов в ЗАПИСИ быть не может:
+                    // запись потом читает врач.** `grams` опционально
+                    // нарочно, и «не знаем сколько» пишется нулевой
+                    // ссылкой, а не нулём. Нормы нет — порции нет,
+                    // и отметка о кормлении остаётся честной отметкой
+                    // о кормлении.
+                    event.grams = dog.servingGrams > 0 ? dog.servingGrams : nil
                     event.note = dog.foodBrand.isEmpty ? nil : dog.foodBrand
                 case .care:
                     event.note = item.title

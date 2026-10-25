@@ -211,12 +211,16 @@ struct LogMealIntent: AppIntent {
         let context = ModelContext(container)
         guard let dog = try QuickLog.activeDog(in: context) else { throw QuickLogError.noDog }
 
+        // Нормы нет — граммов в записи и в ответе нет тоже. Siri
+        // проговаривает число вслух, и человек принимает его за своё:
+        // проверить его в этот момент нечем, экрана перед ним нет.
         let grams = dog.servingGrams
         let message = try QuickLog.record(.meal) {
-            $0.grams = grams
+            $0.grams = grams > 0 ? grams : nil
             $0.note = dog.foodBrand.isEmpty ? nil : dog.foodBrand
         }
-        return .result(dialog: IntentDialog(stringLiteral: "\(message) · \(grams) г"))
+        return .result(dialog: IntentDialog(stringLiteral:
+            grams > 0 ? "\(message) · \(grams) г" : message))
     }
 }
 

@@ -149,6 +149,14 @@ final class FoodStock {
         let left = packsRemaining(at: now)
         let unit = kind.unitName(count: left)
         if kind == .dry {
+            // «0 г в день» значит «расход не задан», а читается как
+            // «не ест». Расход единственного корма приезжает из дневной
+            // нормы (`Dog.syncSingleFoodShare`), и при ненаписанной
+            // норме он ноль по устройству — то есть ноль тут отвечает
+            // про наш пробел, а не про собаку.
+            guard gramsPerDay > 0 else {
+                return String(format: String(localized: "%.1f %@ · расход не задан"), left, unit)
+            }
             return String(format: String(localized: "%.1f %@ · %d г в день"), left, unit, gramsPerDay)
         }
         return String(format: String(localized: "%.0f %@ по %d г"), left.rounded(), unit, packGrams)
