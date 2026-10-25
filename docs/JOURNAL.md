@@ -9,6 +9,7 @@
 написанное рукой, пересборка не трогает.
 
 
+- [25 октября 2026 — chetyre-krasnyh-vne-etalona](journal/2026-10-25-chetyre-krasnyh-vne-etalona.md) — chetyre-krasnyh-vne-etalona
 - [23 октября 2026 — 23.10.2026](journal/2026-10-23-snos-plakata-doveden-i-os-perevedena.md) — 23.10.2026
 - [23 октября 2026 — onbording-i-pro-pod-kino](journal/2026-10-23-onbording-i-pro-pod-kino.md) — onbording-i-pro-pod-kino
 - [23 октября 2026 — nastroyki-pod-kino](journal/2026-10-23-nastroyki-pod-kino.md) — nastroyki-pod-kino
