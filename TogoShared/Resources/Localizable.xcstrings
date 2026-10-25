@@ -119123,38 +119123,38 @@
         }
       }
     },
-    "Это список на твоём телефоне. На телефон человека роль не уезжает — туда едет только та, что выбрана при приглашении. Поменять роль уже вошедшему пока нельзя." : {
+    "Это список на твоём телефоне. Роль и права отсюда на телефон человека не уезжают — туда едет только роль, выбранная при приглашении. Поменять её уже вошедшему пока нельзя." : {
       "comment" : "next",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "This is the list on your phone. The role does not travel to the other person's phone — only the one chosen when inviting goes there. Changing the role of someone who has already joined is not possible yet."
+            "value" : "This is the list on your phone. Roles and permissions set here do not travel to the other person's phone — only the role chosen when inviting goes there. Changing it for someone who has already joined is not possible yet."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Ceci est la liste sur ton téléphone. Le rôle ne part pas vers le téléphone de la personne — seul celui choisi lors de l'invitation y arrive. Changer le rôle de quelqu'un qui est déjà entré n'est pas encore possible."
+            "value" : "Ceci est la liste sur ton téléphone. Le rôle et les droits définis ici ne partent pas vers le téléphone de la personne — seul le rôle choisi lors de l'invitation y arrive. Le changer pour quelqu'un qui est déjà entré n'est pas encore possible."
           }
         },
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Бұл — сенің телефонындағы тізім. Рөл адамның телефонына бармайды — ол жерге шақыру кезінде таңдалғаны ғана барады. Кіріп қойған адамның рөлін өзгерту әзірге мүмкін емес."
+            "value" : "Бұл — сенің телефонындағы тізім. Мұндағы рөл мен құқықтар адамның телефонына бармайды — ол жерге шақыру кезінде таңдалған рөл ғана барады. Кіріп қойған адам үшін оны өзгерту әзірге мүмкін емес."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Это список на твоём телефоне. На телефон человека роль не уезжает — туда едет только та, что выбрана при приглашении. Поменять роль уже вошедшему пока нельзя."
+            "value" : "Это список на твоём телефоне. Роль и права отсюда на телефон человека не уезжают — туда едет только роль, выбранная при приглашении. Поменять её уже вошедшему пока нельзя."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Це список на твоєму телефоні. Роль не їде на телефон людини — туди їде лише та, що вибрана під час запрошення. Змінити роль тому, хто вже увійшов, поки не можна."
+            "value" : "Це список на твоєму телефоні. Роль і права звідси на телефон людини не їдуть — туди їде лише роль, вибрана під час запрошення. Змінити її тому, хто вже увійшов, поки не можна."
           }
         }
       }
