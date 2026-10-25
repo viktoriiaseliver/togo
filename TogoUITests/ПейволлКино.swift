@@ -101,10 +101,12 @@ nonisolated final class ПейволлКино: XCTestCase {
                       "в настройках нет кнопки «Togo Pro»")
         pro.tap()
 
-        // Якорь — подзаголовок листа. Заголовка секции «что открывает»
-        // на этом экране больше нет: редизайн 23.10.2026 свёл шапку
-        // к «Togo Pro · ровно три вещи».
-        XCTAssertTrue(app.staticTexts["ровно три вещи"].waitForExistence(timeout: 15),
+        // Якорь — ЗАГОЛОВОК листа, а не подзаголовок (перенесён 25.10.2026).
+        // Подзаголовок несёт число из `ProFeature.allCases.count`
+        // со склонением из каталога, и якорь на нём ломался бы
+        // от правки состава Pro. Число проверяет модульный
+        // `ProGateTests`.
+        XCTAssertTrue(app.staticTexts["Togo Pro"].waitForExistence(timeout: 15),
                       "пейволл не открылся")
 
         снять("17-togo-pro")

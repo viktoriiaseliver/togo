@@ -318,7 +318,10 @@ nonisolated final class КегльAX5: XCTestCase {
                 return
             }
             pro.tap()
-            XCTAssertTrue(self.app.staticTexts["ровно три вещи"].waitForExistence(timeout: 15),
+            // Якорь на ЗАГОЛОВКЕ: подзаголовок несёт вычисляемое число
+            // (решение дизайна 25.10, круг 6 п. 9), и к вопросу
+            // «открылся ли пейволл» состав Pro отношения не имеет.
+            XCTAssertTrue(self.app.staticTexts["Togo Pro"].waitForExistence(timeout: 15),
                           "пейволл не открылся")
         }
     }
