@@ -26,7 +26,7 @@
   --component-button-destructive-height: 50px;
   --component-button-destructive-label: #FF7A66;
   --component-button-destructive-radius: 24px;
-  --component-button-disabled-background: #3A3A3C;
+  --component-button-disabled-background: #2C2C2E;
   --component-button-disabled-label: #C7C7CC;
   --component-button-finish-background: #FFFFFF2E;
   --component-button-finish-height: 50px;
@@ -129,6 +129,7 @@
   --component-timeline-gutter: 12px;
   --component-timeline-nowMarker: #FFFFFF;
   --component-timeline-syncedMark: #5FBF9326;
+  --component-toggle-trackOff: #767676;
   --primitive-color-amber: #F7C75F;
   --primitive-color-amberBg: #4A300A;
   --primitive-color-arctic: #FFFFFF;
@@ -183,6 +184,7 @@
   --primitive-color-spruceTint: #5FBF9326;
   --primitive-color-stockLow: #FFA15C;
   --primitive-color-stockLowBg: #4A2A10;
+  --primitive-color-toggleOff: #767676;
   --primitive-color-toneAlarmChip: #D52519;
   --primitive-color-toneAlarmPanel: #D52519EB;
   --primitive-color-toneDosePanel: #1F4FFFEB;
@@ -343,7 +345,7 @@
   --component-actionTile-background: #FFFFFF;
   --component-button-destructive-background: #F7D5CF;
   --component-button-destructive-label: #AE2219;
-  --component-button-disabled-background: #D7DBE0;
+  --component-button-disabled-background: #E3E5E8;
   --component-button-disabled-label: #5A5D61;
   --component-button-finish-background: #1F4FFF38;
   --component-button-finish-label: #101112;
@@ -379,6 +381,7 @@
   --component-tabBar-inactive: #5A5D61;
   --component-timeline-alarmMark: #AE2219;
   --component-timeline-nowMarker: #1F4FFF;
+  --component-toggle-trackOff: #D7DBE0;
   --primitive-color-amber: #8A640F;
   --primitive-color-amberBg: #FCEBCB;
   --primitive-color-arctic: #1F4FFF;
@@ -416,6 +419,7 @@
   --primitive-color-spruceText: #286B4C;
   --primitive-color-stockLow: #B85400;
   --primitive-color-stockLowBg: #FFEBD9;
+  --primitive-color-toggleOff: #D7DBE0;
   --semantic-action-doneText: #286B4C;
   --semantic-action-onSubtle: #FFFFFF;
   --semantic-action-primary: #1F4FFF;
@@ -470,7 +474,7 @@
 [data-contrast="high"] {
   --component-actionTile-background: #48484A;
   --component-button-destructive-label: #FFA696;
-  --component-button-disabled-background: #48484A;
+  --component-button-disabled-background: #363638;
   --component-button-disabled-label: #EBEBF0;
   --component-button-secondary-background: #48484A;
   --component-card-background: #242426;
@@ -487,6 +491,7 @@
   --component-tabBar-background: #1E1E22D1;
   --component-tabBar-inactive: #EBEBF0;
   --component-timeline-alarmMark: #FFA696;
+  --component-toggle-trackOff: #8E8E93;
   --primitive-color-clay: #FFA696;
   --primitive-color-glass: #1E1E22D1;
   --primitive-color-glassCard: #242426E6;
@@ -505,6 +510,7 @@
   --primitive-color-nightControlPressed: #5A5A5E;
   --primitive-color-nightPage: #000000;
   --primitive-color-posterInkMuted: #C8C8C4;
+  --primitive-color-toggleOff: #8E8E93;
   --semantic-action-secondary: #48484A;
   --semantic-action-subtle: #3A4C85;
   --semantic-category-incident: #FFA696;
@@ -536,7 +542,7 @@
   --component-actionTile-background: #FFFFFF;
   --component-button-destructive-background: #F7D5CF;
   --component-button-destructive-label: #9B100E;
-  --component-button-disabled-background: #D6D9DD;
+  --component-button-disabled-background: #E3E5E8;
   --component-button-disabled-label: #45484C;
   --component-button-finish-background: #0E14A138;
   --component-button-finish-label: #101112;
@@ -576,6 +582,7 @@
   --component-tabBar-inactive: #45484C;
   --component-timeline-alarmMark: #9B100E;
   --component-timeline-nowMarker: #0E14A1;
+  --component-toggle-trackOff: #D6D9DD;
   --primitive-color-amber: #6B4C0C;
   --primitive-color-amberBg: #FCEBCB;
   --primitive-color-arctic: #0E14A1;
@@ -614,6 +621,7 @@
   --primitive-color-spruceText: #215940;
   --primitive-color-stockLow: #A34A00;
   --primitive-color-stockLowBg: #FFEBD9;
+  --primitive-color-toggleOff: #D6D9DD;
   --semantic-action-doneText: #215940;
   --semantic-action-onSubtle: #FFFFFF;
   --semantic-action-primary: #0E14A1;
