@@ -9132,42 +9132,6 @@
         }
       }
     },
-    "0,1 мг" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "0.1 mg"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "0,1 mg"
-          }
-        },
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "0,1 мг"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "0,1 мг"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "0,1 мг"
-          }
-        }
-      }
-    },
     "0,1 мг · 2 раза" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -9878,42 +9842,6 @@
         }
       }
     },
-    "3 месяца" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "3 months"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "3 mois"
-          }
-        },
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "3 ай"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "3 месяца"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "3 місяці"
-          }
-        }
-      }
-    },
     "3 мин" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -10305,42 +10233,6 @@
         }
       }
     },
-    "4 таблетки" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "4 tablets"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "4 comprimés"
-          }
-        },
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "4 таблетка"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4 таблетки"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "4 таблетки"
-          }
-        }
-      }
-    },
     "4 шага" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -10472,6 +10364,7 @@
       }
     },
     "4,1" : {
+      "comment" : "Подсказка поля веса (HealthScreen, OnboardingSteps). Ярлыка у поля нет, и десятичная запятая — единственное, что подсказка сообщает: это ФОРМАТ, а не пример данных. Переводу не подлежит — «4,1» по-французски те же 4,1. Пометка поставлена 5ac6633 без причины; причина дописана 25.10.2026, потому что пометка без причины через месяц неотличима от дыры и гасит ПодсказкаНеДанныеTests молча.",
       "shouldTranslate" : false
     },
     "5 напоминаний ждут даты" : {
@@ -10952,17 +10845,6 @@
         }
       }
     },
-    "12,9" : {
-      "localizations" : {
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "12,9"
-          }
-        }
-      },
-      "shouldTranslate" : false
-    },
     "14 столбцов" : {
       "comment" : "csvCard",
       "extractionState" : "manual",
@@ -11082,42 +10964,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "16 видів записів · одразу"
-          }
-        }
-      }
-    },
-    "16 мг" : {
-      "comment" : "comparison",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "16 mg"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "16 mg"
-          }
-        },
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "16 мг"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "16 мг"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "16 мг"
           }
         }
       }
@@ -11368,17 +11214,6 @@
         }
       }
     },
-    "51,5" : {
-      "localizations" : {
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "51,5"
-          }
-        }
-      },
-      "shouldTranslate" : false
-    },
     "65 г" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -11404,53 +11239,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "65 г"
-          }
-        }
-      }
-    },
-    "66" : {
-      "localizations" : {
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "66"
-          }
-        }
-      },
-      "shouldTranslate" : false
-    },
-    "66 мкг" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "66 µg"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "66 µg"
-          }
-        },
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "66 мкг"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "66 мкг"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "66 мкг"
           }
         }
       }
@@ -11577,17 +11365,6 @@
           }
         }
       }
-    },
-    "8935331" : {
-      "localizations" : {
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "8935331"
-          }
-        }
-      },
-      "shouldTranslate" : false
     },
     "App Store не ответил. Попробуй ещё раз позже." : {
       "comment" : "message",
@@ -12072,34 +11849,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "iCloud обмежений"
-          }
-        }
-      }
-    },
-    "IDEXX" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "IDEXX"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "IDEXX"
-          }
-        },
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "IDEXX"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "IDEXX"
           }
         }
       }
@@ -12882,34 +12631,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Togo порівнює час із минулими днями. Перші 4 дні відповідь — «незрозуміло»."
-          }
-        }
-      }
-    },
-    "VF120682" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "VF120682"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "VF120682"
-          }
-        },
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "VF120682"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "VF120682"
           }
         }
       }
@@ -51895,42 +51616,6 @@
         }
       }
     },
-    "Кочубина" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Kochubina"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Kotchoubina"
-          }
-        },
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Кочубина"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Кочубина"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Кочубіна"
-          }
-        }
-      }
-    },
     "Кошка" : {
       "comment" : "title",
       "extractionState" : "manual",
@@ -64278,42 +63963,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "низ норми"
-          }
-        }
-      }
-    },
-    "Ницца → Лион" : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Nice → Lyon"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nice → Lyon"
-          }
-        },
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Ницца → Лион"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ницца → Лион"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Ніцца → Ліон"
           }
         }
       }
