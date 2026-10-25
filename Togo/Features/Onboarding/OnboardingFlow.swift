@@ -310,6 +310,18 @@ struct OnboardingFlow: View {
         schedule.apply(to: dog)
         context.insert(dog)
         SeedData.attachStarterCare(to: dog, context: context)
+        // Заготовки навыков заводятся ЗДЕСЬ, а не на экране процедур.
+        //
+        // Экран сеял их сам и помнил флагом в `UserDefaults` — то есть
+        // отметка о данных лежала на устройстве, а данные в облаке,
+        // и на втором телефоне заготовки воскресали. Разбор —
+        // `SeedData.seedProcedureSkillsIfNone`.
+        //
+        // Навыки общие, не привязаны к собаке: завести их на каждую
+        // значило бы удвоить список второй собакой. Онбординг проходят
+        // один раз — это и есть то единственное событие, которое им
+        // соответствует.
+        SeedData.seedProcedureSkillsIfNone(context: context)
         let me = FamilyMember(name: draft.ownerName, role: .owner, isMe: true)
         context.insert(me)
         // Своя карточка запоминается на телефоне: `isMe` уезжает в общий
