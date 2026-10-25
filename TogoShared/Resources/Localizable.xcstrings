@@ -121321,7 +121321,6 @@
             "value" : "де здавали"
           }
         }
-
       }
     },
     "номер рецепта" : {
@@ -121358,7 +121357,6 @@
             "value" : "номер рецепта"
           }
         }
-
       }
     },
     "доза с единицей" : {
@@ -121395,7 +121393,6 @@
             "value" : "доза з одиницею"
           }
         }
-
       }
     },
     "срок" : {
@@ -121432,7 +121429,6 @@
             "value" : "термін"
           }
         }
-
       }
     },
     "фамилия врача" : {
@@ -121469,7 +121465,6 @@
             "value" : "прізвище лікаря"
           }
         }
-
       }
     },
     "сколько и чего" : {
@@ -121506,7 +121501,6 @@
             "value" : "скільки й чого"
           }
         }
-
       }
     },
     "Кем он войдёт" : {
@@ -121543,7 +121537,6 @@
             "value" : "Ким він увійде"
           }
         }
-
       }
     },
     "Сначала укажи дневную норму — она в «Питании и режиме»" : {
@@ -121580,7 +121573,6 @@
             "value" : "Спочатку вкажи денну норму — вона в «Харчуванні та режимі»"
           }
         }
-
       }
     },
     "Поставь, сколько этого корма в день" : {
@@ -121617,7 +121609,6 @@
             "value" : "Постав, скільки цього корму на день"
           }
         }
-
       }
     },
     "только число" : {
@@ -121654,7 +121645,6 @@
             "value" : "тільки число"
           }
         }
-
       }
     },
     "откуда и куда" : {
@@ -121689,6 +121679,79 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "звідки й куди"
+          }
+        }
+      }
+    },
+    "Схему меняет владелец" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The owner changes the plan"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le propriétaire modifie le protocole"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Сызбаны иесі өзгертеді"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Схему меняет владелец"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Схему змінює власник"
+          }
+        }
+
+      }
+    },
+    "Ты видишь дозы, запас и анализы. Право «Менять схему лечения» выдаёт владелец в разделе «Семья»." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "You can see doses, supply and lab results. The owner grants “Change the treatment plan” in “Family”."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tu vois les doses, le stock et les analyses. Le propriétaire accorde « Modifier le traitement » dans « Famille »."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Сен дозаларды, қорды және талдауларды көресің. «Емдеу схемасын өзгерту» құқығын иесі «Отбасы» бөлімінде береді."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ты видишь дозы, запас и анализы. Право «Менять схему лечения» выдаёт владелец в разделе «Семья»."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ти бачиш дози, запас і аналізи. Право «Міняти схему лікування» видає власник у розділі «Сім'я»."
           }
         }
 
