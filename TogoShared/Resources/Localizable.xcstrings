@@ -100365,7 +100365,7 @@
       }
     },
     "Спрашиваю магазин…" : {
-      "comment" : "planPicker",
+      "comment" : "subscriptionSection",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -121931,6 +121931,870 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%.1f %@ · расход не задан"
+          }
+        }
+      }
+    },
+    "Записывает владелец" : {
+      "comment" : "detail",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The owner notes things"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "C'est le propriétaire qui note"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Иесі жазады"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Записывает владелец"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Записує власник"
+          }
+        }
+      }
+    },
+    "Записи правит владелец" : {
+      "comment" : "detail",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The owner edits entries"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "C'est le propriétaire qui modifie les entrées"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Жазбаларды иесі түзетеді"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Записи правит владелец"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Записи править власник"
+          }
+        }
+      }
+    },
+    "Медицинское видит владелец" : {
+      "comment" : "detail",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The owner sees medical records"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "C'est le propriétaire qui voit le médical"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Медицинаны иесі көреді"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Медицинское видит владелец"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Медичне бачить власник"
+          }
+        }
+      }
+    },
+    "Дозы отмечает владелец" : {
+      "comment" : "detail",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The owner marks doses"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "C'est le propriétaire qui coche les doses"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Дозаларды иесі белгілейді"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дозы отмечает владелец"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Дози позначає власник"
+          }
+        }
+      }
+    },
+    "Профиль меняет владелец" : {
+      "comment" : "detail",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The owner changes the profile"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le propriétaire modifie le profil"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Профильді иесі өзгертеді"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Профиль меняет владелец"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Профіль змінює власник"
+          }
+        }
+      }
+    },
+    "Семью меняет владелец" : {
+      "comment" : "detail",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The owner changes the family"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le propriétaire modifie la famille"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Отбасын иесі өзгертеді"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Семью меняет владелец"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Сім'ю змінює власник"
+          }
+        }
+      }
+    },
+    "Право «%@» выдаёт владелец в разделе «Семья»." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The owner grants “%@” in “Family”."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le propriétaire accorde « %@ » dans « Famille »."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "«%@» құқығын иесі «Отбасы» бөлімінде береді."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Право «%@» выдаёт владелец в разделе «Семья»."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Право «%@» видає власник у розділі «Сім'я»."
+          }
+        }
+      }
+    },
+    "Кладу фото…" : {
+      "comment" : "Свои снимки",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Adding the photo…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "J'ajoute la photo…"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Фотоны қосып жатырмын…"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кладу фото…"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Додаю фото…"
+          }
+        }
+      }
+    },
+    "Кладу снимок…" : {
+      "comment" : "Шапка с фотографией",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Saving the photo…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "J'enregistre la photo…"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Суретті сақтап жатырмын…"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кладу снимок…"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Зберігаю знімок…"
+          }
+        }
+      }
+    },
+    "Спрашиваю разрешение…" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Asking for permission…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Je demande l'autorisation…"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Рұқсат сұрап жатырмын…"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Спрашиваю разрешение…"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Запитую дозвіл…"
+          }
+        }
+      }
+    },
+    "Обязательна только кличка. Остальное можно пропустить и заполнить когда угодно." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Only the name is required. Everything else can be skipped and filled in whenever."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Seul le nom est obligatoire. Le reste peut être ignoré et rempli plus tard."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Тек аты міндетті. Қалғанын өткізіп жіберіп, кез келген уақытта толтыруға болады."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обязательна только кличка. Остальное можно пропустить и заполнить когда угодно."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Обов'язкова тільки кличка. Решту можна пропустити і заповнити коли завгодно."
+          }
+        }
+      }
+    },
+    "Назови напоминание — под этим именем оно встанет в список" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Name the reminder — it will appear in the list under this name"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nomme le rappel — il figurera dans la liste sous ce nom"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Еске салуды атап қой — тізімде осы атпен тұрады"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Назови напоминание — под этим именем оно встанет в список"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Назви нагадування — під цим іменем воно стане в список"
+          }
+        }
+      }
+    },
+    "Назови препарат — остальное можно заполнить потом" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Name the medicine — the rest can be filled in later"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nomme le médicament — le reste peut être rempli plus tard"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Дәріні атап қой — қалғанын кейін толтыруға болады"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Назови препарат — остальное можно заполнить потом"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Назви препарат — решту можна заповнити потім"
+          }
+        }
+      }
+    },
+    "Напиши формулировку — хотя бы рабочую гипотезу" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Write the wording — a working hypothesis is enough"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Écris la formulation — une hypothèse de travail suffit"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Тұжырымды жаз — тым болмаса жұмыс гипотезасын"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Напиши формулировку — хотя бы рабочую гипотезу"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Напиши формулювання — хоча б робочу гіпотезу"
+          }
+        }
+      }
+    },
+    "Назови препарат — по нему назначение и ищут" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Name the medicine — that is how the prescription gets found"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nomme le médicament — c'est par lui qu'on retrouve l'ordonnance"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Дәріні атап қой — тағайындауды сол арқылы іздейді"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Назови препарат — по нему назначение и ищут"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Назви препарат — за ним призначення і шукають"
+          }
+        }
+      }
+    },
+    "Назови хотя бы один показатель — строка без названия не считается" : {
+      "comment" : "footer",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Name at least one marker — a row without a name does not count"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nomme au moins un paramètre — une ligne sans nom ne compte pas"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Тым болмаса бір көрсеткішті атап қой — аты жоқ жол саналмайды"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Назови хотя бы один показатель — строка без названия не считается"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Назви хоча б один показник — рядок без назви не рахується"
+          }
+        }
+      }
+    },
+    "Назови показатель — так, как он написан в бланке" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Name the marker — exactly as it is written on the form"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nomme le paramètre — tel qu'il est écrit sur le formulaire"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Көрсеткішті атап қой — бланкте қалай жазылса, солай"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Назови показатель — так, как он написан в бланке"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Назви показник — так, як він написаний у бланку"
+          }
+        }
+      }
+    },
+    "Поменяй дозу или часы — пока менять нечего" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Change the dose or the times — there is nothing to change yet"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Change la dose ou les heures — il n'y a encore rien à changer"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Дозаны немесе сағаттарды өзгерт — әзірге өзгертетін нәрсе жоқ"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поменяй дозу или часы — пока менять нечего"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Поміняй дозу або години — поки міняти нічого"
+          }
+        }
+      }
+    },
+    "Напиши, как его зовут — имя станет автором его записей" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Write their name — it will be the author of their entries"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Écris son nom — il signera ses entrées"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Атын жаз — ол жазбаларының авторы болады"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Напиши, как его зовут — имя станет автором его записей"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Напиши, як його звати — ім'я стане автором його записів"
+          }
+        }
+      }
+    },
+    "Напиши, откуда и куда — по этому собираются вещи" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Write where from and where to — the packing list is built from it"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Écris d'où et vers où — la liste des affaires en dépend"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Қайдан және қайда екенін жаз — заттар соған қарай жиналады"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Напиши, откуда и куда — по этому собираются вещи"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Напиши, звідки й куди — за цим збираються речі"
+          }
+        }
+      }
+    },
+    "Напиши заметку — пустую записывать нечего" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Write the note — there is nothing to save while it is empty"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Écris la note — il n'y a rien à enregistrer tant qu'elle est vide"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Жазбаны жаз — бос күйінде жазатын нәрсе жоқ"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Напиши заметку — пустую записывать нечего"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Напиши нотатку — порожню записувати нічого"
+          }
+        }
+      }
+    },
+    "Нужно одно число — например 4,1" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "One number is needed — 4.1, for example"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Il faut un seul nombre — par exemple 4,1"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Бір сан керек — мысалы, 4,1"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нужно одно число — например 4,1"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Потрібне одне число — наприклад 4,1"
+          }
+        }
+      }
+    },
+    "Начни занятие — тогда отметки заработают" : {
+      "comment" : "markerPad",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Start the session — the marks will work then"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Commence la séance — les marques fonctionneront alors"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Сабақты баста — белгілер содан кейін істейді"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Начни занятие — тогда отметки заработают"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Почни заняття — тоді позначки запрацюють"
+          }
+        }
+      }
+    },
+    "Сначала «Он сделал» — маркер включится после него" : {
+      "comment" : "markerPad",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "“She did it” first — the marker turns on after it"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "D'abord « Il l'a fait » — le marqueur s'active ensuite"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Алдымен «Ол жасады» — маркер содан кейін қосылады"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сначала «Он сделал» — маркер включится после него"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Спочатку «Він зробив» — маркер увімкнеться після нього"
           }
         }
       }
