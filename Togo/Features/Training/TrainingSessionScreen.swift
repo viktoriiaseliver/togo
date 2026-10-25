@@ -226,7 +226,16 @@ struct TrainingSessionScreen: View {
     /// карточка, которая выглядит главным действием и молчит
     /// на нажатие, хуже тусклой.
     private var маркер: some View {
-        let заливка: MarkFill = session.isWaitingForMark ? .accent : .quiet
+        let включено = session.isWaitingForMark
+        let заливка: MarkFill = включено ? .accent : .quiet
+        // Выключенное состояние красится ТОКЕНОМ, а не системным
+        // гашением: `.buttonStyle(.plain)` + `.disabled()` гасил весь
+        // слой метки вполовину уже ПОСЛЕ выбора цвета, и подпись
+        // выходила 3,61:1 при пороге 4,5 (замер по пикселю 25.10.2026,
+        // `04-training.png` набора `витрина-279-25.10`). Разбор —
+        // в `TGCardButtonStyle`.
+        let чернилаЗаголовка = включено ? заливка.label : CardInk.disabledLabel
+        let чернилаПодписи = включено ? заливка.counter : CardInk.disabledLabel
         return Button { mark() } label: {
             HStack(spacing: Token.Space.s12) {
                 Image(systemName: "pawprint.fill")
@@ -241,40 +250,52 @@ struct TrainingSessionScreen: View {
                     Text(dog?.markerKind.title ?? String(localized: "маркер"))
                         .font(.system(size: Token.FontSize.marker,
                                       weight: Token.FontWeight.semibold))
-                        .foregroundStyle(заливка.label)
+                        .foregroundStyle(чернилаЗаголовка)
                         .wraps()
                     Text("жми, когда сделал")
-                        .textStyle(AppFont.caption, color: заливка.counter)
+                        .textStyle(AppFont.caption, color: чернилаПодписи)
                         .wraps()
                 }
                 Spacer(minLength: 0)
             }
-            .foregroundStyle(заливка.label)
+            .foregroundStyle(чернилаЗаголовка)
             .padding(.horizontal, Token.Space.s16)
             .padding(.vertical, Token.Space.s8)
             .frame(maxWidth: .infinity, minHeight: Token.Size.markerCard, alignment: .leading)
             .background(заливка.color,
                         in: RoundedRectangle(cornerRadius: Token.Radius.capsule, style: .continuous))
         }
-        .buttonStyle(.plain)
-        .disabled(!session.isWaitingForMark)
+        .buttonStyle(TGCardButtonStyle())
+        .disabled(!включено)
     }
 
     private var markerPad: some View {
         VStack(spacing: Token.Space.s10) {
             маркер
 
+            // Та же починка, что у маркера, и та же причина: подпись
+            // «сел, посмотрел, подошёл» выходила 3,61:1. Здесь цвет
+            // приходилось подставлять ещё и потому, что `AppFont`
+            // несёт свой `color` и красит `Text` сам — `foregroundStyle`
+            // на `VStack` эти две строки не достаёт вовсе.
+            let исходДоступен = session.isRunning && !session.isWaitingForMark
             Button { session.markAction(); Haptics.tap() } label: {
                 VStack(spacing: Token.Space.s2) {
-                    Text("Он сделал").textStyle(AppFont.cardTitle)
-                    Text("сел, посмотрел, подошёл").textStyle(AppFont.caption)
+                    Text("Он сделал")
+                        .textStyle(AppFont.cardTitle,
+                                   color: исходДоступен ? Token.Ink.primary
+                                                        : CardInk.disabledLabel)
+                    Text("сел, посмотрел, подошёл")
+                        .textStyle(AppFont.caption,
+                                   color: исходДоступен ? Token.Ink.secondary
+                                                        : CardInk.disabledLabel)
                 }
                 .frame(maxWidth: .infinity, minHeight: 72)
                 .background(Token.Surface.sunken,
                             in: RoundedRectangle(cornerRadius: Token.Radius.tile, style: .continuous))
             }
-            .buttonStyle(.plain)
-            .disabled(!session.isRunning || session.isWaitingForMark)
+            .buttonStyle(TGCardButtonStyle())
+            .disabled(!исходДоступен)
 
             // Третий исход занятия — и он обязан выглядеть нажимаемым.
             //
