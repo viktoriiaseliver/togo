@@ -177,11 +177,16 @@ struct ScheduleEditor: View {
                 draft.isManual = false
             }
 
-            TGDivider()
-            TGChipGroup(items: ScheduleDraft.NormEntry.allCases, title: \.title,
-                        isSelected: { $0 == draft.normEntry },
-                        minimumWidth: 150) { draft.normEntry = $0 }
-                .padding(.vertical, Token.Space.s8)
+            // Выбор конца, с которого считают, появляется вместе
+            // с числом: пока нормы нет, он переключает то, чего нет,
+            // то есть выглядит действием и не делает ничего.
+            if draft.нормаНазвана {
+                TGDivider()
+                TGChipGroup(items: ScheduleDraft.NormEntry.allCases, title: \.title,
+                            isSelected: { $0 == draft.normEntry },
+                            minimumWidth: 150) { draft.normEntry = $0 }
+                    .padding(.vertical, Token.Space.s8)
+            }
 
             // Оба шаговика правят одно и то же число — просто с разных
             // концов. Раньше это были два разных поля, и они расходились.
