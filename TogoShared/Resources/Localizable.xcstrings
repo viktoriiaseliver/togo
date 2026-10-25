@@ -107863,6 +107863,78 @@
         }
       }
     },
+    "Убрать из списка" : {
+      "comment" : "next",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Remove from the list"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Retirer de la liste"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Тізімнен шығару"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Убрать из списка"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Вилучити зі списку"
+          }
+        }
+      }
+    },
+    "Уберёт карточку с этого телефона. Доступ к дневнику этим не закроется: его закрывает «Общий дневник → Перестать делиться», и сразу для всех." : {
+      "comment" : "next",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Removes the card from this phone. It does not close access to the diary: that is done by \"Shared diary → Stop sharing\", and for everyone at once."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Retire la fiche de ce téléphone. Cela ne ferme pas l'accès au journal : il se ferme par « Journal partagé → Arrêter de partager », et pour tout le monde à la fois."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Осы телефоннан картаны алып тастайды. Күнделікке кіруді бұл жаппайды: оны «Ортақ күнделік → Бөлісуді тоқтату» жабады, бірден барлығына."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Уберёт карточку с этого телефона. Доступ к дневнику этим не закроется: его закрывает «Общий дневник → Перестать делиться», и сразу для всех."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Вилучить карточку з цього телефона. Доступ до щоденника це не закриє: його закриває «Спільний щоденник → Перестати ділитися», і відразу для всіх."
+          }
+        }
+      }
+    },
     "Убрать корм" : {
       "comment" : "body",
       "extractionState" : "manual",
@@ -119047,6 +119119,42 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Це все"
+          }
+        }
+      }
+    },
+    "Это список на твоём телефоне. На телефон человека роль не уезжает — туда едет только та, что выбрана при приглашении. Поменять роль уже вошедшему пока нельзя." : {
+      "comment" : "next",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "This is the list on your phone. The role does not travel to the other person's phone — only the one chosen when inviting goes there. Changing the role of someone who has already joined is not possible yet."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ceci est la liste sur ton téléphone. Le rôle ne part pas vers le téléphone de la personne — seul celui choisi lors de l'invitation y arrive. Changer le rôle de quelqu'un qui est déjà entré n'est pas encore possible."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Бұл — сенің телефонындағы тізім. Рөл адамның телефонына бармайды — ол жерге шақыру кезінде таңдалғаны ғана барады. Кіріп қойған адамның рөлін өзгерту әзірге мүмкін емес."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Это список на твоём телефоне. На телефон человека роль не уезжает — туда едет только та, что выбрана при приглашении. Поменять роль уже вошедшему пока нельзя."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Це список на твоєму телефоні. Роль не їде на телефон людини — туди їде лише та, що вибрана під час запрошення. Змінити роль тому, хто вже увійшов, поки не можна."
           }
         }
       }
