@@ -1623,6 +1623,17 @@
           }
         },
         {
+          "name": "color/tonePanelInk",
+          "type": "COLOR",
+          "description": "ПОКАЗАНИЕ на цветной панели дозы и тревоги — чистый белый, во всех четырёх режимах. Заводится отдельно от `posterInk` (#F4F4F2), а не правкой его: `posterInk` читают ещё `TGPoster` и нижняя кнопка «Сегодня», и правка увела бы их тоже. Подтверждение, что величина её: белый на #1238D6 даёт 8,20 при её 8,2, на #A11A10 — 7,86 при её 7,9 (кадр `04-p5-panel.png`). С `posterInk` выходило 7,44 и 7,14 — то есть расхождение держалось на ОДНОМ токене, и обе её цифры назвали его разом. У натощак цифра своя (`toneFastingInk`), поэтому там сходилось и без этого.",
+          "value": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0,
+            "a": 1
+          }
+        },
+        {
           "name": "duration/instant",
           "type": "FLOAT",
           "description": "Нажатие. Поколение «финал»: --dur-press 0.15s. Было 120ms — сопоставлено ПО РОЛИ, а не по имени: у макета длительности названы действием (press, move), у нас скоростью (instant, quick, settle), и сопоставлять их по порядку значило бы угадывать. Зовётся из TGButton:105 и DayTimeline:319 — оба про нажатие",
@@ -2395,6 +2406,13 @@
           "aliasCollection": "Primitive"
         },
         {
+          "name": "poster/labelOnAlarmTone",
+          "type": "COLOR",
+          "description": "ПОКАЗАНИЕ на панели тревоги. Прежде панель брала `labelOnColor` — роль ПЛАКАТА, общую с шапкой на фотографии: одно имя отвечало за две разные поверхности, и число сходилось случайно.",
+          "alias": "color/tonePanelInk",
+          "aliasCollection": "Primitive"
+        },
+        {
           "name": "poster/labelOnColor",
           "type": "COLOR",
           "description": "Заголовок плаката на ЦВЕТНОМ блоке: обычный, тревожный, натощак.",
@@ -2406,6 +2424,13 @@
           "type": "COLOR",
           "description": "Показание на плакате дозы. Было `arcticInk`, который стал #111111 — чёрная подпись на индиго нечитаема. `readingTone.dose.fg` = #FFFFFF, и `posterInk` ровно эта роль: текст НА ЦВЕТНОМ блоке. Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`. ",
           "alias": "color/posterInk",
+          "aliasCollection": "Primitive"
+        },
+        {
+          "name": "poster/labelOnDoseTone",
+          "type": "COLOR",
+          "description": "ПОКАЗАНИЕ на панели дозы. Роль ПАНЕЛИ, а не плаката: `labelOnDose` трогать нельзя — её читают `TGPoster` и нижняя кнопка «Сегодня». Та же развилка, что Виктория уже прошла с подписями, заведя `captionOnDoseTone` отдельно от `captionOnDose`.",
+          "alias": "color/tonePanelInk",
           "aliasCollection": "Primitive"
         },
         {

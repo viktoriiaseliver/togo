@@ -198,6 +198,7 @@
   --primitive-color-toneFastingChip: #FFC233;
   --primitive-color-toneFastingInk: #2A1D00;
   --primitive-color-toneFastingPanel: #FFC233EB;
+  --primitive-color-tonePanelInk: #FFFFFF;
   --primitive-duration-instant: 150ms;
   --primitive-duration-quick: 180ms;
   --primitive-duration-settle: 300ms;
@@ -314,8 +315,10 @@
   --semantic-poster-captionOnDoseTone: #FFFFFFE0;
   --semantic-poster-captionOnFasting: #5A4300;
   --semantic-poster-label: #FFFFFF;
+  --semantic-poster-labelOnAlarmTone: #FFFFFF;
   --semantic-poster-labelOnColor: #F4F4F2;
   --semantic-poster-labelOnDose: #F4F4F2;
+  --semantic-poster-labelOnDoseTone: #FFFFFF;
   --semantic-poster-labelOnFasting: #2A1D00;
   --semantic-poster-panelAlarm: #D52519EB;
   --semantic-poster-panelDose: #1F4FFFEB;

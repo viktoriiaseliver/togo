@@ -532,8 +532,21 @@ struct ReadingPanel<Шапка: View>: View {
     private var чернила: Color {
         switch tone {
         case .fasting: Token.Poster.labelOnFasting
-        case .dose: Token.Poster.labelOnDose
-        case .alarm: Token.Poster.labelOnColor
+        // Роли ПАНЕЛИ, а не плаката, и это замер по её кадру
+        // `04-p5-panel.png`, 25.10.2026. Прежде стояли `labelOnDose`
+        // (= `posterInk` `#F4F4F2`) и `labelOnColor` — обе общие
+        // с плакатом и нижней кнопкой:
+        //
+        // ```
+        //              posterInk   чистый белый   её кадр
+        // доза HC         7,44         8,20         8,2
+        // тревога HC      7,14         7,86         7,9
+        // ```
+        //
+        // Правкой самого `posterInk` это чинить нельзя: его читают
+        // `TGPoster.swift:100` и `TodayBottom.swift:178`.
+        case .dose: Token.Poster.labelOnDoseTone
+        case .alarm: Token.Poster.labelOnAlarmTone
         default: Token.Poster.labelOnColor
         }
     }

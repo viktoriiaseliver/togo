@@ -59,10 +59,10 @@ struct ЧернилаПанелиПарныеЗаливкеTests {
              показание: Token.Poster.labelOnFasting,
              подпись: Token.Poster.captionOnFasting),
         Пара(тон: "доза", заливка: Token.Poster.panelDose,
-             показание: Token.Poster.labelOnDose,
+             показание: Token.Poster.labelOnDoseTone,
              подпись: Token.Poster.captionOnDoseTone),
         Пара(тон: "тревога", заливка: Token.Poster.panelAlarm,
-             показание: Token.Poster.labelOnColor,
+             показание: Token.Poster.labelOnAlarmTone,
              подпись: Token.Poster.captionOnAlarmTone),
     ]
 
