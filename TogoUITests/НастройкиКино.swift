@@ -108,25 +108,32 @@ nonisolated final class НастройкиКино: XCTestCase {
                       "в настройках нет строки «Перенос и восстановление»")
         строка.tap()
 
-        // Ярлык шапки («Перенос») и ярлык строки («Перенос
+        // Ярлык шапки («Копия») и ярлык строки («Перенос
         // и восстановление») — разные нарочно, и это не опечатка:
         // `navigationTitle` у `BackupScreen` короткий.
-        XCTAssertTrue(app.navigationBars["Перенос"].waitForExistence(timeout: 10),
-                      "строка нажата, а экран «Перенос» не открылся")
+        //
+        // ШАПКА ПЕРЕИМЕНОВАНА 25.10.2026 словом дизайна (`ОТВЕТЫ-круг-5`,
+        // пункт 8: «Экран про резервную копию, перенос — его следствие»).
+        // Строка настроек НЕ тронута, и это названо, а не забыто:
+        // дизайн назвал ЭКРАН, а не строку, и за строкой стоят два
+        // UI-теста (этот и `ScreenshotTests.test10Перенос`). Расхождение
+        // «строка Перенос → экран Копия» открыто и ждёт слова.
+        XCTAssertTrue(app.navigationBars["Копия"].waitForExistence(timeout: 10),
+                      "строка нажата, а экран «Копия» не открылся")
 
         let csv = app.descendants(matching: .any).matching(
             NSPredicate(format: "label BEGINSWITH %@", "CSV")
         ).firstMatch
         for _ in 0..<8 where !csv.exists { app.swipeUp() }
         XCTAssertTrue(csv.waitForExistence(timeout: 5), """
-            на экране «Перенос» нет строки CSV. Надстрочник экрана \
+            на экране «Копия» нет строки CSV. Надстрочник экрана \
             обещает «iCloud · JSON · CSV» три слова — дорог должно быть три.
             """)
         кадр("06-перенос-csv")
 
-        app.navigationBars["Перенос"].buttons.firstMatch.tap()
+        app.navigationBars["Копия"].buttons.firstMatch.tap()
         XCTAssertTrue(app.navigationBars["Настройки"].waitForExistence(timeout: 10),
-                      "с экрана «Перенос» не вышло вернуться в настройки")
+                      "с экрана «Копия» не вышло вернуться в настройки")
     }
 
     // MARK: Дорога

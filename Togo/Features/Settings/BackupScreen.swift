@@ -2,12 +2,27 @@ import SwiftUI
 import SwiftData
 import UniformTypeIdentifiers
 
-/// Перенос и восстановление.
+/// Резервная копия дневника.
 ///
 /// Дневник живёт на телефоне — значит, у человека должен быть способ забрать
 /// его с собой: на новый телефон, после переустановки, просто «на всякий».
 /// Файл обычный JSON: его видно глазами и он не привязан к нашему серверу,
 /// которого нет.
+///
+/// # Экран называется «Копия», а не «Перенос» — слово дизайна 25.10.2026
+///
+/// `Дизайн/редизайн-ios28/ОТВЕТЫ-круг-5.md`, пункт 8, дословно: «Экран
+/// про резервную копию, перенос — его следствие. Строки: iCloud · JSON
+/// · CSV». Надзаголовок стоял верный с самого начала и не тронут;
+/// менялись заголовок и `navigationTitle`.
+///
+/// **Новой строки это не заводит, и это замер, а не надежда.** Ключ
+/// «Копия» уже лежит в `TogoShared/Resources/Localizable.xcstrings`
+/// с переводами на `en` · `fr` · `kk` · `uk` (`extractionState:
+/// manual`), то есть переименование не прибавляет долга перевода ни
+/// на одну строку. Снятый ключ «Перенос» оставлен в каталоге: его
+/// по-прежнему зовёт `UsageLog.swift:79` (имя экрана в журнале
+/// действий).
 struct BackupScreen: View {
     @Environment(\.modelContext) private var context
     @Environment(Settings.self) private var settings
@@ -38,7 +53,7 @@ struct BackupScreen: View {
             // `TogoShared/Resources/Localizable.xcstrings` сегодня
             // правит другая сессия (вычитка пяти языков), и каждый
             // новый литерал — её работа, а не моя.
-            CinemaHeader("Перенос", надпись: "iCloud · JSON · CSV", отступы: false)
+            CinemaHeader("Копия", надпись: "iCloud · JSON · CSV", отступы: false)
             iCloudCard
             exportCard
             csvCard
@@ -46,7 +61,7 @@ struct BackupScreen: View {
             if let message { messageCard(message) }
             formatCard
         }
-        .navigationTitle("Перенос")
+        .navigationTitle("Копия")
         // Фотографии под шапкой здесь НЕТ, и это не забывчивость:
         // `TGScreen` рисует свою непрозрачную подложку, сквозь неё фон
         // не виден. Пустить фото на эти экраны — значит править каркас

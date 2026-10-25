@@ -433,7 +433,10 @@ nonisolated final class ScreenshotTests: XCTestCase {
     func test10Перенос() {
         открытьНастройки()
         найти(т("Перенос и восстановление"), в: app).tap()
-        XCTAssertTrue(app.navigationBars[т("Перенос")].waitForExistence(timeout: 5),
+        // Шапка — «Копия» с 25.10.2026 (`ОТВЕТЫ-круг-5`, пункт 8).
+        // Строка настроек осталась «Перенос и восстановление»: дизайн
+        // назвал экран, а не строку.
+        XCTAssertTrue(app.navigationBars[т("Копия")].waitForExistence(timeout: 5),
                       "строка «Перенос и восстановление» есть, а экран за ней не открылся")
         capture("10-backup")
     }

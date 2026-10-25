@@ -76,7 +76,7 @@ nonisolated enum UsageLog {
             case .onboarding: String(localized: "Онбординг")
             case .paywall: String(localized: "Подписка")
             case .settings: String(localized: "Настройки")
-            case .backup: String(localized: "Перенос")
+            case .backup: String(localized: "Копия")
             case .dataPrivacy: String(localized: "Данные")
             case .usageLog: String(localized: "Журнал действий")
             case .other: String(localized: "прочее")
