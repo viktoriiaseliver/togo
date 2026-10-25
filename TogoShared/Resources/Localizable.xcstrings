@@ -92408,6 +92408,7 @@
       }
     },
     "с бланка" : {
+      "comment" : "Шаги",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -92426,6 +92427,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "бланктан"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "с бланка"
           }
         },
         "uk" : {
@@ -120400,12 +120407,6 @@
             "value" : "your photos"
           }
         },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Фон — це фотографія за екранами, а не тема. Тема в Togo одна — темна."
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -120476,12 +120477,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "how it will look"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Знімки лежать на телефоні й вирушають лише у віджет — він бере те саме фото, що й екран. Довга сторона стискається до тисячі точок, щоб не займати місце."
           }
         },
         "fr" : {
@@ -120641,7 +120636,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Open \u201cFamily\u201d"
+            "value" : "Open “Family”"
           }
         },
         "fr" : {
@@ -120801,18 +120796,6 @@
             "value" : "five lines, not written yet"
           }
         },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Дивитися треба не на одне число, а на те, куди йде ряд. Відкрий графік."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Перша смужка з'явиться, коли натиснеш маркер. Нижче — швидше: до півсекунди собака пов'язує маркер зі своєю дією, після секунди вона вже робить щось інше."
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -120954,18 +120937,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "you log and view · the owner invites"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Спостерігач читає й не пише. Помічник не бачить медичного. Схему лікування за замовчуванням змінює тільки власник."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Читаєш усе, відмічати й запрошувати може власник. Попроси його видати роль — вона прийде на цей самий телефон."
           }
         },
         "fr" : {
@@ -121287,7 +121258,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "The \u201cHealth\u201d tab appears, along with the fasting window and double-dose protection. You'll add the medication later — we'll ask about the plan and times there."
+            "value" : "The “Health” tab appears, along with the fasting window and double-dose protection. You'll add the medication later — we'll ask about the plan and times there."
           }
         },
         "fr" : {
@@ -121314,6 +121285,413 @@
             "value" : "З'явиться вкладка «Здоров'я», вікно натщесерце й захист від подвійної дози. Препарат додаси потім — схему й години спитаємо там."
           }
         }
+      }
+    },
+    "где сдавали" : {
+      "comment" : "Шаги",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "where it was done"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "où le prélèvement a été fait"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "қайда тапсырылды"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "где сдавали"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "де здавали"
+          }
+        }
+
+      }
+    },
+    "номер рецепта" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "prescription number"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "numéro d'ordonnance"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "рецепт нөмірі"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "номер рецепта"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "номер рецепта"
+          }
+        }
+
+      }
+    },
+    "доза с единицей" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "dose with unit"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "dose avec unité"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "өлшем бірлігімен доза"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "доза с единицей"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "доза з одиницею"
+          }
+        }
+
+      }
+    },
+    "срок" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "duration"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "durée"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "мерзімі"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "срок"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "термін"
+          }
+        }
+
+      }
+    },
+    "фамилия врача" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "vet's last name"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "nom du vétérinaire"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "дәрігердің тегі"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "фамилия врача"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "прізвище лікаря"
+          }
+        }
+
+      }
+    },
+    "сколько и чего" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "how much of what"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "combien et de quoi"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "нешеу және не"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "сколько и чего"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "скільки й чого"
+          }
+        }
+
+      }
+    },
+    "Кем он войдёт" : {
+      "comment" : "inviteCard",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Who they'll be"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Quel rôle il aura"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ол кім болып кіреді"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кем он войдёт"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ким він увійде"
+          }
+        }
+
+      }
+    },
+    "Сначала укажи дневную норму — она в «Питании и режиме»" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "First set the daily amount — it's in “Food and routine”"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Indique d'abord la ration quotidienne — elle est dans « Alimentation et routine »"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Алдымен күндік мөлшерді көрсет — ол «Тамақтану мен режимде»"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сначала укажи дневную норму — она в «Питании и режиме»"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Спочатку вкажи денну норму — вона в «Харчуванні та режимі»"
+          }
+        }
+
+      }
+    },
+    "Поставь, сколько этого корма в день" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Set how much of this food per day"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Indique la quantité de cet aliment par jour"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Осы азықтың күніне қаншасын қой"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поставь, сколько этого корма в день"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Постав, скільки цього корму на день"
+          }
+        }
+
+      }
+    },
+    "только число" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "number only"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "chiffre seul"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "тек сан"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "только число"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "тільки число"
+          }
+        }
+
+      }
+    },
+    "откуда и куда" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "from and to"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "d'où et vers où"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "қайдан және қайда"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "откуда и куда"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "звідки й куди"
+          }
+        }
+
       }
     }
   },

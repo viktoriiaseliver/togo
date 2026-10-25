@@ -117,6 +117,8 @@ def literals(line):
 # в рантайме не спрашивается никогда.
 # Технические строки: в логи и в служебные ключи переводчику лезть незачем.
 TECHNICAL = re.compile(r"\blog\.(error|notice|debug|info|warning)\b")
+# Крючки стенда: имя органа для UI-теста, а не текст для человека.
+IDENTIFIER = re.compile(r"\baccessibilityIdentifier\(")
 DECL = re.compile(r"^\s*(?:@\w+\s+)*(?:public\s+|private\s+|internal\s+|fileprivate\s+)?"
                   r"(struct|enum|final class|class|extension|func|var|let|case)\s+([A-Za-z_][A-Za-z0-9_]*)")
 MARK = re.compile(r"^\s*//\s*MARK:\s*-?\s*(.+)$")
@@ -261,6 +263,21 @@ def collect():
                 context = decl.group(2)
             line = strip_comments(raw)
             if TECHNICAL.search(line):
+                continue
+            # Имена для стенда не текст, и человек их не читает.
+            #
+            # `.accessibilityIdentifier("низ-записать")` — крючок, за
+            # который UI-тест берёт орган. Пишут их по-русски, поэтому
+            # отбор «литерал с кириллицей» сгребал их наравне с подписями:
+            # пять таких ключей приехали в каталог 25.10.2026 и попросили
+            # вычитки на четырёх языках. Перевести их значило бы сломать
+            # тесты, оставить — держать в каталоге то, чего никто не
+            # прочтёт.
+            #
+            # > **Отбор по алфавиту не отличает текст от имени.** Разводит
+            # > только место: что стоит в `accessibilityIdentifier`, то
+            # > адрес, а не слово.
+            if IDENTIFIER.search(line):
                 continue
             for literal in literals(line):
                 if not CYRILLIC.search(literal):
