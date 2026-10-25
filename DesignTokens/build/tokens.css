@@ -317,6 +317,9 @@
   --semantic-poster-labelOnColor: #F4F4F2;
   --semantic-poster-labelOnDose: #F4F4F2;
   --semantic-poster-labelOnFasting: #2A1D00;
+  --semantic-poster-panelAlarm: #D52519EB;
+  --semantic-poster-panelDose: #1F4FFFEB;
+  --semantic-poster-panelFasting: #FFC233EB;
   --semantic-radius-bar: 3px;
   --semantic-radius-capsule: 999px;
   --semantic-radius-card: 24px;
@@ -546,6 +549,8 @@
   --semantic-poster-captionOnAlarmTone: #FFE3E0;
   --semantic-poster-captionOnColor: #C8C8C4;
   --semantic-poster-captionOnDoseTone: #C7D3FF;
+  --semantic-poster-panelAlarm: #A11A10;
+  --semantic-poster-panelDose: #1238D6;
   --semantic-status-overdueText: #FFA696;
   --semantic-surface-card: #242426;
   --semantic-surface-control: #48484A;
