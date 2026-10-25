@@ -120112,10 +120112,34 @@
       "comment" : "Режимы",
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "how the photo is picked"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "comment la photo est choisie"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "фото қалай таңдалады"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "как выбирается фото"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "як обирається фото"
           }
         }
       }
@@ -120124,10 +120148,34 @@
       "comment" : "Режимы",
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The background is a photo behind the screens, not a theme. Togo has one theme — dark."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le fond est une photo derrière les écrans, pas un thème. Togo n'a qu'un thème : sombre."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Фон — экрандар артындағы фотосурет, тема емес. Togo-да тема біреу — қараңғы."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Фон — это фотография за экранами, а не тема. Тема в Togo одна — тёмная."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Фон — це фотографія за екранами, а не тема. Тема в Togo одна — темна."
           }
         }
       }
@@ -120136,10 +120184,40 @@
       "comment" : "Свои снимки",
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "your photos"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Фон — це фотографія за екранами, а не тема. Тема в Togo одна — темна."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "tes photos"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "сенің фотоларың"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "твои фотографии"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "твої фотографії"
           }
         }
       }
@@ -120148,10 +120226,34 @@
       "comment" : "Свои снимки",
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Photos stay on the phone and only go to the widget — it uses the same photo as the screen. The long side is scaled down to a thousand pixels so it doesn't take up space."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Les photos restent sur le téléphone et ne partent que vers le widget — il prend la même photo que l'écran. Le côté long est réduit à mille pixels pour ne pas prendre de place."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Суреттер телефонда жатады және тек виджетке барады — ол экранмен бірдей фотоны алады. Ұзын қабырғасы орын алмас үшін мың нүктеге дейін кішірейтіледі."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Снимки лежат на телефоне и уезжают только в виджет — он берёт то же фото, что и экран. Длинная сторона ужимается до тысячи точек, чтобы не занимать место."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Знімки лежать на телефоні й вирушають лише у віджет — він бере те саме фото, що й екран. Довга сторона стискається до тисячі точок, щоб не займати місце."
           }
         }
       }
@@ -120160,10 +120262,40 @@
       "comment" : "Предпросмотр",
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "how it will look"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Знімки лежать на телефоні й вирушають лише у віджет — він бере те саме фото, що й екран. Довга сторона стискається до тисячі точок, щоб не займати місце."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ce que ça donne"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "не шығады"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "что получится"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "що вийде"
           }
         }
       }
@@ -120185,10 +120317,34 @@
       "comment" : "appearanceSection",
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "how it looks"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "à quoi ça ressemble"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "қалай көрінеді"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "как выглядит"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "як виглядає"
           }
         }
       }
@@ -120197,10 +120353,34 @@
       "comment" : "aboutSection",
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "the whole onboarding in a row; nothing is saved"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "tout l'onboarding d'affilée ; rien n'est enregistré"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "бүкіл онбординг қатарынан; ештеңе жазылмайды"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "весь онбординг подряд; ничего не записывается"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "весь онбординг поспіль; нічого не записується"
           }
         }
       }
@@ -120248,10 +120428,34 @@
       "comment" : "Низ — главная кнопка по состоянию",
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Open Family"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ouvrir « Famille »"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "«Отбасын» ашу"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Открыть «Семью»"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Відкрити «Сім'ю»"
           }
         }
       }
@@ -120273,10 +120477,34 @@
       "comment" : "recentMarks",
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "No marks yet"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pas encore de marques"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Әзірге белгілер жоқ"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Отметок пока нет"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Позначок поки немає"
           }
         }
       }
@@ -120285,10 +120513,34 @@
       "comment" : "recentMarks",
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The first bar appears when you press the marker. Lower is faster: within half a second the dog links the marker to her action; after a second she's already doing something else."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "La première barre apparaît quand tu appuies sur le marqueur. Plus bas, c'est plus rapide : en moins d'une demi-seconde le chien associe le marqueur à son action ; après une seconde, il fait déjà autre chose."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Бірінші жолақ маркерді басқанда пайда болады. Төмен — жылдамырақ: жарты секундқа дейін ит маркерді өз әрекетімен байланыстырады, секундтан кейін ол басқа нәрсе істеп жатады."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Первая полоска появится, когда нажмёшь маркер. Ниже — быстрее: до полусекунды собака связывает маркер со своим действием, после секунды она уже делает что-то другое."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Перша смужка з'явиться, коли натиснеш маркер. Нижче — швидше: до півсекунди собака пов'язує маркер зі своєю дією, після секунди вона вже робить щось інше."
           }
         }
       }
@@ -120297,10 +120549,34 @@
       "comment" : "Показатель",
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Don't look at a single number, look at where the row is heading. Open the chart."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ne regarde pas un seul chiffre, regarde où va la série. Ouvre le graphique."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Бір санға емес, қатардың қайда бара жатқанына қара. Графикті аш."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Смотреть надо не на одно число, а на то, куда идёт ряд. Открой график."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Дивитися треба не на одне число, а на те, куди йде ряд. Відкрий графік."
           }
         }
       }
@@ -120309,10 +120585,46 @@
       "comment" : "sitterBriefingLink",
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "five lines, not written yet"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Дивитися треба не на одне число, а на те, куди йде ряд. Відкрий графік."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Перша смужка з'явиться, коли натиснеш маркер. Нижче — швидше: до півсекунди собака пов'язує маркер зі своєю дією, після секунди вона вже робить щось інше."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "cinq lignes, pas encore écrites"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "бес жол, әлі жазылмаған"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "пять строк, ещё не написаны"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "п'ять рядків, ще не написані"
           }
         }
       }
@@ -120321,10 +120633,34 @@
       "comment" : "hasBriefing",
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "You're a guest in this diary"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tu es invité dans ce journal"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Сен бұл күнделікте қонақсың"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ты в этом дневнике гость"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ти в цьому щоденнику гість"
           }
         }
       }
@@ -120333,10 +120669,34 @@
       "comment" : "hasBriefing",
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "You can read everything; logging and inviting are up to the owner. Ask them to give you a role — it will arrive on this same phone."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tu peux tout lire ; noter et inviter, c'est au propriétaire. Demande-lui un rôle — il arrivera sur ce même téléphone."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Бәрін оқисың, белгілеу мен шақыруды иесі жасайды. Одан рөл беруін сұра — ол дәл осы телефонға келеді."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Читаешь всё, отмечать и приглашать может владелец. Попроси его выдать роль — она придёт на этот же телефон."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Читаєш усе, відмічати й запрошувати може власник. Попроси його видати роль — вона прийде на цей самий телефон."
           }
         }
       }
@@ -120345,10 +120705,34 @@
       "comment" : "rolesExplainer",
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "An observer reads but doesn't write. A helper doesn't see medical data. By default only the owner changes the treatment plan."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L'observateur lit mais n'écrit pas. L'assistant ne voit pas le médical. Par défaut, seul le propriétaire modifie le protocole."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Бақылаушы оқиды, жазбайды. Көмекші медициналықты көрмейді. Емдеу сызбасын әдепкіде тек иесі өзгертеді."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Наблюдатель читает и не пишет. Помощник не видит медицинского. Схему лечения по умолчанию меняет только владелец."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Спостерігач читає й не пише. Помічник не бачить медичного. Схему лікування за замовчуванням змінює тільки власник."
           }
         }
       }
@@ -120356,10 +120740,46 @@
     "отмечаешь и смотришь · приглашает владелец" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "you log and view · the owner invites"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Спостерігач читає й не пише. Помічник не бачить медичного. Схему лікування за замовчуванням змінює тільки власник."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Читаєш усе, відмічати й запрошувати може власник. Попроси його видати роль — вона прийде на цей самий телефон."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "tu notes et consultes · le propriétaire invite"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "белгілейсің және қарайсың · иесі шақырады"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "отмечаешь и смотришь · приглашает владелец"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "відмічаєш і дивишся · запрошує власник"
           }
         }
       }
@@ -120367,10 +120787,34 @@
     "смотришь всё · отмечает владелец" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "you see everything · the owner logs"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "tu vois tout · le propriétaire note"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "бәрін көресің · иесі белгілейді"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "смотришь всё · отмечает владелец"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "дивишся все · відмічає власник"
           }
         }
       }
@@ -120378,10 +120822,34 @@
     "Ты смотришь дневник · отмечает владелец" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "You're viewing the diary · the owner logs"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tu consultes le journal · le propriétaire note"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Сен күнделікті қарайсың · иесі белгілейді"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ты смотришь дневник · отмечает владелец"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ти дивишся щоденник · відмічає власник"
           }
         }
       }
@@ -120390,10 +120858,34 @@
       "comment" : "let",
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "You're invited to a shared diary"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "On t'invite dans un journal partagé"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Сені ортақ күнделікке шақырып тұр"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Тебя зовут в общий дневник"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Тебе кличуть до спільного щоденника"
           }
         }
       }
@@ -120402,10 +120894,34 @@
       "comment" : "let",
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "you'll see everything · the owner will log"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "tu verras tout · le propriétaire notera"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "сен бәрін көре аласың · белгілеуді иесі жасайды"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "ты сможешь смотреть всё · отмечать будет владелец"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ти зможеш бачити все · відмічати буде власник"
           }
         }
       }
@@ -120414,10 +120930,34 @@
       "comment" : "2 · Сколько",
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "How much he ate over the past two weeks"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ce qu'il a mangé ces deux dernières semaines"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Соңғы екі аптада қанша жеді"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Сколько ел последние две недели"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Скільки їв останні два тижні"
           }
         }
       }
@@ -120426,10 +120966,34 @@
       "comment" : "body",
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Enter a name — that's what the diary will call her"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Écris un nom — c'est ainsi que le journal l'appellera"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Атын жаз — күнделік оны солай атайды"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Напиши кличку — так её будет звать дневник"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Напиши кличку — так її зватиме щоденник"
           }
         }
       }
@@ -120438,10 +121002,34 @@
       "comment" : "body",
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "can wait"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "plus tard si tu veux"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "кейінірек болады"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "можно позже"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "можна пізніше"
           }
         }
       }
@@ -120450,10 +121038,34 @@
       "comment" : "body",
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The health record turns on"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le carnet de santé s'active"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Медициналық кітапша қосылады"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Медкнижка включится"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Медкнижка увімкнеться"
           }
         }
       }
@@ -120462,10 +121074,34 @@
       "comment" : "body",
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The Health tab appears, along with the fasting window and double-dose protection. You'll add the medication later — we'll ask about the plan and times there."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L'onglet « Santé » apparaît, avec la fenêtre à jeun et la protection contre la double dose. Tu ajouteras le médicament plus tard — on demandera le protocole et les heures là-bas."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "«Денсаулық» қойындысы, ашқарынға терезесі және қос дозадан қорғау пайда болады. Препаратты кейін қосасың — сызба мен сағаттарды сонда сұраймыз."
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Появится вкладка «Здоровье», окно натощак и защита от двойной дозы. Препарат добавишь потом — схему и часы спросим там."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "З'явиться вкладка «Здоров'я», вікно натщесерце й захист від подвійної дози. Препарат додаси потім — схему й години спитаємо там."
           }
         }
       }
