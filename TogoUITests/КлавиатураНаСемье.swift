@@ -92,9 +92,9 @@ nonisolated final class КлавиатураНаСемье: XCTestCase {
     /// `SettingsScreen.swift:89` — то, чем это включают руками.
     @discardableResult
     private func переключитьPro(в состояние: Bool) -> Bool {
-        let шестерёнка = app.buttons["Настройки"].firstMatch
-        guard шестерёнка.waitForExistence(timeout: 10) else { return false }
-        шестерёнка.tap()
+        // Кнопка настроек уехала в меню «…» 22.10; дорогу знает
+        // один `открытьНастройки`.
+        guard открытьНастройки(в: app) else { return false }
 
         // Переключатель лежит в разделе подписки, низко: «не нашёл»
         // без прокрутки значило бы «не доскроллил».
