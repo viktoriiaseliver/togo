@@ -9,13 +9,20 @@
 написанное рукой, пересборка не трогает.
 
 
+- [26 октября 2026](journal/2026-10-26-tri-otkaza-okazalis-tremya-raznymi-veshchami.md) — Сессия `projects-4e`, тестировщик
+- [26 октября 2026 — menedzher-lozhnye-nuli-po-ramke](journal/2026-10-26-menedzher-lozhnye-nuli-po-ramke.md) — menedzher-lozhnye-nuli-po-ramke
+- [26 октября 2026](journal/2026-10-26-chetyre-naryada-po-snyatym-zamemam.md) — 26.10.2026, `projects-9b`, разработчик вёрстки
 - [25 октября 2026 — vyklyuchennye-knopki-krug-5](journal/2026-10-25-vyklyuchennye-knopki-krug-5.md) — vyklyuchennye-knopki-krug-5
 - [25 октября 2026 — vitrina-na-vershine](journal/2026-10-25-vitrina-na-vershine.md) — vitrina-na-vershine
 - [25 октября 2026 — вес 0 рисовался числом, и два сторожа мерили прозу](journal/2026-10-25-ves-nol-i-dva-storozha-na-proze.md) — вес 0 рисовался числом, и два сторожа мерили прозу
+- [25 октября 2026 — узкий экран снят впервые, и контроль снял две находки из четырёх](journal/2026-10-25-uzkiy-ekran-snyat-vpervye.md) — узкий экран снят впервые, и контроль снял две находки из четырёх
 - [25 октября 2026 — гость получал право отмечать дозы, и этого не выбирал никто](journal/2026-10-25-tikhoe-povyshenie-prav-gostya.md) — гость получал право отмечать дозы, и этого не выбирал никто
 - [25 октября 2026](journal/2026-10-25-sborka-279-sobrana.md) — Смена на 127 коммитов за двое суток
+- [25 октября 2026 — прогон умирает от накопления, а не от набора](journal/2026-10-25-progon-umiraet-ot-nakopleniya.md) — прогон умирает от накопления, а не от набора
+- [25 октября 2026](journal/2026-10-25-polovina-pary-na-paneli-pokazaniya.md) — Начато с последнего продуктового красного — `ПлакатНаГлавномUITests`
 - [25 октября 2026 — plavayushchiy-krash-avtosohraneniya](journal/2026-10-25-plavayushchiy-krash-avtosohraneniya.md) — plavayushchiy-krash-avtosohraneniya
 - [25 октября 2026 — norma-vracha-ne-vydumana](journal/2026-10-25-norma-vracha-ne-vydumana.md) — norma-vracha-ne-vydumana
+- [25 октября 2026 — крупный кегль: четыре экрана починены, два пункта описи оказались ложными](journal/2026-10-25-krupnyy-kegl-shest-ekranov.md) — крупный кегль: четыре экрана починены, два пункта описи оказались ложными
 - [25 октября 2026 — kartinki-v-ramke](journal/2026-10-25-kartinki-v-ramke.md) — kartinki-v-ramke
 - [25 октября 2026 — chetyre-krasnyh-vne-etalona](journal/2026-10-25-chetyre-krasnyh-vne-etalona.md) — chetyre-krasnyh-vne-etalona
 - [23 октября 2026 — 23.10.2026](journal/2026-10-23-snos-plakata-doveden-i-os-perevedena.md) — 23.10.2026
