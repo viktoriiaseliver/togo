@@ -227,7 +227,7 @@ nonisolated final class ШапкаПлаката: XCTestCase {
         // что на экране.
         let запасное = подписи("Собака")
         let чтоЕсть = app.staticTexts.allElementsBoundByIndex
-            .prefix(12).map(\.label).joined(separator: " | ")
+            .prefix(12).map { $0.label }.joined(separator: " | ")
         XCTAssertTrue(app.staticTexts[запасное].waitForExistence(timeout: 5), """
             НА ЭКРАНЕ: \(чтоЕсть)
 
