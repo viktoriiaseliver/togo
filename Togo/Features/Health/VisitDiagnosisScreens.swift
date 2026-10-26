@@ -109,7 +109,33 @@ struct VetVisitEditor: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Environment(AppState.self) private var appState
-    @Query private var клиники: [Clinic]
+    @Query private var всеКлиники: [Clinic]
+
+    /// Кто принимал — **клиники, БЕЗ лабораторий**, и это требование
+    /// модели, а не вкус: `Clinic.swift:34` — «лаборатория, а не
+    /// клиника: туда сдают анализы, **там не принимают**».
+    ///
+    /// До 26.10.2026 фильтра не было вовсе: пикер перечислял
+    /// `ForEach(клиники)` подряд, и в списке «кто принимал» стояли
+    /// IDEXX и Antech — организации, которые приём не ведут
+    /// по устройству. Поле `isLab` объяснено в модели на шести строках
+    /// и не читалось ни одним экраном.
+    ///
+    /// **Выбранная клиника остаётся в списке всегда, даже если она
+    /// лаборатория или уже надгробие.** Без этого правка старого визита
+    /// молча теряла бы организацию: пикер показал бы «не указана»
+    /// при заполненном `visit.clinic`, человек сохранил бы форму,
+    /// не трогая это поле, и `цель.clinic = клиника` записало бы `nil`.
+    /// То есть фильтр показа стал бы **молчаливым удалением данных** —
+    /// ровно тот класс, что «вид выводится из заполненности».
+    private var доступные: [Clinic] {
+        let живые = всеКлиники.filter { $0.deletedAt == nil && !$0.isLab }
+        let выбранная = клиника.map { [$0] } ?? []
+        let слитые = живые + выбранная.filter { выбор in
+            !живые.contains { $0.persistentModelID == выбор.persistentModelID }
+        }
+        return слитые.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+    }
 
     @State private var дата = Date()
     @State private var повод: VisitReason = .checkup
@@ -151,12 +177,31 @@ struct VetVisitEditor: View {
                 // Клиника выбирается из уже заведённых, а не печатается:
                 // справочник склеивается по имени, и свободный ввод
                 // плодил бы «Vet Riviera» и «вет ривьера» как две разные.
+                //
+                // **Довод был верен, а справочника не существовало
+                // до 26.10.2026** — у человека здесь навсегда стояла
+                // одна строка «не указана». Вход теперь есть:
+                // «Здоровье» → «Клиники и лаборатории».
                 Picker("Клиника", selection: $клиника) {
                     Text("не указана").tag(nil as Clinic?)
-                    ForEach(клиники) { Text(verbatim: $0.name).tag($0 as Clinic?) }
+                    ForEach(доступные) { Text(verbatim: $0.name).tag($0 as Clinic?) }
                 }
                 .pickerStyle(.menu)
                 .frame(minHeight: Token.Size.tapTarget)
+                // Пустой справочник больше не молчит. Прежде пикер
+                // с одной строкой «не указана» выглядел поломкой
+                // экрана; теперь он говорит, где завести организацию.
+                if доступные.isEmpty {
+                    TGExplainer(text: "Справочник пуст. Клиники заводятся в «Здоровье» → «Клиники и лаборатории» — оттуда они и попадают в этот выбор.")
+                }
+                // Телефон выбранной клиники — нажимаемым и ЗДЕСЬ,
+                // а не только в справочнике: визит заводят, когда
+                // из клиники вернулись или когда в неё собираются,
+                // и это второй из двух часов, когда номер нужен.
+                if let номер = Fmt.notBlank(клиника?.phone ?? "") {
+                    TGDivider()
+                    СтрокаЗвонка(номер: номер)
+                }
             }
 
             TGCard {
@@ -178,7 +223,15 @@ struct VetVisitEditor: View {
         .task { загрузить() }
         .confirmationDialog("Удалить визит?", isPresented: $удаляем, titleVisibility: .visible) {
             Button("Удалить", role: .destructive) {
-                if let visit { context.delete(visit) }
+                // Надгробие вместо `context.delete` — см. `Medication.deletedAt`.
+                if let visit {
+                    let откат = ОбщееУдаление.удалить(visit)
+                    guard context.persist(otherwise: откат) else {
+                        Haptics.warning()
+                        appState.showFailure("Не удалилось · нажми ещё раз")
+                        return
+                    }
+                }
                 Haptics.warning()
                 dismiss()
             }
@@ -489,7 +542,17 @@ struct DiagnosisEditor: View {
         .task { загрузить() }
         .confirmationDialog("Удалить диагноз?", isPresented: $удаляем, titleVisibility: .visible) {
             Button("Удалить", role: .destructive) {
-                if let diagnosis { context.delete(diagnosis) }
+                // Надгробие вместо `context.delete`. Удалённый диагноз
+                // и СНЯТЫЙ — разные вещи: снятый остаётся в карте
+                // и объясняет, что искали.
+                if let diagnosis {
+                    let откат = ОбщееУдаление.удалить(diagnosis)
+                    guard context.persist(otherwise: откат) else {
+                        Haptics.warning()
+                        appState.showFailure("Не удалилось · нажми ещё раз")
+                        return
+                    }
+                }
                 Haptics.warning()
                 dismiss()
             }

@@ -34,6 +34,10 @@ struct HealthScreen: View {
     @Environment(AppState.self) private var appState
     @Query private var dogs: [Dog]
     @Query private var allMedications: [Medication]
+    /// Нужен только для числа в строке справочника. Клиника не
+    /// принадлежит собаке — ни связи `dog`, ни обратной у `Dog`, —
+    /// поэтому фильтра по активной собаке здесь нет и быть не должно.
+    @Query private var клиники: [Clinic]
 
     @Environment(\.modelContext) private var context
     /// Системный кегль. Читается, а не задаётся: сюда он приезжает
@@ -54,7 +58,11 @@ struct HealthScreen: View {
 
     private var medications: [Medication] {
         guard let dog else { return [] }
-        return allMedications.filter { $0.dog?.persistentModelID == dog.persistentModelID }
+        // Надгробия мимо: `@Query` отдаёт все схемы базы, то есть этот
+        // вход идёт мимо фильтра у `dog.medications`.
+        return allMedications.filter {
+            $0.dog?.persistentModelID == dog.persistentModelID && $0.deletedAt == nil
+        }
     }
 
     var body: some View {
@@ -535,6 +543,16 @@ struct HealthScreen: View {
         return .готовая(Fmt.records(dog.prescriptions.count))
     }
 
+    /// Сколько организаций в справочнике. Надгробия не считаются:
+    /// `ОбщееУдаление` — «надгробие, которое видно человеку, —
+    /// не удаление, а порча экрана», и число тут такой же показ,
+    /// как список.
+    private var клиникВсего: LocalizedStringKey? {
+        let живые = клиники.filter { $0.deletedAt == nil }
+        guard !живые.isEmpty else { return nil }
+        return .готовая(Fmt.records(живые.count))
+    }
+
     private var sectionsGrid: some View {
         TGCard(spacing: 0) {
             // **ВХОД ВЗАМЕН «+» В ШАПКЕ.** Кадр 11 не даёт в шапке
@@ -575,6 +593,22 @@ struct HealthScreen: View {
                         TGLink(title: "Назначения", value: назначенийВсего, systemImage: "doc.text") { PrescriptionsScreen(dog: dog) }
             TGDivider()
                         TGLink(title: "Прививки и визиты", systemImage: "syringe") { CareScreen(dog: dog) }
+            TGDivider()
+            // МЕСТО ВЫЗОВА справочника клиник. Без этой строки `Clinic`
+            // существует и недостижим: у модели НЕ БЫЛО НИ ОДНОГО
+            // человеческого места создания (замер 26.10.2026) —
+            // приём извне, откат архива, маркер схемы и галерея
+            // под `#if DEBUG`. При этом `VetVisitEditor`
+            // и `PrescriptionEditor` уже рисовали `Picker("Клиника")`,
+            // и у человека там навсегда стояла одна строка
+            // «не указана».
+            //
+            // Это та же семья, что `LabResult` до 08.10.2026, и хуже
+            // её на один шаг: там экран был недостижим, здесь ДВА
+            // экрана спрашивали то, на что ответить нельзя.
+            // Сторож на эту строку — `ДорогаКСправочникуКлиникTests`,
+            // от запрета, по образцу `ДорогаКАнализамTests`.
+                        TGLink(title: "Клиники и лаборатории", value: клиникВсего, systemImage: "cross.case") { ClinicsScreen() }
             TGDivider()
                         TGLink(title: "Сводка врачу", value: "разворот за минуту", systemImage: "doc.text") { VetSummaryScreen(dog: dog) }
             TGDivider()
@@ -1014,16 +1048,27 @@ struct WeightScreen: View {
     /// а у записи — на «можно ли писать», и это разные вопросы.
     private func delete(_ entry: WeightEntry) {
         guard canEdit, let dog else { return }
-        context.delete(entry)
+        // Надгробие вместо `context.delete`: вес — то, от чего считается
+        // доза, и расхождение веса между двумя людьми даёт расхождение
+        // дозы. Удаление, не доехавшее до второго человека, оставляло
+        // ему точку, которой у хозяйки уже нет.
+        let откатНадгробия = ОбщееУдаление.удалить(entry)
         // Текущий вес показывается по всему приложению — если удалили
         // последнее взвешивание, он обязан откатиться, а не остаться
         // от только что стёртой записи.
         let былВес = dog.weightKg
+        // `dog.weights` уже отсеивает надгробия, то есть эта запись
+        // из него выпала строкой выше; фильтр по `persistentModelID`
+        // оставлен как есть — он больше не нужен, но и не врёт,
+        // а убрать его значило бы связать откат с порядком двух правок.
         let rest = dog.weights.filter { $0.persistentModelID != entry.persistentModelID }
         if let latest = rest.max(by: { $0.date < $1.date }) {
             dog.weightKg = latest.kg
         }
-        guard context.persist(otherwise: { dog.weightKg = былВес }) else {
+        guard context.persist(otherwise: {
+            dog.weightKg = былВес
+            откатНадгробия()
+        }) else {
             Haptics.warning()
             return appState.showFailure("Взвешивание не удалилось · попробуй ещё раз")
         }
