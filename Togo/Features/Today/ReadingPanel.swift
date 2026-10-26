@@ -103,17 +103,44 @@ struct ReadingPanel<Шапка: View>: View {
         case фраза(LocalizedStringKey)
     }
 
-    // Имена величин — из `tokens/togo-ios28.tokens.json`. Токенов
-    // с такими именами в проекте ещё НЕТ: их заводит другой агент.
-    // Пока они константами с адресом источника, и это названо
-    // в отчёте, а не спрятано.
+    // ~~Токенов с такими именами в проекте ещё НЕТ: их заводит другой
+    // агент. Пока они константами с адресом источника.~~
     //
-    //   size.hero            360   высота блока с фото
-    //   size.heroAX          220   та же высота на крупном кегле
-    //   size.heroPanelRadius  24   радиус стеклянной панели
-    //   type.reading          56 / 300 / SF Pro Rounded
-    //   cinema.titleLarge     36 / −0.025
-    private var высота: CGFloat { размерТекста.isAccessibilitySize ? 220 : 360 }
+    // **УСТАРЕЛО. Токены есть, и высота переведена на них 26.10.2026.**
+    // `Token.Size.hero` = 360 и `Token.Size.heroAX` = 220 живут
+    // в генерате (`Tokens.generated.swift:339,341`), и до этой правки
+    // у `Token.Size.hero` НЕ БЫЛО НИ ОДНОГО ЖИВОГО ЧИТАТЕЛЯ: `git grep
+    // "Token\.Size\.hero\b"` давал только упоминания в прозе, при
+    // живом контроле `heroAX` (один вызов, `CinemaHeader.swift:392`).
+    //
+    // > Это ровно случай `Token.FontSize.micro = 14`, за который мы уже
+    // > платили: имя есть, значение верное, вызова по имени нет. Правка
+    // > токена не меняла на экране ничего, а дизайнер, применивший
+    // > `size.hero` в Figma, получал рассинхрон с кодом. Грепом не
+    // > видно — объявление находится один раз и выглядит работающим.
+    //
+    // Остальные величины этого списка **не переведены, и причина
+    // названа, а не умолчана**:
+    //
+    //   size.heroPanelRadius  24  → `Token.Component.ReadingPanel.glassRadius`
+    //                               и `component.readingPanel.height`.
+    //                               ЭКРАНУ ЗВАТЬ НЕЛЬЗЯ:
+    //                               `ComponentTokenScopeTests` держит счёт
+    //                               обращений к `Token.Component.*`
+    //                               из экранов на нуле. Путь тот же, что
+    //                               у слоя затемнения: сперва компонент
+    //                               в `Togo/DesignSystem/`, потом он
+    //                               читает токен.
+    //   type.reading      56/300  → `Token.FontSize.hero` = 56 есть;
+    //                               кегль панели не переводила этой правкой,
+    //                               чтобы приёмка одного предмета не
+    //                               смешалась с другим.
+    //   cinema.titleLarge 36/−0.025 → `primitive.font.size.titleLarge`
+    //                               и `tracking.titleLarge` = −0,9px
+    //                               (пересчёт em→pt: −0,025 × 36).
+    private var высота: CGFloat {
+        размерТекста.isAccessibilitySize ? Token.Size.heroAX : Token.Size.hero
+    }
 
     var body: some View {
         ZStack(alignment: .topLeading) {
