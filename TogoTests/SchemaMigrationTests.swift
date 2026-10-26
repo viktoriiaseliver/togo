@@ -403,50 +403,35 @@ struct SchemaMigrationTests {
             // «значение + единица» позволила бы сложить 0,1 мг с 50 мкг
             // и получить 50,1. Снос базы разрешён её словом 08.10.2026
             // под этот случай.
-            // НАДГРОБИЯ, 26.10.2026. `deletedAt` у одиннадцати типов
-            // обмена — шесть из них живут ещё с V4 и потому названы
-            // здесь; пять (Clinic, LabResult, VetVisit, Diagnosis,
-            // Prescription) пришли в V5 сущностями, и их поля этот
-            // пофайловый прирост не сверяет по устройству.
+            // **НАДГРОБИЙ ЗДЕСЬ НЕТ, и это замер, а не упущение.**
+            // `deletedAt` у одиннадцати типов пришёл 26.10.2026
+            // коммитом `f546719` — то есть ПОСЛЕ того, как V5 уехала
+            // пятью сборками. Он живёт в V6, и сверяет его
+            // `шестаяВерсияДобавляетОдниНадгробия` ниже.
             //
-            // Решение Виктории: «надгробия всем одиннадцати сразу».
-            // До него удаление у владельца не доезжало до второго
-            // человека ни по одному типу, кроме отметок: исходящая
-            // очередь собирается из `didSave`, а удалённая запись
-            // не приходит ни в `inserted`, ни в `updated`. Самый
-            // дорогой случай — отменённая схема лечения, которая
-            // у мамы оставалась жива и давала напоминания о дозах.
-            //
-            // Все одиннадцать опциональные (`Date?`), то есть стадия
-            // остаётся облегчённой: это ровно тот случай, который
-            // CoreData выводит сам.
+            // Записать его сюда значило бы сказать, что форма 304,
+            // лежащая на пяти телефонах, содержала надгробия. Она
+            // их не содержала — ровно поэтому приложение и не
+            // открылось.
             "Medication": ["unitRaw", "doseSlotsData", "stockLeftAmount", "packAmount",
                            "courseEnd", "expiry", "openedAt", "shelfAfterOpenDays",
                            "remindBeforeExpiry", "canGiveOutside",
-                           "prescriptionNumber", "massPerUnitMcg",
-                           "deletedAt"],
+                           "prescriptionNumber", "massPerUnitMcg"],
             "FoodStock": ["expiry", "shelfAfterOpenDays"],
             "LogEvent": ["editedBy"],
             // Шаг 0 медслоя, 07.10.2026: прививка получила партию, срок
             // и клинику; документ — тип, номер, кем выдан и срок.
-            "CareTask": ["vaccineBatch", "vaccineValidUntil", "clinic", "deletedAt"],
-            "DogDocument": ["kindRaw", "number", "issuedBy", "validUntil", "changedAt",
-                            "deletedAt"],
+            "CareTask": ["vaccineBatch", "vaccineValidUntil", "clinic"],
+            "DogDocument": ["kindRaw", "number", "issuedBy", "validUntil", "changedAt"],
             // Обратные стороны связей к четырём медицинским сущностям.
             // Без них хранилище не открывается вовсе — зеркало CloudKit
             // требует обратной у каждой связи.
             "Dog": ["labResultsStorage", "vetVisitsStorage",
-                    "diagnosesStorage", "prescriptionsStorage", "deletedAt"],
+                    "diagnosesStorage", "prescriptionsStorage"],
             // Обмен взвешиваний, 07.10.2026 вечером. Спор двух
             // телефонов решать было нечем: `date` — день, когда
             // взвесили, а не когда правили запись.
-            "WeightEntry": ["changedAt", "deletedAt"],
-            // У дозы надгробие есть, но ставит его только отмена курса
-            // и рука: пересчёт расписания (`DoseScheduler`,
-            // `ScheduleChange`) его НЕ ставит нарочно — пересчёт
-            // у каждого телефона свой, и надгробие от одного
-            // погасило бы дозу у второго, который ещё не пересчитал.
-            "DoseRecord": ["deletedAt"],
+            "WeightEntry": ["changedAt"],
         ]
 
         // Прирост сущностей — тоже по именам.
@@ -504,18 +489,247 @@ struct SchemaMigrationTests {
             .isSuperset(of: ["expiry", "openedAt", "shelfAfterOpenDays"]))
     }
 
+    /// Что V6 добавила к V5 — **одиннадцать надгробий и ровно они**.
+    ///
+    /// Заведён 26.10.2026 вместе с заморозкой V5. Предмет у него тот же,
+    /// что у соседнего теста про V4→V5, а причина завести отдельный —
+    /// в том, что наряд на эту правку назвал **двенадцать** полей,
+    /// и двенадцатым стоял `Medication.massPerUnitMcg`. Он не новый:
+    /// вошёл 08.10 коммитом `43f05a5`, тем же, что записал отпечаток
+    /// 304, — то есть лежит внутри формы V5. Список поимённый ловит
+    /// такую ошибку, счёт «двенадцать» её бы пропустил.
+    @Test("V6 добавляет к V5 ровно одиннадцать надгробий и ничего больше")
+    func шестаяВерсияДобавляетОдниНадгробия() {
+        func поля(_ версия: any VersionedSchema.Type, _ сущность: String) -> Set<String> {
+            let схема = Schema(versionedSchema: версия)
+            return Set((схема.entitiesByName[сущность]?.properties ?? []).map(\.name))
+        }
+        let сущности = { (версия: any VersionedSchema.Type) in
+            Set(Schema(versionedSchema: версия).entitiesByName.keys)
+        }
+
+        // Одиннадцать типов обмена, у которых удаление должно доезжать
+        // до второго человека. `LogEvent` в списке НЕТ: его надгробие
+        // живёт с V4.
+        let сНадгробием: Set<String> = [
+            "CareTask", "Clinic", "Diagnosis", "Dog", "DogDocument",
+            "DoseRecord", "LabResult", "Medication", "Prescription",
+            "VetVisit", "WeightEntry",
+        ]
+
+        // 1. Набор сущностей не менялся — основание для `.lightweight`.
+        #expect(сущности(TogoSchemaV6.self) == сущности(TogoSchemaV5.self), """
+            набор сущностей V5 и V6 разошёлся. Новая сущность — это НЕ
+            то, что CoreData выводит сам без оговорок.
+            """)
+
+        // 2. Ничего не убыло ни у одной сущности. Удаление поля
+        //    CoreData сам не выводит, а V5 роздана пятью сборками.
+        for сущность in сущности(TogoSchemaV5.self).sorted() {
+            let убыло = поля(TogoSchemaV5.self, сущность)
+                .subtracting(поля(TogoSchemaV6.self, сущность))
+            #expect(убыло.isEmpty, "из `\(сущность)` исчезло: \(убыло.sorted())")
+        }
+
+        // 3. Прирост — ровно `deletedAt` и ровно у этих одиннадцати.
+        //    Проверяется в ОБЕ стороны: и что у названных прибавилось,
+        //    и что у остальных не прибавилось ничего. Односторонняя
+        //    проверка пропустила бы двенадцатое поле у любого типа.
+        var сПриростом: Set<String> = []
+        for сущность in сущности(TogoSchemaV5.self).sorted() {
+            let выросло = поля(TogoSchemaV6.self, сущность)
+                .subtracting(поля(TogoSchemaV5.self, сущность))
+            if !выросло.isEmpty { сПриростом.insert(сущность) }
+            #expect(выросло == (сНадгробием.contains(сущность) ? ["deletedAt"] : []), """
+                у `\(сущность)` прирост V5 → V6 не тот.
+                ждём    \(сНадгробием.contains(сущность) ? ["deletedAt"] : [])
+                выросло \(выросло.sorted())
+
+                В этой стадии заводятся ТОЛЬКО надгробия. Любое другое
+                поле здесь означает, что форму меняют под уже поднятым
+                номером — то есть повторяют дефект 26.10.
+                """)
+        }
+        #expect(сПриростом == сНадгробием, """
+            надгробия стоят не у тех типов.
+            названо  \(сНадгробием.sorted())
+            выросло  \(сПриростом.sorted())
+            """)
+
+        // 4. `LogEvent` надгробие уже имел — иначе «одиннадцать»
+        //    превратилось бы в двенадцать молча.
+        #expect(поля(TogoSchemaV5.self, "LogEvent").contains("deletedAt"), """
+            у `LogEvent` надгробие должно жить ещё с V4. Если его там
+            нет, значит счёт новых полей не одиннадцать, и арифметика
+            `304 + 11 = 315` в `SchemaShapeTests` неверна.
+            """)
+
+        // 5. И `massPerUnitMcg` обязан быть УЖЕ в V5 — это та самая
+        //    ошибка наряда, из-за которой тест и заведён.
+        #expect(поля(TogoSchemaV5.self, "Medication").contains("massPerUnitMcg"), """
+            `massPerUnitMcg` должен лежать внутри формы V5: он вошёл
+            08.10 коммитом `43f05a5` вместе с отпечатком 304. Если его
+            в V5 нет — снимок снят не с того коммита.
+            """)
+
+        // 6. Все надгробия опциональные. Это и есть то, чем стадия
+        //    объявлена облегчённой, и проверять это надо у СХЕМЫ,
+        //    а не глазами по объявлению.
+        let v6 = Schema(versionedSchema: TogoSchemaV6.self)
+        for сущность in сНадгробием.sorted() {
+            let свойство = v6.entitiesByName[сущность]?.properties
+                .first { $0.name == "deletedAt" }
+            #expect(свойство?.isOptional == true, """
+                `\(сущность).deletedAt` не опционально. У прежних записей
+                заполнить его нечем, `.lightweight` не выведется,
+                а зеркало CloudKit на таком поле не заводится.
+                """)
+        }
+    }
+
+    // MARK: Главная приёмка — старая база открывается новой схемой
+
+    /// **То, из-за чего вся эта правка, и чего не проверял ни один тест
+    /// до 26.10.2026.**
+    ///
+    /// Соседние тесты заводят базу из V1 и V2 — снимков, замороженных
+    /// давно. Форму V5 не заводил никто, потому что V5 ссылалась
+    /// на живые классы: база «на V5» получалась тождественной нынешней,
+    /// и переход проверять было нечем. Ровно в этой слепой зоне
+    /// и случилась авария: `f546719` сменил форму V5 под неизменным
+    /// номером, и пять розданных сборок перестали опознаваться.
+    ///
+    /// Теперь V5 — снимок, то есть в бинарнике ДВЕ разные формы, и этот
+    /// круг наконец выразим: завести базу формы 304, закрыть, открыть
+    /// схемой V6 и **пересчитать записи**. Не «открылась», а «записи
+    /// на месте и столько же».
+    @Test("Хранилище розданных сборок 273–277 открывается схемой V6 и ничего не теряет")
+    func изРозданнойПятой() throws {
+        let url = try заводимПапку()
+        defer { убираем(url) }
+
+        let когда = Date(timeIntervalSince1970: 1_761_000_000)
+
+        // 1. База ровно той формы, что лежит на пяти телефонах.
+        do {
+            let схема = Schema(versionedSchema: TogoSchemaV5.self)
+            let контейнер = try ModelContainer(for: схема, configurations: конфигурация(схема, url))
+            let context = ModelContext(контейнер)
+
+            let собака = TogoSchemaV5.Dog()
+            собака.name = "Стич"
+            собака.weightKg = 4.1
+            собака.breed = "Шипперке"
+            собака.rewards = ["сыр", "индейка"]
+            context.insert(собака)
+
+            // Схема лечения — самый дорогой случай: именно её отмена
+            // не доезжала до мамы и давала напоминания о дозах.
+            let лечение = TogoSchemaV5.Medication()
+            лечение.name = "Lévothyrox"
+            лечение.doseText = "66 мкг"
+            лечение.massPerUnitMcg = 66
+            лечение.dog = собака
+            context.insert(лечение)
+
+            let доза = TogoSchemaV5.DoseRecord()
+            доза.scheduledAt = когда
+            доза.givenAt = когда.addingTimeInterval(60)
+            доза.givenBy = "Виктория"
+            доза.medication = лечение
+            context.insert(доза)
+
+            let вес = TogoSchemaV5.WeightEntry()
+            вес.date = когда
+            вес.kg = 4.2
+            вес.dog = собака
+            context.insert(вес)
+
+            let уход = TogoSchemaV5.CareTask()
+            уход.title = "Когти"
+            уход.dog = собака
+            context.insert(уход)
+
+            let анализ = TogoSchemaV5.LabResult()
+            анализ.indicator = "T4"
+            анализ.value = 16.75
+            анализ.dog = собака
+            context.insert(анализ)
+
+            let запись = TogoSchemaV5.LogEvent()
+            запись.kindRaw = LogKind.outing.rawValue
+            запись.date = когда
+            запись.authorName = "Виктория"
+            запись.dog = собака
+            context.insert(запись)
+
+            try context.save()
+        }
+
+        // 2. Та же база нынешней схемой и планом. Это и есть ответ
+        //    на вопрос «откроется ли у неё дневник».
+        let контейнер = try открываемНынешней(url)
+        let context = ModelContext(контейнер)
+
+        // 3. Записи на месте — поимённо и по счёту.
+        let собаки = try context.fetch(FetchDescriptor<Dog>())
+        #expect(собаки.count == 1, "собака должна пережить переход V5 → V6")
+        let собака = try #require(собаки.first)
+        #expect(собака.name == "Стич")
+        #expect(собака.weightKg == 4.1)
+        #expect(собака.breed == "Шипперке")
+        #expect(собака.rewards == ["сыр", "индейка"])
+
+        #expect(try context.fetch(FetchDescriptor<Medication>()).count == 1)
+        #expect(try context.fetch(FetchDescriptor<DoseRecord>()).count == 1)
+        #expect(try context.fetch(FetchDescriptor<WeightEntry>()).count == 1)
+        #expect(try context.fetch(FetchDescriptor<CareTask>()).count == 1)
+        #expect(try context.fetch(FetchDescriptor<LabResult>()).count == 1)
+        #expect(try context.fetch(FetchDescriptor<LogEvent>()).count == 1)
+
+        // 4. Связи целы: без них лента у собаки пуста, хотя записи есть.
+        #expect(собака.events.count == 1, "связь собака → записи пережила переход")
+        #expect(собака.medications.count == 1)
+        #expect(собака.weights.count == 1)
+        #expect(собака.careTasks.count == 1)
+        #expect(собака.labResults.count == 1)
+
+        let лечение = try #require(собака.medications.first)
+        #expect(лечение.name == "Lévothyrox")
+        #expect(лечение.massPerUnitMcg == 66, "числовая доза не должна потеряться")
+        #expect(лечение.doses.count == 1, "связь лечение → дозы пережила переход")
+
+        // 5. Надгробия у переехавших записей ПУСТЫЕ. Это не косметика:
+        //    непустое надгробие означало бы, что миграция пометила
+        //    удалёнными живые записи — и человек увидел бы пустой
+        //    дневник при целых данных, то есть ровно ту беду,
+        //    от которой заводились надгробия.
+        #expect(собака.deletedAt == nil, "живая собака не должна приехать удалённой")
+        #expect(лечение.deletedAt == nil, "живая схема лечения — тем более")
+        #expect(собака.canBeShown, "собака обязана показываться после перехода")
+
+        // 6. И в переведённую базу можно писать — то самое, что падало.
+        let ещёЗапись = LogEvent(kind: .meal, authorName: "Тео")
+        ещёЗапись.dog = собака
+        context.insert(ещёЗапись)
+        try context.save()
+        #expect(try context.fetch(FetchDescriptor<LogEvent>()).count == 2)
+    }
+
     @Test("В плане перечислены все формы хранилища, что уехали из репозитория")
     func планПолон() {
-        #expect(TogoMigrationPlan.schemas.count == 5, """
+        #expect(TogoMigrationPlan.schemas.count == 6, """
             сборка 36 (V1), сборка 46 (V2), сборка 141 (V3), сборки
-            191–271 (V4) и нынешняя (V5) — версию, которой в плане нет,
-            открыть нечем.
-            V3 заморожена снимком 23.09, V4 — 05.10: до заморозки каждая
-            ссылалась на живые классы, и первая же правка модели меняла
-            её форму под неизменным номером.
+            191–271 (V4), сборки 273–277 (V5) и нынешняя (V6) — версию,
+            которой в плане нет, открыть нечем.
+            V3 заморожена снимком 23.09, V4 — 05.10, V5 — 26.10: до
+            заморозки каждая ссылалась на живые классы, и первая же
+            правка модели меняла её форму под неизменным номером.
+            У V5 это и случилось: `f546719` добавил одиннадцать
+            надгробий, и пять розданных сборок перестали открываться.
             """)
-        #expect(TogoMigrationPlan.stages.count == 4)
-        #expect(Persistence.schema.version == TogoSchemaV5.versionIdentifier,
+        #expect(TogoMigrationPlan.stages.count == 5)
+        #expect(Persistence.schema.version == TogoSchemaV6.versionIdentifier,
                 "приложение открывает хранилище последней версией плана")
     }
 
@@ -614,12 +828,12 @@ struct SchemaMigrationTests {
         //    прошёл бы на схеме, совпадающей с нынешней: база открылась
         //    бы штатно, `#expect(throws:)` покраснел бы — но покраснел бы
         //    он на своей же ошибке, а не на дефекте приложения.
-        #expect(TogoSchemaV5СУженнаяФорма.versionIdentifier == TogoSchemaV5.versionIdentifier, """
+        #expect(TogoSchemaV5СУженнаяФорма.versionIdentifier == TogoSchemaV6.versionIdentifier, """
             номер версии снимка разошёлся с нынешним — а весь смысл этой
             проверки в том, что номера СОВПАДАЮТ. С разными номерами это
             повтор соседнего теста про форму не из плана.
             """)
-        #expect(TogoSchemaV5СУженнаяФорма.models.count == TogoSchemaV5.models.count - 1, """
+        #expect(TogoSchemaV5СУженнаяФорма.models.count == TogoSchemaV6.models.count - 1, """
             снимок обязан быть уже нынешней схемы ровно на одну сущность.
             Совпали — значит фильтр ничего не убрал (сущность переименовали
             или сняли), и база заведётся нынешней формой: тест станет
@@ -683,10 +897,10 @@ struct SchemaMigrationTests {
 /// а такое хранилище не открывается вовсе, и тест мерил бы не форму,
 /// а оборванную связь.
 enum TogoSchemaV5СУженнаяФорма: VersionedSchema {
-    static var versionIdentifier: Schema.Version { TogoSchemaV5.versionIdentifier }
+    static var versionIdentifier: Schema.Version { TogoSchemaV6.versionIdentifier }
 
     static var models: [any PersistentModel.Type] {
-        TogoSchemaV5.models.filter { ObjectIdentifier($0) != ObjectIdentifier(ProcedureSkill.self) }
+        TogoSchemaV6.models.filter { ObjectIdentifier($0) != ObjectIdentifier(ProcedureSkill.self) }
     }
 }
 

@@ -86,11 +86,17 @@ struct Schema25Tests {
         //    он ищет; поймал togo-5a, и это тот же класс, что «не все»
         //    у Kvit: отрицательное утверждение выполняется и при
         //    отсутствии предмета.
-        let схема5 = Schema(versionedSchema: TogoSchemaV5.self)
+        //    **Схема берётся у `Persistence`, а не называется номером** —
+        //    правка 26.10.2026. Здесь стояло `TogoSchemaV5.self`, и это
+        //    было верно, пока V5 была последней. После заморозки V5
+        //    и подъёма до V6 такая строка проверяла бы уже не «нынешняя
+        //    схема не открывает форму 25», а «одна из промежуточных
+        //    версий её не открывает» — вопрос слабее и стареющий молча.
+        let схема = Persistence.schema
         #expect(throws: SwiftDataError.self) {
-            _ = try ModelContainer(for: схема5,
+            _ = try ModelContainer(for: схема,
                                    migrationPlan: TogoMigrationPlan.self,
-                                   configurations: конфигурация(схема5, url))
+                                   configurations: конфигурация(схема, url))
         }
 
         // 3. Ради чего опыт: человек с августовской сборкой обязан увидеть
