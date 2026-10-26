@@ -162,17 +162,6 @@ nonisolated final class ГостьНеПишет: XCTestCase {
 
     /// Пройти путь «Еда → Записать». Возвращает приложение на том
     /// экране, где исход уже виден.
-    /// Открыть «Семья»: она живёт в меню «…», как и настройки.
-    private func открытьСемью(в app: XCUIApplication) -> Bool {
-        let меню = app.buttons["Ещё"].firstMatch
-        guard меню.waitForExistence(timeout: 10) else { return false }
-        меню.tap()
-        let пункт = app.buttons["Семья"].firstMatch
-        guard пункт.waitForExistence(timeout: 5) else { return false }
-        пункт.tap()
-        return true
-    }
-
     private func отметитьЕду(_ app: XCUIApplication) {
         // **Дорога изменилась 24.10.2026.** Кнопки «Еда» на главном
         // нет — `ActionGrid` удалён; еда записывается из шторки

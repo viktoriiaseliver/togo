@@ -69,6 +69,26 @@ nonisolated extension XCTestCase {
     /// > помощник заведён, чтобы у этой правки было ОДНО место,
     /// > а не двадцать три.
     @discardableResult
+    /// Открыть экран «Семья».
+    ///
+    /// **Вкладки «Семья» нет с 22.10.2026** — экран уехал в меню «…»
+    /// (`HeaderMenu.swift:64`), туда же, куда настройки. Тесты,
+    /// искавшие `tabBars.buttons["Семья"]`, говорили «вкладки нет —
+    /// кадра нет» и читались как отказ запуска.
+    ///
+    /// > **Дорогу держит ОДИН помощник.** Настройки переносили один
+    /// > раз, и семь тестов чинились по одному; второй раз повторять
+    /// > это незачем.
+    func открытьСемью(в app: XCUIApplication) -> Bool {
+        let меню = app.buttons["Ещё"].firstMatch
+        guard меню.waitForExistence(timeout: 10) else { return false }
+        меню.tap()
+        let пункт = app.buttons["Семья"].firstMatch
+        guard пункт.waitForExistence(timeout: 5) else { return false }
+        пункт.tap()
+        return true
+    }
+
     func открытьНастройки(в app: XCUIApplication) -> Bool {
         // СНАЧАЛА ДОЖДАТЬСЯ, ЧТО ЭКРАН ЕСТЬ, и это не перестраховка.
         //
