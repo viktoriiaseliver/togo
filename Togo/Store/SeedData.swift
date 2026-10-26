@@ -418,9 +418,7 @@ enum SeedData {
                 guard let снимок = ФонФикстураСтенда.снимокДокумента(
                     номер: индекс + 1, стенд: TogoApp.isUITesting
                 ) else { continue }
-                let документ = DogDocument()
-                документ.title = название
-                документ.image = снимок
+                let документ = DogDocument(title: название, image: снимок)
                 документ.dog = dog
                 context.insert(документ)
             }
