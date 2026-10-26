@@ -143,6 +143,12 @@ for name, fields in sorted(want.items()):
 print("\n".join(gaps))
 PY
 )"
+# Эталон из кода нужен ВТОРОЙ раз — для замера development ниже.
+# Считать его дважды нельзя: между двумя вызовами помещается чужой
+# коммит в `SharedDiaryRecords.swift`, и две среды сравнивались бы
+# с РАЗНЫМИ эталонами. Один разбор, один эталон, два сравнения.
+CODE_FILE_KEEP="$(mktemp)"
+cp "$CODE_FILE" "$CODE_FILE_KEEP"
 rm -f "$PROD_FILE" "$CODE_FILE"
 
 # Вторая проверка: зеркало SwiftData.
@@ -191,7 +197,54 @@ else
     echo "✓ зеркало CD_*: $(grep -c '^✓ CD_' "$DEV_FILE.отчёт") типов сошлось, расхождений нет"
 fi
 rm -f "$DEV_FILE.отчёт"
-rm -f "$DEV_FILE" "$PROD_FILE2"
+
+# DEVELOPMENT ПО ОБЩЕМУ ДНЕВНИКУ — настоящий замер, 26.10.2026.
+#
+# **Почему он здесь появился.** Ниже печаталось «Схема в development
+# обновлена, но в production её ещё нет». Это была ЛОЖЬ, и скрипт её
+# не проверял: он сверяет production с кодом и про development
+# не спрашивал вовсе. Строка отправила менеджера смены строить план
+# на несуществующем состоянии — поля не было НИ ТАМ, НИ ТАМ.
+#
+# > **Утверждение о среде, которую инструмент не опрашивает, —
+# > это не устаревшая запись, а выдуманная.** Выгрузка development
+# > у скрипта уже была в руках, её брали для зеркала `CD_*`
+# > и выбрасывали, не задав ей второго вопроса.
+#
+# Разница между средами — не мелочь: в development поля заводит САМО
+# ПРИЛОЖЕНИЕ первой записью со значением, в production их переносит
+# только кнопка. Пустой development значит «запись ещё не случилась»
+# и чинится прогоном на телефоне; пустой production при полном
+# development значит «не нажата кнопка». Это два разных наряда
+# разным людям, и прежняя строка склеивала их в один.
+DEV_MISSING="$(python3 - "$DEV_FILE" "$CODE_FILE_KEEP" <<'PY'
+import json, re, sys
+def parse(path):
+    types = {}
+    for name, body in re.findall(r'RECORD TYPE (\w+) \((.*?)\)\s*;',
+                                 open(path).read(), re.S):
+        fields = set()
+        for line in body.splitlines():
+            line = line.strip().rstrip(',')
+            if not line or line.startswith('GRANT'):
+                continue
+            field = line.split()[0].strip('"')
+            if not field.startswith('___'):
+                fields.add(field)
+        types[name] = fields
+    return types
+dev = parse(sys.argv[1])
+want = {k: set(v) for k, v in json.load(open(sys.argv[2])).items()}
+gaps = []
+for name, fields in sorted(want.items()):
+    if name not in dev:
+        gaps.append(f"{name} — типа нет вовсе, полей {len(fields)}")
+        continue
+    gaps += [f"{name}.{f}" for f in sorted(fields - dev[name])]
+print("\n".join(gaps))
+PY
+)"
+rm -f "$DEV_FILE" "$PROD_FILE2" "$CODE_FILE_KEEP"
 
 # ОБЕ ПРОВЕРКИ ПЕЧАТАЮТСЯ, и выход один — в конце.
 #
@@ -244,10 +297,28 @@ fi
 
 cat <<NOTE
 
-Схема в development обновлена, но в production её ещё нет.
-Не хватает:
+В production не хватает полей, которые ПИШЕТ КОД:
 
 $MISSING
+
+А ТЕПЕРЬ ТО ЖЕ ПРО DEVELOPMENT — замер, а не предположение.
+Прежде здесь стояло «схема в development обновлена», и скрипт этого
+не проверял: development он не опрашивал вовсе. Теперь опрашивает.
+
+$(if [ -z "$DEV_MISSING" ]; then
+    echo "В development ВСЁ ЕСТЬ. Значит остался один шаг — кнопка."
+else
+    echo "В development ТОЖЕ НЕ ХВАТАЕТ:"
+    echo
+    echo "$DEV_MISSING"
+    echo
+    echo "ЗНАЧИТ КНОПКА НЕ ПОМОЖЕТ, и это главное в отчёте: переносить"
+    echo "в production нечего. Поля development заводит САМО ПРИЛОЖЕНИЕ"
+    echo "при первой записи СО ЗНАЧЕНИЕМ — то есть сперва нужен прогон"
+    echo "на телефоне, который эти поля ЗАПОЛНИТ, и только потом кнопка."
+    echo "Диалог «Confirm Deployment» до этого будет ПУСТЫМ, и пустота"
+    echo "будет значить «переносить нечего», а не «всё выложено»."
+fi)
 
 Перенести development → production умеет только дашборд — у cktool
 такой команды нет, а прямой импорт в production CloudKit запрещает.
