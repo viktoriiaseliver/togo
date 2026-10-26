@@ -228,7 +228,66 @@ struct DayTimelineRow: View {
 struct DayTimelineMarkRow: View {
     let group: MarkGroup
 
+    @Environment(\.dynamicTypeSize) private var размерТекста
+
+    /// # Почему подпись уезжает под строку, а не ужимается
+    ///
+    /// Замер 26.10.2026, кадр
+    /// `Дизайн/кадры-приёмки/крупный-кегль-шесть-25.10/после-правки/01b-сегодня-низ-ax5.png`:
+    /// «Д / моча» и «дома / между / выхода…» — перенос посреди слова,
+    /// третья строка накрыта панелью «Просится».
+    ///
+    /// Арифметика нехватки, числом:
+    ///
+    /// ```
+    /// колонка времени  UIFontMetrics(.body).scaledValue(for: 44)  ≈137 pt на AX5 — РАСТЁТ
+    /// иконка           Token.Size.avatarMd = 40                   фиксирована
+    /// экран            402 pt
+    /// подписи остаётся ≈169 pt
+    /// «выходами» micro 14 relativeTo .footnote (≈47 pt на AX5) просит ≈196
+    /// не хватает       ≈27 pt
+    /// ```
+    ///
+    /// **Колонка времени в ЭТОМ ряду — распорка, а не время:** его тут
+    /// нет намеренно (см. ниже), и на крупном кегле она съедает
+    /// сто тридцать семь точек ни на что.
+    ///
+    /// Ужать подпись нельзя — `micro` уже пол кегля
+    /// (`ПолКегляTests` стережёт ступень). Поэтому на крупном кегле
+    /// подпись получает **всю ширину карточки**, уезжая под строку
+    /// значков.
+    ///
+    /// > **Правило применяется к ОБОИМ рядам ленты** (`:246` и `:327`),
+    /// > иначе столбец в одном ряду разойдётся с соседними и сломает
+    /// > выравнивание всей ленты.
+    private var столбцом: Bool { размерТекста.isAccessibilitySize }
+
     var body: some View {
+        if столбцом {
+            VStack(alignment: .leading, spacing: Token.Space.s4) {
+                HStack(alignment: .top, spacing: Token.Space.s12) {
+                    Image(systemName: group.kind.symbol)
+                        .font(.system(size: Token.Size.iconSm, weight: Token.FontWeight.semibold))
+                        .foregroundStyle(цвет)
+                        .frame(width: Token.Size.avatarMd)
+                        .accessibilityHidden(true)
+                    Spacer(minLength: 0)
+                }
+                Text(подпись)
+                    .textStyle(AppFont.micro, color: цвет)
+                    .wraps()
+            }
+            .padding(.horizontal, Token.Spacing.cardPadding)
+            .padding(.bottom, Token.Space.s8)
+            .frame(minHeight: Token.Size.tapTarget)
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel(подпись)
+        } else {
+            строкой
+        }
+    }
+
+    private var строкой: some View {
         HStack(alignment: .top, spacing: Token.Space.s12) {
             // Времени здесь нет намеренно: внутри прогулки его задаёт сама
             // прогулка («18:12 — 18:45»). В живом дневнике три «пописал»
@@ -293,7 +352,42 @@ struct DayTimelineGapRow: View {
     /// Промежуток открыт: собака дома прямо сейчас.
     var isOpen: Bool = false
 
+    @Environment(\.dynamicTypeSize) private var размерТекста
+
+    /// Второе место того же вида, что `DayTimelineMarkRow` — разбор
+    /// и арифметика нехватки там же. Правило обязано стоять в обоих
+    /// рядах: столбец в одном сломал бы выравнивание всей ленты.
+    private var столбцом: Bool { размерТекста.isAccessibilitySize }
+
     var body: some View {
+        if столбцом {
+            VStack(alignment: .leading, spacing: Token.Space.s4) {
+                HStack(alignment: .center, spacing: Token.Space.s12) {
+                    Text(Fmt.gap(interval))
+                        .textStyle(AppFont.micro)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
+                    Image(systemName: "house")
+                        .font(.system(size: Token.Size.iconSm, weight: Token.FontWeight.medium))
+                        .foregroundStyle(Token.Ink.secondary)
+                        .frame(width: Token.Size.avatarMd)
+                        .accessibilityHidden(true)
+                    Spacer(minLength: 0)
+                }
+                Text(isOpen ? "дома с прошлого выхода" : "дома между выходами")
+                    .textStyle(AppFont.micro)
+                    .wraps()
+            }
+            .padding(.horizontal, Token.Spacing.cardPadding)
+            .padding(.vertical, Token.Space.s8)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("дома \(Fmt.duration(interval)) с прошлого выхода")
+        } else {
+            строкой
+        }
+    }
+
+    private var строкой: some View {
         HStack(alignment: .center, spacing: Token.Space.s12) {
             Text(Fmt.gap(interval))
                 .textStyle(AppFont.micro)
@@ -314,12 +408,30 @@ struct DayTimelineGapRow: View {
             // сам `minimumScaleFactor`, и дальше оставалось только
             // многоточие.
             //
-            // Строка переносится свободно: у ряда нет определённой
-            // высоты — ни `frame(height:)`, ни `GeometryReader`, —
-            // то есть расти вниз ему можно, и перенос здесь остаётся
-            // переносом, а не обрезом. Этим он отличается от слайдера
-            // «Домой» (`WalkControls`), где высота обязана быть числом
-            // и выбран был `minimumScaleFactor`.
+            // ~~Строка переносится свободно: у ряда нет определённой
+            // высоты — ни `frame(height:)`, ни `GeometryReader`, — то
+            // есть расти вниз ему можно, и перенос здесь остаётся
+            // переносом, а не обрезом.~~
+            //
+            // **ПОСЫЛКА ВЕРНА, ВЫВОД ЛОЖЕН. Замер 26.10.2026**, кадр
+            // `крупный-кегль-шесть-25.10/после-правки/01b-сегодня-низ-ax5.png`:
+            // ряд действительно вырос вниз — и **ушёл под панель
+            // «Просится», где третья строка накрыта**. Высоты у ряда
+            // нет, а дна у ленты — есть.
+            //
+            // > **«Расти вниз можно» верно про РЯД и неверно про ЭКРАН.**
+            // > Свободный перенос не спасает, если расти некуда:
+            // > обрезает не `lineLimit`, а край видимой области.
+            //
+            // Поэтому одной раскладки мало, и это ДВЕ разные оси:
+            // ширина (ветка `столбцом` выше) и перекрытие низом —
+            // вторая закрывается тем, что лента отдаёт своё место
+            // панели (`TGScreen` на `.safeAreaInset`), и проверяется
+            // кадром, а не этим комментарием.
+            //
+            // Отличие от слайдера «Домой» (`WalkControls`) остаётся
+            // в силе: там высота обязана быть числом и выбран был
+            // `minimumScaleFactor`.
             //
             // На обычном кегле подпись как помещалась в строку,
             // так и помещается: приёмка — пара кадров `01b-…-обычный`
