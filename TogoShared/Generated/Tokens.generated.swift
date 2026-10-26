@@ -41,8 +41,8 @@ nonisolated enum Token {
     /// `Color.resolvedHex(dark:highContrast:)`: он отдаёт то, что
     /// система даст тому, кто рисует, и в четырёх режимах порознь.
     fileprivate enum Общие {
-        static let amber = Color(Dyn(dark: 0xF7C75FFF, light: 0x8A640FFF, darkHC: 0xF7C75FFF, lightHC: 0x6B4C0CFF))
-        static let amberBg = Color(Dyn(dark: 0x4A300AFF, light: 0xFCEBCBFF, darkHC: 0x4A300AFF, lightHC: 0xFCEBCBFF))
+        static let amber = Color(Dyn(dark: 0xF7C75FFF, light: 0x8A640FFF, darkHC: 0xF9D88FFF, lightHC: 0x6B4C0CFF))
+        static let amberBg = Color(Dyn(dark: 0x4A300AFF, light: 0xFCEBCBFF, darkHC: 0x3B2608FF, lightHC: 0xFCEBCBFF))
         static let arctic = Color(Dyn(dark: 0xFFFFFFFF, light: 0x1F4FFFFF, darkHC: 0xFFFFFFFF, lightHC: 0x0E14A1FF))
         static let arcticInk = Color(Dyn(dark: 0x111111FF, light: 0xFFFFFFFF, darkHC: 0x111111FF, lightHC: 0xFFFFFFFF))
         static let arcticPressed = Color(Dyn(dark: 0xD1D1D6FF, light: 0x080679FF, darkHC: 0xD1D1D6FF, lightHC: 0x080679FF))

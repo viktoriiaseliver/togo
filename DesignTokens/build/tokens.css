@@ -533,6 +533,8 @@
   --component-tabBar-inactive: #EBEBF0;
   --component-timeline-alarmMark: #FFA696;
   --component-toggle-trackOff: #8E8E93;
+  --primitive-color-amber: #F9D88F;
+  --primitive-color-amberBg: #3B2608;
   --primitive-color-clay: #FFA696;
   --primitive-color-glass: #1E1E22D1;
   --primitive-color-glassCard: #242426E6;
@@ -573,6 +575,8 @@
   --semantic-poster-panelDose: #1238D6;
   --semantic-poster-panelFasting: #FFC233;
   --semantic-status-overdueText: #FFA696;
+  --semantic-status-waitingBg: #3B2608;
+  --semantic-status-waitingText: #F9D88F;
   --semantic-surface-card: #242426;
   --semantic-surface-control: #48484A;
   --semantic-surface-controlPressed: #5A5A5E;
