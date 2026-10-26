@@ -271,7 +271,11 @@ nonisolated enum BackupService {
                     controlToWeeks: $0.controlToWeeks,
                     dispensed: $0.dispensed, instruction: $0.instruction,
                     source: $0.source)
-            }
+            },
+            // Надгробие собаки — 26.10.2026. Разбор в объявлении поля:
+            // список собак идёт в архив нефильтрованным, и без этой
+            // строки восстановление поднимало удалённую собаку живой.
+            deletedAt: dog.deletedAt
         )
     }
 
@@ -627,6 +631,11 @@ nonisolated enum BackupService {
         dog.sitterWalks = snapshot.sitterWalks ?? dog.sitterWalks
         dog.sitterForbidden = snapshot.sitterForbidden ?? dog.sitterForbidden
         dog.sitterEscalation = snapshot.sitterEscalation ?? dog.sitterEscalation
+        // Надгробие переносится как есть, и `?? dog.deletedAt` здесь
+        // не нужен: у новой записи оно и так `nil`, а у старого архива
+        // ключа нет — то есть собака из него не удалена. Оба случая
+        // дают одно и то же, и лишний `??` соврал бы о наличии решения.
+        dog.deletedAt = snapshot.deletedAt
         return dog
     }
 
