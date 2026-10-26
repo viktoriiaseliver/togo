@@ -28,31 +28,115 @@ struct DocumentPhotosCard: View {
     @Environment(\.dynamicTypeSize) private var размер
 
     private var documents: [DogDocument] {
-        allDocuments.filter { $0.dog?.persistentModelID == dog.persistentModelID }
+        // Надгробия мимо: `@Query` идёт мимо фильтра `dog.documents`.
+        allDocuments.filter {
+            $0.dog?.persistentModelID == dog.persistentModelID && $0.deletedAt == nil
+        }
     }
 
-    private var canEdit: Bool { appState.can(.editProfile) }
+    /// # Снимки закрыты МЕДИЦИНСКИМ правом, а не `editProfile`
+    ///
+    /// Здесь лежит ветпаспорт с прививками, анализы и назначения —
+    /// виды документов называют это прямо (`DocumentKind`: паспорт,
+    /// чип, договор, сертификат). Тот же класс данных, что
+    /// у `LabResultScreens` и `PrescriptionScreens`, и у всего
+    /// медицинского слоя приёмка прав одна: **видеть — `seeMedical`,
+    /// править — `editTreatment`** (четыре экрана «Здоровья»,
+    /// `docs/матрица-ролей.md`). Собственный разбор проекта
+    /// (`docs/медкнижка-покрытие.md`, слой 2) считает `DogDocument`
+    /// частью медкнижки, а не профиля.
+    ///
+    /// **До 26.10.2026 здесь стоял `editProfile` — и это был обход
+    /// права, а не решение.** Причём дыра шире, чем «не то право»:
+    /// `editProfile` закрывал ТОЛЬКО плитку «Снять». Показ снимков
+    /// и кнопка «Удалить снимок» в просмотре не спрашивали **ничего**,
+    /// поэтому ветпаспорт листал и удалял любой, кто дошёл до экрана.
+    ///
+    /// ```
+    ///                seeMedical  editTreatment   БЫЛО: editProfile
+    /// владелец            ✔            ✔                ✔
+    /// со-владелец         ✔            ✘                ✔
+    /// ухаживающий         ✔            ✘                ✘   ← входа не видел
+    /// помощник            ✘            ✘                ✘   ← СНИМКИ ВИДЕЛ
+    /// наблюдатель         ✔            ✘                ✘   ← входа не видел
+    /// ```
+    ///
+    /// Старое право промахивалось в обе стороны сразу: выгульщику
+    /// без `seeMedical` показывало анализы, а ухаживающему
+    /// и наблюдателю, у которых `seeMedical` есть, не показывало
+    /// даже входа. Разрешение «на неделю ситтеру» выдаётся поимённо
+    /// (`FamilyMember.permissions`) — для этого права и не потолок.
+    ///
+    /// Отказ рисует `ПлашкаПрава`, а не свой баннер: имя права человек
+    /// ищет в «Семье» по тому же `Permission.title`, и своими словами
+    /// его называть нельзя.
+    private var canSee: Bool { appState.can(.seeMedical) }
+    private var canEdit: Bool { appState.can(.editTreatment) }
 
     var body: some View {
         TGCard(spacing: 0) {
             TGSectionHeader(title: "снимки",
                             subtitle: "паспорт и прививки спрашивают первыми — у врача, на границе и в гостинице")
 
-            if documents.isEmpty {
-                TGExplainer(text: "Пока ничего не сфотографировано. Снимки лежат на телефоне и никуда не отправляются.")
-            }
+            if !canSee {
+                // Снимки не показываются вовсе — плашка вместо них,
+                // а не сетка в выключенном виде: выключенная сетка
+                // всё равно показывала бы страницы документов.
+                ПлашкаПрава(право: .seeMedical)
+            } else {
+                if documents.isEmpty {
+                    TGExplainer(text: "Пока ничего не сфотографировано. Снимки лежат на телефоне и никуда не отправляются.")
+                }
 
-            сетка
+                просрочка
+                сетка
+            }
         }
         .onChange(of: picked) { _, item in load(item) }
         .sheet(item: Binding(get: { pendingImage.map(PendingPhoto.init) },
                             set: { if $0 == nil { pendingImage = nil } })) { pending in
-            DocumentTitleSheet(image: pending.data) { title, note in
-                add(image: pending.data, title: title, note: note)
+            DocumentFieldsSheet(image: pending.data, draft: DocumentDraft()) { draft in
+                add(image: pending.data, draft: draft)
             }
         }
         .sheet(item: $viewing) { document in
-            DocumentViewerSheet(document: document) { delete(document) }
+            DocumentViewerSheet(document: document,
+                                canEdit: canEdit,
+                                onChange: { сохранить() },
+                                onDelete: { delete(document) })
+        }
+    }
+
+    /// Истёкший срок — наверху карточки, а не внутри плитки.
+    ///
+    /// **Плитку не трогаю нарочно:** её состав задан ответом дизайна
+    /// 25.10.2026, круг 5, пункт 6, до числа («подпись на снимке:
+    /// стекло, отступ 8, радиус 8, высота от 28, поля 4 × 8»), и
+    /// значок срока там — правка по чужому решению. А без показа
+    /// снаружи истёкший паспорт нашёлся бы только тыканьем в десять
+    /// плиток по очереди — то есть ровно тогда, когда уже поздно.
+    ///
+    /// **Здесь «истёк», и только «истёк».** «Истекает через N дней»
+    /// требует запаса в днях, которого нет ни в коде, ни в ТЗ;
+    /// по этой же причине `ReminderScheduler` отказался заводить
+    /// напоминание о сроке — разбор там, в `строкиКонтроля`.
+    @ViewBuilder
+    private var просрочка: some View {
+        let истёкшие = documents.filter { СрокДокумента.у($0).истёк }
+        if !истёкшие.isEmpty {
+            // Названия ИНТЕРПОЛИРУЮТСЯ, а не склеиваются `.готовая`:
+            // название вводит человек, и `.готовая` отправила бы его
+            // в каталог искать перевод («паспорт» там ключ и есть).
+            // Тот же приём, что у `ПлашкаПрава` с именем права.
+            //
+            // Слово «проверь:» в подписи — не украшение: подпись
+            // из ОДНОЙ интерполяции дала бы каталогу ключ `%@`,
+            // то есть ключ без текста, который столкнётся с любым
+            // другим таким же.
+            TGBanner(tone: .alarm,
+                     title: "Срок истёк",
+                     subtitle: "проверь: \(истёкшие.map(\.title).joined(separator: ", "))",
+                     systemImage: "exclamationmark.triangle")
         }
     }
 
@@ -129,8 +213,12 @@ struct DocumentPhotosCard: View {
         }
     }
 
-    private func add(image: Data, title: String, note: String?) {
-        let document = DogDocument(title: title, image: image, note: note)
+    private func add(image: Data, draft: DocumentDraft) {
+        let document = DogDocument(title: draft.title, image: image)
+        // Поля переносит сам черновик — одним местом на создание
+        // и на правку, чтобы «номер» и «кем выдан» не разъехались
+        // по двум спискам присваиваний.
+        draft.применить(к: document)
         document.dog = dog
         context.insert(document)
         // Сохраняем сразу: обратная связь применяется не мгновенно,
@@ -142,9 +230,30 @@ struct DocumentPhotosCard: View {
         Haptics.success()
     }
 
+    /// Правка уже заведённого документа.
+    ///
+    /// Нужна не для порядка: четыре поля появились 07.10.2026,
+    /// а вводить их стало можно только сейчас — у человека уже лежат
+    /// снимки без типа, номера и срока. Без правки срок в них
+    /// не внести никогда, то есть починка не работала бы именно
+    /// у тех, у кого документы есть.
+    private func сохранить() {
+        // Откатывать нечего по устройству: `@Model` уже изменён
+        // в памяти, а отката у `persist` нет. Поэтому отказ человеку
+        // ГОВОРЯТ — «кажется, сохранил» про номер паспорта дороже
+        // обычного.
+        guard context.persistNothingToUndo() else {
+            return неСохранилось("Правка не сохранилась · попробуй ещё раз")
+        }
+        Haptics.success()
+    }
+
     private func delete(_ document: DogDocument) {
-        context.delete(document)
-        guard context.persist(otherwise: {}) else {
+        // Надгробие вместо `context.delete`: подпись документа ездит
+        // ко второму человеку с 07.10.2026, а её удаление — не ездило.
+        // Скан при этом остаётся у каждого свой, он не ездил никогда.
+        let откат = ОбщееУдаление.удалить(document)
+        guard context.persist(otherwise: откат) else {
             return неСохранилось("Снимок не удалился · попробуй ещё раз")
         }
         viewing = nil
@@ -180,7 +289,8 @@ private struct PendingPhoto: Identifiable {
 /// считается без снимка.
 ///
 /// `Text(verbatim:)` у названия — потому что название **вводит
-/// человек** (чипами в `DocumentTitleSheet` либо своим словом):
+/// человек** (умолчанием от вида в `DocumentFieldsSheet` либо своим
+/// словом):
 /// Числа сетки — одно место на обе плитки.
 ///
 /// Ответ дизайна 25.10.2026, круг 5, пункт 6: «3 колонки, зазор 8,
@@ -311,21 +421,176 @@ private struct ПлиткаСнять: View {
     }
 }
 
-/// Что это за бумага. Спрашиваем чипами, а не полем ввода: печатать
-/// «Ветеринарный паспорт» каждый раз никто не станет.
-struct DocumentTitleSheet: View {
-    let image: Data
-    var onSave: (String, String?) -> Void
+/// Что человек ввёл о документе.
+///
+/// Отдельным типом, а не пятью аргументами замыкания: три из них —
+/// `String?` подряд, и «номер», переставленный местами с «кем выдан»,
+/// не покраснел бы ни у компилятора, ни у сторожа.
+struct DocumentDraft {
+    var kind: DocumentKind = .other
+    var title: String = ""
+    var number: String = ""
+    var issuedBy: String = ""
+
+    /// Тумблер отдельно от даты, потому что `DatePicker` пустого
+    /// значения не умеет: без него «срока нет» и «срок сегодня»
+    /// неотличимы, а это разные утверждения.
+    var hasValidUntil: Bool = false
+    var validUntil: Date = Date()
+    var note: String = ""
+
+    init() {}
+
+    init(_ document: DogDocument) {
+        kind = document.kind
+        title = document.title
+        number = document.number ?? ""
+        issuedBy = document.issuedBy ?? ""
+        hasValidUntil = document.validUntil != nil
+        validUntil = document.validUntil ?? Date()
+        note = document.note ?? ""
+    }
+
+    /// Переносит введённое в запись. **Одно место на создание
+    /// и на правку:** два списка присваиваний разошлись бы молча.
+    func применить(к document: DogDocument) {
+        document.kind = kind
+        // Название непустым всегда: оно стоит подписью НА плитке,
+        // и пустая подпись читалась бы как «запись без имени».
+        // Умолчание — имя вида, то есть то, что человек и выбрал.
+        document.title = подчищенное(title) ?? kind.title
+        document.number = подчищенное(number)
+        document.issuedBy = подчищенное(issuedBy)
+        document.validUntil = hasValidUntil ? validUntil : nil
+        document.note = подчищенное(note)
+        // День правки, а не день заведения: разбор у самого поля.
+        document.changedAt = Date()
+    }
+
+    /// Пробел — это «не ввёл», а не значение.
+    private func подчищенное(_ строка: String) -> String? {
+        let чистое = строка.trimmingCharacters(in: .whitespacesAndNewlines)
+        return чистое.isEmpty ? nil : чистое
+    }
+}
+
+/// Срок документа и слово исхода к нему.
+///
+/// **Слово обязано стоять рядом с числом.** `28.09.2029` само по себе
+/// не говорит, годен документ или нет: читающий сверяет его
+/// с сегодняшним днём в голове, у стойки, в спешке. Правило свода —
+/// «инструмент, печатающий число, печатает рядом слово исхода», —
+/// и у этого числа вдобавок две стороны, «до» и «после», на которых
+/// в этом проекте уже спотыкались.
+///
+/// **«Истекает через N дней» здесь НЕ считается, и это решение,
+/// а не недоделка.** Запас в днях — число, которого нет ни в коде,
+/// ни в ТЗ, и выбрать его значило бы решить за врача: прививку делают
+/// заранее, но насколько — зависит от вакцины и страны (бешенство:
+/// «3 года в ЕС, за пределами ЕС проверить серологию»,
+/// `docs/медкнижка-покрытие.md`). Тем же доводом
+/// `ReminderScheduler.строкиКонтроля` отказался заводить напоминание
+/// о сроке; второй раз придумывать это число я не стал.
+///
+/// > **«Истёк» — не порог, а факт, и считается он без догадок.**
+nonisolated enum СрокДокумента {
+    case нет
+    case действует(Date)
+    case истёк(Date)
+
+    static func у(_ document: DogDocument,
+                  сегодня: Date = Date(),
+                  calendar: Calendar = .current) -> СрокДокумента {
+        guard let до = document.validUntil else { return .нет }
+        // Сравнение по ДНЮ, а не по секунде: документ, годный
+        // «до 26 октября», 26 октября ещё годен — а сравнение
+        // моментов времени объявило бы его истёкшим с полуночи.
+        return calendar.startOfDay(for: до) < calendar.startOfDay(for: сегодня)
+            ? .истёк(до)
+            : .действует(до)
+    }
+
+    var истёк: Bool {
+        if case .истёк = self { return true }
+        return false
+    }
+
+    var дата: Date? {
+        switch self {
+        case .нет: nil
+        case .действует(let день), .истёк(let день): день
+        }
+    }
+
+    /// Слово исхода. **Пусто — это «не записан», а не «бессрочно».**
+    /// Различить их модель не может: поле одно и необязательное
+    /// (разбор у `DogDocument.validUntil`). Написать «бессрочно»
+    /// значило бы утверждать за человека то, чего он не говорил.
+    var слово: String {
+        switch self {
+        case .нет: String(localized: "не записан")
+        case .действует: String(localized: "действует")
+        case .истёк: String(localized: "истёк")
+        }
+    }
+}
+
+/// Поля документа: тип, название, номер, кем выдан, срок.
+///
+/// # Чего здесь не было до 26.10.2026
+///
+/// Четыре поля (`kind`, `number`, `issuedBy`, `validUntil`) лежат
+/// в модели с 07.10.2026, ездят в обмен (`SharedDiaryPayloads:418`)
+/// и в архив (`Backup:230`), покрыты тестами — и **ввести их было
+/// негде, а прочитать негде вовсе**. Форма спрашивала название,
+/// снимок и заметку, а подсказка заметки — «срок действия, кто
+/// выдал» — прямо отправляла человека писать срок прозой. С прозой
+/// календарь не сверяется: `docs/медкнижка-покрытие.md` называет это
+/// «работает, но не ищется и не напоминает».
+///
+/// Дальше всех уехал обмен: `SharedDiary` уже описывает, что второй
+/// человек видит «Паспорт FR-2024-88120, годен до 03.10.2027».
+/// Дорога была достроена с обоих концов, кроме двух — того, где
+/// человек вводит, и того, где читает.
+///
+/// # Одна форма на создание и на правку
+///
+/// Правка нужна не для порядка: снимки, заведённые до появления
+/// полей, иначе остались бы без срока навсегда — то есть починка
+/// не работала бы ровно у тех, у кого документы уже есть. Две формы
+/// разошлись бы молча.
+///
+/// # Тип спрашивается ОДИН раз
+///
+/// Прежний чиповый ряд шёл по `DocumentPhoto.commonTitles` — своему
+/// списку из шести слов, пересекавшемуся с `DocumentKind` больше
+/// чем наполовину. Два ряда про одно и то же («паспорт» в обоих)
+/// человек читает как два разных вопроса. Теперь тип один —
+/// `DocumentKind`, он же ключ группировки в модели и он же «тип»
+/// из §2.5 ТЗ, — а название свободное и подставляется из вида.
+struct DocumentFieldsSheet: View {
+    let image: Data?
+    var saveTitle: LocalizedStringKey = "Сохранить"
+    var onSave: (DocumentDraft) -> Void
 
     @Environment(\.dismiss) private var dismiss
-    @State private var title = DocumentPhoto.commonTitles[0]
-    @State private var note = ""
+    @State private var draft: DocumentDraft
+
+    init(image: Data?,
+         draft: DocumentDraft,
+         saveTitle: LocalizedStringKey = "Сохранить",
+         onSave: @escaping (DocumentDraft) -> Void) {
+        self.image = image
+        self.saveTitle = saveTitle
+        self.onSave = onSave
+        self._draft = State(initialValue: draft)
+    }
 
     var body: some View {
         TGSheet(title: "Что это", subtitle: "чтобы потом найти не листая",
                 closeTitle: "Отмена", hasUnsavedChanges: true) {
-            TGCard {
-                if let preview = UIImage(data: image) {
+            if let image, let preview = UIImage(data: image) {
+                TGCard {
                     Image(uiImage: preview)
                         .resizable()
                         .scaledToFit()
@@ -334,32 +599,89 @@ struct DocumentTitleSheet: View {
                         .accessibilityLabel("Снимок документа")
                 }
             }
-            TGCard {
-                TGChipGroup(items: DocumentPhoto.commonTitles, title: { $0 },
-                            isSelected: { $0 == title }, minimumWidth: 120) { title = $0 }
+            TGCard(spacing: 0) {
+                TGChipGroup(items: DocumentKind.allCases, title: { $0.title },
+                            isSelected: { $0 == draft.kind }, minimumWidth: 120) { выбрать($0) }
+                TGDivider()
+                LabeledField(label: "Название") {
+                    // Подсказка — имя выбранного вида: ровно оно
+                    // и подставится, если человек не впишет своё.
+                    // `.готовая` здесь законна — перевод уже взят
+                    // через `String(localized:)` в `DocumentKind.title`.
+                    TextField(.готовая(draft.kind.title), text: $draft.title)
+                }
+                TGDivider()
+                LabeledField(label: "Номер") {
+                    // Строкой и `numbersAndPunctuation`: в номерах
+                    // паспортов есть буквы и пробелы («FR SN 12119422»),
+                    // а в чипе — ведущие нули.
+                    TextField("как в документе", text: $draft.number)
+                        .keyboardType(.numbersAndPunctuation)
+                }
+                TGDivider()
+                LabeledField(label: "Кем выдан") {
+                    TextField("клиника или врач", text: $draft.issuedBy)
+                }
+                TGDivider()
+                Toggle(isOn: $draft.hasValidUntil) {
+                    Text("Есть срок действия").textStyle(AppFont.body)
+                }
+                .frame(minHeight: Token.Size.tapTarget)
+                if draft.hasValidUntil {
+                    TGDivider()
+                    DatePicker("Годен до", selection: $draft.validUntil,
+                               displayedComponents: .date)
+                        .frame(minHeight: Token.Size.tapTarget)
+                }
                 TGDivider()
                 LabeledField(label: "Заметка") {
-                    TextField("срок действия, кто выдал", text: $note)
+                    TextField("что ещё важно", text: $draft.note)
                 }
             }
+            TGExplainer(text: "Выключенный срок значит «не записан», а не «бессрочно»: приложение их не различает и додумывать не станет.")
         } footer: {
-            TGButton(title: "Сохранить") {
-                onSave(title, note.isEmpty ? nil : note)
+            TGButton(title: saveTitle) {
+                onSave(draft)
                 dismiss()
             }
         }
     }
+
+    /// Смена вида переименовывает документ, пока имя не тронуто рукой.
+    ///
+    /// Без этого человек выбирает «паспорт», потом «сертификат», —
+    /// а на плитке остаётся «паспорт», слово, которого он не писал.
+    private func выбрать(_ вид: DocumentKind) {
+        let имяБылоУмолчанием = draft.title.isEmpty || draft.title == draft.kind.title
+        draft.kind = вид
+        if имяБылоУмолчанием { draft.title = "" }
+    }
 }
 
 /// Просмотр во весь экран — ровно то, что нужно показать на стойке.
+///
+/// **Поля показываются рядом со снимком, а не вместо него.** Номер
+/// спрашивают голосом — «назовите номер паспорта», — и вычитывать его
+/// со фотографии страницы, разводя пальцами, это почти то же, что
+/// не иметь его записанным. До 26.10.2026 здесь не было ни одного
+/// из четырёх полей.
 struct DocumentViewerSheet: View {
     let document: DogDocument
+    /// `editTreatment`. Решение и таблица по пяти ролям —
+    /// у `DocumentPhotosCard.canSee`.
+    ///
+    /// **Кнопка «Удалить снимок» до 26.10.2026 не спрашивала
+    /// ничего:** снимок ветпаспорта удалял любой, кто дошёл до экрана.
+    let canEdit: Bool
+    var onChange: () -> Void
     var onDelete: () -> Void
 
     @State private var isConfirmingDelete = false
+    @State private var isEditing = false
 
     var body: some View {
-        TGSheet(title: .готовая(document.title), subtitle: .готовая(Fmt.shortDay(document.addedAt))) {
+        TGSheet(title: .готовая(document.title),
+                subtitle: .готовая(document.kind.title)) {
             if let data = document.image, let image = UIImage(data: data) {
                 Image(uiImage: image)
                     .resizable()
@@ -367,14 +689,33 @@ struct DocumentViewerSheet: View {
                     .clipShape(RoundedRectangle(cornerRadius: Token.Radius.tile, style: .continuous))
                     .accessibilityLabel(document.title)
             }
+            TGCard(spacing: 0) {
+                if let number = document.number { поле("Номер", значение: number) }
+                if let issuedBy = document.issuedBy { поле("Кем выдан", значение: issuedBy) }
+                срок
+                поле("Добавлен", значение: Fmt.shortDay(document.addedAt))
+            }
             if let note = document.note, !note.isEmpty {
                 TGCard { Text(note).textStyle(AppFont.body).wraps() }
             }
             TGExplainer(text: "Снимок лежит на телефоне. Он попадает в резервную копию вместе с дневником и больше никуда не уходит.")
         } footer: {
-            TGButton(title: "Удалить снимок", variant: .destructive,
-                     size: .medium, systemImage: "trash") {
-                isConfirmingDelete = true
+            if canEdit {
+                TGButton(title: "Править", variant: .secondary,
+                         size: .medium, systemImage: "pencil") {
+                    isEditing = true
+                }
+                TGButton(title: "Удалить снимок", variant: .destructive,
+                         size: .medium, systemImage: "trash") {
+                    isConfirmingDelete = true
+                }
+            }
+        }
+        .sheet(isPresented: $isEditing) {
+            DocumentFieldsSheet(image: document.image,
+                                draft: DocumentDraft(document)) { правка in
+                правка.применить(к: document)
+                onChange()
             }
         }
         .confirmationDialog("Удалить снимок?", isPresented: $isConfirmingDelete,
@@ -385,11 +726,54 @@ struct DocumentViewerSheet: View {
             Text("Фотография удалится с телефона. В галерее она останется, если снимали через камеру.")
         }
     }
+
+    /// Срок: дата и слово исхода **в одной строке**. Шапку читают
+    /// один раз, строку с числом — каждый раз.
+    @ViewBuilder
+    private var срок: some View {
+        let состояние = СрокДокумента.у(document)
+        поле("Годен до",
+             значение: состояние.дата.map { "\(Fmt.shortDay($0)) · \(состояние.слово)" }
+                 ?? состояние.слово,
+             тревога: состояние.истёк)
+    }
+
+    /// Подпись — ключ каталога, значение — дословно: номер, кем выдан
+    /// и название вводит человек, и `Text(ключ)` искал бы перевод
+    /// для «FR SN 12119422».
+    private func поле(_ подпись: LocalizedStringKey,
+                      значение: String,
+                      тревога: Bool = false) -> some View {
+        HStack(alignment: .firstTextBaseline) {
+            Text(подпись).textStyle(AppFont.caption)
+            Spacer(minLength: Token.Space.s12)
+            Text(verbatim: значение)
+                .textStyle(тревога
+                    ? AppFont.bodyEmphasis.color(Token.Status.overdueText)
+                    : AppFont.bodyEmphasis)
+                .multilineTextAlignment(.trailing)
+                .wraps()
+        }
+        .frame(minHeight: 38)
+    }
 }
 
 /// Работа со снимком документа.
 nonisolated enum DocumentPhoto {
-    static let commonTitles = ["Паспорт", "Прививки", "Чип", "Анализы", "Назначение", "Другое"]
+    /// Названия видов документа.
+    ///
+    /// **С 26.10.2026 выводятся из `DocumentKind`, а не держатся
+    /// своим списком.** Было шесть слов литералами
+    /// («Паспорт, Прививки, Чип, Анализы, Назначение, Другое») против
+    /// пяти видов в модели — две копии одного перечисления, которые
+    /// разошлись бы молча, и уже разошлись: «Прививки», «Анализы»
+    /// и «Назначение» вида не имели вовсе, а `contract`
+    /// и `certificate` не имели слова.
+    ///
+    /// Форма ввода спрашивает вид чипами по `DocumentKind.allCases`
+    /// напрямую. Здесь остаётся производная: расходиться ей больше
+    /// негде, а читателя у неё один — `StructuralGapsTests`.
+    static var commonTitles: [String] { DocumentKind.allCases.map(\.title) }
 
     /// Длинная сторона, до которой ужимаем. 1600 пикселей хватает, чтобы
     /// прочитать номер и печать, и в двадцать раз меньше исходника.
