@@ -1,0 +1,1566 @@
+﻿# ПОРЯДОК НОМЕРОВ В ПОДСТАНОВКАХ МЕНЯТЬ НЕЛЬЗЯ. %1$@ и %2$lld — это места, куда приложение подставляет имя, число и дату. Номер говорит, ЧТО именно подставится. Переставите номера — собака получит чужую дозу, а дата встанет на место веса. Слова вокруг них переставляйте свободно, сами %-метки оставляйте как есть и в том же количестве.
+№	важность	русский источник	наш перевод (французский)	ПРАВКА НОСИТЕЛЯ — пишите здесь	состояние	подстановка	формы числа	где встречается
+1	1-МЕД	Вместе с ней исчезнет весь её дневник — одиннадцать видов записей: отметки, взвешивания, дела ухода, схемы лечения с дозами, шаги и занятия, поездки, документы, выезды, течки и запас корма. Выгрузить дневник можно в «Настройки → Данные и приватность».	Tout son journal disparaît avec elle — onze types d'entrées : repères, pesées, soins, schémas de traitement avec doses, étapes et séances, voyages, documents, sorties, chaleurs et stock de nourriture. Tu peux exporter le journal dans Réglages → Données et confidentialité.		needs_review			Togo/Features/Profile/Editors.swift:174
+2	1-МЕД	Пока норма не записана, приложение не считает ни порцию, ни перерасход: от неё считается всё остальное. Нажми — и шаговик встанет на сто двадцать граммов, откуда удобно докрутить до того, что назвал врач. Это подсказка, а не назначение.	Tant que la norme n'est pas enregistrée, l'application ne calcule ni la portion ni le dépassement : tout le reste en découle. Appuie, et le sélecteur se placera sur cent vingt grammes, un point pratique pour monter jusqu'à ce que le vétérinaire a indiqué. C'est une suggestion, pas une prescription.		needs_review			Togo/Features/Profile/ScheduleEditor.swift:205
+3	1-МЕД	Не переустанавливай. Приложение не нашло следов того, что дневник уезжал в iCloud, — и выгрузить его сейчас нечем: выгрузка читает то же хранилище, которое не открылось. Напиши в поддержку, строки запуска уже ниже.	Ne réinstalle pas. L'app n'a trouvé aucune trace d'un envoi du journal vers iCloud, et il n'y a aucun moyen de l'exporter maintenant : l'export lit le même stockage qui ne s'est pas ouvert. Écris au support, les lignes de démarrage sont juste en dessous.		needs_review			TogoShared/Domain/StorageFailureAdvice.swift:124
+4	1-МЕД	Включи, если носишь эту дозу с собой. Тогда в режиме прогулки появится «Дал» — и отметка не потеряется до дома. Не включай, если дозу дают только дома: приложение не станет предлагать.	Active si tu emportes cette dose. « Donné » apparaîtra alors en mode promenade — et la note ne se perdra pas avant la maison. N'active pas si la dose se donne seulement à la maison : l'app ne la proposera pas.		needs_review			Togo/Features/Profile/Editors.swift:822
+5	1-МЕД	Исчезнут все одиннадцать видов записей: отметки, взвешивания, дела ухода, схемы лечения с дозами, шаги и занятия, поездки, документы, выезды, течки и запас корма. Это нельзя отменить.	Les onze types d'entrées disparaîtront : repères, pesées, soins, schémas de traitement avec doses, étapes et séances, voyages, documents, sorties, chaleurs et stock de nourriture. C'est irréversible.		needs_review			Togo/Features/Profile/Editors.swift:246
+6	1-МЕД	Пока нормы нет, приложение не считает ни порцию, ни перерасход — от неё считается всё остальное. Подставить своё число оно не может: получилось бы назначение, которого никто не делал.	Tant qu'il n'y a pas de norme, l'application ne calcule ni la portion ni le dépassement : tout le reste en découle. Elle ne peut pas inventer un chiffre : ce serait une prescription que personne n'a faite.		needs_review			Togo/Features/Feeding/FeedingScreen.swift:396
+7	1-МЕД	Срок контроля — диапазоном, а не датой: три врача называют три разных интервала, и выбирать за них приложение не будет. Напомним в начале окна и в последний день.	L'échéance de contrôle est une plage, pas une date : trois vétérinaires donnent trois intervalles différents, et l'app ne choisira pas à leur place. Nous rappellerons au début de la fenêtre et le dernier jour.		needs_review			Togo/Features/Health/PrescriptionScreens.swift:75
+8	1-МЕД	Порцию подставить не из чего: дневная норма не записана. Накрути сколько положил — или запиши норму в режиме питания, и дальше она будет подставляться сама.	Il n'y a rien pour en déduire la portion : la norme journalière n'est pas enregistrée. Indique la quantité que tu as servie — ou enregistre la norme dans le rythme des repas, et elle sera ensuite remplie toute seule.		needs_review			Togo/Features/Log/LogSheets.swift:222
+9	1-МЕД	Отчёт врачу, CSV и приглашение в общий дневник уходят только тогда, когда ты сам нажимаешь «поделиться», и только тому, кого ты выбрал в системном окне.	Le compte rendu pour le vétérinaire, l'export CSV et l'invitation au journal partagé ne partent que lorsque tu appuies toi-même sur « Partager », et uniquement vers la personne choisie dans la fenêtre système.		needs_review			Togo/Features/Settings/LegalScreens.swift:88
+10	1-МЕД	Сами записи — инциденты, стул, дозы — останутся: удаляется только объединение их в эпизод. Если инциденты повторятся, приложение поднимет эпизод заново.	Les entrées elles-mêmes — incidents, selles, doses — resteront : seul leur regroupement en épisode disparaît. Si les incidents reviennent, l'app rouvrira un épisode.		needs_review			Togo/Features/History/HistoryScreen.swift:108
+11	1-МЕД	Без времени так и запишем — «время не указано». Это честнее, чем угадать: подставь мы «вероятно, утром», запись сказала бы врачу то, чего ты не вводил.	Sans heure, nous écrirons exactement cela — « heure non indiquée ». C'est plus honnête que de deviner : si nous mettions « sans doute le matin », la note dirait au vétérinaire ce que tu n'as pas saisi.		needs_review			Togo/Features/Health/LabResultScreens.swift:692
+12	1-МЕД	Доза показана так, как её ввёл человек: числа дозы в миллиграммах приложение не хранит и не считает само. Вес берётся за тот же день — не за ближайший.	La dose est affichée telle qu'une personne l'a saisie : l'app ne stocke ni ne calcule les valeurs en milligrammes. Le poids est celui du même jour — pas du jour le plus proche.		needs_review			Togo/Features/Health/LabChartScreen.swift:543
+13	1-МЕД	От времени дозы считается окно натощак и защита от двойной дозы, от времени еды — «пора ли кормить». Поэтому спрашиваем, а не ставим час нажатия.	C'est l'heure de la dose qui donne la fenêtre à jeun et la protection contre la double dose ; l'heure du repas, elle, donne le « faut-il nourrir ». C'est pour ça qu'on demande, au lieu de prendre l'heure de l'appui.		needs_review			Togo/Features/Today/GivenAtSheet.swift:84
+14	1-МЕД	Окна натощак перед поездкой — общая практика, а не назначение. Если собака на терапии, приложение сведёт их с приёмами и покажет, где конфликт.	Les fenêtres à jeun avant un trajet sont une pratique courante, pas une prescription. Si le chien est sous traitement, l'app les croise avec les prises et montre où ça coince.		needs_review			Togo/Features/Trip/TripScreens.swift:144
+15	1-МЕД	а у тебя, мамы и Ани: выходы, еда, стул, дозы, анализы, визиты, назначения, уход, занятия, поездки, документы. Дневник можно сначала выгрузить.	pour vous, Maman et Anya : sorties, repas, selles, doses, analyses, visites, ordonnances, soins, éducation, voyages, documents. Vous pouvez d'abord exporter le journal.		needs_review			
+16	1-МЕД	Не дозвонились до магазина. Обычно это связь. Приложение работает и без подписки — всё, что важно для безопасности собаки, бесплатно навсегда.	On n'a pas réussi à joindre l'App Store. C'est souvent la connexion. L'app marche aussi sans abonnement : tout ce qui compte pour la sécurité du chien est gratuit pour toujours.		needs_review			Togo/Features/Paywall/PaywallScreen.swift:217
+17	1-МЕД	Окна натощак перед поездом — общая практика, а не назначение. Если собака на терапии, приложение сведёт их с приёмами и покажет, где конфликт.	Les fenêtres à jeun avant un trajet en train sont une pratique courante, pas une prescription. Si le chien est sous traitement, l'app les croise avec les prises et montre où ça coince.		needs_review			Togo/Features/Trip/TripScreens.swift:148
+18	1-МЕД	Полоса — норма с бланка. Форма точки — время забора: круг — часы от дозы известны, крест — не записаны, квадрат — лечения в тот день не было.	La bande est l'intervalle de la fiche. La forme du point indique l'heure du prélèvement : cercle — les heures depuis la dose sont connues, croix — non notées, carré — pas de traitement ce jour-là.		needs_review			Togo/Features/Health/LabChartScreen.swift:420
+19	1-МЕД	Счёт не включён. Скажи, сколько таблеток в пачке — дальше приложение вычитает по одной с каждой отметки и предупредит за три дня до конца.	Le décompte est désactivé. Dis combien de comprimés contient la boîte — l'application en retirera un à chaque prise cochée et préviendra trois jours avant la fin.		needs_review			Togo/Features/Health/HealthScreen.swift:355
+20	1-МЕД	Нужно графику: по силе таблетки видно, росла ли доза. Можно оставить пустым — тогда график покажет анализы без дозы и скажет об этом.	Le graphique en a besoin : le dosage du comprimé montre si la dose a augmenté. Tu peux laisser vide — le graphique affichera alors les analyses sans dose et le signalera.		needs_review			Togo/Features/Profile/Editors.swift:725
+21	1-МЕД	Форма стоит у рецепта, а не у схемы лечения: вопрос обычно ретроспективный — какая форма была в тот месяц, когда что-то пошло не так.	La forme appartient à l'ordonnance, pas au plan de traitement : la question est généralement rétrospective — quelle forme était utilisée le mois où quelque chose a dérapé.		needs_review			Togo/Features/Health/PrescriptionScreens.swift:243
+22	1-МЕД	Запиши, что предполагает врач и на чём это основано. Рабочая гипотеза — тоже запись: по ней видно, почему лечение именно такое.	Note ce que suppose le vétérinaire et sur quoi il s'appuie. Une hypothèse de travail est aussi une note : elle montre pourquoi le traitement est celui-là.		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:288
+23	1-МЕД	Заведи тех, кто тоже за ней ходит: совладельца, ситтера, ребёнка или врача. Роль и права выбираешь ты — сам он их не поменяет.	Ajoute ceux qui s'en occupent aussi : co-propriétaire, pet-sitter, enfant ou vétérinaire. Le rôle et les droits, c'est toi qui les choisis — la personne ne peut pas les changer.		needs_review			
+24	1-МЕД	Запиши осмотр или консультацию — дата, врач и заключение. Они войдут в отчёт врачу и останутся, даже когда курс закончится.	Note un examen ou une consultation — la date, le vétérinaire et la conclusion. Ils entreront dans le compte rendu véto et y resteront après la fin du traitement.		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:58
+25	1-МЕД	Точки сняты в разное время после дозы — такие значения рядом не сравнивают без оговорки. Время забора у каждой строки выше.	Les points ont été prélevés à des moments différents après la dose — on ne compare pas de telles valeurs côte à côte sans réserve. L'heure du prélèvement de chaque ligne figure plus haut.		needs_review			Togo/Features/Health/LabChartScreen.swift:469
+26	1-МЕД	График появится, когда будет хотя бы один анализ с числом. Бактериология и описания в график не идут — им нечего рисовать.	Le graphique apparaîtra dès qu'il y aura au moins une analyse chiffrée. La bactériologie et les descriptions n'y figurent pas — il n'y a rien à tracer.		needs_review			Togo/Features/Health/LabChartScreen.swift:159
+27	1-МЕД	Появится вкладка «Здоровье», окно натощак и защита от двойной дозы. Препарат добавишь потом — схему и часы спросим там.	L'onglet « Santé » apparaît, avec la fenêtre à jeun et la protection contre la double dose. Tu ajouteras le médicament plus tard — on demandera le protocole et les heures là-bas.		needs_review			Togo/Features/Onboarding/OnboardingSteps.swift:497
+28	1-МЕД	Заведи бланк — лабораторию, дату и показатели. Приложение само посчитает отклонение по норме с бланка и часы от дозы.	Crée une fiche — le laboratoire, la date et les paramètres. L'app calculera l'écart par rapport à l'intervalle de la fiche et les heures depuis la dose.		needs_review			Togo/Features/Health/LabResultScreens.swift:80
+29	1-МЕД	Рабочая гипотеза — полноценная запись. Снять её потом можно, стереть — нет: по ней видно, почему лечение было таким.	Une hypothèse de travail est une note à part entière. On peut la lever plus tard, mais pas l'effacer : elle montre pourquoi le traitement était celui-là.		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:445
+30	1-МЕД	Записи дня — еда, выходы, дозы — останутся: удаляется только сам «день с собакой» и его след в наблюдениях истории.	Les entrées de la journée — repas, sorties, doses — resteront : seule la « journée avec le chien » disparaît, avec sa trace dans les observations de l'historique.		needs_review			Togo/Features/DayOut/DayOutScreens.swift:153
+31	1-МЕД	Отклонение приложение считает само по норме с бланка. Нормы нет — так и скажет: «норма не указана», а не «в норме».	L'app calcule elle-même l'écart à partir de l'intervalle de la fiche. Pas d'intervalle — elle le dira : « intervalle non indiqué », et non « dans la norme ».		needs_review			Togo/Features/Health/LabResultScreens.swift:108
+32	1-МЕД	Наблюдатель читает и не пишет. Помощник не видит медицинского. Схему лечения по умолчанию меняет только владелец.	L'observateur lit mais n'écrit pas. L'assistant ne voit pas le médical. Par défaut, seul le propriétaire modifie le protocole.		needs_review			Togo/Features/Family/FamilyScreen.swift:806
+33	1-МЕД	Норму приложение не подставляет: нет на бланке — скажет «норма не указана». Отклонение считается, а не вводится.	L'app ne remplit pas l'intervalle : s'il n'est pas sur la fiche, elle dira « intervalle non indiqué ». L'écart est calculé, pas saisi.		needs_review			Togo/Features/Health/LabResultScreens.swift:651
+34	1-МЕД	Не подставляем сам: рецепт часто заводят задним числом, а вес с тех пор изменился. Сегодняшний — в подсказке.	Nous ne le remplissons pas à ta place : une ordonnance se saisit souvent après coup, et le poids a changé depuis. Celui d'aujourd'hui est dans l'indication.		needs_review			Togo/Features/Health/PrescriptionScreens.swift:276
+35	1-МЕД	Это зеркало дневной нормы, а она не записана. Запиши её в режиме питания — и расход запаса начнёт считаться.	Ceci reflète la norme journalière, et celle-ci n'est pas enregistrée. Enregistre-la dans le rythme des repas, et la consommation du stock sera comptée.		needs_review			Togo/Features/Feeding/FoodStockScreen.swift:400
+36	1-МЕД	Удаление уберёт запись из отчёта врачу. «Снять диагноз» оставит её в истории — обычно нужно именно это.	Supprimer retire la note du compte rendu véto. « Lever le diagnostic » la garde dans l'historique — c'est généralement ce qu'il faut.		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:503
+37	1-МЕД	Заведи тех, кто тоже за ней ходит: совладельца, ситтера, ребёнка или врача. Роль и права выбираешь ты.	Ajoute ceux qui s'occupent aussi de lui : un copropriétaire, un pet-sitter, un enfant ou le vétérinaire. Tu choisis le rôle et les droits.		needs_review			Togo/Features/Family/FamilyScreen.swift:142
+38	1-МЕД	Передавать некому: в семье нет второго человека, которому можно давать дозу. Смена останется твоей.	Personne à qui passer le relais : la famille n'a pas de deuxième personne pouvant donner la dose. Le tour reste le tien.		needs_review			Togo/Features/Sitter/ShiftHandoverSheet.swift:33
+39	1-МЕД	Форма точки — время забора: ● часы от дозы известны · ✕ не записаны · ■ лечения в тот день не было.	Forme du point = heure du prélèvement : ● heures après la dose connues · ✕ non notées · ■ pas de traitement ce jour-là.		needs_review			
+40	1-МЕД	Диапазоном, а не датой: Togo не выбирает срок за врача. Напомним в начале окна и в последний день.	Une plage, pas une date : Togo ne choisit pas l'échéance à la place du vétérinaire. Nous rappellerons au début de la fenêtre et le dernier jour.		needs_review			Togo/Features/Health/PrescriptionScreens.swift:316
+41	1-МЕД	Ты видишь дозы, запас и анализы. Право «Менять схему лечения» выдаёт владелец в разделе «Семья».	Tu vois les doses, le stock et les analyses. Le propriétaire accorde « Modifier le traitement » dans « Famille ».		needs_review			
+42	1-МЕД	Отмечать некого: еда, выходы и дозы считаются по собаке. Заведи её — нужны только кличка и вес.	Rien à noter : repas, sorties et doses se comptent par chien. Ajoute-le — il suffit du nom et du poids.		needs_review			Togo/Features/Today/TodayScreen.swift:122
+43	1-МЕД	В отчёте будет строка «доза → забор: %@». Без этой строки анализы уже дважды читали неверно.	Le compte rendu aura la ligne « dose → prise de sang : %@ ». Sans elle, les analyses ont déjà été mal lues deux fois.		needs_review	да		Togo/Features/Health/HealthScreen.swift:676
+44	1-МЕД	Вместе с рецептом уйдёт и напоминание о контроле. Записи анализов и визиты останутся.	Le rappel de contrôle part avec l'ordonnance. Les analyses et les visites restent.		needs_review			Togo/Features/Health/PrescriptionScreens.swift:389
+45	1-МЕД	Снятый диагноз остаётся в списке и в отчёте: он объясняет, почему лечили именно так.	Un diagnostic levé reste dans la liste et dans le compte rendu : il explique pourquoi le traitement a été celui-là.		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:347
+46	1-МЕД	Это не норма, а зеркало: сравнивать стоит не с чужой собакой, а с собой месяц назад.	Ce n'est pas une norme, c'est un miroir : compare-toi non pas au chien d'un autre, mais à toi il y a un mois.		needs_review			Togo/Features/History/HistoryScreen.swift:214
+47	1-МЕД	Строка уйдёт из списка и из отчёта врачу. Остальные строки этого бланка останутся.	La ligne quittera la liste et le compte rendu véto. Les autres lignes de cette fiche restent.		needs_review			Togo/Features/Health/LabResultScreens.swift:892
+48	1-МЕД	С %@ отметок мочи нет. Приложение не знает, писал он или просто никто не отметил.	Depuis le %@, aucun pipi coché. L'app ne sait pas s'il a fait pipi ou si personne ne l'a coché.		needs_review	да		TogoShared/Domain/NeedVerdict.swift:241
+49	1-МЕД	Следующая по схеме — в %1$@, через %2$@. Это ближе обычного: схема не сдвигается.	Prochaine selon le plan — à %@, dans %@. C'est plus tôt que d'habitude : le plan ne bouge pas.		needs_review	да		Togo/Features/Health/MissedDoseSheet.swift:88
+50	1-МЕД	За выбранный период анализов с числом нет. Поменяй период — или заведи анализ.	Aucune analyse chiffrée sur la période choisie. Change la période — ou ajoute une analyse.		needs_review			Togo/Features/Health/LabChartScreen.swift:281
+51	1-МЕД	Анализ будет помечен «время не указано» и на графике встанет пустым кружком.	L'analyse sera marquée « heure non indiquée » et apparaîtra comme un cercle vide sur le graphique.		needs_review			Togo/Features/Health/LabResultScreens.swift:525
+52	1-МЕД	После промежутков дольше 7 ч: жидкий стул — 2 раза, рвота — 1. Покажи врачу.	Après des écarts de plus de 7 h : selles molles — 2 fois, vomi — 1. Montrez au véto.		needs_review			
+53	1-МЕД	Визит уйдёт из истории и из отчёта врачу. Диагнозы и назначения останутся.	La visite quittera l'historique et le compte rendu véto. Les diagnostics et les ordonnances restent.		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:187
+54	1-МЕД	Это не норма, а зеркало: сравнивать стоит с собой месяц назад — тогда было	Pas une norme, un miroir : comparez avec lui il y a un mois — c'était		needs_review			
+55	1-МЕД	Фон — это фотография за экранами, а не тема. Тема в Togo одна — тёмная.	Le fond est une photo derrière les écrans, pas un thème. Togo n'a qu'un thème : sombre.		needs_review			Togo/Features/Settings/BackgroundScreen.swift:128
+56	1-МЕД	Бесплатно навсегда: окно натощак, защита от двойной дозы, отчёт врачу.	Gratuit pour toujours : fenêtre à jeun, anti-double dose, rapport véto.		needs_review			
+57	1-МЕД	Онлайн-консультация — такой же визит: он тоже попадает в отчёт врачу.	Une téléconsultation est une visite comme une autre : elle entre aussi dans le compte rendu véto.		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:136
+58	1-МЕД	сначала запиши дневную норму в режиме питания — из неё считается всё	enregistre d’abord la norme journalière dans le rythme des repas — tout en découle		needs_review			Togo/Features/Trip/TripScreens.swift:217
+59	1-МЕД	Togo — не медицинское устройство. Решения о лечении принимает врач.	Togo n'est pas un dispositif médical. Le véto décide du traitement.		needs_review			
+60	1-МЕД	few: %lld дозы | many: %lld доз | one: %lld доза | other: %lld доз	one: %lld dose | other: %lld doses		needs_review	да	да	Togo/Features/Health/CourseFinishSheet.swift:52
+61	1-МЕД	Из чего делить, приложение не знает: дневная норма не записана.	L'application ne sait pas quoi diviser : la norme journalière n'est pas enregistrée.		needs_review			Togo/Features/Feeding/FoodStockScreen.swift:347
+62	1-МЕД	Следующая по схеме — в %1$@, через %2$@. Схема не сдвигается.	Prochaine selon le plan — à %@, dans %@. Le plan ne bouge pas.		needs_review	да		Togo/Features/Health/MissedDoseSheet.swift:90
+63	1-МЕД	Норма %1$lld грамм на %2$lld кормлений — %3$lld грамм за раз	Une ration de %1$lld g sur %2$lld repas — %3$lld g à chaque fois		needs_review	да		Togo/Features/Feeding/FeedingScreen.swift:261
+64	1-МЕД	Часы от дозы приложение считает само — вводить их не нужно.	L'app calcule elle-même les heures depuis la dose — inutile de les saisir.		needs_review			Togo/Features/Health/LabResultScreens.swift:691
+65	1-МЕД	Сначала укажи дневную норму — она в «Питании и режиме»	Indique d'abord la ration quotidienne — elle est dans « Alimentation et routine »		needs_review			Togo/Features/Feeding/FoodStockScreen.swift:258
+66	1-МЕД	Беспокоим только из-за дозы, окна натощак и тревоги.	On ne dérange que pour la dose, le jeûne et l'alerte.		needs_review			
+67	1-МЕД	Схему меняет Виктория. Ты видишь и отмечаешь приёмы.	Victoria modifie le protocole. Vous voyez et notez les prises.		needs_review			
+68	1-МЕД	по нему видно, сколько прошло от таблетки до забора	il montre le temps écoulé entre le comprimé et le prélèvement		needs_review			Togo/Features/Health/LabResultScreens.swift:547
+69	1-МЕД	Гость не меняет лечение. Ситтер не видит медицину.	Un invité ne modifie pas le traitement. Le pet-sitter ne voit pas le médical.		needs_review			
+70	1-МЕД	Если курс кончится раньше — покупать не предложим.	Si le traitement finit avant, on ne proposera pas d'acheter.		needs_review			
+71	1-МЕД	Назови препарат — остальное можно заполнить потом	Nomme le médicament — le reste peut être rempli plus tard		needs_review			Togo/Features/Profile/Editors.swift:843
+72	1-МЕД	Не сохранилось · нажми «Сохранить анализ» ещё раз	Non enregistré · appuie encore sur « Enregistrer l'analyse »		needs_review			Togo/Features/Health/LabResultScreens.swift:783
+73	1-МЕД	забор вне окна 4–6 ч — читается по обычной норме	prélèvement hors de la fenêtre 4–6 h — lu selon l'intervalle habituel		needs_review			TogoShared/Domain/LabNorm.swift:155
+74	1-МЕД	Курс кончится раньше запаса — покупать не надо.	Le traitement finit avant le stock — pas besoin d'acheter.		needs_review			Togo/Features/Health/HealthScreen.swift:344
+75	1-МЕД	Норма не записана. Приложение её не подставляет	La norme n'est pas enregistrée. L'application ne la remplit pas		needs_review			Togo/Features/Feeding/FeedingScreen.swift:394
+76	1-МЕД	В среднем %1$lld г в день при норме %2$lld г	En moyenne %1$lld g par jour pour une ration de %2$lld g		needs_review	да		Togo/Features/Feeding/FeedingScreen.swift:436
+77	1-МЕД	Курс пройден. Контрольный приём — в «Уходе».	Traitement terminé. La visite de contrôle est dans Soins.		needs_review			
+78	1-МЕД	норма 130 г ÷ 2 = 65 г · средние за 2 недели	130 g ÷ 2 = 65 g · moyenne sur 2 semaines		needs_review			
+79	1-МЕД	со-владелец · видит всё, отмечает, даёт дозу	copropriétaire · voit tout, note, donne la dose		needs_review			
+80	1-МЕД	Назови препарат — по нему назначение и ищут	Nomme le médicament — c'est par lui qu'on retrouve l'ordonnance		needs_review			Togo/Features/Health/PrescriptionScreens.swift:362
+81	1-МЕД	Норма 1,0–4,5 · забор через 5 ч после дозы.	Norme 1,0–4,5 · prélevé 5 h après la dose.		needs_review			
+82	1-МЕД	Сводку врачу можно собрать на другом языке.	Le résumé véto peut être fait dans une autre langue.		needs_review			
+83	1-МЕД	не записано, через сколько часов после дозы	non noté : combien d'heures après la dose		needs_review			TogoShared/Domain/LabNorm.swift:157
+84	1-МЕД	у каждого экрана своё; меняется при запуске	une par écran ; change au lancement		needs_review			Togo/Features/Settings/BackgroundScreen.swift:167
+85	1-МЕД	Поменяй дозу или часы — пока менять нечего	Change la dose ou les heures — il n'y a encore rien à changer		needs_review			Togo/Features/Health/ScheduleChangeSheet.swift:45
+86	1-МЕД	дать лапу · стоять при осмотре · переноска	donner la patte · rester pour l'examen · caisse		needs_review			
+87	1-МЕД	телефоны · что мог съесть · справка врачу	téléphones · ce qu'il a mangé · note véto		needs_review			Togo/Features/Profile/DogTab.swift:386
+88	1-МЕД	не медицинское устройство · открытый код	pas un dispositif médical · code ouvert		needs_review			
+89	1-МЕД	норма не записана — корм посчитать нечем	la norme n'est pas enregistrée — rien ne permet de compter la nourriture		needs_review			Togo/Features/Trip/TripScreens.swift:179
+90	1-МЕД	Кровь — позвонить врачу · Вет+ до 20:00	Sang — appelez le véto · Vet+ jusqu'à 20:00		needs_review			
+91	1-МЕД	Лечение включено · препараты вернулись	Traitement activé · médicaments rétablis		needs_review			
+92	1-МЕД	Особенность уходит в медицинскую часть	Le détail va dans la partie médicale		needs_review			
+93	1-МЕД	в час дозы и через 30 мин без отметки	à l'heure de la dose et 30 min sans marque		needs_review			
+94	1-МЕД	из галереи · только для этого экрана	depuis la photothèque · cet écran seulement		needs_review			
+95	1-МЕД	режим, выходы, еда · медицина скрыта	rythme, sorties, repas · médical masqué		needs_review			
+96	1-МЕД	Вес не записался · попробуй ещё раз	Le poids n'a pas été noté · réessaie		needs_review			Togo/Features/Health/HealthScreen.swift:1061
+97	1-МЕД	Доза не отметилась · нажми ещё раз	Dose pas cochée · appuie encore		needs_review			Togo/Features/Today/DayPlanActions.swift:254
+98	1-МЕД	Отметить стул в ${applicationName}	Noter les selles dans ${applicationName}		needs_review			
+99	1-МЕД	владелец · ведёт лечение · дежурит	propriétaire · gère le traitement · de garde		needs_review			
+100	1-МЕД	%1$@ в %2$@ — натощак · видят все	%@ à %@ — à jeun · visible par tous		needs_review	да		Togo/Features/Today/TodayScreen.swift:1196
+101	1-МЕД	Курс закрыт · «Здоровье» остаётся	Traitement clos · « Santé » reste		needs_review			
+102	1-МЕД	Фото слишком большое для браузера	Photo trop lourde pour le navigateur		needs_review			
+103	1-МЕД	Спроси врача — сообщение готово.	Demandez au véto — message prêt.		needs_review			
+104	1-МЕД	Схему меняешь ты. Мама отмечает.	Vous modifiez le protocole. Maman note.		needs_review			
+105	1-МЕД	лакомство, занятие, заметка, вес	friandise, éducation, note, poids		needs_review			Togo/Features/Today/TodayBottom.swift:245
+106	1-МЕД	ось дозы — %1$@; наибольшая %2$@	axe des doses — %@ ; la plus haute %@		needs_review	да		Togo/Features/Health/LabChartScreen.swift:398
+107	1-МЕД	схемы лечения в тот день не было	il n'y avait pas de plan de traitement ce jour-là		needs_review			Togo/Features/Health/LabChartScreen.swift:558
+108	1-МЕД	● записи · ▲ тревога · ✚ лечение	● notes · ▲ alerte · ✚ traitement		needs_review			
+109	1-МЕД	замок дозы · бесплатно навсегда	verrou de dose · gratuit pour toujours		needs_review			
+110	1-МЕД	Визиты · диагнозы · назначения	Visites · diagnostics · ordonnances		needs_review			
+111	1-МЕД	Посмотреть онбординг как новый	Revoir l'intro comme au premier lancement		needs_review			Togo/Features/Settings/SettingsScreen.swift:451
+112	1-МЕД	аллергии · на лечении · режимы	allergies · traitement · modes		needs_review			
+113	1-МЕД	левотироксин в 20:00 · натощак	lévothyroxine à 20:00 · à jeun		needs_review			
+114	1-МЕД	вес, от которого считали дозу	le poids ayant servi au calcul de la dose		needs_review			Togo/Features/Health/PrescriptionScreens.swift:266
+115	1-МЕД	её называет врач или упаковка	c'est le vétérinaire ou l'emballage qui la fixe		needs_review			Togo/Features/Feeding/FeedingScreen.swift:382
+116	1-МЕД	сдвинется только окно натощак	seule la fenêtre à jeun bouge		needs_review			
+117	1-МЕД	23:00–7:00 · доза всё равно	23:00–7:00 · la dose sonne quand même		needs_review			
+118	1-МЕД	Доза была %1$@ назад · %2$@	Dose il y a %@ · %@		needs_review	да		Togo/Features/Needs/NeedsSheet.swift:132
+119	1-МЕД	За этот период анализов нет	Aucune analyse sur cette période		needs_review			Togo/Features/Health/MedicalRecordCards.swift:79
+120	1-МЕД	Последний Т4 3,1 — в норме.	Dernière T4 3,1 — dans la norme.		needs_review			
+121	1-МЕД	натощак · не кормить 30 мин	à jeun · pas de repas 30 min		needs_review			
+122	1-МЕД	утром возможна рвота желчью	vomi de bile possible le matin		needs_review			Togo/Features/Feeding/FeedingScreen.swift:536
+123	1-МЕД	В коридоре врача: 7,8–8,6.	Dans la fourchette du véto : 7,8–8,6.		needs_review			
+124	1-МЕД	Записано · стул как всегда	Noté · selles comme d'habitude		needs_review			
+125	1-МЕД	Медицинское видит владелец	C'est le propriétaire qui voit le médical		needs_review			TogoShared/Models/Enums+Family.swift:68
+126	1-МЕД	Отмечать выходы, еду, стул	Noter sorties, repas, selles		needs_review			
+127	1-МЕД	лечения в тот день не было	pas de traitement ce jour-là		needs_review			Togo/Features/Health/LabChartScreen.swift:534
+128	1-МЕД	чьё фото видно за экранами	quelle photo apparaît derrière les écrans		needs_review			Togo/Features/Settings/BackgroundScreen.swift:64
+129	1-МЕД	Врач продлил — продолжить	Le véto a prolongé — continuer		needs_review			
+130	1-МЕД	Курс продлён до 1 декабря	Traitement prolongé jusqu'au 1er déc.		needs_review			
+131	1-МЕД	анализы, осмотр, симптомы	analyses, examen, symptômes		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:463
+132	1-МЕД	забор через %@ после дозы	prélèvement %@ après la dose		needs_review	да		TogoShared/Domain/LabSampleTiming.swift:92
+133	1-МЕД	рвота, лужа, съел с земли	vomi, accident, mangé par terre		needs_review			Togo/Features/Today/TodayBottom.swift:236
+134	1-МЕД	${applicationName}: стул	${applicationName} : selles		needs_review			
+135	1-МЕД	4 анализа · часы от дозы	4 analyses · heures après la dose		needs_review			
+136	1-МЕД	Большие реакции в неделю	Grosses réactions par semaine		needs_review			
+137	1-МЕД	Коридор врач не называл.	Le véto n'a pas fixé de fourchette.		needs_review			
+138	1-МЕД	Сводка врачу · бесплатно	Résumé véto · gratuit		needs_review			
+139	1-МЕД	Сейчас дозы по часам нет	Pas de dose à heure fixe maintenant		needs_review			
+140	1-МЕД	две дозы — передозировка	deux doses — surdosage		needs_review			
+141	1-МЕД	доза · натощак · тревога	dose · à jeun · alerte		needs_review			
+142	1-МЕД	кровь, рвота — со звуком	sang, vomi — avec son		needs_review			
+143	1-МЕД	2 раза в день · натощак	2 fois par jour · à jeun		needs_review			
+144	1-МЕД	Больше пяти не положить	Pas plus de cinq		needs_review			Togo/Features/Settings/BackgroundScreen.swift:229
+145	1-МЕД	Записано · глистогонное	Noté · vermifuge		needs_review			
+146	1-МЕД	Норма врача ÷ кормления	Norme du véto ÷ repas		needs_review			
+147	1-МЕД	Полоса — коридор врача.	Bande — fourchette du véto.		needs_review			
+148	1-МЕД	Схема · Запас · Анализы	Protocole · Stock · Analyses		needs_review			Togo/Features/Health/HealthScreen.swift:63
+149	1-МЕД	Схема изменена с завтра	Protocole modifié dès demain		needs_review			
+150	1-МЕД	время забора не указано	heure du prélèvement non indiquée		needs_review			TogoShared/Domain/LabSampleTiming.swift:96
+151	1-МЕД	запишется временем дозы	noté à l'heure de la dose		needs_review			
+152	1-МЕД	левотироксин с 12 марта	lévothyroxine depuis le 12 mars		needs_review			
+153	1-МЕД	норма врача ÷ кормления	norme du véto ÷ repas		needs_review			Togo/Features/Feeding/FeedingScreen.swift:212
+154	1-МЕД	препарат добавишь потом	vous ajouterez le médicament plus tard		needs_review			
+155	1-МЕД	пуши дозы приходят тебе	les rappels de dose te parviennent		needs_review			Togo/Features/Family/FamilyScreen.swift:390
+156	1-МЕД	пять строк без диагноза	cinq lignes, sans diagnostic		needs_review			Togo/Features/Family/FamilyScreen.swift:734
+157	1-МЕД	схема · запас · анализы	protocole · stock · analyses		needs_review			
+158	1-МЕД	Доз вовремя %@ на %@%.	Doses à l'heure %@ de %@ %.		needs_review	да		TogoShared/Domain/VetSummary.swift:115
+159	1-МЕД	Доз вовремя: %@% из %@	Doses à l'heure : %@ % sur %@		needs_review	да		Togo/Features/Health/VetSummaryScreen.swift:299
+160	1-МЕД	Дозаписать прошлые дни	Compléter les jours passés		needs_review			
+161	1-МЕД	Дозы отмечает владелец	C'est le propriétaire qui coche les doses		needs_review			TogoShared/Models/Enums+Family.swift:69
+162	1-МЕД	Записано · доза 0,1 мг	Noté · dose 0,1 mg		needs_review			
+163	1-МЕД	Записать норму и режим	Enregistrer la norme et le rythme		needs_review			Togo/Features/Feeding/FeedingScreen.swift:311
+164	1-МЕД	Лечение ведёт Виктория	Victoria gère le traitement		needs_review			
+165	1-МЕД	Сообщение врачу готово	Message au véto prêt		needs_review			
+166	1-МЕД	Через %1$@ доза · %2$@	Dose dans %@ · %@		needs_review	да		Togo/Features/Needs/NeedsSheet.swift:131
+167	1-МЕД	мар–окт 2026 · 412 доз	mars–oct. 2026 · 412 doses		needs_review			
+168	1-МЕД	пуши дозы приходят ему	les rappels de dose lui arrivent		needs_review			Togo/Features/Family/FamilyScreen.swift:391
+169	1-МЕД	ситтеру — без медицины	pet-sitter — sans médical		needs_review			
+170	1-МЕД	Время забора известно	L'heure du prélèvement est connue		needs_review			Togo/Features/Health/LabResultScreens.swift:673
+171	1-МЕД	Сначала выгрузить CSV	Exporter le CSV d'abord		needs_review			
+172	1-МЕД	Схему меняет владелец	Le propriétaire modifie le protocole		needs_review			TogoShared/Models/Enums+Family.swift:70
+173	1-МЕД	в час дозы, со звуком	à l'heure de la dose, avec son		needs_review			
+174	1-МЕД	норму ещё не записали	la norme n'a pas encore été enregistrée		needs_review			Togo/Features/Feeding/FeedingScreen.swift:381
+175	1-МЕД	после еды, не натощак	après le repas, pas à jeun		needs_review			
+176	1-МЕД	с %@ мочу не отмечали	%@ · pipi non coché		needs_review	да		TogoShared/Domain/SnapshotText.swift:51
+177	1-МЕД	ситтер · без медицины	pet-sitter · sans médical		needs_review			
+178	1-МЕД	Если кровь или рвота	Si sang ou vomi		needs_review			
+179	1-МЕД	Запас · левотироксин	Stock · lévothyroxine		needs_review			
+180	1-МЕД	Натощак · еда в 8:30	À jeun · repas à 8:30		needs_review			
+181	1-МЕД	Натощак · не кормить	À jeun · pas de repas		needs_review			
+182	1-МЕД	Не медицинский совет	Pas un avis médical		needs_review			Togo/Features/Settings/LegalScreens.swift:224
+183	1-МЕД	Прививки и документы	Vaccins et documents		needs_review			
+184	1-МЕД	Т4 3,1 · 5 ч от дозы	T4 3,1 · 5 h après la dose		needs_review			
+185	1-МЕД	окно натощак закрыто	fenêtre à jeun close		needs_review			Togo/Features/Feeding/FeedingScreen.swift:169
+186	1-МЕД	прививки и документы	vaccins et documents		needs_review			
+187	1-МЕД	через 5 ч после дозы	5 h après la dose		needs_review			
+188	1-МЕД	Левотироксин 0,1 мг	Lévothyroxine 0,1 mg		needs_review			
+189	1-МЕД	Медкнижка включится	Le carnet de santé s'active		needs_review			Togo/Features/Onboarding/OnboardingSteps.swift:496
+190	1-МЕД	левотироксин 0,1 мг	lévothyroxine 0,1 mg		needs_review			
+191	1-МЕД	пора дать лекарство	l'heure du médicament		needs_review			
+192	1-МЕД	7 × 1,5 г из нормы	7 × 1,5 g sur la ration		needs_review			
+193	1-МЕД	Диагнозов пока нет	Pas encore de diagnostics		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:287
+194	1-МЕД	Лакомство из нормы	Friandises sur la ration		needs_review			
+195	1-МЕД	Стоять при осмотре	Rester pour l'examen		needs_review			Togo/Store/SeedData.swift:108
+196	1-МЕД	Таблетку даёшь ты?	C'est vous qui donnez le cachet ?		needs_review			
+197	1-МЕД	норма 130 г в день	130 g par jour		needs_review			
+198	1-МЕД	по нашей норме: %@	selon notre intervalle : %@		needs_review	да		Togo/Features/Health/MedicalRecordCards.swift:432
+199	1-МЕД	%@ доза пропущена	%@ : dose sautée		needs_review	да		Togo/Features/Health/MissedDoseSheet.swift:22
+200	1-МЕД	Анализов пока нет	Pas encore d'analyses		needs_review			Togo/Features/Health/LabResultScreens.swift:79
+201	1-МЕД	Доза уже отмечена	Dose déjà notée		needs_review			
+202	1-МЕД	Забор во сколько?	Prélèvement à quelle heure ?		needs_review			Togo/Features/Health/LabResultScreens.swift:535
+203	1-МЕД	Записано · анализ	Noté · analyse		needs_review			
+204	1-МЕД	Норма лаборатории	Norme du labo		needs_review			
+205	1-МЕД	Семья больше двух	Famille de plus de deux		needs_review			
+206	1-МЕД	Т4 · часы от дозы	T4 · heures après la dose		needs_review			
+207	1-МЕД	Фото этого экрана	Photo de cet écran		needs_review			
+208	1-МЕД	Что сказать врачу	Que dire au véto		needs_review			
+209	1-МЕД	доза, еда, выходы	dose, repas, sorties		needs_review			
+210	1-МЕД	норма не записана	la norme n'est pas enregistrée		needs_review			Togo/Features/Profile/DogTab.swift:406
+211	1-МЕД	паспорт, прививки	passeport, vaccins		needs_review			
+212	1-МЕД	0,15 мг · 2 раза	0,15 mg · 2 fois		needs_review			
+213	1-МЕД	3 · Часы от дозы	3 · Heures après la dose		needs_review			
+214	1-МЕД	Визит и диагнозы	Visite et diagnostics		needs_review			
+215	1-МЕД	Включить лечение	Activer le traitement		needs_review			
+216	1-МЕД	Добавить диагноз	Ajouter un diagnostic		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:289
+217	1-МЕД	Доза не отмечена	Dose non notée		needs_review			
+218	1-МЕД	Сохранить анализ	Enregistrer l'analyse		needs_review			Togo/Features/Health/LabResultScreens.swift:719
+219	1-МЕД	Удалить диагноз?	Supprimer le diagnostic ?		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:490
+220	1-МЕД	в коридоре врача	dans la fourchette du véto		needs_review			
+221	1-МЕД	врач или клиника	vétérinaire ou clinique		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:457
+222	1-МЕД	из дневной нормы	sur la ration du jour		needs_review			
+223	1-МЕД	норма не указана	intervalle non indiqué		needs_review			TogoShared/Domain/LabNorm.swift:228
+224	1-МЕД	отметок мочи нет	aucun pipi coché		needs_review			TogoShared/Domain/NeedVerdict.swift:42
+225	1-МЕД	%@% доз вовремя	%@ % des doses à l'heure		needs_review	да		Togo/Features/Health/VetSummaryScreen.swift:254
+226	1-МЕД	0,1 мг · 2 раза	0,1 mg · 2 fois		needs_review			
+227	1-МЕД	Анализ сохранён	Analyse enregistrée		needs_review			
+228	1-МЕД	Добавить анализ	Ajouter une analyse		needs_review			Togo/Features/Health/LabResultScreens.swift:81
+229	1-МЕД	Доза была в %@.	La dose était à %@.		needs_review	да		Togo/Features/Health/LabResultScreens.swift:545
+230	1-МЕД	Доза в тот день	Dose ce jour-là		needs_review			Togo/Features/Health/LabChartScreen.swift:528
+231	1-МЕД	Записано · стул	Noté · selles		needs_review			
+232	1-МЕД	Капли от клещей	Pipette anti-tiques		needs_review			Togo/Store/SeedData.swift:88
+233	1-МЕД	Мама взяла дозу	Maman a pris la dose		needs_review			
+234	1-МЕД	Удалить диагноз	Supprimer le diagnostic		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:470
+235	1-МЕД	Уход и прививки	Soins et vaccins		needs_review			
+236	1-МЕД	вес на дату: %@	poids à la date : %@		needs_review	да		Togo/Features/Health/MedicalRecordCards.swift:265
+237	1-МЕД	врач увидит обе	le véto verra les deux		needs_review			
+238	1-МЕД	доза и инцидент	dose et incident		needs_review			
+239	1-МЕД	доза с единицей	dose avec unité		needs_review			Togo/Features/Health/ScheduleChangeSheet.swift:91
+240	1-МЕД	норма %1$@–%2$@	ration %1$@–%2$@		needs_review	да		Togo/Features/Health/LabChartScreen.swift:581
+241	1-МЕД	справка собрана	note prête		needs_review			
+242	1-МЕД	что сказал врач	ce qu'a dit le vétérinaire		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:164
+243	1-МЕД	Визиты к врачу	Visites chez le véto		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:48
+244	1-МЕД	Доза и лечение	Dose et traitement		needs_review			
+245	1-МЕД	Доза пропущена	Dose sautée		needs_review			
+246	1-МЕД	Завершить курс	Terminer le traitement		needs_review			
+247	1-МЕД	Записать норму	Enregistrer la norme		needs_review			Togo/Features/Profile/ScheduleEditor.swift:201
+248	1-МЕД	Менять лечение	Changer le traitement		needs_review			
+249	1-МЕД	Написать врачу	Écrire au véto		needs_review			
+250	1-МЕД	Отметка убрана	Marque retirée		needs_review			
+251	1-МЕД	Следующая доза	Prochaine dose		needs_review			
+252	1-МЕД	3,1 · в норме	3,1 · dans la norme		needs_review			
+253	1-МЕД	Анализ руками	Saisie manuelle		needs_review			
+254	1-МЕД	Выходы и стул	Sorties et selles		needs_review			
+255	1-МЕД	Доза ждёт еды	La dose attend le repas		needs_review			
+256	1-МЕД	Доза отмечена	Dose notée		needs_review			
+257	1-МЕД	Коридор врача	Fourchette du véto		needs_review			
+258	1-МЕД	Кровь в стуле	Sang dans les selles		needs_review			
+259	1-МЕД	Новый диагноз	Nouveau diagnostic		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:426
+260	1-МЕД	Правило врача	Règle du véto		needs_review			
+261	1-МЕД	Снять диагноз	Lever le diagnostic		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:496
+262	1-МЕД	Справка врачу	Note pour le véto		needs_review			
+263	1-МЕД	Часов от дозы	Heures après la dose		needs_review			
+264	1-МЕД	глистогонное!	vermifuge !		needs_review			
+265	1-МЕД	коридор врача	fourchette du véto		needs_review			Togo/Features/Health/HealthScreen.swift:867
+266	1-МЕД	кровь в стуле	sang dans les selles		needs_review			Togo/DesignSystem/PosterGallery.swift:58
+267	1-МЕД	норма 1,5–4,0	norme 1,5–4,0		needs_review			
+268	1-МЕД	позвони врачу	appelez le véto		needs_review			
+269	1-МЕД	схема закрыта	protocole clos		needs_review			
+270	1-МЕД	утром натощак	le matin à jeun		needs_review			Togo/Features/Health/PrescriptionScreens.swift:233
+271	1-МЕД	фамилия врача	nom du vétérinaire		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:148
+272	1-МЕД	Ввод анализа	Saisie d'analyse		needs_review			
+273	1-МЕД	Врач изменил	Le véto a changé		needs_review			Togo/Features/Health/HealthScreen.swift:255
+274	1-МЕД	Время забора	Heure du prélèvement		needs_review			Togo/Features/Health/LabResultScreens.swift:678
+275	1-МЕД	Глистогонное	Vermifuge		needs_review			
+276	1-МЕД	Доза в 20:00	Dose à 20:00		needs_review			
+277	1-МЕД	Доза в сутки	Dose par jour		needs_review			Togo/Features/Health/LabChartScreen.swift:367
+278	1-МЕД	Кличка · вес	Nom · poids		needs_review			
+279	1-МЕД	Левотироксин	Lévothyroxine		needs_review			Togo/Features/Health/PrescriptionScreens.swift:220
+280	1-МЕД	Новый анализ	Nouvelle analyse		needs_review			
+281	1-МЕД	После приёма	Après la prise		needs_review			Togo/Features/Health/LabChartScreen.swift:532
+282	1-МЕД	левотироксин	lévothyroxine		needs_review			
+283	1-МЕД	норма и часы	ration et horaires		needs_review			Togo/Features/Feeding/FeedingScreen.swift:118
+284	1-МЕД	Давать дозу	Donner la dose		needs_review			
+285	1-МЕД	Дата забора	Date du prélèvement		needs_review			Togo/Features/Health/LabResultScreens.swift:585
+286	1-МЕД	Жидкий стул	Selles liquides		needs_review			только в тестах: TogoTests/ArchiveFieldValueTests.swift:95
+287	1-МЕД	Фото экрана	Photo de l'écran		needs_review			
+288	1-МЕД	лечения нет	pas de traitement		needs_review			
+289	1-МЕД	первая доза	première dose		needs_review			
+290	1-МЕД	стул в доме	caca à la maison		needs_review			
+291	1-МЕД	Анализы Т4	Analyses T4		needs_review			
+292	1-МЕД	Время дозы	Heure de la dose		needs_review			
+293	1-МЕД	Итог курса	Bilan du traitement		needs_review			
+294	1-МЕД	На лечении	Sous traitement		needs_review			
+295	1-МЕД	верх нормы	limite haute		needs_review			Togo/Features/Health/LabChartScreen.swift:297
+296	1-МЕД	выше нормы	au-dessus de l'intervalle		needs_review			TogoShared/Domain/LabNorm.swift:227
+297	1-МЕД	ниже нормы	en dessous de l'intervalle		needs_review			TogoShared/Domain/LabNorm.swift:225
+298	1-МЕД	Доза в %@	Dose à %@		needs_review	да		Togo/Features/Today/TodayScreen.swift:1033
+299	1-МЕД	Лекарства	Médicaments		needs_review			Togo/Features/Onboarding/OnboardingSteps.swift:484
+300	1-МЕД	Лекарство	Médicament		needs_review			
+301	1-МЕД	низ нормы	limite basse		needs_review			Togo/Features/Health/LabChartScreen.swift:296
+302	1-МЕД	Аллергии	Allergies		needs_review			
+303	1-МЕД	Диагнозы	Diagnostics		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:278
+304	1-МЕД	Доз дано	Doses données		needs_review			
+305	1-МЕД	Медицина	Médical		needs_review			
+306	1-МЕД	Норма до	Intervalle jusqu'à		needs_review			Togo/Features/Health/LabResultScreens.swift:627
+307	1-МЕД	Норма от	Intervalle à partir de		needs_review			Togo/Features/Health/LabResultScreens.swift:621
+308	1-МЕД	Препарат	Médicament		needs_review			Togo/Features/Health/PrescriptionScreens.swift:219
+309	1-МЕД	таблетки	comprimés		needs_review			TogoShared/Models/Enums+Care.swift:135
+310	1-МЕД	0,05 мг	0,05 mg		needs_review			Togo/Store/SeedData.swift:887
+311	1-МЕД	Большой	Grand		needs_review			
+312	1-МЕД	Вес, кг	Poids, kg		needs_review			Togo/Features/Health/PrescriptionScreens.swift:267
+313	1-МЕД	Диагноз	Diagnostic		needs_review			
+314	1-МЕД	Клиника	Clinique		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:154
+315	1-МЕД	Лечение	Traitement		needs_review			
+316	1-МЕД	Натощак	À jeun		needs_review			Togo/Features/Today/TodayScreen.swift:731
+317	1-МЕД	анализы	analyses		needs_review			Togo/Features/Health/LabResultScreens.swift:86
+318	1-МЕД	гормоны	hormones		needs_review			Togo/DesignSystem/MedicalRecordGallery.swift:129
+319	1-МЕД	доза %@	dose %@		needs_review	да		Togo/Features/Health/HealthScreen.swift:663
+320	1-МЕД	натощак	à jeun		needs_review			только в тестах: TogoTests/ЧернилаПанелиПарныеЗаливкеTests.swift:58
+321	1-МЕД	печенье	biscuit		needs_review			
+322	1-МЕД	Анализ	Analyse		needs_review			Togo/Features/Health/LabResultScreens.swift:818
+323	1-МЕД	мг/сут	mg/jour		needs_review			Togo/Features/Health/LabChartScreen.swift:396
+324	1-МЕД	осмотр	examen		needs_review			TogoShared/Models/Medical.swift:246
+325	1-МЕД	Забор	Prélèvement		needs_review			
+326	1-МЕД	Рвота	Vomissements		needs_review			
+327	1-МЕД	Схема	Plan		needs_review			Togo/Features/Health/PrescriptionScreens.swift:232
+328	1-МЕД	Врач	Véto		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:143
+329	1-МЕД	Дозы	Doses		needs_review			
+330	1-МЕД	Курс	Traitement		needs_review			
+331	1-МЕД	дозы	doses		needs_review			TogoShared/Models/Enums+Care.swift:137
+332	2-ТРЕВОГА	Это список на твоём телефоне. Роль и права отсюда на телефон человека не уезжают — туда едет только роль, выбранная при приглашении. Поменять её уже вошедшему пока нельзя.	Ceci est la liste sur ton téléphone. Le rôle et les droits définis ici ne partent pas vers le téléphone de la personne — seul le rôle choisi lors de l'invitation y arrive. Le changer pour quelqu'un qui est déjà entré n'est pas encore possible.		needs_review			
+333	2-ТРЕВОГА	Магазин не отдаёт подписки. Это не связь и не твой телефон: покупки ещё не включены на стороне App Store. Всё, что важно для безопасности собаки, бесплатно навсегда.	L'App Store ne donne pas les abonnements. Ce n'est ni la connexion ni ton téléphone : les achats ne sont pas encore activés du côté d'Apple. Tout ce qui compte pour la sécurité du chien est gratuit pour toujours.		needs_review			Togo/Features/Paywall/PaywallScreen.swift:213
+334	2-ТРЕВОГА	Не удалось восстановить покупки. Проверь связь и попробуй ещё раз.	Impossible de restaurer les achats. Vérifie la connexion et réessaie.		needs_review			Togo/Store/Subscriptions.swift:207
+335	2-ТРЕВОГА	тревога приходит всей семье, даже в тихие часы	l'alerte arrive à toute la famille, même aux heures calmes		needs_review			
+336	2-ТРЕВОГА	Счёт дошёл сам. Отказ — не тупик.	Le compte s'est fait tout seul. Dire non n'est pas une impasse.		needs_review			
+337	2-ТРЕВОГА	Потерялась собака: %@, %@, %@	Chien perdu : %@, %@, %@		needs_review	да		Togo/Features/Emergency/EmergencyScreen.swift:297
+338	2-ТРЕВОГА	Потерялась собака: %@, %@	Chien perdu : %@, %@		needs_review	да		Togo/Features/Emergency/EmergencyScreen.swift:298
+339	2-ТРЕВОГА	отказ — не тупик	non n'est pas une impasse		needs_review			
+340	2-ТРЕВОГА	сравнить нельзя	comparaison impossible		needs_review			TogoShared/Domain/LabNorm.swift:229
+341	2-ТРЕВОГА	Пороги тревоги	Seuils d'alerte		needs_review			
+342	2-ТРЕВОГА	нужно внимание	demande attention		needs_review			
+343	2-ТРЕВОГА	Опасное съел	A mangé quelque chose de dangereux		needs_review			
+344	2-ТРЕВОГА	отказано	refusé		needs_review			Togo/Store/Notifications.swift:193
+345	2-ТРЕВОГА	Тревога	Alerte		needs_review			
+346	3-ДЕНЬГИ	Магазин дал %1$lld из %2$lld подписок. Показывать половину плана нечестно — покажем, когда придут обе.	L'App Store a renvoyé %lld abonnements sur %lld. Montrer la moitié du plan ne serait pas honnête — on l'affichera quand les deux seront là.		needs_review	да		Togo/Features/Paywall/PaywallScreen.swift:215
+347	3-ДЕНЬГИ	На этом Apple ID подписки Togo нет. Если покупка была с другого — войди в него в App Store.	Aucun abonnement Togo sur ce compte Apple. Si l'achat a été fait avec un autre, connecte-toi à celui-là dans l'App Store.		needs_review			Togo/Features/Settings/SettingsScreen.swift:252
+348	3-ДЕНЬГИ	В App Store твоей страны подписки Togo нет. Дело не в твоём Apple ID.	L'abonnement Togo n'existe pas sur l'App Store de ton pays. Ton identifiant Apple n'y est pour rien.		needs_review			Togo/Store/Subscriptions.swift:209
+349	3-ДЕНЬГИ	Бесплатно — двое. Третий человек — Pro.	Gratuit à deux. La troisième personne — Pro.		needs_review			
+350	3-ДЕНЬГИ	Togo Pro · 2,99 € в месяц	Togo Pro · 2,99 € par mois		needs_review			
+351	3-ДЕНЬГИ	Следующий шаг — Pro	Étape suivante — Pro		needs_review			
+352	3-ДЕНЬГИ	следующий шаг — Pro	étape suivante — Pro		needs_review			
+353	3-ДЕНЬГИ	Открыть · Togo Pro	Ouvrir · Togo Pro		needs_review			
+354	3-ДЕНЬГИ	Подписка вернулась	Abonnement restauré		needs_review			Togo/Features/Settings/SettingsScreen.swift:248
+355	3-ДЕНЬГИ	Подписка и правила	Abonnement et conditions		needs_review			
+356	3-ДЕНЬГИ	Спрашиваю магазин…	Je demande à l'App Store…		needs_review			Togo/Features/Settings/SettingsScreen.swift:141
+357	3-ДЕНЬГИ	Togo Pro включён	Togo Pro activé		needs_review			
+358	3-ДЕНЬГИ	Купить на месяц	Acheter pour un mois		needs_review			
+359	4-ПРОЧЕЕ	few: Ещё %lld попытки, и станет видно. Получается — это 4 раза из 5, как и у шага обучения. | many: Ещё %lld попыток, и станет видно. Получается — это 4 раза из 5, как и у шага обучения. | one: Ещё %lld попытка, и станет видно. Получается — это 4 раза из 5, как и у шага обучения. | other: Ещё %lld попытки, и станет видно. Получается — это 4 раза из 5, как и у шага обучения.	one: Encore %lld tentative et ce sera visible. «Ça marche», c'est 4 fois sur 5, comme pour une étape d'apprentissage. | other: Encore %lld tentatives et ce sera visible. «Ça marche», c'est 4 fois sur 5, comme pour une étape d'apprentissage.		needs_review	да	да	Togo/Features/Training/SkillAttemptSheet.swift:78
+360	4-ПРОЧЕЕ	few: ещё %lld попытки — и будет видно, получается ли | many: ещё %lld попыток — и будет видно, получается ли | one: ещё %lld попытка — и будет видно, получается ли | other: ещё %lld попытки — и будет видно, получается ли	one: encore %lld tentative et on verra si ça marche | other: encore %lld tentatives et on verra si ça marche		needs_review	да	да	Togo/Features/Training/TrainingScreens.swift:275
+361	4-ПРОЧЕЕ	Право есть и вход в Apple ID есть, а библиотека не открылась — записи сейчас только на этом телефоне и в iCloud не уезжают. Перезапусти приложение; не поможет — сохрани файл и напиши в поддержку.	Le droit est là et la connexion à l'identifiant Apple aussi, mais la bibliothèque ne s'est pas ouverte — tes notes sont pour l'instant uniquement sur ce téléphone et ne partent pas vers iCloud. Redémarre l'app ; si cela ne suffit pas, enregistre le fichier et écris au support.		needs_review			TogoShared/Domain/Persistence.swift:441
+362	4-ПРОЧЕЕ	Приглашение в общий дневник — это общий доступ iCloud. Открыть его может только тот, кого ты назвал в системном окне «Поделиться»: по пересланному адресу не войдёт никто посторонний.	Une invitation au journal partagé est un partage iCloud. Seule la personne nommée dans la fenêtre système « Partager » peut l'ouvrir : personne ne peut entrer avec une adresse transférée.		needs_review			Togo/Features/Settings/LegalScreens.swift:91
+363	4-ПРОЧЕЕ	Собака в любой момент может уйти. Ушла — значит, задача была слишком сложной, а не собака плохая. Это тоже попытка, и её стоит записать: по ней видно, что шаг надо упростить.	Le chien peut partir à tout moment. S'il part, c'est que l'exercice était trop dur — pas que le chien est mauvais. C'est une tentative aussi, et elle vaut la peine d'être notée : elle montre qu'il faut simplifier l'étape.		needs_review			Togo/Features/Training/SkillAttemptSheet.swift:56
+364	4-ПРОЧЕЕ	Первая полоска появится, когда нажмёшь маркер. Ниже — быстрее: до полусекунды собака связывает маркер со своим действием, после секунды она уже делает что-то другое.	La première barre apparaît quand tu appuies sur le marqueur. Plus bas, c'est plus rapide : en moins d'une demi-seconde le chien associe le marqueur à son action ; après une seconde, il fait déjà autre chose.		needs_review			Togo/Features/Training/TrainingSessionScreen.swift:434
+365	4-ПРОЧЕЕ	few: Удалить прогулку и %lld отметки | many: Удалить прогулку и %lld отметок | one: Удалить прогулку и %lld отметку | other: Удалить прогулку и %lld отметки	one: Supprimer la promenade et %lld marque | other: Supprimer la promenade et %lld marques		needs_review	да	да	Togo/Features/Log/LogSheets.swift:562
+366	4-ПРОЧЕЕ	Снимки лежат на телефоне и уезжают только в виджет — он берёт то же фото, что и экран. Длинная сторона ужимается до тысячи точек, чтобы не занимать место.	Les photos restent sur le téléphone et ne partent que vers le widget — il prend la même photo que l'écran. Le côté long est réduit à mille pixels pour ne pas prendre de place.		needs_review			Togo/Features/Settings/BackgroundScreen.swift:250
+367	4-ПРОЧЕЕ	Дело не в твоих настройках: права на iCloud нет у самой сборки. Записи целы и лежат на этом телефоне — сохрани файл, и они вернутся в следующей сборке.	Ce ne sont pas tes réglages : c'est la version elle-même qui n'a pas le droit iCloud. Tes notes sont intactes et restent sur ce téléphone — enregistre le fichier, elles reviendront dans la prochaine version.		needs_review			TogoShared/Domain/Persistence.swift:439
+368	4-ПРОЧЕЕ	Кто в дневнике — видно владельцу, и он может убрать любого. Уже полученные записи останутся у того, кто их получил: забрать показанное iCloud не умеет.	Le propriétaire voit qui est dans le journal et peut retirer n'importe qui. Les entrées déjà reçues restent chez celui qui les a reçues : iCloud ne sait pas reprendre ce qu'il a montré.		needs_review			Togo/Features/Settings/LegalScreens.swift:92
+369	4-ПРОЧЕЕ	Сами записи останутся. Пропадёт только пометка, что собака была с тобой весь день, — и наблюдения «после долгих дней» перестанут считать его.	Les entrées elles-mêmes resteront. Seule la marque indiquant que le chien est resté avec toi toute la journée disparaîtra — et les observations « après de longues journées » cesseront de compter ce jour-là.		needs_review			Togo/Features/DayOut/DayOutScreens.swift:162
+370	4-ПРОЧЕЕ	Уберёт карточку с этого телефона. Доступ к дневнику этим не закроется: его закрывает «Общий дневник → Перестать делиться», и сразу для всех.	Retire la fiche de ce téléphone. Cela ne ferme pas l'accès au journal : il se ferme par « Journal partagé → Arrêter de partager », et pour tout le monde à la fois.		needs_review			
+371	4-ПРОЧЕЕ	Переписки внутри приложения нет и не будет. Что делать, если что-то пошло не так, хозяин пишет сам — в брифинге, в строке «Если что».	Il n'y a pas et n'y aura pas de messagerie dans l'app. Ce qu'il faut faire si quelque chose ne va pas, le maître l'écrit lui-même — dans le briefing, à la ligne « En cas de souci ».		needs_review			Togo/Features/Family/FamilyScreen.swift:1276
+372	4-ПРОЧЕЕ	few: Принять смену и %lld дела | many: Принять смену и %lld дел | one: Принять смену и %lld дело | other: Принять смену и %lld дела	one: Prendre le relais et %lld tâche | other: Prendre le relais et %lld tâches		needs_review	да	да	Togo/Features/Sitter/ShiftHandoverSheet.swift:36
+373	4-ПРОЧЕЕ	Нажми подчёркнутое, чтобы поменять. Приблизительно — приложение сверит это с тем, как ты кормишь на самом деле, и поправит.	Touche la partie soulignée pour la changer. À peu près — l'application le comparera à ce que tu donnes vraiment et ajustera.		needs_review			Togo/Features/Onboarding/OnboardingSteps.swift:492
+374	4-ПРОЧЕЕ	Чтобы он отмечал со своего телефона, включи общий дневник и отправь приглашение — «позвать в дневник» в списке семьи.	Pour qu'il note depuis son téléphone, active le journal partagé et envoie l'invitation — « inviter au journal » dans la liste de la famille.		needs_review			Togo/Features/Family/FamilyScreen.swift:1193
+375	4-ПРОЧЕЕ	few: %lld напоминания ждут | many: %lld напоминаний ждут | one: %lld напоминание ждёт | other: %lld напоминаний ждут	one: %lld rappel en attente | other: %lld rappels en attente		needs_review	да	да	
+376	4-ПРОЧЕЕ	Заведи рецепт — номер, что выписано и срок контроля. По сроку приложение напомнит: в начале окна и в последний день.	Crée une ordonnance — le numéro, ce qui est prescrit et la fenêtre de contrôle. L'app rappellera : au début de la fenêtre et le dernier jour.		needs_review			Togo/Features/Health/PrescriptionScreens.swift:53
+377	4-ПРОЧЕЕ	few: откладывали %lld раза | many: откладывали %lld раз | one: откладывали %lld раз | other: откладывали %lld раз	one: reporté %lld fois | other: reporté %lld fois		needs_review	да	да	
+378	4-ПРОЧЕЕ	Её присылают из Togo. Нажми прямо в переписке — телефон сам откроет приглашение и спросит, принимаешь ли ты его.	Elle est envoyée depuis Togo. Appuie directement dans la conversation — le téléphone ouvrira l'invitation et demandera si tu l'acceptes.		needs_review			Togo/Features/Onboarding/ПозвалиВСемью.swift:74
+379	4-ПРОЧЕЕ	few: %lld записи внесены | many: %lld записей внесены | one: %lld запись внесена | other: %lld записей внесены	one: %lld entrée ajoutée | other: %lld entrées ajoutées		needs_review	да	да	
+380	4-ПРОЧЕЕ	Есть одна точка. График начнёт говорить со второй: он про то, как величина меняется, а не какая она сейчас.	Il y a un point. Le graphique commencera à parler au deuxième : il montre comment une valeur évolue, pas ce qu'elle vaut maintenant.		needs_review			Togo/Features/Health/LabChartScreen.swift:282
+381	4-ПРОЧЕЕ	Записи на месте — на этом телефоне. Приложение сейчас не может до них добраться, и переустановка их удалит.	Les entrées sont là, sur ce téléphone. L'app ne peut pas y accéder pour le moment, et une réinstallation les supprimerait.		needs_review			TogoShared/Domain/StorageFailureAdvice.swift:94
+382	4-ПРОЧЕЕ	Читаешь всё, отмечать и приглашать может владелец. Попроси его выдать роль — она придёт на этот же телефон.	Tu peux tout lire ; noter et inviter, c'est au propriétaire. Demande-lui un rôle — il arrivera sur ce même téléphone.		needs_review			Togo/Features/Family/FamilyScreen.swift:798
+383	4-ПРОЧЕЕ	Языков мало намеренно: машинный перевод в приложении про здоровье собаки хуже, чем язык, сделанный целиком.	Peu de langues, et c'est voulu : dans une app sur la santé d'un chien, une traduction automatique vaut moins qu'une langue faite entièrement.		needs_review			Togo/Features/Settings/LanguageScreen.swift:187
+384	4-ПРОЧЕЕ	Ссылки нет? Попроси прислать её заново — приглашение отправляют из Togo: «Семья» → «Позвать в дневник».	Pas de lien ? Demande qu'on te le renvoie — l'invitation s'envoie depuis Togo : « Famille » → « Inviter dans le journal ».		needs_review			Togo/Features/Onboarding/ПозвалиВСемью.swift:85
+385	4-ПРОЧЕЕ	Приглашение не открылось, и дело не в твоих настройках — это на нашей стороне. Напиши нам, пожалуйста.	L'invitation ne s'est pas ouverte, et ce ne sont pas tes réglages — c'est de notre côté. Écris-nous, s'il te plaît.		needs_review			TogoShared/Sync/ShareAcceptanceOutcome.swift:94
+386	4-ПРОЧЕЕ	Выбери, кому: маме, мужу, ситтеру. Откроет только он, со своего iCloud, и ему нужен Togo на телефоне.	Choisis à qui : ta mère, ton conjoint, le pet-sitter. Seule cette personne pourra l'ouvrir, depuis son iCloud, et il lui faut Togo sur son téléphone.		needs_review			Togo/Features/Family/FamilyScreen.swift:548
+387	4-ПРОЧЕЕ	Это предел прибора, а не результат. Приложение сохранит его пределом и не выдаст за измеренное число.	C'est la limite de l'appareil, pas un résultat. L'app l'enregistrera comme limite et ne la fera pas passer pour une valeur mesurée.		needs_review			Togo/Features/Health/LabResultScreens.swift:635
+388	4-ПРОЧЕЕ	Попыток пока нет. Приложение скажет, получается ли, после %lld попыток — раньше это была бы догадка.	Aucune tentative pour l'instant. L'app dira si ça marche après %lld tentatives — avant, ce serait une devinette.		needs_review	да		Togo/Features/Training/SkillAttemptSheet.swift:75
+389	4-ПРОЧЕЕ	few: из %lld кормлений | many: из %lld кормлений | one: из %lld кормления | other: из %lld кормлений	one: sur %lld repas | other: sur %lld repas		needs_review	да	да	Togo/Features/Feeding/FeedingScreen.swift:338
+390	4-ПРОЧЕЕ	Фотографии собаки пока нет — экраны чёрные. Положи её в карточку собаки, и подложка появится везде.	Il n'y a pas encore de photo du chien, les écrans sont noirs. Ajoute-la à sa fiche et le fond apparaîtra partout.		needs_review			Togo/Features/Settings/BackgroundScreen.swift:313
+391	4-ПРОЧЕЕ	few: %lld раза пописал | many: %lld раз пописал | one: %lld раз пописал | other: %lld раз пописал	one: %lld pipi | other: %lld pipis		needs_review	да	да	Togo/Features/Needs/WalkMode.swift:783
+392	4-ПРОЧЕЕ	«Откуда взято» решает споры: назначение, известное только письмом, иначе не отличить от бланка.	« D'où ça vient » tranche les désaccords : une ordonnance connue seulement par courrier ne se distingue pas d'une fiche.		needs_review			Togo/Features/Health/PrescriptionScreens.swift:262
+393	4-ПРОЧЕЕ	Приглашение не открылось, и мы не знаем почему. Попробуй ещё раз; если повторится — напиши нам.	L'invitation ne s'est pas ouverte et nous ignorons pourquoi. Réessaie ; si cela se reproduit, écris-nous.		needs_review			TogoShared/Sync/ShareAcceptanceOutcome.swift:96
+394	4-ПРОЧЕЕ	Это пометка, а не срок: сам доступ по ней не закроется. Убрать человека из семьи нужно руками.	C'est une note, pas une échéance : l'accès ne se fermera pas tout seul. Retirer une personne de la famille se fait à la main.		needs_review			
+395	4-ПРОЧЕЕ	few: ровно %lld вещи | many: ровно %lld вещей | one: ровно %lld вещь | other: ровно %lld вещей	one: exactement %lld chose | other: exactement %lld choses		needs_review	да	да	Togo/Features/Paywall/PaywallScreen.swift:201
+396	4-ПРОЧЕЕ	Если не помогло — переустановить. Дневник вернётся из iCloud: прошлые запуски в него уезжали.	Si cela n'a pas aidé, réinstalle. Le journal reviendra d'iCloud : les lancements précédents y étaient envoyés.		needs_review			TogoShared/Domain/StorageFailureAdvice.swift:106
+397	4-ПРОЧЕЕ	Приглашение не открылось: на телефоне не выполнен вход в iCloud. Войди и нажми ссылку снова.	L'invitation ne s'est pas ouverte : ce téléphone n'est pas connecté à iCloud. Connecte-toi et appuie de nouveau sur le lien.		needs_review			TogoShared/Sync/ShareAcceptanceOutcome.swift:92
+398	4-ПРОЧЕЕ	Записывать в этот дневник тебе не разрешено. Открой Togo, вкладку «Семья», и нажми «Это я».	Tu n'as pas le droit d'écrire dans ce journal. Ouvre Togo, l'onglet « Famille », et appuie sur « C'est moi ».		needs_review			Togo/Intents/QuickLogIntents.swift:171
+399	4-ПРОЧЕЕ	few: %lld инцидента | many: %lld инцидентов | one: %lld инцидент | other: %lld инцидентов	one: %lld incident | other: %lld incidents		needs_review	да	да	Togo/Features/Health/VetSummaryScreen.swift:96
+400	4-ПРОЧЕЕ	Дневник ездит через твой личный iCloud, а не через чужой сервер. Аккаунт в Togo не нужен.	Le journal passe par ton iCloud personnel, pas par le serveur d'un tiers. Aucun compte Togo n'est nécessaire.		needs_review			Togo/Features/Onboarding/ПозвалиВСемью.swift:77
+401	4-ПРОЧЕЕ	few: %lld кормления | many: %lld кормлений | one: %lld кормление | other: %lld кормлений	one: %lld repas | other: %lld repas		needs_review	да	да	Togo/Features/Today/TodaySummaryStrip.swift:34
+402	4-ПРОЧЕЕ	Записи с этого телефона будут подписаны этим именем, а права возьмутся из этой карточки.	Les entrées depuis ce téléphone porteront ce nom, et les droits viendront de cette fiche.		needs_review			Togo/Features/Family/FamilyScreen.swift:1080
+403	4-ПРОЧЕЕ	Приложение не спрашивает ссылку — её открывают в переписке, и дальше всё делает телефон.	L'app ne demande pas le lien — on l'ouvre dans la conversation, et le téléphone fait le reste.		needs_review			
+404	4-ПРОЧЕЕ	Свою собаку заводить не нужно — она появится сама, вместе с записями того, кто позвал.	Inutile d'ajouter ton propre chien — il apparaîtra tout seul, avec les notes de celui qui t'a invité.		needs_review			Togo/Features/Onboarding/ПозвалиВСемью.swift:67
+405	4-ПРОЧЕЕ	Адрес скопирован: %@. Напиши с любого другого устройства — и приложи три строки ниже.	Adresse copiée : %@. Écris depuis n'importe quel autre appareil et joins les trois lignes ci-dessous.		needs_review	да		Togo/Features/Settings/DataPrivacyScreen.swift:161
+406	4-ПРОЧЕЕ	Дело не в твоих настройках: приложению не разрешено спрашивать App Store. Напиши нам.	Ce ne sont pas tes réglages : l'app n'a pas le droit d'interroger l'App Store. Écris-nous.		needs_review			Togo/Store/Subscriptions.swift:211
+407	4-ПРОЧЕЕ	Приглашение уже создано, облако ещё не выдало адрес. Попробуй через несколько секунд.	L'invitation est déjà créée, le cloud n'a pas encore fourni le lien. Réessaie dans quelques secondes.		needs_review			TogoShared/Sync/FamilyShare.swift:140
+408	4-ПРОЧЕЕ	Это поле отвечает на вопрос «почему так решили» через полгода, когда никто не помнит.	Ce champ répond à la question « pourquoi avoir décidé ainsi » six mois plus tard, quand personne ne s'en souvient.		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:466
+409	4-ПРОЧЕЕ	few: %lld действия | many: %lld действий | one: %lld действие | other: %lld действий	one: %lld action | other: %lld actions		needs_review	да	да	TogoShared/Domain/Formatting.swift:260
+410	4-ПРОЧЕЕ	«%@» в дневнике дважды, и записи разошлись: часть в одной карточке, часть в другой.	« %@ » est deux fois dans le journal, et les entrées se sont séparées : une partie sur une fiche, une partie sur l'autre.		needs_review	да		Togo/Features/Family/DuplicateDogCard.swift:98
+411	4-ПРОЧЕЕ	Сведу в ту, что заведена %1$@, и перенесу в неё %2$lld записей. Ничего не удалится.	Je fusionne vers celle créée le %@ et j'y déplace %lld entrées. Rien ne sera supprimé.		needs_review	да		Togo/Features/Family/DuplicateDogCard.swift:99
+412	4-ПРОЧЕЕ	few: %lld человека | many: %lld человек | one: %lld человек | other: %lld человек	one: %lld personne | other: %lld personnes		needs_review	да	да	TogoShared/Domain/BackupArchive.swift:668
+413	4-ПРОЧЕЕ	few: %lld занятия | many: %lld занятий | one: %lld занятие | other: %lld занятий	one: %lld séance | other: %lld séances		needs_review	да	да	Togo/Features/Profile/DogTab.swift:455
+414	4-ПРОЧЕЕ	few: %lld попытки | many: %lld попыток | one: %lld попытка | other: %lld попыток	one: %lld essai | other: %lld essais		needs_review	да	да	Togo/Features/Training/SkillAttemptSheet.swift:34
+415	4-ПРОЧЕЕ	Номер связывает строки одного бланка между собой — в списке они встанут вместе.	Le numéro relie entre elles les lignes d'une même fiche — elles apparaîtront groupées dans la liste.		needs_review			Togo/Features/Health/LabResultScreens.swift:587
+416	4-ПРОЧЕЕ	Обязательна только кличка. Остальное можно пропустить и заполнить когда угодно.	Seul le nom est obligatoire. Le reste peut être ignoré et rempli plus tard.		needs_review			Togo/Features/Profile/Editors.swift:62
+417	4-ПРОЧЕЕ	Приглашение не открылось: нет связи. Попробуй ещё раз, когда появится интернет.	L'invitation ne s'est pas ouverte : pas de connexion. Réessaie quand tu auras internet.		needs_review			TogoShared/Sync/ShareAcceptanceOutcome.swift:90
+418	4-ПРОЧЕЕ	few: %lld записи | many: %lld записей | one: %lld запись | other: %lld записей	one: %lld entrée | other: %lld entrées		needs_review	да	да	TogoShared/Domain/BackupArchive.swift:667
+419	4-ПРОЧЕЕ	few: %lld выхода | many: %lld выходов | one: %lld выход | other: %lld выходов	one: %lld sortie | other: %lld sorties		needs_review	да	да	TogoShared/Domain/Formatting.swift:256
+420	4-ПРОЧЕЕ	few: %lld месяца | many: %lld месяцев | one: %lld месяц | other: %lld месяцев	one: %lld mois | other: %lld mois		needs_review	да	да	TogoShared/Models/Dog.swift:462
+421	4-ПРОЧЕЕ	few: %lld сеанса | many: %lld сеансов | one: %lld сеанс | other: %lld сеансов	one: %lld session | other: %lld sessions		needs_review	да	да	Togo/Features/Settings/UsageLogScreen.swift:84
+422	4-ПРОЧЕЕ	Приглашение уходит через общий дневник — пока он выключен, отправлять нечего.	L'invitation passe par le journal partagé — tant qu'il est désactivé, il n'y a rien à envoyer.		needs_review			Togo/Features/Family/FamilyScreen.swift:534
+423	4-ПРОЧЕЕ	Расклад держится до следующего запуска приложения, потом перемешается заново.	La disposition tient jusqu'au prochain lancement de l'app, puis change.		needs_review			Togo/Features/Settings/BackgroundScreen.swift:318
+424	4-ПРОЧЕЕ	few: %lld недели | many: %lld недель | one: %lld неделя | other: %lld недель	one: %lld semaine | other: %lld semaines		needs_review	да	да	Togo/Features/Paywall/PaywallScreen.swift:390
+425	4-ПРОЧЕЕ	few: %lld мешка | many: %lld мешков | one: %lld мешок | other: %lld мешков	one: %lld sac | other: %lld sacs		needs_review	да	да	TogoShared/Models/FoodStock.swift:188
+426	4-ПРОЧЕЕ	few: %lld минуты | many: %lld минут | one: %lld минута | other: %lld минут	one: %lld minute | other: %lld minutes		needs_review	да	да	TogoShared/Domain/Formatting.swift:257
+427	4-ПРОЧЕЕ	few: %lld собаки | many: %lld собак | one: %lld собака | other: %lld собак	one: %lld chien | other: %lld chiens		needs_review	да	да	TogoShared/Domain/BackupArchive.swift:666
+428	4-ПРОЧЕЕ	iCloud не принял приглашение (код %lld). Проверь связь и попробуй ещё раз.	iCloud n'a pas accepté l'invitation (code %lld). Vérifie ta connexion et réessaie.		needs_review	да		TogoShared/Sync/FamilyShare.swift:144
+429	4-ПРОЧЕЕ	Везде первое из твоих. Чтобы поменять — убери фото и положи другое первым.	Partout la première des tiennes. Pour changer, retire la photo et mets-en une autre en premier.		needs_review			Togo/Features/Settings/BackgroundScreen.swift:316
+430	4-ПРОЧЕЕ	few: %lld срыва | many: %lld срывов | one: %lld срыв | other: %lld срывов	one: %lld réaction | other: %lld réactions		needs_review	да	да	Togo/Features/Needs/WalkMode.swift:787
+431	4-ПРОЧЕЕ	Togo сравнивает время с прошлыми днями. Первые 4 дня ответ — «непонятно».	Togo compare l'heure avec les jours passés. Les 4 premiers jours, la réponse est « pas clair ».		needs_review			
+432	4-ПРОЧЕЕ	Записывать в этот дневник тебе не разрешено. Спроси того, кто им делится.	Tu n'as pas le droit de noter dans ce journal. Demande à la personne qui le partage.		needs_review			
+433	4-ПРОЧЕЕ	few: %lld банки | many: %lld банок | one: %lld банка | other: %lld банок	one: %lld boîte | other: %lld boîtes		needs_review	да	да	TogoShared/Models/FoodStock.swift:190
+434	4-ПРОЧЕЕ	Смотреть надо не на одно число, а на то, куда идёт ряд. Открой график.	Ne regarde pas un seul chiffre, regarde où va la série. Ouvre le graphique.		needs_review			Togo/Features/Health/HealthScreen.swift:449
+435	4-ПРОЧЕЕ	few: %lld часа | many: %lld часов | one: %lld час | other: %lld часов	one: %lld heure | other: %lld heures		needs_review	да	да	Togo/Features/DayOut/DayOutScreens.swift:27
+436	4-ПРОЧЕЕ	Адрес и строки запуска скопированы: %@. Напиши с другого устройства.	Adresse et lignes de démarrage copiées : %@. Écris depuis un autre appareil.		needs_review	да		Togo/App/TogoApp.swift:754
+437	4-ПРОЧЕЕ	Лая на 3 меньше, чем две недели назад. Внезапный лай бывает от боли.	3 aboiements de moins qu'il y a deux semaines. Un aboiement soudain peut venir de la douleur.		needs_review			
+438	4-ПРОЧЕЕ	few: %lld дня | many: %lld дней | one: %lld день | other: %lld дней	one: %lld jour | other: %lld jours		needs_review	да	да	TogoShared/Domain/Formatting.swift:255
+439	4-ПРОЧЕЕ	few: %lld дням | many: %lld дням | one: %lld дню | other: %lld дням	one: %lld jour | other: %lld jours		needs_review	да	да	
+440	4-ПРОЧЕЕ	Пока своих фотографий нет, везде будет фото собаки из её карточки.	Tant que tu n'as pas tes propres photos, c'est celle de sa fiche qui s'affiche partout.		needs_review			Togo/Features/Settings/BackgroundScreen.swift:317
+441	4-ПРОЧЕЕ	few: %lld года | many: %lld лет | one: %lld год | other: %lld лет	one: %lld an | other: %lld ans		needs_review	да	да	TogoShared/Models/Dog.swift:465
+442	4-ПРОЧЕЕ	few: %lld раза | many: %lld раз | one: %lld раз | other: %lld раз	one: %lld fois | other: %lld fois		needs_review	да	да	TogoShared/Domain/Formatting.swift:258
+443	4-ПРОЧЕЕ	few: %lld раза | many: %lld раз | one: %lld раз | other: %lld раз	one: %lld fois | other: %lld fois		needs_review	да	да	
+444	4-ПРОЧЕЕ	Назови хотя бы один показатель — строка без названия не считается	Nomme au moins un paramètre — une ligne sans nom ne compte pas		needs_review			Togo/Features/Health/LabResultScreens.swift:712
+445	4-ПРОЧЕЕ	Пока ссылку не открыли, дневник остаётся только на этом телефоне.	Tant que le lien n'est pas ouvert, le journal reste uniquement sur ce téléphone.		needs_review			Togo/Features/Onboarding/ПозвалиВСемью.swift:88
+446	4-ПРОЧЕЕ	iCloud не принял приглашение. Проверь связь и попробуй ещё раз.	iCloud n'a pas accepté l'invitation. Vérifie ta connexion et réessaie.		needs_review			TogoShared/Sync/FamilyShare.swift:146
+447	4-ПРОЧЕЕ	Готово: ты в общем дневнике. Чей он — приложение пока не знает.	C'est fait : tu es dans le journal partagé. À qui il appartient, l'app ne le sait pas encore.		needs_review			TogoShared/Sync/ShareAcceptanceOutcome.swift:88
+448	4-ПРОЧЕЕ	Когда кормили и сколько он не писал — не открывая приложение.	Quand il a mangé et depuis combien de temps il n'a pas fait pipi — sans ouvrir l'app.		needs_review			TogoWidgets/TodayWidget.swift:16
+449	4-ПРОЧЕЕ	Дистанция 6 м · отходит за 1–5 мин · помогает отойти дальше.	Distance 6 m · récupère en 1–5 min · s'éloigner aide.		needs_review			
+450	4-ПРОЧЕЕ	Лужа — это сигнал, а не проступок. Что было за час до этого?	Un accident est un signal, pas une faute. Que s'est-il passé une heure avant ?		needs_review			
+451	4-ПРОЧЕЕ	дата, повод и заключение — то, что спросят в следующий раз	date, motif et conclusion — ce qu'on te demandera la prochaine fois		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:126
+452	4-ПРОЧЕЕ	файл дневника есть, но не открылся — «Дневник не открылся»	le fichier du journal existe mais ne s'ouvre pas — « Le journal ne s'est pas ouvert »		needs_review			TogoShared/Domain/Persistence.swift:309
+453	4-ПРОЧЕЕ	Назови напоминание — под этим именем оно встанет в список	Nomme le rappel — il figurera dans la liste sous ce nom		needs_review			Togo/Features/Profile/Editors.swift:535
+454	4-ПРОЧЕЕ	поднеси телефон: поднёс — прогулка началась или кончилась	approchez le téléphone : la sortie commence ou se termine		needs_review			
+455	4-ПРОЧЕЕ	срок контроля — главное поле: по нему приложение напомнит	l'échéance de contrôle est le champ principal : c'est par elle que l'app rappelle		needs_review			Togo/Features/Health/PrescriptionScreens.swift:201
+456	4-ПРОЧЕЕ	Второй вопрос — как близко: вплотную · ≈ 5 м · далеко.	Question suivante — à quelle distance : tout près · ≈ 5 m · loin.		needs_review			
+457	4-ПРОЧЕЕ	Напиши, как его зовут — имя станет автором его записей	Écris son nom — il signera ses entrées		needs_review			Togo/Features/Family/FamilyScreen.swift:1202
+458	4-ПРОЧЕЕ	Записей меньше чем за 4 дня. Сомневаешься — выведи.	Moins de 4 jours de notes. Dans le doute, sortez-le.		needs_review			
+459	4-ПРОЧЕЕ	Номер нужен в аптеке — он же стоит первым в списке.	La pharmacie a besoin du numéro — c'est aussi lui qui vient en premier dans la liste.		needs_review			Togo/Features/Health/PrescriptionScreens.swift:214
+460	4-ПРОЧЕЕ	бланк спрашиваем один раз — он общий для всех строк	la fiche n'est demandée qu'une fois — elle vaut pour toutes les lignes		needs_review			Togo/Features/Health/LabResultScreens.swift:541
+461	4-ПРОЧЕЕ	права на iCloud нет — только локально (профиль: %@)	pas de droit iCloud — local uniquement (profil : %@)		needs_review	да		TogoShared/Domain/Persistence.swift:237
+462	4-ПРОЧЕЕ	Дома и на улице — разные навыки. Заполняется само.	À la maison et dehors, ce sont deux acquis. Se remplit tout seul.		needs_review			
+463	4-ПРОЧЕЕ	Сначала «Он сделал» — маркер включится после него	D'abord « Il l'a fait » — le marqueur s'active ensuite		needs_review			Togo/Features/Training/TrainingSessionScreen.swift:302
+464	4-ПРОЧЕЕ	по %1$@, где она была с тобой дольше %2$lld часов	sur %@, où il est resté avec toi plus de %lld heures		needs_review	да		Togo/Features/History/HistoryScreen.swift:237
+465	4-ПРОЧЕЕ	ты сможешь смотреть всё · отмечать будет владелец	tu verras tout · le propriétaire notera		needs_review			Togo/Features/Family/РольВДневнике.swift:118
+466	4-ПРОЧЕЕ	Назови показатель — так, как он написан в бланке	Nomme le paramètre — tel qu'il est écrit sur le formulaire		needs_review			Togo/Features/Health/LabResultScreens.swift:873
+467	4-ПРОЧЕЕ	Напиши, откуда и куда — по этому собираются вещи	Écris d'où et vers où — la liste des affaires en dépend		needs_review			Togo/Features/Trip/TripScreens.swift:85
+468	4-ПРОЧЕЕ	Убрать Аню можно в «Семье». Её записи останутся.	Vous pouvez retirer Anya dans Famille. Ses notes restent.		needs_review			
+469	4-ПРОЧЕЕ	себя в списке семьи не нашли — права наблюдателя	nous ne t'avons pas trouvé dans la liste de la famille — droits d'observateur		needs_review			Togo/App/AppState.swift:174
+470	4-ПРОЧЕЕ	те, кто уже в семье, остаются с прежними правами	ceux qui sont déjà dans la famille gardent leurs droits actuels		needs_review			Togo/Store/Subscriptions.swift:390
+471	4-ПРОЧЕЕ	Записей ещё нет. Нажми «Гулять», когда выйдете.	Pas encore de notes. Touchez « Promener » en partant.		needs_review			
+472	4-ПРОЧЕЕ	Под всеми разделами фото собаки из её карточки.	La photo de sa fiche est sous toutes les sections.		needs_review			Togo/Features/Settings/BackgroundScreen.swift:314
+473	4-ПРОЧЕЕ	Напиши формулировку — хотя бы рабочую гипотезу	Écris la formulation — une hypothèse de travail suffit		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:481
+474	4-ПРОЧЕЕ	App Store не ответил. Попробуй ещё раз позже.	L'App Store n'a pas répondu. Réessaie plus tard.		needs_review			Togo/Store/Subscriptions.swift:213
+475	4-ПРОЧЕЕ	Обычно выходите чаще · %1$@ из %2$lld за день	D'habitude vous sortez plus souvent · %@ sur %lld par jour		needs_review	да		Togo/Features/Today/TodayHero.swift:148
+476	4-ПРОЧЕЕ	Перенесено записей: %lld. Дневник снова один.	Entrées déplacées : %lld. Le journal est de nouveau unique.		needs_review	да		Togo/Features/Family/DuplicateDogCard.swift:137
+477	4-ПРОЧЕЕ	Право «%@» выдаёт владелец в разделе «Семья».	Le propriétaire accorde « %@ » dans « Famille ».		needs_review	да		Togo/Features/Family/ПлашкаПрава.swift:46
+478	4-ПРОЧЕЕ	весь онбординг подряд; ничего не записывается	tout l'onboarding d'affilée ; rien n'est enregistré		needs_review			Togo/Features/Settings/SettingsScreen.swift:468
+479	4-ПРОЧЕЕ	Взвешивание не удалилось · попробуй ещё раз	La pesée n'a pas été supprimée · réessaie		needs_review			Togo/Features/Health/HealthScreen.swift:1028
+480	4-ПРОЧЕЕ	Не получилось взять на себя · нажми ещё раз	Impossible de prendre en charge · appuie encore		needs_review			Togo/Features/Today/DayPlanActions.swift:417
+481	4-ПРОЧЕЕ	Следующий шаг не завёлся · попробуй ещё раз	L'étape suivante n'a pas été créée · réessaie		needs_review			Togo/Features/Training/TrainingSessionScreen.swift:528
+482	4-ПРОЧЕЕ	по %@, где она была с тобой дольше %@ часов	sur %@, où il est resté avec toi plus de %@ heures		needs_review	да		Togo/Features/History/HistoryScreen.swift:237
+483	4-ПРОЧЕЕ	слева — как поставили, справа — как выходит	à gauche, ce que tu as réglé ; à droite, ce que ça donne		needs_review			Togo/Features/Feeding/FeedingScreen.swift:513
+484	4-ПРОЧЕЕ	ты сможешь смотреть всё · отмечать будет %@	tu verras tout · %@ notera		needs_review	да		Togo/Features/Family/РольВДневнике.swift:120
+485	4-ПРОЧЕЕ	Liquid Glass поверх фото. Время настоящее.	Liquid Glass sur photo. Heure réelle.		needs_review			
+486	4-ПРОЧЕЕ	Напиши кличку — так её будет звать дневник	Écris un nom — c'est ainsi que le journal l'appellera		needs_review			Togo/Features/Profile/Editors.swift:96
+487	4-ПРОЧЕЕ	Не сохранилось · нажми «Сохранить» ещё раз	Non enregistré · appuie encore sur « Enregistrer »		needs_review			Togo/Features/Health/LabResultScreens.swift:959
+488	4-ПРОЧЕЕ	Отметить в ${applicationName}, что пописал	Noter un pipi dans ${applicationName}		needs_review			
+489	4-ПРОЧЕЕ	Удаление не сохранилось · попробуй ещё раз	La suppression n'a pas été enregistrée · réessaie		needs_review			Togo/Features/Today/DayTimelineList.swift:161
+490	4-ПРОЧЕЕ	отмечаешь и смотришь · приглашает владелец	tu notes et consultes · le propriétaire invite		needs_review			Togo/Features/Family/РольВДневнике.swift:81
+491	4-ПРОЧЕЕ	Напиши заметку — пустую записывать нечего	Écris la note — il n'y a rien à enregistrer tant qu'elle est vide		needs_review			Togo/Features/Log/LogSheets.swift:288
+492	4-ПРОЧЕЕ	Сейчас: %@. Получается — это 4 раза из 5.	Pour l'instant : %@. « Ça marche », c'est 4 fois sur 5.		needs_review	да		Togo/Features/Training/SkillAttemptSheet.swift:80
+493	4-ПРОЧЕЕ	каждый экран — своё, меняется при запуске	une par écran, change au lancement		needs_review			
+494	4-ПРОЧЕЕ	сколько строк на бланке, столько и добавь	ajoute autant de lignes qu'il y en a sur la fiche		needs_review			Togo/Features/Health/LabResultScreens.swift:542
+495	4-ПРОЧЕЕ	Выше — жиже. Три жидких подряд — эпизод.	Plus haut = plus liquide. Trois liquides de suite — épisode.		needs_review			
+496	4-ПРОЧЕЕ	Записи сохранятся и уйдут в iCloud позже	Les notes sont gardées et partiront vers iCloud plus tard		needs_review			
+497	4-ПРОЧЕЕ	Начни занятие — тогда отметки заработают	Commence la séance — les marques fonctionneront alors		needs_review			Togo/Features/Training/TrainingSessionScreen.swift:298
+498	4-ПРОЧЕЕ	Не удалилось · проверь после перезапуска	Non supprimé · vérifie après un redémarrage		needs_review			Togo/Features/DayOut/DayOutScreens.swift:181
+499	4-ПРОЧЕЕ	Отмена не сохранилась · попробуй ещё раз	L'annulation n'a pas été enregistrée · réessaie		needs_review			Togo/App/RootView.swift:455
+500	4-ПРОЧЕЕ	Только действия, без содержания записей.	Actions seulement, sans le contenu des notes.		needs_review			
+501	4-ПРОЧЕЕ	дистанция · восстановление · что помогло	distance · récupération · ce qui aide		needs_review			
+502	4-ПРОЧЕЕ	поднёс — прогулка началась или кончилась	approchez — la sortie commence ou se termine		needs_review			
+503	4-ПРОЧЕЕ	Занятие не удалилось · попробуй ещё раз	La séance n'a pas été supprimée · réessaie		needs_review			Togo/Features/Training/TrainingLibraryScreen.swift:172
+504	4-ПРОЧЕЕ	Записать кормление в ${applicationName}	Noter le repas dans ${applicationName}		needs_review			
+505	4-ПРОЧЕЕ	Не сохранилось · нажми «Готово» ещё раз	Pas enregistré · appuie encore sur « OK »		needs_review			Togo/Features/Profile/Editors.swift:357
+506	4-ПРОЧЕЕ	Снимок не сохранился · попробуй ещё раз	La photo n'a pas été enregistrée · réessaie		needs_review			Togo/Features/Emergency/DocumentPhotos.swift:219
+507	4-ПРОЧЕЕ	Ты смотришь дневник · отмечает владелец	Tu consultes le journal · le propriétaire note		needs_review			Togo/Features/Family/РольВДневнике.swift:92
+508	4-ПРОЧЕЕ	все шесть шагов; ничего не записывается	les six étapes ; rien n'est enregistré		needs_review			
+509	4-ПРОЧЕЕ	нанести между лопатками, не купать 24 ч	appliquer entre les omoplates, ne pas baigner pendant 24 h		needs_review			Togo/Features/Health/PrescriptionScreens.swift:325
+510	4-ПРОЧЕЕ	В среднем %lld г в день за две недели.	En moyenne %lld g par jour sur deux semaines.		needs_review	да		Togo/Features/Feeding/FeedingScreen.swift:267
+511	4-ПРОЧЕЕ	Матрица переноса · оси видны бесплатно	Matrice de transfert · axes gratuits		needs_review			
+512	4-ПРОЧЕЕ	Пропадут все одиннадцать видов записей	Les onze types de notes seront perdus		needs_review			
+513	4-ПРОЧЕЕ	формулировка, статус и на чём основано	formulation, statut et sur quoi cela repose		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:427
+514	4-ПРОЧЕЕ	● ≤ 4 ч · ■ 4–8 · ▲ > 8 · ○ не указано	● ≤ 4 h · ■ 4–8 · ▲ > 8 · ○ non noté		needs_review			
+515	4-ПРОЧЕЕ	В среднем 128 г в день за две недели.	En moyenne 128 g par jour sur deux semaines.		needs_review			
+516	4-ПРОЧЕЕ	Выездной день · корм и вода считаются	Journée dehors · eau et croquettes comptées		needs_review			
+517	4-ПРОЧЕЕ	Снимок не удалился · попробуй ещё раз	La photo n'a pas été supprimée · réessaie		needs_review			Togo/Features/Emergency/DocumentPhotos.swift:242
+518	4-ПРОЧЕЕ	до неё ≤ 30 мин · можно дать на улице	≤ 30 min avant la dose · peut se donner dehors		needs_review			
+519	4-ПРОЧЕЕ	шипперке · 3 года · 8,4 кг · чип есть	schipperke · 3 ans · 8,4 kg · pucé		needs_review			
+520	4-ПРОЧЕЕ	Давно ли гуляли в ${applicationName}	Dernière promenade dans ${applicationName}		needs_review			
+521	4-ПРОЧЕЕ	Записано · занятие 3 мин · 7 успехов	Noté · éducation 3 min · 7 réussites		needs_review			
+522	4-ПРОЧЕЕ	Нет лужи за час — просил не в туалет	Pas de pipi en une heure — il demandait autre chose		needs_review			
+523	4-ПРОЧЕЕ	Снимок не открылся · попробуй другой	La photo ne s'est pas ouverte · essaie-en une autre		needs_review			Togo/Features/Settings/BackgroundScreen.swift:424
+524	4-ПРОЧЕЕ	Срок не пересчитался · нажми ещё раз	Échéance pas recalculée · appuie encore		needs_review			Togo/Features/Today/DayPlanActions.swift:303
+525	4-ПРОЧЕЕ	Эпизод не продлился · отметь ещё раз	Épisode pas prolongé · note encore		needs_review			Togo/Features/Incident/IncidentSheet.swift:89
+526	4-ПРОЧЕЕ	${applicationName}: давно ли гуляли	${applicationName} : dernière promenade		needs_review			
+527	4-ПРОЧЕЕ	Нажми подчёркнутое, чтобы поменять.	Touchez le texte souligné pour le modifier.		needs_review			
+528	4-ПРОЧЕЕ	Ответ не записался · отметь ещё раз	Réponse pas enregistrée · note encore		needs_review			Togo/Features/Needs/WalkSheets.swift:37
+529	4-ПРОЧЕЕ	Поставь, сколько этого корма в день	Indique la quantité de cet aliment par jour		needs_review			Togo/Features/Feeding/FoodStockScreen.swift:259
+530	4-ПРОЧЕЕ	роли, дежурство, инструкция ситтеру	rôles, tour de garde, consignes au pet-sitter		needs_review			Togo/Store/ProGate.swift:106
+531	4-ПРОЧЕЕ	Повторяющееся · от последнего раза	Récurrent · depuis la dernière fois		needs_review			
+532	4-ПРОЧЕЕ	Шаг не удалился · попробуй ещё раз	L'étape n'a pas été supprimée · réessaie		needs_review			Togo/Features/Training/TrainingLibraryScreen.swift:163
+533	4-ПРОЧЕЕ	Эпизод не завёлся · отметь ещё раз	Épisode pas créé · note encore		needs_review			Togo/Features/Incident/IncidentSheet.swift:110
+534	4-ПРОЧЕЕ	бесплатно · собрано из записанного	gratuit · construit à partir de vos notes		needs_review			
+535	4-ПРОЧЕЕ	др. Лемер · контроль через 4–6 нед	Dr Lemaire · contrôle dans 4–6 sem.		needs_review			
+536	4-ПРОЧЕЕ	Вставь ссылку или код приглашения	Collez le lien ou le code d'invitation		needs_review			
+537	4-ПРОЧЕЕ	Не сохранилось · попробуй ещё раз	Non enregistré · réessaie		needs_review			Togo/Features/Care/CareScreen.swift:185
+538	4-ПРОЧЕЕ	Срыв — это порог, а не проступок.	Une réaction est un seuil, pas une faute.		needs_review			
+539	4-ПРОЧЕЕ	Ты смотришь дневник · отмечает %@	Tu consultes le journal · %@ note		needs_review	да		Togo/Features/Family/РольВДневнике.swift:94
+540	4-ПРОЧЕЕ	Шаг не завёлся · попробуй ещё раз	L'étape n'a pas été créée · réessaie		needs_review			Togo/Features/Training/TrainingSessionScreen.swift:49
+541	4-ПРОЧЕЕ	за всё время, не только за период	sur toute la durée, pas seulement sur la période		needs_review			Togo/Features/Health/MedicalRecordCards.swift:187
+542	4-ПРОЧЕЕ	инциденты останутся, эпизод уйдёт	les incidents restent, l'épisode part		needs_review			
+543	4-ПРОЧЕЕ	контроль через %1$lld–%2$lld нед.	contrôle dans %lld–%lld sem.		needs_review	да		Togo/Features/Health/MedicalRecordCards.swift:300
+544	4-ПРОЧЕЕ	показывается только если включено	affiché seulement si activé		needs_review			
+545	4-ПРОЧЕЕ	спрошу «как он сейчас?» через час	je demanderai « comment va-t-il ? » dans une heure		needs_review			
+546	4-ПРОЧЕЕ	2 раза в день · номер для аптеки	2 fois par jour · code pharmacie		needs_review			
+547	4-ПРОЧЕЕ	День не закрылся · нажми ещё раз	Journée pas clôturée · appuie encore		needs_review			Togo/Features/Today/TodayScreen.swift:494
+548	4-ПРОЧЕЕ	Сегодня 3 триггера — день потише	3 déclencheurs aujourd'hui — journée calme		needs_review			
+549	4-ПРОЧЕЕ	Снимок не лёг · попробуй ещё раз	La photo n'a pas été appliquée · réessaie		needs_review			Togo/Features/Settings/BackgroundScreen.swift:427
+550	4-ПРОЧЕЕ	приложение завело его без спроса	l'appli l'a ouvert sans demander		needs_review			
+551	4-ПРОЧЕЕ	сколько вещества в одной единице	quelle quantité de substance dans une unité		needs_review			Togo/Features/Profile/Editors.swift:700
+552	4-ПРОЧЕЕ	смотришь всё · отмечает владелец	tu vois tout · le propriétaire note		needs_review			Togo/Features/Family/РольВДневнике.swift:82
+553	4-ПРОЧЕЕ	RU · FR · EN — на первом экране	RU · FR · EN — en première page		needs_review			
+554	4-ПРОЧЕЕ	Виктория · дневник с марта 2026	Victoria · journal depuis mars 2026		needs_review			
+555	4-ПРОЧЕЕ	Нужно одно число — например 4,1	Il faut un seul nombre — par exemple 4,1		needs_review			Togo/Features/Health/HealthScreen.swift:999
+556	4-ПРОЧЕЕ	Прошлый день · запись через «+»	Jour passé · ajout via « + »		needs_review			
+557	4-ПРОЧЕЕ	Сколько ел последние две недели	Ce qu'il a mangé ces deux dernières semaines		needs_review			Togo/Features/Feeding/FeedingScreen.swift:432
+558	4-ПРОЧЕЕ	Удалена прогулка и %lld отметки	Promenade et %lld marques supprimées		needs_review	да		Togo/Features/Today/DayTimelineList.swift:171
+559	4-ПРОЧЕЕ	Файл сделан %1$@, внутри: %2$@.	Fichier créé le %@, dedans : %@.		needs_review	да		Togo/Features/Settings/BackupScreen.swift:98
+560	4-ПРОЧЕЕ	Эпизод удалён · записи остались	Épisode supprimé · les notes restent		needs_review			Togo/Features/History/HistoryScreen.swift:366
+561	4-ПРОЧЕЕ	одно сообщение: «можно кормить»	un seul message : « on peut nourrir »		needs_review			
+562	4-ПРОЧЕЕ	переключатель на вкладке собаки	sélecteur dans l'onglet du chien		needs_review			Togo/Store/ProGate.swift:103
+563	4-ПРОЧЕЕ	шипперке · 19 мар 2023 · кобель	schipperke · 19 mars 2023 · mâle		needs_review			
+564	4-ПРОЧЕЕ	%1$@ зовёт тебя в дневник %2$@	%1$@ t'invite dans le journal de %2$@		needs_review	да		Togo/Features/Family/РольВДневнике.swift:105
+565	4-ПРОЧЕЕ	4 размера · две кнопки отметки	4 tailles · deux boutons		needs_review			
+566	4-ПРОЧЕЕ	Live Activity и Dynamic Island	Live Activity et Dynamic Island		needs_review			
+567	4-ПРОЧЕЕ	PDF-ордоннанс, письмо, со слов	Ordonnance PDF, courrier, de vive voix		needs_review			Togo/Features/Health/PrescriptionScreens.swift:260
+568	4-ПРОЧЕЕ	Дневник собаки для всей семьи.	Le journal du chien pour toute la famille.		needs_review			Togo/Features/Onboarding/OnboardingSteps.swift:85
+569	4-ПРОЧЕЕ	Не сохранилось · нажми ещё раз	Non enregistré · appuie encore		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:237
+570	4-ПРОЧЕЕ	Позже · напомнить через 15 мин	Plus tard · rappel dans 15 min		needs_review			
+571	4-ПРОЧЕЕ	Пока мало записей для расчёта.	Pas assez de notes pour calculer.		needs_review			
+572	4-ПРОЧЕЕ	Почта на телефоне не настроена	Aucune messagerie configurée sur ce téléphone		needs_review			Togo/App/TogoApp.swift:744
+573	4-ПРОЧЕЕ	включён · что будет при отмене	activé · ce qui se passe si vous résiliez		needs_review			
+574	4-ПРОЧЕЕ	за неделю: улица 7 · пелёнка 3	cette semaine : dehors 7 · alèse 3		needs_review			
+575	4-ПРОЧЕЕ	оси видны, следующий шаг скрыт	axes visibles, étape suivante masquée		needs_review			
+576	4-ПРОЧЕЕ	позвонить Виктории, потом Вет+	appeler Victoria, puis Vet+		needs_review			
+577	4-ПРОЧЕЕ	фото собаки, а без него чёрный	photo du chien, noir sans elle		needs_review			Togo/Features/Settings/BackgroundScreen.swift:165
+578	4-ПРОЧЕЕ	${applicationName}: покормила	${applicationName} : nourri		needs_review			
+579	4-ПРОЧЕЕ	%@ зовёт тебя в общий дневник	%@ t'invite dans un journal partagé		needs_review	да		Togo/Features/Family/РольВДневнике.swift:107
+580	4-ПРОЧЕЕ	14 столбцов · Numbers и Excel	14 colonnes · Numbers et Excel		needs_review			
+581	4-ПРОЧЕЕ	3 одинаковых инцидента за 6 ч	3 incidents identiques en 6 h		needs_review			
+582	4-ПРОЧЕЕ	Для порции и сборов в дорогу.	Pour les portions et les bagages.		needs_review			Togo/Features/Onboarding/OnboardingSteps.swift:287
+583	4-ПРОЧЕЕ	За этот период назначений нет	Aucune prescription sur cette période		needs_review			Togo/Features/Health/MedicalRecordCards.swift:242
+584	4-ПРОЧЕЕ	Не записалось · нажми ещё раз	Pas enregistré · appuie encore		needs_review			Togo/Features/Today/DayPlanActions.swift:393
+585	4-ПРОЧЕЕ	Прогулка в ${applicationName}	Promenade dans ${applicationName}		needs_review			
+586	4-ПРОЧЕЕ	без хвоста · ошейник с биркой	sans queue · collier avec médaille		needs_review			
+587	4-ПРОЧЕЕ	в 7:00 · окно контроля первым	à 7:00 · fenêtre de contrôle d'abord		needs_review			
+588	4-ПРОЧЕЕ	карточка «следующий шаг один»	carte « une étape suivante »		needs_review			
+589	4-ПРОЧЕЕ	останется пропуском в истории	reste comme oubli dans l'historique		needs_review			
+590	4-ПРОЧЕЕ	уходит системным «Поделиться»	envoyé via Partager		needs_review			
+591	4-ПРОЧЕЕ	${applicationName}: прогулка	${applicationName} : promenade		needs_review			
+592	4-ПРОЧЕЕ	1 декабря · заведён как дело	1er déc. · ajouté comme tâche		needs_review			
+593	4-ПРОЧЕЕ	2 раза · 65 г · 8:30 и 19:30	2 fois · 65 g · 8:30 et 19:30		needs_review			
+594	4-ПРОЧЕЕ	3 · все отмечены «пропустил»	3 · toutes marquées « sautée »		needs_review			
+595	4-ПРОЧЕЕ	JSON · заменить или добавить	JSON · remplacer ou ajouter		needs_review			
+596	4-ПРОЧЕЕ	Как попросил · необязательно	Comment il a demandé · facultatif		needs_review			
+597	4-ПРОЧЕЕ	Когда отмечают другие · тихо	Quand d'autres notent · en silence		needs_review			
+598	4-ПРОЧЕЕ	Не удалилось · нажми ещё раз	Pas supprimé · appuie encore		needs_review			Togo/Features/Profile/Editors.swift:374
+599	4-ПРОЧЕЕ	Нет сети · записи сохранятся	Hors ligne · les notes seront gardées		needs_review			
+600	4-ПРОЧЕЕ	Онлайн-консультация · 12 окт	Téléconsultation · 12 oct.		needs_review			
+601	4-ПРОЧЕЕ	Переустановка удалит дневник	La réinstallation supprimera le journal		needs_review			Togo/App/TogoApp.swift:694
+602	4-ПРОЧЕЕ	Приглашать третьего человека	Inviter une troisième personne		needs_review			Togo/Store/Subscriptions.swift:390
+603	4-ПРОЧЕЕ	и следующие · бесплатно одна	et suivants · un gratuit		needs_review			
+604	4-ПРОЧЕЕ	как попросил · необязательно	comment il a demandé · facultatif		needs_review			Togo/Features/Needs/NeedsSheet.swift:291
+605	4-ПРОЧЕЕ	минуты · «Пописал» · «Домой»	minutes · « Pipi » · « Maison »		needs_review			
+606	4-ПРОЧЕЕ	не задаётся · открыто в коде	non fixée · ouvert dans le code		needs_review			
+607	4-ПРОЧЕЕ	останется с прежними правами	garde ses droits		needs_review			
+608	4-ПРОЧЕЕ	только смотрит · наблюдатель	consultation seule · observateur		needs_review			
+609	4-ПРОЧЕЕ	удаление отменяется 5 секунд	suppression annulable 5 secondes		needs_review			
+610	4-ПРОЧЕЕ	${applicationName}: пописал	${applicationName} : pipi		needs_review			
+611	4-ПРОЧЕЕ	%1$lld из %2$lld получается	%lld sur %lld marchent		needs_review	да		Togo/Features/Profile/DogTab.swift:445
+612	4-ПРОЧЕЕ	3,5 л · с поправкой на жару	3,5 L · ajusté pour la chaleur		needs_review			
+613	4-ПРОЧЕЕ	Блокировка и Dynamic Island	Écran verrouillé et Dynamic Island		needs_review			
+614	4-ПРОЧЕЕ	Готово: ты в дневнике — %@.	C'est fait : tu es dans le journal — %@.		needs_review	да		TogoShared/Sync/ShareAcceptanceOutcome.swift:84
+615	4-ПРОЧЕЕ	Идёт эпизод — вердикта нет.	Épisode en cours — pas de verdict.		needs_review			
+616	4-ПРОЧЕЕ	Шоколад · виноград · ксилит	Chocolat · raisin · xylitol		needs_review			
+617	4-ПРОЧЕЕ	ближайшее: когти через 5 дн	prochain : griffes dans 5 j		needs_review			
+618	4-ПРОЧЕЕ	начать и закончить прогулку	commencer et finir une sortie		needs_review			
+619	4-ПРОЧЕЕ	одна собака записана дважды	un chien noté deux fois		needs_review			Togo/Features/Family/DuplicateDogCard.swift:84
+620	4-ПРОЧЕЕ	останется, но только чтение	reste, en lecture seule		needs_review			
+621	4-ПРОЧЕЕ	пять строк, ещё не написаны	cinq lignes, pas encore écrites		needs_review			Togo/Features/Family/FamilyScreen.swift:734
+622	4-ПРОЧЕЕ	своё фото у каждого раздела	une photo par rubrique		needs_review			
+623	4-ПРОЧЕЕ	считаются и срывы, и испуги	réactions et peurs comptent		needs_review			
+624	4-ПРОЧЕЕ	фото собаки, пока своих нет	photo du chien, tant que tu n'en as pas		needs_review			Togo/Features/Settings/BackgroundScreen.swift:166
+625	4-ПРОЧЕЕ	— · не записано в этот день	— · non noté ce jour-là		needs_review			
+626	4-ПРОЧЕЕ	Для кобеля цикл не ведётся	Pas de cycle pour un mâle		needs_review			
+627	4-ПРОЧЕЕ	За этот период визитов нет	Aucune visite sur cette période		needs_review			Togo/Features/Health/MedicalRecordCards.swift:139
+628	4-ПРОЧЕЕ	Кнопка в Пункте управления	Bouton du Centre de contrôle		needs_review			
+629	4-ПРОЧЕЕ	Напомню, когда понадобится	Je vous rappellerai au besoin		needs_review			
+630	4-ПРОЧЕЕ	Не снялось · нажми ещё раз	Pas décoché · appuie encore		needs_review			Togo/Features/Today/DayPlanActions.swift:375
+631	4-ПРОЧЕЕ	Одно фото для всех экранов	Une photo pour tous les écrans		needs_review			
+632	4-ПРОЧЕЕ	Открой ссылку из сообщения	Ouvre le lien du message		needs_review			Togo/Features/Onboarding/ПозвалиВСемью.swift:73
+633	4-ПРОЧЕЕ	Права у людей не отнимаем.	Nous ne retirons jamais de droits aux personnes.		needs_review			
+634	4-ПРОЧЕЕ	Тебя зовут в общий дневник	On t'invite dans un journal partagé		needs_review			Togo/Features/Family/РольВДневнике.swift:111
+635	4-ПРОЧЕЕ	Язык, уведомления, перенос	Langue, notifications, transfert		needs_review			Togo/DesignSystem/Components/TGPosterHeader.swift:199
+636	4-ПРОЧЕЕ	без даты срок не посчитать	sans date, pas d'échéance		needs_review			
+637	4-ПРОЧЕЕ	выделен штамм стафилококка	une souche de staphylocoque a été isolée		needs_review			Togo/Features/Health/LabResultScreens.swift:605
+638	4-ПРОЧЕЕ	даёт Виктория — не трогать	c'est Victoria qui le donne — ne pas toucher		needs_review			
+639	4-ПРОЧЕЕ	дистанция и восстановление	distance et récupération		needs_review			
+640	4-ПРОЧЕЕ	ел %@ назад · %lld из %lld	a mangé il y a %@ · %lld sur %lld		needs_review	да		TogoShared/Domain/SnapshotText.swift:90
+641	4-ПРОЧЕЕ	подтверждён · с марта 2026	confirmé · depuis mars 2026		needs_review			
+642	4-ПРОЧЕЕ	прогулка без разблокировки	sortie sans déverrouiller		needs_review			
+643	4-ПРОЧЕЕ	с марта 2026 · подтверждён	depuis mars 2026 · confirmée		needs_review			
+644	4-ПРОЧЕЕ	%.1f %@ · расход не задан	%.1f %@ · consommation non définie		needs_review	да		
+645	4-ПРОЧЕЕ	%@ уйдут из плана дня. %@	%@ quitteront le plan du jour, l'onglet « Santé » se masquera. %@		needs_review	да		TogoShared/Domain/TreatmentCourse.swift:227
+646	4-ПРОЧЕЕ	2 · Показатель и значение	2 · Paramètre et valeur		needs_review			
+647	4-ПРОЧЕЕ	2 будущие отметки сегодня	2 marques futures aujourd'hui		needs_review			
+648	4-ПРОЧЕЕ	4 в день · просит у двери	4 par jour · demande à la porte		needs_review			
+649	4-ПРОЧЕЕ	5 фраз · отвечает словами	5 phrases · répond en mots		needs_review			
+650	4-ПРОЧЕЕ	Вопрос отправлен Виктории	Question envoyée à Victoria		needs_review			
+651	4-ПРОЧЕЕ	Всё равно записать вторую	Noter une deuxième quand même		needs_review			
+652	4-ПРОЧЕЕ	Его вырвало — что делать?	Il a vomi — que faire ?		needs_review			
+653	4-ПРОЧЕЕ	Занятие · «Ждать у двери»	Éducation · « Attendre à la porte »		needs_review			
+654	4-ПРОЧЕЕ	Скачать CSV · 14 столбцов	Télécharger le CSV · 14 colonnes		needs_review			
+655	4-ПРОЧЕЕ	Уже 5 фото — убери лишние	Déjà 5 photos — retirez-en		needs_review			
+656	4-ПРОЧЕЕ	акцентная кнопка прогулки	bouton promenade accentué		needs_review			Togo/DesignSystem/Components/MarkFill.swift:65
+657	4-ПРОЧЕЕ	выходов в день · 2 недели	sorties par jour · 2 semaines		needs_review			
+658	4-ПРОЧЕЕ	ежедневное · серия 6 дней	quotidien · série de 6 jours		needs_review			
+659	4-ПРОЧЕЕ	не видна, пока не откроют	masqué tant qu'on ne le partage pas		needs_review			
+660	4-ПРОЧЕЕ	открыто до 20:00 · 1,2 км	ouvert jusqu'à 20:00 · 1,2 km		needs_review			
+661	4-ПРОЧЕЕ	переходит к %1$@ · %2$lld	passe à %@ · %lld		needs_review	да		Togo/Features/Sitter/ShiftHandoverSheet.swift:78
+662	4-ПРОЧЕЕ	по времени и прошлым дням	selon l'heure et les jours passés		needs_review			Togo/Features/Needs/NeedsSheet.swift:137
+663	4-ПРОЧЕЕ	по наблюдениям · 4 в день	d'après les observations · 4 par jour		needs_review			
+664	4-ПРОЧЕЕ	система ещё не спрашивала	le système n'a pas encore demandé		needs_review			Togo/Store/Notifications.swift:191
+665	4-ПРОЧЕЕ	собаки ≈ 5 м · велосипеды	chiens ≈ 5 m · vélos		needs_review			
+666	4-ПРОЧЕЕ	три вещи · 2,99 € в месяц	trois choses · 2,99 € par mois		needs_review			
+667	4-ПРОЧЕЕ	чип · паспорт · страховка	puce · passeport · assurance		needs_review			
+668	4-ПРОЧЕЕ	шоколад, виноград, ксилит	chocolat, raisin, xylitol		needs_review			
+669	4-ПРОЧЕЕ	16 видов записей · сразу	16 types de notes · immédiatement		needs_review			
+670	4-ПРОЧЕЕ	Записала · прогулка %@%@	Noté · promenade %@%@		needs_review	да		Togo/Intents/WalkIntents.swift:58
+671	4-ПРОЧЕЕ	Записано · занятие 3 мин	Noté · éducation 3 min		needs_review			
+672	4-ПРОЧЕЕ	Нужен iCloud на телефоне	iCloud est nécessaire sur le téléphone		needs_review			Togo/Features/Onboarding/ПозвалиВСемью.swift:76
+673	4-ПРОЧЕЕ	Открыт лист «Поделиться»	Feuille Partager ouverte		needs_review			
+674	4-ПРОЧЕЕ	Сравнивать пока не с чем	Rien à comparer pour l'instant		needs_review			Togo/Features/Health/LabChartScreen.swift:278
+675	4-ПРОЧЕЕ	Ты в этом дневнике гость	Tu es invité dans ce journal		needs_review			Togo/Features/Family/FamilyScreen.swift:797
+676	4-ПРОЧЕЕ	контроль через %lld нед.	contrôle dans %lld sem.		needs_review	да		Togo/Features/Health/MedicalRecordCards.swift:297
+677	4-ПРОЧЕЕ	нет сети · 3 записи ждут	hors ligne · 3 notes en attente		needs_review			
+678	4-ПРОЧЕЕ	открыт до 20:00 · 1,2 км	ouvert jusqu'à 20:00 · 1,2 km		needs_review			
+679	4-ПРОЧЕЕ	5 напоминаний ждут даты	5 rappels attendent une date		needs_review			
+680	4-ПРОЧЕЕ	7 × 130 г + 2 кормления	7 × 130 g + 2 repas		needs_review			
+681	4-ПРОЧЕЕ	Siri и Пункт управления	Siri et Centre de contrôle		needs_review			
+682	4-ПРОЧЕЕ	Вет+ · Ницца · до 20:00	Vet+ · Nice · jusqu'à 20:00		needs_review			
+683	4-ПРОЧЕЕ	Виджеты и Live Activity	Widgets et Live Activity		needs_review			
+684	4-ПРОЧЕЕ	Ждать · у двери → улица	Attendre · porte → dehors		needs_review			
+685	4-ПРОЧЕЕ	Профиль меняет владелец	Le propriétaire modifie le profil		needs_review			TogoShared/Models/Enums+Family.swift:71
+686	4-ПРОЧЕЕ	Пять ролей, восемь прав	Cinq rôles, huit droits		needs_review			Togo/Features/Family/FamilyScreen.swift:804
+687	4-ПРОЧЕЕ	Собака пока не заведена	Aucun chien pour l'instant		needs_review			Togo/Features/Today/TodayScreen.swift:121
+688	4-ПРОЧЕЕ	Тебя зовут в дневник %@	On t'invite dans le journal de %@		needs_review	да		Togo/Features/Family/РольВДневнике.swift:109
+689	4-ПРОЧЕЕ	Эту можно дать на улице	Celle-ci peut être donnée dehors		needs_review			Togo/Features/Needs/NeedsSheet.swift:340
+690	4-ПРОЧЕЕ	без открытия приложения	sans ouvrir l'appli		needs_review			
+691	4-ПРОЧЕЕ	выводи по первому знаку	sortez au premier signe		needs_review			
+692	4-ПРОЧЕЕ	кобель · не кастрирован	mâle · entier		needs_review			
+693	4-ПРОЧЕЕ	лента дня с фото и план	fil du jour avec photos et plan		needs_review			
+694	4-ПРОЧЕЕ	последний день контроля	dernier jour du contrôle		needs_review			TogoShared/Domain/ControlWindow.swift:124
+695	4-ПРОЧЕЕ	третий человек и дальше	troisième personne et plus		needs_review			
+696	4-ПРОЧЕЕ	3 инцидента за 6 часов	3 incidents en 6 heures		needs_review			
+697	4-ПРОЧЕЕ	Аудит и план ресерча →	Audit et plan de recherche →		needs_review			
+698	4-ПРОЧЕЕ	В список: 1 мешок 3 кг	Ajouté : 1 sac de 3 kg		needs_review			
+699	4-ПРОЧЕЕ	Вет+ · открыт до 20:00	Vet+ · ouvert jusqu'à 20:00		needs_review			
+700	4-ПРОЧЕЕ	Взяла на себя · 45 мин	Je m'en charge · 45 min		needs_review			
+701	4-ПРОЧЕЕ	Включить общий дневник	Activer le journal partagé		needs_review			Togo/Features/Family/FamilyScreen.swift:536
+702	4-ПРОЧЕЕ	Вышли · 10 с на отмену	Sorti · 10 s pour annuler		needs_review			
+703	4-ПРОЧЕЕ	Занятие · маркер «Да!»	Séance · marqueur « Oui ! »		needs_review			
+704	4-ПРОЧЕЕ	Записи правит владелец	C'est le propriétaire qui modifie les entrées		needs_review			TogoShared/Models/Enums+Family.swift:67
+705	4-ПРОЧЕЕ	Начать занятие · 3 мин	Commencer la séance · 3 min		needs_review			
+706	4-ПРОЧЕЕ	Понижение прозрачности	Réduire la transparence		needs_review			
+707	4-ПРОЧЕЕ	После долгих дней дома	Après de longues journées à la maison		needs_review			Togo/Features/History/HistoryScreen.swift:236
+708	4-ПРОЧЕЕ	Похоже на ту же собаку	On dirait le même chien		needs_review			
+709	4-ПРОЧЕЕ	Приметы для объявления	Signalement		needs_review			
+710	4-ПРОЧЕЕ	Сохранить без времени?	Enregistrer sans heure ?		needs_review			Togo/Features/Health/LabResultScreens.swift:517
+711	4-ПРОЧЕЕ	Т4 · протокол контроля	T4 · suivi		needs_review			
+712	4-ПРОЧЕЕ	Трава · бумага · носок	Herbe · papier · chaussette		needs_review			
+713	4-ПРОЧЕЕ	время, пропуски, замок	heures, oublis, verrou		needs_review			
+714	4-ПРОЧЕЕ	не записан в этот день	non noté ce jour-là		needs_review			Togo/Features/Health/LabChartScreen.swift:539
+715	4-ПРОЧЕЕ	остаётся у тебя · %lld	reste chez toi · %lld		needs_review	да		Togo/Features/Sitter/ShiftHandoverSheet.swift:84
+716	4-ПРОЧЕЕ	тёмная плитка прогулки	tuile promenade sombre		needs_review			Togo/DesignSystem/Components/MarkFill.swift:66
+717	4-ПРОЧЕЕ	хранилище не открылось	le stockage ne s'est pas ouvert		needs_review			
+718	4-ПРОЧЕЕ	чип 250 26 880 1234567	puce 250 26 880 1234567		needs_review			
+719	4-ПРОЧЕЕ	+ «дальше» и «Гулять»	+ « suivant » et « Promener »		needs_review			только в тестах: TogoTests/LocalizationCoverageTests.swift:237
+720	4-ПРОЧЕЕ	4 шага · дома → улица	4 étapes · maison → dehors		needs_review			
+721	4-ПРОЧЕЕ	«Просится» → «Вывожу»	« Envie de sortir ? » → « Je le sors »		needs_review			
+722	4-ПРОЧЕЕ	Брифинг отправлен Ане	Consignes envoyées à Anya		needs_review			
+723	4-ПРОЧЕЕ	Записи не сохраняются	Les notes ne s'enregistrent pas		needs_review			
+724	4-ПРОЧЕЕ	Здесь будут следы дня	Les traces du jour apparaîtront ici		needs_review			
+725	4-ПРОЧЕЕ	Как всегда · колбаска	Comme d'habitude · moulée		needs_review			
+726	4-ПРОЧЕЕ	Начать поездку сейчас	Commencer le voyage		needs_review			
+727	4-ПРОЧЕЕ	Отмечено · можно идти	Noté · tu peux y aller		needs_review			Togo/Features/Needs/NeedsSheet.swift:339
+728	4-ПРОЧЕЕ	Отправить приглашение	Envoyer l'invitation		needs_review			Togo/Features/Family/FamilyScreen.swift:544
+729	4-ПРОЧЕЕ	Прогулка идёт · 12:34	Sortie en cours · 12:34		needs_review			
+730	4-ПРОЧЕЕ	Семью меняет владелец	Le propriétaire modifie la famille		needs_review			TogoShared/Models/Enums+Family.swift:72
+731	4-ПРОЧЕЕ	Сколько давать корма?	Combien de croquettes donner ?		needs_review			
+732	4-ПРОЧЕЕ	Спрашиваю разрешение…	Je demande l'autorisation…		needs_review			Togo/Features/Onboarding/OnboardingSteps.swift:668
+733	4-ПРОЧЕЕ	Чёрный шипперке, 8 кг	Schipperke noir, 8 kg		needs_review			
+734	4-ПРОЧЕЕ	Эта сборка без iCloud	Cette version est sans iCloud		needs_review			TogoShared/Domain/Persistence.swift:423
+735	4-ПРОЧЕЕ	бесплатно · PDF и CSV	gratuit · PDF et CSV		needs_review			
+736	4-ПРОЧЕЕ	вода и корм считаются	eau et croquettes comptées		needs_review			
+737	4-ПРОЧЕЕ	кличка не переводится	le nom du chien ne se traduit pas		needs_review			Togo/Features/Settings/LanguageScreen.swift:102
+738	4-ПРОЧЕЕ	контроль ещё не скоро	contrôle pas avant longtemps		needs_review			TogoShared/Domain/ControlWindow.swift:120
+739	4-ПРОЧЕЕ	с бристольской цифрой	avec score de Bristol		needs_review			
+740	4-ПРОЧЕЕ	телефон и твой iCloud	votre téléphone et votre iCloud		needs_review			
+741	4-ПРОЧЕЕ	10 секунд у подъезда	10 secondes devant l'entrée		needs_review			
+742	4-ПРОЧЕЕ	5 шагов · от коврика	5 étapes · depuis le tapis		needs_review			
+743	4-ПРОЧЕЕ	5 шагов · от секунды	5 étapes · depuis une seconde		needs_review			
+744	4-ПРОЧЕЕ	Атопический дерматит	Dermatite atopique		needs_review			
+745	4-ПРОЧЕЕ	Виджеты и блокировка	Widgets et écran verrouillé		needs_review			
+746	4-ПРОЧЕЕ	Вода · 2 из 4 порций	Eau · 2 portions sur 4		needs_review			
+747	4-ПРОЧЕЕ	Две записи за 20 мин	Deux notes en 20 min		needs_review			
+748	4-ПРОЧЕЕ	Заканчивает прогулку	Termine la promenade		needs_review			Togo/Features/Needs/WalkControls.swift:217
+749	4-ПРОЧЕЕ	Меня позвали в семью	On m'a invité dans une famille		needs_review			
+750	4-ПРОЧЕЕ	Порог не отключается	Ce seuil ne se désactive pas		needs_review			
+751	4-ПРОЧЕЕ	Рисовать пока нечего	Rien à tracer pour l'instant		needs_review			Togo/Features/Health/LabChartScreen.swift:158
+752	4-ПРОЧЕЕ	Тема · роль · режимы	Thème · rôle · modes		needs_review			
+753	4-ПРОЧЕЕ	Уведомления включены	Notifications activées		needs_review			
+754	4-ПРОЧЕЕ	Что будет при отмене	En cas de résiliation		needs_review			
+755	4-ПРОЧЕЕ	а отсутствие отметки	mais une marque manquante		needs_review			
+756	4-ПРОЧЕЕ	по дням · промежутки	par jour · écarts		needs_review			
+757	4-ПРОЧЕЕ	показатель не указан	paramètre non indiqué		needs_review			Togo/Features/Health/LabResultScreens.swift:94
+758	4-ПРОЧЕЕ	показываем до отмены	affiché avant la résiliation		needs_review			
+759	4-ПРОЧЕЕ	предложим объединить	on proposera de fusionner		needs_review			
+760	4-ПРОЧЕЕ	просрочено на 9 дней	en retard de 9 jours		needs_review			
+761	4-ПРОЧЕЕ	с защитой от двойной	avec anti-double dose		needs_review			
+762	4-ПРОЧЕЕ	своё или стандартное	la vôtre ou par défaut		needs_review			
+763	4-ПРОЧЕЕ	сколько раз за сутки	combien de fois en 24 h		needs_review			
+764	4-ПРОЧЕЕ	срок контроля прошёл	le contrôle est dépassé		needs_review			TogoShared/Domain/ControlWindow.swift:126
+765	4-ПРОЧЕЕ	3 мин · маркер «да»	3 min · marqueur « oui »		needs_review			
+766	4-ПРОЧЕЕ	Адрес вводить негде	Aucun champ pour l'adresse		needs_review			только в тестах: TogoTests/ПриёмПоСсылкеTests.swift:256
+767	4-ПРОЧЕЕ	Без личных заметок.	Sans notes privées.		needs_review			
+768	4-ПРОЧЕЕ	Вернуть стандартное	Rétablir par défaut		needs_review			
+769	4-ПРОЧЕЕ	Добавить назначение	Ajouter une ordonnance		needs_review			Togo/Features/Health/PrescriptionScreens.swift:54
+770	4-ПРОЧЕЕ	Залезть в переноску	Entrer dans la caisse		needs_review			
+771	4-ПРОЧЕЕ	Записывает владелец	C'est le propriétaire qui note		needs_review			TogoShared/Models/Enums+Family.swift:66
+772	4-ПРОЧЕЕ	Инциденты и эпизоды	Incidents et épisodes		needs_review			
+773	4-ПРОЧЕЕ	Испугался · от чего	A eu peur · de quoi		needs_review			
+774	4-ПРОЧЕЕ	Крупный текст (AX1)	Grand texte (AX1)		needs_review			
+775	4-ПРОЧЕЕ	Маркер и чем платим	Marqueur et récompense		needs_review			
+776	4-ПРОЧЕЕ	Можно дать на улице	Peut être donné dehors		needs_review			Togo/Features/Profile/Editors.swift:819
+777	4-ПРОЧЕЕ	Назначений пока нет	Pas encore d'ordonnances		needs_review			Togo/Features/Health/PrescriptionScreens.swift:52
+778	4-ПРОЧЕЕ	Назначенное на день	Prévu aujourd'hui		needs_review			
+779	4-ПРОЧЕЕ	Не вышло свести: %@	La fusion n'a pas marché : %@		needs_review	да		Togo/Features/Family/DuplicateDogCard.swift:107
+780	4-ПРОЧЕЕ	Онлайн-консультация	Téléconsultation		needs_review			
+781	4-ПРОЧЕЕ	Отправлено Виктории	Envoyé à Victoria		needs_review			
+782	4-ПРОЧЕЕ	Потом, в настройках	Plus tard, dans Réglages		needs_review			Togo/Features/Onboarding/OnboardingSteps.swift:676
+783	4-ПРОЧЕЕ	Приглашение открыто	Invitation ouverte		needs_review			
+784	4-ПРОЧЕЕ	Принять приглашение	Accepter l'invitation		needs_review			
+785	4-ПРОЧЕЕ	Работа с поведением	Travail du comportement		needs_review			
+786	4-ПРОЧЕЕ	Столбик — инцидент.	Barre — incident.		needs_review			
+787	4-ПРОЧЕЕ	Удалить назначение?	Supprimer l'ordonnance ?		needs_review			Togo/Features/Health/PrescriptionScreens.swift:381
+788	4-ПРОЧЕЕ	Уменьшение движения	Réduire les animations		needs_review			
+789	4-ПРОЧЕЕ	Хранилище открылось	Stockage ouvert		needs_review			
+790	4-ПРОЧЕЕ	видит всё, отмечает	voit tout, note		needs_review			
+791	4-ПРОЧЕЕ	за выбранный период	sur la période choisie		needs_review			Togo/Features/Health/MedicalRecordCards.swift:76
+792	4-ПРОЧЕЕ	записи будут у всех	tout le monde verra les notes		needs_review			
+793	4-ПРОЧЕЕ	как выбирается фото	comment la photo est choisie		needs_review			Togo/Features/Settings/BackgroundScreen.swift:115
+794	4-ПРОЧЕЕ	коротко, по порядку	court, dans l'ordre		needs_review			
+795	4-ПРОЧЕЕ	маркер «да» · 3 мин	marqueur « oui » · 3 min		needs_review			
+796	4-ПРОЧЕЕ	один тап — записано	un geste — noté		needs_review			
+797	4-ПРОЧЕЕ	окно закрылось в %@	la fenêtre s'est fermée à %@		needs_review	да		Togo/Features/Health/MissedDoseSheet.swift:24
+798	4-ПРОЧЕЕ	отметь первый выход	notez la première sortie		needs_review			
+799	4-ПРОЧЕЕ	уведомления, данные	notifications, données		needs_review			
+800	4-ПРОЧЕЕ	шаг «Ждать у двери»	étape « Attendre à la porte »		needs_review			
+801	4-ПРОЧЕЕ	14 табл. + 3 запас	14 comprimés + 3 en réserve		needs_review			
+802	4-ПРОЧЕЕ	446 · 94 % вовремя	446 · 94 % à l'heure		needs_review			
+803	4-ПРОЧЕЕ	7, все с отметками	7, toutes marquées		needs_review			
+804	4-ПРОЧЕЕ	iCloud не открылся	iCloud ne s'est pas ouvert		needs_review			TogoShared/Domain/Persistence.swift:424
+805	4-ПРОЧЕЕ	Библиотека навыков	Bibliothèque d'acquis		needs_review			
+806	4-ПРОЧЕЕ	Где ходит в туалет	Où il fait ses besoins		needs_review			
+807	4-ПРОЧЕЕ	Записал: пописал в	Noté : pipi à		needs_review			
+808	4-ПРОЧЕЕ	Записано · пелёнка	Noté · alèse		needs_review			
+809	4-ПРОЧЕЕ	Записей в день: %@	Entrées par jour : %@		needs_review	да		TogoShared/Domain/UsageReport.swift:389
+810	4-ПРОЧЕЕ	Когда позвать всех	Quand alerter tout le monde		needs_review			
+811	4-ПРОЧЕЕ	Ничего не теряется	Rien ne se perd		needs_review			
+812	4-ПРОЧЕЕ	Обычный промежуток	Écart habituel		needs_review			Togo/Features/Needs/NeedsSheet.swift:252
+813	4-ПРОЧЕЕ	Одно фото для всех	Une photo pour tout		needs_review			Togo/Features/Settings/BackgroundScreen.swift:135
+814	4-ПРОЧЕЕ	Отменить последнюю	Annuler la dernière		needs_review			Togo/Features/Training/SkillAttemptSheet.swift:50
+815	4-ПРОЧЕЕ	Отмечено · пописал	Noté · pipi		needs_review			
+816	4-ПРОЧЕЕ	Передать дежурство	Passer la garde		needs_review			
+817	4-ПРОЧЕЕ	Покупок не нашлось	Aucun achat trouvé		needs_review			Togo/Features/Settings/SettingsScreen.swift:251
+818	4-ПРОЧЕЕ	Политика · условия	Confidentialité · conditions		needs_review			
+819	4-ПРОЧЕЕ	Править записанное	Modifier les notes		needs_review			
+820	4-ПРОЧЕЕ	Прерывают три вещи	Trois choses interrompent		needs_review			
+821	4-ПРОЧЕЕ	Просится · вердикт	Veut sortir · verdict		needs_review			
+822	4-ПРОЧЕЕ	Разъединить эпизод	Dissocier l'épisode		needs_review			
+823	4-ПРОЧЕЕ	Следующий шаг один	Une étape suivante		needs_review			
+824	4-ПРОЧЕЕ	Удалить назначение	Supprimer l'ordonnance		needs_review			Togo/Features/Health/PrescriptionScreens.swift:343
+825	4-ПРОЧЕЕ	Удалить этот день?	Supprimer cette journée ?		needs_review			Togo/Features/DayOut/DayOutScreens.swift:157
+826	4-ПРОЧЕЕ	днём между едой %@	en journée, entre les repas %@		needs_review	да		Togo/Features/Feeding/FeedingScreen.swift:573
+827	4-ПРОЧЕЕ	до «можно кормить»	jusqu'à « on peut nourrir »		needs_review			
+828	4-ПРОЧЕЕ	когда позвать всех	quand alerter tout le monde		needs_review			
+829	4-ПРОЧЕЕ	любая NFC-наклейка	n'importe quel autocollant NFC		needs_review			
+830	4-ПРОЧЕЕ	одно фото для всех	une photo pour tout		needs_review			Togo/Features/Settings/SettingsScreen.swift:305
+831	4-ПРОЧЕЕ	от последнего раза	depuis la dernière fois		needs_review			Togo/Features/Care/CareScreen.swift:30
+832	4-ПРОЧЕЕ	переходим на улицу	passage à l'extérieur		needs_review			
+833	4-ПРОЧЕЕ	попыток сегодня: 2	essais aujourd'hui : 2		needs_review			
+834	4-ПРОЧЕЕ	причина не названа	raison non indiquée		needs_review			TogoShared/Sync/FamilySync.swift:549
+835	4-ПРОЧЕЕ	сейчас стандартное	photo par défaut		needs_review			
+836	4-ПРОЧЕЕ	сначала отметь еду	notez d'abord le repas		needs_review			
+837	4-ПРОЧЕЕ	%@ · %@ раз за %@	%@ · %@ fois en %@		needs_review	да		TogoShared/Domain/AlarmThreshold.swift:26
+838	4-ПРОЧЕЕ	%@ г · %@ и запас	%@ g · %@ et réserve		needs_review	да		Togo/Features/DayOut/DayOutScreens.swift:55
+839	4-ПРОЧЕЕ	%@ записей в день	%@ entrées par jour		needs_review	да		Togo/Features/Settings/UsageLogScreen.swift:92
+840	4-ПРОЧЕЕ	%@%@ кг за период	%@%@ kg sur la période		needs_review	да		TogoShared/Domain/VetSummary.swift:47
+841	4-ПРОЧЕЕ	28 · по 4 на день	28 · 4 par jour		needs_review			
+842	4-ПРОЧЕЕ	5 фото вперемешку	5 photos au hasard		needs_review			Togo/Features/Settings/SettingsScreen.swift:306
+843	4-ПРОЧЕЕ	7 срывов за месяц	7 réactions ce mois-ci		needs_review			
+844	4-ПРОЧЕЕ	Блокировка · 9:41	Écran verrouillé · 9:41		needs_review			
+845	4-ПРОЧЕЕ	Брифинг отправлен	Consignes envoyées		needs_review			
+846	4-ПРОЧЕЕ	Вид ситтера (Аня)	Vue pet-sitter (Anya)		needs_review			
+847	4-ПРОЧЕЕ	Влажный · 6 банок	Humide · 6 boîtes		needs_review			
+848	4-ПРОЧЕЕ	График показателя	Graphique du paramètre		needs_review			Togo/Features/Health/HealthScreen.swift:569
+849	4-ПРОЧЕЕ	Давно не выходили	Pas de sortie depuis longtemps		needs_review			Togo/Features/Today/TodayScreen.swift:751
+850	4-ПРОЧЕЕ	Дневник не доехал	Le journal n'est pas arrivé		needs_review			Togo/Features/Today/TodayScreen.swift:747
+851	4-ПРОЧЕЕ	Добавить человека	Ajouter une personne		needs_review			Togo/Features/Family/FamilyScreen.swift:178
+852	4-ПРОЧЕЕ	Долго без выходов	Longtemps sans sortie		needs_review			
+853	4-ПРОЧЕЕ	Закончить занятие	Terminer la séance		needs_review			
+854	4-ПРОЧЕЕ	Закончить поездку	Terminer le voyage		needs_review			
+855	4-ПРОЧЕЕ	Как часто гуляете	Fréquence des sorties		needs_review			
+856	4-ПРОЧЕЕ	Купил · +30 табл.	Acheté · +30 cp		needs_review			
+857	4-ПРОЧЕЕ	Напомню через час	Rappel dans une heure		needs_review			
+858	4-ПРОЧЕЕ	Ночь · тихие часы	Nuit · heures calmes		needs_review			
+859	4-ПРОЧЕЕ	Пишем в этот день	On écrit dans cette journée		needs_review			Togo/Features/Today/TodayScreen.swift:292
+860	4-ПРОЧЕЕ	Поездка закончена	Voyage terminé		needs_review			
+861	4-ПРОЧЕЕ	Поездки и профиль	Voyages et profil		needs_review			
+862	4-ПРОЧЕЕ	Показать в аптеке	Montrer à la pharmacie		needs_review			Togo/Features/Health/PrescriptionScreens.swift:337
+863	4-ПРОЧЕЕ	Править и удалить	Modifier et supprimer		needs_review			Togo/Features/Profile/ProfileScreen.swift:264
+864	4-ПРОЧЕЕ	Привыкает к улице	S'habitue à l'extérieur		needs_review			
+865	4-ПРОЧЕЕ	Семья и дежурство	Famille et garde		needs_review			Togo/Features/Profile/DogTab.swift:312
+866	4-ПРОЧЕЕ	Снимки документов	Photos des documents		needs_review			
+867	4-ПРОЧЕЕ	Со мной весь день	Avec moi toute la journée		needs_review			Togo/Features/Today/TodayScreen.swift:743
+868	4-ПРОЧЕЕ	Удалить эпизод %@	Supprimer l'épisode %@		needs_review	да		Togo/Features/History/HistoryScreen.swift:316
+869	4-ПРОЧЕЕ	Удалить этот день	Supprimer cette journée		needs_review			Togo/Features/DayOut/DayOutScreens.swift:149
+870	4-ПРОЧЕЕ	Фото по умолчанию	Photo par défaut		needs_review			
+871	4-ПРОЧЕЕ	Эпизод закончился	Épisode terminé		needs_review			
+872	4-ПРОЧЕЕ	Эпизод разъединён	Épisode dissocié		needs_review			
+873	4-ПРОЧЕЕ	вердикт и правила	verdict et règles		needs_review			Togo/Features/Settings/HowItWorksScreen.swift:75
+874	4-ПРОЧЕЕ	годна до мар 2027	valable jusqu'en mars 2027		needs_review			
+875	4-ПРОЧЕЕ	дома · закреплено	à la maison · acquis		needs_review			
+876	4-ПРОЧЕЕ	жми, когда сделал	appuyez au moment où il le fait		needs_review			Togo/Features/Training/TrainingSessionScreen.swift:255
+877	4-ПРОЧЕЕ	за 10 мин · «Дал»	10 min avant · « Donné »		needs_review			
+878	4-ПРОЧЕЕ	или «не записано»	ou « non noté »		needs_review			
+879	4-ПРОЧЕЕ	имя, роль и права	nom, rôle et droits		needs_review			Togo/Features/Family/FamilyScreen.swift:1169
+880	4-ПРОЧЕЕ	как часто гуляете	fréquence des sorties		needs_review			Togo/Features/History/HistoryScreen.swift:210
+881	4-ПРОЧЕЕ	кто получает пуши	qui reçoit les alertes		needs_review			
+882	4-ПРОЧЕЕ	напоминание 20:00	rappel 20:00		needs_review			
+883	4-ПРОЧЕЕ	позвать в дневник	inviter au journal		needs_review			Togo/Features/Family/FamilyScreen.swift:532
+884	4-ПРОЧЕЕ	пока мало записей	pas encore assez de notes		needs_review			
+885	4-ПРОЧЕЕ	политика, условия	confidentialité, conditions		needs_review			Togo/Features/Settings/LegalScreens.swift:216
+886	4-ПРОЧЕЕ	результат словами	résultat en toutes lettres		needs_review			Togo/Features/Health/LabResultScreens.swift:832
+887	4-ПРОЧЕЕ	рецепт без номера	ordonnance sans numéro		needs_review			Togo/Features/Health/PrescriptionScreens.swift:99
+888	4-ПРОЧЕЕ	сводка за сегодня	résumé du jour		needs_review			
+889	4-ПРОЧЕЕ	сторонаПриложения	côtéApplication		needs_review			TogoShared/Sync/FamilyShare.swift:952
+890	4-ПРОЧЕЕ	шипперке · 3 года	schipperke · 3 ans		needs_review			
+891	4-ПРОЧЕЕ	%@ · ты помощник	%@ · tu es assistant		needs_review	да		Togo/Features/Family/FamilyScreen.swift:1246
+892	4-ПРОЧЕЕ	%@ вывела собаку	%@ a sorti le chien		needs_review	да		TogoShared/LiveActivity/WalkActivityView.swift:269
+893	4-ПРОЧЕЕ	1 · Номер бланка	1 · Numéro de fiche		needs_review			
+894	4-ПРОЧЕЕ	Siri и «Команды»	Siri et Raccourcis		needs_review			
+895	4-ПРОЧЕЕ	«Тянул к кошкам»	« Il tirait vers les chats »		needs_review			
+896	4-ПРОЧЕЕ	Ветпаспорт · чип	Passeport · puce		needs_review			
+897	4-ПРОЧЕЕ	Визитов пока нет	Pas encore de visites		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:57
+898	4-ПРОЧЕЕ	Масса на единицу	Dosage par unité		needs_review			
+899	4-ПРОЧЕЕ	Матрица переноса	Matrice de transfert		needs_review			
+900	4-ПРОЧЕЕ	На что реагирует	Réagit à		needs_review			
+901	4-ПРОЧЕЕ	Наблюдаем дальше	Continuer à observer		needs_review			
+902	4-ПРОЧЕЕ	Не кормить до %@	Ne pas nourrir avant %@		needs_review	да		Togo/Features/Today/TodayScreen.swift:351
+903	4-ПРОЧЕЕ	Новое назначение	Nouvelle ordonnance		needs_review			Togo/Features/Health/PrescriptionScreens.swift:200
+904	4-ПРОЧЕЕ	Номер для аптеки	Numéro pour la pharmacie		needs_review			Togo/Features/Health/PrescriptionScreens.swift:569
+905	4-ПРОЧЕЕ	Отметок пока нет	Pas encore de marques		needs_review			Togo/Features/Training/TrainingSessionScreen.swift:424
+906	4-ПРОЧЕЕ	Отслеживать цикл	Suivre le cycle		needs_review			
+907	4-ПРОЧЕЕ	Отсчёт с сегодня	À partir d'aujourd'hui		needs_review			
+908	4-ПРОЧЕЕ	Подобрал с земли	Ramassé par terre		needs_review			
+909	4-ПРОЧЕЕ	Поездка началась	Voyage commencé		needs_review			
+910	4-ПРОЧЕЕ	Пока без отметок	Pas encore de marques		needs_review			
+911	4-ПРОЧЕЕ	Попытка записана	Essai noté		needs_review			
+912	4-ПРОЧЕЕ	Работа с порогом	Travail du seuil		needs_review			
+913	4-ПРОЧЕЕ	Убрать из списка	Retirer de la liste		needs_review			Togo/Features/Family/FamilyScreen.swift:1118
+914	4-ПРОЧЕЕ	Управлять семьёй	Gérer la famille		needs_review			
+915	4-ПРОЧЕЕ	без формулировки	sans formulation		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:335
+916	4-ПРОЧЕЕ	время и «дальше»	heure et « suivant »		needs_review			
+917	4-ПРОЧЕЕ	время с прогулки	temps depuis la sortie		needs_review			
+918	4-ПРОЧЕЕ	др. Лемер · Вет+	Dr Lemaire · Vet+		needs_review			
+919	4-ПРОЧЕЕ	другого человека	d'une autre personne		needs_review			Togo/Features/Family/SharedDiaryScreen.swift:153
+920	4-ПРОЧЕЕ	за 3 ч до машины	3 h avant la voiture		needs_review			
+921	4-ПРОЧЕЕ	коридор не задан	pas de fourchette		needs_review			
+922	4-ПРОЧЕЕ	курица · шоколад	poulet · chocolat		needs_review			
+923	4-ПРОЧЕЕ	на этом телефоне	sur ce téléphone		needs_review			Togo/Features/Family/FamilyScreen.swift:1079
+924	4-ПРОЧЕЕ	напоминание 8:00	rappel 8:00		needs_review			
+925	4-ПРОЧЕЕ	переходит · %lld	passe · %lld		needs_review	да		
+926	4-ПРОЧЕЕ	переходит%@ · %@	passe%@ · %@		needs_review	да		
+927	4-ПРОЧЕЕ	плитка «реакция»	tuile « réaction »		needs_review			Togo/DesignSystem/Components/MarkFill.swift:67
+928	4-ПРОЧЕЕ	подобрал с земли	a ramassé par terre		needs_review			
+929	4-ПРОЧЕЕ	пока без отметок	pas encore de marques		needs_review			
+930	4-ПРОЧЕЕ	попыток пока нет	aucune tentative pour l'instant		needs_review			Togo/Features/Training/TrainingScreens.swift:280
+931	4-ПРОЧЕЕ	пора на контроль	l'heure du contrôle		needs_review			TogoShared/Domain/ControlWindow.swift:122
+932	4-ПРОЧЕЕ	приехала обменом	arrivée par partage		needs_review			TogoShared/Domain/DogOrigin.swift:67
+933	4-ПРОЧЕЕ	рабочая гипотеза	hypothèse de travail		needs_review			TogoShared/Models/Medical.swift:312
+934	4-ПРОЧЕЕ	роли и дежурство	rôles et garde		needs_review			
+935	4-ПРОЧЕЕ	с подтверждением	avec confirmation		needs_review			
+936	4-ПРОЧЕЕ	сейчас твоё фото	votre photo		needs_review			
+937	4-ПРОЧЕЕ	собаки ближе 5 м	chiens à moins de 5 m		needs_review			
+938	4-ПРОЧЕЕ	спросим один раз	demandé une seule fois		needs_review			
+939	4-ПРОЧЕЕ	твоё фото № %lld	ta photo n° %lld		needs_review	да		Togo/Features/Settings/BackgroundScreen.swift:411
+940	4-ПРОЧЕЕ	фото · 6 страниц	photo · 6 pages		needs_review			
+941	4-ПРОЧЕЕ	через 4–6 недель	dans 4–6 semaines		needs_review			
+942	4-ПРОЧЕЕ	%@, %@% вовремя	%@, %@ % à l'heure		needs_review	да		Togo/Features/Health/CourseFinishSheet.swift:54
+943	4-ПРОЧЕЕ	%lld кроме тебя	%lld en plus de toi		needs_review	да		Togo/Features/Profile/DogTab.swift:339
+944	4-ПРОЧЕЕ	Брифинг для Ани	Consignes pour Anya		needs_review			
+945	4-ПРОЧЕЕ	Брифинг ситтеру	Consignes pet-sitter		needs_review			
+946	4-ПРОЧЕЕ	Ввести с бланка	Saisir depuis la fiche		needs_review			Togo/Features/Health/LabResultScreens.swift:300
+947	4-ПРОЧЕЕ	Выходов ещё нет	Pas encore de sorties		needs_review			
+948	4-ПРОЧЕЕ	Выходы за день.	Sorties par jour.		needs_review			
+949	4-ПРОЧЕЕ	Данные и доступ	Données et accès		needs_review			
+950	4-ПРОЧЕЕ	Дежурит сегодня	De garde aujourd'hui		needs_review			Togo/Features/Family/FamilyScreen.swift:326
+951	4-ПРОЧЕЕ	Запас кончается	Stock bientôt épuisé		needs_review			Togo/Features/Today/TodayScreen.swift:745
+952	4-ПРОЧЕЕ	Записано · зубы	Noté · dents		needs_review			
+953	4-ПРОЧЕЕ	Звоню в «Вет+»…	Appel de Vet+…		needs_review			
+954	4-ПРОЧЕЕ	Когда поставлен	Quand il a été posé		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:453
+955	4-ПРОЧЕЕ	Кто ещё кормит?	Qui d'autre le nourrit ?		needs_review			
+956	4-ПРОЧЕЕ	Ночь длиннее %@	Nuit plus longue que %@		needs_review	да		Togo/Features/Profile/ScheduleEditor.swift:321
+957	4-ПРОЧЕЕ	Открыть «Семью»	Ouvrir « Famille »		needs_review			Togo/Features/Today/TodayScreen.swift:953
+958	4-ПРОЧЕЕ	Пока без собаки	Pas encore de chien		needs_review			Togo/Features/Onboarding/OnboardingSteps.swift:311
+959	4-ПРОЧЕЕ	Последний выход	Dernière sortie		needs_review			Togo/Features/Needs/NeedsSheet.swift:250
+960	4-ПРОЧЕЕ	Предыдущий день	Jour précédent		needs_review			Togo/Features/Today/TodayHeader.swift:105
+961	4-ПРОЧЕЕ	Пропуск записан	Oubli noté		needs_review			
+962	4-ПРОЧЕЕ	Сколько раз ест	Repas par jour		needs_review			
+963	4-ПРОЧЕЕ	Столбик — срыв.	Barre — réaction.		needs_review			
+964	4-ПРОЧЕЕ	Сухой · 2 мешка	Sec · 2 sacs		needs_review			
+965	4-ПРОЧЕЕ	Т4 · 3,1 мкг/дл	T4 · 3,1 µg/dL		needs_review			
+966	4-ПРОЧЕЕ	У ситтера · Аня	Chez la pet-sitter · Anya		needs_review			
+967	4-ПРОЧЕЕ	Убрать мои фото	Retirer mes photos		needs_review			Togo/Features/Settings/BackgroundScreen.swift:240
+968	4-ПРОЧЕЕ	Удалить строку?	Supprimer la ligne ?		needs_review			Togo/Features/Health/LabResultScreens.swift:884
+969	4-ПРОЧЕЕ	Удалить эпизод?	Supprimer l'épisode ?		needs_review			Togo/Features/History/HistoryScreen.swift:97
+970	4-ПРОЧЕЕ	Экран в работе.	Écran en cours.		needs_review			
+971	4-ПРОЧЕЕ	в чужой дневник	dans le journal de quelqu'un d'autre		needs_review			Togo/Features/Onboarding/ПозвалиВСемью.swift:63
+972	4-ПРОЧЕЕ	где и кто видит	où et qui voit		needs_review			Togo/Features/Settings/DataPrivacyScreen.swift:19
+973	4-ПРОЧЕЕ	готовые вопросы	questions prêtes		needs_review			
+974	4-ПРОЧЕЕ	давала Виктория	données par Victoria		needs_review			
+975	4-ПРОЧЕЕ	ещё не поднялся	ne s'est pas encore posé		needs_review			Togo/Features/Family/SharedDiaryScreen.swift:166
+976	4-ПРОЧЕЕ	кнопка «Гулять»	bouton « Promener »		needs_review			
+977	4-ПРОЧЕЕ	лаборатория: %@	laboratoire : %@		needs_review	да		Togo/Features/Health/MedicalRecordCards.swift:436
+978	4-ПРОЧЕЕ	на чём основано	sur quoi cela repose		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:462
+979	4-ПРОЧЕЕ	нмоль/л ↑ с 2,9	nmol/L ↑ depuis 2,9		needs_review			
+980	4-ПРОЧЕЕ	отмечаешь позже	vous notez plus tard		needs_review			
+981	4-ПРОЧЕЕ	отмечено руками	noté à la main		needs_review			
+982	4-ПРОЧЕЕ	первое из твоих	la première des tiennes		needs_review			Togo/Features/Settings/BackgroundScreen.swift:166
+983	4-ПРОЧЕЕ	подпишем снимок	on légendera la photo		needs_review			
+984	4-ПРОЧЕЕ	покажи в аптеке	à montrer en pharmacie		needs_review			
+985	4-ПРОЧЕЕ	появится «Цикл»	« Cycle » apparaîtra		needs_review			
+986	4-ПРОЧЕЕ	твои фотографии	tes photos		needs_review			Togo/Features/Settings/BackgroundScreen.swift:248
+987	4-ПРОЧЕЕ	только в iCloud	iCloud seulement		needs_review			
+988	4-ПРОЧЕЕ	фото в Здоровье	photo dans Santé		needs_review			
+989	4-ПРОЧЕЕ	шипперке · твоя	schipperke · le vôtre		needs_review			
+990	4-ПРОЧЕЕ	 · повторяется	 · se répète		needs_review			Togo/Store/Notifications.swift:210
+991	4-ПРОЧЕЕ	Брифинг для %@	Consignes pour %@		needs_review	да		Togo/Features/Family/FamilyScreen.swift:754
+992	4-ПРОЧЕЕ	Визит · 12 окт	Visite · 12 oct.		needs_review			
+993	4-ПРОЧЕЕ	Вкладка собаки	Onglet du chien		needs_review			Togo/Features/Settings/BackgroundScreen.swift:390
+994	4-ПРОЧЕЕ	Вне приложения	Hors de l'appli		needs_review			
+995	4-ПРОЧЕЕ	Время изменено	Heure modifiée		needs_review			
+996	4-ПРОЧЕЕ	Добавить визит	Ajouter une visite		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:59
+997	4-ПРОЧЕЕ	Ещё · записать	Plus · noter		needs_review			
+998	4-ПРОЧЕЕ	Ещё показатель	Autre paramètre		needs_review			Togo/Features/Health/LabResultScreens.swift:646
+999	4-ПРОЧЕЕ	Завести собаку	Ajouter un chien		needs_review			Togo/Features/Today/TodayScreen.swift:123
+1000	4-ПРОЧЕЕ	Записать бирку	Écrire le badge		needs_review			
+1001	4-ПРОЧЕЕ	Запись удалена	Note supprimée		needs_review			
+1002	4-ПРОЧЕЕ	Копия в iCloud	Sauvegarde iCloud		needs_review			
+1003	4-ПРОЧЕЕ	Короткий выход	Sortie courte		needs_review			
+1004	4-ПРОЧЕЕ	Новый участник	Nouveau membre		needs_review			Togo/Features/Family/FamilyScreen.swift:1169
+1005	4-ПРОЧЕЕ	Передача смены	Passation		needs_review			
+1006	4-ПРОЧЕЕ	Поделиться PDF	Partager le PDF		needs_review			
+1007	4-ПРОЧЕЕ	Позвонить Вет+	Appeler Vet+		needs_review			
+1008	4-ПРОЧЕЕ	Правка профиля	Modifier le profil		needs_review			
+1009	4-ПРОЧЕЕ	Своими словами	Avec vos mots		needs_review			
+1010	4-ПРОЧЕЕ	Сейчас дежурит	De garde maintenant		needs_review			
+1011	4-ПРОЧЕЕ	Семья и ситтер	Famille et pet-sitter		needs_review			
+1012	4-ПРОЧЕЕ	Сколько давать	Quelle quantité donner		needs_review			Togo/Features/Health/PrescriptionScreens.swift:236
+1013	4-ПРОЧЕЕ	Следующий день	Jour suivant		needs_review			Togo/Features/Today/TodayHeader.swift:114
+1014	4-ПРОЧЕЕ	Собаки · дубль	Chiens · doublon		needs_review			
+1015	4-ПРОЧЕЕ	Т4 общий · окт	T4 totale · oct.		needs_review			
+1016	4-ПРОЧЕЕ	Третий в семье	Troisième de la famille		needs_review			
+1017	4-ПРОЧЕЕ	Удалить визит?	Supprimer la visite ?		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:179
+1018	4-ПРОЧЕЕ	Удалить строку	Supprimer la ligne		needs_review			Togo/Features/Health/LabResultScreens.swift:863
+1019	4-ПРОЧЕЕ	Фон приложения	Arrière-plan de l'appli		needs_review			Togo/Features/Settings/SettingsScreen.swift:291
+1020	4-ПРОЧЕЕ	Число с бланка	Valeur de la fiche		needs_review			
+1021	4-ПРОЧЕЕ	Что мог съесть	Ce qu'il a pu manger		needs_review			
+1022	4-ПРОЧЕЕ	Что ты сможешь	Ce que vous pourrez faire		needs_review			
+1023	4-ПРОЧЕЕ	без «Просится»	sans « Envie de sortir ? »		needs_review			
+1024	4-ПРОЧЕЕ	вчера и раньше	hier et avant		needs_review			
+1025	4-ПРОЧЕЕ	выходов в день	sorties par jour		needs_review			Togo/Features/History/HistoryScreen.swift:212
+1026	4-ПРОЧЕЕ	гулял %@ назад	sorti il y a %@		needs_review	да		TogoShared/Domain/NeedVerdict.swift:203
+1027	4-ПРОЧЕЕ	до 12 мар 2027	jusqu'au 12 mars 2027		needs_review			
+1028	4-ПРОЧЕЕ	заведена здесь	créée ici		needs_review			TogoShared/Domain/DogOrigin.swift:67
+1029	4-ПРОЧЕЕ	звонок в дверь	sonnette		needs_review			
+1030	4-ПРОЧЕЕ	карточка точки	fiche du point		needs_review			
+1031	4-ПРОЧЕЕ	контроль через	contrôle dans		needs_review			Togo/Features/Health/PrescriptionScreens.swift:280
+1032	4-ПРОЧЕЕ	короткий выход	sortie courte		needs_review			
+1033	4-ПРОЧЕЕ	кто что сделал	qui a fait quoi		needs_review			Togo/Features/Settings/UsageLogScreen.swift:21
+1034	4-ПРОЧЕЕ	оставался один	resté seul		needs_review			
+1035	4-ПРОЧЕЕ	плакат-главный	affiche-principale		needs_review			Togo/Features/Today/TodayScreen.swift:1123
+1036	4-ПРОЧЕЕ	права изменены	droits modifiés		needs_review			Togo/Features/Family/FamilyScreen.swift:947
+1037	4-ПРОЧЕЕ	ровно три вещи	exactement trois choses		needs_review			
+1038	4-ПРОЧЕЕ	ровно через %@	dans exactement %@		needs_review	да		Togo/Features/Profile/ScheduleEditor.swift:302
+1039	4-ПРОЧЕЕ	с первого раза	dès la première fois		needs_review			
+1040	4-ПРОЧЕЕ	сборы и дорога	bagages et route		needs_review			Togo/Features/Trip/TripScreens.swift:22
+1041	4-ПРОЧЕЕ	семья по ролям	la famille selon les rôles		needs_review			
+1042	4-ПРОЧЕЕ	сколько и чего	combien et de quoi		needs_review			Togo/Features/Health/PrescriptionScreens.swift:321
+1043	4-ПРОЧЕЕ	срывы и страхи	réactions et peurs		needs_review			
+1044	4-ПРОЧЕЕ	счёт дошёл сам	seuil atteint		needs_review			
+1045	4-ПРОЧЕЕ	2 раза в день	2 fois par jour		needs_review			
+1046	4-ПРОЧЕЕ	3 раза в день	3 fois par jour		needs_review			
+1047	4-ПРОЧЕЕ	Бирка у двери	Badge de porte		needs_review			
+1048	4-ПРОЧЕЕ	Включить счёт	Activer le décompte		needs_review			Togo/Features/Health/HealthScreen.swift:356
+1049	4-ПРОЧЕЕ	Вторая собака	Deuxième chien		needs_review			Togo/Features/Profile/DogSwitcher.swift:119
+1050	4-ПРОЧЕЕ	Добавить фото	Ajouter une photo		needs_review			Togo/Features/Settings/BackgroundScreen.swift:220
+1051	4-ПРОЧЕЕ	Ждать у двери	Attendre à la porte		needs_review			
+1052	4-ПРОЧЕЕ	Жетон и налог	Médaille et taxe		needs_review			
+1053	4-ПРОЧЕЕ	Итог прогулки	Bilan de la sortie		needs_review			Togo/DesignSystem/WalkSummaryGallery.swift:39
+1054	4-ПРОЧЕЕ	Кем он войдёт	Quel rôle il aura		needs_review			Togo/Features/Family/FamilyScreen.swift:599
+1055	4-ПРОЧЕЕ	Кладу снимок…	J'enregistre la photo…		needs_review			Togo/Features/Profile/ВыборФотоСобаки.swift:151
+1056	4-ПРОЧЕЕ	Когда спросят	Quand on vous demande		needs_review			
+1057	4-ПРОЧЕЕ	Кормить можно	Vous pouvez nourrir		needs_review			Togo/Features/Feeding/FeedingScreen.swift:168
+1058	4-ПРОЧЕЕ	На блокировке	Écran verrouillé		needs_review			
+1059	4-ПРОЧЕЕ	Окно контроля	Fenêtre de contrôle		needs_review			Togo/Features/Health/PrescriptionScreens.swift:310
+1060	4-ПРОЧЕЕ	Оставлены обе	Les deux gardées		needs_review			
+1061	4-ПРОЧЕЕ	Отправить Ане	Envoyer à Anya		needs_review			
+1062	4-ПРОЧЕЕ	Порог реакций	Seuil de réaction		needs_review			
+1063	4-ПРОЧЕЕ	Прогулка с %@	Promenade depuis %@		needs_review	да		Togo/Features/Needs/WalkMode.swift:295
+1064	4-ПРОЧЕЕ	Режим изменён	Mode modifié		needs_review			
+1065	4-ПРОЧЕЕ	Свести в одну	Fusionner en une seule		needs_review			Togo/Features/Family/DuplicateDogCard.swift:86
+1066	4-ПРОЧЕЕ	Сводка готова	Résumé prêt		needs_review			
+1067	4-ПРОЧЕЕ	Смена принята	Passation acceptée		needs_review			
+1068	4-ПРОЧЕЕ	Снимок собаки	Photo du chien		needs_review			Togo/Features/Profile/ВыборФотоСобаки.swift:151
+1069	4-ПРОЧЕЕ	Состояние дня	État du jour		needs_review			
+1070	4-ПРОЧЕЕ	Сохранить так	Enregistrer ainsi		needs_review			Togo/Features/Health/LabResultScreens.swift:519
+1071	4-ПРОЧЕЕ	Срок годности	Péremption		needs_review			
+1072	4-ПРОЧЕЕ	Срок контроля	Échéance de contrôle		needs_review			Togo/Features/Health/PrescriptionScreens.swift:281
+1073	4-ПРОЧЕЕ	Срыв · на что	Réaction · à quoi		needs_review			
+1074	4-ПРОЧЕЕ	Ссылка готова	Lien prêt		needs_review			
+1075	4-ПРОЧЕЕ	Убрать строку	Retirer la ligne		needs_review			Togo/Features/Health/LabResultScreens.swift:639
+1076	4-ПРОЧЕЕ	Удалить визит	Supprimer la visite		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:170
+1077	4-ПРОЧЕЕ	Указать время	Indiquer l'heure		needs_review			Togo/Features/Health/LabResultScreens.swift:520
+1078	4-ПРОЧЕЕ	Файл дневника	Fichier du journal		needs_review			
+1079	4-ПРОЧЕЕ	Фото поменяно	Photo changée		needs_review			
+1080	4-ПРОЧЕЕ	Шаг %lld из 3	Étape %lld sur 3		needs_review	да		Togo/Features/Health/LabResultScreens.swift:500
+1081	4-ПРОЧЕЕ	Эпизод закрыт	Épisode clos		needs_review			
+1082	4-ПРОЧЕЕ	всё · 30 дней	tout · 30 jours		needs_review			
+1083	4-ПРОЧЕЕ	вторая собака	deuxième chien		needs_review			
+1084	4-ПРОЧЕЕ	вышли в 19:52	sorti à 19:52		needs_review			
+1085	4-ПРОЧЕЕ	до 1 мар 2027	jusqu'au 1er mars 2027		needs_review			
+1086	4-ПРОЧЕЕ	ещё не гуляли	pas encore sorti		needs_review			
+1087	4-ПРОЧЕЕ	как на бланке	comme sur la fiche		needs_review			Togo/Features/Health/LabResultScreens.swift:301
+1088	4-ПРОЧЕЕ	когда выйдете	quand vous sortez		needs_review			
+1089	4-ПРОЧЕЕ	когда спросят	quand on vous demande		needs_review			Togo/Features/Emergency/EmergencyScreen.swift:198
+1090	4-ПРОЧЕЕ	на паузе · %@	en pause · %@		needs_review	да		Togo/Features/Needs/WalkMode.swift:250
+1091	4-ПРОЧЕЕ	номер рецепта	numéro d'ordonnance		needs_review			Togo/Features/Health/PrescriptionScreens.swift:209
+1092	4-ПРОЧЕЕ	общий дневник	journal partagé		needs_review			
+1093	4-ПРОЧЕЕ	откуда и куда	d'où et vers où		needs_review			Togo/Features/Trip/TripScreens.swift:38
+1094	4-ПРОЧЕЕ	повторяющееся	récurrent		needs_review			
+1095	4-ПРОЧЕЕ	собака не ела	le chien n'a pas mangé		needs_review			
+1096	4-ПРОЧЕЕ	строка бланка	ligne de fiche		needs_review			Togo/Features/Health/LabResultScreens.swift:819
+1097	4-ПРОЧЕЕ	тап — открыть	touchez pour ouvrir		needs_review			
+1098	4-ПРОЧЕЕ	что получится	ce que ça donne		needs_review			Togo/Features/Settings/BackgroundScreen.swift:297
+1099	4-ПРОЧЕЕ	 · сейчас %@	 · maintenant %@		needs_review	да		Togo/Features/Health/MissedDoseSheet.swift:25
+1100	4-ПРОЧЕЕ	1 раз в день	1 fois par jour		needs_review			
+1101	4-ПРОЧЕЕ	130 г в день	130 g par jour		needs_review			
+1102	4-ПРОЧЕЕ	1:42 из 3:00	1:42 sur 3:00		needs_review			
+1103	4-ПРОЧЕЕ	8:30 и 19:30	8:30 et 19:30		needs_review			
+1104	4-ПРОЧЕЕ	CSV сохранён	CSV enregistré		needs_review			
+1105	4-ПРОЧЕЕ	Введи кличку	Saisissez un nom		needs_review			
+1106	4-ПРОЧЕЕ	Вет+ · Ницца	Vet+ · Nice		needs_review			
+1107	4-ПРОЧЕЕ	Вид значения	Type de valeur		needs_review			Togo/Features/Health/LabResultScreens.swift:599
+1108	4-ПРОЧЕЕ	Выбрать своё	Choisir la mienne		needs_review			
+1109	4-ПРОЧЕЕ	Вырвал · чем	A vomi · quoi		needs_review			
+1110	4-ПРОЧЕЕ	Где хранится	Où c'est stocké		needs_review			
+1111	4-ПРОЧЕЕ	Две записи «	Deux notes « 		needs_review			
+1112	4-ПРОЧЕЕ	Другое время	Autre heure		needs_review			Togo/Features/Today/GivenAtSheet.swift:64
+1113	4-ПРОЧЕЕ	Как задумано	Comme prévu		needs_review			Togo/Features/Settings/BackgroundScreen.swift:134
+1114	4-ПРОЧЕЕ	Копия и файл	Sauvegarde et fichier		needs_review			
+1115	4-ПРОЧЕЕ	Лион, к маме	Lyon, chez Maman		needs_review			
+1116	4-ПРОЧЕЕ	Меня позвали	On m'a invité		needs_review			Togo/Features/Onboarding/ПозвалиВСемью.swift:92
+1117	4-ПРОЧЕЕ	Не отмечена?	Pas notée ?		needs_review			
+1118	4-ПРОЧЕЕ	Номер бланка	Numéro de fiche		needs_review			Togo/Features/Health/LabResultScreens.swift:572
+1119	4-ПРОЧЕЕ	Обычный день	Journée normale		needs_review			Togo/DesignSystem/WidgetGallery.swift:45
+1120	4-ПРОЧЕЕ	Оставить обе	Garder les deux		needs_review			
+1121	4-ПРОЧЕЕ	Откуда взято	D'où ça vient		needs_review			Togo/Features/Health/PrescriptionScreens.swift:259
+1122	4-ПРОЧЕЕ	Первый выход	Première sortie		needs_review			
+1123	4-ПРОЧЕЕ	Передать Ане	Passer à Anya		needs_review			
+1124	4-ПРОЧЕЕ	Пора звонить	Il faut appeler		needs_review			
+1125	4-ПРОЧЕЕ	Последний Т4	Dernière T4		needs_review			
+1126	4-ПРОЧЕЕ	Самый долгий	Le plus long		needs_review			Togo/Features/Needs/NeedsSheet.swift:254
+1127	4-ПРОЧЕЕ	Снять момент	Saisir l'instant		needs_review			
+1128	4-ПРОЧЕЕ	Собаки слиты	Chiens fusionnés		needs_review			Togo/Features/Family/DuplicateDogCard.swift:80
+1129	4-ПРОЧЕЕ	Срок доступа	Durée d'accès		needs_review			
+1130	4-ПРОЧЕЕ	Тебя позвали	On t'a invité		needs_review			Togo/Features/Onboarding/ПозвалиВСемью.swift:62
+1131	4-ПРОЧЕЕ	Убрать навык	Retirer la compétence		needs_review			Togo/Features/Training/SkillAttemptSheet.swift:58
+1132	4-ПРОЧЕЕ	Фон обновлён	Arrière-plan mis à jour		needs_review			
+1133	4-ПРОЧЕЕ	Формулировка	Formulation		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:449
+1134	4-ПРОЧЕЕ	Что снимаешь	Que photographiez-vous		needs_review			
+1135	4-ПРОЧЕЕ	без названия	sans nom		needs_review			Togo/Features/Health/ClinicScreens.swift:148
+1136	4-ПРОЧЕЕ	было и стало	avant et après		needs_review			
+1137	4-ПРОЧЕЕ	в семье %lld	%lld dans la famille		needs_review	да		Togo/Features/Family/FamilyScreen.swift:277
+1138	4-ПРОЧЕЕ	вывел собаку	a sorti le chien		needs_review			TogoShared/LiveActivity/WalkActivityView.swift:266
+1139	4-ПРОЧЕЕ	до 14 ноября	jusqu'au 14 novembre		needs_review			
+1140	4-ПРОЧЕЕ	еды пока нет	pas encore de repas		needs_review			TogoShared/Domain/SnapshotText.swift:67
+1141	4-ПРОЧЕЕ	завтра, 8:00	demain, 8:00		needs_review			
+1142	4-ПРОЧЕЕ	звони сейчас	appelez maintenant		needs_review			
+1143	4-ПРОЧЕЕ	значения нет	pas de valeur		needs_review			Togo/Features/Health/LabResultScreens.swift:331
+1144	4-ПРОЧЕЕ	идёт · 3 мин	en cours · 3 min		needs_review			
+1145	4-ПРОЧЕЕ	как выглядит	à quoi ça ressemble		needs_review			Togo/Features/Settings/SettingsScreen.swift:297
+1146	4-ПРОЧЕЕ	как задумано	comme prévu		needs_review			Togo/Features/Settings/SettingsScreen.swift:304
+1147	4-ПРОЧЕЕ	кто назначил	qui l'a prescrit		needs_review			Togo/Features/Health/PrescriptionScreens.swift:247
+1148	4-ПРОЧЕЕ	наблюдай 6 ч	surveillez 6 h		needs_review			
+1149	4-ПРОЧЕЕ	нет значения	pas de valeur		needs_review			Togo/Features/Health/MedicalRecordCards.swift:386
+1150	4-ПРОЧЕЕ	обычно до %@	d'habitude jusqu'à %@		needs_review	да		Togo/Features/Today/TodayScreen.swift:894
+1151	4-ПРОЧЕЕ	одно касание	un geste		needs_review			Togo/Features/Emergency/EmergencyScreen.swift:18
+1152	4-ПРОЧЕЕ	переключение	changer		needs_review			Togo/Features/Profile/DogSwitcher.swift:144
+1153	4-ПРОЧЕЕ	пора звонить	il faut appeler		needs_review			
+1154	4-ПРОЧЕЕ	развернулись	on a fait demi-tour		needs_review			
+1155	4-ПРОЧЕЕ	только здесь	ici seulement		needs_review			Togo/Features/Family/FamilyScreen.swift:928
+1156	4-ПРОЧЕЕ	только число	chiffre seul		needs_review			Togo/Features/Profile/Editors.swift:705
+1157	4-ПРОЧЕЕ	у всей семьи	pour toute la famille		needs_review			
+1158	4-ПРОЧЕЕ	фото раздела	photo de la section		needs_review			Togo/Features/Settings/BackgroundScreen.swift:403
+1159	4-ПРОЧЕЕ	что выписано	ce qui est prescrit		needs_review			Togo/Features/Health/PrescriptionScreens.swift:218
+1160	4-ПРОЧЕЕ	что это даёт	ce que ça apporte		needs_review			Togo/Features/Family/FamilyScreen.swift:1191
+1161	4-ПРОЧЕЕ	%@ %@ по %@	%@ %@ à %@		needs_review	да		Togo/Features/Feeding/FoodStockScreen.swift:162
+1162	4-ПРОЧЕЕ	12 окт 2026	12 oct. 2026		needs_review			
+1163	4-ПРОЧЕЕ	14 столбцов	14 colonnes		needs_review			Togo/Features/Settings/BackupScreen.swift:196
+1164	4-ПРОЧЕЕ	19 мар 2023	19 mars 2023		needs_review			
+1165	4-ПРОЧЕЕ	2 кормления	2 repas		needs_review			
+1166	4-ПРОЧЕЕ	Аня · 15:11	Anya · 15:11		needs_review			
+1167	4-ПРОЧЕЕ	Аня · 2 дня	Anya · 2 jours		needs_review			
+1168	4-ПРОЧЕЕ	Аня · вчера	Anya · hier		needs_review			
+1169	4-ПРОЧЕЕ	Дежурит Аня	Anya est de garde		needs_review			
+1170	4-ПРОЧЕЕ	Другой день	Autre jour		needs_review			Togo/Features/Today/HeaderMenu.swift:56
+1171	4-ПРОЧЕЕ	Завести ещё	Ajouter un autre		needs_review			
+1172	4-ПРОЧЕЕ	Заметка Ани	Note d'Anya		needs_review			
+1173	4-ПРОЧЕЕ	Записей нет	Aucune note		needs_review			только в тестах: TogoUITests/ТишинаДольшеСуток.swift:52
+1174	4-ПРОЧЕЕ	Каждый день	Chaque jour		needs_review			
+1175	4-ПРОЧЕЕ	Кладу фото…	J'ajoute la photo…		needs_review			Togo/Features/Settings/BackgroundScreen.swift:220
+1176	4-ПРОЧЕЕ	Когда дали?	Donné quand ?		needs_review			Togo/Features/Today/GivenAtSheet.swift:55
+1177	4-ПРОЧЕЕ	Когда и где	Quand et où		needs_review			Togo/Features/Health/LabResultScreens.swift:533
+1178	4-ПРОЧЕЕ	Лаборатория	Laboratoire		needs_review			Togo/Features/Health/LabResultScreens.swift:554
+1179	4-ПРОЧЕЕ	Не брал еду	N'a pas pris la friandise		needs_review			
+1180	4-ПРОЧЕЕ	Новый визит	Nouvelle visite		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:125
+1181	4-ПРОЧЕЕ	Паспорт · 1	Passeport · 1		needs_review			
+1182	4-ПРОЧЕЕ	Паспорт · 2	Passeport · 2		needs_review			
+1183	4-ПРОЧЕЕ	Первый день	Premier jour		needs_review			Togo/Features/Today/TodayScreen.swift:749
+1184	4-ПРОЧЕЕ	По повторам	Par répétition		needs_review			
+1185	4-ПРОЧЕЕ	Подтвердить	Confirmer		needs_review			
+1186	4-ПРОЧЕЕ	Поле клички	Champ du nom		needs_review			
+1187	4-ПРОЧЕЕ	Похоже, что	On dirait		needs_review			
+1188	4-ПРОЧЕЕ	Разъединить	Dissocier		needs_review			
+1189	4-ПРОЧЕЕ	Участники ·	Membres ·		needs_review			
+1190	4-ПРОЧЕЕ	Час отъезда	Heure de départ		needs_review			
+1191	4-ПРОЧЕЕ	Чей дневник	À qui est le journal		needs_review			Togo/Features/Family/SharedDiaryScreen.swift:110
+1192	4-ПРОЧЕЕ	Что заметил	Ce que vous avez remarqué		needs_review			
+1193	4-ПРОЧЕЕ	Что помогло	Ce qui a aidé		needs_review			
+1194	4-ПРОЧЕЕ	Что сказать	Que dire		needs_review			Togo/Features/Today/TodayScreen.swift:986
+1195	4-ПРОЧЕЕ	без отметок	sans marques		needs_review			
+1196	4-ПРОЧЕЕ	без раздела	sans rubrique		needs_review			Togo/Features/Health/MedicalRecordCards.swift:123
+1197	4-ПРОЧЕЕ	где сдавали	où le prélèvement a été fait		needs_review			Togo/Features/Health/LabResultScreens.swift:569
+1198	4-ПРОЧЕЕ	ел %@ назад	a mangé il y a %@		needs_review	да		TogoShared/Domain/SnapshotText.swift:88
+1199	4-ПРОЧЕЕ	закончилось	épuisé		needs_review			
+1200	4-ПРОЧЕЕ	лужа в доме	pipi à la maison		needs_review			
+1201	4-ПРОЧЕЕ	мама · 8:02	Maman · 8:02		needs_review			
+1202	4-ПРОЧЕЕ	маркер «да»	marqueur « oui »		needs_review			
+1203	4-ПРОЧЕЕ	можно позже	plus tard si tu veux		needs_review			Togo/Features/Onboarding/OnboardingSteps.swift:253
+1204	4-ПРОЧЕЕ	наблюдатель	observateur		needs_review			
+1205	4-ПРОЧЕЕ	нет отметок	rien de coché		needs_review			только в тестах: TogoUITests/ВиджетПодТишиной.swift:89
+1206	4-ПРОЧЕЕ	подтверждён	confirmé		needs_review			TogoShared/Models/Medical.swift:313
+1207	4-ПРОЧЕЕ	сейчас · %@	maintenant · %@		needs_review	да		Togo/Features/Today/TodayScreen.swift:860
+1208	4-ПРОЧЕЕ	со-владелец	copropriétaire		needs_review			
+1209	4-ПРОЧЕЕ	ухаживающий	soignant		needs_review			
+1210	4-ПРОЧЕЕ	факт · план	réel · prévu		needs_review			
+1211	4-ПРОЧЕЕ	фото собаки	photo du chien		needs_review			Togo/Features/Settings/BackgroundScreen.swift:406
+1212	4-ПРОЧЕЕ	через 3 дня	dans 3 jours		needs_review			
+1213	4-ПРОЧЕЕ	что сделать	que faire		needs_review			Togo/Features/Onboarding/ПозвалиВСемью.swift:71
+1214	4-ПРОЧЕЕ	шаги готовы	étapes prêtes		needs_review			
+1215	4-ПРОЧЕЕ	12 октября	12 octobre		needs_review			
+1216	4-ПРОЧЕЕ	7,8–8,6 кг	7,8–8,6 kg		needs_review			
+1217	4-ПРОЧЕЕ	» добавлен	 » ajoutée		needs_review			
+1218	4-ПРОЧЕЕ	Велосипеды	Vélos		needs_review			
+1219	4-ПРОЧЕЕ	Ветпаспорт	Passeport		needs_review			
+1220	4-ПРОЧЕЕ	Все экраны	Tous les écrans		needs_review			
+1221	4-ПРОЧЕЕ	Всей семье	Toute la famille		needs_review			
+1222	4-ПРОЧЕЕ	Гипотиреоз	Hypothyroïdie		needs_review			
+1223	4-ПРОЧЕЕ	Дал раньше	Donnée plus tôt		needs_review			
+1224	4-ПРОЧЕЕ	Даю сейчас	Je la donne maintenant		needs_review			
+1225	4-ПРОЧЕЕ	Еда · 65 г	Repas · 65 g		needs_review			
+1226	4-ПРОЧЕЕ	Закончился	C'est fini		needs_review			
+1227	4-ПРОЧЕЕ	Записывать	Noter		needs_review			
+1228	4-ПРОЧЕЕ	Как близко	À quelle distance		needs_review			
+1229	4-ПРОЧЕЕ	Назначения	Prescriptions		needs_review			Togo/Features/Health/MedicalRecordCards.swift:237
+1230	4-ПРОЧЕЕ	Нужна дата	Il faut une date		needs_review			
+1231	4-ПРОЧЕЕ	Объединено	Fusionné		needs_review			
+1232	4-ПРОЧЕЕ	Объединить	Fusionner		needs_review			
+1233	4-ПРОЧЕЕ	Показатели	Paramètres		needs_review			Togo/Features/Health/LabResultScreens.swift:534
+1234	4-ПРОЧЕЕ	Показатель	Paramètre		needs_review			Togo/Features/Health/LabChartScreen.swift:256
+1235	4-ПРОЧЕЕ	Получилось	Réussi		needs_review			Togo/Features/Training/SkillAttemptSheet.swift:42
+1236	4-ПРОЧЕЕ	Попросился	A demandé		needs_review			
+1237	4-ПРОЧЕЕ	Пригласить	Inviter		needs_review			
+1238	4-ПРОЧЕЕ	Расписание	Planning		needs_review			
+1239	4-ПРОЧЕЕ	С прогулки	Depuis la sortie		needs_review			TogoShared/Widgets/TodayWidgetView.swift:149
+1240	4-ПРОЧЕЕ	Свой навык	Votre propre acquis		needs_review			
+1241	4-ПРОЧЕЕ	Снимки · 6	Photos · 6		needs_review			
+1242	4-ПРОЧЕЕ	Т4 в конце	T4 à la fin		needs_review			
+1243	4-ПРОЧЕЕ	Українська	Українська		needs_review			Togo/Features/Settings/LanguageScreen.swift:78
+1244	4-ПРОЧЕЕ	Экстренный	Urgence		needs_review			
+1245	4-ПРОЧЕЕ	без номера	sans numéro		needs_review			Togo/Features/Health/LabResultScreens.swift:316
+1246	4-ПРОЧЕЕ	без текста	sans texte		needs_review			
+1247	4-ПРОЧЕЕ	гипотиреоз	hypothyroïdie		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:450
+1248	4-ПРОЧЕЕ	гулял в %@	promené à %@		needs_review	да		Togo/Features/Today/TodayScreen.swift:886
+1249	4-ПРОЧЕЕ	дежурит %@	%@ est de garde		needs_review	да		Togo/Features/Family/FamilyScreen.swift:278
+1250	4-ПРОЧЕЕ	дисклеймер	avertissement		needs_review			Togo/Features/Settings/LegalScreens.swift:225
+1251	4-ПРОЧЕЕ	для аптеки	pour la pharmacie		needs_review			Togo/Features/Health/PrescriptionScreens.swift:43
+1252	4-ПРОЧЕЕ	до 05.2028	jusqu'au 05.2028		needs_review			
+1253	4-ПРОЧЕЕ	до, недель	à, semaines		needs_review			Togo/Features/Health/PrescriptionScreens.swift:297
+1254	4-ПРОЧЕЕ	ещё не ели	pas encore mangé		needs_review			TogoShared/Domain/SnapshotText.swift:66
+1255	4-ПРОЧЕЕ	заключение	conclusion		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:163
+1256	4-ПРОЧЕЕ	инструкция	notice		needs_review			Togo/Features/Health/PrescriptionScreens.swift:324
+1257	4-ПРОЧЕЕ	как всегда	comme d'habitude		needs_review			
+1258	4-ПРОЧЕЕ	на пелёнку	sur alèse		needs_review			
+1259	4-ПРОЧЕЕ	не CKError	pas une CKError		needs_review			TogoShared/Sync/FamilySync.swift:558
+1260	4-ПРОЧЕЕ	не кормить	ne pas nourrir		needs_review			Togo/DesignSystem/PosterGallery.swift:101
+1261	4-ПРОЧЕЕ	необратимо	irréversible		needs_review			
+1262	4-ПРОЧЕЕ	от, недель	à partir de, semaines		needs_review			Togo/Features/Health/PrescriptionScreens.swift:289
+1263	4-ПРОЧЕЕ	по острому	urgence		needs_review			TogoShared/Models/Medical.swift:248
+1264	4-ПРОЧЕЕ	по попытке	par essai		needs_review			Togo/Features/Training/TrainingScreens.swift:230
+1265	4-ПРОЧЕЕ	показатель	paramètre		needs_review			Togo/Features/Health/HealthScreen.swift:428
+1266	4-ПРОЧЕЕ	получилось	réussies		needs_review			Togo/Features/Training/SkillAttemptSheet.swift:32
+1267	4-ПРОЧЕЕ	попыток: 0	essais : 0		needs_review			
+1268	4-ПРОЧЕЕ	попыток: 1	essais : 1		needs_review			
+1269	4-ПРОЧЕЕ	сертификат	certificat		needs_review			TogoShared/Models/Enums+Care.swift:182
+1270	4-ПРОЧЕЕ	ты · 12:40	vous · 12:40		needs_review			
+1271	4-ПРОЧЕЕ	шаг 3 из 5	étape 3 sur 5		needs_review			
+1272	4-ПРОЧЕЕ	≈ примерно	≈ environ		needs_review			
+1273	4-ПРОЧЕЕ	  где: %@	  où : %@		needs_review	да		TogoShared/Domain/UsageReport.swift:398
+1274	4-ПРОЧЕЕ	%@ в день	%@ par jour		needs_review	да		TogoShared/Domain/ScheduleChange.swift:43
+1275	4-ПРОЧЕЕ	%lld из 3	%lld sur 3		needs_review	да		Togo/Features/Onboarding/OnboardingFlow.swift:164
+1276	4-ПРОЧЕЕ	1 декабря	1er décembre		needs_review			
+1277	4-ПРОЧЕЕ	2–5 минут	2–5 minutes		needs_review			
+1278	4-ПРОЧЕЕ	CSV готов	CSV prêt		needs_review			
+1279	4-ПРОЧЕЕ	T0 · факт	T0 · réel		needs_review			
+1280	4-ПРОЧЕЕ	В сегодня	Aujourd'hui		needs_review			Togo/Features/Today/TodayScreen.swift:296
+1281	4-ПРОЧЕЕ	Выгружать	Exporter		needs_review			
+1282	4-ПРОЧЕЕ	Дать лапу	Donner la patte		needs_review			только в тестах: TogoTests/BackupTests.swift:260
+1283	4-ПРОЧЕЕ	Дежурство	Garde		needs_review			
+1284	4-ПРОЧЕЕ	Едем с %@	On part avec %@		needs_review	да		Togo/Features/Trip/TripScreens.swift:21
+1285	4-ПРОЧЕЕ	Кто видит	Qui le voit		needs_review			
+1286	4-ПРОЧЕЕ	Лента дня	Fil du jour		needs_review			
+1287	4-ПРОЧЕЕ	Наблюдаем	En observation		needs_review			Togo/Features/Today/TodayScreen.swift:737
+1288	4-ПРОЧЕЕ	Ночь 13 ч	Nuit 13 h		needs_review			
+1289	4-ПРОЧЕЕ	Повторить	Réessayer		needs_review			
+1290	4-ПРОЧЕЕ	Применить	Appliquer		needs_review			
+1291	4-ПРОЧЕЕ	Пропусков	Oublis		needs_review			
+1292	4-ПРОЧЕЕ	Пропущено	Oubliées		needs_review			
+1293	4-ПРОЧЕЕ	Разрешить	Autoriser		needs_review			Togo/Features/Onboarding/OnboardingSteps.swift:668
+1294	4-ПРОЧЕЕ	С момента	À partir de		needs_review			
+1295	4-ПРОЧЕЕ	Хватит до	Suffit jusqu'au		needs_review			
+1296	4-ПРОЧЕЕ	Хранилище	Stockage		needs_review			только в тестах: TogoTests/PersistenceTests.swift:13
+1297	4-ПРОЧЕЕ	Экстренно	Urgence		needs_review			
+1298	4-ПРОЧЕЕ	без срока	sans échéance		needs_review			Togo/Store/Notifications.swift:215
+1299	4-ПРОЧЕЕ	велосипед	vélo		needs_review			
+1300	4-ПРОЧЕЕ	выключена	désactivé		needs_review			
+1301	4-ПРОЧЕЕ	за 30 мин	30 min avant		needs_review			
+1302	4-ПРОЧЕЕ	испугался	a eu peur		needs_review			
+1303	4-ПРОЧЕЕ	календарь	calendrier		needs_review			Togo/Features/Feeding/HeatScreen.swift:30
+1304	4-ПРОЧЕЕ	контексты	contextes		needs_review			
+1305	4-ПРОЧЕЕ	не входят	non incluses		needs_review			
+1306	4-ПРОЧЕЕ	нетiCloud	pasiCloud		needs_review			TogoShared/Sync/FamilyShare.swift:951
+1307	4-ПРОЧЕЕ	после еды	après le repas		needs_review			
+1308	4-ПРОЧЕЕ	после сна	après la sieste		needs_review			
+1309	4-ПРОЧЕЕ	разрешено	autorisé		needs_review			Togo/Store/Notifications.swift:192
+1310	4-ПРОЧЕЕ	с собакой	avec un chien		needs_review			
+1311	4-ПРОЧЕЕ	спокойный	calme		needs_review			
+1312	4-ПРОЧЕЕ	твоё фото	ta photo		needs_review			Togo/Features/Settings/BackgroundScreen.swift:409
+1313	4-ПРОЧЕЕ	2 недели	2 semaines		needs_review			Togo/Features/History/HistoryScreen.swift:213
+1314	4-ПРОЧЕЕ	30 табл.	30 cp		needs_review			
+1315	4-ПРОЧЕЕ	= %lld г	= %lld g		needs_review	да		Togo/Features/Feeding/FeedingScreen.swift:241
+1316	4-ПРОЧЕЕ	Вернулся	De retour		needs_review			
+1317	4-ПРОЧЕЕ	Включена	Activé		needs_review			
+1318	4-ПРОЧЕЕ	Дальше ·	Ensuite ·		needs_review			
+1319	4-ПРОЧЕЕ	Еда 65 г	Repas 65 g		needs_review			
+1320	4-ПРОЧЕЕ	Заводчик	Éleveur		needs_review			
+1321	4-ПРОЧЕЕ	Значение	Valeur		needs_review			
+1322	4-ПРОЧЕЕ	Изменить	Modifier		needs_review			Togo/Features/Today/DayTimelineList.swift:92
+1323	4-ПРОЧЕЕ	Контакты	Contacts		needs_review			
+1324	4-ПРОЧЕЕ	Контроль	Contrôle		needs_review			
+1325	4-ПРОЧЕЕ	На улице	Dehors		needs_review			TogoShared/LiveActivity/WalkActivityView.swift:502
+1326	4-ПРОЧЕЕ	Нет сети	Hors ligne		needs_review			
+1327	4-ПРОЧЕЕ	Оставить	Garder		needs_review			Togo/Features/History/HistoryScreen.swift:103
+1328	4-ПРОЧЕЕ	Открытая	Entamée		needs_review			
+1329	4-ПРОЧЕЕ	Отметить	Noter		needs_review			Togo/DesignSystem/Components/TGCheckRow.swift:83
+1330	4-ПРОЧЕЕ	Отмечено	Noté		needs_review			
+1331	4-ПРОЧЕЕ	Передать	Passer la main		needs_review			Togo/Features/Family/FamilyScreen.swift:351
+1332	4-ПРОЧЕЕ	Снимок «	Photo « 		needs_review			
+1333	4-ПРОЧЕЕ	Спросить	Demander		needs_review			
+1334	4-ПРОЧЕЕ	Т4 общий	T4 totale		needs_review			Togo/DesignSystem/MedicalRecordGallery.swift:144
+1335	4-ПРОЧЕЕ	Удалятся	Seront supprimées		needs_review			
+1336	4-ПРОЧЕЕ	Упаковка	Boîte		needs_review			
+1337	4-ПРОЧЕЕ	Упаковки	Boîtes		needs_review			
+1338	4-ПРОЧЕЕ	владелец	propriétaire		needs_review			TogoShared/Sync/FamilyShare.swift:303
+1339	4-ПРОЧЕЕ	вплотную	tout près		needs_review			только в тестах: TogoTests/WalkSessionTests.swift:241
+1340	4-ПРОЧЕЕ	г в день	g par jour		needs_review			Togo/Features/Feeding/FeedingScreen.swift:387
+1341	4-ПРОЧЕЕ	гипотеза	hypothèse		needs_review			TogoShared/Models/Medical.swift:339
+1342	4-ПРОЧЕЕ	гулял %@	promené le %@		needs_review	да		TogoShared/Domain/NeedVerdict.swift:205
+1343	4-ПРОЧЕЕ	за сутки	en 24 h		needs_review			
+1344	4-ПРОЧЕЕ	значение	valeur		needs_review			Togo/DesignSystem/ComponentGallery.swift:42
+1345	4-ПРОЧЕЕ	контроль	contrôle		needs_review			TogoShared/Models/Medical.swift:247
+1346	4-ПРОЧЕЕ	не задан	non fixée		needs_review			
+1347	4-ПРОЧЕЕ	по датам	par date		needs_review			Togo/Features/Health/LabChartScreen.swift:436
+1348	4-ПРОЧЕЕ	половину	la moitié		needs_review			
+1349	4-ПРОЧЕЕ	помощник	assistant		needs_review			
+1350	4-ПРОЧЕЕ	прогулка	promenade		needs_review			Togo/Store/Exporter.swift:13
+1351	4-ПРОЧЕЕ	с бланка	depuis la fiche		needs_review			Togo/Features/Health/LabResultScreens.swift:610
+1352	4-ПРОЧЕЕ	три шага	trois étapes		needs_review			
+1353	4-ПРОЧЕЕ	ты, мама	vous, Maman		needs_review			
+1354	4-ПРОЧЕЕ	чип есть	pucé		needs_review			Togo/Features/Profile/DogTab.swift:195
+1355	4-ПРОЧЕЕ	шипперке	schipperke		needs_review			только в тестах: TogoTests/КартинкиВРамкеКадрTests.swift:232
+1356	4-ПРОЧЕЕ	это не «	ce n'est pas « 		needs_review			
+1357	4-ПРОЧЕЕ	100 мкг	100 µg		needs_review			
+1358	4-ПРОЧЕЕ	30 дней	30 jours		needs_review			Togo/Features/History/HistoryScreen.swift:119
+1359	4-ПРОЧЕЕ	4–6 нед	4–6 sem		needs_review			Togo/Features/Health/PrescriptionScreens.swift:148
+1360	4-ПРОЧЕЕ	4–8 нед	4–8 sem		needs_review			Togo/Features/Health/PrescriptionScreens.swift:148
+1361	4-ПРОЧЕЕ	Виджеты	Widgets		needs_review			
+1362	4-ПРОЧЕЕ	Вкладки	Onglets		needs_review			
+1363	4-ПРОЧЕЕ	Впереди	À venir		needs_review			
+1364	4-ПРОЧЕЕ	Другое…	Autre…		needs_review			
+1365	4-ПРОЧЕЕ	Единица	Unité		needs_review			Togo/Features/Health/LabResultScreens.swift:615
+1366	4-ПРОЧЕЕ	Купание	Bain		needs_review			
+1367	4-ПРОЧЕЕ	Матрица	Matrice		needs_review			
+1368	4-ПРОЧЕЕ	Ночь %@	Nuit %@		needs_review	да		Togo/Features/Feeding/FeedingScreen.swift:534
+1369	4-ПРОЧЕЕ	Остаток	Reste		needs_review			
+1370	4-ПРОЧЕЕ	Пелёнка	Alèse		needs_review			
+1371	4-ПРОЧЕЕ	Поездки	Voyages		needs_review			
+1372	4-ПРОЧЕЕ	Попытка	Essai		needs_review			
+1373	4-ПРОЧЕЕ	Правила	Règles		needs_review			Togo/Features/Settings/SettingsScreen.swift:415
+1374	4-ПРОЧЕЕ	Пропуск	Sauter		needs_review			
+1375	4-ПРОЧЕЕ	Реакции	Réactions		needs_review			
+1376	4-ПРОЧЕЕ	Светлая	Clair		needs_review			
+1377	4-ПРОЧЕЕ	Со мной	Avec moi		needs_review			
+1378	4-ПРОЧЕЕ	Собрать	Préparer		needs_review			
+1379	4-ПРОЧЕЕ	Средний	Moyen		needs_review			
+1380	4-ПРОЧЕЕ	Ты · %@	Toi · %@		needs_review	да		Togo/Features/Family/РольВДневнике.swift:70
+1381	4-ПРОЧЕЕ	У двери	À la porte		needs_review			
+1382	4-ПРОЧЕЕ	Условия	Conditions		needs_review			Togo/Features/Settings/LegalScreens.swift:221
+1383	4-ПРОЧЕЕ	Успехов	Réussites		needs_review			
+1384	4-ПРОЧЕЕ	в сутки	par jour		needs_review			Togo/Features/Health/LabChartScreen.swift:553
+1385	4-ПРОЧЕЕ	выходов	sorties		needs_review			
+1386	4-ПРОЧЕЕ	дежурит	de garde		needs_review			Togo/Features/Family/FamilyScreen.swift:949
+1387	4-ПРОЧЕЕ	договор	contrat		needs_review			TogoShared/Models/Enums+Care.swift:181
+1388	4-ПРОЧЕЕ	заранее	à l'avance		needs_review			
+1389	4-ПРОЧЕЕ	купание	bain		needs_review			
+1390	4-ПРОЧЕЕ	мкг/сут	µg/jour		needs_review			Togo/Features/Health/LabChartScreen.swift:397
+1391	4-ПРОЧЕЕ	не знаю	je ne sais pas		needs_review			
+1392	4-ПРОЧЕЕ	не пьёт	n'en prend pas		needs_review			Togo/Features/Onboarding/OnboardingSteps.swift:486
+1393	4-ПРОЧЕЕ	нетСети	pasDeRéseau		needs_review			TogoShared/Sync/FamilyShare.swift:950
+1394	4-ПРОЧЕЕ	нмоль/л	nmol/L		needs_review			Togo/DesignSystem/MedicalRecordGallery.swift:148
+1395	4-ПРОЧЕЕ	обменом	par partage		needs_review			TogoShared/Domain/DogOrigin.swift:123
+1396	4-ПРОЧЕЕ	паспорт	passeport		needs_review			TogoShared/Models/Enums+Care.swift:179
+1397	4-ПРОЧЕЕ	поездка	voyage		needs_review			только в тестах: TogoTests/CrossTimeZoneDayTests.swift:247
+1398	4-ПРОЧЕЕ	попыток	tentatives		needs_review			
+1399	4-ПРОЧЕЕ	пропуск	oubli		needs_review			
+1400	4-ПРОЧЕЕ	ребёнок	enfant		needs_review			
+1401	4-ПРОЧЕЕ	русский	Français		needs_review			
+1402	4-ПРОЧЕЕ	смотрел	a regardé		needs_review			
+1403	4-ПРОЧЕЕ	со мной	avec moi		needs_review			
+1404	4-ПРОЧЕЕ	собакой	le chien		needs_review			
+1405	4-ПРОЧЕЕ	у двери	à la porte		needs_review			
+1406	4-ПРОЧЕЕ	удалено	supprimé		needs_review			
+1407	4-ПРОЧЕЕ	1,2 км	1,2 km		needs_review			
+1408	4-ПРОЧЕЕ	2 раза	2 fois		needs_review			только в тестах: TogoTests/PluralFormTests.swift:35
+1409	4-ПРОЧЕЕ	3 раза	3 fois		needs_review			
+1410	4-ПРОЧЕЕ	4 из 4	4 sur 4		needs_review			
+1411	4-ПРОЧЕЕ	4 шага	4 étapes		needs_review			
+1412	4-ПРОЧЕЕ	= 65 г	= 65 g		needs_review			
+1413	4-ПРОЧЕЕ	Виджет	Widget		needs_review			Togo/DesignSystem/WidgetGallery.swift:37
+1414	4-ПРОЧЕЕ	Визиты	Visites		needs_review			Togo/Features/Health/MedicalRecordCards.swift:134
+1415	4-ПРОЧЕЕ	Вперёд	Suivant		needs_review			
+1416	4-ПРОЧЕЕ	Выдано	Délivré		needs_review			Togo/Features/Health/PrescriptionScreens.swift:320
+1417	4-ПРОЧЕЕ	Выходы	Sorties		needs_review			Togo/Features/History/HistoryScreen.swift:421
+1418	4-ПРОЧЕЕ	График	Graphique		needs_review			Togo/Features/Health/LabChartScreen.swift:154
+1419	4-ПРОЧЕЕ	Дорога	Sur la route		needs_review			
+1420	4-ПРОЧЕЕ	Кобель	Mâle		needs_review			
+1421	4-ПРОЧЕЕ	Навыки	Acquis		needs_review			
+1422	4-ПРОЧЕЕ	Начать	Commencer		needs_review			Togo/Features/Onboarding/OnboardingSteps.swift:90
+1423	4-ПРОЧЕЕ	Период	Période		needs_review			Togo/Features/Health/LabChartScreen.swift:266
+1424	4-ПРОЧЕЕ	Прочее	Autres		needs_review			
+1425	4-ПРОЧЕЕ	Раздел	Rubrique		needs_review			Togo/Features/Health/LabResultScreens.swift:581
+1426	4-ПРОЧЕЕ	Режимы	Modes		needs_review			
+1427	4-ПРОЧЕЕ	Рецепт	Ordonnance		needs_review			
+1428	4-ПРОЧЕЕ	Сделал	Fait		needs_review			
+1429	4-ПРОЧЕЕ	Сидеть	Assis		needs_review			
+1430	4-ПРОЧЕЕ	Скулил	A gémi		needs_review			
+1431	4-ПРОЧЕЕ	Снимки	Photos		needs_review			
+1432	4-ПРОЧЕЕ	Статус	Statut		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:441
+1433	4-ПРОЧЕЕ	Туалет	Besoins		needs_review			
+1434	4-ПРОЧЕЕ	Ты дал	Vous avez donné		needs_review			
+1435	4-ПРОЧЕЕ	Тёмная	Sombre		needs_review			
+1436	4-ПРОЧЕЕ	Увидят	Visible par		needs_review			
+1437	4-ПРОЧЕЕ	Шторки	Feuilles		needs_review			
+1438	4-ПРОЧЕЕ	Это ты	C'est vous		needs_review			
+1439	4-ПРОЧЕЕ	в 7:00	à 7:00		needs_review			
+1440	4-ПРОЧЕЕ	г съел	g mangés		needs_review			
+1441	4-ПРОЧЕЕ	далеко	loin		needs_review			
+1442	4-ПРОЧЕЕ	дальше	suivant		needs_review			TogoShared/Widgets/TodayWidgetView.swift:387
+1443	4-ПРОЧЕЕ	другое	autre		needs_review			
+1444	4-ПРОЧЕЕ	жидкий	liquides		needs_review			
+1445	4-ПРОЧЕЕ	запись	note		needs_review			
+1446	4-ПРОЧЕЕ	курица	poulet		needs_review			Togo/Store/SeedData.swift:375
+1447	4-ПРОЧЕЕ	мягкий	molles		needs_review			
+1448	4-ПРОЧЕЕ	ничего	rien		needs_review			
+1449	4-ПРОЧЕЕ	онлайн	en ligne		needs_review			TogoShared/Models/Medical.swift:249
+1450	4-ПРОЧЕЕ	отошли	on s'est éloignés		needs_review			
+1451	4-ПРОЧЕЕ	подряд	d'affilée		needs_review			
+1452	4-ПРОЧЕЕ	скулил	a gémi		needs_review			
+1453	4-ПРОЧЕЕ	снимок	photo		needs_review			
+1454	4-ПРОЧЕЕ	↑ с %@	↑ depuis %@		needs_review	да		Togo/Features/Health/LabResultScreens.swift:223
+1455	4-ПРОЧЕЕ	↓ с %@	↓ depuis %@		needs_review	да		Togo/Features/Health/LabResultScreens.swift:224
+1456	4-ПРОЧЕЕ	1 дек	1er déc.		needs_review			
+1457	4-ПРОЧЕЕ	25 дн	25 j		needs_review			
+1458	4-ПРОЧЕЕ	3 мин	3 min		needs_review			
+1459	4-ПРОЧЕЕ	3 нед	3 sem		needs_review			Togo/Features/Health/PrescriptionScreens.swift:148
+1460	4-ПРОЧЕЕ	42 дн	42 j		needs_review			
+1461	4-ПРОЧЕЕ	6 мес	6 mois		needs_review			Togo/Features/Health/LabChartScreen.swift:61
+1462	4-ПРОЧЕЕ	Бланк	Fiche		needs_review			
+1463	4-ПРОЧЕЕ	Визит	Visite		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:125
+1464	4-ПРОЧЕЕ	Домой	Maison		needs_review			Togo/Features/Needs/WalkControls.swift:174
+1465	4-ПРОЧЕЕ	Дубль	Doublon		needs_review			
+1466	4-ПРОЧЕЕ	Ждать	Attendre		needs_review			
+1467	4-ПРОЧЕЕ	Копия	Sauvegarde		needs_review			TogoShared/Domain/UsageLog.swift:79
+1468	4-ПРОЧЕЕ	Купил	Acheté		needs_review			Togo/Features/Health/HealthScreen.swift:346
+1469	4-ПРОЧЕЕ	Малый	Petit		needs_review			
+1470	4-ПРОЧЕЕ	Место	Panier		needs_review			
+1471	4-ПРОЧЕЕ	Не ел	N'a pas mangé		needs_review			
+1472	4-ПРОЧЕЕ	Номер	Numéro		needs_review			Togo/Features/Health/PrescriptionScreens.swift:205
+1473	4-ПРОЧЕЕ	Повод	Motif		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:132
+1474	4-ПРОЧЕЕ	Снято	Prise le		needs_review			
+1475	4-ПРОЧЕЕ	Снять	Photo		needs_review			Togo/Features/Emergency/DocumentPhotos.swift:395
+1476	4-ПРОЧЕЕ	Сразу	Tout de suite		needs_review			
+1477	4-ПРОЧЕЕ	Стало	Après		needs_review			
+1478	4-ПРОЧЕЕ	Улица	Dehors		needs_review			
+1479	4-ПРОЧЕЕ	Число	Valeur		needs_review			Togo/Features/Health/LabResultScreens.swift:609
+1480	4-ПРОЧЕЕ	Это я	C'est moi		needs_review			Togo/Features/Family/FamilyScreen.swift:1081
+1481	4-ПРОЧЕЕ	гости	invités		needs_review			
+1482	4-ПРОЧЕЕ	гроза	orage		needs_review			
+1483	4-ПРОЧЕЕ	ел %@	a mangé le %@		needs_review	да		TogoShared/Domain/SnapshotText.swift:84
+1484	4-ПРОЧЕЕ	запас	stock		needs_review			Togo/Features/Health/HealthScreen.swift:318
+1485	4-ПРОЧЕЕ	здесь	ici		needs_review			TogoShared/Domain/DogOrigin.swift:123
+1486	4-ПРОЧЕЕ	когти	griffes		needs_review			
+1487	4-ПРОЧЕЕ	кость	os		needs_review			
+1488	4-ПРОЧЕЕ	метис	croisé		needs_review			
+1489	4-ПРОЧЕЕ	нг/дл	ng/dL		needs_review			Togo/DesignSystem/MedicalRecordGallery.swift:132
+1490	4-ПРОЧЕЕ	не ел	n'a pas mangé		needs_review			TogoShared/Domain/RecallDictionary.swift:127
+1491	4-ПРОЧЕЕ	пауза	en pause		needs_review			
+1492	4-ПРОЧЕЕ	режим	mode		needs_review			
+1493	4-ПРОЧЕЕ	салют	feux d'artifice		needs_review			
+1494	4-ПРОЧЕЕ	семья	famille		needs_review			Togo/Features/Profile/DogTab.swift:300
+1495	4-ПРОЧЕЕ	слизь	glaires		needs_review			
+1496	4-ПРОЧЕЕ	сразу	immédiatement		needs_review			
+1497	4-ПРОЧЕЕ	сушка	viande séchée		needs_review			
+1498	4-ПРОЧЕЕ	текст	texte		needs_review			Togo/Features/Health/LabResultScreens.swift:369
+1499	4-ПРОЧЕЕ	у Ани	chez Anya		needs_review			
+1500	4-ПРОЧЕЕ	улица	dehors		needs_review			
+1501	4-ПРОЧЕЕ	шаг 1	étape 1		needs_review			
+1502	4-ПРОЧЕЕ	это я	c'est moi		needs_review			Togo/Features/Family/FamilyScreen.swift:916
+1503	4-ПРОЧЕЕ	↓ с 5	↓ depuis 5		needs_review			
+1504	4-ПРОЧЕЕ	≈ 5 м	≈ 5 m		needs_review			
+1505	4-ПРОЧЕЕ	+4 ч	+4 h		needs_review			только в тестах: TogoTests/LocalizationCoverageTests.swift:237
+1506	4-ПРОЧЕЕ	+6 ч	+6 h		needs_review			только в тестах: TogoTests/LocalizationCoverageTests.swift:237
+1507	4-ПРОЧЕЕ	10 г	10 g		needs_review			
+1508	4-ПРОЧЕЕ	65 г	65 g		needs_review			
+1509	4-ПРОЧЕЕ	«да»	« oui »		needs_review			
+1510	4-ПРОЧЕЕ	Было	Avant		needs_review			
+1511	4-ПРОЧЕЕ	Вика	Vika		needs_review			только в тестах: TogoTests/ЗасевTests.swift:108
+1512	4-ПРОЧЕЕ	Дата	Date		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:140
+1513	4-ПРОЧЕЕ	Идёт	En cours		needs_review			
+1514	4-ПРОЧЕЕ	Кино	Cinéma		needs_review			
+1515	4-ПРОЧЕЕ	Кому	À qui		needs_review			
+1516	4-ПРОЧЕЕ	Лаял	A aboyé		needs_review			
+1517	4-ПРОЧЕЕ	Меню	Menu		needs_review			
+1518	4-ПРОЧЕЕ	Ночь	Nuit		needs_review			
+1519	4-ПРОЧЕЕ	Сука	Femelle		needs_review			
+1520	4-ПРОЧЕЕ	Часы	Horaires		needs_review			
+1521	4-ПРОЧЕЕ	Шаги	Étapes		needs_review			
+1522	4-ПРОЧЕЕ	выкл	désactivé		needs_review			
+1523	4-ПРОЧЕЕ	день	jour		needs_review			только в тестах: TogoTests/КалендарьПротивСекундTests.swift:206
+1524	4-ПРОЧЕЕ	зубы	dents		needs_review			
+1525	4-ПРОЧЕЕ	из 3	sur 3		needs_review			
+1526	4-ПРОЧЕЕ	итог	bilan		needs_review			
+1527	4-ПРОЧЕЕ	кому	qui		needs_review			
+1528	4-ПРОЧЕЕ	лаял	a aboyé		needs_review			
+1529	4-ПРОЧЕЕ	мама	Maman		needs_review			
+1530	4-ПРОЧЕЕ	план	plan		needs_review			Togo/Features/Feeding/FeedingScreen.swift:517
+1531	4-ПРОЧЕЕ	пьёт	en prend		needs_review			Togo/Features/Onboarding/OnboardingSteps.swift:485
+1532	4-ПРОЧЕЕ	роли	rôles		needs_review			Togo/Features/Profile/DogTab.swift:341
+1533	4-ПРОЧЕЕ	свои	les siennes		needs_review			
+1534	4-ПРОЧЕЕ	свой	le tien		needs_review			Togo/Features/Family/SharedDiaryScreen.swift:152
+1535	4-ПРОЧЕЕ	своё	le tien		needs_review			Togo/Features/Health/PrescriptionScreens.swift:148
+1536	4-ПРОЧЕЕ	снят	écarté		needs_review			TogoShared/Models/Medical.swift:314
+1537	4-ПРОЧЕЕ	срок	durée		needs_review			Togo/Features/Health/PrescriptionScreens.swift:237
+1538	4-ПРОЧЕЕ	срыв	réaction		needs_review			
+1539	4-ПРОЧЕЕ	таб.	cp.		needs_review			TogoShared/Models/Enums+Care.swift:144
+1540	4-ПРОЧЕЕ	тебе	vous		needs_review			
+1541	4-ПРОЧЕЕ	часы	horaires		needs_review			Togo/Features/Feeding/FeedingScreen.swift:512
+1542	4-ПРОЧЕЕ	Аня	Anya		needs_review			только в тестах: TogoTests/SharedDiarySyncTests.swift:386
+1543	4-ПРОЧЕЕ	Где	Où		needs_review			
+1544	4-ПРОЧЕЕ	Да!	Oui !		needs_review			
+1545	4-ПРОЧЕЕ	Дал	Donné		needs_review			Togo/Features/Today/TodayScreen.swift:965
+1546	4-ПРОЧЕЕ	Ест	Mange		needs_review			Togo/Features/Onboarding/OnboardingSteps.swift:468
+1547	4-ПРОЧЕЕ	Кем	Par qui		needs_review			Togo/Features/Health/VisitDiagnosisScreens.swift:456
+1548	4-ПРОЧЕЕ	Пол	Sexe		needs_review			
+1549	4-ПРОЧЕЕ	Что	Quoi		needs_review			
+1550	4-ПРОЧЕЕ	авг	août		needs_review			
+1551	4-ПРОЧЕЕ	вкл	activé		needs_review			
+1552	4-ПРОЧЕЕ	дня	jours		needs_review			
+1553	4-ПРОЧЕЕ	еду	nourriture		needs_review			
+1554	4-ПРОЧЕЕ	ест	mange		needs_review			
+1555	4-ПРОЧЕЕ	май	mai		needs_review			
+1556	4-ПРОЧЕЕ	мар	mars		needs_review			
+1557	4-ПРОЧЕЕ	мин	min		needs_review			TogoShared/Domain/RecallDictionary.swift:142
+1558	4-ПРОЧЕЕ	мкг	µg		needs_review			TogoShared/Domain/Formatting.swift:188
+1559	4-ПРОЧЕЕ	окт	oct.		needs_review			
+1560	4-ПРОЧЕЕ	сам	soi-même		needs_review			TogoShared/Sync/SharedDiarySeed.swift:173
+1561	4-ПРОЧЕЕ	сыр	fromage		needs_review			Togo/Store/SeedData.swift:374
+1562	4-ПРОЧЕЕ	уши	oreilles		needs_review			
+1563	4-ПРОЧЕЕ	чип	puce		needs_review			TogoShared/Models/Enums+Care.swift:180
+1564	4-ПРОЧЕЕ	т4	T4		needs_review			Togo/Features/Health/MedicalRecordCards.swift:460
