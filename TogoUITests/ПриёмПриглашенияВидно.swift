@@ -76,10 +76,13 @@ nonisolated final class ПриёмПриглашенияВидно: XCTestCase {
     override func setUp() { continueAfterFailure = false }
 
     private func открытьОбщийДневник(_ app: XCUIApplication) {
-        let вкладка = app.tabBars.buttons["Семья"].firstMatch
-        XCTAssertTrue(вкладка.waitForExistence(timeout: 15),
-                      "приложение не поднялось — это отказ запуска, не показа")
-        вкладка.tap()
+        // Вкладки «Семья» нет с 22.10 — экран в меню «…»; дорогу
+        // знает `открытьСемью`. Прежний отказ говорил «приложение
+        // не поднялось — это отказ запуска, не показа» про
+        // поднявшееся приложение: сама формулировка верна, адрес
+        // неверен.
+        XCTAssertTrue(открытьСемью(в: app),
+                      "экран «Семья» не открылся — это отказ дороги, не показа")
 
         // Кандидаты по типам, а не `descendants(.any)`: `NavigationLink`
         // с карточкой в метке SwiftUI волен сложить кнопкой, ячейкой
