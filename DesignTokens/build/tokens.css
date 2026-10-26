@@ -5,6 +5,9 @@
   --component-actionTile-background: #3A3A3C;
   --component-actionTile-minHeight: 52px;
   --component-actionTile-radius: 16px;
+  --component-backdrop-headerScrim-alpha: 0.55;
+  --component-backdrop-headerScrim-alphaHC: 0.7;
+  --component-backdrop-headerScrim-fadePt: 48px;
   --component-backdrop-height-sub: 360px;
   --component-backdrop-height-tab: 420px;
   --component-backdrop-height-today: 640px;
@@ -245,6 +248,7 @@
   --primitive-size-hairline: 1px;
   --primitive-size-handleH: 4px;
   --primitive-size-handleW: 36px;
+  --primitive-size-headerScrimFade: 48px;
   --primitive-size-hero: 360px;
   --primitive-size-heroAX: 220px;
   --primitive-size-iconLg: 20px;

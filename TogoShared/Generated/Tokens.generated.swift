@@ -333,6 +333,8 @@ nonisolated enum Token {
         static let hairline: CGFloat = 1
         static let handleH: CGFloat = 4
         static let handleW: CGFloat = 36
+        /// Спад затемнения под текстом шапки (`backdrop.headerScrim.fadePt`). СВОЙ ПРИМИТИВ, А НЕ `metricBars`, хотя там тоже 48: то высота полосы столбиков метрики, и смена одного не должна тащить другое — ровно та причина, по которой `metricBars` сам не взят у `font.size.metric`. Источник — хендофф `sha256 ca8d9c263a13` (`design_handoff_togo_ios28 6/tokens/togo-ios28.tokens.json`, 23.10.2026 11:45, 171 значение), он же в репозитории `Дизайн/редизайн-ios28/tokens/togo-ios28.tokens.json` с коммита `3249684`. КОПИЙ ХЕНДОФФА ШЕСТЬ, РЕДАКЦИЙ ТРИ — различать только хешем: безномерная и «2» это `2efce20f` (109 значений, без `cinemaHC`), «3» это `25b79a90`, «4»/«5»/«6» это `ca8d9c26`. Имя копии не называет редакцию.
+        static let headerScrimFade: CGFloat = 48
         /// Высота панели показания (`size.hero`). При крупном кегле — `heroAX` 220. ЭТО КАРТОЧКА-ГЕРОЙ, А НЕ ПОДЛОЖКА: высоту фона-фото брать `backdropToday/Tab/Sub/Walk`, их четыре и они по типу экрана. Прямой ответ дизайна на круг 2, 23.10.2026, пункт 3: «`size.hero` (360) — карточка-герой, к подложке не относится. Подложку от него отвязать». До 23.10 `CinemaBackdrop` брал отсюда, и на вкладке плато фото уезжало на 54 pt вверх под шапку. Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`.
         static let hero: CGFloat = 360
         /// Высота панели показания при крупном кегле (`size.heroAX`). Отдельная ось: панель ужимается, чтобы кнопки низа остались на экране. Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`.
@@ -447,6 +449,13 @@ nonisolated enum Token {
             static let radius: CGFloat = 16
         }
         enum Backdrop {
+            enum HeaderScrim {
+                /// Плотность затемнения шапки в обычном режиме (`backdrop.headerScrim.alpha`). Читатели на 26.10.2026: `Togo/Features/Settings/CinemaHeader.swift` и `Togo/Features/Profile/ФотоШапка.swift`, оба через `плотностьШапки`, плюс `Togo/Features/Today/ReadingPanel.swift`. До этого коммита стояло литералом в трёх файлах — место токену назвал сам код: «Место им — `Token.Component.Backdrop.headerScrim`, хозяин — сессия токенов».
+                static let alpha: Double = 0.55
+                /// Плотность затемнения шапки в повышенном контрасте (`backdrop.headerScrim.alphaHC`). ДВА ОТДЕЛЬНЫХ ЧИСЛА, А НЕ МОДАЛЬНЫЙ ТОКЕН: у дизайнера значения различаются по КОНТРАСТУ, а не по теме — одно на `dark`+`light`, другое на `darkHC`+`lightHC`, — и в схему `MODES` из четырёх независимых режимов это не укладывается без дублей. Код читает их ровно так же: `контраст == .increased ? alphaHC : alpha`. Светлых режимов на устройстве нет вовсе (`UIUserInterfaceStyle = Dark` в обоих plist, решение Виктории 23.10.2026 «Кино. Одна тема», под охраной `ThemeNotPinnedTests`), так что живых значений здесь два, а не четыре.
+                static let alphaHC: Double = 0.7
+                static let fadePt: CGFloat = 48
+            }
             enum Height {
                 static let sub: CGFloat = 360
                 static let tab: CGFloat = 420
