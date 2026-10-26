@@ -82,10 +82,16 @@ import UIKit
 @MainActor
 struct CinemaHeader: View {
 
-    /// Уровень контраста системы: от него зависит плотность слоя
-    /// затемнения (.55 против .70). Читается из окружения, а не
-    /// из `UITraitCollection`: внутри `body` верно первое.
-    @Environment(\.colorSchemeContrast) private var контраст
+    // Уровень контраста системы читает теперь `TGHeaderScrim` — он
+    // и выбирает плотность слоя (.55 против .70). Здесь объявление
+    // снято 26.10.2026 как оставшееся БЕЗ ЕДИНОГО ЧИТАТЕЛЯ: после
+    // переезда слоя в компонент `контраст` встречался в файле только
+    // в своём `@Environment` и в прозе. Замер — `grep` по файлу
+    // с вырезанными комментариями: одна строка, и это объявление.
+    //
+    // Запись, которую стоит сохранить: читать его надо ИЗ ОКРУЖЕНИЯ,
+    // а не из `UITraitCollection` — внутри `body` верно первое.
+    // В компоненте так и сделано.
 
     /// Название экрана: ключ каталога либо готовое значение.
     ///
@@ -297,23 +303,8 @@ struct CinemaHeader: View {
     @ViewBuilder
     private var слойШапки: some View {
         if наФото {
-            VStack(spacing: 0) {
-                Token.Surface.screen.opacity(плотностьШапки)
-                LinearGradient(
-                    colors: [Token.Surface.screen.opacity(плотностьШапки),
-                             Token.Surface.screen.opacity(0)],
-                    startPoint: .top, endPoint: .bottom
-                )
-                .frame(height: 48)
-            }
-            .padding(.bottom, -48)
-            .accessibilityHidden(true)
+            TGHeaderScrim()
         }
-    }
-
-    /// `backdrop.headerScrim.alpha` = .55, `alphaHC` = .70.
-    private var плотностьШапки: Double {
-        контраст == .increased ? 0.70 : 0.55
     }
 
     private var заголовок: Text {

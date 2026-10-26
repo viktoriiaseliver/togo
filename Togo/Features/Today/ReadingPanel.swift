@@ -61,10 +61,10 @@ struct ReadingPanel<Шапка: View>: View {
     /// Прозрачность выключена в системе — блюра не будет, будет
     /// сплошная поверхность (хендофф, «Рекомендации» 7).
     @Environment(\.accessibilityReduceTransparency) private var безПрозрачности
-    /// Уровень контраста системы: от него зависит плотность слоя
-    /// затемнения под шапкой (.55 против .70) — те же числа, что
-    /// у `CinemaHeader.плотностьШапки`.
-    @Environment(\.colorSchemeContrast) private var контраст
+    // Уровень контраста системы читает теперь `TGHeaderScrim`.
+    // Объявление снято 26.10.2026 как оставшееся без единого читателя
+    // после переезда слоя в компонент (замер: `grep` по файлу
+    // с вырезанной прозой — одна строка, и это само объявление).
 
     /// Чип состояния — светлый на обычном дне, цветной на дозе.
     struct Чип {
@@ -227,23 +227,8 @@ struct ReadingPanel<Шапка: View>: View {
     @ViewBuilder
     private var слойШапки: some View {
         if наФото {
-            VStack(spacing: 0) {
-                Token.Surface.screen.opacity(плотностьШапки)
-                LinearGradient(
-                    colors: [Token.Surface.screen.opacity(плотностьШапки),
-                             Token.Surface.screen.opacity(0)],
-                    startPoint: .top, endPoint: .bottom
-                )
-                .frame(height: 48)
-            }
-            .padding(.bottom, -48)
-            .accessibilityHidden(true)
+            TGHeaderScrim()
         }
-    }
-
-    /// `backdrop.headerScrim.alpha` = .55, `alphaHC` = .70.
-    private var плотностьШапки: Double {
-        контраст == .increased ? 0.70 : 0.55
     }
 
     /// Подкраска фото по тону. Пусто — фото остаётся как есть.
