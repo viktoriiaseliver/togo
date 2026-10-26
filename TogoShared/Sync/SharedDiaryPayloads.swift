@@ -250,7 +250,7 @@ extension Dog {
             markerKind: markerKindRaw,
             sessionLengthMinutes: sessionLengthMinutes,
             trainingFoodFromPortion: trainingFoodFromPortion,
-            changedAt: changedAt
+            deletedAt: deletedAt, changedAt: changedAt
         )
     }
 
@@ -292,6 +292,7 @@ extension Dog {
         markerKindRaw = payload.markerKind
         sessionLengthMinutes = payload.sessionLengthMinutes
         trainingFoodFromPortion = payload.trainingFoodFromPortion
+        deletedAt = payload.deletedAt
         changedAt = payload.changedAt
     }
 }
@@ -308,7 +309,7 @@ extension CareTask {
             seasonEndMonth: seasonEndMonth, snoozeCount: snoozeCount,
             clinicID: clinic?.id, clinicName: clinic?.name,
             vaccineBatch: vaccineBatch, vaccineValidUntil: vaccineValidUntil,
-            changedAt: changedAt
+            deletedAt: deletedAt, changedAt: changedAt
         )
     }
 
@@ -332,6 +333,7 @@ extension CareTask {
         // `SharedDiaryInbox.accept(_:dog:context:)` — там, где контекст
         // есть по устройству. Разделение не стиль: `apply` зовут и из
         // тестов без хранилища.
+        deletedAt = payload.deletedAt
         changedAt = payload.changedAt
     }
 }
@@ -347,12 +349,13 @@ extension Medication {
             prescriber: prescriber, cancelledAt: cancelledAt,
             cancelledNote: cancelledNote,
             prescriptionNumber: prescriptionNumber,
-            unitRaw: unitRaw, doseSlotsData: doseSlotsData,
+            unitRaw: unitRaw, massPerUnitMcg: massPerUnitMcg,
+            doseSlotsData: doseSlotsData,
             courseEnd: courseEnd, expiry: expiry, openedAt: openedAt,
             shelfAfterOpenDays: shelfAfterOpenDays,
             remindBeforeExpiry: remindBeforeExpiry,
             canGiveOutside: canGiveOutside,
-            changedAt: changedAt
+            deletedAt: deletedAt, changedAt: changedAt
         )
     }
 
@@ -375,6 +378,12 @@ extension Medication {
         // иначе правка приехавшая от прежней версии стёрла бы единицу
         // дозы у того, кто её уже ввёл.
         if let unitRaw = payload.unitRaw { self.unitRaw = unitRaw }
+        // Масса — через `if let`, как единица дозы рядом, и по той же
+        // причине: снимок от прежней сборки её не прислал, и присвоить
+        // `nil` значило бы стереть массу у того, кто её уже ввёл.
+        // Это ровно та правка, которую здесь сделали для `unitRaw`
+        // 07.10 и не сделали для массы 08.10.
+        if let масса = payload.massPerUnitMcg { massPerUnitMcg = масса }
         if let слоты = payload.doseSlotsData { doseSlotsData = слоты }
         courseEnd = payload.courseEnd ?? courseEnd
         expiry = payload.expiry ?? expiry
@@ -382,6 +391,7 @@ extension Medication {
         if let дней = payload.shelfAfterOpenDays { shelfAfterOpenDays = дней }
         if let напоминать = payload.remindBeforeExpiry { remindBeforeExpiry = напоминать }
         if let наУлице = payload.canGiveOutside { canGiveOutside = наУлице }
+        deletedAt = payload.deletedAt
         changedAt = payload.changedAt
     }
 }
@@ -389,12 +399,13 @@ extension Medication {
 @MainActor
 extension WeightEntry {
     var payload: WeightPayload {
-        WeightPayload(id: id, dogID: dog?.id, date: date, kg: kg, changedAt: changedAt)
+        WeightPayload(id: id, dogID: dog?.id, date: date, kg: kg, deletedAt: deletedAt, changedAt: changedAt)
     }
 
     func apply(_ payload: WeightPayload) {
         date = payload.date
         kg = payload.kg
+        deletedAt = payload.deletedAt
         changedAt = payload.changedAt
     }
 }
@@ -405,7 +416,7 @@ extension DogDocument {
         DocumentPayload(
             id: id, dogID: dog?.id, title: title, kind: kindRaw,
             number: number, issuedBy: issuedBy, validUntil: validUntil,
-            addedAt: addedAt, note: note, changedAt: changedAt
+            addedAt: addedAt, note: note, deletedAt: deletedAt, changedAt: changedAt
         )
     }
 
@@ -420,6 +431,7 @@ extension DogDocument {
         validUntil = payload.validUntil
         addedAt = payload.addedAt
         note = payload.note
+        deletedAt = payload.deletedAt
         changedAt = payload.changedAt
     }
 }
@@ -441,7 +453,7 @@ extension LabResult {
             value: value, belowLimit: belowLimit, aboveLimit: aboveLimit,
             textValue: textValue, unit: unit,
             referenceLow: referenceLow, referenceHigh: referenceHigh,
-            method: method, labMark: labMark, note: note, changedAt: changedAt
+            method: method, labMark: labMark, note: note, deletedAt: deletedAt, changedAt: changedAt
         )
     }
 
@@ -462,6 +474,7 @@ extension LabResult {
         method = payload.method
         labMark = payload.labMark
         note = payload.note
+        deletedAt = payload.deletedAt
         changedAt = payload.changedAt
     }
 }
@@ -473,7 +486,7 @@ extension VetVisit {
             id: id, dogID: dog?.id, date: date,
             clinicID: clinic?.id, clinicName: clinic?.name,
             doctor: doctor, reason: reasonRaw, conclusion: conclusion,
-            changedAt: changedAt
+            deletedAt: deletedAt, changedAt: changedAt
         )
     }
 
@@ -482,6 +495,7 @@ extension VetVisit {
         doctor = payload.doctor
         reasonRaw = payload.reason
         conclusion = payload.conclusion
+        deletedAt = payload.deletedAt
         changedAt = payload.changedAt
     }
 }
@@ -492,7 +506,7 @@ extension Diagnosis {
         DiagnosisPayload(
             id: id, dogID: dog?.id, wording: wording, status: statusRaw,
             madeOn: madeOn, madeBy: madeBy, evidence: evidence,
-            changedAt: changedAt
+            deletedAt: deletedAt, changedAt: changedAt
         )
     }
 
@@ -502,6 +516,7 @@ extension Diagnosis {
         madeOn = payload.madeOn
         madeBy = payload.madeBy
         evidence = payload.evidence
+        deletedAt = payload.deletedAt
         changedAt = payload.changedAt
     }
 }
@@ -518,7 +533,7 @@ extension Prescription {
             pharmacyForm: pharmacyForm,
             controlFromWeeks: controlFromWeeks, controlToWeeks: controlToWeeks,
             dispensed: dispensed, instruction: instruction, source: source,
-            changedAt: changedAt
+            deletedAt: deletedAt, changedAt: changedAt
         )
     }
 
@@ -537,6 +552,7 @@ extension Prescription {
         dispensed = payload.dispensed
         instruction = payload.instruction
         source = payload.source
+        deletedAt = payload.deletedAt
         changedAt = payload.changedAt
     }
 }
@@ -546,7 +562,7 @@ extension Clinic {
     var payload: ClinicPayload {
         ClinicPayload(
             id: id, name: name, detail: detail, isLab: isLab,
-            phone: phone, createdAt: createdAt, changedAt: changedAt
+            phone: phone, createdAt: createdAt, deletedAt: deletedAt, changedAt: changedAt
         )
     }
 
@@ -558,6 +574,7 @@ extension Clinic {
         detail = payload.detail
         isLab = payload.isLab
         phone = payload.phone
+        deletedAt = payload.deletedAt
         changedAt = payload.changedAt
     }
 }
@@ -578,7 +595,7 @@ extension DoseRecord {
             claimedAt: claimedAt,
             cancelledAt: cancelledAt,
             cancelReason: cancelReason,
-            changedAt: changedAt
+            deletedAt: deletedAt, changedAt: changedAt
         )
     }
 
@@ -592,6 +609,7 @@ extension DoseRecord {
         claimedAt = payload.claimedAt
         cancelledAt = payload.cancelledAt
         cancelReason = payload.cancelReason
+        deletedAt = payload.deletedAt
         changedAt = payload.changedAt
     }
 }
@@ -686,6 +704,12 @@ enum SharedDiaryInbox {
         ).first
 
         guard let local = existing else {
+            // Надгробие на запись, которой у нас НИКОГДА НЕ БЫЛО,
+            // заводить нечего. Создать её, чтобы в ту же секунду скрыть,
+            // значило бы положить человеку в базу запись, которой он
+            // не видел, — тот же класс, что «мусор, который уходит
+            // от нас к человеку, хуже мусора, который лежит у нас».
+            if payload.deletedAt != nil { return false }
             let dog = Dog(name: payload.name, weightKg: payload.weightKg)
             dog.id = payload.id
             dog.apply(payload)
@@ -764,6 +788,12 @@ enum SharedDiaryInbox {
         ).first
 
         guard let local = existing else {
+            // Надгробие на запись, которой у нас НИКОГДА НЕ БЫЛО,
+            // заводить нечего. Создать её, чтобы в ту же секунду скрыть,
+            // значило бы положить человеку в базу запись, которой он
+            // не видел, — тот же класс, что «мусор, который уходит
+            // от нас к человеку, хуже мусора, который лежит у нас».
+            if payload.deletedAt != nil { return false }
             let clinic = Clinic(name: payload.name, detail: payload.detail,
                                 isLab: payload.isLab, phone: payload.phone)
             clinic.id = payload.id
@@ -831,6 +861,12 @@ enum SharedDiaryInbox {
         ).first
 
         guard let local = existing else {
+            // Надгробие на запись, которой у нас НИКОГДА НЕ БЫЛО,
+            // заводить нечего. Создать её, чтобы в ту же секунду скрыть,
+            // значило бы положить человеку в базу запись, которой он
+            // не видел, — тот же класс, что «мусор, который уходит
+            // от нас к человеку, хуже мусора, который лежит у нас».
+            if payload.deletedAt != nil { return false }
             let запись = WeightEntry(date: payload.date, kg: payload.kg)
             запись.id = payload.id
             запись.changedAt = payload.changedAt
@@ -868,6 +904,12 @@ enum SharedDiaryInbox {
         ).first
 
         guard let local = existing else {
+            // Надгробие на запись, которой у нас НИКОГДА НЕ БЫЛО,
+            // заводить нечего. Создать её, чтобы в ту же секунду скрыть,
+            // значило бы положить человеку в базу запись, которой он
+            // не видел, — тот же класс, что «мусор, который уходит
+            // от нас к человеку, хуже мусора, который лежит у нас».
+            if payload.deletedAt != nil { return false }
             let документ = DogDocument(title: payload.title)
             документ.id = payload.id
             документ.apply(payload)
@@ -920,6 +962,12 @@ enum SharedDiaryInbox {
         ).first
 
         guard let local = existing else {
+            // Надгробие на запись, которой у нас НИКОГДА НЕ БЫЛО,
+            // заводить нечего. Создать её, чтобы в ту же секунду скрыть,
+            // значило бы положить человеку в базу запись, которой он
+            // не видел, — тот же класс, что «мусор, который уходит
+            // от нас к человеку, хуже мусора, который лежит у нас».
+            if payload.deletedAt != nil { return false }
             let анализ = LabResult(sampledOn: payload.sampledOn)
             анализ.id = payload.id
             анализ.apply(payload)
@@ -953,6 +1001,12 @@ enum SharedDiaryInbox {
         ).first
 
         guard let local = existing else {
+            // Надгробие на запись, которой у нас НИКОГДА НЕ БЫЛО,
+            // заводить нечего. Создать её, чтобы в ту же секунду скрыть,
+            // значило бы положить человеку в базу запись, которой он
+            // не видел, — тот же класс, что «мусор, который уходит
+            // от нас к человеку, хуже мусора, который лежит у нас».
+            if payload.deletedAt != nil { return false }
             let визит = VetVisit(date: payload.date)
             визит.id = payload.id
             визит.apply(payload)
@@ -992,6 +1046,12 @@ enum SharedDiaryInbox {
         ).first
 
         guard let local = existing else {
+            // Надгробие на запись, которой у нас НИКОГДА НЕ БЫЛО,
+            // заводить нечего. Создать её, чтобы в ту же секунду скрыть,
+            // значило бы положить человеку в базу запись, которой он
+            // не видел, — тот же класс, что «мусор, который уходит
+            // от нас к человеку, хуже мусора, который лежит у нас».
+            if payload.deletedAt != nil { return false }
             let диагноз = Diagnosis(madeOn: payload.madeOn)
             диагноз.id = payload.id
             диагноз.apply(payload)
@@ -1025,6 +1085,12 @@ enum SharedDiaryInbox {
         ).first
 
         guard let local = existing else {
+            // Надгробие на запись, которой у нас НИКОГДА НЕ БЫЛО,
+            // заводить нечего. Создать её, чтобы в ту же секунду скрыть,
+            // значило бы положить человеку в базу запись, которой он
+            // не видел, — тот же класс, что «мусор, который уходит
+            // от нас к человеку, хуже мусора, который лежит у нас».
+            if payload.deletedAt != nil { return false }
             let рецепт = Prescription(date: payload.date)
             рецепт.id = payload.id
             рецепт.apply(payload)
@@ -1062,6 +1128,12 @@ enum SharedDiaryInbox {
         ).first
 
         guard let local = existing else {
+            // Надгробие на запись, которой у нас НИКОГДА НЕ БЫЛО,
+            // заводить нечего. Создать её, чтобы в ту же секунду скрыть,
+            // значило бы положить человеку в базу запись, которой он
+            // не видел, — тот же класс, что «мусор, который уходит
+            // от нас к человеку, хуже мусора, который лежит у нас».
+            if payload.deletedAt != nil { return false }
             let task = CareTask(title: payload.title, detail: payload.detail)
             task.id = payload.id
             task.apply(payload)
@@ -1122,6 +1194,10 @@ enum SharedDiaryInbox {
             }
             схема = local
         } else {
+            // Надгробие на схему, которой у нас никогда не было,
+            // заводить нечего — тот же страж, что у остальных десяти,
+            // форма здесь другая (`if let`, а не `guard`).
+            if payload.deletedAt != nil { return false }
             let свежая = Medication(name: payload.name, doseText: payload.doseText,
                                     times: payload.times)
             свежая.id = payload.id
@@ -1286,6 +1362,12 @@ enum SharedDiaryInbox {
         ).first
 
         guard let local = existing else {
+            // Надгробие на запись, которой у нас НИКОГДА НЕ БЫЛО,
+            // заводить нечего. Создать её, чтобы в ту же секунду скрыть,
+            // значило бы положить человеку в базу запись, которой он
+            // не видел, — тот же класс, что «мусор, который уходит
+            // от нас к человеку, хуже мусора, который лежит у нас».
+            if payload.deletedAt != nil { return false }
             let dose = DoseRecord(scheduledAt: payload.scheduledAt)
             dose.id = payload.id
             dose.apply(payload)

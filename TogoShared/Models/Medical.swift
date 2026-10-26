@@ -149,6 +149,11 @@ final class LabResult {
     var note: String = ""
 
     var changedAt: Date = Date()
+
+    /// Надгробие удаления — разбор у `Medication.deletedAt`.
+    /// Ставить только через `ОбщееУдаление`.
+    var deletedAt: Date?
+
     var dog: Dog?
 
     init(sampledOn: Date = Date(),
@@ -211,6 +216,11 @@ final class VetVisit {
     var conclusion: String = ""
 
     var changedAt: Date = Date()
+
+    /// Надгробие удаления — разбор у `Medication.deletedAt`.
+    /// Ставить только через `ОбщееУдаление`.
+    var deletedAt: Date?
+
     var dog: Dog?
 
     init(date: Date = Date(), doctor: String = "", reasonRaw: String = VisitReason.checkup.rawValue) {
@@ -266,6 +276,17 @@ final class Diagnosis {
     var evidence: String = ""
 
     var changedAt: Date = Date()
+
+    /// Надгробие удаления — разбор у `Medication.deletedAt`.
+    /// Ставить только через `ОбщееУдаление`.
+    ///
+    /// **Снятый диагноз и удалённый — разные вещи.** Снятый
+    /// (`DiagnosisStatus.withdrawn`) остаётся в карте: по нему
+    /// не лечат, но он объясняет, что искали. Удалённый — запись,
+    /// которой не должно было быть. Склеить их значило бы потерять
+    /// историю поиска у того, кто придёт к врачу вторым.
+    var deletedAt: Date?
+
     var dog: Dog?
 
     init(wording: String = "", madeOn: Date = Date(),
@@ -379,6 +400,11 @@ final class Prescription {
     var source: String = ""
 
     var changedAt: Date = Date()
+
+    /// Надгробие удаления — разбор у `Medication.deletedAt`.
+    /// Ставить только через `ОбщееУдаление`.
+    var deletedAt: Date?
+
     var dog: Dog?
 
     init(number: String = "", date: Date = Date(), medicationName: String = "") {

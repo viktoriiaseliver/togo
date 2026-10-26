@@ -202,6 +202,7 @@ nonisolated enum SharedDiaryRecords {
         record["markerKind"] = payload.markerKind
         record["sessionLengthMinutes"] = payload.sessionLengthMinutes
         record["trainingFoodFromPortion"] = payload.trainingFoodFromPortion ? 1 : 0
+        record["deletedAt"] = payload.deletedAt
         record["changedAt"] = payload.changedAt
     }
 
@@ -280,6 +281,7 @@ nonisolated enum SharedDiaryRecords {
             // то есть ровно то расхождение, ради которого поле и поехало.
             sessionLengthMinutes: record["sessionLengthMinutes"] as? Int ?? 3,
             trainingFoodFromPortion: (record["trainingFoodFromPortion"] as? Int ?? 1) == 1,
+            deletedAt: record["deletedAt"] as? Date,
             changedAt: changedAt
         )
     }
@@ -318,6 +320,7 @@ nonisolated enum SharedDiaryRecords {
         record["clinicName"] = payload.clinicName
         record["vaccineBatch"] = payload.vaccineBatch
         record["vaccineValidUntil"] = payload.vaccineValidUntil
+        record["deletedAt"] = payload.deletedAt
         record["changedAt"] = payload.changedAt
     }
 
@@ -346,6 +349,7 @@ nonisolated enum SharedDiaryRecords {
             clinicName: record["clinicName"] as? String,
             vaccineBatch: record["vaccineBatch"] as? String,
             vaccineValidUntil: record["vaccineValidUntil"] as? Date,
+            deletedAt: record["deletedAt"] as? Date,
             changedAt: changedAt
         )
     }
@@ -375,6 +379,7 @@ nonisolated enum SharedDiaryRecords {
         record["validUntil"] = payload.validUntil
         record["addedAt"] = payload.addedAt
         record["note"] = payload.note
+        record["deletedAt"] = payload.deletedAt
         record["changedAt"] = payload.changedAt
     }
 
@@ -397,6 +402,7 @@ nonisolated enum SharedDiaryRecords {
             validUntil: record["validUntil"] as? Date,
             addedAt: record["addedAt"] as? Date ?? changedAt,
             note: record["note"] as? String,
+            deletedAt: record["deletedAt"] as? Date,
             changedAt: changedAt
         )
     }
@@ -419,6 +425,7 @@ nonisolated enum SharedDiaryRecords {
         record["dogID"] = payload.dogID?.uuidString
         record["date"] = payload.date
         record["kg"] = payload.kg
+        record["deletedAt"] = payload.deletedAt
         record["changedAt"] = payload.changedAt
     }
 
@@ -444,6 +451,7 @@ nonisolated enum SharedDiaryRecords {
             dogID: (record["dogID"] as? String).flatMap(UUID.init),
             date: date,
             kg: kg,
+            deletedAt: record["deletedAt"] as? Date,
             changedAt: changedAt
         )
     }
@@ -483,6 +491,7 @@ nonisolated enum SharedDiaryRecords {
         record["method"] = payload.method
         record["labMark"] = payload.labMark
         record["note"] = payload.note
+        record["deletedAt"] = payload.deletedAt
         record["changedAt"] = payload.changedAt
     }
 
@@ -511,6 +520,7 @@ nonisolated enum SharedDiaryRecords {
             method: record["method"] as? String,
             labMark: record["labMark"] as? String ?? "",
             note: record["note"] as? String ?? "",
+            deletedAt: record["deletedAt"] as? Date,
             changedAt: changedAt
         )
     }
@@ -535,6 +545,7 @@ nonisolated enum SharedDiaryRecords {
         record["doctor"] = payload.doctor
         record["reason"] = payload.reason
         record["conclusion"] = payload.conclusion
+        record["deletedAt"] = payload.deletedAt
         record["changedAt"] = payload.changedAt
     }
 
@@ -556,6 +567,7 @@ nonisolated enum SharedDiaryRecords {
             // только у записи, где поля нет вовсе.
             reason: record["reason"] as? String ?? VisitReason.checkup.rawValue,
             conclusion: record["conclusion"] as? String ?? "",
+            deletedAt: record["deletedAt"] as? Date,
             changedAt: changedAt
         )
     }
@@ -579,6 +591,7 @@ nonisolated enum SharedDiaryRecords {
         record["madeOn"] = payload.madeOn
         record["madeBy"] = payload.madeBy
         record["evidence"] = payload.evidence
+        record["deletedAt"] = payload.deletedAt
         record["changedAt"] = payload.changedAt
     }
 
@@ -600,6 +613,7 @@ nonisolated enum SharedDiaryRecords {
             madeOn: madeOn,
             madeBy: record["madeBy"] as? String ?? "",
             evidence: record["evidence"] as? String ?? "",
+            deletedAt: record["deletedAt"] as? Date,
             changedAt: changedAt
         )
     }
@@ -634,6 +648,7 @@ nonisolated enum SharedDiaryRecords {
         record["dispensed"] = payload.dispensed
         record["instruction"] = payload.instruction
         record["source"] = payload.source
+        record["deletedAt"] = payload.deletedAt
         record["changedAt"] = payload.changedAt
     }
 
@@ -662,6 +677,7 @@ nonisolated enum SharedDiaryRecords {
             dispensed: record["dispensed"] as? String ?? "",
             instruction: record["instruction"] as? String ?? "",
             source: record["source"] as? String ?? "",
+            deletedAt: record["deletedAt"] as? Date,
             changedAt: changedAt
         )
     }
@@ -686,6 +702,7 @@ nonisolated enum SharedDiaryRecords {
         record["isLab"] = payload.isLab
         record["phone"] = payload.phone
         record["createdAt"] = payload.createdAt
+        record["deletedAt"] = payload.deletedAt
         record["changedAt"] = payload.changedAt
     }
 
@@ -713,6 +730,7 @@ nonisolated enum SharedDiaryRecords {
             isLab: record["isLab"] as? Bool ?? false,
             phone: record["phone"] as? String,
             createdAt: record["createdAt"] as? Date ?? changedAt,
+            deletedAt: record["deletedAt"] as? Date,
             changedAt: changedAt
         )
     }
@@ -746,6 +764,12 @@ nonisolated enum SharedDiaryRecords {
         // `unitRaw`: «0,5» без единицы не значит ничего, и у второго
         // человека схема приезжала без неё.
         record["unitRaw"] = payload.unitRaw
+        // Масса на единицу формы — третий конец той же потери,
+        // что `unitRaw`, и внесён 26.10.2026. Разбор у
+        // `MedicationPayload.massPerUnitMcg`: без неё
+        // `Medication.дневнаяМасса` выходит через `guard`, и второй
+        // человек молча не видит, сколько вещества даёт.
+        record["massPerUnitMcg"] = payload.massPerUnitMcg
         record["courseEnd"] = payload.courseEnd
         record["expiry"] = payload.expiry
         record["openedAt"] = payload.openedAt
@@ -764,6 +788,7 @@ nonisolated enum SharedDiaryRecords {
         let слотыJSON: Data? = payload.doseSlotsData
             .flatMap { try? JSONEncoder().encode($0) }
         record["doseSlotsData"] = слотыJSON
+        record["deletedAt"] = payload.deletedAt
         record["changedAt"] = payload.changedAt
     }
 
@@ -790,6 +815,9 @@ nonisolated enum SharedDiaryRecords {
             cancelledNote: record["cancelledNote"] as? String,
             prescriptionNumber: record["prescriptionNumber"] as? String,
             unitRaw: record["unitRaw"] as? String,
+            // Умолчания нет нарочно: пусто значит «не введено»,
+            // а ноль был бы настоящей дозой «ничего».
+            massPerUnitMcg: record["massPerUnitMcg"] as? Double,
             doseSlotsData: (record["doseSlotsData"] as? Data)
                 .flatMap { try? JSONDecoder().decode([DoseSlot].self, from: $0) },
             courseEnd: record["courseEnd"] as? Date,
@@ -798,6 +826,7 @@ nonisolated enum SharedDiaryRecords {
             shelfAfterOpenDays: record["shelfAfterOpenDays"] as? Int,
             remindBeforeExpiry: record["remindBeforeExpiry"] as? Bool,
             canGiveOutside: record["canGiveOutside"] as? Bool,
+            deletedAt: record["deletedAt"] as? Date,
             changedAt: changedAt
         )
     }
@@ -836,6 +865,7 @@ nonisolated enum SharedDiaryRecords {
         record["claimedAt"] = payload.claimedAt
         record["cancelledAt"] = payload.cancelledAt
         record["cancelReason"] = payload.cancelReason
+        record["deletedAt"] = payload.deletedAt
         record["changedAt"] = payload.changedAt
     }
 
@@ -858,6 +888,7 @@ nonisolated enum SharedDiaryRecords {
             claimedAt: record["claimedAt"] as? Date,
             cancelledAt: record["cancelledAt"] as? Date,
             cancelReason: record["cancelReason"] as? String,
+            deletedAt: record["deletedAt"] as? Date,
             changedAt: changedAt
         )
     }

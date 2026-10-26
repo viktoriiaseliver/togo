@@ -337,6 +337,18 @@ nonisolated struct DogPayload: Equatable, Sendable, Codable {
     var sessionLengthMinutes: Int
     var trainingFoodFromPortion: Bool
 
+    /// Надгробие: удаление едет ко второму человеку обычной правкой.
+    ///
+    /// **Одиннадцать из двенадцати типов не умели выразить удаление
+    /// до 26.10.2026**, и до второго человека оно не доезжало вовсе.
+    /// Разбор механизма и цены — `Medication.deletedAt`; правило спора
+    /// — `SharedDiaryMerge.resolve`, «удаление сильнее правки».
+    ///
+    /// `= nil` не ради краткости: снимок от прежней сборки этого поля
+    /// не знает, и декодирование без умолчания отказало бы на всём
+    /// архиве разом.
+    var deletedAt: Date? = nil
+
     var changedAt: Date
 }
 
@@ -382,6 +394,9 @@ nonisolated struct CarePayload: Equatable, Sendable, Codable {
     var vaccineBatch: String? = nil
     var vaccineValidUntil: Date? = nil
 
+    /// Надгробие удаления — разбор у `DogPayload.deletedAt`.
+    var deletedAt: Date? = nil
+
     var changedAt: Date
 }
 
@@ -417,6 +432,9 @@ nonisolated struct WeightPayload: Equatable, Sendable, Codable {
     var dogID: UUID?
     var date: Date
     var kg: Double
+    /// Надгробие удаления — разбор у `DogPayload.deletedAt`.
+    var deletedAt: Date? = nil
+
     var changedAt: Date
 }
 
@@ -438,6 +456,9 @@ nonisolated struct DocumentPayload: Equatable, Sendable, Codable {
     var validUntil: Date?
     var addedAt: Date
     var note: String?
+    /// Надгробие удаления — разбор у `DogPayload.deletedAt`.
+    var deletedAt: Date? = nil
+
     var changedAt: Date
 }
 
@@ -475,6 +496,9 @@ nonisolated struct LabResultPayload: Equatable, Sendable, Codable {
     var method: String?
     var labMark: String
     var note: String
+    /// Надгробие удаления — разбор у `DogPayload.deletedAt`.
+    var deletedAt: Date? = nil
+
     var changedAt: Date
 }
 
@@ -492,6 +516,9 @@ nonisolated struct VetVisitPayload: Equatable, Sendable, Codable {
     var doctor: String
     var reason: String
     var conclusion: String
+    /// Надгробие удаления — разбор у `DogPayload.deletedAt`.
+    var deletedAt: Date? = nil
+
     var changedAt: Date
 }
 
@@ -508,6 +535,9 @@ nonisolated struct DiagnosisPayload: Equatable, Sendable, Codable {
     var madeOn: Date
     var madeBy: String
     var evidence: String
+    /// Надгробие удаления — разбор у `DogPayload.deletedAt`.
+    var deletedAt: Date? = nil
+
     var changedAt: Date
 }
 
@@ -540,6 +570,9 @@ nonisolated struct PrescriptionPayload: Equatable, Sendable, Codable {
     var dispensed: String
     var instruction: String
     var source: String
+    /// Надгробие удаления — разбор у `DogPayload.deletedAt`.
+    var deletedAt: Date? = nil
+
     var changedAt: Date
 }
 
@@ -550,6 +583,9 @@ nonisolated struct ClinicPayload: Equatable, Sendable, Codable {
     var isLab: Bool
     var phone: String?
     var createdAt: Date
+    /// Надгробие удаления — разбор у `DogPayload.deletedAt`.
+    var deletedAt: Date? = nil
+
     var changedAt: Date
 }
 
@@ -598,6 +634,34 @@ nonisolated struct MedicationPayload: Equatable, Sendable, Codable {
     /// данных, и расходятся они молча.**
     var unitRaw: String? = nil
 
+    /// Масса действующего вещества на единицу формы, в микрограммах.
+    ///
+    /// **ТРЕТИЙ КОНЕЦ ОДНОЙ ПОТЕРИ, и первые два закрыли 08.10.2026.**
+    /// Поле заведено решением Виктории (`43f05a5`), и у того прироста
+    /// было четыре сторожа: отпечаток формы, реестр имён, снимок архива
+    /// и список «про семью». Закрыли три разные руки в три разных часа.
+    /// Четвёртый конец — обмен — не закрыл никто, потому что снаружи все
+    /// четыре выглядят одним сторожем («поле названо»), а держат разное:
+    /// ЧИСЛО, ИМЕНА, ПЕРЕНОС и СМЫСЛ.
+    ///
+    /// То есть поле не забыли в одном месте — **его не внесли в обмен
+    /// как класс**, и это тот же механизм, что у `unitRaw` 07.10: архив
+    /// знал, обмен нет, и два пути для одних данных расходились молча.
+    ///
+    /// `DeviceLocalFieldTests:343` уже отвечает, что оно обязано ехать,
+    /// и отвечает прямым текстом: «„0,05 мг“ у мамы и у Виктории значит
+    /// одно и то же, потому что это одна и та же таблетка из одной
+    /// упаковки».
+    ///
+    /// **Цена пропуска — та же, что у `unitRaw`, и это не аналогия.**
+    /// `Medication.дневнаяМасса` выходит через `guard let masse =
+    /// massPerUnitMcg, masse > 0 else { return nil }`: без поля второй
+    /// человек получает схему, у которой массы нет вовсе, то есть
+    /// **молча не видит, сколько вещества даёт**. Пусто здесь значит
+    /// «не введено», а не ноль, — поэтому `Double?`, и умолчания
+    /// у него нет ни на одном конце.
+    var massPerUnitMcg: Double? = nil
+
     /// Расписание дозы по слотам: в котором часу сколько. Без него
     /// у второго человека схема «дважды в день» не знает, сколько
     /// именно в каждый приём.
@@ -620,6 +684,9 @@ nonisolated struct MedicationPayload: Equatable, Sendable, Codable {
     /// из соседних полей.** Второй человек, собравшийся на прогулку
     /// с каплями в глаз, обязан видеть тот же ответ, что дала хозяйка.
     var canGiveOutside: Bool? = nil
+
+    /// Надгробие удаления — разбор у `DogPayload.deletedAt`.
+    var deletedAt: Date? = nil
 
     var changedAt: Date
 }
@@ -652,12 +719,48 @@ nonisolated struct DosePayload: Equatable, Sendable, Codable {
     var claimedAt: Date?
     var cancelledAt: Date?
     var cancelReason: String?
+    /// Надгробие удаления — разбор у `DogPayload.deletedAt`.
+    var deletedAt: Date? = nil
+
     var changedAt: Date
 }
 
 // MARK: - Кто выигрывает спор
 
 nonisolated enum SharedDiaryMerge {
+
+    /// Удаление сильнее правки — одно правило на все двенадцать типов.
+    ///
+    /// `nil` значит «надгробие спора не решает»: либо его нет ни
+    /// у одной стороны, либо есть у обеих, либо чужая правка **позже**
+    /// нашего удаления, и тогда она его отменяет сознательно.
+    ///
+    /// **Почему одной функцией, а не одиннадцатью копиями.** Правило
+    /// у ленты живёт с самого начала (`resolve(local:remote:)` ниже),
+    /// и переписанное одиннадцать раз оно разошлось бы молча: порядок
+    /// сравнений здесь несимметричен, а `<=` против `<` решает исход
+    /// при равных часах. Копия, в которой знак перевернули, снаружи
+    /// выглядит точно так же.
+    ///
+    /// Ось взята от `changedAt`, а не от самого надгробия нарочно:
+    /// у удаления своё время, и сравнивать его с временем правки
+    /// значило бы сравнивать две разные величины одного имени.
+    static func надгробиеРешает<Снимок>(
+        _ local: Снимок,
+        _ remote: Снимок,
+        надгробие: (Снимок) -> Date?,
+        правка: (Снимок) -> Date
+    ) -> Снимок? {
+        if надгробие(local) != nil, надгробие(remote) == nil,
+           правка(remote) <= правка(local) {
+            return local
+        }
+        if надгробие(remote) != nil, надгробие(local) == nil,
+           правка(local) <= правка(remote) {
+            return remote
+        }
+        return nil
+    }
 
     /// Спор о записи дневника.
     ///
@@ -703,6 +806,11 @@ nonisolated enum SharedDiaryMerge {
     /// где данных больше, чем ту, где их стёрли.
     static func resolve(local: DogPayload, remote: DogPayload) -> DogPayload {
         precondition(local.id == remote.id)
+
+        // Удаление сильнее правки — то же правило, что у ленты.
+        if let решено = надгробиеРешает(
+            local, remote, надгробие: { $0.deletedAt }, правка: { $0.changedAt }
+        ) { return решено }
         if local.changedAt != remote.changedAt {
             return local.changedAt > remote.changedAt ? local : remote
         }
@@ -721,6 +829,11 @@ nonisolated enum SharedDiaryMerge {
     /// если врач отменил курс, а потом назначил снова.
     static func resolve(local: CarePayload, remote: CarePayload) -> CarePayload {
         precondition(local.id == remote.id)
+
+        // Удаление сильнее правки — то же правило, что у ленты.
+        if let решено = надгробиеРешает(
+            local, remote, надгробие: { $0.deletedAt }, правка: { $0.changedAt }
+        ) { return решено }
         if local.changedAt != remote.changedAt {
             return local.changedAt > remote.changedAt ? local : remote
         }
@@ -739,6 +852,11 @@ nonisolated enum SharedDiaryMerge {
     /// на секунды нельзя.
     static func resolve(local: DocumentPayload, remote: DocumentPayload) -> DocumentPayload {
         precondition(local.id == remote.id)
+
+        // Удаление сильнее правки — то же правило, что у ленты.
+        if let решено = надгробиеРешает(
+            local, remote, надгробие: { $0.deletedAt }, правка: { $0.changedAt }
+        ) { return решено }
         if local.changedAt != remote.changedAt {
             return local.changedAt > remote.changedAt ? local : remote
         }
@@ -766,6 +884,11 @@ nonisolated enum SharedDiaryMerge {
     /// исход решит порядок, в котором пришли записи, а он не наш.
     static func resolve(local: WeightPayload, remote: WeightPayload) -> WeightPayload {
         precondition(local.id == remote.id)
+
+        // Удаление сильнее правки — то же правило, что у ленты.
+        if let решено = надгробиеРешает(
+            local, remote, надгробие: { $0.deletedAt }, правка: { $0.changedAt }
+        ) { return решено }
         if local.changedAt != remote.changedAt {
             return local.changedAt > remote.changedAt ? local : remote
         }
@@ -786,6 +909,11 @@ nonisolated enum SharedDiaryMerge {
 
     static func resolve(local: LabResultPayload, remote: LabResultPayload) -> LabResultPayload {
         precondition(local.id == remote.id)
+
+        // Удаление сильнее правки — то же правило, что у ленты.
+        if let решено = надгробиеРешает(
+            local, remote, надгробие: { $0.deletedAt }, правка: { $0.changedAt }
+        ) { return решено }
         if local.changedAt != remote.changedAt {
             return local.changedAt > remote.changedAt ? local : remote
         }
@@ -810,6 +938,11 @@ nonisolated enum SharedDiaryMerge {
 
     static func resolve(local: VetVisitPayload, remote: VetVisitPayload) -> VetVisitPayload {
         precondition(local.id == remote.id)
+
+        // Удаление сильнее правки — то же правило, что у ленты.
+        if let решено = надгробиеРешает(
+            local, remote, надгробие: { $0.deletedAt }, правка: { $0.changedAt }
+        ) { return решено }
         if local.changedAt != remote.changedAt {
             return local.changedAt > remote.changedAt ? local : remote
         }
@@ -825,6 +958,11 @@ nonisolated enum SharedDiaryMerge {
 
     static func resolve(local: DiagnosisPayload, remote: DiagnosisPayload) -> DiagnosisPayload {
         precondition(local.id == remote.id)
+
+        // Удаление сильнее правки — то же правило, что у ленты.
+        if let решено = надгробиеРешает(
+            local, remote, надгробие: { $0.deletedAt }, правка: { $0.changedAt }
+        ) { return решено }
         if local.changedAt != remote.changedAt {
             return local.changedAt > remote.changedAt ? local : remote
         }
@@ -849,6 +987,11 @@ nonisolated enum SharedDiaryMerge {
 
     static func resolve(local: PrescriptionPayload, remote: PrescriptionPayload) -> PrescriptionPayload {
         precondition(local.id == remote.id)
+
+        // Удаление сильнее правки — то же правило, что у ленты.
+        if let решено = надгробиеРешает(
+            local, remote, надгробие: { $0.deletedAt }, правка: { $0.changedAt }
+        ) { return решено }
         if local.changedAt != remote.changedAt {
             return local.changedAt > remote.changedAt ? local : remote
         }
@@ -880,6 +1023,11 @@ nonisolated enum SharedDiaryMerge {
     /// здесь не редкость — справочник правят оба, набирая одно и то же.
     static func resolve(local: ClinicPayload, remote: ClinicPayload) -> ClinicPayload {
         precondition(local.id == remote.id)
+
+        // Удаление сильнее правки — то же правило, что у ленты.
+        if let решено = надгробиеРешает(
+            local, remote, надгробие: { $0.deletedAt }, правка: { $0.changedAt }
+        ) { return решено }
         if local.changedAt != remote.changedAt {
             return local.changedAt > remote.changedAt ? local : remote
         }
@@ -895,6 +1043,11 @@ nonisolated enum SharedDiaryMerge {
 
     static func resolve(local: MedicationPayload, remote: MedicationPayload) -> MedicationPayload {
         precondition(local.id == remote.id)
+
+        // Удаление сильнее правки — то же правило, что у ленты.
+        if let решено = надгробиеРешает(
+            local, remote, надгробие: { $0.deletedAt }, правка: { $0.changedAt }
+        ) { return решено }
         if local.changedAt != remote.changedAt {
             return local.changedAt > remote.changedAt ? local : remote
         }
@@ -921,6 +1074,11 @@ nonisolated enum SharedDiaryMerge {
     /// безопаснее.
     static func resolve(local: DosePayload, remote: DosePayload) -> DosePayload {
         precondition(local.id == remote.id)
+
+        // Удаление сильнее правки — то же правило, что у ленты.
+        if let решено = надгробиеРешает(
+            local, remote, надгробие: { $0.deletedAt }, правка: { $0.changedAt }
+        ) { return решено }
 
         var winner = local.changedAt >= remote.changedAt ? local : remote
 

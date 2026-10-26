@@ -58,6 +58,10 @@ final class DogDocument {
     /// > и `WeightEntry.changedAt`.
     var changedAt: Date = Date()
 
+    /// Надгробие удаления — разбор у `Medication.deletedAt`.
+    /// Ставить только через `ОбщееУдаление`.
+    var deletedAt: Date?
+
     var dog: Dog?
 
     init(title: String, image: Data? = nil, note: String? = nil) {
