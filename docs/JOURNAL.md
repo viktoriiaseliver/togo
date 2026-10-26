@@ -10,7 +10,9 @@
 
 
 - [26 октября 2026](journal/2026-10-26-tri-otkaza-okazalis-tremya-raznymi-veshchami.md) — Сессия `projects-4e`, тестировщик
+- [26 октября 2026](journal/2026-10-26-obkhod-perezhil-svoyu-prichinu.md) — Смена `projects-68`, доп-менеджер
 - [26 октября 2026 — menedzher-lozhnye-nuli-po-ramke](journal/2026-10-26-menedzher-lozhnye-nuli-po-ramke.md) — menedzher-lozhnye-nuli-po-ramke
+- [26 октября 2026](journal/2026-10-26-instrument-otvechal-pro-sosedniy-predmet.md) — Разработчик вёрстки: честный ноль про переполнение уехал ответом про потерю содержимого
 - [26 октября 2026](journal/2026-10-26-chetyre-naryada-po-snyatym-zamemam.md) — 26.10.2026, `projects-9b`, разработчик вёрстки
 - [25 октября 2026 — vyklyuchennye-knopki-krug-5](journal/2026-10-25-vyklyuchennye-knopki-krug-5.md) — vyklyuchennye-knopki-krug-5
 - [25 октября 2026 — vitrina-na-vershine](journal/2026-10-25-vitrina-na-vershine.md) — vitrina-na-vershine
