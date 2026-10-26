@@ -700,7 +700,7 @@ struct LabResultEntryFlow: View {
                 // общий, а «↓» лаборатория ставит против конкретного
                 // показателя. Долг на это поле закрыт 26.10.2026,
                 // разбор — в голове этого типа.
-                LabeledField(label: String(localized: "Отметка лаборатории")) {
+                LabeledField(label: "Отметка лаборатории") {
                     TextField("что отметила лаборатория", text: $строка.отметка)
                 }
                 TGExplainer(text: "Это отметка самой лаборатории с бланка, а не вывод приложения. Расхождение с нашим счётом — находка, а не ошибка: референс у лабораторий разный.")
@@ -1028,11 +1028,11 @@ struct LabResultRowEditor: View {
                     TGExplainer(text: "Справочник пуст. Клиники и лаборатории заводятся в «Здоровье» → «Клиники и лаборатории» — оттуда они и попадают в этот выбор.")
                 }
                 TGDivider()
-                LabeledField(label: String(localized: "Номер бланка")) {
+                LabeledField(label: "Номер бланка") {
                     TextField("как на бланке", text: $номерБланка)
                 }
                 TGDivider()
-                LabeledField(label: String(localized: "Раздел")) {
+                LabeledField(label: "Раздел") {
                     TextField("гормоны", text: $раздел)
                 }
                 TGDivider()
@@ -1089,7 +1089,7 @@ struct LabResultRowEditor: View {
             // > коммите, где долг закрыт.** Голова
             // > `LabResultEntryFlow` поправлена рядом.
             TGCard(spacing: 0) {
-                LabeledField(label: String(localized: "Отметка лаборатории")) {
+                LabeledField(label: "Отметка лаборатории") {
                     // Подсказка — слово-роль: конкретные «↓» или
                     // «норма» в примере читались бы как наш вердикт.
                     TextField("что отметила лаборатория", text: $черновик.отметка)

@@ -755,15 +755,15 @@ struct MedicationEditorSheet: View {
             // на пять языков. Форма взята у единственного верного
             // места, а не придумана здесь.
             TGCard(spacing: 0) {
-                LabeledField(label: String(localized: "Название")) {
+                LabeledField(label: "Название") {
                     TextField("Lévothyrox", text: $name)
                 }
                 TGDivider()
-                LabeledField(label: String(localized: "Доза")) {
+                LabeledField(label: "Доза") {
                     TextField("доза с единицей", text: $doseText)
                 }
                 TGDivider()
-                LabeledField(label: String(localized: "Назначил")) {
+                LabeledField(label: "Назначил") {
                     TextField("врач или клиника", text: $prescriber)
                 }
                 TGDivider()
@@ -786,7 +786,7 @@ struct MedicationEditorSheet: View {
                 // в каталоге — голый литерал в параметре типа `String`
                 // извлечение Xcode не видит, и строка не уехала бы
                 // носителю вовсе.
-                LabeledField(label: String(localized: "Номер назначения")) {
+                LabeledField(label: "Номер назначения") {
                     TextField("с бланка, если есть", text: $номерНазначения)
                         .autocorrectionDisabled()
                 }

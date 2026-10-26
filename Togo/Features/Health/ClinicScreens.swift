@@ -241,7 +241,7 @@ struct ClinicEditor: View {
                 closeTitle: новая ? "Отмена" : "Закрыть",
                 hasUnsavedChanges: новая && можноСохранить) {
             TGCard(spacing: 0) {
-                LabeledField(label: String(localized: "Название")) {
+                LabeledField(label: "Название") {
                     // Подсказка — слово-роль, а не образец данных:
                     // «Vet Riviera» вынесло бы наружу название живой
                     // клиники и уехало бы переводчику. Разбор —
@@ -249,14 +249,14 @@ struct ClinicEditor: View {
                     TextField("название клиники", text: $название)
                 }
                 TGDivider()
-                LabeledField(label: String(localized: "Чем отличается")) {
+                LabeledField(label: "Чем отличается") {
                     TextField("город или адрес", text: $пояснение)
                 }
                 TGExplainer(text: "Пояснение нужно, когда у двух организаций одно название: в выборе иначе две одинаковые строки.")
             }
 
             TGCard(spacing: 0) {
-                LabeledField(label: String(localized: "Телефон")) {
+                LabeledField(label: "Телефон") {
                     TextField("номер телефона", text: $телефон)
                         .keyboardType(.phonePad)
                 }
