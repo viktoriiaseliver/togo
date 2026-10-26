@@ -57,6 +57,20 @@ struct UsageLogScreen: View {
     /// набираются тысячи строк, и разбор их в теле экрана — это застывший
     /// интерфейс ровно на том экране, который заведён ради отзывчивости.
     private func reload() async {
+        // Вход стенда. Журнал под `-UITesting` выключен по устройству
+        // (`UsageLog.isOn`), файла на диске нет, и `report.isEmpty`
+        // истинно всегда — то есть блок `summary` с рядом из трёх чисел
+        // не рисуется ни на каком кегле. Фикстура подменяет ЧТЕНИЕ,
+        // а не запись: на диск не попадает ничего, наследовать её
+        // следующему прогону нечем.
+        #if DEBUG
+        if let записи = ФикстурыМестРядаЧисел.записиЖурнала(стенд: TogoApp.isUITesting) {
+            entries = записи
+            report = UsageReport.build(записи)
+            raw = "фикстура стенда · на диск не писалась"
+            return
+        }
+        #endif
         let loaded = await Task.detached(priority: .userInitiated) {
             let entries = UsageLog.entries()
             return (entries, UsageReport.build(entries), UsageLog.rawText())
