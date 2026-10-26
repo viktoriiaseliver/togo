@@ -9,6 +9,7 @@
 написанное рукой, пересборка не трогает.
 
 
+- [26 октября 2026](journal/2026-10-26-versiya-na-zhivyh-klassah-ne-opisyvaet-nichego.md) — Разработчик схемы: версия на живых классах не описывает ничего — V5 заморожена снимком, V6 встала на живые, база пяти телефонов открывается
 - [26 октября 2026](journal/2026-10-26-tri-otkaza-okazalis-tremya-raznymi-veshchami.md) — Сессия `projects-4e`, тестировщик
 - [26 октября 2026](journal/2026-10-26-obkhod-perezhil-svoyu-prichinu.md) — Смена `projects-68`, доп-менеджер
 - [26 октября 2026 — menedzher-lozhnye-nuli-po-ramke](journal/2026-10-26-menedzher-lozhnye-nuli-po-ramke.md) — menedzher-lozhnye-nuli-po-ramke
