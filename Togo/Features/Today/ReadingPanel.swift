@@ -57,10 +57,15 @@ struct ReadingPanel<Шапка: View>: View {
     /// Шапка: аватар, кличка, «вес · дежурит», кнопка «…».
     @ViewBuilder var шапка: Шапка
 
-    @Environment(\.dynamicTypeSize) private var размерТекста
-    /// Прозрачность выключена в системе — блюра не будет, будет
-    /// сплошная поверхность (хендофф, «Рекомендации» 7).
+    /// Сниженная прозрачность снимает фотографию под блоком: человек,
+    /// попросивший систему убрать полупрозрачность, просил читаемости,
+    /// а текст поверх фотографии — ровно то, от чего он отказывается.
+    /// Про саму поверхность панели её спрашивает теперь `TGGlassPanel`.
     @Environment(\.accessibilityReduceTransparency) private var безПрозрачности
+    // Размер текста читает теперь `.высотаПанелиПоказания()`. Объявление
+    // снято 26.10.2026 как оставшееся без единого читателя после переезда
+    // оси в модификатор (замер: `grep "размерТекста"` по файлу — одна
+    // строка, и это само объявление).
     // Уровень контраста системы читает теперь `TGHeaderScrim`.
     // Объявление снято 26.10.2026 как оставшееся без единого читателя
     // после переезда слоя в компонент (замер: `grep` по файлу
@@ -122,25 +127,39 @@ struct ReadingPanel<Шапка: View>: View {
     // Остальные величины этого списка **не переведены, и причина
     // названа, а не умолчана**:
     //
-    //   size.heroPanelRadius  24  → `Token.Component.ReadingPanel.glassRadius`
-    //                               и `component.readingPanel.height`.
-    //                               ЭКРАНУ ЗВАТЬ НЕЛЬЗЯ:
-    //                               `ComponentTokenScopeTests` держит счёт
-    //                               обращений к `Token.Component.*`
-    //                               из экранов на нуле. Путь тот же, что
-    //                               у слоя затемнения: сперва компонент
-    //                               в `Togo/DesignSystem/`, потом он
-    //                               читает токен.
-    //   type.reading      56/300  → `Token.FontSize.hero` = 56 есть;
-    //                               кегль панели не переводила этой правкой,
-    //                               чтобы приёмка одного предмета не
-    //                               смешалась с другим.
+    // ~~  size.heroPanelRadius  24  → ЭКРАНУ ЗВАТЬ НЕЛЬЗЯ, нужен
+    //      компонент в `Togo/DesignSystem/`.~~
+    //
+    // **ЗАКРЫТО 26.10.2026 компонентами `TGGlassPanel`
+    // и `.высотаПанелиПоказания()`.** Радиус (литерал `24`) и высота
+    // (`Token.Size.hero`) переведены на `Token.Component.ReadingPanel.*`,
+    // и перевод высоты — не косметика: `Token.Size.hero`
+    // и `component.readingPanel.height` сегодня дают одно число, потому
+    // что второй — АЛИАС первого, но в Фигму уезжает отдельной
+    // переменной `readingPanel/height`. Перенаправь алиас — макет поедет,
+    // а Swift промолчит. Разбор и замер по шести токенам группы —
+    // в голове `TGGlassPanel`.
+    //
+    // Остальные величины этого списка **не переведены, и причина
+    // названа, а не умолчана**:
+    //
+    //   type.reading      56/300  → `Token.FontSize.hero` = 56 есть,
+    //                               и `component.readingPanel.readingSize`
+    //                               тоже, читателей у обоих ноль, а кегль
+    //                               стоит литералом в `показаниеКрупно`.
+    //                               Кегль на этом экране — чужой предмет,
+    //                               и литерал держит храповик
+    //                               `DesignLiteralTests`: снижать чужой
+    //                               храповик своей правкой значит смешать
+    //                               две приёмки.
     //   cinema.titleLarge 36/−0.025 → `primitive.font.size.titleLarge`
     //                               и `tracking.titleLarge` = −0,9px
     //                               (пересчёт em→pt: −0,025 × 36).
-    private var высота: CGFloat {
-        размерТекста.isAccessibilitySize ? Token.Size.heroAX : Token.Size.hero
-    }
+    //
+    // Объявление `@Environment(\.dynamicTypeSize)` снято вместе
+    // с `высота`: ось крупного кегля уехала в модификатор, и здесь
+    // у переменной не осталось ни одного читателя. Форма та же, что
+    // у `colorSchemeContrast` выше.
 
     var body: some View {
         ZStack(alignment: .topLeading) {
@@ -164,7 +183,7 @@ struct ReadingPanel<Шапка: View>: View {
             }
             .padding(.bottom, Token.Space.s16)
         }
-        .frame(minHeight: высота)
+        .высотаПанелиПоказания()
         // Опознаётся приёмкой по РАМКЕ блока, а не по доле экрана:
         // координата от края экрана меряет экран, рамка меряет элемент.
         // На этом однажды уже промахнулись — точка «92 % ширины, 9 %
@@ -359,21 +378,26 @@ struct ReadingPanel<Шапка: View>: View {
 
     // MARK: Стеклянная панель
 
+    /// **Поверхность и радиус переехали в `TGGlassPanel` 26.10.2026.**
+    /// Радиус стоял здесь литералом `24` при живом
+    /// `Token.Component.ReadingPanel.glassRadius` = 24, а звать токен
+    /// экрану нельзя (`ComponentTokenScopeTests`). Разбор, замер по шести
+    /// токенам группы и причина, по которой компонент НЕ зовёт
+    /// `.стекло(.плотное)`, — в голове `TGGlassPanel`.
+    ///
+    /// **Решение «кроет ли заливка стекло» осталось здесь, и это граница,
+    /// а не недоделка:** `ReadingTone` живёт в этом слое, дизайн-системе
+    /// на него смотреть нельзя. Компонент получает готовый цвет либо
+    /// `nil` — та же форма, что у `TGHeaderScrim`, которому экран отдаёт
+    /// условие «есть ли под шапкой фото».
     private var стекляннаяПанель: some View {
-        VStack(alignment: .leading, spacing: Token.Space.s8) {
-            показаниеКрупно
-            if откуда != nil || докуда != nil { строкаСДо }
-            if let доля { полосаКосточка(доля) }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(Token.Space.s16)
-        // `background { … }` со слотом, а не `background(_:in:)`:
-        // поверхность тут ВЬЮ (материал либо заливка), а не `ShapeStyle`,
-        // и форму ей задаёт обрезка. Компилятор сказал это прямо —
-        // «requires that 'some View' conform to 'ShapeStyle'».
-        .background {
-            поверхность
-                .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+        TGGlassPanel(заливка: tone.paintsPanel ? заливкаПанели : nil) {
+            VStack(alignment: .leading, spacing: Token.Space.s8) {
+                показаниеКрупно
+                if откуда != nil || докуда != nil { строкаСДо }
+                if let доля { полосаКосточка(доля) }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
 
@@ -446,24 +470,12 @@ struct ReadingPanel<Шапка: View>: View {
 
     // MARK: Цвета тона
 
-    /// Поверхность панели.
-    ///
-    /// **Reduce Transparency → сплошная поверхность без блюра**
-    /// (хендофф, «Рекомендации» 7). Иначе `--g-strong`: в тёмной
-    /// и «Кино» это `.ultraThinMaterial`, как сказано
-    /// в `togo-ios28.tokens.json` (`glass.swiftui`).
-    @ViewBuilder
-    private var поверхность: some View {
-        if tone.paintsPanel {
-            // Янтарь, синий и терракот кроют панель целиком — стекла
-            // под ними нет вовсе, и блюр тут ничего не решает.
-            Rectangle().fill(заливкаПанели)
-        } else if безПрозрачности {
-            Rectangle().fill(Token.Surface.card)
-        } else {
-            Rectangle().fill(.ultraThinMaterial)
-        }
-    }
+    // Поверхность панели (`Reduce Transparency` → сплошная, иначе
+    // `.ultraThinMaterial` по `togo-ios28.tokens.json`, `glass.swiftui`)
+    // переехала в `TGGlassPanel` 26.10.2026 вместе с радиусом: там же
+    // лежит токен, и там же названо, почему она не зовёт
+    // `.стекло(.плотное)` при том, что `TGGlass` объявляет эту плотность
+    // ровно для этой панели.
 
     /// Заливка панели у тех трёх тонов, что её красят.
     ///
