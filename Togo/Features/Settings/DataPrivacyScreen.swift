@@ -25,8 +25,27 @@ struct DataPrivacyScreen: View {
                 HStack(spacing: 0) {
                     TGStat(count: activeEvents.count,
                            сЧислом: String(localized: "\(activeEvents.count) записей"))
-                    TGStat(count: dogs.count,
-                           сЧислом: String(localized: "\(dogs.count) собак"))
+                    // **Показываемые, а не все** (замер 26.10.2026).
+                    //
+                    // Стояло `dogs.count`, и человек с одной собакой
+                    // читал «9 собак»: восемь пустых записей считались
+                    // наравне с живой. Кадр —
+                    // `Дизайн/кадры-приёмки/онбординг-26.10/контроль-данные-тот-же-пузырь-без-отмены.png`.
+                    //
+                    // Различитель, по которому это дефект, а не
+                    // решение: **сосед по ТОЙ ЖЕ строке уже фильтрует** —
+                    // рядом стоит `activeEvents`, а не все события.
+                    // У решения «показываем всё, что в базе» был бы
+                    // хозяин и довод, а здесь два счётчика одной
+                    // карточки отвечают на разные вопросы.
+                    //
+                    // Тот же класс чинили в `SettingsScreen.swift:336-341`
+                    // («ворота Pro считали безымянные наравне с собаками,
+                    // счётчик в заголовке врал по той же причине») —
+                    // **починили в одном месте и не перенесли
+                    // в соседнее.**
+                    TGStat(count: dogs.shownToPerson.count,
+                           сЧислом: String(localized: "\(dogs.shownToPerson.count) собак"))
                     TGStat(count: Diary.daysOfData(activeEvents),
                            сЧислом: String(localized: "\(Diary.daysOfData(activeEvents)) дней"))
                 }
