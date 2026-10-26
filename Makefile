@@ -39,9 +39,24 @@ texts: ## Пересобрать docs/TEXTS.md и каталог строк из
 
 .PHONY: loc-export
 loc-export: ## Выгрузить XLIFF для переводчика (build/loc/*.xcloc)
+# Языков в бандле ПЯТЬ, выгружается четыре: русский не выгружают — он
+# источник, ключ каталога и есть русская строка. Казахского здесь
+# не было до 26.10.2026, и это не косметика: `knownRegions` знал `kk`
+# с обеих сторон (`Tools/generate_project.py:313` и pbxproj:291),
+# сторож `языкиСходятся` был ЗЕЛЁН — он сверяет проект с каталогами
+# и про этот файл не знает вовсе. То есть язык охранялся, собирался
+# в бандл, набрал 3543 непроверенные строки — и отдать его носителю
+# стандартным путём было технически НЕЧЕМ.
+#
+# > Третья копия списка языков живёт в Makefile, и её не сверяет
+# > никто. Сторож на `knownRegions` гасился тем, что список, которым
+# > РАБОТАЮТ, лежит не там, где он смотрит.
+#
+# Добавляя язык в `generate_project.py`, добавлять и сюда.
 	@xcodebuild -project $(PROJECT) -exportLocalizations \
 		-localizationPath build/loc \
-		-exportLanguage en -exportLanguage fr -exportLanguage uk
+		-exportLanguage en -exportLanguage fr -exportLanguage uk \
+		-exportLanguage kk
 	@echo "Отдай переводчику папки в build/loc — они открываются в любом CAT-редакторе"
 
 .PHONY: loc-import
