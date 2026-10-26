@@ -71,7 +71,31 @@ nonisolated final class Янтарь: XCTestCase {
     /// с зелёным: цвет, которому нечего противопоставить, не читается
     /// как состояние.
     func testЯ2Занятие() {
-        app.buttons[т("Ещё")].firstMatch.tap()
+        // **ДВА РАЗНЫХ «Ещё», и тест жал не то** (правка 26.10.2026).
+        // В шапке «Ещё» открывает меню настроек; «Занятие» лежит
+        // во ВТОРОЙ шторке записи:
+        //
+        // ```
+        // «+» (низ-записать) → шторка «Записать» (TodayBottom)
+        //                      Инцидент · Стул · Еда · Ещё
+        //   строка «Ещё»     → шторка .more (TodayRouter)
+        //                      Лакомство · Занятие · Заметка · …
+        // ```
+        //
+        // Отказ звучал «кнопки занятия нет — кадра этого состояния
+        // не будет вовсе» и читался как дефект продукта.
+        let плюс = app.buttons["низ-записать"].firstMatch
+        guard плюс.waitForExistence(timeout: 15) else {
+            XCTFail("кнопки «Записать» нет — до занятия не дойти"); return
+        }
+        плюс.tap()
+        let ещё = app.buttons.containing(
+            NSPredicate(format: "label BEGINSWITH %@", т("Ещё"))
+        ).firstMatch
+        guard ещё.waitForExistence(timeout: 10) else {
+            XCTFail("в шторке «Записать» нет строки «Ещё»"); return
+        }
+        ещё.tap()
         let занятие = app.buttons.containing(
             NSPredicate(format: "label BEGINSWITH %@", т("Занятие"))
         ).firstMatch
