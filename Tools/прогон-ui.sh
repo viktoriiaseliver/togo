@@ -126,6 +126,24 @@ if [ -z "$UDID" ]; then
     # «staged migration» и третий день будет искать причину в коде.
     RUNTIME_IOS="${RUNTIME_IOS:-26.5}"
     RUNTIME="com.apple.CoreSimulator.SimRuntime.iOS-${RUNTIME_IOS//./-}"
+
+    # ТИП УСТРОЙСТВА — ПАРА К РАНТАЙМУ, а не отдельная настройка.
+    #
+    # Замер 26.10.2026: `RUNTIME_IOS=18.6` при прибитом `iPhone 17 Pro`
+    # даёт `Incompatible device` (code=403) — устройство НОВЕЕ системы,
+    # такой пары не существует. Переменная рантайма была, а
+    # воспользоваться ею было нельзя: тип оставался от 26.5.
+    #
+    # > **Потолок защищает от нового рантайма и тем же механизмом
+    # > запирает старый.** Условие привязано к тому, что стоит
+    # > на машине, а не к правилу; знак оно сменило в тот момент,
+    # > когда понадобилось мерить ВНИЗ, а не вверх.
+    #
+    # Поэтому тип задаётся РЯДОМ и по умолчанию соответствует
+    # умолчанию рантайма. Меняешь одно — проверь второе: «iPhone 17 Pro
+    # + 18.6» и «iPhone 16 Pro + 27.0» одинаково не заводятся,
+    # а отказ приходит до прогона и выглядит как поломка стенда.
+    DEVICE_TYPE="${DEVICE_TYPE:-com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro}"
     if ! xcrun simctl list runtimes available | grep -qF "$RUNTIME"; then
         cat >&2 <<KONEC
 
@@ -145,8 +163,44 @@ KONEC
         exit 9
     fi
     UDID="$(xcrun simctl create "$SIM_NAME" \
-        com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro "$RUNTIME")"
-    echo "создан:     $UDID (iOS $RUNTIME_IOS)"
+        "$DEVICE_TYPE" "$RUNTIME" 2>&1)"
+
+    # ОТКАЗ `simctl create` ПРИХОДИТ В ПЕРЕМЕННОЙ, А НЕ КОДОМ.
+    #
+    # Замер 26.10.2026: при несовместимой паре он печатает
+    # «Unable to create a device for device type: … runtime: …»
+    # НА МЕСТЕ UDID. Дальше этот текст уезжает в `simctl ui`,
+    # в `-destination` и в имя лога, и прогон отказывает три раза
+    # подряд, ни разу не назвав причину: «Invalid device: Unable
+    # to create…» читается как поломка стенда, а не как «такой пары
+    # не бывает».
+    #
+    # > **Отказ назвал сторону, которая отказала, и не назвал причину** —
+    # > наш первый пункт свода, пойманный на себе.
+    #
+    # Проверяется формой: UDID — это 36 символов UUID и ничего больше.
+    if ! printf '%s' "$UDID" | grep -qE '^[0-9A-F-]{36}$'; then
+        cat >&2 <<KONEC
+
+ЗАМЕР НЕ СОСТОЯЛСЯ: устройство «${SIM_NAME}» не завелось.
+
+Пара «тип + рантайм» несовместима либо тип не существует:
+  тип:     $DEVICE_TYPE
+  рантайм: iOS $RUNTIME_IOS
+
+simctl ответил вместо UDID:
+$UDID
+
+Тип устройства не может быть НОВЕЕ рантайма: «iPhone 17 Pro + 18.6»
+не бывает, как и «iPhone 16 Pro + 27.0». Назвать пару явно:
+  DEVICE_TYPE=com.apple.CoreSimulator.SimDeviceType.iPhone-16-Pro \\
+  RUNTIME_IOS=18.6 Tools/прогон-ui.sh <набор>
+
+Доступные типы: xcrun simctl list devicetypes
+KONEC
+        exit 9
+    fi
+    echo "создан:     $UDID (iOS $RUNTIME_IOS, $DEVICE_TYPE)"
 fi
 echo "udid:       $UDID"
 
