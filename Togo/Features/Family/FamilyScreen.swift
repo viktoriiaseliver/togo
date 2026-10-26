@@ -379,7 +379,7 @@ struct FamilyScreen: View {
             }
         }
         .padding(Token.Spacing.cardPadding)
-        .стекло(.плавающее, радиус: Token.Radius.card)
+        .стекло(радиус: Token.Radius.card)
     }
 
     /// «до 22:55 · пуши дозы приходят тебе».

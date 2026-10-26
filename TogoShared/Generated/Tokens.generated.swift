@@ -627,13 +627,11 @@ nonisolated enum Token {
         enum ReadingPanel {
             /// «с · до» 14 semibold.
             static let captionSize: CGFloat = 14
-            /// Стеклянная панель внутри, 24.
+            /// Стеклянная панель внутри, 24. ЕДИНСТВЕННЫЙ радиус этой группы с 26.10.2026: соседний `radius` (32, «панель целиком») удалён решением Виктории как объявление без читателей — ноль обращений вне прозы при живом контроле (этот токен, 1 читатель, `TGGlassPanel.swift`). Рисовать ему было нечему: блок лежит во всю ширину и рамки не имеет. Нужна ли панели своя внешняя рамка — вопрос к макету, а не к коду, и ответ на него заведёт токен заново.
             static let glassRadius: CGFloat = 24
             static let height: CGFloat = 360
             /// При крупном кегле.
             static let heightAX: CGFloat = 220
-            /// Панель целиком, 32.
-            static let radius: CGFloat = 32
             /// Показание 56, SF Pro Rounded 300.
             static let readingSize: CGFloat = 56
         }

@@ -97,7 +97,7 @@ struct КиноЭкран<Содержимое: View>: View {
             HeaderMenu(настройки: настройки)
                 .tint(Token.Poster.labelOnColor)
                 .foregroundStyle(Token.Poster.labelOnColor)
-                .стекло(.плавающее, радиус: Token.Size.tapTarget / 2)
+                .стекло(радиус: Token.Size.tapTarget / 2)
         }
         .padding(.trailing, Token.Spacing.screenPadding)
     }

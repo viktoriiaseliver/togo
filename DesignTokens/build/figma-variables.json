@@ -3424,7 +3424,7 @@
         {
           "name": "readingPanel/glassRadius",
           "type": "FLOAT",
-          "description": "Стеклянная панель внутри, 24.",
+          "description": "Стеклянная панель внутри, 24. ЕДИНСТВЕННЫЙ радиус этой группы с 26.10.2026: соседний `radius` (32, «панель целиком») удалён решением Виктории как объявление без читателей — ноль обращений вне прозы при живом контроле (этот токен, 1 читатель, `TGGlassPanel.swift`). Рисовать ему было нечему: блок лежит во всю ширину и рамки не имеет. Нужна ли панели своя внешняя рамка — вопрос к макету, а не к коду, и ответ на него заведёт токен заново.",
           "alias": "radius/card",
           "aliasCollection": "Primitive"
         },
@@ -3440,13 +3440,6 @@
           "type": "FLOAT",
           "description": "При крупном кегле.",
           "alias": "size/heroAX",
-          "aliasCollection": "Primitive"
-        },
-        {
-          "name": "readingPanel/radius",
-          "type": "FLOAT",
-          "description": "Панель целиком, 32.",
-          "alias": "radius/hero",
           "aliasCollection": "Primitive"
         },
         {

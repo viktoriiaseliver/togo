@@ -184,7 +184,7 @@ struct DogTab: View {
             кнопкаСнимка
         }
         .padding(Token.Spacing.cardPadding)
-        .стекло(.плавающее, радиус: Token.Radius.card)
+        .стекло(радиус: Token.Radius.card)
     }
 
     /// «шипперке · 3 года · 8,4 кг · чип есть» — дословно с кадра `09`.
