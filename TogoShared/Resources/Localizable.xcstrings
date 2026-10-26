@@ -1774,7 +1774,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%1$@ · %2$@ · %3$@ · %4$lld метров"
           }
         },
@@ -2060,7 +2060,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%1$@ · %2$lld м"
           }
         },
@@ -2166,7 +2166,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%1$@ · натощак %2$lld мин"
           }
         },
@@ -2333,7 +2333,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%1$@ %2$@"
           }
         }
@@ -2542,7 +2542,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%1$@ в %2$@ — натощак · видят все"
           }
         },
@@ -4223,7 +4223,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%1$@, %2$lld м"
           }
         },
@@ -4365,7 +4365,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%1$@: %2$lld %3$@ на месяц"
           }
         },
@@ -4579,7 +4579,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%1$@: спокойно %2$lld, лай %3$lld"
           }
         },
@@ -4767,7 +4767,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%1$lld %2$@ по %3$@"
           }
         },
@@ -5956,7 +5956,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%1$lld из %2$lld"
           }
         },
@@ -5990,7 +5990,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%1$lld из %2$lld в момент"
           }
         },
@@ -6024,7 +6024,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%1$lld из %2$lld закрыто"
           }
         },
@@ -6058,7 +6058,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%1$lld из %2$lld получается"
           }
         },
@@ -8106,7 +8106,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%1$lld со сдвигом · пропущено %2$lld"
           }
         },
@@ -16616,7 +16616,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "В среднем %1$lld г в день — на %2$lld%% больше нормы. Это не срочно, но за две недели складывается в лишний вес."
           }
         },
@@ -16650,7 +16650,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "В среднем %1$lld г в день — на %2$lld%% меньше нормы. Бодр и вес держится — не беда; вес падает — к врачу."
           }
         },
@@ -16712,7 +16712,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "В среднем %1$lld г в день при норме %2$lld г"
           }
         },
@@ -16747,7 +16747,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "В среднем %1$lld г в день при норме %2$lld г. Менять нечего."
           }
         },
@@ -29610,7 +29610,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Действий: %1$lld · записей: %2$lld · сеансов: %3$lld"
           }
         },
@@ -29817,7 +29817,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "день %1$lld из %2$lld"
           }
         },
@@ -33034,7 +33034,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Доза была %1$@ назад · %2$@"
           }
         },
@@ -50725,7 +50725,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "контроль через %1$lld–%2$lld нед."
           }
         },
@@ -54956,7 +54956,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Магазин дал %1$lld из %2$lld подписок. Показывать половину плана нечестно — покажем, когда придут обе."
           }
         },
@@ -65280,7 +65280,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Норма — %1$lld г в день, по кормам выходит %2$lld г. Так бывает: поправь или раскладку здесь, или саму норму на «Питании»."
           }
         },
@@ -65350,7 +65350,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "норма %1$@–%2$@"
           }
         },
@@ -65413,7 +65413,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Норма %1$lld грамм на %2$lld кормлений — %3$lld грамм за раз"
           }
         },
@@ -66578,7 +66578,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Нужно хотя бы %1$@ с записями — пока их %2$lld. Просто продолжай отмечать выходы."
           }
         },
@@ -67203,7 +67203,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Обычно выходите чаще · %1$@ из %2$lld за день"
           }
         },
@@ -69648,7 +69648,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "ось дозы — %1$@; наибольшая %2$@"
           }
         },
@@ -75481,7 +75481,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "переходит к %1$@ · %2$lld"
           }
         },
@@ -76084,7 +76084,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "план дня · осталось %1$lld из %2$lld"
           }
         },
@@ -76262,7 +76262,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "по %1$@, где она была с тобой дольше %2$lld часов"
           }
         },
@@ -80663,7 +80663,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Полных дней с записями: %1$lld, нужно хотя бы %2$lld — иначе среднее врёт. Продолжай отмечать еду, дальше приложение посчитает само."
           }
         },
@@ -80698,7 +80698,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Полных дней с записями: %1$lld. Нужно хотя бы %2$lld, иначе среднее врёт. Просто продолжай отмечать еду — считать приложение начнёт само."
           }
         },
@@ -82102,7 +82102,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Порог задаёт счёт, а не догадка: %1$lld эпизода за %2$lld часов. Приложение не ставит диагнозов — решение всегда за врачом."
           }
         },
@@ -83657,7 +83657,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "посчитано из веса %1$@ и порции %2$lld г"
           }
         },
@@ -93501,7 +93501,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Сведу в ту, что заведена %1$@, и перенесу в неё %2$lld записей. Ничего не удалится."
           }
         },
@@ -94775,7 +94775,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "сегодня %1$lld из %2$lld"
           }
         },
@@ -97079,7 +97079,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Следующая по схеме — в %1$@, через %2$@. Схема не сдвигается."
           }
         },
@@ -97113,7 +97113,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Следующая по схеме — в %1$@, через %2$@. Это ближе обычного: схема не сдвигается."
           }
         },
@@ -100421,7 +100421,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "спокойно %1$lld · лай %2$lld"
           }
         },
@@ -112127,7 +112127,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Файл сделан %1$@, внутри: %2$@."
           }
         },
@@ -114725,7 +114725,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Через %1$@ доза · %2$@"
           }
         },
