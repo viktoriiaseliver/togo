@@ -75,7 +75,7 @@ struct UsageLogScreen: View {
             Text("\(Fmt.days(report.days)) пользования")
                 .textStyle(AppFont.caption)
             TGDivider()
-            HStack(spacing: 0) {
+            РядЧисел {
                 TGStat(count: report.total,
                        сЧислом: String(localized: "\(report.total) действий"))
                 TGStat(count: report.records,

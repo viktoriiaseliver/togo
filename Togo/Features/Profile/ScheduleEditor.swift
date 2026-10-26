@@ -308,6 +308,9 @@ struct ScheduleEditor: View {
     private var rhythmRow: some View {
         let plan = draft.effectivePlan
         if plan.times.count > 1 {
+            // Два числа, не три — см. оговорку у `SkillAttemptSheet`.
+            // Подписи здесь самые длинные из двойных рядов («днём между
+            // едой»), так что если двойные ряды и мерить, то с этого.
             HStack(spacing: 0) {
                 TGStat(value: plan.dayInterval.map { Fmt.duration(Double($0) * 60) } ?? "—",
                        caption: "днём между едой", size: 17)

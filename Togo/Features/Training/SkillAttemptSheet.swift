@@ -28,6 +28,11 @@ struct SkillAttemptSheet: View {
     var body: some View {
         TGSheet(title: .готовая(skill.title), subtitle: .готовая(skill.detail)) {
             TGCard {
+                // Ряд из ДВУХ чисел, и `РядЧисел` здесь нарочно НЕ стоит:
+                // `FeedingScreen:300` исключил двойные ряды из правила
+                // словами «рядов из двух чисел это не касается»,
+                // и замера под ними нет ни одного. Два числа делят
+                // ширину пополам, а не на три — предмет другой.
                 HStack(spacing: 0) {
                     TGStat(value: "\(skill.successes)", caption: "получилось")
                     TGStat(count: skill.attempts,

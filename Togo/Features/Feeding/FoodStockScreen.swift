@@ -428,7 +428,7 @@ struct FoodStockEditorSheet: View {
                                     packsLeft: packsLeft, gramsPerDay: gramsPerDay)
             if let days = preview.daysLeft() {
                 TGDivider()
-                HStack(spacing: 0) {
+                РядЧисел {
                     TGStat(value: Fmt.days(days), caption: "хватит на", size: 17)
                     TGStat(value: preview.runsOutOn().map(Fmt.shortDay) ?? "—",
                            caption: "кончится", size: 17)

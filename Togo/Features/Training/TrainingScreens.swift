@@ -35,7 +35,7 @@ struct SessionSummarySheet: View {
                 Text(verdictLine).textStyle(AppFont.caption)
             }
             TGDivider()
-            HStack(spacing: 0) {
+            РядЧисел {
                 TGStat(value: "\(session.onTimeMarks) из \(session.markDelaysMs.count)", caption: "маркер в момент")
                 TGStat(value: "\(session.averageDelayMs) мс", caption: "средняя задержка")
                 TGStat(value: "\(session.gramsUsed) г", caption: "ушло из порции")

@@ -777,7 +777,7 @@ struct WalkSummarySheet: View {
 
     private var statsCard: some View {
         TGCard {
-            HStack(spacing: 0) {
+            РядЧисел {
                 TGStat(value: Fmt.duration(session.duration()), caption: "в пути", size: 20)
                 TGStat(count: session.count(of: .urine),
                        сЧислом: String(localized: "\(session.count(of: .urine)) раз пописал"),

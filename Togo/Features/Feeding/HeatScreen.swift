@@ -71,7 +71,7 @@ struct HeatScreen: View {
     private var forecastCard: some View {
         TGCard {
             TGSectionHeader(title: "следующая")
-            HStack(spacing: 0) {
+            РядЧисел {
                 TGStat(value: forecast.expectedNext.map(Fmt.shortDay) ?? "—",
                        caption: "ждём примерно", size: 20)
                 TGStat(value: forecast.daysUntilNext.map { $0 > 0 ? "\($0)" : "—" } ?? "—",

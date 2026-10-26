@@ -118,6 +118,8 @@ struct DayOutSummarySheet: View {
                 subtitle: .готовая(Fmt.duration(day.duration())),
                 hasUnsavedChanges: !note.isEmpty) {
             TGCard {
+                // Два числа, не три — см. оговорку у `SkillAttemptSheet`:
+                // двойные ряды из правила исключены и не померены.
                 HStack(spacing: 0) {
                     TGStat(value: Fmt.gap(day.duration()), caption: "на ногах", size: 20)
                     TGStat(value: String(localized: "\(day.plannedHours) часов"),

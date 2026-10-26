@@ -21,7 +21,7 @@ struct TodaySummaryStrip: View {
 
     var body: some View {
         TGCard {
-            HStack(alignment: .top, spacing: 0) {
+            РядЧисел(выравнивание: .top) {
                 TGStat(value: "\(summary.eatenGrams) г",
                        caption: summary.dailyGrams > 0 ? "из \(summary.dailyGrams) съел" : "съел")
                 // «С прогулки» отсюда убрано: на этот вопрос отвечает

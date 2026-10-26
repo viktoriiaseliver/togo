@@ -53,6 +53,10 @@ struct ComponentGallery: View {
                         TGStat(value: "60 г", caption: "съел")
                         TGStat(value: "190 мл", caption: "выпил")
                         TGStat(value: "2", caption: "выхода")
+                        // Витрина нарочно оставлена строкой: она
+                        // показывает сам `TGStat`, а ось раскладки
+                        // показывать нечем — галерея снимается
+                        // на обычном кегле.
                     }
                     TGDivider()
                     HStack(spacing: Token.Space.s12) {

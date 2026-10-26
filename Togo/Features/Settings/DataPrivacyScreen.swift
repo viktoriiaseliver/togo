@@ -22,7 +22,7 @@ struct DataPrivacyScreen: View {
                 Text("Аккаунта нет, серверов у нас нет. Записи хранятся в базе приложения и в общем хранилище с виджетами.")
                     .textStyle(AppFont.caption)
                 TGDivider()
-                HStack(spacing: 0) {
+                РядЧисел {
                     TGStat(count: activeEvents.count,
                            сЧислом: String(localized: "\(activeEvents.count) записей"))
                     // **Показываемые, а не все** (замер 26.10.2026).
