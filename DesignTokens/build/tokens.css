@@ -103,7 +103,6 @@
   --component-readingTone-alarm-primaryButton: #D52519;
   --component-readingTone-dose-chip: #1F4FFF;
   --component-readingTone-dose-chipLabel: #F4F4F2;
-  --component-readingTone-dose-fg: #F4F4F2;
   --component-readingTone-dose-panel: #1F4FFFEB;
   --component-readingTone-dose-primaryButton: #1F4FFF;
   --component-readingTone-fasting-caption: #5A4300;
@@ -403,7 +402,6 @@
   --component-readingTone-alarm-chipLabel: #FFFFFF;
   --component-readingTone-alarm-fg: #FFFFFF;
   --component-readingTone-dose-chipLabel: #FFFFFF;
-  --component-readingTone-dose-fg: #FFFFFF;
   --component-readingTone-night-fg: #101112;
   --component-readingTone-night-panel: #FFFFFFDB;
   --component-readingTone-normal-chip: #1F4FFF;
@@ -619,7 +617,6 @@
   --component-readingTone-alarm-fg: #FFFFFF;
   --component-readingTone-dose-chip: #0E14A1;
   --component-readingTone-dose-chipLabel: #FFFFFF;
-  --component-readingTone-dose-fg: #FFFFFF;
   --component-readingTone-dose-primaryButton: #0E14A1;
   --component-readingTone-fasting-panel: #FFC233;
   --component-readingTone-night-fg: #101112;

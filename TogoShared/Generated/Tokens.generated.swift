@@ -267,7 +267,7 @@ nonisolated enum Token {
         static let labelOnAlarmTone = Color(hex: 0xFFFFFFFF)
         /// Заголовок плаката на ЦВЕТНОМ блоке: обычный, тревожный, натощак.
         static let labelOnColor = Общие.posterInk
-        /// Показание на плакате дозы. Было `arcticInk`, который стал #111111 — чёрная подпись на индиго нечитаема. `readingTone.dose.fg` = #FFFFFF, и `posterInk` ровно эта роль: текст НА ЦВЕТНОМ блоке. Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`. 
+        /// Показание на плакате дозы. Было `arcticInk`, который стал #111111 — чёрная подпись на индиго нечитаема. `posterInk` — ровно эта роль: текст НА ЦВЕТНОМ блоке. Решение Виктории 22.10.2026: тема «Кино» заменяет Graphite. Источник — `design_handoff_togo_ios28/tokens/togo-ios28.tokens.json`. ЗДЕСЬ СТОЯЛА ССЫЛКА «`readingTone.dose.fg` = #FFFFFF», и она УБРАНА 26.10.2026 вместе с самим путём: путь был мёртвым (ноль обращений вне прозы) и держал posterInk #F4F4F2, а не #FFFFFF — то есть ссылка называла значение ДИЗАЙНА, а не наше, и читалась как подтверждение. Показание на ПАНЕЛИ дозы красит `semantic.poster.labelOnDoseTone` (#FFFFFF); этот токен — роль ПЛАКАТА, его читают `TGPoster` и нижняя кнопка «Сегодня», и трогать его нельзя.
         static let labelOnDose = Общие.posterInk
         /// ПОКАЗАНИЕ на панели дозы. Роль ПАНЕЛИ, а не плаката: `labelOnDose` трогать нельзя — её читают `TGPoster` и нижняя кнопка «Сегодня». Та же развилка, что Виктория уже прошла с подписями, заведя `captionOnDoseTone` отдельно от `captionOnDose`.
         static let labelOnDoseTone = Color(hex: 0xFFFFFFFF)
@@ -648,9 +648,8 @@ nonisolated enum Token {
             }
             enum Dose {
                 static let chip = Общие.indigo
-                /// Подпись на чипе тона. ВЫВЕДЕНО из цвета показания того же тона (`fg`): своих значений для подписи чипа хендофф не даёт. Кадр 02 подтверждает только час дозы — белым по индиго. Замер по кадрам второго пакета 22.10.2026: `~/Downloads/design_handoff_togo_ios28 2/screenshots/01.png` (обычный день) и `02.png` (час дозы), 424×896. Прочитано глазами, не из описания.
+                /// Подпись на чипе тона. ВЫВЕДЕНО из цвета показания того же тона — прежде это был сосед `fg`, УДАЛЁННЫЙ 26.10.2026 решением Виктории как мёртвый путь (он давал posterInk #F4F4F2 против #FFFFFF, которым показание красят на самом деле; экран берёт `semantic.poster.labelOnDoseTone`). Значение подписи чипа этим не тронуто: своих значений для подписи чипа хендофф не даёт, и оснований менять его у исполнителя нет. Кадр 02 подтверждает только час дозы — белым по индиго. Замер по кадрам второго пакета 22.10.2026: `~/Downloads/design_handoff_togo_ios28 2/screenshots/01.png` (обычный день) и `02.png` (час дозы), 424×896. Прочитано глазами, не из описания.
                 static let chipLabel = Общие.posterInk
-                static let fg = Общие.posterInk
                 static let panel = Общие.toneDosePanel
                 /// ЕДИНСТВЕННОЕ МЕСТО, ГДЕ ГЛАВНАЯ КНОПКА НЕ БЕЛАЯ: в час дозы она индиговая (`readingTone.dose.primaryButton` = #1F4FFF).
                 static let primaryButton = Общие.indigo
