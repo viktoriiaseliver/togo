@@ -9,6 +9,9 @@ struct HeatScreen: View {
 
     @Environment(\.modelContext) private var context
     @Environment(AppState.self) private var appState
+    /// От настройки размера текста зависит, строкой или столбцом
+    /// раскладывать строку истории и ряд чисел прогноза.
+    @Environment(\.dynamicTypeSize) private var размерТекста
 
     @Query(sort: \HeatRecord.startedAt, order: .reverse) private var allRecords: [HeatRecord]
 
@@ -91,26 +94,82 @@ struct HeatScreen: View {
             TGSectionHeader(title: "было")
             ForEach(records) { record in
                 Button { if canEdit { editing = record } } label: {
-                    HStack {
-                        VStack(alignment: .leading, spacing: Token.Space.s2) {
-                            Text(Fmt.shortDay(record.startedAt)).textStyle(AppFont.bodyEmphasis)
-                            Text(record.isOngoing
-                                 ? "идёт, день \(record.dayNumber())"
-                                 : record.dayCount().map { Fmt.days($0) } ?? "")
-                                .textStyle(AppFont.caption)
-                        }
-                        Spacer(minLength: Token.Space.s8)
-                        if let note = record.note, !note.isEmpty {
-                            Text(note)
-                                .textStyle(AppFont.caption)
-                                .lineLimit(1)
-                        }
-                    }
-                    .frame(minHeight: Token.Size.tapTarget)
-                    .contentShape(Rectangle())
+                    строкаИстории(record)
                 }
                 .buttonStyle(.plain)
                 if record.id != records.last?.id { TGDivider() }
+            }
+        }
+    }
+
+    /// Строка истории: дата с длительностью слева, заметка человека справа.
+    ///
+    /// **Заметка — свободный текст, и вход у него живой:**
+    /// `TextField("что-то заметила", text: $note)` ниже в этом же файле
+    /// (`HeatEditorSheet`), сохраняется в `target.note`. То есть длину
+    /// задаёт человек, а не мы, и расчёта «влезет» тут быть не может.
+    ///
+    /// Стояло `lineLimit(1)` без `minimumScaleFactor`, то есть заметка
+    /// рубилась в многоточие. На доступных размерах левая колонка
+    /// забирает почти всю ширину, и от заметки оставалось одно
+    /// многоточие — это уже не читаемость, а потеря: человек не видит
+    /// даже, что заметка есть.
+    @ViewBuilder
+    private func строкаИстории(_ record: HeatRecord) -> some View {
+        // Раскладка явным `if`, не `ViewThatFits`: он запрещён красной
+        // линией проекта — держит в дереве обе ветки, и озвучка находит
+        // по два элемента на один орган.
+        Group {
+            if размерТекста.isAccessibilitySize {
+                // Столбцом: заметке достаётся вся ширина, и она
+                // переносится по словам вместо многоточия.
+                VStack(alignment: .leading, spacing: Token.Space.s4) {
+                    датаСДлительностью(record)
+                    заметка(record, своейСтрокой: true)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            } else {
+                HStack {
+                    датаСДлительностью(record)
+                    Spacer(minLength: Token.Space.s8)
+                    заметка(record, своейСтрокой: false)
+                }
+            }
+        }
+        .frame(minHeight: Token.Size.tapTarget)
+        .contentShape(Rectangle())
+    }
+
+    /// Дети у обеих раскладок — одни и те же вызовы. Разойдись они,
+    /// и ветка, которую реже видят, отстанет молча.
+    private func датаСДлительностью(_ record: HeatRecord) -> some View {
+        VStack(alignment: .leading, spacing: Token.Space.s2) {
+            Text(Fmt.shortDay(record.startedAt)).textStyle(AppFont.bodyEmphasis)
+            Text(record.isOngoing
+                 ? "идёт, день \(record.dayNumber())"
+                 : record.dayCount().map { Fmt.days($0) } ?? "")
+                .textStyle(AppFont.caption)
+        }
+    }
+
+    @ViewBuilder
+    private func заметка(_ record: HeatRecord, своейСтрокой: Bool) -> some View {
+        if let note = record.note, !note.isEmpty {
+            // `Text(note)` с переменной типа `String` берёт дословную
+            // перегрузку и в каталог не уезжает — это данные человека,
+            // и так и надо.
+            if своейСтрокой {
+                Text(note).textStyle(AppFont.caption).wraps()
+            } else {
+                // Одна строка на обычных размерах — чтобы вид не поехал.
+                // `minimumScaleFactor` при достатке места не делает
+                // ничего, а в тесноте показывает больше слов прежде
+                // многоточия. Полная заметка достаётся нажатием:
+                // строка открывает `HeatEditorSheet`.
+                Text(note)
+                    .textStyle(AppFont.caption)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
             }
         }
     }

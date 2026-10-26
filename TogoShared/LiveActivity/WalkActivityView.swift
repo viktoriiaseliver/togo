@@ -275,14 +275,28 @@ public struct WalkActivityView: View {
             HStack(spacing: Token.Space.s12) {
                 жетон
                 VStack(alignment: .leading, spacing: Token.Space.s2) {
+                    // **Обе подписи собраны из КЛИЧКИ и ИМЕНИ человека**
+                    // (`заголовок` выше: «Виктория вывела Стича»), то
+                    // есть длину задаёт человек, а не макет. Плюс строка
+                    // едет на пяти языках, и казахский с украинским
+                    // в ряде слов длиннее русского. Стояло `lineLimit(1)`
+                    // без ужатия — кличка рубилась в многоточие, а имя
+                    // с многоточием читается как другое имя.
+                    //
+                    // Довод рядом (у таймера ниже) был сделан про число
+                    // и к именам не применён: «Обрезанное время читается
+                    // как другое число, а ужатое — как то же самое».
+                    // У имён это верно ровно так же.
                     Text(заголовок)
                         .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(Token.Ink.primary)
                         .lineLimit(1)
+                        .minimumScaleFactor(0.8)
                     Text(подпись)
                         .font(.system(size: 13))
                         .foregroundStyle(Token.Ink.secondary)
                         .lineLimit(1)
+                        .minimumScaleFactor(0.8)
                 }
                 Spacer(minLength: Token.Space.s8)
                 // **Таймер ужимается, а не обрезается.** Прогулка

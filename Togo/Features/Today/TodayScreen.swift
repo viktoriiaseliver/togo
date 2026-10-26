@@ -1074,6 +1074,13 @@ struct TodayScreen: View {
                 Text(подписьСостояния(второе))
                     .textStyle(AppFont.caption, color: Token.Ink.secondary)
                     .lineLimit(1)
+                    // Эта строка — единственное, что остаётся
+                    // от показания, когда шапка уехала наверх:
+                    // обрезать её в многоточие значит отнять
+                    // «дальше» вовсе. При достатке места
+                    // `minimumScaleFactor` не делает ничего, то есть
+                    // вид на обычном кегле не меняется.
+                    .minimumScaleFactor(0.7)
             }
             Spacer(minLength: Token.Space.s8)
         }
