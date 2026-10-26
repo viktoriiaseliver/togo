@@ -365,11 +365,22 @@ struct DogEditorScreen: View {
         guard let dog else { return }
         let былВыбран = appState.activeDogID
         if appState.activeDogID == dog.id { appState.activeDogID = nil }
-        context.delete(dog)
+        // Надгробие вместо `context.delete`. Каскад при этом НЕ ходит,
+        // и это решение: надгробие на собаке значит «этой собаки у нас
+        // нет», а не «сотрите её историю у второго человека». Жёсткое
+        // удаление уносило ленту, веса, дела, схемы и медкнижку —
+        // у себя, и молча ничего не говорило второму телефону.
+        let откатНадгробия = ОбщееУдаление.удалить(dog)
         // Снятый выбор возвращаем: иначе при неудавшемся удалении собака
         // осталась бы в дневнике, но перестала быть открытой — и человек
-        // решил бы, что удаление прошло.
-        guard context.persist(otherwise: { appState.activeDogID = былВыбран }) else {
+        // решил бы, что удаление прошло. Надгробие возвращаем по той же
+        // причине, и она стала сильнее: фильтры показа читают ПОЛЕ,
+        // а не базу, так что незаписанное надгробие убрало бы собаку
+        // с экрана при отказе сохранения — отказ выглядел бы успехом.
+        guard context.persist(otherwise: {
+            appState.activeDogID = былВыбран
+            откатНадгробия()
+        }) else {
             Haptics.warning()
             appState.showFailure("Не удалилось · нажми ещё раз")
             return
@@ -544,7 +555,16 @@ struct CareTaskEditorSheet: View {
         .task { load() }
         .confirmationDialog("Удалить «\(title)»?", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
             Button("Удалить", role: .destructive) {
-                if let task { context.delete(task) }
+                // Надгробие вместо `context.delete`: иначе у второго
+                // человека дело остаётся, и «план дня» у двоих разный.
+                if let task {
+                    let откат = ОбщееУдаление.удалить(task)
+                    guard context.persist(otherwise: откат) else {
+                        Haptics.warning()
+                        appState.showFailure("Не удалилось · нажми ещё раз")
+                        return
+                    }
+                }
                 Haptics.warning()
                 dismiss()
             }
@@ -656,10 +676,40 @@ struct MedicationEditorSheet: View {
 
     @State private var name = ""
     @State private var doseText = ""
-    @State private var times: [Int] = [7 * 60]
+    /// Часы приёма И количество на каждый час — **одним массивом,
+    /// а не двумя**.
+    ///
+    /// Здесь раньше жил `times: [Int]`, и количество ввести было нечем:
+    /// `Medication.doseSlotsData` не писал ни один экран (замер
+    /// 26.10.2026), хотя читателей у него двое и оба живые —
+    /// `dailyUse` (запас на экране «Здоровье») и `quantity(at:)`
+    /// (списание с отметки приёма в `DoseScheduler.markGiven`).
+    /// Без ввода «½ утром, 1 вечером» оба считали по единице за приём,
+    /// то есть расход вдвое больше настоящего, и запас кончался
+    /// на бумаге раньше, чем в пачке.
+    ///
+    /// Второй массив рядом с `times` завести нельзя, и причина записана
+    /// в самой модели: два параллельных массива разъезжаются длинами
+    /// молча, и тогда половина таблетки приземляется на чужой час.
+    /// У `DoseSlot` разъезжаться нечем — час и количество в одной
+    /// записи. Правило взято там же, где оно уже записано, а не
+    /// придумано здесь заново.
+    @State private var слоты: [DoseSlot] = [DoseSlot(minuteOfDay: 7 * 60, quantity: 1)]
+    @State private var единица: MedUnit = .tab
     @State private var fastingMinutes = 0
     @State private var fastingBeforeMinutes = 0
     @State private var prescriber = ""
+    @State private var номерНазначения = ""
+    /// Сроки — каждый со своим «указан ли». `nil` в модели значит
+    /// «не введено», и тумблер — единственный способ отличить его
+    /// от сегодняшней даты, которую `DatePicker` подставит сам.
+    @State private var естьКурсДо = false
+    @State private var курсДо = Date()
+    @State private var естьСрокГодности = false
+    @State private var срокГодности = Date()
+    @State private var вскрыт = false
+    @State private var когдаВскрыли = Date()
+    @State private var годенПослеВскрытияДней = 0
     /// Масса вещества в одной единице формы. Вводится ЧИСЛОМ и ЕДИНИЦЕЙ,
     /// хранится всегда в микрограммах — перевод случается здесь и больше
     /// нигде.
@@ -679,21 +729,102 @@ struct MedicationEditorSheet: View {
             title: isNew ? "Новый препарат" : .готовая(name),
             subtitle: "доза по часам — одна из трёх вещей, которым можно прерывать человека",
             closeTitle: isNew ? "Отмена" : "Закрыть",
-            hasUnsavedChanges: isNew && !(name + doseText + prescriber)
+            hasUnsavedChanges: isNew && !(name + doseText + prescriber + номерНазначения)
                 .trimmingCharacters(in: .whitespaces).isEmpty
         ) {
+            // **`LabeledField.label` — это `String`, а не
+            // `LocalizedStringKey`, и внутри он рисуется `Text(label)`:
+            // переменная типа `String` в `LocalizedStringKey`
+            // не превращается, поэтому берётся дословная перегрузка
+            // и подпись НЕ ПЕРЕВОДИТСЯ ВОВСЕ** (замер 26.10.2026).
+            //
+            // Ключи «Название», «Доза», «Назначил» в каталоге есть
+            // по одному вхождению каждый — но попали они туда
+            // не отсюда: единственное место, где подпись обёрнута
+            // правильно, это `ClinicScreens.swift:244`
+            // (`String(localized: "Название")`). Здесь и
+            // в `DocumentPhotos.swift:606` стоял голый литерал.
+            //
+            // > **Сторож локализации мерил прокси, а не предмет.** Он
+            // > спрашивает «переведён ли ключ», и был зелёным по всем
+            // > пяти языкам; «показывается ли перевод» он не спрашивает
+            // > нигде. Француз на медицинской форме читал три подписи
+            // > по-русски при готовом французском в каталоге.
+            //
+            // Новых строк это не стоит: все три ключа уже переведены
+            // на пять языков. Форма взята у единственного верного
+            // места, а не придумана здесь.
             TGCard(spacing: 0) {
-                LabeledField(label: "Название") {
+                LabeledField(label: String(localized: "Название")) {
                     TextField("Lévothyrox", text: $name)
                 }
                 TGDivider()
-                LabeledField(label: "Доза") {
+                LabeledField(label: String(localized: "Доза")) {
                     TextField("доза с единицей", text: $doseText)
                 }
                 TGDivider()
-                LabeledField(label: "Назначил") {
+                LabeledField(label: String(localized: "Назначил")) {
                     TextField("врач или клиника", text: $prescriber)
                 }
+                TGDivider()
+                // Писатель для `Medication.prescriptionNumber`. Поле есть
+                // с шага 0 медицинского слоя, ездит в обмене и в архиве,
+                // и писали его только прогрев схемы CloudKit, засев
+                // и галерея макетов — **человеческого писателя не было
+                // ни одного** (замер 26.10.2026).
+                //
+                // Стоит ПОД «Назначил» нарочно: обе строки человек
+                // списывает с одного бланка, и спрашивать их в разных
+                // местах формы значит заставить искать бланк дважды.
+                //
+                // Клавиатура обычная, не цифровая: в номере бывают
+                // косая черта и ведущий ноль («2026/0417», «№ 07350»),
+                // и `.numberPad` их бы не дал. Ведущий ноль значащий —
+                // ровно поэтому поле строковое, а не числовое.
+                // Обёрнуто `String(localized:)` по той же причине, что
+                // три подписи выше: иначе ключа не было бы даже
+                // в каталоге — голый литерал в параметре типа `String`
+                // извлечение Xcode не видит, и строка не уехала бы
+                // носителю вовсе.
+                LabeledField(label: String(localized: "Номер назначения")) {
+                    TextField("с бланка, если есть", text: $номерНазначения)
+                        .autocorrectionDisabled()
+                }
+            }
+
+            // Писатель для `Medication.unitRaw` (`Care.swift:253`).
+            //
+            // **Сеттер `unit` существовал, из интерфейса не звался ни
+            // разу** (замер 26.10.2026): писали только засев и прогрев.
+            // Единица формы — не украшение: «осталось 7» без неё ничего
+            // не значит, потому что семь таблеток это неделя, а семь
+            // миллилитров — один приём.
+            //
+            // Здесь она нужна сразу и по делу: от неё зависит шаг
+            // количества в расписании ниже (`MedUnit.allowsHalves`) —
+            // таблетку делят, миллилитр мера сам по себе. То есть поле
+            // читается в этой же форме, а не только уезжает в базу.
+            //
+            // **Чего эта правка НЕ делает.** Экран «Здоровье» и шторка
+            // запаса печатают «таблеток» литералом
+            // (`HealthScreen:355`, `PillSupplyScreen:79`) и показывают
+            // остаток голым числом (`HealthScreen:374`). Единицу они
+            // теперь могут спросить у схемы, но файлы держит другая
+            // сессия — названо вслух и отдано менеджеру.
+            TGCard {
+                TGSectionHeader(title: "в чём меряется")
+                // Подпись озвучке — ТОТ ЖЕ ключ, что у заголовка
+                // раздела, и это не экономия на букве: новая строка
+                // здесь стоит пяти переводов, а сказать озвучке нужно
+                // ровно то же, что видит глаз.
+                Picker("в чём меряется", selection: $единица) {
+                    ForEach(MedUnit.allCases, id: \.self) {
+                        Text(verbatim: $0.title).tag($0)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .frame(minHeight: Token.Size.tapTarget)
+                TGExplainer(text: "От этого зависит счёт запаса и можно ли делить дозу пополам.")
             }
 
             TGCard {
@@ -727,38 +858,21 @@ struct MedicationEditorSheet: View {
 
             TGCard {
                 TGSectionHeader(title: "во сколько давать")
-                ForEach(times.indices, id: \.self) { index in
-                    HStack {
-                        Picker("Час", selection: Binding(
-                            get: { times[index] / 60 },
-                            set: { times[index] = $0 * 60 + times[index] % 60 }
-                        )) {
-                            ForEach(0...23, id: \.self) { Text(String(format: "%02d", $0)).tag($0) }
-                        }
-                        .pickerStyle(.menu)
-                        Picker("Минуты", selection: Binding(
-                            get: { times[index] % 60 },
-                            set: { times[index] = (times[index] / 60) * 60 + $0 }
-                        )) {
-                            ForEach([0, 15, 30, 45], id: \.self) { Text(String(format: "%02d", $0)).tag($0) }
-                        }
-                        .pickerStyle(.menu)
-                        Spacer()
-                        if times.count > 1 {
-                            Button {
-                                times.remove(at: index)
-                            } label: {
-                                Image(systemName: "minus.circle")
-                                    .foregroundStyle(Token.Status.overdueText)
-                            }
-                            .accessibilityLabel("Убрать время")
-                        }
-                    }
-                    .frame(minHeight: Token.Size.tapTarget)
+                ForEach(слоты.indices, id: \.self) { index in
+                    слотРяд(index)
+                    if index < слоты.count - 1 { TGDivider() }
                 }
                 TGButton(title: "Добавить время", variant: .secondary, size: .medium, systemImage: "plus") {
-                    times.append(19 * 60)
+                    слоты.append(DoseSlot(minuteOfDay: 19 * 60, quantity: 1))
                 }
+                // Говорит ровно то, что считает код: расход берётся
+                // суммой количеств (`Medication.dailyUse`), и запас
+                // на экране «Здоровье» вычитает столько, сколько дали
+                // (`DoseScheduler.markGiven` через `quantity(at:)`).
+                // Полтаблетки дважды в день — это одна таблетка в сутки,
+                // а не две; до появления этого ввода счёт всегда считал
+                // по две.
+                TGExplainer(text: "Полтаблетки утром и целая вечером — обычное назначение. От этих чисел считается запас: приложение вычитает ровно столько, сколько дали.")
             }
 
             TGCard {
@@ -822,6 +936,90 @@ struct MedicationEditorSheet: View {
                 TGExplainer(text: "Включи, если носишь эту дозу с собой. Тогда в режиме прогулки появится «Дал» — и отметка не потеряется до дома. Не включай, если дозу дают только дома: приложение не станет предлагать.")
             }
 
+            // Писатели для `courseEnd`, `expiry`, `openedAt`
+            // и `shelfAfterOpenDays` — четырёх полей, у которых
+            // человеческого писателя не было ни одного (замер
+            // 26.10.2026; писали прогрев CloudKit, засев и откат архива).
+            //
+            // **`courseEnd` из этих четырёх дороже остальных: показ
+            // у него готов и ждал только ввода.** `PillSupply
+            // .shortfallDays` считает нехватку на курс, `courseEndsFirst`
+            // решает, что сказать человеку, и оба читает экран
+            // «Здоровье» (`:331`, `:343`) и шторка запаса (`:40`).
+            // В самой модели это записано с 05.10.2026: «строка „курс
+            // идёт до такого-то, не хватит столько-то" не показывалась
+            // никому ни разу». Через три недели она всё ещё
+            // не показывалась — не хватало ровно этих двух строк ввода.
+            //
+            // > **Механизм без входа не «почти работает» — он
+            // > не работает**, и отличить его от рабочего нельзя
+            // > ни тестом, ни компилятором: тесты передают дату
+            // > аргументом сами.
+            //
+            // Про `remindBeforeExpiry` здесь НЕТ переключателя,
+            // и это решение с доводом, а не пропуск. Разбор — в докладе
+            // и ниже у `save()`.
+            TGCard {
+                TGSectionHeader(title: "сроки")
+
+                Toggle(isOn: $естьКурсДо) {
+                    Text("Курс идёт до определённого числа").textStyle(AppFont.body)
+                }
+                .frame(minHeight: Token.Size.tapTarget)
+                if естьКурсДо {
+                    DatePicker("Курс до", selection: $курсДо, displayedComponents: .date)
+                        .textStyle(AppFont.body)
+                        .frame(minHeight: Token.Size.tapTarget)
+                }
+                TGExplainer(text: "Зная последний день, приложение скажет заранее, что таблеток до конца курса не хватит.")
+
+                TGDivider()
+                Toggle(isOn: $естьСрокГодности) {
+                    Text("Срок годности указан").textStyle(AppFont.body)
+                }
+                .frame(minHeight: Token.Size.tapTarget)
+                if естьСрокГодности {
+                    // День в сроке годности лекарств не печатают —
+                    // на упаковке месяц и год. Храним конец месяца
+                    // (`save()`), а спрашиваем датой: отдельного
+                    // выбора «месяц и год» в SwiftUI нет, а свой
+                    // здесь был бы третьим способом вводить дату
+                    // в одной форме.
+                    DatePicker("Годен до", selection: $срокГодности, displayedComponents: .date)
+                        .textStyle(AppFont.body)
+                        .frame(minHeight: Token.Size.tapTarget)
+                }
+
+                TGDivider()
+                Toggle(isOn: $вскрыт) {
+                    Text("Флакон вскрыт").textStyle(AppFont.body)
+                }
+                .frame(minHeight: Token.Size.tapTarget)
+                if вскрыт {
+                    DatePicker("Когда вскрыли", selection: $когдаВскрыли, displayedComponents: .date)
+                        .textStyle(AppFont.body)
+                        .frame(minHeight: Token.Size.tapTarget)
+                    Stepper(value: $годенПослеВскрытияДней, in: 0...365, step: 1) {
+                        HStack {
+                            Text("Годен после вскрытия").textStyle(AppFont.body)
+                            Spacer()
+                            Text(годенПослеВскрытияДней == 0
+                                 ? String(localized: "не указан")
+                                 : Fmt.days(годенПослеВскрытияДней))
+                                .textStyle(AppFont.numeric(15))
+                        }
+                    }
+                    .frame(minHeight: Token.Size.tapTarget)
+                }
+                // Правило словами, а не вторым вычислением: минимум
+                // из двух сроков считает `Medication.goodUntil()`,
+                // и повторять его здесь значило бы завести вторую
+                // копию — а две копии расходятся молча. Человеку
+                // нужно знать правило, чтобы понимать, почему
+                // приложение потом назовёт именно эту дату.
+                TGExplainer(text: "Из двух сроков действует ближний: вскрытый флакон портится раньше, чем кончается срок на упаковке.")
+            }
+
             if let medication {
                 TGCard {
                     Toggle(isOn: Binding(get: { medication.isPaused }, set: { medication.isPaused = $0 })) {
@@ -858,7 +1056,19 @@ struct MedicationEditorSheet: View {
         .task { load() }
         .confirmationDialog("Удалить схему «\(name)»?", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
             Button("Удалить", role: .destructive) {
-                if let medication { context.delete(medication) }
+                // Надгробие, а не `context.delete`: до 26.10.2026 удаление
+                // схемы до второго человека не доезжало вовсе — у мамы
+                // курс оставался жив, и она получала напоминания о дозах
+                // по лечению, которого больше нет. Разбор —
+                // `Medication.deletedAt`.
+                if let medication {
+                    let откат = ОбщееУдаление.удалить(medication)
+                    guard context.persist(otherwise: откат) else {
+                        Haptics.warning()
+                        appState.showFailure("Не удалилось · нажми ещё раз")
+                        return
+                    }
+                }
                 Haptics.warning()
                 dismiss()
             }
@@ -876,7 +1086,29 @@ struct MedicationEditorSheet: View {
         guard !loaded, let medication else { loaded = true; return }
         name = medication.name
         doseText = medication.doseText
-        times = medication.times.isEmpty ? [7 * 60] : medication.times
+        // `schedule`, а НЕ `doseSlotsData`: это и есть тот читатель,
+        // которого модель завела отвечать за обе формы расписания —
+        // пустые слоты он разворачивает в часы с количеством 1,
+        // непустые отдаёт как есть. Читать `doseSlotsData` напрямую
+        // модель запрещает своим же комментарием, и правильно:
+        // у схемы, заведённой до появления слотов, там пусто,
+        // а расписание у неё есть.
+        слоты = medication.schedule.isEmpty
+            ? [DoseSlot(minuteOfDay: 7 * 60, quantity: 1)]
+            : medication.schedule
+        единица = medication.unit
+        номерНазначения = medication.prescriptionNumber ?? ""
+        // Три «указан ли» читаются из `nil`, а не из значения: иначе
+        // форма не смогла бы отличить «не введено» от даты, которую
+        // `DatePicker` подставит сам, и первое же открытие формы
+        // записало бы сегодняшнее число как срок годности.
+        естьКурсДо = medication.courseEnd != nil
+        курсДо = medication.courseEnd ?? Date()
+        естьСрокГодности = medication.expiry != nil
+        срокГодности = medication.expiry ?? Date()
+        вскрыт = medication.openedAt != nil
+        когдаВскрыли = medication.openedAt ?? Date()
+        годенПослеВскрытияДней = medication.shelfAfterOpenDays
         fastingMinutes = medication.fastingMinutes
         // У схемы, заведённой до появления поля, окно «до» читается
         // симметрично — показываем то же, что и применяем.
@@ -897,8 +1129,105 @@ struct MedicationEditorSheet: View {
         loaded = true
     }
 
+    /// Один приём в расписании: час, минуты и сколько давать.
+    ///
+    /// Вынесено из `body` функцией, а не оставлено вложенным: с четырьмя
+    /// `Picker` и `Stepper` внутри одного выражения компилятор выводит
+    /// тип всей цепочки разом, и в этом проекте такая склейка уже
+    /// стоила трёх секунд типизации (разбор — `ReminderScheduler
+    /// .briefLines`). Явная граница снимает перебор целиком.
+    @ViewBuilder
+    private func слотРяд(_ index: Int) -> some View {
+        HStack {
+            Picker("Час", selection: Binding(
+                get: { слоты[index].minuteOfDay / 60 },
+                set: { слоты[index].minuteOfDay = $0 * 60 + слоты[index].minuteOfDay % 60 }
+            )) {
+                ForEach(0...23, id: \.self) { Text(String(format: "%02d", $0)).tag($0) }
+            }
+            .pickerStyle(.menu)
+            Picker("Минуты", selection: Binding(
+                get: { слоты[index].minuteOfDay % 60 },
+                set: { слоты[index].minuteOfDay = (слоты[index].minuteOfDay / 60) * 60 + $0 }
+            )) {
+                ForEach([0, 15, 30, 45], id: \.self) { Text(String(format: "%02d", $0)).tag($0) }
+            }
+            .pickerStyle(.menu)
+            Spacer()
+            if слоты.count > 1 {
+                Button {
+                    слоты.remove(at: index)
+                } label: {
+                    Image(systemName: "minus.circle")
+                        .foregroundStyle(Token.Status.overdueText)
+                }
+                .accessibilityLabel("Убрать время")
+            }
+        }
+        .frame(minHeight: Token.Size.tapTarget)
+
+        Stepper(value: Binding(
+            get: { слоты[index].quantity },
+            set: { слоты[index].quantity = $0 }
+        ), in: шагКоличества...20, step: шагКоличества) {
+            HStack {
+                Text("Сколько давать").textStyle(AppFont.body)
+                Spacer()
+                Text(verbatim: "\(Fmt.decimal(слоты[index].quantity)) \(единица.shortName)")
+                    .textStyle(AppFont.numeric(15))
+            }
+        }
+        .frame(minHeight: Token.Size.tapTarget)
+    }
+
+    /// Шаг количества: таблетку делят пополам, миллилитр — мера сам
+    /// по себе.
+    ///
+    /// Правило берётся у `MedUnit.allowsHalves`, а не пишется здесь
+    /// заново: оно уже записано в модели вместе с причиной.
+    ///
+    /// **Уже введённые половинки при смене единицы НЕ округляются.**
+    /// Шаг решает, что предложит шаговик, и не имеет права молча менять
+    /// число, которое человек ввёл с назначения: округление дозы — это
+    /// другая доза, а не другое оформление.
+    private var шагКоличества: Double { единица.allowsHalves ? 0.5 : 1 }
+
+    /// Конец месяца выбранной даты.
+    ///
+    /// Так это записано в модели: на упаковке стоят месяц и год,
+    /// и «годен до 11/2026» значит «до последнего дня ноября»,
+    /// а не «до первого». Взять дату как есть значило бы укоротить
+    /// срок годности на почти месяц — у лекарства это выброшенная
+    /// упаковка.
+    private func конецМесяца(_ дата: Date) -> Date {
+        let календарь = Calendar.current
+        let части = календарь.dateComponents([.year, .month], from: дата)
+        guard let начало = календарь.date(from: части),
+              let следующий = календарь.date(byAdding: .month, value: 1, to: начало),
+              let последний = календарь.date(byAdding: .day, value: -1, to: следующий),
+              let конец = календарь.date(bySettingHour: 23, minute: 59, second: 59,
+                                         of: последний)
+        else { return дата }
+        return конец
+    }
+
     private func save() {
-        let target = medication ?? Medication(name: name, doseText: doseText, times: times, fastingMinutes: fastingMinutes)
+        // Часы БЕЗ ПОВТОРОВ. `DayPlanBuilder` строит пункт плана с id
+        // `dose-<схема>-<минута>` (`:62`), и два одинаковых часа дали бы
+        // два пункта с одним id — в `ForEach` это ломается молча.
+        // Количество при этом не теряется: `quantity(at:)` СКЛАДЫВАЕТ
+        // слоты на один час, то есть «8:00 ½ и 8:00 ½» остаётся одной
+        // таблеткой утром. Так это и описано в модели.
+        let часы = Array(Set(слоты.map(\.minuteOfDay))).sorted()
+        // Слоты храним только когда есть что хранить. Все количества
+        // по единице — это прежняя форма расписания, за неё отвечает
+        // `times`, и `Medication.schedule` разворачивает её сам. Писать
+        // в `doseSlotsData` копию часов значило бы завести ВТОРОЕ место,
+        // где живут часы приёма, — ровно то, от чего слот и придуман.
+        let слотыВБазу = слоты.allSatisfy { $0.quantity == 1 }
+            ? []
+            : слоты.sorted { $0.minuteOfDay < $1.minuteOfDay }
+        let target = medication ?? Medication(name: name, doseText: doseText, times: часы, fastingMinutes: fastingMinutes)
         // Снимок до правки. Здесь цена молчания выше, чем у остальных
         // редакторов: часы приёма и окно натощак — это расписание доз
         // и напоминаний. Экран, закрывшийся с «получилось» после
@@ -912,10 +1241,34 @@ struct MedicationEditorSheet: View {
         let былВрач = target.prescriber
         let былаМасса = target.massPerUnitMcg
         let былоНаУлице = target.canGiveOutside
+        let былиСлоты = target.doseSlotsData
+        let былаЕдиницаФормы = target.unitRaw
+        let былНомер = target.prescriptionNumber
+        let былКонецКурса = target.courseEnd
+        let былСрок = target.expiry
+        let былоВскрытие = target.openedAt
+        let былоПослеВскрытия = target.shelfAfterOpenDays
 
         target.name = name
         target.doseText = doseText
-        target.times = times.sorted()
+        target.times = часы
+        target.doseSlotsData = слотыВБазу
+        // Через сеттер `unit`, а не в `unitRaw` руками: перевод
+        // в строку хранения записан в модели один раз, и второго
+        // места ему здесь не надо.
+        target.unit = единица
+        // Пустая строка даёт `nil` — «не введено», а не пустой номер.
+        target.prescriptionNumber = номерНазначения.trimmingCharacters(in: .whitespaces).isEmpty
+            ? nil : номерНазначения.trimmingCharacters(in: .whitespaces)
+        target.courseEnd = естьКурсДо ? курсДо : nil
+        // Срок годности — конец месяца, разбор у `конецМесяца`.
+        target.expiry = естьСрокГодности ? конецМесяца(срокГодности) : nil
+        target.openedAt = вскрыт ? когдаВскрыли : nil
+        // Ноль, когда флакон не вскрыт: держать дни после вскрытия
+        // у невскрытого значило бы оставить половину пары, а `goodUntil`
+        // читает обе — срок после вскрытия без даты вскрытия не
+        // считается ничем, и поле осталось бы тихой неправдой.
+        target.shelfAfterOpenDays = вскрыт ? годенПослеВскрытияДней : 0
         target.fastingMinutes = fastingMinutes
         target.fastingBeforeMinutes = fastingBeforeMinutes
         target.prescriber = prescriber.isEmpty ? nil : prescriber
@@ -943,6 +1296,13 @@ struct MedicationEditorSheet: View {
                 target.name = былоИмя
                 target.doseText = былаДоза
                 target.times = былиЧасы
+                target.doseSlotsData = былиСлоты
+                target.unitRaw = былаЕдиницаФормы
+                target.prescriptionNumber = былНомер
+                target.courseEnd = былКонецКурса
+                target.expiry = былСрок
+                target.openedAt = былоВскрытие
+                target.shelfAfterOpenDays = былоПослеВскрытия
                 target.fastingMinutes = былоНатощак
                 target.fastingBeforeMinutes = былоНатощакДо
                 target.prescriber = былВрач

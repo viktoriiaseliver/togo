@@ -106,7 +106,12 @@ nonisolated enum DoseScheduler {
     ) -> Int {
         let расписание = Set(medication.times)
         var removed = 0
-        for dose in medication.doses
+        // `dosesStorage`, а НЕ `doses`: с 26.10.2026 `Medication.doses`
+        // отсеивает надгробия, а уборка сирот обязана их видеть. Иначе
+        // невидимая сирота останется в базе навсегда — удалённая запись,
+        // которую больше не найдёт ни один читатель, то есть её уже
+        // не убрать ничем.
+        for dose in (medication.dosesStorage ?? [])
         where calendar.isDate(dose.scheduledAt, inSameDayAs: startOfDay) {
             guard dose.givenAt == nil, dose.skippedAt == nil,
                   dose.cancelledAt == nil, dose.claimedAt == nil else { continue }
@@ -315,10 +320,16 @@ nonisolated enum DoseScheduler {
     /// и `.последняяДоза`, `LabResultEntryFlow.активноеЛечение`
     /// и `.последняяДоза`). Фильтр из трёх строк копируется охотнее
     /// всего именно потому, что выглядит слишком мелким для выноса.
+    /// Надгробие спрашивается здесь, а не только у `dog.medications`,
+    /// потому что вход у этой функции ДРУГОЙ: ей передают массив прямо
+    /// из `@Query`, то есть мимо фильтра модели. Опись чтений 26.10
+    /// назвала шесть читателей — график анализов и ввод бланка, —
+    /// и все шесть показывают человеку «активное лечение».
     static func activeSchedules(of dog: Dog?, among medications: [Medication]) -> [Medication] {
         guard let dog else { return [] }
         return medications.filter {
-            $0.dog?.persistentModelID == dog.persistentModelID && !$0.isPaused
+            $0.dog?.persistentModelID == dog.persistentModelID
+                && $0.deletedAt == nil && !$0.isPaused
         }
     }
 
