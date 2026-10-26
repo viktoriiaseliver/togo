@@ -403,25 +403,50 @@ struct SchemaMigrationTests {
             // «значение + единица» позволила бы сложить 0,1 мг с 50 мкг
             // и получить 50,1. Снос базы разрешён её словом 08.10.2026
             // под этот случай.
+            // НАДГРОБИЯ, 26.10.2026. `deletedAt` у одиннадцати типов
+            // обмена — шесть из них живут ещё с V4 и потому названы
+            // здесь; пять (Clinic, LabResult, VetVisit, Diagnosis,
+            // Prescription) пришли в V5 сущностями, и их поля этот
+            // пофайловый прирост не сверяет по устройству.
+            //
+            // Решение Виктории: «надгробия всем одиннадцати сразу».
+            // До него удаление у владельца не доезжало до второго
+            // человека ни по одному типу, кроме отметок: исходящая
+            // очередь собирается из `didSave`, а удалённая запись
+            // не приходит ни в `inserted`, ни в `updated`. Самый
+            // дорогой случай — отменённая схема лечения, которая
+            // у мамы оставалась жива и давала напоминания о дозах.
+            //
+            // Все одиннадцать опциональные (`Date?`), то есть стадия
+            // остаётся облегчённой: это ровно тот случай, который
+            // CoreData выводит сам.
             "Medication": ["unitRaw", "doseSlotsData", "stockLeftAmount", "packAmount",
                            "courseEnd", "expiry", "openedAt", "shelfAfterOpenDays",
                            "remindBeforeExpiry", "canGiveOutside",
-                           "prescriptionNumber", "massPerUnitMcg"],
+                           "prescriptionNumber", "massPerUnitMcg",
+                           "deletedAt"],
             "FoodStock": ["expiry", "shelfAfterOpenDays"],
             "LogEvent": ["editedBy"],
             // Шаг 0 медслоя, 07.10.2026: прививка получила партию, срок
             // и клинику; документ — тип, номер, кем выдан и срок.
-            "CareTask": ["vaccineBatch", "vaccineValidUntil", "clinic"],
-            "DogDocument": ["kindRaw", "number", "issuedBy", "validUntil", "changedAt"],
+            "CareTask": ["vaccineBatch", "vaccineValidUntil", "clinic", "deletedAt"],
+            "DogDocument": ["kindRaw", "number", "issuedBy", "validUntil", "changedAt",
+                            "deletedAt"],
             // Обратные стороны связей к четырём медицинским сущностям.
             // Без них хранилище не открывается вовсе — зеркало CloudKit
             // требует обратной у каждой связи.
             "Dog": ["labResultsStorage", "vetVisitsStorage",
-                    "diagnosesStorage", "prescriptionsStorage"],
+                    "diagnosesStorage", "prescriptionsStorage", "deletedAt"],
             // Обмен взвешиваний, 07.10.2026 вечером. Спор двух
             // телефонов решать было нечем: `date` — день, когда
             // взвесили, а не когда правили запись.
-            "WeightEntry": ["changedAt"],
+            "WeightEntry": ["changedAt", "deletedAt"],
+            // У дозы надгробие есть, но ставит его только отмена курса
+            // и рука: пересчёт расписания (`DoseScheduler`,
+            // `ScheduleChange`) его НЕ ставит нарочно — пересчёт
+            // у каждого телефона свой, и надгробие от одного
+            // погасило бы дозу у второго, который ещё не пересчитал.
+            "DoseRecord": ["deletedAt"],
         ]
 
         // Прирост сущностей — тоже по именам.
