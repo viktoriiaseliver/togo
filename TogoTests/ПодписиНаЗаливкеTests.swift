@@ -260,6 +260,107 @@ struct ПодписиНаЗаливкеTests {
             """)
     }
 
+    // MARK: Поверхность 4 · тихая заливка, пара названа в самом токене
+
+    /// `Action.onSubtle` на `Action.subtle` — пара, у которой **имя
+    /// второй половины записано в описании первой**.
+    ///
+    /// # Повод: половина пары, прожившая незамеченной
+    ///
+    /// Замер 26.10.2026. Бейдж «это я» (`FamilyScreen.swift:920`)
+    /// красил подпись `Token.Ink.primary` на заливке
+    /// `Token.Action.subtle`, а парный токен `Action.onSubtle` имел
+    /// **ноль читателей** во всём дереве.
+    ///
+    /// ```
+    ///                        dark    darkHC   light   lightHC
+    /// Ink.primary            11,03    8,23     1,71 ✗  1,71 ✗
+    ///   на Action.subtle
+    /// ```
+    ///
+    /// > **На устройстве это было безопасно ПО СОВПАДЕНИЮ:**
+    /// > `Ink.primary` в тёмной равен `#FFFFFF`, то есть тому же
+    /// > значению, что правильный `onSubtle`. Пара разошлась бы молча
+    /// > в день, когда `Ink.primary` получит оттенок, — грепом её
+    /// > не найти, обе стороны по отдельности верны.
+    ///
+    /// Это формула, уже оплаченная 25.10 на панели показания: 1,35
+    /// при доложенных 8,59.
+    ///
+    /// # Почему сторож проверяет ДВЕ вещи, а не одну
+    ///
+    /// Контраст пары — половина ответа. Вторая половина: **у `onSubtle`
+    /// должен быть живой читатель.** Токен без читателя находится
+    /// грепом один раз, в объявлении, и выглядит работающим — за это
+    /// уже платили `Token.FontSize.micro = 14` при живом
+    /// `AppFont.micro = 15`. Поэтому ниже стоит проверка по исходнику,
+    /// а не только по числу.
+    @Test("Подпись на тихой заливке берётся из своей пары, и у пары есть читатель")
+    func тихаяЗаливкаПарная() throws {
+        var провалы: [String] = []
+        var замеры: [String] = []
+
+        for тема in ThemeContrastTests.режимы {
+            let k = ThemeContrastTests.контраст(Token.Action.onSubtle,
+                                               на: Token.Action.subtle,
+                                               режим: тема)
+            let исход = k < Self.порог ? "НЕ ХВАТАЕТ" : "проходит"
+            замеры.append("  \(Self.два(k).padding(toLength: 8, withPad: " ", startingAt: 0)) \(исход.padding(toLength: 11, withPad: " ", startingAt: 0)) onSubtle · \(тема.имя)")
+            if k < Self.порог {
+                провалы.append("  onSubtle · \(тема.имя): \(Self.два(k)) при пороге \(Self.два(Self.порог)) — НЕ ХВАТАЕТ")
+            }
+        }
+
+        #expect(провалы.isEmpty, """
+            подпись на тихой заливке ниже порога в \(провалы.count) клетках:
+
+            \(провалы.joined(separator: "\n"))
+            """)
+
+        // ВТОРАЯ ПОЛОВИНА: у токена есть живой читатель в экранах.
+        // Ось — исходник, а не значение: значение верно и у мёртвого.
+        let корень = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent().deletingLastPathComponent()
+        let экраны = корень.appendingPathComponent("Togo/Features")
+        var читателей = 0
+        var контроль = 0
+        if let обход = FileManager.default.enumerator(at: экраны, includingPropertiesForKeys: nil) {
+            for case let файл as URL in обход where файл.pathExtension == "swift" {
+                guard let текст = try? String(contentsOf: файл, encoding: .utf8) else { continue }
+                // Прозу вырезаем: сторож, не различающий код и комментарий,
+                // меряет прозу — и запрещает писать про ошибку в файле,
+                // где её не совершают.
+                let код = текст.split(separator: "\n", omittingEmptySubsequences: false)
+                    .filter { !$0.trimmingCharacters(in: .whitespaces).hasPrefix("//") }
+                    .joined(separator: "\n")
+                читателей += код.components(separatedBy: "Token.Action.onSubtle").count - 1
+                контроль += код.components(separatedBy: "Token.Action.subtle").count - 1
+            }
+        }
+
+        // Контроль в том же проходе и подверженный тому же отказу:
+        // если обход каталога сломается, обнулятся ОБА — а это
+        // невозможно при живой заливке, и несовместимость видна
+        // без знания причины.
+        #expect(контроль > 0, "обход экранов дал ноль и на заливке — сломан сам обход, а не предмет")
+        #expect(читателей > 0, """
+            у `Token.Action.onSubtle` ноль читателей в `Togo/Features`,
+            при \(контроль) вхождениях парной заливки `Action.subtle`.
+
+            Значит заливку кто-то кладёт, а подпись берёт не из этой
+            пары — ровно то, что было у бейджа «это я» до 26.10.2026.
+            """)
+
+        print("""
+            ЗАМЕР, тихая заливка:
+
+            \(замеры.joined(separator: "\n"))
+
+              читателей `Action.onSubtle` в Togo/Features: \(читателей)
+              вхождений парной `Action.subtle` (контроль):  \(контроль)
+            """)
+    }
+
     // MARK: Запрет
 
     /// В режиме прогулки подпись не красится нейтральным напрямую.
