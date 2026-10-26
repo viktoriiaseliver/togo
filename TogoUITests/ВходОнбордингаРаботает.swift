@@ -171,7 +171,7 @@ nonisolated final class ВходОнбордингаРаботает: XCTestCase
         XCTAssertTrue(app.tabBars.firstMatch.waitForExistence(timeout: 20),
                       "Главный экран не поднялся — дальше мерить нечего.")
 
-        app.buttons["Настройки"].firstMatch.tap()
+        XCTAssertTrue(открытьНастройки(в: app), "в настройки не попасть")
 
         // Поиск по НАЧАЛУ подписи, а не точным совпадением, и это
         // замер 21.10.2026. У кнопки две строки в `VStack`
