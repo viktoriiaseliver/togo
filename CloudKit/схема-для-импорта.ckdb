@@ -434,6 +434,7 @@ DEFINE SCHEMA
         clinicName        STRING,
         vaccineBatch      STRING,
         vaccineValidUntil TIMESTAMP,
+        deletedAt TIMESTAMP,
         GRANT WRITE TO "_creator",
         GRANT CREATE TO "_icloud",
         GRANT READ TO "_world"
@@ -483,6 +484,7 @@ DEFINE SCHEMA
         sitterForbidden         STRING,
         sitterWalks             STRING,
         trainingFoodFromPortion INT64,
+        deletedAt TIMESTAMP,
         GRANT WRITE TO "_creator",
         GRANT CREATE TO "_icloud",
         GRANT READ TO "_world"
@@ -509,6 +511,7 @@ DEFINE SCHEMA
         scheduledAt       TIMESTAMP,
         skippedAt         TIMESTAMP,
         skippedBy         STRING,
+        deletedAt TIMESTAMP,
         GRANT WRITE TO "_creator",
         GRANT CREATE TO "_icloud",
         GRANT READ TO "_world"
@@ -587,6 +590,8 @@ DEFINE SCHEMA
         remindBeforeExpiry INT64,
         shelfAfterOpenDays INT64,
         unitRaw            STRING,
+        deletedAt      TIMESTAMP,
+        massPerUnitMcg DOUBLE,
         GRANT WRITE TO "_creator",
         GRANT CREATE TO "_icloud",
         GRANT READ TO "_world"
@@ -628,6 +633,7 @@ DEFINE SCHEMA
         modifiedTimestamp TIMESTAMP,
         name              STRING,
         phone             STRING,
+        deletedAt TIMESTAMP,
         GRANT WRITE TO "_creator",
         GRANT CREATE TO "_icloud",
         GRANT READ TO "_world"
@@ -643,6 +649,7 @@ DEFINE SCHEMA
         modifiedTimestamp TIMESTAMP,
         status            STRING,
         wording           STRING,
+        deletedAt TIMESTAMP,
         GRANT WRITE TO "_creator",
         GRANT CREATE TO "_icloud",
         GRANT READ TO "_world"
@@ -660,6 +667,7 @@ DEFINE SCHEMA
         number            STRING,
         title             STRING,
         validUntil        TIMESTAMP,
+        deletedAt TIMESTAMP,
         GRANT WRITE TO "_creator",
         GRANT CREATE TO "_icloud",
         GRANT READ TO "_world"
@@ -686,6 +694,7 @@ DEFINE SCHEMA
         textValue         STRING,
         unit              STRING,
         value             DOUBLE,
+        deletedAt TIMESTAMP,
         GRANT WRITE TO "_creator",
         GRANT CREATE TO "_icloud",
         GRANT READ TO "_world"
@@ -712,6 +721,7 @@ DEFINE SCHEMA
         pharmacyForm      STRING,
         schedule          STRING,
         source            STRING,
+        deletedAt TIMESTAMP,
         GRANT WRITE TO "_creator",
         GRANT CREATE TO "_icloud",
         GRANT READ TO "_world"
@@ -728,6 +738,7 @@ DEFINE SCHEMA
         dogID             STRING,
         modifiedTimestamp TIMESTAMP,
         reason            STRING,
+        deletedAt TIMESTAMP,
         GRANT WRITE TO "_creator",
         GRANT CREATE TO "_icloud",
         GRANT READ TO "_world"
@@ -740,6 +751,7 @@ DEFINE SCHEMA
         dogID             STRING,
         kg                DOUBLE,
         modifiedTimestamp TIMESTAMP,
+        deletedAt TIMESTAMP,
         GRANT WRITE TO "_creator",
         GRANT CREATE TO "_icloud",
         GRANT READ TO "_world"
