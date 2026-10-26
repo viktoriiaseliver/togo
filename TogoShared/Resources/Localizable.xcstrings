@@ -14079,7 +14079,7 @@
       }
     },
     "без названия" : {
-      "comment" : "prescriptionsCard",
+      "comment" : "body",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -18806,7 +18806,7 @@
       }
     },
     "взвесить сейчас" : {
-      "comment" : "body",
+      "comment" : "history",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -34993,7 +34993,7 @@
       }
     },
     "Другое" : {
-      "comment" : "body",
+      "comment" : "title",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -48673,7 +48673,7 @@
       }
     },
     "кг" : {
-      "comment" : "body",
+      "comment" : "history",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -56859,7 +56859,7 @@
       }
     },
     "Минуты" : {
-      "comment" : "body",
+      "comment" : "load",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -62673,7 +62673,7 @@
       }
     },
     "Не сохранилось · нажми «Сохранить» ещё раз" : {
-      "comment" : "body",
+      "comment" : "Отметка лаборатории",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -62889,7 +62889,7 @@
       }
     },
     "Не удалилось · нажми ещё раз" : {
-      "comment" : "delete",
+      "comment" : "Отметка лаборатории",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -63213,7 +63213,7 @@
       }
     },
     "не указана" : {
-      "comment" : "body",
+      "comment" : "Шаги",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -91886,12 +91886,6 @@
         "ru" : {
           "variations" : {
             "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "ровно %lld вещь"
-                }
-              },
               "few" : {
                 "stringUnit" : {
                   "state" : "translated",
@@ -91902,6 +91896,12 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "ровно %lld вещей"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "ровно %lld вещь"
                 }
               },
               "other" : {
@@ -91916,12 +91916,6 @@
         "uk" : {
           "variations" : {
             "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "рівно %lld річ"
-                }
-              },
               "few" : {
                 "stringUnit" : {
                   "state" : "needs_review",
@@ -91932,6 +91926,12 @@
                 "stringUnit" : {
                   "state" : "needs_review",
                   "value" : "рівно %lld речей"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "needs_review",
+                  "value" : "рівно %lld річ"
                 }
               },
               "other" : {
@@ -102727,7 +102727,7 @@
       }
     },
     "Строка уйдёт из списка и из отчёта врачу. Остальные строки этого бланка останутся." : {
-      "comment" : "body",
+      "comment" : "Отметка лаборатории",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -107984,7 +107984,7 @@
       }
     },
     "Убрать время" : {
-      "comment" : "body",
+      "comment" : "load",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -109995,7 +109995,7 @@
       }
     },
     "Удалить строку" : {
-      "comment" : "body",
+      "comment" : "Отметка лаборатории",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -110031,7 +110031,7 @@
       }
     },
     "Удалить строку?" : {
-      "comment" : "body",
+      "comment" : "Отметка лаборатории",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -113789,7 +113789,7 @@
       }
     },
     "Час" : {
-      "comment" : "body",
+      "comment" : "load",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -115034,7 +115034,7 @@
       }
     },
     "Чип" : {
-      "comment" : "body",
+      "comment" : "rows",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -121984,7 +121984,7 @@
       }
     },
     "Схему меняет владелец" : {
-      "comment" : "body",
+      "comment" : "detail",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -122059,12 +122059,6 @@
       "comment" : "2 · Сколько",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Записать норму и режим"
-          }
-        },
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -122083,6 +122077,12 @@
             "value" : "Нормасы мен режимін жазу"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Записать норму и режим"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -122095,12 +122095,6 @@
       "comment" : "2 · Сколько",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "норму ещё не записали"
-          }
-        },
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -122119,6 +122113,12 @@
             "value" : "норма әлі жазылмаған"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "норму ещё не записали"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -122131,12 +122131,6 @@
       "comment" : "2 · Сколько",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "её называет врач или упаковка"
-          }
-        },
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -122155,6 +122149,12 @@
             "value" : "оны дәрігер немесе қаптама айтады"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "её называет врач или упаковка"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -122167,12 +122167,6 @@
       "comment" : "2 · Сколько",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "г в день"
-          }
-        },
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -122191,6 +122185,12 @@
             "value" : "г/тәулік"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "г в день"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -122203,12 +122203,6 @@
       "comment" : "2 · Сколько",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Норма не записана. Приложение её не подставляет"
-          }
-        },
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -122227,6 +122221,12 @@
             "value" : "Норма жазылмаған. Қолданба оны өзі қоймайды"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Норма не записана. Приложение её не подставляет"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -122239,12 +122239,6 @@
       "comment" : "2 · Сколько",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Пока нормы нет, приложение не считает ни порцию, ни перерасход — от неё считается всё остальное. Подставить своё число оно не может: получилось бы назначение, которого никто не делал."
-          }
-        },
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -122263,6 +122257,12 @@
             "value" : "Норма болмағанша, қолданба бір реттік үлесті де, артық берілгенді де есептемейді — қалғанының бәрі осыдан шығады. Өз санын қоя алмайды: ол ешкім жасамаған тағайындау болып шығады."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пока нормы нет, приложение не считает ни порцию, ни перерасход — от неё считается всё остальное. Подставить своё число оно не может: получилось бы назначение, которого никто не делал."
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -122275,12 +122275,6 @@
       "comment" : "splitRow",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Из чего делить, приложение не знает: дневная норма не записана."
-          }
-        },
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -122299,6 +122293,12 @@
             "value" : "Қолданба неден бөлетінін білмейді: тәуліктік норма жазылмаған."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Из чего делить, приложение не знает: дневная норма не записана."
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -122311,12 +122311,6 @@
       "comment" : "amountCard",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Это зеркало дневной нормы, а она не записана. Запиши её в режиме питания — и расход запаса начнёт считаться."
-          }
-        },
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -122335,6 +122329,12 @@
             "value" : "Бұл — тәуліктік норманың айнасы, ал ол жазылмаған. Оны тамақтану режимінде жаз — сонда қордың жұмсалуы есептеле бастайды."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Это зеркало дневной нормы, а она не записана. Запиши её в режиме питания — и расход запаса начнёт считаться."
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -122347,12 +122347,6 @@
       "comment" : "everyday",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "норма не записана"
-          }
-        },
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -122371,6 +122365,12 @@
             "value" : "норма жазылмаған"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "норма не записана"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -122383,12 +122383,6 @@
       "comment" : "mealsCard",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Записать норму"
-          }
-        },
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -122407,6 +122401,12 @@
             "value" : "Норманы жазу"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Записать норму"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -122419,12 +122419,6 @@
       "comment" : "mealsCard",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Пока норма не записана, приложение не считает ни порцию, ни перерасход: от неё считается всё остальное. Нажми — и шаговик встанет на сто двадцать граммов, откуда удобно докрутить до того, что назвал врач. Это подсказка, а не назначение."
-          }
-        },
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -122443,6 +122437,12 @@
             "value" : "Норма жазылмағанша, қолданба бір реттік үлесті де, артық берілгенді де есептемейді: қалғанының бәрі осыдан шығады. Бас — қадамдық жүз жиырма грамға тұрады, одан дәрігер айтқан санға дейін бұрау қолайлы. Бұл — кеңес, тағайындау емес."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пока норма не записана, приложение не считает ни порцию, ни перерасход: от неё считается всё остальное. Нажми — и шаговик встанет на сто двадцать граммов, откуда удобно докрутить до того, что назвал врач. Это подсказка, а не назначение."
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -122455,12 +122455,6 @@
       "comment" : "body",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "норма не записана — корм посчитать нечем"
-          }
-        },
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -122479,6 +122473,12 @@
             "value" : "норма жазылмаған — жемді есептейтін нәрсе жоқ"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "норма не записана — корм посчитать нечем"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -122491,12 +122491,6 @@
       "comment" : "water",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "сначала запиши дневную норму в режиме питания — из неё считается всё"
-          }
-        },
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -122515,6 +122509,12 @@
             "value" : "алдымен тәуліктік норманы тамақтану режимінде жаз — бәрі осыдан есептеледі"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "сначала запиши дневную норму в режиме питания — из неё считается всё"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -122527,12 +122527,6 @@
       "comment" : "body",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Порцию подставить не из чего: дневная норма не записана. Накрути сколько положил — или запиши норму в режиме питания, и дальше она будет подставляться сама."
-          }
-        },
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -122551,6 +122545,12 @@
             "value" : "Үлесті неден алатын нәрсе жоқ: тәуліктік норма жазылмаған. Қанша салғаныңды бұрап қой — немесе норманы тамақтану режимінде жаз, әрі қарай ол өзі қойылады."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Порцию подставить не из чего: дневная норма не записана. Накрути сколько положил — или запиши норму в режиме питания, и дальше она будет подставляться сама."
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -122563,12 +122563,6 @@
       "comment" : "unit",
       "extractionState" : "manual",
       "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%.1f %@ · расход не задан"
-          }
-        },
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -122585,6 +122579,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "%.1f %@ · жұмсалуы белгіленбеген"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%.1f %@ · расход не задан"
           }
         },
         "uk" : {
@@ -123172,7 +123172,7 @@
       }
     },
     "Назови показатель — так, как он написан в бланке" : {
-      "comment" : "body",
+      "comment" : "Отметка лаборатории",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -123352,7 +123352,7 @@
       }
     },
     "Нужно одно число — например 4,1" : {
-      "comment" : "body",
+      "comment" : "history",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -123455,6 +123455,3437 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Спочатку «Він зробив» — маркер увімкнеться після нього"
+          }
+        }
+      }
+    },
+    "Клиники и лаборатории" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Clinics and labs"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Cliniques et laboratoires"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Клиникалар мен зертханалар"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Клиники и лаборатории"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Клініки та лабораторії"
+          }
+        }
+      }
+    },
+    "справочник" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "directory"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "répertoire"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "анықтамалық"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "справочник"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "довідник"
+          }
+        }
+      }
+    },
+    "Клиник пока нет" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "No clinics yet"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aucune clinique pour l'instant"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Әзірге клиника жоқ"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Клиник пока нет"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Клінік поки немає"
+          }
+        }
+      }
+    },
+    "Заведи клинику или лабораторию: название, телефон и чем она отличается от соседней. После этого они появятся в выборе у визита, у назначения и у анализа." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Add a clinic or a lab: the name, the phone number, and what sets it apart from the one next door. After that they'll show up when you pick a place for a visit, a prescription or a test."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ajoute une clinique ou un laboratoire : nom, téléphone, et ce qui le distingue du voisin. Ensuite, ils apparaîtront dans les choix d'une visite, d'une ordonnance et d'une analyse."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Клиника немесе зертхана қос: атауы, телефоны және көршісінен айырмашылығы. Содан кейін олар қабылдау, тағайындау және анализ таңдауында көрінеді."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Заведи клинику или лабораторию: название, телефон и чем она отличается от соседней. После этого они появятся в выборе у визита, у назначения и у анализа."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Заведи клініку або лабораторію: назву, телефон і чим вона відрізняється від сусідньої. Після цього вони з'являться у виборі у візиту, у призначення та в аналізу."
+          }
+        }
+      }
+    },
+    "Добавить клинику" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Add a clinic"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ajouter une clinique"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Клиника қосу"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавить клинику"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Додати клініку"
+          }
+        }
+      }
+    },
+    "клиники" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "clinics"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "cliniques"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "клиникалар"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "клиники"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "клініки"
+          }
+        }
+      }
+    },
+    "лаборатории" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "labs"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "laboratoires"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "зертханалар"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "лаборатории"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "лабораторії"
+          }
+        }
+      }
+    },
+    "Один раз заведённую клинику дальше только выбирают — так записи о ней собираются в одну группу, а не в двенадцать с опечатками." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Once a clinic has been added you only ever pick it from then on — that way its records gather into one group instead of twelve with typos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Une fois la clinique créée, on ne fait plus que la sélectionner — ainsi ses enregistrements se regroupent en un seul ensemble, et non en douze avec des fautes de frappe."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Бір рет қосылған клиниканы бұдан кейін тек таңдайды — осылайша ол туралы жазбалар он екі емес, бір топқа жиналады."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Один раз заведённую клинику дальше только выбирают — так записи о ней собираются в одну группу, а не в двенадцать с опечатками."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Один раз заведену клініку далі лише вибирають — так записи про неї збираються в одну групу, а не в дванадцять з помилками."
+          }
+        }
+      }
+    },
+    "Новая клиника" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "New clinic"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nouvelle clinique"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Жаңа клиника"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Новая клиника"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Нова клініка"
+          }
+        }
+      }
+    },
+    "название и телефон — то, что понадобится в тот час, когда звонить" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "name and phone — what you'll need at the hour when you have to call"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "nom et téléphone — ce qu'il te faudra à l'heure où il faudra appeler"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "атауы мен телефоны — қоңырау шалатын сағатта қажет болатыны"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "название и телефон — то, что понадобится в тот час, когда звонить"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "назва і телефон — те, що знадобиться в ту годину, коли дзвонити"
+          }
+        }
+      }
+    },
+    "название клиники" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "clinic name"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "nom de la clinique"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "клиника атауы"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "название клиники"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "назва клініки"
+          }
+        }
+      }
+    },
+    "Чем отличается" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "What sets it apart"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ce qui le distingue"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Айырмашылығы"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Чем отличается"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Чим відрізняється"
+          }
+        }
+      }
+    },
+    "город или адрес" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "city or address"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ville ou adresse"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "қала немесе мекенжай"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "город или адрес"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "місто або адреса"
+          }
+        }
+      }
+    },
+    "Пояснение нужно, когда у двух организаций одно название: в выборе иначе две одинаковые строки." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "A note helps when two places share a name — otherwise the picker shows two identical rows."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "La précision sert quand deux établissements portent le même nom : sinon, la liste affiche deux lignes identiques."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Екі мекеменің атауы бірдей болғанда түсіндірме қажет: әйтпесе таңдауда екі бірдей жол болады."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пояснение нужно, когда у двух организаций одно название: в выборе иначе две одинаковые строки."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Пояснення потрібне, коли у двох організацій одна назва: у виборі інакше два однакові рядки."
+          }
+        }
+      }
+    },
+    "номер телефона" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "phone number"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "numéro de téléphone"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "телефон нөмірі"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "номер телефона"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "номер телефону"
+          }
+        }
+      }
+    },
+    "Номер открывается нажатием прямо из справочника — искать его в форме правки в тот час некогда." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The number dials straight from the directory — at that hour there's no time to go hunting for it in an edit form."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "On appelle le numéro directement depuis le répertoire — à cette heure-là, on n'a pas le temps d'aller le chercher dans un formulaire."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Нөмір анықтамалықтан тікелей басу арқылы ашылады — ол сағатта оны түзету формасынан іздеуге уақыт жоқ."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Номер открывается нажатием прямо из справочника — искать его в форме правки в тот час некогда."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Номер відкривається натисканням прямо з довідника — шукати його у формі редагування в ту годину немає коли."
+          }
+        }
+      }
+    },
+    "Это лаборатория" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "This is a lab"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "C'est un laboratoire"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Бұл зертхана"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Это лаборатория"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Це лабораторія"
+          }
+        }
+      }
+    },
+    "Анализы сдают в лабораторию, принимают — в клинике. Переключатель решает, в каком из двух списков она появится и где её предложат выбрать." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tests are run at a lab; appointments happen at a clinic. This switch decides which of the two lists it lands in, and where you'll be offered it."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Les analyses se font en laboratoire, les consultations en clinique. Ce commutateur détermine dans laquelle des deux listes l'établissement apparaîtra et où il te sera proposé."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Анализдар зертханада алынады, қабылдау клиникада өтеді. Ауыстырғыш оның қай тізімде көрінетінін және қай жерде таңдауға ұсынылатынын шешеді."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Анализы сдают в лабораторию, принимают — в клинике. Переключатель решает, в каком из двух списков она появится и где её предложат выбрать."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Аналізи здають у лабораторію, приймають — у клініці. Перемикач визначає, у якому з двох списків вона з'явиться і де її запропонують вибрати."
+          }
+        }
+      }
+    },
+    "Удалить клинику" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Delete clinic"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Supprimer la clinique"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Клиниканы жою"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить клинику"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Видалити клініку"
+          }
+        }
+      }
+    },
+    "Назови клинику — по названию справочник и склеивается" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Give the clinic a name — the directory merges entries by name"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Donne un nom à la clinique — c'est par le nom que le répertoire regroupe les entrées"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Клиниканың атын жаз — анықтамалық атауы бойынша біріктіріледі"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Назови клинику — по названию справочник и склеивается"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Назви клініку — за назвою довідник і склеюється"
+          }
+        }
+      }
+    },
+    "Удалить клинику?" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Delete the clinic?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Supprimer la clinique ?"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Клиниканы жою керек пе?"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить клинику?"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Видалити клініку?"
+          }
+        }
+      }
+    },
+    "Клиника уйдёт из справочника. Визиты, назначения и прививки в ней останутся: они факт того дня, даже когда организации в списке больше нет." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The clinic will leave the directory. Visits, prescriptions and vaccinations recorded there stay: they are a fact of that day, even when the place is no longer on the list."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "La clinique disparaîtra du répertoire. Les visites, les ordonnances et les vaccins qui y sont rattachés restent : ce sont des faits de ce jour-là, même si l'établissement n'est plus dans la liste."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Клиника анықтамалықтан кетеді. Онда жасалған қабылдаулар, тағайындаулар мен егулер қалады: олар сол күннің фактісі, мекеме тізімде болмаса да."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Клиника уйдёт из справочника. Визиты, назначения и прививки в ней останутся: они факт того дня, даже когда организации в списке больше нет."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Клініка піде з довідника. Візити, призначення та щеплення в ній залишаться: вони факт того дня, навіть коли організації у списку більше немає."
+          }
+        }
+      }
+    },
+    "Не удалилось · попробуй ещё раз" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Couldn't delete · try again"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Suppression impossible · réessaie"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Жойылмады · қайта көр"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалилось · попробуй ещё раз"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Не видалилося · спробуй ще раз"
+          }
+        }
+      }
+    },
+    "Справочник пуст. Клиники и лаборатории заводятся в «Здоровье» → «Клиники и лаборатории» — оттуда они и попадают в этот выбор." : {
+      "comment" : "Шаги",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The directory is empty. Clinics and labs are added in Health → Clinics and labs — that's where this picker draws from."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le répertoire est vide. Les cliniques et laboratoires s'ajoutent dans « Santé » → « Cliniques et laboratoires » — c'est de là que vient cette liste."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Анықтамалық бос. Клиникалар мен зертханалар «Денсаулық» → «Клиникалар мен зертханалар» бөлімінде қосылады — осы таңдауға солардан түседі."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Справочник пуст. Клиники и лаборатории заводятся в «Здоровье» → «Клиники и лаборатории» — оттуда они и попадают в этот выбор."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Довідник порожній. Клініки та лабораторії заводяться у «Здоров'ї» → «Клініки та лабораторії» — звідти вони й потрапляють у цей вибір."
+          }
+        }
+      }
+    },
+    "Отметка лаборатории" : {
+      "comment" : "Шаги",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lab's own marking"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Indication du laboratoire"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Зертхананың белгісі"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отметка лаборатории"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Позначка лабораторії"
+          }
+        }
+      }
+    },
+    "что отметила лаборатория" : {
+      "comment" : "Шаги",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "what the lab flagged"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ce que le laboratoire a signalé"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "зертхана не белгіледі"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "что отметила лаборатория"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "що позначила лабораторія"
+          }
+        }
+      }
+    },
+    "Это отметка самой лаборатории с бланка, а не вывод приложения. Расхождение с нашим счётом — находка, а не ошибка: референс у лабораторий разный." : {
+      "comment" : "Шаги",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "This is the lab's own marking from the form, not a conclusion drawn by the app. A mismatch with our own count is a finding, not an error: reference ranges differ from lab to lab."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "C'est l'indication du laboratoire lui-même, telle qu'elle figure sur le compte rendu, et non une conclusion de l'application. Un écart avec notre calcul est une observation, pas une erreur : les valeurs de référence varient d'un laboratoire à l'autre."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Бұл қолданбаның қорытындысы емес, бланктегі зертхананың өз белгісі. Біздің есебімізден айырмашылық — қате емес, табыс: зертханалардың референс мәндері әртүрлі."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Это отметка самой лаборатории с бланка, а не вывод приложения. Расхождение с нашим счётом — находка, а не ошибка: референс у лабораторий разный."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Це позначка самої лабораторії з бланка, а не висновок застосунку. Розбіжність із нашим підрахунком — знахідка, а не помилка: референс у лабораторій різний."
+          }
+        }
+      }
+    },
+    "бланк" : {
+      "comment" : "Бланк — ПЯТЬ ПОЛЕЙ, которые нельзя было исправить",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "lab form"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "compte rendu"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "бланк"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "бланк"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "бланк"
+          }
+        }
+      }
+    },
+    "общее для всех строк этого бланка" : {
+      "comment" : "Бланк — ПЯТЬ ПОЛЕЙ, которые нельзя было исправить",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "shared by every row of this lab form"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "commun à toutes les lignes de ce compte rendu"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "осы бланктің барлық жолдарына ортақ"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "общее для всех строк этого бланка"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "спільне для всіх рядків цього бланка"
+          }
+        }
+      }
+    },
+    "Номер связывает строки одного бланка между собой. Правка номера здесь переносит эту строку в другую группу — именно этим и чинят опечатку." : {
+      "comment" : "Бланк — ПЯТЬ ПОЛЕЙ, которые нельзя было исправить",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The number ties together the rows of a single lab form. Editing it here moves this row into another group — that is exactly how a typo gets fixed."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le numéro relie entre elles les lignes d'un même compte rendu. Le modifier ici déplace cette ligne dans un autre groupe — c'est précisément ainsi qu'on corrige une faute de frappe."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Нөмір бір бланктің жолдарын бір-бірімен байланыстырады. Нөмірді осында түзету бұл жолды басқа топқа көшіреді — қатені дәл осылай түзетеді."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Номер связывает строки одного бланка между собой. Правка номера здесь переносит эту строку в другую группу — именно этим и чинят опечатку."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Номер зв'язує рядки одного бланка між собою. Правка номера тут переносить цей рядок до іншої групи — саме цим і виправляють помилку."
+          }
+        }
+      }
+    },
+    "время забора" : {
+      "comment" : "Бланк — ПЯТЬ ПОЛЕЙ, которые нельзя было исправить",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "collection time"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "heure du prélèvement"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "алу уақыты"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "время забора"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "час забору"
+          }
+        }
+      }
+    },
+    "Кто имеет доступ" : {
+      "comment" : "inviteCard",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Who has access"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Qui a accès"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Кімде рұқсат бар"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кто имеет доступ"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Хто має доступ"
+          }
+        }
+      }
+    },
+    "Там видно, кто уже вошёл, и там же меняют роль одному человеку или закрывают доступ только ему." : {
+      "comment" : "inviteCard",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "There you can see who has already joined, and that's where you change one person's role or revoke access for them alone."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "On y voit qui a déjà rejoint, et c'est là qu'on change le rôle d'une personne ou qu'on lui retire l'accès à elle seule."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Онда кім кіргені көрінеді, сол жерде бір адамның рөлін өзгертеді немесе тек оған рұқсатты жабады."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Там видно, кто уже вошёл, и там же меняют роль одному человеку или закрывают доступ только ему."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Там видно, хто вже увійшов, і там же змінюють роль одній людині або закривають доступ лише їй."
+          }
+        }
+      }
+    },
+    "Это список на твоём телефоне. Роль и права отсюда на телефон человека не уезжают. Чтобы поменять роль тому, кто уже вошёл, открой «Кто имеет доступ» — там люди так, как их знает iCloud." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "This list lives on your phone. Roles and rights don't travel from here to anyone else's phone. To change the role of someone who has already joined, open Who has access — there, people appear as iCloud knows them."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Cette liste est sur ton téléphone. Les rôles et les droits ne partent pas d'ici vers le téléphone de la personne. Pour changer le rôle de quelqu'un qui a déjà rejoint, ouvre « Qui a accès » — là, les personnes sont telles qu'iCloud les connaît."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Бұл — сенің телефоныңдағы тізім. Рөл мен құқықтар бұдан адамның телефонына кетпейді. Кіріп қойған адамның рөлін өзгерту үшін «Кімде рұқсат бар» бөлімін аш — онда адамдар iCloud білетіндей."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Это список на твоём телефоне. Роль и права отсюда на телефон человека не уезжают. Чтобы поменять роль тому, кто уже вошёл, открой «Кто имеет доступ» — там люди так, как их знает iCloud."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Це список на твоєму телефоні. Роль і права звідси на телефон людини не їдуть. Щоб змінити роль тому, хто вже увійшов, відкрий «Хто має доступ» — там люди такі, як їх знає iCloud."
+          }
+        }
+      }
+    },
+    "Это пометка, а не срок: сам доступ по ней не закроется. Закрыть его нужно руками — «Кто имеет доступ», и только этому человеку." : {
+      "comment" : "next",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "This is a note, not a deadline: access won't close by itself because of it. You have to close it by hand — Who has access, and for this person only."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "C'est une note, pas une échéance : l'accès ne se fermera pas tout seul. Il faut le fermer à la main — « Qui a accès », et pour cette personne uniquement."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Бұл белгі, мерзім емес: рұқсат өздігінен жабылмайды. Оны қолмен жабу керек — «Кімде рұқсат бар», және тек осы адамға."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Это пометка, а не срок: сам доступ по ней не закроется. Закрыть его нужно руками — «Кто имеет доступ», и только этому человеку."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Це помітка, а не строк: сам доступ за нею не закриється. Закрити його потрібно руками — «Хто має доступ», і лише цій людині."
+          }
+        }
+      }
+    },
+    "Уберёт карточку с этого телефона. Доступ к дневнику этим не закроется: его закрывают в «Кто имеет доступ», и там же — только этому человеку." : {
+      "comment" : "next",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "This removes the card from this phone. It does not close diary access: that's done in Who has access, and there too — for this person only."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Cela retire la fiche de ce téléphone. L'accès au journal n'en sera pas fermé : il se ferme dans « Qui a accès », et là aussi — pour cette personne uniquement."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Бұл телефоннан картаны алып тастайды. Күнделікке рұқсат бұдан жабылмайды: ол «Кімде рұқсат бар» бөлімінде жабылады, сол жерде — тек осы адамға."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Уберёт карточку с этого телефона. Доступ к дневнику этим не закроется: его закрывают в «Кто имеет доступ», и там же — только этому человеку."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Приберe картку з цього телефона. Доступ до щоденника цим не закриється: його закривають у «Хто має доступ», і там же — лише цій людині."
+          }
+        }
+      }
+    },
+    "Доступ к дневнику" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Diary access"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Accès au journal"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Күнделікке рұқсат"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Доступ к дневнику"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Доступ до щоденника"
+          }
+        }
+      }
+    },
+    "Спрашиваю iCloud…" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Asking iCloud…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Interrogation d'iCloud…"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "iCloud сұралуда…"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Спрашиваю iCloud…"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Запитую iCloud…"
+          }
+        }
+      }
+    },
+    "Приглашение ещё не создано — или список не приехал. Создай приглашение в «Семье» и позови человека." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The invitation hasn't been created yet — or the list hasn't arrived. Create an invitation in Family and invite someone."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L'invitation n'a pas encore été créée — ou la liste n'est pas arrivée. Crée une invitation dans « Famille » et invite quelqu'un."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Шақыру әлі жасалмаған — немесе тізім келмеген. «Отбасы» бөлімінде шақыру жасап, адамды шақыр."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Приглашение ещё не создано — или список не приехал. Создай приглашение в «Семье» и позови человека."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Запрошення ще не створене — або список не приїхав. Створи запрошення в «Сім'ї» і поклич людину."
+          }
+        }
+      }
+    },
+    "Это те, кто реально видит дневник через iCloud. Список семьи рядом — карточки на твоём телефоне, они нужны для подписи записей и живут отдельно." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "These are the people who actually see the diary through iCloud. The family list beside it holds cards on your phone — they're used for signing entries and exist separately."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ce sont les personnes qui voient réellement le journal via iCloud. La liste de famille à côté contient des fiches sur ton téléphone : elles servent à signer les entrées et existent séparément."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Бұлар — күнделікті iCloud арқылы шынымен көретіндер. Қатардағы отбасы тізімі — телефоныңдағы карталар, олар жазбаларға қол қою үшін қажет және бөлек тұрады."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Это те, кто реально видит дневник через iCloud. Список семьи рядом — карточки на твоём телефоне, они нужны для подписи записей и живут отдельно."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Це ті, хто реально бачить щоденник через iCloud. Список сім'ї поруч — картки на твоєму телефоні, вони потрібні для підпису записів і живуть окремо."
+          }
+        }
+      }
+    },
+    "Доступом управляет владелец" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Access is managed by the owner"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L'accès est géré par le propriétaire"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Рұқсатты иесі басқарады"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Доступом управляет владелец"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Доступом керує власник"
+          }
+        }
+      }
+    },
+    "Ты в чужом дневнике. Кого пускать и какую роль дать — решает тот, кто позвал." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "This diary isn't yours. Who gets in and what role they get is decided by whoever invited you."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tu es dans le journal de quelqu'un d'autre. Qui laisser entrer et quel rôle lui donner, c'est celui qui t'a invité qui décide."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Сен бөтен күнделіктесің. Кімді жіберу және қандай рөл беру — шақырған адам шешеді."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ты в чужом дневнике. Кого пускать и какую роль дать — решает тот, кто позвал."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ти в чужому щоденнику. Кого пускати і яку роль дати — вирішує той, хто покликав."
+          }
+        }
+      }
+    },
+    "Без имени" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "No name"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sans nom"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Атауы жоқ"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Без имени"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Без імені"
+          }
+        }
+      }
+    },
+    "владелец дневника" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "diary owner"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "propriétaire du journal"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "күнделік иесі"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "владелец дневника"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "власник щоденника"
+          }
+        }
+      }
+    },
+    "это ты" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "that's you"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "c'est toi"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "бұл сен"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "это ты"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "це ти"
+          }
+        }
+      }
+    },
+    "позвали, ещё не вошёл" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "invited, hasn't joined yet"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "invité, pas encore entré"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "шақырылған, әлі кірмеген"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "позвали, ещё не вошёл"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "покликали, ще не увійшов"
+          }
+        }
+      }
+    },
+    "роль из приглашения" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "role from the invitation"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "rôle issu de l'invitation"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "шақырудағы рөл"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "роль из приглашения"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "роль із запрошення"
+          }
+        }
+      }
+    },
+    "роль и доступ" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "role and access"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "rôle et accès"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "рөл мен рұқсат"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "роль и доступ"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "роль і доступ"
+          }
+        }
+      }
+    },
+    "Закрыть доступ этому человеку?" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Revoke this person's access?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Retirer l'accès à cette personne ?"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Осы адамның рұқсатын жабу керек пе?"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закрыть доступ этому человеку?"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Закрити доступ цій людині?"
+          }
+        }
+      }
+    },
+    "Закрыть доступ" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Revoke access"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Retirer l'accès"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Рұқсатты жабу"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закрыть доступ"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Закрити доступ"
+          }
+        }
+      }
+    },
+    "Новые записи к нему приходить перестанут. То, что он уже получил, останется у него на телефоне: забрать показанное iCloud не умеет. Остальные в дневнике останутся." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "New entries will stop reaching them. What they already received stays on their phone: iCloud can't take back what it has shown. Everyone else stays in the diary."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Les nouvelles entrées ne lui parviendront plus. Ce qu'il a déjà reçu reste sur son téléphone : iCloud ne sait pas reprendre ce qui a été montré. Les autres restent dans le journal."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Жаңа жазбалар оған келуді тоқтатады. Ол алып қойғаны телефонында қалады: iCloud көрсетілгенді қайтарып алуды білмейді. Қалғандары күнделікте қалады."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Новые записи к нему приходить перестанут. То, что он уже получил, останется у него на телефоне: забрать показанное iCloud не умеет. Остальные в дневнике останутся."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Нові записи до нього надходити перестануть. Те, що він уже отримав, залишиться в нього на телефоні: забрати показане iCloud не вміє. Решта у щоденнику залишаться."
+          }
+        }
+      }
+    },
+    "уезжает на его телефон" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "travels to their phone"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "part vers son téléphone"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "оның телефонына кетеді"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "уезжает на его телефон"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "їде на його телефон"
+          }
+        }
+      }
+    },
+    "Человек ещё не вошёл. Ему приедет роль, выбранная в приглашении; поменять её можно будет, когда он войдёт." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "This person hasn't joined yet. They'll receive the role chosen in the invitation; you'll be able to change it once they're in."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Cette personne n'a pas encore rejoint. Elle recevra le rôle choisi dans l'invitation ; tu pourras le modifier une fois qu'elle sera entrée."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Адам әлі кірмеген. Оған шақыруда таңдалған рөл келеді; ол кіргенде рөлді өзгертуге болады."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Человек ещё не вошёл. Ему приедет роль, выбранная в приглашении; поменять её можно будет, когда он войдёт."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Людина ще не увійшла. Їй приїде роль, вибрана в запрошенні; змінити її можна буде, коли вона увійде."
+          }
+        }
+      }
+    },
+    "Роль доедет при следующем обмене — обычно в течение минуты. Схему лечения второй телефон не правит ни при какой роли." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The role will arrive with the next sync — usually within a minute. A second phone never edits the treatment plan, whatever its role."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le rôle arrivera à la prochaine synchronisation — en général en moins d'une minute. Un second téléphone ne modifie jamais le protocole de traitement, quel que soit son rôle."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Рөл келесі алмасуда келеді — әдетте бір минут ішінде. Емдеу схемасын екінші телефон қандай рөлде болса да түзетпейді."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Роль доедет при следующем обмене — обычно в течение минуты. Схему лечения второй телефон не правит ни при какой роли."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Роль доїде при наступному обміні — зазвичай протягом хвилини. Схему лікування другий телефон не редагує за жодної ролі."
+          }
+        }
+      }
+    },
+    "доступ" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "access"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "accès"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "рұқсат"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "доступ"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "доступ"
+          }
+        }
+      }
+    },
+    "Закроет дневник только этому человеку. Остальные останутся, и приглашение заново создавать не нужно." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "This closes the diary for this person only. Everyone else stays, and you won't need to create the invitation again."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Cela fermera le journal pour cette personne uniquement. Les autres restent, et il n'y a pas besoin de recréer l'invitation."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Күнделікті тек осы адамға жабады. Қалғандары қалады, шақыруды қайта жасау қажет емес."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закроет дневник только этому человеку. Остальные останутся, и приглашение заново создавать не нужно."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Закриє щоденник лише цій людині. Решта залишаться, і запрошення створювати заново не потрібно."
+          }
+        }
+      }
+    },
+    "Закрываю…" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Closing…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Fermeture…"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Жабылуда…"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закрываю…"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Закриваю…"
+          }
+        }
+      }
+    },
+    "Срок истёк" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Expired"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Périmé"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Мерзімі өтті"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Срок истёк"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Строк вийшов"
+          }
+        }
+      }
+    },
+    "Правка не сохранилась · попробуй ещё раз" : {
+      "comment" : "document",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Changes weren't saved · try again"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Modification non enregistrée · réessaie"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Түзету сақталмады · қайта көр"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Правка не сохранилась · попробуй ещё раз"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Правка не збереглася · спробуй ще раз"
+          }
+        }
+      }
+    },
+    "не записан" : {
+      "comment" : "note",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "not recorded"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "non renseigné"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "жазылмаған"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "не записан"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "не записаний"
+          }
+        }
+      }
+    },
+    "действует" : {
+      "comment" : "note",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "valid"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "valable"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "жарамды"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "действует"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "діє"
+          }
+        }
+      }
+    },
+    "истёк" : {
+      "comment" : "note",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "expired"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "périmé"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "мерзімі өткен"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "истёк"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "вийшов"
+          }
+        }
+      }
+    },
+    "как в документе" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "as in the document"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "comme sur le document"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "құжаттағыдай"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "как в документе"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "як у документі"
+          }
+        }
+      }
+    },
+    "Кем выдан" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Issued by"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Délivré par"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Кім берген"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кем выдан"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ким виданий"
+          }
+        }
+      }
+    },
+    "клиника или врач" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "clinic or vet"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "clinique ou vétérinaire"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "клиника немесе дәрігер"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "клиника или врач"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "клініка або лікар"
+          }
+        }
+      }
+    },
+    "Есть срок действия" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Has an expiry date"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "A une date de péremption"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Жарамдылық мерзімі бар"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Есть срок действия"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Є строк дії"
+          }
+        }
+      }
+    },
+    "Годен до" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Use by"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "À utiliser avant le"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Жарамдылық мерзімі"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Годен до"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Придатний до"
+          }
+        }
+      }
+    },
+    "что ещё важно" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "what else matters"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ce qui compte aussi"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "бұдан басқа маңыздысы"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "что ещё важно"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "що ще важливо"
+          }
+        }
+      }
+    },
+    "Выключенный срок значит «не записан», а не «бессрочно»: приложение их не различает и додумывать не станет." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "A date switched off means “not recorded”, not “no expiry”: the app doesn't tell the two apart and won't guess."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Une date désactivée signifie « non renseignée », et non « sans limite » : l'application ne fait pas la différence et n'inventera rien."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Өшірілген мерзім «жазылмаған» дегенді білдіреді, «мерзімсіз» дегенді емес: қолданба оларды ажыратпайды және өзінен қоспайды."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выключенный срок значит «не записан», а не «бессрочно»: приложение их не различает и додумывать не станет."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Вимкнений строк означає «не записаний», а не «безстроково»: застосунок їх не розрізняє і додумувати не буде."
+          }
+        }
+      }
+    },
+    "Добавлен" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Added"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ajouté"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Қосылды"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавлен"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Доданий"
+          }
+        }
+      }
+    },
+    "Править" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Edit"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Modifier"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Түзету"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Править"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Редагувати"
+          }
+        }
+      }
+    },
+    "Номер назначения" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Prescription number"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Numéro d'ordonnance"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Тағайындау нөмірі"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Номер назначения"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Номер призначення"
+          }
+        }
+      }
+    },
+    "с бланка, если есть" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "from the lab form, if given"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "d'après le compte rendu, si indiqué"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "бланктен, болса"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "с бланка, если есть"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "з бланка, якщо є"
+          }
+        }
+      }
+    },
+    "в чём меряется" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "unit of measure"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "unité de mesure"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "өлшем бірлігі"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "в чём меряется"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "у чому міряється"
+          }
+        }
+      }
+    },
+    "От этого зависит счёт запаса и можно ли делить дозу пополам." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "This determines how the stock is counted and whether the dose can be split in half."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Cela détermine le calcul du stock et la possibilité de couper la dose en deux."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Қордың есебі және дозаны жартыға бөлуге болатыны осыған байланысты."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "От этого зависит счёт запаса и можно ли делить дозу пополам."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Від цього залежить облік запасу і чи можна ділити дозу навпіл."
+          }
+        }
+      }
+    },
+    "Полтаблетки утром и целая вечером — обычное назначение. От этих чисел считается запас: приложение вычитает ровно столько, сколько дали." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Half a tablet in the morning and a whole one in the evening is a common prescription. The stock is counted from these numbers: the app subtracts exactly what was given."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Un demi-comprimé le matin et un entier le soir : une ordonnance courante. Le stock est calculé à partir de ces nombres — l'application déduit exactement ce qui a été donné."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Таңертең жарты таблетка, кешке тұтас — қарапайым тағайындау. Қор осы сандардан есептеледі: қолданба берілгенді дәл сол мөлшерде шегереді."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Полтаблетки утром и целая вечером — обычное назначение. От этих чисел считается запас: приложение вычитает ровно столько, сколько дали."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Півтаблетки зранку і ціла ввечері — звичайне призначення. Від цих чисел вважається запас: застосунок вираховує рівно стільки, скільки дали."
+          }
+        }
+      }
+    },
+    "сроки" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "dates"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "dates"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "мерзімдер"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "сроки"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "строки"
+          }
+        }
+      }
+    },
+    "Курс идёт до определённого числа" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The course runs until a set date"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le traitement court jusqu'à une date précise"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Курс белгілі бір күнге дейін жүреді"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Курс идёт до определённого числа"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Курс іде до певної дати"
+          }
+        }
+      }
+    },
+    "Курс до" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Course until"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Traitement jusqu'au"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Курс мерзімі"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Курс до"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Курс до"
+          }
+        }
+      }
+    },
+    "Зная последний день, приложение скажет заранее, что таблеток до конца курса не хватит." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Knowing the last day, the app can warn you in advance that there won't be enough tablets to finish the course."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "En connaissant le dernier jour, l'application te prévient à l'avance qu'il ne restera pas assez de comprimés pour terminer le traitement."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Соңғы күнді біле отырып, қолданба курсты бітіруге таблетка жетпейтінін алдын ала айтады."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Зная последний день, приложение скажет заранее, что таблеток до конца курса не хватит."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Знаючи останній день, застосунок скаже заздалегідь, що таблеток до кінця курсу не вистачить."
+          }
+        }
+      }
+    },
+    "Срок годности указан" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Expiry date recorded"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Date de péremption renseignée"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Жарамдылық мерзімі көрсетілген"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Срок годности указан"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Строк придатності вказаний"
+          }
+        }
+      }
+    },
+    "Флакон вскрыт" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Vial opened"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Flacon ouvert"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Құты ашылған"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Флакон вскрыт"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Флакон відкритий"
+          }
+        }
+      }
+    },
+    "Когда вскрыли" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Opened on"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Date d'ouverture"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Қашан ашылды"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Когда вскрыли"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Коли відкрили"
+          }
+        }
+      }
+    },
+    "Годен после вскрытия" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Shelf life once opened"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Durée après ouverture"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ашылғаннан кейінгі жарамдылығы"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Годен после вскрытия"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Придатний після відкриття"
+          }
+        }
+      }
+    },
+    "Из двух сроков действует ближний: вскрытый флакон портится раньше, чем кончается срок на упаковке." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Of the two dates the earlier one applies: an opened vial spoils before the date on the box runs out."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Des deux dates, c'est la plus proche qui compte : un flacon ouvert se périme avant la date inscrite sur la boîte."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Екі мерзімнің ішінде жақыны әрекет етеді: ашылған құты қаптамадағы мерзім бітпей тұрып бұзылады."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Из двух сроков действует ближний: вскрытый флакон портится раньше, чем кончается срок на упаковке."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "З двох строків діє найближчий: відкритий флакон псується раніше, ніж закінчується строк на упаковці."
+          }
+        }
+      }
+    },
+    "или вставь ссылку" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "or paste a link"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ou colle un lien"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "немесе сілтемені қой"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "или вставь ссылку"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "або встав посилання"
+          }
+        }
+      }
+    },
+    "Если нажать ссылку в переписке не получается — скопируй её и вставь сюда. Это тот же самый адрес, он начинается на icloud.com." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "If tapping the link in your chat doesn't work, copy it and paste it here. It's the very same address — it starts with icloud.com."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Si tu n'arrives pas à ouvrir le lien depuis ta conversation, copie-le et colle-le ici. C'est exactement la même adresse, elle commence par icloud.com."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Хат алмасудағы сілтемені басу мүмкін болмаса — оны көшіріп, осында қой. Бұл сол мекенжай, ол icloud.com-нан басталады."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Если нажать ссылку в переписке не получается — скопируй её и вставь сюда. Это тот же самый адрес, он начинается на icloud.com."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Якщо натиснути посилання в переписці не вдається — скопіюй його і встав сюди. Це та сама адреса, вона починається на icloud.com."
+          }
+        }
+      }
+    },
+    "Ссылка приглашения" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Invitation link"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lien d'invitation"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Шақыру сілтемесі"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ссылка приглашения"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Посилання запрошення"
+          }
+        }
+      }
+    },
+    "Вставь ссылку — её присылают из Togo вместе с приглашением" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Paste the link — Togo sends it along with the invitation"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Colle le lien — Togo l'envoie avec l'invitation"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Сілтемені қой — оны Togo шақырумен бірге жібереді"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вставь ссылку — её присылают из Togo вместе с приглашением"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Встав посилання — його надсилають із Togo разом із запрошенням"
+          }
+        }
+      }
+    },
+    "Проверяю…" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Checking…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Vérification…"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Тексерілуде…"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Проверяю…"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Перевіряю…"
+          }
+        }
+      }
+    },
+    "Войти по ссылке" : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Join via link"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Rejoindre par lien"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Сілтеме арқылы кіру"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Войти по ссылке"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Увійти за посиланням"
+          }
+        }
+      }
+    },
+    "Этого человека в дневнике уже нет — его убрали с другого телефона или он вышел сам. Потяни список вниз, чтобы обновить." : {
+      "comment" : "errorDescription",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "This person is no longer in the diary — they were removed from another phone, or they left on their own. Pull the list down to refresh."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Cette personne n'est plus dans le journal — elle a été retirée depuis un autre téléphone, ou elle est partie d'elle-même. Tire la liste vers le bas pour actualiser."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Бұл адам күнделікте жоқ — оны басқа телефоннан алып тастаған немесе өзі шыққан. Жаңарту үшін тізімді төмен тарт."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Этого человека в дневнике уже нет — его убрали с другого телефона или он вышел сам. Потяни список вниз, чтобы обновить."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Цієї людини у щоденнику вже немає — її вилучили з іншого телефона або вона вийшла сама. Потягни список вниз, щоб оновити."
+          }
+        }
+      }
+    },
+    "Владельца дневника убрать нельзя: раздавать доступ станет некому." : {
+      "comment" : "errorDescription",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "You can't remove the diary owner — there'd be no one left to grant access."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Impossible de retirer le propriétaire du journal : il ne resterait personne pour donner les accès."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Күнделік иесін алып тастауға болмайды: рұқсат беретін адам қалмайды."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Владельца дневника убрать нельзя: раздавать доступ станет некому."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Власника щоденника вилучити не можна: роздавати доступ стане нікому."
+          }
+        }
+      }
+    },
+    "назначениеРолиПриехало" : {
+      "comment" : "имя Notification.Name (FamilyShare.swift:747), на экран не попадает — в каталог уехало извлечением, переводить нечего",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "назначениеРолиПриехало"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "Такой короткой ссылки у Togo нет. Нужен адрес, который начинается на icloud.com — его присылает приложение вместе с приглашением." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Togo has no short link like that. You need an address starting with icloud.com — the app sends it along with the invitation."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Togo n'a pas de lien court de ce genre. Il faut une adresse commençant par icloud.com — l'application l'envoie avec l'invitation."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Togo-да осындай қысқа сілтеме жоқ. icloud.com-нан басталатын мекенжай қажет — оны қолданба шақырумен бірге жібереді."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Такой короткой ссылки у Togo нет. Нужен адрес, который начинается на icloud.com — его присылает приложение вместе с приглашением."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Такого короткого посилання у Togo немає. Потрібна адреса, яка починається на icloud.com — його надсилає застосунок разом із запрошенням."
+          }
+        }
+      }
+    },
+    "Это не похоже на приглашение. Нужна ссылка на icloud.com — её присылают из Togo, «Семья» → «Позвать в дневник»." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "This doesn't look like an invitation. You need an icloud.com link — it's sent from Togo, Family → Invite to diary."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Cela ne ressemble pas à une invitation. Il faut un lien icloud.com — il est envoyé depuis Togo, « Famille » → « Inviter au journal »."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Бұл шақыруға ұқсамайды. icloud.com сілтемесі қажет — оны Togo-дан жібереді, «Отбасы» → «Күнделікке шақыру»."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Это не похоже на приглашение. Нужна ссылка на icloud.com — её присылают из Togo, «Семья» → «Позвать в дневник»."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Це не схоже на запрошення. Потрібне посилання на icloud.com — його надсилають із Togo, «Сім'я» → «Покликати у щоденник»."
           }
         }
       }
