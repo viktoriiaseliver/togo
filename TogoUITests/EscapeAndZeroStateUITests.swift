@@ -40,28 +40,33 @@ nonisolated final class EscapeAndZeroStateUITests: XCTestCase {
                       "кнопки «Записать» нет — шторок не открыть ни одной")
         var проверено = 0
         var безКрестика: [String] = []
-        for пункт in ["Лакомство", "Заметка"] {
+        // Три строки первой шторки (`TodayBottom`), четвёртая — «Ещё»,
+        // она ведёт во вторую и проверяется отдельным тестом.
+        for пункт in ["Инцидент", "Стул", "Еда"] {
             плюс.tap()
             let строка = найти(пункт, в: app)
             guard строка.waitForExistence(timeout: 5) else {
-                XCTFail("в шторке «Записать» нет пункта «\(пункт)»")
+                XCTFail("в шторке «Записать» нет строки «\(пункт)»")
                 continue
             }
             строка.tap()
-            let закрыть = app.buttons["Закрыть"].firstMatch
             проверено += 1
+            let закрыть = app.buttons["Закрыть"].firstMatch
             if закрыть.waitForExistence(timeout: 5) {
                 закрыть.tap()
             } else {
                 безКрестика.append(пункт)
             }
-            // Вернуться на главный: вторая шторка открывается оттуда.
-            let внешняя = app.buttons["Закрыть"].firstMatch
-            if внешняя.exists { внешняя.tap() }
+            // Внешняя шторка закрывается «Отменой», а не «Закрыть»:
+            // она ничего не создаёт сама, только выбирает, что создавать
+            // (`TodayBottom`, кадр 06). Разные слова — разный смысл,
+            // и подставить одно вместо другого нельзя.
+            let отмена = app.buttons["Отмена"].firstMatch
+            if отмена.waitForExistence(timeout: 3) { отмена.tap() }
             _ = плюс.waitForExistence(timeout: 5)
         }
-        XCTAssertEqual(проверено, 2,
-                       "осмотрено \(проверено) шторок из двух — замер не состоялся")
+        XCTAssertEqual(проверено, 3,
+                       "осмотрено \(проверено) шторок из трёх — замер не состоялся")
         XCTAssertTrue(безКрестика.isEmpty,
                       "нет явной кнопки закрытия у шторок: \(безКрестика)")
     }
@@ -79,9 +84,17 @@ nonisolated final class EscapeAndZeroStateUITests: XCTestCase {
         let плюс = app.buttons["низ-записать"].firstMatch
         XCTAssertTrue(плюс.waitForExistence(timeout: 10), "кнопки «Записать» нет")
         плюс.tap()
+        // ДВА шага, а не один: «Всё про собаку» лежит во ВТОРОЙ шторке,
+        // за строкой «Ещё» (`TodayBottom` → `.more` → `TodayRouter`).
+        // Первая редакция этой правки искала его сразу после «+»
+        // и покраснела бы — правдиво про экран и ложно про продукт.
+        let ещё = найти("Ещё", в: app)
+        XCTAssertTrue(ещё.waitForExistence(timeout: 5),
+                      "в шторке «Записать» нет строки «Ещё»")
+        ещё.tap()
         let всё = найти("Всё про собаку", в: app)
         XCTAssertTrue(всё.waitForExistence(timeout: 5),
-                      "в шторке «Записать» нет строки «Всё про собаку»")
+                      "во второй шторке нет строки «Всё про собаку»")
         всё.tap()
         // Шторка закрывается и переключает вкладку, а не строит дерево внутри себя.
         XCTAssertTrue(найти("Питание и режим", в: app).waitForExistence(timeout: 5),

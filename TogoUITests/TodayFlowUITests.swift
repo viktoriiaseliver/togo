@@ -72,8 +72,21 @@ nonisolated final class TodayFlowUITests: XCTestCase {
                       "«Вывожу» стоит первой во всех четырёх исходах вердикта")
     }
 
+    /// Запись еды доходит до ленты.
+    ///
+    /// **Дорога изменилась 24.10.2026: `ActionGrid` удалён**, и кнопки
+    /// «Еда» прямо на главном больше нет. Еда записывается из шторки
+    /// «Записать» («+», крючок `низ-записать`, строка «Еда» —
+    /// `TodayBottom`). Отказ звучал «Failed to tap "Еда" Button»
+    /// и читался как дефект продукта.
     func testЗаписьЕдыПоявляетсяВЛенте() {
-        app.buttons["Еда"].firstMatch.tap()
+        let плюс = app.buttons["низ-записать"].firstMatch
+        XCTAssertTrue(плюс.waitForExistence(timeout: 10), "кнопки «Записать» нет")
+        плюс.tap()
+        let еда = найти("Еда", в: app)
+        XCTAssertTrue(еда.waitForExistence(timeout: 5),
+                      "в шторке «Записать» нет строки «Еда»")
+        еда.tap()
         let записать = app.buttons["Записать"]
         XCTAssertTrue(записать.waitForExistence(timeout: 3))
         записать.tap()
@@ -94,7 +107,7 @@ nonisolated final class TodayFlowUITests: XCTestCase {
     /// значит стеречь прокси вместо предмета: предмет здесь — «ревьюер
     /// Apple доходит до политики», а не «строка лежит в том же списке».
     func testНастройкиСодержатОбязательныеРазделы() {
-        app.buttons["Настройки"].tap()
+        XCTAssertTrue(открытьНастройки(в: app), "в настройки не попасть")
         XCTAssertTrue(app.navigationBars["Настройки"].waitForExistence(timeout: 5))
 
         let данные = app.descendants(matching: .any)
