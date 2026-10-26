@@ -101,22 +101,41 @@ nonisolated enum VetSummaryBuilder {
     static func delta(current: VetSummary, previous: VetSummary) -> [String] {
         var lines: [String] = []
 
+        // **Все пять строк были склеены по-русски и в каталог не попадали
+        //   никогда** (замер 26.10.2026). Это сводка, которую читает ВРАЧ:
+        //   куски шли через интерполяцию обычной `String`, а не через
+        //   `String(localized:)`, поэтому извлечение строк их не видело,
+        //   и сторож полноты каталога — тоже: он сверяет то, что В каталоге,
+        //   а этих строк там не бывало.
+        //
+        // **Два ключа вместо склейки со словом из тернарника.** Прежде
+        //   «реже»/«чаще» и «больше»/«меньше» выбирались ПО-РУССКИ
+        //   и уезжали в подстановку. Даже оберни склейку целиком —
+        //   носитель получил бы «Инциденты %@ — …» и не узнал бы, какое
+        //   из двух слов там окажется; а в языке с согласованием выбрать
+        //   второе слово по первому нельзя вовсе.
+        //
+        // > **Слово, выбранное кодом, переводом не становится.**
+        //   Переводится фраза, а не её кусок.
         let now = current.incidentTotal, was = previous.incidentTotal
         if now != was {
-            let word = now < was ? "реже" : "чаще"
-            lines.append("Инциденты \(word) — \(now) против \(was) за прошлый период.")
+            lines.append(now < was
+                ? String(localized: "Инциденты реже — \(now) против \(was) за прошлый период.")
+                : String(localized: "Инциденты чаще — \(now) против \(was) за прошлый период."))
         } else if now > 0 {
-            lines.append("Инциденты держатся: \(now) и в прошлый период столько же.")
+            lines.append(String(localized: "Инциденты держатся: \(now) и в прошлый период столько же."))
         }
 
         if let share = current.onTimeShare, let before = previous.onTimeShare {
             let delta = Int(((share - before) * 100).rounded())
             if abs(delta) >= 5 {
-                lines.append("Доз вовремя \(delta > 0 ? "больше" : "меньше") на \(abs(delta))%.")
+                lines.append(delta > 0
+                    ? String(localized: "Доз вовремя больше на \(abs(delta))%.")
+                    : String(localized: "Доз вовремя меньше на \(abs(delta))%."))
             }
         }
 
-        if let weight = current.weightDelta { lines.append("Вес: \(weight).") }
+        if let weight = current.weightDelta { lines.append(String(localized: "Вес: \(weight).")) }
         return lines
     }
 }

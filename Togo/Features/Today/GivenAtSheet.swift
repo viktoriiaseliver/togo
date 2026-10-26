@@ -55,10 +55,17 @@ struct GivenAtSheet: View {
         TGSheet(title: "Когда дали?", subtitle: .готовая(title)) {
             TGCard(padding: 4) {
                 VStack(spacing: 0) {
-                    row(.scheduled, text: "В \(Fmt.clock(scheduled)), как назначено")
+                    // Обе строки шли обычной интерполяцией и в каталог
+                    // не попадали никогда, при том что соседняя строка
+                    // ниже (`Другое время`) обёрнута правильно —
+                    // **половина пары в одном `VStack`**. Параметр
+                    // у `row` типа `String`, а не `LocalizedStringKey`,
+                    // поэтому компилятор на это не покраснеет: склеенная
+                    // строка подходит по типу идеально.
+                    row(.scheduled, text: String(localized: "В \(Fmt.clock(scheduled)), как назначено"))
                     if let сейчас {
                         TGDivider()
-                        row(.now, text: "Сейчас, \(Fmt.clock(сейчас))")
+                        row(.now, text: String(localized: "Сейчас, \(Fmt.clock(сейчас))"))
                     }
                     TGDivider()
                     row(.custom, text: String(localized: "Другое время"))

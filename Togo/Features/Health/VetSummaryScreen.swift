@@ -296,7 +296,20 @@ nonisolated enum VetSummaryText {
         lines.append(String(localized: "Период: \(Fmt.shortDay(summary.from)) — \(Fmt.shortDay(summary.to))"))
 
         if let share = summary.onTimeShare {
-            lines.append("Доз вовремя: \(Int((share * 100).rounded()))% из \(summary.totalDoses)"
+            // **Голова склейки была НЕ обёрнута, а оба хвоста обёрнуты** —
+            // половина пары внутри одного выражения. На французском
+            // выходило «Доз вовремя: 85% из 20, со сдвигом 2», где
+            // переведены ровно те куски, которые человек дочитывает
+            // последними.
+            //
+            // Хвосты оставлены отдельными ключами нарочно: это
+            // НЕЗАВИСИМЫЕ необязательные придатки, каждый приходит
+            // сам по себе, и вариантов целой фразы было бы четыре.
+            // Цена названа: переставить придаток относительно головы
+            // носитель не сможет. Это компромисс, а не решение,
+            // и он здесь записан, чтобы следующий не принял его
+            // за правильную форму.
+            lines.append(String(localized: "Доз вовремя: \(Int((share * 100).rounded()))% из \(summary.totalDoses)")
                          + (summary.dosesShifted > 0 ? String(localized: ", со сдвигом \(summary.dosesShifted)") : "")
                          + (summary.dosesSkipped > 0 ? String(localized: ", пропущено \(summary.dosesSkipped)") : ""))
         }
