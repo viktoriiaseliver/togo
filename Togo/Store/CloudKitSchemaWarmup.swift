@@ -104,7 +104,7 @@ nonisolated enum CloudKitSchemaWarmup {
 
         let objects: [any PersistentModel] = [
             DayOut(startedAt: markerDate, plannedHours: 1),
-            DoseRecord(scheduledAt: markerDate),
+            дозаСоВсемиПолями(),
             Episode(title: markerTitle, detail: markerTitle, startedAt: markerDate),
             HeatRecord(startedAt: markerDate, note: markerTitle),
             ProcedureSkill(title: markerTitle, detail: markerTitle),
@@ -153,6 +153,7 @@ nonisolated enum CloudKitSchemaWarmup {
         собака.distinctiveMarks = markerTitle
         собака.targetWeightLow = 1
         собака.targetWeightHigh = 2
+        собака.deletedAt = markerDate
         return собака
     }
 
@@ -231,7 +232,10 @@ nonisolated enum CloudKitSchemaWarmup {
     /// Клиника: на неё ссылаются уход, приём врача и назначение.
     @MainActor
     private static func клиникаСоВсемиПолями() -> Clinic {
-        Clinic(name: markerTitle, detail: markerTitle, isLab: true, phone: markerTitle)
+        let клиника = Clinic(name: markerTitle, detail: markerTitle,
+                             isLab: true, phone: markerTitle)
+        клиника.deletedAt = markerDate
+        return клиника
     }
 
     /// Лекарство со всем слоем запаса и сроков: одиннадцать полей
@@ -250,6 +254,7 @@ nonisolated enum CloudKitSchemaWarmup {
         лекарство.remindBeforeExpiry = true
         лекарство.canGiveOutside = true
         лекарство.prescriptionNumber = markerTitle
+        лекарство.deletedAt = markerDate
         return лекарство
     }
 
@@ -260,6 +265,7 @@ nonisolated enum CloudKitSchemaWarmup {
         документ.number = markerTitle
         документ.issuedBy = markerTitle
         документ.validUntil = markerDate
+        документ.deletedAt = markerDate
         return документ
     }
 
@@ -271,6 +277,7 @@ nonisolated enum CloudKitSchemaWarmup {
         уход.vaccineBatch = markerTitle
         уход.vaccineValidUntil = markerDate
         уход.clinic = клиника
+        уход.deletedAt = markerDate
         return уход
     }
 
@@ -286,7 +293,22 @@ nonisolated enum CloudKitSchemaWarmup {
 
     @MainActor
     private static func взвешиваниеСоВсемиПолями() -> WeightEntry {
-        WeightEntry(date: markerDate, kg: 1)
+        let взвешивание = WeightEntry(date: markerDate, kg: 1)
+        взвешивание.deletedAt = markerDate
+        return взвешивание
+    }
+
+    /// Отметка приёма. Нужна прогреву **только ради надгробия**
+    /// (26.10.2026): остальные её поля в зеркале уже есть, а `deletedAt`
+    /// заводится записью со значением и только в development.
+    ///
+    /// Прежде доза заводилась строкой `DoseRecord(scheduledAt:)` прямо
+    /// в списке объектов, и дописать ей поле было негде.
+    @MainActor
+    private static func дозаСоВсемиПолями() -> DoseRecord {
+        let доза = DoseRecord(scheduledAt: markerDate)
+        доза.deletedAt = markerDate
+        return доза
     }
 
     /// Анализ. `labMark` и `method` заполняются здесь **меткой прогрева**,
@@ -313,6 +335,7 @@ nonisolated enum CloudKitSchemaWarmup {
         анализ.labMark = markerTitle
         анализ.note = markerTitle
         анализ.dog = собака
+        анализ.deletedAt = markerDate
         return анализ
     }
 
@@ -323,6 +346,7 @@ nonisolated enum CloudKitSchemaWarmup {
         приём.clinic = клиника
         приём.conclusion = markerTitle
         приём.dog = собака
+        приём.deletedAt = markerDate
         return приём
     }
 
@@ -333,6 +357,7 @@ nonisolated enum CloudKitSchemaWarmup {
         диагноз.madeBy = markerTitle
         диагноз.evidence = markerTitle
         диагноз.dog = собака
+        диагноз.deletedAt = markerDate
         return диагноз
     }
 
@@ -353,6 +378,7 @@ nonisolated enum CloudKitSchemaWarmup {
         назначение.instruction = markerTitle
         назначение.source = markerTitle
         назначение.dog = собака
+        назначение.deletedAt = markerDate
         return назначение
     }
 

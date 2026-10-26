@@ -83,7 +83,14 @@ nonisolated enum TreatmentCourse {
         let date = Calendar.current.date(byAdding: .day, value: days, to: now) ?? now
         // Второй раз то же дело не заводим: экран прощания можно открыть
         // и закрыть несколько раз подряд.
-        if let existing = dog.careTasks.first(where: { $0.title == checkupTitle && $0.lastDone == nil }) {
+        // `careTasksStorage`, а НЕ `careTasks`: с 26.10.2026 обёртка
+        // отсеивает надгробия, а дедуп — ОПОЗНАНИЕ, не показ. Не увидев
+        // удалённое дело, он завёл бы второе с тем же названием, и экран
+        // прощания с курсом начал бы плодить «Контроль у врача» парами.
+        // Тот же разбор, что у склейки собак по кличке: опознанию нужна
+        // правда базы, а не то, что видно человеку.
+        if let existing = (dog.careTasksStorage ?? [])
+            .first(where: { $0.title == checkupTitle && $0.lastDone == nil }) {
             let былаДата = existing.scheduledDate
             existing.scheduledDate = date
             // Не записалось — не отдаём дело наружу: экран покажет

@@ -86,9 +86,19 @@ final class Clinic {
 
     /// Наружу — обычный массив: CloudKit требует опциональности
     /// у хранимого, остальному коду про это знать незачем.
-    var careTasks: [CareTask] { careTasksStorage ?? [] }
-    var vetVisits: [VetVisit] { vetVisitsStorage ?? [] }
-    var prescriptions: [Prescription] { prescriptionsStorage ?? [] }
+    ///
+    /// Надгробия отсеиваются, как у собаки (26.10.2026). **Живых
+    /// читателей у этих трёх свойств сегодня НОЛЬ** — опись чтений
+    /// назвала их задел на будущее, показ клиник идёт двумя `@Query`
+    /// в редакторах визита и назначения. Фильтр поставлен всё равно,
+    /// и это не «впрок на всякий случай»: свойство без фильтра рядом
+    /// с одиннадцатью отфильтрованными читается как решение, и первый
+    /// же читатель унаследует дефект, которого никто не заводил.
+    var careTasks: [CareTask] { (careTasksStorage ?? []).filter { $0.deletedAt == nil } }
+    var vetVisits: [VetVisit] { (vetVisitsStorage ?? []).filter { $0.deletedAt == nil } }
+    var prescriptions: [Prescription] {
+        (prescriptionsStorage ?? []).filter { $0.deletedAt == nil }
+    }
 
     init(name: String, detail: String? = nil, isLab: Bool = false, phone: String? = nil) {
         self.name = name

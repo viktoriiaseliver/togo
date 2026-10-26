@@ -22,7 +22,13 @@ struct CareScreen: View {
 
     private var tasks: [CareTask] {
         guard let dog else { return [] }
-        return allTasks.filter { $0.dog?.persistentModelID == dog.persistentModelID }
+        // `deletedAt` спрашивается здесь, а не только у `dog.careTasks`:
+        // вход другой — `@Query` отдаёт все дела базы, мимо фильтра
+        // модели. Опись чтений 26.10.2026 назвала это место и ещё семь
+        // таких же.
+        return allTasks.filter {
+            $0.dog?.persistentModelID == dog.persistentModelID && $0.deletedAt == nil
+        }
     }
 
     var body: some View {
@@ -373,10 +379,24 @@ struct CareSuggestionsSheet: View {
     @State private var chosen: Set<String> = []
     @State private var loaded = false
 
+    /// Какие дела уже заведены — чтобы не предлагать их второй раз.
+    ///
+    /// **Надгробия отсеиваются, и это решение в пользу человека, а не
+    /// симметрии.** Удалённое дело здесь — не «занятое название»:
+    /// человек убрал «Капли от клещей» и вправе завести их заново.
+    /// Не отсеяв надгробие, мы запретили бы ему это молча — кнопка
+    /// просто не появилась бы, и причину прочесть было бы негде.
+    ///
+    /// Отличие от дедупа «Контроль у врача» в `TreatmentCourse`: там
+    /// дело заводит КОД сам по себе, и повтор даёт два одинаковых дела
+    /// без участия человека. Здесь заводит человек, нажав на название.
     private var existing: Set<String> {
         guard let dog else { return [] }
         return Set(allTasks
-            .filter { $0.dog?.persistentModelID == dog.persistentModelID }
+            .filter {
+                $0.dog?.persistentModelID == dog.persistentModelID
+                    && $0.deletedAt == nil
+            }
             .map(\.title))
     }
 

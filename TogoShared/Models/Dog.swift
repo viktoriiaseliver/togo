@@ -235,22 +235,63 @@ final class Dog {
     // CloudKit требует, чтобы все связи были опциональными: иначе хранилище
     // не открывается вовсе. Поэтому хранимое свойство — опциональный массив,
     // а наружу торчит обычный: остальному коду про это знать незачем.
+    //
+    // # Восемь из пятнадцати ОТСЕИВАЮТ НАДГРОБИЯ — 26.10.2026
+    //
+    // Мягкое удаление оставляет запись в базе нарочно: без неё обмен
+    // не соберёт `CKRecord` и удаление не доедет до второго человека
+    // (разбор — `Medication.deletedAt`). Значит запись есть, а показывать
+    // её нельзя, и единственное дешёвое место для фильтра — здесь:
+    // **опись чтений 26.10 дала 22 места показа и счёта, и четырнадцать
+    // из них закрываются узкими местами**, а две строки — `medications`
+    // и `Medication.doses` — почти половину всей лекарственной
+    // арифметики.
+    //
+    // Фильтр стоит у восьми типов, у которых надгробие есть. У семи
+    // остальных (`events`, `trainingSteps`, `trainingSessions`, `trips`,
+    // `daysOut`, `heats`, `stocks`) его нет: лента фильтруется своими
+    // читателями с самого начала (`deletedAt` у неё живёт отдельно
+    // и обратимо), остальные шесть в общем дневнике не ездят вовсе
+    // и удаляются жёстко.
+    //
+    // # ДОРОГА К `*Storage` ОСТАВЛЕНА ОТКРЫТОЙ, и это не небрежность
+    //
+    // Четырём читателям надгробие обязано быть ВИДНО, иначе фильтр
+    // здесь заводит новый дефект того же класса:
+    //
+    // ```
+    // ReminderScheduler.снятьНеждущие   снимает запросы уведомлений.
+    //                                   Не увидит удалённую схему —
+    //                                   и «Доза 21:30 не отмечена»
+    //                                   будет звонить по лечению,
+    //                                   которого человек уже нет
+    // DoseScheduler.removeOrphans       уберёт сироты только видимые
+    // TreatmentCourse (дело «Контроль»)  дедуп перестанет видеть
+    //                                   удалённое и начнёт плодить дубли
+    // NamelessDogAudit                  перепись, не видящая удалённого,
+    //                                   это не перепись
+    // ```
+    //
+    // Все четыре ходят к `*Storage` напрямую, и приём не новый:
+    // `CloudKitSchemaWarmup` так читал счёт ещё до этой правки.
+    // **Делать `*Storage` приватным нельзя** — чинить эти четыре места
+    // станет нечем.
 
     var events: [LogEvent] { eventsStorage ?? [] }
-    var weights: [WeightEntry] { weightsStorage ?? [] }
-    var careTasks: [CareTask] { careTasksStorage ?? [] }
-    var medications: [Medication] { medicationsStorage ?? [] }
+    var weights: [WeightEntry] { (weightsStorage ?? []).filter { $0.deletedAt == nil } }
+    var careTasks: [CareTask] { (careTasksStorage ?? []).filter { $0.deletedAt == nil } }
+    var medications: [Medication] { (medicationsStorage ?? []).filter { $0.deletedAt == nil } }
     var trainingSteps: [TrainingStep] { trainingStepsStorage ?? [] }
     var trainingSessions: [TrainingSession] { trainingSessionsStorage ?? [] }
     var trips: [Trip] { tripsStorage ?? [] }
-    var documents: [DogDocument] { documentsStorage ?? [] }
+    var documents: [DogDocument] { (documentsStorage ?? []).filter { $0.deletedAt == nil } }
     var daysOut: [DayOut] { daysOutStorage ?? [] }
     var heats: [HeatRecord] { heatsStorage ?? [] }
     var stocks: [FoodStock] { stocksStorage ?? [] }
-    var labResults: [LabResult] { labResultsStorage ?? [] }
-    var vetVisits: [VetVisit] { vetVisitsStorage ?? [] }
-    var diagnoses: [Diagnosis] { diagnosesStorage ?? [] }
-    var prescriptions: [Prescription] { prescriptionsStorage ?? [] }
+    var labResults: [LabResult] { (labResultsStorage ?? []).filter { $0.deletedAt == nil } }
+    var vetVisits: [VetVisit] { (vetVisitsStorage ?? []).filter { $0.deletedAt == nil } }
+    var diagnoses: [Diagnosis] { (diagnosesStorage ?? []).filter { $0.deletedAt == nil } }
+    var prescriptions: [Prescription] { (prescriptionsStorage ?? []).filter { $0.deletedAt == nil } }
 
 
     var sex: DogSex {
@@ -364,7 +405,18 @@ final class Dog {
     /// мешает показать: ни «ничего не тянет», ни «видена дважды» для
     /// скрытия не нужны — они были защитой от необратимости, которой
     /// больше нет.
-    var canBeShown: Bool { nameIfAny != nil }
+    /// **С 26.10.2026 условий два: кличка и надгробие.** Удалённая
+    /// собака остаётся в базе, чтобы удаление доехало до второго
+    /// человека (разбор — `Medication.deletedAt`), и показывать её
+    /// нельзя. Точка выбрана по описи чтений: через `shownToPerson`
+    /// идут одиннадцать вызовов `AppState.activeDog`, переключатель,
+    /// список в настройках, Siri и **счётчик пейволла**
+    /// (`ProGate:178`) — то есть удалённая собака иначе считалась бы
+    /// второй и запирала бы человека за платным порогом.
+    ///
+    /// Опознание и склейка дубликатов сюда НЕ ходят нарочно
+    /// (`DuplicateMerge`, `DuplicateDogCard`): им нужна правда базы.
+    var canBeShown: Bool { nameIfAny != nil && deletedAt == nil }
 
     var displayName: String { Fmt.dogNameOrFallback(name) }
 

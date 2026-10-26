@@ -139,7 +139,27 @@ struct PrescriptionEditor: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Environment(AppState.self) private var appState
-    @Query private var клиники: [Clinic]
+    @Query private var всеКлиники: [Clinic]
+
+    /// Кто назначил — **клиники, БЕЗ лабораторий**. Требование модели
+    /// (`Clinic.swift:34`): «туда сдают анализы, там не принимают»,
+    /// а рецепт выписывает принимающий врач. До 26.10.2026 фильтра
+    /// не было, и в списке «кто назначил» стояли IDEXX и Antech.
+    ///
+    /// **Выбранная остаётся в списке всегда** — иначе правка старого
+    /// рецепта молча теряла бы организацию: пикер показал бы
+    /// «не указана» при заполненном `prescription.clinic`, а
+    /// `цель.clinic = клиника` записало бы `nil`. Фильтр показа стал бы
+    /// молчаливым удалением данных. Разбор — у двойника
+    /// в `VetVisitEditor`.
+    private var доступные: [Clinic] {
+        let живые = всеКлиники.filter { $0.deletedAt == nil && !$0.isLab }
+        let выбранная = клиника.map { [$0] } ?? []
+        let слитые = живые + выбранная.filter { выбор in
+            !живые.contains { $0.persistentModelID == выбор.persistentModelID }
+        }
+        return слитые.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+    }
 
     /// Сроки, которые называют врачи. Четвёртый — «своё»: в карте
     /// у Стича три врача назвали три разных интервала, и список
@@ -251,10 +271,20 @@ struct PrescriptionEditor: View {
                 TGDivider()
                 Picker("Клиника", selection: $клиника) {
                     Text("не указана").tag(nil as Clinic?)
-                    ForEach(клиники) { Text(verbatim: $0.name).tag($0 as Clinic?) }
+                    ForEach(доступные) { Text(verbatim: $0.name).tag($0 as Clinic?) }
                 }
                 .pickerStyle(.menu)
                 .frame(minHeight: Token.Size.tapTarget)
+                if доступные.isEmpty {
+                    TGExplainer(text: "Справочник пуст. Клиники заводятся в «Здоровье» → «Клиники и лаборатории» — оттуда они и попадают в этот выбор.")
+                }
+                // Телефон выписавшей клиники нажимаемым: по рецепту
+                // звонят, когда в аптеке чего-то не хватает или когда
+                // номер бланка не читается.
+                if let номер = Fmt.notBlank(клиника?.phone ?? "") {
+                    TGDivider()
+                    СтрокаЗвонка(номер: номер)
+                }
                 TGDivider()
                 LabeledField(label: "Откуда взято") {
                     TextField("PDF-ордоннанс, письмо, со слов", text: $происхождение)
@@ -380,7 +410,15 @@ struct PrescriptionEditor: View {
         }
         .confirmationDialog("Удалить назначение?", isPresented: $удаляем, titleVisibility: .visible) {
             Button("Удалить", role: .destructive) {
-                if let prescription { context.delete(prescription) }
+                // Надгробие вместо `context.delete` — см. `Medication.deletedAt`.
+                if let prescription {
+                    let откат = ОбщееУдаление.удалить(prescription)
+                    guard context.persist(otherwise: откат) else {
+                        Haptics.warning()
+                        appState.showFailure("Не удалилось · нажми ещё раз")
+                        return
+                    }
+                }
                 Haptics.warning()
                 dismiss()
             }

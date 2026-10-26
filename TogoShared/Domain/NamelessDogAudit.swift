@@ -147,10 +147,16 @@ nonisolated enum NamelessDogAudit {
     @MainActor
     private static func улика(_ dog: Dog, повторная: Bool) {
         let filled = непустыеПоля(dog)
-        let rel = "ev \(dog.events.count) w \(dog.weights.count)"
-            + " care \(dog.careTasks.count) med \(dog.medications.count)"
+        // Счёт по `*Storage`, а не по обёрткам: с 26.10.2026 восемь
+        // обёрток отсеивают надгробия, а **перепись, не видящая
+        // удалённого, — не перепись**. Здесь ищут семя дефекта, и ноль
+        // по связям обязан значить «связей нет», а не «связи есть,
+        // но скрыты». Тот же приём уже стоял в `CloudKitSchemaWarmup`.
+        let rel = "ev \((dog.eventsStorage ?? []).count) w \((dog.weightsStorage ?? []).count)"
+            + " care \((dog.careTasksStorage ?? []).count)"
+            + " med \((dog.medicationsStorage ?? []).count)"
             + " step \(dog.trainingSteps.count) ses \(dog.trainingSessions.count)"
-            + " trip \(dog.trips.count) doc \(dog.documents.count)"
+            + " trip \(dog.trips.count) doc \((dog.documentsStorage ?? []).count)"
             + " out \(dog.daysOut.count) heat \(dog.heats.count)"
             + " stock \(dog.stocks.count)"
         let iso = ISO8601DateFormatter()
