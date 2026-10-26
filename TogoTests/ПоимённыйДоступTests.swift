@@ -154,8 +154,11 @@ struct ПоимённыйДоступTests {
                 """)
         }
 
-        #expect(FamilyShare.причина(FamilyShare.ShareError.нетТакогоУчастника) == "нетУчастника")
-        #expect(FamilyShare.причина(FamilyShare.ShareError.нельзяУбратьВладельца) == "владелец")
+        // Латиницей, как пять соседей: имя отказа уходит в журнал
+        // действий, который потом грепают, а кириллица в логах
+        // у этого проекта измеренно лежит в двух нормализациях разом.
+        #expect(FamilyShare.причина(FamilyShare.ShareError.нетТакогоУчастника) == "noParticipant")
+        #expect(FamilyShare.причина(FamilyShare.ShareError.нельзяУбратьВладельца) == "ownerNotRemovable")
     }
 
     // MARK: - Роль поимённо доезжает и действует

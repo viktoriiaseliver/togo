@@ -299,8 +299,13 @@ enum FamilyShare {
         case ShareError.noEntitlement: "noEntitlement"
         case ShareError.notOwner: "notOwner"
         case ShareError.linkNotReady: "linkNotReady"
-        case ShareError.нетТакогоУчастника: "нетУчастника"
-        case ShareError.нельзяУбратьВладельца: "владелец"
+        // Латиницей, как пять соседей выше, и это не вкус: имя уходит
+        // в журнал действий, который потом ГРЕПАЮТ. У этого проекта
+        // измерено, что кириллица в логах лежит в двух нормализациях
+        // Unicode разом (NFC и NFD) и ищется не с первого раза, —
+        // а здесь имя отказа и есть то, по чему разбирают случай.
+        case ShareError.нетТакогоУчастника: "noParticipant"
+        case ShareError.нельзяУбратьВладельца: "ownerNotRemovable"
         case ShareError.saveFailed(let code): code.map { "saveFailed\($0)" } ?? "saveFailed"
         default: (error as? CKError).map { "ck\($0.errorCode)" } ?? "unknown"
         }
@@ -365,13 +370,13 @@ enum FamilyShare {
     /// по неуникальному признаку закрыл бы дневник не тому человеку.
     private static func опознать(_ участник: CKShare.Participant) -> String? {
         if let запись = участник.userIdentity.userRecordID?.recordName {
-            return "id:" + запись
+            return "id:" + запись     // внутреннее: различитель участника, человек его не видит
         }
         if let почта = участник.userIdentity.lookupInfo?.emailAddress {
-            return "почта:" + почта
+            return "mail:" + почта    // внутреннее: различитель участника, человек его не видит
         }
         if let телефон = участник.userIdentity.lookupInfo?.phoneNumber {
-            return "тел:" + телефон
+            return "tel:" + телефон   // внутреннее: различитель участника, человек его не видит
         }
         return nil
     }

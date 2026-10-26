@@ -295,14 +295,14 @@ struct ДоступУчастника: View {
             try await FamilyShare.назначить(выбор, участнику: ключ)
             выбраннаяРоль = выбор
             Haptics.success()
-            UsageLog.note(.record, "рольПоимённо", on: .family)
+            UsageLog.note(.record, "roleByParticipant", on: .family)
             приПравке()
         } catch {
             // Вид отказа — в названии события: «не получилось» без
             // причины лечить так же нечем.
             отказ = error.localizedDescription
             Haptics.warning()
-            UsageLog.note(.record, "рольПоимённо:\(FamilyShare.причина(error))",
+            UsageLog.note(.record, "roleByParticipant:\(FamilyShare.причина(error))",
                           on: .family, outcome: .failed)
         }
     }
@@ -314,13 +314,13 @@ struct ДоступУчастника: View {
         do {
             try await FamilyShare.убрать(участника: участник.id)
             Haptics.success()
-            UsageLog.note(.record, "отзывДоступа", on: .family)
+            UsageLog.note(.record, "revokeAccess", on: .family)
             приПравке()
             dismiss()
         } catch {
             отказ = error.localizedDescription
             Haptics.warning()
-            UsageLog.note(.record, "отзывДоступа:\(FamilyShare.причина(error))",
+            UsageLog.note(.record, "revokeAccess:\(FamilyShare.причина(error))",
                           on: .family, outcome: .failed)
         }
     }

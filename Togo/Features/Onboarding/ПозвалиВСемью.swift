@@ -193,10 +193,10 @@ struct ПозвалиВСемью: View {
         исход = ответ
         if ответ.принято_ли {
             Haptics.success()
-            UsageLog.note(.record, "приёмПоСсылке", on: .family)
+            UsageLog.note(.record, "acceptByLink", on: .family)
         } else {
             Haptics.warning()
-            UsageLog.note(.record, "приёмПоСсылке:отказ", on: .family, outcome: .failed)
+            UsageLog.note(.record, "acceptByLink:failed", on: .family, outcome: .failed)
         }
     }
 }
