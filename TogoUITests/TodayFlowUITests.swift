@@ -87,8 +87,17 @@ nonisolated final class TodayFlowUITests: XCTestCase {
         XCTAssertTrue(еда.waitForExistence(timeout: 5),
                       "в шторке «Записать» нет строки «Еда»")
         еда.tap()
-        let записать = app.buttons["Записать"]
-        XCTAssertTrue(записать.waitForExistence(timeout: 3))
+        // **«Записать» стало неоднозначным** (замер 26.10.2026):
+        // так зовётся И внешняя шторка выбора, И кнопка подтверждения
+        // внутри формы еды. Отказ: «Find single matching element.
+        // Multiple matches». Прежде входом была кнопка «Еда»
+        // на главном, и второго «Записать» на экране не было.
+        //
+        // > **Неоднозначность завёл не продукт, а новая дорога:**
+        // > раньше эти два слова не встречались на одном экране.
+        let записать = app.buttons["Записать"].firstMatch
+        XCTAssertTrue(записать.waitForExistence(timeout: 3),
+                      "в форме еды нет кнопки «Записать»")
         записать.tap()
         XCTAssertTrue(app.buttons["Отменить"].waitForExistence(timeout: 3),
                       "каждая запись отменяется тостом")

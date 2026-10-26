@@ -215,10 +215,10 @@ nonisolated final class КлавиатураНаСемье: XCTestCase {
             Это отказ ВХОДА, и он не равен «экрана семьи нет».
             """)
 
-        let вкладка = app.tabBars.buttons["Семья"].firstMatch
-        XCTAssertTrue(вкладка.waitForExistence(timeout: 10),
-                      "вкладки «Семья» нет — кадра нет, и это не «экрана нет»")
-        вкладка.tap()
+        // Вкладки «Семья» нет с 22.10 — экран в меню «…»;
+        // дорогу знает `открытьСемью`.
+        XCTAssertTrue(открытьСемью(в: app),
+                      "экран «Семья» не открылся — это отказ дороги, не показа")
         XCTAssertTrue(app.navigationBars["Семья"].waitForExistence(timeout: 5),
                       "экран семьи не открылся")
 
