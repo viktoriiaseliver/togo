@@ -13,6 +13,7 @@
 - [26 октября 2026](journal/2026-10-26-versiya-na-zhivyh-klassah-ne-opisyvaet-nichego.md) — Разработчик схемы: версия на живых классах не описывает ничего — V5 заморожена снимком, V6 встала на живые, база пяти телефонов открывается
 - [26 октября 2026](journal/2026-10-26-tri-otkaza-okazalis-tremya-raznymi-veshchami.md) — Сессия `projects-4e`, тестировщик
 - [26 октября 2026](journal/2026-10-26-obkhod-perezhil-svoyu-prichinu.md) — Смена `projects-68`, доп-менеджер
+- [26 октября 2026 — nadgrobie-vybiralo-glavnuyu](journal/2026-10-26-nadgrobie-vybiralo-glavnuyu.md) — nadgrobie-vybiralo-glavnuyu
 - [26 октября 2026 — menedzher-lozhnye-nuli-po-ramke](journal/2026-10-26-menedzher-lozhnye-nuli-po-ramke.md) — menedzher-lozhnye-nuli-po-ramke
 - [26 октября 2026](journal/2026-10-26-instrument-otvechal-pro-sosedniy-predmet.md) — Разработчик вёрстки: честный ноль про переполнение уехал ответом про потерю содержимого
 - [26 октября 2026](journal/2026-10-26-chetyre-naryada-po-snyatym-zamemam.md) — 26.10.2026, `projects-9b`, разработчик вёрстки
