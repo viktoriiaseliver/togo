@@ -1,6 +1,7 @@
 import SwiftUI
 import UIKit
 import SwiftData
+import PhotosUI
 
 /// Стул — самая частая запись. Один тап в норме, два — когда что-то не так.
 /// Формы записываются сразу, без «Сохранить»; кнопка подтверждения появляется
@@ -15,6 +16,7 @@ struct StoolSheet: View {
     @State private var form: StoolForm?
     @State private var flags: Set<StoolFlag> = []
     @State private var created: LogEvent?
+    @State private var фото: Data?
 
     private var usual: StoolForm? { Diary.usualStool(dog?.events ?? []) }
 
@@ -90,6 +92,18 @@ struct StoolSheet: View {
                 )
             }
 
+            // **Фото ПОСЛЕ формы, и это не раскладка, а порядок
+            // действий.** Выбор формы без особенностей записывает стул
+            // и закрывает шторку (`pick`) — предложи снимок раньше,
+            // и человек, который просто отметил «как всегда», получил
+            // бы лишний шаг на самой частой записи дня.
+            //
+            // Кто снимает, тот уже выбрал форму и остался: у него либо
+            // особенность, либо он сам открыл камеру.
+            if form != nil {
+                ФотоМомента(data: $фото)
+            }
+
             TGExplainer(text: flags.isEmpty
                 ? "Бристольская шкала 1–7 существует, но только в базе и в отчёте врачу — выбирать её руками не нужно."
                 : "Подтверждение нужно потому, что запись с особенностью уходит в медицинскую часть и попадает в отчёт врачу.")
@@ -101,6 +115,18 @@ struct StoolSheet: View {
             }
         }
         .presentationDetents([.large])
+        // **Снимок кладётся В ЗАПИСЬ СРАЗУ, а не при подтверждении.**
+        // Без особенностей `confirm()` не зовётся вовсе: `pick`
+        // записывает форму и закрывает шторку. Положи фото только
+        // в `confirm` — и у человека, снявшего стул «как всегда»,
+        // оно бы молча исчезло.
+        //
+        // Запись к этому моменту уже есть (её завёл `pick`), поэтому
+        // `ensureEvent` здесь не заводит вторую.
+        .onChange(of: фото) { _, новое in
+            guard новое != nil, let event = created else { return }
+            event.photo = новое
+        }
     }
 
     private func toggle(_ flag: StoolFlag) {
@@ -124,6 +150,7 @@ struct StoolSheet: View {
         guard let event = ensureEvent() else { return }
         event.stoolForm = form
         event.stoolFlags = flags
+        event.photo = фото
         Haptics.success()
         appState.showUndo("Записано · Стул", eventID: event.id)
         dismiss()
@@ -354,6 +381,19 @@ struct EventEditSheet: View {
             // своими словами — то есть разошлись бы молча ещё и между
             // собой.
             if !canEdit { ПлашкаПрава(право: .editRecords) }
+            // Снимок целиком — здесь, а не в ленте: лента показывает
+            // только значок «есть фото», и строка ведёт сюда.
+            //
+            // Править фото может лишь тот, кому разрешено править
+            // записи: снимок — часть записи, и отдельного права у него
+            // нет. Чужому показываем, но не даём трогать.
+            if let event, event.photo != nil || canEdit {
+                ФотоМомента(data: Binding(get: { event.photo },
+                                          set: { новое in
+                    guard canEdit else { return }
+                    event.photo = новое
+                }))
+            }
             if let event {
                 TGCard(padding: 4) {
                     VStack(spacing: 0) {
@@ -752,5 +792,80 @@ struct UrineAtHomeSheet: View {
             }
         }
         dismiss()
+    }
+}
+
+/// Снять момент — фотография, которая уедет в запись дневника.
+///
+/// **Решение Виктории 27.10.2026: «фото момента (мы добавили
+/// возможность фоткать же)».** Возможность была у ДОКУМЕНТОВ
+/// (`DogDocument.image` с 08.10), у записи дневника её не было:
+/// снять стул, чтобы показать врачу через неделю, было нечем.
+///
+/// # Почему общий блок, а не кнопка в каждой шторке
+///
+/// Вид нужен в двух местах — у стула и у инцидента, — и в обоих
+/// он один и тот же: выбрать, ужать, показать миниатюру, дать
+/// убрать. Две копии этого разошлись бы молча: в Togo уже
+/// заплачено тремя реализациями «не кормить», из которых молчали
+/// две.
+///
+/// # Сжатие берётся готовое, а не пишется второе
+///
+/// `DocumentPhoto.shrink` — та самая дорога, у которой в голове
+/// записан разбор про `UIGraphicsImageRenderer` и масштаб устройства
+/// (запрошенные 1600 превращались в 4800, вес — в девять раз).
+/// Второй такой же код завёл бы второй дом у правила «сколько весит
+/// снимок в базе».
+///
+/// > **Снимок с камеры в базе — это мегабайты в каждом запросе
+/// > ленты.** Поэтому и `shrink`, и `.externalStorage` у поля:
+/// > файл лежит рядом, в строке таблицы только ссылка.
+struct ФотоМомента: View {
+    @Binding var data: Data?
+
+    @State private var picked: PhotosPickerItem?
+
+    var body: some View {
+        TGCard {
+            TGSectionHeader(title: "фото",
+                            subtitle: "если надо показать врачу")
+            if let data, let image = UIImage(data: data) {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFill()
+                    // 3:4 — та же пропорция, что у снимков документов
+                    // (ответ дизайна, круг 5 п. 6). Одно число на два
+                    // места, а не два похожих.
+                    .aspectRatio(3.0 / 4.0, contentMode: .fit)
+                    .frame(maxWidth: .infinity)
+                    .clipShape(RoundedRectangle(cornerRadius: Token.Radius.tile,
+                                                style: .continuous))
+                    .accessibilityLabel("Фото момента")
+                TGButton(title: "Убрать фото", variant: .secondary, size: .medium) {
+                    self.data = nil
+                }
+            } else {
+                PhotosPicker(selection: $picked, matching: .images, photoLibrary: .shared()) {
+                    TGIconRow(symbol: "camera",
+                              title: "Снять или выбрать",
+                              detail: "останется в дневнике и в сводке врачу")
+                        .frame(minHeight: Token.Size.tapTarget)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .onChange(of: picked) { _, item in
+            guard let item else { return }
+            Task {
+                // Полноразмерный снимок — десятки мегабайт. В дневнике
+                // он не нужен: врач смотрит на вид, а не на текстуру.
+                guard let raw = try? await item.loadTransferable(type: Data.self),
+                      let shrunk = DocumentPhoto.shrink(raw)
+                else { picked = nil; return }
+                data = shrunk
+                picked = nil
+            }
+        }
     }
 }

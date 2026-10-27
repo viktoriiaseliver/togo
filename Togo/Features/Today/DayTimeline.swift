@@ -173,6 +173,23 @@ struct DayTimelineRow: View {
                         .textStyle(AppFont.micro)
                         .wraps()
                 }
+                // **Признак фото, а не само фото.** Строка ленты —
+                // список дня, и миниатюра в полную ширину сделала бы
+                // из него галерею: записей за день бывает полтора
+                // десятка. Снимок целиком показывает правка записи,
+                // куда строка и ведёт.
+                //
+                // Значок, а не слово: он не переводится, не растёт
+                // с кеглем до переноса и читается на любом языке —
+                // а место в строке уже делят заголовок, автор
+                // и подпись.
+                if event.photo != nil {
+                    Label("Есть фото", systemImage: "photo")
+                        .labelStyle(.iconOnly)
+                        .font(.system(size: Token.Size.iconSm))
+                        .foregroundStyle(Token.Ink.secondary)
+                        .accessibilityLabel("Есть фото")
+                }
             }
         }
         .padding(.horizontal, Token.Spacing.cardPadding)

@@ -133,6 +133,18 @@ private struct IncidentDetailStep: View {
             if kind.asksReactionDetails { reactionDetails }
             if kind.showsPunishmentWarning { punishmentWarning }
             if let previous = previousIncident { episodeNotice(previous) }
+
+            // **Фото на ВТОРОМ шаге, где запись уже есть.** Первый шаг
+            // — выбор вида, он записывает и закрывается; предложи
+            // снимок там, и человек с рвотой на полу получил бы лишний
+            // экран между собой и записью.
+            //
+            // Здесь же он стоит по делу: вид уже выбран, запись
+            // заведена, и подзаголовок шторки прямо говорит «записано ·
+            // дальше только если хочешь».
+            ФотоМомента(data: Binding(get: { event.photo },
+                                      set: { event.photo = $0 }))
+
             tellFamilyToggle
         } footer: {
             TGButton(title: "Готово", action: onDone)
