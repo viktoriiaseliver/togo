@@ -2816,27 +2816,6 @@
       "name": "Component",
       "variables": [
         {
-          "name": "actionTile/background",
-          "type": "COLOR",
-          "description": "",
-          "alias": "action/secondary",
-          "aliasCollection": "Semantic"
-        },
-        {
-          "name": "actionTile/minHeight",
-          "type": "FLOAT",
-          "description": "",
-          "alias": "size/controlL",
-          "aliasCollection": "Primitive"
-        },
-        {
-          "name": "actionTile/radius",
-          "type": "FLOAT",
-          "description": "",
-          "alias": "radius/tile",
-          "aliasCollection": "Semantic"
-        },
-        {
           "name": "backdrop/headerScrim/alpha",
           "type": "FLOAT",
           "description": "Плотность затемнения шапки в обычном режиме (`backdrop.headerScrim.alpha`). Читатели на 26.10.2026: `Togo/Features/Settings/CinemaHeader.swift` и `Togo/Features/Profile/ФотоШапка.swift`, оба через `плотностьШапки`, плюс `Togo/Features/Today/ReadingPanel.swift`. До этого коммита стояло литералом в трёх файлах — место токену назвал сам код: «Место им — `Token.Component.Backdrop.headerScrim`, хозяин — сессия токенов».",
@@ -2856,66 +2835,10 @@
           "aliasCollection": "Primitive"
         },
         {
-          "name": "backdrop/height/sub",
-          "type": "FLOAT",
-          "description": "",
-          "alias": "size/backdropSub",
-          "aliasCollection": "Primitive"
-        },
-        {
-          "name": "backdrop/height/tab",
-          "type": "FLOAT",
-          "description": "",
-          "alias": "size/backdropTab",
-          "aliasCollection": "Primitive"
-        },
-        {
-          "name": "backdrop/height/today",
-          "type": "FLOAT",
-          "description": "",
-          "alias": "size/backdropToday",
-          "aliasCollection": "Primitive"
-        },
-        {
-          "name": "backdrop/height/walk",
-          "type": "FLOAT",
-          "description": "",
-          "alias": "size/backdropWalk",
-          "aliasCollection": "Primitive"
-        },
-        {
           "name": "backdrop/maxPhotos",
           "type": "FLOAT",
           "description": "До пяти своих фото (`backdrop.settings.maxPhotos`).",
           "value": 5.0
-        },
-        {
-          "name": "backdrop/tint/alarm",
-          "type": "COLOR",
-          "description": "",
-          "alias": "color/backdropTintAlarm",
-          "aliasCollection": "Primitive"
-        },
-        {
-          "name": "backdrop/tint/dose",
-          "type": "COLOR",
-          "description": "",
-          "alias": "color/backdropTintDose",
-          "aliasCollection": "Primitive"
-        },
-        {
-          "name": "backdrop/tint/fasting",
-          "type": "COLOR",
-          "description": "",
-          "alias": "color/backdropTintFasting",
-          "aliasCollection": "Primitive"
-        },
-        {
-          "name": "backdrop/tint/night",
-          "type": "COLOR",
-          "description": "",
-          "alias": "color/backdropTintNight",
-          "aliasCollection": "Primitive"
         },
         {
           "name": "banner/chevronSize",
@@ -2974,20 +2897,6 @@
           "aliasCollection": "Primitive"
         },
         {
-          "name": "bottomBar/primaryHeight",
-          "type": "FLOAT",
-          "description": "",
-          "alias": "size/capsule",
-          "aliasCollection": "Primitive"
-        },
-        {
-          "name": "bottomBar/secondaryHeight",
-          "type": "FLOAT",
-          "description": "",
-          "alias": "size/capsule",
-          "aliasCollection": "Primitive"
-        },
-        {
           "name": "button/destructive/background",
           "type": "COLOR",
           "description": "",
@@ -2995,24 +2904,10 @@
           "aliasCollection": "Semantic"
         },
         {
-          "name": "button/destructive/height",
-          "type": "FLOAT",
-          "description": "",
-          "alias": "size/controlM",
-          "aliasCollection": "Primitive"
-        },
-        {
           "name": "button/destructive/label",
           "type": "COLOR",
           "description": "",
           "alias": "status/overdueText",
-          "aliasCollection": "Semantic"
-        },
-        {
-          "name": "button/destructive/radius",
-          "type": "FLOAT",
-          "description": "",
-          "alias": "radius/control",
           "aliasCollection": "Semantic"
         },
         {
@@ -3037,24 +2932,10 @@
           "aliasCollection": "Semantic"
         },
         {
-          "name": "button/finish/height",
-          "type": "FLOAT",
-          "description": "",
-          "alias": "size/controlM",
-          "aliasCollection": "Primitive"
-        },
-        {
           "name": "button/finish/label",
           "type": "COLOR",
           "description": "",
           "alias": "status/doneText",
-          "aliasCollection": "Semantic"
-        },
-        {
-          "name": "button/finish/radius",
-          "type": "FLOAT",
-          "description": "",
-          "alias": "radius/control",
           "aliasCollection": "Semantic"
         },
         {
@@ -3079,13 +2960,6 @@
           "aliasCollection": "Semantic"
         },
         {
-          "name": "button/primary/radius",
-          "type": "FLOAT",
-          "description": "",
-          "alias": "radius/capsule",
-          "aliasCollection": "Primitive"
-        },
-        {
           "name": "button/secondary/background",
           "type": "COLOR",
           "description": "",
@@ -3104,20 +2978,6 @@
           "type": "COLOR",
           "description": "",
           "alias": "text/primary",
-          "aliasCollection": "Semantic"
-        },
-        {
-          "name": "button/secondary/radius",
-          "type": "FLOAT",
-          "description": "",
-          "alias": "radius/control",
-          "aliasCollection": "Semantic"
-        },
-        {
-          "name": "card/background",
-          "type": "COLOR",
-          "description": "",
-          "alias": "surface/card",
           "aliasCollection": "Semantic"
         },
         {
@@ -3142,25 +3002,11 @@
           "aliasCollection": "Semantic"
         },
         {
-          "name": "categoryBadge/dose",
-          "type": "COLOR",
-          "description": "",
-          "alias": "category/dose",
-          "aliasCollection": "Semantic"
-        },
-        {
           "name": "categoryBadge/doseRadius",
           "type": "FLOAT",
           "description": "Доза — скруглённый квадрат 12 (`category.doseShapeRadius`), а не круг. Единственный вид, у которого форма другая.",
           "alias": "radius/icon",
           "aliasCollection": "Primitive"
-        },
-        {
-          "name": "categoryBadge/food",
-          "type": "COLOR",
-          "description": "",
-          "alias": "category/food",
-          "aliasCollection": "Semantic"
         },
         {
           "name": "categoryBadge/incident",
@@ -3205,52 +3051,10 @@
           "aliasCollection": "Primitive"
         },
         {
-          "name": "categoryBadge/train",
-          "type": "COLOR",
-          "description": "",
-          "alias": "category/train",
-          "aliasCollection": "Semantic"
-        },
-        {
           "name": "categoryBadge/treat",
           "type": "COLOR",
           "description": "Лакомство и еда — один цвет, так в хендоффе.",
           "alias": "category/treat",
-          "aliasCollection": "Semantic"
-        },
-        {
-          "name": "categoryBadge/walk",
-          "type": "COLOR",
-          "description": "",
-          "alias": "category/walk",
-          "aliasCollection": "Semantic"
-        },
-        {
-          "name": "categoryBadge/water",
-          "type": "COLOR",
-          "description": "",
-          "alias": "category/water",
-          "aliasCollection": "Semantic"
-        },
-        {
-          "name": "categoryBadge/weight",
-          "type": "COLOR",
-          "description": "",
-          "alias": "category/weight",
-          "aliasCollection": "Semantic"
-        },
-        {
-          "name": "chip/alarmBackground",
-          "type": "COLOR",
-          "description": "",
-          "alias": "status/overdueBg",
-          "aliasCollection": "Semantic"
-        },
-        {
-          "name": "chip/alarmLabel",
-          "type": "COLOR",
-          "description": "",
-          "alias": "status/overdueText",
           "aliasCollection": "Semantic"
         },
         {
@@ -3261,51 +3065,9 @@
           "aliasCollection": "Primitive"
         },
         {
-          "name": "chip/radius",
-          "type": "FLOAT",
-          "description": "",
-          "alias": "radius/tile",
-          "aliasCollection": "Semantic"
-        },
-        {
-          "name": "chip/restBackground",
-          "type": "COLOR",
-          "description": "",
-          "alias": "action/secondary",
-          "aliasCollection": "Semantic"
-        },
-        {
-          "name": "chip/selectedBackground",
-          "type": "COLOR",
-          "description": "",
-          "alias": "action/primaryQuiet",
-          "aliasCollection": "Semantic"
-        },
-        {
-          "name": "feedRow/background",
-          "type": "COLOR",
-          "description": "",
-          "alias": "surface/card",
-          "aliasCollection": "Semantic"
-        },
-        {
-          "name": "feedRow/minHeight",
-          "type": "FLOAT",
-          "description": "",
-          "alias": "size/rowMin",
-          "aliasCollection": "Primitive"
-        },
-        {
           "name": "feedRow/timeColumn",
           "type": "FLOAT",
           "description": "Колонка времени 44, по правому краю.",
-          "alias": "size/tapTarget",
-          "aliasCollection": "Primitive"
-        },
-        {
-          "name": "header/buttonSize",
-          "type": "FLOAT",
-          "description": "",
           "alias": "size/tapTarget",
           "aliasCollection": "Primitive"
         },
@@ -3331,31 +3093,10 @@
           "aliasCollection": "Semantic"
         },
         {
-          "name": "metric/bars/gap",
-          "type": "FLOAT",
-          "description": "",
-          "alias": "size/metricBarGap",
-          "aliasCollection": "Primitive"
-        },
-        {
-          "name": "metric/bars/height",
-          "type": "FLOAT",
-          "description": "",
-          "alias": "size/metricBars",
-          "aliasCollection": "Primitive"
-        },
-        {
           "name": "metric/bars/marginTop",
           "type": "FLOAT",
           "description": "Отступ полосы от пояснения, 6.",
           "alias": "space/6",
-          "aliasCollection": "Primitive"
-        },
-        {
-          "name": "metric/bars/radius",
-          "type": "FLOAT",
-          "description": "",
-          "alias": "radius/bar",
           "aliasCollection": "Primitive"
         },
         {
@@ -3371,13 +3112,6 @@
           "description": "ЛИНИЯ НОРМЫ СПЛОШНАЯ — прозрачность ОТМЕНЕНА дизайном: в прототипе она была `text-secondary` с opacity .5, ответ круга 2 говорит «прозрачности на линиях нет». Цвет — `text.faint` (#8E8E93 в тёмной), он же `text.disabled` хендоффа. Запрет `Ink.faint` (`InkContrastTests`) этим НЕ нарушен: он стоит на ТЕКСТЕ и ЗНАЧКАХ, а здесь двухточечная линия, которой порог 4,5:1 не адресован. ЧИТАТЕЛЕЙ У ОБОИХ ПОЛЕЙ НОЛЬ — линию нормы не рисует ни один живой экран; разбор в описании `primitive.size.metricNormLine`.",
           "alias": "text/faint",
           "aliasCollection": "Semantic"
-        },
-        {
-          "name": "metric/normLine/width",
-          "type": "FLOAT",
-          "description": "",
-          "alias": "size/metricNormLine",
-          "aliasCollection": "Primitive"
         },
         {
           "name": "metric/number/size",
@@ -3450,45 +3184,10 @@
           "aliasCollection": "Primitive"
         },
         {
-          "name": "readingTone/alarm/chip",
-          "type": "COLOR",
-          "description": "",
-          "alias": "color/toneAlarmChip",
-          "aliasCollection": "Primitive"
-        },
-        {
           "name": "readingTone/alarm/chipLabel",
           "type": "COLOR",
           "description": "Подпись на чипе тона. ВЫВЕДЕНО из цвета показания того же тона (`fg`): своих значений для подписи чипа хендофф не даёт. Кадр 02 подтверждает только час дозы — белым по индиго. Замер по кадрам второго пакета 22.10.2026: `~/Downloads/design_handoff_togo_ios28 2/screenshots/01.png` (обычный день) и `02.png` (час дозы), 424×896. Прочитано глазами, не из описания.",
           "alias": "color/posterInk",
-          "aliasCollection": "Primitive"
-        },
-        {
-          "name": "readingTone/alarm/fg",
-          "type": "COLOR",
-          "description": "",
-          "alias": "color/posterInk",
-          "aliasCollection": "Primitive"
-        },
-        {
-          "name": "readingTone/alarm/panel",
-          "type": "COLOR",
-          "description": "",
-          "alias": "color/toneAlarmPanel",
-          "aliasCollection": "Primitive"
-        },
-        {
-          "name": "readingTone/alarm/primaryButton",
-          "type": "COLOR",
-          "description": "",
-          "alias": "color/toneAlarmChip",
-          "aliasCollection": "Primitive"
-        },
-        {
-          "name": "readingTone/dose/chip",
-          "type": "COLOR",
-          "description": "",
-          "alias": "color/indigo",
           "aliasCollection": "Primitive"
         },
         {
@@ -3499,31 +3198,10 @@
           "aliasCollection": "Primitive"
         },
         {
-          "name": "readingTone/dose/panel",
-          "type": "COLOR",
-          "description": "",
-          "alias": "color/toneDosePanel",
-          "aliasCollection": "Primitive"
-        },
-        {
           "name": "readingTone/dose/primaryButton",
           "type": "COLOR",
           "description": "ЕДИНСТВЕННОЕ МЕСТО, ГДЕ ГЛАВНАЯ КНОПКА НЕ БЕЛАЯ: в час дозы она индиговая (`readingTone.dose.primaryButton` = #1F4FFF).",
           "alias": "color/indigo",
-          "aliasCollection": "Primitive"
-        },
-        {
-          "name": "readingTone/fasting/caption",
-          "type": "COLOR",
-          "description": "",
-          "alias": "color/toneFastingCaption",
-          "aliasCollection": "Primitive"
-        },
-        {
-          "name": "readingTone/fasting/chip",
-          "type": "COLOR",
-          "description": "",
-          "alias": "color/toneFastingChip",
           "aliasCollection": "Primitive"
         },
         {
@@ -3532,34 +3210,6 @@
           "description": "Подпись на чипе тона. ВЫВЕДЕНО из цвета показания того же тона (`fg`): своих значений для подписи чипа хендофф не даёт. Кадр 02 подтверждает только час дозы — белым по индиго. Замер по кадрам второго пакета 22.10.2026: `~/Downloads/design_handoff_togo_ios28 2/screenshots/01.png` (обычный день) и `02.png` (час дозы), 424×896. Прочитано глазами, не из описания.",
           "alias": "color/toneFastingInk",
           "aliasCollection": "Primitive"
-        },
-        {
-          "name": "readingTone/fasting/fg",
-          "type": "COLOR",
-          "description": "",
-          "alias": "color/toneFastingInk",
-          "aliasCollection": "Primitive"
-        },
-        {
-          "name": "readingTone/fasting/panel",
-          "type": "COLOR",
-          "description": "",
-          "alias": "color/toneFastingPanel",
-          "aliasCollection": "Primitive"
-        },
-        {
-          "name": "readingTone/night/fg",
-          "type": "COLOR",
-          "description": "",
-          "alias": "text/primary",
-          "aliasCollection": "Semantic"
-        },
-        {
-          "name": "readingTone/night/panel",
-          "type": "COLOR",
-          "description": "",
-          "alias": "glass/strong",
-          "aliasCollection": "Semantic"
         },
         {
           "name": "readingTone/night/photoBrightness",
@@ -3592,13 +3242,6 @@
           "type": "COLOR",
           "description": "Подпись на белом чипе — #111111. Значение взято С КАДРА: в токенах хендоффа подписи чипа нет ни у одного тона. Замер по кадрам второго пакета 22.10.2026: `~/Downloads/design_handoff_togo_ios28 2/screenshots/01.png` (обычный день) и `02.png` (час дозы), 424×896. Прочитано глазами, не из описания.",
           "alias": "text/onAccent",
-          "aliasCollection": "Semantic"
-        },
-        {
-          "name": "readingTone/normal/fg",
-          "type": "COLOR",
-          "description": "",
-          "alias": "text/primary",
           "aliasCollection": "Semantic"
         },
         {
@@ -3651,13 +3294,6 @@
           "aliasCollection": "Primitive"
         },
         {
-          "name": "sheet/radius",
-          "type": "FLOAT",
-          "description": "",
-          "alias": "radius/sheet",
-          "aliasCollection": "Semantic"
-        },
-        {
           "name": "tabBar/active",
           "type": "COLOR",
           "description": "Активная вкладка — ИНДИГО, и на обычном дне тоже, где главная кнопка белая. Это и есть граница решения «индиго отменено»: отменён индиговый АКЦЕНТ ПО УМОЛЧАНИЮ (главная кнопка), а не индиго как значение. На кадре 01 белая кнопка «Просится» и синяя вкладка «Сегодня» стоят в одном кадре — читать их как одно решение нельзя. Замер по кадрам второго пакета 22.10.2026: `~/Downloads/design_handoff_togo_ios28 2/screenshots/01.png` (обычный день) и `02.png` (час дозы), 424×896. Прочитано глазами, не из описания.",
@@ -3672,39 +3308,11 @@
           "aliasCollection": "Semantic"
         },
         {
-          "name": "tabBar/height",
-          "type": "FLOAT",
-          "description": "",
-          "alias": "size/tabBar",
-          "aliasCollection": "Primitive"
-        },
-        {
           "name": "tabBar/inactive",
           "type": "COLOR",
           "description": "Неактивная вкладка. Замер по кадрам второго пакета 22.10.2026: `~/Downloads/design_handoff_togo_ios28 2/screenshots/01.png` (обычный день) и `02.png` (час дозы), 424×896. Прочитано глазами, не из описания.",
           "alias": "text/secondary",
           "aliasCollection": "Semantic"
-        },
-        {
-          "name": "tabBar/item",
-          "type": "FLOAT",
-          "description": "",
-          "alias": "size/tabItem",
-          "aliasCollection": "Primitive"
-        },
-        {
-          "name": "timeline/alarmMark",
-          "type": "COLOR",
-          "description": "",
-          "alias": "status/overdueText",
-          "aliasCollection": "Semantic"
-        },
-        {
-          "name": "timeline/gutter",
-          "type": "FLOAT",
-          "description": "",
-          "alias": "space/12",
-          "aliasCollection": "Primitive"
         },
         {
           "name": "timeline/nowMarker",

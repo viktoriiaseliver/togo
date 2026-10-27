@@ -443,11 +443,6 @@ nonisolated enum Token {
     /// Слой компонентов — то, что в Figma лежит свойствами внутри самого
     /// компонента. Экран сюда не лезет: он выбирает вариант.
     enum Component {
-        enum ActionTile {
-            static let background = Общие.night4
-            static let minHeight: CGFloat = 52
-            static let radius: CGFloat = 16
-        }
         enum Backdrop {
             enum HeaderScrim {
                 /// Плотность затемнения шапки в обычном режиме (`backdrop.headerScrim.alpha`). Читатели на 26.10.2026: `Togo/Features/Settings/CinemaHeader.swift` и `Togo/Features/Profile/ФотоШапка.swift`, оба через `плотностьШапки`, плюс `Togo/Features/Today/ReadingPanel.swift`. До этого коммита стояло литералом в трёх файлах — место токену назвал сам код: «Место им — `Token.Component.Backdrop.headerScrim`, хозяин — сессия токенов».
@@ -455,12 +450,6 @@ nonisolated enum Token {
                 /// Плотность затемнения шапки в повышенном контрасте (`backdrop.headerScrim.alphaHC`). ДВА ОТДЕЛЬНЫХ ЧИСЛА, А НЕ МОДАЛЬНЫЙ ТОКЕН: у дизайнера значения различаются по КОНТРАСТУ, а не по теме — одно на `dark`+`light`, другое на `darkHC`+`lightHC`, — и в схему `MODES` из четырёх независимых режимов это не укладывается без дублей. Код читает их ровно так же: `контраст == .increased ? alphaHC : alpha`. Светлых режимов на устройстве нет вовсе (`UIUserInterfaceStyle = Dark` в обоих plist, решение Виктории 23.10.2026 «Кино. Одна тема», под охраной `ThemeNotPinnedTests`), так что живых значений здесь два, а не четыре.
                 static let alphaHC: Double = 0.7
                 static let fadePt: CGFloat = 48
-            }
-            enum Height {
-                static let sub: CGFloat = 360
-                static let tab: CGFloat = 420
-                static let today: CGFloat = 640
-                static let walk: CGFloat = 520
             }
             /// Маска исчезновения фото (`backdrop.maskStops`). В хендоффе задана парами «позиция → непрозрачность» ([0.45,1],[0.92,0]); здесь те же две позиции выражены ЧЁРНЫМ С АЛЬФОЙ, а не вторым типом токена. Причина — не краткость: второй тип завёл бы вторую реализацию одного правила, а у нас записано, что третья реализация молчала в двух случаях из трёх. Чёрный с альфой и в CSS даёт дословно тот же `linear-gradient`, и в SwiftUI годится для `.mask` без перевода.
             static let mask: [GradientStop] = [
@@ -480,12 +469,6 @@ nonisolated enum Token {
                 GradientStop(position: 0.76, color: Color(hex: 0x000000FF)),
                 GradientStop(position: 1, color: Color(hex: 0x000000FF)),
             ]
-            enum Tint {
-                static let alarm = Color(hex: 0xD5251999)
-                static let dose = Color(hex: 0x1F4FFF8C)
-                static let fasting = Color(hex: 0xFFC2338C)
-                static let night = Color(hex: 0x14143C99)
-            }
         }
         enum Banner {
             /// Шеврон ГРОМКОЙ плашки — «шеврон 22», ответ дизайна 25.10.2026, круг 5, пункт 6. Плашка «Если что-то случилось» лежит в `NavigationLink` и до 25.10 не показывала этого ничем: единственная подсказка была в том, что она нажимается. ТОЛЬКО У ГРОМКОЙ: тихие плашки в 48 остальных местах никуда не ведут, и шеврон на них обещал бы переход, которого нет.
@@ -505,15 +488,11 @@ nonisolated enum Token {
         enum BottomBar {
             /// Круглая «+» → шторка «Записать».
             static let plusSize: CGFloat = 60
-            static let primaryHeight: CGFloat = 60
-            static let secondaryHeight: CGFloat = 60
         }
         enum Button {
             enum Destructive {
                 static let background = Общие.clayBg
-                static let height: CGFloat = 50
                 static let label = Общие.clay
-                static let radius: CGFloat = 24
             }
             enum Disabled {
                 /// ОТВЕТ ДИЗАЙНА 25.10.2026, КРУГ 5, ПУНКТ 4, дословно: «Разводим выключенную и второстепенную. `Disabled.background` → `surface.sunken` #2C2C2E… Второстепенная остаётся #3A3A3C». Было `{semantic.surface.pressed}` = `night5`; с 23.10.2026 `night4` (контрол, он же вторая кнопка) ушёл на #3A3A3C и СОВПАЛ С `night5` байт в байт — выключенная и второстепенная кнопки стали одного цвета в Dark и Dark HC, и на это стоял красный с хозяином Викторией (`ВыключеннаяИВторостепеннаяTests`, эталон, заведён 23.10). ЭТОТ ПЕРЕВОД ЕГО ЗАКРЫВАЕТ: после правки вторая #3A3A3C против выключенной #2C2C2E в Dark, #48484A против #363638 в Dark HC, #FFFFFF против #E3E5E8 в обеих светлых — различаются все четыре. ВЗЯТ НЕ ТОТ ПРЕТЕНДЕНТ, КОТОРОГО ЖДАЛИ, И ЭТО НАДО ЗНАТЬ ЧИТАЮЩЕМУ: и запись эталона, и голова `ПлашкиКонтролаTests`, и описание `nightControlPressed` называли готовым ответом `Token.Surface.controlPressed` (#48484A). Дизайн выбрал ДРУГОЕ — `surface.sunken`, — и выбрал громче: #2C2C2E темнее фона карточки, то есть выключенная кнопка проваливается, а не поднимается. Слово дизайна старше нашего предположения; `controlPressed` остаётся без читателей и ждёт нажатой плашки контрола, под которую и заведён. ЧТО ЭТА ПРАВКА СОЗДАЁТ И У ЧЕГО ХОЗЯИН: `Disabled.background` теперь равен `Surface.sunken` БАЙТ В БАЙТ во всех четырёх режимах — выключенная кнопка, положенная НА утопленную область, не будет видна вовсе. Сторожа на эту пару нет ни одного, и это названо здесь, а не оставлено на кадр. Замер 25.10.2026: `Surface.sunken` — 20 вхождений в Swift, и ни одно из них не рисует под собой выключенную кнопку; `TGButton:109` — единственный читатель этой роли. Совпадение выбрал дизайн прямым словом, поэтому оно записано условием, а не дефектом. ПОДПИСЬ НЕ ТРОНУТА НАРОЧНО, см. соседнюю запись `label`. Прежняя причина, которая переживает эту правку: пара `Disabled.background` и `Surface.pressed` сидела на одном примитиве `night5`, и обязана была разойтись, как только у `Surface.pressed` появится первый читатель; теперь они разошлись значением, и условие снято починкой, а не ожиданием. Сторож на условие стоит в `ThemeContrastTests.нажатоеИВыключенноеНеСлипнутся` и остаётся годным: он краснеет, если их СВЕДУТ обратно. ПРЕЖНЯЯ ЗАПИСЬ ЦЕЛИКОМ, потому что причина переживает починку: УСЛОВИЕ, КОТОРОЕ НАДО ПРОВЕРЯТЬ, А НЕ ПОМНИТЬ: эта роль и `semantic.surface.pressed` сидят на одном примитиве `night5`, и обязаны РАЗОЙТИСЬ в тот момент, когда у `Surface.pressed` появится первый читатель в Swift. Сегодня столкновения нет по замеру 15.10.2026: у `night5` одна производная (`Surface.pressed`) и у неё ЖИВЫХ ЧИТАТЕЛЕЙ НОЛЬ, как и у `Surface.skeleton`, `Chip.pressedBackground`, `Action.secondaryPressed` — при живом контроле `Surface.sunken` 17, `Surface.screen` 11, `Surface.card` 9. Но это «поле без читателя», а оно означает в двух случаях противоположное: появится читатель — нажатая кнопка и выключенная станут одного цвета, и обнаружится это у человека, а не у нас. Сторож на это условие стоит в `ThemeContrastTests`. Было `{semantic.surface.control}` = `night4`, то есть в светлой `#FFFFFF` — РОВНО фон экрана, байт в байт, 1,0000:1: плашки не существовало на экране, и человек видел слово «Дальше» без кнопки рядом с «Пока без собаки» того же вида. Сломано было означающее, а не контраст: подними контраст подписи на белой плашке — получишь два хорошо читаемых серых слова, между которыми по-прежнему не выбрать. Порог ≥3:1, под который эту шкалу сперва мерили, здесь не норма ничья: WCAG 1.4.11 исключает неактивные элементы, а системная рампа Apple держит выключенную заливку на 1,1–1,7:1 (systemGray4 1,52 · systemGray5 1,26). `night5` даёт 1,3909 в Light и 1,4162 в Light HC — внутри полосы Apple, и HC даёт БОЛЬШЕ, как и должен. Решение Виктории 15.10.2026, получено прямым вопросом.
@@ -523,35 +502,28 @@ nonisolated enum Token {
             }
             enum Finish {
                 static let background = Общие.arcticTint
-                static let height: CGFloat = 50
                 static let label = Общие.ink
-                static let radius: CGFloat = 24
             }
             enum Primary {
                 static let background = Общие.arctic
                 static let height: CGFloat = 60
                 static let label = Общие.arcticInk
-                static let radius: CGFloat = 999
             }
             enum Secondary {
                 static let background = Общие.night4
                 static let height: CGFloat = 50
                 static let label = Общие.ink
-                static let radius: CGFloat = 24
             }
         }
         enum Card {
-            static let background = Общие.night2
             static let padding: CGFloat = 16
             static let radius: CGFloat = 24
         }
         enum CategoryBadge {
             /// Уход и занятие — один цвет, так в хендоффе.
             static let care = Color(hex: 0xC3A6FFFF)
-            static let dose = Color(hex: 0xFF8FBFFF)
             /// Доза — скруглённый квадрат 12 (`category.doseShapeRadius`), а не круг. Единственный вид, у которого форма другая.
             static let doseRadius: CGFloat = 12
-            static let food = Color(hex: 0xFF9A5CFF)
             /// `category.incident` хендоффа = `status.error`, то есть наш терракот. Своего значения у инцидента нет и заводить его не надо.
             static let incident = Общие.clay
             /// Значок внутри кружка — #111 на любой заливке.
@@ -564,29 +536,17 @@ nonisolated enum Token {
             static let radius: CGFloat = 13
             /// Кружок 40 pt.
             static let size: CGFloat = 40
-            static let train = Color(hex: 0xC3A6FFFF)
             /// Лакомство и еда — один цвет, так в хендоффе.
             static let treat = Color(hex: 0xFF9A5CFF)
-            static let walk = Color(hex: 0x7CE0A0FF)
-            static let water = Color(hex: 0x7FD3FFFF)
-            static let weight = Color(hex: 0xFFD43BFF)
         }
         enum Chip {
-            static let alarmBackground = Общие.clayBg
-            static let alarmLabel = Общие.clay
             static let height: CGFloat = 44
-            static let radius: CGFloat = 16
-            static let restBackground = Общие.night4
-            static let selectedBackground = Общие.arcticTint
         }
         enum FeedRow {
-            static let background = Общие.night2
-            static let minHeight: CGFloat = 60
             /// Колонка времени 44, по правому краю.
             static let timeColumn: CGFloat = 44
         }
         enum Header {
-            static let buttonSize: CGFloat = 44
             /// Крупный заголовок 36.
             static let titleSize: CGFloat = 36
             /// −0,9 pt при 36.
@@ -596,18 +556,14 @@ nonisolated enum Token {
             enum Bars {
                 /// Столбики красятся ссылкой (`metric.bars.color` = `text.link`), а не акцентом: акцент в «Кино» белый, и четырнадцать белых столбиков на чёрном были бы сплошной заливкой.
                 static let color = Общие.link
-                static let gap: CGFloat = 3
-                static let height: CGFloat = 48
                 /// Отступ полосы от пояснения, 6.
                 static let marginTop: CGFloat = 6
-                static let radius: CGFloat = 3
             }
             /// Зазор между строками блока, 6 (`metric.gap`).
             static let gap: CGFloat = 6
             enum NormLine {
                 /// ЛИНИЯ НОРМЫ СПЛОШНАЯ — прозрачность ОТМЕНЕНА дизайном: в прототипе она была `text-secondary` с opacity .5, ответ круга 2 говорит «прозрачности на линиях нет». Цвет — `text.faint` (#8E8E93 в тёмной), он же `text.disabled` хендоффа. Запрет `Ink.faint` (`InkContrastTests`) этим НЕ нарушен: он стоит на ТЕКСТЕ и ЗНАЧКАХ, а здесь двухточечная линия, которой порог 4,5:1 не адресован. ЧИТАТЕЛЕЙ У ОБОИХ ПОЛЕЙ НОЛЬ — линию нормы не рисует ни один живой экран; разбор в описании `primitive.size.metricNormLine`.
                 static let color = Общие.inkFaint
-                static let width: CGFloat = 2
             }
             enum Number {
                 /// 48, SF Pro Rounded 300, табличные цифры.
@@ -637,32 +593,20 @@ nonisolated enum Token {
         }
         enum ReadingTone {
             enum Alarm {
-                static let chip = Color(hex: 0xD52519FF)
                 /// Подпись на чипе тона. ВЫВЕДЕНО из цвета показания того же тона (`fg`): своих значений для подписи чипа хендофф не даёт. Кадр 02 подтверждает только час дозы — белым по индиго. Замер по кадрам второго пакета 22.10.2026: `~/Downloads/design_handoff_togo_ios28 2/screenshots/01.png` (обычный день) и `02.png` (час дозы), 424×896. Прочитано глазами, не из описания.
                 static let chipLabel = Общие.posterInk
-                static let fg = Общие.posterInk
-                static let panel = Общие.toneAlarmPanel
-                static let primaryButton = Color(hex: 0xD52519FF)
             }
             enum Dose {
-                static let chip = Общие.indigo
                 /// Подпись на чипе тона. ВЫВЕДЕНО из цвета показания того же тона — прежде это был сосед `fg`, УДАЛЁННЫЙ 26.10.2026 решением Виктории как мёртвый путь (он давал posterInk #F4F4F2 против #FFFFFF, которым показание красят на самом деле; экран берёт `semantic.poster.labelOnDoseTone`). Значение подписи чипа этим не тронуто: своих значений для подписи чипа хендофф не даёт, и оснований менять его у исполнителя нет. Кадр 02 подтверждает только час дозы — белым по индиго. Замер по кадрам второго пакета 22.10.2026: `~/Downloads/design_handoff_togo_ios28 2/screenshots/01.png` (обычный день) и `02.png` (час дозы), 424×896. Прочитано глазами, не из описания.
                 static let chipLabel = Общие.posterInk
-                static let panel = Общие.toneDosePanel
                 /// ЕДИНСТВЕННОЕ МЕСТО, ГДЕ ГЛАВНАЯ КНОПКА НЕ БЕЛАЯ: в час дозы она индиговая (`readingTone.dose.primaryButton` = #1F4FFF).
                 static let primaryButton = Общие.indigo
             }
             enum Fasting {
-                static let caption = Color(hex: 0x5A4300FF)
-                static let chip = Color(hex: 0xFFC233FF)
                 /// Подпись на чипе тона. ВЫВЕДЕНО из цвета показания того же тона (`fg`): своих значений для подписи чипа хендофф не даёт. Кадр 02 подтверждает только час дозы — белым по индиго. Замер по кадрам второго пакета 22.10.2026: `~/Downloads/design_handoff_togo_ios28 2/screenshots/01.png` (обычный день) и `02.png` (час дозы), 424×896. Прочитано глазами, не из описания.
                 static let chipLabel = Color(hex: 0x2A1D00FF)
-                static let fg = Color(hex: 0x2A1D00FF)
-                static let panel = Общие.toneFastingPanel
             }
             enum Night {
-                static let fg = Общие.ink
-                static let panel = Общие.glassStrong
                 /// Фото ночью: `brightness(.7)`.
                 static let photoBrightness: Double = 0.7
                 /// Фото ночью: `saturate(.3)`.
@@ -675,7 +619,6 @@ nonisolated enum Token {
                 static let chip = Общие.arctic
                 /// Подпись на белом чипе — #111111. Значение взято С КАДРА: в токенах хендоффа подписи чипа нет ни у одного тона. Замер по кадрам второго пакета 22.10.2026: `~/Downloads/design_handoff_togo_ios28 2/screenshots/01.png` (обычный день) и `02.png` (час дозы), 424×896. Прочитано глазами, не из описания.
                 static let chipLabel = Общие.arcticInk
-                static let fg = Общие.ink
                 /// Обычно — плотное стекло, а не цвет.
                 static let panel = Общие.glassStrong
             }
@@ -691,21 +634,16 @@ nonisolated enum Token {
             static let handleColor = Общие.hairline
             static let handleHeight: CGFloat = 4
             static let handleWidth: CGFloat = 36
-            static let radius: CGFloat = 36
         }
         enum TabBar {
             /// Активная вкладка — ИНДИГО, и на обычном дне тоже, где главная кнопка белая. Это и есть граница решения «индиго отменено»: отменён индиговый АКЦЕНТ ПО УМОЛЧАНИЮ (главная кнопка), а не индиго как значение. На кадре 01 белая кнопка «Просится» и синяя вкладка «Сегодня» стоят в одном кадре — читать их как одно решение нельзя. Замер по кадрам второго пакета 22.10.2026: `~/Downloads/design_handoff_togo_ios28 2/screenshots/01.png` (обычный день) и `02.png` (час дозы), 424×896. Прочитано глазами, не из описания.
             static let active = Общие.indigo
             /// Таб-бар стеклянный.
             static let background = Общие.glass
-            static let height: CGFloat = 64
             /// Неактивная вкладка. Замер по кадрам второго пакета 22.10.2026: `~/Downloads/design_handoff_togo_ios28 2/screenshots/01.png` (обычный день) и `02.png` (час дозы), 424×896. Прочитано глазами, не из описания.
             static let inactive = Общие.inkMuted
-            static let item: CGFloat = 56
         }
         enum Timeline {
-            static let alarmMark = Общие.clay
-            static let gutter: CGFloat = 12
             static let nowMarker = Общие.arctic
             static let syncedMark = Color(hex: 0x5FBF9326)
         }
