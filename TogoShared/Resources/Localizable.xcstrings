@@ -631,6 +631,36 @@
             }
           }
         },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld неделя позади"
+                }
+              },
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld недели позади"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld недель позади"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld недели позади"
+                }
+              }
+            }
+          }
+        },
         "uk" : {
           "variations" : {
             "plural" : {
@@ -2286,8 +2316,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%@ · time %@"
+            "state" : "translated",
+            "value" : "%@ · #%@"
           }
         },
         "fr" : {
@@ -2464,8 +2494,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%@ · on an empty stomach %@ min"
+            "state" : "translated",
+            "value" : "%@ · fasting %@ min"
           }
         },
         "fr" : {
@@ -2498,8 +2528,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%@ · on an empty stomach %lld min"
+            "state" : "translated",
+            "value" : "%@ · fasting %lld min"
           }
         },
         "fr" : {
@@ -10233,8 +10263,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "twice a day · on empty stomach"
+            "state" : "translated",
+            "value" : "twice a day · on an empty stomach"
           }
         },
         "fr" : {
@@ -13654,8 +13684,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Lab"
+            "state" : "translated",
+            "value" : "Lab result"
           }
         },
         "fr" : {
@@ -13754,8 +13784,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Lab saved"
+            "state" : "translated",
+            "value" : "Lab result saved"
           }
         },
         "fr" : {
@@ -20828,8 +20858,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Her whole diary goes with her — eleven kinds of records: marks, weigh-ins, care tasks, treatment schedules with doses, steps and sessions, trips, documents, outings, heats and food stock. You can export the diary in Settings → Data and privacy."
+            "state" : "translated",
+            "value" : "Her whole diary disappears with her — eleven kinds of records: marks, weigh-ins, care tasks, treatment schedules with doses, steps and sessions, trips, documents, outings, heats and food stock. You can export the diary in Settings → Data and privacy."
           }
         },
         "fr" : {
@@ -22140,8 +22170,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Vet extended it — continue the treatment"
+            "state" : "translated",
+            "value" : "Vet extended it — continue the course"
           }
         },
         "fr" : {
@@ -22378,8 +22408,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Draw time"
+            "state" : "translated",
+            "value" : "Sample time"
           }
         },
         "fr" : {
@@ -25557,8 +25587,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Comes to per day"
+            "state" : "translated",
+            "value" : "Total per day"
           }
         },
         "fr" : {
@@ -26457,8 +26487,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Where he goes to the toilet"
+            "state" : "translated",
+            "value" : "Where she goes to the toilet"
           }
         },
         "fr" : {
@@ -28242,8 +28272,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Gave earlier"
+            "state" : "translated",
+            "value" : "Given earlier"
           }
         },
         "fr" : {
@@ -33058,8 +33088,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Doses on time %@ out of %@%."
+            "state" : "translated",
+            "value" : "Doses on time %@ by %@%."
           }
         },
         "fr" : {
@@ -35513,8 +35543,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "He vomited — what do I do?"
+            "state" : "translated",
+            "value" : "She vomited — what do I do?"
           }
         },
         "fr" : {
@@ -40601,8 +40631,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Training · “Wait at the door”"
+            "state" : "translated",
+            "value" : "Session · “Wait at the door”"
           }
         },
         "fr" : {
@@ -41127,8 +41157,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Supply · levothyroxine"
+            "state" : "translated",
+            "value" : "Stock · levothyroxine"
           }
         },
         "fr" : {
@@ -41884,8 +41914,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Logged · training 3 min"
+            "state" : "translated",
+            "value" : "Logged · session 3 min"
           }
         },
         "fr" : {
@@ -41913,8 +41943,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Logged · training 3 min · 7 successes"
+            "state" : "translated",
+            "value" : "Logged · session 3 min · 7 successes"
           }
         },
         "fr" : {
@@ -42620,8 +42650,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Less than 4 days of entries. If unsure, take him out."
+            "state" : "translated",
+            "value" : "Less than 4 days of entries. If unsure, take her out."
           }
         },
         "fr" : {
@@ -43131,8 +43161,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "The entries will stay in the history and in the vet report. You can bring the treatment back in the profile."
+            "state" : "translated",
+            "value" : "The entries will stay in the history and in the vet report. You can bring the course back in the profile."
           }
         },
         "fr" : {
@@ -47917,8 +47947,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "As usual · log"
+            "state" : "translated",
+            "value" : "As always · sausage-shaped"
           }
         },
         "fr" : {
@@ -48342,8 +48372,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "How he asked · optional"
+            "state" : "translated",
+            "value" : "How she asked · optional"
           }
         },
         "fr" : {
@@ -53481,8 +53511,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Treatment finished"
+            "state" : "translated",
+            "value" : "Course finished"
           }
         },
         "fr" : {
@@ -53516,8 +53546,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Treatment finished %@"
+            "state" : "translated",
+            "value" : "Course finished %@"
           }
         },
         "fr" : {
@@ -53552,8 +53582,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Treatment is over"
+            "state" : "translated",
+            "value" : "The course is over"
           }
         },
         "fr" : {
@@ -53617,8 +53647,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "The treatment runs until %@ — you'll be %@ short. Pharmacies take 2–3 days to deliver."
+            "state" : "translated",
+            "value" : "The course runs until %@ — you'll be %@ short. Pharmacies take 2–3 days to deliver."
           }
         },
         "fr" : {
@@ -55995,8 +56025,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Transfer matrix"
+            "state" : "translated",
+            "value" : "Generalization matrix"
           }
         },
         "fr" : {
@@ -56024,8 +56054,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Transfer matrix · axes free"
+            "state" : "translated",
+            "value" : "Generalization matrix · axes free"
           }
         },
         "fr" : {
