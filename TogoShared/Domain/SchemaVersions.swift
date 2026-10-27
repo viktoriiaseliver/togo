@@ -2330,7 +2330,6 @@ nonisolated enum TogoSchemaV6: VersionedSchema {
         var editedBy: String?
         var changedAt: Date = Date()
         var dog: Dog?
-        var parts: [String] = []
 
         init() {}
     }
