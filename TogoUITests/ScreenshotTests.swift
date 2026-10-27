@@ -49,7 +49,7 @@ nonisolated final class ScreenshotTests: XCTestCase {
             .appendingPathComponent("build/кадры-витрины")
     }
 
-    /// Язык партии кадров: `TEST_RUNNER_ВИТРИНА_ЯЗЫК=uk` и так далее.
+    /// Язык партии кадров: `TEST_RUNNER_VITRINA_LANG=uk` и так далее.
     ///
     /// **Витрина App Store локализована на четыре языка, а снимался
     /// только основной** — замер 27.10.2026 по API: у `ru` десять
@@ -63,10 +63,26 @@ nonisolated final class ScreenshotTests: XCTestCase {
     /// Это записано в правилах стенда и стоило партии кадров:
     /// «светлая» тогда молча перезаписала «тёмную».
     ///
+    /// **ИМЯ ПЕРЕМЕННОЙ ЛАТИНИЦЕЙ, И ЭТО ЗАМЕР, А НЕ ВКУС.** Первая
+    /// редакция звала её `ВИТРИНА_ЯЗЫК`, и партия `uk` вышла
+    /// по-русски при зелёном прогоне: shell такое имя не принимает —
+    ///
+    /// ```
+    /// TEST_RUNNER_ВИТРИНА_ЯЗЫК=uk sh -c '…'   bad substitution
+    /// TEST_RUNNER_VITRINA_LANG=uk  sh -c '…'   uk
+    /// ```
+    ///
+    /// Свод проекта этот класс знал и называл ЛАТЕНТНЫМ — «живых
+    /// случаев ноль, опасна тем, что здесь всё пишут по-русски».
+    /// Теперь случай есть, и он показал худшую сторону формы:
+    /// переменная не доехала, тест этого не заметил, кадры снялись
+    /// и легли под теми же именами. Отказ пришёл в виде готовой
+    /// партии кадров на неверном языке.
+    ///
     /// Пусто — ничего не добавляем: партия снимается на языке
     /// симулятора, как снималась всегда.
     private func языкЗапуска() -> [String] {
-        let ключ = "ВИТРИНА_ЯЗЫК"
+        let ключ = "VITRINA_LANG"
         guard let язык = ProcessInfo.processInfo.environment[ключ],
               !язык.isEmpty else { return [] }
         // Локаль задаём вместе с языком: без неё даты и числа останутся
@@ -133,7 +149,7 @@ nonisolated final class ScreenshotTests: XCTestCase {
                                                     withIntermediateDirectories: true)
             // Суффикс языка в ИМЕНИ: без него вторая партия молча
             // затрёт первую. Так уже терялась партия кадров темы.
-            let язык = ProcessInfo.processInfo.environment["ВИТРИНА_ЯЗЫК"]
+            let язык = ProcessInfo.processInfo.environment["VITRINA_LANG"]
             let имя = язык.map { "\(name)-\($0)" } ?? name
             let путь = каталог.appendingPathComponent("\(имя).png")
             try shot.pngRepresentation.write(to: путь)
