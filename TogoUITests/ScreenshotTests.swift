@@ -49,10 +49,40 @@ nonisolated final class ScreenshotTests: XCTestCase {
             .appendingPathComponent("build/кадры-витрины")
     }
 
+    /// Язык партии кадров: `TEST_RUNNER_ВИТРИНА_ЯЗЫК=uk` и так далее.
+    ///
+    /// **Витрина App Store локализована на четыре языка, а снимался
+    /// только основной** — замер 27.10.2026 по API: у `ru` десять
+    /// кадров, у `uk`, `en-US` и `fr-FR` по пять, и пять недостающих
+    /// у всех трёх одни и те же (`03-stool`, `04-training`,
+    /// `06-family`, `10-backup`, `11-language`).
+    ///
+    /// Префикс `TEST_RUNNER_` обязателен: без него переменная
+    /// до приложения в симуляторе НЕ ДОЕЗЖАЕТ, а прогон при этом
+    /// зелёный и кадры снимаются — просто на языке по умолчанию.
+    /// Это записано в правилах стенда и стоило партии кадров:
+    /// «светлая» тогда молча перезаписала «тёмную».
+    ///
+    /// Пусто — ничего не добавляем: партия снимается на языке
+    /// симулятора, как снималась всегда.
+    private func языкЗапуска() -> [String] {
+        let ключ = "ВИТРИНА_ЯЗЫК"
+        guard let язык = ProcessInfo.processInfo.environment[ключ],
+              !язык.isEmpty else { return [] }
+        // Локаль задаём вместе с языком: без неё даты и числа останутся
+        // в формате прежней локали, и кадр соврёт про формат, оставаясь
+        // верным про текст.
+        let локали = ["uk": "uk_UA", "en": "en_US", "fr": "fr_FR",
+                      "kk": "kk_KZ", "ru": "ru_RU"]
+        let локаль = локали[язык] ?? язык
+        print("ВИТРИНА: язык \(язык), локаль \(локаль)")
+        return ["-AppleLanguages", "(\(язык))", "-AppleLocale", локаль]
+    }
+
     override func setUp() {
         continueAfterFailure = false
         app = XCUIApplication()
-        app.launchArguments = ["-UITesting"]
+        app.launchArguments = ["-UITesting"] + языкЗапуска()
         app.launch()
         // «Стич» не переводится: это кличка из демо-данных, а не подпись
         // интерфейса. В каталоге она есть (генератор строк вынимает любую
@@ -101,7 +131,11 @@ nonisolated final class ScreenshotTests: XCTestCase {
         do {
             try FileManager.default.createDirectory(at: каталог,
                                                     withIntermediateDirectories: true)
-            let путь = каталог.appendingPathComponent("\(name).png")
+            // Суффикс языка в ИМЕНИ: без него вторая партия молча
+            // затрёт первую. Так уже терялась партия кадров темы.
+            let язык = ProcessInfo.processInfo.environment["ВИТРИНА_ЯЗЫК"]
+            let имя = язык.map { "\(name)-\($0)" } ?? name
+            let путь = каталог.appendingPathComponent("\(имя).png")
             try shot.pngRepresentation.write(to: путь)
             print("КАДР: \(путь.path) · \(shot.pngRepresentation.count) байт")
         } catch {
