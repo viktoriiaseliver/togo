@@ -3925,8 +3925,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%@ quitteront le plan du jour, l'onglet « Santé » se masquera. %@"
+            "state" : "translated",
+            "value" : "%@ quitteront le plan du jour. %@"
           }
         },
         "kk" : {
@@ -12885,8 +12885,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "pour vous, Maman et Anya : sorties, repas, selles, doses, analyses, visites, ordonnances, soins, éducation, voyages, documents. Vous pouvez d'abord exporter le journal."
+            "state" : "translated",
+            "value" : "pour toi, Maman et Anya : sorties, repas, selles, doses, analyses, visites, ordonnances, soins, éducation, voyages, documents. Tu peux d'abord exporter le journal."
           }
         },
         "kk" : {
@@ -14803,8 +14803,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "gratuit · construit à partir de vos notes"
+            "state" : "translated",
+            "value" : "gratuit · construit à partir de tes notes"
           }
         },
         "kk" : {
@@ -17037,8 +17037,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Saisissez un nom"
+            "state" : "translated",
+            "value" : "Saisis un nom"
           }
         },
         "kk" : {
@@ -19913,8 +19913,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "activé · ce qui se passe si vous résiliez"
+            "state" : "translated",
+            "value" : "activé · ce qui se passe si tu résilies"
           }
         },
         "kk" : {
@@ -23057,8 +23057,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Collez le lien ou le code d'invitation"
+            "state" : "translated",
+            "value" : "Colle le lien ou le code d'invitation"
           }
         },
         "kk" : {
@@ -23785,8 +23785,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Choisir la mienne"
+            "state" : "translated",
+            "value" : "Choisir la tienne"
           }
         },
         "kk" : {
@@ -23994,8 +23994,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "sortez au premier signe"
+            "state" : "translated",
+            "value" : "sors-le au premier signe"
           }
         },
         "kk" : {
@@ -37208,14 +37208,14 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "Encore %lld tentative et ce sera visible. «Ça marche», c'est 4 fois sur 5, comme pour une étape d'apprentissage."
+                  "state" : "translated",
+                  "value" : "Encore %lld tentative et ce sera visible. « Ça marche », c'est 4 fois sur 5, comme pour une étape d'apprentissage."
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "Encore %lld tentatives et ce sera visible. «Ça marche», c'est 4 fois sur 5, comme pour une étape d'apprentissage."
+                  "state" : "translated",
+                  "value" : "Encore %lld tentatives et ce sera visible. « Ça marche », c'est 4 fois sur 5, comme pour une étape d'apprentissage."
                 }
               }
             }
@@ -37413,8 +37413,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "ne s'est pas encore posé"
+            "state" : "translated",
+            "value" : "pas encore démarré"
           }
         },
         "kk" : {
@@ -37947,8 +37947,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "appuyez au moment où il le fait"
+            "state" : "translated",
+            "value" : "appuie au moment où il le fait"
           }
         },
         "kk" : {
@@ -41930,8 +41930,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Écrire le badge"
+            "state" : "translated",
+            "value" : "Programmer le badge"
           }
         },
         "kk" : {
@@ -42175,8 +42175,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Pas encore de notes. Touchez « Promener » en partant."
+            "state" : "translated",
+            "value" : "Pas encore de notes. Touche « Promener » en partant."
           }
         },
         "kk" : {
@@ -42276,8 +42276,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Moins de 4 jours de notes. Dans le doute, sortez-le."
+            "state" : "translated",
+            "value" : "Moins de 4 jours de notes. Dans le doute, sors-le."
           }
         },
         "kk" : {
@@ -44249,8 +44249,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "appelez maintenant"
+            "state" : "translated",
+            "value" : "appelle maintenant"
           }
         },
         "kk" : {
@@ -49910,8 +49910,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "quand on vous demande"
+            "state" : "translated",
+            "value" : "quand on te demande"
           }
         },
         "kk" : {
@@ -49945,8 +49945,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Quand on vous demande"
+            "state" : "translated",
+            "value" : "Quand on te demande"
           }
         },
         "kk" : {
@@ -56905,8 +56905,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "minutes · « Pipi » · « Maison »"
+            "state" : "translated",
+            "value" : "minutes · « Pipi » · « Rentrer »"
           }
         },
         "kk" : {
@@ -58432,8 +58432,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "surveillez 6 h"
+            "state" : "translated",
+            "value" : "surveille 6 h"
           }
         },
         "kk" : {
@@ -58843,8 +58843,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Touchez le texte souligné pour le modifier."
+            "state" : "translated",
+            "value" : "Touche le texte souligné pour le modifier."
           }
         },
         "kk" : {
@@ -59881,8 +59881,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Je vous rappellerai au besoin"
+            "state" : "translated",
+            "value" : "Je te rappellerai au besoin"
           }
         },
         "kk" : {
@@ -66466,8 +66466,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "demande attention"
+            "state" : "translated",
+            "value" : "attention requise"
           }
         },
         "kk" : {
@@ -72307,8 +72307,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "notez la première sortie"
+            "state" : "translated",
+            "value" : "note la première sortie"
           }
         },
         "kk" : {
@@ -72372,8 +72372,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "vous notez plus tard"
+            "state" : "translated",
+            "value" : "tu notes plus tard"
           }
         },
         "kk" : {
@@ -77336,8 +77336,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "approchez — la sortie commence ou se termine"
+            "state" : "translated",
+            "value" : "approche — la sortie commence ou se termine"
           }
         },
         "kk" : {
@@ -77365,8 +77365,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "approchez le téléphone : la sortie commence ou se termine"
+            "state" : "translated",
+            "value" : "approche le téléphone : la sortie commence ou se termine"
           }
         },
         "kk" : {
@@ -78606,8 +78606,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "appelez le véto"
+            "state" : "translated",
+            "value" : "appelle le véto"
           }
         },
         "kk" : {
@@ -82918,8 +82918,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Après des écarts de plus de 7 h : selles molles — 2 fois, vomi — 1. Montrez au véto."
+            "state" : "translated",
+            "value" : "Après des écarts de plus de 7 h : selles molles — 2 fois, vomi — 1. Montre-le au véto."
           }
         },
         "kk" : {
@@ -85136,8 +85136,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "vous ajouterez le médicament plus tard"
+            "state" : "translated",
+            "value" : "tu ajouteras le médicament plus tard"
           }
         },
         "kk" : {
@@ -93921,8 +93921,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "la vôtre ou par défaut"
+            "state" : "translated",
+            "value" : "la tienne ou par défaut"
           }
         },
         "kk" : {
@@ -94044,8 +94044,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Avec vos mots"
+            "state" : "translated",
+            "value" : "Avec tes mots"
           }
         },
         "kk" : {
@@ -94145,8 +94145,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Votre propre acquis"
+            "state" : "translated",
+            "value" : "Ton propre acquis"
           }
         },
         "kk" : {
@@ -95338,8 +95338,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "votre photo"
+            "state" : "translated",
+            "value" : "ta photo"
           }
         },
         "kk" : {
@@ -97735,8 +97735,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "notez d'abord le repas"
+            "state" : "translated",
+            "value" : "note d'abord le repas"
           }
         },
         "kk" : {
@@ -98234,8 +98234,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "écarté"
+            "state" : "translated",
+            "value" : "levé"
           }
         },
         "kk" : {
@@ -98371,8 +98371,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Photo"
+            "state" : "translated",
+            "value" : "Photographier"
           }
         },
         "kk" : {
@@ -100675,8 +100675,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Demandez au véto — message prêt."
+            "state" : "translated",
+            "value" : "Demande au véto — message prêt."
           }
         },
         "kk" : {
@@ -103624,8 +103624,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Victoria modifie le protocole. Vous voyez et notez les prises."
+            "state" : "translated",
+            "value" : "Victoria modifie le protocole. Tu vois et tu notes les prises."
           }
         },
         "kk" : {
@@ -103689,8 +103689,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Vous modifiez le protocole. Maman note."
+            "state" : "translated",
+            "value" : "Tu modifies le protocole. Maman note."
           }
         },
         "kk" : {
@@ -104692,8 +104692,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "C'est vous qui donnez le cachet ?"
+            "state" : "translated",
+            "value" : "C'est toi qui donnes le comprimé ?"
           }
         },
         "kk" : {
@@ -104901,8 +104901,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "touchez pour ouvrir"
+            "state" : "translated",
+            "value" : "touche pour ouvrir"
           }
         },
         "kk" : {
@@ -105210,8 +105210,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "vous"
+            "state" : "translated",
+            "value" : "toi"
           }
         },
         "kk" : {
@@ -105383,8 +105383,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "votre téléphone et votre iCloud"
+            "state" : "translated",
+            "value" : "ton téléphone et ton iCloud"
           }
         },
         "kk" : {
@@ -107121,8 +107121,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "vous · 12:40"
+            "state" : "translated",
+            "value" : "toi · 12:40"
           }
         },
         "kk" : {
@@ -107186,8 +107186,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Vous avez donné"
+            "state" : "translated",
+            "value" : "Tu as donné"
           }
         },
         "kk" : {
@@ -107287,8 +107287,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "vous, Maman"
+            "state" : "translated",
+            "value" : "toi, Maman"
           }
         },
         "kk" : {
@@ -107929,8 +107929,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Vous pouvez retirer Anya dans Famille. Ses notes restent."
+            "state" : "translated",
+            "value" : "Tu peux retirer Anya dans Famille. Ses notes restent."
           }
         },
         "kk" : {
@@ -108247,8 +108247,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Retirer la compétence"
+            "state" : "translated",
+            "value" : "Retirer l'acquis"
           }
         },
         "kk" : {
@@ -110350,8 +110350,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Déjà 5 photos — retirez-en"
+            "state" : "translated",
+            "value" : "Déjà 5 photos — retires-en"
           }
         },
         "kk" : {
@@ -116161,8 +116161,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Ce que vous avez remarqué"
+            "state" : "translated",
+            "value" : "Ce que tu as remarqué"
           }
         },
         "kk" : {
@@ -117285,8 +117285,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Que photographiez-vous"
+            "state" : "translated",
+            "value" : "Que photographies-tu ?"
           }
         },
         "kk" : {
@@ -117314,8 +117314,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Ce que vous pourrez faire"
+            "state" : "translated",
+            "value" : "Ce que tu pourras faire"
           }
         },
         "kk" : {
@@ -118316,8 +118316,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "schipperke · le vôtre"
+            "state" : "translated",
+            "value" : "schipperke · le tien"
           }
         },
         "kk" : {
@@ -119716,8 +119716,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Ce n'est pas une norme, c'est un miroir : compare-toi non pas au chien d'un autre, mais à toi il y a un mois."
+            "state" : "translated",
+            "value" : "Ce n'est pas une norme, c'est un miroir : compare-le non pas au chien d'un autre, mais à lui-même il y a un mois."
           }
         },
         "kk" : {
@@ -119751,8 +119751,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Pas une norme, un miroir : comparez avec lui il y a un mois — c'était"
+            "state" : "translated",
+            "value" : "Pas une norme, un miroir : compare avec lui il y a un mois — c'était"
           }
         },
         "kk" : {
@@ -120175,8 +120175,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "C'est vous"
+            "state" : "translated",
+            "value" : "C'est toi"
           }
         },
         "kk" : {
@@ -120673,8 +120673,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Le fond est une photo derrière les écrans, pas un thème. Togo n'a qu'un thème : sombre."
+            "state" : "translated",
+            "value" : "Le fond est une photo derrière les écrans, pas un thème. Togo n'a qu'un thème : sombre."
           }
         },
         "kk" : {
@@ -120866,8 +120866,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "tout l'onboarding d'affilée ; rien n'est enregistré"
+            "state" : "translated",
+            "value" : "tout l'onboarding d'affilée ; rien n'est enregistré"
           }
         },
         "kk" : {
@@ -120941,8 +120941,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Ouvrir « Famille »"
+            "state" : "translated",
+            "value" : "Ouvrir « Famille »"
           }
         },
         "kk" : {
@@ -121026,8 +121026,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "La première barre apparaît quand tu appuies sur le marqueur. Plus bas, c'est plus rapide : en moins d'une demi-seconde le chien associe le marqueur à son action ; après une seconde, il fait déjà autre chose."
+            "state" : "translated",
+            "value" : "La première barre apparaît quand tu appuies sur le marqueur. Plus bas, c'est plus rapide : en moins d'une demi-seconde le chien associe le marqueur à son action ; après une seconde, il fait déjà autre chose."
           }
         },
         "kk" : {
@@ -121170,8 +121170,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Tu peux tout lire ; noter et inviter, c'est au propriétaire. Demande-lui un rôle — il arrivera sur ce même téléphone."
+            "state" : "translated",
+            "value" : "Tu peux tout lire ; noter et inviter, c'est au propriétaire. Demande-lui un rôle — il arrivera sur ce même téléphone."
           }
         },
         "kk" : {
@@ -121563,8 +121563,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "L'onglet « Santé » apparaît, avec la fenêtre à jeun et la protection contre la double dose. Tu ajouteras le médicament plus tard — on demandera le protocole et les heures là-bas."
+            "state" : "translated",
+            "value" : "L'onglet « Santé » apparaît, avec la fenêtre à jeun et la protection contre la double dose. Tu ajouteras le médicament plus tard — on demandera le protocole et les heures là-bas."
           }
         },
         "kk" : {
@@ -121851,8 +121851,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Indique d'abord la ration quotidienne — elle est dans « Alimentation et routine »"
+            "state" : "translated",
+            "value" : "Indique d'abord la ration quotidienne — elle est dans « Alimentation et routine »"
           }
         },
         "kk" : {
@@ -122031,8 +122031,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Tu vois les doses, le stock et les analyses. Le propriétaire accorde « Modifier le traitement » dans « Famille »."
+            "state" : "translated",
+            "value" : "Tu vois les doses, le stock et les analyses. Le propriétaire accorde « Modifier le traitement » dans « Famille »."
           }
         },
         "kk" : {
@@ -122823,8 +122823,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Le propriétaire accorde « %@ » dans « Famille »."
+            "state" : "translated",
+            "value" : "Le propriétaire accorde « %@ » dans « Famille »."
           }
         },
         "kk" : {
@@ -123435,8 +123435,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "D'abord « Il l'a fait » — le marqueur s'active ensuite"
+            "state" : "translated",
+            "value" : "D'abord « Il l'a fait » — le marqueur s'active ensuite"
           }
         },
         "kk" : {
@@ -123579,8 +123579,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Ajoute une clinique ou un laboratoire : nom, téléphone, et ce qui le distingue du voisin. Ensuite, ils apparaîtront dans les choix d'une visite, d'une ordonnance et d'une analyse."
+            "state" : "translated",
+            "value" : "Ajoute une clinique ou un laboratoire : nom, téléphone, et ce qui le distingue du voisin. Ensuite, ils apparaîtront dans les choix d'une visite, d'une ordonnance et d'une analyse."
           }
         },
         "kk" : {
@@ -123939,8 +123939,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "La précision sert quand deux établissements portent le même nom : sinon, la liste affiche deux lignes identiques."
+            "state" : "translated",
+            "value" : "La précision sert quand deux établissements portent le même nom : sinon, la liste affiche deux lignes identiques."
           }
         },
         "kk" : {
@@ -124191,8 +124191,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Supprimer la clinique ?"
+            "state" : "translated",
+            "value" : "Supprimer la clinique ?"
           }
         },
         "kk" : {
@@ -124227,8 +124227,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "La clinique disparaîtra du répertoire. Les visites, les ordonnances et les vaccins qui y sont rattachés restent : ce sont des faits de ce jour-là, même si l'établissement n'est plus dans la liste."
+            "state" : "translated",
+            "value" : "La clinique disparaîtra du répertoire. Les visites, les ordonnances et les vaccins qui y sont rattachés restent : ce sont des faits de ce jour-là, même si l'établissement n'est plus dans la liste."
           }
         },
         "kk" : {
@@ -124299,8 +124299,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Le répertoire est vide. Les cliniques et laboratoires s'ajoutent dans « Santé » → « Cliniques et laboratoires » — c'est de là que vient cette liste."
+            "state" : "translated",
+            "value" : "Le répertoire est vide. Les cliniques et laboratoires s'ajoutent dans « Santé » → « Cliniques et laboratoires » — c'est de là que vient cette liste."
           }
         },
         "kk" : {
@@ -124407,8 +124407,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "C'est l'indication du laboratoire lui-même, telle qu'elle figure sur le compte rendu, et non une conclusion de l'application. Un écart avec notre calcul est une observation, pas une erreur : les valeurs de référence varient d'un laboratoire à l'autre."
+            "state" : "translated",
+            "value" : "C'est l'indication du laboratoire lui-même, telle qu'elle figure sur le compte rendu, et non une conclusion de l'application. Un écart avec notre calcul est une observation, pas une erreur : les valeurs de référence varient d'un laboratoire à l'autre."
           }
         },
         "kk" : {
@@ -124659,8 +124659,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Cette liste est sur ton téléphone. Les rôles et les droits ne partent pas d'ici vers le téléphone de la personne. Pour changer le rôle de quelqu'un qui a déjà rejoint, ouvre « Qui a accès » — là, les personnes sont telles qu'iCloud les connaît."
+            "state" : "translated",
+            "value" : "Cette liste est sur ton téléphone. Les rôles et les droits ne partent pas d'ici vers le téléphone de la personne. Pour changer le rôle de quelqu'un qui a déjà rejoint, ouvre « Qui a accès » — là, les personnes sont telles qu'iCloud les connaît."
           }
         },
         "kk" : {
@@ -124695,8 +124695,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "C'est une note, pas une échéance : l'accès ne se fermera pas tout seul. Il faut le fermer à la main — « Qui a accès », et pour cette personne uniquement."
+            "state" : "translated",
+            "value" : "C'est une note, pas une échéance : l'accès ne se fermera pas tout seul. Il faut le fermer à la main — « Qui a accès », et pour cette personne uniquement."
           }
         },
         "kk" : {
@@ -124731,8 +124731,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Cela retire la fiche de ce téléphone. L'accès au journal n'en sera pas fermé : il se ferme dans « Qui a accès », et là aussi — pour cette personne uniquement."
+            "state" : "translated",
+            "value" : "Cela retire la fiche de ce téléphone. L'accès au journal n'en sera pas fermé : il se ferme dans « Qui a accès », et là aussi — pour cette personne uniquement."
           }
         },
         "kk" : {
@@ -124839,8 +124839,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "L'invitation n'a pas encore été créée — ou la liste n'est pas arrivée. Crée une invitation dans « Famille » et invite quelqu'un."
+            "state" : "translated",
+            "value" : "L'invitation n'a pas encore été créée — ou la liste n'est pas arrivée. Crée une invitation dans « Famille » et invite quelqu'un."
           }
         },
         "kk" : {
@@ -124875,8 +124875,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Ce sont les personnes qui voient réellement le journal via iCloud. La liste de famille à côté contient des fiches sur ton téléphone : elles servent à signer les entrées et existent séparément."
+            "state" : "translated",
+            "value" : "Ce sont les personnes qui voient réellement le journal via iCloud. La liste de famille à côté contient des fiches sur ton téléphone : elles servent à signer les entrées et existent séparément."
           }
         },
         "kk" : {
@@ -125199,8 +125199,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Retirer l'accès à cette personne ?"
+            "state" : "translated",
+            "value" : "Retirer l'accès à cette personne ?"
           }
         },
         "kk" : {
@@ -125271,8 +125271,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Les nouvelles entrées ne lui parviendront plus. Ce qu'il a déjà reçu reste sur son téléphone : iCloud ne sait pas reprendre ce qui a été montré. Les autres restent dans le journal."
+            "state" : "translated",
+            "value" : "Les nouvelles entrées ne lui parviendront plus. Ce qu'il a déjà reçu reste sur son téléphone : iCloud ne sait pas reprendre ce qui a été montré. Les autres restent dans le journal."
           }
         },
         "kk" : {
@@ -125343,8 +125343,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Cette personne n'a pas encore rejoint. Elle recevra le rôle choisi dans l'invitation ; tu pourras le modifier une fois qu'elle sera entrée."
+            "state" : "translated",
+            "value" : "Cette personne n'a pas encore rejoint. Elle recevra le rôle choisi dans l'invitation ; tu pourras le modifier une fois qu'elle sera entrée."
           }
         },
         "kk" : {
@@ -125919,8 +125919,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Une date désactivée signifie « non renseignée », et non « sans limite » : l'application ne fait pas la différence et n'inventera rien."
+            "state" : "translated",
+            "value" : "Une date désactivée signifie « non renseignée », et non « sans limite » : l'application ne fait pas la différence et n'inventera rien."
           }
         },
         "kk" : {
@@ -126171,8 +126171,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Un demi-comprimé le matin et un entier le soir : une ordonnance courante. Le stock est calculé à partir de ces nombres — l'application déduit exactement ce qui a été donné."
+            "state" : "translated",
+            "value" : "Un demi-comprimé le matin et un entier le soir : une ordonnance courante. Le stock est calculé à partir de ces nombres — l'application déduit exactement ce qui a été donné."
           }
         },
         "kk" : {
@@ -126495,8 +126495,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Des deux dates, c'est la plus proche qui compte : un flacon ouvert se périme avant la date inscrite sur la boîte."
+            "state" : "translated",
+            "value" : "Des deux dates, c'est la plus proche qui compte : un flacon ouvert se périme avant la date inscrite sur la boîte."
           }
         },
         "kk" : {
@@ -126783,8 +126783,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Impossible de retirer le propriétaire du journal : il ne resterait personne pour donner les accès."
+            "state" : "translated",
+            "value" : "Impossible de retirer le propriétaire du journal : il ne resterait personne pour donner les accès."
           }
         },
         "kk" : {
@@ -126866,8 +126866,8 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Cela ne ressemble pas à une invitation. Il faut un lien icloud.com — il est envoyé depuis Togo, « Famille » → « Inviter au journal »."
+            "state" : "translated",
+            "value" : "Cela ne ressemble pas à une invitation. Il faut un lien icloud.com — il est envoyé depuis Togo, « Famille » → « Inviter au journal »."
           }
         },
         "kk" : {
