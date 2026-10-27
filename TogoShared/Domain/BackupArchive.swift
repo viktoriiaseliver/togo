@@ -711,53 +711,93 @@ nonisolated struct BackupArchive: Codable, Sendable {
     nonisolated struct Статья: Sendable {
         /// Имя поля в `DogSnapshot` — по нему сверяется сторож.
         let коллекция: String
-        /// Как это называется для человека.
+        /// Как это называется для человека — ИМЕНИТЕЛЬНЫЙ, для списка
+        /// «что внутри файла»: «записи ленты», «взвешивания».
         let название: String
+        /// Та же вещь ВМЕСТЕ С ЧИСЛОМ: «1 запись ленты»,
+        /// «24 взвешивания», «140 строк анализов».
+        ///
+        /// **Замыкание, а не строка, и это не усложнение, а падежи.**
+        /// Первая версия описи несла одно название, и подпись диалога
+        /// вышла машинной: «9 записи ленты · 8 уход и напоминания».
+        /// Вторая несла родительный множественного — и сломалась
+        /// на числах, кончающихся на 2–4: «24 взвешиваний».
+        ///
+        /// Русскому нужны ТРИ формы (1 запись · 2 записи · 5 записей),
+        /// украинскому тоже, английскому и французскому две, казахскому
+        /// после числа — единственное. Одной строкой это не решается
+        /// ни на одном языке, кроме казахского, и форму выбирает
+        /// каталог: ключ `%lld записей ленты` несёт `variations/plural`.
+        ///
+        /// Так же устроены три части `summary`, которые были здесь
+        /// до описи (`%lld собак`, `%lld человек`) — то есть правило
+        /// в проекте уже было, и первые две версии его нарушали.
+        ///
+        /// Литерал обязан стоять в самом замыкании: `String(localized:)`
+        /// извлекает ключ из текста на месте вызова, и строка,
+        /// собранная из переменной, в каталог не попадёт вовсе.
+        let сЧислом: @Sendable (Int) -> String
         /// Сколько записей в конкретном снимке собаки.
         let счёт: @Sendable (DogSnapshot) -> Int
     }
 
     static let опись: [Статья] = [
         Статья(коллекция: "events",
-               название: String(localized: "записи ленты")) { $0.events.count },
+               название: String(localized: "записи ленты"),
+               сЧислом: { String(localized: "\($0) записей ленты") }) { $0.events.count },
         Статья(коллекция: "weights",
-               название: String(localized: "взвешивания")) { $0.weights.count },
+               название: String(localized: "взвешивания"),
+               сЧислом: { String(localized: "\($0) взвешиваний") }) { $0.weights.count },
         Статья(коллекция: "careTasks",
-               название: String(localized: "уход и напоминания")) { $0.careTasks.count },
+               название: String(localized: "уход и напоминания"),
+               сЧислом: { String(localized: "\($0) дел ухода") }) { $0.careTasks.count },
         Статья(коллекция: "medications",
-               название: String(localized: "схемы лечения")) { $0.medications.count },
+               название: String(localized: "схемы лечения"),
+               сЧислом: { String(localized: "\($0) схем лечения") }) { $0.medications.count },
         Статья(коллекция: "labResults",
-               название: String(localized: "строки анализов")) { $0.labResults?.count ?? 0 },
+               название: String(localized: "строки анализов"),
+               сЧислом: { String(localized: "\($0) строк анализов") }) { $0.labResults?.count ?? 0 },
         Статья(коллекция: "vetVisits",
-               название: String(localized: "визиты к врачу")) { $0.vetVisits?.count ?? 0 },
+               название: String(localized: "визиты к врачу"),
+               сЧислом: { String(localized: "\($0) визитов к врачу") }) { $0.vetVisits?.count ?? 0 },
         Статья(коллекция: "diagnoses",
-               название: String(localized: "диагнозы")) { $0.diagnoses?.count ?? 0 },
+               название: String(localized: "диагнозы"),
+               сЧислом: { String(localized: "\($0) диагнозов") }) { $0.diagnoses?.count ?? 0 },
         Статья(коллекция: "prescriptions",
-               название: String(localized: "рецепты")) { $0.prescriptions?.count ?? 0 },
+               название: String(localized: "рецепты"),
+               сЧислом: { String(localized: "\($0) рецептов") }) { $0.prescriptions?.count ?? 0 },
         Статья(коллекция: "documents",
-               название: String(localized: "документы")) { $0.documents?.count ?? 0 },
+               название: String(localized: "документы"),
+               сЧислом: { String(localized: "\($0) документов") }) { $0.documents?.count ?? 0 },
         Статья(коллекция: "trainingSteps",
-               название: String(localized: "шаги обучения")) { $0.trainingSteps.count },
+               название: String(localized: "шаги обучения"),
+               сЧислом: { String(localized: "\($0) шагов обучения") }) { $0.trainingSteps.count },
         Статья(коллекция: "trainingSessions",
-               название: String(localized: "занятия")) { $0.trainingSessions.count },
+               название: String(localized: "занятия"),
+               сЧислом: { String(localized: "\($0) занятий") }) { $0.trainingSessions.count },
         Статья(коллекция: "trips",
-               название: String(localized: "поездки")) { $0.trips.count },
+               название: String(localized: "поездки"),
+               сЧислом: { String(localized: "\($0) поездок") }) { $0.trips.count },
         Статья(коллекция: "daysOut",
-               название: String(localized: "выезды")) { $0.daysOut?.count ?? 0 },
+               название: String(localized: "выезды"),
+               сЧислом: { String(localized: "\($0) выездов") }) { $0.daysOut?.count ?? 0 },
         Статья(коллекция: "stocks",
-               название: String(localized: "запасы корма")) { $0.stocks?.count ?? 0 },
+               название: String(localized: "запасы корма"),
+               сЧислом: { String(localized: "\($0) запасов корма") }) { $0.stocks?.count ?? 0 },
         Статья(коллекция: "heats",
-               название: String(localized: "течки")) { $0.heats?.count ?? 0 },
+               название: String(localized: "течки"),
+               сЧислом: { String(localized: "\($0) течек") }) { $0.heats?.count ?? 0 },
     ]
 
     /// Сколько чего в этом файле — только непустое.
     ///
     /// Пустые виды не перечисляются нарочно: «0 течек» у кобеля это
     /// не сведения, а шум, в котором тонет «140 строк анализов».
-    var состав: [(название: String, сколько: Int)] {
+    var состав: [(название: String, сЧислом: String, сколько: Int)] {
         BackupArchive.опись.compactMap { статья in
             let сколько = dogs.reduce(0) { $0 + статья.счёт($1) }
-            return сколько > 0 ? (статья.название, сколько) : nil
+            return сколько > 0
+                ? (статья.название, статья.сЧислом(сколько), сколько) : nil
         }
     }
 
@@ -769,7 +809,9 @@ nonisolated struct BackupArchive: Codable, Sendable {
     var summary: String {
         var части = [String(localized: "\(dogs.count) собак"),
                      String(localized: "\(members.count) человек")]
-        части += состав.map { "\($0.сколько) \($0.название)" }
+        // Число уже внутри: падеж выбирает каталог, а не склейка.
+        // Разбор у `Статья.сЧислом`.
+        части += состав.map(\.сЧислом)
         return части.joined(separator: " · ")
     }
 }
