@@ -30,4 +30,7 @@ Togo Pro is an auto-renewable subscription, monthly or yearly. The App Store sho
 Terms of use: https://viktoriiaseliver.github.io/togo/terms.html
 Privacy policy: https://viktoriiaseliver.github.io/togo/privacy.html
 
+FIVE LANGUAGES
+English, Русский, Français, Українська, Қазақша. You switch the language in settings — no need to restart the phone.
+
 We have no server of our own, and there's no account to create. The diary lives on your phone; if iCloud is on, a copy goes to your private library, in the same place as everything else of yours. The shared family diary is iCloud sharing: only the person you name yourself gets in.

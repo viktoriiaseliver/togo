@@ -13,7 +13,7 @@ LE CARNET PARTAGÉ
 La personne que tu invites voit les entrées du jour et les doses notées : sorties, repas, selles, « envie de sortir ». Deux entrées pour la même chose ne s'écrasent pas : Togo propose de les fusionner. Le soir, personne ne cherche qui a sorti le chien.
 
 LE MÉDICAL EST UN MODE, PAS UNE RUBRIQUE
-L'onglet « Santé » est ouvert à qui vous confiez le médical : un assistant peut ne pas l'avoir. Fenêtre à jeun, protection contre la double dose, protocole « dose → prise de sang » et compte rendu pour le vétérinaire — construit à partir de ce qui est déjà noté.
+L'onglet « Santé » est ouvert à qui tu confies le médical : un assistant peut ne pas l'avoir. Fenêtre à jeun, protection contre la double dose, protocole « dose → prise de sang » et compte rendu pour le vétérinaire — construit à partir de ce qui est déjà noté.
 
 VOYAGES
 Le mode s'active par une date et s'éteint tout seul. Les bagages se calculent d'après le poids et la ration, les fenêtres avant le vol d'après l'heure de départ.
@@ -29,5 +29,8 @@ Le deuxième chien et les suivants, une famille de plus de deux personnes. Le re
 Togo Pro est un abonnement à renouvellement automatique, mensuel ou annuel. Le prix est affiché sur l'App Store : il dépend du pays et peut changer. L'abonnement se renouvelle tout seul tant qu'il n'est pas annulé, au plus tard 24 heures avant la fin de la période. Le paiement est débité sur ton compte Apple à la confirmation de l'achat. Tu peux l'annuler dans les réglages de l'App Store.
 Conditions d'utilisation : https://viktoriiaseliver.github.io/togo/terms.html
 Politique de confidentialité : https://viktoriiaseliver.github.io/togo/privacy.html
+
+CINQ LANGUES
+Français, English, Русский, Українська, Қазақша. La langue se change dans les réglages, sans redémarrer le téléphone.
 
 Nous n'avons pas de serveur, et il n'y a pas de compte à créer. Le carnet reste sur le téléphone ; si iCloud est activé, une copie se trouve dans ta bibliothèque privée, là où sont tes autres données. Le carnet partagé de la famille, c'est un partage iCloud : n'y entre que la personne que tu as nommée.
