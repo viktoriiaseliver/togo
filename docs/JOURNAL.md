@@ -9,6 +9,7 @@
 написанное рукой, пересборка не трогает.
 
 
+- [27 октября 2026 — dizayn-zakryt-ostatok-eto-resheniya](journal/2026-10-27-dizayn-zakryt-ostatok-eto-resheniya.md) — dizayn-zakryt-ostatok-eto-resheniya
 - [26 октября 2026 — узкий экран](journal/2026-10-26-zhest-ne-doshyol-do-scrollview.md) — механизм «карточка не достаётся» НЕ установлен: арифметика по кадрам сняла оба каркасных кандидата, а побайтный кадр не согласуется ни с одним — остаётся жест, не дошедший до ScrollView
 - [26 октября 2026](journal/2026-10-26-versiya-na-zhivyh-klassah-ne-opisyvaet-nichego.md) — Разработчик схемы: версия на живых классах не описывает ничего — V5 заморожена снимком, V6 встала на живые, база пяти телефонов открывается
 - [26 октября 2026](journal/2026-10-26-tri-otkaza-okazalis-tremya-raznymi-veshchami.md) — Сессия `projects-4e`, тестировщик
