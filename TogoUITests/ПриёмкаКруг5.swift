@@ -213,7 +213,7 @@ nonisolated final class ПриёмкаКруг5: XCTestCase {
         снять("03-вес-пуст-можно-позже")
         дальше.tap()
 
-        let режим = app.staticTexts["Режим дня"]
+        let режим = app.staticTexts["Режим"]
         XCTAssertTrue(режим.waitForExistence(timeout: 10), """
             С пустым весом дальше не пустило. Вес в онбординге
             не обязателен (ОТВЕТЫ-круг-5, п. 1).
