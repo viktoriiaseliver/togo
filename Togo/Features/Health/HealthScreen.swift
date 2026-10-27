@@ -65,6 +65,31 @@ struct HealthScreen: View {
         }
     }
 
+    /// То, что собака пьёт СЕЙЧАС.
+    ///
+    /// **Отменённое отсюда убрано 27.10.2026 по просьбе Виктории:**
+    /// «неактивные таблетки лучше скрыть в архив, чтобы не путать
+    /// пользователей». Повод прямой — в восстановленной карте Стича
+    /// девять схем, из них действует ОДНА, а остальные восемь шли
+    /// следом в том же списке, и у каждой своя карточка запаса.
+    ///
+    /// > Отменённая схема и действующая выглядят одинаково, а значат
+    /// > противоположное. На экране, где сверяют дозу, это хуже, чем
+    /// > отсутствие истории.
+    ///
+    /// Удалять их нельзя: история лечения — то, что спрашивает врач
+    /// первым («чем лечили раньше и чем кончилось»). Поэтому они
+    /// не исчезают, а уходят в свёрнутый раздел ниже.
+    private var действующиеСхемы: [Medication] {
+        medications.filter { $0.cancelledAt == nil }
+    }
+
+    /// История: отменённые схемы, новые сверху.
+    private var прошлыеСхемы: [Medication] {
+        medications.filter { $0.cancelledAt != nil }
+            .sorted { ($0.cancelledAt ?? .distantPast) > ($1.cancelledAt ?? .distantPast) }
+    }
+
     var body: some View {
         NavigationStack {
             КиноЭкран(экран: .health,
@@ -110,7 +135,7 @@ struct HealthScreen: View {
                 // Цена копии измерена не здесь: `QuotedNamesTests` ловил
                 // ровно это трижды за сутки 25.10.2026.
                 if !canEdit { ПлашкаПрава(право: .editTreatment) }
-                if medications.isEmpty {
+                if действующиеСхемы.isEmpty && прошлыеСхемы.isEmpty {
                     EmptyStateCard(
                         subject: .health,
                         title: "Схемы лечения пока нет",
@@ -119,10 +144,11 @@ struct HealthScreen: View {
                         action: canEdit ? { isAdding = true } : nil
                     )
                 } else {
-                    ForEach(medications) { medication in
+                    ForEach(действующиеСхемы) { medication in
                         карточкаЛечения(medication)
                         карточкаЗапаса(medication)
                     }
+                    прошлыеСхемыРаздел
                 }
 
                 показательКарточка
@@ -158,6 +184,69 @@ struct HealthScreen: View {
                 }
             }
         }
+    }
+
+    /// Прошлые схемы — свёрнуто, и число в заголовке.
+    ///
+    /// Свёрнуто потому, что это СПРАВКА, а не рабочий список: сюда
+    /// заглядывают, когда врач спрашивает «чем лечили раньше».
+    /// Число в заголовке нужно, чтобы раздел не читался как пустой —
+    /// закрытая полка без счёта выглядит так же, как полка, на которой
+    /// ничего нет.
+    ///
+    /// Карточки запаса у прошлых схем НЕТ: запас отвечает на вопрос
+    /// «когда покупать», а у отменённой схемы покупать нечего, и число
+    /// в ней осталось бы от последнего дня приёма — то есть врало бы
+    /// про сегодня.
+    @ViewBuilder
+    private var прошлыеСхемыРаздел: some View {
+        if !прошлыеСхемы.isEmpty {
+            TGCard {
+                DisclosureGroup {
+                    VStack(alignment: .leading, spacing: Token.Space.s12) {
+                        ForEach(прошлыеСхемы) { схема in
+                            строкаПрошлойСхемы(схема)
+                        }
+                    }
+                    .padding(.top, Token.Space.s8)
+                } label: {
+                    TGSectionHeader(title: .готовая(
+                        String(localized: "Прошлые схемы · \(прошлыеСхемы.count)")))
+                }
+                .tint(Token.Ink.secondary)
+            }
+        }
+    }
+
+    /// Строка истории: чем лечили, когда отменили и почему.
+    private func строкаПрошлойСхемы(_ схема: Medication) -> some View {
+        VStack(alignment: .leading, spacing: Token.Space.s4) {
+            Text(.готовая(схема.name))
+                .textStyle(AppFont.bodyEmphasis)
+                .wraps()
+            Text(.готовая(подписьПрошлой(схема)))
+                .textStyle(AppFont.caption)
+                .foregroundStyle(Token.Ink.secondary)
+                .wraps()
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    /// «1 таблетка · до 26.10.2026 · повод отмены».
+    ///
+    /// Повод берётся из `cancelledNote` и НЕ придумывается: пустая
+    /// заметка значит «причину не записали», и дописать её за человека
+    /// значило бы сочинить историю лечения.
+    private func подписьПрошлой(_ схема: Medication) -> String {
+        var части: [String] = []
+        if let доза = Fmt.notBlank(схема.doseText) { части.append(доза) }
+        if let до = схема.cancelledAt {
+            части.append(String(localized: "до \(Fmt.shortDay(до))"))
+        }
+        if let повод = Fmt.notBlank(схема.cancelledNote ?? "") {
+            части.append(повод)
+        }
+        return части.joined(separator: " · ")
     }
 
     /// Схему меняет только владелец. Остальные видят её и отмечают приёмы.
