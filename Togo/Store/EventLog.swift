@@ -15,10 +15,23 @@ struct EventLog {
     let context: ModelContext
     let appState: AppState
 
-    /// Правило дубля общее с записью голосом и кнопкой «Действие»:
-    /// `DuplicateGuard`. Здесь оно раньше и жило — и защищало один путь
-    /// из двух.
-    static var duplicateWindow: TimeInterval { DuplicateGuard.window }
+    // Правило дубля общее с записью голосом и кнопкой «Действие»:
+    // `DuplicateGuard` (`TogoShared/Domain/DuplicateGuard.swift`).
+    // Здесь оно раньше и жило — и защищало один путь из двух.
+    //
+    // Обёртка `static var duplicateWindow: TimeInterval
+    // { DuplicateGuard.window }` стояла здесь и удалена 27.10.2026.
+    // Замер: переезд правила — `2d412ba` («Голосом можно было покормить
+    // дважды»), и обёртка его пережила, не получив ни одного читателя;
+    // окно спрашивают у хозяина прямо — `DuplicateGuardTests.swift:71`,
+    // `Tools/замер_дублей.py:38`. Сам сторож в этом файле жив
+    // и ниже: `DuplicateGuard.recent(…)` на :110 (его наличие
+    // стережёт `SingleDoorTests:153`).
+    //
+    // Почему удалено, а не оставлено «на всякий»: второе имя у одной
+    // величины — приглашение развести их молча. Проверка:
+    //     git grep -n "duplicateWindow"        ← ожидается ноль
+    //     git grep -n "DuplicateGuard.window"  ← контроль, обязан найти
 
     /// Записать событие.
     ///

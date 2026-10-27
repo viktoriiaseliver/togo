@@ -41,7 +41,24 @@ struct TimelineBlock: Identifiable {
     /// Событие заняло время, а не случилось мгновенно.
     var isSpan: Bool { endedAt.timeIntervalSince(startedAt) >= 60 }
 
-    var hasMarks: Bool { !marks.isEmpty }
+    // `hasMarks` стоял здесь и удалён 27.10.2026: ноль читателей,
+    // и места, где он нужен, нет.
+    //
+    // Замер: читатель был один — `DayTimeline.swift:134` в `acb0ecf`,
+    // отступ строки (`block.hasMarks ? s4 : s10`), — и исчез вместе
+    // с рельсом в `da6e68a` («сплошные строки вместо рельса»). Контроль
+    // того же замера: `markGroups` и `isSpan` живы с тех пор и по сей
+    // день (DayTimeline.swift:86 и :212/:231,
+    // DayTimelineList.swift:104).
+    //
+    // Почему не подключаю: отметки рисуются `ForEach(block.markGroups)`
+    // в обоих контейнерах, а пустой массив даёт ноль строк сам —
+    // вопрос «есть ли отметки» там не задаётся по устройству.
+    // Единственный прямой читатель `marks` вне тестов,
+    // `DayTimelineList.swift:144`, складывает их с событием при
+    // удалении, а про пустоту спрашивает уже у собранного списка.
+    // Проверка: git grep -n "hasMarks" (ожидается ноль),
+    // git grep -n "markGroups" — контроль, обязан найти оба ряда.
 
     /// Собаку выводили на улицу. Прогулка и выход по нужде — оба.
     var isOuting: Bool { event.kind == .walk || event.kind == .outing }
