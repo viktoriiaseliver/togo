@@ -16,6 +16,7 @@ extension LogEvent {
             date: date,
             authorName: authorName,
             note: note,
+            photo: photo,
             outcome: outcomeRaw,
             durationSeconds: durationSeconds,
             stoolForm: stoolFormRaw,
@@ -48,6 +49,7 @@ extension LogEvent {
         date = payload.date
         authorName = payload.authorName
         note = payload.note
+        photo = payload.photo
         outcomeRaw = payload.outcome
         durationSeconds = payload.durationSeconds
         stoolFormRaw = payload.stoolForm
