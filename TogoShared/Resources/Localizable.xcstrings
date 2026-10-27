@@ -63202,8 +63202,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Nothing happened"
+            "state" : "translated",
+            "value" : "Didn't go"
           }
         },
         "fr" : {
@@ -64130,8 +64130,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "No pee within an hour — he asked for something else"
+            "state" : "translated",
+            "value" : "No pee within an hour — she asked for something else"
           }
         },
         "fr" : {
@@ -65999,8 +65999,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Water ration ≈ %@ ml per day. In hot weather look at this line first: a change of water or food most often goes wrong right here."
+            "state" : "translated",
+            "value" : "Water need ≈ %@ ml per day. In hot weather look at this line first: a change of water or food most often goes wrong right here."
           }
         },
         "fr" : {
@@ -66033,8 +66033,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Water ration ≈ %lld ml per day. In hot weather look at this line first: a change of water or food most often goes wrong right here."
+            "state" : "translated",
+            "value" : "Water need ≈ %lld ml per day. In hot weather look at this line first: a change of water or food most often goes wrong right here."
           }
         },
         "fr" : {
@@ -70698,8 +70698,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Feedback when noting"
+            "state" : "translated",
+            "value" : "Haptics when noting"
           }
         },
         "fr" : {
@@ -84789,8 +84789,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "We never take permissions away from people."
+            "state" : "translated",
+            "value" : "We never take rights away from people."
           }
         },
         "fr" : {
@@ -88816,8 +88816,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Skip"
+            "state" : "translated",
+            "value" : "Missed dose"
           }
         },
         "fr" : {
@@ -88881,8 +88881,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Skip logged"
+            "state" : "translated",
+            "value" : "Missed dose logged"
           }
         },
         "fr" : {
@@ -88910,8 +88910,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Skips"
+            "state" : "translated",
+            "value" : "Doses missed"
           }
         },
         "fr" : {
@@ -89687,8 +89687,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Past day · add with «+»"
+            "state" : "translated",
+            "value" : "Past day · add with “+”"
           }
         },
         "fr" : {
@@ -89969,8 +89969,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Five roles, eight permissions"
+            "state" : "translated",
+            "value" : "Five roles, eight rights"
           }
         },
         "fr" : {
@@ -103869,8 +103869,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Plan · Supply · Labs"
+            "state" : "translated",
+            "value" : "Plan · Stock · Labs"
           }
         },
         "fr" : {
@@ -108477,8 +108477,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Removes the card from this phone. It does not close access to the diary: that is done by \"Shared diary → Stop sharing\", and for everyone at once."
+            "state" : "translated",
+            "value" : "Removes the card from this phone. It does not close access to the diary: that is done by “Shared diary → Stop sharing”, and for everyone at once."
           }
         },
         "fr" : {
@@ -110790,8 +110790,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Doses already marked will stay put."
+            "state" : "translated",
+            "value" : "The dose entries already created will stay in place."
           }
         },
         "fr" : {
@@ -112419,8 +112419,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "The file didn't fit"
+            "state" : "translated",
+            "value" : "Wrong file"
           }
         },
         "fr" : {
@@ -112726,8 +112726,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "The “didn't take food” flag stops the session and drops the score. Refusing food means learning isn't possible right now."
+            "state" : "translated",
+            "value" : "The “didn't take food” flag stops the session and leaves it unscored. Refusing food means learning isn't possible right now."
           }
         },
         "fr" : {
@@ -116816,8 +116816,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "What he might have eaten"
+            "state" : "translated",
+            "value" : "What she might have eaten"
           }
         },
         "fr" : {
@@ -121793,8 +121793,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "How much he ate over the past two weeks"
+            "state" : "translated",
+            "value" : "How much she ate over the past two weeks"
           }
         },
         "fr" : {
@@ -122225,8 +122225,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "First set the daily amount — it's in “Food and routine”"
+            "state" : "translated",
+            "value" : "First set the daily ration — it's in “Food and routine”"
           }
         },
         "fr" : {
@@ -122405,8 +122405,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "You can see doses, supply and lab results. The owner grants “Change the treatment plan” in “Family”."
+            "state" : "translated",
+            "value" : "You can see doses, stock and lab results. The owner grants “Change the treatment plan” in “Family”."
           }
         },
         "fr" : {
