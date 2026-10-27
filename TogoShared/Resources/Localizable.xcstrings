@@ -1029,8 +1029,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "“%@” will leave the day's plan, and the “Health” tab will hide itself. %@"
+            "state" : "translated",
+            "value" : "“%@” will leave the day's plan. %@"
           }
         },
         "fr" : {
@@ -1154,8 +1154,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "«Як завжди» з'являється, тільки якщо останні чотири записи збіглися."
+            "state" : "translated",
+            "value" : "«Як зазвичай» з'являється, тільки якщо останні чотири записи збіглися."
           }
         }
       }
@@ -3919,8 +3919,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%@ will leave the day's plan, and the “Health” tab will hide itself. %@"
+            "state" : "translated",
+            "value" : "%@ will leave the day's plan. %@"
           }
         },
         "fr" : {
@@ -8281,14 +8281,14 @@
             "plural" : {
               "one" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld іркіліс"
+                  "state" : "translated",
+                  "value" : "%lld ашулану"
                 }
               },
               "other" : {
                 "stringUnit" : {
-                  "state" : "needs_review",
-                  "value" : "%lld іркіліс"
+                  "state" : "translated",
+                  "value" : "%lld ашулану"
                 }
               }
             }
@@ -10770,8 +10770,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "7 × 1.5 g from norm"
+            "state" : "translated",
+            "value" : "7 × 1.5 g from the ration"
           }
         },
         "fr" : {
@@ -11230,8 +11230,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "23:00–7:00 · доза однаково подзвонить"
+            "state" : "translated",
+            "value" : "23:00–7:00 · доза все одно подзвонить"
           }
         }
       }
@@ -12245,8 +12245,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Siri және «Командалар»"
+            "state" : "translated",
+            "value" : "Siri және «Пәрмендер»"
           }
         },
         "uk" : {
@@ -12879,8 +12879,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "for you, Mom and Anya: walks, food, stool, doses, labs, visits, prescriptions, care, training, trips, documents. You can export the diary first."
+            "state" : "translated",
+            "value" : "for you, Mom and Anya: outings, food, stool, doses, labs, visits, prescriptions, care, training, trips, documents. You can export the diary first."
           }
         },
         "fr" : {
@@ -15096,8 +15096,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "найближче: кігті за 5 дн"
+            "state" : "translated",
+            "value" : "найближче: кігті через 5 дн"
           }
         }
       }
@@ -17073,8 +17073,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Бланктан енгізу"
+            "state" : "translated",
+            "value" : "Бланктен енгізу"
           }
         },
         "ru" : {
@@ -17203,8 +17203,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Велосипед, скутер"
+            "state" : "translated",
+            "value" : "Велосипед, самокат"
           }
         },
         "ru" : {
@@ -17614,8 +17614,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "норманың жоғары шегі"
+            "state" : "translated",
+            "value" : "норманың жоғарғы шегі"
           }
         },
         "ru" : {
@@ -19735,8 +19735,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "The tab arrives with a treatment and leaves with “Treatment finished”. For a healthy dog there's nothing medical on the main screen at all."
+            "state" : "translated",
+            "value" : "The tab belongs to whoever is allowed to see medical records: a helper doesn't have it. A treatment is ended with “Treatment finished”, and the vet report stays available afterwards."
           }
         },
         "fr" : {
@@ -19759,8 +19759,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Вкладка приходить із курсом і йде за «Курс завершено». У здорової собаки медицини на головному немає зовсім."
+            "state" : "translated",
+            "value" : "Вкладка в того, кому дозволено бачити медичне: у помічника її немає. Курс завершують через «Курс завершено», і звіт лікарю лишається доступним після нього."
           }
         }
       }
@@ -19800,8 +19800,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "gives you the “Health” tab, doses, the fasting window and reports"
+            "state" : "translated",
+            "value" : "switches on scheduled doses, the fasting window and reminders"
           }
         },
         "fr" : {
@@ -19824,8 +19824,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "дає вкладку «Здоров'я», дози, вікно натщесерце і звіти"
+            "state" : "translated",
+            "value" : "вмикає дози за годинами, вікно натщесерце і нагадування"
           }
         }
       }
@@ -20424,8 +20424,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Ылғал · 6 банка"
+            "state" : "translated",
+            "value" : "Дымқыл · 6 банка"
           }
         },
         "uk" : {
@@ -21557,8 +21557,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Тығыз"
+            "state" : "translated",
+            "value" : "Тым жақын"
           }
         },
         "ru" : {
@@ -22076,8 +22076,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Алу уақыты белгілі"
+            "state" : "translated",
+            "value" : "Қан алу уақыты белгілі"
           }
         },
         "ru" : {
@@ -22100,8 +22100,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "sampling time not given"
+            "state" : "translated",
+            "value" : "draw time not given"
           }
         },
         "fr" : {
@@ -22766,8 +22766,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Однаково записати другу"
+            "state" : "translated",
+            "value" : "Усе одно записати другу"
           }
         }
       }
@@ -24395,8 +24395,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "вигул"
+            "state" : "translated",
+            "value" : "вихід"
           }
         }
       }
@@ -24638,8 +24638,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Turn it off and the tab disappears, but the entries stay in the history."
+            "state" : "translated",
+            "value" : "Turn it off and the treatment closes, but the entries stay in the history."
           }
         },
         "fr" : {
@@ -24662,8 +24662,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Вимкнеш — вкладка зникне, а записи залишаться в історії."
+            "state" : "translated",
+            "value" : "Вимкнеш — курс закриється, а записи залишаться в історії."
           }
         }
       }
@@ -24799,8 +24799,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Знудило · чим"
+            "state" : "translated",
+            "value" : "Вирвало · чим"
           }
         }
       }
@@ -25242,8 +25242,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "walks"
+            "state" : "translated",
+            "value" : "outings"
           }
         },
         "fr" : {
@@ -25272,8 +25272,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "walks a day"
+            "state" : "translated",
+            "value" : "outings a day"
           }
         },
         "fr" : {
@@ -25307,8 +25307,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "walks a day · 2 weeks"
+            "state" : "translated",
+            "value" : "outings a day · 2 weeks"
           }
         },
         "fr" : {
@@ -25336,8 +25336,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "No walks yet"
+            "state" : "translated",
+            "value" : "No outings yet"
           }
         },
         "fr" : {
@@ -25402,8 +25402,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Walks"
+            "state" : "translated",
+            "value" : "Outings"
           }
         },
         "fr" : {
@@ -25473,8 +25473,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Walks per day."
+            "state" : "translated",
+            "value" : "Outings per day."
           }
         },
         "fr" : {
@@ -25502,8 +25502,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Walks and stool"
+            "state" : "translated",
+            "value" : "Outings and stool"
           }
         },
         "fr" : {
@@ -25692,8 +25692,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Вище — рідше. Три рідкі поспіль — епізод."
+            "state" : "translated",
+            "value" : "Вище — рідкіше. Три рідкі поспіль — епізод."
           }
         }
       }
@@ -28482,8 +28482,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Алу күні"
+            "state" : "translated",
+            "value" : "Қан алу күні"
           }
         },
         "ru" : {
@@ -28696,8 +28696,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "дати лапу · стояти на огляді · перенесення"
+            "state" : "translated",
+            "value" : "дати лапу · стояти на огляді · переноска"
           }
         }
       }
@@ -29268,8 +29268,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Қаншық"
+            "state" : "translated",
+            "value" : "Ұрғашы"
           }
         },
         "ru" : {
@@ -33713,8 +33713,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Dose skipped"
+            "state" : "translated",
+            "value" : "Dose missed"
           }
         },
         "fr" : {
@@ -33771,8 +33771,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "dose, food, walks"
+            "state" : "translated",
+            "value" : "dose, food, outings"
           }
         },
         "fr" : {
@@ -34254,8 +34254,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Long without walks"
+            "state" : "translated",
+            "value" : "Long without outings"
           }
         },
         "fr" : {
@@ -34813,8 +34813,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "др. Лемер · контроль за 4–6 тиж"
+            "state" : "translated",
+            "value" : "др. Лемер · контроль через 4–6 тиж"
           }
         }
       }
@@ -35181,8 +35181,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Його знудило — що робити?"
+            "state" : "translated",
+            "value" : "Його вирвало — що робити?"
           }
         }
       }
@@ -35205,8 +35205,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "оның нормасы ≈ күніне %@ мл, аптапта көбірек · жиналатын ішкіш"
+            "state" : "translated",
+            "value" : "оның нормасы ≈ күніне %@ мл, аптапта көбірек · жиналмалы су ыдысы"
           }
         },
         "ru" : {
@@ -38631,8 +38631,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Алу қай уақытта?"
+            "state" : "translated",
+            "value" : "Қан алу қай уақытта?"
           }
         },
         "ru" : {
@@ -38755,8 +38755,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Take it now"
+            "state" : "translated",
+            "value" : "Fetch now"
           }
         },
         "fr" : {
@@ -39005,8 +39005,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "End course"
+            "state" : "translated",
+            "value" : "Finish treatment"
           }
         },
         "fr" : {
@@ -39930,8 +39930,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Залізти в перенесення"
+            "state" : "translated",
+            "value" : "Залізти в переноску"
           }
         }
       }
@@ -41841,8 +41841,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Записано · випорожнення як завжди"
+            "state" : "translated",
+            "value" : "Записано · випорожнення як зазвичай"
           }
         }
       }
@@ -45902,8 +45902,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "from daily norm"
+            "state" : "translated",
+            "value" : "from the daily ration"
           }
         },
         "fr" : {
@@ -47520,8 +47520,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "як завжди"
+            "state" : "translated",
+            "value" : "як зазвичай"
           }
         }
       }
@@ -47556,8 +47556,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Як завжди · %@"
+            "state" : "translated",
+            "value" : "Як зазвичай · %@"
           }
         }
       }
@@ -47585,8 +47585,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Як завжди · ковбаска"
+            "state" : "translated",
+            "value" : "Як зазвичай · ковбаска"
           }
         }
       }
@@ -47753,8 +47753,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "бланктағыдай"
+            "state" : "translated",
+            "value" : "бланктегідей"
           }
         },
         "ru" : {
@@ -47981,8 +47981,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "як попросився · необов'язково"
+            "state" : "translated",
+            "value" : "як попросив · необов'язково"
           }
         }
       }
@@ -48010,8 +48010,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Як попросився · необов'язково"
+            "state" : "translated",
+            "value" : "Як попросив · необов'язково"
           }
         }
       }
@@ -51584,8 +51584,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Қысқаша: күнделік сенің телефонында тұрады. Біз аккаунт жасамаймыз, сен не жазатыныңыз туралы аналитика жинамаймыз және деректі үшінші тұлғаларға бермейміз."
+            "state" : "translated",
+            "value" : "Қысқаша: күнделік сенің телефоныңда тұрады. Біз аккаунт жасамаймыз, сен не жазатының туралы аналитика жинамаймыз және деректі үшінші тұлғаларға бермейміз."
           }
         },
         "ru" : {
@@ -51607,8 +51607,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "short walk"
+            "state" : "translated",
+            "value" : "short outing"
           }
         },
         "fr" : {
@@ -51636,8 +51636,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Short walk"
+            "state" : "translated",
+            "value" : "Short outing"
           }
         },
         "fr" : {
@@ -52022,8 +52022,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "кров у калі"
+            "state" : "translated",
+            "value" : "кров у випорожненнях"
           }
         }
       }
@@ -52051,8 +52051,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Кров у калі"
+            "state" : "translated",
+            "value" : "Кров у випорожненнях"
           }
         }
       }
@@ -53604,8 +53604,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Treats from daily norm"
+            "state" : "translated",
+            "value" : "Treats from the daily ration"
           }
         },
         "fr" : {
@@ -54709,8 +54709,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Wet spots"
+            "state" : "translated",
+            "value" : "Watery"
           }
         },
         "fr" : {
@@ -54916,8 +54916,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Сен күмәндәнатын кез келген жағдай. Қолданба сенен және дәрігерден жақсы білмейді."
+            "state" : "translated",
+            "value" : "Сен күмәнданатын кез келген жағдай. Қолданба сенен және дәрігерден жақсы білмейді."
           }
         },
         "ru" : {
@@ -55657,8 +55657,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Көшіру матрицасы"
+            "state" : "translated",
+            "value" : "Тасымалдау матрицасы"
           }
         },
         "uk" : {
@@ -55686,8 +55686,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Көшіру матрицасы · осьтер тегін көрінеді"
+            "state" : "translated",
+            "value" : "Тасымалдау матрицасы · осьтер тегін көрінеді"
           }
         },
         "uk" : {
@@ -56899,8 +56899,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "minutes · “Peed” · “Home”"
+            "state" : "translated",
+            "value" : "minutes · “Peed” · “Head home”"
           }
         },
         "fr" : {
@@ -58230,8 +58230,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "неден үзілді"
+            "state" : "translated",
+            "value" : "неден ашуланды"
           }
         },
         "ru" : {
@@ -58266,8 +58266,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "неден үзілетін"
+            "state" : "translated",
+            "value" : "неден ашуланатын"
           }
         },
         "ru" : {
@@ -58491,8 +58491,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "viewer"
+            "state" : "translated",
+            "value" : "observer"
           }
         },
         "fr" : {
@@ -59864,8 +59864,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Нагадаю за годину"
+            "state" : "translated",
+            "value" : "Нагадаю через годину"
           }
         }
       }
@@ -65718,8 +65718,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Vet's norm ÷ meals"
+            "state" : "translated",
+            "value" : "Vet's ration ÷ meals"
           }
         },
         "fr" : {
@@ -65760,8 +65760,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Норма дейін"
+            "state" : "translated",
+            "value" : "Норманың жоғарғы шегі"
           }
         },
         "ru" : {
@@ -65784,8 +65784,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "norm and times"
+            "state" : "translated",
+            "value" : "ration and times"
           }
         },
         "fr" : {
@@ -65897,8 +65897,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Норма бастап"
+            "state" : "translated",
+            "value" : "Норманың төменгі шегі"
           }
         },
         "ru" : {
@@ -68629,8 +68629,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "ол күні бойы қатарда және үнемі шығады; мұндай күні шешім мәнсіз нәрсе санайды"
+            "state" : "translated",
+            "value" : "ол күні бойы қасыңда және үнемі шығады; вердикт мұндай күні мәнсіз нәрсе санайды"
           }
         },
         "ru" : {
@@ -68653,8 +68653,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "It arrives with a treatment and leaves with it: at the bottom of “Health” there's “Treatment finished”. The entries stay in the history and in the vet report."
+            "state" : "translated",
+            "value" : "It belongs to whoever is allowed to see medical records. A helper doesn't have it. You can finish a treatment at the bottom of “Health” — the entries stay in the history and in the vet report, and the tab doesn't go anywhere."
           }
         },
         "fr" : {
@@ -68677,8 +68677,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Вона приходить із курсом лікування і йде з ним: унизу «Здоров'я» є «Курс завершено». Записи залишаються в історії і у звіті лікарю."
+            "state" : "translated",
+            "value" : "Вона в того, кому дозволено бачити медичне. У помічника її немає. Курс можна завершити внизу «Здоров'я» — записи залишаються в історії і у звіті лікарю, а вкладка нікуди не дінеться."
           }
         }
       }
@@ -69531,8 +69531,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Stop"
+            "state" : "translated",
+            "value" : "Rest stop"
           }
         },
         "fr" : {
@@ -70510,8 +70510,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "«Пәрмендер» → «Автоматтандыру» ашыңыз"
+            "state" : "translated",
+            "value" : "«Пәрмендер» → «Автоматтандыру» бөлімін аш"
           }
         },
         "ru" : {
@@ -72301,8 +72301,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "log the first walk"
+            "state" : "translated",
+            "value" : "log the first outing"
           }
         },
         "fr" : {
@@ -72395,8 +72395,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Log walks, food, stool"
+            "state" : "translated",
+            "value" : "Log outings, meals, stool"
           }
         },
         "fr" : {
@@ -74079,8 +74079,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "үзіліс"
+            "state" : "translated",
+            "value" : "кідірту"
           }
         },
         "uk" : {
@@ -74109,8 +74109,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Үзіліс"
+            "state" : "translated",
+            "value" : "Кідірту"
           }
         },
         "ru" : {
@@ -74406,8 +74406,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "First walk"
+            "state" : "translated",
+            "value" : "First outing"
           }
         },
         "fr" : {
@@ -75131,8 +75131,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Дағдыны көшіру"
+            "state" : "translated",
+            "value" : "Дағдыны тасымалдау"
           }
         },
         "ru" : {
@@ -76186,8 +76186,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Бойынша"
+            "state" : "translated",
+            "value" : "Дейін"
           }
         },
         "ru" : {
@@ -76759,8 +76759,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "әрекет бойынша"
+            "state" : "translated",
+            "value" : "талпыныс бойынша"
           }
         },
         "ru" : {
@@ -78849,8 +78849,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Пізніше · нагадати за 15 хв"
+            "state" : "translated",
+            "value" : "Пізніше · нагадати через 15 хв"
           }
         }
       }
@@ -81492,8 +81492,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "көру"
+            "state" : "translated",
+            "value" : "байқап көру"
           }
         },
         "ru" : {
@@ -81551,8 +81551,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Asked out"
+            "state" : "translated",
+            "value" : "Asked to go out"
           }
         },
         "fr" : {
@@ -81592,8 +81592,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Әрекет"
+            "state" : "translated",
+            "value" : "Талпыныс"
           }
         },
         "uk" : {
@@ -81621,8 +81621,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Әрекет жазылды"
+            "state" : "translated",
+            "value" : "Талпыныс жазылды"
           }
         },
         "uk" : {
@@ -81743,8 +81743,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "бүгінгі әрекеттер: 2"
+            "state" : "translated",
+            "value" : "бүгінгі талпыныс: 2"
           }
         },
         "uk" : {
@@ -81772,8 +81772,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "әрекеттер: 0"
+            "state" : "translated",
+            "value" : "талпыныс: 0"
           }
         },
         "uk" : {
@@ -81801,8 +81801,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "әрекеттер: 1"
+            "state" : "translated",
+            "value" : "талпыныс: 1"
           }
         },
         "uk" : {
@@ -83115,8 +83115,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Last walk"
+            "state" : "translated",
+            "value" : "Last outing"
           }
         },
         "fr" : {
@@ -83968,8 +83968,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Екеуің бір нәрсені белгілеген сияқтысың. Жазбалардың біреуі кейін келді — шамасы, автор желісіз болған."
+            "state" : "translated",
+            "value" : "Екеуің де бір нәрсені белгілеген сияқтысыңдар. Жазбалардың біреуі кейін келді — шамасы, автор желісіз болған."
           }
         },
         "ru" : {
@@ -85351,8 +85351,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Үш нәрсе бөледі"
+            "state" : "translated",
+            "value" : "Үш нәрсе үзеді"
           }
         },
         "uk" : {
@@ -88874,8 +88874,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%@ мерзімі өтті"
+            "state" : "translated",
+            "value" : "мерзімі %@ өтті"
           }
         },
         "ru" : {
@@ -89385,8 +89385,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Басқару тақтасы"
+            "state" : "translated",
+            "value" : "Басқару орталығы"
           }
         },
         "ru" : {
@@ -91419,8 +91419,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "routine, walks, food · medical hidden"
+            "state" : "translated",
+            "value" : "routine, outings, food · medical hidden"
           }
         },
         "fr" : {
@@ -92381,8 +92381,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "С"
+            "state" : "translated",
+            "value" : "Бастап"
           }
         },
         "ru" : {
@@ -92617,8 +92617,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "бланктан"
+            "state" : "translated",
+            "value" : "бланктен"
           }
         },
         "ru" : {
@@ -93425,8 +93425,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Белгілерді тастау"
+            "state" : "translated",
+            "value" : "Белгілерді тазалау"
           }
         },
         "ru" : {
@@ -93745,8 +93745,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Звіт лікарю · безкоштовно"
+            "state" : "translated",
+            "value" : "Зведення лікарю · безкоштовно"
           }
         }
       }
@@ -93774,8 +93774,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Звіт готовий"
+            "state" : "translated",
+            "value" : "Зведення готове"
           }
         }
       }
@@ -93832,8 +93832,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Звіт лікарю можна зібрати іншою мовою."
+            "state" : "translated",
+            "value" : "Зведення лікарю можна зібрати іншою мовою."
           }
         }
       }
@@ -94615,8 +94615,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "we didn't find you in the family list — viewer rights"
+            "state" : "translated",
+            "value" : "we didn't find you in the family list — observer rights"
           }
         },
         "fr" : {
@@ -96520,8 +96520,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Ит күніне қанша рет үзілді. Жеке күнге емес, ай ішінде сызықтың қайда бара жатқанына қарау керек."
+            "state" : "translated",
+            "value" : "Ит күніне қанша рет ашуланды. Жеке күнге емес, ай ішінде сызықтың қайда бара жатқанына қарау керек."
           }
         },
         "ru" : {
@@ -96628,8 +96628,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Көбіне назар қажет"
+            "state" : "translated",
+            "value" : "Бәлкім, назар қажет"
           }
         },
         "ru" : {
@@ -97654,8 +97654,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Ауысым қабылданды"
+            "state" : "translated",
+            "value" : "Кезек қабылданды"
           }
         },
         "uk" : {
@@ -98228,8 +98228,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "ruled out"
+            "state" : "translated",
+            "value" : "resolved"
           }
         },
         "fr" : {
@@ -98365,8 +98365,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Shoot"
+            "state" : "translated",
+            "value" : "Take photo"
           }
         },
         "fr" : {
@@ -98995,8 +98995,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "собака не їв"
+            "state" : "translated",
+            "value" : "собака не їла"
           }
         }
       }
@@ -99776,8 +99776,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Үзілген ит қазір үйрене алмайды, оны ұрысудың мәні жоқ. Алысырақ кет, демалуға мүмкіндік бер, келесі ретте ол шыдайтын қашықтықты сақта."
+            "state" : "translated",
+            "value" : "Ашуланған ит қазір үйрене алмайды, оны ұрысудың мәні жоқ. Алысырақ кет, демалуға мүмкіндік бер, келесі ретте ол шыдайтын қашықтықты сақта."
           }
         },
         "ru" : {
@@ -99800,8 +99800,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "lost it"
+            "state" : "translated",
+            "value" : "reacted"
           }
         },
         "fr" : {
@@ -100918,8 +100918,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "спитаю «як він зараз?» за годину"
+            "state" : "translated",
+            "value" : "спитаю «як він зараз?» через годину"
           }
         }
       }
@@ -101785,8 +101785,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Үзіліс — теріс қылық емес, шек. Ит сол кезде үйрене алмайды: ұрысудың орнына алысырақ кетіп, демалуға мүмкіндік беру пайдалы."
+            "state" : "translated",
+            "value" : "Ашулану — шек, тәртіп бұзу емес. Ит сол кезде үйрене алмайды: ұрысудың орнына алысырақ кетіп, демалуға мүмкіндік беру пайдалы."
           }
         },
         "ru" : {
@@ -101850,8 +101850,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "іркіліс"
+            "state" : "translated",
+            "value" : "ашулану"
           }
         },
         "ru" : {
@@ -101922,8 +101922,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Іркілістер · 30 күн"
+            "state" : "translated",
+            "value" : "Ашуланулар · 30 күн"
           }
         },
         "ru" : {
@@ -103910,8 +103910,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "рахунок дійшов сам"
+            "state" : "translated",
+            "value" : "лік дійшов сам"
           }
         }
       }
@@ -103939,8 +103939,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Рахунок дійшов сам. Відмова — не глухий кут."
+            "state" : "translated",
+            "value" : "Лік дійшов сам. Відмова — не глухий кут."
           }
         }
       }
@@ -104728,8 +104728,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%@ таблетка"
+            "state" : "translated",
+            "value" : "Таблетка қоры: %@"
           }
         },
         "ru" : {
@@ -106242,8 +106242,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "view only · viewer"
+            "state" : "translated",
+            "value" : "view only · observer"
           }
         },
         "fr" : {
@@ -107941,8 +107941,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Прибрати Аню можна в «Родині». Її записи залишаться."
+            "state" : "translated",
+            "value" : "Прибрати Аню можна в «Сім'ї». Її записи залишаться."
           }
         }
       }
@@ -108121,8 +108121,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Вилучить карточку з цього телефона. Доступ до щоденника це не закриє: його закриває «Спільний щоденник → Перестати ділитися», і відразу для всіх."
+            "state" : "translated",
+            "value" : "Вилучить картку з цього телефона. Доступ до щоденника це не закриє: його закриває «Спільний щоденник → Перестати ділитися», і відразу для всіх."
           }
         }
       }
@@ -108217,8 +108217,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Менің суреттерімді алу"
+            "state" : "translated",
+            "value" : "Менің суреттерімді алып тастау"
           }
         },
         "ru" : {
@@ -108397,8 +108397,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Соңғысын алу"
+            "state" : "translated",
+            "value" : "Соңғысын алып тастау"
           }
         },
         "ru" : {
@@ -110932,8 +110932,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Керувати родиною"
+            "state" : "translated",
+            "value" : "Керувати сім'єю"
           }
         }
       }
@@ -111165,8 +111165,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Таңғы қорытынды"
+            "state" : "translated",
+            "value" : "Таңғы жиынтық"
           }
         },
         "ru" : {
@@ -111314,8 +111314,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "доглядальниця"
+            "state" : "translated",
+            "value" : "опікунка"
           }
         }
       }
@@ -114760,8 +114760,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "за 3 дні"
+            "state" : "translated",
+            "value" : "через 3 дні"
           }
         }
       }
@@ -114789,8 +114789,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "за 4–6 тижнів"
+            "state" : "translated",
+            "value" : "через 4–6 тижнів"
           }
         }
       }
@@ -115288,8 +115288,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Бланктағы сан"
+            "state" : "translated",
+            "value" : "Бланктегі сан"
           }
         },
         "uk" : {
@@ -119745,8 +119745,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Not a norm, a mirror: compare with yourself a month ago — it was"
+            "state" : "translated",
+            "value" : "Not a standard, a mirror: compare with yourself a month ago — it was"
           }
         },
         "fr" : {
@@ -120038,8 +120038,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "бұл құқықтардың алдын ала жинағы, шекті шек емес"
+            "state" : "translated",
+            "value" : "бұл — құқықтардың алдын ала жинағы, шек емес"
           }
         },
         "ru" : {
@@ -121212,8 +121212,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Бақылаушы оқиды, жазбайды. Көмекші медициналықты көрмейді. Емдеу сызбасын әдепкіде тек иесі өзгертеді."
+            "state" : "translated",
+            "value" : "Бақылаушы оқиды, жазбайды. Көмекші медициналықты көрмейді. Емдеу схемасын әдепкіде тек иесі өзгертеді."
           }
         },
         "ru" : {
@@ -121569,8 +121569,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "«Денсаулық» қойындысы, ашқарынға терезесі және қос дозадан қорғау пайда болады. Препаратты кейін қосасың — сызба мен сағаттарды сонда сұраймыз."
+            "state" : "translated",
+            "value" : "«Денсаулық» қойындысы, ашқарын терезесі және қос дозадан қорғау пайда болады. Дәріні кейін қосасың — схема мен сағаттарды сонда сұраймыз."
           }
         },
         "ru" : {
@@ -121857,8 +121857,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Алдымен күндік мөлшерді көрсет — ол «Тамақтану мен режимде»"
+            "state" : "translated",
+            "value" : "Алдымен күндік норманы көрсет — ол «Тамақтану мен режимде»"
           }
         },
         "ru" : {
@@ -122001,8 +122001,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Сызбаны иесі өзгертеді"
+            "state" : "translated",
+            "value" : "Схеманы иесі өзгертеді"
           }
         },
         "ru" : {
@@ -122061,8 +122061,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Record the norm and schedule"
+            "state" : "translated",
+            "value" : "Record the ration and schedule"
           }
         },
         "fr" : {
@@ -122097,8 +122097,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "the norm has not been recorded yet"
+            "state" : "translated",
+            "value" : "the ration has not been recorded yet"
           }
         },
         "fr" : {
@@ -122205,8 +122205,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "The norm is not recorded. The app does not fill it in"
+            "state" : "translated",
+            "value" : "The ration is not recorded. The app does not fill it in"
           }
         },
         "fr" : {
@@ -122241,8 +122241,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Until there is a norm, the app calculates neither the portion nor the overfeeding — everything else is derived from it. It cannot fill in a number of its own: that would be a prescription nobody made."
+            "state" : "translated",
+            "value" : "Until there is a ration, the app calculates neither the portion nor the overfeeding — everything else is derived from it. It cannot fill in a number of its own: that would be a prescription nobody made."
           }
         },
         "fr" : {
@@ -122277,8 +122277,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "The app does not know what to divide: the daily norm is not recorded."
+            "state" : "translated",
+            "value" : "The app does not know what to divide: the daily ration is not recorded."
           }
         },
         "fr" : {
@@ -122313,8 +122313,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "This mirrors the daily norm, and the norm is not recorded. Record it in the feeding schedule, and the stock usage will start being counted."
+            "state" : "translated",
+            "value" : "This mirrors the daily ration, and the ration is not recorded. Record it in the feeding schedule, and the stock usage will start being counted."
           }
         },
         "fr" : {
@@ -122349,8 +122349,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "the norm is not recorded"
+            "state" : "translated",
+            "value" : "the ration is not recorded"
           }
         },
         "fr" : {
@@ -122385,8 +122385,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Record the norm"
+            "state" : "translated",
+            "value" : "Record the ration"
           }
         },
         "fr" : {
@@ -122421,8 +122421,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Until the norm is recorded, the app calculates neither the portion nor the overfeeding: everything else is derived from it. Tap, and the stepper will sit at one hundred and twenty grams, a convenient place to dial up to whatever the vet named. This is a hint, not a prescription."
+            "state" : "translated",
+            "value" : "Until the ration is recorded, the app calculates neither the portion nor the overfeeding: everything else is derived from it. Tap, and the stepper will sit at one hundred and twenty grams, a convenient place to dial up to whatever the vet named. This is a hint, not a prescription."
           }
         },
         "fr" : {
@@ -122457,8 +122457,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "the norm is not recorded — there is nothing to count the food by"
+            "state" : "translated",
+            "value" : "the ration is not recorded — there is nothing to count the food by"
           }
         },
         "fr" : {
@@ -122493,8 +122493,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "first record the daily norm in the feeding schedule — everything is derived from it"
+            "state" : "translated",
+            "value" : "first record the daily ration in the feeding schedule — everything is derived from it"
           }
         },
         "fr" : {
@@ -122529,8 +122529,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "There is nothing to derive the portion from: the daily norm is not recorded. Dial in however much you put out — or record the norm in the feeding schedule, and from then on it will be filled in automatically."
+            "state" : "translated",
+            "value" : "There is nothing to derive the portion from: the daily ration is not recorded. Dial in however much you put out — or record the ration in the feeding schedule, and from then on it will be filled in automatically."
           }
         },
         "fr" : {
@@ -124089,8 +124089,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Анализдар зертханада алынады, қабылдау клиникада өтеді. Ауыстырғыш оның қай тізімде көрінетінін және қай жерде таңдауға ұсынылатынын шешеді."
+            "state" : "translated",
+            "value" : "Талдаулар зертханада алынады, қабылдау клиникада өтеді. Ауыстырғыш оның қай тізімде көрінетінін және қай жерде таңдауға ұсынылатынын шешеді."
           }
         },
         "ru" : {
@@ -124233,8 +124233,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Клиника анықтамалықтан кетеді. Онда жасалған қабылдаулар, тағайындаулар мен егулер қалады: олар сол күннің фактісі, мекеме тізімде болмаса да."
+            "state" : "translated",
+            "value" : "Клиника анықтамалықтан кетеді. Онда жасалған қабылдаулар, тағайындаулар мен екпелер қалады: олар сол күннің фактісі, мекеме тізімде болмаса да."
           }
         },
         "ru" : {
@@ -124545,8 +124545,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "collection time"
+            "state" : "translated",
+            "value" : "draw time"
           }
         },
         "fr" : {
@@ -124557,8 +124557,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "алу уақыты"
+            "state" : "translated",
+            "value" : "қан алу уақыты"
           }
         },
         "ru" : {
@@ -124749,8 +124749,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Приберe картку з цього телефона. Доступ до щоденника цим не закриється: його закривають у «Хто має доступ», і там же — лише цій людині."
+            "state" : "translated",
+            "value" : "Прибере картку з цього телефона. Доступ до щоденника цим не закриється: його закривають у «Хто має доступ», і там же — лише цій людині."
           }
         }
       }
@@ -126189,8 +126189,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Півтаблетки зранку і ціла ввечері — звичайне призначення. Від цих чисел вважається запас: застосунок вираховує рівно стільки, скільки дали."
+            "state" : "translated",
+            "value" : "Півтаблетки зранку і ціла ввечері — звичайне призначення. Від цих чисел рахується запас: застосунок віднімає рівно стільки, скільки дали."
           }
         }
       }
