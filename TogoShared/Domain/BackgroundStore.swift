@@ -320,11 +320,11 @@ nonisolated enum BackgroundBridge {
     /// > ПЕРВЫМ, и встроенные подложки участвуют только тогда,
     /// > когда своих нет ни одной.
     /// Портрет Стича — вертикальный кадр под полный экран «Сегодня».
-    static let портрет = "стич-портрет.jpg"
+    static let портрет = "стич-портрет.jpg"  // внутреннее: имя файла в бандле, человек его не видит
     /// Герой — кадр под вкладки, подэкраны и «На улице».
-    static let герой = "стич-герой.jpg"
+    static let герой = "стич-герой.jpg"  // внутреннее: имя файла в бандле, человек его не видит
     /// Аватар — лицо под жетон в шапке и «остров».
-    static let аватар = "стич-аватар.jpg"
+    static let аватар = "стич-аватар.jpg"  // внутреннее: имя файла в бандле, человек его не видит
 
     static let встроенные = [портрет, герой, аватар]
 
@@ -340,7 +340,7 @@ nonisolated enum BackgroundBridge {
         let тип = (имя as NSString).pathExtension
         guard let путь = Bundle.main.path(forResource: база, ofType: тип)
                 ?? Bundle.main.path(forResource: база, ofType: тип,
-                                    inDirectory: "Подложки")
+                                    inDirectory: "Подложки")  // внутреннее: имя каталога в бандле, не подпись
         else { return nil }
         return try? Data(contentsOf: URL(fileURLWithPath: путь))
     }
