@@ -239,6 +239,13 @@ struct RecordSheet: View {
                 TGDivider()
                 строка("Стул", nil, "leaf", тон: Token.Ink.primary, маршрут: .stool)
                 TGDivider()
+                // «Туалет дома» заведён 27.10.2026 решением Виктории
+                // («с дома отметка туалет, покакал»). Стул дома
+                // отмечался всегда, моча — только на прогулке, хотя
+                // щенок и больная собака ходят именно дома.
+                строка("Туалет дома", "пописал или лужа",
+                       "drop", тон: Token.Ink.primary, маршрут: .urineAtHome)
+                TGDivider()
                 строка("Еда", порцияГрамм > 0 ? String(localized: "\(порцияГрамм) г") : nil,
                        "fork.knife", тон: Token.Ink.primary, маршрут: .meal)
                 TGDivider()
