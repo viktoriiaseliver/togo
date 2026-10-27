@@ -96996,14 +96996,14 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "More likely attention"
+            "state" : "translated",
+            "value" : "Wants attention"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Plutôt de l'attention"
+            "value" : "Veut de l'attention"
           }
         },
         "kk" : {
@@ -97020,8 +97020,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Радше уваги"
+            "state" : "translated",
+            "value" : "Хоче уваги"
           }
         }
       }

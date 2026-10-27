@@ -72,7 +72,7 @@ struct ДорогаКАнализамTests {
     }
 
     /// Дорога обязана вести на ЖИВОЙ экран, а не на отладочный.
-    @Test("Дорога не ведёт в отладочную галерею")
+    @Test("Дорога к анализам не ведёт в отладочную галерею")
     func дорогаНеВГалерею() throws {
         let строки = try Self.строкиКода(Self.текст("Togo/Features/Health/HealthScreen.swift"))
         let вГалерею = строки.filter { $0.contains("MedicalRecordGallery") }
