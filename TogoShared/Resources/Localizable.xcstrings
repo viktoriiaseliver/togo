@@ -10053,8 +10053,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "2 · Marker and value"
+            "state" : "translated",
+            "value" : "2 · Parameter and value"
           }
         },
         "fr" : {
@@ -16050,8 +16050,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "at 7:00 · recheck window first"
+            "state" : "translated",
+            "value" : "at 7:00 · follow-up window first"
           }
         },
         "fr" : {
@@ -27424,8 +27424,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Marker chart"
+            "state" : "translated",
+            "value" : "Parameter chart"
           }
         },
         "fr" : {
@@ -35175,8 +35175,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Dr. Lemaire · recheck in 4–6 wks"
+            "state" : "translated",
+            "value" : "Dr. Lemaire · follow-up in 4–6 wks"
           }
         },
         "fr" : {
@@ -35573,8 +35573,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "her ration ≈ %@ ml per day, more in the heat · folding water bowl"
+            "state" : "translated",
+            "value" : "she needs ≈ %@ ml a day, more in the heat · folding water bowl"
           }
         },
         "fr" : {
@@ -37895,8 +37895,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Another marker"
+            "state" : "translated",
+            "value" : "Another parameter"
           }
         },
         "fr" : {
@@ -38321,8 +38321,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "tap the moment he does it"
+            "state" : "translated",
+            "value" : "tap the moment she does it"
           }
         },
         "fr" : {
@@ -39206,8 +39206,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Add a form — the lab, the date and the markers. The app will work out the deviation from the range on the form and the hours since the dose."
+            "state" : "translated",
+            "value" : "Add a form — the lab, the date and the parameters. The app will work out the deviation from the range on the form and the hours since the dose."
           }
         },
         "fr" : {
@@ -45266,8 +45266,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "and take a dose on"
+            "state" : "translated",
+            "value" : "and take on a dose"
           }
         },
         "fr" : {
@@ -48337,8 +48337,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "how he asked · optional"
+            "state" : "translated",
+            "value" : "how she asked · optional"
           }
         },
         "fr" : {
@@ -54014,8 +54014,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "treat, training, note, weight"
+            "state" : "translated",
+            "value" : "treat, session, note, weight"
           }
         },
         "fr" : {
@@ -60617,8 +60617,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "on an empty stomach %@ min"
+            "state" : "translated",
+            "value" : "fasting %@ min"
           }
         },
         "fr" : {
@@ -68997,8 +68997,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "she's beside you all day and goes out constantly; on a day like that the verdict counts nonsense"
+            "state" : "translated",
+            "value" : "she's beside you all day and goes out constantly; on a day like that the verdict comes out as nonsense"
           }
         },
         "fr" : {
@@ -69852,8 +69852,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "keeps existing permissions"
+            "state" : "translated",
+            "value" : "keeps existing rights"
           }
         },
         "fr" : {
@@ -71743,8 +71743,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "undone"
+            "state" : "translated",
+            "value" : "undid"
           }
         },
         "fr" : {
@@ -80206,8 +80206,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Markers"
+            "state" : "translated",
+            "value" : "Parameters"
           }
         },
         "fr" : {
@@ -80242,8 +80242,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "marker"
+            "state" : "translated",
+            "value" : "parameter"
           }
         },
         "fr" : {
@@ -80278,8 +80278,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Marker"
+            "state" : "translated",
+            "value" : "Parameter"
           }
         },
         "fr" : {
@@ -80314,8 +80314,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "marker not given"
+            "state" : "translated",
+            "value" : "parameter not given"
           }
         },
         "fr" : {
@@ -83155,8 +83155,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "after food, not on empty stomach"
+            "state" : "translated",
+            "value" : "after food, not on an empty stomach"
           }
         },
         "fr" : {
@@ -89825,8 +89825,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "dose notifications go to him"
+            "state" : "translated",
+            "value" : "dose notifications go to them"
           }
         },
         "fr" : {
@@ -101280,8 +101280,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "I'll ask “how is he?” in an hour"
+            "state" : "translated",
+            "value" : "I'll ask “how is she?” in an hour"
           }
         },
         "fr" : {
@@ -105895,8 +105895,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "phones · what he ate · vet note"
+            "state" : "translated",
+            "value" : "phones · what she ate · vet note"
           }
         },
         "fr" : {
@@ -119701,8 +119701,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "This is the list on your phone. Roles and permissions set here do not travel to the other person's phone — only the role chosen when inviting goes there. Changing it for someone who has already joined is not possible yet."
+            "state" : "translated",
+            "value" : "This is the list on your phone. Roles and rights set here do not travel to the other person's phone — only the role chosen when inviting goes there. Changing it for someone who has already joined is not possible yet."
           }
         },
         "fr" : {
@@ -123521,8 +123521,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Name at least one marker — a row without a name does not count"
+            "state" : "translated",
+            "value" : "Name at least one parameter — a row without a name does not count"
           }
         },
         "fr" : {
@@ -123557,8 +123557,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Name the marker — exactly as it is written on the form"
+            "state" : "translated",
+            "value" : "Name the parameter — exactly as it is written on the form"
           }
         },
         "fr" : {
@@ -124673,8 +124673,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "The directory is empty. Clinics and labs are added in Health → Clinics and labs — that's where this picker draws from."
+            "state" : "translated",
+            "value" : "The directory is empty. Clinics and labs are added in “Health” → “Clinics and labs” — that's where this picker draws from."
           }
         },
         "fr" : {
@@ -125033,8 +125033,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "This list lives on your phone. Roles and rights don't travel from here to anyone else's phone. To change the role of someone who has already joined, open Who has access — there, people appear as iCloud knows them."
+            "state" : "translated",
+            "value" : "This list lives on your phone. Roles and rights don't travel from here to anyone else's phone. To change the role of someone who has already joined, open “Who has access” — there, people appear as iCloud knows them."
           }
         },
         "fr" : {
@@ -125069,8 +125069,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "This is a note, not a deadline: access won't close by itself because of it. You have to close it by hand — Who has access, and for this person only."
+            "state" : "translated",
+            "value" : "This is a note, not a deadline: access won't close by itself because of it. You have to close it by hand — in “Who has access”, and for this person only."
           }
         },
         "fr" : {
@@ -127240,8 +127240,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "This doesn't look like an invitation. You need an icloud.com link — it's sent from Togo, Family → Invite to diary."
+            "state" : "translated",
+            "value" : "This doesn't look like an invitation. You need an icloud.com link — it's sent from Togo, “Family” → Invite to diary."
           }
         },
         "fr" : {
