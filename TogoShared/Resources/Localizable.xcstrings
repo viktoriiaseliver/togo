@@ -574,6 +574,95 @@
         }
       }
     },
+    "%lld недель позади" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld week behind"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld weeks behind"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld semaine écoulée"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld semaines écoulées"
+                }
+              }
+            }
+          }
+        },
+        "kk" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld апта өтті"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld апта өтті"
+                }
+              }
+            }
+          }
+        },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld тиждень позаду"
+                }
+              },
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld тижні позаду"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld тижнів позаду"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld тижня позаду"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "-ИсходПриёма" : {
       "comment" : "АРГУМЕНТ ЗАПУСКА, А НЕ ТЕКСТ. НЕ ПЕРЕВОДИТСЯ. TogoApp.swift:195 — `args.firstIndex(of: \"-ИсходПриёма\")`. В каталог приехал извлечением: `Tools/extract_texts.py` собирает ВСЕ кириллические литералы, а этот сравнивается с `ProcessInfo.arguments` — каталог его не спрашивает никогда. Пометка стоит не ради сегодняшнего вреда (перевод тут безвреден и мёртв), а ради завтрашнего: четыре таких ключа числились пробелами перевода на каждом языке, то есть счёт долга показывал работу, которой нет. И хуже счёта — ловушка: кто-нибудь «починит» сравнение через `String(localized:)`, и стенд перестанет заводиться на казахском и украинском телефоне, а отказ придёт в форме «онбординг не показывается». Замер 22.10.2026.",
       "extractionState" : "manual",
@@ -625,6 +714,267 @@
         }
       },
       "shouldTranslate" : false
+    },
+    "В %@, как назначено" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "At %@, as scheduled"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "À %@, comme prévu"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@-де, жоспарланғандай"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "О %@, як призначено"
+          }
+        }
+      }
+    },
+    "Доз вовремя больше на %lld%." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doses on time up by %lld%."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doses à l'heure en hausse de %lld %."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Уақытында берілген дозалар %lld%-ға көп."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Доз вчасно більше на %lld%."
+          }
+        }
+      }
+    },
+    "Доз вовремя меньше на %lld%." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doses on time down by %lld%."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doses à l'heure en baisse de %lld %."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Уақытында берілген дозалар %lld%-ға аз."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Доз вчасно менше на %lld%."
+          }
+        }
+      }
+    },
+    "Инциденты реже — %1$lld против %2$lld за прошлый период." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Incidents less often — %1$lld against %2$lld in the previous period."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Incidents moins fréquents — %1$lld contre %2$lld sur la période précédente."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оқиғалар сирегірек — %1$lld, өткен кезеңде %2$lld."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Інциденти рідше — %1$lld проти %2$lld за попередній період."
+          }
+        }
+      }
+    },
+    "Инциденты чаще — %1$lld против %2$lld за прошлый период." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Incidents more often — %1$lld against %2$lld in the previous period."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Incidents plus fréquents — %1$lld contre %2$lld sur la période précédente."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оқиғалар жиірек — %1$lld, өткен кезеңде %2$lld."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Інциденти частіше — %1$lld проти %2$lld за попередній період."
+          }
+        }
+      }
+    },
+    "норма до %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "normal range up to %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "normale jusqu'à %@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "норма %@ дейін"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "норма до %@"
+          }
+        }
+      }
+    },
+    "норма от %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "normal range from %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "normale à partir de %@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "норма %@ бастап"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "норма від %@"
+          }
+        }
+      }
+    },
+    "Сейчас, %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Now, %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maintenant, %@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Қазір, %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Зараз, %@"
+          }
+        }
+      }
+    },
+    "Схема изменена %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schedule changed %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schéma modifié %@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Схема %@ өзгертілді"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Схему змінено %@"
+          }
+        }
+      }
     },
     "Тебя зовут в дневник %@" : {
       "extractionState" : "manual",
@@ -50945,8 +51295,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Range"
+            "state" : "translated",
+            "value" : "Hallway"
           }
         },
         "fr" : {
@@ -50992,8 +51342,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Дәрігер дәлізді атамады."
+            "state" : "translated",
+            "value" : "Дәрігер аралықты атамады."
           }
         },
         "uk" : {
@@ -51022,8 +51372,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "дәрігер дәлізі"
+            "state" : "translated",
+            "value" : "дәрігер аралығы"
           }
         },
         "ru" : {
@@ -51057,8 +51407,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Дәрігер дәлізі"
+            "state" : "translated",
+            "value" : "Дәрігер аралығы"
           }
         },
         "uk" : {
@@ -119656,8 +120006,8 @@
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "бұл «"
+            "state" : "translated",
+            "value" : "бұл емес «"
           }
         },
         "uk" : {
