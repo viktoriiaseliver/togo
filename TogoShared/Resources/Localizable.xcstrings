@@ -20116,7 +20116,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "The tab belongs to whoever is allowed to see medical records: a helper doesn't have it. A treatment is ended with “Treatment finished”, and the vet report stays available afterwards."
+            "value" : "The tab belongs to whoever is allowed to see medical records: a helper doesn't have it. A treatment is ended with “Course finished”, and the vet report stays available afterwards."
           }
         },
         "fr" : {
@@ -125105,8 +125105,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "This removes the card from this phone. It does not close diary access: that's done in Who has access, and there too — for this person only."
+            "state" : "translated",
+            "value" : "This removes the card from this phone. It does not close diary access: that's done in “Who has access”, and there too — for this person only."
           }
         },
         "fr" : {
