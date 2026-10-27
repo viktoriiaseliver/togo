@@ -85,7 +85,19 @@ struct LocalizationDebtTests {
         // Эталон держал обе половины на причине «текст заморожен,
         // носителя сегодня нет» — переводчик не был нужен ни одной.
         "Feeding.swift": 1, "ScheduleChange.swift": 1,
-        "TimelineBuilder.swift": 1, "TreatmentCourse.swift": 5, "VetSummary.swift": 9, "WalkMarkIntent.swift": 6,
+        "TimelineBuilder.swift": 1, "TreatmentCourse.swift": 5, "VetSummary.swift": 9, "WalkMarkIntent.swift": 8,
+        // 6 → 8, 27.10.2026: `WalkFinishIntent` — кнопка «Домой»
+        // на живой активности, решение Виктории. Две строки той же
+        // природы, что шесть прежних: `LocalizedStringResource`
+        // и `IntentDescription` ПЕРЕВОДЯТСЯ КАТАЛОГОМ САМИ — это их
+        // тип, а не наш литерал. Сторож их не различает по устройству
+        // (он смотрит кириллицу в коде), и ровно поэтому у файла
+        // есть долг, а не исключение: число растёт вместе с числом
+        // интентов и остаётся проверяемым.
+        //
+        // Проверка за минуту, что это не обычные литералы:
+        // `grep -n "String(localized:" WalkMarkIntent.swift` — у двух
+        // новых строк его нет, а у `WalkMarkKind.title` есть.
         // `WidgetSnapshot.swift` стоял здесь с долгом 3 и ушёл 07.10.2026:
         // три слова заглушки виджета («Собака», «Просится», «нет данных»)
         // рисовались по-русски на любом языке. Человек видит их в галерее
