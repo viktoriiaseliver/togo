@@ -86,6 +86,7 @@ nonisolated final class ФоныИПодложки: XCTestCase {
     /// а отсутствия никто не ищет.
     override func tearDown() {
         print("КАДРОВ СНЯТО: \(снято.count) из \(ожидалось) · \(name) · \(снято.joined(separator: ", "))")
+        вынестиКадры(из: каталог, набор: "ФоныИПодложки")
         app = nil
     }
 

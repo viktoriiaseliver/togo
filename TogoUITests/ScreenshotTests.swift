@@ -88,6 +88,7 @@ nonisolated final class ScreenshotTests: XCTestCase {
     /// > отсутствия никто не ищет.
     override func tearDown() {
         print("КАДРОВ СНЯТО: \(снято.count) · \(name) · \(снято.joined(separator: ", "))")
+        вынестиКадры(из: каталог, набор: "ScreenshotTests")
     }
 
     private func capture(_ name: String) {

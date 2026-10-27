@@ -81,6 +81,7 @@ nonisolated final class ЗатемнениеНадФото: XCTestCase {
 
     override func tearDown() {
         print("ЗАТЕМНЕНИЕ-КАДРОВ СНЯТО: \(снято.count) · \(name) · \(снято.joined(separator: ", "))")
+        вынестиКадры(из: каталог, набор: "ЗатемнениеНадФото")
     }
 
     private func запустить(сФото: Bool) {

@@ -73,6 +73,7 @@ nonisolated final class КлавиатураНаСемье: XCTestCase {
         // ОДИНАКОВО: строк `КАДР:` просто меньше, а отсутствия
         // никто не ищет.
         print("КАДРОВ СНЯТО: \(снято.count) · \(name) · \(снято.joined(separator: ", "))")
+        вынестиКадры(из: каталог, набор: "КлавиатураНаСемье")
         guard app?.state == .runningForeground else { return }
         переключитьPro(в: false)
     }

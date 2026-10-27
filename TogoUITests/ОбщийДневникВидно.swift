@@ -79,6 +79,7 @@ nonisolated final class ОбщийДневникВидно: XCTestCase {
         // ОДИНАКОВО: строк `КАДР:` просто меньше, а отсутствия
         // никто не ищет.
         print("КАДРОВ СНЯТО: \(снято.count) · \(name) · \(снято.joined(separator: ", "))")
+        вынестиКадры(из: каталог, набор: "ОбщийДневникВидно")
         guard app?.state == .runningForeground else { return }
         if тумблер.exists, (тумблер.value as? String) == "1" { тумблер.tap() }
     }

@@ -54,6 +54,7 @@ nonisolated final class НастройкиКино: XCTestCase {
     /// просто меньше, а их отсутствия никто не ищет.
     override func tearDown() {
         print("КАДРОВ СНЯТО: \(снято.count) из \(Self.всегоКадров) · \(name) · \(снято.joined(separator: ", "))")
+        вынестиКадры(из: каталог, набор: "НастройкиКино")
     }
 
     func testНастройкиИПодэкраныПодКино() throws {

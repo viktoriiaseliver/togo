@@ -102,6 +102,7 @@ nonisolated final class КегльAX5: XCTestCase {
     /// а их отсутствия никто не ищет.
     override func tearDown() {
         print("AX5-КАДРОВ СНЯТО: \(снято.count) · \(name) · \(снято.joined(separator: ", "))")
+        вынестиКадры(из: каталог, набор: "КегльAX5")
     }
 
     private func запустить(крупный: Bool, сценарий: String? = nil,

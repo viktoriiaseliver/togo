@@ -71,6 +71,7 @@ nonisolated final class ИсторияИЗдоровьеКино: XCTestCase {
     /// а отсутствия никто не ищет.
     override func tearDown() {
         print("КАДРОВ СНЯТО: \(снято.count) из \(ожидается) · \(name) · \(снято.joined(separator: ", "))")
+        вынестиКадры(из: каталог, набор: "ИсторияИЗдоровьеКино")
         super.tearDown()
     }
 

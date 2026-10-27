@@ -226,6 +226,7 @@ nonisolated final class ОнбордингНиз: XCTestCase {
     /// проверкой. Печать называет снятое и свой предмет — имя теста.
     override func tearDown() {
         print("КАДРОВ СНЯТО: \(снято.count) · \(name) · \(снято.joined(separator: ", "))")
+        вынестиКадры(из: каталог, набор: "ОнбордингНиз")
         super.tearDown()
     }
 

@@ -36,6 +36,7 @@ nonisolated final class DynamicTypeScreenshotTests: XCTestCase {
     /// полный проход.
     override func tearDown() {
         print("КАДРОВ СНЯТО: \(снято.count) · \(name) · \(снято.joined(separator: ", "))")
+        вынестиКадры(из: каталог, набор: "DynamicTypeScreenshotTests")
     }
 
     /// Кадры ложатся и вложением, и файлом в `build/кадры-крупный-кегль/`.

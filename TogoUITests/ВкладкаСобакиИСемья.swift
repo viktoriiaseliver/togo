@@ -61,6 +61,7 @@ nonisolated final class ВкладкаСобакиИСемья: XCTestCase {
     /// этот второй.
     override func tearDown() {
         print("КАДРОВ СНЯТО: \(снято.count) · \(name) · \(снято.joined(separator: ", "))")
+        вынестиКадры(из: каталог, набор: "ВкладкаСобакиИСемья")
     }
 
     /// Кадр окна файлом, а не `XCTAttachment`: выгрузка вложений в этом

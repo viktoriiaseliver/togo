@@ -52,6 +52,7 @@ nonisolated final class ПриёмкаКруг5: XCTestCase {
     /// не ищет никто.
     override func tearDown() {
         print("КАДРОВ СНЯТО: \(снято.count) · \(name) · \(снято.joined(separator: ", "))")
+        вынестиКадры(из: каталог, набор: "ПриёмкаКруг5")
         super.tearDown()
     }
 

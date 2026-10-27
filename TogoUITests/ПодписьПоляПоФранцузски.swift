@@ -114,6 +114,7 @@ nonisolated final class ПодписьПоляПоФранцузски: XCTestCa
 
     override func tearDown() {
         print("FR-КАДРОВ СНЯТО: \(снято.count) · \(name) · \(снято.joined(separator: ", "))")
+        вынестиКадры(из: каталог, набор: "ПодписьПоляПоФранцузски")
     }
 
     private func запустить(кегль: String) {
