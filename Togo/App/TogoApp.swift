@@ -28,6 +28,52 @@ final class ShareAcceptDelegate: NSObject, UIApplicationDelegate {
         configuration.delegateClass = ShareAcceptSceneDelegate.self
         return configuration
     }
+
+    /// Регистрация на удалённые уведомления — ТО, БЕЗ ЧЕГО ОБЩИЙ
+    /// ДНЕВНИК НЕ ОБЩИЙ.
+    ///
+    /// **Жалоба 27.10.2026:** мама приняла приглашение, но не видела
+    /// свежих отметок — они появились только когда она нажала
+    /// «забрать сейчас». То есть обмен работал, а узнавать о чужой
+    /// записи было нечем.
+    ///
+    /// Причина записана в коде дважды и обеими руками
+    /// (`FamilySync:771`, `:876`): «`UIBackgroundModes`
+    /// с `remote-notification` в манифесте ЕСТЬ, а `CKSubscription`
+    /// в коде НОЛЬ — право есть, механизма нет».
+    ///
+    /// Подписку заводить руками не надо: `CKSyncEngine` создаёт её сам
+    /// при первом запуске. Чего он НЕ может сделать за приложение —
+    /// попросить систему о праве доставлять пуши. Без этой строки
+    /// Apple просто не присылает уведомление, движок не просыпается,
+    /// и единственным входом остаётся человек, открывший приложение.
+    ///
+    /// > Право в манифесте и регистрация в коде — РАЗНЫЕ вещи,
+    /// > и первая без второй выглядит как настроенный механизм.
+    ///
+    /// Разрешения у пользователя не спрашиваем и баннеров не шлём:
+    /// это «тихий» пуш данных, ему не нужен `UNUserNotificationCenter`.
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions:
+                         [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
+        application.registerForRemoteNotifications()
+        return true
+    }
+
+    /// Пуш приехал — будим обмен.
+    ///
+    /// `CKSyncEngine` сам разберёт, что изменилось; наше дело —
+    /// дождаться его и честно сказать системе, нашлось ли новое.
+    /// Соврать здесь дорого: система считает ответы, и приложение,
+    /// отвечающее `.newData` всегда, со временем будят реже.
+    func application(_ application: UIApplication,
+                     didReceiveRemoteNotification userInfo: [AnyHashable: Any]) async
+        -> UIBackgroundFetchResult {
+        guard CKNotification(fromRemoteNotificationDictionary: userInfo) != nil else {
+            return .noData
+        }
+        return await FamilySync.обновитьПоПушу()
+    }
 }
 
 /// Та самая дверь, в которую стучится система с принятым приглашением.
