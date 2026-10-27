@@ -955,6 +955,7 @@ DEFINE SCHEMA
         "cloudkit.thumbnailImageData" BYTES,
         "cloudkit.title"              STRING,
         "cloudkit.type"               STRING,
+        togoRoleAssignment            STRING,
         GRANT WRITE TO "_creator",
         GRANT CREATE TO "_icloud",
         GRANT READ TO "_world"
