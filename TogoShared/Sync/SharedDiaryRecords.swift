@@ -80,6 +80,73 @@ nonisolated enum SharedDiaryRecords {
         record["isDayOnly"] = payload.isDayOnly.map { $0 ? 1 : 0 }
         record["toldFamily"] = payload.toldFamily.map { $0 ? 1 : 0 }
         record["changedAt"] = payload.changedAt
+        // Присвоение стоит ЗДЕСЬ, а не внутри `фотоАссетом`, и это
+        // не стиль. `Tools/схема_общего_дневника.py` выводит список
+        // отправляемых полей из строк вида `record["поле"] = …`
+        // в теле `apply` — спрячь присвоение в помощник, и поле
+        // исчезнет из эталона CloudKit, оставшись в коде. Первая
+        // версия этой правки так и сделала: сверка продолжала
+        // молчать про `photo` при живом контроле на `grams`.
+        record["photo"] = фотоАссетом(payload.photo, for: record)
+    }
+
+    /// Фото момента — `CKAsset`, а не поле записи.
+    ///
+    /// **Форма выбрана не мной и не сегодня:** решение записано
+    /// у `DocumentPayload` строкой «если он однажды поедет, это будет
+    /// `CKAsset`, а не поле записи». Причина — предел CloudKit: запись
+    /// целиком не больше мегабайта, и снимок с камеры его перекрывает
+    /// один. Положи фото полем — и отказ придёт не на фото, а на ВСЕЙ
+    /// записи, то есть пропадёт и время, и стул, и заметка.
+    ///
+    /// **Это починка ложного утверждения, а не новая работа.** Коммит
+    /// `ea2efc3` от 27.10 назывался «фото едет семье по-настоящему»
+    /// и говорил «подключены ОБА конца: payload и apply». Концов
+    /// оказалось три: `payload`/`apply` в `SharedDiary.swift` — это
+    /// модель ↔ payload, а payload ↔ `CKRecord` живёт здесь, и сюда
+    /// я не заглянул. Поймал не человек и не тест, а
+    /// `Tools/схема_общего_дневника.py`: он выводит список полей
+    /// из ЭТОГО файла, и `photo` в нём не было при живом контроле
+    /// (`grams` — 2 вхождения в каждом из трёх файлов, `photo` — 4, 2
+    /// и НОЛЬ).
+    ///
+    /// > **Два конца из трёх выглядят как оба.** Проверка «подключил
+    /// > ли я обмен» упёрлась в имена методов — `payload` и `apply`
+    /// > есть в двух файлах, и совпадение имён я прочитал как
+    /// > совпадение предмета.
+    ///
+    /// Временный файл нужен потому, что `CKAsset` принимает только URL.
+    /// Он ложится в `NSTemporaryDirectory`, и его не удаляем здесь:
+    /// CloudKit читает файл ПОСЛЕ возврата из этого метода, при
+    /// отправке. Систему чистит сама — каталог временный по договору
+    /// с ней.
+    /// Возвращает ассет либо `nil`. Присваивает вызывающий — так
+    /// устроена сверка, разбор у места вызова.
+    ///
+    /// `nil` здесь не «нечего слать», а осмысленное значение: у записи,
+    /// из которой фото убрали, старый ассет иначе остался бы висеть
+    /// на второй стороне.
+    private static func фотоАссетом(_ data: Data?, for record: CKRecord) -> CKAsset? {
+        guard let data, !data.isEmpty else { return nil }
+        let url = URL(fileURLWithPath: NSTemporaryDirectory())
+            .appendingPathComponent("togo-photo-\(record.recordID.recordName)")
+            .appendingPathExtension("bin")
+        do {
+            try data.write(to: url, options: .atomic)
+            return CKAsset(fileURL: url)
+        } catch {
+            // Запись уезжает БЕЗ фото, но уезжает. Потерять время,
+            // стул и заметку из-за снимка нельзя: остальные поля
+            // этой записи — то, ради чего обмен и существует.
+            return nil
+        }
+    }
+
+    /// Фото из приехавшей записи. `CKAsset` отдаёт файл, а не данные.
+    static func фотоИзЗаписи(_ record: CKRecord) -> Data? {
+        guard let asset = record["photo"] as? CKAsset,
+              let url = asset.fileURL else { return nil }
+        return try? Data(contentsOf: url)
     }
 
     static func eventPayload(_ record: CKRecord) -> EventPayload? {
@@ -96,6 +163,11 @@ nonisolated enum SharedDiaryRecords {
             date: date,
             authorName: record["authorName"] as? String ?? "",
             note: record["note"] as? String,
+            // Фото приезжает ассетом, то есть файлом, а не полем —
+            // разбор у `приложитьФото`. Место в списке не вольное:
+            // у `EventPayload` memberwise-init, и порядок обязан
+            // повторять объявление — `photo` седьмое, сразу за `note`.
+            photo: фотоИзЗаписи(record),
             outcome: record["outcome"] as? String,
             durationSeconds: record["durationSeconds"] as? Int,
             stoolForm: record["stoolForm"] as? String,
