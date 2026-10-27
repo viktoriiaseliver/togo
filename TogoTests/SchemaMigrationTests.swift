@@ -718,18 +718,20 @@ struct SchemaMigrationTests {
 
     @Test("В плане перечислены все формы хранилища, что уехали из репозитория")
     func планПолон() {
-        #expect(TogoMigrationPlan.schemas.count == 6, """
+        #expect(TogoMigrationPlan.schemas.count == 7, """
             сборка 36 (V1), сборка 46 (V2), сборка 141 (V3), сборки
-            191–271 (V4), сборки 273–277 (V5) и нынешняя (V6) — версию,
-            которой в плане нет, открыть нечем.
-            V3 заморожена снимком 23.09, V4 — 05.10, V5 — 26.10: до
-            заморозки каждая ссылалась на живые классы, и первая же
-            правка модели меняла её форму под неизменным номером.
-            У V5 это и случилось: `f546719` добавил одиннадцать
+            191–271 (V4), сборки 273–277 (V5), сборка 279 (V6)
+            и нынешняя (V7) — версию, которой в плане нет, открыть нечем.
+            V3 заморожена снимком 23.09, V4 — 05.10, V5 — 26.10,
+            V6 — 27.10: до заморозки каждая ссылалась на живые классы,
+            и первая же правка модели меняла её форму под неизменным
+            номером. У V5 это и случилось: `f546719` добавил одиннадцать
             надгробий, и пять розданных сборок перестали открываться.
+            V6 заморожена ПЕРЕД тем, как к `LogEvent` добавили `photo`, —
+            то есть в той форме, с которой 279 уехала людям.
             """)
-        #expect(TogoMigrationPlan.stages.count == 5)
-        #expect(Persistence.schema.version == TogoSchemaV6.versionIdentifier,
+        #expect(TogoMigrationPlan.stages.count == 6)
+        #expect(Persistence.schema.version == TogoSchemaV7.versionIdentifier,
                 "приложение открывает хранилище последней версией плана")
     }
 
@@ -828,12 +830,12 @@ struct SchemaMigrationTests {
         //    прошёл бы на схеме, совпадающей с нынешней: база открылась
         //    бы штатно, `#expect(throws:)` покраснел бы — но покраснел бы
         //    он на своей же ошибке, а не на дефекте приложения.
-        #expect(TogoSchemaV5СУженнаяФорма.versionIdentifier == TogoSchemaV6.versionIdentifier, """
+        #expect(TogoSchemaV5СУженнаяФорма.versionIdentifier == TogoSchemaV7.versionIdentifier, """
             номер версии снимка разошёлся с нынешним — а весь смысл этой
             проверки в том, что номера СОВПАДАЮТ. С разными номерами это
             повтор соседнего теста про форму не из плана.
             """)
-        #expect(TogoSchemaV5СУженнаяФорма.models.count == TogoSchemaV6.models.count - 1, """
+        #expect(TogoSchemaV5СУженнаяФорма.models.count == TogoSchemaV7.models.count - 1, """
             снимок обязан быть уже нынешней схемы ровно на одну сущность.
             Совпали — значит фильтр ничего не убрал (сущность переименовали
             или сняли), и база заведётся нынешней формой: тест станет
@@ -897,10 +899,10 @@ struct SchemaMigrationTests {
 /// а такое хранилище не открывается вовсе, и тест мерил бы не форму,
 /// а оборванную связь.
 enum TogoSchemaV5СУженнаяФорма: VersionedSchema {
-    static var versionIdentifier: Schema.Version { TogoSchemaV6.versionIdentifier }
+    static var versionIdentifier: Schema.Version { TogoSchemaV7.versionIdentifier }
 
     static var models: [any PersistentModel.Type] {
-        TogoSchemaV6.models.filter { ObjectIdentifier($0) != ObjectIdentifier(ProcedureSkill.self) }
+        TogoSchemaV7.models.filter { ObjectIdentifier($0) != ObjectIdentifier(ProcedureSkill.self) }
     }
 }
 
