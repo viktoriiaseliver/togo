@@ -34666,19 +34666,19 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Home"
+            "state" : "translated",
+            "value" : "Head home"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Maison"
+            "state" : "translated",
+            "value" : "Rentrer"
           }
         },
         "kk" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Үйге"
           }
         },
@@ -34690,7 +34690,7 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Додому"
           }
         }
