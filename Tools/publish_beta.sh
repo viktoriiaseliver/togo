@@ -253,7 +253,12 @@ else:
 предыдущие = call(f"builds?filter[app]={app}&limit=2&sort=-uploadedDate")["data"]
 if len(предыдущие) > 1:
     прошлая = предыдущие[1]
-    прошлые_тексты = [l["attributes"].get("whatsNew", "")
+    # `or ""`, а не `.get(…, "")`: у сборки, которой заметок не писали
+    # вовсе, Apple отдаёт whatsNew = null, и умолчание словаря от него
+    # не спасает — ключ ЕСТЬ, значение пустое. Замер 27.10.2026:
+    # сборка 278 (ничья, никому не отданная) уронила раздачу 279
+    # на `None.strip()`.
+    прошлые_тексты = [(l["attributes"].get("whatsNew") or "")
                       for l in call(f"builds/{прошлая['id']}/betaBuildLocalizations")["data"]
                       if l["attributes"]["locale"] == "ru"]
     if прошлые_тексты and прошлые_тексты[0].strip() == notes:
