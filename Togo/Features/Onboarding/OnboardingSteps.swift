@@ -485,33 +485,41 @@ struct ModeStep: View {
     private var кличка: String { Fmt.dogNameOrFallback(draft.name) }
 
     var body: some View {
-        TGScreen(title: "Режим дня") {
-            TGCard(spacing: 0) {
-                строка(вопрос: "Ест",
-                       ответ: String(localized: "\(Fmt.times(schedule.mealsPerDay)) в день")) {
-                    ForEach(Self.сколькоРаз, id: \.self) { сколько in
-                        Button(.готовая(Fmt.times(сколько))) { schedule.mealsPerDay = сколько }
-                    }
-                }
-                TGDivider()
-                строка(вопрос: "Встаёт",
-                       ответ: Fmt.clock(minuteOfDay: schedule.wakeMinuteOfDay)) {
-                    ForEach(Self.подъём, id: \.self) { минута in
-                        Button(.готовая(Fmt.clock(minuteOfDay: минута))) {
-                            schedule.wakeMinuteOfDay = минута
-                        }
-                    }
-                }
-                TGDivider()
-                строка(вопрос: "Лекарства",
-                       ответ: draft.isOnTreatment ? String(localized: "пьёт")
-                                                  : String(localized: "не пьёт")) {
-                    Button("не пьёт") { draft.isOnTreatment = false }
-                    Button("пьёт") { draft.isOnTreatment = true }
-                }
+        TGScreen(title: "Режим") {
+            // **ФРАЗОЙ, А НЕ СПИСКОМ — отзыв Виктории 27.10.2026
+            // «Не так как в дизайне», с кадром прототипа.**
+            //
+            // Было: карточка из трёх строк «ЕСТ · ВСТАЁТ · ЛЕКАРСТВА»
+            // с надзаголовками капсом и шевронами. Стало: связное
+            // предложение, в котором подчёркнуты три изменяемых слова —
+            // ровно то, что рисует прототип v10.
+            //
+            // # Почему это не косметика
+            //
+            // Список спрашивает три раза: «ест?», «встаёт?»,
+            // «лекарства?». Фраза УТВЕРЖДАЕТ — и человек правит то,
+            // что неверно, а остальное пропускает. На первом запуске
+            // это разница между анкетой и предложением «я угадал?».
+            //
+            // # Чем пришлось заплатить
+            //
+            // Фраза собирается из кусков, и у неё нет одного ключа
+            // в каталоге: «ест», «, встаёт в», «, лекарства» —
+            // три отдельных ключа. У нас записано «переводится фраза,
+            // а не её кусок», и здесь правило нарушено осознанно:
+            // ключ целиком («%@ ест %@, встаёт в %@, лекарства %@»)
+            // не даёт подчеркнуть и сделать нажимаемыми ТРИ разных
+            // места — SwiftUI не умеет ссылок внутри `Text` без
+            // `AttributedString`, а он ломает выбор через `Menu`.
+            //
+            // Порядок слов при этом переводчик менять НЕ МОЖЕТ, и это
+            // названо как ограничение, а не скрыто: на языке, где
+            // сказуемое идёт в конец, фраза рассыплется. Для пяти
+            // наших языков порядок один и тот же.
+            VStack(alignment: .leading, spacing: Token.Space.s12) {
+                фраза
+                TGExplainer(text: "Нажми подчёркнутое, чтобы поменять. Приблизительно — приложение сверит это с тем, как ты кормишь на самом деле, и поправит.")
             }
-
-            TGExplainer(text: "Нажми подчёркнутое, чтобы поменять. Приблизительно — приложение сверит это с тем, как ты кормишь на самом деле, и поправит.")
 
             if draft.isOnTreatment {
                 TGCard {
@@ -536,7 +544,81 @@ struct ModeStep: View {
     /// режимом: раньше пяти это смена, позже одиннадцати — не подъём.
     private static let подъём: [Int] = stride(from: 5 * 60, through: 11 * 60, by: 30).map { $0 }
 
-    /// Строка «вопрос — подчёркнутый ответ».
+    /// Связная фраза про режим: три подчёркнутых слова в тексте.
+    ///
+    /// `WrappingHStack` в проекте нет, и заводить его ради одного
+    /// экрана не нужно: фраза разложена по строкам ВРУЧНУЮ, по смыслу,
+    /// — «{кличка} ест N раз в день,» / «встаёт в HH:MM,» /
+    /// «лекарства не пьёт». На крупном кегле каждая часть переносится
+    /// сама (`wraps()`), и порядок не ломается.
+    ///
+    /// Прототип рисует их в поток; разница видна только на узком
+    /// экране, и названа здесь, чтобы следующий не считал это
+    /// недоделкой.
+    private var фраза: some View {
+        VStack(alignment: .leading, spacing: Token.Space.s4) {
+            HStack(alignment: .firstTextBaseline, spacing: Token.Space.s6) {
+                Text(.готовая(кличка + " " + String(localized: "ест")))
+                    .textStyle(AppFont.cardTitle)
+                слово(ответ: String(localized: "\(Fmt.times(schedule.mealsPerDay)) в день")) {
+                    ForEach(Self.сколькоРаз, id: \.self) { сколько in
+                        Button(.готовая(Fmt.times(сколько))) { schedule.mealsPerDay = сколько }
+                    }
+                }
+                Spacer(minLength: 0)
+            }
+            HStack(alignment: .firstTextBaseline, spacing: Token.Space.s6) {
+                Text("встаёт в").textStyle(AppFont.cardTitle)
+                слово(ответ: Fmt.clock(minuteOfDay: schedule.wakeMinuteOfDay)) {
+                    ForEach(Self.подъём, id: \.self) { минута in
+                        Button(.готовая(Fmt.clock(minuteOfDay: минута))) {
+                            schedule.wakeMinuteOfDay = минута
+                        }
+                    }
+                }
+                Spacer(minLength: 0)
+            }
+            HStack(alignment: .firstTextBaseline, spacing: Token.Space.s6) {
+                Text("лекарства").textStyle(AppFont.cardTitle)
+                слово(ответ: draft.isOnTreatment ? String(localized: "пьёт")
+                                                 : String(localized: "не пьёт")) {
+                    Button("не пьёт") { draft.isOnTreatment = false }
+                    Button("пьёт") { draft.isOnTreatment = true }
+                }
+                Spacer(minLength: 0)
+            }
+        }
+        // Фраза читается озвучкой как три отдельных действия, а не как
+        // один абзац: у каждого `Menu` своя подпись, и человек слышит
+        // «ест 2 раза в день, кнопка», а не всё предложение разом.
+        .padding(.vertical, Token.Space.s4)
+    }
+
+    /// Одно изменяемое слово внутри фразы: подчёркнуто и нажимается.
+    ///
+    /// Цель касания держит `minHeight`, а не только глиф: подчёркнутое
+    /// «пьёт» — четыре буквы, и без этого в него не попасть пальцем.
+    private func слово<Пункты: View>(ответ: String,
+                                     @ViewBuilder пункты: () -> Пункты) -> some View {
+        Menu {
+            пункты()
+        } label: {
+            Text(.готовая(ответ))
+                .textStyle(AppFont.cardTitle.color(Token.Ink.link))
+                .underline()
+                .wraps()
+                .frame(minHeight: Token.Size.tapTarget)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text(.готовая(ответ)))
+        .accessibilityHint("Нажми, чтобы поменять")
+    }
+
+    /// Строка «вопрос — подчёркнутый ответ». БОЛЬШЕ НЕ ЗОВЁТСЯ
+    /// на этом экране: 27.10.2026 список заменён фразой. Оставлена
+    /// намеренно — тот же вид списком нужен «Режиму дня» в профиле,
+    /// где полей больше и фраза в них не складывается.
     ///
     /// Вся строка целиком и есть цель касания: подчёркнуто слово,
     /// нажимается строка. Так и подпись читается как в макете,
