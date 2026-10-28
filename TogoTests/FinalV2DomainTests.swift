@@ -76,89 +76,13 @@ struct FinalV2DomainTests {
     // менеджера смены. Модуль и тесты восстанавливаются из git
     // одной командой, если решение переменится.
 
-    // MARK: Матрица навыка
-
-    /// Один участник, чтобы клетки не расходились по столбцам.
-    private static let мама = UUID()
-    private static let аня = UUID()
-
-    private func попытки(_ place: SkillMatrix.Place,
-                         _ member: UUID,
-                         успехов: Int,
-                         всего: Int) -> [SkillMatrix.Attempt] {
-        (0..<всего).map { index in
-            SkillMatrix.Attempt(place: place,
-                                memberID: member,
-                                succeeded: index < успехов,
-                                date: Date().addingTimeInterval(-Double(index) * 3600))
-        }
-    }
-
-    @Test("Матрица различает место: дома получается, на улице нет")
-    func matrixSeparatesPlaces() {
-        let список = попытки(.home, Self.мама, успехов: 5, всего: 5)
-            + попытки(.street, Self.мама, успехов: 1, всего: 5)
-        let клетки = SkillMatrix.cells(список)
-
-        let дом = клетки.first { $0.place == .home }
-        let улица = клетки.first { $0.place == .street }
-        #expect(дом?.status == .works)
-        #expect(улица?.status == .learning)
-        // Ради этого матрица и существует: сводное число по тем же
-        // данным — 6 из 10 — не сказало бы ни про дом, ни про улицу.
-        #expect(SkillProgress.status(successes: 6, attempts: 10) == .learning)
-    }
-
-    @Test("Матрица различает участника на одном и том же месте")
-    func matrixSeparatesMembers() {
-        let список = попытки(.yard, Self.мама, успехов: 5, всего: 5)
-            + попытки(.yard, Self.аня, успехов: 0, всего: 5)
-        let клетки = SkillMatrix.cells(список).filter { $0.place == .yard }
-        #expect(клетки.count == 2)
-        #expect(клетки.first { $0.memberID == Self.мама }?.status == .works)
-        #expect(клетки.first { $0.memberID == Self.аня }?.status == .learning)
-    }
-
-    @Test("Клетка без попыток не заводится вовсе — «не пробовали» не равно «ноль из нуля»")
-    func emptyCellIsAbsent() {
-        let клетки = SkillMatrix.cells(попытки(.home, Self.мама, успехов: 1, всего: 1))
-        #expect(клетки.count == 1)
-        #expect(клетки.allSatisfy { $0.attempts > 0 })
-        #expect(SkillMatrix.cells([]).isEmpty)
-        // Пустую матрицу показывать нельзя: четырнадцать «—» читаются
-        // как поломка, а не как пустое состояние.
-        #expect(!SkillMatrix.hasAnythingToShow([]))
-    }
-
-    @Test("Окно обрезает прошлое: научившаяся собака не висит в «учится» из-за старых попыток")
-    func windowCutsOldAttempts() {
-        // Двадцать попыток: десять свежих удачных, десять старых
-        // неудачных. Без окна — 10 из 20, то есть «учится» навсегда.
-        let свежие = (0..<10).map { index in
-            SkillMatrix.Attempt(place: .street, memberID: Self.мама, succeeded: true,
-                                date: Date().addingTimeInterval(-Double(index) * 3600))
-        }
-        let старые = (0..<10).map { index in
-            SkillMatrix.Attempt(place: .street, memberID: Self.мама, succeeded: false,
-                                date: Date().addingTimeInterval(-Double(index + 100) * 3600))
-        }
-        let клетка = SkillMatrix.cells(старые + свежие).first { $0.place == .street }
-        #expect(клетка?.attempts == SkillMatrix.window)
-        #expect(клетка?.successes == 10)
-        #expect(клетка?.status == .works)
-    }
-
-    @Test("Отрабатывать предлагается самое простое из непройденных, а не самое трудное")
-    func practisesEasiestUnfinishedFirst() {
-        let список = попытки(.home, Self.мама, успехов: 5, всего: 5)      // получается
-            + попытки(.entrance, Self.мама, успехов: 1, всего: 5)         // учится
-            + попытки(.street, Self.мама, успехов: 0, всего: 5)           // учится
-        #expect(SkillMatrix.nextPlaceToPractise(SkillMatrix.cells(список)) == .entrance)
-        // Когда непройденных нет — ответа нет, и это не «всё хорошо»,
-        // а отсутствие предмета. Решает тот, кто спрашивает.
-        let всёПолучается = попытки(.home, Self.мама, успехов: 5, всего: 5)
-        #expect(SkillMatrix.nextPlaceToPractise(SkillMatrix.cells(всёПолучается)) == nil)
-    }
+    // Матрица навыка СНЯТА 28.10.2026 вместе с `SkillMatrix.swift`:
+    // занятия и перенос навыка удалены по решению Виктории. Пять
+    // тестов про клетки, места и участников ушли с предметом.
+    //
+    // Остальные тесты этого набора к занятиям отношения не имеют
+    // (окно дозы, начало и конец эпизода, акцент темы) и оставлены
+    // без правок.
 
     // MARK: Начало эпизода
 
@@ -310,9 +234,7 @@ struct FinalV2DomainTests {
     func suiteHadSomethingToCheck() {
         // Первой строкой у любой группы — проверка, что предмет есть.
         // Без неё остальные тесты зеленели бы на пустых типах.
-        #expect(SkillMatrix.Place.allCases.count == 4)
         #expect(EpisodeTrigger.looseCount == 3)
         #expect(EpisodeTrigger.window == 24 * 3600)
-        #expect(SkillMatrix.window == 10)
     }
 }
