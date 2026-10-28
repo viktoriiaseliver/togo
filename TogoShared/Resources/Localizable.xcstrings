@@ -3247,6 +3247,35 @@
         }
       }
     },
+    "лакомства" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "treats"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "friandises"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "дәмдіктер"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ласощі"
+          }
+        }
+      }
+    },
     "лекарства" : {
       "extractionState" : "manual",
       "localizations" : {

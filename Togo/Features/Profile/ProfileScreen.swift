@@ -159,20 +159,30 @@ struct ProfileScreen: View {
 
     // MARK: Чем маркируешь и чем платим
 
+    /// Лакомства — то, что от занятий осталось живым.
+    ///
+    /// **Карточка звалась «занятия» и держала четыре поля; два ушли
+    /// 28.10.2026 вместе с блоком занятий** (решение Виктории: «удали
+    /// блок и логику занятия и перенос навыка полностью везде»).
+    ///
+    /// ```
+    /// Маркер (кликер/слово)      только занятия        СНЯТ
+    /// Длина занятия              только занятия        СНЯТА
+    /// Чем платим (rewards)       ЖИВО: шторка «Лакомство», LogSheets:268
+    /// Корм из порции             ЖИВО: учёт нормы, LogSheets и WalkRecorder
+    /// ```
+    ///
+    /// Два оставшихся проверены поиском читателей, а не на глаз:
+    /// лакомство дают и просто так, а «из порции» считает дневную
+    /// норму — ни то ни другое занятий не требует.
+    ///
+    /// Поля `markerKindRaw` и `sessionLengthMinutes` в модели
+    /// ОСТАЮТСЯ: снять их — значит менять форму схемы и отнимать
+    /// записи у тех, кто успел завести занятия. Здесь снят показ,
+    /// и это разные действия.
     private func marker(_ dog: Dog) -> some View {
         TGCard(spacing: 0) {
-            TGSectionHeader(title: "занятия")
-            HStack {
-                Text("Маркер").textStyle(AppFont.body)
-                Spacer(minLength: Token.Space.s8)
-                Picker("Маркер", selection: Binding(get: { dog.markerKind }, set: { dog.markerKind = $0 })) {
-                    ForEach(MarkerKind.allCases, id: \.self) { Text($0.title).tag($0) }
-                }
-                .pickerStyle(.menu)
-                .tint(Token.Ink.secondary)
-            }
-            .frame(minHeight: Token.Size.tapTarget)
-            TGDivider()
+            TGSectionHeader(title: "лакомства")
             LabeledField(label: "Чем платим") {
                 TextField("сыр, индейка, мячик", text: Binding(
                     get: { dog.rewards.joined(separator: ", ") },
@@ -185,14 +195,6 @@ struct ProfileScreen: View {
             }
             .frame(minHeight: Token.Size.tapTarget)
             TGDivider()
-            Stepper(value: Binding(get: { dog.sessionLengthMinutes }, set: { dog.sessionLengthMinutes = $0 }), in: 2...5) {
-                HStack {
-                    Text("Длина занятия").textStyle(AppFont.body)
-                    Spacer()
-                    Text("\(dog.sessionLengthMinutes) мин").textStyle(AppFont.numeric(15))
-                }
-            }
-            .frame(minHeight: Token.Size.tapTarget)
             TGExplainer(text: "Ограничения на лакомства нет. Есть дневная норма, часть которой собака зарабатывает, — это и снимает конфликт между занятиями и весом.")
         }
         .disabled(!canEdit)
