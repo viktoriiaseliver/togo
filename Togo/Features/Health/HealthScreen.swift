@@ -824,13 +824,30 @@ struct ProtocolScreen: View {
                                 title: "доза \(dog?.medications.first?.doseText ?? "")",
                                 detail: "отмечено с точностью до минуты", isDone: true)
                     TGDivider()
+                    // ГАЛОЧКА ЧИТАЕТ ОТМЕТКУ ЧЕЛОВЕКА, А НЕ ЧАСЫ.
+                    //
+                    // **Прежде здесь стояло `now > givenAt + 4 ч`** —
+                    // то есть через четыре часа приложение само
+                    // рисовало ✓ против «забор крови», сдавали кровь
+                    // или нет. Отзыв 27.10.2026: «Не отмечается».
+                    //
+                    // > Это медицинская запись, показывающая галочку
+                    // > за то, чего никто не делал. Красная линия
+                    // > проекта названа дословно: «не подставлять там,
+                    // > где подстановка станет утверждением человека».
+                    // > Запись потом читает врач.
+                    //
+                    // Время осталось в строке — но как ПЛАН («в 13:30
+                    // забор»), а не как факт.
                     ProtocolRow(label: "+4", time: givenAt.addingTimeInterval(4 * 3600),
                                 title: "забор крови", detail: "напомним за 30 минут",
-                                isDone: now > givenAt.addingTimeInterval(4 * 3600))
+                                isDone: заборы(после: givenAt).count >= 1,
+                                отметить: { recordDraw() })
                     TGDivider()
                     ProtocolRow(label: "+6", time: givenAt.addingTimeInterval(6 * 3600),
                                 title: "забор крови", detail: "вторая точка, по назначению",
-                                isDone: now > givenAt.addingTimeInterval(6 * 3600))
+                                isDone: заборы(после: givenAt).count >= 2,
+                                отметить: { recordDraw() })
                 }
                 TGCard {
                     Text("Интервал посчитаем сами").textStyle(AppFont.cardTitle)
@@ -899,6 +916,33 @@ struct ProtocolScreen: View {
         return строка
     }
 
+    /// Отметки забора крови после дозы — то, чем закрываются точки
+    /// протокола.
+    ///
+    /// # Почему сравнение по тексту, и где у него граница
+    ///
+    /// Забор записывается как `LogKind.note` с текстом «Забор крови»
+    /// (`recordDraw` ниже). Отдельного поля у него нет, и завести
+    /// его — это менять форму схемы, то есть отдельное решение.
+    ///
+    /// Сравнивается И с текущим переводом, И с русским ключом: запись,
+    /// сделанная до смены языка интерфейса, иначе перестала бы
+    /// закрывать свою точку. Полного покрытия это не даёт — сменивший
+    /// язык с французского на английский посреди протокола увидит
+    /// точку открытой, — и граница названа здесь, а не обойдена
+    /// молчанием.
+    ///
+    /// Порядок: первый забор закрывает +4, второй +6. Это проще
+    /// сопоставления по времени и честнее: врач берёт кровь не минута
+    /// в минуту, а окно вокруг плановой точки пришлось бы выдумывать.
+    private func заборы(после givenAt: Date) -> [LogEvent] {
+        let имя = String(localized: "Забор крови")
+        return Diary.active(dog?.events ?? [])
+            .filter { $0.kind == .note && $0.date >= givenAt }
+            .filter { $0.note == имя || $0.note == "Забор крови" }
+            .sorted { $0.date < $1.date }
+    }
+
     private func recordDraw() {
         EventLog(context: context, appState: appState)
             .record(.note, dog: dog, confirmation: "Записано · забор крови") { event in
@@ -917,6 +961,9 @@ private struct ProtocolRow: View {
     let title: String
     let detail: String
     let isDone: Bool
+    /// Что делать по нажатию на кружок. `nil` — строка только
+    /// показывает (как «T0 · доза»: её отметил приём препарата).
+    var отметить: (() -> Void)?
 
     var body: some View {
         HStack(alignment: .top, spacing: Token.Space.s12) {
@@ -929,8 +976,28 @@ private struct ProtocolRow: View {
                 Text(detail).textStyle(AppFont.caption)
             }
             Spacer(minLength: Token.Space.s8)
-            Image(systemName: isDone ? "checkmark.circle.fill" : "circle")
-                .foregroundStyle(isDone ? Token.Action.doneText : Token.Ink.secondary)
+            // КРУЖОК НАЖИМАЕТСЯ, если строке есть что отметить.
+            //
+            // **Прежде это была голая картинка**, и отзыв 27.10.2026
+            // сказал ровно это: «Не отмечается». Человек видел кружок
+            // против «забор крови», жал — и не происходило ничего.
+            // Кнопка «Отметить забор крови» внизу экрана писала запись
+            // в дневник, но на кружок не влияла никак.
+            if let отметить {
+                Button(action: отметить) {
+                    Image(systemName: isDone ? "checkmark.circle.fill" : "circle")
+                        .foregroundStyle(isDone ? Token.Action.doneText : Token.Ink.secondary)
+                        .frame(minWidth: Token.Size.tapTarget,
+                               minHeight: Token.Size.tapTarget)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .disabled(isDone)
+                .accessibilityLabel(isDone ? "Забор отмечен" : "Отметить забор крови")
+            } else {
+                Image(systemName: isDone ? "checkmark.circle.fill" : "circle")
+                    .foregroundStyle(isDone ? Token.Action.doneText : Token.Ink.secondary)
+            }
         }
         .padding(.vertical, Token.Space.s10)
     }
