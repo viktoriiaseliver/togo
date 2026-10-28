@@ -67,7 +67,7 @@ struct DogTab: View {
             TGScreen {
                 if let dog {
                     герой(dog)
-                    DogSwitcher(dogs: dogs, active: dog)
+                    DogSwitcher(dogs: dogs.shownToPerson, active: dog)
                     emergency(dog)
                     семьяБлок
                     everyday(dog)
@@ -429,8 +429,12 @@ struct DogTab: View {
             TGLink(title: "Занятия и шаги", value: trainingSummary(dog).map { .готовая($0) },
                    systemImage: "list.bullet") { TrainingLibraryScreen(dog: dog) }
             TGDivider()
-            TGLink(title: dogs.count > 1 ? "Собаки" : "Завести ещё собаку",
-                   value: dogs.count > 1 ? "\(dogs.count)" : nil,
+            // Счёт — по тем же собакам, что видит человек (`shownToPerson`),
+            // а не по сырому запросу: туда попадают удалённые и безымянные,
+            // и при одной собаке строка говорила «Собаки · 4» (отзыв 27.10,
+            // «4собаки… Собака у меня 1»), а экран «Собаки» показывал одну.
+            TGLink(title: dogs.shownToPerson.count > 1 ? "Собаки" : "Завести ещё собаку",
+                   value: dogs.shownToPerson.count > 1 ? "\(dogs.shownToPerson.count)" : nil,
                    systemImage: "pawprint") { DogsScreen() }
         }
         .buttonStyle(.plain)

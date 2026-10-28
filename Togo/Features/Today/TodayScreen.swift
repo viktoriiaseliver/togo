@@ -39,6 +39,7 @@ struct TodayScreen: View {
     @Environment(Settings.self) private var settings
     @Environment(\.modelContext) private var context
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.openURL) private var openURL
     @Query private var dogs: [Dog]
     @Query private var members: [FamilyMember]
     @Query private var trips: [Trip]
@@ -151,7 +152,7 @@ struct TodayScreen: View {
     /// можно было только прочитав всё.
     var body: some View {
         // Один снимок ленты на один `body` — см. `ПамятьЛенты` внизу файла.
-        let _ = память.сверить(events, now: now)
+        let _ = память.сверить(events, now: now, день: отсчёт)
         NavigationStack {
             соШторками(сЧасами(
                 ZStack {
@@ -434,7 +435,11 @@ struct TodayScreen: View {
                 // экране. Тот же дубль, что убрали у «Что сказать».
                 // В тревоге и у того, кто не отмечает, низ другой —
                 // там кнопка остаётся единственной.
+                // И только тому, кто вправе давать дозу: `claim` без
+                // `.giveDose` молча выходит, а у наблюдателя есть
+                // `.seeMedical` — плашку он видит, и кнопка была мёртвой.
                 if !overdue.claimIsActive(at: now),
+                   appState.can(.giveDose),
                    !(состояниеВерхнее == .dose && рольБезОтметок == nil) {
                     TGButton(title: "Беру на себя", variant: .secondary,
                              size: .medium, systemImage: "hand.raised") {
@@ -481,7 +486,10 @@ struct TodayScreen: View {
     private var деньПозади: some View {
         DayTimeline(events: Diary.onDayWithTraces(events, отсчёт, tracing: undoableDeletions),
                     now: отсчёт,
-                    showsAuthor: members.count > 1) { event in
+                    showsAuthor: members.count > 1,
+                    // Параметр у ленты был, а «Сегодня» его не передавало:
+                    // во вчера стояло «23:59 · сейчас».
+                    showsNow: экранДень.этоСегодня) { event in
             route = .edit(event.id)
         }
 
@@ -877,7 +885,7 @@ struct TodayScreen: View {
     /// на вызов был к этому слеп).
     ///
     /// ```
-    /// isAlarm      appState.isEpisodeActive — острое, «взяли телефон»
+    /// isAlarm      запись с raisesAlarm за день — острое, «взяли телефон»
     /// isThreshold  AlarmThresholdAnalyzer — счёт дошёл сам
     /// isDoseDue    overdueDose (то же, что у баннера дозы)
     /// isFasting    fastingWindow (то же, что у баннера натощак)
@@ -899,7 +907,14 @@ struct TodayScreen: View {
     /// ступени недостижимы ни при каком дне. Названо в отчёте.
     private var состояниеПоказания: TodayStateRouter.DayState {
         var s = TodayStateRouter.DayState()
-        s.isAlarm = appState.isEpisodeActive
+        // **Острое — запись с тревожным признаком за этот день, а не любой
+        // эпизод.** Здесь стояло `appState.isEpisodeActive`, и два
+        // инцидента подряд красили экран в красное «Похоже, пора звонить»
+        // с кнопкой «Позвонить», которая без порога тревоги не делала
+        // ничего (кадры 27–28.10, отзыв «Красная плашка читается как
+        // ошибка»). У прототипа `alarm` — «кровь в стуле»; эпизод у него
+        // своё состояние, `.episode` («Наблюдаем»), и оно ниже есть.
+        s.isAlarm = тревожнаяЗаписьЗаДень
         s.isThreshold = порогТревоги != nil
         s.isDoseDue = overdueDose != nil
         s.isFasting = fastingWindow != nil
@@ -927,6 +942,15 @@ struct TodayScreen: View {
 
     private var ритм: WalkRhythm {
         память.ритм { WalkRhythmAnalyzer.rhythm(events: events, now: now) }
+    }
+
+    /// Есть ли за показанный день запись с тревожным признаком — кровь
+    /// в стуле, опасная рвота (`LogEvent.raisesAlarm`, тот же признак,
+    /// что красит день в «Истории»).
+    private var тревожнаяЗаписьЗаДень: Bool {
+        память.тревожная {
+            Diary.onDay(events, отсчёт).contains(where: \.raisesAlarm)
+        }
     }
 
     /// Порог тревоги — один счёт на плашку, очередь состояний и кнопку
@@ -1094,12 +1118,25 @@ struct TodayScreen: View {
             return .init(название: "Позвонить", символ: "phone.badge.waveform") {
                 if let threshold = порогТревоги {
                     alarm = threshold
+                } else {
+                    позвонитьВрачу()
                 }
             }
         case .dose:
             return .init(название: "Дал", символ: "pills") {
-                if let item = planItems.first(where: { $0.kind == .dose && !$0.isDone }) {
-                    complete(item)
+                // Та доза, о которой говорит плашка, а не первая
+                // неотмеченная за день: утренняя могла быть уже не «той».
+                // И таймер от еды уважается, как в списке плана: закрытая
+                // доза открывает объяснение, чего ждём, а не отметку.
+                let своя = overdueDose.flatMap { доза in
+                    planItems.first {
+                        $0.kind == .dose && !$0.isDone
+                            && Calendar.current.isDate($0.time, equalTo: доза.scheduledAt,
+                                                       toGranularity: .minute)
+                    }
+                }
+                if let item = своя ?? planItems.first(where: { $0.kind == .dose && !$0.isDone }) {
+                    if item.gate.isOpen { complete(item) } else { open(item) }
                 }
             }
         case .walk:
@@ -1109,6 +1146,22 @@ struct TodayScreen: View {
         default:
             return обычноеДействие
         }
+    }
+
+    /// «Позвонить», когда порога нет, а острое есть (кровь в стуле).
+    ///
+    /// Без этой ветки кнопка не делала НИЧЕГО: шторка тревоги требует
+    /// порог, а острое состояние ставит и одна запись. Телефон берётся
+    /// тот же, что у `AlarmThresholdScreen` — клиника, иначе врач. Нет
+    /// ни одного — ведём на вкладку собаки: первой там стоит карточка
+    /// «Если что-то случилось · телефоны», где его и вписывают.
+    private func позвонитьВрачу() {
+        guard let телефон = dog.flatMap({ $0.clinicPhone ?? $0.vetPhone }).flatMap(Fmt.notBlank) else {
+            onOpenDog()
+            return
+        }
+        let цифры = телефон.filter { $0.isNumber || $0 == "+" }
+        if let url = URL(string: "tel://\(цифры)") { openURL(url) }
     }
 
     /// «Просится» или «Остановка» — то, что человек жмёт в обычный день.
@@ -1147,7 +1200,8 @@ struct TodayScreen: View {
         case .dose:
             // «Беру на себя» — защита между людьми: чтобы двое не дали
             // дозу дважды. Механика живёт в модели, и её надо звать.
-            guard let доза = overdueDose, !доза.claimIsActive(at: now) else { return nil }
+            guard let доза = overdueDose, !доза.claimIsActive(at: now),
+                  appState.can(.giveDose) else { return nil }
             return .init(название: "Беру на себя", символ: "hand.raised") {
                 claim(доза)
             }
@@ -1582,7 +1636,8 @@ struct ШапкаПанели: View {
 ///
 /// # Зачем
 ///
-/// Блоки «дома / на улице», ритм выходов и порог тревоги считаются
+/// Блоки «дома / на улице», ритм выходов, порог тревоги и «есть ли за день
+/// тревожная запись» считаются
 /// по ВСЕЙ истории и спрашиваются из `body` десятки раз: очередь состояний
 /// зовётся шесть раз, показание дважды, строки «откуда / докуда / доля»
 /// ещё по разу. Счёт вызовов по коду 28.10.2026 — около двадцати сборок
@@ -1593,9 +1648,10 @@ struct ШапкаПанели: View {
 /// # Как устроено
 ///
 /// `TodayScreen.body` первой строкой зовёт `сверить`. Ключ — отпечаток
-/// полей, которые читают эти три расчёта, по всем записям. Ключ сменился —
-/// память сброшена; `now` сменился — сброшены ритм и порог (они от него
-/// зависят, блоки — нет). Всё остальное время расчёты берутся из памяти.
+/// полей, которые читают эти расчёты, по всем записям. Ключ сменился —
+/// память сброшена; `now` сменился — сброшены ритм, порог и тревожная
+/// запись (они от него зависят, блоки — нет); сменился показанный день —
+/// сброшена тревожная запись. Всё остальное время расчёты берутся из памяти.
 ///
 /// **Отпечаток — не оптимизация, а наблюдение.** Читая поля каждой
 /// записи в `body`, экран остаётся подписан на их правку: поправь время
@@ -1609,23 +1665,33 @@ struct ШапкаПанели: View {
 final class ПамятьЛенты {
     private var ключЛенты: Int?
     private var момент: Date?
+    private var день: Date?
     private var блоки: [TimelineBlock]?
     private var ритм: WalkRhythm?
     private var порогПосчитан = false
     private var порог: AlarmThreshold?
+    private var тревожная: Bool?
 
-    func сверить(_ события: [LogEvent], now: Date) {
+    func сверить(_ события: [LogEvent], now: Date, день: Date) {
         let ключ = Self.отпечаток(события)
         if ключ != ключЛенты {
             ключЛенты = ключ
             блоки = nil
             ритм = nil
             порогПосчитан = false
+            тревожная = nil
         }
         if now != момент {
             момент = now
             ритм = nil
             порогПосчитан = false
+            тревожная = nil
+        }
+        // Тревожная запись — за ПОКАЗАННЫЙ день: листание на вчера
+        // не меняет ни ленту, ни `now`, а ответ меняет.
+        if день != self.день {
+            self.день = день
+            тревожная = nil
         }
     }
 
@@ -1643,6 +1709,13 @@ final class ПамятьЛенты {
         return новый
     }
 
+    func тревожная(_ посчитать: () -> Bool) -> Bool {
+        if let тревожная { return тревожная }
+        let ответ = посчитать()
+        тревожная = ответ
+        return ответ
+    }
+
     func порог(_ посчитать: () -> AlarmThreshold?) -> AlarmThreshold? {
         if порогПосчитан { return порог }
         порог = посчитать()
@@ -1651,7 +1724,7 @@ final class ПамятьЛенты {
     }
 
     /// Поля, которые читают `TimelineBuilder.blocks`, `Diary.active`,
-    /// `WalkRhythmAnalyzer` и `AlarmThresholdAnalyzer`.
+    /// `WalkRhythmAnalyzer`, `AlarmThresholdAnalyzer` и `raisesAlarm`.
     private static func отпечаток(_ события: [LogEvent]) -> Int {
         var h = Hasher()
         h.combine(события.count)
@@ -1667,6 +1740,8 @@ final class ПамятьЛенты {
             h.combine(e.durationSeconds)
             h.combine(e.askSignalRaw)
             h.combine(e.incidentKindRaw)
+            h.combine(e.incidentDetailRaw)
+            h.combine(e.stoolFlagsRaw)
         }
         return h.finalize()
     }

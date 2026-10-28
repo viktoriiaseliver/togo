@@ -126,7 +126,15 @@ nonisolated enum FeedingAnalyzer {
             suggestedMealTimes: suggestedTimes,
             stoolLagMinutes: lag,
             suggestedOutingTimes: suggestedOutingTimes(mealTimes: suggestedTimes, lag: lag, days: complete),
-            conflicts: conflicts(mealTimes: suggestedTimes, fastingWindows: fastingWindows)
+            // Спорит с лечением РАСПИСАНИЕ человека, а не наша подсказка.
+            // Здесь стояли `suggestedTimes`, а карточка подписана
+            // «Расписание спорит с лечением»: на кадре 28.10.2026 тревога
+            // была про кормление в 20:30 — его предложило приложение,
+            // а у человека стоит 21:30 («Почему кормление спорит???»).
+            // Подсказка идёт в ход, только пока своих часов нет вовсе.
+            conflicts: conflicts(mealTimes: (dog?.mealTimes).flatMap { $0.isEmpty ? nil : $0 }
+                                     ?? suggestedTimes,
+                                 fastingWindows: fastingWindows)
         )
     }
 
