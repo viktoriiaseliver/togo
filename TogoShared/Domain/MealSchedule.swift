@@ -129,8 +129,21 @@ nonisolated enum MealSchedule {
 
     // MARK: Мелочи
 
+    /// Сколько минут между подъёмом и отбоем — по кругу суток.
+    ///
+    /// **Одна точка на три места.** Та же величина считалась руками
+    /// в `Dog.awakeMinutes` и в `ScheduleDraft.awakeMinutes`
+    /// (`span > 0 ? span : span + 24 * 60`), а здесь — через `forward`.
+    /// Разница между копиями была ровно одна и в пользу этой:
+    /// `forward` сперва приводит минуты в сутки, а ручная ветка нет,
+    /// то есть на значении вне `0…1439` (архив восстанавливает число
+    /// как есть) ручная давала отрицательное «бодрствует».
+    static func awakeMinutes(wake: Int, sleep: Int) -> Int {
+        forward(from: wake, to: sleep)
+    }
+
     static func latestMeal(wake: Int, sleep: Int) -> Int {
-        let awake = forward(from: wake, to: sleep)
+        let awake = awakeMinutes(wake: wake, sleep: sleep)
         // Окно короче трёх часов — не режим, а опечатка: оставляем хотя бы час.
         let span = max(60, awake - beforeSleep)
         return normalize(wake + span)

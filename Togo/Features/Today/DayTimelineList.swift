@@ -53,8 +53,9 @@ struct DayTimelineList: View {
     @Environment(AppState.self) private var appState
     @Environment(\.modelContext) private var context
 
-    /// Короче часа промежуток не показываем: это шум, а не сведения.
-    private static let gapThreshold: TimeInterval = 60 * 60
+    /// Порог промежутка — у соседа, а не свой: решение одно
+    /// (`DayTimeline.gapThreshold`), и двух копий у него быть не должно.
+    private static var gapThreshold: TimeInterval { DayTimeline.gapThreshold }
 
     private var blocks: [TimelineBlock] { TimelineBuilder.blocks(events) }
 

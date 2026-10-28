@@ -194,7 +194,29 @@ nonisolated enum TreatmentCourse {
     }
 
     /// Насколько поздняя отметка ещё считается «вовремя».
+    ///
+    /// **Одна точка на обе сводки — человеку и врачу.** До 28.10.2026
+    /// это же число и этот же предикат лежали вторым экземпляром
+    /// в `VetSummaryBuilder` (`VetSummary.swift:63` и `:74`),
+    /// посимвольно те же три строки. Расхождение было бы не косметикой:
+    /// одна сводка показывает «доз вовремя» человеку, вторую он несёт
+    /// врачу, и два разных числа про одно и то же читались бы как
+    /// разные данные, а не как разные пороги.
     static let onTimeWindow: TimeInterval = 3600
+
+    /// Дана ли доза вовремя.
+    ///
+    /// На значениях, а не на `DoseRecord`, нарочно: два вызывающих
+    /// читают модель каждый в своей изоляции, и общая точка не должна
+    /// тащить за собой ни модель, ни главный актор.
+    ///
+    /// Раннее «дал» сюда попадает: промежуток отрицательный, и он
+    /// меньше окна. Так было в обеих копиях — правило здесь
+    /// переносится, а не переписывается.
+    nonisolated static func даноВовремя(scheduledAt: Date, givenAt: Date?) -> Bool {
+        guard let givenAt else { return false }
+        return givenAt.timeIntervalSince(scheduledAt) <= onTimeWindow
+    }
 
     /// Сколько суток прошло между двумя моментами — календарём.
     ///
@@ -219,9 +241,8 @@ nonisolated enum TreatmentCourse {
     static func summary(_ dog: Dog, now: Date = Date()) -> Summary {
         let doses = dog.medications.flatMap(\.doses)
         let given = doses.filter(\.isGiven)
-        let onTime = given.filter { dose in
-            guard let givenAt = dose.givenAt else { return false }
-            return givenAt.timeIntervalSince(dose.scheduledAt) <= onTimeWindow
+        let onTime = given.filter {
+            даноВовремя(scheduledAt: $0.scheduledAt, givenAt: $0.givenAt)
         }
         let first = doses.map(\.scheduledAt).min()
         return Summary(

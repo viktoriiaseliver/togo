@@ -198,11 +198,16 @@ struct FoodStockEditorSheet: View {
     private var isOnlyFood: Bool { siblings.isEmpty }
 
     /// Сколько граммов уедет в запись — **одна величина на условие
-    /// кнопки и на сохранение**.
+    /// кнопки, на обе арифметики карточки и на сохранение**.
     ///
-    /// Повторяет `save()` (`:424`) нарочно: пока условие считало своё,
-    /// кнопка могла быть выключена при готовой к записи величине
-    /// и наоборот. Разойдутся — разойдутся вместе, а не молча.
+    /// Заведена, чтобы условие кнопки не считало своё: иначе кнопка
+    /// бывала выключена при готовой к записи величине и наоборот.
+    /// **А повторяли её при этом три места** (замер 28.10.2026):
+    /// `save()`, `draftStock` и превью «хватит на · кончится · купить
+    /// на месяц». Первые два совпадали посимвольно, третье считало
+    /// по голому `gramsPerDay` — и у единственного корма это другое
+    /// число. Теперь зовут сюда все; номера строк в этом разборе
+    /// намеренно не названы — они устаревают быстрее правила.
     private var кСохранению: Int { isOnlyFood ? dog.dailyGrams : gramsPerDay }
 
     /// Сколько нормы осталось нераспределённым.
@@ -363,8 +368,7 @@ struct FoodStockEditorSheet: View {
     /// их модель, а не экран.
     private var draftStock: FoodStock {
         FoodStock(kind: kind, brand: brand, packGrams: packGrams,
-                  packsLeft: packsLeft,
-                  gramsPerDay: isOnlyFood ? dog.dailyGrams : gramsPerDay)
+                  packsLeft: packsLeft, gramsPerDay: кСохранению)
     }
 
     private var amountCard: some View {
@@ -447,8 +451,14 @@ struct FoodStockEditorSheet: View {
                 .frame(minHeight: Token.Size.tapTarget)
             }
 
-            let preview = FoodStock(kind: kind, packGrams: packGrams,
-                                    packsLeft: packsLeft, gramsPerDay: gramsPerDay)
+            // Третий черновик той же записи на этом экране стоял здесь
+            // со СВОИМ расходом — голым `gramsPerDay` вместо
+            // `кСохранению` (замер 28.10.2026). У единственного корма
+            // шаговика нет, и число в нём остаётся от прошлого захода:
+            // строка «норма не записана, расход не считается» стояла
+            // ровно над «хватит на 12 дней», посчитанными по той самой
+            // норме, которой нет. Черновик теперь один на всю карточку.
+            let preview = draftStock
             if let days = preview.daysLeft() {
                 TGDivider()
                 РядЧисел {
@@ -495,7 +505,8 @@ struct FoodStockEditorSheet: View {
         target.packsLeft = packsLeft
         // У единственного корма расход равен дневной норме: отдельного
         // числа для него не спрашиваем и не храним расхождение.
-        target.gramsPerDay = isOnlyFood ? dog.dailyGrams : gramsPerDay
+        // Выражение не повторяется — `кСохранению` для того и заведено.
+        target.gramsPerDay = кСохранению
         if stock == nil {
             target.openedAt = Date()
             target.dog = dog

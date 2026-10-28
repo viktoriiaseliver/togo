@@ -742,8 +742,14 @@ struct FeedingScreen: View {
         // брался после: `былиЧасы` читались уже из перезаписанного
         // `dog.mealTimes`, то есть возврат возвращал НОВОЕ расписание,
         // а не прежнее. Отказ записи при этом выглядел бы удачей.
-        let былоКормлений = dog.mealsPerDay
-        let былиЧасы = dog.mealTimes
+        //
+        // И список полей — общий с `ScheduleScreen` (`ПитаниеСнимок`),
+        // а не свой. Своим он называл два поля из пяти: `setMealsPerDay`
+        // пишет ещё `dailyNormGrams` и `portionGrams` через
+        // `setDailyGrams`, а `syncSingleFoodShare()` — расход
+        // единственного запаса. При отказе записи норма врача и обратный
+        // отсчёт корма оставались от непринятой правки.
+        let былоПитание = ПитаниеСнимок(dog)
 
         dog.mealTimes = report.suggestedMealTimes
         // Через `setMealsPerDay`, а не присваиванием: дневная норма должна
@@ -751,10 +757,7 @@ struct FeedingScreen: View {
         // молча меняло то, сколько собака ест за сутки.
         dog.setMealsPerDay(report.suggestedMealTimes.count)
         dog.syncSingleFoodShare()
-        guard context.persist(otherwise: {
-            dog.mealsPerDay = былоКормлений
-            dog.mealTimes = былиЧасы
-        }) else {
+        guard context.persist(otherwise: { былоПитание.вернуть(в: dog) }) else {
             Haptics.warning()
             return
         }

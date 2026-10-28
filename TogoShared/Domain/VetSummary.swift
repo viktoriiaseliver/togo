@@ -59,8 +59,14 @@ nonisolated struct VetSummary: Equatable, Sendable {
 }
 
 nonisolated enum VetSummaryBuilder {
-    /// Насколько поздняя доза ещё считается данной вовремя.
-    static let onTimeWindow: TimeInterval = 3600
+    /// Насколько поздняя доза ещё считается данной вовремя — **и число,
+    /// и предикат берутся у `TreatmentCourse`.**
+    ///
+    /// Здесь стояла своя `onTimeWindow = 3600` и свой трёхстрочный
+    /// фильтр, посимвольно совпадавший с тем, что в
+    /// `TreatmentCourse.summary`. Две копии одного порога, из которых
+    /// одну человек видит на экране, а вторую несёт врачу.
+    static var onTimeWindow: TimeInterval { TreatmentCourse.onTimeWindow }
 
     static func build(
         events: [LogEvent],
@@ -71,9 +77,8 @@ nonisolated enum VetSummaryBuilder {
     ) -> VetSummary {
         let window = doses.filter { $0.scheduledAt >= from && $0.scheduledAt <= to }
         let given = window.filter(\.isGiven)
-        let onTime = given.filter { dose in
-            guard let givenAt = dose.givenAt else { return false }
-            return givenAt.timeIntervalSince(dose.scheduledAt) <= onTimeWindow
+        let onTime = given.filter {
+            TreatmentCourse.даноВовремя(scheduledAt: $0.scheduledAt, givenAt: $0.givenAt)
         }
 
         let incidentEvents = Diary.active(events)

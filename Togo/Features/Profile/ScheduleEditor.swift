@@ -50,9 +50,14 @@ struct ScheduleDraft: Equatable {
         /// `.perDay`, где правится само записанное число, а порция
         /// стоит отдельной строкой «Значит за раз» и честно названа
         /// производной.
+        ///
+        /// Порцию считает `Dog.servingGrams(dailyGrams:mealsPerDay:)`,
+        /// а не своя строка: здесь жила **третья** копия той же формулы
+        /// округления (замер 28.10.2026), и именно она решает, какой
+        /// шаговик встанет над нормой врача.
         static func для(норма: Int, кормлений: Int) -> NormEntry {
             guard норма > 0, кормлений > 0 else { return .perServing }
-            let порция = max(5, Int((Double(норма) / Double(кормлений) / 5).rounded()) * 5)
+            let порция = Dog.servingGrams(dailyGrams: норма, mealsPerDay: кормлений)
             return порция * кормлений == норма ? .perServing : .perDay
         }
     }
@@ -107,15 +112,16 @@ struct ScheduleDraft: Equatable {
     ///
     /// Нормы нет — порции нет. Пол `max(5, …)` отвечал «5 г» там, где
     /// ответа нет вовсе, и пятёрка выглядела данными человека.
+    ///
+    /// Считает модель, а не черновик: иначе шаговик в редакторе
+    /// и число в профиле округляли бы каждый по-своему. Разбор —
+    /// у `Dog.servingGrams(dailyGrams:mealsPerDay:)`.
     var servingGrams: Int {
-        guard dailyGrams > 0 else { return 0 }
-        guard mealsPerDay > 0 else { return dailyGrams }
-        return max(5, Int((Double(dailyGrams) / Double(mealsPerDay) / 5).rounded()) * 5)
+        Dog.servingGrams(dailyGrams: dailyGrams, mealsPerDay: mealsPerDay)
     }
 
     var awakeMinutes: Int {
-        let span = sleepMinuteOfDay - wakeMinuteOfDay
-        return span > 0 ? span : span + 24 * 60
+        MealSchedule.awakeMinutes(wake: wakeMinuteOfDay, sleep: sleepMinuteOfDay)
     }
 
     /// Раскладка по суткам целиком: считает и ночной перерыв тоже.
@@ -186,6 +192,67 @@ struct ScheduleDraft: Equatable {
         dog.wakeMinuteOfDay = wakeMinuteOfDay
         dog.sleepMinuteOfDay = sleepMinuteOfDay
         dog.mealTimes = effectiveMealTimes
+    }
+}
+
+/// Что правка режима питания трогает — и чем это вернуть при отказе
+/// записи.
+///
+/// **Обратная сторона `apply(to:)`, и лежит рядом с ним нарочно.**
+/// `ModelContext.persist(otherwise:)` требует вернуть **ровно те поля,
+/// что трогали** (`rollback()` у SwiftData значений не возвращает —
+/// разбор там же), то есть список полей написан в проекте дважды:
+/// один раз правкой, второй — возвратом. Копий возврата было две,
+/// и они разошлись (замер 28.10.2026):
+///
+/// ```
+/// ScheduleScreen.сохранить       семь полей, включая расход корма
+///                                у `stocks[0]` — и прямо названо,
+///                                что седьмое лежит в ДРУГОМ объекте
+/// FeedingScreen.applySchedule    два: mealsPerDay и mealTimes
+/// ```
+///
+/// А трогает `applySchedule` пять: `setMealsPerDay` внутри зовёт
+/// `setDailyGrams`, и тот пишет `dailyNormGrams` и `portionGrams`;
+/// `syncSingleFoodShare()` пишет `gramsPerDay` единственного запаса.
+/// То есть при отказе записи норма врача и обратный отсчёт корма
+/// оставались от **непринятой** правки, а экран при этом честно
+/// говорил «не сохранилось».
+///
+/// Поля, которых правка не касалась, возвращаются теми же значениями
+/// — это пустая запись, а не лишнее действие; взамен список
+/// перестаёт зависеть от того, какую из двух дорог читает автор.
+struct ПитаниеСнимок {
+    private let dailyNormGrams: Int?
+    private let portionGrams: Int
+    private let mealsPerDay: Int
+    private let wakeMinuteOfDay: Int
+    private let sleepMinuteOfDay: Int
+    private let mealTimes: [Int]
+    /// Расход единственного корма. `nil` — запасов не один, и
+    /// `syncSingleFoodShare()` до него не доходит.
+    private let gramsPerDay: Int?
+
+    init(_ dog: Dog) {
+        dailyNormGrams = dog.dailyNormGrams
+        portionGrams = dog.portionGrams
+        mealsPerDay = dog.mealsPerDay
+        wakeMinuteOfDay = dog.wakeMinuteOfDay
+        sleepMinuteOfDay = dog.sleepMinuteOfDay
+        mealTimes = dog.mealTimes
+        gramsPerDay = dog.stocks.count == 1 ? dog.stocks[0].gramsPerDay : nil
+    }
+
+    func вернуть(в dog: Dog) {
+        dog.dailyNormGrams = dailyNormGrams
+        dog.portionGrams = portionGrams
+        dog.mealsPerDay = mealsPerDay
+        dog.wakeMinuteOfDay = wakeMinuteOfDay
+        dog.sleepMinuteOfDay = sleepMinuteOfDay
+        dog.mealTimes = mealTimes
+        if let gramsPerDay, dog.stocks.count == 1 {
+            dog.stocks[0].gramsPerDay = gramsPerDay
+        }
     }
 }
 

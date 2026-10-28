@@ -51,7 +51,12 @@ struct DayTimeline: View {
     var onTap: (LogEvent) -> Void
 
     /// Короче часа промежуток не показываем: это шум, а не сведения.
-    private static let gapThreshold: TimeInterval = 60 * 60
+    ///
+    /// **Не `private` нарочно: у решения один адрес на оба контейнера.**
+    /// Ровно та же строка с тем же комментарием стояла второй копией
+    /// в `DayTimelineList` (замер 28.10.2026) — как и у `DayTimelineRow`
+    /// ниже, расходиться им негде, а разойтись они могли молча.
+    static let gapThreshold: TimeInterval = 60 * 60
 
     var body: some View {
         TGCard(padding: 0, spacing: 0) {

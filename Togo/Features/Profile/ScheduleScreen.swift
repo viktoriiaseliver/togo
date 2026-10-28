@@ -50,29 +50,15 @@ struct ScheduleScreen: View {
     /// признак изменений, но значения не возвращает — разбор
     /// в `ModelContext.persist(otherwise:)`.
     private func сохранить() {
-        let былаНорма = dog.dailyNormGrams
-        let былаПорция = dog.portionGrams
-        let былоКормлений = dog.mealsPerDay
-        let былПодъём = dog.wakeMinuteOfDay
-        let былОтбой = dog.sleepMinuteOfDay
-        let былиЧасы = dog.mealTimes
-        // `syncSingleFoodShare()` трогает седьмое поле, и оно в другом
-        // объекте. Соседство в вызове — не повод его пропустить.
-        let былРасходКорма = dog.stocks.count == 1 ? dog.stocks[0].gramsPerDay : nil
+        // Семь полей, из которых седьмое (`syncSingleFoodShare()`)
+        // лежит в другом объекте: соседство в вызове — не повод его
+        // пропустить. Список стоит один раз, рядом с `apply(to:)`, —
+        // вторая его копия жила в `FeedingScreen` и была вдвое короче.
+        let былоПитание = ПитаниеСнимок(dog)
 
         draft.apply(to: dog)
 
-        guard context.persist(otherwise: {
-            dog.dailyNormGrams = былаНорма
-            dog.portionGrams = былаПорция
-            dog.mealsPerDay = былоКормлений
-            dog.wakeMinuteOfDay = былПодъём
-            dog.sleepMinuteOfDay = былОтбой
-            dog.mealTimes = былиЧасы
-            if let былРасходКорма, dog.stocks.count == 1 {
-                dog.stocks[0].gramsPerDay = былРасходКорма
-            }
-        }) else {
+        guard context.persist(otherwise: { былоПитание.вернуть(в: dog) }) else {
             Haptics.warning()
             return
         }

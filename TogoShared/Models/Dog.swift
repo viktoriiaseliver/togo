@@ -596,6 +596,23 @@ final class Dog {
     /// в `FeedingAnalyzer.status`, то есть счёт эту разницу знал всегда,
     /// а показ её не знал.
     var servingGrams: Int {
+        Self.servingGrams(dailyGrams: dailyGrams, mealsPerDay: mealsPerDay)
+    }
+
+    /// Та же арифметика для черновика, у которого собаки ещё нет.
+    ///
+    /// **Копий этой формулы было три** (замер 28.10.2026): здесь,
+    /// в `ScheduleDraft.servingGrams` и внутри
+    /// `ScheduleDraft.NormEntry.для(норма:кормлений:)`. Все три
+    /// совпадали посимвольно, и ни одна не ссылалась на другую —
+    /// то есть правка округления в одной расходилась бы с остальными
+    /// молча, а третья копия решает, КАКОЙ шаговик человек увидит
+    /// над нормой врача.
+    ///
+    /// Форма «статика на значениях, а не на модели» выбрана потому,
+    /// что черновик редактора `Dog` не держит по устройству:
+    /// в онбординге собаки ещё нет.
+    static func servingGrams(dailyGrams: Int, mealsPerDay: Int) -> Int {
         guard dailyGrams > 0 else { return 0 }
         guard mealsPerDay > 0 else { return dailyGrams }
         return max(5, Int((Double(dailyGrams) / Double(mealsPerDay) / 5).rounded()) * 5)
@@ -640,9 +657,13 @@ final class Dog {
 
     /// Сколько часов в сутках собака бодрствует. Меньше шести не бывает —
     /// это защита от опечатки, а не медицинская норма.
+    ///
+    /// Считает `MealSchedule`, а не эта строка: ровно то же «от подъёма
+    /// до отбоя по кругу суток» стояло ещё в `ScheduleDraft.awakeMinutes`
+    /// и внутри `MealSchedule.latestMeal` — три копии одного правила
+    /// на 28.10.2026.
     var awakeMinutes: Int {
-        let span = sleepMinuteOfDay - wakeMinuteOfDay
-        return span > 0 ? span : span + 24 * 60
+        MealSchedule.awakeMinutes(wake: wakeMinuteOfDay, sleep: sleepMinuteOfDay)
     }
 
     /// Кормления по суткам: ровный шаг, сокращённая ночь, последнее
