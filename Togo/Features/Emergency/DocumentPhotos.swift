@@ -27,11 +27,80 @@ struct DocumentPhotosCard: View {
     /// круг 5, пункт 6: «3 колонки… при AX-размерах — 2 колонки».
     @Environment(\.dynamicTypeSize) private var размер
 
+    /// Какое направление выбрано. `nil` — все.
+    @State private var направление: DocumentDirection?
+
     private var documents: [DogDocument] {
         // Надгробия мимо: `@Query` идёт мимо фильтра `dog.documents`.
         allDocuments.filter {
             $0.dog?.persistentModelID == dog.persistentModelID && $0.deletedAt == nil
         }
+    }
+
+    /// Снимки выбранного направления.
+    private var отобранные: [DogDocument] {
+        guard let направление else { return documents }
+        return documents.filter { $0.direction == направление }
+    }
+
+    /// Направления, у которых СНИМКИ ЕСТЬ, по порядку перечисления.
+    ///
+    /// **Пустые чипы не показываются нарочно.** Семь направлений
+    /// плюс «все» — восемь органов управления над сеткой из трёх
+    /// плиток; шесть из них ответили бы пустотой. Чип, который
+    /// заведомо ничего не найдёт, — это не фильтр, а обещание
+    /// данных, которых нет.
+    ///
+    /// Порядок берётся у `allCases`, а не у частоты: список
+    /// направлений человек читает глазами, и порядок, меняющийся
+    /// от того, что он снял последним, искать мешает.
+    private var направленияСоСнимками: [DocumentDirection] {
+        let есть = Set(documents.compactMap(\.direction))
+        return DocumentDirection.allCases.filter(есть.contains)
+    }
+
+    /// Снимки по месяцам события, новые сверху.
+    ///
+    /// # Почему по `occurredOn`, а не по `addedAt`
+    ///
+    /// Её слова 28.10.2026, прямым текстом: «чтоб потом быстро
+    /// находить документы по датам и то какие были сделаны анализ
+    /// а в каком направлении». Дата, которую ищут, — **когда это
+    /// сделали**, а не когда сфотографировали: карту Стича снимали
+    /// одним вечером, и по `addedAt` все анализы за два года легли
+    /// бы в один день.
+    ///
+    /// # Снимки без даты события лежат ОТДЕЛЬНО, а не подставляются
+    ///
+    /// Поставить им `addedAt` было бы подстановкой, которая становится
+    /// утверждением человека: «анализ сделан 28 октября» — это запись,
+    /// которую потом читает врач. Поэтому у них своя группа в конце,
+    /// и она заодно показывает, чему дату стоит проставить.
+    ///
+    /// Ключ `nil` в кортеже и значит «даты события нет».
+    private var поМесяцам: [(месяц: Date?, снимки: [DogDocument])] {
+        let календарь = Calendar.current
+        var группы: [Date?: [DogDocument]] = [:]
+        for снимок in отобранные {
+            let ключ = снимок.occurredOn.map {
+                календарь.date(from: календарь.dateComponents([.year, .month], from: $0)) ?? $0
+            }
+            группы[ключ, default: []].append(снимок)
+        }
+        // Внутри месяца — по дню события, новые сверху. У группы без
+        // даты сортировать по событию нечем, там порядок по съёмке.
+        let сНазванной = группы
+            .compactMap { ключ, снимки -> (месяц: Date?, снимки: [DogDocument])? in
+                guard let ключ else { return nil }
+                return (ключ, снимки.sorted {
+                    ($0.occurredOn ?? $0.addedAt) > ($1.occurredOn ?? $1.addedAt)
+                })
+            }
+            .sorted { ($0.месяц ?? .distantPast) > ($1.месяц ?? .distantPast) }
+        let безДаты = группы[Date?.none].map {
+            [(месяц: Date?.none, снимки: $0.sorted { $0.addedAt > $1.addedAt })]
+        } ?? []
+        return сНазванной + безДаты
     }
 
     /// # Снимки закрыты МЕДИЦИНСКИМ правом, а не `editProfile`
@@ -89,6 +158,7 @@ struct DocumentPhotosCard: View {
                 }
 
                 просрочка
+                чипыНаправлений
                 сетка
             }
         }
@@ -172,12 +242,75 @@ struct DocumentPhotosCard: View {
     /// состояние, у которого вход виден. Отдельная строка под сеткой
     /// при нуле снимков оставляла бы пустую сетку и строку, то есть
     /// два пустых места вместо одного действия.
+    /// Чипы направлений — та же форма, что фильтр истории.
+    ///
+    /// Показываются, только когда направлений БОЛЬШЕ ОДНОГО: при одном
+    /// фильтровать не из чего, и «все · гормоны» было бы двумя
+    /// кнопками с одинаковым ответом.
+    @ViewBuilder
+    private var чипыНаправлений: some View {
+        if направленияСоСнимками.count > 1 {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: Token.Space.s8) {
+                    КиноЧип(подпись: "все", выбран: направление == nil) {
+                        направление = nil
+                    }
+                    ForEach(направленияСоСнимками, id: \.self) { вид in
+                        КиноЧип(подпись: .готовая(вид.title),
+                                выбран: направление == вид) {
+                            // Второе нажатие на выбранный снимает отбор:
+                            // иначе выйти из направления можно только
+                            // через «все», а его на узком экране
+                            // приходится искать прокруткой назад.
+                            направление = (направление == вид) ? nil : вид
+                        }
+                    }
+                }
+                .padding(.vertical, Token.Space.s2)
+            }
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel("Направление")
+        }
+    }
+
     @ViewBuilder
     private var сетка: some View {
+        // Заголовок месяца показывается, только когда групп больше
+        // одной: над единственной группой он был бы шумом, а при
+        // отборе по направлению групп часто ровно одна.
+        let группы = поМесяцам
+        let сЗаголовками = группы.count > 1
+
+        ForEach(Array(группы.enumerated()), id: \.offset) { индекс, группа in
+            if сЗаголовками {
+                TGSectionHeader(title: заголовокГруппы(группа.месяц),
+                                subtitle: nil)
+                    .padding(.top, индекс == 0 ? 0 : Token.Space.s8)
+            }
+            плитки(группа.снимки, сКнопкойСъёмки: индекс == группы.count - 1)
+        }
+
+        // Группы нет вовсе — ни одного снимка в выбранном направлении
+        // или ни одного вообще. Кнопку съёмки всё равно показать надо:
+        // иначе при пустом отборе экран теряет единственный вход.
+        if группы.isEmpty {
+            плитки([], сКнопкойСъёмки: true)
+        }
+    }
+
+    /// Подпись группы. У снимков без даты события она говорит ровно
+    /// это, а не подставляет день съёмки.
+    private func заголовокГруппы(_ месяц: Date?) -> LocalizedStringKey {
+        guard let месяц else { return "без даты события" }
+        return .готовая(Fmt.monthTitle(месяц))
+    }
+
+    @ViewBuilder
+    private func плитки(_ снимки: [DogDocument], сКнопкойСъёмки: Bool) -> some View {
         LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: Token.Space.s8),
                                  count: Сетка.колонок(размер)),
                   spacing: Token.Space.s8) {
-            ForEach(documents) { document in
+            ForEach(снимки) { document in
                 Button { viewing = document } label: {
                     ПлиткаСнимка(документ: document)
                 }
@@ -186,7 +319,7 @@ struct DocumentPhotosCard: View {
                 .accessibilityAddTraits(.isButton)
             }
 
-            if canEdit {
+            if canEdit && сКнопкойСъёмки {
                 PhotosPicker(selection: $picked, matching: .images, photoLibrary: .shared()) {
                     ПлиткаСнять()
                 }
@@ -432,6 +565,24 @@ struct DocumentDraft {
     var number: String = ""
     var issuedBy: String = ""
 
+    /// Направление: «про какую медицину» этот документ.
+    ///
+    /// `nil` — «не названо», и это НЕ то же самое, что `.other`
+    /// («есть и не из списка»): разбор у `DogDocument.directionRaw`.
+    /// У паспорта направления нет вовсе, и выбирать его человека
+    /// никто не заставляет.
+    var direction: DocumentDirection?
+
+    /// Когда это СДЕЛАЛИ — день забора, приёма, прививки.
+    ///
+    /// Тумблер отдельно от даты по той же причине, что у срока:
+    /// `DatePicker` пустого значения не умеет, и без тумблера «даты
+    /// нет» и «это сегодня» были бы неотличимы. Здесь цена ошибки
+    /// выше, чем у срока: дату события потом читает врач, а карту
+    /// снимают одним вечером за несколько лет сразу.
+    var hasOccurredOn: Bool = false
+    var occurredOn: Date = Date()
+
     /// Тумблер отдельно от даты, потому что `DatePicker` пустого
     /// значения не умеет: без него «срока нет» и «срок сегодня»
     /// неотличимы, а это разные утверждения.
@@ -446,6 +597,9 @@ struct DocumentDraft {
         title = document.title
         number = document.number ?? ""
         issuedBy = document.issuedBy ?? ""
+        direction = document.direction
+        hasOccurredOn = document.occurredOn != nil
+        occurredOn = document.occurredOn ?? Date()
         hasValidUntil = document.validUntil != nil
         validUntil = document.validUntil ?? Date()
         note = document.note ?? ""
@@ -462,6 +616,11 @@ struct DocumentDraft {
         document.number = подчищенное(number)
         document.issuedBy = подчищенное(issuedBy)
         document.validUntil = hasValidUntil ? validUntil : nil
+        document.direction = direction
+        // Выключенный тумблер СТИРАЕТ дату, а не оставляет прежнюю:
+        // иначе человек, снявший отметку, видел бы «без даты события»
+        // на экране и дату в записи — а уехала бы врачу запись.
+        document.occurredOn = hasOccurredOn ? occurredOn : nil
         document.note = подчищенное(note)
         // День правки, а не день заведения: разбор у самого поля.
         document.changedAt = Date()
@@ -621,6 +780,48 @@ struct DocumentFieldsSheet: View {
                 TGDivider()
                 LabeledField(label: "Кем выдан") {
                     TextField("клиника или врач", text: $draft.issuedBy)
+                }
+                TGDivider()
+                // Дата события и направление — вход, которого не было.
+                //
+                // Поля завела сессия схемы V8 (28.10.2026), а писать их
+                // умели только архив, обмен и отладочный прогрев:
+                // человек ввести не мог НИЧЕМ. Это наш класс «механизм
+                // без входа» — поле есть, читателей нет, и грепом оно
+                // выглядит живым, потому что его пишет восстановление.
+                //
+                // Её слова, ради которых всё и делалось: «не просто
+                // записывать данные, просто фотографировать результаты
+                // и подписывать их правильно… чтоб потом быстро
+                // находить документы по датам и то какие были сделаны
+                // анализ а в каком направлении».
+                Toggle(isOn: $draft.hasOccurredOn) {
+                    Text("Знаю, когда это сделали").textStyle(AppFont.body)
+                }
+                .frame(minHeight: Token.Size.tapTarget)
+                if draft.hasOccurredOn {
+                    TGDivider()
+                    // «Когда сделали», а не «дата»: у бланка день
+                    // забора и день выдачи — разные дни, и слово
+                    // «дата» не говорит, какой из них ввести.
+                    DatePicker("Когда сделали", selection: $draft.occurredOn,
+                               displayedComponents: .date)
+                        .frame(minHeight: Token.Size.tapTarget)
+                }
+                TGDivider()
+                LabeledField(label: "Направление") {
+                    // Picker, а не чипы: направлений семь, и чипами они
+                    // заняли бы два ряда над формой, где уже есть ряд
+                    // чипов вида. «Не названо» — первым и по умолчанию:
+                    // у паспорта направления нет вовсе, и заставлять
+                    // выбирать его нельзя.
+                    Picker("Направление", selection: $draft.direction) {
+                        Text("не названо").tag(DocumentDirection?.none)
+                        ForEach(DocumentDirection.allCases, id: \.self) { вид in
+                            Text(.готовая(вид.title)).tag(DocumentDirection?.some(вид))
+                        }
+                    }
+                    .labelsHidden()
                 }
                 TGDivider()
                 Toggle(isOn: $draft.hasValidUntil) {

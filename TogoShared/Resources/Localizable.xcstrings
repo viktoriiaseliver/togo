@@ -2492,6 +2492,35 @@
         }
       }
     },
+    "без даты события" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "no date of the event"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sans date de l'événement"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "оқиға күні жоқ"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "без дати події"
+          }
+        }
+      }
+    },
     "биохимия" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2668,6 +2697,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Впиши корм і фасування — застосунок порахує, на скільки вистачить, і нагадає за тиждень до кінця."
+          }
+        }
+      }
+    },
+    "все" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "all"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "tous"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "бәрі"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "усі"
           }
         }
       }
@@ -2980,6 +3038,35 @@
         }
       }
     },
+    "Знаю, когда это сделали" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I know when this was done"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je sais quand ça a été fait"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Қашан жасалғанын білемін"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Знаю, коли це зробили"
+          }
+        }
+      }
+    },
     "Инциденты реже — %1$lld против %2$lld за прошлый период." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3098,6 +3185,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "коли здавати"
+          }
+        }
+      }
+    },
+    "Когда сделали" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When it was done"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quand ça a été fait"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Қашан жасалды"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Коли зробили"
           }
         }
       }
@@ -3255,6 +3371,64 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "напоготові · телефони · що міг з’їсти · довідка лікарю"
+          }
+        }
+      }
+    },
+    "Направление" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Area"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Domaine"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бағыт"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Напрям"
+          }
+        }
+      }
+    },
+    "не названо" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "not specified"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "non précisé"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "аталмаған"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "не названо"
           }
         }
       }
