@@ -274,7 +274,11 @@ struct FamilyScreen: View {
     /// у всех, кроме выбравших «одно фото для всех», шапка была бы
     /// пустым полотном.
     private var фотоЭкрана: Data? {
-        BackgroundStore.shared.background(for: .sub("family"))?.data ?? dog?.photo
+        // `.family`, а не `.sub("family")`: имя экрана живёт одной копией
+        // в `ScreenKey`, и `BackgroundBridge.раскладкаРазделов` берёт его
+        // оттуда же. С 28.10.2026 этот экран получает по раскладке
+        // не «героя», а свой фон раздела.
+        BackgroundStore.shared.background(for: .family)?.data ?? dog?.photo
     }
 
     /// «3 ЧЕЛОВЕКА · ДЕЖУРИТ ВИКА» — дословно с кадра `12`.
