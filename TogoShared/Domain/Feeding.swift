@@ -115,6 +115,38 @@ nonisolated enum FeedingAnalyzer {
             calendar: calendar
         )
 
+        // **Конфликт считается по расписанию, которое СТОИТ, а не по
+        // предложенному.** Отзыв 27.10.2026, 21:55: «Почему кормление
+        // спорит???» — и кадр показывает спор дословно:
+        //
+        // ```
+        // красная плашка   «Кормление в 20:30 попадает в окно натощак
+        //                   19:30–21:30»
+        // строка ниже      «09:30, 15:30 и 21:30 · план»
+        // ещё ниже         «Записей о еде пока нет»
+        // ```
+        //
+        // 20:30 у неё не стоит нигде. Оно из `suggestedTimes`: при пустых
+        // наблюдениях `observed.count != normMeals`, и предложение
+        // считается `MealSchedule.evenTimes` от подъёма и сна —
+        // 09:30 · 15:00 · **20:30**. Её собственные часы другие.
+        //
+        // И показать это предложение было негде: кнопка «Поставить это
+        // расписание» стоит под `!report.observedMealTimes.isEmpty`
+        // (`FeedingScreen:545`). То есть тревога приходила о расписании,
+        // которого человек не ставил и не видел, — а рядом лежала строка
+        // с тем, которое он ставил.
+        //
+        // > **Тревога обязана называть то, что человек может подвинуть.**
+        // > Своя же подпись плашки говорит «приложение само ничего
+        // > не двигает: это решается с врачом» — значит двигать будет
+        // > человек, и двигать он может только свои часы.
+        //
+        // Предложенное расписание проверяется теми же окнами в тот
+        // момент, когда его применяют: `dog.mealTimes` после применения
+        // и есть предложенное.
+        let расписаниеВСиле = (dog?.mealTimes).flatMap { $0.isEmpty ? nil : $0 } ?? suggestedTimes
+
         return FeedingReport(
             days: days,
             normGramsPerDay: norm,
@@ -126,7 +158,7 @@ nonisolated enum FeedingAnalyzer {
             suggestedMealTimes: suggestedTimes,
             stoolLagMinutes: lag,
             suggestedOutingTimes: suggestedOutingTimes(mealTimes: suggestedTimes, lag: lag, days: complete),
-            conflicts: conflicts(mealTimes: suggestedTimes, fastingWindows: fastingWindows)
+            conflicts: conflicts(mealTimes: расписаниеВСиле, fastingWindows: fastingWindows)
         )
     }
 

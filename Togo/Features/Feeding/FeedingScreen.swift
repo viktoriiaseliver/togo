@@ -505,9 +505,22 @@ struct FeedingScreen: View {
     @ViewBuilder
     private var часыКарточка: some View {
         if let dog {
-            let план = MealSchedule.plan(mealsPerDay: dog.mealsPerDay,
-                                         wake: dog.wakeMinuteOfDay,
-                                         sleep: dog.sleepMinuteOfDay)
+            // **Промежутки — у поставленных часов, а не у идеальных.**
+            // Строка выше печатает `dog.mealTimes`; строка ночи печатала
+            // `plan(mealsPerDay:wake:sleep:)`, то есть другое расписание.
+            // На кадре отзыва 27.10 21:55 это выглядело так:
+            // «09:30, 15:30 и 21:30 · план» (ночь 12 ч, днём 6 ч)
+            // и прямо под ним «Ночь 13 ч · днём между едой 5 ч 30 мин».
+            // Разбор — `MealSchedule.plan(times:)`.
+            //
+            // Идеальная раскладка остаётся там, где её и спрашивают, —
+            // в редакторе режима (`ScheduleEditor`): он предлагает часы,
+            // а эта карточка о них отчитывается.
+            let план = dog.mealTimes.isEmpty
+                ? MealSchedule.plan(mealsPerDay: dog.mealsPerDay,
+                                    wake: dog.wakeMinuteOfDay,
+                                    sleep: dog.sleepMinuteOfDay)
+                : MealSchedule.plan(times: dog.mealTimes)
             TGCard(spacing: Token.Space.s8) {
                 TGSectionHeader(title: "часы",
                                 subtitle: "слева — как поставили, справа — как выходит")
