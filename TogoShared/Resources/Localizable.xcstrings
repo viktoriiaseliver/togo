@@ -2492,6 +2492,35 @@
         }
       }
     },
+    "биохимия" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "biochemistry"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "biochimie"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "биохимия"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "біохімія"
+          }
+        }
+      }
+    },
     "В %@, как назначено" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2575,6 +2604,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "візити до лікаря"
+          }
+        }
+      }
+    },
+    "визуальное (УЗИ, рентген)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "imaging (ultrasound, X-ray)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "imagerie (échographie, radio)"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "визуалды (УДЗ, рентген)"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "візуальне (УЗД, рентген)"
           }
         }
       }
@@ -3044,6 +3102,35 @@
         }
       }
     },
+    "кровь (ОАК)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "blood (CBC)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sang (NFS)"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "қан (ЖҚА)"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "кров (ЗАК)"
+          }
+        }
+      }
+    },
     "лекарства" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3104,6 +3191,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Позначки — не окремі випорожнення: ті, що йдуть підряд у межах %@, застосунок вважає одним разом. Вердикт «проситься» рахує по них, а не по натисканнях — %lld за цей вихід."
+          }
+        }
+      }
+    },
+    "микробиология" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "microbiology"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "microbiologie"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "микробиология"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "мікробіологія"
           }
         }
       }
@@ -3306,6 +3422,35 @@
         }
       }
     },
+    "прививки" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "vaccines"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "vaccins"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "екпелер"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "щеплення"
+          }
+        }
+      }
+    },
     "придёт в выбранный час вместе с остальным, а не отдельно" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3337,6 +3482,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "прийде у вибрану годину разом з рештою, а не окремо"
+          }
+        }
+      }
+    },
+    "прочее направление" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "other area"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "autre domaine"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "басқа бағыт"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "інший напрям"
           }
         }
       }
