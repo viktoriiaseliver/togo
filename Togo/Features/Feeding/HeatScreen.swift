@@ -49,7 +49,7 @@ struct HeatScreen: View {
             disclaimer
         }
         .navigationTitle("Цикл")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("heat"))
         .toolbar {
             if canEdit {
                 ToolbarItem(placement: .topBarTrailing) {

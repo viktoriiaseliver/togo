@@ -65,10 +65,21 @@ struct BackgroundStoreTests {
     @Test("«Как задумано» берёт фото собаки, а своих снимков не раздаёт")
     func автоБерётФотоСобаки() {
         let выбор = BackgroundChoice(mode: .auto, items: Self.пятьФото)
-        for ключ in ScreenKey.основные {
+        // Экраны про саму собаку — у них фото раздела нет.
+        for ключ in [ScreenKey.today, .dog, .walk, .widget, .sub("settings")] {
             #expect(выбор.photoName(for: ключ, seed: 7, fallback: "dog.jpg") == "dog.jpg",
                     "\(ключ.name): вторая ступень цепочки не сработала")
         }
+        // **Первая ступень — фото раздела, решение Виктории 28.10.2026:**
+        // «чтобы изображения с Unsplash легли по умолчанию на экраны».
+        // Оно старше фото собаки: у «Истории» и «Здоровья» своё фото
+        // и при заведённом снимке собаки — так у прототипа (`map`, `SUBP`).
+        #expect(выбор.photoName(for: .history, seed: 7, fallback: "dog.jpg")
+                    == "unsplash-1477884213360-7e9d7dcc1e48.jpg")
+        #expect(выбор.photoName(for: .health, seed: 7, fallback: "dog.jpg")
+                    == "unsplash-1628009368231-7bb7cfcb0def.jpg")
+        #expect(выбор.photoName(for: .sub("feeding"), seed: 7, fallback: "dog.jpg")
+                    == "unsplash-1589924691995-400dc9ecc119.jpg")
         // **Третья ступень сменилась 27.10.2026 решением Виктории.**
         // Было «собаки нет — честный nil, чёрный без подложки» (ответ
         // дизайна круга 2 п. 1). Стало: встроенная подложка со Стичем.
@@ -127,12 +138,16 @@ struct BackgroundStoreTests {
         let пусто = BackgroundChoice(mode: .auto, items: [])
         #expect(пусто.photoName(for: .today, seed: 1, fallback: nil)
                     == BackgroundBridge.портрет)
-        for ключ in [ScreenKey.dog, .history, .health, .widget,
-                     ScreenKey.sub("family"), .walk] {
+        for ключ in [ScreenKey.dog, .widget, .sub("settings"), .walk] {
             #expect(пусто.photoName(for: ключ, seed: 1, fallback: nil)
                         == BackgroundBridge.герой,
-                    "\(ключ.name): вкладки, подэкраны и «На улице» берут героя")
+                    "\(ключ.name): экраны про собаку и «На улице» берут героя")
         }
+        // Разделы — своё фото (28.10.2026; до того здесь тоже был герой).
+        #expect(пусто.photoName(for: .sub("family"), seed: 1, fallback: nil)
+                    == "unsplash-1601758228041-f3b2795255f1.jpg")
+        #expect(пусто.photoName(for: .sub("trip"), seed: 1, fallback: nil)
+                    == "unsplash-1530281700549-e82e7bf110d6.jpg")
         // Затравка на раскладку НЕ ВЛИЯЕТ — в этом и смысл замены
         // хэша: при другом seed фото остаются на своих местах.
         #expect(пусто.photoName(for: .today, seed: 999_999, fallback: nil)

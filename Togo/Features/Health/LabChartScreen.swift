@@ -165,7 +165,7 @@ struct LabChartScreen: View {
             }
         }
         .navigationTitle("График")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("labs"))
         .sheet(item: $выбраннаяТочка) { точка in
             ТочкаКарточка(точка: точка,
                           дозаЧислом: дозаЧислом(на: точка.дата),

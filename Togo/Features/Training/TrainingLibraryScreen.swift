@@ -50,7 +50,7 @@ struct TrainingLibraryScreen: View {
             }
         }
         .navigationTitle("Занятия и шаги")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("library"))
         .confirmationDialog("Удалить шаг?",
                             isPresented: Binding(get: { removingStep != nil },
                                                  set: { if !$0 { removingStep = nil } }),

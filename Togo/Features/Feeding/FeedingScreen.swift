@@ -135,7 +135,7 @@ struct FeedingScreen: View {
             }
         }
         .navigationTitle("Питание")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("feeding"))
         .usageScreen(.feeding)
         .task {
             now = Date()

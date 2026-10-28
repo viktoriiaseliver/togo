@@ -1264,7 +1264,7 @@ struct MemberScreen: View {
             }
         }
         .navigationTitle(member.name)
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("family"))
     }
 }
 
@@ -1438,7 +1438,7 @@ struct SitterPreviewScreen: View {
             }
         }
         .navigationTitle("Вид ситтера")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("handover"))
     }
 
     /// Брифинг ситтера читает чужой человек, и проверить число ему

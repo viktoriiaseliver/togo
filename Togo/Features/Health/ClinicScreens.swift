@@ -116,7 +116,7 @@ struct ClinicsScreen: View {
             }
         }
         .navigationTitle("Клиники и лаборатории")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("clinics"))
         .toolbar {
             if canEdit {
                 ToolbarItem(placement: .topBarTrailing) {

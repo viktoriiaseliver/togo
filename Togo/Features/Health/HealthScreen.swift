@@ -814,7 +814,7 @@ struct ProtocolScreen: View {
             }
         }
         .navigationTitle("Протокол")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("protocol"))
         .onReceive(tick) { now = $0 }
     }
 
@@ -909,7 +909,7 @@ struct VetReportScreen: View {
             .buttonStyle(.plain)
         }
         .navigationTitle("Отчёт")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("report"))
     }
 
     private var contents: [(String, Int)] {
@@ -1078,7 +1078,7 @@ struct WeightScreen: View {
             }
         }
         .navigationTitle("Вес")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("weight"))
         // Выход с цифровой клавиатуры: у `.decimalPad` своей клавиши
         // возврата нет.
         .готовоНадКлавиатурой { весВФокусе = false }

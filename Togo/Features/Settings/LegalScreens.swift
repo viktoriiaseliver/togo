@@ -64,7 +64,7 @@ struct LegalDocument: View {
         // конфиденциальности» уехала в неё: ключ печатался по-русски
         // при живом переводе в каталоге. У `CinemaHeader` разведение
         // то же самое и по той же причине.
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("legal"))
     }
 }
 
@@ -230,6 +230,6 @@ struct LegalScreen: View {
             }
         }
         .navigationTitle("Правила")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("legal"))
     }
 }

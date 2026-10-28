@@ -91,7 +91,7 @@ struct DataPrivacyScreen: View {
             }
         }
         .navigationTitle("Данные")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("privacy"))
         .usageScreen(.dataPrivacy)
         .confirmationDialog("Удалить все данные?", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
             Button("Удалить всё", role: .destructive) { deleteEverything() }
@@ -217,7 +217,7 @@ struct SupportScreen: View {
             }
         }
         .navigationTitle("Поддержка")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("support"))
     }
 
     private func openMail() {
@@ -304,7 +304,7 @@ struct AboutScreen: View {
             }
         }
         .navigationTitle("О приложении")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("about"))
     }
 
     private let principles = [
@@ -353,6 +353,6 @@ struct WhatsNewScreen: View {
             }
         }
         .navigationTitle("Что нового")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("whatsnew"))
     }
 }

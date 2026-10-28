@@ -169,7 +169,7 @@ struct DogsScreen: View {
             TGExplainer(text: "У каждой собаки свой дневник, своё питание и свой уход — они не смешиваются. Права в семье выдаются один раз и действуют на всех.")
         }
         .navigationTitle("Собаки")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("dogs"))
     }
 }
 

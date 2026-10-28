@@ -123,7 +123,7 @@ struct TransferMatrixScreen: View {
             nextStepCard
         }
         .navigationTitle("Перенос навыка")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("matrix"))
     }
 
     private var places: [(String, SkillStatus)] {
@@ -294,7 +294,7 @@ struct ProcedurePrepScreen: View {
             }
         }
         .navigationTitle("Процедуры")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("procedures"))
         .sheet(item: $открыт) { skill in
             SkillAttemptSheet(skill: skill) { удалить in
                 открыт = nil

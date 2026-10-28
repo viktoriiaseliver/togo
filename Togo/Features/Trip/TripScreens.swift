@@ -97,7 +97,7 @@ struct TripSetupScreen: View {
             }
         }
         .navigationTitle("Поездка")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("trip"))
         .usageScreen(.trip)
     }
 

@@ -151,6 +151,15 @@ nonisolated struct BackgroundChoice: Codable, Equatable, Sendable {
             // Порядок при этом НЕ ТРОНУТ: фото собаки по-прежнему
             // старше встроенных, и человек, заведший свою собаку,
             // чужой не увидит никогда.
+            //
+            // **Первая ступень заняла фото раздела 28.10.2026, решением
+            // Виктории:** «чтобы изображения с Unsplash легли по умолчанию
+            // на экраны». Раскладка — её же список и таблица `SUBP`
+            // прототипа v10: у раздела своё фото, и оно старше фото собаки.
+            // Экраны про саму собаку («Сегодня», вкладка собаки, профиль,
+            // настройки, «На улице», виджет) фото раздела не имеют —
+            // у них по-прежнему фото собаки, иначе Стич.
+            if let раздел = BackgroundBridge.фотоРаздела(ключ) { return раздел }
             return запасное ?? Self.встроеннаяДля(ключ, seed: seed)
         case .single:
             return items.first ?? запасное ?? Self.встроеннаяДля(ключ, seed: seed)
@@ -159,7 +168,9 @@ nonisolated struct BackgroundChoice: Codable, Equatable, Sendable {
             // Встроенные подмешиваются ТОЛЬКО при пустом своём списке:
             // иначе человек, добавивший два снимка, получил бы вперемешку
             // свои и чужую собаку — и прочёл бы это как дефект.
-            let список = свои.isEmpty ? BackgroundBridge.встроенные : свои
+            // Без своих — пять первых, как у прототипа: два Стича
+            // и история, семья, течка (список Виктории 28.10.2026).
+            let список = свои.isEmpty ? BackgroundBridge.карусельПоУмолчанию : свои
             guard !список.isEmpty else { return nil }
             return список[Self.индекс(ключ: ключ.name, seed: seed, из: список.count)]
         }
@@ -357,6 +368,43 @@ nonisolated enum BackgroundBridge {
         "unsplash-1548199973-03cce0bbc87b.jpg",     // течка, курс
         "unsplash-1530281700549-e82e7bf110d6.jpg",  // поездка
         "unsplash-1558788353-f76d92427f16.jpg",     // бирка у двери
+    ]
+
+    /// Фото раздела по ключу экрана — `SUBP` и вкладки прототипа v10,
+    /// список Виктории 28.10.2026 дословно.
+    ///
+    /// `nil` — у экрана своего фото нет: он про саму собаку или служебный,
+    /// и берёт фото собаки, иначе Стича. Имя ключа — `ScreenKey.name`,
+    /// у подэкранов с приставкой `sub:`.
+    static func фотоРаздела(_ ключ: ScreenKey) -> String? {
+        let имя = ключ.name.hasPrefix("sub:") ? String(ключ.name.dropFirst(4)) : ключ.name
+        switch имя {
+        case "family", "docs", "docphotos", "handover", "invited", "onboarding":
+            return "unsplash-1601758228041-f3b2795255f1.jpg"
+        case "history", "threshold", "howitworks":
+            return "unsplash-1477884213360-7e9d7dcc1e48.jpg"
+        case "health", "procedures", "visit", "rx", "emergency", "labs", "labentry",
+             "pills", "alarmth", "clinics", "protocol", "report", "diagnoses":
+            return "unsplash-1628009368231-7bb7cfcb0def.jpg"
+        case "feeding": return "unsplash-1589924691995-400dc9ecc119.jpg"
+        case "care": return "unsplash-1516734212186-a967f81ad0d7.jpg"
+        case "weight": return "unsplash-1583337130417-3346a1be7dee.jpg"
+        case "training", "matrix", "session", "library":
+            return "unsplash-1587300003388-59208cc962cb.jpg"
+        case "heat", "course": return "unsplash-1548199973-03cce0bbc87b.jpg"
+        case "trip": return "unsplash-1530281700549-e82e7bf110d6.jpg"
+        case "doortag": return "unsplash-1558788353-f76d92427f16.jpg"
+        default: return nil
+        }
+    }
+
+    /// Карусель «Свои фото», пока своих нет: два Стича и три раздела —
+    /// история, семья, течка. Так у прототипа (`bgFor`, пять первых).
+    static let карусельПоУмолчанию = [
+        портрет, герой,
+        "unsplash-1477884213360-7e9d7dcc1e48.jpg",
+        "unsplash-1601758228041-f3b2795255f1.jpg",
+        "unsplash-1548199973-03cce0bbc87b.jpg",
     ]
 
     /// Байты встроенной подложки, если имя — её.

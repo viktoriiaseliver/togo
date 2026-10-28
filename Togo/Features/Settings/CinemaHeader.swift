@@ -187,9 +187,14 @@ struct CinemaHeader: View {
     /// в `CinemaBackdrop`: иначе текст оденется в белое там, где фона
     /// уже нет.
     private var наФото: Bool {
-        guard !снизитьПрозрачность, let экран else { return false }
+        guard !снизитьПрозрачность, let экран = экран ?? экранОкружения else { return false }
         return BackgroundStore.shared.background(for: экран) != nil
     }
+
+    /// Ключ экрана, который назвал `cinemaScreen(экран:)`. Свой шапке
+    /// передают только «Настройки»; остальные подэкраны называют себя
+    /// ОДИН раз — в подложке, — и шапка берёт ключ отсюда.
+    @Environment(\.экранКино) private var экранОкружения
 
     /// Крупный заголовок «Кино». Стиль собран здесь, а не в `AppFont`,
     /// потому что `AppFont` живёт в чужом сегодня каталоге; значения —
@@ -605,6 +610,9 @@ extension View {
     ///   в отчёте, а не сделана молча.
     func cinemaScreen(экран: ScreenKey? = nil) -> some View {
         self
+            // Шапка внутри берёт ключ отсюда — одно место на экран,
+            // а не два, которые разойдутся.
+            .environment(\.экранКино, экран)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
@@ -624,6 +632,21 @@ extension View {
                 .ignoresSafeArea()
             }
             .toolbarBackground(.hidden, for: .navigationBar)
+    }
+}
+
+/// Каким экраном назвался `cinemaScreen(экран:)` — для шапки внутри.
+/// Форма ключа — та же, что у `PosterModeKey`: `@Entry` в проекте
+/// не применялся, а с изоляцией `MainActor` по умолчанию проверять его
+/// здесь нечем.
+private struct ЭкранКиноKey: EnvironmentKey {
+    static let defaultValue: ScreenKey? = nil
+}
+
+extension EnvironmentValues {
+    var экранКино: ScreenKey? {
+        get { self[ЭкранКиноKey.self] }
+        set { self[ЭкранКиноKey.self] = newValue }
     }
 }
 

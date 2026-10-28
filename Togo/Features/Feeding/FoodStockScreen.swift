@@ -110,7 +110,7 @@ struct FoodStockScreen: View {
             }
         }
         .navigationTitle("Чем кормим")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("feeding"))
         .usageScreen(.foodStock)
         .sheet(isPresented: $isAdding) { FoodStockEditorSheet(dog: dog) }
         .sheet(item: $editing) { stock in FoodStockEditorSheet(stock: stock, dog: dog) }

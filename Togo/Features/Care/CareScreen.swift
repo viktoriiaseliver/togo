@@ -52,7 +52,7 @@ struct CareScreen: View {
             }
         }
         .navigationTitle(только == .medical ? LocalizedStringKey("Прививки") : "Уход")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("care"))
         .usageScreen(.care)
         .toolbar {
             if dog != nil {

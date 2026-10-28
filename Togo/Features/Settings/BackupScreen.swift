@@ -73,7 +73,7 @@ struct BackupScreen: View {
         // не виден. Пустить фото на эти экраны — значит править каркас
         // в `Togo/DesignSystem`, а там сегодня чужая работа. Названо
         // в отчёте открытым пунктом, а не сделано молча.
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("backup"))
         .usageScreen(.backup)
         .task {
             rebuild()
