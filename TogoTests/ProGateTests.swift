@@ -124,7 +124,12 @@ struct ProGateTests {
     func гостьНеПлатитЗаЧужуюСобаку() {
         let своя = Dog(name: "Белка", weightKg: 12)
         let чужая = Dog(name: "Стич", weightKg: 4.7)
-        #expect([своя, чужая].allSatisfy(\.canBeShown),
+        // Замыканием, а не `allSatisfy(\.canBeShown)`: внутри `#expect`
+        // key path как функция разворачивается в вызов, который макрос
+        // считает бросающим, и сборка тест-таргета падает на
+        // «call can throw, but it is not marked with 'try'». Соседний
+        // `фантомыНеСчитаются` написан замыканием по той же причине.
+        #expect([своя, чужая].allSatisfy { $0.canBeShown },
                 "сценарий не наполнился: обе записи должны показываться")
 
         #expect(ProGate.isOpen(.secondDog(among: [своя, чужая], гость: true), isPro: false), """
