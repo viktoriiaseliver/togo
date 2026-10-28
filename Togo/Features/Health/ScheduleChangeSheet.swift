@@ -27,10 +27,28 @@ struct ScheduleChangeSheet: View {
         change.doomedDoses(medication.doses, now: now)
     }
 
+    /// Право менять схему лечения.
+    ///
+    /// **Этого вопроса здесь не задавали вовсе — замер 28.10.2026.**
+    /// Право `.editTreatment` спрашивают шесть экранов «Здоровья»
+    /// (визиты, диагнозы, клиники, анализы, рецепты, документы),
+    /// а лист, которым МЕНЯЮТ САМУ СХЕМУ, не спрашивал: гость
+    /// с ролью «только смотреть» мог поменять дозу лекарства.
+    ///
+    /// > Право проверяли везде, где схему ПОКАЗЫВАЮТ, и не проверили
+    /// > там, где её МЕНЯЮТ. Дыра была не в правиле, а в одном
+    /// > месте, которое под него не попало.
+    ///
+    /// `.editTreatment` по умолчанию есть только у владельца
+    /// (`FamilyResolver`), и у второго телефона оно отнимается — то есть
+    /// путь не краевой: это основной путь любого приглашённого.
+    private var canEdit: Bool { appState.can(.editTreatment) }
+
     var body: some View {
         TGSheet(title: "Врач изменил дозу",
                 subtitle: "прошлые отметки останутся как были — меняется только план вперёд",
                 hasUnsavedChanges: isChanged) {
+            if !canEdit { ПлашкаПрава(право: .editTreatment) }
             comparison
             timesCard
             startCard
@@ -47,7 +65,8 @@ struct ScheduleChangeSheet: View {
                     .textStyle(AppFont.caption.color(Token.Status.overdueText))
                     .wraps()
             }
-            TGButton(title: "Сохранить новую схему", isEnabled: isChanged) { save() }
+            TGButton(title: "Сохранить новую схему",
+                     isEnabled: isChanged && canEdit) { save() }
             TGButton(title: "Отменить", variant: .secondary, size: .medium) { dismiss() }
         }
         .presentationDetents([.large])
@@ -174,6 +193,16 @@ struct ScheduleChangeSheet: View {
     }
 
     private func save() {
+        // Ворота права — ЗДЕСЬ, а не только у кнопки. Выключенная
+        // кнопка — это подсказка глазу; она не защищает от второго
+        // пути к тому же действию, а записи о смене схемы уезжают
+        // семье. Форма отказа взята у `EventLog` — там же, где
+        // проверяется право на запись в дневник.
+        guard canEdit else {
+            appState.showFailure(String(localized: "Это записывает тот, кому разрешено"))
+            Haptics.warning()
+            return
+        }
         // Имя автора — обязательное, не для порядка: запись о смене
         // схемы уезжает семье, а безымянная наружу не уходит вовсе
         // (красная линия проекта). И второй человек должен видеть,

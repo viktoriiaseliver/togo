@@ -3923,6 +3923,35 @@
         }
       }
     },
+    "Уберутся только те, что уже закончились. Идущий останется — его закрывают кнопкой «Собаке лучше — закрыть». Записи останутся все: удаляется только объединение их в эпизод." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only the ones already over will be removed. An ongoing one stays — you close it with “She's better — close it”. All entries are kept: only their grouping into an episode is deleted."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seuls ceux déjà terminés seront supprimés. Celui en cours reste — on le ferme avec « Le chien va mieux — fermer ». Toutes les notes restent : seul leur regroupement en épisode est supprimé."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тек аяқталғандары жойылады. Жүріп жатқаны қалады — оны «Иттің жағдайы жақсы — жабу» түймесімен жабады. Жазбалардың бәрі қалады: олардың эпизодқа біріктірілуі ғана жойылады."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Приберуться лише ті, що вже закінчилися. Той, що триває, залишиться — його закривають кнопкою «Собаці краще — закрити». Записи залишаться всі: видаляється тільки об'єднання їх в епізод."
+          }
+        }
+      }
+    },
     "Уберутся только те, что уже закончились. Идущий останется — его закрывают кнопкой «Собаке лучше». Записи останутся все: удаляется только объединение их в эпизод." : {
       "extractionState" : "manual",
       "localizations" : {

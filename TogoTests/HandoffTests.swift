@@ -265,7 +265,7 @@ struct ScheduleChangeTests {
         try context.save()
 
         ScheduleChangeApplier.apply(change(.tomorrowMorning), to: medication,
-                                    now: now, context: context)
+                                    now: now, context: context, автор: "Виктория")
 
         #expect(medication.doses.contains { $0.isGiven },
                 "история приёмов задним числом не должна становиться неправдой")
@@ -285,7 +285,8 @@ struct ScheduleChangeTests {
         let plan = change(.tonight)
         #expect(plan.doomedDoses(medication.doses, now: now).count == 1)
 
-        let removed = ScheduleChangeApplier.apply(plan, to: medication, now: now, context: context)
+        let removed = ScheduleChangeApplier.apply(plan, to: medication, now: now,
+                                                  context: context, автор: "Виктория")
         #expect(removed == 1)
         #expect(medication.times == [9 * 60])
     }
@@ -302,7 +303,7 @@ struct ScheduleChangeTests {
         try context.save()
 
         let removed = ScheduleChangeApplier.apply(change(.tomorrowMorning), to: medication,
-                                                  now: now, context: context)
+                                                  now: now, context: context, автор: "Виктория")
         #expect(removed == 0, "вечером ещё старая схема — так и написано на экране")
         #expect(medication.doses.count == 1)
     }
