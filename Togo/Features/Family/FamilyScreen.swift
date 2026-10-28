@@ -1413,6 +1413,25 @@ struct SitterPreviewScreen: View {
 
             TGCard(spacing: 0) {
                 TGSectionHeader(title: "что нужно сделать")
+                // **Шеврона здесь нет, и это починка от 28.10.2026.**
+                // Он стоял у всех четырёх строк плана, а строки
+                // не нажимаются: голый `HStack` внутри `ForEach`, ни
+                // `Button`, ни `NavigationLink`, ни `onTapGesture`
+                // ни на строке, ни на родителе. При этом высота
+                // `Token.Size.tapTarget` — размер под палец, то есть
+                // строка обещала нажатие дважды.
+                //
+                // Правило у проекта своё и записано дважды:
+                // `TGBanner.swift:150` — «тихие плашки в 48 остальных
+                // местах никуда не ведут, а шеврон обещает переход»;
+                // `SettingsScreen.swift:290` — шеврон ставит ссылка
+                // и он же пропадает, когда строка перестаёт быть
+                // ссылкой. Экран показывает ВИД ситтера, а не ведёт
+                // по его маршрутам, — значит обещать переход нечем.
+                //
+                // Чинится снятием обещания, а не добавлением экрана:
+                // придумывать ситтеру четыре новых перехода ради
+                // шеврона значило бы чинить не тот конец.
                 ForEach(plan, id: \.0) { time, title in
                     HStack(spacing: Token.Space.s12) {
                         Text(time)
@@ -1421,9 +1440,6 @@ struct SitterPreviewScreen: View {
                             .frame(minWidth: 44, alignment: .leading)
                         Text(title).textStyle(AppFont.body)
                         Spacer(minLength: 0)
-                        Image(systemName: "chevron.right")
-                            .font(.system(size: Token.Size.iconSm, weight: .semibold))
-                            .foregroundStyle(Token.Ink.secondary)
                     }
                     .frame(minHeight: Token.Size.tapTarget)
                 }
