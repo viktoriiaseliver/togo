@@ -839,12 +839,31 @@ struct WalkSummarySheet: View {
         }
     }
 
+    /// Отметок мочи и опорожнений — две разные величины, и ось названа
+    /// в той же строке, что число. Разбор — `ActiveSession.опорожнений`.
+    private var меток: Int { session.count(of: .urine) }
+    private var опорожнений: Int { session.опорожнений }
+    private var метил: Bool { меток > опорожнений }
+
     private var statsCard: some View {
         TGCard {
             РядЧисел {
                 TGStat(value: Fmt.duration(session.duration()), caption: "в пути", size: 20)
-                TGStat(count: session.count(of: .urine),
-                       сЧислом: String(localized: "\(session.count(of: .urine)) раз пописал"),
+                // **«8 раз пописал» было утверждением о мочевом пузыре,
+                // выведенным из числа тапов.** Отзыв 28.10.2026, 08:47:
+                // «У меня кастрированный кобель, почему считает мочу
+                // много раз?» Кобель метит; подряд идущие метки — одно
+                // опорожнение, и это правило у Togo уже измерено
+                // (`Diary.sameEmptyingWindow`) и применялось к вердикту,
+                // но не к тому, что человек читает.
+                //
+                // Число остаётся её: тапы настоящие, и прятать их нельзя.
+                // Меняется СЛОВО — с утверждения о физиологии на то, что
+                // отмечено на самом деле.
+                TGStat(count: меток,
+                       сЧислом: метил
+                           ? String(localized: "\(меток) раз пометил")
+                           : String(localized: "\(меток) раз пописал"),
                        size: 20)
                 if session.reactions > 0 {
                     TGStat(count: session.reactions,
@@ -857,6 +876,15 @@ struct WalkSummarySheet: View {
             if !session.marks.isEmpty {
                 TGDivider()
                 Text(session.tally).textStyle(AppFont.caption)
+            }
+            if метил {
+                // Отвечаем ровно на заданный вопрос, и числом из кода,
+                // а не из головы: окно подставляется из
+                // `Diary.sameEmptyingWindow`, поэтому фраза не разойдётся
+                // с правилом, когда правило подвинут.
+                TGExplainer(text: .готовая(String(
+                    localized: "Метки — не отдельные опорожнения: подряд идущие в пределах \(Fmt.duration(Diary.sameEmptyingWindow)) приложение считает одним разом. Вердикт «просится» считает по ним, а не по тапам — \(опорожнений) за этот выход."
+                )))
             }
         }
     }
