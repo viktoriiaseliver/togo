@@ -154,12 +154,20 @@ final class FoodStock {
             // нормы (`Dog.syncSingleFoodShare`), и при ненаписанной
             // норме он ноль по устройству — то есть ноль тут отвечает
             // про наш пробел, а не про собаку.
+            // `locale:` — про РАЗДЕЛИТЕЛЬ, а не про слова: каталог тут
+            // уже спрошен (`String(localized:)` внутри), а `%.1f`
+            // без локали печатает POSIX-точку при любом языке. Две
+            // половины одной строки шли по разным правилам, и видно
+            // это было только на числе с дробью (замер 28.10.2026).
             guard gramsPerDay > 0 else {
-                return String(format: String(localized: "%.1f %@ · расход не задан"), left, unit)
+                return String(format: String(localized: "%.1f %@ · расход не задан"),
+                              locale: .current, left, unit)
             }
-            return String(format: String(localized: "%.1f %@ · %d г в день"), left, unit, gramsPerDay)
+            return String(format: String(localized: "%.1f %@ · %d г в день"),
+                          locale: .current, left, unit, gramsPerDay)
         }
-        return String(format: String(localized: "%.0f %@ по %d г"), left.rounded(), unit, packGrams)
+        return String(format: String(localized: "%.0f %@ по %d г"),
+                      locale: .current, left.rounded(), unit, packGrams)
     }
 }
 

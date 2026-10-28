@@ -374,9 +374,14 @@ struct FoodStockEditorSheet: View {
                 HStack {
                     Text("Осталось").textStyle(AppFont.body)
                     Spacer()
+                    // `Fmt.decimal`, а не `String(format: "%.1f")`:
+                    // у `String(format:)` без локали разделитель всегда
+                    // POSIX, и в русском выходило `2.5 мешка` — точка
+                    // рядом с `4,7 кг` на соседнем экране. Переводить
+                    // тут нечего: число и единица, слов нет.
                     Text(kind == .wet
                          ? "\(Int(packsLeft)) \(kind.unitName(count: packsLeft))"
-                         : String(format: "%.1f %@", packsLeft, kind.unitName(count: packsLeft)))
+                         : "\(Fmt.decimal(packsLeft)) \(kind.unitName(count: packsLeft))")
                         .textStyle(AppFont.numeric(17))
                 }
             }
@@ -418,7 +423,25 @@ struct FoodStockEditorSheet: View {
                 HStack {
                     Text("Это примерно").textStyle(AppFont.body)
                     Spacer()
-                    Text(String(format: "%.1f %@ в день", perDay, kind.unitName(count: perDay)))
+                    // **Ключ `%.1f %@ в день` лежал в каталоге
+                    // переведённым на пять языков и не читался ни разу**
+                    // (замер 28.10.2026). У записи стоит
+                    // `extractionState: manual`, а в поле `comment` —
+                    // имя `amountCard`, то есть её завели рукой ровно
+                    // под эту строку. Читателя не было: голый
+                    // `String(format:)` в каталог не ходит по
+                    // устройству, и француз видел здесь «в день».
+                    //
+                    // Это четвёртая форма «механизма без входа»:
+                    // имя есть, значение есть, вызова по имени нет.
+                    // Образец правильной сборки лежал через файл —
+                    // `FoodStock.swift:160`.
+                    //
+                    // `locale:` обязателен отдельно от каталога: он
+                    // отвечает за разделитель у `%.1f`, а не за слова.
+                    Text(String(format: String(localized: "%.1f %@ в день"),
+                                locale: .current,
+                                perDay, kind.unitName(count: perDay)))
                         .textStyle(AppFont.numeric(15).color(Token.Ink.secondary))
                 }
                 .frame(minHeight: Token.Size.tapTarget)
