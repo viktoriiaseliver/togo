@@ -569,7 +569,7 @@ struct FeedingScreen: View {
                 TGLink(title: "Настроить режим вручную", systemImage: "clock") {
                     ScheduleScreen(dog: dog)
                 }
-                TGExplainer(text: "Ровный интервал между кормлениями важнее точного часа: собака привыкает к промежутку, а не к цифре на часах. Ночь считается так же, как день.")
+                TGExplainer(text: "Собака привыкает к промежутку, а не к цифре на часах: ровный интервал важнее точного часа. Ночь считается как день.")
             }
         }
     }
@@ -614,7 +614,7 @@ struct FeedingScreen: View {
                 )
 
                 if stocks.isEmpty {
-                    TGExplainer(text: "Впиши, чем кормишь и в какой фасовке — приложение посчитает, на сколько хватит, и напомнит за неделю до конца.")
+                    TGExplainer(text: "Впиши корм и фасовку — приложение посчитает, на сколько хватит, и напомнит за неделю до конца.")
                 } else {
                     ForEach(stocks) { stock in
                         StockRow(stock: stock, now: now)
@@ -652,6 +652,28 @@ struct FeedingScreen: View {
 
     // MARK: Выходы
 
+    /// Ориентиры выходов — **строкой данных, а не рядом кнопок**.
+    ///
+    /// Отзыв 27.10.2026, 21:56: «когда выводить блок похож на кнопки».
+    /// Похож он не случайно и не «немного»: ряд стоял в той же форме,
+    /// какой на ЭТОМ ЖЕ экране обозначается нажимаемое —
+    ///
+    /// ```
+    /// «во сколько кормить», 09:30   Token.Surface.sunken + Radius.tile
+    ///                               + Size.tapTarget → DatePicker, НАЖИМАЕТСЯ
+    /// «когда выводить», 11:21       тот же фон, тот же радиус, та же
+    ///                               высота 44 → Text, НЕ НАЖИМАЕТСЯ
+    /// ```
+    ///
+    /// Высота `tapTarget` — это размер пальца; ставить его тому, по чему
+    /// не жмут, значит обещать нажатие формой. Человек жмёт, ничего
+    /// не происходит, и **отказ выходит наш, а не его**.
+    ///
+    /// Заливка и высота сняты, часы собраны в одну строку через точку —
+    /// ровно так проект уже печатает перечисление отметок
+    /// (`ActiveSession.tally`). Точка здесь разделитель, а не слово,
+    /// поэтому переводу не подлежит и системный список ей не нужен:
+    /// это не фраза, а значения в ряд.
     private var outingsCard: some View {
         TGCard {
             TGSectionHeader(title: "когда выводить")
@@ -660,16 +682,15 @@ struct FeedingScreen: View {
                     .textStyle(AppFont.body)
                     .wraps()
             }
-            HStack(spacing: Token.Space.s8) {
-                ForEach(report.suggestedOutingTimes, id: \.self) { time in
-                    Text(verbatim: Fmt.clock(minuteOfDay: time))
-                        .textStyle(AppFont.numeric(15))
-                        .frame(maxWidth: .infinity, minHeight: Token.Size.tapTarget)
-                        .background(Token.Surface.sunken,
-                                    in: RoundedRectangle(cornerRadius: Token.Radius.tile, style: .continuous))
-                }
-            }
-            TGExplainer(text: "Это ориентиры из его же записей, а не расписание. Просится раньше — выводи раньше: вердикт и эти часы не спорят с человеком.")
+            Text(verbatim: report.suggestedOutingTimes
+                    .map { Fmt.clock(minuteOfDay: $0) }
+                    .joined(separator: " · "))
+                .textStyle(AppFont.numeric(17))
+                .wraps()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .accessibilityLabel(Text("Ориентиры выходов"))
+                .accessibilityValue(Text(verbatim: часыСтрокой(report.suggestedOutingTimes)))
+            TGExplainer(text: "Это ориентиры из его записей, а не расписание. Просится раньше — выводи раньше: ни часы, ни вердикт не спорят.")
         }
     }
 
@@ -717,12 +738,17 @@ struct FeedingScreen: View {
 
     private func applySchedule() {
         guard let dog else { return }
+        // **Снимок для возврата берётся ПРЕЖДЕ правки.** Здесь он
+        // брался после: `былиЧасы` читались уже из перезаписанного
+        // `dog.mealTimes`, то есть возврат возвращал НОВОЕ расписание,
+        // а не прежнее. Отказ записи при этом выглядел бы удачей.
+        let былоКормлений = dog.mealsPerDay
+        let былиЧасы = dog.mealTimes
+
         dog.mealTimes = report.suggestedMealTimes
         // Через `setMealsPerDay`, а не присваиванием: дневная норма должна
         // остаться прежней, а порция — пересчитаться. Прямое присваивание
         // молча меняло то, сколько собака ест за сутки.
-        let былоКормлений = dog.mealsPerDay
-        let былиЧасы = dog.mealTimes
         dog.setMealsPerDay(report.suggestedMealTimes.count)
         dog.syncSingleFoodShare()
         guard context.persist(otherwise: {
