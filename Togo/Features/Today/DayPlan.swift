@@ -153,7 +153,11 @@ struct DayPlanList: View {
         if let waiting = DoseGate.caption(item.gate, now: now) { return waiting }
         var parts: [String] = []
         if item.showsTime { parts.append(Fmt.clock(item.time)) } else { parts.append(String(localized: "днём")) }
-        if let hint = item.hint { parts.append(hint) }
+        // Пустая подсказка — не подсказка. У еды сюда приходит марка
+        // корма, а она чаще всего пустая СТРОКА, а не `nil`, — и строка
+        // плана читалась «15:30 ·» с точкой, за которой ничего нет
+        // (кадр 28.10.2026).
+        if let hint = item.hint.flatMap(Fmt.notBlank) { parts.append(hint) }
         return parts.joined(separator: " · ")
     }
 

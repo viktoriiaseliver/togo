@@ -424,7 +424,14 @@ struct TodayScreen: View {
                     subtitle: .готовая(claimSubtitle(overdue)),
                     systemImage: "exclamationmark.triangle"
                 )
-                if !overdue.claimIsActive(at: now) {
+                // Кнопка здесь — только когда её нет внизу. При верхнем
+                // состоянии «доза» `второеДействие` уже «Беру на себя»,
+                // и на кадре 28.10.2026 их стояло две одинаковые на одном
+                // экране. Тот же дубль, что убрали у «Что сказать».
+                // В тревоге и у того, кто не отмечает, низ другой —
+                // там кнопка остаётся единственной.
+                if !overdue.claimIsActive(at: now),
+                   !(состояниеВерхнее == .dose && рольБезОтметок == nil) {
                     TGButton(title: "Беру на себя", variant: .secondary,
                              size: .medium, systemImage: "hand.raised") {
                         claim(overdue)
