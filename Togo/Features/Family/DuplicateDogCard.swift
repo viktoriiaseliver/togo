@@ -174,6 +174,15 @@ struct DuplicateDogCard: View {
             лишняя.daysOutStorage?.forEach { $0.dog = главная }
             лишняя.heatsStorage?.forEach { $0.dog = главная }
             лишняя.stocksStorage?.forEach { $0.dog = главная }
+            // Медслой. Его здесь не было: анализы, визиты, диагнозы
+            // и назначения оставались на карточке, которую слияние
+            // прячет надгробием, — и исчезали из вида вместе с ней
+            // (аудит 28.10.2026). Для дневника с лечением это потеря
+            // ровно того, что спросит врач.
+            лишняя.labResultsStorage?.forEach { $0.dog = главная }
+            лишняя.vetVisitsStorage?.forEach { $0.dog = главная }
+            лишняя.diagnosesStorage?.forEach { $0.dog = главная }
+            лишняя.prescriptionsStorage?.forEach { $0.dog = главная }
             // Связи записываются ДО надгробия — разбор в доке метода.
             try context.save()
             ОбщееУдаление.удалить(лишняя)
@@ -240,6 +249,10 @@ struct DuplicateDogCard: View {
         всего += собака.daysOutStorage?.count ?? 0
         всего += собака.heatsStorage?.count ?? 0
         всего += собака.stocksStorage?.count ?? 0
+        всего += собака.labResultsStorage?.count ?? 0
+        всего += собака.vetVisitsStorage?.count ?? 0
+        всего += собака.diagnosesStorage?.count ?? 0
+        всего += собака.prescriptionsStorage?.count ?? 0
         return всего
     }
 }

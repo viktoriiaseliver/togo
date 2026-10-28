@@ -111,6 +111,12 @@ struct DataPrivacyScreen: View {
                       CareTask.self, TrainingSession.self, TrainingStep.self, ProcedureSkill.self,
                       Trip.self, Episode.self, FamilyMember.self,
                       FoodStock.self, HeatRecord.self, DogDocument.self, DayOut.self,
+                      // Медслой и справочник клиник — пять моделей, которых
+                      // в списке не было (аудит 28.10.2026): после «удалить
+                      // все данные» на телефоне оставались анализы, визиты,
+                      // диагнозы, назначения и клиники.
+                      LabResult.self, VetVisit.self, Diagnosis.self, Prescription.self,
+                      Clinic.self,
                       Dog.self] as [any PersistentModel.Type] {
             do {
                 try context.delete(model: model)

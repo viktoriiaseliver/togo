@@ -180,6 +180,7 @@ struct HeatScreen: View {
 }
 
 struct HeatEditorSheet: View {
+    @Environment(AppState.self) private var appState
     var record: HeatRecord?
     let dog: Dog
 
@@ -240,6 +241,12 @@ struct HeatEditorSheet: View {
         .confirmationDialog("Удалить запись?", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
             Button("Удалить", role: .destructive) {
                 if let record { context.delete(record) }
+                // Та же форма, что у запаса корма и выездного дня.
+                guard context.persistNothingToUndo() else {
+                    Haptics.warning()
+                    appState.showFailure("Не удалилось · проверь после перезапуска")
+                    return
+                }
                 Haptics.warning()
                 dismiss()
             }

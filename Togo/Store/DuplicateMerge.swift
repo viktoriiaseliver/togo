@@ -106,6 +106,13 @@ nonisolated enum DuplicateMerge {
                 лишняя.daysOutStorage?.forEach { $0.dog = главная }
                 лишняя.heatsStorage?.forEach { $0.dog = главная }
                 лишняя.stocksStorage?.forEach { $0.dog = главная }
+                // Медслой — та же потеря, что в `DuplicateDogCard.слить`
+                // (аудит 28.10.2026): без этих строк медкарта оставалась
+                // на спрятанной карточке.
+                лишняя.labResultsStorage?.forEach { $0.dog = главная }
+                лишняя.vetVisitsStorage?.forEach { $0.dog = главная }
+                лишняя.diagnosesStorage?.forEach { $0.dog = главная }
+                лишняя.prescriptionsStorage?.forEach { $0.dog = главная }
                 // Надгробие вместо `context.delete`, с 26.10.2026:
                 // жёсткое удаление лишней карточки до второго человека
                 // не доезжает по устройству, и у мамы оставались две

@@ -258,8 +258,14 @@ nonisolated enum ScheduleChangeApplier {
         // Прошлое остаётся как было: меняется только план вперёд.
         let былДоза = medication.doseText
         let былиЧасы = medication.times
+        let былиСлоты = medication.doseSlotsData
         medication.doseText = change.newDoseText
         medication.times = change.newTimes.sorted()
+        // У схемы с количеством по часам (½ таблетки) расписание живёт
+        // в слотах, и `Medication.schedule` берёт их ПЕРВЫМИ. Здесь
+        // менялись только `times`: дозы заводились на новые часы,
+        // а план, запас и чипы оставались на старых (аудит 28.10.2026).
+        medication.doseSlotsData = Self.слоты(былиСлоты, на: medication.times)
         // Схема лечения — место, где молчание стоит дозы: экран покажет
         // новые часы, а напоминания придут по старым.
         //
@@ -270,8 +276,27 @@ nonisolated enum ScheduleChangeApplier {
         guard context.persist(otherwise: {
             medication.doseText = былДоза
             medication.times = былиЧасы
+            medication.doseSlotsData = былиСлоты
             отмена.undo()
         }) else { return nil }
         return отмена.count
+    }
+
+    /// Слоты на новые часы — с теми же количествами.
+    ///
+    /// Смена часов количества не называет, поэтому его не выдумываем,
+    /// а переносим: слотов было столько же, сколько новых часов, —
+    /// по порядку; иначе — самое частое прежнее количество на каждый
+    /// час (у «½ дважды в день» оно и единственное). Пустые слоты
+    /// остаются пустыми: тогда расписание — `times`, и всё по одной.
+    static func слоты(_ прежние: [DoseSlot], на часы: [Int]) -> [DoseSlot] {
+        guard !прежние.isEmpty else { return [] }
+        let поПорядку = прежние.sorted { $0.minuteOfDay < $1.minuteOfDay }
+        if поПорядку.count == часы.count {
+            return zip(часы, поПорядку).map { DoseSlot(minuteOfDay: $0, quantity: $1.quantity) }
+        }
+        let частота = Dictionary(grouping: поПорядку.map(\.quantity), by: { $0 })
+        let обычное = частота.max { $0.value.count < $1.value.count }?.key ?? 1
+        return часы.map { DoseSlot(minuteOfDay: $0, quantity: обычное) }
     }
 }

@@ -1099,6 +1099,7 @@ struct MemberScreen: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Environment(AppState.self) private var appState
+    @State private var убратьСпрошено = false
 
     /// Права выдаёт тот, у кого есть право их выдавать.
     private var canManage: Bool { appState.can(.manageFamily) }
@@ -1258,10 +1259,27 @@ struct MemberScreen: View {
             if appState.myMemberID != member.id {
                 TGExplainer(text: "Уберёт карточку с этого телефона. Доступ к дневнику этим не закроется: его закрывают в «Кто имеет доступ», и там же — только этому человеку.")
                 TGButton(title: "Убрать из списка", variant: .destructive, size: .medium, systemImage: "person.badge.minus") {
-                    context.delete(member)
-                    dismiss()
+                    убратьСпрошено = true
                 }
             }
+        }
+        // Удаление было в одно касание, без вопроса и без сохранения
+        // (аудит 28.10.2026). Карточка — автор записей и дежурный,
+        // убрать её случайно дороже, чем один лишний вопрос.
+        .confirmationDialog(.готовая(String(localized: "Убрать \(member.name) из списка?")),
+                            isPresented: $убратьСпрошено, titleVisibility: .visible) {
+            Button("Убрать", role: .destructive) {
+                context.delete(member)
+                guard context.persistNothingToUndo() else {
+                    Haptics.warning()
+                    appState.showFailure("Не удалилось · проверь после перезапуска")
+                    return
+                }
+                dismiss()
+            }
+            Button("Отмена", role: .cancel) {}
+        } message: {
+            Text("Записи этого человека останутся в дневнике.")
         }
         .navigationTitle(member.name)
         .cinemaScreen(экран: .sub("family"))

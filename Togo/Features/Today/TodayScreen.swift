@@ -1213,7 +1213,19 @@ struct TodayScreen: View {
                 claim(доза)
             }
         case .walk:
-            return .init(название: "Пописал", символ: "drop") { route = .walk }
+            // «Пописал» ОТМЕЧАЕТ, а не открывает прогулку (аудит 28.10.2026:
+            // кнопка с таким словом не ставила ничего). Отметка та же,
+            // что в режиме прогулки, — `appState.mark`, с откатом.
+            // У короткого выхода отметок нет — там остаётся переход.
+            return .init(название: "Пописал", символ: "drop") {
+                guard appState.session?.kind == .walk else {
+                    route = .walk
+                    return
+                }
+                appState.mark(.urine)
+                Haptics.tap()
+                appState.showUndo("Отмечено · \(ActiveSession.Mark.Kind.urine.title)")
+            }
         default:
             return .init(название: "Гулять", символ: "figure.walk") { route = .walk }
         }
