@@ -292,9 +292,13 @@ nonisolated enum ScheduleChangeApplier {
         // отдельный `save` оставил бы щель, в которой схема уже новая,
         // а история про это не знает.
         let след = LogEvent(kind: .note, date: now, authorName: автор)
-        след.note = String(localized:
-            "Схема изменена: было «\(былДоза)» \(ScheduleChange.summary(былиЧасы)), "
-            + "стало «\(change.newDoseText)» \(ScheduleChange.summary(change.newTimes))")
+        // Литерал ЦЕЛИКОМ, без склейки через `+`: `String(localized:)`
+        // берёт ключ каталога из текста на месте вызова, и склеенная
+        // строка в каталог не попадёт вовсе — запись встала бы
+        // по-русски на всех пяти языках.
+        let былоЧасы = ScheduleChange.summary(былиЧасы)
+        let сталоЧасы = ScheduleChange.summary(change.newTimes)
+        след.note = String(localized: "Схема изменена: было «\(былДоза)» \(былоЧасы), стало «\(change.newDoseText)» \(сталоЧасы)")
         след.dog = medication.dog
         context.insert(след)
 
