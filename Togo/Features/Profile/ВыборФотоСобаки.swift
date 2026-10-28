@@ -113,7 +113,7 @@ struct ЖетонСобаки: View {
     @State private var кладу = false
 
     var body: some View {
-        if let dog, dog.photo == nil {
+        if let dog, dog.снимок == nil {
             жетонСВыбором(dog.initial)
                 .onChange(of: выбранный) { _, новый in взять(новый, для: dog) }
         } else {

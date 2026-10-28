@@ -192,7 +192,7 @@ nonisolated enum NamelessDogAudit {
     @MainActor
     private static func непустыеПоля(_ dog: Dog) -> [String] {
         var имена: [String] = []
-        if dog.photo != nil { имена.append("photo") }
+        if dog.снимок != nil { имена.append("photo") }
         if dog.breed?.isEmpty == false { имена.append("breed") }
         if dog.birthDate != nil { имена.append("birthDate") }
         if dog.weightKg != 0 { имена.append("weightKg") }

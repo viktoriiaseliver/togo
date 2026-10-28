@@ -789,7 +789,17 @@ final class BackgroundStore {
     /// > 23.10). Стирание на `nil` снесло бы живое фото при повторном
     /// > проходе онбординга. Это решение, а не уборка.
     func запомнитьФотоСобаки(_ data: Data?) {
-        guard let data else { return }
+        // Ноль байт — НЕ фотография, и это не теория: при переходе
+        // V7 → V8 SwiftData перенесла `nil` как `Data()` нулевой длины
+        // (замер 28.10.2026, разбор у `Dog.снимок`). Без этой проверки
+        // пустые байты уехали бы в App Group подложкой — то есть
+        // человек получил бы ЧЁРНЫЙ ЭКРАН вместо собаки, ровно ту
+        // жалобу, которую чинили этим утром по другой причине.
+        //
+        // Проверка здесь, а не только у вызывающих: функцию зовут
+        // пятеро, и правило «пустое — не фото» в пяти копиях
+        // разошлось бы молча.
+        guard let data, !data.isEmpty else { return }
         guard BackgroundBridge.данные(файла: BackgroundBridge.dogFallbackName) != data else { return }
         BackgroundBridge.положить(data, под: BackgroundBridge.dogFallbackName)
         кэш[BackgroundBridge.dogFallbackName] = data
