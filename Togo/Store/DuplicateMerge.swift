@@ -94,18 +94,10 @@ nonisolated enum DuplicateMerge {
             guard let главная = по_дате.first else { continue }
             var перенесено = 0
             for лишняя in по_дате.dropFirst() {
-                перенесено += записейУ(лишняя)
-                лишняя.eventsStorage?.forEach { $0.dog = главная }
-                лишняя.weightsStorage?.forEach { $0.dog = главная }
-                лишняя.careTasksStorage?.forEach { $0.dog = главная }
-                лишняя.medicationsStorage?.forEach { $0.dog = главная }
-                лишняя.trainingStepsStorage?.forEach { $0.dog = главная }
-                лишняя.trainingSessionsStorage?.forEach { $0.dog = главная }
-                лишняя.tripsStorage?.forEach { $0.dog = главная }
-                лишняя.documentsStorage?.forEach { $0.dog = главная }
-                лишняя.daysOutStorage?.forEach { $0.dog = главная }
-                лишняя.heatsStorage?.forEach { $0.dog = главная }
-                лишняя.stocksStorage?.forEach { $0.dog = главная }
+                // Перенос — ОДНОЙ дорогой, `ОбъединениеСобак.перенести`.
+                // Здесь была копия списка связей, неполная на четыре
+                // медицинских: анализы, визиты, диагнозы, рецепты.
+                перенесено += ОбъединениеСобак.перенести(с: лишняя, на: главная)
                 // Надгробие вместо `context.delete`, с 26.10.2026:
                 // жёсткое удаление лишней карточки до второго человека
                 // не доезжает по устройству, и у мамы оставались две
@@ -182,19 +174,9 @@ nonisolated enum DuplicateMerge {
     /// > а не код.
     @MainActor
     private static func записейУ(_ собака: Dog) -> Int {
-        var всего = 0
-        всего += собака.eventsStorage?.count ?? 0
-        всего += собака.weightsStorage?.count ?? 0
-        всего += собака.careTasksStorage?.count ?? 0
-        всего += собака.medicationsStorage?.count ?? 0
-        всего += собака.trainingStepsStorage?.count ?? 0
-        всего += собака.trainingSessionsStorage?.count ?? 0
-        всего += собака.tripsStorage?.count ?? 0
-        всего += собака.documentsStorage?.count ?? 0
-        всего += собака.daysOutStorage?.count ?? 0
-        всего += собака.heatsStorage?.count ?? 0
-        всего += собака.stocksStorage?.count ?? 0
-        return всего
+        // Своего счёта здесь больше нет: он был третьей копией того же
+        // списка связей и расходился бы с переносом молча.
+        ОбъединениеСобак.связанных(собака)
     }
 }
 #endif

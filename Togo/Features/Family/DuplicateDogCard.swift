@@ -122,7 +122,7 @@ struct DuplicateDogCard: View {
     private func объяснение(_ кличка: String, _ группа: [Dog]) -> String {
         let по_дате = группа.sorted { $0.createdAt < $1.createdAt }
         let старшая = по_дате[0]
-        let переезжает = по_дате.dropFirst().map(связанных).reduce(0, +)
+        let переезжает = по_дате.dropFirst().map(ОбъединениеСобак.связанных).reduce(0, +)
         let когда = старшая.createdAt.formatted(date: .numeric, time: .shortened)
         let первое = String(localized: "«\(кличка)» в дневнике дважды, и записи разошлись: часть в одной карточке, часть в другой.")
         let второе = String(localized: "Сведу в ту, что заведена \(когда), и перенесу в неё \(переезжает) записей. Ничего не удалится.")
@@ -162,18 +162,13 @@ struct DuplicateDogCard: View {
         guard let главная = по_дате.first else { return }
         var перенесено = 0
         for лишняя in по_дате.dropFirst() {
-            перенесено += связанных(лишняя)
-            лишняя.eventsStorage?.forEach { $0.dog = главная }
-            лишняя.weightsStorage?.forEach { $0.dog = главная }
-            лишняя.careTasksStorage?.forEach { $0.dog = главная }
-            лишняя.medicationsStorage?.forEach { $0.dog = главная }
-            лишняя.trainingStepsStorage?.forEach { $0.dog = главная }
-            лишняя.trainingSessionsStorage?.forEach { $0.dog = главная }
-            лишняя.tripsStorage?.forEach { $0.dog = главная }
-            лишняя.documentsStorage?.forEach { $0.dog = главная }
-            лишняя.daysOutStorage?.forEach { $0.dog = главная }
-            лишняя.heatsStorage?.forEach { $0.dog = главная }
-            лишняя.stocksStorage?.forEach { $0.dog = главная }
+            // Перенос — ОДНОЙ дорогой, `ОбъединениеСобак.перенести`.
+            //
+            // Здесь стояла вторая копия списка связей, и обе копии
+            // были неполны одинаково: четыре связи медицинского слоя
+            // (анализы, визиты, диагнозы, рецепты) не переносил никто.
+            // Разбор — в голове `ОбъединениеСобак.перенести`.
+            перенесено += ОбъединениеСобак.перенести(с: лишняя, на: главная)
             // Связи записываются ДО надгробия — разбор в доке метода.
             try context.save()
             ОбщееУдаление.удалить(лишняя)
@@ -227,19 +222,4 @@ struct DuplicateDogCard: View {
     ///
     /// Сложение по одному выражению на строку выводить нечего: у каждой
     /// строки тип известен из `всего`. Длиннее на вид и дешевле по сути.
-    private func связанных(_ собака: Dog) -> Int {
-        var всего = 0
-        всего += собака.eventsStorage?.count ?? 0
-        всего += собака.weightsStorage?.count ?? 0
-        всего += собака.careTasksStorage?.count ?? 0
-        всего += собака.medicationsStorage?.count ?? 0
-        всего += собака.trainingStepsStorage?.count ?? 0
-        всего += собака.trainingSessionsStorage?.count ?? 0
-        всего += собака.tripsStorage?.count ?? 0
-        всего += собака.documentsStorage?.count ?? 0
-        всего += собака.daysOutStorage?.count ?? 0
-        всего += собака.heatsStorage?.count ?? 0
-        всего += собака.stocksStorage?.count ?? 0
-        return всего
-    }
 }
