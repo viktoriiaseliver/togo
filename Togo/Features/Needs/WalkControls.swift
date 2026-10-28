@@ -48,7 +48,7 @@ struct WalkRing: View {
 
     @ViewBuilder
     private var портрет: some View {
-        if let photo = dog?.photo, let image = UIImage(data: photo) {
+        if let photo = dog?.photo, let image = КэшСнимков.картинка(photo) {
             Image(uiImage: image).resizable().scaledToFill()
         } else {
             // Без фото — силуэт, а не пустой круг: пустой круг читается

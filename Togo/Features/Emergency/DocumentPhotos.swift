@@ -343,7 +343,7 @@ private struct ПлиткаСнимка: View {
 
     @ViewBuilder
     private var снимок: some View {
-        if let data = документ.image, let image = UIImage(data: data) {
+        if let data = документ.image, let image = КэшСнимков.картинка(data) {
             Image(uiImage: image)
                 .resizable()
                 .scaledToFill()
@@ -589,7 +589,7 @@ struct DocumentFieldsSheet: View {
     var body: some View {
         TGSheet(title: "Что это", subtitle: "чтобы потом найти не листая",
                 closeTitle: "Отмена", hasUnsavedChanges: true) {
-            if let image, let preview = UIImage(data: image) {
+            if let image, let preview = КэшСнимков.картинка(image) {
                 TGCard {
                     Image(uiImage: preview)
                         .resizable()
@@ -682,7 +682,7 @@ struct DocumentViewerSheet: View {
     var body: some View {
         TGSheet(title: .готовая(document.title),
                 subtitle: .готовая(document.kind.title)) {
-            if let data = document.image, let image = UIImage(data: data) {
+            if let data = document.image, let image = КэшСнимков.картинка(data) {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFit()

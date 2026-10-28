@@ -157,6 +157,10 @@ enum TimelineBuilder {
         }
 
         let openings = outingsThatBecameWalks(sorted)
+        // Множество, а не `openings.values.contains` на каждую запись:
+        // то было O(записей × прогулок) на всю историю собаки, и «Сегодня»
+        // платило это на каждой перерисовке (разбор 28.10.2026).
+        let началаПрогулок = Set(openings.values.map(\.id))
 
         return sorted.compactMap { event in
             // Отметка, у которой прогулка нашлась, своей строки не получает.
@@ -164,7 +168,7 @@ enum TimelineBuilder {
                 return nil
             }
             // Выход, переросший в прогулку, тоже: он стал её началом.
-            if openings.values.contains(where: { $0.id == event.id }) { return nil }
+            if началаПрогулок.contains(event.id) { return nil }
 
             return TimelineBlock(
                 event: event,
@@ -181,13 +185,16 @@ enum TimelineBuilder {
     private static func outingsThatBecameWalks(_ sorted: [LogEvent]) -> [UUID: LogEvent] {
         var result: [UUID: LogEvent] = [:]
         var taken = Set<UUID>()
+        // Кандидаты отбираются ОДИН раз, в том же порядке, что `sorted`, —
+        // поэтому `last` ниже выбирает ту же запись, что и прежде. Раньше
+        // для каждой прогулки перебиралась вся история собаки.
+        let кандидаты = sorted.filter {
+            $0.kind == .outing && $0.outcome == nil && $0.walkEventID == nil
+        }
 
         for walk in sorted where walk.kind == .walk {
-            let opening = sorted.last { candidate in
-                candidate.kind == .outing
-                    && candidate.outcome == nil
-                    && candidate.walkEventID == nil
-                    && !taken.contains(candidate.id)
+            let opening = кандидаты.last { candidate in
+                !taken.contains(candidate.id)
                     && candidate.date <= walk.date
                     && walk.date.timeIntervalSince(candidate.date) <= outingIntoWalk
             }

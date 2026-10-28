@@ -251,7 +251,7 @@ struct TGAvatar: View {
 
     var body: some View {
         Group {
-            if let image, let uiImage = UIImage(data: image) {
+            if let image, let uiImage = КэшСнимков.картинка(image) {
                 Image(uiImage: uiImage).resizable().scaledToFill()
             } else {
                 Text(initial)

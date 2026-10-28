@@ -264,7 +264,7 @@ struct BackgroundScreen: View {
 
     private func плитка(_ фото: BackgroundPhoto) -> some View {
         Group {
-            if let image = UIImage(data: фото.data) {
+            if let image = КэшСнимков.картинка(фото.data) {
                 Image(uiImage: image).resizable().scaledToFill()
             } else {
                 Token.Surface.sunken
@@ -347,7 +347,7 @@ struct BackgroundScreen: View {
     /// что получит экран, а без снимка показывать там нечего.
     private func окно(_ ключ: ScreenKey) -> some View {
         Group {
-            if let фото = store.background(for: ключ), let image = UIImage(data: фото.data) {
+            if let фото = store.background(for: ключ), let image = КэшСнимков.картинка(фото.data) {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFill()

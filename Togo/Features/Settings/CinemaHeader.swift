@@ -394,7 +394,7 @@ struct CinemaBackdrop: View {
             Token.Surface.screen
             if !снизитьПрозрачность,
                let фото = store.background(for: экран),
-               let картинка = UIImage(data: фото.data) {
+               let картинка = КэшСнимков.картинка(фото.data) {
                 // **Размер даёт `Color.clear`, а не снимок, и это
                 // починка раскладки, а не стиль** (замер 26.10.2026).
                 //

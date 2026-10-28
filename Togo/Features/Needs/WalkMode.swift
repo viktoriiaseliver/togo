@@ -282,7 +282,7 @@ struct WalkModeScreen: View {
     private var фон: some View {
         ZStack(alignment: .top) {
             Token.Surface.screen
-            if let photo = dog?.photo, let image = UIImage(data: photo) {
+            if let photo = dog?.photo, let image = КэшСнимков.картинка(photo) {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFill()

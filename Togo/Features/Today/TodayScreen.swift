@@ -88,6 +88,8 @@ struct TodayScreen: View {
     /// только ответ на него. `body` теперь пересчитывается два раза
     /// за жест (туда и обратно через порог), а не шестьдесят в секунду.
     @State private var компактнаяВидна = false
+    /// Тяжёлый счёт по всей истории собаки — один раз на снимок ленты.
+    @State private var память = ПамятьЛенты()
     /// Показать листалку дня.
     ///
     /// **Листалка уехала за пункт меню «Другой день»** — по кадру 01
@@ -148,6 +150,8 @@ struct TodayScreen: View {
     /// с шестью шторками и закрытием дня, — порядок был, но увидеть его
     /// можно было только прочитав всё.
     var body: some View {
+        // Один снимок ленты на один `body` — см. `ПамятьЛенты` внизу файла.
+        let _ = память.сверить(events, now: now)
         NavigationStack {
             соШторками(сЧасами(
                 ZStack {
@@ -922,14 +926,14 @@ struct TodayScreen: View {
     }
 
     private var ритм: WalkRhythm {
-        WalkRhythmAnalyzer.rhythm(events: events, now: now)
+        память.ритм { WalkRhythmAnalyzer.rhythm(events: events, now: now) }
     }
 
     /// Порог тревоги — один счёт на плашку, очередь состояний и кнопку
     /// «Позвонить». Три вызова анализатора в трёх местах давали бы
     /// три ответа на один вопрос, если бы один из них поменяли.
     private var порогТревоги: AlarmThreshold? {
-        AlarmThresholdAnalyzer.evaluate(events: events, now: now)
+        память.порог { AlarmThresholdAnalyzer.evaluate(events: events, now: now) }
     }
 
     /// «сейчас · 17:54» или дата — подзаголовок шторки «Записать».
@@ -1335,7 +1339,7 @@ struct TodayScreen: View {
     /// читателей ниже: время дома и конец последнего выхода обязаны
     /// стоять на одних и тех же блоках.
     private var блокиДня: [TimelineBlock] {
-        TimelineBuilder.blocks(Diary.active(events))
+        память.блоки { TimelineBuilder.blocks(Diary.active(events)) }
     }
 
     /// Сколько собака дома прямо сейчас.
@@ -1571,5 +1575,99 @@ struct ШапкаПанели: View {
             // «Сегодня».
             HeaderMenu(настройки: настройки, другойДень: другойДень)
         }
+    }
+}
+
+/// Тяжёлый счёт «Сегодня» по всей истории собаки — один раз на снимок ленты.
+///
+/// # Зачем
+///
+/// Блоки «дома / на улице», ритм выходов и порог тревоги считаются
+/// по ВСЕЙ истории и спрашиваются из `body` десятки раз: очередь состояний
+/// зовётся шесть раз, показание дважды, строки «откуда / докуда / доля»
+/// ещё по разу. Счёт вызовов по коду 28.10.2026 — около двадцати сборок
+/// блоков, десяти ритмов и шести порогов на ОДИН `body`. После починки
+/// прокрутки `body` перестал идти на каждом кадре, но шёл на тике,
+/// на каждой записи и при пересечении 120 pt — и там давал рывок.
+///
+/// # Как устроено
+///
+/// `TodayScreen.body` первой строкой зовёт `сверить`. Ключ — отпечаток
+/// полей, которые читают эти три расчёта, по всем записям. Ключ сменился —
+/// память сброшена; `now` сменился — сброшены ритм и порог (они от него
+/// зависят, блоки — нет). Всё остальное время расчёты берутся из памяти.
+///
+/// **Отпечаток — не оптимизация, а наблюдение.** Читая поля каждой
+/// записи в `body`, экран остаётся подписан на их правку: поправь время
+/// прогулки — SwiftUI перерисует экран, `сверить` увидит новый ключ.
+/// Закешируй мы по `events.count`, правка без смены числа записей
+/// оставила бы на экране прежнее время дома — молча.
+///
+/// > Добавишь в эти три расчёта чтение НОВОГО поля записи — добавь его
+/// > в отпечаток. Иначе правка этого поля не сбросит память.
+@MainActor
+final class ПамятьЛенты {
+    private var ключЛенты: Int?
+    private var момент: Date?
+    private var блоки: [TimelineBlock]?
+    private var ритм: WalkRhythm?
+    private var порогПосчитан = false
+    private var порог: AlarmThreshold?
+
+    func сверить(_ события: [LogEvent], now: Date) {
+        let ключ = Self.отпечаток(события)
+        if ключ != ключЛенты {
+            ключЛенты = ключ
+            блоки = nil
+            ритм = nil
+            порогПосчитан = false
+        }
+        if now != момент {
+            момент = now
+            ритм = nil
+            порогПосчитан = false
+        }
+    }
+
+    func блоки(_ посчитать: () -> [TimelineBlock]) -> [TimelineBlock] {
+        if let блоки { return блоки }
+        let новые = посчитать()
+        блоки = новые
+        return новые
+    }
+
+    func ритм(_ посчитать: () -> WalkRhythm) -> WalkRhythm {
+        if let ритм { return ритм }
+        let новый = посчитать()
+        ритм = новый
+        return новый
+    }
+
+    func порог(_ посчитать: () -> AlarmThreshold?) -> AlarmThreshold? {
+        if порогПосчитан { return порог }
+        порог = посчитать()
+        порогПосчитан = true
+        return порог
+    }
+
+    /// Поля, которые читают `TimelineBuilder.blocks`, `Diary.active`,
+    /// `WalkRhythmAnalyzer` и `AlarmThresholdAnalyzer`.
+    private static func отпечаток(_ события: [LogEvent]) -> Int {
+        var h = Hasher()
+        h.combine(события.count)
+        for e in события {
+            h.combine(e.id)
+            h.combine(e.date)
+            h.combine(e.kindRaw)
+            h.combine(e.outcomeRaw)
+            h.combine(e.walkEventID)
+            h.combine(e.deletedAt)
+            h.combine(e.originRaw)
+            h.combine(e.isDayOnly)
+            h.combine(e.durationSeconds)
+            h.combine(e.askSignalRaw)
+            h.combine(e.incidentKindRaw)
+        }
+        return h.finalize()
     }
 }
