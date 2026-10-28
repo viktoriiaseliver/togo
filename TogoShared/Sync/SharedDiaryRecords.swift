@@ -849,6 +849,7 @@ nonisolated enum SharedDiaryRecords {
         // человек молча не видит, сколько вещества даёт.
         record["massPerUnitMcg"] = payload.massPerUnitMcg
         record["courseEnd"] = payload.courseEnd
+        record["startedAt"] = payload.startedAt
         record["expiry"] = payload.expiry
         record["openedAt"] = payload.openedAt
         record["shelfAfterOpenDays"] = payload.shelfAfterOpenDays
@@ -899,6 +900,7 @@ nonisolated enum SharedDiaryRecords {
             doseSlotsData: (record["doseSlotsData"] as? Data)
                 .flatMap { try? JSONDecoder().decode([DoseSlot].self, from: $0) },
             courseEnd: record["courseEnd"] as? Date,
+            startedAt: record["startedAt"] as? Date,
             expiry: record["expiry"] as? Date,
             openedAt: record["openedAt"] as? Date,
             shelfAfterOpenDays: record["shelfAfterOpenDays"] as? Int,

@@ -31,6 +31,28 @@ struct SchemaFrozenTests {
         return Set(entity.properties.map(\.name))
     }
 
+    /// V8 = V7 плюс одно поле, `Medication.startedAt` (28.10.2026).
+    ///
+    /// Снимок V7 собран машиной из снимка V6 и `LogEvent.photo`; этот
+    /// тест — его приёмка на настоящей `Schema`, а не на разборе текста:
+    /// разойдись снимок с живыми классами в любом другом поле —
+    /// здесь появится лишняя разница, и `.lightweight` перестанет быть
+    /// правдой про эту стадию.
+    @Test("V8 отличается от V7 только датой начала схемы")
+    func восьмаяДобавляетДатуНачала() {
+        #expect(поля(TogoSchemaV8.self, "Medication")
+                    .subtracting(поля(TogoSchemaV7.self, "Medication")) == ["startedAt"])
+        #expect(поля(TogoSchemaV7.self, "Medication")
+                    .subtracting(поля(TogoSchemaV8.self, "Medication")).isEmpty)
+        let прочие = Schema(versionedSchema: TogoSchemaV8.self).entities.map(\.name)
+            .filter { $0 != "Medication" }
+        #expect(прочие.count == 20)
+        for сущность in прочие {
+            #expect(поля(TogoSchemaV7.self, сущность) == поля(TogoSchemaV8.self, сущность),
+                    "снимок V7 разошёлся с живыми классами в «\(сущность)»")
+        }
+    }
+
     /// Нынешняя версия — последняя в плане, и она же у хранилища.
     /// Расхождение здесь значит, что схему подняли, а открывают старой.
     @Test("Хранилище открывается последней версией плана")
@@ -130,7 +152,7 @@ struct SchemaFrozenTests {
         // Седьмое число добавлено 27.10.2026 вместе с V7. Как и V6,
         // она не меняет набор сущностей: `LogEvent.photo` — поле,
         // а не модель, и поэтому стадия V6 → V7 тоже облегчённая.
-        let ожидаемо = [16, 16, 16, 16, 21, 21, 21]
+        let ожидаемо = [16, 16, 16, 16, 21, 21, 21, 21]
         #expect(наборы.count == ожидаемо.count, """
             версий в плане \(наборы.count), а перечень приростов
             написан на \(ожидаемо.count). Добавил версию — назови

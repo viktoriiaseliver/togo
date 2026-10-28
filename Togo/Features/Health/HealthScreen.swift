@@ -334,6 +334,13 @@ struct HealthScreen: View {
                 Text(verbatim: medication.scheduleSummary)
                     .textStyle(AppFont.caption)
                     .wraps()
+                // Дата начала — только названная (V8). Первую дозу журнала
+                // за начало здесь не выдаём: это догадка, а карточку
+                // читает врач.
+                if let начало = medication.startedAt {
+                    Text(.готовая(String(localized: "с \(Fmt.shortDay(начало))")))
+                        .textStyle(AppFont.caption.color(Token.Ink.secondary))
+                }
                 if medication.isPaused {
                     Text("на паузе")
                         .textStyle(AppFont.micro.color(Token.Status.waitingText))

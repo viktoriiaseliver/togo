@@ -61,7 +61,7 @@ nonisolated enum Persistence {
     /// в плане» — это ровно тот случай, когда форма поменялась,
     /// а версия нет, и хранилище молча не откроется. Сторожит
     /// `SchemaFrozenTests.хранилищеНаПоследней`.
-    static let schema = Schema(versionedSchema: TogoSchemaV7.self)
+    static let schema = Schema(versionedSchema: TogoSchemaV8.self)
 
     /// Удалось ли открыть хранилище в iCloud. Экран переноса показывает
     /// это человеку: обещать синхронизацию, которой нет, нельзя.
