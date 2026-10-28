@@ -2579,6 +2579,41 @@
         }
       }
     },
+    "Впиши корм и фасовку — приложение посчитает, на сколько хватит, и напомнит за неделю до конца." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter the food and the pack size — the app will work out how long it lasts and remind you a week before it runs out."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indique l'aliment et le conditionnement — l'app calculera pour combien de temps ça suffit et te préviendra une semaine avant la fin."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жемді және қаптаманы жаз — қолданба қанша уақытқа жететінін санайды және бітуге бір апта қалғанда еске салады."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Впиши корм и фасовку — приложение посчитает, на сколько хватит, и напомнит за неделю до конца."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Впиши корм і фасування — застосунок порахує, на скільки вистачить, і нагадає за тиждень до кінця."
+          }
+        }
+      }
+    },
     "встаёт в" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3166,6 +3201,41 @@
         }
       }
     },
+    "Порция = норма ÷ кормления: добавишь кормление — упадёт порция, а не дневная еда. Норму называет врач или упаковка. Влажный корм на три четверти вода — граммы там другие." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Portion = ration ÷ meals: add a meal and the portion goes down, not the amount for the day. The ration comes from the vet or the package. Wet food is three quarters water — the grams there are different."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Portion = ration ÷ repas : ajoute un repas et c'est la portion qui baisse, pas la quantité du jour. La ration vient du vétérinaire ou du paquet. La pâtée est aux trois quarts de l'eau — les grammes y sont différents."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Үлес = норма ÷ тамақтандыру саны: тамақтандыру қоссаң, күндік тамақ емес, үлес азаяды. Норманы дәрігер немесе қаптама айтады. Дымқыл жем төрттен үш бөлігі су — ондағы грамм басқа."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Порция = норма ÷ кормления: добавишь кормление — упадёт порция, а не дневная еда. Норму называет врач или упаковка. Влажный корм на три четверти вода — граммы там другие."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Порція = норма ÷ годування: додаси годування — зменшиться порція, а не денна їжа. Норму називає лікар або упаковка. Вологий корм на три чверті вода — грами там інші."
+          }
+        }
+      }
+    },
     "Прерывают ровно три вещи. Всё остальное ждёт сводки — это единственный способ не превратить дневник в источник тревоги." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3335,6 +3405,41 @@
         }
       }
     },
+    "Ровный шаг в сутки не влезает: кормления разложены поровну между первым и последним, а ночь длиннее. Выровнять — вставать раньше или ложиться позже." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "An even step doesn't fit into a day: meals are spaced evenly between the first and the last, and the night is longer. To level it — get up earlier or go to bed later."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un pas régulier ne tient pas dans la journée : les repas sont répartis à égalité entre le premier et le dernier, et la nuit reste plus longue. Pour équilibrer — se lever plus tôt ou se coucher plus tard."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тәулікке біркелкі қадам сыймайды: тамақтандырулар бірінші мен соңғысының арасында тең бөлінген, ал түн ұзағырақ. Теңестіру үшін — ертерек тұру немесе кешірек жату."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ровный шаг в сутки не влезает: кормления разложены поровну между первым и последним, а ночь длиннее. Выровнять — вставать раньше или ложиться позже."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Рівний крок у добу не влазить: годування розкладено порівну між першим і останнім, а ніч довша. Вирівняти — вставати раніше або лягати пізніше."
+          }
+        }
+      }
+    },
     "сводка по уходу" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3430,6 +3535,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Зараз, %@"
+          }
+        }
+      }
+    },
+    "Собака привыкает к промежутку, а не к цифре на часах: ровный интервал важнее точного часа. Ночь считается как день." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A dog gets used to the gap, not to the number on the clock: an even interval matters more than the exact hour. Night counts as day."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le chien s'habitue à l'écart, pas au chiffre sur l'horloge : un intervalle régulier compte plus que l'heure exacte. La nuit compte comme le jour."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ит сағаттағы санға емес, аралыққа үйренеді: біркелкі аралық нақты сағаттан маңызды. Түн де күн сияқты есептеледі."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Собака привыкает к промежутку, а не к цифре на часах: ровный интервал важнее точного часа. Ночь считается как день."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Собака звикає до проміжку, а не до цифри на годиннику: рівний інтервал важливіший за точну годину. Ніч рахуємо як день."
           }
         }
       }
@@ -3982,6 +4122,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Епізоди та довідник клінік"
+          }
+        }
+      }
+    },
+    "Это ориентиры из его записей, а не расписание. Просится раньше — выводи раньше: ни часы, ни вердикт не спорят." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "These are guides from her own entries, not a schedule. If she asks earlier, take her out earlier: neither the hours nor the verdict will argue."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce sont des repères tirés de ses entrées, pas un horaire. S'il demande plus tôt, sors-le plus tôt : ni les heures ni le verdict ne te contredisent."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бұл кесте емес, оның жазбаларынан алынған бағдарлар. Ертерек сұранса — ертерек шығар: сағаттар да, шешім де қарсы келмейді."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Это ориентиры из его записей, а не расписание. Просится раньше — выводи раньше: ни часы, ни вердикт не спорят."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Це орієнтири з його записів, а не розклад. Проситься раніше — виводь раніше: ні години, ні вердикт не сперечаються."
           }
         }
       }
