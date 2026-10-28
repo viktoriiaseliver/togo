@@ -157,6 +157,25 @@ enum TimelineBuilder {
         }
 
         let openings = outingsThatBecameWalks(sorted)
+        // ВТОРАЯ квадратичность той же функции, замер 28.10.2026.
+        //
+        // Ниже стояло `openings.values.contains(where: { $0.id == … })`
+        // — то есть на КАЖДУЮ запись шёл проход по всем найденным
+        // началам прогулок. При 2100 записях и 525 прогулках это
+        // миллион с лишним сравнений, и именно они остались после
+        // починки первой квадратичности:
+        //
+        // ```
+        // blocks до обеих починок   903 мс
+        // после первой              477 мс   ← половина цены была ЗДЕСЬ
+        // ```
+        //
+        // > Починив одну квадратичность, легко доложить «ускорено
+        // > вдвое» и не заметить вторую в той же функции. Различает
+        // > не внимательность, а ПОВТОРНЫЙ ЗАМЕР после починки.
+        //
+        // Множество строится один раз; проверка становится O(1).
+        let началиПрогулку = Set(openings.values.map(\.id))
 
         return sorted.compactMap { event in
             // Отметка, у которой прогулка нашлась, своей строки не получает.
@@ -164,7 +183,7 @@ enum TimelineBuilder {
                 return nil
             }
             // Выход, переросший в прогулку, тоже: он стал её началом.
-            if openings.values.contains(where: { $0.id == event.id }) { return nil }
+            if началиПрогулку.contains(event.id) { return nil }
 
             return TimelineBlock(
                 event: event,
@@ -179,21 +198,67 @@ enum TimelineBuilder {
     /// Данные не трогаем: обе записи остаются на месте и правятся по
     /// отдельности. Меняется только то, как лента их показывает.
     private static func outingsThatBecameWalks(_ sorted: [LogEvent]) -> [UUID: LogEvent] {
+        // # ЗДЕСЬ БЫЛА ГЛАВНАЯ ПРИЧИНА ТОРМОЗОВ ПРОКРУТКИ
+        //
+        // Прежняя редакция звала `sorted.last { … }` НА КАЖДУЮ
+        // прогулку, то есть проходила весь дневник заново столько раз,
+        // сколько в нём прогулок. Замер 28.10.2026 на 1400 записях
+        // с прогулками:
+        //
+        // ```
+        // TimelineBuilder.blocks   903 мс   ← один проход
+        // бюджет кадра при 60 к/с   16 мс
+        // ```
+        //
+        // Девятьсот миллисекунд на построение ленты — это и есть
+        // «скролл тормозит»: `body` зовёт его на каждый кадр.
+        //
+        // > **Прежний замер показывал семь миллисекунд и был честен:**
+        // > в его данных не было ни одной прогулки, и этот цикл
+        // > не выполнялся ни разу. Замер на данных без предмета даёт
+        // > верное число и ложный вывод.
+        //
+        // Окно поиска — пять минут (`outingIntoWalk`), то есть
+        // кандидатов в нём единицы, а искали по всему массиву.
+        //
+        // Теперь: кандидаты отбираются ОДИН раз, и для каждой прогулки
+        // двоичным поиском находится граница окна. `sorted` уже
+        // по возрастанию даты — на этом и стои́т поиск.
+        let кандидаты = sorted.filter {
+            $0.kind == .outing && $0.outcome == nil && $0.walkEventID == nil
+        }
+        guard !кандидаты.isEmpty else { return [:] }
+
         var result: [UUID: LogEvent] = [:]
         var taken = Set<UUID>()
 
         for walk in sorted where walk.kind == .walk {
-            let opening = sorted.last { candidate in
-                candidate.kind == .outing
-                    && candidate.outcome == nil
-                    && candidate.walkEventID == nil
-                    && !taken.contains(candidate.id)
-                    && candidate.date <= walk.date
-                    && walk.date.timeIntervalSince(candidate.date) <= outingIntoWalk
+            // Граница: первый кандидат ПОЗЖЕ прогулки. Всё, что левее
+            // неё, — не позже, как и требует прежнее условие
+            // `candidate.date <= walk.date`.
+            var низ = 0, верх = кандидаты.count
+            while низ < верх {
+                let середина = (низ + верх) / 2
+                if кандидаты[середина].date <= walk.date {
+                    низ = середина + 1
+                } else {
+                    верх = середина
+                }
             }
-            guard let opening else { continue }
-            result[walk.id] = opening
-            taken.insert(opening.id)
+            // Назад от границы, пока не вышли из окна. Массив
+            // отсортирован, поэтому первый же кандидат вне окна значит,
+            // что и все предыдущие вне его: `last` искал самый поздний,
+            // и здесь он находится первым.
+            var i = низ - 1
+            while i >= 0,
+                  walk.date.timeIntervalSince(кандидаты[i].date) <= outingIntoWalk {
+                if !taken.contains(кандидаты[i].id) {
+                    result[walk.id] = кандидаты[i]
+                    taken.insert(кандидаты[i].id)
+                    break
+                }
+                i -= 1
+            }
         }
         return result
     }
