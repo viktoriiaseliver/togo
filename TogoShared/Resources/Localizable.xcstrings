@@ -1763,6 +1763,113 @@
         }
       }
     },
+    "%lld раз пометил" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "marked %lld time"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "marked %lld times"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "a marqué %lld fois"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "a marqué %lld fois"
+                }
+              }
+            }
+          }
+        },
+        "kk" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld рет белгі қалдырды"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld рет белгі қалдырды"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld раз пометил"
+                }
+              },
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld раза пометил"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld раз пометил"
+                }
+              }
+            }
+          }
+        },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld раз позначив"
+                }
+              },
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld рази позначив"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld разів позначив"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "%lld рецептов" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2937,6 +3044,35 @@
         }
       }
     },
+    "Метки — не отдельные опорожнения: подряд идущие в пределах %@ приложение считает одним разом. Вердикт «просится» считает по ним, а не по тапам — %lld за этот выход." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marks aren't separate emptyings: ones within %@ of each other count as a single time. The “Needs to go out?” verdict counts those, not taps — %lld on this walk."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les marques ne sont pas des vidanges séparées : celles qui se suivent à moins de %@ comptent pour une seule fois. Le verdict « Envie de sortir ? » compte celles-là, pas les appuis — %lld pour cette sortie."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Белгілер — жеке босатулар емес: %@ ішінде қатар келгендерін қолданба бір рет деп санайды. «Сұранып тұр» шешімі соларды санайды, басуларды емес — осы серуенде %lld."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Позначки — не окремі випорожнення: ті, що йдуть підряд у межах %@, застосунок вважає одним разом. Вердикт «проситься» рахує по них, а не по натисканнях — %lld за цей вихід."
+          }
+        }
+      }
+    },
     "наготове · телефоны · что мог съесть · справка врачу" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3356,6 +3492,35 @@
         }
       }
     },
+    "Схема изменена: было «%@» %@, стало «%@» %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schedule changed: was “%@” %@, now “%@” %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schéma modifié : avant « %@ » %@, maintenant « %@ » %@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Схема өзгертілді: бұрын «%@» %@, қазір «%@» %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Схему змінено: було «%@» %@, стало «%@» %@"
+          }
+        }
+      }
+    },
     "схемы лечения" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3614,6 +3779,122 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "ти зможеш бачити все · відмічати буде %@"
+          }
+        }
+      }
+    },
+    "Уберутся только те, что уже закончились. Идущий останется — его закрывают кнопкой «Собаке лучше». Записи останутся все: удаляется только объединение их в эпизод." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only the ones already over will be removed. An ongoing one stays — you close it with “She's better”. All entries are kept: only their grouping into an episode is deleted."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seuls ceux déjà terminés seront supprimés. Celui en cours reste — on le ferme avec « Le chien va mieux ». Toutes les notes restent : seul leur regroupement en épisode est supprimé."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тек аяқталғандары жойылады. Жүріп жатқаны қалады — оны «Иттің жағдайы жақсы» түймесімен жабады. Жазбалардың бәрі қалады: олардың эпизодқа біріктірілуі ғана жойылады."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Приберуться лише ті, що вже закінчилися. Той, що триває, залишиться — його закривають кнопкою «Собаці краще». Записи залишаться всі: видаляється тільки об'єднання їх в епізод."
+          }
+        }
+      }
+    },
+    "Убрано эпизодов: %lld · записи остались" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Episodes removed: %lld · entries kept"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Épisodes supprimés : %lld · les notes restent"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Эпизод жойылды: %lld · жазбалар қалды"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прибрано епізодів: %lld · записи лишилися"
+          }
+        }
+      }
+    },
+    "Убрать закончившиеся · %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove finished · %lld"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer les terminés · %lld"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Аяқталғандарды жою · %lld"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прибрати завершені · %lld"
+          }
+        }
+      }
+    },
+    "Убрать закончившиеся эпизоды?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove finished episodes?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer les épisodes terminés ?"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Аяқталған эпизодтарды жою керек пе?"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прибрати завершені епізоди?"
           }
         }
       }
