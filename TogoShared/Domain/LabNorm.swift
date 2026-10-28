@@ -191,10 +191,12 @@ nonisolated enum LabNorm {
                 return limit <= low ? .below : .indeterminate
             case .lowerBound(let low):
                 return limit <= low ? .below : .indeterminate
-            case .upperBound:
+            case .upperBound(let high):
                 // «Меньше чего-то» при норме «меньше порога» — в норме,
-                // если предел прибора не выше порога.
-                return .withinRange
+                // если предел прибора не выше порога. Условие было
+                // написано здесь словами и не проверялось: «<10» при норме
+                // «<5» выходило «в норме», хотя значение могло быть и 9.
+                return limit <= high ? .withinRange : .indeterminate
             case .unknown:
                 return .normUnknown
             }
@@ -205,8 +207,9 @@ nonisolated enum LabNorm {
                 return limit >= high ? .above : .indeterminate
             case .upperBound(let high):
                 return limit >= high ? .above : .indeterminate
-            case .lowerBound:
-                return .withinRange
+            case .lowerBound(let low):
+                // Зеркально: «больше 2» при норме «больше 5» может быть и 3.
+                return limit >= low ? .withinRange : .indeterminate
             case .unknown:
                 return .normUnknown
             }
