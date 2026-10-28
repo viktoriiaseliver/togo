@@ -48,6 +48,10 @@ struct TodayScreen: View {
     @State private var route: TodayRoute?
     @State private var finishingDayOut: DayOut?
     @State private var now = Date()
+    /// Лента, посчитанная один раз на кадр, — см. `срезЛенты` ниже
+    /// и разбор в `КешЛенты`. Живёт в `@State`, потому что должна
+    /// переживать перерисовку: вычисляемое свойство кешем не бывает.
+    @State private var кешЛенты = КешЛенты()
     /// Какой день показан. Не путать с `now`: `now` — который час,
     /// это — за какой день считать. Пока показывают сегодня, они
     /// совпадают, и разницы не видно; на «вчера» она решает всё.
@@ -370,7 +374,7 @@ struct TodayScreen: View {
                   lastOutingEndedAt: lastOutingEndedAt,
                   session: appState.session,
                   now: now,
-                  rhythm: WalkRhythmAnalyzer.rhythm(events: events, now: now),
+                  rhythm: ритм,
                   outingsToday: outingsToday,
                   showsReading: false)
 
@@ -899,9 +903,7 @@ struct TodayScreen: View {
         return s
     }
 
-    private var ритм: WalkRhythm {
-        WalkRhythmAnalyzer.rhythm(events: events, now: now)
-    }
+    private var ритм: WalkRhythm { срезЛенты.ритм }
 
     /// «сейчас · 17:54» или дата — подзаголовок шторки «Записать».
     ///
@@ -1303,18 +1305,27 @@ struct TodayScreen: View {
     // был `TGPoster`, а шапка панели несёт теперь ещё и кнопку «…».
     // Её тип — `ШапкаПанели`, объявлен внизу файла.
 
+    /// Три величины по всей ленте — одним проходом, см. `КешЛенты`.
+    ///
+    /// **Это не украшение, а починка зависаний 28.10.2026.** Прежде
+    /// `timeIndoors`, `lastOutingEndedAt` и `ритм` были тремя
+    /// вычисляемыми свойствами, и каждое строило ленту заново. Их
+    /// читают восемнадцать раз за один проход body — через
+    /// `состояниеПоказания` (4 вызова) и `показаниеПанели` (2),
+    /// которые сами зовут оба, — то есть экран проходил дневник
+    /// около двадцати раз, чтобы нарисовать один кадр.
+    ///
+    /// Свежесть держит отпечаток полей ленты, а не число записей:
+    /// разбор — в доккомментарии `КешЛенты`.
+    private var срезЛенты: СрезЛенты { кешЛенты.срез(events, now: now) }
+
     /// Сколько собака дома прямо сейчас.
-    private var timeIndoors: TimeInterval? {
-        TimelineBuilder.timeIndoorsNow(TimelineBuilder.blocks(Diary.active(events)),
-                                       now: now, threshold: 0)
-    }
+    private var timeIndoors: TimeInterval? { срезЛенты.дома }
 
     /// Конец последнего записанного выхода. Герою нужен, чтобы за потолком
     /// тишины сказать «записей нет с такого-то», а не печатать число часов,
     /// которое отвечает уже не на тот вопрос.
-    private var lastOutingEndedAt: Date? {
-        TimelineBuilder.blocks(Diary.active(events)).last(where: \.isOuting)?.endedAt
-    }
+    private var lastOutingEndedAt: Date? { срезЛенты.конецПоследнегоВыхода }
 
     /// Сколько раз сегодня выходили. Правило — в
     /// `TimelineBuilder.outingsCount`: вторая копия этого счёта стояла
