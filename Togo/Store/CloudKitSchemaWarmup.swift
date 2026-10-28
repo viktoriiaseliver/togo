@@ -119,7 +119,7 @@ nonisolated enum CloudKitSchemaWarmup {
             участникСоВсемиПолями(),
             записьСоВсемиПолями(),
             лекарствоСоВсемиПолями(),
-            документСоВсемиПолями(),
+            документСоВсемиПолями(клиника),
             уходСоВсемиПолями(клиника),
             запасСоВсемиПолями(),
             взвешиваниеСоВсемиПолями(),
@@ -258,14 +258,25 @@ nonisolated enum CloudKitSchemaWarmup {
         return лекарство
     }
 
+    /// Документ со всеми полями, включая связь на клинику.
+    ///
+    /// Клиника аргументом с 28.10.2026: поле `CD_clinic` в зеркале
+    /// заводится только тогда, когда связь у записи **заполнена**.
+    /// Создай документ без клиники — и поля в `CD_DogDocument`
+    /// не появится, а прогрев напечатает успех. Тот же довод, по которому
+    /// клиника аргументом у ухода, визита и назначения.
     @MainActor
-    private static func документСоВсемиПолями() -> DogDocument {
+    private static func документСоВсемиПолями(_ клиника: Clinic) -> DogDocument {
         let документ = DogDocument(title: markerTitle, note: markerTitle)
         документ.kindRaw = DocumentKind.other.rawValue
         документ.number = markerTitle
         документ.issuedBy = markerTitle
         документ.validUntil = markerDate
         документ.deletedAt = markerDate
+        // Три поля шага 1, 28.10.2026 — V8.
+        документ.occurredOn = markerDate
+        документ.directionRaw = DocumentDirection.other.rawValue
+        документ.clinic = клиника
         return документ
     }
 

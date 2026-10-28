@@ -229,7 +229,11 @@ nonisolated enum BackupService {
                                                addedAt: $0.addedAt, note: $0.note,
                                                kindRaw: $0.kindRaw, number: $0.number,
                                                issuedBy: $0.issuedBy,
-                                               validUntil: $0.validUntil)
+                                               validUntil: $0.validUntil,
+                                               occurredOn: $0.occurredOn,
+                                               directionRaw: $0.directionRaw,
+                                               clinicName: $0.clinic?.name,
+                                               deletedAt: $0.deletedAt)
             },
             daysOut: daysOut.map {
                 BackupArchive.DayOutSnapshot(startedAt: $0.startedAt, endedAt: $0.endedAt,
@@ -925,6 +929,26 @@ nonisolated enum BackupService {
             document.number = documentSnapshot.number
             document.issuedBy = documentSnapshot.issuedBy
             document.validUntil = documentSnapshot.validUntil
+            // Три поля шага 1, 28.10.2026. `occurredOn` — дата
+            // на бумаге; `addedAt` выше отвечает про телефон, и путать
+            // их нельзя: искать человек будет по первой.
+            //
+            // Подставлять `addedAt` при пустом `occurredOn` НЕЛЬЗЯ:
+            // вышло бы, что человек сказал «анализ сдан в день съёмки».
+            // Пусто — значит не сказано, и так и остаётся.
+            document.occurredOn = documentSnapshot.occurredOn
+            document.directionRaw = documentSnapshot.directionRaw
+            // Клиника ищется по имени в уже вставленном справочнике,
+            // как у дела ухода, визита и рецепта; промах оставляет связь
+            // пустой и клиники не заводит.
+            if let имя = Fmt.notBlank(documentSnapshot.clinicName ?? "") {
+                document.clinic = clinics[имя]
+            }
+            // Надгробие — как у события и у собаки. Без него удалённый
+            // документ ОЖИВАЛ при восстановлении: список в архив идёт
+            // без фильтра надгробий, а поля в снимке не было.
+            // Разбор — у `DocumentSnapshot.deletedAt`.
+            document.deletedAt = documentSnapshot.deletedAt
             document.dog = dog
             context.insert(document)
         }

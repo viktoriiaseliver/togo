@@ -418,13 +418,21 @@ extension DogDocument {
         DocumentPayload(
             id: id, dogID: dog?.id, title: title, kind: kindRaw,
             number: number, issuedBy: issuedBy, validUntil: validUntil,
-            addedAt: addedAt, note: note, deletedAt: deletedAt, changedAt: changedAt
+            addedAt: addedAt, note: note, deletedAt: deletedAt, changedAt: changedAt,
+            occurredOn: occurredOn, direction: directionRaw,
+            clinicID: clinic?.id, clinicName: clinic?.name
         )
     }
 
     /// `image` не трогается ни в одну сторону: его в нагрузке нет,
     /// и приехавшая правка не должна стирать скан, который человек
     /// положил у себя.
+    ///
+    /// **`clinic` здесь НЕ ставится, и это то же решение, что
+    /// у медкнижки** (`SharedDiaryPayloads:443`): для поиска клиники
+    /// нужен контекст, а у модели до вставки его может не быть. Связь
+    /// сшивает приём — `accept(_:dog:context:)`, — там, где контекст
+    /// есть по устройству.
     func apply(_ payload: DocumentPayload) {
         title = payload.title
         kindRaw = payload.kind
@@ -435,6 +443,8 @@ extension DogDocument {
         note = payload.note
         deletedAt = payload.deletedAt
         changedAt = payload.changedAt
+        occurredOn = payload.occurredOn
+        directionRaw = payload.direction
     }
 }
 
@@ -915,6 +925,13 @@ enum SharedDiaryInbox {
             let документ = DogDocument(title: payload.title)
             документ.id = payload.id
             документ.apply(payload)
+            // Клиника сшивается здесь, а не в `apply`: там нет
+            // контекста. Промах по id и по имени оставляет связь
+            // пустой и клиники НЕ заводит — запись, рождённая промахом,
+            // была бы дублем справочника. То же решение, что
+            // у медкнижки.
+            документ.clinic = клиника(id: payload.clinicID,
+                                      имя: payload.clinicName, context: context)
             документ.dog = dog
             context.insert(документ)
             guard context.persist(otherwise: { context.delete(документ) }) else {
@@ -929,6 +946,12 @@ enum SharedDiaryInbox {
         if merged != local.payload {
             let былПрежний = local.payload
             local.apply(merged)
+            // Связь сшивается по ПОБЕДИВШЕЙ версии, как у визита:
+            // иначе спор решался бы по-разному для поля и для связи.
+            if let сшита = клиника(id: merged.clinicID,
+                                   имя: merged.clinicName, context: context) {
+                local.clinic = сшита
+            }
             if !context.persist(otherwise: { local.apply(былПрежний) }) {
                 log.error("общий дневник: слияние документа не записалось")
             }

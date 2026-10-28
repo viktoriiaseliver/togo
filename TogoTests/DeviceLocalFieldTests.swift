@@ -283,6 +283,25 @@ struct DeviceLocalFieldTests {
         "DogDocument.changedAt",
         "DogDocument.kindRaw", "DogDocument.number",
         "DogDocument.issuedBy", "DogDocument.validUntil",
+        // Шаг 1, 28.10.2026. Три поля, и вопрос по каждому задан
+        // тот же — «значит ли оно на ДРУГОМ телефоне то же самое».
+        //
+        // `occurredOn` — дата НА БУМАГЕ: день забора крови, день
+        // приёма, день подписания. Это факт о событии, а не о телефоне,
+        // и у второго человека он тот же. **Соблазн счесть его своим
+        // есть, и он реальный:** рядом стоит `addedAt`, который как раз
+        // про телефон — «когда я это сняла». Различает их не форма
+        // (оба `Date` у одной модели), а один вопрос: у `addedAt` ответ
+        // зависит от того, чей телефон снимал, у `occurredOn` — нет.
+        //
+        // `directionRaw` — ключ показа: по нему человек ищет «что
+        // сдавали». Второму человеку он говорит ровно то же.
+        //
+        // `clinic` — где делали. К одному врачу ходят оба, и «моей
+        // клиники» не бывает: то же решение, что у `CareTask.clinic`
+        // строкой выше.
+        "DogDocument.occurredOn", "DogDocument.directionRaw",
+        "DogDocument.clinic",
         // Номер назначения связывает схему лечения с бланком рецепта.
         // Его называют в аптеке и в клинике — оба человека, не телефон.
         "Medication.prescriptionNumber",
@@ -603,6 +622,12 @@ struct DeviceLocalFieldTests {
         "Dog.labResultsStorage", "Dog.vetVisitsStorage",
         "Dog.diagnosesStorage", "Dog.prescriptionsStorage",
         "Clinic.vetVisitsStorage", "Clinic.prescriptionsStorage",
+        // Четвёртая обратная сторона у клиники — заведена 28.10.2026
+        // вместе с `DogDocument.clinic`. Та же причина: связь без
+        // обратной стороны зеркало CloudKit не открывает вовсе,
+        // и читателей у свойства при этом ноль — то есть забыть его
+        // легче всего, а цена ошибки максимальная.
+        "Clinic.documentsStorage",
     ]
 
     /// Модели, поля которых уже разобраны — **выводится из самих

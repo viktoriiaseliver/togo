@@ -459,6 +459,13 @@ nonisolated enum SharedDiaryRecords {
         record["note"] = payload.note
         record["deletedAt"] = payload.deletedAt
         record["changedAt"] = payload.changedAt
+        // Три поля шага 1, 28.10.2026. Клиника — ссылкой строкой
+        // и именем рядом, как у визита: id сшивает точно, имя спасает,
+        // когда справочник у второго человека свой.
+        record["occurredOn"] = payload.occurredOn
+        record["direction"] = payload.direction
+        record["clinicID"] = payload.clinicID?.uuidString
+        record["clinicName"] = payload.clinicName
     }
 
     static func documentPayload(_ record: CKRecord) -> DocumentPayload? {
@@ -481,7 +488,17 @@ nonisolated enum SharedDiaryRecords {
             addedAt: record["addedAt"] as? Date ?? changedAt,
             note: record["note"] as? String,
             deletedAt: record["deletedAt"] as? Date,
-            changedAt: changedAt
+            changedAt: changedAt,
+            // Три поля шага 1. Умолчания здесь НЕТ ни у одного,
+            // в отличие от `kind` выше: у направления и даты события
+            // пустота — законное состояние (у паспорта направления
+            // нет вовсе), и подставить вместо неизвестного конкретное
+            // значило бы сказать за человека. Разбор
+            // у `DogDocument.directionRaw`.
+            occurredOn: record["occurredOn"] as? Date,
+            direction: record["direction"] as? String,
+            clinicID: (record["clinicID"] as? String).flatMap(UUID.init),
+            clinicName: record["clinicName"] as? String
         )
     }
 

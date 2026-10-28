@@ -587,6 +587,166 @@ struct SchemaMigrationTests {
         }
     }
 
+    /// Что V7 добавила к V6 — **одно поле `LogEvent.photo` и ровно оно**.
+    ///
+    /// Заведён 28.10.2026 вместе с заморозкой V7, и до этого дня стадию
+    /// V6 → V7 не называл поимённо никто: её прирост держался только
+    /// счётом (`SchemaShapeTests`, 315 + 1 = 316). Счёт сходится
+    /// и при обмене одного поля на другое, поэтому у каждой стадии
+    /// должен быть свой поимённый сторож — у V4 → V5 и V5 → V6 они
+    /// есть, у V6 → V7 не было.
+    @Test("V7 добавляет к V6 ровно фотографию у записи и ничего больше")
+    func седьмаяВерсияДобавляетОдноФото() {
+        func поля(_ версия: any VersionedSchema.Type, _ сущность: String) -> Set<String> {
+            let схема = Schema(versionedSchema: версия)
+            return Set((схема.entitiesByName[сущность]?.properties ?? []).map(\.name))
+        }
+        let сущности = { (версия: any VersionedSchema.Type) in
+            Set(Schema(versionedSchema: версия).entitiesByName.keys)
+        }
+
+        #expect(сущности(TogoSchemaV7.self) == сущности(TogoSchemaV6.self), """
+            набор сущностей V6 и V7 разошёлся. Новая сущность — это НЕ
+            то, что CoreData выводит сам без оговорок.
+            """)
+
+        for сущность in сущности(TogoSchemaV6.self).sorted() {
+            let убыло = поля(TogoSchemaV6.self, сущность)
+                .subtracting(поля(TogoSchemaV7.self, сущность))
+            #expect(убыло.isEmpty, "из `\(сущность)` исчезло: \(убыло.sorted())")
+
+            let выросло = поля(TogoSchemaV7.self, сущность)
+                .subtracting(поля(TogoSchemaV6.self, сущность))
+            #expect(выросло == (сущность == "LogEvent" ? ["photo"] : []), """
+                у `\(сущность)` прирост V6 → V7 не тот.
+                ждём    \(сущность == "LogEvent" ? ["photo"] : [])
+                выросло \(выросло.sorted())
+                """)
+        }
+
+        // Опциональность — то, чем стадия объявлена облегчённой,
+        // и спрашивать её надо у СХЕМЫ, а не глазами по объявлению.
+        let фото = Schema(versionedSchema: TogoSchemaV7.self)
+            .entitiesByName["LogEvent"]?.properties.first { $0.name == "photo" }
+        #expect(фото?.isOptional == true, """
+            `LogEvent.photo` не опционально. У прежних записей заполнить
+            его нечем, `.lightweight` не выведется, а зеркало CloudKit
+            на таком поле не заводится.
+            """)
+    }
+
+    /// Что V8 добавила к V7 — **четыре свойства и ровно они**.
+    ///
+    /// Заведён 28.10.2026 вместе с заморозкой V7 и подъёмом до V8.
+    /// Список поимённый, а не счётом «четыре», по той же причине,
+    /// по которой заведён сосед про надгробия: наряд на ту правку
+    /// называл двенадцать полей, а их было одиннадцать, и число
+    /// пропустило бы ошибку.
+    ///
+    /// **Четвёртое свойство здесь — обратная сторона связи, и его
+    /// легче всего забыть:** читателей у `Clinic.documentsStorage`
+    /// сегодня ноль, то есть ни один экран не покраснеет от его
+    /// отсутствия. Покраснеет человек — зеркало CloudKit отказывается
+    /// открывать хранилище у связи без обратной
+    /// (`CloudKit integration requires that all relationships have
+    /// an inverse`, замер `togo-1e` 07.10.2026), и это не красный
+    /// тест, а контейнер, не открывшийся вовсе.
+    @Test("V8 добавляет к V7 ровно четыре свойства и ничего больше")
+    func восьмаяВерсияДобавляетЧетыреСвойства() {
+        func поля(_ версия: any VersionedSchema.Type, _ сущность: String) -> Set<String> {
+            let схема = Schema(versionedSchema: версия)
+            return Set((схема.entitiesByName[сущность]?.properties ?? []).map(\.name))
+        }
+        let сущности = { (версия: any VersionedSchema.Type) in
+            Set(Schema(versionedSchema: версия).entitiesByName.keys)
+        }
+
+        // Ожидаемый прирост по сущностям — поимённо и в ОБЕ стороны:
+        // и что у названных прибавилось то, и что у остальных
+        // не прибавилось ничего.
+        let прирост: [String: Set<String>] = [
+            "DogDocument": ["occurredOn", "directionRaw", "clinic"],
+            "Clinic": ["documentsStorage"],
+        ]
+
+        // 1. Набор сущностей не менялся — основание для `.lightweight`.
+        #expect(сущности(TogoSchemaV8.self) == сущности(TogoSchemaV7.self), """
+            набор сущностей V7 и V8 разошёлся. Справочник клиник живёт
+            с V5, и новая связь на него сущности не добавляет; новая
+            сущность здесь — это НЕ то, что CoreData выводит сам
+            без оговорок.
+            """)
+
+        // 2. Ничего не убыло. Удаление поля `.lightweight` не выводит,
+        //    а V7 роздана тремя сборками.
+        for сущность in сущности(TogoSchemaV7.self).sorted() {
+            let убыло = поля(TogoSchemaV7.self, сущность)
+                .subtracting(поля(TogoSchemaV8.self, сущность))
+            #expect(убыло.isEmpty, "из `\(сущность)` исчезло: \(убыло.sorted())")
+        }
+
+        // 3. Прирост — ровно названный, и только у названных.
+        var сПриростом: Set<String> = []
+        for сущность in сущности(TogoSchemaV7.self).sorted() {
+            let выросло = поля(TogoSchemaV8.self, сущность)
+                .subtracting(поля(TogoSchemaV7.self, сущность))
+            if !выросло.isEmpty { сПриростом.insert(сущность) }
+            #expect(выросло == (прирост[сущность] ?? []), """
+                у `\(сущность)` прирост V7 → V8 не тот.
+                ждём    \((прирост[сущность] ?? []).sorted())
+                выросло \(выросло.sorted())
+
+                В этой стадии заводятся ТОЛЬКО дата события,
+                направление и связь с клиникой. Любое другое поле
+                здесь означает, что форму меняют под уже поднятым
+                номером — то есть повторяют дефект 26.10.
+                """)
+        }
+        #expect(сПриростом == Set(прирост.keys), """
+            поля выросли не у тех типов.
+            названо  \(прирост.keys.sorted())
+            выросло  \(сПриростом.sorted())
+            """)
+
+        // 4. Все четыре опциональные. Это и есть то, чем стадия
+        //    объявлена облегчённой, и спрашивать надо у СХЕМЫ.
+        let v8 = Schema(versionedSchema: TogoSchemaV8.self)
+        for (сущность, имена) in прирост.sorted(by: { $0.key < $1.key }) {
+            for имя in имена.sorted() {
+                let свойство = v8.entitiesByName[сущность]?.properties
+                    .first { $0.name == имя }
+                #expect(свойство?.isOptional == true, """
+                    `\(сущность).\(имя)` не опционально. У прежних
+                    записей заполнить его нечем, `.lightweight`
+                    не выведется, а зеркало CloudKit на таком поле
+                    не заводится.
+                    """)
+            }
+        }
+
+        // 5. Связь обязана быть связью с ОБЕИХ сторон, а не парой
+        //    скаляров: без обратной зеркало CloudKit не открывает
+        //    хранилище вовсе. Проверяется у схемы, потому что
+        //    `@Relationship(inverse:)` в объявлении — намерение,
+        //    а `isRelationship` у схемы — результат.
+        let связьДокумента = v8.entitiesByName["DogDocument"]?.properties
+            .first { $0.name == "clinic" }
+        let связьКлиники = v8.entitiesByName["Clinic"]?.properties
+            .first { $0.name == "documentsStorage" }
+        #expect(связьДокумента?.isRelationship == true, """
+            `DogDocument.clinic` не связь. Строкой имя клиники хранить
+            нельзя: одиннадцать организаций карты рассыплются
+            на столько групп, сколько было опечаток.
+            """)
+        #expect(связьКлиники?.isRelationship == true, """
+            `Clinic.documentsStorage` не связь — то есть у связи
+            документа с клиникой нет обратной стороны. Зеркало
+            CloudKit такое хранилище не открывает вовсе, и у человека
+            это молчаливый откат в память: рабочий экран, отметка
+            дозы, запись в никуда.
+            """)
+    }
+
     // MARK: Главная приёмка — старая база открывается новой схемой
 
     /// **То, из-за чего вся эта правка, и чего не проверял ни один тест
@@ -718,20 +878,24 @@ struct SchemaMigrationTests {
 
     @Test("В плане перечислены все формы хранилища, что уехали из репозитория")
     func планПолон() {
-        #expect(TogoMigrationPlan.schemas.count == 7, """
+        #expect(TogoMigrationPlan.schemas.count == 8, """
             сборка 36 (V1), сборка 46 (V2), сборка 141 (V3), сборки
-            191–271 (V4), сборки 273–277 (V5), сборка 279 (V6)
-            и нынешняя (V7) — версию, которой в плане нет, открыть нечем.
+            191–271 (V4), сборки 273–277 (V5), сборка 279 (V6),
+            сборки 280–282 (V7) и нынешняя (V8) — версию, которой
+            в плане нет, открыть нечем.
             V3 заморожена снимком 23.09, V4 — 05.10, V5 — 26.10,
-            V6 — 27.10: до заморозки каждая ссылалась на живые классы,
-            и первая же правка модели меняла её форму под неизменным
-            номером. У V5 это и случилось: `f546719` добавил одиннадцать
-            надгробий, и пять розданных сборок перестали открываться.
+            V6 — 27.10, V7 — 28.10: до заморозки каждая ссылалась
+            на живые классы, и первая же правка модели меняла её форму
+            под неизменным номером. У V5 это и случилось: `f546719`
+            добавил одиннадцать надгробий, и пять розданных сборок
+            перестали открываться.
             V6 заморожена ПЕРЕД тем, как к `LogEvent` добавили `photo`, —
-            то есть в той форме, с которой 279 уехала людям.
+            то есть в той форме, с которой 279 уехала людям. V7 — перед
+            тем, как к документу добавили дату события, направление
+            и клинику, то есть в той форме, с которой уехали 280–282.
             """)
-        #expect(TogoMigrationPlan.stages.count == 6)
-        #expect(Persistence.schema.version == TogoSchemaV7.versionIdentifier,
+        #expect(TogoMigrationPlan.stages.count == 7)
+        #expect(Persistence.schema.version == TogoSchemaV8.versionIdentifier,
                 "приложение открывает хранилище последней версией плана")
     }
 
@@ -830,12 +994,12 @@ struct SchemaMigrationTests {
         //    прошёл бы на схеме, совпадающей с нынешней: база открылась
         //    бы штатно, `#expect(throws:)` покраснел бы — но покраснел бы
         //    он на своей же ошибке, а не на дефекте приложения.
-        #expect(TogoSchemaV5СУженнаяФорма.versionIdentifier == TogoSchemaV7.versionIdentifier, """
+        #expect(TogoSchemaV5СУженнаяФорма.versionIdentifier == TogoSchemaV8.versionIdentifier, """
             номер версии снимка разошёлся с нынешним — а весь смысл этой
             проверки в том, что номера СОВПАДАЮТ. С разными номерами это
             повтор соседнего теста про форму не из плана.
             """)
-        #expect(TogoSchemaV5СУженнаяФорма.models.count == TogoSchemaV7.models.count - 1, """
+        #expect(TogoSchemaV5СУженнаяФорма.models.count == TogoSchemaV8.models.count - 1, """
             снимок обязан быть уже нынешней схемы ровно на одну сущность.
             Совпали — значит фильтр ничего не убрал (сущность переименовали
             или сняли), и база заведётся нынешней формой: тест станет
@@ -899,10 +1063,10 @@ struct SchemaMigrationTests {
 /// а такое хранилище не открывается вовсе, и тест мерил бы не форму,
 /// а оборванную связь.
 enum TogoSchemaV5СУженнаяФорма: VersionedSchema {
-    static var versionIdentifier: Schema.Version { TogoSchemaV7.versionIdentifier }
+    static var versionIdentifier: Schema.Version { TogoSchemaV8.versionIdentifier }
 
     static var models: [any PersistentModel.Type] {
-        TogoSchemaV7.models.filter { ObjectIdentifier($0) != ObjectIdentifier(ProcedureSkill.self) }
+        TogoSchemaV8.models.filter { ObjectIdentifier($0) != ObjectIdentifier(ProcedureSkill.self) }
     }
 }
 
