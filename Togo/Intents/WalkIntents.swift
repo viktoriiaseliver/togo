@@ -49,8 +49,16 @@ enum WalkControl {
             throw QuickLogError.noPermission
         }
 
-        _ = WalkRecorder.record(session, dog: dog,
-                            author: AppState.storedUserName, context: context)
+        // `nil` у `record` значит «не сохранилось». Здесь он выбрасывался:
+        // сессия стиралась, а Siri говорила «Записала» — прогулка с метки
+        // или из «Команд» пропадала насовсем при честном «записано».
+        // Не сохранилось — сессию не трогаем: приложение допишет её
+        // при открытии (`дописатьПрогулкуСБлокировки`), а человек слышит
+        // правду.
+        guard WalkRecorder.record(session, dog: dog,
+                                  author: AppState.storedUserName, context: context) != nil else {
+            throw QuickLogError.storageUnavailable
+        }
         ActiveSessionStore.save(nil)
 
         let minutes = Int(session.duration(at: now)) / 60

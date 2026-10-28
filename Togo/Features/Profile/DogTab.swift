@@ -511,6 +511,7 @@ struct DogTab: View {
 
 /// Заведённая поездка: что взять и когда что делать.
 struct TripScreen: View {
+    @Environment(AppState.self) private var appState
     let trip: Trip
     let dog: Dog
 
@@ -545,7 +546,15 @@ struct TripScreen: View {
         .confirmationDialog("Убрать поездку?", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
             Button("Убрать", role: .destructive) {
                 context.delete(trip)
-                _ = context.persist(otherwise: {})
+                // Неудача сохранения выбрасывалась, и экран закрывался
+                // как после удаления. Форма — та же, что у выездного дня
+                // (`DayOutScreens.удалить`): откатить удаление нечем,
+                // поэтому говорится правда.
+                guard context.persistNothingToUndo() else {
+                    Haptics.warning()
+                    appState.showFailure("Не удалилось · проверь после перезапуска")
+                    return
+                }
                 Haptics.warning()
                 dismiss()
             }

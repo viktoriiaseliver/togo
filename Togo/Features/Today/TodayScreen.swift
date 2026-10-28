@@ -1043,6 +1043,13 @@ struct TodayScreen: View {
     /// «гулял в 15:44» — откуда считаем.
     private var откудаСчитаем: String? {
         guard let конец = lastOutingEndedAt else { return nil }
+        // За потолком тишины показание уже назвало ДАТУ («Выходов нет
+        // с 7 окт.»), и голое «гулял в 22:52» под ним читалось как
+        // сегодняшнее (кадр 28.10.2026). Дата там уже есть — час без неё
+        // только спорит с ней.
+        guard TodayHero.silence(indoors: timeIndoors, lastOutingEndedAt: конец) == nil else {
+            return nil
+        }
         return String(localized: "гулял в \(Fmt.clock(конец))")
     }
 

@@ -681,7 +681,10 @@ struct HealthScreen: View {
             TGDivider()
                         TGLink(title: "Назначения", value: назначенийВсего, systemImage: "doc.text") { PrescriptionsScreen(dog: dog) }
             TGDivider()
-                        TGLink(title: "Прививки и визиты", systemImage: "syringe") { CareScreen(dog: dog) }
+                        // «Визиты к врачу» — строкой выше, своим экраном. Здесь был второй
+                        // вход «Прививки и визиты», и вёл он в ВЕСЬ уход — зубы, уши,
+                        // когти (отзыв 27.10: «Почему в прививках и визитах уход?»).
+                        TGLink(title: "Прививки", systemImage: "syringe") { CareScreen(dog: dog, только: .medical) }
             TGDivider()
             // МЕСТО ВЫЗОВА справочника клиник. Без этой строки `Clinic`
             // существует и недостижим: у модели НЕ БЫЛО НИ ОДНОГО

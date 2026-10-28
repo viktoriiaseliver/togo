@@ -704,12 +704,14 @@ struct FeedingScreen: View {
 
     private func applySchedule() {
         guard let dog else { return }
+        // «Было» снимается ДО записи. Здесь `былиЧасы` брались после
+        // `dog.mealTimes = …`, и откат при неудаче возвращал новые часы.
+        let былоКормлений = dog.mealsPerDay
+        let былиЧасы = dog.mealTimes
         dog.mealTimes = report.suggestedMealTimes
         // Через `setMealsPerDay`, а не присваиванием: дневная норма должна
         // остаться прежней, а порция — пересчитаться. Прямое присваивание
         // молча меняло то, сколько собака ест за сутки.
-        let былоКормлений = dog.mealsPerDay
-        let былиЧасы = dog.mealTimes
         dog.setMealsPerDay(report.suggestedMealTimes.count)
         dog.syncSingleFoodShare()
         guard context.persist(otherwise: {

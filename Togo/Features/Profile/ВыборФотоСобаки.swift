@@ -46,10 +46,15 @@ enum ФотоСобаки {
             appState?.showFailure(String(localized: "Снимок не открылся · попробуй другой"))
             return false
         }
+        let былоФото = dog.photo
         dog.photo = ужатое
-        guard context.persist(otherwise: {}) else {
+        // Не сохранилось — фото возвращается и человеку говорится. Раньше
+        // откат был пустым: аватар показывал новый снимок, а после
+        // перезапуска его не было.
+        guard context.persist(otherwise: { dog.photo = былоФото }) else {
             Haptics.warning()
             UsageLog.note(.record, "dogPhoto", on: экран, outcome: .failed)
+            appState?.showFailure(String(localized: "Снимок не сохранился · попробуй ещё раз"))
             return false
         }
         UsageLog.note(.record, "dogPhoto", on: экран, outcome: .done)

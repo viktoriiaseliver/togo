@@ -102,6 +102,7 @@ struct DataPrivacyScreen: View {
     }
 
     private func deleteEverything() {
+        var неУдалось = 0
         // Список полный намеренно: полагаться на каскад от собаки здесь
         // нельзя. Запас корма, течки и снимки документов в нём не значились
         // вовсе — то есть после «удалить все данные» фотография паспорта
@@ -111,7 +112,19 @@ struct DataPrivacyScreen: View {
                       Trip.self, Episode.self, FamilyMember.self,
                       FoodStock.self, HeatRecord.self, DogDocument.self, DayOut.self,
                       Dog.self] as [any PersistentModel.Type] {
-            try? context.delete(model: model)
+            do {
+                try context.delete(model: model)
+            } catch {
+                неУдалось += 1
+            }
+        }
+        // `try?` выбрасывал отказ, и экран говорил «Всё удалено» при любом
+        // исходе. Не удалилась хоть одна модель — говорим правду и не
+        // трогаем ни отметки, ни напоминания: человек нажмёт ещё раз.
+        guard неУдалось == 0 else {
+            Haptics.warning()
+            appState.showFailure("Удалилось не всё · нажми ещё раз")
+            return
         }
 
         // Отметки в UserDefaults стираются ТОЖЕ, и это решение Виктории

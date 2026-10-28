@@ -205,11 +205,19 @@ struct DocumentPhotosCard: View {
             // Полноразмерный снимок с камеры — это десятки мегабайт.
             // В дневнике он не нужен: читать надо номер, а не разглядывать
             // текстуру бумаги.
+            //
+            // `picked` снимается ПЕРВЫМ и при любом исходе: иначе неудача
+            // оставляла его выбранным, и повторный выбор того же снимка
+            // не давал `onChange` — плитка «Снять» выглядела мёртвой.
+            // Неудача говорит о себе тем же текстом, что у фото собаки.
+            picked = nil
             guard let raw = try? await item.loadTransferable(type: Data.self),
                   let shrunk = DocumentPhoto.shrink(raw)
-            else { return }
+            else {
+                appState.showFailure(String(localized: "Снимок не открылся · попробуй другой"))
+                return
+            }
             pendingImage = shrunk
-            picked = nil
         }
     }
 

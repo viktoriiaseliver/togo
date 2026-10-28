@@ -8,6 +8,7 @@ struct TripSetupScreen: View {
 
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
+    @Environment(AppState.self) private var appState
     @Query private var trips: [Trip]
 
     @State private var destination = ""
@@ -40,6 +41,12 @@ struct TripSetupScreen: View {
                 TGDivider()
                 DatePicker("Когда", selection: $start, displayedComponents: .date)
                     .frame(minHeight: Token.Size.tapTarget)
+                    // `in: start...` у «По» не двигает уже выбранный конец:
+                    // перенеси начало за него — и поездка сохранялась
+                    // с концом раньше начала.
+                    .onChange(of: start) { _, новое in
+                        if end < новое { end = новое }
+                    }
                 TGDivider()
                 DatePicker("По", selection: $end, in: start..., displayedComponents: .date)
                     .frame(minHeight: Token.Size.tapTarget)
@@ -114,6 +121,13 @@ struct TripSetupScreen: View {
         trip.lodging = lodging
         trip.dog = dog
         context.insert(trip)
+        // Здесь была одна вставка без сохранения и сразу «успех»:
+        // не сохранилось — экран закрывался, будто поездка есть.
+        guard context.persist(otherwise: { context.delete(trip) }) else {
+            Haptics.warning()
+            appState.showFailure(String(localized: "Поездка не сохранилась · нажми ещё раз"))
+            return
+        }
         Haptics.success()
         dismiss()
     }
@@ -202,20 +216,30 @@ struct PackingListCard: View {
     /// в списке сборов человек читает как «корма не надо». Это худший
     /// из возможных нулей: его видно в аэропорту, а не на экране,
     /// где можно переспросить.
+    /// Граммы — до килограмма, дальше килограммы с одним знаком.
+    ///
+    /// «13160 г» на 62 дня не читается (отзыв 27.10: «Переведи граммы
+    /// как то в понятные цифры»): в магазине корм продают килограммами.
+    /// «22.0 л» у воды стояло через `%.1f` — с точкой и нулём;
+    /// `Fmt.decimal` даёт запятую и прячет нулевой знак.
+    private static func масса(_ граммы: Int) -> String {
+        граммы < 1000 ? "\(граммы) г" : "\(Fmt.decimal(Double(граммы) / 1000)) кг"
+    }
+
     private var items: [(String, String, String)] {
         let food = dog.dailyGrams * days + dog.servingGrams * 2
         let water = Double(dog.waterNormMl * days) * 1.5 / 1000
         return [
             ("Корм",
-             dog.dailyGrams > 0 ? "\(food) г" : "—",
+             dog.dailyGrams > 0 ? Self.масса(food) : "—",
              dog.dailyGrams > 0
-                 ? "\(dog.dailyGrams * days) г на дни плюс запас на два кормления"
+                 ? "\(Self.масса(dog.dailyGrams * days)) на дни плюс запас на два кормления"
                  // Имя экрана НЕ цитируется: цитата обязана дословно
                  // совпасть с переводом своего ключа в каталоге, и
                  // сторож цитат ловил это трижды за сутки. Дорога
                  // названа словами, а не подписью кнопки.
                  : "сначала запиши дневную норму в режиме питания — из неё считается всё"),
-            ("Вода в дорогу", String(format: "%.1f л", water), "его норма ≈ \(dog.waterNormMl) мл в день, в жару больше · складная поилка"),
+            ("Вода в дорогу", "\(Fmt.decimal(water)) л", "его норма ≈ \(dog.waterNormMl) мл в день, в жару больше · складная поилка"),
             ("Пакеты", "\(days * 4) шт", "по четыре на день, с запасом"),
         ]
     }
