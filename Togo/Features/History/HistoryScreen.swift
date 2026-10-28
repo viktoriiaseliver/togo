@@ -73,7 +73,7 @@ struct HistoryScreen: View {
                     ритмВыходов
                     dayOutCard
                     месяцШапкой
-                    MonthCalendar(month: $month, events: filtered, onSelect: { selectedDay = $0 })
+                    MonthCalendar(month: $month, поДням: поДням, onSelect: { selectedDay = $0 })
                     episodesCard
                 }
             }
@@ -166,14 +166,18 @@ struct HistoryScreen: View {
     /// на тридцати днях подписи всё равно рисовались через одну.
     /// Что именно на полосе — говорит строка под ней, а не ось.
     private var полосаВыходов: some View {
-        TGCard {
+        // Точки считаются ОДИН раз на всю карточку. Прежде тут стояли
+        // `chartPoints` и `тревожныеДни` рядом — два обращения, и каждое
+        // строило весь тридцатидневный набор заново.
+        let точки = chartPoints
+        return TGCard {
             HStack(alignment: .firstTextBaseline, spacing: Token.Space.s8) {
                 Text(.готовая(filter.chartName)).textStyle(AppFont.cardTitle).wraps()
                 Spacer(minLength: Token.Space.s8)
                 Text("30 дней").textStyle(AppFont.caption).wraps()
             }
-            КиноСтолбики(значения: chartPoints.map(\.value),
-                         тревожные: тревожныеДни)
+            КиноСтолбики(значения: точки.map(\.value),
+                         тревожные: тревожные(точки))
             Text(filter.chartExplainer).textStyle(AppFont.caption).wraps()
             TGDivider()
             Text("Приложение не ставит диагнозов. Оно умеет показать этот график врачу — вместе с датами еды и препаратов за те же дни.")
@@ -182,17 +186,32 @@ struct HistoryScreen: View {
         }
     }
 
-    private var тревожныеДни: Set<Int> {
-        Set(chartPoints.enumerated().compactMap { $1.isAlarm ? $0 : nil })
+    private func тревожные(_ точки: [HistoryPoint]) -> Set<Int> {
+        Set(точки.enumerated().compactMap { $1.isAlarm ? $0 : nil })
     }
 
+    /// Отобранные записи, разложенные по дням.
+    ///
+    /// **Одно вычисление на весь экран, и это не украшение.** Прежде
+    /// `chartPoints` звал `Diary.onDay(filtered, день)` в цикле по
+    /// тридцати дням, а `filtered` — вычисляемое свойство: оно
+    /// пересчитывалось все тридцать раз, и каждый раз фильтровало весь
+    /// дневник. Календарь делал то же сорок два раза. Разбор —
+    /// `Diary.поДням`.
+    private var поДням: [Date: [LogEvent]] { Diary.поДням(filtered) }
+
     /// График строится только по дням без активного эпизода.
-    private var chartPoints: [HistoryPoint] {
+    private var chartPoints: [HistoryPoint] { точки(поДням) }
+
+    /// Тридцать точек из готового индекса: день достаётся за O(1),
+    /// отсутствие ключа значит «записей не было» — так условились
+    /// в `Diary.поДням`.
+    private func точки(_ индекс: [Date: [LogEvent]]) -> [HistoryPoint] {
         let calendar = Calendar.current
         let start = calendar.date(byAdding: .day, value: -29, to: calendar.startOfDay(for: .now)) ?? .now
         return (0..<30).compactMap { offset in
             guard let day = calendar.date(byAdding: .day, value: offset, to: start) else { return nil }
-            let dayEvents = Diary.onDay(filtered, day)
+            let dayEvents = индекс[calendar.startOfDay(for: day)] ?? []
             return HistoryPoint(day: day, value: filter.value(for: dayEvents),
                                 isAlarm: dayEvents.contains(where: \.raisesAlarm))
         }
@@ -556,7 +575,13 @@ nonisolated struct HistoryPoint: Identifiable, Sendable {
 /// прописными **над** карточкой) — здесь осталась только сетка.
 struct MonthCalendar: View {
     @Binding var month: Date
-    let events: [LogEvent]
+    /// Записи, УЖЕ разложенные по дням, — см. `Diary.поДням`.
+    ///
+    /// Массив здесь был бы честнее по виду и дороже по цене: сетка
+    /// спрашивает про сорок два дня, и из массива каждый ответ стоил
+    /// бы полного прохода. Индекс строит тот, кто его и так строит
+    /// для графика.
+    let поДням: [Date: [LogEvent]]
     var onSelect: (Date) -> Void
 
     private let calendar = Calendar.current
@@ -627,8 +652,23 @@ struct MonthCalendar: View {
         return leading + days
     }
 
+    /// Записи дня берутся из индекса за O(1).
+    ///
+    /// **Прежде здесь стоял `Diary.onDay(events, day)`, и это главная
+    /// найденная причина зависаний 28.10.2026.** Функция зовётся на
+    /// КАЖДУЮ ячейку сетки — до сорока двух, — и каждый вызов проходил
+    /// весь дневник, сравнивая даты через
+    /// `Calendar.isDate(_:inSameDayAs:)`. При тысяче с лишним записей
+    /// это десятки тысяч календарных сравнений на одну перерисовку
+    /// календаря, то есть на каждое касание фильтра и каждый тик
+    /// состояния.
+    ///
+    /// > Цена росла от ПРОИЗВЕДЕНИЯ записей на дни, а не от записей.
+    /// > Поэтому её не было видно, пока дневник вели руками: у человека
+    /// > с тремя записями в день календарь стоил столько же, сколько
+    /// > у человека с тысячей.
     private func marker(for day: Date) -> DayMarker {
-        let dayEvents = Diary.onDay(events, day)
+        let dayEvents = поДням[calendar.startOfDay(for: day)] ?? []
         if dayEvents.isEmpty { return .none }
         if dayEvents.contains(where: { $0.raisesAlarm || $0.kind == .incident }) { return .alarm }
         if dayEvents.contains(where: { $0.kind.isMedical }) { return .medical }
