@@ -370,13 +370,13 @@ struct TodayScreen: View {
                   lastOutingEndedAt: lastOutingEndedAt,
                   session: appState.session,
                   now: now,
-                  rhythm: WalkRhythmAnalyzer.rhythm(events: events, now: now),
+                  rhythm: ритм,
                   outingsToday: outingsToday,
                   showsReading: false)
 
         // Порог тревоги: счёт дошёл сам, и человек должен увидеть это
         // до того, как начнёт гадать в три часа ночи, «уже пора или ещё нет».
-        if let threshold = AlarmThresholdAnalyzer.evaluate(events: events, now: now) {
+        if let threshold = порогТревоги {
             Button { alarm = threshold } label: {
                 TGBanner(tone: .alarm,
                          title: "Похоже, пора звонить",
@@ -670,8 +670,6 @@ struct TodayScreen: View {
             }
     }
 
-    // MARK: Шапка
-
     // MARK: Плакат — верхняя треть
 
     // **`PosterMode` «Сегодня» больше не спрашивает, и это снятие
@@ -688,17 +686,13 @@ struct TodayScreen: View {
     // `ReadingTone` (`TodayStateRouter.tone`), и расхождение двух очередей
     // названо в голове `ReadingTone`.
 
-
     /// Показание плаката.
     ///
-    /// Правило тишины НЕ дублируется: `TodayHero.silence(…)` статическое
-    /// ровно для этого — 24.09 его вынесли из вью, потому что Siri
-    /// читала ту же величину мимо потолка и отвечала «дома 434 ч».
     /// **Правила те же, что были у плаката, — изменился только тип
     /// ответа.** Ни одно условие здесь не выведено заново: правило
-    /// тишины по-прежнему `TodayHero.silence(…)`, статическое ровно
-    /// для этого — 24.09 его вынесли из вью, потому что Siri читала
-    /// ту же величину мимо потолка и отвечала «дома 434 ч».
+    /// тишины — `TodayHero.silence(…)`, статическое ровно для этого —
+    /// 24.09 его вынесли из вью, потому что Siri читала ту же величину
+    /// мимо потолка и отвечала «дома 434 ч».
     private var показаниеПанели: ReadingPanel<ШапкаПанели>.Показание {
         if let session = appState.session {
             // `duration(at:)`, а не `now − startedAt`: пауза вычитается
@@ -874,7 +868,7 @@ struct TodayScreen: View {
     private var состояниеПоказания: TodayStateRouter.DayState {
         var s = TodayStateRouter.DayState()
         s.isAlarm = appState.isEpisodeActive
-        s.isThreshold = AlarmThresholdAnalyzer.evaluate(events: events, now: now) != nil
+        s.isThreshold = порогТревоги != nil
         s.isDoseDue = overdueDose != nil
         s.isFasting = fastingWindow != nil
         s.isEpisode = appState.isEpisodeActive
@@ -901,6 +895,13 @@ struct TodayScreen: View {
 
     private var ритм: WalkRhythm {
         WalkRhythmAnalyzer.rhythm(events: events, now: now)
+    }
+
+    /// Порог тревоги — один счёт на плашку, очередь состояний и кнопку
+    /// «Позвонить». Три вызова анализатора в трёх местах давали бы
+    /// три ответа на один вопрос, если бы один из них поменяли.
+    private var порогТревоги: AlarmThreshold? {
+        AlarmThresholdAnalyzer.evaluate(events: events, now: now)
     }
 
     /// «сейчас · 17:54» или дата — подзаголовок шторки «Записать».
@@ -992,8 +993,7 @@ struct TodayScreen: View {
     /// «обычно до 22:44» — докуда. Говорится только когда ритм
     /// надёжен: до трёх дней записей это была бы выдумка, а не прогноз.
     private var докудаСчитаем: String? {
-        guard ритм.isReliable, let конец = lastOutingEndedAt else { return nil }
-        let ожидаемый = конец.addingTimeInterval(ритм.averageIndoors)
+        guard let ожидаемый = ожидаемыйВыход else { return nil }
         return String(localized: "обычно до \(Fmt.clock(ожидаемый))")
     }
 
@@ -1010,12 +1010,6 @@ struct TodayScreen: View {
 
     // MARK: Низ — главная кнопка по состоянию
 
-    /// Что делать прямо сейчас. Кнопка меняется вместе с тоном.
-    ///
-    /// **«Вывожу» (здесь — «Просится») остаётся первой во всех исходах
-    /// вердикта** — красная линия проекта: приложение не знает лучше
-    /// хозяина. Поэтому в обычном дне главная кнопка открывает вердикт,
-    /// а не «Гулять»: она спрашивает, а не решает.
     /// Роль того, кто здесь ничего не отмечает, — или `nil`, если
     /// отмечает.
     ///
@@ -1056,11 +1050,17 @@ struct TodayScreen: View {
         .accessibilityHint("Открыть «Семью»")
     }
 
+    /// Что делать прямо сейчас. Кнопка меняется вместе с тоном.
+    ///
+    /// **«Вывожу» (здесь — «Просится») остаётся первой во всех исходах
+    /// вердикта** — красная линия проекта: приложение не знает лучше
+    /// хозяина. Поэтому в обычном дне главная кнопка открывает вердикт,
+    /// а не «Гулять»: она спрашивает, а не решает.
     private var главноеДействие: TodayBottomBar.Действие {
         switch состояниеВерхнее {
         case .alarm, .threshold:
             return .init(название: "Позвонить", символ: "phone.badge.waveform") {
-                if let threshold = AlarmThresholdAnalyzer.evaluate(events: events, now: now) {
+                if let threshold = порогТревоги {
                     alarm = threshold
                 }
             }
@@ -1109,7 +1109,7 @@ struct TodayScreen: View {
             //
             // «Что сказать» при этом НЕ ПОТЕРЯНО: плашка «Похоже, пора
             // звонить» открывает тот же экран по нажатию
-            // (`TodayScreen:379`), то есть кнопка дублировала её.
+            // (`TodayScreen.тревоги`), то есть кнопка дублировала её.
             // Убрали дубль, вернули пропавшее.
             return обычноеДействие
         case .dose:
@@ -1303,17 +1303,23 @@ struct TodayScreen: View {
     // был `TGPoster`, а шапка панели несёт теперь ещё и кнопку «…».
     // Её тип — `ШапкаПанели`, объявлен внизу файла.
 
+    /// Блоки «дома / на улице» по живым записям. Одна сборка на двух
+    /// читателей ниже: время дома и конец последнего выхода обязаны
+    /// стоять на одних и тех же блоках.
+    private var блокиДня: [TimelineBlock] {
+        TimelineBuilder.blocks(Diary.active(events))
+    }
+
     /// Сколько собака дома прямо сейчас.
     private var timeIndoors: TimeInterval? {
-        TimelineBuilder.timeIndoorsNow(TimelineBuilder.blocks(Diary.active(events)),
-                                       now: now, threshold: 0)
+        TimelineBuilder.timeIndoorsNow(блокиДня, now: now, threshold: 0)
     }
 
     /// Конец последнего записанного выхода. Герою нужен, чтобы за потолком
     /// тишины сказать «записей нет с такого-то», а не печатать число часов,
     /// которое отвечает уже не на тот вопрос.
     private var lastOutingEndedAt: Date? {
-        TimelineBuilder.blocks(Diary.active(events)).last(where: \.isOuting)?.endedAt
+        блокиДня.last(where: \.isOuting)?.endedAt
     }
 
     /// Сколько раз сегодня выходили. Правило — в
@@ -1375,14 +1381,14 @@ struct TodayScreen: View {
         }
     }
 
-    /// Груминг и вес живут в профиле и всплывают на главном только когда подошёл срок.
-    /// На главном показываем только то, что правда просится сегодня.
-    /// «Через 30 дней» — это не дело на сегодня, это шум.
     /// Сколько дел ухода заведено, но не может напомнить.
     private var careAwaitingDate: Int {
         dog?.careTasks.filter(\.needsDate).count ?? 0
     }
 
+    /// Груминг и вес живут в профиле и всплывают на главном только когда подошёл срок.
+    /// На главном показываем только то, что правда просится сегодня.
+    /// «Через 30 дней» — это не дело на сегодня, это шум.
     private var planItems: [DayPlanItem] {
         DayPlanBuilder.items(dog: dog, events: events, now: отсчёт,
                              seesMedical: appState.can(.seeMedical))
@@ -1402,13 +1408,6 @@ struct TodayScreen: View {
         return dutyMember.map { String(localized: "Сегодня дежурит \($0.name)") } ?? String(localized: "Кто-то один — отметьте")
     }
 
-    /// Вернуть пункт в невыполненные.
-    ///
-    /// Отметить не то — обычное дело: сработал свайп, покормила не она,
-    /// доза оказалась другой. Раньше отменить это можно было только
-    /// найдя запись в ленте и удалив её оттуда — то есть догадавшись,
-    /// что «сделано» в режиме дня и запись в ленте это одно и то же.
-    /// Какой записью в ленте отмечается пункт плана.
     /// Всё, что план дня делает с хранилищем, живёт в `DayPlanActions`.
     /// Вынесено 28.09: внутри `View` эти двести пятьдесят строк нельзя
     /// было позвать из теста вовсе — чтобы дойти до `complete`, надо
@@ -1418,6 +1417,7 @@ struct TodayScreen: View {
                        dog: dog, день: отсчёт, сейчас: now, careUndo: $lastCareDone)
     }
 
+    /// Какой записью в ленте отмечается пункт плана.
     private func logKind(of item: DayPlanItem) -> LogKind { actions.logKind(of: item) }
 
     /// Закрыть выход.
@@ -1437,6 +1437,12 @@ struct TodayScreen: View {
         route = .walkResult
     }
 
+    /// Вернуть пункт в невыполненные.
+    ///
+    /// Отметить не то — обычное дело: сработал свайп, покормила не она,
+    /// доза оказалась другой. Раньше отменить это можно было только
+    /// найдя запись в ленте и удалив её оттуда — то есть догадавшись,
+    /// что «сделано» в режиме дня и запись в ленте это одно и то же.
     private func uncomplete(_ item: DayPlanItem) { actions.uncomplete(item) }
 
     /// Тап по тексту строки: открыть запись, а не отметить.
@@ -1507,8 +1513,6 @@ struct TodayScreen: View {
         actions.complete(item, givenAt: момент)
     }
 }
-
-
 
 // `DogAvatar` переехал в `TodayHeader.swift` — туда, где его и рисуют.
 
