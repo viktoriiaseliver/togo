@@ -246,7 +246,8 @@ nonisolated enum ScheduleChangeApplier {
         to medication: Medication,
         now: Date = Date(),
         calendar: Calendar = .current,
-        context: ModelContext
+        context: ModelContext,
+        автор: String
     ) -> Int? {
         let doomed = change.doomedDoses(medication.doses, now: now, calendar: calendar)
         // Причина записывается словами человека, а не кодом состояния:
@@ -271,9 +272,36 @@ nonisolated enum ScheduleChangeApplier {
         // оставили бы щель, в которой дозы уже отменены, а расписание
         // ещё старое: ровно то состояние, из которого `ensureDoses`
         // завела бы отмену и новую отметку на один час.
+        // СЛЕД В ДНЕВНИКЕ — то, чего не было до 28.10.2026.
+        //
+        // Отзыв Виктории 27.10, 21:00: «не отмечается смена режима».
+        // Схема менялась исправно — `doseText` и `times` переписывались
+        // и сохранялись, — но в ленте не оставалось НИ СТРОКИ.
+        //
+        // Цена молчания здесь не про удобство. Первый вопрос врача
+        // на контроле: «когда подняли дозу». В карте Стича смен девять
+        // за год, и каждая объясняет, почему следующий анализ показал
+        // другое число. Без записи этот ответ остаётся только в памяти
+        // человека.
+        //
+        // > Изменение, которое применилось и не оставило следа,
+        // > отличается от неслучившегося только тем, что о нём
+        // > некому вспомнить.
+        //
+        // Запись идёт в ту же транзакцию, что отмена доз и новые часы:
+        // отдельный `save` оставил бы щель, в которой схема уже новая,
+        // а история про это не знает.
+        let след = LogEvent(kind: .note, date: now, authorName: автор)
+        след.note = String(localized:
+            "Схема изменена: было «\(былДоза)» \(ScheduleChange.summary(былиЧасы)), "
+            + "стало «\(change.newDoseText)» \(ScheduleChange.summary(change.newTimes))")
+        след.dog = medication.dog
+        context.insert(след)
+
         guard context.persist(otherwise: {
             medication.doseText = былДоза
             medication.times = былиЧасы
+            context.delete(след)
             отмена.undo()
         }) else { return nil }
         return отмена.count

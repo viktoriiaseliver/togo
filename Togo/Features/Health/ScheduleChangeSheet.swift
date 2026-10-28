@@ -10,6 +10,7 @@ struct ScheduleChangeSheet: View {
     let medication: Medication
 
     @Environment(\.modelContext) private var context
+    @Environment(AppState.self) private var appState
     @Environment(\.dismiss) private var dismiss
 
     @State private var doseText: String = ""
@@ -173,8 +174,13 @@ struct ScheduleChangeSheet: View {
     }
 
     private func save() {
+        // Имя автора — обязательное, не для порядка: запись о смене
+        // схемы уезжает семье, а безымянная наружу не уходит вовсе
+        // (красная линия проекта). И второй человек должен видеть,
+        // КТО поменял дозу, — это первое, что он спросит.
         guard let removed = ScheduleChangeApplier.apply(change, to: medication,
-                                                        now: now, context: context) else {
+                                                        now: now, context: context,
+                                                        автор: appState.currentUserName) else {
             Haptics.warning()
             return
         }
