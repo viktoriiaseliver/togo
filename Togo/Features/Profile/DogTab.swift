@@ -467,8 +467,6 @@ struct DogTab: View {
             TGDivider()
                         TGLink(title: "Вес", value: .готовая(Fmt.weight(dog.weightKg)), systemImage: "scalemass") { WeightScreen(dog: dog) }
             TGDivider()
-            TGLink(title: "Перенос навыка", systemImage: "square.grid.3x3") { TransferMatrixScreen(dog: dog) }
-            TGDivider()
             // Второй вход в «Процедуры», и он тут не для удобства.
             //
             // Единственный вход был с вкладки «Здоровье», а она есть,
