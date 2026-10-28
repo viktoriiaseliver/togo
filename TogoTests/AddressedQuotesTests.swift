@@ -129,7 +129,57 @@ struct AddressedQuotesTests {
 
     private static let образцыВкладок: [String] = [#"tabItem\s*\{[^}]*?"([^"]+)""#]
 
-    private func кнопки() throws -> Set<String> { try подписи(Self.образцыКнопок) }
+    /// Подписи, которые кнопка берёт у ПЕРЕЧИСЛЕНИЯ, а не у литерала.
+    ///
+    /// **Третья слепая зона этого сторожа, и найдена она тем же
+    /// способом, что две прежние, — красным прогоном 28.10.2026:**
+    /// «кнопка «Еда» ← текста нет в приложении». Кнопка «Еда» есть
+    /// у человека на главном экране с первого дня; её подпись —
+    /// `LogKind.meal.title`, то есть `case .meal: String(localized:
+    /// "Еда")` в `TogoShared/Models/Enums.swift`.
+    ///
+    /// Два промаха сразу, и каждого поодиночке хватило бы:
+    ///
+    /// ```
+    /// исходники()        читают ТОЛЬКО каталог Togo; Enums.swift
+    ///                    лежит в TogoShared и не читался вовсе
+    /// образцы кнопок     ищут литерал ВНУТРИ вызова (TGButton(title:…),
+    ///                    Button("…")); подпись из перечисления
+    ///                    не лежит рядом ни с одним вызовом
+    /// ```
+    ///
+    /// > Ложный красный здесь опаснее пропуска: он обвиняет живую
+    /// > кнопку и зовёт переименовать её под сторожа. Чинится
+    /// > перечень источников, а не текст и не кнопка.
+    ///
+    /// Читается ТОЛЬКО `TogoShared/Models/Enums*.swift`, а не весь
+    /// общий слой: там и живут подписи видов, а широкий захват набрал
+    /// бы в кнопки всякую строку домена и ослабил бы сторожа молча.
+    private func подписиПеречислений() throws -> Set<String> {
+        let каталог = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("TogoShared/Models")
+        let обход = FileManager.default.enumerator(at: каталог, includingPropertiesForKeys: nil)
+        let re = try NSRegularExpression(
+            pattern: #"case\s+\.\w+(?:,\s*\.\w+)*:\s*String\(localized:\s*"([^"]+)""#)
+        var найдено: Set<String> = []
+        while let элемент = обход?.nextObject() as? URL {
+            guard элемент.lastPathComponent.hasPrefix("Enums"),
+                  элемент.pathExtension == "swift",
+                  let текст = try? String(contentsOf: элемент, encoding: .utf8) else { continue }
+            let диапазон = NSRange(текст.startIndex..., in: текст)
+            for совпадение in re.matches(in: текст, range: диапазон) {
+                if let r = Range(совпадение.range(at: 1), in: текст) {
+                    найдено.insert(String(текст[r]))
+                }
+            }
+        }
+        return найдено
+    }
+
+    private func кнопки() throws -> Set<String> {
+        try подписи(Self.образцыКнопок).union(подписиПеречислений())
+    }
     private func экраны() throws -> Set<String> { try подписи(Self.образцыЭкранов) }
     private func вкладки() throws -> Set<String> { try подписи(Self.образцыВкладок) }
 
