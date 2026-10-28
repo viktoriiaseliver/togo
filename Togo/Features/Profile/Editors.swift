@@ -455,7 +455,10 @@ struct CareTaskEditorSheet: View {
     var body: some View {
         TGSheet(
             title: isNew ? "Новое напоминание" : .готовая(title),
-            subtitle: "придёт утром вместе с остальным, а не отдельно",
+            // «придёт утром» было верно, пока час сводки выбирался
+            // из 5…12. С 28.10.2026 выбирается часть дня — и строка
+            // обещала бы утро тому, кто поставил вечер.
+            subtitle: "придёт в выбранный час вместе с остальным, а не отдельно",
             closeTitle: isNew ? "Отмена" : "Закрыть",
             hasUnsavedChanges: isNew && !title.trimmingCharacters(in: .whitespaces).isEmpty
         ) {

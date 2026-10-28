@@ -2350,6 +2350,41 @@
       },
       "shouldTranslate" : false
     },
+    "Togo · сводка по уходу" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Togo · care brief"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Togo · résumé des soins"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Togo · күтім жиынтығы"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Togo · сводка по уходу"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Togo · зведення з догляду"
+          }
+        }
+      }
+    },
     "В %@, как назначено" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2472,6 +2507,41 @@
         }
       }
     },
+    "Всё это приходит одним сообщением — утром, днём или вечером, как настроишь, а не восемью подряд. Прерывают только доза и окно натощак." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All of it arrives in a single message — morning, afternoon or evening, whichever you set — not in eight in a row. Only a dose and a fasting window interrupt you."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tout ça arrive en un seul message — le matin, l’après-midi ou le soir, comme tu le règles — pas en huit d’affilée. Seules la dose et la fenêtre à jeun interrompent."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Осының бәрі қатарынан сегіз емес, бір хабармен келеді — таңертең, күндіз немесе кешке, өзің қалай баптасаң. Тек доза мен ашқарын терезесі үзеді."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Всё это приходит одним сообщением — утром, днём или вечером, как настроишь, а не восемью подряд. Прерывают только доза и окно натощак."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Усе це приходить одним повідомленням — вранці, удень або ввечері, як налаштуєш, а не вісьмома поспіль. Переривають тільки доза і вікно натщесерце."
+          }
+        }
+      }
+    },
     "выезды" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2497,6 +2567,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "виїзди"
+          }
+        }
+      }
+    },
+    "дела и сроки" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "tasks and dates"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "tâches et échéances"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "істер мен мерзімдер"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "дела и сроки"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "справи і терміни"
           }
         }
       }
@@ -2733,6 +2838,41 @@
         }
       }
     },
+    "Когда напоминать" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When to remind"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quand rappeler"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Қашан еске салу"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Когда напоминать"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Коли нагадувати"
+          }
+        }
+      }
+    },
     "когда сдавать" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2797,6 +2937,41 @@
         }
       }
     },
+    "наготове · телефоны · что мог съесть · справка врачу" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ready in advance · phones · what she ate · vet note"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "prêt à l’avance · téléphones · ce qu’il a mangé · note véto"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "алдын ала дайын · телефондар · не жеді · дәрігерге анықтама"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "наготове · телефоны · что мог съесть · справка врачу"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "напоготові · телефони · що міг з’їсти · довідка лікарю"
+          }
+        }
+      }
+    },
     "норма до %@" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2855,6 +3030,111 @@
         }
       }
     },
+    "Прерывают ровно три вещи. Всё остальное ждёт сводки — это единственный способ не превратить дневник в источник тревоги." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exactly three things interrupt. Everything else waits for the brief — that’s the only way to keep the diary from becoming a source of worry."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trois choses seulement interrompent. Tout le reste attend le résumé — c’est le seul moyen de ne pas faire du journal une source d’angoisse."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дәл үш нәрсе үзеді. Қалғанының бәрі жиынтықты күтеді — күнделікті алаңдау көзіне айналдырмаудың жалғыз жолы осы."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прерывают ровно три вещи. Всё остальное ждёт сводки — это единственный способ не превратить дневник в источник тревоги."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Переривають рівно три речі. Усе інше чекає зведення — це єдиний спосіб не перетворити щоденник на джерело тривоги."
+          }
+        }
+      }
+    },
+    "Прерывают только доза по часам, окно натощак и лестница эскалации. Всё остальное придёт одним сообщением в выбранный час." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only a scheduled dose, a fasting window and escalation interrupt. Everything else arrives in a single message at the hour you choose."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seules la dose à l’heure, la fenêtre à jeun et l’escalade interrompent. Tout le reste arrivera en un seul message à l’heure choisie."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тек сағат бойынша доза, ашқарын терезесі және күшейту баспалдағы үзеді. Қалғанының бәрі таңдалған сағатта бір хабармен келеді."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Прерывают только доза по часам, окно натощак и лестница эскалации. Всё остальное придёт одним сообщением в выбранный час."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Переривають тільки доза за годинами, вікно натщесерце і драбина ескалації. Усе інше прийде одним повідомленням у вибрану годину."
+          }
+        }
+      }
+    },
+    "придёт в выбранный час вместе с остальным, а не отдельно" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "arrives at the hour you chose with everything else, not separately"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "arrive à l’heure choisie avec le reste, pas à part"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "таңдалған сағатта қалғанымен бірге келеді, бөлек емес"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "придёт в выбранный час вместе с остальным, а не отдельно"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "прийде у вибрану годину разом з рештою, а не окремо"
+          }
+        }
+      }
+    },
     "рецепты" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2880,6 +3160,111 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "рецепти"
+          }
+        }
+      }
+    },
+    "ровно %@ г" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "exactly %@ g"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "exactement %@ g"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "дәл %@ г"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ровно %@ г"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "рівно %@ г"
+          }
+        }
+      }
+    },
+    "сводка по уходу" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "care brief"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "résumé des soins"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "күтім жиынтығы"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "сводка по уходу"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "зведення з догляду"
+          }
+        }
+      }
+    },
+    "Сводка по уходу" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Care brief"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Résumé des soins"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Күтім жиынтығы"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сводка по уходу"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Зведення з догляду"
           }
         }
       }
@@ -3089,6 +3474,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "тічки"
+          }
+        }
+      }
+    },
+    "Точный час" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exact hour"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heure précise"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нақты сағат"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Точный час"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Точна година"
           }
         }
       }

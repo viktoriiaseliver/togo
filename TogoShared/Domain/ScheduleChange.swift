@@ -36,8 +36,12 @@ nonisolated struct ScheduleChange: Equatable, Sendable {
         switch sorted.count {
         case 0: return String(localized: "без расписания")
         case 1:
-            let hour = sorted[0] / 60
-            let when = hour < 12 ? String(localized: "утром") : (hour < 17 ? String(localized: "днём") : String(localized: "вечером"))
+            // Деление суток берётся у `ЧастьДня`, а не повторяется здесь.
+            // До 28.10.2026 тут стояла вторая копия того же правила
+            // (`hour < 12 ? … : hour < 17 ? …`), и в день, когда человек
+            // получил выбор части дня для сводки, копий стало бы две
+            // с разными хозяевами.
+            let when = ЧастьДня.по(часу: sorted[0] / 60).title
             return String(localized: "один раз · \(when)")
         case 2: return String(localized: "дважды в день")
         default: return "\(String(localized: "\(sorted.count) раз")) в день"

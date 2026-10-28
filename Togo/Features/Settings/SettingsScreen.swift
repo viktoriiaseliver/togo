@@ -315,7 +315,10 @@ struct SettingsScreen: View {
             NavigationLink {
                 NotificationSettingsScreen()
             } label: {
-                LabeledContent("Утренняя сводка", value: Fmt.clock(minuteOfDay: settings.briefHour * 60))
+                // «Утренняя» убрано: час выбирается от 5 до 21, и строка
+                // противоречила бы собственному значению у всякого,
+                // кто поставил сводку на вечер.
+                LabeledContent("Сводка по уходу", value: Fmt.clock(minuteOfDay: settings.briefHour * 60))
             }
             LabeledContent("Тихие часы") {
                 Text("\(Fmt.clock(minuteOfDay: settings.quietHoursStart * 60)) — \(Fmt.clock(minuteOfDay: settings.quietHoursEnd * 60))")
@@ -325,7 +328,7 @@ struct SettingsScreen: View {
         } header: {
             Text("что прерывает")
         } footer: {
-            Text("Прерывают только доза по часам, окно натощак и лестница эскалации. Всё остальное придёт утром, одним сообщением.")
+            Text("Прерывают только доза по часам, окно натощак и лестница эскалации. Всё остальное придёт одним сообщением в выбранный час.")
         }
     }
 
@@ -561,18 +564,60 @@ struct NotificationSettingsScreen: View {
             .listRowBackground(Color.clear)
             .listRowSeparator(.hidden)
 
+            // # Выбор ЧАСТИ ДНЯ — отзыв 28.10.2026
+            //
+            // Владелица, дословно: «Почему уход днём? Хочу выбирать
+            // часть дня сама». Замер показал, что выбор был, и был
+            // неполным:
+            //
+            // ```
+            // Picker("Час сводки")  ForEach(5...12)   пять утра — полдень
+            // заголовок секции      «утренняя сводка»
+            // ```
+            //
+            // То есть поставить сводку на день или на вечер было нельзя
+            // ни одним путём, а подпись называла её утренней при любом
+            // выборе. Часть дня теперь выбирается первой, а час — внутри
+            // неё: «когда» человек держит в голове частью дня, а не
+            // числом.
+            //
+            // Второе поле в модели НЕ заводится: часть дня выводится
+            // из часа (`ЧастьДня.по(часу:)`). Две величины об одном
+            // разошлись бы молча — у нас это записано про любые две
+            // копии числа.
+            //
+            // Повтор части дня — бездействие нарочно: человек, стоящий
+            // на 10:00 и нажавший «утром», ждёт, что ничего не изменится,
+            // а не что час уедет на умолчание 08:00.
             Section {
-                Picker("Час сводки", selection: $settings.briefHour) {
-                    ForEach(5...12, id: \.self) { hour in
+                Picker("Когда напоминать", selection: Binding(
+                    get: { ЧастьДня.по(часу: settings.briefHour) },
+                    set: { часть in
+                        guard !часть.часы.contains(settings.briefHour) else { return }
+                        settings.briefHour = часть.часПоУмолчанию
+                    }
+                )) {
+                    ForEach(ЧастьДня.allCases) { часть in
+                        Text(.готовая(часть.title)).tag(часть)
+                    }
+                }
+                .pickerStyle(.segmented)
+
+                Picker("Точный час", selection: $settings.briefHour) {
+                    ForEach(Array(ЧастьДня.по(часу: settings.briefHour).часы), id: \.self) { hour in
                         Text(Fmt.clock(minuteOfDay: hour * 60)).tag(hour)
                     }
                 }
                 .pickerStyle(.menu)
+                // Пересборка висит ЗДЕСЬ, а не в сеттере части дня:
+                // часть дня меняет именно `briefHour`, то есть этот
+                // `onChange` срабатывает и на неё. Два места, зовущие
+                // одну пересборку, разошлись бы — одно из них забыли бы.
                 .onChange(of: settings.briefHour) { _, _ in
                     Task { await ReminderScheduler.scheduleBrief(dog: appState.activeDog(from: dogs), settings: settings) }
                 }
             } header: {
-                Text("утренняя сводка")
+                Text("сводка по уходу")
             } footer: {
                 Text("Груминг, антипаразитарка, прививки и взвешивание приходят одним сообщением в этот час. Отложенное дважды в нём подсвечивается, но в тревогу не переходит.")
             }

@@ -67,7 +67,15 @@ enum NotificationCenterService {
         // отвечал «переведено» про строку, которая до перевода
         // не доезжала. Пуш рисуется, когда приложение закрыто, и ни
         // один кадр его не ловит.
-        content.title = String(localized: "Togo · утренняя сводка")
+        //
+        // «Утренняя» снято 28.10.2026: час сводки выбирается от 5 до 21
+        // (`NotificationSettingsScreen`, отзыв «хочу выбирать часть дня
+        // сама»), и заголовок называл её утренней в 19:00. Имя
+        // `Category.morningBrief` и имя функции не тронуты нарочно —
+        // идентификатор запроса уходит в очередь уведомлений, и смена
+        // строки `"brief"` осиротила бы уже поставленные запросы
+        // у всех, кто обновится.
+        content.title = String(localized: "Togo · сводка по уходу")
         content.body = lines.prefix(4).joined(separator: "\n")
         content.sound = .default
         content.interruptionLevel = .active

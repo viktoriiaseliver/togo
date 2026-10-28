@@ -127,11 +127,16 @@ nonisolated final class Янтарь: XCTestCase {
             NSPredicate(format: "label BEGINSWITH %@", т("Уход"))
         ).firstMatch
         guard уход.waitForExistence(timeout: 10) else {
-            XCTFail("ссылки «Уход» нет — кадра навыка в обучении не будет")
+            XCTFail("ссылки «Уход и прививки» нет — кадра навыка в обучении не будет")
             return
         }
         уход.tap()
-        _ = app.navigationBars[т("Уход")].waitForExistence(timeout: 10)
+        // Экран переименован 28.10.2026 («Уход» → «Уход и прививки»)
+        // по отзыву «Почему в прививках и визитах уход?». Предикат
+        // строкой выше ищет BEGINSWITH и пережил бы правку молча —
+        // а вот точное имя панели нет, и это тот случай, когда тест
+        // обязан покраснеть вместе с правкой.
+        _ = app.navigationBars[т("Уход и прививки")].waitForExistence(timeout: 10)
         capture("amber-3-care")
         app.swipeUp()
         capture("amber-3-care-scrolled")
