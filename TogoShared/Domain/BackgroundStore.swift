@@ -504,7 +504,7 @@ final class BackgroundStore {
     ///
     /// **Первый снимок в режиме «как задумано» переводит режим
     /// в «одно фото для всех», и это не вольность.** Так делает
-    /// прототип — `addBg` в `Togo-RU.dc.html:945`:
+    /// прототип — `addBg` в `Togo-RU.dc.html:944`:
     ///
     /// ```js
     /// this.saveBg({ mode: b.mode && b.mode !== 'auto' ? b.mode : 'single', … })

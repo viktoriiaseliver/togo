@@ -28,7 +28,7 @@ import UIKit
 /// # Значение взято у дизайна, а не придумано здесь
 ///
 /// Хендофф рисует переключатель сам — `Дизайн/редизайн-ios28/prototypes/
-/// Togo-RU.dc.html:775`, и те же 775 в EN/FR/KK/UK:
+/// Togo-RU.dc.html:774`, и те же 774 в EN/FR/KK/UK:
 ///
 /// ```js
 /// tBg:  on ? 'var(--text-link)' : 'var(--control-toggle-off)'

@@ -11638,35 +11638,6 @@
         }
       }
     },
-    "● ≤ 4 ч · ■ 4–8 · ▲ > 8 · ○ не указано" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "● ≤ 4 h · ■ 4–8 · ▲ > 8 · ○ not recorded"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "● ≤ 4 h · ■ 4–8 · ▲ > 8 · ○ non noté"
-          }
-        },
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "● ≤ 4 сағ · ■ 4–8 · ▲ > 8 · ○ көрсетілмеген"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "● ≤ 4 год · ■ 4–8 · ▲ > 8 · ○ не вказано"
-          }
-        }
-      }
-    },
     "● записи · ▲ тревога · ✚ лечение" : {
       "extractionState" : "manual",
       "localizations" : {
