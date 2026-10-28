@@ -54,7 +54,12 @@ struct TodayRouter: View {
             case .treat:            TreatSheet(dog: dog)
             case .incident:         IncidentSheet(dog: dog)
             case .note:             NoteSheet(dog: dog)
-            case .training:         TrainingSessionScreen(dog: dog)
+            // Маршрут занятия оставлен ПУСТЫМ, а не удалён: `case
+            // .training` живёт в перечислении маршрутов, и убрать его
+            // значило бы править всех, кто по нему ветвится. Вход
+            // в занятия снят 28.10.2026 решением Виктории, и открыть
+            // этот маршрут теперь неоткуда.
+            case .training:         EmptyView()
             case .dayOut:           DayOutStartSheet(dog: dog)
             case .more:             MoreSheet(dog: dog, onOpenDog: onOpenDog)
             case .edit(let id):     EventEditSheet(eventID: id)

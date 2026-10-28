@@ -703,7 +703,12 @@ struct HealthScreen: View {
             TGDivider()
                         TGLink(title: "Выгрузка записей", systemImage: "tablecells") { VetReportScreen(dog: dog) }
             TGDivider()
-                        TGLink(title: "Подготовка к процедурам", systemImage: "hand.raised") { ProcedurePrepScreen() }
+                        // Второй вход в «Подготовку к процедурам» —
+                        // убран 28.10.2026 тем же решением Виктории,
+                        // что и первый в DogTab: «удали блок и логику
+                        // занятия и перенос навыка полностью везде».
+                        // Экран и модель остаются: ProcedureSkill — это
+                        // @Model в замороженной схеме.
         }
         .buttonStyle(.plain)
     }
