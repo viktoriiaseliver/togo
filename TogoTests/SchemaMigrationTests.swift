@@ -855,7 +855,7 @@ struct SchemaMigrationTests {
         #expect(второй.photo == nil, """
             у собаки без фотографии поле перестало быть пустым:
             перенос пустого значения во внешнее хранилище дал
-            не `nil`.
+            не `nil`, а \(String(describing: второй.photo?.count)) байт.
             """)
     }
 
