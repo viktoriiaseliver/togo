@@ -131,14 +131,26 @@ nonisolated enum DayOutAnalyzer {
         let long = daysOut.filter { $0.endedAt != nil && $0.wasLong() }
         guard !long.isEmpty else { return .empty }
 
-        let active = Diary.active(events)
+        // Записи РАЗ ЛОЖАТСЯ ПО ДНЯМ, а не фильтруются на каждый день.
+        //
+        // Прежде здесь стояло `active.filter { calendar.isDate(…) }`
+        // ВНУТРИ цикла по длинным дням: проход по всему дневнику
+        // столько раз, сколько таких дней, и каждое сравнение —
+        // `Calendar.isDate(_:inSameDayAs:)`, одна из самых дорогих
+        // операций Foundation.
+        //
+        // Та же форма, что чинили в календаре истории 28.10.2026:
+        // цена росла от ПРОИЗВЕДЕНИЯ дней на записи. Зовётся это
+        // из тела экрана «История» (`HistoryScreen:266`), то есть
+        // на каждую перерисовку.
+        let поДням = Diary.поДням(events, calendar: calendar)
         var trace = DayOutTrace(longDays: long.count, followedByLooseStool: 0,
                                 followedByPoorAppetite: 0, followedByIncident: 0)
 
         for day in long {
             guard let next = calendar.date(byAdding: .day, value: 1,
                                            to: calendar.startOfDay(for: day.startedAt)) else { continue }
-            let ofDay = active.filter { calendar.isDate($0.date, inSameDayAs: next) }
+            let ofDay = поДням[calendar.startOfDay(for: next)] ?? []
             guard !ofDay.isEmpty else { continue }   // день без записей ничего не говорит
 
             if ofDay.contains(where: { ($0.stoolForm?.bristolScore ?? 0) >= 6 }) {
