@@ -338,7 +338,22 @@ struct EventEditSheet: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
     @Environment(AppState.self) private var appState
+    /// Одна запись, отобранная БАЗОЙ по идентификатору.
+    ///
+    /// **Прежде здесь стоял `@Query` без отбора, а запись искалась
+    /// перебором: `events.first { $0.id == eventID }`.** Замер
+    /// 28.10.2026 по жалобе «виснет»: свойство `event` зовётся в теле
+    /// этого листа **76 раз**, и каждое обращение проходило весь
+    /// дневник. При 1400 записях это порядка ста тысяч сравнений
+    /// идентификаторов на одно открытие листа — плюс сам `@Query`
+    /// поднимал в память весь дневник, чтобы вернуть одну строку.
+    ///
+    /// > Отбор, сделанный в коде после запроса, выглядит так же,
+    /// > как отбор, сделанный запросом, и стоит несравнимо дороже:
+    /// > первый платит за все строки, второй — за одну.
     @Query private var events: [LogEvent]
+    /// Отметки этой прогулки — тоже отбором, а не фильтром по всему.
+    @Query private var отметкиПрогулки: [LogEvent]
     @Query private var careTasks: [CareTask]
     @Query private var medications: [Medication]
     @Query private var trainingSessions: [TrainingSession]
@@ -348,7 +363,18 @@ struct EventEditSheet: View {
     /// правки; ни граммов, ни текста заметки в слепке нет.
     @State private var openedAs: String?
 
-    private var event: LogEvent? { events.first { $0.id == eventID } }
+    init(eventID: UUID) {
+        self.eventID = eventID
+        // Предикаты строятся здесь, потому что `@Query` не видит
+        // свойств типа в объявлении: отбор по `eventID` возможен
+        // только через собственный инициализатор.
+        _events = Query(filter: #Predicate<LogEvent> { $0.id == eventID })
+        _отметкиПрогулки = Query(filter: #Predicate<LogEvent> {
+            $0.walkEventID == eventID && $0.deletedAt == nil
+        })
+    }
+
+    private var event: LogEvent? { events.first }
 
     /// Что в записи может измениться. Числа и текст не пишем — только то,
     /// заполнены они или нет, и на сколько.
@@ -592,9 +618,14 @@ struct EventEditSheet: View {
     }
 
     /// Отметки, сделанные внутри этой прогулки.
+    ///
+    /// Отбор делает база (`отметкиПрогулки`), а не фильтр по всему
+    /// дневнику. Проверка вида остаётся здесь: у записи, которая
+    /// не прогулка, отметок не бывает по смыслу, и предикат про это
+    /// не знает.
     private func marks(of event: LogEvent) -> [LogEvent] {
         guard event.kind == .walk else { return [] }
-        return events.filter { $0.walkEventID == event.id && $0.deletedAt == nil }
+        return отметкиПрогулки
     }
 
     private func deleteTitle(for event: LogEvent) -> String {
