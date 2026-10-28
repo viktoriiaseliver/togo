@@ -160,7 +160,7 @@ struct WalkModeScreen: View {
                 if размерТекста.isAccessibilitySize {
                     ScrollView {
                         VStack(spacing: 0) {
-                            WalkRing(dog: dog)
+                            кольцо(session)
                             таймер(session)
                         }
                         .frame(maxWidth: .infinity)
@@ -168,14 +168,14 @@ struct WalkModeScreen: View {
                     .scrollBounceBehavior(.basedOnSize)
                 } else {
                     Spacer(minLength: 0)
-                    WalkRing(dog: dog)
+                    кольцо(session)
                     таймер(session)
                     Spacer(minLength: 0)
                 }
             } else {
                 ScrollView {
                     VStack(spacing: Token.Space.s16) {
-                        WalkRing(dog: dog)
+                        кольцо(session)
                         таймер(session)
                         marksList(session)
                             .padding(.horizontal, Token.Spacing.screenPadding)
@@ -301,6 +301,18 @@ struct WalkModeScreen: View {
     /// Какую долю высоты занимает фото. Доля, а не точки: 520 из кадра
     /// 874 — это 0,59 экрана, и на SE точки соврали бы.
     private static let доляФона: CGFloat = 0.59
+
+    /// Кольцо времени с портретом внутри.
+    ///
+    /// Долю кольца считает `WalkRing`, а секунды сюда приезжают от того
+    /// же `tick`, что уже крутит экран, — своего таймера у кольца нет:
+    /// два тикающих источника на одном экране разошлись бы, и разошлись
+    /// бы молча.
+    private func кольцо(_ session: ActiveSession) -> some View {
+        WalkRing(dog: dog,
+                 прошло: session.duration(at: now),
+                 наПаузе: session.isPaused)
+    }
 
     /// Таймер и что под ним.
     ///
