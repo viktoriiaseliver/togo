@@ -12,11 +12,22 @@ import CoreTransferable
 struct SharedDiaryScreen: View {
     @Environment(\.familySync) private var sync
     @Environment(AppState.self) private var appState
+    @Environment(SubscriptionStore.self) private var store
     @Query private var dogs: [Dog]
 
     @State private var isOn = SharedDiarySettings.isOn
     @State private var invite: DiaryInvite?
     @State private var participants: [String] = []
+    /// Кто реально имеет доступ — **ось ворот семьи**, не показ.
+    ///
+    /// Отдельно от `participants` выше, и это не дубль: тот список
+    /// собран `compactMap(подпись)` и теряет участников, у которых
+    /// CloudKit не знает ни имени, ни почты, — для строки «В дневнике»
+    /// это верно (показывать нечего), а для счёта это был бы **молчаливый
+    /// недосчёт в пользу бесплатного плана**. Разбор —
+    /// `ProRequest.familyBeyondTwo(среди:)`.
+    @State private var состав: [УчастникДневника] = []
+    @State private var showPaywall = false
     @State private var failure: String?
     /// Непочиненный отказ приёма приглашения — тот, что показывала
     /// плашка пять секунд на холодном старте. Здесь он ждёт, пока
@@ -58,6 +69,7 @@ struct SharedDiaryScreen: View {
         .navigationTitle("Общий дневник")
         .cinemaScreen()
         .usageScreen(.sharedDiary)
+        .sheet(isPresented: $showPaywall) { NavigationStack { PaywallScreen() } }
         .task {
             // Читается ДО `refresh()` и вне его: у `refresh()` стоит
             // `guard isOn`, а неудавшийся приём оставляет обмен
@@ -179,18 +191,39 @@ struct SharedDiaryScreen: View {
         TGCard {
             TGSectionHeader(title: "пригласить")
             if let invite {
-                // Лист «Поделиться» в режиме совместной работы: там выбирают
-                // человека из контактов, и CloudKit записывает его в участники.
-                // Голая ссылка текстом при `publicPermission = .none` не
-                // открылась бы ни у кого.
-                ShareLink(item: invite,
-                          preview: SharePreview("Дневник · \(dog.flatMap(\.nameIfAny) ?? String(localized: "собаки"))",
-                                                image: Image(systemName: "pawprint.fill"))) {
-                    TGListRow(title: "Пригласить человека", systemImage: "person.badge.plus",
-                              accessory: .none)
+                // ВТОРАЯ РАЗДАЧА ДОСТУПА, И ДО 29.10.2026 ОНА ТОЖЕ БЫЛА
+                // БЕЗ ВОРОТ. Правило одно на обе — `ProGate`, — а не
+                // два `if` рядом: две копии порога разошлись бы молча,
+                // и обе были бы зелёными. Разбор и замер —
+                // `ProRequest.familyBeyondTwo(среди:)`.
+                if ProGate.isOpen(.familyBeyondTwo(среди: состав), isPro: store.isPro) {
+                    // Лист «Поделиться» в режиме совместной работы: там выбирают
+                    // человека из контактов, и CloudKit записывает его в участники.
+                    // Голая ссылка текстом при `publicPermission = .none` не
+                    // открылась бы ни у кого.
+                    ShareLink(item: invite,
+                              preview: SharePreview("Дневник · \(dog.flatMap(\.nameIfAny) ?? String(localized: "собаки"))",
+                                                    image: Image(systemName: "pawprint.fill"))) {
+                        TGListRow(title: "Пригласить человека", systemImage: "person.badge.plus",
+                                  accessory: .none)
+                    }
+                    .buttonStyle(.plain)
+                    TGExplainer(text: "Выбери, кого пригласить, — маму, мужа, ситтера. Откроет только он, со своего iCloud, и ему нужен Togo на телефоне. Кто уже в дневнике, видно выше.")
+                } else {
+                    Button { showPaywall = true } label: {
+                        TGListRow(title: "Открыть · Togo Pro", systemImage: "person.badge.plus",
+                                  accessory: .none)
+                    }
+                    .buttonStyle(.plain)
+                    TGExplainer(text: "Бесплатно — двое. Третий человек — Pro.")
+                    // Никого не отключаем — разбор у `ProGate.сверхПредела`.
+                    if ProGate.сверхПредела(состав, isPro: store.isPro) > 0 {
+                        TGBanner(tone: .waiting,
+                                 title: "Семья больше двух человек",
+                                 subtitle: "те, кто уже в семье, остаются с прежними правами",
+                                 systemImage: "person.3")
+                    }
                 }
-                .buttonStyle(.plain)
-                TGExplainer(text: "Выбери, кого пригласить, — маму, мужа, ситтера. Откроет только он, со своего iCloud, и ему нужен Togo на телефоне. Кто уже в дневнике, видно выше.")
                 Button("Перестать делиться", role: .destructive) { isStoppingShare = true }
                     .textStyle(AppFont.captionEmphasis.color(Token.Status.overdueText))
             } else {
@@ -324,6 +357,9 @@ struct SharedDiaryScreen: View {
             let share = try await FamilyShare.invite(dogName: dog.flatMap(\.nameIfAny) ?? String(localized: "собаки"))
             invite = DiaryInvite(share: share)
             participants = await FamilyShare.participants()
+            // Ссылка одна на зону, и `invite` возвращает ранее созданную:
+            // «только что создали» не значит «в дневнике никого».
+            состав = await FamilyShare.участники()
             UsageLog.note(.record, "invite", on: .sharedDiary)
         } catch {
             failure = error.localizedDescription
@@ -337,6 +373,7 @@ struct SharedDiaryScreen: View {
             try await FamilyShare.stopSharing()
             invite = nil
             participants = []
+            состав = []
         } catch {
             failure = error.localizedDescription
         }
@@ -370,6 +407,17 @@ struct SharedDiaryScreen: View {
             invite = await FamilyShare.existing().map(DiaryInvite.init)
         }
         participants = await FamilyShare.participants()
+        // Состав для ворот — только владельцу, и это не экономия запроса.
+        //
+        // Гость за чужой дневник не платит: ровно то же решение,
+        // что у `ProRequest.secondDog(among:гость:)` 28.10.2026 —
+        // «брать деньги за чужую вещь нельзя». Пригласить он и так
+        // не может (`потолокГостя` снимает `manageFamily` безусловно),
+        // а посчитать ему чужих участников значило бы завести число,
+        // которое ничего не решает и однажды решит.
+        if canInvite {
+            состав = await FamilyShare.участники()
+        }
     }
 }
 
