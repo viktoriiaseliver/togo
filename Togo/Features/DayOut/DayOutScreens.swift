@@ -335,7 +335,8 @@ struct DayOutEditSheet: View {
 struct DayOutCard: View {
     let day: DayOut
     let now: Date
-    /// Когда в последний раз предлагали воду.
+    /// Когда в последний раз предлагали воду — по записям `.water`
+    /// в ленте, а не по памяти экрана (29.10.2026).
     let lastWater: Date?
     var onWater: () -> Void
     var onFinish: () -> Void
@@ -371,7 +372,10 @@ struct DayOutCard: View {
                     Text("Пора предложить воду")
                         .textStyle(AppFont.body)
                     Spacer(minLength: 0)
-                    Button("Предложила", action: onWater)
+                    // «Предложено», а не «Предложила»: пол человека
+                    // приложение не знает (29.10.2026). Кнопка пишет
+                    // настоящую запись `.water` — см. `TodayScreen.предложитьВоду`.
+                    Button("Предложено", action: onWater)
                         .textStyle(AppFont.captionEmphasis)
                         .buttonStyle(.plain)
                         .foregroundStyle(Token.Status.doneText)
