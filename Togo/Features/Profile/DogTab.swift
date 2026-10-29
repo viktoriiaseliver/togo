@@ -694,30 +694,82 @@ struct DogTab: View {
     /// Без поездок и без права их заводить секции нет вовсе: пустая
     /// карточка под заголовком «поездки» с обещанием «режим включится
     /// сам» говорила бы помощнику о том, чего он сделать не может.
+    ///
+    /// # Прошедшие — отдельно и с датами (29.10.2026)
+    ///
+    /// Аудит вкладки: поездки лежали одним списком навсегда, новые
+    /// сверху по дню отъезда, и у каждой справа стоял только этот день.
+    /// Через полгода «Лион · 12 мая» прошлогодний и «Ницца · 3 нояб»
+    /// завтрашний читались одинаково — а важна из них одна.
+    ///
+    /// Теперь наверху то, что идёт и впереди, **ближайшая первой**;
+    /// прошедшие — своей секцией ниже, новые сверху, и справа у них
+    /// весь срок «с — по», а не день отъезда: про прошлую поездку
+    /// спрашивают «когда это было», а не «когда ехать».
     @ViewBuilder
     private func travel(_ dog: Dog) -> some View {
         let мои = trips.filter { $0.dog?.persistentModelID == dog.persistentModelID }
+        let сейчас = Date()
+        let впереди = мои.filter { !прошла($0, сейчас) }
+            .sorted { $0.startDate < $1.startDate }
+        let прошедшие = мои.filter { прошла($0, сейчас) }
             .sorted { $0.startDate > $1.startDate }
-        if canEdit || !мои.isEmpty {
-            поездки(мои, dog: dog)
+        if canEdit || !впереди.isEmpty {
+            поездки(впереди, dog: dog)
+        }
+        if !прошедшие.isEmpty {
+            прошедшиеПоездки(прошедшие, dog: dog)
         }
     }
 
-    private func поездки(_ мои: [Trip], dog: Dog) -> some View {
+    /// Поездка кончилась: прошёл и её последний день целиком.
+    ///
+    /// Граница — та же, что у `Trip.isActive`: последний день считается
+    /// до конца («возвращаются вечером»), и тем же календарём дневника.
+    /// Своё правило здесь дало бы поездку, которая в один и тот же вечер
+    /// «идёт» на её экране и «прошла» в списке.
+    private func прошла(_ trip: Trip, _ сейчас: Date) -> Bool {
+        let календарь = CalendarDay.дневниковыйКалендарь
+        guard let конец = календарь.date(byAdding: .day, value: 1,
+                                         to: календарь.startOfDay(for: trip.endDate)) else {
+            return false
+        }
+        return сейчас > конец
+    }
+
+    private func поездки(_ впереди: [Trip], dog: Dog) -> some View {
         секция("поездки",
-                      подпись: мои.isEmpty ? "режим включится сам в день отъезда" : nil) {
-            ForEach(мои) { trip in
+                      подпись: впереди.isEmpty ? "режим включится сам в день отъезда" : nil) {
+            ForEach(впереди) { trip in
                 TGLink(title: .готовая(trip.destination),
                        value: trip.isActive() ? "идёт" : .готовая(Fmt.shortDay(trip.startDate)),
                        systemImage: trip.transport.symbol) { TripScreen(trip: trip, dog: dog) }
                 // Черта — между строками, а не после каждой: у помощника
                 // строки «Ещё поездка» нет, и черта висела бы последней.
-                if canEdit || trip.id != мои.last?.id { TGDivider() }
+                if canEdit || trip.id != впереди.last?.id { TGDivider() }
             }
             // Заводит поездку тот, кто правит профиль: от неё меняется
             // план дня и напоминания у всей семьи (`НапоминанияПоездки`).
             if canEdit {
-                        TGLink(title: мои.isEmpty ? "Запланировать поездку" : "Ещё поездка", systemImage: "plus") { TripSetupScreen(dog: dog) }
+                        TGLink(title: впереди.isEmpty ? "Запланировать поездку" : "Ещё поездка", systemImage: "plus") { TripSetupScreen(dog: dog) }
+            }
+        }
+        .buttonStyle(.plain)
+    }
+
+    /// Прошедшие поездки: открываются так же, правятся и убираются
+    /// на своём экране, — но стоят ниже и не спорят с предстоящими.
+    private func прошедшиеПоездки(_ прошедшие: [Trip], dog: Dog) -> some View {
+        секция("прошедшие") {
+            ForEach(прошедшие) { trip in
+                // Срок — значением, а не ключом каталога: это даты,
+                // переводить в них нечего (тот же вид, что в шапке
+                // `TripScreen`, только без числа дней).
+                TGLink(title: .готовая(trip.destination),
+                       value: .готовая("\(Fmt.shortDay(trip.startDate)) — \(Fmt.shortDay(trip.endDate))"),
+                       systemImage: trip.transport.symbol,
+                       tone: Token.Ink.secondary) { TripScreen(trip: trip, dog: dog) }
+                if trip.id != прошедшие.last?.id { TGDivider() }
             }
         }
         .buttonStyle(.plain)
