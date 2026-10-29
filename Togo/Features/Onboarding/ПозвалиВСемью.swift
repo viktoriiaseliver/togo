@@ -104,7 +104,7 @@ struct ПозвалиВСемью: View {
     @ViewBuilder
     private var ссылкой: some View {
         TGCard {
-            TGSectionHeader(title: "или вставь ссылку")
+            TGSectionHeader(title: "Вставь ссылку или код приглашения")
             TGExplainer(text: "Если нажать ссылку в переписке не получается — скопируй её и вставь сюда. Это тот же самый адрес, он начинается на icloud.com.")
 
             // Подсказка в поле — `Text(verbatim:)`, а подпись — ключ

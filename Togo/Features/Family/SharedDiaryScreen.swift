@@ -209,6 +209,61 @@ struct SharedDiaryScreen: View {
                     }
                     .buttonStyle(.plain)
                     TGExplainer(text: "Выбери, кого пригласить, — маму, мужа, ситтера. Откроет только он, со своего iCloud, и ему нужен Togo на телефоне. Кто уже в дневнике, видно выше.")
+
+                    // Код приглашения — ВТОРОЙ вход для того, кого уже
+                    // позвали, а не замена приглашению.
+                    //
+                    // Заведён 29.10.2026 по прямой просьбе Виктории:
+                    // «дай код, который я и мама можем ввести, если оно
+                    // само не нашлось». Случай настоящий и частый: iOS
+                    // не передаёт ссылку через установку из App Store,
+                    // а переписка ломает адрес точкой в конце фразы.
+                    //
+                    // **Чего код НЕ делает, и это сказано человеку
+                    // словом, а не оставлено на опыт:** доступа он
+                    // не даёт. `share.publicPermission = .none`
+                    // (`FamilyShare.swift:220`), участники —
+                    // `specifiedRecipientsOnly`, то есть по адресу
+                    // входит только тот, кого владелец назвал в листе
+                    // «Поделиться». Сперва выбрать человека, потом —
+                    // код, если ссылка не доехала.
+                    //
+                    // > **Обещать можно только то, у чего есть дорога.**
+                    // > Код без приглашения дороги не имеет, и если бы
+                    // > мы показали его как «вход», отказ CloudKit
+                    // > пришёл бы человеку как наша поломка.
+                    //
+                    // Берётся хвост настоящего адреса, а не выдумывается:
+                    // `icloud.com/share/<код>`. Разбор на той стороне —
+                    // `ПриёмПоСсылке`, он принимает и адрес, и код.
+                    if let код = invite.share.url?.lastPathComponent, !код.isEmpty {
+                        TGTile {
+                            VStack(alignment: .leading, spacing: Token.Space.s4) {
+                                Text("Ссылка приглашения")
+                                    .textStyle(AppFont.micro, color: Token.Ink.secondary)
+                                // `verbatim` нарочно: код — не текст
+                                // интерфейса, в каталог ему нельзя.
+                                Text(verbatim: код)
+                                    .textStyle(AppFont.numeric(15), color: Token.Ink.primary)
+                                    .wraps()
+                                // Форма взята у соседа дословно
+                                // (`AlarmThresholdScreen:84`): цель
+                                // касания держит `minHeight`, а не кегль
+                                // текста, — иначе на мелком шрифте
+                                // кнопка уходит под 44 pt.
+                                Button("Скопировать") {
+                                    UIPasteboard.general.string = код
+                                    Haptics.success()
+                                }
+                                .textStyle(AppFont.captionEmphasis.color(Token.Action.primary))
+                                .buttonStyle(.plain)
+                                .frame(minHeight: Token.Size.tapTarget)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal, Token.Space.s12)
+                            .padding(.vertical, Token.Space.s8)
+                        }
+                    }
                 } else {
                     Button { showPaywall = true } label: {
                         TGListRow(title: "Открыть · Togo Pro", systemImage: "person.badge.plus",
