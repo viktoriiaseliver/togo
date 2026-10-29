@@ -855,6 +855,35 @@
         }
       }
     },
+    "%@ — в дневнике" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ is in the diary"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ est dans le journal"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ күнделікте"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ — у щоденнику"
+          }
+        }
+      }
+    },
     "%@: сейчас доз по расписанию нет." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2898,6 +2927,35 @@
         }
       }
     },
+    "без имени в iCloud" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "no name in iCloud"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "sans nom dans iCloud"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "iCloud-та аты жоқ"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "без імені в iCloud"
+          }
+        }
+      }
+    },
     "биохимия" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3010,6 +3068,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "О %@, як призначено"
+          }
+        }
+      }
+    },
+    "в дневнике" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "in the diary"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "dans le journal"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "күнделікте"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "у щоденнику"
           }
         }
       }
@@ -3420,6 +3507,35 @@
         }
       }
     },
+    "Включи — и второй человек будет отмечать со своего телефона. Записи сойдутся в одну ленту, у каждой виден автор. Собака приедет к нему сама — заводить свою не нужно." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Turn it on and the other person can log from their own phone. Entries meet in one feed, each with its author. The dog arrives on their phone by itself — no need to add one."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Active-le et l’autre personne notera depuis son téléphone. Les entrées se retrouvent dans un seul fil, chacune avec son auteur. Le chien arrive chez elle tout seul — inutile d’en créer un."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Қос — сонда екінші адам өз телефонынан белгілейді. Жазбалар бір лентаға жиналады, әрқайсысының авторы көрінеді. Ит оған өзі келеді — өз итін қосудың қажеті жоқ."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Увімкни — і друга людина відмічатиме зі свого телефона. Записи зійдуться в одну стрічку, у кожного видно автора. Собака приїде до неї сам — заводити свого не треба."
+          }
+        }
+      }
+    },
     "Вместе с ней из дневника пропадёт всё, что про неё записано: отметки, взвешивания, дела ухода, схемы лечения с дозами, шаги и занятия, поездки, документы, выезды, течки, запас корма, анализы, визиты, диагнозы и рецепты. Выгрузить дневник можно в «Настройки → Данные и приватность»." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3608,6 +3724,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Усе це приходить одним повідомленням — вранці, удень або ввечері, як налаштуєш, а не вісьмома поспіль. Переривають тільки доза і вікно натщесерце."
+          }
+        }
+      }
+    },
+    "Выбери человека в контактах — по номеру или почте его iCloud. Ссылка откроется только у него." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pick the person in your contacts — by the phone number or email of their iCloud. The link opens only for them."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Choisis la personne dans tes contacts — par le numéro ou l’e-mail de son iCloud. Le lien ne s’ouvre que chez elle."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Контактілерден адамды таңда — оның iCloud нөмірі не поштасы бойынша. Сілтеме тек онда ашылады."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Обери людину в контактах — за номером або поштою її iCloud. Посилання відкриється тільки в неї."
           }
         }
       }
@@ -3873,6 +4018,35 @@
         }
       }
     },
+    "Готовлю приглашение…" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Preparing the invitation…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Préparation de l’invitation…"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Шақыру дайындалуда…"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Готую запрошення…"
+          }
+        }
+      }
+    },
     "Давать после еды" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3991,6 +4165,93 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "діагнози"
+          }
+        }
+      }
+    },
+    "Дневник едет на этот телефон" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The diary is on its way to this phone"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le journal arrive sur ce téléphone"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Күнделік осы телефонға келе жатыр"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Щоденник їде на цей телефон"
+          }
+        }
+      }
+    },
+    "Дневник приедет сам вместе с собакой — обычно за минуту." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The diary arrives by itself, dog included — usually within a minute."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le journal arrive tout seul, avec le chien — en général en une minute."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Күнделік итпен бірге өзі келеді — әдетте бір минутта."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Щоденник приїде сам разом із собакою — зазвичай за хвилину."
+          }
+        }
+      }
+    },
+    "Дневник приехал · %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The diary has arrived · %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le journal est arrivé · %@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Күнделік келді · %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Щоденник приїхав · %@"
           }
         }
       }
@@ -4430,6 +4691,35 @@
         }
       }
     },
+    "доступ к дневнику" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "access to the diary"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "accès au journal"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "күнделікке қолжетімділік"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "доступ до щоденника"
+          }
+        }
+      }
+    },
     "Еда в %@" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4716,6 +5006,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "За ці 30 днів зважувань немає. Записати вагу — «Здоров'я» → «Вага»."
+          }
+        }
+      }
+    },
+    "Забираю…" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Fetching…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Récupération…"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Алынуда…"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Забираю…"
           }
         }
       }
@@ -5741,6 +6060,35 @@
         }
       }
     },
+    "Когда откроет, на экране «Семья» напротив имени появится «в дневнике». До тех пор — «приглашён · ждём, когда откроет»." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Once they open it, the “Family” screen will show “in the diary” next to the name. Until then — “invited · waiting for them to open it”."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Une fois ouvert, l’écran « Famille » affichera « dans le journal » à côté du nom. D’ici là — « invité · en attente d'ouverture »."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ашқанда «Отбасы» экранында атының жанында «күнделікте» шығады. Оған дейін — «шақырылды · ашуын күтеміз»."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Коли відкриє, на екрані «Сім'я» біля імені з’явиться «у щоденнику». До того — «запрошено · чекаємо, коли відкриє»."
+          }
+        }
+      }
+    },
     "когда сдавать" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5799,6 +6147,64 @@
         }
       }
     },
+    "Код не даёт доступа сам по себе: входит только тот, кого выбрали в «Отправить приглашение»." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The code gives no access on its own: only the person chosen in “Send the invitation” gets in."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le code ne donne pas accès à lui seul : seule la personne choisie dans « Envoyer l'invitation » peut entrer."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Кодтың өзі кіруге рұқсат бермейді: тек «Шақыру жіберу» ішінде таңдалған адам кіреді."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Код сам по собі доступу не дає: входить лише той, кого обрали в «Надіслати запрошення»."
+          }
+        }
+      }
+    },
+    "код, если ссылка не откроется" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "code, in case the link won’t open"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "code, si le lien ne s’ouvre pas"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "сілтеме ашылмаса — код"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "код, якщо посилання не відкриється"
+          }
+        }
+      }
+    },
     "кровь (ОАК)" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5853,6 +6259,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Хто чергує, видно в «Сім'ї». Нагадування про дози приходять на кожен телефон зі щоденником, де їх дозволили. Взяти чи передати чергування — одна дія."
+          }
+        }
+      }
+    },
+    "кто и с какими правами" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "who and with what rights"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "qui et avec quels droits"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "кім және қандай құқықпен"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "хто і з якими правами"
           }
         }
       }
@@ -5975,6 +6410,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "ліки"
+          }
+        }
+      }
+    },
+    "Лента, дозы и уход — общие. Твои отметки уходят в этот же дневник." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The feed, doses and care are shared. Your entries go into this same diary."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le fil, les doses et les soins sont partagés. Tes entrées vont dans ce même journal."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Лента, дозалар мен күтім — ортақ. Сенің белгілерің осы күнделікке кетеді."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Стрічка, дози й догляд — спільні. Твої відмітки йдуть у цей самий щоденник."
           }
         }
       }
@@ -6242,6 +6706,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "напоготові · телефони · що не можна їсти · довідка лікарю"
+          }
+        }
+      }
+    },
+    "Нажать прямо в переписке и согласиться. Если Togo открылся с приветствием — «Меня позвали» и вставить ссылку или код ниже." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tap it right in the chat and accept. If Togo opens with the welcome screen — “I was invited” and paste the link or the code below."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Appuyer directement dans la conversation et accepter. Si Togo s’ouvre sur l’accueil — « On m'a invité » et coller le lien ou le code ci-dessous."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Хат алмасудың өзінде басып, келісу. Togo сәлемдесумен ашылса — «Мені шақырды» және төмендегі сілтемені не кодты қою."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Натиснути прямо в листуванні й погодитися. Якщо Togo відкрився з привітанням — «Мене запросили» і вставити посилання чи код нижче."
           }
         }
       }
@@ -6855,6 +7348,35 @@
         }
       }
     },
+    "Обычно это минута. Свою собаку заводить не нужно — она приедет вместе с записями." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Usually it takes a minute. No need to add your own dog — it arrives with the entries."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "En général une minute. Pas besoin de créer ton chien — il arrive avec les entrées."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Әдетте бір минут. Өз итіңді қосудың қажеті жоқ — ол жазбалармен бірге келеді."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Зазвичай це хвилина. Свого собаку заводити не треба — він приїде разом із записами."
+          }
+        }
+      }
+    },
     "Ограничения на лакомства нет: их можно брать из дневной порции — тогда награды не прибавляют веса." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6909,6 +7431,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Залиш хоча б один прийом — без годин нагадувати нема про що"
+          }
+        }
+      }
+    },
+    "Открыть ссылку из сообщения" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Open the link from the message"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ouvrir le lien du message"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Хабардағы сілтемені ашу"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Відкрити посилання з повідомлення"
           }
         }
       }
@@ -7145,6 +7696,35 @@
         }
       }
     },
+    "Отмечает со своего телефона" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Logs from their own phone"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Note depuis son propre téléphone"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Өз телефонынан белгілейді"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Відмічає зі свого телефона"
+          }
+        }
+      }
+    },
     "Отмечает, что налили воды. Без количества: сколько выпито, не знает никто." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7170,6 +7750,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Позначає, що налили води. Без кількості: скільки випито, не знає ніхто."
+          }
+        }
+      }
+    },
+    "Отправь приглашение · %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Send the invitation · %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Envoie l’invitation · %@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Шақыру жібер · %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Надішли запрошення · %@"
           }
         }
       }
@@ -7373,6 +7982,64 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "по %@, коли собака була з тобою довше %@"
+          }
+        }
+      }
+    },
+    "Позвать в дневник" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Invite to the diary"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inviter dans le journal"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Күнделікке шақыру"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Покликати в щоденник"
+          }
+        }
+      }
+    },
+    "Пока никого не позвали. «Позвать в дневник» внизу — приглашение создастся само." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "No one invited yet. “Invite to the diary” below — the invitation will be created for you."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Personne n’est encore invité. « Inviter dans le journal » en bas — l’invitation se crée toute seule."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Әзірге ешкім шақырылмады. Төменде «Күнделікке шақыру» — шақыру өзі жасалады."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Поки нікого не запросили. «Покликати в щоденник» внизу — запрошення створиться саме."
           }
         }
       }
@@ -7702,6 +8369,64 @@
         }
       }
     },
+    "последний шаг на этом телефоне" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "last step on this phone"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "dernière étape sur ce téléphone"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "осы телефондағы соңғы қадам"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "останній крок на цьому телефоні"
+          }
+        }
+      }
+    },
+    "Поставить Togo" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Install Togo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Installer Togo"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Togo орнату"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Встановити Togo"
+          }
+        }
+      }
+    },
     "Предложено" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7830,6 +8555,35 @@
         }
       }
     },
+    "Приглашение готово, а роль не записалась — поменяй её на экране «Семья»." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The invitation is ready, but the role wasn’t saved — change it on the “Family” screen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L’invitation est prête, mais le rôle n’a pas été enregistré — modifie-le sur l’écran « Famille »."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Шақыру дайын, бірақ рөл сақталмады — оны «Отбасы» экранында өзгерт."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Запрошення готове, а роль не записалась — зміни її на екрані «Сім'я»."
+          }
+        }
+      }
+    },
     "Приглашение не открылось: iCloud просит подождать. Нажми ссылку снова через несколько минут." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7855,6 +8609,122 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Запрошення не відкрилося: iCloud просить зачекати. Натисни посилання знову за кілька хвилин."
+          }
+        }
+      }
+    },
+    "приглашение открыто, записи теперь общие" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "the invitation was opened, entries are now shared"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "l’invitation a été ouverte, les entrées sont désormais partagées"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "шақыру ашылды, жазбалар енді ортақ"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "запрошення відкрито, записи тепер спільні"
+          }
+        }
+      }
+    },
+    "Приглашение открыто: записи теперь общие." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The invitation was opened: entries are now shared."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L’invitation a été ouverte : les entrées sont désormais partagées."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Шақыру ашылды: жазбалар енді ортақ."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Запрошення відкрито: записи тепер спільні."
+          }
+        }
+      }
+    },
+    "приглашение принято" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "invitation accepted"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "invitation acceptée"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "шақыру қабылданды"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "запрошення прийнято"
+          }
+        }
+      }
+    },
+    "приглашён · ждём, когда откроет" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "invited · waiting for them to open it"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "invité · en attente d'ouverture"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "шақырылды · ашуын күтеміз"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "запрошено · чекаємо, коли відкриє"
           }
         }
       }
@@ -7890,6 +8760,64 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "прийде у вибрану годину разом з рештою, а не окремо"
+          }
+        }
+      }
+    },
+    "пришлём приглашение — записи сойдутся в один дневник" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "we’ll send an invitation — entries will meet in one diary"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "on envoie une invitation — les entrées se retrouvent dans un seul journal"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "шақыру жібереміз — жазбалар бір күнделікке жиналады"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "надішлемо запрошення — записи зійдуться в один щоденник"
+          }
+        }
+      }
+    },
+    "Проверить потом можно на экране «Семья»: там сверху написано, в чьём ты дневнике." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "You can check later on the “Family” screen: the top says whose diary you’re in."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tu pourras vérifier plus tard sur l’écran « Famille » : en haut, il est écrit dans quel journal tu es."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Кейін «Отбасы» экранынан тексеруге болады: жоғарыда кімнің күнделігінде екенің жазылған."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Перевірити потім можна на екрані «Сім'я»: там угорі написано, у чиєму ти щоденнику."
           }
         }
       }
@@ -8167,6 +9095,35 @@
         }
       }
     },
+    "Роли и доступ по одному" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Roles and access, one by one"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Rôles et accès un par un"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Рөлдер мен қолжетімділік бір-бірлеп"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ролі й доступ по одному"
+          }
+        }
+      }
+    },
     "с наклейки в паспорте" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -8411,6 +9368,35 @@
         }
       }
     },
+    "Свою собаку не заводить" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Don’t add a dog of their own"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ne pas créer son propre chien"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Өз итін қоспау"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Свого собаку не заводити"
+          }
+        }
+      }
+    },
     "Сегодня записей пока нет." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -8581,6 +9567,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Скільки з'їдено за два тижні"
+          }
+        }
+      }
+    },
+    "Собака и её профиль, вся лента дня, уход и прививки, схемы лечения и отметки доз, вес, документы, анализы, визиты и клиники. Своё у каждого: поездки, дни с собакой, течки, запас корма и список семьи." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The dog and its profile, the whole daily feed, care and vaccines, treatment schedules and dose marks, weight, documents, lab results, visits and clinics. Each keeps their own: trips, days with the dog, heats, food stock and the family list."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le chien et son profil, tout le fil du jour, soins et vaccins, schémas de traitement et prises, poids, documents, analyses, visites et cliniques. Chacun garde les siens : voyages, journées avec le chien, chaleurs, stock de nourriture et liste de la famille."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ит және оның профилі, күннің бүкіл лентасы, күтім мен екпелер, емдеу схемалары мен доза белгілері, салмақ, құжаттар, талдаулар, сапарлар мен клиникалар. Әркімнің өзінікі: сапарлар, итпен күндер, күйлеу, жем қоры және отбасы тізімі."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Собака і її профіль, уся стрічка дня, догляд і щеплення, схеми лікування й відмітки доз, вага, документи, аналізи, візити й клініки. У кожного своє: поїздки, дні із собакою, тічки, запас корму й список сім’ї."
           }
         }
       }
@@ -9229,6 +10244,35 @@
         }
       }
     },
+    "Твои отметки уходят в него, а записи оттуда — к тебе. Отмечай как обычно." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Your entries go into it, and its entries come to you. Log as usual."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tes entrées y vont, et les siennes viennent à toi. Note comme d’habitude."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Сенің белгілерің соған кетеді, ал ондағы жазбалар — саған. Әдеттегідей белгіле."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Твої відмітки йдуть у нього, а записи звідти — до тебе. Відмічай як завжди."
+          }
+        }
+      }
+    },
     "Тебя зовут в дневник %@" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -9293,6 +10337,35 @@
         }
       }
     },
+    "Тем же путём, каким его поставили здесь. Войти в iCloud в настройках телефона." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The same way it was installed here. Sign in to iCloud in the phone’s Settings."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "De la même façon qu’ici. Se connecter à iCloud dans les Réglages du téléphone."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Мұнда орнатылғандай. Телефон баптауларында iCloud-қа кіру."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Так само, як його встановили тут. Увійти в iCloud у налаштуваннях телефона."
+          }
+        }
+      }
+    },
     "течки" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -9318,6 +10391,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "тічки"
+          }
+        }
+      }
+    },
+    "только имя автора здесь: телефон один на семью" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "just an author name here: one phone for the family"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "juste un nom d’auteur ici : un téléphone pour la famille"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "мұнда тек автордың аты: отбасыға бір телефон"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "лише ім’я автора тут: один телефон на сім’ю"
           }
         }
       }
@@ -9417,6 +10519,122 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Ти · %@"
+          }
+        }
+      }
+    },
+    "Ты в дневнике · %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "You’re in the diary · %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tu es dans le journal · %@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Сен күнделіктесің · %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ти в щоденнику · %@"
+          }
+        }
+      }
+    },
+    "Ты в дневнике · %@. Собака приедет вместе с записями — обычно за минуту. Свою заводить не нужно." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "You’re in the diary · %@. The dog arrives with the entries — usually within a minute. No need to add your own."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tu es dans le journal · %@. Le chien arrive avec les entrées — en général en une minute. Inutile de créer le tien."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Сен күнделіктесің · %@. Ит жазбалармен бірге келеді — әдетте бір минутта. Өз итіңді қосудың қажеті жоқ."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ти в щоденнику · %@. Собака приїде разом із записами — зазвичай за хвилину. Свого заводити не треба."
+          }
+        }
+      }
+    },
+    "Ты в общем дневнике" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "You’re in a shared diary"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tu es dans un journal partagé"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Сен ортақ күнделіктесің"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ти в спільному щоденнику"
+          }
+        }
+      }
+    },
+    "Ты в общем дневнике. Собака приедет вместе с записями — обычно за минуту. Свою заводить не нужно." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "You’re in a shared diary. The dog arrives with the entries — usually within a minute. No need to add your own."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tu es dans un journal partagé. Le chien arrive avec les entrées — en général en une minute. Inutile de créer le tien."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Сен ортақ күнделіктесің. Ит жазбалармен бірге келеді — әдетте бір минутта. Өз итіңді қосудың қажеті жоқ."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ти в спільному щоденнику. Собака приїде разом із записами — зазвичай за хвилину. Свого заводити не треба."
           }
         }
       }
@@ -9980,6 +11198,64 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "що не можна їсти"
+          }
+        }
+      }
+    },
+    "Что общее" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "What’s shared"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ce qui est partagé"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Не ортақ"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Що спільне"
+          }
+        }
+      }
+    },
+    "что сделать на телефоне · %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "what to do on the phone · %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "à faire sur le téléphone · %@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "телефонда не істеу керек · %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "що зробити на телефоні · %@"
           }
         }
       }
@@ -136317,13 +137593,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "This doesn't look like an invitation. You need an icloud.com link — it's sent from Togo, “Family” → Invite to diary."
+            "value" : "This doesn't look like an invitation. You need an icloud.com link — it's sent from Togo, “Family” → “Invite to the diary”."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cela ne ressemble pas à une invitation. Il faut un lien icloud.com — il est envoyé depuis Togo, « Famille » → « Inviter au journal »."
+            "value" : "Cela ne ressemble pas à une invitation. Il faut un lien icloud.com — il est envoyé depuis Togo, « Famille » → « Inviter dans le journal »."
           }
         },
         "kk" : {
@@ -136341,7 +137617,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Це не схоже на запрошення. Потрібне посилання на icloud.com — його надсилають із Togo, «Сім'я» → «Покликати у щоденник»."
+            "value" : "Це не схоже на запрошення. Потрібне посилання на icloud.com — його надсилають із Togo, «Сім'я» → «Покликати в щоденник»."
           }
         }
       }

@@ -348,6 +348,21 @@ enum NotificationCenterService {
             UNNotificationRequest(identifier: id, content: content, trigger: trigger))
     }
 
+    /// «Мама — в дневнике»: владельцу, когда приглашённый вошёл
+    /// (`ВошедшиеВДневник`, 29.10.2026). Через секунду — это весть,
+    /// а не напоминание; `.active`, без прерывания фокуса.
+    static func scheduleJoined(id: String, title: String, body: String) async -> ИсходЗапроса {
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.body = body
+        content.sound = .default
+        content.interruptionLevel = .active
+        content.threadIdentifier = "family"
+        return await поставить(UNNotificationRequest(
+            identifier: id, content: content,
+            trigger: UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)))
+    }
+
     static func cancel(ids: [String]) {
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ids)
     }

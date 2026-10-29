@@ -37,6 +37,7 @@ struct TodayScreen: View {
 
     @Environment(AppState.self) private var appState
     @Environment(Settings.self) private var settings
+    @Environment(\.familySync) private var sync
     @Environment(\.modelContext) private var context
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.openURL) private var openURL
@@ -161,14 +162,30 @@ struct TodayScreen: View {
 
     /// Собаку пропустили на онбординге. Говорим об этом прямо: пустой день
     /// без объяснения читается как сломанное приложение, а не как выбор.
+    @ViewBuilder
     private var нетСобаки: some View {
-        EmptyStateCard(
-            subject: .day,
-            title: "Собака пока не заведена",
-            message: "Отмечать некого: еда, выходы и дозы считаются по собаке. Заведи её — нужны только кличка и вес.",
-            actionTitle: "Завести собаку",
-            action: onOpenDog
-        )
+        // Гость в чужом дневнике собаку НЕ заводит — она приедет сама.
+        // До 29.10.2026 и ему говорили «Заведи её», и мама Виктории
+        // заводила свою пустую собаку поверх дневника, который ехал.
+        if SharedZoneOwner.isGuest {
+            EmptyStateCard(
+                subject: .day,
+                title: "Дневник едет на этот телефон",
+                message: .готовая(ЧейДневник.имя.map {
+                    String(localized: "Ты в дневнике · \($0). Собака приедет вместе с записями — обычно за минуту. Свою заводить не нужно.")
+                } ?? String(localized: "Ты в общем дневнике. Собака приедет вместе с записями — обычно за минуту. Свою заводить не нужно.")),
+                actionTitle: "Забрать сейчас",
+                action: { Task { await sync?.fetchNow() } }
+            )
+        } else {
+            EmptyStateCard(
+                subject: .day,
+                title: "Собака пока не заведена",
+                message: "Отмечать некого: еда, выходы и дозы считаются по собаке. Заведи её — нужны только кличка и вес.",
+                actionTitle: "Завести собаку",
+                action: onOpenDog
+            )
+        }
     }
 
     /// Экран читается сверху вниз одним взглядом: что случилось, что идёт
