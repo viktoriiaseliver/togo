@@ -774,6 +774,26 @@ struct WalkModeScreen: View {
             return
         }
 
+        // Короткий выход, открытый сюда кнопкой «Открыть» или тапом
+        // по живой активности, уже лежит в ленте с начала. Прогулкой
+        // поверх него он ложился вторым выходом за ту же дверь
+        // (29.10.2026). Одна запись — та, что есть; см. `OutingFinisher.close`.
+        if finished.kind == .outing {
+            guard appState.can(.logBasics) else {
+                appState.showFailure(String(localized: "Записывать может тот, кому это разрешено"))
+                dismiss()
+                return
+            }
+            if !OutingFinisher.close(finished, dog: dog, at: Date(), context: context) {
+                Haptics.warning()
+                appState.showFailure("Ответ не записался · отметь ещё раз")
+            }
+            OutingFinisher.записатьПрочиеОтметки(finished, dog: dog,
+                                                 appState: appState, context: context)
+            показатьИтог(finished)
+            return
+        }
+
         let log = EventLog(context: context, appState: appState)
         let duration = Int(finished.duration())
 

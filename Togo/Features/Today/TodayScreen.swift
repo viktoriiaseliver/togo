@@ -352,6 +352,14 @@ struct TodayScreen: View {
         // прогулки — а дубль прогулки хуже её отсутствия, потому что
         // он уезжает в сводку врачу.
         guard let finished = appState.finishSession() else { return }
+        // Короткий выход уже лежит в ленте с начала — второй записью
+        // («прогулкой») его не дублируем. См. `OutingFinisher.close`.
+        if finished.kind == .outing {
+            OutingFinisher.close(finished, dog: dog, at: Date(), context: context)
+            OutingFinisher.записатьПрочиеОтметки(finished, dog: dog,
+                                                 appState: appState, context: context)
+            return
+        }
         WalkRecorder.record(finished, dog: dog,
                             author: AppState.storedUserName, context: context)
     }
