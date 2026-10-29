@@ -57,6 +57,8 @@ struct DogTab: View {
     /// Снимок, выбранный кнопкой фотоаппарата на описи собаки.
     @State private var выбранныйСнимок: PhotosPickerItem?
     @State private var кладуСнимок = false
+    /// Человек попросил убрать снимок — ждёт подтверждения.
+    @State private var убратьСнимокСпрошено = false
 
     @Environment(\.modelContext) private var context
 
@@ -201,6 +203,7 @@ struct DogTab: View {
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
+            if dog.снимок != nil { кнопкаУбратьСнимок }
             кнопкаСнимка
         }
         .padding(Token.Spacing.cardPadding)
@@ -271,6 +274,37 @@ struct DogTab: View {
         // у значка камеры нет, поэтому слово живёт в имени
         // для озвучки; разбор границы — у первого входа.
         .accessibilityLabel(кладуСнимок ? "Кладу снимок…" : "Снимок собаки")
+    }
+
+    /// Убрать снимок — рядом с тем, кто его кладёт.
+    ///
+    /// Отдельной кнопкой, а не пунктом меню над фотоаппаратом:
+    /// `PhotosPicker` внутри `Menu` — второй способ открыть выбор,
+    /// и у Togo записано, чем кончаются два пути к одному делу.
+    /// Есть только когда снимок есть: убрать букву нельзя.
+    private var кнопкаУбратьСнимок: some View {
+        Button { убратьСнимокСпрошено = true } label: {
+            Image(systemName: "trash")
+                .font(.system(size: Token.Size.iconMd, weight: .medium))
+                .foregroundStyle(Token.Ink.secondary)
+                .frame(width: Token.Size.tapTarget, height: Token.Size.tapTarget)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .disabled(кладуСнимок)
+        .accessibilityLabel("Убрать фото")
+        .confirmationDialog("Убрать фото?", isPresented: $убратьСнимокСпрошено,
+                            titleVisibility: .visible) {
+            Button("Убрать", role: .destructive) {
+                if let dog {
+                    ФотоСобаки.убрать(у: dog, context: context,
+                                      appState: appState, экран: .profile)
+                }
+            }
+            Button("Отмена", role: .cancel) {}
+        } message: {
+            Text("Вместо снимка будет буква клички. Если это фото стояло фоном под экранами, фон тоже уйдёт.")
+        }
     }
 
     /// **Ярлык `PhotosPicker` — `@Sendable`-замыкание.** Внутрь него
@@ -608,6 +642,16 @@ struct TripScreen: View {
             }
 
             PackingListCard(dog: dog, days: trip.dayCount())
+
+            // Правка — тем же экраном, которым поездку заводили.
+            // До 29.10.2026 её здесь не было: опечатка в «куда» или
+            // сдвиг на день лечились только удалением.
+            TGCard(spacing: 0) {
+                TGLink(title: "Поправить поездку", systemImage: "pencil") {
+                    TripSetupScreen(dog: dog, trip: trip)
+                }
+            }
+            .buttonStyle(.plain)
 
             TGButton(title: "Убрать поездку", variant: .destructive,
                      size: .medium, systemImage: "trash") { isConfirmingDelete = true }

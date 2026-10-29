@@ -81,6 +81,38 @@ enum ФотоСобаки {
         Haptics.success()
         return true
     }
+
+    /// Убрать снимок у собаки. Возвращает, убралось ли.
+    ///
+    /// **До 29.10.2026 снимок можно было положить и заменить, но не
+    /// убрать**: входы были только у `положить`, и неудачное фото
+    /// оставалось аватаром, подложкой и виджетом навсегда.
+    ///
+    /// Здесь же, а не на вкладке, по той же причине, что у `положить`:
+    /// запись в `Dog.photo` идёт одним путём (`ЖетонФотоСобакиTests
+    /// .писательОдин`). Откат — как у соседа: не сохранилось — снимок
+    /// возвращается и человеку говорится, а подложка не трогается.
+    @MainActor
+    @discardableResult
+    static func убрать(у dog: Dog,
+                       context: ModelContext,
+                       appState: AppState?,
+                       экран: UsageLog.Screen) -> Bool {
+        let былоФото = dog.photo
+        dog.photo = nil
+        guard context.persist(otherwise: { dog.photo = былоФото }) else {
+            Haptics.warning()
+            UsageLog.note(.record, "dogPhotoRemove", on: экран, outcome: .failed)
+            appState?.showFailure(String(localized: "Не удалилось · нажми ещё раз"))
+            return false
+        }
+        UsageLog.note(.record, "dogPhotoRemove", on: экран, outcome: .done)
+        // Подложка — после записи, а не до: при отказе хранилища снимок
+        // у собаки остался, и гасить его на экранах было бы неправдой.
+        BackgroundStore.shared.забытьФотоСобаки(былоФото)
+        Haptics.warning()
+        return true
+    }
 }
 
 /// Аватар-жетон в шапке «Сегодня». **Пустой — открывает выбор фото.**

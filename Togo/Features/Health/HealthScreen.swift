@@ -135,7 +135,13 @@ struct HealthScreen: View {
                 // Цена копии измерена не здесь: `QuotedNamesTests` ловил
                 // ровно это трижды за сутки 25.10.2026.
                 if !canEdit { ПлашкаПрава(право: .editTreatment) }
-                if действующиеСхемы.isEmpty && прошлыеСхемы.isEmpty {
+                // Схемы — ОДИН раз на перерисовку. `medications` фильтрует
+                // все схемы базы, и до 29.10.2026 его звали пять раз за
+                // `body`: дважды проверка пустоты, `ForEach` и трижды
+                // раздел прошлых (с сортировкой каждый раз).
+                let действующие = действующиеСхемы
+                let прошлые = прошлыеСхемы
+                if действующие.isEmpty && прошлые.isEmpty {
                     EmptyStateCard(
                         subject: .health,
                         title: "Схемы лечения пока нет",
@@ -144,11 +150,11 @@ struct HealthScreen: View {
                         action: canEdit ? { isAdding = true } : nil
                     )
                 } else {
-                    ForEach(действующиеСхемы) { medication in
+                    ForEach(действующие) { medication in
                         карточкаЛечения(medication)
                         карточкаЗапаса(medication)
                     }
-                    прошлыеСхемыРаздел
+                    прошлыеСхемыРаздел(прошлые)
                 }
 
                 показательКарточка
@@ -199,7 +205,7 @@ struct HealthScreen: View {
     /// в ней осталось бы от последнего дня приёма — то есть врало бы
     /// про сегодня.
     @ViewBuilder
-    private var прошлыеСхемыРаздел: some View {
+    private func прошлыеСхемыРаздел(_ прошлыеСхемы: [Medication]) -> some View {
         if !прошлыеСхемы.isEmpty {
             TGCard {
                 DisclosureGroup {
@@ -1210,7 +1216,13 @@ struct WeightScreen: View {
                         // История читается всеми, а удаляется по праву:
                         // без права строка остаётся строкой, а не
                         // выключенной кнопкой, ведущей в тишину.
-                        Button { if canEdit { removing = entry } } label: {
+                        // Тап открывает ПРАВКУ, а удаление — внутри неё.
+                        // До 29.10.2026 тап вёл прямо в «Удалить?»:
+                        // опечатку «12,4 → 124» можно было только стереть
+                        // и набрать заново — и вместе с ней терялся день
+                        // взвешивания, потому что новая запись встаёт
+                        // сегодняшним числом.
+                        Button { if canEdit { правится = entry } } label: {
                             HStack {
                                 Text(Fmt.shortDay(entry.date)).textStyle(AppFont.caption)
                                 Spacer()
@@ -1230,7 +1242,7 @@ struct WeightScreen: View {
                     // удалить: иначе она посылает человека делать то,
                     // чего ему не дадут.
                     if canEdit {
-                        TGExplainer(text: "Ошиблась — тапни по строке и удали.")
+                        TGExplainer(text: "Ошиблась — тапни по строке: там можно поправить число и день или удалить.")
                     }
                 }
             }
@@ -1240,15 +1252,8 @@ struct WeightScreen: View {
         // Выход с цифровой клавиатуры: у `.decimalPad` своей клавиши
         // возврата нет.
         .готовоНадКлавиатурой { весВФокусе = false }
-        .confirmationDialog("Удалить взвешивание?",
-                            isPresented: Binding(get: { removing != nil },
-                                                 set: { if !$0 { removing = nil } }),
-                            titleVisibility: .visible,
-                            presenting: removing) { entry in
-            Button("Удалить", role: .destructive) { delete(entry) }
-            Button("Отмена", role: .cancel) { removing = nil }
-        } message: { entry in
-            Text("\(Fmt.shortDay(entry.date)) · \(Fmt.weight(entry.kg)). Из графика и из коридора веса запись тоже уйдёт.")
+        .sheet(item: $правится) { entry in
+            WeightEntryEditorSheet(entry: entry, dog: dog, canEdit: canEdit) { delete($0) }
         }
     }
 
@@ -1296,8 +1301,9 @@ struct WeightScreen: View {
     /// снимает его в «Семье», и обмен приносит это на чужой телефон).
     /// Проверка у показа отвечает на «рисовать ли кнопку»,
     /// а у записи — на «можно ли писать», и это разные вопросы.
-    private func delete(_ entry: WeightEntry) {
-        guard canEdit, let dog else { return }
+    @discardableResult
+    private func delete(_ entry: WeightEntry) -> Bool {
+        guard canEdit, let dog else { return false }
         // Надгробие вместо `context.delete`: вес — то, от чего считается
         // доза, и расхождение веса между двумя людьми даёт расхождение
         // дозы. Удаление, не доехавшее до второго человека, оставляло
@@ -1320,14 +1326,15 @@ struct WeightScreen: View {
             откатНадгробия()
         }) else {
             Haptics.warning()
-            return appState.showFailure("Взвешивание не удалилось · попробуй ещё раз")
+            appState.showFailure("Взвешивание не удалилось · попробуй ещё раз")
+            return false
         }
         Haptics.warning()
-        removing = nil
+        return true
     }
 
-    /// Какую запись предлагается удалить.
-    @State private var removing: WeightEntry?
+    /// Какую запись открыли на правку.
+    @State private var правится: WeightEntry?
 
     private var parsedWeight: Double? {
         Double(newWeight.replacingOccurrences(of: ",", with: "."))
@@ -1340,6 +1347,7 @@ struct WeightScreen: View {
         let entry = WeightEntry(kg: kg)
         entry.dog = dog
         context.insert(entry)
+        let былВес = dog.weightKg
         dog.weightKg = kg
 
         // Взвесили — значит, напоминание «Взвесить» отработало. Просить
@@ -1351,11 +1359,137 @@ struct WeightScreen: View {
         guard context.persist(otherwise: {
             context.delete(entry)
             задача?.lastDone = былоСделано
+            // Текущий вес возвращается вместе с записью: до 29.10.2026
+            // откат его не трогал, и при отказе хранилища приложение
+            // показывало вес, которого нет ни в одном взвешивании.
+            dog.weightKg = былВес
         }) else {
             Haptics.warning()
             return appState.showFailure("Вес не записался · попробуй ещё раз")
         }
         newWeight = ""
         Haptics.success()
+    }
+}
+
+/// Правка одного взвешивания: число, день и удаление.
+///
+/// **Вес — то, от чего считается доза**, поэтому текущий вес собаки
+/// пересчитывается здесь же: правили последнее взвешивание — меняется
+/// и `dog.weightKg`, перенесли его днём раньше другого — текущим
+/// становится то, что теперь последнее. Правило одно с удалением
+/// (`WeightScreen.delete`): текущий вес — это вес последнего замера.
+struct WeightEntryEditorSheet: View {
+    let entry: WeightEntry
+    let dog: Dog?
+    let canEdit: Bool
+    /// Удаление делает хозяин списка: у него откат текущего веса
+    /// и надгробие, и второй копии этого правила здесь не нужно.
+    let удалить: (WeightEntry) -> Bool
+
+    @Environment(\.modelContext) private var context
+    @Environment(\.dismiss) private var dismiss
+    @Environment(AppState.self) private var appState
+
+    @State private var вес = ""
+    @State private var день = Date()
+    @State private var загружено = false
+    @State private var удаляем = false
+    @FocusState private var весВФокусе: Bool
+
+    private var разобранный: Double? {
+        ЧислоСБланка.разобрать(вес).flatMap { $0 > 0 ? $0 : nil }
+    }
+
+    var body: some View {
+        TGSheet(title: "Взвешивание", subtitle: .готовая(Fmt.shortDay(entry.date)),
+                closeTitle: "Закрыть") {
+            TGCard(spacing: 0) {
+                LabeledField(label: "Вес") {
+                    HStack(spacing: Token.Space.s4) {
+                        TextField("4,1", text: $вес)
+                            .keyboardType(.decimalPad)
+                            .focused($весВФокусе)
+                        Text("кг").textStyle(AppFont.caption)
+                    }
+                }
+                TGDivider()
+                DatePicker("Дата", selection: $день, in: ...Date(), displayedComponents: .date)
+                    .frame(minHeight: Token.Size.tapTarget)
+            }
+            if canEdit {
+                TGButton(title: "Удалить взвешивание", variant: .destructive, size: .medium, systemImage: "trash") {
+                    удаляем = true
+                }
+            }
+        } footer: {
+            VStack(spacing: Token.Space.s8) {
+                if разобранный == nil {
+                    Text("Нужно одно число — например 4,1")
+                        .textStyle(AppFont.caption.color(Token.Status.overdueText))
+                        .wraps()
+                }
+                TGButton(title: "Сохранить", isEnabled: canEdit && разобранный != nil) { сохранить() }
+            }
+        }
+        .presentationDetents([.medium, .large])
+        .готовоНадКлавиатурой { весВФокусе = false }
+        .task { загрузить() }
+        .confirmationDialog("Удалить взвешивание?", isPresented: $удаляем, titleVisibility: .visible) {
+            Button("Удалить", role: .destructive) {
+                if удалить(entry) { dismiss() }
+            }
+            Button("Отмена", role: .cancel) {}
+        } message: {
+            Text("\(Fmt.shortDay(entry.date)) · \(Fmt.weight(entry.kg)). Из графика и из коридора веса запись тоже уйдёт.")
+        }
+    }
+
+    private func загрузить() {
+        guard !загружено else { return }
+        загружено = true
+        // `ЧислоСБланка`, а не `Fmt.decimal`: тот округляет до знака,
+        // и правка «4,15» открылась бы как «4,2» — сохранение без единого
+        // касания записало бы другой вес.
+        вес = ЧислоСБланка.текст(entry.kg).replacingOccurrences(of: ".", with: ",")
+        день = entry.date
+    }
+
+    private func сохранить() {
+        guard canEdit, let kg = разобранный else { return }
+        let былВес = entry.kg
+        let былДень = entry.date
+        let былоИзменено = entry.changedAt
+        let былТекущий = dog?.weightKg
+
+        entry.kg = kg
+        // День меняется, время суток остаётся: взвешивание в 08:10
+        // осталось утренним и на другом дне.
+        entry.date = перенести(entry.date, на: день)
+        // Время правки — им решается спор двух телефонов
+        // (`WeightEntry.changedAt`).
+        entry.changedAt = Date()
+        if let dog, let последнее = dog.weights.max(by: { $0.date < $1.date }) {
+            dog.weightKg = последнее.kg
+        }
+
+        guard context.persist(otherwise: {
+            entry.kg = былВес
+            entry.date = былДень
+            entry.changedAt = былоИзменено
+            if let dog, let былТекущий { dog.weightKg = былТекущий }
+        }) else {
+            Haptics.warning()
+            appState.showFailure("Не сохранилось · нажми «Сохранить» ещё раз")
+            return
+        }
+        Haptics.success()
+        dismiss()
+    }
+
+    private func перенести(_ момент: Date, на день: Date, calendar: Calendar = .current) -> Date {
+        let часы = calendar.dateComponents([.hour, .minute, .second], from: момент)
+        return calendar.date(bySettingHour: часы.hour ?? 12, minute: часы.minute ?? 0,
+                             second: часы.second ?? 0, of: день) ?? день
     }
 }

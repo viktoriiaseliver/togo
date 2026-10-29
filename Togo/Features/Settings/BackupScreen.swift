@@ -28,7 +28,10 @@ struct BackupScreen: View {
     @Environment(Settings.self) private var settings
     @Environment(AppState.self) private var appState
     @Query private var dogs: [Dog]
-    @Query private var events: [LogEvent]
+    // `@Query [LogEvent]` снят 29.10.2026: его читал только CSV в `body`,
+    // а CSV теперь собирается в момент отправки (`ВыгрузкаДневника`).
+    // Запрос всех записей дневника перерисовывал экран на каждую
+    // новую отметку — ради кнопки, которую жмут раз в месяц.
 
     @State private var archive: BackupArchive?
     @State private var fileData: Data?
@@ -188,8 +191,10 @@ struct BackupScreen: View {
             // и без него показывается собой во всех пяти языках.
             TGSectionHeader(title: "выгрузить")
             ShareLink(
+                // Собирается в момент отправки, а не в `body`:
+                // разбор у `ВыгрузкаДневника`.
                 item: CSVFile(name: "togo-dnevnik.csv",
-                              text: Exporter.csv(events: Diary.active(events))),
+                              выгрузка: ВыгрузкаДневника(container: context.container, вид: .весьДневник)),
                 preview: SharePreview("Дневник Togo · CSV")
             ) {
                 TGListRow(title: "CSV",

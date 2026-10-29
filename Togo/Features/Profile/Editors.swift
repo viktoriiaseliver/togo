@@ -119,6 +119,40 @@ struct DogEditorScreen: View {
                     TextField("можно пропустить", text: $draft.breed)
                 }
                 TGDivider()
+                // # Дату рождения хранили, а спросить её было негде
+                //
+                // Замер 29.10.2026: `Dog.birthDate` ездит в обмене,
+                // в архиве и в сводке врачу (`ageMonths`), а писатель
+                // у неё в `Togo/` один — `DogDraft.makeDog()`. Поля
+                // `hasBirthDate`/`birthDate` в черновике лежат с первого
+                // дня, но с 28-го макета онбординг их не показывает,
+                // а профиль не показывал никогда — то есть возраст
+                // не мог назвать НИКТО, ни при заведении, ни потом.
+                //
+                // Тумблер отдельно от даты по той же причине, что
+                // у сроков лекарства (`MedicationEditorSheet`):
+                // `DatePicker` пустого значения не умеет, и без
+                // «знаю» первое же открытие профиля записало бы
+                // собаке днём рождения сегодняшнее число.
+                Toggle(isOn: Binding(
+                    get: { draft.hasBirthDate },
+                    set: { знаю in
+                        draft.hasBirthDate = знаю
+                        if знаю, draft.birthDate == nil { draft.birthDate = Date() }
+                    }
+                )) {
+                    Text("Знаю дату рождения").textStyle(AppFont.body)
+                }
+                .frame(minHeight: Token.Size.tapTarget)
+                if draft.hasBirthDate {
+                    DatePicker("Дата рождения",
+                               selection: Binding(get: { draft.birthDate ?? Date() },
+                                                  set: { draft.birthDate = $0 }),
+                               in: ...Date(), displayedComponents: .date)
+                        .textStyle(AppFont.body)
+                        .frame(minHeight: Token.Size.tapTarget)
+                }
+                TGDivider()
                 // **Пол спрашивали ровно в одном месте — в онбординге.**
                 //
                 // Замер 08.10.2026 по живой выгрузке: у всех шестнадцати
@@ -309,6 +343,8 @@ struct DogEditorScreen: View {
         draft.isOnTreatment = dog.isOnTreatment
         draft.sex = dog.sex
         draft.isNeutered = dog.isNeutered
+        draft.hasBirthDate = dog.birthDate != nil
+        draft.birthDate = dog.birthDate
         loaded = true
     }
 
@@ -320,6 +356,7 @@ struct DogEditorScreen: View {
             let былоЛечение = dog.isOnTreatment
             let былПол = dog.sex
             let былаКастрация = dog.isNeutered
+            let былаДатаРождения = dog.birthDate
             // **Кличка триммится, потому что она КЛЮЧ, а не показ.**
             //
             // Соседняя ветка того же метода (`:102`, `draft.makeDog()`)
@@ -358,6 +395,11 @@ struct DogEditorScreen: View {
             // в сводку врачу молча. Строка исчезает с экрана вместе
             // с полом, значит и значение не должно её пережить.
             dog.isNeutered = draft.sex == .unknown ? false : draft.isNeutered
+            // Начало дня, а не момент: день рождения — это день. Час,
+            // в который человек открыл профиль, о собаке ничего не говорит.
+            dog.birthDate = draft.hasBirthDate
+                ? draft.birthDate.map { Calendar.current.startOfDay(for: $0) }
+                : nil
             guard context.persist(otherwise: {
                 dog.name = былоИмя
                 dog.weightKg = былВес
@@ -365,6 +407,7 @@ struct DogEditorScreen: View {
                 dog.isOnTreatment = былоЛечение
                 dog.sex = былПол
                 dog.isNeutered = былаКастрация
+                dog.birthDate = былаДатаРождения
             }) else { return неСохранилось() }
         } else {
             let new = draft.makeDog()
@@ -447,8 +490,36 @@ struct CareTaskEditorSheet: View {
     @State private var isSeasonal = false
     @State private var seasonStart = 4
     @State private var seasonEnd = 10
+    /// Три поля прививки (`CareTask.vaccineBatch`, `vaccineValidUntil`,
+    /// `clinic`). Замер 29.10.2026: все три ездят в обмене и в архиве,
+    /// а пишет их в `Togo/` только прогрев схемы CloudKit — человеку
+    /// ввести партию с наклейки было негде, хотя повод у полей назван
+    /// днём (срок бешенства Стича истёк 03.10.2026, `Care.swift:16`).
+    @State private var партия = ""
+    @State private var естьДействуетДо = false
+    @State private var действуетДо = Date()
+    @State private var клиника: Clinic?
     @State private var loaded = false
     @State private var isConfirmingDelete = false
+
+    @Query private var всеКлиники: [Clinic]
+
+    /// Где делали — клиники без лабораторий, и выбранная остаётся
+    /// в списке всегда. Правило и его причина взяты у `VetVisitEditor`:
+    /// без этого правка старой прививки молча стёрла бы организацию.
+    private var доступныеКлиники: [Clinic] {
+        let живые = всеКлиники.filter { $0.deletedAt == nil && !$0.isLab }
+        let выбранная = клиника.map { [$0] } ?? []
+        let слитые = живые + выбранная.filter { выбор in
+            !живые.contains { $0.persistentModelID == выбор.persistentModelID }
+        }
+        return слитые.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+    }
+
+    /// Поля прививки показываются у медицинских дел, кроме ежедневных:
+    /// прививка — дело «по дате» или «раз в N дней», а у груминга
+    /// партии и срока с наклейки не бывает.
+    private var спрашиватьПрививку: Bool { category == .medical && kind != .daily }
 
     private var isNew: Bool { task == nil }
 
@@ -549,6 +620,10 @@ struct CareTaskEditorSheet: View {
                             isSelected: { $0 == category }) { category = $0 }
             }
 
+            if спрашиватьПрививку {
+                прививкаКарточка
+            }
+
             if kind != .daily {
             TGCard {
                 Toggle(isOn: $isSeasonal) {
@@ -614,6 +689,41 @@ struct CareTaskEditorSheet: View {
         }
     }
 
+    /// Партия, срок и клиника — то, что стоит на наклейке в паспорте.
+    ///
+    /// Всё необязательное и пустое по умолчанию: подставить срок
+    /// значило бы напечатать человеку дату, которой он не вводил,
+    /// а запись потом читает врач (красная линия «не подставлять»).
+    private var прививкаКарточка: some View {
+        TGCard(spacing: 0) {
+            TGSectionHeader(title: "если это прививка", subtitle: "с наклейки в паспорте")
+            LabeledField(label: "Партия") {
+                TextField("как в документе", text: $партия)
+                    .autocorrectionDisabled()
+            }
+            TGDivider()
+            Toggle(isOn: $естьДействуетДо) {
+                Text("Срок годности указан").textStyle(AppFont.body)
+            }
+            .frame(minHeight: Token.Size.tapTarget)
+            if естьДействуетДо {
+                DatePicker("Годен до", selection: $действуетДо, displayedComponents: .date)
+                    .textStyle(AppFont.body)
+                    .frame(minHeight: Token.Size.tapTarget)
+            }
+            TGDivider()
+            Picker("Клиника", selection: $клиника) {
+                Text("не указана").tag(nil as Clinic?)
+                ForEach(доступныеКлиники) { Text(verbatim: $0.name).tag($0 as Clinic?) }
+            }
+            .pickerStyle(.menu)
+            .frame(minHeight: Token.Size.tapTarget)
+            if доступныеКлиники.isEmpty {
+                TGExplainer(text: "Справочник пуст. Клиники и лаборатории заводятся в «Здоровье» → «Клиники и лаборатории» — оттуда они и попадают в этот выбор.")
+            }
+        }
+    }
+
     private var kindExplainer: String {
         switch kind {
         case .daily:
@@ -642,6 +752,10 @@ struct CareTaskEditorSheet: View {
         isSeasonal = task.seasonStartMonth != nil
         seasonStart = task.seasonStartMonth ?? 4
         seasonEnd = task.seasonEndMonth ?? 10
+        партия = task.vaccineBatch ?? ""
+        естьДействуетДо = task.vaccineValidUntil != nil
+        действуетДо = task.vaccineValidUntil ?? Date()
+        клиника = task.clinic
         loaded = true
     }
 
@@ -662,6 +776,9 @@ struct CareTaskEditorSheet: View {
         let былоЗаранее = target.remindDaysBefore
         let былоНачалоСезона = target.seasonStartMonth
         let былКонецСезона = target.seasonEndMonth
+        let былаПартия = target.vaccineBatch
+        let былоДействуетДо = target.vaccineValidUntil
+        let былаКлиника = target.clinic
 
         target.title = title
         target.detail = detail
@@ -673,6 +790,14 @@ struct CareTaskEditorSheet: View {
         target.remindDaysBefore = remindDaysBefore
         target.seasonStartMonth = (isSeasonal && kind != .daily) ? seasonStart : nil
         target.seasonEndMonth = (isSeasonal && kind != .daily) ? seasonEnd : nil
+        // Пишем, только когда поля были на экране. Скрытая карточка
+        // (дело переложили в груминг) не повод стирать партию молча:
+        // поле, которое человек не видел, он и не менял.
+        if спрашиватьПрививку {
+            target.vaccineBatch = Fmt.notBlank(партия)
+            target.vaccineValidUntil = естьДействуетДо ? действуетДо : nil
+            target.clinic = клиника
+        }
         let новое = task == nil
         if новое {
             target.dog = dog
@@ -694,6 +819,9 @@ struct CareTaskEditorSheet: View {
                 target.remindDaysBefore = былоЗаранее
                 target.seasonStartMonth = былоНачалоСезона
                 target.seasonEndMonth = былКонецСезона
+                target.vaccineBatch = былаПартия
+                target.vaccineValidUntil = былоДействуетДо
+                target.clinic = былаКлиника
             }
         }) else {
             Haptics.warning()
@@ -738,6 +866,13 @@ struct MedicationEditorSheet: View {
     @State private var единица: MedUnit = .tab
     @State private var fastingMinutes = 0
     @State private var fastingBeforeMinutes = 0
+    /// Писатель для `Medication.minutesAfterMeal` (`Care.swift:337`).
+    ///
+    /// Замер 29.10.2026: поле читают `DoseGate` (замок дозы до еды),
+    /// `DoseGateSheet` (объяснение замка), обмен и архив — а писали
+    /// его только засев и откат архива. Инсулин, который колют
+    /// через N минут после еды, завести человеку было нечем.
+    @State private var послеЕдыМинут = 0
     @State private var prescriber = ""
     @State private var номерНазначения = ""
     /// Сроки — каждый со своим «указан ли». `nil` в модели значит
@@ -948,6 +1083,25 @@ struct MedicationEditorSheet: View {
                 }
                 .frame(minHeight: Token.Size.tapTarget)
                 TGExplainer(text: "Пока окно идёт, кнопка еды не исчезает — она объясняет причину и предлагает напомнить, когда можно.")
+            }
+
+            // Окно «после еды» — ОТДЕЛЬНОЙ карточкой, а не третьей
+            // строкой рядом с натощак: у них противоположный смысл.
+            // Натощак запирает ЕДУ вокруг дозы, «после еды» запирает
+            // ДОЗУ до еды (`DoseGate.state`). В одной карточке два
+            // шаговика с одинаковой подписью «мин» читались бы как одно
+            // правило.
+            TGCard {
+                Stepper(value: $послеЕдыМинут, in: 0...120, step: 5) {
+                    HStack {
+                        Text("Давать после еды").textStyle(AppFont.body)
+                        Spacer()
+                        Text(послеЕдыМинут == 0 ? "не нужно" : "\(послеЕдыМинут) мин")
+                            .textStyle(AppFont.numeric(Token.FontSize.meta))
+                    }
+                }
+                .frame(minHeight: Token.Size.tapTarget)
+                TGExplainer(text: "Доза откроется через столько минут после отметки еды. Не поела — не откроется вовсе: это вопрос к врачу, а не сбой.")
             }
 
             // Писатель для `Medication.canGiveOutside` (`Care.swift:402`).
@@ -1196,6 +1350,7 @@ struct MedicationEditorSheet: View {
         // У схемы, заведённой до появления поля, окно «до» читается
         // симметрично — показываем то же, что и применяем.
         fastingBeforeMinutes = medication.fastingBefore
+        послеЕдыМинут = medication.minutesAfterMeal
         prescriber = medication.prescriber ?? ""
         // Показываем в той единице, в которой число читается человеком,
         // а храним всегда в микрограммах.
@@ -1321,6 +1476,7 @@ struct MedicationEditorSheet: View {
         let былиЧасы = target.times
         let былоНатощак = target.fastingMinutes
         let былоНатощакДо = target.fastingBeforeMinutes
+        let былоПослеЕды = target.minutesAfterMeal
         let былВрач = target.prescriber
         let былаМасса = target.massPerUnitMcg
         let былоНаУлице = target.canGiveOutside
@@ -1358,6 +1514,7 @@ struct MedicationEditorSheet: View {
         target.shelfAfterOpenDays = вскрыт ? годенПослеВскрытияДней : 0
         target.fastingMinutes = fastingMinutes
         target.fastingBeforeMinutes = fastingBeforeMinutes
+        target.minutesAfterMeal = послеЕдыМинут
         target.prescriber = prescriber.isEmpty ? nil : prescriber
         // Разбор — `ЧислоСБланка`, уже заведённый для анализов: он терпит
         // и запятую, и точку, и неразрывные пробелы из PDF. Второго
@@ -1393,6 +1550,7 @@ struct MedicationEditorSheet: View {
                 target.shelfAfterOpenDays = былоПослеВскрытия
                 target.fastingMinutes = былоНатощак
                 target.fastingBeforeMinutes = былоНатощакДо
+                target.minutesAfterMeal = былоПослеЕды
                 target.prescriber = былВрач
                 target.massPerUnitMcg = былаМасса
                 target.canGiveOutside = былоНаУлице

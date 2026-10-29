@@ -881,6 +881,30 @@ final class BackgroundStore {
         кэш[BackgroundBridge.dogFallbackName] = data
     }
 
+    /// Забыть фото собаки как запасное — когда снимок у собаки убрали.
+    ///
+    /// **Гасит только СВОИ байты**, и в этом всё правило. Запасное
+    /// — фото активной собаки; убрали снимок у неактивной — подложка
+    /// чужая, и трогать её нельзя. Сверка по байтам, а не по собаке:
+    /// хранилище собак не знает, а байты — единственное, что у него
+    /// с собакой общее. Это не та «вторая половина» из головы
+    /// `запомнитьФотоСобаки` (собака без снимка гасит подложку при
+    /// СМЕНЕ собаки) — та по-прежнему не сделана, и причина там.
+    ///
+    /// Зовёт ровно одно место — `ФотоСобаки.убрать` (29.10.2026).
+    func забытьФотоСобаки(_ былоФото: Data?) {
+        guard let былоФото, !былоФото.isEmpty,
+              BackgroundBridge.данные(файла: BackgroundBridge.dogFallbackName) == былоФото
+        else { return }
+        BackgroundBridge.убрать(файл: BackgroundBridge.dogFallbackName)
+        кэш[BackgroundBridge.dogFallbackName] = nil
+        #if canImport(WidgetKit)
+        // Виджет берёт то же фото: без перезагрузки он показывал бы
+        // убранный снимок до следующего срока.
+        WidgetCenter.shared.reloadAllTimelines()
+        #endif
+    }
+
     private func сохранить(detail: String) {
         BackgroundBridge.записатьВыбор(choice)
         UsageLog.note(.setting, detail, on: .settings)

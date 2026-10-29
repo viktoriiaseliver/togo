@@ -49,6 +49,8 @@ struct HistoryScreen: View {
     /// Переход делает хозяин экрана: `NavigationLink` внутри `Menu`
     /// срабатывает непредсказуемо (разбор у `HeaderMenu`).
     @State private var показатьНастройки = false
+    /// Прошедший день с собакой, открытый на правку.
+    @State private var правимыйДень: DayOut?
 
     private var dog: Dog? { appState.activeDog(from: dogs) }
     private var events: [LogEvent] { Diary.active(dog?.events ?? []) }
@@ -59,7 +61,16 @@ struct HistoryScreen: View {
                       кикер: .готовая(кикер),
                       заголовок: "История",
                       настройки: { показатьНастройки = true }) {
-                if events.isEmpty {
+                // # Дневник читается ОДИН раз на перерисовку
+                //
+                // `events` — вычисляемое: `Diary.active` над всеми записями
+                // собаки. До 29.10.2026 его звали шесть мест одного `body`
+                // (пустота, отбор, ритм, долгие дни, индекс календаря,
+                // индекс полосы), и индекс по дням строился дважды —
+                // полосой и календарём. Каждое касание чипа платило
+                // за шесть проходов по дневнику вместо одного.
+                let события = events
+                if события.isEmpty {
                     EmptyStateCard(
                         subject: .history,
                         title: "История начнётся с первой записи",
@@ -68,12 +79,16 @@ struct HistoryScreen: View {
                         action: nil
                     )
                 } else {
+                    let индекс = Diary.поДням(события.filter(filter.matches))
                     чипыФильтра
-                    полосаВыходов
-                    ритмВыходов
-                    dayOutCard
+                    if filter == .weight { полосаВеса } else { полосаВыходов(индекс) }
+                    ритмВыходов(события)
+                    dayOutCard(события)
+                    прошедшиеДни
                     месяцШапкой
-                    MonthCalendar(month: $month, поДням: поДням, onSelect: { selectedDay = $0 })
+                    MonthCalendar(month: $month, поДням: индекс,
+                                  дниВзвешиваний: filter == .weight ? дниВзвешиваний : [],
+                                  onSelect: { selectedDay = $0 })
                     episodesCard
                 }
             }
@@ -81,6 +96,7 @@ struct HistoryScreen: View {
             .navigationDestination(isPresented: $показатьНастройки) {
                 SettingsScreen()
             }
+            .sheet(item: $правимыйДень) { day in DayOutEditSheet(day: day) }
             .sheet(item: Binding(get: { selectedDay.map(DayRef.init) },
                                  set: { selectedDay = $0?.date })) { ref in
                 DayReadingScreen(day: ref.date, events: events,
@@ -152,10 +168,6 @@ struct HistoryScreen: View {
         .accessibilityLabel("Фильтр")
     }
 
-    private var filtered: [LogEvent] {
-        events.filter(filter.matches)
-    }
-
     // MARK: Полоса за тридцать дней
 
     /// Кадр 10: заголовок слева, срок справа, столбики без осей,
@@ -165,24 +177,85 @@ struct HistoryScreen: View {
     /// «выше или ниже соседнего», и ось месяца этого не добавляла:
     /// на тридцати днях подписи всё равно рисовались через одну.
     /// Что именно на полосе — говорит строка под ней, а не ось.
-    private var полосаВыходов: some View {
+    private func полосаВыходов(_ индекс: [Date: [LogEvent]]) -> some View {
         // Точки считаются ОДИН раз на всю карточку. Прежде тут стояли
         // `chartPoints` и `тревожныеДни` рядом — два обращения, и каждое
         // строило весь тридцатидневный набор заново.
-        let точки = chartPoints
+        let столбики = точки(индекс)
         return TGCard {
             HStack(alignment: .firstTextBaseline, spacing: Token.Space.s8) {
                 Text(.готовая(filter.chartName)).textStyle(AppFont.cardTitle).wraps()
                 Spacer(minLength: Token.Space.s8)
                 Text("30 дней").textStyle(AppFont.caption).wraps()
             }
-            КиноСтолбики(значения: точки.map(\.value),
-                         тревожные: тревожные(точки))
+            КиноСтолбики(значения: столбики.map(\.value),
+                         тревожные: тревожные(столбики))
             Text(filter.chartExplainer).textStyle(AppFont.caption).wraps()
             TGDivider()
             Text("Приложение не ставит диагнозов. Оно умеет показать этот график врачу — вместе с датами еды и препаратов за те же дни.")
                 .textStyle(AppFont.caption)
                 .wraps()
+        }
+    }
+
+    // MARK: Вес
+
+    /// # Фильтр «Вес» не рисовал НИЧЕГО — и не мог
+    ///
+    /// Замер 29.10.2026. Фильтр спрашивал `LogEvent.kind == .weight`,
+    /// а взвешивания живут не в ленте, а отдельной моделью
+    /// `WeightEntry` (`Dog.weights`): их пишет `WeightScreen.save()`,
+    /// и `LogEvent` с видом `.weight` не заводит в `Togo/` никто.
+    /// Сверху `HistoryFilter.value` для `.weight` возвращал `0`
+    /// литералом. Итог — тридцать пустых столбиков, пустой календарь
+    /// и пояснение про «зелёную полосу коридора», которой нет.
+    ///
+    /// > **Фильтр смотрел туда, где предмета не бывает.** Три слоя
+    /// > (отбор, значение, пояснение) были согласны друг с другом
+    /// > и все трое молчали.
+    ///
+    /// Столбиков у веса нет нарочно: у полосы потолок — максимум,
+    /// и 4,1 против 4,3 кг вышли бы одинаковой высоты. Вес читают
+    /// числом, поэтому здесь — последний замер крупно и список
+    /// взвешиваний за тот же срок, что у соседних фильтров.
+    private var взвешиванияЗаМесяц: [WeightEntry] {
+        let calendar = Calendar.current
+        let начало = calendar.date(byAdding: .day, value: -29, to: calendar.startOfDay(for: .now)) ?? .now
+        return (dog?.weights ?? [])
+            .filter { $0.date >= начало }
+            .sorted { $0.date > $1.date }
+    }
+
+    /// Дни, в которые взвешивали, — для точки в календаре.
+    private var дниВзвешиваний: Set<Date> {
+        let calendar = Calendar.current
+        return Set((dog?.weights ?? []).map { calendar.startOfDay(for: $0.date) })
+    }
+
+    private var полосаВеса: some View {
+        let замеры = взвешиванияЗаМесяц
+        return TGCard {
+            HStack(alignment: .firstTextBaseline, spacing: Token.Space.s8) {
+                Text(.готовая(filter.chartName)).textStyle(AppFont.cardTitle).wraps()
+                Spacer(minLength: Token.Space.s8)
+                Text("30 дней").textStyle(AppFont.caption).wraps()
+            }
+            if let последний = замеры.first {
+                Text(Fmt.weight(последний.kg)).textStyle(AppFont.display)
+                ForEach(замеры.prefix(10)) { замер in
+                    HStack {
+                        Text(Fmt.shortDay(замер.date)).textStyle(AppFont.caption)
+                        Spacer()
+                        Text(Fmt.weight(замер.kg)).textStyle(AppFont.numeric(Token.FontSize.meta))
+                    }
+                }
+            } else {
+                TGExplainer(text: "За эти 30 дней взвешиваний нет. Записать вес — «Здоровье» → «Вес и симптомы».")
+            }
+            if let low = dog?.targetWeightLow, let high = dog?.targetWeightHigh {
+                Text("цель \(Fmt.weight(low)) — \(Fmt.weight(high)) · поставил врач").textStyle(AppFont.caption)
+            }
+            Text(filter.chartExplainer).textStyle(AppFont.caption).wraps()
         }
     }
 
@@ -198,11 +271,10 @@ struct HistoryScreen: View {
     /// пересчитывалось все тридцать раз, и каждый раз фильтровало весь
     /// дневник. Календарь делал то же сорок два раза. Разбор —
     /// `Diary.поДням`.
-    private var поДням: [Date: [LogEvent]] { Diary.поДням(filtered) }
-
-    /// График строится только по дням без активного эпизода.
-    private var chartPoints: [HistoryPoint] { точки(поДням) }
-
+    ///
+    /// С 29.10.2026 индекс строится в `body` один раз и раздаётся
+    /// полосе и календарю аргументом: вычисляемым свойством он
+    /// строился бы каждым читателем заново.
     /// Тридцать точек из готового индекса: день достаётся за O(1),
     /// отсутствие ключа значит «записей не было» — так условились
     /// в `Diary.поДням`.
@@ -237,8 +309,8 @@ struct HistoryScreen: View {
     /// > только `outingsPerDay` — так решено кадром 10, и пересматривать
     /// > это уборкой нельзя.
     @ViewBuilder
-    private var ритмВыходов: some View {
-        let ритм = WalkRhythmAnalyzer.rhythm(events: events)
+    private func ритмВыходов(_ события: [LogEvent]) -> some View {
+        let ритм = WalkRhythmAnalyzer.rhythm(events: события)
         if ритм.isReliable {
             КиноМетрика(
                 шапка: "как часто гуляете",
@@ -261,9 +333,9 @@ struct HistoryScreen: View {
     /// и оставляет вывод человеку. Этого хватает, чтобы прийти к врачу
     /// не с «ей плохо», а с «после долгих дней у неё вот что».
     @ViewBuilder
-    private var dayOutCard: some View {
+    private func dayOutCard(_ события: [LogEvent]) -> some View {
         let mine = daysOut.filter { $0.dog?.persistentModelID == dog?.persistentModelID }
-        let trace = DayOutAnalyzer.trace(daysOut: mine, events: events,
+        let trace = DayOutAnalyzer.trace(daysOut: mine, events: события,
                                          norm: dog?.dailyGrams ?? 0)
         if !trace.findings.isEmpty {
             TGCard {
@@ -276,6 +348,42 @@ struct HistoryScreen: View {
                 }
                 TGDivider()
                 TGExplainer(text: "Это совпадение, а не причина: приложение не ставит диагнозов. Но показать эту строку врачу полезнее, чем сказать «она иногда вялая».")
+            }
+        }
+    }
+
+    /// Прошедшие дни с собакой — с дорогой к правке.
+    ///
+    /// **До 29.10.2026 прошедшего дня не было видно нигде**, кроме
+    /// как числом в «После долгих дней»: итог показывался один раз,
+    /// при «Закончить», и после него день нельзя было ни найти,
+    /// ни поправить, ни убрать. Десять последних — потому что правят
+    /// недавнее: забыли закончить вчера, а не в прошлом году.
+    @ViewBuilder
+    private var прошедшиеДни: some View {
+        let мои = daysOut
+            .filter { $0.dog?.persistentModelID == dog?.persistentModelID && $0.endedAt != nil }
+            .sorted { $0.startedAt > $1.startedAt }
+            .prefix(10)
+        if !мои.isEmpty {
+            TGCard {
+                TGSectionHeader(title: "дни с собакой")
+                ForEach(Array(мои)) { day in
+                    Button { правимыйДень = day } label: {
+                        HStack {
+                            Text(Fmt.shortDay(day.startedAt)).textStyle(AppFont.body)
+                            Spacer()
+                            Text(Fmt.gap(day.duration())).textStyle(AppFont.numeric(Token.FontSize.meta))
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: Token.Size.iconSm))
+                                .foregroundStyle(Token.Ink.secondary)
+                                .accessibilityHidden(true)
+                        }
+                        .frame(minHeight: Token.Size.tapTarget)
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                }
             }
         }
     }
@@ -545,7 +653,10 @@ nonisolated enum HistoryFilter: String, CaseIterable, Sendable {
         case .stool: String(localized: "Выше — жиже. Терракотовые столбики — дни с кровью или слизью.")
         case .symptoms: String(localized: "Столбик есть — был инцидент. Пусто — и хорошо.")
         case .reactions: String(localized: "Сколько раз собака срывалась за день. Смотреть надо не на отдельный день, а на то, куда идёт линия за месяц.")
-        case .weight: String(localized: "Зелёная полоса — коридор, который назвал врач.")
+        // Было «Зелёная полоса — коридор, который назвал врач»: полосы
+        // не было ни в одной редакции экрана, а коридор показывается
+        // строкой «цель … · поставил врач» (`HistoryScreen.полосаВеса`).
+        case .weight: String(localized: "Взвешивания из «Вес и симптомы». Сравнивать стоит с собой месяц назад, а не с чужой собакой.")
         }
     }
 
@@ -582,6 +693,10 @@ struct MonthCalendar: View {
     /// бы полного прохода. Индекс строит тот, кто его и так строит
     /// для графика.
     let поДням: [Date: [LogEvent]]
+    /// Дни взвешиваний (начала суток) — у фильтра «Вес». Взвешивания
+    /// лежат не в ленте, а в `WeightEntry`, и в `поДням` не попадают:
+    /// без этого множества календарь под «Весом» был бы пуст всегда.
+    var дниВзвешиваний: Set<Date> = []
     var onSelect: (Date) -> Void
 
     private let calendar = Calendar.current
@@ -668,8 +783,9 @@ struct MonthCalendar: View {
     /// > с тремя записями в день календарь стоил столько же, сколько
     /// > у человека с тысячей.
     private func marker(for day: Date) -> DayMarker {
-        let dayEvents = поДням[calendar.startOfDay(for: day)] ?? []
-        if dayEvents.isEmpty { return .none }
+        let начало = calendar.startOfDay(for: day)
+        let dayEvents = поДням[начало] ?? []
+        if dayEvents.isEmpty { return дниВзвешиваний.contains(начало) ? .ordinary : .none }
         if dayEvents.contains(where: { $0.raisesAlarm || $0.kind == .incident }) { return .alarm }
         if dayEvents.contains(where: { $0.kind.isMedical }) { return .medical }
         return .ordinary
