@@ -52,13 +52,13 @@ struct TodayHeader: View {
     }
 
     private var строкаСобаки: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: Token.Space.s12) {
             // **Второй вход для фото собаки** (дизайн 23.10.2026, пункт 9):
             // пустой жетон открывает тот же `PhotosPicker`, что и
             // фотоаппарат на вкладке собаки. С фотографией — обычный
             // аватар, не кнопка. Разбор — `ВыборФотоСобаки.swift`.
             ЖетонСобаки(dog: dog)
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: Token.Space.s2) {
                 // Цвет подставляется ВМЕСТО стилевого, а не поверх:
                 // `AppFont` несёт свой `color` и красит сам `Text`,
                 // то есть побеждает `.foregroundStyle` предка. Прежние
@@ -87,7 +87,7 @@ struct TodayHeader: View {
                 TGAvatar(initial: duty.initial, tint: Token.Action.doneQuiet)
             }
         }
-        .padding(.top, 4)
+        .padding(.top, Token.Space.s4)
     }
 
     /// Листалка дня: «‹ вчера, 27 сентября ›».

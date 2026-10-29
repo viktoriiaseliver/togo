@@ -99,7 +99,7 @@ struct AskSignalCard: View {
                     .textStyle(AppFont.micro)
             }
             GeometryReader { geometry in
-                HStack(spacing: 2) {
+                HStack(spacing: Token.Space.s2) {
                     let total = max(1, tally.total)
                     Rectangle()
                         .fill(Token.Action.done)

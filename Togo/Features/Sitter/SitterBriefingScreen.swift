@@ -51,18 +51,21 @@ struct SitterBriefingScreen: View {
             }
 
             TGExplainer(text: "Это всё, что нужно знать. Диагнозов и истории болезни здесь нет — они хозяйке, не тебе.")
+        } bottom: {
+            // Кнопка — в слоте каркаса, а не своим `safeAreaInset` поверх
+            // него. Свой стоял с полями 18 со всех сторон и БЕЗ подложки:
+            // текст прокручивался под прозрачной полосой и просвечивал
+            // в зазоре над кнопкой, а отступы расходились с каждым другим
+            // закреплённым низом (у каркаса 10 сверху, 8 снизу).
+            TGButton(title: "Понятно, открыть «Сегодня»") {
+                onStart?()
+                dismiss()
+            }
         }
         .navigationTitle("Инструкция")
         .cinemaScreen(экран: .sub("handover"))
         .usageScreen(.sitter)
         .navigationBarTitleDisplayMode(.inline)
-        .safeAreaInset(edge: .bottom) {
-            TGButton(title: "Понятно, открыть «Сегодня»") {
-                onStart?()
-                dismiss()
-            }
-            .padding(Token.Spacing.screenPadding)
-        }
     }
 
     private var untilText: String {
