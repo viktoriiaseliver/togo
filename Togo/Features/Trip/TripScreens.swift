@@ -18,7 +18,8 @@ struct TripSetupScreen: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Environment(AppState.self) private var appState
-    @Query private var trips: [Trip]
+    // `@Query` всех поездок здесь снят 29.10.2026: читателя у него
+    // не было ни одного, а запрос шёл на каждой перерисовке формы.
 
     @State private var destination = ""
     @State private var start = Date()
@@ -187,6 +188,14 @@ struct TripSetupScreen: View {
 
     private func save() {
         guard let dog else { return }
+        // Право спрашивается и у записи, а не только у двери на вкладке:
+        // форма живёт дольше кадра, а право владелец может снять
+        // в «Семье», пока она открыта (тот же разбор — `WeightScreen.save`).
+        guard appState.can(.editProfile) else {
+            Haptics.warning()
+            appState.showFailure(Permission.editProfile.отказ)
+            return
+        }
         if let trip { return сохранитьПравку(trip) }
         // **Якорь в полдень, а не «как отдал пикер».** `DatePicker`
         // с `displayedComponents: .date` сохраняет ВРЕМЯ СУТОК у

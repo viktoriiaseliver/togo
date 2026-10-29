@@ -58,6 +58,13 @@ struct FeedingScreen: View {
     let dog: Dog?
 
     @Environment(\.modelContext) private var context
+    @Environment(AppState.self) private var appState
+
+    /// Расписание кормлений — поле профиля (`editProfile`: «порция,
+    /// вес, напоминания»), и правит его тот же, кто на `ScheduleScreen`.
+    /// До 29.10.2026 кнопка «Поставить это расписание» прав не
+    /// спрашивала: помощник переписывал часы и порцию всей семье.
+    private var canEdit: Bool { appState.can(.editProfile) }
     /// Системный кегль. Читается, а не задаётся: сюда он приезжает
     /// от настройки **процесса**, и на этом же месте его подменяет
     /// аргумент запуска `-UIPreferredContentSizeCategoryName`.
@@ -555,7 +562,7 @@ struct FeedingScreen: View {
 
                 if report.observedMealTimes.isEmpty {
                     TGExplainer(text: "Записей о еде пока нет. Отметь пару кормлений — и приложение увидит его режим само.")
-                } else if !report.suggestedMealTimes.isEmpty,
+                } else if canEdit, !report.suggestedMealTimes.isEmpty,
                           report.suggestedMealTimes.sorted() != dog.mealTimes.sorted() {
                     // Кнопка остаётся: это единственный вход
                     // в `applySchedule()`. Убери её — и предложенное
@@ -737,7 +744,7 @@ struct FeedingScreen: View {
     // MARK: Действия
 
     private func applySchedule() {
-        guard let dog else { return }
+        guard canEdit, let dog else { return }
         // **Снимок для возврата берётся ПРЕЖДЕ правки.** Здесь он
         // брался после: `былиЧасы` читались уже из перезаписанного
         // `dog.mealTimes`, то есть возврат возвращал НОВОЕ расписание,
@@ -758,7 +765,10 @@ struct FeedingScreen: View {
         dog.setMealsPerDay(report.suggestedMealTimes.count)
         dog.syncSingleFoodShare()
         guard context.persist(otherwise: { былоПитание.вернуть(в: dog) }) else {
+            // Одна хаптика — это отказ без слова: расписание на экране
+            // откатилось, и человек решил бы, что кнопка не сработала.
             Haptics.warning()
+            appState.showFailure("Не сохранилось · попробуй ещё раз")
             return
         }
         Haptics.success()

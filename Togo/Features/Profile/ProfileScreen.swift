@@ -1,8 +1,9 @@
 import SwiftUI
 import SwiftData
 
-/// Профиль собаки: питание, вес, уход, дрессировка.
-/// Груминг и вес живут здесь и всплывают на главном только когда подошёл срок.
+/// Профиль собаки: возраст, чего нельзя, вес, лакомства, лечение,
+/// правка и удаление. Питание, уход и документы — своими строками
+/// на вкладке собаки, а не здесь.
 struct ProfileScreen: View {
     let dog: Dog?
 
@@ -10,6 +11,14 @@ struct ProfileScreen: View {
     @Environment(AppState.self) private var appState
 
     private var canEdit: Bool { appState.can(.editProfile) }
+
+    /// Тумблер лечения — не поле профиля, а **решение о курсе**:
+    /// включение возвращает отменённые схемы, выключение закрывает курс
+    /// (`TreatmentCourse`). Право на это у «Здоровья» одно —
+    /// `editTreatment` («Курс завершён», `HealthScreen.finishCourse`),
+    /// и до 29.10.2026 здесь стояло `editProfile`: со-владелец, которому
+    /// схему менять нельзя, закрывал курс отсюда в одно касание.
+    private var canEditTreatment: Bool { appState.can(.editTreatment) }
 
     var body: some View {
         TGScreen {
@@ -202,7 +211,21 @@ struct ProfileScreen: View {
 
     // MARK: Лечение
 
+    /// Без `seeMedical` карточки нет вовсе: «собака на лечении» — уже
+    /// медицинское сведение, и помощнику его не показывает ни одна
+    /// вкладка (`HealthScreen` держит то же право).
+    @ViewBuilder
     private func treatment(_ dog: Dog) -> some View {
+        if appState.can(.seeMedical) {
+            // Плашка — только когда профиль править можно, а курс нельзя:
+            // без `editProfile` сверху уже стоит своя, и две подряд
+            // назвали бы один выключенный экран двумя отказами.
+            if canEdit && !canEditTreatment { ПлашкаПрава(право: .editTreatment) }
+            карточкаЛечения(dog)
+        }
+    }
+
+    private func карточкаЛечения(_ dog: Dog) -> some View {
         TGCard {
             // Тумблер не просто пишет флаг: включение возвращает
             // отменённые препараты, выключение закрывает курс так же,
@@ -225,7 +248,7 @@ struct ProfileScreen: View {
             }
             TGExplainer(text: "Выключишь — курс закроется, а записи останутся в истории.")
         }
-        .disabled(!canEdit)
+        .disabled(!canEditTreatment)
     }
 
 
