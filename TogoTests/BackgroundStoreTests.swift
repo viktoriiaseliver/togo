@@ -65,10 +65,21 @@ struct BackgroundStoreTests {
     @Test("«Как задумано» берёт фото собаки, а своих снимков не раздаёт")
     func автоБерётФотоСобаки() {
         let выбор = BackgroundChoice(mode: .auto, items: Self.пятьФото)
-        for ключ in ScreenKey.основные {
+        // Экраны про саму собаку — у них фото раздела нет.
+        for ключ in [ScreenKey.today, .dog, .walk, .widget, .sub("settings")] {
             #expect(выбор.photoName(for: ключ, seed: 7, fallback: "dog.jpg") == "dog.jpg",
                     "\(ключ.name): вторая ступень цепочки не сработала")
         }
+        // **Первая ступень — фото раздела, решение Виктории 28.10.2026:**
+        // «чтобы изображения с Unsplash легли по умолчанию на экраны».
+        // Оно старше фото собаки: у «Истории» и «Здоровья» своё фото
+        // и при заведённом снимке собаки — так у прототипа (`map`, `SUBP`).
+        #expect(выбор.photoName(for: .history, seed: 7, fallback: "dog.jpg")
+                    == "unsplash-1477884213360-7e9d7dcc1e48.jpg")
+        #expect(выбор.photoName(for: .health, seed: 7, fallback: "dog.jpg")
+                    == "unsplash-1628009368231-7bb7cfcb0def.jpg")
+        #expect(выбор.photoName(for: .sub("feeding"), seed: 7, fallback: "dog.jpg")
+                    == "unsplash-1589924691995-400dc9ecc119.jpg")
         // **Третья ступень сменилась 27.10.2026 решением Виктории.**
         // Было «собаки нет — честный nil, чёрный без подложки» (ответ
         // дизайна круга 2 п. 1). Стало: встроенная подложка со Стичем.

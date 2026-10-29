@@ -3212,60 +3212,536 @@ nonisolated enum TogoSchemaV7: VersionedSchema {
 nonisolated enum TogoSchemaV8: VersionedSchema {
     static var versionIdentifier: Schema.Version { Schema.Version(8, 0, 0) }
 
+    /// **Заморожена 28.10.2026 снимком — ПЕРЕД тем, как к `Medication`
+    /// добавили `startedAt`.** Снимок собран машиной, а не руками:
+    /// снимок V6 плюс единственная разница V7 — `LogEvent.photo`
+    /// с `.externalStorage` (`ea2efc3`). Разница проверена разбором
+    /// живых классов: хранимые поля всех 21 сущности совпали со снимком
+    /// V6 ровно до этой строки. Сборки 280–284 уехали людям с этой формой.
+    static var models: [any PersistentModel.Type] {
+        [Dog.self, DogDocument.self, DayOut.self, HeatRecord.self, FoodStock.self, LogEvent.self, CareTask.self, Medication.self, DoseRecord.self, WeightEntry.self, TrainingStep.self, TrainingSession.self, ProcedureSkill.self, Clinic.self, LabResult.self, VetVisit.self, Diagnosis.self, Prescription.self, FamilyMember.self, Episode.self, Trip.self]
+    }
+
+    @Model
+    final class Dog {
+        var id: UUID = UUID()
+        var name: String = ""
+        var photo: Data?
+        var breed: String?
+        var birthDate: Date?
+        var sexRaw: String = DogSex.unknown.rawValue
+        var isNeutered: Bool = false
+        var weightKg: Double = 0
+        var targetWeightLow: Double?
+        var targetWeightHigh: Double?
+        var foodBrand: String = ""
+        var portionGrams: Int = 0
+        var mealsPerDay: Int = 2
+        var mealTimes: [Int] = [7 * 60 + 30, 18 * 60 + 30]   // минуты от полуночи
+        var wakeMinuteOfDay: Int = 7 * 60
+        var sleepMinuteOfDay: Int = 23 * 60
+        var forbiddenFoods: [String] = []
+        var dailyNormGrams: Int?
+        var rewards: [String] = []
+        var sitterFood: String = ""
+        var sitterDose: String = ""
+        var sitterWalks: String = ""
+        var sitterForbidden: String = ""
+        var sitterEscalation: String = ""
+        var trainingFoodFromPortion: Bool = true
+        var markerKindRaw: String = MarkerKind.clicker.rawValue
+        var sessionLengthMinutes: Int = 3
+        var isOnTreatment: Bool = false
+        var chipNumber: String?
+        var passportNumber: String?
+        var insuranceNumber: String?
+        var vetName: String?
+        var vetPhone: String?
+        var clinicName: String?
+        var clinicPhone: String?
+        var distinctiveMarks: String?
+        var createdAt: Date = Date()
+        var changedAt: Date = Date()
+        var deletedAt: Date?
+        @Relationship(deleteRule: .cascade, inverse: \LogEvent.dog)
+        var eventsStorage: [LogEvent]?
+        @Relationship(deleteRule: .cascade, inverse: \WeightEntry.dog)
+        var weightsStorage: [WeightEntry]?
+        @Relationship(deleteRule: .cascade, inverse: \CareTask.dog)
+        var careTasksStorage: [CareTask]?
+        @Relationship(deleteRule: .cascade, inverse: \Medication.dog)
+        var medicationsStorage: [Medication]?
+        @Relationship(deleteRule: .cascade, inverse: \TrainingStep.dog)
+        var trainingStepsStorage: [TrainingStep]?
+        @Relationship(deleteRule: .cascade, inverse: \TrainingSession.dog)
+        var trainingSessionsStorage: [TrainingSession]?
+        @Relationship(deleteRule: .cascade, inverse: \Trip.dog)
+        var tripsStorage: [Trip]?
+        @Relationship(deleteRule: .cascade, inverse: \DogDocument.dog)
+        var documentsStorage: [DogDocument]?
+        @Relationship(deleteRule: .cascade, inverse: \DayOut.dog)
+        var daysOutStorage: [DayOut]?
+        @Relationship(deleteRule: .cascade, inverse: \HeatRecord.dog)
+        var heatsStorage: [HeatRecord]?
+        @Relationship(deleteRule: .cascade, inverse: \FoodStock.dog)
+        var stocksStorage: [FoodStock]?
+        @Relationship(deleteRule: .cascade, inverse: \LabResult.dog)
+        var labResultsStorage: [LabResult]?
+        @Relationship(deleteRule: .cascade, inverse: \VetVisit.dog)
+        var vetVisitsStorage: [VetVisit]?
+        @Relationship(deleteRule: .cascade, inverse: \Diagnosis.dog)
+        var diagnosesStorage: [Diagnosis]?
+        @Relationship(deleteRule: .cascade, inverse: \Prescription.dog)
+        var prescriptionsStorage: [Prescription]?
+
+        init() {}
+    }
+
+    @Model
+    final class DogDocument {
+        var id: UUID = UUID()
+        var title: String = ""
+        @Attribute(.externalStorage) var image: Data?
+        var addedAt: Date = Date()
+        var note: String?
+        var kindRaw: String = DocumentKind.other.rawValue
+        var number: String?
+        var issuedBy: String?
+        var validUntil: Date?
+        // Четыре поля формы, уехавшей в сборке 284. Снимок без них
+        // совпадал с V7 по контрольной сумме, и SwiftData отказывал
+        // при открытии: «Duplicate version checksums across stages
+        // detected» — приложение падало до первого теста.
+        var occurredOn: Date?
+        var directionRaw: String?
+        var clinic: Clinic?
+        var changedAt: Date = Date()
+        var deletedAt: Date?
+        var dog: Dog?
+
+        init() {}
+    }
+
+    @Model
+    final class DayOut {
+        var id: UUID = UUID()
+        var startedAt: Date = Date()
+        var endedAt: Date?
+        var plannedHours: Int = 4
+        var note: String?
+        var dog: Dog?
+
+        init() {}
+    }
+
+    @Model
+    final class HeatRecord {
+        var id: UUID = UUID()
+        var startedAt: Date = Date()
+        var endedAt: Date?
+        var note: String?
+        var dog: Dog?
+
+        init() {}
+    }
+
+    @Model
+    final class FoodStock {
+        var id: UUID = UUID()
+        var kindRaw: String = FoodKind.dry.rawValue
+        var brand: String = ""
+        var packGrams: Int = 3000
+        var packsLeft: Double = 1
+        var countedAt: Date?
+        var openedAt: Date?
+        var expiry: Date?
+        var shelfAfterOpenDays: Int = 0
+        var gramsPerDay: Int = 0
+        var dog: Dog?
+
+        init() {}
+    }
+
+    @Model
+    final class LogEvent {
+        var id: UUID = UUID()
+        var date: Date = Date()
+        var kindRaw: String = LogKind.note.rawValue
+        var authorName: String = ""
+        var isSynced: Bool = true
+        @Attribute(.externalStorage) var photo: Data?
+        var note: String?
+        var enteredAt: Date?
+        var originRaw: String?
+        var isDayOnly: Bool = false
+        var outcomeRaw: String?
+        var askSignalRaw: String?
+        var durationSeconds: Int?
+        var stoolFormRaw: String?
+        var stoolFlagsRaw: [String] = []
+        var grams: Int?
+        var milliliters: Int?
+        var fromPortion: Bool = false
+        var reactionTriggerRaw: String?
+        var reactionDistanceRaw: String?
+        var incidentKindRaw: String?
+        var incidentDetailRaw: String?
+        var toldFamily: Bool = false
+        var trainingSessionID: UUID?
+        var medicationID: UUID?
+        var careTaskID: UUID?
+        var walkEventID: UUID?
+        var deletedAt: Date?
+        var deletedBy: String?
+        var editedBy: String?
+        var changedAt: Date = Date()
+        var dog: Dog?
+
+        init() {}
+    }
+
+    @Model
+    final class CareTask {
+        var id: UUID = UUID()
+        var title: String = ""
+        var detail: String = ""
+        var kindRaw: String = CareKind.periodic.rawValue
+        var categoryRaw: String = CareCategory.grooming.rawValue
+        var vaccineBatch: String?
+        var vaccineValidUntil: Date?
+        var clinic: Clinic?
+        var intervalDays: Int = 30
+        var scheduledDate: Date?
+        var remindDaysBefore: Int = 14
+        var lastDone: Date?
+        var streak: Int = 0
+        var seasonStartMonth: Int?
+        var seasonEndMonth: Int?
+        var snoozeCount: Int = 0
+        var changedAt: Date = Date()
+        var deletedAt: Date?
+        var dog: Dog?
+
+        init() {}
+    }
+
+    @Model
+    final class Medication {
+        var id: UUID = UUID()
+        var name: String = ""
+        var doseText: String = ""
+        var times: [Int] = []
+        var doseSlotsData: [DoseSlot] = []
+        var unitRaw: String = MedUnit.tab.rawValue
+        var massPerUnitMcg: Double?
+        var fastingMinutes: Int = 0
+        var fastingBeforeMinutes: Int = 0
+        var minutesAfterMeal: Int = 0
+        var isPaused: Bool = false
+        var stockLeft: Int = 0
+        var stockTotal: Int = 0
+        var stockLeftAmount: Double?
+        var packAmount: Double?
+        var courseEnd: Date?
+        var expiry: Date?
+        var openedAt: Date?
+        var shelfAfterOpenDays: Int = 0
+        var remindBeforeExpiry: Bool = false
+        var canGiveOutside: Bool = false
+        var prescriptionNumber: String?
+        var prescriber: String?
+        var cancelledAt: Date?
+        var cancelledNote: String?
+        var changedAt: Date = Date()
+        var deletedAt: Date?
+        var dog: Dog?
+        @Relationship(deleteRule: .cascade, inverse: \DoseRecord.medication)
+        var dosesStorage: [DoseRecord]?
+
+        init() {}
+    }
+
+    @Model
+    final class DoseRecord {
+        var id: UUID = UUID()
+        var scheduledAt: Date = Date()
+        var givenAt: Date?
+        var givenBy: String?
+        var claimedBy: String?
+        var claimedAt: Date?
+        var cancelledAt: Date?
+        var cancelReason: String?
+        var changedAt: Date = Date()
+        var deletedAt: Date?
+        var skippedAt: Date?
+        var skippedBy: String?
+        var medication: Medication?
+        var awaitedMedicationID: UUID?
+        var awaitedMedicationName: String?
+
+        init() {}
+    }
+
+    @Model
+    final class WeightEntry {
+        var id: UUID = UUID()
+        var date: Date = Date()
+        var kg: Double = 0
+        var dog: Dog?
+        var changedAt: Date = Date()
+        var deletedAt: Date?
+
+        init() {}
+    }
+
+    @Model
+    final class TrainingStep {
+        var id: UUID = UUID()
+        var cue: String = ""             // «Ко мне»
+        var place: String = ""           // «Коридор»
+        var person: String = ""          // «Виктория»
+        var distanceMeters: Int = 2
+        var statusRaw: String = SkillStatus.notStarted.rawValue
+        var consecutiveGoodSessions: Int = 0
+        var order: Int = 0
+        var dog: Dog?
+
+        init() {}
+    }
+
+    @Model
+    final class TrainingSession {
+        var id: UUID = UUID()
+        var startedAt: Date = Date()
+        var durationSeconds: Int = 0
+        var cue: String = ""
+        var place: String = ""
+        var person: String = ""
+        var distanceMeters: Int = 2
+        var markDelaysMs: [Int] = []
+        var successes: Int = 0
+        var attempts: Int = 0
+        var gramsUsed: Int = 0
+        var observationsRaw: [String] = []
+        var countsTowardProgress: Bool = true
+        var dog: Dog?
+
+        init() {}
+    }
+
+    @Model
+    final class ProcedureSkill {
+        var id: UUID = UUID()
+        var title: String = ""
+        var detail: String = ""
+        var statusRaw: String = SkillStatus.notStarted.rawValue
+        var targetDate: Date?
+        var successes: Int = 0
+        var attempts: Int = 0
+
+        init() {}
+    }
+
+    @Model
+    final class Clinic {
+        var id: UUID = UUID()
+        var name: String = ""
+        var detail: String?
+        var isLab: Bool = false
+        var phone: String?
+        var createdAt: Date = Date()
+        var changedAt: Date = Date()
+        var deletedAt: Date?
+        @Relationship(deleteRule: .nullify, inverse: \CareTask.clinic)
+        var careTasksStorage: [CareTask]?
+        @Relationship(deleteRule: .nullify, inverse: \VetVisit.clinic)
+        var vetVisitsStorage: [VetVisit]?
+        @Relationship(deleteRule: .nullify, inverse: \Prescription.clinic)
+        var prescriptionsStorage: [Prescription]?
+
+        init() {}
+        @Relationship(deleteRule: .nullify, inverse: \DogDocument.clinic)
+        var documentsStorage: [DogDocument]?
+    }
+
+    @Model
+    final class LabResult {
+        var id: UUID = UUID()
+        var sampledOn: Date = Date()
+        var sampledAt: Date?
+        var laboratory: String = ""
+        var reportNumber: String = ""
+        var section: String = ""
+        var indicator: String = ""
+        var value: Double?
+        var belowLimit: Double?
+        var aboveLimit: Double?
+        var textValue: String?
+        var unit: String = ""
+        var referenceLow: Double?
+        var referenceHigh: Double?
+        var method: String?
+        var labMark: String = ""
+        var note: String = ""
+        var changedAt: Date = Date()
+        var deletedAt: Date?
+        var dog: Dog?
+
+        init() {}
+    }
+
+    @Model
+    final class VetVisit {
+        var id: UUID = UUID()
+        var date: Date = Date()
+        var clinic: Clinic?
+        var doctor: String = ""
+        var reasonRaw: String = VisitReason.checkup.rawValue
+        var conclusion: String = ""
+        var changedAt: Date = Date()
+        var deletedAt: Date?
+        var dog: Dog?
+
+        init() {}
+    }
+
+    @Model
+    final class Diagnosis {
+        var id: UUID = UUID()
+        var wording: String = ""
+        var statusRaw: String = DiagnosisStatus.hypothesis.rawValue
+        var madeOn: Date = Date()
+        var madeBy: String = ""
+        var evidence: String = ""
+        var changedAt: Date = Date()
+        var deletedAt: Date?
+        var dog: Dog?
+
+        init() {}
+    }
+
+    @Model
+    final class Prescription {
+        var id: UUID = UUID()
+        var number: String = ""
+        var date: Date = Date()
+        var clinic: Clinic?
+        var doctor: String = ""
+        var dogWeightKg: Double?
+        var medicationName: String = ""
+        var dosage: String = ""
+        var schedule: String = ""
+        var duration: String = ""
+        var pharmacyForm: String?
+        var controlFromWeeks: Int = 0
+        var controlToWeeks: Int = 0
+        var dispensed: String = ""
+        var instruction: String = ""
+        var source: String = ""
+        var changedAt: Date = Date()
+        var deletedAt: Date?
+        var dog: Dog?
+
+        init() {}
+    }
+
+    @Model
+    final class FamilyMember {
+        var id: UUID = UUID()
+        var name: String = ""
+        var roleRaw: String = FamilyRole.helper.rawValue
+        var note: String?
+        var isMe: Bool = false
+        var customPermissionsRaw: [String]?
+        var isOnDuty: Bool = false
+        var dutyUntil: Date?
+        var inviteToken: String?
+        var inviteExpiresAt: Date?
+        var accessExpiresAt: Date?
+        var acceptedAt: Date?
+
+        init() {}
+    }
+
+    @Model
+    final class Episode {
+        var id: UUID = UUID()
+        var startedAt: Date = Date()
+        var endedAt: Date?
+        var lastIncidentAt: Date = Date()
+        var title: String = ""
+        var detail: String = ""
+
+        init() {}
+    }
+
+    @Model
+    final class Trip {
+        var id: UUID = UUID()
+        var destination: String = ""
+        var startDate: Date = Date()
+        var endDate: Date = Date()
+        var transportRaw: String = TransportKind.car.rawValue
+        var travelHours: Double = 0
+        var lodging: String = ""
+        var participants: [String] = []
+        var departureMinuteOfDay: Int = 9 * 60
+        var packedItems: [String] = []
+        var dog: Dog?
+
+        init() {}
+    }
+}
+
+/// Нынешняя версия — живые классы приложения.
+///
+/// **28.10.2026: `Medication.startedAt`** — с какого дня идёт схема.
+/// Просьба Виктории: «нужно добавить дату лечения или начала схемы, если
+/// начали раньше, а заполнили „сегодня"». Поле необязательное: у схем,
+/// заведённых до V8, оно пустое, и это «начало не названо», а не «сегодня».
+///
+/// > Следующая правка модели обязана сперва заморозить ЭТУ версию
+/// > снимком, сверив хранимые поля живых классов со снимком V7,
+/// > и только потом менять классы.
+// MARK: - V9 · живые классы · Medication.startedAt
+//
+// **Эта форма пришла из облачной сессии 28.10.2026 под номером V8 —
+// и номер был занят.** Локальная сессия в тот же день завела свою
+// V8 (`DogDocument.occurredOn/direction/clinic`), собрала из неё
+// сборку 284 и РАЗДАЛА её обеим группам TestFlight. Две разные формы
+// под одним `Schema.Version(8, 0, 0)` — это `Cannot use staged
+// migration with an unknown model version` у всякого, кто поставил
+// 284: его хранилище объявляет себя восьмой формой, а план описывает
+// восьмую иначе.
+//
+// Замер 29.10.2026, которым коллизия установлена:
+//
+//     наша V8   Schema.Version(8,0,0)   DogDocument.occurredOn/direction/clinic
+//     их  V8    Schema.Version(8,0,0)   Medication.startedAt
+//     контроль  поле startedAt: у нас 0 вхождений, у них 1;
+//               «var name» — 1 у обоих, то есть запрос жив
+//
+// Разведены так: **V8 остаётся за тем, что уже уехало людям**, и она
+// заморожена снимком; новое поле становится V9 на живых классах.
+// Обратный порядок был бы хуже вдвое — пришлось бы менять форму,
+// которая стоит на телефонах, и переписывать её снимок задним числом.
+//
+// > **Номер версии схемы — это не имя правки, а адрес формы
+// > на чужом телефоне.** Занять его второй раз нельзя, даже если
+// > правка меньше.
+nonisolated enum TogoSchemaV9: VersionedSchema {
+    static var versionIdentifier: Schema.Version { Schema.Version(9, 0, 0) }
+
     static var models: [any PersistentModel.Type] {
         [Dog.self, DogDocument.self, DayOut.self, HeatRecord.self, FoodStock.self, LogEvent.self, CareTask.self, Medication.self, DoseRecord.self, WeightEntry.self, TrainingStep.self, TrainingSession.self, ProcedureSkill.self, Clinic.self, LabResult.self, VetVisit.self, Diagnosis.self, Prescription.self, FamilyMember.self, Episode.self, Trip.self]
     }
 }
 
-/// Как хранилище прежней формы становится нынешним.
-///
-/// **Все стадии — `.lightweight`, и это доказано диффом, а не выбрано
-/// на глаз.** Сверка хранимых свойств по всем шестнадцати моделям
-/// между `1815b59`, `4081a47` и `HEAD` даёт ровно четыре изменения,
-/// и все четыре — добавление поля:
-///
-/// - `LogEvent.enteredAt: Date?` — опциональное;
-/// - `LogEvent.originRaw: String?` — опциональное;
-/// - `LogEvent.isDayOnly: Bool = false` — со значением по умолчанию;
-/// - `Medication.fastingBeforeMinutes: Int = 0` — со значением по умолчанию.
-///
-/// Ни одно поле не удалено и не переименовано, ни у одного не менялись
-/// тип, опциональность и атрибуты, набор сущностей тот же. Это ровно
-/// тот случай, который CoreData выводит сам, и `.custom` здесь добавил
-/// бы код без единой задачи для него.
-///
-/// **Чего `.lightweight` не делает и почему это верно.** Заполнить
-/// `fastingBeforeMinutes` у прежних схем он не станет — там останется
-/// ноль. Так и задумано: правило «у схемы без окна „до“ оно равно окну
-/// „после“» живёт в `Medication.fastingBefore`, то есть в чтении,
-/// а не в данных. Переписать это миграцией значило бы потерять разницу
-/// между «не заполнено» и «поставлен явный ноль» безвозвратно —
-/// у вычисляемого свойства она хотя бы восстановима.
-///
-/// **Чего этот план НЕ описывает — замер 05.10.2026.** В App Store
-/// Connect девятнадцать залитых сборок, и форма самой первой из них
-/// в плане отсутствует:
-///
-///     сборка 25  ·  27.08.2026  ·  192 хранимых поля против 204 у V1
-///                   роздана группе «Свои» (внутренняя); у «Друзей» её нет
-///                   нет: Dog.sitter* ×5, DoseRecord.changedAt/skippedAt/
-///                        skippedBy, LogEvent.changedAt,
-///                        Medication.minutesAfterMeal/stockLeft/stockTotal
-///
-/// Что с этим делать — решение Виктории, а не наше: вопрос в том, есть
-/// ли у кого-то на телефоне августовская сборка с записями. **Открыть
-/// ли SwiftData такое хранилище, не мерил никто** — измерена форма,
-/// а не исход открытия. Пока вопрос открыт, запись стоит здесь, а не
-/// в чьей-то памяти.
-///
-/// Проверяется за минуту: `source ../Gamut/.env.asc`, затем
-/// `/v1/apps/6805876636/betaGroups` и `/v1/betaGroups/<id>/builds`
-/// (обратное направление, `/v1/builds/<id>/betaGroups`, отдаёт `403`).
 nonisolated enum TogoMigrationPlan: SchemaMigrationPlan {
     static var schemas: [any VersionedSchema.Type] {
         [TogoSchemaV1.self, TogoSchemaV2.self, TogoSchemaV3.self,
          TogoSchemaV4.self, TogoSchemaV5.self, TogoSchemaV6.self,
-         TogoSchemaV7.self, TogoSchemaV8.self]
+         TogoSchemaV7.self, TogoSchemaV8.self, TogoSchemaV9.self]
     }
 
     static var stages: [MigrationStage] {
@@ -3322,6 +3798,14 @@ nonisolated enum TogoMigrationPlan: SchemaMigrationPlan {
             // что человек сказал «анализ сдан в день съёмки», а он
             // этого не говорил.
             .lightweight(fromVersion: TogoSchemaV7.self, toVersion: TogoSchemaV8.self),
+            // V8 → V9: необязательное `Medication.startedAt`. Поле
+            // добавляется пустым, ничего не переносится — `.lightweight`.
+            //
+            // Стадия заведена 29.10.2026 при сведении двух линий: эта
+            // правка пришла из облачной сессии как V8, а номер уже
+            // был занят формой, уехавшей в сборке 284. Разбор —
+            // у объявления `TogoSchemaV9`.
+            .lightweight(fromVersion: TogoSchemaV8.self, toVersion: TogoSchemaV9.self),
         ]
     }
 }

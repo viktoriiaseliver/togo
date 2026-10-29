@@ -231,7 +231,6 @@ enum TimelineBuilder {
 
         var result: [UUID: LogEvent] = [:]
         var taken = Set<UUID>()
-
         for walk in sorted where walk.kind == .walk {
             // Граница: первый кандидат ПОЗЖЕ прогулки. Всё, что левее
             // неё, — не позже, как и требует прежнее условие

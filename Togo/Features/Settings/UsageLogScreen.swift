@@ -38,7 +38,7 @@ struct UsageLogScreen: View {
             privacy
         }
         .navigationTitle("Журнал действий")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("usagelog"))
         .task { await reload() }
         .usageScreen(.usageLog)
         .confirmationDialog("Очистить журнал?", isPresented: $isConfirmingClear,

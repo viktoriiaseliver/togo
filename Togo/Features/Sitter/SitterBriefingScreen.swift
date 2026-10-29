@@ -53,7 +53,7 @@ struct SitterBriefingScreen: View {
             TGExplainer(text: "Это всё, что нужно знать. Диагнозов и истории болезни здесь нет — они хозяйке, не тебе.")
         }
         .navigationTitle("Инструкция")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("handover"))
         .usageScreen(.sitter)
         .navigationBarTitleDisplayMode(.inline)
         .safeAreaInset(edge: .bottom) {

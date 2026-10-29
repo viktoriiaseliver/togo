@@ -334,6 +334,13 @@ struct HealthScreen: View {
                 Text(verbatim: medication.scheduleSummary)
                     .textStyle(AppFont.caption)
                     .wraps()
+                // Дата начала — только названная (V8). Первую дозу журнала
+                // за начало здесь не выдаём: это догадка, а карточку
+                // читает врач.
+                if let начало = medication.startedAt {
+                    Text(.готовая(String(localized: "с \(Fmt.shortDay(начало))")))
+                        .textStyle(AppFont.caption.color(Token.Ink.secondary))
+                }
                 if medication.isPaused {
                     Text("на паузе")
                         .textStyle(AppFont.micro.color(Token.Status.waitingText))
@@ -681,7 +688,10 @@ struct HealthScreen: View {
             TGDivider()
                         TGLink(title: "Назначения", value: назначенийВсего, systemImage: "doc.text") { PrescriptionsScreen(dog: dog) }
             TGDivider()
-                        TGLink(title: "Прививки и визиты", systemImage: "syringe") { CareScreen(dog: dog) }
+                        // «Визиты к врачу» — строкой выше, своим экраном. Здесь был второй
+                        // вход «Прививки и визиты», и вёл он в ВЕСЬ уход — зубы, уши,
+                        // когти (отзыв 27.10: «Почему в прививках и визитах уход?»).
+                        TGLink(title: "Прививки", systemImage: "syringe") { CareScreen(dog: dog, только: .medical) }
             TGDivider()
             // МЕСТО ВЫЗОВА справочника клиник. Без этой строки `Clinic`
             // существует и недостижим: у модели НЕ БЫЛО НИ ОДНОГО
@@ -867,7 +877,7 @@ struct ProtocolScreen: View {
             планКонтроля
         }
         .navigationTitle("Протокол")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("protocol"))
         .onReceive(tick) { now = $0 }
     }
 
@@ -1057,7 +1067,7 @@ struct VetReportScreen: View {
             .buttonStyle(.plain)
         }
         .navigationTitle("Отчёт")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("report"))
     }
 
     private var contents: [(String, Int)] {
@@ -1226,7 +1236,7 @@ struct WeightScreen: View {
             }
         }
         .navigationTitle("Вес")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("weight"))
         // Выход с цифровой клавиатуры: у `.decimalPad` своей клавиши
         // возврата нет.
         .готовоНадКлавиатурой { весВФокусе = false }

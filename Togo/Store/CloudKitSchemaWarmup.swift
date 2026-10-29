@@ -248,6 +248,8 @@ nonisolated enum CloudKitSchemaWarmup {
         лекарство.stockLeftAmount = 1
         лекарство.packAmount = 1
         лекарство.courseEnd = markerDate
+        // V8, 28.10.2026: без значения поле в схему development не ляжет.
+        лекарство.startedAt = markerDate
         лекарство.expiry = markerDate
         лекарство.openedAt = markerDate
         лекарство.shelfAfterOpenDays = 1

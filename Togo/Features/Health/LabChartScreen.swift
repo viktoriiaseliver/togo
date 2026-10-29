@@ -165,7 +165,7 @@ struct LabChartScreen: View {
             }
         }
         .navigationTitle("График")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("labs"))
         .sheet(item: $выбраннаяТочка) { точка in
             ТочкаКарточка(точка: точка,
                           дозаЧислом: дозаЧислом(на: точка.дата),
@@ -202,7 +202,7 @@ struct LabChartScreen: View {
     /// числовая доза с единицей массы. Это правка ФОРМЫ ХРАНИЛИЩА,
     /// и она отдельным решением.
     private func дозаТекстом(на дата: Date) -> String? {
-        let свои = DoseScheduler.activeSchedules(of: dog, among: медикаменты)
+        let свои = схемы(на: дата)
         let строки = свои.compactMap { лекарство -> String? in
             guard let доза = Fmt.notBlank(лекарство.doseText) else { return nil }
             let имя = Fmt.notBlank(лекарство.name) ?? ""
@@ -223,10 +223,43 @@ struct LabChartScreen: View {
     /// Нулевой столбик был бы утверждением «дозы не было», а это
     /// другое: мы просто не знаем силу таблетки.
     private func дозаЧислом(на дата: Date) -> Double? {
-        let суммы = DoseScheduler.activeSchedules(of: dog, among: медикаменты)
+        let суммы = схемы(на: дата)
             .compactMap(\.dailyMassMcg)
         guard !суммы.isEmpty else { return nil }
         return суммы.reduce(0, +)
+    }
+
+    /// Схемы, которые шли В ДЕНЬ ЗАБОРА, а не сегодня.
+    ///
+    /// **Здесь стояло `activeSchedules` — схемы, действующие СЕЙЧАС,** при
+    /// том что обе функции выше принимают дату и не пользовались ею.
+    /// Мартовская точка показывала сегодняшнюю дозу, все столбики дозы
+    /// были одной высоты — на графике, который существует ради вопроса
+    /// «изменился ли Т4 после смены дозы» (разбор 28.10.2026).
+    ///
+    /// Начало — `startedAt` (V8, 28.10.2026), а у схем, где его не назвали,
+    /// первая доза в журнале; конец — `cancelledAt`. Схема на паузе без даты отмены не берётся:
+    /// когда её поставили на паузу, неизвестно, и это прежнее поведение.
+    /// Схема без единой дозы в журнале считается шедшей всегда — так же
+    /// отвечал и прежний счёт.
+    private func схемы(на дата: Date) -> [Medication] {
+        guard let dog else { return [] }
+        return медикаменты.filter { лекарство in
+            guard лекарство.dog?.persistentModelID == dog.persistentModelID,
+                  лекарство.deletedAt == nil else { return false }
+            if let конец = лекарство.cancelledAt {
+                guard конец > дата else { return false }
+            } else if лекарство.isPaused {
+                return false
+            }
+            // Начало — `startedAt` (V8), если его назвали; иначе первая
+            // доза журнала, как до V8.
+            if let начало = лекарство.startedAt ?? лекарство.doses.map(\.scheduledAt).min(),
+               начало > дата {
+                return false
+            }
+            return true
+        }
     }
 
     /// Есть ли хоть у одной точки доза числом.

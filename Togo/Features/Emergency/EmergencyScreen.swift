@@ -22,7 +22,7 @@ struct EmergencyScreen: View {
             vetBriefCard
         }
         .navigationTitle("Если что-то случилось")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("emergency"))
         .usageScreen(.emergency)
     }
 
@@ -294,7 +294,7 @@ struct DocumentsScreen: View {
             TGExplainer(text: "Всё это лежит на телефоне и никуда не отправляется само.")
         }
         .navigationTitle("Документы")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("docs"))
     }
 
     private func binding(_ keyPath: ReferenceWritableKeyPath<Dog, String?>) -> Binding<String> {

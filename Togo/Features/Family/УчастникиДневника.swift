@@ -73,7 +73,7 @@ struct УчастникиДневника: View {
             }
         }
         .navigationTitle("Доступ к дневнику")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("family"))
         .task { await обновить() }
         .refreshable { await обновить() }
         .sheet(item: $выбранный) { участник in

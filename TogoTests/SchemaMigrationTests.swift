@@ -1014,8 +1014,9 @@ struct SchemaMigrationTests {
         #expect(TogoMigrationPlan.schemas.count == 8, """
             сборка 36 (V1), сборка 46 (V2), сборка 141 (V3), сборки
             191–271 (V4), сборки 273–277 (V5), сборка 279 (V6),
-            сборки 280–282 (V7) и нынешняя (V8) — версию, которой
-            в плане нет, открыть нечем.
+            сборки 280–282 (V7) и 284 (V8) — версию, которой в плане
+            нет, открыть нечем. V8 заморожена снимком до того, как
+            облачная правка `Medication.startedAt` стала V9.
             V3 заморожена снимком 23.09, V4 — 05.10, V5 — 26.10,
             V6 — 27.10, V7 — 28.10: до заморозки каждая ссылалась
             на живые классы, и первая же правка модели меняла её форму
@@ -1027,8 +1028,10 @@ struct SchemaMigrationTests {
             тем, как к документу добавили дату события, направление
             и клинику, то есть в той форме, с которой уехали 280–282.
             """)
-        #expect(TogoMigrationPlan.stages.count == 7)
-        #expect(Persistence.schema.version == TogoSchemaV8.versionIdentifier,
+        // Восьмая стадия — V8 → V9, заведена 29.10.2026 при сведении
+        // двух линий: облачная правка пришла под занятым номером 8.
+        #expect(TogoMigrationPlan.stages.count == 8)
+        #expect(Persistence.schema.version == TogoSchemaV9.versionIdentifier,
                 "приложение открывает хранилище последней версией плана")
     }
 
@@ -1127,12 +1130,12 @@ struct SchemaMigrationTests {
         //    прошёл бы на схеме, совпадающей с нынешней: база открылась
         //    бы штатно, `#expect(throws:)` покраснел бы — но покраснел бы
         //    он на своей же ошибке, а не на дефекте приложения.
-        #expect(TogoSchemaV5СУженнаяФорма.versionIdentifier == TogoSchemaV8.versionIdentifier, """
+        #expect(TogoSchemaV5СУженнаяФорма.versionIdentifier == TogoSchemaV9.versionIdentifier, """
             номер версии снимка разошёлся с нынешним — а весь смысл этой
             проверки в том, что номера СОВПАДАЮТ. С разными номерами это
             повтор соседнего теста про форму не из плана.
             """)
-        #expect(TogoSchemaV5СУженнаяФорма.models.count == TogoSchemaV8.models.count - 1, """
+        #expect(TogoSchemaV5СУженнаяФорма.models.count == TogoSchemaV9.models.count - 1, """
             снимок обязан быть уже нынешней схемы ровно на одну сущность.
             Совпали — значит фильтр ничего не убрал (сущность переименовали
             или сняли), и база заведётся нынешней формой: тест станет
@@ -1196,10 +1199,21 @@ struct SchemaMigrationTests {
 /// а такое хранилище не открывается вовсе, и тест мерил бы не форму,
 /// а оборванную связь.
 enum TogoSchemaV5СУженнаяФорма: VersionedSchema {
-    static var versionIdentifier: Schema.Version { TogoSchemaV8.versionIdentifier }
+    static var versionIdentifier: Schema.Version { TogoSchemaV9.versionIdentifier }
 
+    /// Модели берутся у **V9 — живых классов**, а не у снимка.
+    ///
+    /// 29.10.2026 здесь стояла `TogoSchemaV8.models`, и после того как
+    /// V8 стала снимком, тест заводил контейнер на снимочных типах,
+    /// а код работал с живыми: SwiftData роняло приложение первым же
+    /// чтением — «Failed to cast model Togo.Dog … to Dog», два
+    /// перезапуска раннера и ни одного выполненного теста.
+    ///
+    /// > **Снимок и живой класс — разные типы с одним именем.** Всё,
+    /// > что собирает контейнер для РАБОТЫ (а не для проверки старой
+    /// > формы), обязано брать модели у последней версии плана.
     static var models: [any PersistentModel.Type] {
-        TogoSchemaV8.models.filter { ObjectIdentifier($0) != ObjectIdentifier(ProcedureSkill.self) }
+        TogoSchemaV9.models.filter { ObjectIdentifier($0) != ObjectIdentifier(ProcedureSkill.self) }
     }
 }
 

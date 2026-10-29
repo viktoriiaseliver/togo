@@ -186,7 +186,8 @@ nonisolated enum BackupService {
                     stockLeftAmount: medication.stockLeftAmount,
                     packAmount: medication.packAmount,
                     canGiveOutside: medication.canGiveOutside,
-                    prescriptionNumber: medication.prescriptionNumber
+                    prescriptionNumber: medication.prescriptionNumber,
+                    startedAt: medication.startedAt
                 )
             },
             trainingSteps: dog.trainingSteps.map {
@@ -742,6 +743,9 @@ nonisolated enum BackupService {
             medication.prescriber = medicationSnapshot.prescriber
             medication.cancelledAt = medicationSnapshot.cancelledAt
             medication.cancelledNote = medicationSnapshot.cancelledNote
+            // Старый архив без даты начала её не стирает — та же идиома,
+            // что у массы ниже.
+            medication.startedAt = medicationSnapshot.startedAt ?? medication.startedAt
             // Единица дозы — первая из тринадцати: без неё «0,5»
             // не значит ничего, а ошибка здесь не путаница в дневнике,
             // а передозировка.

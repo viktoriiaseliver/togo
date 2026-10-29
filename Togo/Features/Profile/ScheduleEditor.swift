@@ -297,7 +297,16 @@ struct ScheduleEditor: View {
     private var mealsCard: some View {
         TGCard {
             TGSectionHeader(title: "еда")
-            Stepper(value: $draft.mealsPerDay, in: 1...5) {
+            // Сброс ручной раскладки — в сеттере, то есть ТОЛЬКО от нажатия.
+            // Здесь стоял `onChange(of: mealsPerDay)`, а он срабатывал
+            // и при загрузке: черновик открывается с числом по умолчанию,
+            // `ScheduleScreen.task` подставляет сохранённое — число
+            // «меняется», ручные часы снимались, и «Сохранить» затирал их
+            // ровной раскладкой. Отзыв 27.10: «Сбрасывается когда захожу
+            // настроить», кадр: сохранено 15:30 и 21:30, открыто 15:00 и 20:30.
+            Stepper(value: Binding(get: { draft.mealsPerDay },
+                                   set: { draft.mealsPerDay = $0; draft.isManual = false }),
+                    in: 1...5) {
                 HStack {
                     Text("Сколько раз в день").textStyle(AppFont.body)
                     Spacer(minLength: Token.Space.s8)
@@ -514,7 +523,11 @@ struct ScheduleEditor: View {
         guard times.indices.contains(index) else { return }
         times[index] = minute
         draft.mealTimes = times
-        draft.isManual = true
+        // «Вручную» — только если вышло НЕ ровно. Поставил человек часы,
+        // совпавшие с ровной раскладкой, — кнопка «Разложить ровно»
+        // предлагала сделать уже сделанное (отзыв 27.10: «и так ровно
+        // предлагает настроить ровно»).
+        draft.isManual = times.sorted() != draft.evenMealTimes
     }
 
     private var explainerCard: some View {

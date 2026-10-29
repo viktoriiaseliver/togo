@@ -714,6 +714,9 @@ nonisolated struct MedicationPayload: Equatable, Sendable, Codable {
     /// N дней» потерялась бы у человека с открытым флаконом капель,
     /// то есть там, где ошибка измеряется дозой.
     var courseEnd: Date? = nil
+    /// С какого дня идёт схема — V8, 28.10.2026. Едет семье: от неё
+    /// второй человек получает те же сроки контрольных анализов.
+    var startedAt: Date? = nil
     var expiry: Date? = nil
     var openedAt: Date? = nil
     var shelfAfterOpenDays: Int? = nil

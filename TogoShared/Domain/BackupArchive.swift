@@ -637,6 +637,9 @@ nonisolated struct BackupArchive: Codable, Sendable {
         /// в аптеке, чтобы продлить, и в клинике, чтобы найти запись.
         /// У Стича таких бланков тридцать четыре.
         var prescriptionNumber: String?
+        /// С какого дня идёт схема — V8, 28.10.2026. Нет в старых
+        /// архивах: тогда `nil`, «начало не названо».
+        var startedAt: Date?
     }
 
     struct DoseSnapshot: Codable, Sendable {

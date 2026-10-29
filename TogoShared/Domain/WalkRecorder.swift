@@ -42,7 +42,12 @@ nonisolated enum WalkRecorder {
     ) -> LogEvent? {
         var вставленные: [LogEvent] = []
         let walk = LogEvent(kind: .walk, date: session.startedAt, authorName: author)
-        walk.durationSeconds = Int(session.duration())
+        // Конец — момент «Домой» на блокировке, если прогулку закончили
+        // там. Записывает её приложение позже, при открытии, и `Date()`
+        // здесь прибавлял к прогулке всё время, пока телефон лежал
+        // в кармане: закончили в 10:00, открыли в 11:30 — полтора часа
+        // лишних (аудит 28.10.2026). Эту длительность читает сводка врачу.
+        walk.durationSeconds = Int(session.duration(at: session.закончиласьНаБлокировке ?? Date()))
         walk.dog = dog
         context.insert(walk)
         вставленные.append(walk)

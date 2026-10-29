@@ -110,7 +110,7 @@ struct FoodStockScreen: View {
             }
         }
         .navigationTitle("Чем кормим")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("feeding"))
         .usageScreen(.foodStock)
         .sheet(isPresented: $isAdding) { FoodStockEditorSheet(dog: dog) }
         .sheet(item: $editing) { stock in FoodStockEditorSheet(stock: stock, dog: dog) }
@@ -173,6 +173,7 @@ struct FoodStockScreen: View {
 
 /// Форма корма: тип, фасовка, остаток, дневная доля.
 struct FoodStockEditorSheet: View {
+    @Environment(AppState.self) private var appState
     var stock: FoodStock?
     let dog: Dog
 
@@ -274,6 +275,13 @@ struct FoodStockEditorSheet: View {
         .confirmationDialog("Убрать корм?", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
             Button("Убрать", role: .destructive) {
                 if let stock { context.delete(stock) }
+                // Удаление без сохранения закрывало шторку как успех
+                // (аудит 28.10.2026). Откатить удаление нечем — говорим правду.
+                guard context.persistNothingToUndo() else {
+                    Haptics.warning()
+                    appState.showFailure("Не удалилось · проверь после перезапуска")
+                    return
+                }
                 Haptics.warning()
                 dismiss()
             }

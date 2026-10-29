@@ -406,6 +406,9 @@ struct DeviceLocalFieldTests {
         // и СМЫСЛ.** Поэтому автор прироста добросовестно обновил
         // один и не узнал о трёх.
         "Medication.massPerUnitMcg",
+        // V8, 28.10.2026: дата начала схемы. Едет — от неё у обоих
+        // людей одни и те же сроки контрольных анализов.
+        "Medication.startedAt",
         "Medication.fastingMinutes", "Medication.fastingBeforeMinutes",
         "Medication.minutesAfterMeal", "Medication.isPaused",
         // Запас в четырёх полях. Это пачка — предмет, общий на всех,

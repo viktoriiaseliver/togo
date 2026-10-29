@@ -112,10 +112,16 @@ nonisolated enum FeedingGate {
             .filter { $0 > now }
             // Уже отмеченную дозу запирать нельзя: если её дали раньше
             // срока, еда упирается в окно «после», а не в план.
+            //
+            // Сверка по ПЛАНОВОМУ часу дозы и до минуты, как в `ensureDoses`.
+            // Здесь сравнивался час, когда ДАЛИ, с точностью до часа:
+            // доза на 08:00, данная в 07:50, попадала в другой час и еду
+            // держала «до 08:00» при уже выпитой таблетке, а две дозы
+            // в одном часу (08:00 и 08:30) снимались одной отметкой.
             .filter { doseAt in
                 !medication.doses.contains { dose in
-                    dose.isGiven && calendar.isDate(dose.givenAt ?? .distantPast,
-                                                    equalTo: doseAt, toGranularity: .hour)
+                    dose.isGiven && calendar.isDate(dose.scheduledAt,
+                                                    equalTo: doseAt, toGranularity: .minute)
                 }
             }
             .sorted()

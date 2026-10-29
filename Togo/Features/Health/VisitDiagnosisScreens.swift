@@ -81,7 +81,7 @@ struct VetVisitsScreen: View {
             }
         }
         .navigationTitle("Визиты к врачу")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("visit"))
         .toolbar {
             if canEdit, dog != nil {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -402,7 +402,7 @@ struct DiagnosesScreen: View {
             }
         }
         .navigationTitle("Диагнозы")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("diagnoses"))
         .toolbar {
             if canEdit, dog != nil {
                 ToolbarItem(placement: .topBarTrailing) {

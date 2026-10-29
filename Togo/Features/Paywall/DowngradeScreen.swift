@@ -52,6 +52,6 @@ struct DowngradeScreen: View {
             }
         }
         .navigationTitle("Отключить Pro")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("downgrade"))
     }
 }

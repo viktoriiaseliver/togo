@@ -516,7 +516,7 @@ struct LabResultEntryFlow: View {
     private var последняяДоза: Date? {
         guard времяИзвестно else { return nil }
         return DoseScheduler.lastDose(
-            before: sampledAt,
+            before: моментЗабора(день: sampledOn, время: sampledAt),
             among: DoseScheduler.activeSchedules(of: dog, among: медикаменты))
     }
 
@@ -528,8 +528,9 @@ struct LabResultEntryFlow: View {
     ///
     /// С 23.10.2026 вызовов три, и считает их один `DoseScheduler`.
     private var часыОтДозы: LabSampleTiming.Timing {
-        DoseScheduler.sampleTiming(sampledAt: времяИзвестно ? sampledAt : nil,
-                                   of: dog, among: медикаменты)
+        DoseScheduler.sampleTiming(
+            sampledAt: времяИзвестно ? моментЗабора(день: sampledOn, время: sampledAt) : nil,
+            of: dog, among: медикаменты)
     }
 
     var body: some View {
@@ -824,7 +825,8 @@ struct LabResultEntryFlow: View {
                                    section: раздел.trimmingCharacters(in: .whitespaces),
                                    laboratory: лаборатория.trimmingCharacters(in: .whitespaces),
                                    reportNumber: номерБланка.trimmingCharacters(in: .whitespaces))
-            анализ.sampledAt = времяИзвестно ? sampledAt : nil
+            анализ.sampledAt = времяИзвестно
+                ? моментЗабора(день: sampledOn, время: sampledAt) : nil
             анализ.unit = черновик.единица.trimmingCharacters(in: .whitespaces)
             анализ.referenceLow = ЧислоСБланка.разобрать(черновик.нормаНиз)
             анализ.referenceHigh = ЧислоСБланка.разобрать(черновик.нормаВерх)
@@ -1206,7 +1208,8 @@ struct LabResultRowEditor: View {
         result.reportNumber = номерБланка.trimmingCharacters(in: .whitespaces)
         result.section = раздел.trimmingCharacters(in: .whitespaces)
         result.sampledOn = датаЗабора
-        result.sampledAt = времяИзвестно ? времяЗабора : nil
+        result.sampledAt = времяИзвестно
+            ? моментЗабора(день: датаЗабора, время: времяЗабора) : nil
 
         let число = ЧислоСБланка.разобрать(черновик.число)
         result.value = черновик.вид == .равно ? число : nil
@@ -1243,4 +1246,17 @@ struct LabResultRowEditor: View {
         Haptics.success()
         dismiss()
     }
+}
+
+/// Момент забора: ДЕНЬ — из даты забора, час и минута — из поля времени.
+///
+/// Поле времени показывает только часы и минуты, а несёт полную дату —
+/// ту, что была при открытии формы, то есть сегодня. До 28.10.2026 она
+/// уходила в базу как есть: бланк за прошлую неделю сохранялся
+/// с сегодняшней датой и выбранным часом, и «часов от дозы» в сводке
+/// врачу считались от сегодняшних доз (разбор 28.10.2026).
+func моментЗабора(день: Date, время: Date, calendar: Calendar = .current) -> Date {
+    let часы = calendar.dateComponents([.hour, .minute], from: время)
+    return calendar.date(bySettingHour: часы.hour ?? 0, minute: часы.minute ?? 0,
+                         second: 0, of: день) ?? время
 }

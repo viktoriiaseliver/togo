@@ -91,7 +91,7 @@ struct DataPrivacyScreen: View {
             }
         }
         .navigationTitle("Данные")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("privacy"))
         .usageScreen(.dataPrivacy)
         .confirmationDialog("Удалить все данные?", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
             Button("Удалить всё", role: .destructive) { deleteEverything() }
@@ -102,6 +102,7 @@ struct DataPrivacyScreen: View {
     }
 
     private func deleteEverything() {
+        var неУдалось = 0
         // Список полный намеренно: полагаться на каскад от собаки здесь
         // нельзя. Запас корма, течки и снимки документов в нём не значились
         // вовсе — то есть после «удалить все данные» фотография паспорта
@@ -110,8 +111,26 @@ struct DataPrivacyScreen: View {
                       CareTask.self, TrainingSession.self, TrainingStep.self, ProcedureSkill.self,
                       Trip.self, Episode.self, FamilyMember.self,
                       FoodStock.self, HeatRecord.self, DogDocument.self, DayOut.self,
+                      // Медслой и справочник клиник — пять моделей, которых
+                      // в списке не было (аудит 28.10.2026): после «удалить
+                      // все данные» на телефоне оставались анализы, визиты,
+                      // диагнозы, назначения и клиники.
+                      LabResult.self, VetVisit.self, Diagnosis.self, Prescription.self,
+                      Clinic.self,
                       Dog.self] as [any PersistentModel.Type] {
-            try? context.delete(model: model)
+            do {
+                try context.delete(model: model)
+            } catch {
+                неУдалось += 1
+            }
+        }
+        // `try?` выбрасывал отказ, и экран говорил «Всё удалено» при любом
+        // исходе. Не удалилась хоть одна модель — говорим правду и не
+        // трогаем ни отметки, ни напоминания: человек нажмёт ещё раз.
+        guard неУдалось == 0 else {
+            Haptics.warning()
+            appState.showFailure("Удалилось не всё · нажми ещё раз")
+            return
         }
 
         // Отметки в UserDefaults стираются ТОЖЕ, и это решение Виктории
@@ -204,7 +223,7 @@ struct SupportScreen: View {
             }
         }
         .navigationTitle("Поддержка")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("support"))
     }
 
     private func openMail() {
@@ -291,7 +310,7 @@ struct AboutScreen: View {
             }
         }
         .navigationTitle("О приложении")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("about"))
     }
 
     private let principles = [
@@ -340,6 +359,6 @@ struct WhatsNewScreen: View {
             }
         }
         .navigationTitle("Что нового")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("whatsnew"))
     }
 }

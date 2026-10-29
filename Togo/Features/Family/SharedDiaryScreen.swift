@@ -56,7 +56,7 @@ struct SharedDiaryScreen: View {
             limitsCard
         }
         .navigationTitle("Общий дневник")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("family"))
         .usageScreen(.sharedDiary)
         .task {
             // Читается ДО `refresh()` и вне его: у `refresh()` стоит

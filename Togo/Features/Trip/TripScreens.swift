@@ -8,6 +8,7 @@ struct TripSetupScreen: View {
 
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
+    @Environment(AppState.self) private var appState
     @Query private var trips: [Trip]
 
     @State private var destination = ""
@@ -68,6 +69,12 @@ struct TripSetupScreen: View {
                 TGDivider()
                 DatePicker("Когда", selection: $start, displayedComponents: .date)
                     .frame(minHeight: Token.Size.tapTarget)
+                    // `in: start...` у «По» не двигает уже выбранный конец:
+                    // перенеси начало за него — и поездка сохранялась
+                    // с концом раньше начала.
+                    .onChange(of: start) { _, новое in
+                        if end < новое { end = новое }
+                    }
                 TGDivider()
                 DatePicker("По", selection: $end, in: start..., displayedComponents: .date)
                     .frame(minHeight: Token.Size.tapTarget)
@@ -123,7 +130,7 @@ struct TripSetupScreen: View {
             }
         }
         .navigationTitle("Поездка")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("trip"))
         .usageScreen(.trip)
     }
 
@@ -147,6 +154,13 @@ struct TripSetupScreen: View {
         trip.lodging = lodging
         trip.dog = dog
         context.insert(trip)
+        // Здесь была одна вставка без сохранения и сразу «успех»:
+        // не сохранилось — экран закрывался, будто поездка есть.
+        guard context.persist(otherwise: { context.delete(trip) }) else {
+            Haptics.warning()
+            appState.showFailure(String(localized: "Поездка не сохранилась · нажми ещё раз"))
+            return
+        }
         Haptics.success()
         dismiss()
     }

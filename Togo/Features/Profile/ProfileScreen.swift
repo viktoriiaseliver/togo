@@ -35,7 +35,7 @@ struct ProfileScreen: View {
         }
         .disabled(false)
         .navigationTitle(заголовок)
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("profile"))
     }
 
     /// Заголовок экрана.

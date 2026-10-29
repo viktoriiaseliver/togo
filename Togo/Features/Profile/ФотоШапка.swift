@@ -203,7 +203,7 @@ struct ФотоШапка<Низ: View>: View {
     private var подложка: some View {
         Token.Surface.page
             .overlay {
-                if let фото, let снимок = UIImage(data: фото) {
+                if let фото, let снимок = КэшСнимков.картинка(фото) {
                     Image(uiImage: снимок)
                         .resizable()
                         .scaledToFill()

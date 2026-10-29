@@ -515,7 +515,10 @@ struct AppRoot: View {
     @Environment(Settings.self) private var settings
     @Environment(AppState.self) private var appState
     @Environment(\.modelContext) private var context
-    @Query private var dogs: [Dog]
+    // `@Query dogs` снят 28.10.2026: читателя у него не осталось с тех пор,
+    // как сняли `&& dogs.first != nil` (ниже), а подписка жила — и корень
+    // всего приложения перерисовывался на любом изменении любой собаки,
+    // в том числе на каждом импорте из общего дневника.
     @Query private var members: [FamilyMember]
     @State private var showsWhatsNew = false
     /// Сколько раз при этом показе приняли приглашение.

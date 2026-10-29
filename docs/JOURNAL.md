@@ -9,6 +9,10 @@
 написанное рукой, пересборка не трогает.
 
 
+- [28 октября 2026 — v10-vygruzka-i-refaktoring-segodnya](journal/2026-10-28-v10-vygruzka-i-refaktoring-segodnya.md) — v10-vygruzka-i-refaktoring-segodnya
+- [27 октября 2026](journal/2026-10-27-vecher-obshchiy-dnevnik-i-rol-gostya.md) — **27.10.2026, вечер.** После раздачи 280 и 281 Виктория поставила сборку на телефон, восстановила карту Стича и позвала маму
+- [27 октября 2026](journal/2026-10-27-polnaya-karta-sticha-redakciya-5.md) — **27.10.2026.** Виктория дала три файла — медкнижка Стича редакции 5 от 27.10.2026 в PDF, DOCX и французский перевод — и задачу: собрать данные так, чтобы она могла их восстановить
+- [27 октября 2026](journal/2026-10-27-opis-arkhiva-i-foto-v-cloudkit.md) — **27.10.2026, вечер.** Задание Виктории: «все чини и заливай»
 - [27 октября 2026 — dizayn-zakryt-ostatok-eto-resheniya](journal/2026-10-27-dizayn-zakryt-ostatok-eto-resheniya.md) — dizayn-zakryt-ostatok-eto-resheniya
 - [26 октября 2026 — узкий экран](journal/2026-10-26-zhest-ne-doshyol-do-scrollview.md) — механизм «карточка не достаётся» НЕ установлен: арифметика по кадрам сняла оба каркасных кандидата, а побайтный кадр не согласуется ни с одним — остаётся жест, не дошедший до ScrollView
 - [26 октября 2026](journal/2026-10-26-versiya-na-zhivyh-klassah-ne-opisyvaet-nichego.md) — Разработчик схемы: версия на живых классах не описывает ничего — V5 заморожена снимком, V6 встала на живые, база пяти телефонов открывается

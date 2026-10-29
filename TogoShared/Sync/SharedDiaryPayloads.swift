@@ -353,7 +353,8 @@ extension Medication {
             prescriptionNumber: prescriptionNumber,
             unitRaw: unitRaw, massPerUnitMcg: massPerUnitMcg,
             doseSlotsData: doseSlotsData,
-            courseEnd: courseEnd, expiry: expiry, openedAt: openedAt,
+            courseEnd: courseEnd, startedAt: startedAt,
+            expiry: expiry, openedAt: openedAt,
             shelfAfterOpenDays: shelfAfterOpenDays,
             remindBeforeExpiry: remindBeforeExpiry,
             canGiveOutside: canGiveOutside,
@@ -388,6 +389,8 @@ extension Medication {
         if let масса = payload.massPerUnitMcg { massPerUnitMcg = масса }
         if let слоты = payload.doseSlotsData { doseSlotsData = слоты }
         courseEnd = payload.courseEnd ?? courseEnd
+        // Та же идиома: снимок от сборки до V8 даты начала не несёт.
+        startedAt = payload.startedAt ?? startedAt
         expiry = payload.expiry ?? expiry
         openedAt = payload.openedAt ?? openedAt
         if let дней = payload.shelfAfterOpenDays { shelfAfterOpenDays = дней }

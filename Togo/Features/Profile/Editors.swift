@@ -234,7 +234,7 @@ struct DogEditorScreen: View {
         // Строка отказа живёт до первой правки клички, а не до непустой:
         // человек уже начал исправлять, ругать его по дороге незачем.
         .onChange(of: draft.name) { _, _ in кличкаНеНазвана = false }
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("editors"))
         // Выход с цифровой клавиатуры. Худший экран этого класса:
         // см. причину у объявления `весВФокусе`.
         .готовоНадКлавиатурой { весВФокусе = false }
@@ -743,6 +743,14 @@ struct MedicationEditorSheet: View {
     /// Сроки — каждый со своим «указан ли». `nil` в модели значит
     /// «не введено», и тумблер — единственный способ отличить его
     /// от сегодняшней даты, которую `DatePicker` подставит сам.
+    /// С какого дня даём — `Medication.startedAt`, V8. У новой схемы
+    /// по умолчанию сегодня и названо: человек заводит то, что начал.
+    /// Начали раньше — сдвигает дату назад (просьба Виктории 28.10.2026).
+    @State private var началоНазвано = true
+    @State private var началоСхемы = Date()
+    /// Через сколько недель от начала сдать кровь. Каждая неделя —
+    /// дело ухода «по дате» в медицинской категории.
+    @State private var контрольНедели: Set<Int> = []
     @State private var естьКурсДо = false
     @State private var курсДо = Date()
     @State private var естьСрокГодности = false
@@ -1002,6 +1010,33 @@ struct MedicationEditorSheet: View {
             TGCard {
                 TGSectionHeader(title: "сроки")
 
+                Toggle(isOn: $началоНазвано) {
+                    Text("Знаю, с какого дня даём").textStyle(AppFont.body)
+                }
+                .frame(minHeight: Token.Size.tapTarget)
+                if началоНазвано {
+                    DatePicker("Начало схемы", selection: $началоСхемы,
+                               in: ...Date(), displayedComponents: .date)
+                        .textStyle(AppFont.body)
+                        .frame(minHeight: Token.Size.tapTarget)
+                    TGExplainer(text: "Начали раньше, чем завели здесь, — поставь настоящий день. От него считаются контрольные анализы.")
+
+                    Text("Анализ крови через").textStyle(AppFont.body)
+                    TGChipGroup(items: Self.неделиКонтроля,
+                                title: { String(localized: "\($0) нед") },
+                                isSelected: { контрольНедели.contains($0) },
+                                minimumWidth: 64) { неделя in
+                        if контрольНедели.contains(неделя) {
+                            контрольНедели.remove(неделя)
+                        } else {
+                            контрольНедели.insert(неделя)
+                        }
+                    }
+                    if !контрольНедели.isEmpty {
+                        TGExplainer(text: .готовая(String(localized: "Каждая станет делом в «Прививках» на свой день: \(Self.даты(контрольНедели, от: началоСхемы)). Напомнит утренней сводкой и встанет в план дня.")))
+                    }
+                }
+
                 Toggle(isOn: $естьКурсДо) {
                     Text("Курс идёт до определённого числа").textStyle(AppFont.body)
                 }
@@ -1142,6 +1177,14 @@ struct MedicationEditorSheet: View {
         // форма не смогла бы отличить «не введено» от даты, которую
         // `DatePicker` подставит сам, и первое же открытие формы
         // записало бы сегодняшнее число как срок годности.
+        // Схема до V8 даты начала не знает: «не названо», и форма
+        // не подставляет сегодняшнее число сама. Подсказка в поле —
+        // первая доза журнала, но записана она будет, только если
+        // человек включит переключатель.
+        началоНазвано = medication.startedAt != nil
+        началоСхемы = medication.startedAt
+            ?? medication.doses.map(\.scheduledAt).min()
+            ?? Date()
         естьКурсДо = medication.courseEnd != nil
         курсДо = medication.courseEnd ?? Date()
         естьСрокГодности = medication.expiry != nil
@@ -1285,6 +1328,7 @@ struct MedicationEditorSheet: View {
         let былаЕдиницаФормы = target.unitRaw
         let былНомер = target.prescriptionNumber
         let былКонецКурса = target.courseEnd
+        let былоНачало = target.startedAt
         let былСрок = target.expiry
         let былоВскрытие = target.openedAt
         let былоПослеВскрытия = target.shelfAfterOpenDays
@@ -1301,6 +1345,9 @@ struct MedicationEditorSheet: View {
         target.prescriptionNumber = номерНазначения.trimmingCharacters(in: .whitespaces).isEmpty
             ? nil : номерНазначения.trimmingCharacters(in: .whitespaces)
         target.courseEnd = естьКурсДо ? курсДо : nil
+        // Начало дня, а не момент: «с какого ДНЯ даём». Час, в который
+        // человек открыл форму, утверждением о схеме не является.
+        target.startedAt = началоНазвано ? Calendar.current.startOfDay(for: началоСхемы) : nil
         // Срок годности — конец месяца, разбор у `конецМесяца`.
         target.expiry = естьСрокГодности ? конецМесяца(срокГодности) : nil
         target.openedAt = вскрыт ? когдаВскрыли : nil
@@ -1340,6 +1387,7 @@ struct MedicationEditorSheet: View {
                 target.unitRaw = былаЕдиницаФормы
                 target.prescriptionNumber = былНомер
                 target.courseEnd = былКонецКурса
+                target.startedAt = былоНачало
                 target.expiry = былСрок
                 target.openedAt = былоВскрытие
                 target.shelfAfterOpenDays = былоПослеВскрытия
@@ -1354,7 +1402,66 @@ struct MedicationEditorSheet: View {
             appState.showFailure("Не сохранилось · нажми «Готово» ещё раз")
             return
         }
+        // Дела контроля — ПОСЛЕ сохранения схемы и отдельным сохранением:
+        // не легли они — схема при этом уже записана, и человеку
+        // говорится ровно про дела, а не «не сохранилось» вообще.
+        if let начало = target.startedAt, !контрольНедели.isEmpty,
+           !завестиКонтроль(для: target, от: начало) {
+            Haptics.warning()
+            appState.showFailure("Схема сохранена, а напоминания об анализах — нет · открой и нажми ещё раз")
+            return
+        }
         Haptics.success()
         dismiss()
+    }
+
+    /// Недели, которые называют врачи для контроля Т4 после смены дозы:
+    /// 3, 4–6, 4–8 — отсюда и набор (просьба Виктории 28.10.2026:
+    /// «через 3, 4, 5, 6, 8 недель»).
+    static let неделиКонтроля = [3, 4, 5, 6, 8]
+
+    /// «18 нояб., 25 нояб.» — для подсказки под чипами.
+    static func даты(_ недели: Set<Int>, от начало: Date) -> String {
+        недели.sorted().compactMap {
+            Calendar.current.date(byAdding: .weekOfYear, value: $0, to: начало)
+        }.map(Fmt.shortDay).joined(separator: ", ")
+    }
+
+    /// Завести по делу ухода на каждую выбранную неделю.
+    ///
+    /// **Дело, а не своё напоминание**, и это переиспользование, а не
+    /// упрощение: назначенное дело ухода уже встаёт в план дня в свой
+    /// день, попадает в утреннюю сводку и отмечается «сделано». Свой
+    /// канал уведомлений для анализов завёл бы второе место, где живёт
+    /// «что сегодня надо сделать», — и они разошлись бы.
+    ///
+    /// Повторное сохранение формы дублей не плодит: дело с тем же
+    /// заголовком на тот же день уже есть — второе не заводится.
+    private func завестиКонтроль(для схема: Medication, от начало: Date) -> Bool {
+        guard let собака = схема.dog ?? dog else { return true }
+        let календарь = Calendar.current
+        var заведённые: [CareTask] = []
+        for неделя in контрольНедели.sorted() {
+            guard let день = календарь.date(byAdding: .weekOfYear, value: неделя, to: начало) else { continue }
+            let заголовок = String(localized: "Анализ крови · \(неделя) нед от начала")
+            let уже = собака.careTasks.contains {
+                $0.title == заголовок && $0.scheduledDate.map { календарь.isDate($0, inSameDayAs: день) } == true
+            }
+            if уже { continue }
+            let дело = CareTask(title: заголовок,
+                                detail: [схема.name, схема.doseText].filter { !$0.isEmpty }.joined(separator: " · "),
+                                kind: .dated, intervalDays: 0, category: .medical,
+                                scheduledDate: день)
+            дело.dog = собака
+            context.insert(дело)
+            заведённые.append(дело)
+        }
+        guard !заведённые.isEmpty else { return true }
+        return context.persist(otherwise: {
+            for дело in заведённые {
+                дело.dog = nil
+                context.delete(дело)
+            }
+        })
     }
 }

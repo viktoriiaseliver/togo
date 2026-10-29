@@ -77,7 +77,7 @@ struct PrescriptionsScreen: View {
             }
         }
         .navigationTitle("Назначения")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("rx"))
         .toolbar {
             if canEdit, dog != nil {
                 ToolbarItem(placement: .topBarTrailing) {

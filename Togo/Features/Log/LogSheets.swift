@@ -861,7 +861,7 @@ struct ФотоМомента: View {
         TGCard {
             TGSectionHeader(title: "фото",
                             subtitle: "если надо показать врачу")
-            if let data, let image = UIImage(data: data) {
+            if let data, let image = КэшСнимков.картинка(data) {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFill()

@@ -404,6 +404,31 @@ struct UndoToastView: View {
         }
     }
 
+    /// Отмена записи дозы обязана снять и саму ОТМЕТКУ приёма.
+    ///
+    /// Запись в ленте — половина дозы. Вторая — `DoseRecord.givenAt`:
+    /// от неё считается окно натощак, защита от второй дозы и запас,
+    /// по ней снимаются напоминания. Тост «Отменить» прятал только
+    /// запись, и доза оставалась «дана» (аудит 28.10.2026, G2): человек
+    /// видел, что отменил, а телефон больше не напоминал.
+    ///
+    /// Снимает `DoseScheduler.unmark` — тот же путь, что у «снять
+    /// отметку» в плане дня: таблетка возвращается в пачку, сохранение
+    /// своё. Дозу ищем по препарату записи и моменту, когда её дали.
+    private func снятьДозу(записью event: LogEvent) {
+        guard event.kind == .dose,
+              let схемаID = event.medicationID,
+              let схема = event.dog?.medications.first(where: { $0.id == схемаID }),
+              let доза = схема.doses.first(where: {
+                  guard let дали = $0.givenAt else { return false }
+                  return abs(дали.timeIntervalSince(event.date)) < 60
+              })
+        else { return }
+        if !DoseScheduler.unmark(схема, scheduledAt: доза.scheduledAt, context: context) {
+            appState.showFailure("Запись убрана, а отметка дозы — нет · сними её в плане дня")
+        }
+    }
+
     private func undo(_ toast: AppState.UndoToast) {
         switch toast.action {
         case .removeCreated(let id):
@@ -420,6 +445,7 @@ struct UndoToastView: View {
                 // к нему обычной правкой.
                 event.deletedAt = Date()
                 event.deletedBy = appState.currentUserName
+                снятьДозу(записью: event)
             }
         case .restoreDeleted(let ids):
             UsageLog.note(.undo, "restore")

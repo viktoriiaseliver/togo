@@ -26,6 +26,11 @@ import SwiftData
 /// ни разу — то есть имя было решено раньше, чем доехало до экрана.
 struct CareScreen: View {
     let dog: Dog?
+    /// Только одна категория дел. Со «Здоровья» экран открывается
+    /// с `.medical`: ссылка там подписана «Прививки», и зубы с ушами
+    /// под ней были не к месту (отзыв 27.10: «Почему в прививках
+    /// и визитах уход?»). `nil` — весь уход, как со вкладки собаки.
+    var только: CareCategory? = nil
 
     @Environment(\.modelContext) private var context
     @Environment(AppState.self) private var appState
@@ -47,17 +52,14 @@ struct CareScreen: View {
         // таких же.
         return allTasks.filter {
             $0.dog?.persistentModelID == dog.persistentModelID && $0.deletedAt == nil
+                && (только == nil || $0.category == только)
         }
     }
 
     var body: some View {
         TGScreen {
-            // Надпись была «от последнего раза» — это правда только
-            // про `.periodic`. У `.daily` нет «последнего раза» вовсе,
-            // у `.dated` срок назначен днём, а не отсчитан от прошлого.
-            // Оговорка, верная для одной трети экрана, читалась как
-            // устройство всего экрана.
-            CinemaHeader("Уход и прививки", надпись: "дела и сроки", отступы: false)
+            CinemaHeader(только == .medical ? LocalizedStringKey("Прививки") : "Уход",
+                         надпись: "от последнего раза", отступы: false)
             if tasks.isEmpty {
                 emptyState
             } else {
@@ -68,8 +70,8 @@ struct CareScreen: View {
                 footer
             }
         }
-        .navigationTitle("Уход и прививки")
-        .cinemaScreen()
+        .navigationTitle(только == .medical ? LocalizedStringKey("Прививки") : "Уход")
+        .cinemaScreen(экран: .sub("care"))
         .usageScreen(.care)
         .toolbar {
             if dog != nil {
@@ -245,8 +247,28 @@ struct CareScreen: View {
         // Ежедневное можно снять, если отметили по ошибке: у привычки
         // нет долга, но и врать себе незачем.
         if task.kind == .daily, task.isDoneToday(on: now) {
-            task.lastDone = nil
+            // Снятие обязано вернуть ВЧЕРА, а не стереть историю. Здесь
+            // было `lastDone = nil`: повторная отметка не узнавала
+            // вчерашнюю и начинала серию с единицы — пять дней подряд
+            // терялись от одного случайного касания. Серия после снятия
+            // больше нуля — значит вчера тоже сделали.
+            //
+            // И снятие сохраняется: раньше оно жило только в памяти,
+            // а тост «Снято» стоял при любом исходе.
+            let былоСделано = task.lastDone
+            let былаСерия = task.streak
             task.streak = max(0, task.streak - 1)
+            task.lastDone = task.streak > 0
+                ? Calendar.current.date(byAdding: .day, value: -1, to: now)
+                : nil
+            guard context.persist(otherwise: {
+                task.lastDone = былоСделано
+                task.streak = былаСерия
+            }) else {
+                Haptics.warning()
+                appState.showFailure("Не сохранилось · попробуй ещё раз")
+                return
+            }
             Haptics.warning()
             UsageLog.note(.care, "undone")
             appState.showUndo("Снято · \(task.title)")
@@ -398,6 +420,7 @@ private struct CareTaskRow: View {
 /// Выбор из готового списка. Отмечаешь то, что делаешь, — и только оно
 /// попадает в приложение.
 struct CareSuggestionsSheet: View {
+    @Environment(AppState.self) private var appState
     let dog: Dog?
 
     @Environment(\.modelContext) private var context
@@ -483,8 +506,18 @@ struct CareSuggestionsSheet: View {
     }
 
     private func add() {
-        if let dog { SeedData.addCare(chosen, to: dog, context: context) }
-        if !chosen.isEmpty { Haptics.success() }
+        guard let dog, !chosen.isEmpty else {
+            dismiss()
+            return
+        }
+        // `addCare` отвечает нулём, когда не сохранилось, — ответ
+        // выбрасывался, и шторка закрывалась с «успехом» без дел.
+        guard SeedData.addCare(chosen, to: dog, context: context) > 0 else {
+            Haptics.warning()
+            appState.showFailure("Не сохранилось · попробуй ещё раз")
+            return
+        }
+        Haptics.success()
         dismiss()
     }
 }

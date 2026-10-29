@@ -29,7 +29,7 @@ struct ScheduleScreen: View {
             }
         }
         .navigationTitle("Режим")
-        .cinemaScreen()
+        .cinemaScreen(экран: .sub("schedule"))
         .task {
             guard !loaded else { return }
             draft = ScheduleDraft.from(dog)
