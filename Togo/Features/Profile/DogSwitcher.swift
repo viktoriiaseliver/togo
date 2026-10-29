@@ -133,9 +133,47 @@ private struct ЕщёСобакаChip: View {
 ///
 /// Живёт в настройках собаки, а не в общих: это про собак, а не про
 /// приложение. Заводится вторая ровно тем же экраном, что и первая.
+///
+/// # Ворота Pro здесь не было, и это обходило пейволл целиком
+///
+/// Замер 29.10.2026, по вызовам, а не по именам:
+///
+/// ```
+/// grep 'ProGate.isOpen(.secondDog'   1 вхождение на всё дерево
+///                                    SettingsScreen.swift:373
+/// grep 'DogEditorScreen()'           ДВА: SettingsScreen:374
+///                                    и DogSwitcher:162 (этот экран)
+/// ```
+///
+/// То есть дверей, заводящих собаку, было две, а ворота стояли
+/// на одной. Вторая дверь при этом **ближе**: «Настройки → Добавить
+/// собаку» лежат за вкладкой настроек, а сюда ведут три входа подряд
+/// — пилюля «+ Вторая собака» в переключателе (`DogSwitcher:41`),
+/// строка «Собаки» на вкладке собаки (`DogTab:509`) и сам этот список.
+/// Человек без подписки заводил вторую собаку, ни разу не увидев
+/// пейволла, — а в пейволле «Вторая и следующие собаки» стоит первой
+/// строкой из двух.
+///
+/// > **Ворота на одной двери из двух — не ворота, а украшение.**
+/// > Ни компилятор, ни тест вопроса «а все ли двери» не задают:
+/// > у закрытой и у несуществующей двери в коде одинаково ноль
+/// > признаков.
+///
+/// Поэтому ворота здесь — **тот же вызов, что в настройках**, а не
+/// свой `store.isPro`: фильтр показа применяет сама фабрика
+/// `ProRequest.secondDog(among:)`, и повторять его на месте нельзя
+/// (`dogs.count` и `dogs.shownToPerson.count` — один тип и разный
+/// смысл, промах между ними компилируется). Гостя фабрика снимает
+/// умолчанием `SharedZoneOwner.isGuest`: за собаку из чужого дневника
+/// денег не берут.
+///
+/// Сторож на обе двери — `ProGateTests.каждаяДверьСобакиЗаВоротами`.
 struct DogsScreen: View {
     @Query(sort: \Dog.name) private var dogs: [Dog]
     @Environment(AppState.self) private var appState
+    @Environment(SubscriptionStore.self) private var store
+
+    @State private var showPaywall = false
 
     private var canEdit: Bool { appState.can(.editProfile) }
 
@@ -158,11 +196,28 @@ struct DogsScreen: View {
                     .buttonStyle(.plain)
                     TGDivider()
                 }
+                // Два права подряд, и порядок у них не случайный.
+                // `canEdit` — про роль: помощнику собаку заводить
+                // нельзя ни за какие деньги, и пейволл ему показывать
+                // значит продавать то, что не откроется. Ворота Pro —
+                // про подписку, и они внутри.
                 if canEdit {
-                    NavigationLink { DogEditorScreen() } label: {
-                        TGListRow(title: "Завести ещё собаку", systemImage: "plus")
+                    if ProGate.isOpen(.secondDog(among: dogs), isPro: store.isPro) {
+                        NavigationLink { DogEditorScreen() } label: {
+                            TGListRow(title: "Завести ещё собаку", systemImage: "plus")
+                        }
+                        .buttonStyle(.plain)
+                    } else {
+                        // Подпись меняется вместе с дверью, как
+                        // в настройках: «Завести ещё собаку» за
+                        // пейволлом обещало бы бесплатное.
+                        // Обе строки уже лежат в каталоге на пяти
+                        // языках — новых сюда не заводится.
+                        Button { showPaywall = true } label: {
+                            TGListRow(title: "Добавить вторую собаку", systemImage: "plus")
+                        }
+                        .buttonStyle(.plain)
                     }
-                    .buttonStyle(.plain)
                 }
             }
 
@@ -170,6 +225,9 @@ struct DogsScreen: View {
         }
         .navigationTitle("Собаки")
         .cinemaScreen()
+        .sheet(isPresented: $showPaywall) {
+            NavigationStack { PaywallScreen() }
+        }
     }
 }
 
