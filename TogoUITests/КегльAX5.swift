@@ -229,9 +229,10 @@ nonisolated final class КегльAX5: XCTestCase {
     func test02Семья() {
         пара("02-семья") { _ in
             guard self.вкладкаСобаки() else { return }
-            let строка = self.найти("Семья и дежурство", в: self.app)
+            // «Семья и дежурство» → «Семья» 29.10.2026: имя экрана и меню.
+            let строка = self.найти("Семья", в: self.app)
             guard строка.waitForExistence(timeout: 15) else {
-                XCTFail("во вкладке собаки нет строки «Семья и дежурство»")
+                XCTFail("во вкладке собаки нет строки «Семья»")
                 return
             }
             строка.tap()
@@ -410,9 +411,10 @@ nonisolated final class КегльAX5: XCTestCase {
     func test09СемьяНизДостижим() {
         пара("09-семья-низ") { _ in
             guard self.вкладкаСобаки() else { return }
-            let строка = self.найти("Семья и дежурство", в: self.app)
+            // «Семья и дежурство» → «Семья» 29.10.2026: имя экрана и меню.
+            let строка = self.найти("Семья", в: self.app)
             guard строка.waitForExistence(timeout: 15) else {
-                XCTFail("во вкладке собаки нет строки «Семья и дежурство»")
+                XCTFail("во вкладке собаки нет строки «Семья»")
                 return
             }
             строка.tap()
