@@ -431,6 +431,30 @@ struct TodayScreen: View {
             .buttonStyle(.plain)
         }
 
+        // Стул: тревога выше окна натощак — это здоровье, а не
+        // расписание. «Не отмечали» тише и с кнопкой, которая снимает
+        // вопрос за одно касание.
+        switch тишинаСтула {
+        case .норма:
+            EmptyView()
+        case .тревога(let с):
+            Button { route = .stool } label: {
+                TGBanner(tone: .alarm,
+                         title: .готовая(String(localized: "Стула нет с \(Fmt.shortDay(с))")),
+                         subtitle: "Выходы отмечаются, а стула нет третьи сутки. Это повод позвонить врачу — сразу, если не ест, рвёт или тужится. Был, но не записали — тапни и отметь.",
+                         systemImage: "leaf")
+            }
+            .buttonStyle(.plain)
+        case .неОтмечали(let с):
+            Button { route = .stool } label: {
+                TGBanner(tone: .waiting,
+                         title: .готовая(String(localized: "Стул не отмечали с \(Fmt.shortDay(с))")),
+                         subtitle: "Был — тапни и отметь. Если правда не было, присмотрись: на третьи сутки без стула звонят врачу.",
+                         systemImage: "leaf")
+            }
+            .buttonStyle(.plain)
+        }
+
         if let fasting = fastingWindow {
             TGBanner(
                 tone: .waiting,
@@ -879,6 +903,12 @@ struct TodayScreen: View {
         case .часыМинуты:
             // Единственный вид показания, которому нужно имя: голое
             // число часов. `timeIndoors` — сколько собака ДОМА.
+            //
+            // Ночью — «Ночь»: число то же и верное, но читать его как
+            // «давно терпит» нельзя, собака спит (`NightWindow`).
+            if ночь.awake(from: now.addingTimeInterval(-60), to: now) == 0 {
+                return .init(символ: "moon.fill", текст: "Ночь")
+            }
             return .init(символ: "house.fill", текст: "Дома")
         case .минутыСекунды, .фраза:
             // Таймер прогулки называет себя сам; предложение
@@ -1096,9 +1126,14 @@ struct TodayScreen: View {
     /// посчитал `WalkRhythmAnalyzer`. Пусто, пока ритм ненадёжен:
     /// полоса без знаменателя показывала бы долю от выдуманного целого.
     private var доляРитма: Double? {
+        // Бодрствующие часы, а не часы на стене: ночью собака в туалет
+        // не ходит, и утром полоса стояла переполненной вдвое (решение
+        // Виктории 29.10.2026, `NightWindow`). Среднее у ритма — тоже
+        // без ночей (`WalkRhythmAnalyzer.nightThreshold`), то есть
+        // числитель и знаменатель теперь меряют одно.
         guard ритм.isReliable, ритм.averageIndoors > 0,
-              let дома = timeIndoors else { return nil }
-        return дома / ритм.averageIndoors
+              let якорь = якорьСчёта else { return nil }
+        return ночь.awake(from: якорь, to: now) / ритм.averageIndoors
     }
 
     // MARK: Низ — главная кнопка по состоянию
@@ -1332,7 +1367,8 @@ struct TodayScreen: View {
     /// выдумкой, а не прогнозом, и строки нет вовсе.
     private var ожидаемыйВыход: Date? {
         guard ритм.isReliable, let конец = якорьСчёта else { return nil }
-        return конец.addingTimeInterval(ритм.averageIndoors)
+        // Через ночь: «обычно до 02:30» становится «обычно до 10:30».
+        return ночь.adding(awake: ритм.averageIndoors, to: конец)
     }
 
     /// Чем называется состояние в строке «Дальше».
@@ -1449,6 +1485,16 @@ struct TodayScreen: View {
     /// стоять на одних и тех же блоках.
     private var блокиДня: [TimelineBlock] {
         память.блоки { TimelineBuilder.blocks(Diary.active(events)) }
+    }
+
+    /// Ночь — тихие часы из настроек: человек их уже назвал.
+    private var ночь: NightWindow {
+        NightWindow(startHour: settings.quietHoursStart, endHour: settings.quietHoursEnd)
+    }
+
+    /// Стул: «не отмечали» или настоящий сигнал (`StoolSilence`).
+    private var тишинаСтула: StoolSilence.Оценка {
+        память.стул { StoolSilence.assess(events, now: now) }
     }
 
     /// Сколько прошло с последнего туалета — главное показание экрана.
@@ -1762,6 +1808,7 @@ final class ПамятьЛенты {
     private var тревожная: Bool?
     private var туалетПосчитан = false
     private var туалет: ToiletClock.Момент?
+    private var стул: StoolSilence.Оценка?
 
     func сверить(_ события: [LogEvent], now: Date, день: Date) {
         let ключ = Self.отпечаток(события)
@@ -1772,6 +1819,7 @@ final class ПамятьЛенты {
             порогПосчитан = false
             тревожная = nil
             туалетПосчитан = false
+            стул = nil
         }
         if now != момент {
             момент = now
@@ -1779,6 +1827,7 @@ final class ПамятьЛенты {
             порогПосчитан = false
             тревожная = nil
             туалетПосчитан = false
+            стул = nil
         }
         // Тревожная запись — за ПОКАЗАННЫЙ день: листание на вчера
         // не меняет ни ленту, ни `now`, а ответ меняет.
@@ -1817,6 +1866,13 @@ final class ПамятьЛенты {
         туалет = посчитать()
         туалетПосчитан = true
         return туалет
+    }
+
+    func стул(_ посчитать: () -> StoolSilence.Оценка) -> StoolSilence.Оценка {
+        if let стул { return стул }
+        let оценка = посчитать()
+        стул = оценка
+        return оценка
     }
 
     func порог(_ посчитать: () -> AlarmThreshold?) -> AlarmThreshold? {

@@ -20,13 +20,11 @@ enum OutingFinisher {
     /// глядя на эту функцию.
     static func finish(outcome: OutingOutcome?, dog: Dog?,
                        appState: AppState, context: ModelContext) {
-        // Кобель без ответа — пописал. Решение Виктории 29.10.2026:
-        // «поход на улицу для кобеля = туалет». Пишется в запись, а
-        // не только читается так, потому что здесь это ответ человека,
-        // заданный правилом раз и навсегда: шторка у кобеля мочу
-        // не спрашивает вовсе (`WalkResultSheet.кобель`), и пустой
-        // ответ значит «не было стула», а не «не знаю».
-        let итог = outcome ?? (dog?.sex == .male ? OutingOutcome.urine : nil)
+        // Кобель без ответа НЕ пишется мочой, хотя мочой читается
+        // (`ToiletClock`): пропуск вопроса «Покакал?» — не ответ «нет».
+        // Запиши его «пописал», и `StoolSilence` принял бы каждый
+        // пропуск за доказательство, что стула не было.
+        let итог = outcome
         let duration = appState.stopWalk()
         Task { await LiveActivityController.finishWalk(outcome: итог?.shortTitle) }
         guard let dog, let last = Diary.last(dog.events, kind: .outing) else { return }
