@@ -286,8 +286,32 @@ struct HistoryScreen: View {
         return (0..<30).compactMap { offset in
             guard let day = calendar.date(byAdding: .day, value: offset, to: start) else { return nil }
             let dayEvents = индекс[calendar.startOfDay(for: day)] ?? []
-            return HistoryPoint(day: day, value: filter.value(for: dayEvents),
+            return HistoryPoint(day: day, value: значение(dayEvents),
                                 isAlarm: dayEvents.contains(where: \.raisesAlarm))
+        }
+    }
+
+    /// Высота столбика за день.
+    ///
+    /// # «Выходы» считают ВЫХОДЫ, а не отметки — с 29.10.2026
+    ///
+    /// Прежде полоса брала `events.filter { $0.kind == .outing }.count`,
+    /// то есть СОБЫТИЯ: прогулка с тремя отметками «пописал» давала
+    /// здесь 3, а «Сегодня» за тот же день — 1 (`TimelineBuilder
+    /// .outingsCount` считает блоки). Расхождение было названо
+    /// в `OutingsCountTests.границы` и ждало решения; решение одно —
+    /// у «сколько раз выходили» не может быть двух ответов
+    /// на двух вкладках.
+    ///
+    /// Считается здесь, а не в `HistoryFilter.value`: перечисление
+    /// `nonisolated`, а `TimelineBuilder` живёт на главном акторе
+    /// приложения. Индекс дня уже отобран через `Diary.active`,
+    /// поэтому `blocks` зовётся на готовом дне, без второго прохода
+    /// по дневнику.
+    private func значение(_ dayEvents: [LogEvent]) -> Double {
+        switch filter {
+        case .all: Double(TimelineBuilder.blocks(dayEvents).filter(\.isOuting).count)
+        default: filter.value(for: dayEvents)
         }
     }
 
@@ -624,11 +648,31 @@ nonisolated enum HistoryFilter: String, CaseIterable, Sendable {
         }
     }
 
-    /// Фильтр меняет и календарь, и список эпизодов, и график — одно состояние на экран.
+    /// Фильтр меняет календарь и полосу — одно состояние на экран.
+    ///
+    /// Список эпизодов фильтр НЕ меняет, и прежняя строка, говорившая
+    /// обратное, была ложной в момент записи: `episodesCard` фильтра
+    /// не читает (замер 29.10.2026).
+    ///
+    /// # «Стул» брал выходы БЕЗ стула — починка 29.10.2026
+    ///
+    /// Стояло `outing && outcome != .urine`. Под это подходили выход
+    /// «не сходил» (`.none`) и выход без ответа (`nil`) — у кобеля
+    /// это вообще моча по правилу чтения `ToiletClock`. Человек
+    /// выбирал «Стул» и видел в календаре дни, где стула не было.
+    /// Теперь стул — то же, что считает `ToiletClock.stoolCount`
+    /// и `StoolSilence`: запись стула, стул в доме (он инцидент),
+    /// выход или остановка в дороге с ответом «стул» / «и то и другое».
     func matches(_ event: LogEvent) -> Bool {
         switch self {
         case .all: true
-        case .stool: event.kind == .stool || (event.kind == .outing && event.outcome != .urine)
+        case .stool:
+            switch event.kind {
+            case .stool: true
+            case .incident: event.incidentKind == .stoolIndoors
+            case .outing, .travelStop: event.outcome == .stool || event.outcome == .both
+            default: false
+            }
         case .symptoms: event.kind == .incident || event.raisesAlarm
         case .reactions: event.kind == .reaction || event.incidentKind == .reaction
         case .weight: event.kind == .weight
@@ -638,8 +682,9 @@ nonisolated enum HistoryFilter: String, CaseIterable, Sendable {
     /// Имя полосы БЕЗ срока: на кадре 10 срок стоит отдельной строкой
     /// справа, а не внутри заголовка.
     ///
-    /// `chartTitle` оставлен рядом и не удалён: он склеивает имя
-    /// со сроком и годится там, где строка одна (озвучка, отчёт).
+    /// `chartTitle`, склеивавший имя со сроком «для озвучки и отчёта»,
+    /// снят 29.10.2026: вызовов у него не было ни одного
+    /// (`grep -rn chartTitle` — только объявление).
     var chartName: String {
         switch self {
         case .all: String(localized: "Выходы")
@@ -648,10 +693,6 @@ nonisolated enum HistoryFilter: String, CaseIterable, Sendable {
         case .reactions: String(localized: "Срывы")
         case .weight: String(localized: "Вес")
         }
-    }
-
-    var chartTitle: String {
-        [chartName, String(localized: "30 дней")].joined(separator: " · ")
     }
 
     var chartExplainer: String {
@@ -667,11 +708,25 @@ nonisolated enum HistoryFilter: String, CaseIterable, Sendable {
         }
     }
 
+    /// Высота столбика у фильтров, которым хватает самих записей.
+    ///
+    /// `.all` здесь — грубый запасной ответ, а не тот, что рисуется:
+    /// выходы считает экран блоками (`HistoryScreen.значение`), потому
+    /// что `TimelineBuilder` изолирован главным актором. Запасной
+    /// хотя бы не считает отметки внутри прогулки выходами, но выход,
+    /// ставший прогулкой, посчитает дважды — **для показа его
+    /// не звать**, звать `TimelineBuilder.outingsCount`.
+    ///
+    /// `.symptoms` считает всё, что фильтр отобрал: день с кровью
+    /// в стуле — тревожный, и столбик у него был бы нулевой,
+    /// под пояснением «столбик есть — был инцидент».
     func value(for events: [LogEvent]) -> Double {
         switch self {
-        case .all: Double(events.filter { $0.kind == .outing }.count)
+        case .all: Double(events.filter {
+            $0.kind == .walk || ($0.kind == .outing && $0.walkEventID == nil)
+        }.count)
         case .stool: events.compactMap { $0.stoolForm?.bristolScore }.map(Double.init).max() ?? 0
-        case .symptoms: Double(events.filter { $0.kind == .incident }.count)
+        case .symptoms: Double(events.filter(matches).count)
         case .reactions: Double(events.filter { $0.kind == .reaction || $0.incidentKind == .reaction }.count)
         case .weight: 0
         }
