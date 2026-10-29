@@ -444,12 +444,21 @@ struct ScheduleEditor: View {
                         : .готовая(scheduleSubtitle)
                 )
                 if draft.часыРазошлисьСРовными {
-                    Button("Разложить ровно") {
+                    Button {
                         draft.isManual = false
                         draft.mealTimes = draft.evenMealTimes
                         Haptics.tap()
+                    } label: {
+                        // Подпись мелкая, а цель касания — нет: без рамки
+                        // нажималась только высота строки caption, ~18 pt
+                        // при пороге 44. Рамка внутри метки, а не снаружи
+                        // кнопки: снаружи она растит место, но не касание.
+                        Text("Разложить ровно")
+                            .textStyle(AppFont.captionEmphasis.color(Token.Action.doneText))
+                            .frame(minHeight: Token.Size.tapTarget)
+                            .contentShape(Rectangle())
                     }
-                    .textStyle(AppFont.captionEmphasis.color(Token.Action.doneText))
+                    .buttonStyle(.plain)
                 }
             }
 
