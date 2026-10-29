@@ -88,8 +88,9 @@ struct FoodStockScreen: View {
                     action: canEdit ? { isAdding = true } : nil
                 )
             } else {
+                // Заголовок «чем кормим» над карточкой снят 29.10.2026:
+                // он повторял имя экрана строкой ниже шапки «Чем кормим».
                 TGCard(spacing: 0) {
-                    TGSectionHeader(title: "чем кормим")
                     ForEach(stocks) { stock in
                         Button { if canEdit { editing = stock } } label: {
                             StockRow(stock: stock, now: .now)

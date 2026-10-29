@@ -261,6 +261,13 @@ struct HeatEditorSheet: View {
         // цикла, а на нём «опасные дни». Якорь в полдень — чтобы у второго
         // человека в другом поясе день не уехал на сутки. См. `CalendarDay`.
         let target = record ?? HeatRecord(startedAt: CalendarDay.anchored(startedAt))
+        // Снимок до правки (29.10.2026): откат возвращал только новую
+        // запись, а правленая при отказе хранилища оставалась в памяти
+        // с новыми датами — прогноз на вкладке считался от дат, которых
+        // в базе нет, до первого перезапуска.
+        let былоНачало = target.startedAt
+        let былКонец = target.endedAt
+        let былаЗаметка = target.note
         target.startedAt = CalendarDay.anchored(startedAt)
         target.endedAt = hasEnded ? CalendarDay.anchored(endedAt) : nil
         target.note = note.isEmpty ? nil : note
@@ -270,9 +277,18 @@ struct HeatEditorSheet: View {
             context.insert(target)
         }
         guard context.persist(otherwise: {
-            if новая { context.delete(target) }
+            if новая {
+                context.delete(target)
+            } else {
+                target.startedAt = былоНачало
+                target.endedAt = былКонец
+                target.note = былаЗаметка
+            }
         }) else {
+            // Шторка остаётся открытой, и это сказано словом: одна
+            // хаптика читалась как «кнопка не нажалась».
             Haptics.warning()
+            appState.showFailure("Не сохранилось · попробуй ещё раз")
             return
         }
         Haptics.success()
