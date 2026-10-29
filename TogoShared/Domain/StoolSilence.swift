@@ -86,7 +86,7 @@ nonisolated enum StoolSilence {
         switch e.kind {
         case .stool: return true
         case .incident: return e.incidentKind == .stoolIndoors
-        case .outing: return e.outcome == .stool || e.outcome == .both
+        case .outing, .travelStop: return e.outcome == .stool || e.outcome == .both
         default: return false
         }
     }
@@ -94,7 +94,7 @@ nonisolated enum StoolSilence {
     /// Запись, которая доказывает, что туалет отмечают.
     static func ответОТуалете(_ e: LogEvent, прогулкиСОтметками: Set<UUID>) -> Bool {
         switch e.kind {
-        case .outing:
+        case .outing, .travelStop:
             // Отметка внутри прогулки — тоже ответ: человек тапал кнопки.
             return e.outcome != nil
         case .walk:

@@ -660,6 +660,9 @@ struct TripScreen: View {
         .cinemaScreen(экран: .sub("trip"))
         .confirmationDialog("Убрать поездку?", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
             Button("Убрать", role: .destructive) {
+                // Остановки уходят вместе с поездкой: иначе убранная
+                // поездка звала бы «Остановка» в день, когда никто не едет.
+                НапоминанияПоездки.снять(trip)
                 context.delete(trip)
                 // Неудача сохранения выбрасывалась, и экран закрывался
                 // как после удаления. Форма — та же, что у выездного дня

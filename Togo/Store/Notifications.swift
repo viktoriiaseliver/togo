@@ -326,6 +326,28 @@ enum NotificationCenterService {
             UNNotificationRequest(identifier: id, content: content, trigger: trigger))
     }
 
+    /// Остановка в дороге — обещана экраном поездки: «Остановки каждые
+    /// 2 часа… Приложение напомнит» (`TransportKind.windowsExplainer`).
+    /// До 29.10.2026 это обещание было текстом без постановщика.
+    ///
+    /// `.active`, а не `.timeSensitive`: это совет водителю, а не
+    /// назначение врача, и прерывать фокус ради него нельзя.
+    static func scheduleTripStop(id: String, at date: Date,
+                                 title: String, body: String) async -> ИсходЗапроса {
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.body = body
+        content.sound = .default
+        content.interruptionLevel = .active
+        content.threadIdentifier = "trip"
+        let trigger = UNCalendarNotificationTrigger(
+            dateMatching: Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: date),
+            repeats: false
+        )
+        return await поставить(
+            UNNotificationRequest(identifier: id, content: content, trigger: trigger))
+    }
+
     static func cancel(ids: [String]) {
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ids)
     }

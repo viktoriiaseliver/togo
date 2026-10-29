@@ -19,6 +19,7 @@ enum TodayRoute: Identifiable, Hashable {
     case meal
     case treat
     case water
+    case travelStop
     case incident
     case note
     case training
@@ -51,6 +52,7 @@ struct TodayRouter: View {
             case .meal:             MealSheet(dog: dog)
             case .treat:            TreatSheet(dog: dog)
             case .water:            WaterSheet(dog: dog)
+            case .travelStop:       TripStopSheet(dog: dog)
             case .incident:         IncidentSheet(dog: dog)
             case .note:             NoteSheet(dog: dog)
             // Маршрут занятия оставлен ПУСТЫМ, а не удалён: `case

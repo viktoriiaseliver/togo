@@ -136,7 +136,13 @@ struct TodayScreen: View {
 
     private var dog: Dog? { appState.activeDog(from: dogs) }
     private var events: [LogEvent] { dog?.events ?? [] }
-    private var activeTrip: Trip? { trips.first { $0.isActive(on: now) } }
+    /// Идущая поездка ЭТОЙ собаки. До 29.10.2026 фильтра по собаке
+    /// не было — в отличие от дня с собакой строкой ниже: поездка
+    /// одной собаки включала режим дороги на экране второй, и у неё
+    /// «Просится» менялось на «Остановка».
+    private var activeTrip: Trip? {
+        trips.first { $0.dog?.persistentModelID == dog?.persistentModelID && $0.isActive(on: now) }
+    }
 
     /// Идущий день с собакой.
     private var activeDayOut: DayOut? {
@@ -1283,7 +1289,11 @@ struct TodayScreen: View {
     private var обычноеДействие: TodayBottomBar.Действие {
         .init(название: isDogAlongside ? "Остановка" : "Просится",
               символ: isDogAlongside ? "car" : "pawprint") {
-            route = isDogAlongside ? .walk : .needs
+            // «Остановка» пишет остановку одним тапом, как обещает
+            // экран поездки (`TripStopSheet`, 29.10.2026). До того
+            // она открывала таймер прогулки, а `LogKind.travelStop`
+            // не создавался нигде.
+            route = isDogAlongside ? .travelStop : .needs
         }
     }
 

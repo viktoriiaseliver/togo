@@ -54,7 +54,8 @@ nonisolated enum ToiletClock {
     /// Туалет ли эта запись, и когда именно он был.
     static func moment(of event: LogEvent, male: Bool) -> Момент? {
         switch event.kind {
-        case .outing:
+        // Остановка в дороге — тот же выход, только у машины (29.10.2026).
+        case .outing, .travelStop:
             // Развёрнуто явно, а не `case .none?`: у `OutingOutcome`
             // свой случай `.none`, и рядом с `Optional.none` он читается
             // ровно наоборот.

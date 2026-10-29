@@ -70,6 +70,8 @@ struct ТекстУведомленияЧерезКаталогTests {
         "scheduleDose(",
         "scheduleMorningBrief(",
         "scheduleFastingEnd(",
+        // Остановки в дороге, 29.10.2026 (`НапоминанияПоездки`).
+        "scheduleTripStop(",
     ]
 
     @Test("Кириллический литерал не уходит в уведомление мимо каталога")
