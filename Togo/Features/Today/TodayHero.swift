@@ -73,13 +73,19 @@ struct TodayHero: View {
     var showsReading: Bool = true
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Token.Space.s6) {
-            if showsReading { headline }
-            if let support { Text(support).textStyle(AppFont.caption).wraps() }
+        // Без показания и без строки режима герою сказать нечего —
+        // и его нет вовсе (аудит «Сегодня» 29.10.2026). Пустой `VStack`
+        // в стопке экрана давал лишний промежуток между блоками,
+        // а озвучка находила невидимый элемент с текстом показания.
+        if showsReading || support != nil {
+            VStack(alignment: .leading, spacing: Token.Space.s6) {
+                if showsReading { headline }
+                if let support { Text(support).textStyle(AppFont.caption).wraps() }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel(voiceOver)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(voiceOver)
     }
 
     @ViewBuilder
@@ -151,6 +157,10 @@ struct TodayHero: View {
     }
 
     private var voiceOver: String {
+        // Показание отдали плакату — его и озвучивает плакат. Здесь
+        // озвучивалось оно же второй раз, и прежней подписью «на улице
+        // были … назад», хотя с 29.10.2026 счёт идёт от туалета.
+        guard showsReading else { return support ?? "" }
         if let session {
             return session.isPaused ? String(localized: "Выход на паузе") : String(localized: "Идёт выход")
         }

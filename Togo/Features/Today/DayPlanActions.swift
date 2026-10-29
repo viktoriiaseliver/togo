@@ -229,6 +229,14 @@ struct DayPlanActions {
 
     func complete(_ item: DayPlanItem, givenAt момент: Date) {
         guard let dog else { return }
+        // **Права — здесь, в общей двери, а не только у первой кнопки**
+        // (аудит «Сегодня» 29.10.2026). Проверку держал один из трёх
+        // путей — тап по строке плана. Шторка пропущенной дозы звала
+        // `complete` напрямую, и у человека без `.giveDose`
+        // `DoseScheduler.markGiven` успевал поставить дозе «дано», а запись
+        // в ленту `EventLog` потом отвергал: доза в схеме дана, в дневнике
+        // её нет, замок у второго телефона стоит на пустом месте.
+        guard checkPermission(for: item) else { return }
 
         // Повод спросить про уведомления считается ДО отметки.
         //
@@ -375,6 +383,11 @@ struct DayPlanActions {
 
     func uncomplete(_ item: DayPlanItem) {
         guard dog != nil else { return }
+        // Снять — такая же правка дневника, как поставить, и права у неё
+        // те же. Записи здесь гасятся напрямую, мимо `EventLog`, поэтому
+        // его ворота сюда не доходят: до 29.10.2026 наблюдатель снимал
+        // чужую отметку кормления тапом по галочке «сделано».
+        guard checkPermission(for: item) else { return }
 
         // Убираем ту запись, которая этот пункт и закрыла, — ближайшую
         // к его времени.
@@ -433,6 +446,8 @@ struct DayPlanActions {
     /// Пропуск записывается, а не просто исчезает: врач спросит именно
     /// про него, а в истории иначе останется необъяснённая дыра.
     func skipDose(_ target: MissedDoseTarget) {
+        // Пропуск — тоже отметка дозы; права те же, что у «дал».
+        guard checkPermission(for: target.item) else { return }
         guard DoseScheduler.markSkipped(target.medication, scheduledAt: target.item.time,
                                         by: appState.currentUserName, context: context) != nil else {
             // Пропуск заводили ради врача: «отмечено» без записи
