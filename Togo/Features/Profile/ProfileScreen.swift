@@ -200,11 +200,15 @@ struct ProfileScreen: View {
             }
             TGDivider()
             Toggle(isOn: Binding(get: { dog.trainingFoodFromPortion }, set: { dog.trainingFoodFromPortion = $0 })) {
-                Text("Корм на занятия — из порции").textStyle(AppFont.body)
+                // Подпись и объяснение — без занятий (29.10.2026): блок
+                // занятий снят 28.10, а флаг `trainingFoodFromPortion`
+                // живой и считает ЛАКОМСТВА (`TreatSheet`, `fromPortion`).
+                // Имя поля в модели прежнее — это форма схемы, а не текст.
+                Text("Лакомства — из дневной порции").textStyle(AppFont.body)
             }
             .frame(minHeight: Token.Size.tapTarget)
             TGDivider()
-            TGExplainer(text: "Ограничения на лакомства нет. Есть дневная норма, часть которой собака зарабатывает, — это и снимает конфликт между занятиями и весом.")
+            TGExplainer(text: "Ограничения на лакомства нет: их можно брать из дневной порции — тогда награды не прибавляют веса.")
         }
         .disabled(!canEdit)
     }

@@ -47,7 +47,13 @@ struct DogEditorScreen: View {
 
     var body: some View {
         TGScreen {
-            CinemaHeader(isNew ? "Новая собака" : "Профиль", отступы: false)
+            // «Профиль» → «Профиль и удаление» (аудит 29.10.2026): дверь
+            // сюда подписана «Править и удалить» (`ProfileScreen`), а экран
+            // назывался словом, которое не обещало удаления, — и тем же
+            // словом, что запасной заголовок самого профиля шагом раньше.
+            // Подпись двери не тронута: её ищут UI-тесты (`ПустыеСобаки`),
+            // и глагол у двери — то, что за ней делают.
+            CinemaHeader(isNew ? "Новая собака" : "Профиль и удаление", отступы: false)
             // **Было «Обязательны только кличка и вес» — и это ЛОЖЬ
             // с двух сторон сразу.**
             //
@@ -103,15 +109,34 @@ struct DogEditorScreen: View {
                         .accessibilityAddTraits(.isStaticText)
                 }
                 TGDivider()
-                LabeledField(label: "Вес") {
-                    HStack(spacing: Token.Space.s4) {
-                        // «4,1» — то же самое: подсказка про ФОРМАТ,
-                        // а не пример веса. У числа перевода нет,
-                        // но ключ в каталоге заводится всё равно
-                        // и зря просит вычитки на четырёх языках.
-                        TextField("Вес", text: $draft.weight).keyboardType(.decimalPad)
-                            .focused($весВФокусе)
-                        Text("кг").textStyle(AppFont.caption)
+                // # Вес правится в одном месте — на экране «Вес» (29.10.2026)
+                //
+                // Аудит вкладки собаки: вес правили два экрана по разным
+                // правилам. Здесь `save()` писал `dog.weightKg` голым
+                // присваиванием, мимо взвешиваний, а «Вес» считает текущим
+                // вес ПОСЛЕДНЕГО ЗАМЕРА (`WeightScreen.delete`,
+                // `WeightEntryEditorSheet`). Число, набранное в профиле,
+                // жило до первой правки или удаления любого взвешивания —
+                // и молча пропадало, а от веса считается доза.
+                //
+                // Решение Виктории («да все чини»): у заведённой собаки —
+                // дверь на «Вес», у новой — поле остаётся, и вес уезжает
+                // первым взвешиванием (`SeedData.attachStarterCare`), то
+                // есть тем же путём, что у онбординга.
+                if let dog {
+                    TGLink(title: "Вес", value: .готовая(Fmt.weight(dog.weightKg)),
+                           systemImage: "scalemass") { WeightScreen(dog: dog) }
+                } else {
+                    LabeledField(label: "Вес") {
+                        HStack(spacing: Token.Space.s4) {
+                            // «4,1» — то же самое: подсказка про ФОРМАТ,
+                            // а не пример веса. У числа перевода нет,
+                            // но ключ в каталоге заводится всё равно
+                            // и зря просит вычитки на четырёх языках.
+                            TextField("Вес", text: $draft.weight).keyboardType(.decimalPad)
+                                .focused($весВФокусе)
+                            Text("кг").textStyle(AppFont.caption)
+                        }
                     }
                 }
                 TGDivider()
@@ -301,7 +326,7 @@ struct DogEditorScreen: View {
             .padding(.horizontal, Token.Spacing.screenPadding)
             .padding(.bottom, Token.Space.s8)
         }
-        .navigationTitle(isNew ? "Новая собака" : "Профиль")
+        .navigationTitle(isNew ? "Новая собака" : "Профиль и удаление")
         // Строка отказа живёт до первой правки клички, а не до непустой:
         // человек уже начал исправлять, ругать его по дороге незачем.
         .onChange(of: draft.name) { _, _ in кличкаНеНазвана = false }
@@ -375,13 +400,8 @@ struct DogEditorScreen: View {
     private func load() {
         guard !loaded, let dog else { loaded = true; return }
         draft.name = dog.name
-        // Незаписанный вес — пустое поле, а не «0,0»: ноль в поле
-        // читается как утверждение «весит ноль» (тот же разбор, что
-        // у `Fmt.weightIfKnown`, 25.10.2026), и сохранить его можно
-        // было бы, не заметив.
-        draft.weight = dog.weightKg > 0
-            ? String(dog.weightKg).replacingOccurrences(of: ".", with: ",")
-            : ""
+        // Вес в черновик больше не читается: у заведённой собаки поля
+        // веса здесь нет, вместо него дверь на «Вес» (29.10.2026).
         draft.breed = dog.breed ?? ""
         draft.isOnTreatment = dog.isOnTreatment
         draft.sex = dog.sex
@@ -394,7 +414,6 @@ struct DogEditorScreen: View {
     private func save() {
         if let dog {
             let былоИмя = dog.name
-            let былВес = dog.weightKg
             let былаПорода = dog.breed
             let былПол = dog.sex
             let былаКастрация = dog.isNeutered
@@ -427,7 +446,9 @@ struct DogEditorScreen: View {
             // в живых данных — на 08.10 НЕ ИЗМЕРЕНО: съём крошек
             // с телефона отложен Викторией.
             dog.name = Fmt.dogName(draft.name) ?? dog.name
-            dog.weightKg = draft.weightValue ?? dog.weightKg
+            // `dog.weightKg` здесь больше не пишется: текущий вес — вес
+            // последнего взвешивания, и меняет его только экран «Вес»
+            // (разбор — у двери на него выше, 29.10.2026).
             dog.breed = draft.breed.isEmpty ? nil : draft.breed
             // `isOnTreatment` здесь больше не пишется: курс у заведённой
             // собаки меняет только `TreatmentCourse` (разбор — у тумблера).
@@ -445,7 +466,6 @@ struct DogEditorScreen: View {
                 : nil
             guard context.persist(otherwise: {
                 dog.name = былоИмя
-                dog.weightKg = былВес
                 dog.breed = былаПорода
                 dog.sex = былПол
                 dog.isNeutered = былаКастрация
@@ -1143,7 +1163,7 @@ struct MedicationEditorSheet: View {
                     }
                 }
                 .frame(minHeight: Token.Size.tapTarget)
-                TGExplainer(text: "Доза откроется через столько минут после отметки еды. Не поела — не откроется вовсе: это вопрос к врачу, а не сбой.")
+                TGExplainer(text: "Доза откроется через столько минут после отметки еды. Еды не отметили — не откроется вовсе: это вопрос к врачу, а не сбой.")
             }
 
             // Писатель для `Medication.canGiveOutside` (`Care.swift:402`).
