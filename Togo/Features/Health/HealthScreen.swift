@@ -54,6 +54,10 @@ struct HealthScreen: View {
     /// `NavigationLink` внутри `Menu` срабатывает непредсказуемо
     /// (разбор у `HeaderMenu`).
     @State private var показатьНастройки = false
+    /// Какие показатели стоят карточками — выбор этого телефона
+    /// (`ПоказателиНаЗдоровье`). `nil` — не настраивали.
+    @State private var выборПоказателей: [String]?
+    @State private var настраиваемПоказатели = false
 
     private var dog: Dog? { appState.activeDog(from: dogs) }
 
@@ -185,12 +189,31 @@ struct HealthScreen: View {
                     прошлыеСхемыРаздел(прошлые)
                 }
 
-                показательКарточка
+                показателиБлок
                 sectionsGrid
                 finishCourse
                 disclaimer
             }
             .usageScreen(.health)
+            // Выбор — у каждой собаки свой: смена активной собаки
+            // перечитывает его, а не тащит чужой.
+            .task(id: dog?.id) {
+                выборПоказателей = dog.flatMap { ПоказателиНаЗдоровье.прочитать(собака: $0.id) }
+            }
+            .sheet(isPresented: $настраиваемПоказатели) {
+                if let dog {
+                    let показатели = LabChartScreen.показатели(dog.labResults)
+                    let естьВес = !dog.weights.isEmpty
+                    НастройкаПоказателейSheet(
+                        кандидаты: ПоказателиНаЗдоровье.кандидаты(показатели: показатели, естьВес: естьВес),
+                        начальный: ПоказателиНаЗдоровье.карточки(выбор: выборПоказателей,
+                                                                 показатели: показатели, естьВес: естьВес),
+                        сохранить: { новый in
+                            ПоказателиНаЗдоровье.записать(новый, собака: dog.id)
+                            выборПоказателей = новый
+                        })
+                }
+            }
             .navigationDestination(isPresented: $показатьНастройки) {
                 SettingsScreen()
             }
@@ -564,8 +587,12 @@ struct HealthScreen: View {
 
     // MARK: Показатель
 
-    /// Карточка последнего показателя — кадр 11, «Т4 · протокол контроля»
+    /// Карточки показателей — кадр 11, «Т4 · протокол контроля»
     /// с нормой справа, и кадр 14, где тот же блок стоит крупно.
+    ///
+    /// **С 29.10.2026 их выбирает человек** — какие, сколько (до четырёх)
+    /// и в каком порядке (`ПоказателиНаЗдоровье`, шторка «Настроить»).
+    /// Не настраивал — одна карточка последнего сданного, как было.
     ///
     /// **Нормы приложение не придумывает.** `referenceLow` / `referenceHigh`
     /// приходят с бланка; нет их — строка про норму не печатается вовсе.
@@ -576,55 +603,125 @@ struct HealthScreen: View {
     /// Округление до одного знака писано для веса: `16,75 нмоль/л`
     /// как `16,8` — потеря данных в медицинском числе.
     @ViewBuilder
-    private var показательКарточка: some View {
-        if let dog, let последний = последнийПоказатель(dog) {
-            NavigationLink { LabChartScreen(dog: dog) } label: {
-                TGCard {
-                    HStack(alignment: .firstTextBaseline, spacing: Token.Space.s8) {
-                        Text(verbatim: Fmt.notBlank(последний.indicator)
-                             ?? String(localized: "показатель")).textStyle(AppFont.cardTitle).wraps()
-                        Spacer(minLength: Token.Space.s8)
-                        if let норма = нормаСтрокой(последний) {
-                            Text(verbatim: норма).textStyle(AppFont.caption).wraps()
+    private var показателиБлок: some View {
+        if let dog {
+            let показатели = LabChartScreen.показатели(dog.labResults)
+            let естьВес = !dog.weights.isEmpty
+            let кандидаты = ПоказателиНаЗдоровье.кандидаты(показатели: показатели, естьВес: естьВес)
+            let карточки = ПоказателиНаЗдоровье.карточки(выбор: выборПоказателей,
+                                                       показатели: показатели, естьВес: естьВес)
+            if карточки.isEmpty {
+                // Анализов с числом нет, а вес есть: карточек по умолчанию
+                // ноль (как было), но дорога к настройке остаётся —
+                // иначе поставить себе вес было бы неоткуда.
+                if !кандидаты.isEmpty {
+                    Button { настраиваемПоказатели = true } label: {
+                        TGCard {
+                            TGListRow(title: "Какие графики показывать", systemImage: "slider.horizontal.3")
                         }
                     }
-                    HStack(alignment: .firstTextBaseline, spacing: Token.Space.s8) {
-                        Text(verbatim: ЧислоСБланка.показать(последний.value ?? 0))
-                            .textStyle(TextStyleToken(size: КиноРазмеры.метрика,
-                                                      weight: Token.FontWeight.light,
-                                                      color: Token.Ink.link,
-                                                      monospacedDigits: true,
-                                                      relativeTo: .title2))
+                    .buttonStyle(.plain)
+                }
+            } else {
+                HStack(alignment: .center, spacing: Token.Space.s8) {
+                    TGSectionHeader(title: "показатели")
+                    Spacer(minLength: Token.Space.s8)
+                    if кандидаты.count > 1 {
+                        КиноЧип(подпись: "Настроить", значок: "slider.horizontal.3") {
+                            настраиваемПоказатели = true
+                        }
+                    }
+                }
+                ForEach(карточки, id: \.self) { имя in
+                    if имя == ПоказателиНаЗдоровье.вес {
+                        карточкаВеса(dog)
+                    } else if let последний = последнийПоказатель(dog, имя: имя) {
+                        карточкаПоказателя(dog, последний, имя: имя,
+                                           сПояснением: карточки.count == 1)
+                    }
+                }
+            }
+        }
+    }
+
+    private func карточкаПоказателя(_ dog: Dog, _ последний: LabResult, имя: String,
+                                    сПояснением: Bool) -> some View {
+        NavigationLink { LabChartScreen(dog: dog, начальныйПоказатель: имя) } label: {
+            TGCard {
+                HStack(alignment: .firstTextBaseline, spacing: Token.Space.s8) {
+                    Text(verbatim: имя).textStyle(AppFont.cardTitle).wraps()
+                    Spacer(minLength: Token.Space.s8)
+                    if let норма = нормаСтрокой(последний) {
+                        Text(verbatim: норма).textStyle(AppFont.caption).wraps()
+                    }
+                }
+                HStack(alignment: .firstTextBaseline, spacing: Token.Space.s8) {
+                    Text(verbatim: ЧислоСБланка.показать(последний.value ?? 0))
+                        .textStyle(стильМетрики)
+                        .wraps()
+                    if let единица = Fmt.notBlank(последний.unit) {
+                        Text(verbatim: единица)
+                            .textStyle(AppFont.bodyEmphasis.color(Token.Ink.link))
                             .wraps()
-                        if let единица = Fmt.notBlank(последний.unit) {
-                            Text(verbatim: единица)
-                                .textStyle(AppFont.bodyEmphasis.color(Token.Ink.link))
-                                .wraps()
-                        }
                     }
-                    КиноСтолбики(значения: рядПоказателя(dog, like: последний))
+                }
+                КиноСтолбики(значения: ПоказателиНаЗдоровье.доли(рядПоказателя(dog, имя: имя)))
+                // Пояснение — один раз на экран, а не под каждой
+                // карточкой: при четырёх карточках одна и та же фраза
+                // четырежды — шум, а не забота.
+                if сПояснением {
                     Text("Смотреть надо не на одно число, а на то, куда идёт ряд. Открой график.")
                         .textStyle(AppFont.caption)
                         .wraps()
                 }
             }
-            .buttonStyle(.plain)
         }
+        .buttonStyle(.plain)
     }
 
-    /// Последний анализ с ЧИСЛОМ. Предел прибора (`<0,1`) сюда
-    /// не попадает нарочно: его нельзя нарисовать столбиком, не превратив
-    /// «меньше, чем прибор различает» в число.
-    private func последнийПоказатель(_ dog: Dog) -> LabResult? {
+    /// Вес — кандидатом наравне с анализами. Число — `Fmt.weight`:
+    /// округление до знака разрешено ровно для веса (красная линия).
+    /// Ведёт на экран веса, где его и правят.
+    private func карточкаВеса(_ dog: Dog) -> some View {
+        NavigationLink { WeightScreen(dog: dog) } label: {
+            TGCard {
+                Text("Вес").textStyle(AppFont.cardTitle).wraps()
+                Text(verbatim: Fmt.weight(dog.weightKg))
+                    .textStyle(стильМетрики)
+                    .wraps()
+                КиноСтолбики(значения: ПоказателиНаЗдоровье.доли(
+                    dog.weights.sorted { $0.date < $1.date }
+                        .suffix(КиноРазмеры.днейВПолосе)
+                        .map(\.kg)))
+            }
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var стильМетрики: TextStyleToken {
+        TextStyleToken(size: КиноРазмеры.метрика,
+                       weight: Token.FontWeight.light,
+                       color: Token.Ink.link,
+                       monospacedDigits: true,
+                       relativeTo: .title2)
+    }
+
+    /// Последний анализ с ЧИСЛОМ по этому показателю. Предел прибора
+    /// (`<0,1`) сюда не попадает нарочно: его нельзя нарисовать
+    /// столбиком, не превратив «меньше, чем прибор различает» в число.
+    /// Имя сравнивается обрезанным — так его собирает
+    /// `LabChartScreen.показатели`.
+    private func последнийПоказатель(_ dog: Dog, имя: String) -> LabResult? {
         dog.labResults
-            .filter { $0.value != nil }
+            .filter { $0.value != nil && $0.indicator.trimmingCharacters(in: .whitespaces) == имя }
             .max { $0.sampledOn < $1.sampledOn }
     }
 
-    /// Ряд того же показателя по датам — для полосы столбиков.
-    private func рядПоказателя(_ dog: Dog, like образец: LabResult) -> [Double] {
+    /// Ряд того же показателя по датам — для полосы столбиков. Только
+    /// числа: пропусков и нулей вместо пределов прибора в нём нет.
+    private func рядПоказателя(_ dog: Dog, имя: String) -> [Double] {
         dog.labResults
-            .filter { $0.indicator == образец.indicator && $0.value != nil }
+            .filter { $0.value != nil && $0.indicator.trimmingCharacters(in: .whitespaces) == имя }
             .sorted { $0.sampledOn < $1.sampledOn }
             .suffix(КиноРазмеры.днейВПолосе)
             .compactMap(\.value)
