@@ -103,6 +103,50 @@ struct TreatmentCourseTests {
         #expect(medication.cancelledNote == nil)
     }
 
+    /// `resume` возвращал в строй КАЖДУЮ отменённую схему — и ту, что
+    /// врач отменил отдельно задолго до курса (29.10.2026).
+    @Test("Возврат курса не воскрешает схему, отменённую раньше и отдельно")
+    func resumeRestoresOnlyCourseMedications() throws {
+        let (context, dog, medication) = try setup()
+        let старая = Medication(name: "Энрофлоксацин", doseText: "50 мг", times: [8 * 60])
+        старая.dog = dog
+        context.insert(старая)
+        старая.отменить(в: Date().addingTimeInterval(-90 * 86_400), заметка: "отменил врач")
+        let пауза = Medication(name: "Омепразол", doseText: "10 мг", times: [7 * 60])
+        пауза.dog = dog
+        пауза.isPaused = true
+        context.insert(пауза)
+        try context.save()
+
+        TreatmentCourse.finish(dog, by: "Вика", context: context)
+        TreatmentCourse.resume(dog, context: context)
+
+        #expect(medication.cancelledAt == nil && !medication.isPaused, "схема курса не вернулась")
+        #expect(старая.cancelledAt != nil && старая.isPaused,
+                "вернулась схема, которую отменили до курса отдельным решением")
+        #expect(пауза.isPaused, "схема, стоявшая на паузе до конца курса, ожила")
+    }
+
+    /// Срок контроля был прибит числом 14, хотя врач его называет
+    /// в назначении (29.10.2026).
+    @Test("Срок контроля берётся из назначения курса, а без него — две недели")
+    func checkupFollowsPrescription() throws {
+        let (context, dog, medication) = try setup()
+        let сейчас = Date()
+        #expect(TreatmentCourse.checkupDelay(for: dog, now: сейчас) == TreatmentCourse.checkupDelayDays)
+
+        medication.prescriptionNumber = "2026/0417"
+        let рецепт = Prescription(number: "2026/0417", date: сейчас, medicationName: "Апоквел")
+        рецепт.controlFromWeeks = 6
+        рецепт.controlToWeeks = 8
+        рецепт.dog = dog
+        context.insert(рецепт)
+        try context.save()
+
+        let дней = TreatmentCourse.checkupDelay(for: dog, now: сейчас)
+        #expect((41...43).contains(дней), "ждали около шести недель, получили \(дней) дней")
+    }
+
     @Test("Перед подтверждением названы препараты, которые уйдут")
     func farewellNamesMedications() throws {
         let (_, dog, _) = try setup()

@@ -351,6 +351,26 @@ struct VetSummaryTests {
         #expect(Int((share * 100).rounded()) == 67)
     }
 
+    /// Пикер с `.date` несёт час открытия экрана. До 29.10.2026 период
+    /// «с 29.09 по 29.10» в 14:37 значил «с 14:37 по 14:37», и утро
+    /// первого дня с вечером последнего выпадали из сводки и выгрузки.
+    @Test("Период из пикера берётся целыми сутками")
+    func периодЦелымиСутками() throws {
+        var календарь = Calendar(identifier: .gregorian)
+        календарь.timeZone = try #require(TimeZone(identifier: "Europe/Paris"))
+        let первый = try #require(календарь.date(from: DateComponents(year: 2026, month: 9, day: 29, hour: 14, minute: 37)))
+        let последний = try #require(календарь.date(from: DateComponents(year: 2026, month: 10, day: 29, hour: 14, minute: 37)))
+        let период = VetSummaryBuilder.целыеСутки(с: первый, по: последний, calendar: календарь)
+
+        let утроПервого = try #require(календарь.date(from: DateComponents(year: 2026, month: 9, day: 29, hour: 7)))
+        let вечерПоследнего = try #require(календарь.date(from: DateComponents(year: 2026, month: 10, day: 29, hour: 23, minute: 59)))
+        let следующийДень = try #require(календарь.date(from: DateComponents(year: 2026, month: 10, day: 30, hour: 0)))
+        #expect(период.from <= утроПервого, "утро первого дня выпало из периода")
+        #expect(период.to >= вечерПоследнего, "вечер последнего дня выпал из периода")
+        #expect(период.to < следующийДень, "период захватил полночь следующего дня")
+        #expect(период.from == календарь.startOfDay(for: первый))
+    }
+
     @Test("Без доз процента не бывает")
     func noShareWithoutDoses() {
         let summary = VetSummaryBuilder.build(events: [], doses: [], weights: [],

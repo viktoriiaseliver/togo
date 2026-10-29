@@ -75,6 +75,8 @@ struct TodayScreen: View {
     /// возвращало именно туда, а не обнуляло срок.
     @State private var lastCareDone: [UUID: Date?] = [:]
     @State private var lockedDose: LockedDose?
+    /// Эпизод, который просят закрыть со «Сегодня» (29.10.2026).
+    @State private var закрываемЭпизод: Episode?
     @State private var missedDose: MissedDoseTarget?
     @State private var gatedDose: GatedDose?
     @State private var alarm: AlarmThreshold?
@@ -352,9 +354,19 @@ struct TodayScreen: View {
         // прогулки — а дубль прогулки хуже её отсутствия, потому что
         // он уезжает в сводку врачу.
         guard let finished = appState.finishSession() else { return }
-        let записана = WalkRecorder.record(finished, dog: dog,
-                                           author: AppState.storedUserName, context: context)
-        if записана != nil, finished.count(of: .incident) > 0 {
+        // Короткий выход уже лежит в ленте с начала — второй записью
+        // («прогулкой») его не дублируем. См. `OutingFinisher.close`.
+        if finished.kind == .outing {
+            OutingFinisher.close(finished, dog: dog, at: Date(), context: context)
+            OutingFinisher.записатьПрочиеОтметки(finished, dog: dog,
+                                                 appState: appState, context: context)
+        } else {
+            guard WalkRecorder.record(finished, dog: dog,
+                                      author: AppState.storedUserName, context: context) != nil
+            else { return }
+        }
+        // Инцидент с блокировки поднимает эпизод так же, как из шторки.
+        if finished.count(of: .incident) > 0 {
             EpisodeRaiser.afterIncident(dog: dog, context: context, appState: appState)
         }
     }
@@ -759,10 +771,24 @@ struct TodayScreen: View {
                               markedBy: locked.givenBy,
                               markedAt: locked.givenAt) {
                     // Другая доза — записываем отдельно, со своим временем.
-                    route = .more
+                    // Прежде здесь стояло `route = .more`: шторка «Ещё»,
+                    // в которой дозы нет (29.10.2026).
+                    actions.recordSeparateDose(like: locked.item, at: Date())
                 } onUndo: {
                     uncomplete(locked.item)
                 }
+            }
+            // Тот же вопрос и те же слова, что у «Собаке лучше — закрыть»
+            // в истории (`HistoryScreen`): одно действие — один текст.
+            .confirmationDialog("Закрыть эпизод?",
+                                isPresented: Binding(get: { закрываемЭпизод != nil },
+                                                     set: { if !$0 { закрываемЭпизод = nil } }),
+                                titleVisibility: .visible,
+                                presenting: закрываемЭпизод) { эпизод in
+                Button("Закрыть") { закрытьЭпизод(эпизод) }
+                Button("Ещё рано", role: .cancel) { закрываемЭпизод = nil }
+            } message: { _ in
+                Text("Записи останутся в истории. Вердикт «просится» снова начнёт считаться по обычным промежуткам — во время эпизода он не считается совсем.")
             }
     }
 
@@ -1310,9 +1336,38 @@ struct TodayScreen: View {
                 Haptics.tap()
                 appState.showUndo("Отмечено · \(отметка.title)")
             }
+        case .episode:
+            // # Закрыть эпизод со «Сегодня» — 29.10.2026
+            //
+            // Чип «Наблюдаем» говорил, что эпизод идёт, а закрыть его
+            // отсюда было нечем: «Собаке лучше — закрыть» жило только
+            // в истории, на третьем экране. Человек, увидевший утром,
+            // что собаке лучше, держал «Наблюдаем» ещё двое суток —
+            // до тишины `EpisodeLifetime.quietPeriod`, — а вердикт
+            // «просится» всё это время не считался.
+            if let эпизод = appState.activeEpisode, appState.can(.logBasics) {
+                return .init(название: "Собаке лучше", символ: "checkmark") {
+                    закрываемЭпизод = эпизод
+                }
+            }
+            return .init(название: "Гулять", символ: "figure.walk") { route = .walk }
         default:
             return .init(название: "Гулять", символ: "figure.walk") { route = .walk }
         }
+    }
+
+    /// Закрыть эпизод руками — тем же `Episode.close`, что в истории.
+    private func закрытьЭпизод(_ эпизод: Episode) {
+        let былЗакрыт = эпизод.endedAt
+        эпизод.close()
+        guard context.persist(otherwise: { эпизод.endedAt = былЗакрыт }) else {
+            Haptics.warning()
+            appState.showFailure(String(localized: "Не сохранилось · нажми ещё раз"))
+            return
+        }
+        Haptics.success()
+        закрываемЭпизод = nil
+        appState.refreshEpisode(from: episodes, at: now)
     }
 
     // MARK: Строка «Дальше» и компактная строка

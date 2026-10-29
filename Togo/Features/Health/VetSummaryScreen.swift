@@ -25,17 +25,28 @@ struct VetSummaryScreen: View {
         (dog?.weights ?? []).map { (date: $0.date, kg: $0.kg) }
     }
 
+    /// Период целыми сутками: пикер несёт час открытия экрана,
+    /// и без этого утро первого дня и вечер последнего выпадали
+    /// из сводки (29.10.2026, `VetSummaryBuilder.целыеСутки`).
+    private var период: (from: Date, to: Date) {
+        VetSummaryBuilder.целыеСутки(с: from, по: to)
+    }
+
     private var summary: VetSummary {
         VetSummaryBuilder.build(events: dog?.events ?? [], doses: doses,
-                                weights: weights, from: from, to: to)
+                                weights: weights, from: период.from, to: период.to)
     }
 
     /// Тот же по длине период до текущего — чтобы было с чем сравнивать.
+    ///
+    /// Конец — миг до начала текущего, а не само начало: иначе запись
+    /// ровно в полночь первого дня считалась бы в обоих периодах.
     private var previous: VetSummary {
-        let span = to.timeIntervalSince(from)
+        let span = период.to.timeIntervalSince(период.from)
         return VetSummaryBuilder.build(events: dog?.events ?? [], doses: doses,
                                        weights: weights,
-                                       from: from.addingTimeInterval(-span), to: from)
+                                       from: период.from.addingTimeInterval(-span),
+                                       to: период.from.addingTimeInterval(-0.001))
     }
 
     var body: some View {
@@ -53,7 +64,7 @@ struct VetSummaryScreen: View {
             // хендофф требует «сначала цифры, потом дельта словами»,
             // а бланки — это документы, которые врач читает после
             // того, как понял картину.
-            MedicalRecordCards(dog: dog, from: from, to: to)
+            MedicalRecordCards(dog: dog, from: период.from, to: период.to)
             notesCard
             shareCard
         }

@@ -286,6 +286,7 @@ struct DocumentsScreen: View {
                                   systemImage: "square.and.arrow.up", accessory: .none)
                     }
                     .buttonStyle(.plain)
+                    TGExplainer(text: "Своего телефона приложение не знает — допиши его в объявление перед отправкой. Номер ветеринара сюда не ставится: звонить должны тебе.")
                 }
             }
 
@@ -320,7 +321,18 @@ struct DocumentsScreen: View {
         if let age = dog.ageDescription { parts.append(String(localized: "Возраст: \(age)")) }
         if let chip = dog.chipNumber, !chip.isEmpty { parts.append(String(localized: "Чип: \(chip)")) }
         if let marks = dog.distinctiveMarks, !marks.isEmpty { parts.append(String(localized: "Приметы: \(marks)")) }
-        if let phone = dog.vetPhone, !phone.isEmpty { parts.append(String(localized: "Ветеринар: \(phone)")) }
+        // # Телефона ветеринара на плакате НЕТ, и это починка (29.10.2026)
+        //
+        // Здесь стояло `Ветеринар: <vetPhone>` — единственный номер
+        // объявления. Нашедший собаку звонил бы врачу, а не хозяину:
+        // врач собаку не ищет, на звонок незнакомца в выходной
+        // не ответит, а владельца по номеру чипа найдёт не сразу.
+        //
+        // Своего телефона у владельца в модели нет — ни у `Dog`,
+        // ни у `FamilyMember` (поля схемы без спроса не заводим).
+        // Поэтому номер в текст не подставляется вовсе, а под кнопкой
+        // сказано дописать свой перед отправкой. Пустое место честнее
+        // чужого номера: его видно и его заполнят.
         return parts.count > 1 ? parts.joined(separator: "\n") : nil
     }
 }

@@ -55,6 +55,18 @@ enum WalkControl {
         // Не сохранилось — сессию не трогаем: приложение допишет её
         // при открытии (`дописатьПрогулкуСБлокировки`), а человек слышит
         // правду.
+        //
+        // Короткий выход (`.outing`) закрывается своей записью, которую
+        // завели в начале, — метка у двери писала поверх неё ещё
+        // и прогулку (29.10.2026). См. `OutingFinisher.close`.
+        if session.kind == .outing {
+            guard OutingFinisher.close(session, dog: dog, at: now, context: context) else {
+                throw QuickLogError.storageUnavailable
+            }
+            ActiveSessionStore.save(nil)
+            let minutes = Int(session.duration(at: now)) / 60
+            return "Записала · выход \(String(localized: "\(minutes) минут"))"
+        }
         guard WalkRecorder.record(session, dog: dog,
                                   author: AppState.storedUserName, context: context) != nil else {
             throw QuickLogError.storageUnavailable

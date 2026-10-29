@@ -414,6 +414,16 @@ nonisolated enum BackupService {
                           // `LogEvent` и `WeightEntry`.
                           LabResult.self, VetVisit.self,
                           Diagnosis.self, Prescription.self,
+                          // Запас корма, течки, документы и выезды —
+                          // 29.10.2026. Четыре вида восстанавливались,
+                          // а в перечне чистки их не было: держал их
+                          // один каскад от собаки, то есть запись
+                          // с пустым `dog` переживала «заменить всё»
+                          // и ложилась рядом с приехавшей из файла.
+                          // Обещание «то, что сейчас на телефоне, будет
+                          // стёрто» про них было неправдой.
+                          FoodStock.self, HeatRecord.self,
+                          DogDocument.self, DayOut.self,
                           FamilyMember.self, Dog.self] as [any PersistentModel.Type] {
                 try context.delete(model: model)
             }

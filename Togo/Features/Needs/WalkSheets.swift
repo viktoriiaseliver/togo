@@ -43,6 +43,91 @@ enum OutingFinisher {
             return
         }
     }
+
+    /// Закрыть короткий ВЫХОД, который закончили не шторкой «Как сходил?»:
+    /// «Домой» на блокировке, метка у двери, «Открыть» → режим прогулки.
+    ///
+    /// # Зачем (29.10.2026)
+    ///
+    /// Запись выхода рождается В НАЧАЛЕ — `NeedsSheet.startOuting` кладёт
+    /// `.outing` в ленту до того, как человек вышел за дверь. Три пути
+    /// конца при этом не знали, что запись уже есть, и писали свою:
+    ///
+    /// ```
+    /// «Домой» на блокировке   дописатьПрогулкуСБлокировки → WalkRecorder.record
+    /// метка у двери, Siri     WalkControl.finish          → WalkRecorder.record
+    /// «Открыть» → «Домой»     WalkMode.finish             → EventLog.record(.walk)
+    /// ```
+    ///
+    /// Каждый ставил `.walk` безусловно, по виду сессии не спрашивая.
+    /// Двухминутный выход ложился в дневник выходом **и** прогулкой —
+    /// а ритм выходов и сводка врачу считают обе.
+    ///
+    /// Теперь у выхода одна запись — та, что завели в начале. Сюда
+    /// приезжают длительность и результат из отметок с блокировки
+    /// («Пописал», «Стул»). Отметки других видов ставит только режим
+    /// прогулки, и пишет их `записатьПрочиеОтметки` — через `EventLog`,
+    /// у которого есть право и сторож дубля. Сам `close` записей
+    /// не заводит нарочно: дверь в дневник одна (`SingleDoorTests`).
+    ///
+    /// Записи выхода не нашлось — её удалили, пока шли. Тогда писать
+    /// нечего, и это уважение к удалению, а не потеря: заводить
+    /// прогулку взамен значило бы вернуть то, что человек убрал.
+    ///
+    /// Возвращает, легло ли в хранилище: путь без экрана обязан сказать
+    /// правду, а не «записала».
+    @discardableResult
+    static func close(_ finished: ActiveSession, dog: Dog,
+                      at end: Date, context: ModelContext) -> Bool {
+        let окно: TimeInterval = 5 * 60
+        guard let выход = Diary.active(dog.events)
+            .filter({ $0.kind == .outing && abs($0.date.timeIntervalSince(finished.startedAt)) <= окно })
+            .min(by: { abs($0.date.timeIntervalSince(finished.startedAt)) < abs($1.date.timeIntervalSince(finished.startedAt)) })
+        else {
+            UsageLog.note(.record, "outcome", outcome: .empty)
+            return true
+        }
+
+        let былРезультат = выход.outcome
+        let былаДлительность = выход.durationSeconds
+        выход.durationSeconds = Int(finished.duration(at: finished.закончиласьНаБлокировке ?? end))
+        выход.outcome = результат(былРезультат,
+                                  моча: finished.marks.contains { $0.kind == .urine },
+                                  стул: finished.marks.contains { $0.kind == .stool })
+
+        return context.persist(otherwise: {
+            выход.outcome = былРезультат
+            выход.durationSeconds = былаДлительность
+        })
+    }
+
+    /// Отметки выхода, которые не складываются в его результат: занятие,
+    /// срыв, заметка — их ставит режим прогулки. Каждая ложится своей
+    /// строкой, как у прогулки, но без связи с ней: прогулки нет.
+    static func записатьПрочиеОтметки(_ finished: ActiveSession, dog: Dog,
+                                      appState: AppState, context: ModelContext) {
+        let log = EventLog(context: context, appState: appState)
+        for mark in finished.marks where mark.kind != .urine && mark.kind != .stool {
+            log.record(mark.kind.logKind, dog: dog, at: mark.at,
+                       confirmation: nil, haptic: .none) { event in
+                WalkRecorder.apply(mark, to: event, dog: dog, walkID: nil)
+            }
+        }
+    }
+
+    /// Результат выхода с учётом отметок. Ничего не отмечено — результат
+    /// остаётся каким был: «не сходил» отсюда не выводится, отсутствие
+    /// отметки значит «не отметили», а не «не было».
+    private static func результат(_ был: OutingOutcome?, моча: Bool, стул: Bool) -> OutingOutcome? {
+        let былаМоча = был == .urine || был == .both
+        let былСтул = был == .stool || был == .both
+        switch (былаМоча || моча, былСтул || стул) {
+        case (true, true): return .both
+        case (true, false): return .urine
+        case (false, true): return .stool
+        case (false, false): return был
+        }
+    }
 }
 
 /// Результат спрашивается один раз. Не ответили — запись остаётся без результата,

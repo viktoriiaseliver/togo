@@ -96,18 +96,36 @@ struct CourseFinishSheet: View {
                           title: "Контрольный приём \(Fmt.shortDay(checkupDate))",
                           detail: "Напомним за три дня. Дату поменяешь в уходе.")
             } else {
-                TGIconRow(symbol: "stethoscope",
-                          title: "Контрольный приём",
-                          detail: "Врач обычно смотрит результат через две недели.")
-                TGButton(title: "Напомнить через две недели",
-                         variant: .secondary, size: .medium) {
-                    onScheduleCheckup(TreatmentCourse.checkupDelayDays)
-                    checkupDate = Calendar.current.date(
-                        byAdding: .day, value: TreatmentCourse.checkupDelayDays, to: .now)
-                    Haptics.success()
+                // Срок — из назначения курса, если врач его назвал
+                // (`TreatmentCourse.checkupDelay`, 29.10.2026). Прежде
+                // здесь всегда стояли «две недели», при назначенных
+                // в рецепте шести.
+                let дней = TreatmentCourse.checkupDelay(for: dog)
+                if дней == TreatmentCourse.checkupDelayDays {
+                    TGIconRow(symbol: "stethoscope",
+                              title: "Контрольный приём",
+                              detail: "Врач обычно смотрит результат через две недели.")
+                    TGButton(title: "Напомнить через две недели",
+                             variant: .secondary, size: .medium) {
+                        назначитьКонтроль(через: дней)
+                    }
+                } else {
+                    TGIconRow(symbol: "stethoscope",
+                              title: "Контрольный приём",
+                              detail: "Срок контроля взят из назначения врача.")
+                    TGButton(title: "Напомнить через \(Fmt.days(дней))",
+                             variant: .secondary, size: .medium) {
+                        назначитьКонтроль(через: дней)
+                    }
                 }
             }
         }
+    }
+
+    private func назначитьКонтроль(через дней: Int) {
+        onScheduleCheckup(дней)
+        checkupDate = Calendar.current.date(byAdding: .day, value: дней, to: .now)
+        Haptics.success()
     }
 
     private var consequences: some View {
