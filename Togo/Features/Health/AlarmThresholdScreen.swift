@@ -29,7 +29,7 @@ struct AlarmThresholdScreen: View {
 
     var body: some View {
         TGSheet(title: "Похоже, пора звонить",
-                subtitle: "записала, но одной записи мало") {
+                subtitle: "записано, но одной записи мало") {
             episodesCard
             vetTextCard
             TGExplainer(text: "Порог задаёт счёт, а не догадка: \(AlarmThresholdAnalyzer.minimumEpisodes) эпизода за \(Int(threshold.window / 3600)) часов. Приложение не ставит диагнозов — решение всегда за врачом.")

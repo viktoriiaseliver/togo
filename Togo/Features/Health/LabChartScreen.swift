@@ -60,6 +60,16 @@ struct LabChartScreen: View {
     enum Период: String, CaseIterable, Identifiable {
         case полгода = "6 мес", год = "год", всё = "всё"
         var id: String { rawValue }
+        /// Подпись — ключом каталога, а не `rawValue` дословно
+        /// (29.10.2026): `Text(verbatim:)` показывал «6 мес / год / всё»
+        /// по-русски на всех языках, хотя ключи переведены.
+        var подпись: LocalizedStringKey {
+            switch self {
+            case .полгода: "6 мес"
+            case .год: "год"
+            case .всё: "всё"
+            }
+        }
         var месяцев: Int? {
             switch self {
             case .полгода: 6
@@ -303,7 +313,7 @@ struct LabChartScreen: View {
                 TGDivider()
             }
             Picker("Период", selection: $период) {
-                ForEach(Период.allCases) { Text(verbatim: $0.rawValue).tag($0) }
+                ForEach(Период.allCases) { Text($0.подпись).tag($0) }
             }
             .pickerStyle(.segmented)
         }
