@@ -528,7 +528,7 @@ struct EventEditSheet: View {
                                 get: { event.outcome },
                                 set: { event.outcome = $0 }
                             )) {
-                                Text("не отмечено").tag(OutingOutcome?.none)
+                                Text("Не отмечено").tag(OutingOutcome?.none)
                                 ForEach(OutingOutcome.allCases, id: \.self) {
                                     Text($0.title).tag(OutingOutcome?.some($0))
                                 }
