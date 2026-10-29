@@ -1180,13 +1180,57 @@ struct MemberScreen: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(AppState.self) private var appState
     @State private var убратьСпрошено = false
+    /// Черновик имени. Отдельным `@State`, а не привязкой прямо
+    /// к `member.name`: имя — подпись автора у каждой новой записи,
+    /// и писать его по букве значило бы подписать запись, сделанную
+    /// посреди набора, словом «Ма».
+    @State private var имя = ""
 
     /// Права выдаёт тот, у кого есть право их выдавать.
     private var canManage: Bool { appState.can(.manageFamily) }
 
+    /// Своё имя поправить может каждый, чужое — тот, кто управляет
+    /// семьёй. Так же устроены права ниже: «кто я» не требует права
+    /// раздавать роли.
+    private var можноПравитьИмя: Bool { canManage || appState.myMemberID == member.id }
+
+    private var имяИзменено: Bool {
+        guard let новое = Fmt.notBlank(имя) else { return false }
+        return новое != member.name
+    }
+
     var body: some View {
         TGScreen {
             CinemaHeader(значение: member.name, отступы: false)
+            // # Имя заводилось и больше не менялось НИКОГДА
+            //
+            // Замер 29.10.2026: `FamilyMember.name` пишут в `Togo/`
+            // ровно два места — `InviteSheet.create()` и онбординг
+            // (`ownerName`, по умолчанию «Я»). Поправить опечатку в имени
+            // мамы или назвать себя вместо «Я» было негде, а имя —
+            // подпись автора у каждой отметки с этого телефона.
+            //
+            // **Старые записи не переподписываются**, и это сказано
+            // словами: автор хранится в записи строкой, и переписать
+            // историю задним числом значило бы утверждать, что «Я»
+            // в прошлом месяце было этим именем. Это не всегда так.
+            if можноПравитьИмя {
+                TGCard(spacing: 0) {
+                    LabeledField(label: "Как зовут") {
+                        TextField("имя", text: $имя)
+                            .textInputAutocapitalization(.words)
+                            .submitLabel(.done)
+                            .onSubmit { сохранитьИмя() }
+                    }
+                    if имяИзменено {
+                        TGButton(title: "Сохранить имя", variant: .secondary, size: .medium) {
+                            сохранитьИмя()
+                        }
+                        .padding(.vertical, Token.Space.s8)
+                        TGExplainer(text: "Новые записи подпишутся новым именем. Уже сделанные останутся с прежним.")
+                    }
+                }
+            }
             // Плашка одна на ДВА выключенных органа этого экрана:
             // чипы роли (`:908`) и переключатели прав
             // (`PermissionToggle`, `:1017`). Оба молчали.
@@ -1363,6 +1407,25 @@ struct MemberScreen: View {
         }
         .navigationTitle(member.name)
         .cinemaScreen(экран: .sub("family"))
+        .task { имя = member.name }
+    }
+
+    /// Сохранить имя честно: при отказе хранилища имя возвращается,
+    /// и подпись автора на этом телефоне остаётся прежней.
+    private func сохранитьИмя() {
+        guard let новое = Fmt.notBlank(имя), новое != member.name else { return }
+        let было = member.name
+        member.name = новое
+        guard context.persist(otherwise: { member.name = было }) else {
+            Haptics.warning()
+            appState.showFailure("Не сохранилось · нажми ещё раз")
+            return
+        }
+        // Своё имя — это ещё и подпись автора, которую держит
+        // `AppState`. Без этой строки карточка сказала бы «Аня»,
+        // а следующая отметка подписалась бы прежним «Я».
+        if appState.myMemberID == member.id { appState.currentUserName = новое }
+        Haptics.success()
     }
 }
 

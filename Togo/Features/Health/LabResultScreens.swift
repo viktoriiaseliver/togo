@@ -355,6 +355,10 @@ struct ЧерновикПоказателя: Identifiable {
     /// **Не наш вердикт:** наш считает `LabNorm`, и показываются
     /// они только парой и подписанными (`MedicalRecordCards.вердикт`).
     var отметка = ""
+    /// Заметка с бланка (`LabResult.note`): «на бланке Т+5ч, по счёту
+    /// ≈3,5 ч». Поле в модели с первого дня медслоя, ездит в архиве —
+    /// а ввода у него не было ни в одном экране (замер 29.10.2026).
+    var заметка = ""
 
     var пустой: Bool {
         показатель.trimmingCharacters(in: .whitespaces).isEmpty
@@ -480,6 +484,12 @@ struct LabResultEntryFlow: View {
     @State private var времяИзвестно = false
     @State private var sampledAt = Date()
     @State private var спрашиваемПроВремя = false
+    /// Заметка ко всему бланку — шаг 3, рядом со временем забора.
+    /// Образец заметки из модели («на бланке Т+5ч, по счёту ≈3,5 ч»)
+    /// говорит о бланке, а не о строке; поэтому спрашивается один раз
+    /// и ложится в каждую строку, как дата и номер. Своя у строки —
+    /// правится потом в `LabResultRowEditor`.
+    @State private var заметкаБланка = ""
 
     /// Какое числовое поле в фокусе. **Несёт `id` строки, а не только
     /// вид поля**, и это не перестраховка: показатели лежат
@@ -766,6 +776,12 @@ struct LabResultEntryFlow: View {
             TGExplainer(text: времяИзвестно
                         ? "Часы от дозы приложение считает само — вводить их не нужно."
                         : "Без времени так и запишем — «время не указано». Это честнее, чем угадать: подставь мы «вероятно, утром», запись сказала бы врачу то, чего ты не вводил.")
+
+            TGDivider()
+            TGSectionHeader(title: "заметка")
+            TextField("что ещё важно", text: $заметкаБланка, axis: .vertical)
+                .textStyle(AppFont.body)
+                .frame(minHeight: Token.Size.tapTarget)
         }
     }
 
@@ -845,6 +861,7 @@ struct LabResultEntryFlow: View {
             // держит `MedicalRecordCards.вердикт` структурой,
             // а не это место.
             анализ.labMark = черновик.отметка.trimmingCharacters(in: .whitespaces)
+            анализ.note = заметкаБланка.trimmingCharacters(in: .whitespacesAndNewlines)
 
             анализ.changedAt = Date()
             анализ.dog = dog
@@ -1104,6 +1121,13 @@ struct LabResultRowEditor: View {
                 TGExplainer(text: "Это отметка самой лаборатории с бланка, а не вывод приложения. Расхождение с нашим счётом — находка, а не ошибка: референс у лабораторий разный.")
             }
 
+            TGCard {
+                TGSectionHeader(title: "заметка")
+                TextField("что ещё важно", text: $черновик.заметка, axis: .vertical)
+                    .textStyle(AppFont.body)
+                    .frame(minHeight: Token.Size.tapTarget)
+            }
+
             TGButton(title: "Удалить строку", variant: .destructive, size: .medium, systemImage: "trash") {
                 удаляем = true
             }
@@ -1152,6 +1176,7 @@ struct LabResultRowEditor: View {
         черновик.нормаНиз = ЧислоСБланка.текст(result.referenceLow)
         черновик.нормаВерх = ЧислоСБланка.текст(result.referenceHigh)
         черновик.отметка = result.labMark
+        черновик.заметка = result.note
         // Поля бланка. Без этих шести строк форма открывалась с пустой
         // лабораторией и сегодняшней датой, и «Сохранить» затирало бы
         // верные значения — то есть правка одного показателя рвала бы
@@ -1190,6 +1215,7 @@ struct LabResultRowEditor: View {
         let былаНормаНиз = result.referenceLow
         let былаНормаВерх = result.referenceHigh
         let былаОтметка = result.labMark
+        let былаЗаметка = result.note
         let былаЛаборатория = result.laboratory
         let былНомер = result.reportNumber
         let былРаздел = result.section
@@ -1202,6 +1228,7 @@ struct LabResultRowEditor: View {
         result.referenceLow = ЧислоСБланка.разобрать(черновик.нормаНиз)
         result.referenceHigh = ЧислоСБланка.разобрать(черновик.нормаВерх)
         result.labMark = черновик.отметка.trimmingCharacters(in: .whitespaces)
+        result.note = черновик.заметка.trimmingCharacters(in: .whitespacesAndNewlines)
         // Пять полей бланка. До 26.10.2026 их тут не было, и опечатка
         // в них была неисправима навсегда.
         result.laboratory = лаборатория.trimmingCharacters(in: .whitespaces)
@@ -1232,6 +1259,7 @@ struct LabResultRowEditor: View {
             result.referenceLow = былаНормаНиз
             result.referenceHigh = былаНормаВерх
             result.labMark = былаОтметка
+            result.note = былаЗаметка
             result.laboratory = былаЛаборатория
             result.reportNumber = былНомер
             result.section = былРаздел
