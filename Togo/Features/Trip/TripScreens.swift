@@ -433,11 +433,36 @@ struct TripTodayBlock: View {
             // выход перед машиной 08:40» — семь часов после выезда,
             // предлагая сделать то, чего уже не сделать.
             if now < departure {
-                departureWindows
+                окнаДороги(от: departure, заголовок: "до выезда")
             } else {
+                // Обратная дорога — над советами на месте, а не вместо
+                // них: в последний день ветклиника рядом нужна так же.
+                if let обратно = обратныйВыезд, now < обратно {
+                    окнаДороги(от: обратно, заголовок: "обратная дорога",
+                              оговорка: "если едете обратно в то же время")
+                    TGDivider()
+                }
                 onSiteAdvice
             }
         }
+    }
+
+    /// Обратный выезд — **догадка, и она названа догадкой** (29.10.2026).
+    ///
+    /// Аудит: у последнего дня поездки не было ни одного окна «до дороги»,
+    /// хотя последняя еда и выход перед машиной нужны и на обратном пути.
+    /// Часа возвращения поездка не спрашивает, а новое поле — это смена
+    /// формы схемы, которой без отдельного решения не делаем. Поэтому
+    /// берётся час ВЫЕЗДА на дне возвращения, и блок подписан «если
+    /// едете обратно в то же время»: окна посчитаны от часа, которого
+    /// человек не называл, и сказать это обязан сам блок, а не разбор.
+    ///
+    /// Только у поездки длиннее дня: однодневная уезжает и возвращается
+    /// в один день, и обратная дорога «в то же время» совпала бы
+    /// с выездом — два одинаковых списка подряд.
+    private var обратныйВыезд: Date? {
+        guard trip.dayCount() > 1, trip.dayNumber(on: now) == trip.dayCount() else { return nil }
+        return Calendar.current.date(minuteOfDay: trip.departureMinuteOfDay, on: trip.endDate)
     }
 
     /// Момент выезда: минута выезда на дне отъезда.
@@ -452,10 +477,13 @@ struct TripTodayBlock: View {
         Calendar.current.date(minuteOfDay: trip.departureMinuteOfDay, on: trip.startDate)
     }
 
-    private var departureWindows: some View {
+    /// Окна перед дорогой — туда или обратно. Одна форма на оба пути:
+    /// вторая копия списка отстала бы от первой молча.
+    private func окнаДороги(от выезд: Date, заголовок: LocalizedStringKey,
+                            оговорка: LocalizedStringKey? = nil) -> some View {
         VStack(alignment: .leading, spacing: Token.Space.s8) {
-            TGSectionHeader(title: "до выезда")
-            ForEach(trip.transport.windows(before: departure), id: \.0) { offset, at, title in
+            TGSectionHeader(title: заголовок, subtitle: оговорка)
+            ForEach(trip.transport.windows(before: выезд), id: \.0) { offset, at, title in
                 HStack(spacing: Token.Space.s12) {
                     Text(offset)
                         .textStyle(AppFont.numeric(13, weight: .medium))
@@ -467,7 +495,7 @@ struct TripTodayBlock: View {
                 }
                 .frame(minHeight: 38)
             }
-            дозыВДороге
+            дозыВДороге(выезд: выезд)
             TGExplainer(text: .готовая(trip.transport.windowsDisclaimer))
         }
     }
@@ -476,13 +504,13 @@ struct TripTodayBlock: View {
     /// («приложение сведёт их с приёмами и покажет, где конфликт»)
     /// и чего не делал никто до 29.10.2026. Правило — `TripPlan`.
     @ViewBuilder
-    private var дозыВДороге: some View {
+    private func дозыВДороге(выезд: Date) -> some View {
         if let dog, dog.isOnTreatment {
-            let окна = trip.transport.windows(before: departure).map(\.1)
+            let окна = trip.transport.windows(before: выезд).map(\.1)
             let дозы = TripPlan.дозыВДороге(
                 dog.medications.map { ($0.name, $0.times, $0.isPaused) },
-                выезд: departure, вДороге: max(trip.travelHours, 1),
-                началоОкон: окна.min() ?? departure)
+                выезд: выезд, вДороге: max(trip.travelHours, 1),
+                началоОкон: окна.min() ?? выезд)
             ForEach(дозы, id: \.когда) { доза in
                 TGIconRow(symbol: "pills",
                           title: .готовая(String(localized: "\(доза.препарат) в \(Fmt.clock(доза.когда))")),
