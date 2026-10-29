@@ -728,14 +728,15 @@ struct TodayScreen: View {
         now = новое
         guard смениласьДата else { return }
         if показывалиСегодня { показанныйДень = новое }
-        завестиДозыДня()
+        завестиДозыДня(на: новое)
     }
 
     /// Отметки приёма на день `now` — одна дорога на три повода:
-    /// появление экрана, смена собаки и смена даты.
-    private func завестиДозыДня() {
+    /// появление экрана, смена собаки и смена даты. День — аргументом:
+    /// из `перевестиЧасы` он приходит раньше, чем экран перерисуется.
+    private func завестиДозыДня(на день: Date? = nil) {
         guard let dog else { return }
-        DoseScheduler.ensureDoses(for: dog, on: now, context: context)
+        DoseScheduler.ensureDoses(for: dog, on: день ?? now, context: context)
     }
 
     // MARK: Шторки
