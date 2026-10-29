@@ -51822,7 +51822,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "No meal entries yet. Note a couple of meals and the app will see her routine on its own."
+            "value" : "No meal entries yet. Note a couple of meals and the app will see his routine on its own."
           }
         },
         "fr" : {
@@ -57234,7 +57234,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "How she asks"
+            "value" : "How he asks"
           }
         },
         "fr" : {
@@ -68259,7 +68259,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Tap “Needs to go out?” when she comes to the door. In a day her routine will appear here, and you'll see when she really wants out."
+            "value" : "Tap “Needs to go out?” when he comes to the door. In a day his routine will appear here, and you'll see when he really wants out."
           }
         },
         "fr" : {
@@ -133774,7 +133774,7 @@
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Довідник порожній. Клініки та лабораторії заводяться у «Здоров'ї» → «Клініки та лабораторії» — звідти вони й потрапляють у цей вибір."
+            "value" : "Довідник порожній. Клініки та лабораторії заводяться на екрані «Здоров'я» → «Клініки та лабораторії» — звідти вони й потрапляють у цей вибір."
           }
         }
       }
@@ -135376,7 +135376,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Une date désactivée signifie « non renseignée », et non « sans limite » : l'application ne fait pas la différence et n'inventera rien."
+            "value" : "Une date désactivée signifie « non renseigné », et non « sans limite » : l'application ne fait pas la différence et n'inventera rien."
           }
         },
         "kk" : {
