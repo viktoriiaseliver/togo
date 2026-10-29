@@ -460,25 +460,24 @@ struct TodayScreen: View {
         // Стул: тревога выше окна натощак — это здоровье, а не
         // расписание. «Не отмечали» тише и с кнопкой, которая снимает
         // вопрос за одно касание.
-        switch тишинаСтула {
-        case .норма:
-            EmptyView()
-        case .тревога(let с):
-            Button { route = .stool } label: {
-                TGBanner(tone: .alarm,
-                         title: .готовая(String(localized: "Стула нет с \(Fmt.shortDay(с))")),
-                         subtitle: "Выходы отмечаются, а стула нет третьи сутки. Это повод позвонить врачу — сразу, если не ест, рвёт или тужится. Был, но не записали — тапни и отметь.",
-                         systemImage: "leaf")
+        // Только на сегодня: плашка про «сейчас», а отметка из неё легла бы
+        // в показанный прошлый день. И только тому, кто вправе записывать:
+        // у наблюдателя отказ приходил уже после шторки (аудит 29.10.2026).
+        // Тексты сжаты до двух строк на 320 pt; «третьи сутки» снято —
+        // порог у собаки со своим ритмом длиннее трёх суток.
+        if экранДень.этоСегодня {
+            switch тишинаСтула {
+            case .норма:
+                EmptyView()
+            case .тревога(let с):
+                плашкаСтула(tone: .alarm,
+                            title: String(localized: "Стула нет с \(Fmt.shortDay(с))"),
+                            subtitle: "Выходы отмечаются, а стула нет. Не ест, рвёт или тужится — звони врачу сразу. Был — тапни и отметь.")
+            case .неОтмечали(let с):
+                плашкаСтула(tone: .waiting,
+                            title: String(localized: "Стул не отмечали с \(Fmt.shortDay(с))"),
+                            subtitle: "Был — тапни и отметь. Не было — присмотрись к нему.")
             }
-            .buttonStyle(.plain)
-        case .неОтмечали(let с):
-            Button { route = .stool } label: {
-                TGBanner(tone: .waiting,
-                         title: .готовая(String(localized: "Стул не отмечали с \(Fmt.shortDay(с))")),
-                         subtitle: "Был — тапни и отметь. Если правда не было, присмотрись: на третьи сутки без стула звонят врачу.",
-                         systemImage: "leaf")
-            }
-            .buttonStyle(.plain)
         }
 
         if let fasting = fastingWindow {
@@ -516,6 +515,17 @@ struct TodayScreen: View {
                     }
                 }
             }
+        }
+    }
+
+    @ViewBuilder
+    private func плашкаСтула(tone: TGTone, title: String, subtitle: LocalizedStringKey) -> some View {
+        let плашка = TGBanner(tone: tone, title: .готовая(title), subtitle: subtitle, systemImage: "leaf")
+        if appState.can(.logBasics) {
+            Button { route = .stool } label: { плашка }
+                .buttonStyle(.plain)
+        } else {
+            плашка
         }
     }
 
@@ -1401,7 +1411,9 @@ struct TodayScreen: View {
                          символ: отметка.symbol) {
                 appState.mark(отметка)
                 Haptics.tap()
-                appState.showUndo("Отмечено · \(отметка.title)")
+                // Подпись кнопки, а не имя отметки: нажали «Покакал» —
+                // тост «Отмечено · Стул» читался как другое действие.
+                appState.showUndo(String(localized: "Отмечено · \(отметка == .stool ? String(localized: "покакал") : String(localized: "пописал"))"))
             }
         case .episode:
             // # Закрыть эпизод со «Сегодня» — 29.10.2026
