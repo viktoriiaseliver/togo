@@ -460,8 +460,28 @@ struct FamilyScreen: View {
             ?? calendar.date(bySettingHour: 19, minute: 0, second: 0, of: .now) ?? .now
         let shift = Shift(person: member.name, from: start, to: end)
 
+        // Пункт несёт то, по чему узнаётся его запись: вид, связь
+        // и — у дозы — автора из самой отметки. Разбор у `ShiftReport.Пункт`.
         let plan = DayPlanBuilder.items(dog: dog, events: dog?.events ?? [], now: .now)
-            .map { (id: $0.id, title: $0.title, due: $0.time, isDone: $0.isDone) }
+            .map { пункт -> ShiftReport.Пункт in
+                switch пункт.kind {
+                case .meal:
+                    return ShiftReport.Пункт(id: пункт.id, title: пункт.title, due: пункт.time,
+                                             isDone: пункт.isDone, вид: .meal)
+                case .care:
+                    return ShiftReport.Пункт(id: пункт.id, title: пункт.title, due: пункт.time,
+                                             isDone: пункт.isDone, вид: .care,
+                                             связь: пункт.careTask?.id)
+                case .dose:
+                    let отметка = пункт.medication?.doses.first {
+                        $0.isGiven && calendar.isDate($0.scheduledAt, equalTo: пункт.time, toGranularity: .minute)
+                    }
+                    return ShiftReport.Пункт(id: пункт.id, title: пункт.title, due: пункт.time,
+                                             isDone: пункт.isDone, вид: .dose,
+                                             связь: пункт.medication?.id,
+                                             автор: отметка?.givenBy)
+                }
+            }
 
         return ShiftReport.build(shift: shift, plan: plan, events: dog?.events ?? [])
     }
