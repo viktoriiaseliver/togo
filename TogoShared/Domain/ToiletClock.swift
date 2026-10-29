@@ -104,7 +104,11 @@ nonisolated enum ToiletClock {
         let выходы = дня.filter {
             $0.kind == .outing && ($0.outcome == .stool || $0.outcome == .both)
         }.filter { выход in
-            !записи.contains { abs($0.date.timeIntervalSince(выход.date)) <= Diary.sameEmptyingWindow }
+            // Склеивается только с записью стула: кучка дома рядом
+            // с выходом — это другой стул, а не тот же дважды.
+            !записи.contains {
+                $0.kind == .stool && abs($0.date.timeIntervalSince(выход.date)) <= Diary.sameEmptyingWindow
+            }
         }
         return записи.count + выходы.count
     }
