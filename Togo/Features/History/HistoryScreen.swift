@@ -76,7 +76,10 @@ struct HistoryScreen: View {
                     EmptyStateCard(
                         subject: .history,
                         title: "История начнётся с первой записи",
-                        message: "Здесь появятся календарь с точкой на каждый день, графики по стулу и весу и список эпизодов. Заполнять заранее ничего не надо.",
+                        // «Графики по стулу и весу» сняты 29.10.2026:
+                        // у веса графика нет нарочно (`полосаВеса`),
+                        // и обещание читалось как пропавшая функция.
+                        message: "Здесь появятся календарь с отметкой на каждый день, полоса за 30 дней и эпизоды. Заполнять заранее ничего не надо.",
                         actionTitle: nil,
                         action: nil
                     )
@@ -229,9 +232,16 @@ struct HistoryScreen: View {
     }
 
     /// Дни, в которые взвешивали, — для точки в календаре.
+    ///
+    /// Без служебного: прогрев схемы (`CloudKitSchemaWarmup`) пишет
+    /// взвешивание датой 2001 года, и ленте его не показывает
+    /// `Diary.служебная`, а сюда оно до 29.10.2026 доезжало.
+    /// Порог тот же, не копия: `SharedDiaryOutgoing.раньшеПриложения`.
     private var дниВзвешиваний: Set<Date> {
         let calendar = Calendar.current
-        return Set((dog?.weights ?? []).map { calendar.startOfDay(for: $0.date) })
+        return Set((dog?.weights ?? [])
+            .filter { $0.date >= SharedDiaryOutgoing.раньшеПриложения }
+            .map { calendar.startOfDay(for: $0.date) })
     }
 
     private var полосаВеса: some View {
@@ -243,21 +253,33 @@ struct HistoryScreen: View {
                 Text("30 дней").textStyle(AppFont.caption).wraps()
             }
             if let последний = замеры.first {
+                // Последний замер — крупно и со своей датой, а в списке
+                // под ним его больше нет. До 29.10.2026 он стоял дважды:
+                // числом и первой строкой списка с тем же числом.
                 Text(Fmt.weight(последний.kg)).textStyle(AppFont.display)
-                ForEach(замеры.prefix(10)) { замер in
+                Text(Fmt.shortDay(последний.date)).textStyle(AppFont.caption)
+                ForEach(замеры.dropFirst().prefix(10)) { замер in
                     HStack {
                         Text(Fmt.shortDay(замер.date)).textStyle(AppFont.caption)
                         Spacer()
                         Text(Fmt.weight(замер.kg)).textStyle(AppFont.numeric(Token.FontSize.meta))
                     }
                 }
-            } else {
+            } else if appState.can(.seeMedical) {
                 TGExplainer(text: "За эти 30 дней взвешиваний нет. Записать вес — «Здоровье» → «Вес и симптомы».")
+            } else {
+                // Без `.seeMedical` вкладки «Здоровье» нет вовсе
+                // (`RootView`), и дорога в неё вела бы в пустоту.
+                TGExplainer(text: "За эти 30 дней взвешиваний нет.")
             }
             if let low = dog?.targetWeightLow, let high = dog?.targetWeightHigh {
-                Text("цель \(Fmt.weight(low)) — \(Fmt.weight(high)) · поставил врач").textStyle(AppFont.caption)
+                // «от врача», а не «поставил врач»: пол врача
+                // приложению неизвестен.
+                Text("цель \(Fmt.weight(low)) — \(Fmt.weight(high)) · от врача").textStyle(AppFont.caption)
             }
-            Text(filter.chartExplainer).textStyle(AppFont.caption).wraps()
+            if !замеры.isEmpty {
+                Text(filter.chartExplainer).textStyle(AppFont.caption).wraps()
+            }
         }
     }
 
@@ -363,17 +385,39 @@ struct HistoryScreen: View {
         let mine = daysOut.filter { $0.dog?.persistentModelID == dog?.persistentModelID }
         let trace = DayOutAnalyzer.trace(daysOut: mine, events: события,
                                          norm: dog?.dailyGrams ?? 0)
-        if !trace.findings.isEmpty {
+        if !trace.findings(пол: dog?.sex).isEmpty {
+            // # Род собаки — у `РодСобаки`, а не вписан (29.10.2026)
+            //
+            // Здесь стояло «где она была с тобой» и «она иногда вялая»
+            // при любом поле, а `часов` — числом без склонения. Подпись
+            // собрана из двух готовых строк: «по 3 дням» и «6 часов»
+            // склоняет каталог, фразу вокруг — род.
+            //
+            // «Приложение не ставит диагнозов» снято из пояснения:
+            // та же фраза стоит под полосой выше, на одном экране —
+            // дважды.
+            let дням = String(localized: "\(trace.longDays) дням")
+            let часов = String(localized: "\(Int(DayOut.longDayHours)) часов")
             TGCard {
                 Text("После долгих дней дома").textStyle(AppFont.cardTitle).wraps()
-                Text("по \(String(localized: "\(trace.longDays) дням")), где она была с тобой дольше \(Int(DayOut.longDayHours)) часов")
-                    .textStyle(AppFont.caption)
-                    .wraps()
-                ForEach(trace.findings, id: \.self) { line in
-                    Text("• " + line).textStyle(AppFont.caption).wraps()
+                Text(.готовая(РодСобаки.форма(
+                    dog,
+                    он: String(localized: "по \(дням), когда он был с тобой дольше \(часов)"),
+                    она: String(localized: "по \(дням), когда она была с тобой дольше \(часов)"),
+                    нейтрально: { String(localized: "по \(дням), когда собака была с тобой дольше \(часов)") }
+                )))
+                .textStyle(AppFont.caption)
+                .wraps()
+                ForEach(trace.findings(пол: dog?.sex), id: \.self) { line in
+                    Text(verbatim: "• " + line).textStyle(AppFont.caption).wraps()
                 }
                 TGDivider()
-                TGExplainer(text: "Это совпадение, а не причина: приложение не ставит диагнозов. Но показать эту строку врачу полезнее, чем сказать «она иногда вялая».")
+                TGExplainer(text: .готовая(РодСобаки.форма(
+                    dog,
+                    он: String(localized: "Это совпадение, а не причина. Но показать эту строку врачу полезнее, чем сказать «он иногда вялый»."),
+                    она: String(localized: "Это совпадение, а не причина. Но показать эту строку врачу полезнее, чем сказать «она иногда вялая»."),
+                    нейтрально: { String(localized: "Это совпадение, а не причина. Но показать эту строку врачу полезнее, чем сказать «собака иногда вялая».") }
+                )))
             }
         }
     }
@@ -391,27 +435,43 @@ struct HistoryScreen: View {
             .filter { $0.dog?.persistentModelID == dog?.persistentModelID && $0.endedAt != nil }
             .sorted { $0.startedAt > $1.startedAt }
             .prefix(10)
+        // Правка и удаление прошедшего дня — за `.editRecords`, как
+        // у записей ленты. До 29.10.2026 лист правки открывал любой,
+        // в том числе наблюдатель, и «Удалить этот день» у него
+        // срабатывало. Без права строки остаются — день виден, —
+        // но без стрелки: обещать дверь, которой нет, нельзя.
+        let можноПравить = appState.can(.editRecords)
         if !мои.isEmpty {
             TGCard {
                 TGSectionHeader(title: "дни с собакой")
                 ForEach(Array(мои)) { day in
-                    Button { правимыйДень = day } label: {
-                        HStack {
-                            Text(Fmt.shortDay(day.startedAt)).textStyle(AppFont.body)
-                            Spacer()
-                            Text(Fmt.gap(day.duration())).textStyle(AppFont.numeric(Token.FontSize.meta))
-                            Image(systemName: "chevron.right")
-                                .font(.system(size: Token.Size.iconSm))
-                                .foregroundStyle(Token.Ink.secondary)
-                                .accessibilityHidden(true)
+                    if можноПравить {
+                        Button { правимыйДень = day } label: {
+                            строкаДня(day, соСтрелкой: true)
                         }
-                        .frame(minHeight: Token.Size.tapTarget)
-                        .contentShape(Rectangle())
+                        .buttonStyle(.plain)
+                    } else {
+                        строкаДня(day, соСтрелкой: false)
                     }
-                    .buttonStyle(.plain)
                 }
             }
         }
+    }
+
+    private func строкаДня(_ day: DayOut, соСтрелкой: Bool) -> some View {
+        HStack {
+            Text(Fmt.shortDay(day.startedAt)).textStyle(AppFont.body)
+            Spacer()
+            Text(Fmt.gap(day.duration())).textStyle(AppFont.numeric(Token.FontSize.meta))
+            if соСтрелкой {
+                Image(systemName: "chevron.right")
+                    .font(.system(size: Token.Size.iconSm))
+                    .foregroundStyle(Token.Ink.secondary)
+                    .accessibilityHidden(true)
+            }
+        }
+        .frame(minHeight: Token.Size.tapTarget)
+        .contentShape(Rectangle())
     }
 
     // MARK: Календарь
@@ -761,8 +821,12 @@ nonisolated enum HistoryFilter: String, CaseIterable, Sendable {
         case .reactions: String(localized: "Сколько раз собака срывалась за день. Смотреть надо не на отдельный день, а на то, куда идёт линия за месяц.")
         // Было «Зелёная полоса — коридор, который назвал врач»: полосы
         // не было ни в одной редакции экрана, а коридор показывается
-        // строкой «цель … · поставил врач» (`HistoryScreen.полосаВеса`).
-        case .weight: String(localized: "Взвешивания из «Вес и симптомы». Сравнивать стоит с собой месяц назад, а не с чужой собакой.")
+        // строкой «цель … · от врача» (`HistoryScreen.полосаВеса`).
+        //
+        // Вторая фраза — «сравнивать стоит с собой месяц назад, а не
+        // с чужой собакой» — снята 29.10.2026: слово в слово её говорит
+        // «как часто гуляете» карточкой ниже, на том же экране.
+        case .weight: String(localized: "Взвешивания из «Вес и симптомы» — за 30 дней, новые сверху.")
         }
     }
 
