@@ -627,6 +627,7 @@ enum ReminderScheduler {
             сообщить(.очередьПолна(ожидает: план.ожидает), про: "dose")
         }
     }
+
     /// Снять напоминания по дозе: её отметили или отменили.
     static func cancelDose(_ dose: DoseRecord) {
         NotificationCenterService.cancel(ids: ["t-10", "t+30", "t+60"].map { doseID(dose, stage: $0) })
