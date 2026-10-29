@@ -279,10 +279,11 @@ struct VetSummaryPresentation: View {
             ForEach(delta, id: \.self) { line in
                 Text(line).textStyle(AppFont.body).wraps()
             }
-        }
-        .safeAreaInset(edge: .bottom) {
+        } bottom: {
+            // В слоте каркаса, а не своим `safeAreaInset`: тот стоял
+            // без подложки и с полями 18 со всех сторон — строки сводки
+            // просвечивали в зазоре над кнопкой при прокрутке.
             TGButton(title: "Закрыть", variant: .secondary) { dismiss() }
-                .padding(Token.Spacing.screenPadding)
         }
     }
 }
