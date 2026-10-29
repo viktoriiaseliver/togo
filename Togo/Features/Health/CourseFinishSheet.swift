@@ -100,20 +100,24 @@ struct CourseFinishSheet: View {
                 // (`TreatmentCourse.checkupDelay`, 29.10.2026). Прежде
                 // здесь всегда стояли «две недели», при назначенных
                 // в рецепте шести.
-                let дней = TreatmentCourse.checkupDelay(for: dog)
-                if дней == TreatmentCourse.checkupDelayDays {
-                    TGIconRow(symbol: "stethoscope",
-                              title: "Контрольный приём",
-                              detail: "Врач обычно смотрит результат через две недели.")
-                    TGButton(title: "Напомнить через две недели",
-                             variant: .secondary, size: .medium) {
-                        назначитьКонтроль(через: дней)
-                    }
-                } else {
+                //
+                // Источник — по тому, ОТКУДА число, а не по его величине
+                // (29.10.2026): назначенные врачом ровно 14 дней прежде
+                // подписывались «врач обычно смотрит через две недели».
+                if let дней = TreatmentCourse.checkupDelayFromPrescription(for: dog) {
                     TGIconRow(symbol: "stethoscope",
                               title: "Контрольный приём",
                               detail: "Срок контроля взят из назначения врача.")
                     TGButton(title: "Напомнить через \(Fmt.days(дней))",
+                             variant: .secondary, size: .medium) {
+                        назначитьКонтроль(через: дней)
+                    }
+                } else {
+                    let дней = TreatmentCourse.checkupDelayDays
+                    TGIconRow(symbol: "stethoscope",
+                              title: "Контрольный приём",
+                              detail: "Врач обычно смотрит результат через две недели.")
+                    TGButton(title: "Напомнить через две недели",
                              variant: .secondary, size: .medium) {
                         назначитьКонтроль(через: дней)
                     }

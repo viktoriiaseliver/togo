@@ -137,16 +137,29 @@ nonisolated enum TreatmentCourse {
     @MainActor
     static func checkupDelay(for dog: Dog, now: Date = Date(),
                              calendar: Calendar = .current) -> Int {
+        checkupDelayFromPrescription(for: dog, now: now, calendar: calendar) ?? checkupDelayDays
+    }
+
+    /// Срок контроля ИЗ НАЗНАЧЕНИЯ — или `nil`, если назначение его
+    /// не даёт (нет номера, нет срока, окно уже открылось).
+    ///
+    /// Отдельно от `checkupDelay` с 29.10.2026: экран прощания говорил
+    /// «срок взят из назначения» по признаку `дней != 14`, то есть
+    /// назначенные врачом ровно две недели подписывал как «врач обычно
+    /// смотрит через две недели» — источником приложения, а не врача.
+    @MainActor
+    static func checkupDelayFromPrescription(for dog: Dog, now: Date = Date(),
+                                             calendar: Calendar = .current) -> Int? {
         let живые = activeMedications(dog)
         let схемы = живые.isEmpty ? отменённыеКурсом(dog) : живые
         let номера = Set(схемы.compactMap { $0.prescriptionNumber.flatMap(Fmt.notBlank) })
-        guard !номера.isEmpty else { return checkupDelayDays }
+        guard !номера.isEmpty else { return nil }
         let назначение = dog.prescriptions
             .filter { Fmt.notBlank($0.number).map(номера.contains) == true && $0.prescribedControl != nil }
             .max { $0.date < $1.date }
         guard let назначение, let срок = назначение.prescribedControl,
               let окно = ControlWindow.window(prescribedAt: назначение.date, срок, calendar: calendar),
-              окно.opens > now else { return checkupDelayDays }
+              окно.opens > now else { return nil }
         return max(1, суток(от: now, до: окно.opens, календарь: calendar))
     }
 

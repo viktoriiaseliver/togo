@@ -147,6 +147,29 @@ struct TreatmentCourseTests {
         #expect((41...43).contains(дней), "ждали около шести недель, получили \(дней) дней")
     }
 
+    /// Источник срока — по происхождению, а не по величине (29.10.2026):
+    /// назначенные врачом ровно две недели экран прощания прежде
+    /// подписывал «врач обычно смотрит через две недели».
+    @Test("Срок из назначения опознаётся и тогда, когда он равен умолчанию")
+    func checkupSourceIsNotItsValue() throws {
+        let (context, dog, medication) = try setup()
+        let сейчас = Date()
+        #expect(TreatmentCourse.checkupDelayFromPrescription(for: dog, now: сейчас) == nil,
+                "без назначения источника нет — экран говорит про умолчание")
+
+        medication.prescriptionNumber = "2026/0418"
+        let рецепт = Prescription(number: "2026/0418", date: сейчас, medicationName: "Апоквел")
+        рецепт.controlFromWeeks = 2
+        рецепт.controlToWeeks = 3
+        рецепт.dog = dog
+        context.insert(рецепт)
+        try context.save()
+
+        let изНазначения = TreatmentCourse.checkupDelayFromPrescription(for: dog, now: сейчас)
+        #expect(изНазначения != nil, "срок врача потерян как источник")
+        #expect((13...15).contains(изНазначения ?? 0), "ждали около двух недель, получили \(String(describing: изНазначения))")
+    }
+
     @Test("Перед подтверждением названы препараты, которые уйдут")
     func farewellNamesMedications() throws {
         let (_, dog, _) = try setup()
