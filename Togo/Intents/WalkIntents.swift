@@ -65,7 +65,7 @@ enum WalkControl {
             }
             ActiveSessionStore.save(nil)
             let minutes = Int(session.duration(at: now)) / 60
-            return "Записала · выход \(String(localized: "\(minutes) минут"))"
+            return String(localized: "Записала · выход \(String(localized: "\(minutes) минут"))")
         }
         guard WalkRecorder.record(session, dog: dog,
                                   author: AppState.storedUserName, context: context) != nil else {
@@ -81,7 +81,7 @@ enum WalkControl {
 
         let minutes = Int(session.duration(at: now)) / 60
         let tail = session.marks.isEmpty ? "" : " · \(session.tally)"
-        return "Записала · прогулка \(String(localized: "\(minutes) минут"))\(tail)"
+        return String(localized: "Записала · прогулка \(String(localized: "\(minutes) минут"))\(tail)")
     }
 }
 
