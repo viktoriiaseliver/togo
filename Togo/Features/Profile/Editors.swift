@@ -1249,7 +1249,16 @@ struct MedicationEditorSheet: View {
                         }
                     }
                     if !контрольНедели.isEmpty {
-                        TGExplainer(text: .готовая(String(localized: "Каждая станет делом в «Прививках» на свой день: \(Self.даты(контрольНедели, от: началоСхемы)). Напомнит утренней сводкой и встанет в план дня.")))
+                        let даты = Self.даты(контрольНедели, от: началоСхемы)
+                        let прошли = Self.прошедших(контрольНедели, от: началоСхемы)
+                        if !даты.isEmpty {
+                            TGExplainer(text: .готовая(String(localized: "Каждая станет делом в «Прививках» на свой день: \(даты). Напомнит утренней сводкой и встанет в план дня.")))
+                        }
+                        if прошли > 0 {
+                            // Начало схемы в прошлом: часть недель уже позади,
+                            // и задним числом их не заводим (29.10.2026).
+                            TGExplainer(text: .готовая(String(localized: "Прошедшие недели не заводятся: \(прошли) из \(контрольНедели.count) уже позади.")))
+                        }
                     }
                 }
 
@@ -1353,8 +1362,15 @@ struct MedicationEditorSheet: View {
                 // по лечению, которого больше нет. Разбор —
                 // `Medication.deletedAt`.
                 if let medication {
-                    let откат = ОбщееУдаление.удалить(medication)
-                    guard context.persist(otherwise: откат) else {
+                    let момент = Date()
+                    let откат = ОбщееУдаление.удалить(medication, когда: момент)
+                    // Удалённая схема уносит свои будущие анализы крови
+                    // (`КонтрольКрови`); откат возвращает и их.
+                    let анализы = КонтрольКрови.снять(для: medication, в: момент)
+                    guard context.persist(otherwise: {
+                        откат()
+                        анализы.forEach { $0.deletedAt = nil }
+                    }) else {
                         Haptics.warning()
                         appState.showFailure("Не удалилось · нажми ещё раз")
                         return
@@ -1644,7 +1660,16 @@ struct MedicationEditorSheet: View {
     static func даты(_ недели: Set<Int>, от начало: Date) -> String {
         недели.sorted().compactMap {
             Calendar.current.date(byAdding: .weekOfYear, value: $0, to: начало)
-        }.map(Fmt.shortDay).joined(separator: ", ")
+        }
+        .filter { !КонтрольКрови.прошла($0, now: Date()) }
+        .map(Fmt.shortDay).joined(separator: ", ")
+    }
+
+    /// Сколько выбранных недель уже прошло — им дел не будет.
+    static func прошедших(_ недели: Set<Int>, от начало: Date) -> Int {
+        недели.compactMap { Calendar.current.date(byAdding: .weekOfYear, value: $0, to: начало) }
+            .filter { КонтрольКрови.прошла($0, now: Date()) }
+            .count
     }
 
     /// Завести по делу ухода на каждую выбранную неделю.
@@ -1663,7 +1688,11 @@ struct MedicationEditorSheet: View {
         var заведённые: [CareTask] = []
         for неделя in контрольНедели.sorted() {
             guard let день = календарь.date(byAdding: .weekOfYear, value: неделя, to: начало) else { continue }
-            let заголовок = String(localized: "Анализ крови · \(неделя) нед от начала")
+            // Прошедшая неделя не заводится: схема, начатая полтора месяца
+            // назад, получала «просроченные» анализы в первый же день
+            // (аудит 29.10.2026). Подсказка под чипами говорит об этом.
+            if КонтрольКрови.прошла(день, now: Date()) { continue }
+            let заголовок = КонтрольКрови.заголовок(недели: неделя)
             let уже = собака.careTasks.contains {
                 $0.title == заголовок && $0.scheduledDate.map { календарь.isDate($0, inSameDayAs: день) } == true
             }
