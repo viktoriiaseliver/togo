@@ -162,8 +162,12 @@ struct VetSummaryScreen: View {
                 }
             }
             if showsNotes {
+                // Целыми сутками, как вся сводка выше (29.10.2026): с голыми
+                // `from`/`to` заметки утра первого дня и вечера последнего
+                // выпадали, хотя период на экране стоял целым.
+                let период = self.период
                 let notes = Diary.active(dog?.events ?? [])
-                    .filter { $0.kind == .note && $0.date >= from && $0.date <= to }
+                    .filter { $0.kind == .note && $0.date >= период.from && $0.date <= период.to }
                 if notes.isEmpty {
                     TGExplainer(text: "Заметок за период нет.")
                 } else {
@@ -192,7 +196,7 @@ struct VetSummaryScreen: View {
             ShareLink(
                 item: CSVFile(name: "togo-svodka.csv",
                               text: Exporter.csv(events: Diary.active(dog?.events ?? [])
-                                  .filter { $0.date >= from && $0.date <= to })),
+                                  .filter { $0.date >= период.from && $0.date <= период.to })),
                 preview: SharePreview("Сводка Togo · CSV")
             ) {
                 TGListRow(title: "Выгрузить CSV", value: "без подписки",

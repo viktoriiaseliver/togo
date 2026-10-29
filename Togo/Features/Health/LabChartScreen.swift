@@ -54,12 +54,31 @@ struct LabChartScreen: View {
     @Query private var медикаменты: [Medication]
 
     @State private var показатель: String?
+
+    /// `начальныйПоказатель` — с какого показателя открыться
+    /// (29.10.2026): карточка показателя на «Здоровье» ведёт сразу
+    /// на свой график, а не на последний сданный. Без него — как
+    /// раньше, первый из `доступныеПоказатели`.
+    init(dog: Dog?, начальныйПоказатель: String? = nil) {
+        self.dog = dog
+        _показатель = State(initialValue: начальныйПоказатель)
+    }
     @State private var период: Период = .всё
     @State private var выбраннаяТочка: Точка?
 
     enum Период: String, CaseIterable, Identifiable {
         case полгода = "6 мес", год = "год", всё = "всё"
         var id: String { rawValue }
+        /// Подпись — ключом каталога, а не `rawValue` дословно
+        /// (29.10.2026): `Text(verbatim:)` показывал «6 мес / год / всё»
+        /// по-русски на всех языках, хотя ключи переведены.
+        var подпись: LocalizedStringKey {
+            switch self {
+            case .полгода: "6 мес"
+            case .год: "год"
+            case .всё: "всё"
+            }
+        }
         var месяцев: Int? {
             switch self {
             case .полгода: 6
@@ -86,10 +105,16 @@ struct LabChartScreen: View {
     /// Показатели, у которых есть хотя бы одно ЧИСЛО. Текстовые
     /// результаты (бактериология) в график не идут — им нечего рисовать,
     /// и это не пропуск, а природа величины.
-    private var доступныеПоказатели: [String] {
+    private var доступныеПоказатели: [String] { Self.показатели(всеАнализы) }
+
+    /// Тот же список для «Здоровья» — один источник, а не копия:
+    /// кандидаты в карточки показателей (`ПоказателиНаЗдоровье`)
+    /// обязаны совпадать с тем, что умеет рисовать этот экран.
+    /// Свежие первыми; имя — без пробелов по краям.
+    static func показатели(_ анализы: [LabResult]) -> [String] {
         var видели = Set<String>()
         var порядок: [String] = []
-        for анализ in всеАнализы.sorted(by: { $0.sampledOn > $1.sampledOn }) {
+        for анализ in анализы.sorted(by: { $0.sampledOn > $1.sampledOn }) {
             guard анализ.value != nil else { continue }
             let имя = анализ.indicator.trimmingCharacters(in: .whitespaces)
             guard !имя.isEmpty, !видели.contains(имя) else { continue }
@@ -99,7 +124,14 @@ struct LabChartScreen: View {
         return порядок
     }
 
-    private var выбранный: String? { показатель ?? доступныеПоказатели.first }
+    /// Выбранный — только из тех, что есть: начальный показатель
+    /// мог исчезнуть (строку удалили на другом телефоне), и тогда
+    /// экран открывается на первом, а не на пустом графике.
+    private var выбранный: String? {
+        let есть = доступныеПоказатели
+        if let показатель, есть.contains(показатель) { return показатель }
+        return есть.first
+    }
 
     /// Время забора относительно последней дозы — **из домена**.
     ///
@@ -303,7 +335,7 @@ struct LabChartScreen: View {
                 TGDivider()
             }
             Picker("Период", selection: $период) {
-                ForEach(Период.allCases) { Text(verbatim: $0.rawValue).tag($0) }
+                ForEach(Период.allCases) { Text($0.подпись).tag($0) }
             }
             .pickerStyle(.segmented)
         }

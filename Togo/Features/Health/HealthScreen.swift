@@ -54,6 +54,10 @@ struct HealthScreen: View {
     /// `NavigationLink` внутри `Menu` срабатывает непредсказуемо
     /// (разбор у `HeaderMenu`).
     @State private var показатьНастройки = false
+    /// Какие показатели стоят карточками — выбор этого телефона
+    /// (`ПоказателиНаЗдоровье`). `nil` — не настраивали.
+    @State private var выборПоказателей: [String]?
+    @State private var настраиваемПоказатели = false
 
     private var dog: Dog? { appState.activeDog(from: dogs) }
 
@@ -81,8 +85,35 @@ struct HealthScreen: View {
     /// Удалять их нельзя: история лечения — то, что спрашивает врач
     /// первым («чем лечили раньше и чем кончилось»). Поэтому они
     /// не исчезают, а уходят в свёрнутый раздел ниже.
+    ///
+    /// # Порядок: идёт → на паузе → курс кончился (29.10.2026)
+    ///
+    /// До этой правки порядок был порядком `@Query`, то есть ничьим:
+    /// временная схема на паузе или антибиотик с прошедшим концом
+    /// курса вставали ПЕРВЫМИ, над тем, что собака пьёт сегодня.
+    /// Экран открывают, чтобы сверить дозу, — и первым читается
+    /// то, что давать не надо.
+    ///
+    /// Внутри группы — по имени: стабильно между перерисовками
+    /// и между двумя телефонами семьи.
     private var действующиеСхемы: [Medication] {
-        medications.filter { $0.cancelledAt == nil }
+        let сегодня = Calendar.current.startOfDay(for: Date())
+        return medications.filter { $0.cancelledAt == nil }
+            .sorted { левая, правая in
+                let л = Self.очередь(левая, сегодня: сегодня)
+                let п = Self.очередь(правая, сегодня: сегодня)
+                if л != п { return л < п }
+                return левая.name.localizedStandardCompare(правая.name) == .orderedAscending
+            }
+    }
+
+    /// 0 — идёт, 1 — на паузе, 2 — назначенный конец курса прошёл.
+    ///
+    /// Конец курса сравнивается с НАЧАЛОМ сегодняшнего дня: курс
+    /// «до 29.10» в сам день 29.10 ещё идёт.
+    static func очередь(_ схема: Medication, сегодня: Date) -> Int {
+        if let конец = схема.courseEnd, конец < сегодня { return 2 }
+        return схема.isPaused ? 1 : 0
     }
 
     /// История: отменённые схемы, новые сверху.
@@ -158,12 +189,31 @@ struct HealthScreen: View {
                     прошлыеСхемыРаздел(прошлые)
                 }
 
-                показательКарточка
+                показателиБлок
                 sectionsGrid
                 finishCourse
                 disclaimer
             }
             .usageScreen(.health)
+            // Выбор — у каждой собаки свой: смена активной собаки
+            // перечитывает его, а не тащит чужой.
+            .task(id: dog?.id) {
+                выборПоказателей = dog.flatMap { ПоказателиНаЗдоровье.прочитать(собака: $0.id) }
+            }
+            .sheet(isPresented: $настраиваемПоказатели) {
+                if let dog {
+                    let показатели = LabChartScreen.показатели(dog.labResults)
+                    let естьВес = !dog.weights.isEmpty
+                    НастройкаПоказателейSheet(
+                        кандидаты: ПоказателиНаЗдоровье.кандидаты(показатели: показатели, естьВес: естьВес),
+                        начальный: ПоказателиНаЗдоровье.карточки(выбор: выборПоказателей,
+                                                                 показатели: показатели, естьВес: естьВес),
+                        сохранить: { новый in
+                            ПоказателиНаЗдоровье.записать(новый, собака: dog.id)
+                            выборПоказателей = новый
+                        })
+                }
+            }
             .navigationDestination(isPresented: $показатьНастройки) {
                 SettingsScreen()
             }
@@ -344,9 +394,15 @@ struct HealthScreen: View {
                 // Дата начала — только названная (V8). Первую дозу журнала
                 // за начало здесь не выдаём: это догадка, а карточку
                 // читает врач.
-                if let начало = medication.startedAt {
-                    Text(.готовая(String(localized: "с \(Fmt.shortDay(начало))")))
+                //
+                // Конец курса — тем же рядом (29.10.2026): без него
+                // схема, курс которой кончился вчера, выглядела так же,
+                // как та, что идёт. Ключи оба уже в каталоге, склейка
+                // точкой — как у подписи прошлой схемы.
+                if let срок = срокСхемы(medication) {
+                    Text(.готовая(срок))
                         .textStyle(AppFont.caption.color(Token.Ink.secondary))
+                        .wraps()
                 }
                 if medication.isPaused {
                     Text("на паузе")
@@ -358,6 +414,19 @@ struct HealthScreen: View {
         }
         .buttonStyle(.plain)
         .disabled(!canEdit)
+    }
+
+    /// «с 01.10.2026 · до 30.10.2026». Обе половины — только названные:
+    /// ни начала из первой дозы журнала, ни конца «по умолчанию».
+    private func срокСхемы(_ medication: Medication) -> String? {
+        var части: [String] = []
+        if let начало = medication.startedAt {
+            части.append(String(localized: "с \(Fmt.shortDay(начало))"))
+        }
+        if let конец = medication.courseEnd {
+            части.append(String(localized: "до \(Fmt.shortDay(конец))"))
+        }
+        return части.isEmpty ? nil : части.joined(separator: " · ")
     }
 
     @ViewBuilder
@@ -518,8 +587,12 @@ struct HealthScreen: View {
 
     // MARK: Показатель
 
-    /// Карточка последнего показателя — кадр 11, «Т4 · протокол контроля»
+    /// Карточки показателей — кадр 11, «Т4 · протокол контроля»
     /// с нормой справа, и кадр 14, где тот же блок стоит крупно.
+    ///
+    /// **С 29.10.2026 их выбирает человек** — какие, сколько (до четырёх)
+    /// и в каком порядке (`ПоказателиНаЗдоровье`, шторка «Настроить»).
+    /// Не настраивал — одна карточка последнего сданного, как было.
     ///
     /// **Нормы приложение не придумывает.** `referenceLow` / `referenceHigh`
     /// приходят с бланка; нет их — строка про норму не печатается вовсе.
@@ -530,55 +603,125 @@ struct HealthScreen: View {
     /// Округление до одного знака писано для веса: `16,75 нмоль/л`
     /// как `16,8` — потеря данных в медицинском числе.
     @ViewBuilder
-    private var показательКарточка: some View {
-        if let dog, let последний = последнийПоказатель(dog) {
-            NavigationLink { LabChartScreen(dog: dog) } label: {
-                TGCard {
-                    HStack(alignment: .firstTextBaseline, spacing: Token.Space.s8) {
-                        Text(verbatim: Fmt.notBlank(последний.indicator)
-                             ?? String(localized: "показатель")).textStyle(AppFont.cardTitle).wraps()
-                        Spacer(minLength: Token.Space.s8)
-                        if let норма = нормаСтрокой(последний) {
-                            Text(verbatim: норма).textStyle(AppFont.caption).wraps()
+    private var показателиБлок: some View {
+        if let dog {
+            let показатели = LabChartScreen.показатели(dog.labResults)
+            let естьВес = !dog.weights.isEmpty
+            let кандидаты = ПоказателиНаЗдоровье.кандидаты(показатели: показатели, естьВес: естьВес)
+            let карточки = ПоказателиНаЗдоровье.карточки(выбор: выборПоказателей,
+                                                       показатели: показатели, естьВес: естьВес)
+            if карточки.isEmpty {
+                // Анализов с числом нет, а вес есть: карточек по умолчанию
+                // ноль (как было), но дорога к настройке остаётся —
+                // иначе поставить себе вес было бы неоткуда.
+                if !кандидаты.isEmpty {
+                    Button { настраиваемПоказатели = true } label: {
+                        TGCard {
+                            TGListRow(title: "Какие графики показывать", systemImage: "slider.horizontal.3")
                         }
                     }
-                    HStack(alignment: .firstTextBaseline, spacing: Token.Space.s8) {
-                        Text(verbatim: ЧислоСБланка.показать(последний.value ?? 0))
-                            .textStyle(TextStyleToken(size: КиноРазмеры.метрика,
-                                                      weight: Token.FontWeight.light,
-                                                      color: Token.Ink.link,
-                                                      monospacedDigits: true,
-                                                      relativeTo: .title2))
+                    .buttonStyle(.plain)
+                }
+            } else {
+                HStack(alignment: .center, spacing: Token.Space.s8) {
+                    TGSectionHeader(title: "показатели")
+                    Spacer(minLength: Token.Space.s8)
+                    if кандидаты.count > 1 {
+                        КиноЧип(подпись: "Настроить", значок: "slider.horizontal.3") {
+                            настраиваемПоказатели = true
+                        }
+                    }
+                }
+                ForEach(карточки, id: \.self) { имя in
+                    if имя == ПоказателиНаЗдоровье.вес {
+                        карточкаВеса(dog)
+                    } else if let последний = последнийПоказатель(dog, имя: имя) {
+                        карточкаПоказателя(dog, последний, имя: имя,
+                                           сПояснением: карточки.count == 1)
+                    }
+                }
+            }
+        }
+    }
+
+    private func карточкаПоказателя(_ dog: Dog, _ последний: LabResult, имя: String,
+                                    сПояснением: Bool) -> some View {
+        NavigationLink { LabChartScreen(dog: dog, начальныйПоказатель: имя) } label: {
+            TGCard {
+                HStack(alignment: .firstTextBaseline, spacing: Token.Space.s8) {
+                    Text(verbatim: имя).textStyle(AppFont.cardTitle).wraps()
+                    Spacer(minLength: Token.Space.s8)
+                    if let норма = нормаСтрокой(последний) {
+                        Text(verbatim: норма).textStyle(AppFont.caption).wraps()
+                    }
+                }
+                HStack(alignment: .firstTextBaseline, spacing: Token.Space.s8) {
+                    Text(verbatim: ЧислоСБланка.показать(последний.value ?? 0))
+                        .textStyle(стильМетрики)
+                        .wraps()
+                    if let единица = Fmt.notBlank(последний.unit) {
+                        Text(verbatim: единица)
+                            .textStyle(AppFont.bodyEmphasis.color(Token.Ink.link))
                             .wraps()
-                        if let единица = Fmt.notBlank(последний.unit) {
-                            Text(verbatim: единица)
-                                .textStyle(AppFont.bodyEmphasis.color(Token.Ink.link))
-                                .wraps()
-                        }
                     }
-                    КиноСтолбики(значения: рядПоказателя(dog, like: последний))
+                }
+                КиноСтолбики(значения: ПоказателиНаЗдоровье.доли(рядПоказателя(dog, имя: имя)))
+                // Пояснение — один раз на экран, а не под каждой
+                // карточкой: при четырёх карточках одна и та же фраза
+                // четырежды — шум, а не забота.
+                if сПояснением {
                     Text("Смотреть надо не на одно число, а на то, куда идёт ряд. Открой график.")
                         .textStyle(AppFont.caption)
                         .wraps()
                 }
             }
-            .buttonStyle(.plain)
         }
+        .buttonStyle(.plain)
     }
 
-    /// Последний анализ с ЧИСЛОМ. Предел прибора (`<0,1`) сюда
-    /// не попадает нарочно: его нельзя нарисовать столбиком, не превратив
-    /// «меньше, чем прибор различает» в число.
-    private func последнийПоказатель(_ dog: Dog) -> LabResult? {
+    /// Вес — кандидатом наравне с анализами. Число — `Fmt.weight`:
+    /// округление до знака разрешено ровно для веса (красная линия).
+    /// Ведёт на экран веса, где его и правят.
+    private func карточкаВеса(_ dog: Dog) -> some View {
+        NavigationLink { WeightScreen(dog: dog) } label: {
+            TGCard {
+                Text("Вес").textStyle(AppFont.cardTitle).wraps()
+                Text(verbatim: Fmt.weight(dog.weightKg))
+                    .textStyle(стильМетрики)
+                    .wraps()
+                КиноСтолбики(значения: ПоказателиНаЗдоровье.доли(
+                    dog.weights.sorted { $0.date < $1.date }
+                        .suffix(КиноРазмеры.днейВПолосе)
+                        .map(\.kg)))
+            }
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var стильМетрики: TextStyleToken {
+        TextStyleToken(size: КиноРазмеры.метрика,
+                       weight: Token.FontWeight.light,
+                       color: Token.Ink.link,
+                       monospacedDigits: true,
+                       relativeTo: .title2)
+    }
+
+    /// Последний анализ с ЧИСЛОМ по этому показателю. Предел прибора
+    /// (`<0,1`) сюда не попадает нарочно: его нельзя нарисовать
+    /// столбиком, не превратив «меньше, чем прибор различает» в число.
+    /// Имя сравнивается обрезанным — так его собирает
+    /// `LabChartScreen.показатели`.
+    private func последнийПоказатель(_ dog: Dog, имя: String) -> LabResult? {
         dog.labResults
-            .filter { $0.value != nil }
+            .filter { $0.value != nil && $0.indicator.trimmingCharacters(in: .whitespaces) == имя }
             .max { $0.sampledOn < $1.sampledOn }
     }
 
-    /// Ряд того же показателя по датам — для полосы столбиков.
-    private func рядПоказателя(_ dog: Dog, like образец: LabResult) -> [Double] {
+    /// Ряд того же показателя по датам — для полосы столбиков. Только
+    /// числа: пропусков и нулей вместо пределов прибора в нём нет.
+    private func рядПоказателя(_ dog: Dog, имя: String) -> [Double] {
         dog.labResults
-            .filter { $0.indicator == образец.indicator && $0.value != nil }
+            .filter { $0.value != nil && $0.indicator.trimmingCharacters(in: .whitespaces) == имя }
             .sorted { $0.sampledOn < $1.sampledOn }
             .suffix(КиноРазмеры.днейВПолосе)
             .compactMap(\.value)
@@ -817,9 +960,16 @@ struct ProtocolScreen: View {
     /// Различитель «ещё не делали» — `lastDone == nil`: у прививки
     /// и обработки он стоит всегда (их делали хоть раз), у контроля,
     /// назначенного вперёд, пуст. Так его и заводит карта.
+    ///
+    /// **Только медицинское и не «Контрольный приём» (29.10.2026).**
+    /// Прежний фильтр брал ЛЮБОЕ назначенное дело: груминг на субботу
+    /// или приём у врача после курса вставали в «когда сдавать»
+    /// со строкой «кровь около 13:30» — по ней поехали бы сдавать
+    /// кровь на стрижку.
     private var назначенныйКонтроль: CareTask? {
         dog?.careTasks
             .filter { $0.deletedAt == nil && $0.lastDone == nil }
+            .filter { $0.category == .medical && $0.title != TreatmentCourse.checkupTitle }
             .filter { ($0.scheduledDate ?? .distantPast) > Date() }
             .min { ($0.scheduledDate ?? .distantFuture) < ($1.scheduledDate ?? .distantFuture) }
     }
@@ -841,11 +991,19 @@ struct ProtocolScreen: View {
             if let dose = lastDose, let givenAt = dose.givenAt {
                 TGCard {
                     Text("T+\(Fmt.duration(now.timeIntervalSince(givenAt)))").textStyle(AppFont.display)
-                    Text("Доза дана в \(Fmt.clock(givenAt)) под наблюдением").textStyle(AppFont.caption)
+                    // «под наблюдением» отсюда снято 29.10.2026: отметка
+                    // дозы этого не говорит, а строку читает врач.
+                    // Утверждение, которого человек не делал, — та же
+                    // подстановка, что запрещена красной линией.
+                    Text("Доза дана в \(Fmt.clock(givenAt))").textStyle(AppFont.caption)
                 }
                 TGCard(spacing: 0) {
                     ProtocolRow(label: "T0", time: givenAt,
-                                title: "доза \(dog?.medications.first?.doseText ?? "")",
+                                // Доза ТОЙ схемы, чья отметка начала протокол.
+                                // До 29.10.2026 здесь стояла `medications.first` —
+                                // первая схема базы, то есть при двух препаратах
+                                // строка T0 называла дозу чужого лекарства.
+                                title: "доза \(dose.medication?.doseText ?? "")",
                                 detail: "отмечено с точностью до минуты", isDone: true)
                     TGDivider()
                     // ГАЛОЧКА ЧИТАЕТ ОТМЕТКУ ЧЕЛОВЕКА, А НЕ ЧАСЫ.
@@ -978,8 +1136,16 @@ struct ProtocolScreen: View {
     /// Выдуманный час забора в медицинской записи хуже отсутствующего:
     /// по нему поедут в клинику.
     private func строкаПлана(_ дата: Date) -> String {
-        let дней = Calendar.current.dateComponents([.day], from: Date(), to: дата).day ?? 0
-        var строка = String(localized: "\(Fmt.shortDay(дата)) · через \(дней) дней")
+        // Сутки — календарные, от начала дня к началу дня. Прежний
+        // счёт «от этой минуты» давал «через 0 дней» на завтрашний
+        // забор, если экран открыли вечером.
+        let дней = CalendarDay.daysBetween(Date(), дата)
+        var строка: String
+        switch дней {
+        case ...0: строка = [Fmt.shortDay(дата), String(localized: "сегодня")].joined(separator: " · ")
+        case 1: строка = [Fmt.shortDay(дата), String(localized: "завтра")].joined(separator: " · ")
+        default: строка = String(localized: "\(Fmt.shortDay(дата)) · через \(дней) дней")
+        }
         if let утро = утренняяДоза {
             let таблетка = Fmt.clock(minuteOfDay: утро)
             let кровь = Fmt.clock(minuteOfDay: утро + 4 * 60)
@@ -1450,8 +1616,12 @@ struct WeightScreen: View {
     /// Какую запись открыли на правку.
     @State private var правится: WeightEntry?
 
+    /// Тот же разбор, что у правки взвешивания (`WeightEntryEditorSheet`),
+    /// и то же «больше нуля». До 29.10.2026 здесь стоял голый `Double(…)`:
+    /// он принимал «0», «-4» и «inf», и ноль ложился текущим весом —
+    /// тем, от которого считают дозу.
     private var parsedWeight: Double? {
-        Double(newWeight.replacingOccurrences(of: ",", with: "."))
+        ЧислоСБланка.разобрать(newWeight).flatMap { $0 > 0 ? $0 : nil }
     }
 
     /// Записать взвешивание. Право — как у удаления, и по той же
