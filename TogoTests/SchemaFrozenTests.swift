@@ -31,25 +31,42 @@ struct SchemaFrozenTests {
         return Set(entity.properties.map(\.name))
     }
 
-    /// V8 = V7 плюс одно поле, `Medication.startedAt` (28.10.2026).
+    /// Две стадии подряд, и каждая добавляет своё.
     ///
-    /// Снимок V7 собран машиной из снимка V6 и `LogEvent.photo`; этот
-    /// тест — его приёмка на настоящей `Schema`, а не на разборе текста:
-    /// разойдись снимок с живыми классами в любом другом поле —
-    /// здесь появится лишняя разница, и `.lightweight` перестанет быть
-    /// правдой про эту стадию.
-    @Test("V8 отличается от V7 только датой начала схемы")
-    func восьмаяДобавляетДатуНачала() {
+    /// **Переписано 29.10.2026 при сведении двух линий.** Прежняя
+    /// редакция утверждала «V8 отличается от V7 только датой начала
+    /// схемы» — она пришла из облачной сессии, где `Medication.startedAt`
+    /// был восьмой формой. Но номер 8 к тому часу уже уехал людям
+    /// в сборке 284 с другим содержимым (поля документа), и дата начала
+    /// стала девятой. Разбор — в шапке `TogoSchemaV9`.
+    ///
+    /// Снимки собраны машиной из предыдущих; этот тест — их приёмка
+    /// на настоящей `Schema`, а не на разборе текста: разойдись снимок
+    /// с живыми классами в любом другом поле — здесь появится лишняя
+    /// разница, и `.lightweight` перестанет быть правдой про стадию.
+    @Test("V8 добавляет поля документа, V9 — дату начала схемы")
+    func стадииДобавляютСвоё() {
+        // V7 → V8: четыре поля формы, уехавшей в 284.
+        #expect(поля(TogoSchemaV8.self, "DogDocument")
+                    .subtracting(поля(TogoSchemaV7.self, "DogDocument"))
+                == ["occurredOn", "directionRaw", "clinic"])
+        #expect(поля(TogoSchemaV8.self, "Clinic")
+                    .subtracting(поля(TogoSchemaV7.self, "Clinic"))
+                == ["documentsStorage"])
+
+        // V8 → V9: одна дата начала схемы лечения.
+        #expect(поля(TogoSchemaV9.self, "Medication")
+                    .subtracting(поля(TogoSchemaV8.self, "Medication")) == ["startedAt"])
         #expect(поля(TogoSchemaV8.self, "Medication")
-                    .subtracting(поля(TogoSchemaV7.self, "Medication")) == ["startedAt"])
-        #expect(поля(TogoSchemaV7.self, "Medication")
-                    .subtracting(поля(TogoSchemaV8.self, "Medication")).isEmpty)
-        let прочие = Schema(versionedSchema: TogoSchemaV8.self).entities.map(\.name)
+                    .subtracting(поля(TogoSchemaV9.self, "Medication")).isEmpty)
+
+        // Прочие сущности между V8 и V9 не менялись ничем.
+        let прочие = Schema(versionedSchema: TogoSchemaV9.self).entities.map(\.name)
             .filter { $0 != "Medication" }
         #expect(прочие.count == 20)
         for сущность in прочие {
-            #expect(поля(TogoSchemaV7.self, сущность) == поля(TogoSchemaV8.self, сущность),
-                    "снимок V7 разошёлся с живыми классами в «\(сущность)»")
+            #expect(поля(TogoSchemaV8.self, сущность) == поля(TogoSchemaV9.self, сущность),
+                    "снимок V8 разошёлся с живыми классами в «\(сущность)»")
         }
     }
 

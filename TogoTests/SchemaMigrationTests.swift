@@ -1011,7 +1011,7 @@ struct SchemaMigrationTests {
 
     @Test("В плане перечислены все формы хранилища, что уехали из репозитория")
     func планПолон() {
-        #expect(TogoMigrationPlan.schemas.count == 8, """
+        #expect(TogoMigrationPlan.schemas.count == 9, """
             сборка 36 (V1), сборка 46 (V2), сборка 141 (V3), сборки
             191–271 (V4), сборки 273–277 (V5), сборка 279 (V6),
             сборки 280–282 (V7) и 284 (V8) — версию, которой в плане
