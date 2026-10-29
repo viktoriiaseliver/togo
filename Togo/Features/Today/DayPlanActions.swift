@@ -339,10 +339,14 @@ struct DayPlanActions {
     /// запаса и строкой в ленте. Плановая отметка остаётся на месте:
     /// у новой своё `scheduledAt`, и `устойчивыйID` у неё свой.
     ///
-    /// **Одна и та же минута запрещена нарочно.** `markGiven` ищет отметку
-    /// по минуте и на занятую отвечает «уже дали» — то есть вернул бы
-    /// ПЛАНОВУЮ дозу, а лента получила бы вторую строку без второй
-    /// отметки. Такую запись врач прочёл бы как две дозы при одной.
+    /// **Только что записанная доза запрещает вторую — и это два
+    /// механизма, а не один.** `markGiven` ищет отметку по МИНУТЕ
+    /// и на занятую отвечает «уже дали», то есть вернул бы ПЛАНОВУЮ дозу.
+    /// А строку в ленту `EventLog` пропускает через `DuplicateGuard`
+    /// (`window`, 90 секунд для дозы того же препарата) — и отбил бы её
+    /// уже ПОСЛЕ того, как отметка легла: доза в отметках есть, в ленте
+    /// нет. Поэтому оба условия проверяются здесь, до записи, и ответ
+    /// человеку один.
     func recordSeparateDose(like item: DayPlanItem, at момент: Date) {
         guard item.kind == .dose, let medication = item.medication else { return }
         guard appState.can(.giveDose) else {
@@ -350,12 +354,15 @@ struct DayPlanActions {
             return
         }
         let calendar = Calendar.current
-        let занято = medication.doses.contains {
-            $0.isGiven && calendar.isDate($0.scheduledAt, equalTo: момент, toGranularity: .minute)
+        let занято = medication.doses.contains { доза in
+            guard доза.isGiven else { return false }
+            if calendar.isDate(доза.scheduledAt, equalTo: момент, toGranularity: .minute) { return true }
+            guard let дана = доза.givenAt else { return false }
+            return abs(дана.timeIntervalSince(момент)) < DuplicateGuard.window
         }
         guard !занято else {
             Haptics.warning()
-            appState.showFailure(String(localized: "В эту минуту доза уже записана · попробуй через минуту"))
+            appState.showFailure(String(localized: "Доза записана только что · отдельную запиши через пару минут"))
             return
         }
         let отдельная = DayPlanItem(id: "separate-\(medication.id.uuidString)-\(Int(момент.timeIntervalSince1970))",
