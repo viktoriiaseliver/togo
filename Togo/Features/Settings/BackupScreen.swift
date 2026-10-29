@@ -87,7 +87,7 @@ struct BackupScreen: View {
                             isPresented: Binding(get: { pendingArchive != nil },
                                                  set: { if !$0 { pendingArchive = nil } }),
                             titleVisibility: .visible) {
-            ForEach(BackupService.Strategy.allCases, id: \.self) { option in
+            ForEach(доступныеСтратегии, id: \.self) { option in
                 Button(option.title, role: option == .replace ? .destructive : nil) {
                     restore(using: option)
                 }
@@ -213,6 +213,32 @@ struct BackupScreen: View {
 
     // MARK: Загрузка
 
+    /// Может ли этот человек «Заменить всё».
+    ///
+    /// # Почему право, и почему именно `manageFamily` (29.10.2026)
+    ///
+    /// «Заменить всё» стирает дневник целиком — собак, ленту, медкнижку
+    /// и **семью** (`FamilyMember` в перечне чистки `BackupService.restore`),
+    /// то есть заодно и выданные права. До этой правки пункт был в диалоге
+    /// у любого: гость общего дневника и выгульщик с одним `logBasics`
+    /// могли одним нажатием положить вместо дневника свой файл.
+    ///
+    /// Отдельного права «восстановление» нет, а заводить его значит
+    /// менять `Permission`, который едет в карточках семьи. Ближайшее
+    /// по смыслу — `manageFamily`: единственное право, которое
+    /// `isOwnerOnlyByDefault`, и оно же снимается потолком гостя
+    /// (`FamilyResolver.потолокГостя`). Его же спрашивают все остальные
+    /// действия над составом дневника (`FamilyScreen.canManage`).
+    /// Со-владелец его получает — и это верно: он распоряжается
+    /// дневником наравне.
+    ///
+    /// «Добавить недостающее» не закрыто: оно ничего не стирает.
+    private var можноЗаменить: Bool { appState.can(.manageFamily) }
+
+    private var доступныеСтратегии: [BackupService.Strategy] {
+        BackupService.Strategy.allCases.filter { $0 != .replace || можноЗаменить }
+    }
+
     private var importCard: some View {
         TGCard {
             TGSectionHeader(title: "восстановить из файла")
@@ -220,7 +246,11 @@ struct BackupScreen: View {
                      systemImage: "square.and.arrow.down") {
                 isImporting = true
             }
-            TGExplainer(text: "Приложение спросит, заменить всё или добавить недостающее. Тот же файл, загруженный дважды, ничего не задваивает — записи сверяются между собой.")
+            if можноЗаменить {
+                TGExplainer(text: "Приложение спросит, заменить всё или добавить недостающее. Тот же файл, загруженный дважды, ничего не задваивает — записи сверяются между собой.")
+            } else {
+                TGExplainer(text: "Из файла можно добавить недостающее. Заменить весь дневник файлом могут владелец и со-владелец.")
+            }
         }
     }
 
@@ -303,6 +333,14 @@ struct BackupScreen: View {
 
     private func restore(using strategy: BackupService.Strategy) {
         guard let pendingArchive else { return }
+        // Вторая проверка — в месте действия, а не только в списке
+        // пунктов: право могут снять, пока диалог открыт (карточка
+        // семьи приехала обменом).
+        guard strategy != .replace || можноЗаменить else {
+            self.pendingArchive = nil
+            appState.showFailure(String(localized: "Заменить весь дневник могут владелец и со-владелец"))
+            return
+        }
         do {
             let count = try BackupService.restore(pendingArchive, into: context, strategy: strategy)
             message = Message(
