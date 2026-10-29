@@ -319,8 +319,18 @@ nonisolated enum BackupService {
     enum Strategy: String, CaseIterable, Sendable {
         /// Стереть всё и положить содержимое файла. Переезд на новый телефон.
         case replace
-        /// Добавить, чего нет. Записи сверяются по идентификатору,
-        /// поэтому повторный импорт того же файла ничего не задваивает.
+        /// Добавить, чего нет.
+        ///
+        /// **Лента сверяется по идентификатору, остальные четырнадцать
+        /// коллекций — по естественным ключам.** `id` несёт один снимок
+        /// из пятнадцати (`EventSnapshot`); у прочих его нет нарочно —
+        /// «после восстановления это ДРУГАЯ запись в другом хранилище»
+        /// (`ArchiveParityTests`). Чем опознаётся «та же запись»
+        /// у каждого вида, перечислено у `attachRest`.
+        ///
+        /// Здесь стояло «записи сверяются по идентификатору»: про ленту
+        /// правда, про остальное — нет, и обещание `detail` («повторы
+        /// не задвоятся») держал один этот комментарий.
         case merge
 
         var title: String {
@@ -338,6 +348,47 @@ nonisolated enum BackupService {
         }
     }
 
+    /// Положить содержимое файла в хранилище и вернуть, сколько записей
+    /// в нём прибавилось.
+    ///
+    /// # Две стратегии и одно правило на двоих
+    ///
+    /// ```
+    /// replace  всё стереть и положить файл; опознавать нечего
+    /// merge    долить недостающее: собаки и участники сливаются
+    ///          по имени, лента — по `id`, остальное — по естественным
+    ///          ключам (перечень у `attachRest`)
+    /// ```
+    ///
+    /// При `merge` существующая собака получает: ленту, все четырнадцать
+    /// прочих коллекций и **пустые** поля профиля. Заполненное руками
+    /// не трогается — разбор у `дополнитьПрофиль`.
+    ///
+    /// # Чего `merge` НЕ приносит, и почему это решение
+    ///
+    /// **Эпизоды и навыки процедур** восстанавливаются только при
+    /// `replace`. Опознать «тот же эпизод» нечем: `id` в снимке у них
+    /// нет, связи с собакой нет тоже, а склейка по названию собрала бы
+    /// в одну группу всё безымянное —
+    ///
+    /// > **группировка по полю со значением по умолчанию собирает
+    /// > в одну группу всё, что это поле не заполнило.**
+    ///
+    /// Цена названа, а не обойдена: человек, доливающий файл, эпизодов
+    /// и навыков не получит. Цена обратного выбора больше — разные
+    /// эпизоды, склеенные в один, и разделить их потом нечем.
+    /// Перестанет быть верным, если в `EpisodeSnapshot`
+    /// и `ProcedureSkillSnapshot` появится устойчивый идентификатор.
+    ///
+    /// # Граница возвращаемого числа
+    ///
+    /// **Справочник клиник в счёт не входит** — цикл по
+    /// `archive.clinics` вставляет записи без `restored += 1`. Это
+    /// названо, а не починено: клиника не запись дневника, а строка
+    /// справочника, и человек, читающий «Добавлено новых записей»,
+    /// ищет глазами свои анализы и визиты. Понадобится считать и их —
+    /// менять придётся и подпись на экране, а она живёт в каталоге
+    /// строк на пяти языках.
     @MainActor
     @discardableResult
     static func restore(_ archive: BackupArchive, into context: ModelContext, strategy: Strategy) throws -> Int {
@@ -433,9 +484,43 @@ nonisolated enum BackupService {
             // > собирает в одну группу всё, что это поле не заполнило.**
             if strategy == .merge, let имя = Fmt.dogName(snapshot.name),
                existingDogNames.contains(имя) {
-                // Собака уже есть — доливаем только новые записи к ней.
+                // Собака уже есть — доливаем к ней всё, чего у неё нет.
+                //
+                // **Здесь стоял один `attachEvents`, и это был самый
+                // дорогой пропуск переноса.** Человек выбирал «Добавить
+                // недостающее», получал «Добавлено новых записей: N» —
+                // и получал ОДНУ ЛЕНТУ: профиль (чип, паспорт, врач,
+                // режим дня, лист ситтера), веса, дела ухода, схемы
+                // лечения, дозы, анализы, визиты, диагнозы, рецепты,
+                // документы, запасы, течки, выезды, обучение и поездки
+                // не приезжали вовсе. Отзыв владелицы дословно:
+                // «добавило в логи истории, а не туда куда надо».
+                //
+                // > **Ветка, которая делает часть обещанного и считает
+                // > сделанное, выглядит удачной.** Счётчик был прав про
+                // > ленту и молчал про остальные четырнадцать коллекций,
+                // > то есть отчитывался о том, что сделал, а не о том,
+                // > что обещал экран.
+                //
+                // **Эпизоды и навыки процедур сюда НЕ доливаются, и это
+                // решение, а не забывчивость.** Они восстанавливаются
+                // только при «заменить» (ниже), потому что опознать
+                // «тот же эпизод» нечем: `id` в снимке нет, связи
+                // с собакой у обоих нет тоже, а склейка по названию
+                // собрала бы в одну группу всё безымянное —
+                //
+                // > **группировка по полю со значением по умолчанию
+                // > собирает в одну группу всё, что это поле
+                // > не заполнило.**
+                //
+                // Цена записана прямо: человек, доливающий файл,
+                // эпизодов и навыков не получит. Цена обратного выбора
+                // больше — разные эпизоды, склеенные в один, и разделить
+                // их потом нечем.
                 if let dog = try context.fetch(FetchDescriptor<Dog>()).first(where: { $0.name == имя }) {
+                    дополнитьПрофиль(snapshot, у: dog)
                     restored += attachEvents(snapshot.events, to: dog, skipping: existingEventIDs, context: context)
+                    restored += attachRest(snapshot, to: dog, clinics: клиники, context: context)
                 }
                 continue
             }
@@ -489,7 +574,13 @@ nonisolated enum BackupService {
                 BackgroundStore.shared.запомнитьФотоСобаки(фото)
             }
             restored += attachEvents(snapshot.events, to: dog, skipping: existingEventIDs, context: context)
-            attachRest(snapshot, to: dog, clinics: клиники, context: context)
+            // Счёт из медчасти идёт в `restored` и здесь: до 29.10.2026
+            // `attachRest` не возвращал ничего, и «Добавлено новых
+            // записей» считало одну ленту. У собаки, восстановленной
+            // вместе со 140 анализами и 40 визитами, экран печатал
+            // число отметок дневника — то есть умалчивал ровно о том,
+            // ради чего файл и собран.
+            restored += attachRest(snapshot, to: dog, clinics: клиники, context: context)
         }
 
         // Участники сливаются по имени — и тот же класс, что у собак:
@@ -644,6 +735,153 @@ nonisolated enum BackupService {
         return dog
     }
 
+    /// Долить профиль собаки, которая на телефоне уже есть:
+    /// **заполнить пустое, не тронуть заполненное**.
+    ///
+    /// «Добавить недостающее» буквально это и значит. Затирать
+    /// заполненное руками — не значит: номер чипа, врача и приметы
+    /// человек мог поправить ПОСЛЕ того, как снял файл, и тогда архив
+    /// здесь источник более старый, чем телефон. То же правило уже
+    /// записано у справочника клиник — «слияние перезаписало телефон
+    /// из архива поверх местного; правило доливки — не трогать то, что
+    /// уже есть».
+    ///
+    /// # Чего эта функция не трогает вовсе
+    ///
+    /// ```
+    /// weightKg · portionGrams · mealsPerDay · mealTimes   правят каждый день
+    /// isOnTreatment · forbiddenFoods · rewards            правят каждый день
+    /// markerKindRaw                                       правят каждый день
+    /// foodBrand                                           пишется из запаса корма
+    /// createdAt                                           факт о ЗАПИСИ, не о собаке
+    /// deletedAt                                           надгробие чужого телефона
+    /// ```
+    ///
+    /// Первые восемь — то, что человек меняет на экранах: вес меряют
+    /// на весах, порцию двигают в режиме питания, лакомства переписывают
+    /// после занятия. У них «пусто» и «ноль» неразличимы по типу, а
+    /// значит подстановка из вчерашнего файла молча откатила бы
+    /// сегодняшнюю правку. Пустыми они бывают у НОВОЙ собаки — а новая
+    /// идёт другой веткой, через `makeDog`, где снимок переносится
+    /// целиком.
+    ///
+    /// `deletedAt` отдельной строкой: привези его сюда — и файл
+    /// с телефона, где собаку удалили, похоронил бы живую карточку
+    /// вместе со всей историей. Надгробие ставит человек у себя,
+    /// а не файл за него.
+    @MainActor
+    private static func дополнитьПрофиль(_ snapshot: BackupArchive.DogSnapshot, у dog: Dog) {
+        // Девять необязательных строк: порода, три номера, врач
+        // и клиника с телефонами, приметы. Списком, а не девятью `if`
+        // подряд: одинаковое правило, записанное девять раз, расходится
+        // на десятом.
+        let строки: [(ReferenceWritableKeyPath<Dog, String?>, String?)] = [
+            (\.breed, snapshot.breed),
+            (\.chipNumber, snapshot.chipNumber),
+            (\.passportNumber, snapshot.passportNumber),
+            (\.insuranceNumber, snapshot.insuranceNumber),
+            (\.vetName, snapshot.vetName),
+            (\.vetPhone, snapshot.vetPhone),
+            (\.clinicName, snapshot.clinicName),
+            (\.clinicPhone, snapshot.clinicPhone),
+            (\.distinctiveMarks, snapshot.distinctiveMarks),
+        ]
+        for (поле, изФайла) in строки {
+            // Пустая строка — такая же пустота, как `nil`: человек,
+            // стерший поле, оставляет в нём `""`, и для него это то же
+            // самое «не заполнено».
+            guard Fmt.notBlank(dog[keyPath: поле] ?? "") == nil,
+                  let новое = Fmt.notBlank(изФайла ?? "") else { continue }
+            dog[keyPath: поле] = новое
+        }
+
+        // Пять строк листа ситтера — то же правило, другой тип:
+        // опциональности у них в модели нет, пусто значит `""`.
+        let листСиттера: [(ReferenceWritableKeyPath<Dog, String>, String?)] = [
+            (\.sitterFood, snapshot.sitterFood),
+            (\.sitterDose, snapshot.sitterDose),
+            (\.sitterWalks, snapshot.sitterWalks),
+            (\.sitterForbidden, snapshot.sitterForbidden),
+            (\.sitterEscalation, snapshot.sitterEscalation),
+        ]
+        for (поле, изФайла) in листСиттера {
+            guard Fmt.notBlank(dog[keyPath: поле]) == nil,
+                  let новое = Fmt.notBlank(изФайла ?? "") else { continue }
+            dog[keyPath: поле] = новое
+        }
+
+        if dog.birthDate == nil { dog.birthDate = snapshot.birthDate }
+        if dog.targetWeightLow == nil { dog.targetWeightLow = snapshot.targetWeightLow }
+        if dog.targetWeightHigh == nil { dog.targetWeightHigh = snapshot.targetWeightHigh }
+
+        // Норма еды — единственное настоящее число про количество
+        // (`Dog.dailyNormGrams`), и у собак, заведённых до той правки,
+        // оно пустое.
+        //
+        // `setDailyGrams` заодно пересчитывает `portionGrams`, и это
+        // не правка «поля, которое трогают каждый день»: модель говорит
+        // прямо, что правильное значение порции всегда `servingGrams`
+        // и пишет его именно `setDailyGrams`. Порция здесь зеркало,
+        // а оставленное старым зеркало — это та самая пара
+        // несходящихся чисел на карточке, из-за которой норма и стала
+        // единственной.
+        if dog.dailyNormGrams == nil, let норма = snapshot.dailyNormGrams, норма > 0 {
+            dog.setDailyGrams(норма)
+        }
+
+        // Пол: пусто — это `unknown`, а не отсутствие значения.
+        // От пола зависит календарь течки, то есть видит ли человек
+        // цикл вообще.
+        if (DogSex(rawValue: dog.sexRaw) ?? .unknown) == .unknown,
+           let изФайла = snapshot.sexRaw,
+           (DogSex(rawValue: изФайла) ?? .unknown) != .unknown {
+            dog.sexRaw = изФайла
+        }
+
+        // **У `Bool` пустоты нет, и это названная граница, а не выбор.**
+        // `isNeutered` в модели не опционален, значит «не кастрирован»
+        // и «не сказано» — одно состояние, и различить их нечем.
+        // Без вранья здесь можно ровно одно: поднять флаг, когда файл
+        // говорит «да», а на телефоне стоит умолчание. Снимать флаг
+        // по файлу нельзя — это было бы утверждение за человека,
+        // а `nil` в снимке (старый файл ключа не знает) значит «файл
+        // не в курсе», и тогда не трогаем ничего.
+        if dog.isNeutered == false, snapshot.isNeutered == true {
+            dog.isNeutered = true
+        }
+
+        // Режим дня. Умолчания берутся у самой модели, а не копией
+        // числа: поменяй кто-нибудь подъём в `Dog`, и копия здесь стала
+        // бы молча считать непустое пустым.
+        //
+        // Граница названа: отличить «человек выбрал семь утра»
+        // от «никто не трогал» нечем — у часа подъёма нет пустого
+        // состояния, как и у `isNeutered`. Поэтому час из файла
+        // подставляется только там, где на телефоне стоит ровно
+        // умолчание.
+        let умолчание = Dog(name: "", weightKg: 0)
+        if dog.wakeMinuteOfDay == умолчание.wakeMinuteOfDay,
+           let изФайла = snapshot.wakeMinuteOfDay {
+            dog.wakeMinuteOfDay = изФайла
+        }
+        if dog.sleepMinuteOfDay == умолчание.sleepMinuteOfDay,
+           let изФайла = snapshot.sleepMinuteOfDay {
+            dog.sleepMinuteOfDay = изФайла
+        }
+
+        // Фото. Пусто — подложки нет вовсе, и тогда она едет из файла;
+        // непустое не трогаем, человек мог переснять.
+        //
+        // `BackgroundStore` здесь по той же причине, что в ветке новой
+        // собаки: он живёт в App Group, базу не читает, и байты ему
+        // отдают у точки записи. Без этой строки человек получил бы
+        // живое `Dog.photo` и чёрные вкладки.
+        if dog.photo == nil, let фото = snapshot.photo {
+            dog.photo = фото
+            BackgroundStore.shared.запомнитьФотоСобаки(фото)
+        }
+    }
+
     @MainActor
     private static func attachEvents(
         _ snapshots: [BackupArchive.EventSnapshot],
@@ -692,19 +930,263 @@ nonisolated enum BackupService {
         return count
     }
 
+    /// Естественный ключ: части, склеенные знаком, которого в тексте
+    /// не бывает.
+    ///
+    /// Разделитель — `U+001F` (unit separator), а не дефис и не точка:
+    /// печатный знак склеивает и РАЗНЫЕ пары («Когти-21» + «» и «Когти»
+    /// + «21» дают одну строку), а ключ, который иногда совпадает
+    /// у разных записей, — это молчаливый пропуск при доливке, то есть
+    /// потеря данных там, где человек просил их добавить.
+    private static func ключ(_ части: String...) -> String {
+        части.joined(separator: "\u{1F}")
+    }
+
+    /// Дата в ключе — **целыми секундами вниз**, а не сырым `Double`.
+    ///
+    /// Замер, а не осторожность: `JSONEncoder` с
+    /// `dateEncodingStrategy = .iso8601` печатает дату без долей секунды
+    /// и доли ОТБРАСЫВАЕТ — `1790000000.7` уезжает в файл как
+    /// `2026-09-21T14:13:20Z` и возвращается `1790000000.0`. Значит
+    /// сравнение сырых `Double` у записи из хранилища (её дату поставил
+    /// `Date()`, с долями) и у неё же из файла не совпадёт НИКОГДА,
+    /// и первое же «Добавить недостающее» поверх своего же дневника
+    /// завело бы второй экземпляр каждой записи.
+    ///
+    /// Вниз (`.rounded(.down)`), а не к ближайшему: округление
+    /// к ближайшему подняло бы `…000,7` до `…001`, а файл несёт
+    /// `…000` — ровно то расхождение, которое здесь и чинится.
+    ///
+    /// Пустая дата даёт пустую часть ключа: «не сказано» — тоже
+    /// значение, и две записи без даты мы не различаем ничем.
+    private static func секунды(_ дата: Date?) -> String {
+        guard let дата else { return "" }
+        return String(Int(дата.timeIntervalSince1970.rounded(.down)))
+    }
+
+    /// Вес в ключе — целыми граммами.
+    ///
+    /// По той же причине, что дата секундами: `4.1` после круга через
+    /// JSON сравнимо, а `4.1 * 3` — уже нет, и сравнивать килограммы
+    /// оператором `==` значит однажды не узнать своё же взвешивание.
+    private static func граммы(_ кг: Double) -> String {
+        String(Int((кг * 1000).rounded()))
+    }
+
+    /// Новая схема лечения из снимка.
+    ///
+    /// Вынесена из `attachRest` 29.10.2026, когда у той появилась
+    /// развилка «схема уже есть — доливаем в неё только дозы». Тело
+    /// не тронуто ни строкой: тридцать полей с разбором, почему каждое
+    /// едет, стоят того, чтобы их переносили целиком, а не набирали
+    /// заново.
     @MainActor
+    private static func makeMedication(
+        _ medicationSnapshot: BackupArchive.MedicationSnapshot
+    ) -> Medication {
+        let medication = Medication(name: medicationSnapshot.name,
+                                    doseText: medicationSnapshot.doseText,
+                                    times: medicationSnapshot.times,
+                                    fastingMinutes: medicationSnapshot.fastingMinutes)
+        medication.fastingBeforeMinutes = medicationSnapshot.fastingBeforeMinutes ?? 0
+        medication.isPaused = medicationSnapshot.isPaused
+        medication.prescriber = medicationSnapshot.prescriber
+        medication.cancelledAt = medicationSnapshot.cancelledAt
+        medication.cancelledNote = medicationSnapshot.cancelledNote
+        // Дата начала схемы. **Дыра, открывшаяся при сведении двух
+        // линий 29.10.2026, а не чья-то забывчивость:** поле завела
+        // облачная сессия (V9), а работа по доливке архива шла
+        // параллельно и вынесла создание схемы в эту функцию. Каждая
+        // правка была полной у себя, а вместе они дали восстановление,
+        // которое теряло дату начала курса.
+        //
+        // > **Две полные половины дают неполное целое, если их не свести
+        // > замером.** Поймано сверкой `makeMedication` с полями
+        // > снимка, а не прогоном: тест на это нашёлся бы, только если
+        // > кто-то сравнивал список полей, — и такой сторож есть
+        // > (`ArchiveParityTests`), поэтому дыра прожила минуты.
+        //
+        // Старый архив без даты её не стирает: `?? medication.startedAt`
+        // — та же идиома, что у единицы дозы ниже.
+        medication.startedAt = medicationSnapshot.startedAt ?? medication.startedAt
+        // Единица дозы — первая из тринадцати: без неё «0,5»
+        // не значит ничего, а ошибка здесь не путаница в дневнике,
+        // а передозировка.
+        medication.unitRaw = medicationSnapshot.unitRaw ?? medication.unitRaw
+        // Сила единицы — то, от чего считается доза. Про единицу
+        // строкой выше подумали отдельно, про массу нет, и она
+        // не ехала вовсе: `Backup` 0 · `BackupArchive` 0. Сама
+        // запись при этом выглядела полной — `doseText` и единица
+        // ездили, — поэтому потерю не замечал никто.
+        //
+        // **ПРАВЛЮ СВОЙ ЖЕ ДОВОД, он был неверен.** Здесь стояло:
+        // «`??` не косметика: `nil` из старого снимка не должен
+        // затирать массу, введённую человеком после восстановления».
+        // Такого сценария на этом пути НЕ БЫВАЕТ: `Medication(…)`
+        // строкой выше рождает запись заново (конструктор в файле
+        // один), `init` массы не ставит — значит слева всегда `nil`,
+        // и `?? medication.massPerUnitMcg` это `?? nil`.
+        //
+        // > Механизм безвреден, а объяснение рядом с ним неверно —
+        // > и это хуже, чем отсутствие объяснения: по нему чуть
+        // > не написали тест на поведение, которого не бывает.
+        // > Он прошёл бы ПУСТО, и защиту считали бы проверенной.
+        //
+        // **И ВТОРАЯ ПОПРАВКА, она сужает первую.** Я написал «верно
+        // для всех девяти» — слишком широко; замер `a5` и `23`:
+        // `??` подставляет **умолчание инициализатора**, и у соседей
+        // (`unitRaw`, `fastingBeforeMinutes`, `minutesAfterMeal`)
+        // умолчание НЕ `nil`, там приём осмыслен. Пуст он ровно там,
+        // где умолчание `nil`, — здесь.
+        //
+        // > **Приём перенесён с необязательного поля на
+        // > необязательное, у которого нет значения по умолчанию.**
+        // > Четыре соседние строки по виду одинаковы, и одна
+        // > не делает ничего.
+        //
+        // Третий замер `a5` говорил сильнее остальных: «`attachRest`
+        // зовётся из одного места и всегда на НОВОЙ собаке; при
+        // `.merge` на существующей собаке он не зовётся вовсе. То есть
+        // лекарства в существующую собаку не сливаются ни одним путём».
+        //
+        // > **Это было описание ДЕФЕКТА, прочитанное как описание
+        // > устройства.** Одна и та же строка служила доводом в пользу
+        // > `??` и называла потерю всей медчасти при «Добавить
+        // > недостающее» — и три недели читалась как первое.
+        //
+        // С 29.10.2026 ветка `.merge` зовёт `attachRest`, и лекарства
+        // в существующую собаку доливаются. Довод про `??` от этого
+        // не изменился: запись рождается заново здесь же, слева
+        // по-прежнему всегда `nil`.
+        //
+        // `??` оставлен: он идиома этой функции, и выламывать одну
+        // строку из четырёх одинаковых значит завести четвёртую
+        // форму там, где три работают. Чинится строка, не код.
+        //
+        // Настоящий непроверенный случай другой, и он за кругом:
+        // снимок БЕЗ массы (нынешние архивы Виктории и мамы) обязан
+        // дать `massPerUnitMcg == nil` и `dailyMassMcg == nil` —
+        // чтобы график честно не рисовал столбик, а не рисовал ноль.
+        medication.massPerUnitMcg = medicationSnapshot.massPerUnitMcg
+            ?? medication.massPerUnitMcg
+        medication.minutesAfterMeal = medicationSnapshot.minutesAfterMeal
+            ?? medication.minutesAfterMeal
+        // `dependsOnMeal` — вычисляемое (get-only): оно выводится
+        // из `minutesAfterMeal`, и восстанавливать его отдельно
+        // нечего. В снимок положено нарочно: для ветеринара это
+        // ответ на вопрос «до еды или после», и прочитать его
+        // из файла глазами важнее, чем вывести.
+        medication.doseSlotsData = medicationSnapshot.doseSlots
+            ?? medication.doseSlotsData
+        medication.courseEnd = medicationSnapshot.courseEnd
+        medication.expiry = medicationSnapshot.expiry
+        medication.openedAt = medicationSnapshot.openedAt
+        medication.shelfAfterOpenDays = medicationSnapshot.shelfAfterOpenDays
+            ?? medication.shelfAfterOpenDays
+        medication.remindBeforeExpiry = medicationSnapshot.remindBeforeExpiry
+            ?? medication.remindBeforeExpiry
+        medication.stockLeft = medicationSnapshot.stockLeft ?? medication.stockLeft
+        medication.stockTotal = medicationSnapshot.stockTotal ?? medication.stockTotal
+        medication.stockLeftAmount = medicationSnapshot.stockLeftAmount
+        medication.packAmount = medicationSnapshot.packAmount
+        medication.canGiveOutside = medicationSnapshot.canGiveOutside
+            ?? medication.canGiveOutside
+        medication.prescriptionNumber = medicationSnapshot.prescriptionNumber
+        return medication
+    }
+
+    /// Долить к собаке всё, кроме ленты, и вернуть, сколько записей
+    /// легло в хранилище.
+    ///
+    /// # Возврат — не удобство, а счётчик на экране
+    ///
+    /// До 29.10.2026 функция не возвращала ничего, и «Добавлено новых
+    /// записей: N» считало одну ленту. Собака, приехавшая со 140
+    /// анализами, давала число отметок дневника — строка не лгала
+    /// и **умалчивала ровно о том, ради чего файл собран**. Тот же
+    /// класс, что был у подписи диалога перед «Заменить всё».
+    ///
+    /// # Пропуск — по ЕСТЕСТВЕННЫМ ключам, потому что `id` в снимке нет
+    ///
+    /// `id` несёт один снимок из пятнадцати — `EventSnapshot`, и по нему
+    /// работает дедупликация ленты (`attachEvents`). У остальных его нет
+    /// нарочно: «после восстановления это ДРУГАЯ запись в другом
+    /// хранилище» (`ArchiveParityTests`). Значит опознать «та же запись»
+    /// можно только тем, чем её опознаёт человек, — содержанием:
+    ///
+    /// ```
+    /// вес             дата + килограммы
+    /// дело ухода      название
+    /// схема лечения   название + номер назначения
+    /// доза            время приёма ВНУТРИ своей схемы
+    /// анализ          дата забора + показатель + номер отчёта
+    /// визит           дата + клиника
+    /// диагноз         формулировка + дата постановки
+    /// рецепт          номер + название лекарства
+    /// документ        название + дата на бумаге
+    /// запас корма     вид + марка + вес упаковки
+    /// течка           дата начала
+    /// выезд           дата начала
+    /// шаг обучения    команда + номер в лестнице
+    /// занятие         время начала
+    /// поездка         куда + день отъезда
+    /// ```
+    ///
+    /// Каждый ключ собирается строкой над своим циклом, а не общим
+    /// блоком в начале: правят их по одному, и ключ, уехавший от своего
+    /// цикла, расходится с ним молча.
+    ///
+    /// # Ключи берутся у САМОЙ СОБАКИ, а не параметром
+    ///
+    /// Так их невозможно передать чужими. У новой собаки коллекции
+    /// пусты, пропускать нечего — то есть «заменить» и «новая собака»
+    /// ведут себя ровно как прежде, и условия на стратегию здесь нет
+    /// ни одного.
+    ///
+    /// # Надгробие считается «запись уже есть»
+    ///
+    /// Ключи читаются с `*Storage`, а не с обёрток `dog.careTasks`
+    /// и соседей, отсеивающих надгробия. Иначе запись, удалённая
+    /// на этом телефоне и лежащая в файле живой, ОЖИЛА бы при доливке —
+    /// тот же класс, что чинили у документов 28.10.2026, только другой
+    /// дорогой. Человек убрал бумагу; долив файла её не возвращает.
+    ///
+    /// # Чего этот пропуск не делает
+    ///
+    /// Повторов ВНУТРИ одного файла он не схлопывает: ключи сняты
+    /// до вставки и по ходу не пополняются. Два одинаковых взвешивания
+    /// в файле — это два взвешивания в хранилище источника, и первый
+    /// долив воспроизводит оба. Второй долив того же файла не добавит
+    /// уже ничего: ключ в наборе есть.
+    @MainActor
+    @discardableResult
     private static func attachRest(
         _ snapshot: BackupArchive.DogSnapshot,
         to dog: Dog,
         clinics: [String: Clinic],
         context: ModelContext
-    ) {
-        for weight in snapshot.weights {
+    ) -> Int {
+        var добавлено = 0
+
+        // Вес — `дата + килограммы`. Два взвешивания в один день бывают
+        // (дома утром и у врача днём), поэтому одной даты мало; вес без
+        // даты — тем более не ключ.
+        let естьВеса = Set((dog.weightsStorage ?? [])
+            .map { ключ(секунды($0.date), граммы($0.kg)) })
+        for weight in snapshot.weights
+        where !естьВеса.contains(ключ(секунды(weight.date), граммы(weight.kg))) {
             let entry = WeightEntry(date: weight.date, kg: weight.kg)
             entry.dog = dog
             context.insert(entry)
+            добавлено += 1
         }
-        for care in snapshot.careTasks {
+        // Дело ухода — по НАЗВАНИЮ. Интервал, последняя дата и серия
+        // в ключ не входят нарочно: «Когти» каждые 21 день и «Когти»
+        // каждые 30 — это одно дело, которому поменяли срок. Войди срок
+        // в ключ, доливка завела бы второе «Когти», и человек получил бы
+        // два напоминания об одном.
+        let естьДела = Set((dog.careTasksStorage ?? []).map(\.title))
+        for care in snapshot.careTasks where !естьДела.contains(care.title) {
             let task = CareTask(title: care.title, detail: care.detail,
                                 intervalDays: care.intervalDays,
                                 category: CareCategory(rawValue: care.categoryRaw) ?? .grooming,
@@ -732,97 +1214,52 @@ nonisolated enum BackupService {
             }
             task.dog = dog
             context.insert(task)
+            добавлено += 1
+        }
+        // Схема лечения — `название + номер назначения`. Номер в ключе
+        // потому, что одно лекарство выписывают дважды разными курсами
+        // («Lévothyrox» по рецепту 2026/0417 и по 2026/0881 — две схемы
+        // с разными дозами), и без номера вторая молча не приехала бы.
+        // Пустой номер участвует в ключе пустым: две схемы без номера
+        // и с одним названием мы не различаем ничем, и доливка честно
+        // считает их одной.
+        var схемыПоКлючу: [String: Medication] = [:]
+        for схема in dog.medicationsStorage ?? [] {
+            схемыПоКлючу[ключ(схема.name, схема.prescriptionNumber ?? "")] = схема
         }
         for medicationSnapshot in snapshot.medications {
-            let medication = Medication(name: medicationSnapshot.name,
-                                        doseText: medicationSnapshot.doseText,
-                                        times: medicationSnapshot.times,
-                                        fastingMinutes: medicationSnapshot.fastingMinutes)
-            medication.fastingBeforeMinutes = medicationSnapshot.fastingBeforeMinutes ?? 0
-            medication.isPaused = medicationSnapshot.isPaused
-            medication.prescriber = medicationSnapshot.prescriber
-            medication.cancelledAt = medicationSnapshot.cancelledAt
-            medication.cancelledNote = medicationSnapshot.cancelledNote
-            // Старый архив без даты начала её не стирает — та же идиома,
-            // что у массы ниже.
-            medication.startedAt = medicationSnapshot.startedAt ?? medication.startedAt
-            // Единица дозы — первая из тринадцати: без неё «0,5»
-            // не значит ничего, а ошибка здесь не путаница в дневнике,
-            // а передозировка.
-            medication.unitRaw = medicationSnapshot.unitRaw ?? medication.unitRaw
-            // Сила единицы — то, от чего считается доза. Про единицу
-            // строкой выше подумали отдельно, про массу нет, и она
-            // не ехала вовсе: `Backup` 0 · `BackupArchive` 0. Сама
-            // запись при этом выглядела полной — `doseText` и единица
-            // ездили, — поэтому потерю не замечал никто.
+            let ключСхемы = ключ(medicationSnapshot.name,
+                                 medicationSnapshot.prescriptionNumber ?? "")
+            // Схемы ещё нет — заводим; есть — доливаем в неё одни дозы.
+            // Второе и есть то, ради чего развилка: пропустить схему
+            // целиком значило бы не привезти приёмы, которых на этом
+            // телефоне не было.
             //
-            // **ПРАВЛЮ СВОЙ ЖЕ ДОВОД, он был неверен.** Здесь стояло:
-            // «`??` не косметика: `nil` из старого снимка не должен
-            // затирать массу, введённую человеком после восстановления».
-            // Такого сценария на этом пути НЕ БЫВАЕТ: `Medication(…)`
-            // строкой выше рождает запись заново (конструктор в файле
-            // один), `init` массы не ставит — значит слева всегда `nil`,
-            // и `?? medication.massPerUnitMcg` это `?? nil`.
-            //
-            // > Механизм безвреден, а объяснение рядом с ним неверно —
-            // > и это хуже, чем отсутствие объяснения: по нему чуть
-            // > не написали тест на поведение, которого не бывает.
-            // > Он прошёл бы ПУСТО, и защиту считали бы проверенной.
-            //
-            // **И ВТОРАЯ ПОПРАВКА, она сужает первую.** Я написал «верно
-            // для всех девяти» — слишком широко; замер `a5` и `23`:
-            // `??` подставляет **умолчание инициализатора**, и у соседей
-            // (`unitRaw`, `fastingBeforeMinutes`, `minutesAfterMeal`)
-            // умолчание НЕ `nil`, там приём осмыслен. Пуст он ровно там,
-            // где умолчание `nil`, — здесь.
-            //
-            // > **Приём перенесён с необязательного поля на
-            // > необязательное, у которого нет значения по умолчанию.**
-            // > Четыре соседние строки по виду одинаковы, и одна
-            // > не делает ничего.
-            //
-            // Третий замер `a5`, он закрывает вопрос сильнее остальных:
-            // `attachRest` зовётся из одного места и всегда на НОВОЙ
-            // собаке; при `.merge` на существующей собаке он не зовётся
-            // вовсе. То есть лекарства в существующую собаку
-            // не сливаются ни одним путём.
-            //
-            // `??` оставлен: он идиома этой функции, и выламывать одну
-            // строку из четырёх одинаковых значит завести четвёртую
-            // форму там, где три работают. Чинится строка, не код.
-            //
-            // Настоящий непроверенный случай другой, и он за кругом:
-            // снимок БЕЗ массы (нынешние архивы Виктории и мамы) обязан
-            // дать `massPerUnitMcg == nil` и `dailyMassMcg == nil` —
-            // чтобы график честно не рисовал столбик, а не рисовал ноль.
-            medication.massPerUnitMcg = medicationSnapshot.massPerUnitMcg
-                ?? medication.massPerUnitMcg
-            medication.minutesAfterMeal = medicationSnapshot.minutesAfterMeal
-                ?? medication.minutesAfterMeal
-            // `dependsOnMeal` — вычисляемое (get-only): оно выводится
-            // из `minutesAfterMeal`, и восстанавливать его отдельно
-            // нечего. В снимок положено нарочно: для ветеринара это
-            // ответ на вопрос «до еды или после», и прочитать его
-            // из файла глазами важнее, чем вывести.
-            medication.doseSlotsData = medicationSnapshot.doseSlots
-                ?? medication.doseSlotsData
-            medication.courseEnd = medicationSnapshot.courseEnd
-            medication.expiry = medicationSnapshot.expiry
-            medication.openedAt = medicationSnapshot.openedAt
-            medication.shelfAfterOpenDays = medicationSnapshot.shelfAfterOpenDays
-                ?? medication.shelfAfterOpenDays
-            medication.remindBeforeExpiry = medicationSnapshot.remindBeforeExpiry
-                ?? medication.remindBeforeExpiry
-            medication.stockLeft = medicationSnapshot.stockLeft ?? medication.stockLeft
-            medication.stockTotal = medicationSnapshot.stockTotal ?? medication.stockTotal
-            medication.stockLeftAmount = medicationSnapshot.stockLeftAmount
-            medication.packAmount = medicationSnapshot.packAmount
-            medication.canGiveOutside = medicationSnapshot.canGiveOutside
-                ?? medication.canGiveOutside
-            medication.prescriptionNumber = medicationSnapshot.prescriptionNumber
-            medication.dog = dog
-            context.insert(medication)
-            for doseSnapshot in medicationSnapshot.doses {
+            // Заведённая здесь схема в набор НЕ дописывается, и это
+            // та же оговорка, что у остальных четырнадцати коллекций:
+            // набор отвечает про то, что лежало на телефоне ДО долива.
+            // Две одинаковые схемы в одном файле — это две схемы
+            // в хранилище источника, и схлопывать их за человека мы
+            // не беремся; повторный долив того же файла их всё равно
+            // не задвоит — ключ к тому времени в наборе есть.
+            let medication: Medication
+            if let существующая = схемыПоКлючу[ключСхемы] {
+                medication = существующая
+            } else {
+                medication = makeMedication(medicationSnapshot)
+                medication.dog = dog
+                context.insert(medication)
+                добавлено += 1
+            }
+            // Доза — время приёма ВНУТРИ своей схемы, а не глобально:
+            // в семь утра дают и левотироксин, и преднизолон, и это две
+            // разные дозы. Ключи снимаются у той схемы, в которую
+            // доливаем, — в том числе у только что заведённой, где их
+            // нет ни одного.
+            let естьДозы = Set((medication.dosesStorage ?? [])
+                .map { секунды($0.scheduledAt) })
+            for doseSnapshot in medicationSnapshot.doses
+            where !естьДозы.contains(секунды(doseSnapshot.scheduledAt)) {
                 // **`DoseRecord.устойчивыйID` здесь НЕ применяется, и это
                 // не недосмотр.** Он выводит id из `medication.id`,
                 // а `MedicationSnapshot` id схемы не несёт (см. ниже) —
@@ -859,9 +1296,18 @@ nonisolated enum BackupService {
                 dose.claimedAt = doseSnapshot.claimedAt
                 dose.medication = medication
                 context.insert(dose)
+                добавлено += 1
             }
         }
-        for stepSnapshot in snapshot.trainingSteps {
+        // Шаг обучения — `команда + номер в лестнице`. Команда одна
+        // («место»), а шагов у неё десяток, и отличает их порядок:
+        // место на кухне → место при госте → место в двух метрах.
+        // Расстояние и человек в ключ не идут: их правят, доводя тот же
+        // шаг, и войди они в ключ — правка завела бы дубль.
+        let естьШаги = Set((dog.trainingStepsStorage ?? [])
+            .map { ключ($0.cue, String($0.order)) })
+        for stepSnapshot in snapshot.trainingSteps
+        where !естьШаги.contains(ключ(stepSnapshot.cue, String(stepSnapshot.order))) {
             let step = TrainingStep(cue: stepSnapshot.cue, place: stepSnapshot.place,
                                     person: stepSnapshot.person,
                                     distanceMeters: stepSnapshot.distanceMeters,
@@ -870,8 +1316,15 @@ nonisolated enum BackupService {
             step.consecutiveGoodSessions = stepSnapshot.consecutiveGoodSessions
             step.dog = dog
             context.insert(step)
+            добавлено += 1
         }
-        for sessionSnapshot in snapshot.trainingSessions {
+        // Занятие — по ВРЕМЕНИ НАЧАЛА. Двух занятий, начатых в одну
+        // секунду, не бывает: таймер запускают руками. Команда и место
+        // различают занятия слабее, чем секунда, и в ключе не нужны.
+        let естьЗанятия = Set((dog.trainingSessionsStorage ?? [])
+            .map { секунды($0.startedAt) })
+        for sessionSnapshot in snapshot.trainingSessions
+        where !естьЗанятия.contains(секунды(sessionSnapshot.startedAt)) {
             let session = TrainingSession(cue: sessionSnapshot.cue, place: sessionSnapshot.place,
                                           person: sessionSnapshot.person,
                                           distanceMeters: sessionSnapshot.distanceMeters)
@@ -885,8 +1338,19 @@ nonisolated enum BackupService {
             session.countsTowardProgress = sessionSnapshot.countsTowardProgress
             session.dog = dog
             context.insert(session)
+            добавлено += 1
         }
-        for stockSnapshot in snapshot.stocks ?? [] {
+        // Запас корма — `вид + марка + вес упаковки`. Упаковка в ключе
+        // потому, что «Acana» мешком 3 кг и «Acana» паучем 100 г лежат
+        // в доме одновременно и расходуются по-разному. Остаток
+        // упаковок и дата пересчёта в ключ не идут: это и есть то, что
+        // меняется каждый день, — войди они в ключ, доливка заводила бы
+        // новый запас на каждое изменение остатка.
+        let естьЗапасы = Set((dog.stocksStorage ?? [])
+            .map { ключ($0.kindRaw, $0.brand, String($0.packGrams)) })
+        for stockSnapshot in snapshot.stocks ?? []
+        where !естьЗапасы.contains(ключ(stockSnapshot.kindRaw, stockSnapshot.brand,
+                                        String(stockSnapshot.packGrams))) {
             let stock = FoodStock(kind: FoodKind(rawValue: stockSnapshot.kindRaw) ?? .dry,
                                   brand: stockSnapshot.brand,
                                   packGrams: stockSnapshot.packGrams,
@@ -905,23 +1369,46 @@ nonisolated enum BackupService {
             stock.countedAt = stockSnapshot.countedAt ?? stock.countedAt
             stock.dog = dog
             context.insert(stock)
+            добавлено += 1
         }
-        for heatSnapshot in snapshot.heats ?? [] {
+        // Течка — по ДАТЕ НАЧАЛА. Двух течек, начавшихся в один день,
+        // не бывает, а конец и заметку человек дописывает потом — течка
+        // идёт две недели. Войди `endedAt` в ключ, и доливка завела бы
+        // вторую течку поверх той же самой, как только первую закрыли.
+        let естьТечки = Set((dog.heatsStorage ?? []).map { секунды($0.startedAt) })
+        for heatSnapshot in snapshot.heats ?? []
+        where !естьТечки.contains(секунды(heatSnapshot.startedAt)) {
             let heat = HeatRecord(startedAt: heatSnapshot.startedAt,
                                   endedAt: heatSnapshot.endedAt,
                                   note: heatSnapshot.note)
             heat.dog = dog
             context.insert(heat)
+            добавлено += 1
         }
-        for dayOutSnapshot in snapshot.daysOut ?? [] {
+        // Выезд — по ДАТЕ НАЧАЛА, и по той же причине, что течка:
+        // конец дописывают, когда вернулись, а `plannedHours` правят
+        // на ходу.
+        let естьВыезды = Set((dog.daysOutStorage ?? []).map { секунды($0.startedAt) })
+        for dayOutSnapshot in snapshot.daysOut ?? []
+        where !естьВыезды.contains(секунды(dayOutSnapshot.startedAt)) {
             let выезд = DayOut(startedAt: dayOutSnapshot.startedAt,
                                plannedHours: dayOutSnapshot.plannedHours)
             выезд.endedAt = dayOutSnapshot.endedAt
             выезд.note = dayOutSnapshot.note
             выезд.dog = dog
             context.insert(выезд)
+            добавлено += 1
         }
-        for documentSnapshot in snapshot.documents ?? [] {
+        // Документ — `название + дата НА БУМАГЕ`. Дата именно
+        // `occurredOn`, а не `addedAt`: один бланк, снятый дважды, —
+        // один документ, и ключ обязан это видеть. Пустая `occurredOn`
+        // участвует пустой: «дата не сказана» — тоже значение, и два
+        // паспорта без даты мы не различаем ничем.
+        let естьДокументы = Set((dog.documentsStorage ?? [])
+            .map { ключ($0.title, секунды($0.occurredOn)) })
+        for documentSnapshot in snapshot.documents ?? []
+        where !естьДокументы.contains(ключ(documentSnapshot.title,
+                                           секунды(documentSnapshot.occurredOn))) {
             let document = DogDocument(title: documentSnapshot.title,
                                        image: documentSnapshot.image,
                                        note: documentSnapshot.note)
@@ -955,11 +1442,20 @@ nonisolated enum BackupService {
             document.deletedAt = documentSnapshot.deletedAt
             document.dog = dog
             context.insert(document)
+            добавлено += 1
         }
         // Медкнижка — 07.10.2026. Клиника ищется по имени в уже
         // вставленном справочнике, как у дел ухода; промах оставляет
         // связь пустой и клиники не заводит.
-        for снимок in snapshot.labResults ?? [] {
+        // Анализ — `дата забора + показатель + номер отчёта`. Все три:
+        // в одном отчёте до двадцати двух показателей (биохимия), один
+        // показатель сдают по многу раз, а номер отчёта в старых
+        // записях бывает пуст.
+        let естьАнализы = Set((dog.labResultsStorage ?? [])
+            .map { ключ(секунды($0.sampledOn), $0.indicator, $0.reportNumber) })
+        for снимок in snapshot.labResults ?? []
+        where !естьАнализы.contains(ключ(секунды(снимок.sampledOn), снимок.indicator,
+                                         снимок.reportNumber)) {
             let анализ = LabResult(sampledOn: снимок.sampledOn,
                                    indicator: снимок.indicator,
                                    section: снимок.section,
@@ -981,8 +1477,15 @@ nonisolated enum BackupService {
             анализ.note = снимок.note
             анализ.dog = dog
             context.insert(анализ)
+            добавлено += 1
         }
-        for снимок in snapshot.vetVisits ?? [] {
+        // Визит — `дата + клиника`. Двух приёмов в одной клинике
+        // в один день не бывает; в разных клиниках в один день —
+        // бывает, и это два визита.
+        let естьВизиты = Set((dog.vetVisitsStorage ?? [])
+            .map { ключ(секунды($0.date), $0.clinic?.name ?? "") })
+        for снимок in snapshot.vetVisits ?? []
+        where !естьВизиты.contains(ключ(секунды(снимок.date), снимок.clinicName ?? "")) {
             let визит = VetVisit(date: снимок.date, doctor: снимок.doctor,
                                  reasonRaw: снимок.reasonRaw)
             визит.conclusion = снимок.conclusion
@@ -991,16 +1494,30 @@ nonisolated enum BackupService {
             }
             визит.dog = dog
             context.insert(визит)
+            добавлено += 1
         }
-        for снимок in snapshot.diagnoses ?? [] {
+        // Диагноз — `формулировка + дата постановки`. Статус в ключ
+        // не входит: снятый диагноз — тот же диагноз, которому
+        // поменяли статус, и войди статус в ключ, доливка завела бы
+        // второй, с прежним «подтверждён».
+        let естьДиагнозы = Set((dog.diagnosesStorage ?? [])
+            .map { ключ($0.wording, секунды($0.madeOn)) })
+        for снимок in snapshot.diagnoses ?? []
+        where !естьДиагнозы.contains(ключ(снимок.wording, секунды(снимок.madeOn))) {
             let диагноз = Diagnosis(wording: снимок.wording, madeOn: снимок.madeOn,
                                     statusRaw: снимок.statusRaw)
             диагноз.madeBy = снимок.madeBy
             диагноз.evidence = снимок.evidence
             диагноз.dog = dog
             context.insert(диагноз)
+            добавлено += 1
         }
-        for снимок in snapshot.prescriptions ?? [] {
+        // Рецепт — `номер + название лекарства`. Номер один на бланк,
+        // а в бланке бывает несколько препаратов — у Стича такие есть.
+        let естьРецепты = Set((dog.prescriptionsStorage ?? [])
+            .map { ключ($0.number, $0.medicationName) })
+        for снимок in snapshot.prescriptions ?? []
+        where !естьРецепты.contains(ключ(снимок.number, снимок.medicationName)) {
             let рецепт = Prescription(number: снимок.number, date: снимок.date,
                                       medicationName: снимок.medicationName)
             рецепт.doctor = снимок.doctor
@@ -1019,8 +1536,16 @@ nonisolated enum BackupService {
             }
             рецепт.dog = dog
             context.insert(рецепт)
+            добавлено += 1
         }
-        for tripSnapshot in snapshot.trips {
+        // Поездка — `куда + день отъезда`. Двух поездок в одно место
+        // в один день не бывает; возвращение и сборы правят до самого
+        // выезда, и в ключ они не идут.
+        let естьПоездки = Set((dog.tripsStorage ?? [])
+            .map { ключ($0.destination, секунды($0.startDate)) })
+        for tripSnapshot in snapshot.trips
+        where !естьПоездки.contains(ключ(tripSnapshot.destination,
+                                         секунды(tripSnapshot.startDate))) {
             let trip = Trip(destination: tripSnapshot.destination,
                             startDate: tripSnapshot.startDate,
                             endDate: tripSnapshot.endDate,
@@ -1032,7 +1557,9 @@ nonisolated enum BackupService {
             trip.packedItems = tripSnapshot.packedItems
             trip.dog = dog
             context.insert(trip)
+            добавлено += 1
         }
+        return добавлено
     }
 }
 
