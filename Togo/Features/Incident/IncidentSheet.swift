@@ -43,7 +43,7 @@ struct IncidentSheet: View {
                     .buttonStyle(.plain)
                 }
             }
-            TGExplainer(text: "Запишется сразу, без вопросов «почему» и «чья вина». Уточнить можно потом, тапнув по строке в ленте.")
+            TGExplainer(text: "Запишется сразу, без вопросов «почему» и «чья вина». Уточнить можно потом, тапнув по строке в ленте.", памятка: "инцидент.запишетсяСразу")
         }
     }
 
@@ -177,7 +177,7 @@ private struct IncidentDetailStep: View {
                 event.reactionDistance = event.reactionDistance == chosen ? nil : chosen
                 Haptics.tap()
             }
-            TGExplainer(text: "Срыв — это порог, а не проступок. Собака в этот момент не может учиться: полезно отойти дальше и дать ей выдохнуть, а не отчитывать.")
+            TGExplainer(text: "Срыв — это порог, а не проступок. Собака в этот момент не может учиться: полезно отойти дальше и дать ей выдохнуть, а не отчитывать.", памятка: "инцидент.срывПорог")
         }
     }
 
@@ -185,16 +185,28 @@ private struct IncidentDetailStep: View {
 
     /// Приложение видит момент записи и обязано в этот момент сказать это.
     /// Один раз, без морали, рядом с записью.
+    ///
+    /// **«Один раз» до 29.10.2026 было обещанием без механизма**: карточка
+    /// стояла на каждой луже. С того дня туалет дома — всегда инцидент,
+    /// и у щенка это пять лекций за день. Теперь — памятка
+    /// (`Памятки`, первые три лужи); «что было до» остаётся всегда:
+    /// оно каждый раз про другое.
     private var punishmentWarning: some View {
         VStack(alignment: .leading, spacing: Token.Spacing.stack) {
-            TGCard {
-                Text("Не наказывай").textStyle(AppFont.cardTitle)
-                Text("Тыкать носом и ругать учит не чистоплотности, а прятаться и делать лужи там, где не видно. Собака не связывает выговор с тем, что было десять минут назад.")
-                    .textStyle(AppFont.caption)
+            if лекцияВидна {
+                TGCard {
+                    Text("Не наказывай").textStyle(AppFont.cardTitle)
+                    Text("Тыкать носом и ругать учит не чистоплотности, а прятаться и делать лужи там, где не видно. Собака не связывает выговор с тем, что было десять минут назад.")
+                        .textStyle(AppFont.caption)
+                }
+                .onAppear { Памятки.показана(Self.лекция) }
             }
             historyBefore
         }
     }
+
+    private static let лекция = "инцидент.неНаказывай"
+    @State private var лекцияВидна = Памятки.видна(IncidentDetailStep.лекция)
 
     private var historyBefore: some View {
         let rows = Diary.hourBefore(dog?.events ?? [], incident: event.date)

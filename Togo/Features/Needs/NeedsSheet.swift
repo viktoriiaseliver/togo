@@ -461,7 +461,7 @@ struct HowAskedSheet: View {
                     .buttonStyle(.plain)
                 }
             }
-            TGExplainer(text: "Спрашиваем не каждый раз: только когда сигнал меняется или раз в несколько выходов.")
+            TGExplainer(text: "Спрашиваем не каждый раз: только когда сигнал меняется или раз в несколько выходов.", памятка: "просится.неКаждыйРаз")
         }
         .presentationDetents([.medium])
     }

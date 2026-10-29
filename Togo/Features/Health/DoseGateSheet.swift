@@ -45,7 +45,7 @@ struct DoseGateSheet: View {
                           title: "Ел в \(Fmt.clock(since))",
                           detail: "Отсчёт пошёл с этой отметки, а не с расписания: покормили позже — укол сдвинулся ровно на столько же.")
             }
-            TGExplainer(text: "Раньше времени отметить нельзя. Так задумано: \(Fmt.minutes(medication.minutesAfterMeal)) — это условие из назначения.")
+            TGExplainer(text: "Раньше времени отметить нельзя. Так задумано: \(Fmt.minutes(medication.minutesAfterMeal)) — это условие из назначения.", памятка: "доза.раньшеНельзя")
         }
     }
 

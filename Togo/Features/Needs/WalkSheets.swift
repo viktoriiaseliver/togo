@@ -84,7 +84,7 @@ struct WalkResultSheet: View {
                     .buttonStyle(.plain)
                 }
             }
-            TGExplainer(text: "Не ответишь — запись всё равно останется, просто без результата. Спрашивать второй раз не будем.")
+            TGExplainer(text: "Не ответишь — запись всё равно останется, просто без результата. Спрашивать второй раз не будем.", памятка: "выход.неОтветишь")
             TGButton(title: "Пропустить", variant: .secondary, size: .medium) { finish(nil) }
         }
         .presentationDetents([.medium])
