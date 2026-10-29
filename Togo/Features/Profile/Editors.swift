@@ -190,11 +190,32 @@ struct DogEditorScreen: View {
                 }
             }
 
-            TGCard {
-                Toggle(isOn: $draft.isOnTreatment) {
-                    VStack(alignment: .leading, spacing: Token.Space.s2) {
-                        Text("Собака на лечении").textStyle(AppFont.body)
-                        Text("включит вкладку «Здоровье», дозы и окно натощак").textStyle(AppFont.caption)
+            // # Тумблер лечения — только у НОВОЙ собаки (29.10.2026)
+            //
+            // У заведённой он был вторым на тот же флаг, и с другим
+            // правилом. Профиль (`ProfileScreen.treatment`) зовёт
+            // `TreatmentCourse.finish`/`resume`: выключение отменяет схемы
+            // и гасит будущие дозы, включение возвращает отменённые курсом.
+            // Здесь же `save()` писал `dog.isOnTreatment = …` голым
+            // присваиванием — курс «закрывался», а схемы продолжали звать
+            // дозы, ровно то, от чего предостерегает комментарий профиля
+            // («схема оживала наполовину»). И право было не то:
+            // `editProfile` вместо `editTreatment`.
+            //
+            // Профиль — один экран назад, тумблер там на месте; у новой
+            // собаки схем нет, и голый флаг ей законен.
+            //
+            // Подпись заменена: «включит вкладку „Здоровье“» — неправда
+            // с 08.10.2026 (`02c1e88`): вкладку держит право `seeMedical`,
+            // а не курс. Взята подпись профиля — одно и то же действие
+            // теперь называется одними словами.
+            if isNew {
+                TGCard {
+                    Toggle(isOn: $draft.isOnTreatment) {
+                        VStack(alignment: .leading, spacing: Token.Space.s2) {
+                            Text("Собака на лечении").textStyle(AppFont.body)
+                            Text("включает дозы по часам, окно натощак и напоминания").textStyle(AppFont.caption)
+                        }
                     }
                 }
             }
@@ -354,7 +375,13 @@ struct DogEditorScreen: View {
     private func load() {
         guard !loaded, let dog else { loaded = true; return }
         draft.name = dog.name
-        draft.weight = String(dog.weightKg).replacingOccurrences(of: ".", with: ",")
+        // Незаписанный вес — пустое поле, а не «0,0»: ноль в поле
+        // читается как утверждение «весит ноль» (тот же разбор, что
+        // у `Fmt.weightIfKnown`, 25.10.2026), и сохранить его можно
+        // было бы, не заметив.
+        draft.weight = dog.weightKg > 0
+            ? String(dog.weightKg).replacingOccurrences(of: ".", with: ",")
+            : ""
         draft.breed = dog.breed ?? ""
         draft.isOnTreatment = dog.isOnTreatment
         draft.sex = dog.sex
@@ -369,7 +396,6 @@ struct DogEditorScreen: View {
             let былоИмя = dog.name
             let былВес = dog.weightKg
             let былаПорода = dog.breed
-            let былоЛечение = dog.isOnTreatment
             let былПол = dog.sex
             let былаКастрация = dog.isNeutered
             let былаДатаРождения = dog.birthDate
@@ -403,7 +429,8 @@ struct DogEditorScreen: View {
             dog.name = Fmt.dogName(draft.name) ?? dog.name
             dog.weightKg = draft.weightValue ?? dog.weightKg
             dog.breed = draft.breed.isEmpty ? nil : draft.breed
-            dog.isOnTreatment = draft.isOnTreatment
+            // `isOnTreatment` здесь больше не пишется: курс у заведённой
+            // собаки меняет только `TreatmentCourse` (разбор — у тумблера).
             dog.sex = draft.sex
             // Кастрация привязана к полу и в показе, и в смысле: сняли
             // пол обратно в «не знаю» — утверждение «кастрирован»
@@ -420,7 +447,6 @@ struct DogEditorScreen: View {
                 dog.name = былоИмя
                 dog.weightKg = былВес
                 dog.breed = былаПорода
-                dog.isOnTreatment = былоЛечение
                 dog.sex = былПол
                 dog.isNeutered = былаКастрация
                 dog.birthDate = былаДатаРождения
