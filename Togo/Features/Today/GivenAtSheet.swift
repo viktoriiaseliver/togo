@@ -53,7 +53,7 @@ struct GivenAtSheet: View {
 
     var body: some View {
         TGSheet(title: "Когда дали?", subtitle: .готовая(title)) {
-            TGCard(padding: 4) {
+            TGCard(padding: Token.Space.s4) {
                 VStack(spacing: 0) {
                     // Обе строки шли обычной интерполяцией и в каталог
                     // не попадали никогда, при том что соседняя строка
@@ -80,7 +80,7 @@ struct GivenAtSheet: View {
                         .frame(minHeight: Token.Size.tapTarget)
                     }
                 }
-                .padding(.horizontal, 12)
+                .padding(.horizontal, Token.Space.s12)
             }
 
             TGButton(title: "Записать", variant: .primary, size: .medium) {

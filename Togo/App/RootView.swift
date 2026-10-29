@@ -336,7 +336,7 @@ struct UndoToastView: View {
             Group {
                 if размерТекста.isAccessibilitySize {
                     VStack(alignment: .leading, spacing: Token.Space.s8) {
-                        HStack(spacing: 12) {
+                        HStack(spacing: Token.Space.s12) {
                             знак
                             текст
                         }
@@ -344,16 +344,16 @@ struct UndoToastView: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                 } else {
-                    HStack(spacing: 12) {
+                    HStack(spacing: Token.Space.s12) {
                         знак
                         текст
-                        Spacer(minLength: 8)
+                        Spacer(minLength: Token.Space.s8)
                         if естьЧтоОтменять { отменить }
                     }
                 }
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 12)
+            .padding(.horizontal, Token.Space.s16)
+            .padding(.vertical, Token.Space.s12)
             .background(Token.Surface.card,
                         in: RoundedRectangle(cornerRadius: Token.Radius.sheet, style: .continuous))
             .shadow(color: Token.Ink.primary.opacity(0.12), radius: 14, y: 4)

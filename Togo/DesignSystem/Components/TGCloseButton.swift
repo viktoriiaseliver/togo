@@ -14,7 +14,7 @@ struct TGCloseButton: View {
     var body: some View {
         Button(action: action) {
             Image(systemName: "xmark")
-                .font(.system(size: 13, weight: .bold))
+                .font(.system(size: Token.Size.iconSm, weight: .bold))
                 .foregroundStyle(Token.Ink.secondary)
                 .frame(width: 30, height: 30)
                 .background(Token.Surface.sunken, in: Circle())
