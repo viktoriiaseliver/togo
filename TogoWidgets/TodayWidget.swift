@@ -7,7 +7,7 @@ import UIKit
 struct TodayWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: "TodayWidget", provider: SnapshotProvider()) { entry in
-            TodayWidgetEntry(snapshot: entry.snapshot)
+            TodayWidgetEntry(snapshot: entry.snapshot, now: entry.date)
                 .containerBackground(for: .widget) {
                     WidgetBackdrop(photo: entry.photo)
                 }
@@ -41,14 +41,40 @@ struct SnapshotProvider: TimelineProvider {
                                  photo: BackgroundBridge.photo(for: .widget)))
     }
 
-    /// Обновляемся раз в пятнадцать минут: чаще незачем — интервалы у собаки
-    /// измеряются часами.
+    /// Лента на час вперёд, запись в минуту.
+    ///
+    /// **Здесь была одна запись и «перечитать через пятнадцать минут»,
+    /// и число на плитке стояло.** Вид считал интервал от `Date()`
+    /// в момент отрисовки, а рисует система ленту заранее: «2 ч 11 мин»
+    /// держалось до следующего пересбора, то есть до четверти часа,
+    /// а при разряженном бюджете виджета — дольше. Локскрин был хуже:
+    /// он печатал `sinceUrineSeconds`, посчитанные приложением, и при
+    /// закрытом приложении не двигался вовсе (замер 29.10.2026, отзыв
+    /// «виджет замирает»).
+    ///
+    /// Теперь у каждой записи своё `date`, и вид считает от него —
+    /// `TodayWidgetEntry` отдаёт его как `now`. Шестьдесят записей —
+    /// это один запрос ленты, а не шестьдесят: бюджет перезагрузок
+    /// тратят `reloadTimelines`, а не длина ленты. Минута, а не пять:
+    /// `Fmt.hoursMinutes` печатает минуты, и число, отстающее на четыре,
+    /// неверно, а не грубо.
+    ///
+    /// Снимок читается один раз на всю ленту: его пересобирает
+    /// приложение после каждой записи (`WidgetRefresh`) и само просит
+    /// систему перечитать ленту. Через час лента кончается
+    /// (`.atEnd`) и собирается заново с тем, что лежит в снимке.
     func getTimeline(in context: Context, completion: @escaping (Timeline<SnapshotEntry>) -> Void) {
-        let entry = SnapshotEntry(date: .now,
-                                  snapshot: WidgetBridge.read(),
-                                  photo: BackgroundBridge.photo(for: .widget))
-        let next = Date().addingTimeInterval(15 * 60)
-        completion(Timeline(entries: [entry], policy: .after(next)))
+        let snapshot = WidgetBridge.read()
+        let photo = BackgroundBridge.photo(for: .widget)
+        // С начала текущей минуты: иначе каждая запись сдвинута на
+        // секунды запроса, и минута на плитке меняется не тогда,
+        // когда на часах.
+        let начало = Calendar.current.dateInterval(of: .minute, for: .now)?.start ?? .now
+        let entries = (0..<60).map { шаг in
+            SnapshotEntry(date: начало.addingTimeInterval(Double(шаг) * 60),
+                          snapshot: snapshot, photo: photo)
+        }
+        completion(Timeline(entries: entries, policy: .atEnd))
     }
 }
 
@@ -89,8 +115,12 @@ struct WidgetBackdrop: View {
 struct TodayWidgetEntry: View {
     @Environment(\.widgetFamily) private var family
     let snapshot: WidgetSnapshot
+    /// Момент записи ленты, а не `Date()` отрисовки: система рисует
+    /// ленту заранее, и `Date()` в теле вида — это час подготовки,
+    /// а не час показа.
+    let now: Date
 
     var body: some View {
-        TodayWidgetView(snapshot: snapshot, family: family)
+        TodayWidgetView(snapshot: snapshot, family: family, now: now)
     }
 }

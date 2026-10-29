@@ -29,6 +29,26 @@ enum QuickLog {
     /// Записать и ответить словами: голосом человек не видит экрана,
     /// и подтверждение должно быть в самом ответе.
     static func record(_ kind: LogKind, configure: (LogEvent) -> Void = { _ in }) throws -> String {
+        try записать(kind, configure: configure).ответ
+    }
+
+    /// Что вышло из записи — для тех, кому мало ответа словами.
+    ///
+    /// Заведено 29.10.2026 для инцидентов из «Команд»: эпизод
+    /// (`EpisodeRaiser`) поднимается по собаке и контексту, в котором
+    /// запись легла, и только если она правда легла — дубль эпизода
+    /// не продлевает.
+    struct Итог {
+        /// Пусто — сторож дубля нашёл такую же запись, новой нет.
+        let запись: LogEvent?
+        let собака: Dog
+        let контекст: ModelContext
+        let ответ: String
+    }
+
+    /// Та же дверь, что `record`, — право, дубль, сохранение, журнал,
+    /// снимок виджета, — но с итогом на руках.
+    static func записать(_ kind: LogKind, configure: (LogEvent) -> Void = { _ in }) throws -> Итог {
         guard let container = Persistence.shared else {
             throw QuickLogError.storageUnavailable
         }
@@ -53,19 +73,33 @@ enum QuickLog {
         if let recent = DuplicateGuard.recent(of: kind, dog: dog, at: event.date,
                                               like: event, in: context) {
             UsageLog.note(.record, kind.rawValue, outcome: .duplicate)
-            return DuplicateGuard.message(kind, at: recent.date)
+            return Итог(запись: nil, собака: dog, контекст: context,
+                        ответ: DuplicateGuard.message(kind, at: recent.date))
         }
 
         event.dog = dog
         context.insert(event)
-        try context.save()
+        // Не сохранилось — запись из контекста убираем: иначе следующий
+        // `save` того же контекста (эпизод, снимок) положил бы её молча,
+        // уже после того, как человек услышал «недоступен».
+        do {
+            try context.save()
+        } catch {
+            context.delete(event)
+            throw QuickLogError.storageUnavailable
+        }
 
         // Без этой строки журнал не знает о записях голосом вовсе:
         // в замере 23.09 их нет ни одной, и нельзя сказать, не пользуются
         // ими или путь размечен не был.
         UsageLog.note(.record, kind.rawValue, on: .other)
 
-        return String(localized: "Записала · \(kind.title.lowercased()) · \(dog.displayName)")
+        // Виджет и локскрин — сразу, до ответа: процесс интента система
+        // вправе усыпить, как только ответ ушёл (`WidgetRefresh`).
+        WidgetRefresh.сейчас()
+
+        return Итог(запись: event, собака: dog, контекст: context,
+                    ответ: String(localized: "Записала · \(kind.title.lowercased()) · \(dog.displayName)"))
     }
 
     /// Можно ли этому телефону записывать голосом и кнопкой «Действие».
@@ -193,9 +227,18 @@ struct MarkStoolIntent: AppIntent {
     static let description = IntentDescription("Записывает стул в дневник Togo. Форму можно уточнить потом.")
     static let openAppWhenRun = false
 
+    /// Форма — по желанию, 29.10.2026: в «Командах» её можно выбрать
+    /// сразу («стул · кашица» с одной кнопки), голосом не спрашивается.
+    /// Стул на улице с этого дня — только эта запись: стул дома пишется
+    /// инцидентом (`MarkStoolIndoorsIntent`).
+    @Parameter(title: "Форма")
+    var form: StoolFormChoice?
+
     @MainActor
     func perform() async throws -> some IntentResult & ProvidesDialog {
-        let message = try QuickLog.record(.stool)
+        let форма = form?.form
+        var message = try QuickLog.record(.stool) { $0.stoolForm = форма }
+        if let форма { message += " · " + форма.title.lowercased() }
         return .result(dialog: IntentDialog(stringLiteral: message))
     }
 }
@@ -204,6 +247,13 @@ struct LogMealIntent: AppIntent {
     static let title: LocalizedStringResource = "Записать кормление"
     static let description = IntentDescription("Записывает еду. Граммы берутся из режима питания.")
     static let openAppWhenRun = false
+
+    /// Граммы — по желанию, 29.10.2026. Пусто — порция из режима
+    /// питания, как и было; названо — это число человека, а не наша
+    /// подстановка, и оно пишется как есть. Ноль и меньше за число
+    /// не считаются: «0 г» в сводке врачу читалось бы как отказ от еды.
+    @Parameter(title: "Граммы")
+    var grams: Int?
 
     @MainActor
     func perform() async throws -> some IntentResult & ProvidesDialog {
@@ -214,7 +264,8 @@ struct LogMealIntent: AppIntent {
         // Нормы нет — граммов в записи и в ответе нет тоже. Siri
         // проговаривает число вслух, и человек принимает его за своё:
         // проверить его в этот момент нечем, экрана перед ним нет.
-        let grams = dog.servingGrams
+        let названо = self.grams.flatMap { $0 > 0 ? $0 : nil }
+        let grams = названо ?? dog.servingGrams
         let message = try QuickLog.record(.meal) {
             $0.grams = grams > 0 ? grams : nil
             $0.note = dog.foodBrand.isEmpty ? nil : dog.foodBrand
@@ -340,6 +391,17 @@ struct TimeIndoorsIntent: AppIntent {
 /// > можно только телефоном, и опровержение будет стоить правки
 /// > текста в пяти локалях.
 ///
+/// ## 29.10.2026: интентов семнадцать, готовых фраз десять — и это потолок
+///
+/// Просьба Виктории «работа через команды, чтобы отмечать разные
+/// автоматизации» добавила восемь действий (`AutomationIntents.swift`).
+/// Готовых фраз у приложения **не больше десяти** — это предел
+/// `AppShortcutsProvider`, а не наш выбор. Пять новых мест отданы тому,
+/// что говорят вслух, когда руки заняты: лужа и стул дома, рвота, доза,
+/// лакомство. Вода, короткий выход и заметка без фразы — причина
+/// у каждой в списке ниже; в «Командах» и автоматизациях они есть
+/// все, фраза нужна только голосу без настройки.
+///
 /// Список исключений ниже — **не проза**: на нём стоит
 /// `ГотовыеФразыTests`, и девятый интент без записи в одном из двух
 /// мест красит прогон.
@@ -394,6 +456,21 @@ struct TogoShortcuts: AppShortcutsProvider {
             фразу «Togo: прогулка» — третья фраза про тот же предмет \
             уводила бы её у Siri, ровно как сказано у StartWalkIntent.
             """,
+        "MarkWaterIntent": """
+            Действие для автоматизации по времени («налила воды утром»), \
+            а не для голоса. Десять мест готовых фраз — предел системы, \
+            и вода из них самая редкая: с экрана её отметку сняли вовсе.
+            """,
+        "MarkOutingIntent": """
+            Выход с исходом ставят на метку у двери и на «пришёл домой»; \
+            голосом то же самое уже говорят готовые фразы «пописал» \
+            и «стул», и третья фраза про выход спорила бы с ними у Siri.
+            """,
+        "AddNoteIntent": """
+            Текст заметки — параметр-строка, а строку в готовую фразу \
+            Siri не подставляет: такая фраза всё равно переспросила бы \
+            текст. В «Командах» действие есть, с вопросом «Что записать?».
+            """,
     ]
 
     static var appShortcuts: [AppShortcut] {
@@ -431,6 +508,43 @@ struct TogoShortcuts: AppShortcutsProvider {
                       "\(.applicationName): давно ли гуляли"],
             shortTitle: "Давно ли гуляли",
             systemImageName: "clock"
+        )
+        // Пять ниже — 29.10.2026, `AutomationIntents.swift`. Это десятая
+        // готовая фраза из десяти возможных: следующей нужно чьё-то место.
+        AppShortcut(
+            intent: MarkPuddleIntent(),
+            phrases: ["\(.applicationName): лужа дома",
+                      "Отметить лужу дома в \(.applicationName)"],
+            shortTitle: "Лужа в доме",
+            systemImageName: "drop.triangle"
+        )
+        AppShortcut(
+            intent: MarkStoolIndoorsIntent(),
+            phrases: ["\(.applicationName): покакал дома",
+                      "Отметить стул дома в \(.applicationName)"],
+            shortTitle: "Стул в доме",
+            systemImageName: "house"
+        )
+        AppShortcut(
+            intent: MarkVomitIntent(),
+            phrases: ["\(.applicationName): вырвало",
+                      "Отметить рвоту в \(.applicationName)"],
+            shortTitle: "Рвота",
+            systemImageName: "arrow.up.circle"
+        )
+        AppShortcut(
+            intent: GiveDoseIntent(),
+            phrases: ["\(.applicationName): дал лекарство",
+                      "Отметить лекарство в \(.applicationName)"],
+            shortTitle: "Доза",
+            systemImageName: "pills"
+        )
+        AppShortcut(
+            intent: MarkTreatIntent(),
+            phrases: ["\(.applicationName): лакомство",
+                      "Отметить лакомство в \(.applicationName)"],
+            shortTitle: "Лакомство",
+            systemImageName: "sparkles"
         )
     }
 }

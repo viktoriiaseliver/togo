@@ -69,10 +69,35 @@ enum LiveActivityController {
     /// Снимок для виджетов пересобирается из тех же данных, что и главный экран,
     /// чтобы виджет и приложение никогда не расходились.
     static func publishSnapshot(dog: Dog?, appState: AppState, now: Date = Date()) {
+        publishSnapshot(dog: dog,
+                        episodeActive: appState.isEpisodeActive,
+                        walkStartedAt: appState.walkStartedAt,
+                        walkStartedBy: appState.walkStartedBy,
+                        now: now)
+    }
+
+    /// То же без `AppState` — для путей, где экрана нет.
+    ///
+    /// **Заведено 29.10.2026, потому что снимок писал ровно один путь
+    /// из шести.** Звал его тик «Сегодня» — то есть открытое приложение.
+    /// Отметка голосом, меткой у двери, кнопкой живой активности или
+    /// чужая запись, приехавшая со второго телефона тихим пушем, до
+    /// виджета не доезжали, пока человек сам не открывал приложение:
+    /// отзыв «виджет отстаёт» был про это. `AppState` у тех путей нет
+    /// по устройству — у интента и у приёма обмена нет экрана, — поэтому
+    /// три величины, которые брались из него, приходят параметрами,
+    /// а собирает их `WidgetRefresh` из базы и из сохранённой прогулки.
+    static func publishSnapshot(dog: Dog?, episodeActive: Bool,
+                                walkStartedAt: Date?, walkStartedBy: String?,
+                                now: Date = Date()) {
         guard let dog else { return }
         let events = dog.events
-        let signals = Diary.signals(events, now: now, episodeActive: appState.isEpisodeActive)
+        let signals = Diary.signals(events, now: now, episodeActive: episodeActive)
         let verdict = VerdictEngine.evaluate(signals)
+        // Счёт от туалета — `ToiletClock`, тем же вызовом, что у героя
+        // «Сегодня»; выход — конец последнего блока ленты, тоже как там.
+        let туалет = ToiletClock.last(events, male: dog.sex == .male, now: now)
+        let выход = TimelineBuilder.blocks(Diary.active(events)).last(where: \.isOuting)?.endedAt
 
         let snapshot = WidgetSnapshot(
             dogName: dog.displayName,
@@ -85,8 +110,8 @@ enum LiveActivityController {
             urineSilenceSince: signals.urineSilence,
             lastStoolSummary: signals.lastStool.map { "стул \(Fmt.clock($0))" },
             lastWalkSummary: signals.lastWalk.map { "гулял \(Fmt.duration(now.timeIntervalSince($0))) назад" },
-            walkStartedAt: appState.walkStartedAt,
-            walkStartedBy: appState.walkStartedBy,
+            walkStartedAt: walkStartedAt,
+            walkStartedBy: walkStartedBy,
             // Та же величина, из которой рядом собирается
             // `lastWalkSummary`, — но датой. Строку виджет показать
             // может, а считать по ней время не может: она застывает
@@ -96,10 +121,32 @@ enum LiveActivityController {
             lastMealAt: мяЕда(events, now: now).0,
             mealsToday: мяЕда(events, now: now).1,
             mealsPlanned: dog.mealsPerDay,
-            updatedAt: now
+            updatedAt: now,
+            lastToiletAt: туалет?.когда,
+            lastToiletAtHome: туалет.map { $0.где == .дом },
+            lastOutingEndedAt: выход
         )
+        // Перечитать ленту виджета — только если снимок сказал новое.
+        //
+        // Бюджет перезагрузок у виджета конечен, а пересобирается снимок
+        // теперь на каждом сохранении базы, в том числе фоновом. Тик
+        // «Сегодня» раз в минуту менял бы его всегда: три поля здесь —
+        // интервалы и метка времени, посчитанные от `now`. Сравнение
+        // их не видит; всё, что виджет показывает живым, он считает
+        // от дат сам (`SnapshotText.sinceText(_:now:)`).
+        let прежний = WidgetBridge.read()
         WidgetBridge.publish(snapshot)
+        guard безЧасов(прежний) != безЧасов(snapshot) else { return }
         WidgetCenter.shared.reloadAllTimelines()
+    }
+
+    /// Снимок без величин, которые меняются от одного хода часов.
+    private static func безЧасов(_ snapshot: WidgetSnapshot) -> WidgetSnapshot {
+        var s = snapshot
+        s.sinceUrineSeconds = nil
+        s.lastWalkSummary = nil   // ЧИТАТЕЛЯ-НЕТ-lastWalkSummary
+        s.updatedAt = .distantPast   // ЧИТАТЕЛЯ-НЕТ-updatedAt
+        return s
     }
 
     /// Окно «не кормить» — тем же правилом, что и главный экран.
