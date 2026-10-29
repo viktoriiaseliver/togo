@@ -296,7 +296,7 @@ final class AppState {
         // вычисляемым от аргумента, просмотр нельзя было бы закончить —
         // аргумент процесса не меняется.
         просмотрОнбординга = TogoApp.просмотрОнбординга
-        activeDogID = UserDefaults.standard.string(forKey: Keys.activeDog).flatMap(UUID.init)
+        activeDogID = Self.запомненнаяСобака
         myMemberID = UserDefaults.standard.string(forKey: Keys.myMember).flatMap(UUID.init)
         session = ActiveSessionStore.load()
         // Прогулку могли забыть: приложение сняли из многозадачности,
@@ -339,8 +339,23 @@ final class AppState {
     /// Фильтр один на весь показ: `shownToPerson` рядом с правилом
     /// в `Dog.swift`.
     func activeDog(from dogs: [Dog]) -> Dog? {
+        Self.activeDog(from: dogs, выбрана: activeDogID)
+    }
+
+    /// То же правило без экземпляра — для фонового обновления
+    /// напоминаний (`ФоновоеОбновление`), у которого `AppState` нет:
+    /// система будит приложение без интерфейса, и заводить ради выбора
+    /// собаки весь `AppState` (с его разбором прогулки и живой
+    /// активности в `init`) значило бы делать в фоне чужую работу.
+    /// Правило одно — второй копии фильтра показа здесь нет.
+    static func activeDog(from dogs: [Dog], выбрана id: UUID?) -> Dog? {
         let показываемые = dogs.shownToPerson
-        return показываемые.first { $0.id == activeDogID } ?? показываемые.first
+        return показываемые.first { $0.id == id } ?? показываемые.first
+    }
+
+    /// Выбранная собака так, как её помнит телефон, — без экземпляра.
+    static var запомненнаяСобака: UUID? {
+        UserDefaults.standard.string(forKey: Keys.activeDog).flatMap(UUID.init)
     }
 
     /// Переключиться на другую собаку.
@@ -820,9 +835,25 @@ final class Settings {
     /// В тихие часы приложение не спрашивает результат выхода —
     /// собирает утром одной карточкой.
     func isQuietHour(_ date: Date = Date()) -> Bool {
-        let hour = Calendar.current.component(.hour, from: date)
-        return quietHoursStart <= quietHoursEnd
-            ? (hour >= quietHoursStart && hour < quietHoursEnd)
-            : (hour >= quietHoursStart || hour < quietHoursEnd)
+        Self.тихийЛиЧас(Calendar.current.component(.hour, from: date),
+                        начало: quietHoursStart, конец: quietHoursEnd)
+    }
+
+    /// Правило тихих часов — **одно на экран и на планировщик**.
+    ///
+    /// Вынесено 29.10.2026, когда тихие часы впервые применил
+    /// `ReminderScheduler` (до того их читали только два места
+    /// `TodayScreen`). Планировщику нужен ответ о ЧУЖОМ моменте —
+    /// о часе, на который ставится запрос, — а не о «сейчас», и без
+    /// выноса рядом появилась бы вторая копия сравнения. Копии этого
+    /// правила расходятся на полуночи: `23 → 7` переходит через сутки,
+    /// и именно эта ветка пишется по-разному у двух рук.
+    ///
+    /// Начало равно концу — тихих часов нет вовсе (ветка `<=` ниже
+    /// при равенстве не даёт `true` ни для одного часа).
+    static func тихийЛиЧас(_ час: Int, начало: Int, конец: Int) -> Bool {
+        начало <= конец
+            ? (час >= начало && час < конец)
+            : (час >= начало || час < конец)
     }
 }

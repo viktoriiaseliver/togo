@@ -282,7 +282,11 @@ struct FamilyScreen: View {
                   высота: Token.Size.backdropSub,
                   надстрочник: надстрочник,
                   заголовок: .ключ("Семья")) {
-            if let duty { dutyCard(duty) }
+            if let duty {
+                dutyCard(duty)
+            } else if let я = мояКарточка, canManageFamily, я.can(.giveDose) {
+                свободноеДежурство(я)
+            }
         }
         .padding(.horizontal, -Token.Spacing.screenPadding)
     }
@@ -443,12 +447,99 @@ struct FamilyScreen: View {
     /// «до 22:55 · пуши дозы приходят тебе».
     ///
     /// Срок пропускается, когда его нет: «до — · …» хуже, чем без срока.
+    ///
+    /// # «пуши дозы приходят ему» СНЯТО 29.10.2026 — оно было ложным
+    ///
+    /// Замер по дереву: дежурство не читает ни один постановщик
+    /// уведомлений. `ReminderScheduler.scheduleDoses` ставит дозы
+    /// на ЭТОМ телефоне при любом дежурном, а телефон дежурного о своём
+    /// дежурстве не знает вовсе — карточки семьи по обмену не ездят
+    /// (решение 08.10.2026, `SharedDiary.swift:78`). Строка «пуши дозы
+    /// приходят ему» на телефоне владельца утверждала два неверных
+    /// факта сразу: что ему — да, и что тебе — нет.
+    ///
+    /// Сделать её правдой механизмом здесь нельзя: заглушить дозу
+    /// на «недежурном» телефоне по местной пометке значит промолчать про
+    /// лекарство, не убедившись, что оно звонит где-то ещё. Поэтому
+    /// правдой сделан текст: напоминание приходит на каждый телефон
+    /// с дневником, где их разрешили. «тебе» осталось — на своём
+    /// телефоне оно верно.
+    ///
+    /// Сравнивается `мояКарточка`, а не `member.isMe`: у гостя `isMe`
+    /// приезжает чужим (разбор у `мояКарточка`), и «тебе» досталось бы
+    /// владельцу.
     private func подписьДежурства(_ member: FamilyMember) -> LocalizedStringKey {
-        let кому = member.isMe
+        let кому = member.id == мояКарточка?.id
             ? String(localized: "пуши дозы приходят тебе")
-            : String(localized: "пуши дозы приходят ему")
+            : String(localized: "пуши дозы — на каждый телефон с дневником")
         guard let до = member.dutyUntil else { return .готовая(кому) }
         return .готовая(String(localized: "до \(Fmt.clock(до))") + " · " + кому)
+    }
+
+    /// Дежурства нет ни у кого — карточка со входом «Взять дежурство».
+    ///
+    /// # Почему её не было и что это стоило
+    ///
+    /// Замер 29.10.2026: `isOnDuty = true` ставили два места —
+    /// `passDuty` (передача ОТ дежурного) и демо-база. То есть дежурство
+    /// можно было только передать, а начать — нельзя: у семьи, где
+    /// дежурного никогда не назначали (а это все семьи, кроме демо),
+    /// карточки не было вовсе, и вход в передачу — тоже. Механизм стоял
+    /// за дверью, у которой не было ручки.
+    ///
+    /// Взять можно только себе: назначить другого — это передача,
+    /// и у неё есть лист с итогом смены. Ворота те же, что у «Передать»
+    /// (`manageFamily`), плюс право давать дозу — то же, по которому
+    /// `FamilyResolver.сменщик` выбирает принимающего. Гость сюда
+    /// не попадает: своей карточки у него нет (`мояКарточка == nil`).
+    private func свободноеДежурство(_ я: FamilyMember) -> some View {
+        let текст = VStack(alignment: .leading, spacing: Token.Space.s2) {
+            Text("Дежурит сегодня").textStyle(AppFont.caption)
+            Text("Никто").textStyle(AppFont.cardTitle)
+        }
+        let взять = Button("Взять дежурство") { взятьДежурство(я) }
+            .textStyle(AppFont.captionEmphasis.color(Token.Ink.primary))
+            .padding(.horizontal, Token.Space.s16)
+            .frame(minHeight: Token.Size.tapTarget)
+            .background(Capsule().fill(Token.Surface.raised))
+
+        return Group {
+            if размерТекста.isAccessibilitySize {
+                VStack(alignment: .leading, spacing: Token.Space.s8) {
+                    текст
+                    взять
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            } else {
+                HStack(spacing: Token.Space.s12) {
+                    текст
+                    Spacer(minLength: Token.Space.s8)
+                    взять
+                }
+            }
+        }
+        .padding(Token.Spacing.cardPadding)
+        .стекло(радиус: Token.Radius.card)
+    }
+
+    /// Начать дежурство самому. Срок — тот же 22:00, что ставит передача:
+    /// два разных конца смены у одного дежурства разошлись бы на экране.
+    ///
+    /// Сохраняется явно, с откатом: кнопка, сказавшая «готово» без
+    /// записи, показала бы дежурство до первого перезапуска.
+    private func взятьДежурство(_ я: FamilyMember) {
+        let былСрок = я.dutyUntil
+        я.isOnDuty = true
+        я.dutyUntil = Calendar.current.date(bySettingHour: 22, minute: 0, second: 0, of: .now)
+        guard context.persist(otherwise: {
+            я.isOnDuty = false
+            я.dutyUntil = былСрок
+        }) else {
+            Haptics.warning()
+            appState.showFailure("Не сохранилось · нажми ещё раз")
+            return
+        }
+        Haptics.success()
     }
 
     /// Итог смены собирается из режима дня, а не из своего учёта:
