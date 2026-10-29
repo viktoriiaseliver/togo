@@ -637,6 +637,16 @@ struct NotificationSettingsScreen: View {
                 Picker("Конец", selection: $settings.quietHoursEnd) {
                     ForEach(5...9, id: \.self) { Text(Fmt.clock(minuteOfDay: $0 * 60)).tag($0) }
                 }
+                // С 29.10.2026 тихие часы сдвигают сводку — значит
+                // правка границы обязана её переставить сейчас, а не
+                // при следующем открытии. «Можно кормить» переставит
+                // ближайшая пересборка (возврат в приложение, сохранение).
+                .onChange(of: settings.quietHoursEnd) { _, _ in
+                    Task { await ReminderScheduler.scheduleBrief(dog: appState.activeDog(from: dogs), settings: settings) }
+                }
+                .onChange(of: settings.quietHoursStart) { _, _ in
+                    Task { await ReminderScheduler.scheduleBrief(dog: appState.activeDog(from: dogs), settings: settings) }
+                }
             } header: {
                 Text("тихие часы")
             } footer: {
