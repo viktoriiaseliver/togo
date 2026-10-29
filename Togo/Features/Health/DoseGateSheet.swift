@@ -28,7 +28,11 @@ struct DoseGateSheet: View {
         } footer: {
             TGButton(title: "Понятно", variant: .secondary, size: .medium) { dismiss() }
         }
-        .presentationDetents([.medium])
+        // Ожидание — две карточки, одна с героем 56 pt и одна
+        // с пояснением в три строки, плюс закреплённая кнопка: на одном
+        // `.medium` это прокрутка внутри половинки уже на обычном кегле
+        // (оценка по исходнику, кадра нет). Второй упор — дотянуть вверх.
+        .presentationDetents([.medium, .large])
     }
 
     private func waiting(until: Date, since: Date) -> some View {
