@@ -88,6 +88,7 @@ struct HistoryScreen: View {
                     чипыФильтра
                     if filter == .weight { полосаВеса } else { полосаВыходов(индекс) }
                     ритмВыходов(события)
+                    показатьВрачу
                     dayOutCard(события)
                     прошедшиеДни
                     месяцШапкой
@@ -611,6 +612,23 @@ struct HistoryScreen: View {
     /// Порог `> 1`: ради одной строки второй орган управления рядом
     /// с её же корзиной — это два пути к одному делу, а у Togo записано,
     /// чем они кончаются.
+    /// «Показать врачу» прямо из «Истории» — решение Виктории 29.10.2026.
+    ///
+    /// До этого в «Истории» не было ни одного входа в сводку: она жила
+    /// только на «Здоровье», а показывать врачу открывают именно историю.
+    /// Экран тот же — `VetSummaryScreen`, второй сборки сводки не заводим.
+    /// Право то же, что у вкладки «Здоровье»: сводка — медицинская.
+    @ViewBuilder
+    private var показатьВрачу: some View {
+        if let dog, appState.can(.seeMedical) {
+            TGCard(spacing: 0) {
+                TGLink(title: "Показать врачу", value: "сводка за период",
+                       systemImage: "stethoscope") { VetSummaryScreen(dog: dog) }
+            }
+            .buttonStyle(.plain)
+        }
+    }
+
     private var закончившиеся: [Episode] {
         episodes.filter { !$0.isActive() }
     }
@@ -763,7 +781,10 @@ nonisolated enum HistoryFilter: String, CaseIterable, Sendable {
         switch self {
         case .all: String(localized: "Всё")
         case .stool: String(localized: "Стул")
-        case .symptoms: String(localized: "Симптомы")
+        // «Инциденты», а не «Симптомы» — решение Виктории 29.10.2026:
+        // туалет дома остаётся инцидентом, и чип показывал лужи под
+        // словом «симптомы». Полоса под ним всегда звалась «Инциденты».
+        case .symptoms: String(localized: "Инциденты")
         case .reactions: String(localized: "Срывы")
         case .weight: String(localized: "Вес")
         }
