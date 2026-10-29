@@ -99,7 +99,7 @@ struct MoreSheet: View {
 
     var body: some View {
         TGSheet(title: "Ещё", subtitle: "то, что нужно реже, чем раз в день") {
-            TGCard(padding: 4) {
+            TGCard(padding: Token.Space.s4) {
                 VStack(spacing: 0) {
                     row("Лакомство", "sparkles") { next = .treat }
                     TGDivider()
@@ -107,7 +107,7 @@ struct MoreSheet: View {
                     TGDivider()
                     row("Собака со мной весь день", "figure.walk.motion") { next = .dayOut }
                 }
-                .padding(.horizontal, 12)
+                .padding(.horizontal, Token.Space.s12)
             }
 
             Button {
@@ -123,7 +123,7 @@ struct MoreSheet: View {
             .buttonStyle(.plain)
             TGExplainer(text: "Питание, уход, документы и «если что-то случилось» живут на вкладке собаки — туда два тапа с любого экрана.", памятка: "ещё.вкладкаСобаки")
         }
-        .presentationDetents([.medium])
+        .presentationDetents([.medium, .large])
         .sheet(item: $next) { route in
             TodayRouter(route: route, dog: dog, now: Date())
         }

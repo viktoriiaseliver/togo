@@ -36,7 +36,7 @@ struct IncidentSheet: View {
                                 .foregroundStyle(Token.Ink.silhouette)
                             Text(kind.title).textStyle(AppFont.bodyEmphasis)
                         }
-                        .frame(maxWidth: .infinity, minHeight: 92)
+                        .frame(maxWidth: .infinity, minHeight: Token.Size.markerCard)
                         .background(Token.Surface.card,
                                     in: RoundedRectangle(cornerRadius: Token.Radius.tile, style: .continuous))
                     }

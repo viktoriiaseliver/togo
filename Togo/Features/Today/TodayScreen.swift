@@ -213,7 +213,7 @@ struct TodayScreen: View {
                             }
                             .padding(.horizontal, Token.Spacing.screenPadding)
                             .padding(.top, Token.Spacing.stack)
-                            .padding(.bottom, 24)
+                            .padding(.bottom, Token.Space.s24)
                         }
                         // Прокрутка меряется ОДНИМ способом и в одном
                         // месте: компактная строка появляется за 120 pt,
@@ -379,9 +379,17 @@ struct TodayScreen: View {
                 .textStyle(AppFont.caption)
                 .wraps()
             Spacer(minLength: Token.Space.s8)
-            Button("В сегодня") { показанныйДень = now }
-                .textStyle(AppFont.captionEmphasis.color(Token.Action.doneText))
-                .fixedSize()
+            // Рамка цели касания — ВНУТРИ метки: снаружи, на `HStack`,
+            // она растягивала строку, а нажималось только слово
+            // (аудит отступов 29.10.2026).
+            Button { показанныйДень = now } label: {
+                Text("В сегодня")
+                    .textStyle(AppFont.captionEmphasis.color(Token.Action.doneText))
+                    .frame(minHeight: Token.Size.tapTarget)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .fixedSize()
         }
         .foregroundStyle(Token.Status.waitingText)
         .frame(minHeight: Token.Size.tapTarget)

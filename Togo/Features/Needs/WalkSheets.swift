@@ -70,13 +70,13 @@ struct WalkResultSheet: View {
 
     var body: some View {
         TGSheet(title: кобель ? "Покакал?" : "Как сходил?", subtitle: "спросим только сейчас") {
-            VStack(spacing: 8) {
+            VStack(spacing: Token.Space.s8) {
                 ForEach(варианты, id: \.0) { вариант in
                     Button { record(вариант.0) } label: {
                         Text(вариант.1)
                             .textStyle(AppFont.body)
                             .foregroundStyle(Token.Ink.primary)
-                            .frame(maxWidth: .infinity, minHeight: 52)
+                            .frame(maxWidth: .infinity, minHeight: Token.Size.controlL)
                             .background(Token.Surface.card, in: RoundedRectangle(cornerRadius: Token.Radius.tile, style: .continuous))
                     }
                     .buttonStyle(.plain)
@@ -85,7 +85,7 @@ struct WalkResultSheet: View {
             TGExplainer(text: "Не ответишь — запись всё равно останется, просто без результата. Спрашивать второй раз не будем.", памятка: "выход.неОтветишь")
             TGButton(title: "Пропустить", variant: .secondary, size: .medium) { finish(nil) }
         }
-        .presentationDetents([.medium])
+        .presentationDetents([.medium, .large])
     }
 
     private func record(_ outcome: OutingOutcome) {

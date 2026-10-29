@@ -35,10 +35,9 @@ struct TodayBottomBar: View {
         let действие: () -> Void
     }
 
-    // `size.buttonPrimary = 60`, `size.plus = 60` — токенов с такими
-    // именами в проекте ещё нет, их заводит другой агент. Названо
-    // в отчёте.
-    private let высотаКнопки: CGFloat = 60
+    // Токен главной кнопки, а не число: с 60 он совпадает, и когда
+    // дизайн его сдвинет, нижняя панель сдвинется вместе с `TGButton`.
+    private let высотаКнопки: CGFloat = Token.Component.Button.Primary.height
 
     var body: some View {
         // Раскладка выбирается явным `if`, а не `ViewThatFits`:
@@ -66,7 +65,10 @@ struct TodayBottomBar: View {
         }
         .padding(.horizontal, Token.Spacing.screenPadding)
         .padding(.top, Token.Space.s10)
-        .padding(.bottom, Token.Space.s6)
+        // `s8`, как у остальных закреплённых низов (`TGScreen`, `TGSheet`):
+        // `s6` был единственным, и низ «Сегодня» сидел на два пункта ниже
+        // соседних экранов (аудит отступов 29.10.2026).
+        .padding(.bottom, Token.Space.s8)
     }
 
     /// Обе кнопки одинаковые: высота 60, `flex 1/1`, 17 semibold.
@@ -92,7 +94,9 @@ struct TodayBottomBar: View {
                     .minimumScaleFactor(0.45)
             }
             .foregroundStyle(чернила(главнаяЛи))
-            .padding(.horizontal, Token.Space.s8)
+            // `s12`, как у `TGButton`: две кнопки рядом с разным полем
+            // давали разный перенос одной и той же подписи.
+            .padding(.horizontal, Token.Space.s12)
             .frame(maxWidth: .infinity, minHeight: высотаКнопки)
             .background(заливка(главнаяЛи),
                         in: RoundedRectangle(cornerRadius: Token.Radius.control,
@@ -254,7 +258,7 @@ struct RecordSheet: View {
                        "ellipsis", тон: Token.Ink.primary, маршрут: .more)
             }
         }
-        .presentationDetents([.medium])
+        .presentationDetents([.medium, .large])
     }
 
     private func строка(_ название: LocalizedStringKey,
