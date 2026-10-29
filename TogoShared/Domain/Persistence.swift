@@ -72,7 +72,7 @@ nonisolated enum Persistence {
     /// > **Заморозка версии и перевод контейнера — ОДНА правка, а не
     /// > две.** Разнести их во времени нельзя: между ними приложение
     /// > не открывает собственную базу.
-    static let schema = Schema(versionedSchema: TogoSchemaV9.self)
+    static let schema = Schema(versionedSchema: TogoSchemaV10.self)
 
     /// Удалось ли открыть хранилище в iCloud. Экран переноса показывает
     /// это человеку: обещать синхронизацию, которой нет, нельзя.

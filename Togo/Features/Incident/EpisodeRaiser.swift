@@ -38,7 +38,7 @@ enum EpisodeRaiser {
 
         // Ещё один инцидент — не новый эпизод, а продолжение старого.
         let идущие = (try? context.fetch(FetchDescriptor<Episode>())) ?? []
-        if let running = идущие.filter({ $0.isActive(at: now) })
+        if let running = идущие.filter({ $0.isActive(at: now) && $0.касается(dog) })
             .max(by: { $0.lastIncidentAt < $1.lastIncidentAt }) {
             let былоПоследним = running.lastIncidentAt
             let былКонец = running.endedAt
@@ -57,7 +57,8 @@ enum EpisodeRaiser {
         let episode = Episode(
             title: "Эпизод",
             detail: "Два инцидента за сутки. Вердикты «просится» на паузе, пока не станет понятно, что происходит.",
-            startedAt: recent.map(\.date).min() ?? now
+            startedAt: recent.map(\.date).min() ?? now,
+            dogID: dog.id
         )
         episode.extend(to: recent.map(\.date).max() ?? now)
         context.insert(episode)

@@ -123,12 +123,25 @@ final class Episode {
     var lastIncidentAt: Date = Date()
     var title: String = ""
     var detail: String = ""
+    /// Чей эпизод. Пусто — не записано (эпизоды до V10), и такой
+    /// эпизод читается общим, как читался всегда. Разбор — у объявления
+    /// `TogoSchemaV10`.
+    var dogID: UUID?
 
-    init(title: String, detail: String, startedAt: Date = Date()) {
+    init(title: String, detail: String, startedAt: Date = Date(), dogID: UUID? = nil) {
         self.title = title
         self.detail = detail
         self.startedAt = startedAt
         self.lastIncidentAt = startedAt
+        self.dogID = dogID
+    }
+
+    /// Касается ли эпизод этой собаки. Безымянный — касается всех:
+    /// так он и читался до V10, и спрятать его значило бы молча
+    /// вернуть вердикты посреди идущего эпизода.
+    func касается(_ dog: Dog?) -> Bool {
+        guard let dogID else { return true }
+        return dogID == dog?.id
     }
 
     /// Сколько тишины считается концом эпизода.

@@ -619,6 +619,11 @@ nonisolated enum BackupService {
                 skill.attempts = snapshot.attempts
                 context.insert(skill)
             }
+            // `dogID` (V10) архив не несёт: у `DogSnapshot` нет своего
+            // идентификатора, а восстановленная собака получает новый.
+            // Восстановленный эпизод поэтому безымянный — то есть общий,
+            // как все эпизоды до V10. Это потеря «чей», а не эпизода,
+            // и названа здесь, а не найдена следующим.
             for snapshot in archive.episodes {
                 let episode = Episode(title: snapshot.title, detail: snapshot.detail, startedAt: snapshot.startedAt)
                 episode.endedAt = snapshot.endedAt

@@ -640,7 +640,7 @@ struct TodayScreen: View {
                 // Отметки приёма на сегодня заводятся лениво: без них
                 // эскалация не знает, что дозу пропустили.
                 if let dog { DoseScheduler.ensureDoses(for: dog, on: now, context: context) }
-                appState.refreshEpisode(from: episodes, at: now)
+                appState.refreshEpisode(from: episodes, at: now, dog: dog)
                 // Напоминания пересобираются при каждом открытии: их мало,
                 // а разойтись они могут молча.
                 await ReminderScheduler.refresh(dog: dog, settings: settings, at: now)
@@ -663,8 +663,13 @@ struct TodayScreen: View {
             .onChange(of: events.count) { _, _ in
                 now = Date()
             }
+            // Эпизод с V10 — у собаки, а не у дома: сменили собаку —
+            // сменился и ответ «идёт ли эпизод».
+            .onChange(of: dog?.id) { _, _ in
+                appState.refreshEpisode(from: episodes, at: now, dog: dog)
+            }
             .onChange(of: episodes.count) { _, _ in
-                appState.refreshEpisode(from: episodes, at: now)
+                appState.refreshEpisode(from: episodes, at: now, dog: dog)
             }
     }
 

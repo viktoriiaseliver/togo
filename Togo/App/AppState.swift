@@ -258,9 +258,12 @@ final class AppState {
     var activeEpisode: Episode?
 
     /// Подтянуть эпизод из базы и убрать тот, что уже прошёл.
-    func refreshEpisode(from episodes: [Episode], at now: Date = Date()) {
+    ///
+    /// С V10 — только эпизоды этой собаки (`Episode.касается`): две рвоты
+    /// у щенка больше не гасят вердикты у второй собаки.
+    func refreshEpisode(from episodes: [Episode], at now: Date = Date(), dog: Dog? = nil) {
         activeEpisode = episodes
-            .filter { $0.isActive(at: now) }
+            .filter { $0.isActive(at: now) && $0.касается(dog) }
             .max { $0.lastIncidentAt < $1.lastIncidentAt }
     }
     /// Идущий выход или прогулка. Одновременно идёт что-то одно:

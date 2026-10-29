@@ -519,6 +519,9 @@ struct DeviceLocalFieldTests {
         // об одной собаке, и один из двух неверен.
         "Episode.id", "Episode.startedAt", "Episode.endedAt",
         "Episode.lastIncidentAt", "Episode.title", "Episode.detail",
+        // Чей эпизод (V10). Ездит по той же причине, что сам эпизод:
+        // на втором телефоне он обязан гасить вердикты у той же собаки.
+        "Episode.dogID",
 
         // Поездка — режим на несколько дней, его ведут вдвоём.
         // `departureMinuteOfDay` — минуты суток, оговорка та же,
