@@ -1157,7 +1157,7 @@ struct MedicationEditorSheet: View {
                     }
                 }
                 .frame(minHeight: Token.Size.tapTarget)
-                TGExplainer(text: "Доза откроется через столько минут после отметки еды. Не поела — не откроется вовсе: это вопрос к врачу, а не сбой.")
+                TGExplainer(text: "Доза откроется через столько минут после отметки еды. Еды не отметили — не откроется вовсе: это вопрос к врачу, а не сбой.")
             }
 
             // Писатель для `Medication.canGiveOutside` (`Care.swift:402`).

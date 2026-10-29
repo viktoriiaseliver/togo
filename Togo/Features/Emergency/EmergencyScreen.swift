@@ -322,7 +322,9 @@ struct DocumentsScreen: View {
             .disabled(!canEdit)
 
             TGCard {
-                TGSectionHeader(title: "если потерялась",
+                // «если потерялась» — женский род у любой собаки (29.10.2026);
+                // существительное согласует глагол само.
+                TGSectionHeader(title: "если собака потерялась",
                                 subtitle: "приметы для объявления — писать их в панике невозможно")
                 TextEditor(text: binding(\.distinctiveMarks))
                     .textStyle(AppFont.body)
