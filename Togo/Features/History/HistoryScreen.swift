@@ -61,7 +61,16 @@ struct HistoryScreen: View {
                       кикер: .готовая(кикер),
                       заголовок: "История",
                       настройки: { показатьНастройки = true }) {
-                if events.isEmpty {
+                // # Дневник читается ОДИН раз на перерисовку
+                //
+                // `events` — вычисляемое: `Diary.active` над всеми записями
+                // собаки. До 29.10.2026 его звали шесть мест одного `body`
+                // (пустота, отбор, ритм, долгие дни, индекс календаря,
+                // индекс полосы), и индекс по дням строился дважды —
+                // полосой и календарём. Каждое касание чипа платило
+                // за шесть проходов по дневнику вместо одного.
+                let события = events
+                if события.isEmpty {
                     EmptyStateCard(
                         subject: .history,
                         title: "История начнётся с первой записи",
@@ -70,13 +79,14 @@ struct HistoryScreen: View {
                         action: nil
                     )
                 } else {
+                    let индекс = Diary.поДням(события.filter(filter.matches))
                     чипыФильтра
-                    if filter == .weight { полосаВеса } else { полосаВыходов }
-                    ритмВыходов
-                    dayOutCard
+                    if filter == .weight { полосаВеса } else { полосаВыходов(индекс) }
+                    ритмВыходов(события)
+                    dayOutCard(события)
                     прошедшиеДни
                     месяцШапкой
-                    MonthCalendar(month: $month, поДням: поДням,
+                    MonthCalendar(month: $month, поДням: индекс,
                                   дниВзвешиваний: filter == .weight ? дниВзвешиваний : [],
                                   onSelect: { selectedDay = $0 })
                     episodesCard
@@ -158,10 +168,6 @@ struct HistoryScreen: View {
         .accessibilityLabel("Фильтр")
     }
 
-    private var filtered: [LogEvent] {
-        events.filter(filter.matches)
-    }
-
     // MARK: Полоса за тридцать дней
 
     /// Кадр 10: заголовок слева, срок справа, столбики без осей,
@@ -171,19 +177,19 @@ struct HistoryScreen: View {
     /// «выше или ниже соседнего», и ось месяца этого не добавляла:
     /// на тридцати днях подписи всё равно рисовались через одну.
     /// Что именно на полосе — говорит строка под ней, а не ось.
-    private var полосаВыходов: some View {
+    private func полосаВыходов(_ индекс: [Date: [LogEvent]]) -> some View {
         // Точки считаются ОДИН раз на всю карточку. Прежде тут стояли
         // `chartPoints` и `тревожныеДни` рядом — два обращения, и каждое
         // строило весь тридцатидневный набор заново.
-        let точки = chartPoints
+        let столбики = точки(индекс)
         return TGCard {
             HStack(alignment: .firstTextBaseline, spacing: Token.Space.s8) {
                 Text(.готовая(filter.chartName)).textStyle(AppFont.cardTitle).wraps()
                 Spacer(minLength: Token.Space.s8)
                 Text("30 дней").textStyle(AppFont.caption).wraps()
             }
-            КиноСтолбики(значения: точки.map(\.value),
-                         тревожные: тревожные(точки))
+            КиноСтолбики(значения: столбики.map(\.value),
+                         тревожные: тревожные(столбики))
             Text(filter.chartExplainer).textStyle(AppFont.caption).wraps()
             TGDivider()
             Text("Приложение не ставит диагнозов. Оно умеет показать этот график врачу — вместе с датами еды и препаратов за те же дни.")
@@ -265,11 +271,10 @@ struct HistoryScreen: View {
     /// пересчитывалось все тридцать раз, и каждый раз фильтровало весь
     /// дневник. Календарь делал то же сорок два раза. Разбор —
     /// `Diary.поДням`.
-    private var поДням: [Date: [LogEvent]] { Diary.поДням(filtered) }
-
-    /// График строится только по дням без активного эпизода.
-    private var chartPoints: [HistoryPoint] { точки(поДням) }
-
+    ///
+    /// С 29.10.2026 индекс строится в `body` один раз и раздаётся
+    /// полосе и календарю аргументом: вычисляемым свойством он
+    /// строился бы каждым читателем заново.
     /// Тридцать точек из готового индекса: день достаётся за O(1),
     /// отсутствие ключа значит «записей не было» — так условились
     /// в `Diary.поДням`.
@@ -304,8 +309,8 @@ struct HistoryScreen: View {
     /// > только `outingsPerDay` — так решено кадром 10, и пересматривать
     /// > это уборкой нельзя.
     @ViewBuilder
-    private var ритмВыходов: some View {
-        let ритм = WalkRhythmAnalyzer.rhythm(events: events)
+    private func ритмВыходов(_ события: [LogEvent]) -> some View {
+        let ритм = WalkRhythmAnalyzer.rhythm(events: события)
         if ритм.isReliable {
             КиноМетрика(
                 шапка: "как часто гуляете",
@@ -328,9 +333,9 @@ struct HistoryScreen: View {
     /// и оставляет вывод человеку. Этого хватает, чтобы прийти к врачу
     /// не с «ей плохо», а с «после долгих дней у неё вот что».
     @ViewBuilder
-    private var dayOutCard: some View {
+    private func dayOutCard(_ события: [LogEvent]) -> some View {
         let mine = daysOut.filter { $0.dog?.persistentModelID == dog?.persistentModelID }
-        let trace = DayOutAnalyzer.trace(daysOut: mine, events: events,
+        let trace = DayOutAnalyzer.trace(daysOut: mine, events: события,
                                          norm: dog?.dailyGrams ?? 0)
         if !trace.findings.isEmpty {
             TGCard {

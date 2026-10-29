@@ -135,7 +135,13 @@ struct HealthScreen: View {
                 // Цена копии измерена не здесь: `QuotedNamesTests` ловил
                 // ровно это трижды за сутки 25.10.2026.
                 if !canEdit { ПлашкаПрава(право: .editTreatment) }
-                if действующиеСхемы.isEmpty && прошлыеСхемы.isEmpty {
+                // Схемы — ОДИН раз на перерисовку. `medications` фильтрует
+                // все схемы базы, и до 29.10.2026 его звали пять раз за
+                // `body`: дважды проверка пустоты, `ForEach` и трижды
+                // раздел прошлых (с сортировкой каждый раз).
+                let действующие = действующиеСхемы
+                let прошлые = прошлыеСхемы
+                if действующие.isEmpty && прошлые.isEmpty {
                     EmptyStateCard(
                         subject: .health,
                         title: "Схемы лечения пока нет",
@@ -144,11 +150,11 @@ struct HealthScreen: View {
                         action: canEdit ? { isAdding = true } : nil
                     )
                 } else {
-                    ForEach(действующиеСхемы) { medication in
+                    ForEach(действующие) { medication in
                         карточкаЛечения(medication)
                         карточкаЗапаса(medication)
                     }
-                    прошлыеСхемыРаздел
+                    прошлыеСхемыРаздел(прошлые)
                 }
 
                 показательКарточка
@@ -199,7 +205,7 @@ struct HealthScreen: View {
     /// в ней осталось бы от последнего дня приёма — то есть врало бы
     /// про сегодня.
     @ViewBuilder
-    private var прошлыеСхемыРаздел: some View {
+    private func прошлыеСхемыРаздел(_ прошлыеСхемы: [Medication]) -> some View {
         if !прошлыеСхемы.isEmpty {
             TGCard {
                 DisclosureGroup {

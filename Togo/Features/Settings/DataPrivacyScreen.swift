@@ -60,14 +60,18 @@ struct DataPrivacyScreen: View {
             TGCard {
                 TGSectionHeader(title: "выгрузить")
                 ShareLink(
-                    item: CSVFile(name: "togo-dnevnik.csv", text: Exporter.csv(events: activeEvents)),
+                    // Собирается в момент отправки, а не в `body`:
+                    // разбор у `ВыгрузкаДневника`.
+                    item: CSVFile(name: "togo-dnevnik.csv",
+                                  выгрузка: ВыгрузкаДневника(container: context.container, вид: .весьДневник)),
                     preview: SharePreview("Дневник Togo · CSV")
                 ) {
                     TGListRow(title: "Весь дневник · CSV", systemImage: "square.and.arrow.up")
                 }
                 TGDivider()
                 ShareLink(
-                    item: CSVFile(name: "togo-stul-vrachu.csv", text: Exporter.clinicalCSV(events: activeEvents)),
+                    item: CSVFile(name: "togo-stul-vrachu.csv",
+                                  выгрузка: ВыгрузкаДневника(container: context.container, вид: .стулВрачу)),
                     preview: SharePreview("Стул для врача · CSV")
                 ) {
                     TGListRow(title: "Стул для врача · CSV", systemImage: "cross.case")
