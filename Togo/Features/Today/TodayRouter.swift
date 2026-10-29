@@ -16,8 +16,6 @@ enum TodayRoute: Identifiable, Hashable {
     case walk
     case walkResult
     case stool
-    /// Пописал дома — отметка без прогулки.
-    case urineAtHome
     case meal
     case treat
     case incident
@@ -49,7 +47,6 @@ struct TodayRouter: View {
             case .walk:             WalkModeScreen(dog: dog)
             case .walkResult:       WalkResultSheet(dog: dog)
             case .stool:            StoolSheet(dog: dog)
-            case .urineAtHome:      UrineAtHomeSheet(dog: dog)
             case .meal:             MealSheet(dog: dog)
             case .treat:            TreatSheet(dog: dog)
             case .incident:         IncidentSheet(dog: dog)

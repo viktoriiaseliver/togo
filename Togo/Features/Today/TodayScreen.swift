@@ -352,8 +352,11 @@ struct TodayScreen: View {
         // прогулки — а дубль прогулки хуже её отсутствия, потому что
         // он уезжает в сводку врачу.
         guard let finished = appState.finishSession() else { return }
-        WalkRecorder.record(finished, dog: dog,
-                            author: AppState.storedUserName, context: context)
+        let записана = WalkRecorder.record(finished, dog: dog,
+                                           author: AppState.storedUserName, context: context)
+        if записана != nil, finished.count(of: .incident) > 0 {
+            EpisodeRaiser.afterIncident(dog: dog, context: context, appState: appState)
+        }
     }
 
     private func обновитьДеньЗаписи() {
@@ -409,7 +412,7 @@ struct TodayScreen: View {
         // строку рядом с плакатом значило бы завести вторую
         // реализацию, которая разойдётся молча.
         TodayHero(indoors: timeIndoors,
-                  lastOutingEndedAt: lastOutingEndedAt,
+                  lastOutingEndedAt: якорьСчёта,
                   session: appState.session,
                   now: now,
                   rhythm: ритм,
@@ -759,7 +762,7 @@ struct TodayScreen: View {
             return .минутыСекунды(session.duration(at: now))
         }
         if let тишина = TodayHero.silence(indoors: timeIndoors,
-                                          lastOutingEndedAt: lastOutingEndedAt) {
+                                          lastOutingEndedAt: якорьСчёта) {
             return .фраза(.готовая(String(localized: "Выходов нет с \(Fmt.shortDay(тишина))")))
         }
         guard let indoors = timeIndoors else {
@@ -941,7 +944,7 @@ struct TodayScreen: View {
         s.isNight = settings.isQuietHour(now)
         s.hasNoEntries = ритм.days == 0
         s.isSilent = TodayHero.silence(indoors: timeIndoors,
-                                       lastOutingEndedAt: lastOutingEndedAt) != nil
+                                       lastOutingEndedAt: якорьСчёта) != nil
         // **Третий из трёх незаполненных флагов закрыт 27.10.2026.**
         // Выше написано «у них в проекте нет готового источника»
         // со ссылкой на замер 22.10 («PillSupply.supply — ноль вызовов
@@ -1056,9 +1059,14 @@ struct TodayScreen: View {
         return ближайший
     }
 
-    /// «гулял в 15:44» — откуда считаем.
+    /// «сходил в 15:44» — откуда считаем.
+    ///
+    /// Подпись называет то, от чего на самом деле идёт счёт: туалет
+    /// на улице, туалет дома или — запасным — конец выхода. Скажи
+    /// она «гулял», а счёт иди от лужи дома, число под ней читалось бы
+    /// как время на диване после прогулки.
     private var откудаСчитаем: String? {
-        guard let конец = lastOutingEndedAt else { return nil }
+        guard let конец = якорьСчёта else { return nil }
         // За потолком тишины показание уже назвало ДАТУ («Выходов нет
         // с 7 окт.»), и голое «гулял в 22:52» под ним читалось как
         // сегодняшнее (кадр 28.10.2026). Дата там уже есть — час без неё
@@ -1066,7 +1074,13 @@ struct TodayScreen: View {
         guard TodayHero.silence(indoors: timeIndoors, lastOutingEndedAt: конец) == nil else {
             return nil
         }
-        return String(localized: "гулял в \(Fmt.clock(конец))")
+        guard считаемОтТуалета, let туалет = последнийТуалет else {
+            return String(localized: "гулял в \(Fmt.clock(конец))")
+        }
+        switch туалет.где {
+        case .улица: return String(localized: "сходил в \(Fmt.clock(конец))")
+        case .дом: return String(localized: "дома в \(Fmt.clock(конец))")
+        }
     }
 
     /// «обычно до 22:44» — докуда. Говорится только когда ритм
@@ -1233,14 +1247,20 @@ struct TodayScreen: View {
             // кнопка с таким словом не ставила ничего). Отметка та же,
             // что в режиме прогулки, — `appState.mark`, с откатом.
             // У короткого выхода отметок нет — там остаётся переход.
-            return .init(название: "Пописал", символ: "drop") {
+            //
+            // У кобеля — «Покакал»: моча у него не отмечается вовсе,
+            // прогулка сама считается мочой (`ToiletClock`, решение
+            // Виктории 29.10.2026).
+            let отметка: ActiveSession.Mark.Kind = dog?.sex == .male ? .stool : .urine
+            return .init(название: отметка == .stool ? "Покакал" : "Пописал",
+                         символ: отметка.symbol) {
                 guard appState.session?.kind == .walk else {
                     route = .walk
                     return
                 }
-                appState.mark(.urine)
+                appState.mark(отметка)
                 Haptics.tap()
-                appState.showUndo("Отмечено · \(ActiveSession.Mark.Kind.urine.title)")
+                appState.showUndo("Отмечено · \(отметка.title)")
             }
         default:
             return .init(название: "Гулять", символ: "figure.walk") { route = .walk }
@@ -1311,7 +1331,7 @@ struct TodayScreen: View {
     /// Условие надёжности то же: до трёх дней записей прогноз был бы
     /// выдумкой, а не прогнозом, и строки нет вовсе.
     private var ожидаемыйВыход: Date? {
-        guard ритм.isReliable, let конец = lastOutingEndedAt else { return nil }
+        guard ритм.isReliable, let конец = якорьСчёта else { return nil }
         return конец.addingTimeInterval(ритм.averageIndoors)
     }
 
@@ -1431,9 +1451,42 @@ struct TodayScreen: View {
         память.блоки { TimelineBuilder.blocks(Diary.active(events)) }
     }
 
-    /// Сколько собака дома прямо сейчас.
+    /// Сколько прошло с последнего туалета — главное показание экрана.
+    ///
+    /// **С 29.10.2026 считается от туалета, а не от выхода** (решение
+    /// Виктории: «считали время не тогда, когда собака гуляла, а тогда,
+    /// когда писяла-какала»). Имя свойства прежнее нарочно: его читают
+    /// шесть мест экрана, и все они спрашивают одну величину.
     private var timeIndoors: TimeInterval? {
-        TimelineBuilder.timeIndoorsNow(блокиДня, now: now, threshold: 0)
+        якорьСчёта.map { max(0, now.timeIntervalSince($0)) }
+    }
+
+    /// Последний туалет по всей ленте — `ToiletClock`.
+    private var последнийТуалет: ToiletClock.Момент? {
+        память.туалет { ToiletClock.last(events, male: dog?.sex == .male, now: now) }
+    }
+
+    /// Откуда считаем: последний туалет, а без него — конец выхода.
+    ///
+    /// **Выход остаётся запасным, а не выброшен.** У суки, которой
+    /// не отвечают «как сходил», туалета в дневнике может не быть
+    /// вовсе — и тогда честнее «на улице были 3 ч назад», чем
+    /// «сегодня ещё не выходили». И второе: туалет старше потолка
+    /// тишины при более свежем выходе — это не «терпит трое суток»,
+    /// а «перестали отвечать». Тогда считаем от выхода, иначе экран
+    /// сказал бы о собаке то, чего не знает (та же форма дефекта,
+    /// что «434 ч назад», `TodayHero.silenceCeiling`).
+    private var якорьСчёта: Date? {
+        let выход = lastOutingEndedAt
+        guard let туалет = последнийТуалет?.когда else { return выход }
+        guard let выход, выход > туалет else { return туалет }
+        return now.timeIntervalSince(туалет) < OutingSilence.ceiling ? туалет : выход
+    }
+
+    /// Считаем ли от туалета — от этого зависит подпись «откуда».
+    private var считаемОтТуалета: Bool {
+        guard let якорь = якорьСчёта, let туалет = последнийТуалет else { return false }
+        return якорь == туалет.когда
     }
 
     /// Конец последнего записанного выхода. Герою нужен, чтобы за потолком
@@ -1461,7 +1514,8 @@ struct TodayScreen: View {
 
     private var summaryStrip: some View {
         TodaySummaryStrip(summary: Diary.summary(events, day: отсчёт, dog: dog),
-                          outings: outingsToday)
+                          outings: outingsToday,
+                          стул: ToiletClock.stoolCount(events, on: отсчёт))
     }
 
     // MARK: Данные экрана
@@ -1706,6 +1760,8 @@ final class ПамятьЛенты {
     private var порогПосчитан = false
     private var порог: AlarmThreshold?
     private var тревожная: Bool?
+    private var туалетПосчитан = false
+    private var туалет: ToiletClock.Момент?
 
     func сверить(_ события: [LogEvent], now: Date, день: Date) {
         let ключ = Self.отпечаток(события)
@@ -1715,12 +1771,14 @@ final class ПамятьЛенты {
             ритм = nil
             порогПосчитан = false
             тревожная = nil
+            туалетПосчитан = false
         }
         if now != момент {
             момент = now
             ритм = nil
             порогПосчитан = false
             тревожная = nil
+            туалетПосчитан = false
         }
         // Тревожная запись — за ПОКАЗАННЫЙ день: листание на вчера
         // не меняет ни ленту, ни `now`, а ответ меняет.
@@ -1749,6 +1807,16 @@ final class ПамятьЛенты {
         let ответ = посчитать()
         тревожная = ответ
         return ответ
+    }
+
+    /// Пол собаки в ключ не входит: смена пола перерисует экран через
+    /// `dog`, а не через ленту, — но `now` тикает раз в минуту и сбросит
+    /// память раньше, чем человек успеет посмотреть.
+    func туалет(_ посчитать: () -> ToiletClock.Момент?) -> ToiletClock.Момент? {
+        if туалетПосчитан { return туалет }
+        туалет = посчитать()
+        туалетПосчитан = true
+        return туалет
     }
 
     func порог(_ посчитать: () -> AlarmThreshold?) -> AlarmThreshold? {

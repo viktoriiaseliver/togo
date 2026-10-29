@@ -459,8 +459,19 @@ struct WalkModeScreen: View {
             VStack(spacing: Token.Space.s10) {
                 // Самое частое — главной кнопкой экрана. В теме «Кино»
                 // она белая; роль та же, что у `Button.Primary`.
-                широкая(Self.главная, на: .accent, высота: Token.Size.capsule)
-                широкая(Self.вторая, на: .quiet, высота: Token.Size.controlL)
+                //
+                // **У кобеля мочи на экране нет** — решение Виктории
+                // 29.10.2026: «поход на улицу для кобеля = туалет,
+                // и незачем указывать мочу». Он метит на каждой прогулке,
+                // и прогулка сама считается мочой (`ToiletClock`). Главной
+                // становится единственная отметка, которая у него
+                // что-то сообщает, — стул.
+                if dog?.sex == .male {
+                    широкая(Self.вторая, на: .accent, высота: Token.Size.capsule)
+                } else {
+                    широкая(Self.главная, на: .accent, высота: Token.Size.capsule)
+                    широкая(Self.вторая, на: .quiet, высота: Token.Size.controlL)
+                }
 
                 // Инцидент первым и красным — порядок с кадра и из
                 // шторки «Записать»: то, о чём жалеют, что не записали.
@@ -788,6 +799,11 @@ struct WalkModeScreen: View {
                        confirmation: nil, haptic: .none) { event in
                 WalkRecorder.apply(entry, to: event, dog: dog, walkID: walkEvent?.id)
             }
+        }
+        // Инцидент с прогулки поднимает эпизод так же, как из шторки
+        // «Что случилось» (`EpisodeRaiser`, 29.10.2026).
+        if finished.count(of: .incident) > 0 {
+            EpisodeRaiser.afterIncident(dog: dog, context: context, appState: appState)
         }
 
         показатьИтог(finished)

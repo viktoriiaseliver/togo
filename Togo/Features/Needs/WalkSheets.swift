@@ -20,13 +20,20 @@ enum OutingFinisher {
     /// глядя на эту функцию.
     static func finish(outcome: OutingOutcome?, dog: Dog?,
                        appState: AppState, context: ModelContext) {
+        // Кобель без ответа — пописал. Решение Виктории 29.10.2026:
+        // «поход на улицу для кобеля = туалет». Пишется в запись, а
+        // не только читается так, потому что здесь это ответ человека,
+        // заданный правилом раз и навсегда: шторка у кобеля мочу
+        // не спрашивает вовсе (`WalkResultSheet.кобель`), и пустой
+        // ответ значит «не было стула», а не «не знаю».
+        let итог = outcome ?? (dog?.sex == .male ? OutingOutcome.urine : nil)
         let duration = appState.stopWalk()
-        Task { await LiveActivityController.finishWalk(outcome: outcome?.shortTitle) }
+        Task { await LiveActivityController.finishWalk(outcome: итог?.shortTitle) }
         guard let dog, let last = Diary.last(dog.events, kind: .outing) else { return }
 
         let былРезультат = last.outcome
         let былаДлительность = last.durationSeconds
-        last.outcome = outcome
+        last.outcome = итог
         last.durationSeconds = Int(duration)
 
         guard context.persist(otherwise: {
@@ -49,12 +56,26 @@ struct WalkResultSheet: View {
     @Environment(AppState.self) private var appState
     @Environment(\.modelContext) private var context
 
+    /// У кобеля спрашиваем только про стул: моча у него — сам выход.
+    private var кобель: Bool { dog?.sex == .male }
+
+    /// Что предлагаем. У кобеля «Пописал» и «И то и другое» сводятся
+    /// к одному вопросу «покакал ли», а «Не сходил» остаётся: выход
+    /// без результата — настоящий сигнал и у кобеля.
+    private var варианты: [(OutingOutcome, String)] {
+        кобель
+            ? [(.both, String(localized: "Покакал")),
+               (.urine, String(localized: "Только пописал")),
+               (.none, OutingOutcome.none.title)]
+            : OutingOutcome.allCases.map { ($0, $0.title) }
+    }
+
     var body: some View {
-        TGSheet(title: "Как сходил?", subtitle: "спросим только сейчас") {
+        TGSheet(title: кобель ? "Покакал?" : "Как сходил?", subtitle: "спросим только сейчас") {
             VStack(spacing: 8) {
-                ForEach(OutingOutcome.allCases, id: \.self) { outcome in
-                    Button { record(outcome) } label: {
-                        Text(outcome.title)
+                ForEach(варианты, id: \.0) { вариант in
+                    Button { record(вариант.0) } label: {
+                        Text(вариант.1)
                             .textStyle(AppFont.body)
                             .foregroundStyle(Token.Ink.primary)
                             .frame(maxWidth: .infinity, minHeight: 52)

@@ -60,6 +60,12 @@ enum WalkControl {
             throw QuickLogError.storageUnavailable
         }
         ActiveSessionStore.save(nil)
+        // Голосом закрытая прогулка с инцидентом — тот же эпизод, что
+        // из шторки. `AppState` здесь нет: эпизод ляжет в базу, экран
+        // подтянет его при открытии.
+        if session.count(of: .incident) > 0 {
+            EpisodeRaiser.afterIncident(dog: dog, context: context, appState: nil)
+        }
 
         let minutes = Int(session.duration(at: now)) / 60
         let tail = session.marks.isEmpty ? "" : " · \(session.tally)"

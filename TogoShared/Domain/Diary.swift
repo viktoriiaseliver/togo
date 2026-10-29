@@ -323,6 +323,12 @@ nonisolated enum Diary {
         active(events).filter { $0.kind == .incident && now.timeIntervalSince($0.date) < 24 * 3600 }
     }
 
+    /// Инциденты, из которых складывается эпизод: без туалета дома.
+    /// Почему — в голове `EpisodeRaiser`.
+    static func episodeIncidentsInLast24h(_ events: [LogEvent], now: Date = Date()) -> [LogEvent] {
+        incidentsInLast24h(events, now: now).filter { ($0.incidentKind ?? .other).raisesEpisode }
+    }
+
     /// Час предыстории после лужи: вода, одиночество, последний выход.
     static func hourBefore(_ events: [LogEvent], incident: Date) -> [LogEvent] {
         active(events)

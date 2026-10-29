@@ -18,6 +18,12 @@ struct TodaySummaryStrip: View {
     let summary: Diary.DaySummary
     /// Выходы за день — блоками, не событиями. См. `TimelineBuilder.outingsCount`.
     let outings: Int
+    /// Сколько раз покакал за день — `ToiletClock.stoolCount`.
+    ///
+    /// Просьба Виктории 29.10.2026. Отдельным числом, а не подписью
+    /// у выходов: врач спрашивает «сколько раз в день стул», и выходы
+    /// на этот вопрос не отвечают — кобель выходит пять раз и какает два.
+    let стул: Int
 
     var body: some View {
         TGCard {
@@ -35,6 +41,7 @@ struct TodaySummaryStrip: View {
                                                  summary.meals)))
                 TGStat(value: "\(outings)",
                        caption: .готовая(подпись(Fmt.outings(outings), outings)))
+                TGStat(value: "\(стул)", caption: "стул")
             }
             if summary.trainingGrams > 0 {
                 TGDivider()
