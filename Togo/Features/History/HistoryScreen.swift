@@ -71,12 +71,14 @@ struct HistoryScreen: View {
                     )
                 } else {
                     чипыФильтра
-                    полосаВыходов
+                    if filter == .weight { полосаВеса } else { полосаВыходов }
                     ритмВыходов
                     dayOutCard
                     прошедшиеДни
                     месяцШапкой
-                    MonthCalendar(month: $month, поДням: поДням, onSelect: { selectedDay = $0 })
+                    MonthCalendar(month: $month, поДням: поДням,
+                                  дниВзвешиваний: filter == .weight ? дниВзвешиваний : [],
+                                  onSelect: { selectedDay = $0 })
                     episodesCard
                 }
             }
@@ -187,6 +189,67 @@ struct HistoryScreen: View {
             Text("Приложение не ставит диагнозов. Оно умеет показать этот график врачу — вместе с датами еды и препаратов за те же дни.")
                 .textStyle(AppFont.caption)
                 .wraps()
+        }
+    }
+
+    // MARK: Вес
+
+    /// # Фильтр «Вес» не рисовал НИЧЕГО — и не мог
+    ///
+    /// Замер 29.10.2026. Фильтр спрашивал `LogEvent.kind == .weight`,
+    /// а взвешивания живут не в ленте, а отдельной моделью
+    /// `WeightEntry` (`Dog.weights`): их пишет `WeightScreen.save()`,
+    /// и `LogEvent` с видом `.weight` не заводит в `Togo/` никто.
+    /// Сверху `HistoryFilter.value` для `.weight` возвращал `0`
+    /// литералом. Итог — тридцать пустых столбиков, пустой календарь
+    /// и пояснение про «зелёную полосу коридора», которой нет.
+    ///
+    /// > **Фильтр смотрел туда, где предмета не бывает.** Три слоя
+    /// > (отбор, значение, пояснение) были согласны друг с другом
+    /// > и все трое молчали.
+    ///
+    /// Столбиков у веса нет нарочно: у полосы потолок — максимум,
+    /// и 4,1 против 4,3 кг вышли бы одинаковой высоты. Вес читают
+    /// числом, поэтому здесь — последний замер крупно и список
+    /// взвешиваний за тот же срок, что у соседних фильтров.
+    private var взвешиванияЗаМесяц: [WeightEntry] {
+        let calendar = Calendar.current
+        let начало = calendar.date(byAdding: .day, value: -29, to: calendar.startOfDay(for: .now)) ?? .now
+        return (dog?.weights ?? [])
+            .filter { $0.date >= начало }
+            .sorted { $0.date > $1.date }
+    }
+
+    /// Дни, в которые взвешивали, — для точки в календаре.
+    private var дниВзвешиваний: Set<Date> {
+        let calendar = Calendar.current
+        return Set((dog?.weights ?? []).map { calendar.startOfDay(for: $0.date) })
+    }
+
+    private var полосаВеса: some View {
+        let замеры = взвешиванияЗаМесяц
+        return TGCard {
+            HStack(alignment: .firstTextBaseline, spacing: Token.Space.s8) {
+                Text(.готовая(filter.chartName)).textStyle(AppFont.cardTitle).wraps()
+                Spacer(minLength: Token.Space.s8)
+                Text("30 дней").textStyle(AppFont.caption).wraps()
+            }
+            if let последний = замеры.first {
+                Text(Fmt.weight(последний.kg)).textStyle(AppFont.display)
+                ForEach(замеры.prefix(10)) { замер in
+                    HStack {
+                        Text(Fmt.shortDay(замер.date)).textStyle(AppFont.caption)
+                        Spacer()
+                        Text(Fmt.weight(замер.kg)).textStyle(AppFont.numeric(15))
+                    }
+                }
+            } else {
+                TGExplainer(text: "За эти 30 дней взвешиваний нет. Записать вес — «Здоровье» → «Вес и симптомы».")
+            }
+            if let low = dog?.targetWeightLow, let high = dog?.targetWeightHigh {
+                Text("цель \(Fmt.weight(low)) — \(Fmt.weight(high)) · поставил врач").textStyle(AppFont.caption)
+            }
+            Text(filter.chartExplainer).textStyle(AppFont.caption).wraps()
         }
     }
 
@@ -585,7 +648,10 @@ nonisolated enum HistoryFilter: String, CaseIterable, Sendable {
         case .stool: String(localized: "Выше — жиже. Терракотовые столбики — дни с кровью или слизью.")
         case .symptoms: String(localized: "Столбик есть — был инцидент. Пусто — и хорошо.")
         case .reactions: String(localized: "Сколько раз собака срывалась за день. Смотреть надо не на отдельный день, а на то, куда идёт линия за месяц.")
-        case .weight: String(localized: "Зелёная полоса — коридор, который назвал врач.")
+        // Было «Зелёная полоса — коридор, который назвал врач»: полосы
+        // не было ни в одной редакции экрана, а коридор показывается
+        // строкой «цель … · поставил врач» (`HistoryScreen.полосаВеса`).
+        case .weight: String(localized: "Взвешивания из «Вес и симптомы». Сравнивать стоит с собой месяц назад, а не с чужой собакой.")
         }
     }
 
@@ -622,6 +688,10 @@ struct MonthCalendar: View {
     /// бы полного прохода. Индекс строит тот, кто его и так строит
     /// для графика.
     let поДням: [Date: [LogEvent]]
+    /// Дни взвешиваний (начала суток) — у фильтра «Вес». Взвешивания
+    /// лежат не в ленте, а в `WeightEntry`, и в `поДням` не попадают:
+    /// без этого множества календарь под «Весом» был бы пуст всегда.
+    var дниВзвешиваний: Set<Date> = []
     var onSelect: (Date) -> Void
 
     private let calendar = Calendar.current
@@ -708,8 +778,9 @@ struct MonthCalendar: View {
     /// > с тремя записями в день календарь стоил столько же, сколько
     /// > у человека с тысячей.
     private func marker(for day: Date) -> DayMarker {
-        let dayEvents = поДням[calendar.startOfDay(for: day)] ?? []
-        if dayEvents.isEmpty { return .none }
+        let начало = calendar.startOfDay(for: day)
+        let dayEvents = поДням[начало] ?? []
+        if dayEvents.isEmpty { return дниВзвешиваний.contains(начало) ? .ordinary : .none }
         if dayEvents.contains(where: { $0.raisesAlarm || $0.kind == .incident }) { return .alarm }
         if dayEvents.contains(where: { $0.kind.isMedical }) { return .medical }
         return .ordinary
