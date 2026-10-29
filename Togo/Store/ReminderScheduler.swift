@@ -28,6 +28,13 @@ import UserNotifications
 /// в настройках при этом честен — он обещает ровно «не спрашивает
 /// результат выхода», и про уведомления не обещает ничего.
 ///
+/// **Исход постановки с 29.10.2026 читается, а не выбрасывается.**
+/// Было три `try? await center.add(request)` — отказ системы
+/// не доходил никуда, и человек не узнавал, что напоминания о дозе
+/// не будет. Теперь каждый вызов отдаёт `ИсходЗапроса`, его читает
+/// `сообщить(_:про:)`, и отказ виден в «Настройки → Журнал действий».
+/// Границу этого — чего оно НЕ делает — см. у самой `сообщить`.
+///
 /// И рядом улика: `NotificationCenterService.Category.escalation`
 /// объявлен и **не имеет ни одного читателя** — один `grep` находит
 /// только объявление. Это та самая форма, где «поле без читателя»
@@ -40,12 +47,13 @@ enum ReminderScheduler {
     /// и приложение обязано вернуться к разговору само.
     static func remindToWatch(at date: Date) async {
         guard await isAllowed() else { return }
-        await NotificationCenterService.scheduleDose(
+        let исход = await NotificationCenterService.scheduleDose(
             id: "watch-\(Int(date.timeIntervalSince1970))",
             at: date,
             title: "Как он сейчас?",
             body: "Час назад было три эпизода подряд. Если повторилось — стоит позвонить."
         )
+        сообщить(исход, про: "watch")
     }
 
     /// Пересобрать все напоминания заново.
@@ -67,12 +75,80 @@ enum ReminderScheduler {
         }
     }
 
+    // MARK: Куда уходит отказ
+
+    /// Довести исход постановки до человека.
+    ///
+    /// # Почему журнал действий, а не плашка
+    ///
+    /// Плашку показывает `AppState.showFailure`, и слой `Store`
+    /// достаёт до него ровно одним способом — **принимает ссылку
+    /// параметром**, как это делает `EventLog`
+    /// (`Togo/Store/EventLog.swift:16`, три вызова `showFailure`).
+    /// У `ReminderScheduler` ссылки нет, и завести её, не тронув
+    /// места вызова, нельзя: их шесть, и все в `Togo/Features/` —
+    /// `TodayScreen:567` и `:661`, `DayPlanActions:224` и `:317`,
+    /// `NeedsSheet:387`, `SettingsScreen:625`.
+    ///
+    /// Параметр `appState: AppState? = nil` был бы **хуже молчания**.
+    /// Он выглядит подключённым, компилируется, тесты зелёные —
+    /// и не зовётся ниоткуда. Это наш класс «механизм без входа»,
+    /// и от рабочего он не отличается ни одним признаком.
+    ///
+    /// Поэтому исход уходит туда, где вход и читатель уже есть:
+    /// **Настройки → «Журнал действий» → «Что чинить»**
+    /// (`SettingsScreen:393` ведёт на `UsageLogScreen`; корзину
+    /// `failure` собирает `UsageReport.frictionList`, заголовок —
+    /// «Приложение не справилось», и в строке видно, чего именно
+    /// не вышло и сколько раз).
+    ///
+    /// # Чего это НЕ делает, и это названо здесь, а не в журнале
+    ///
+    /// **В момент отказа человека не прерывает ничто.** Он узнает,
+    /// когда откроет журнал, — то есть позже, а по замыслу экрана
+    /// (`UsageLogScreen`, шапка) и вовсе «через пару недель».
+    /// Для дозы это мало, и назвать это починкой нельзя:
+    ///
+    /// ```
+    /// отказ записан            закрыто этой правкой
+    /// отказ виден в журнале    закрыто этой правкой
+    /// человек прерван сразу    ОТКРЫТО: нужен appState у шести мест
+    ///                          вызова, это файлы Togo/Features/
+    /// ```
+    ///
+    /// # Почему `detail` латиницей
+    ///
+    /// Это опознавательная метка, а не фраза: журнал читают
+    /// на пяти языках, и русская строка без перевода легла бы русской
+    /// во все пять. Остальные вызовы `UsageLog.note` пишут сюда ровно
+    /// такие метки (`kind.rawValue`, `"briefHour"`). Новых строк
+    /// интерфейса эта правка не вводит ни одной.
+    private static func сообщить(_ исход: NotificationCenterService.ИсходЗапроса,
+                                 про что: String) {
+        switch исход {
+        case .поставлен, .нечегоСтавить:
+            return
+        case let .отказСистемы(причина):
+            log.error("Напоминание «\(что)» не встало: \(причина)")
+            UsageLog.note(.failure, "\(что)-not-scheduled", outcome: .failed)
+        case let .очередьПолна(ожидает):
+            log.error("""
+                Очередь уведомлений полна: ждёт \(ожидает) \
+                из \(NotificationCenterService.потолокОжидающих), \
+                партия «\(что)» влезает не целиком
+                """)
+            UsageLog.note(.failure, "\(что)-queue-full", outcome: .failed)
+        }
+    }
+
     // MARK: Утренняя сводка
 
     /// Всё повторяющееся — одним сообщением в выбранный час.
     static func scheduleBrief(dog: Dog?, settings: Settings, at now: Date = Date()) async {
         let lines = briefLines(dog: dog, at: now)
-        await NotificationCenterService.scheduleMorningBrief(at: settings.briefHour, lines: lines)
+        let исход = await NotificationCenterService.scheduleMorningBrief(
+            at: settings.briefHour, lines: lines)
+        сообщить(исход, про: "brief")
     }
 
     /// Что попадёт в сводку. Отложенное дважды подсвечивается, но в тревогу
@@ -174,6 +250,30 @@ enum ReminderScheduler {
     // MARK: Доза по часам
 
     /// Единственное, что имеет право на time-sensitive, плюс эскалация.
+    ///
+    /// # Потолок 64 считается ЗДЕСЬ, и только здесь
+    ///
+    /// Остальные напоминания ставятся по одному; доза ставит **три
+    /// запроса на каждую ждущую дозу** (`t-10`, `t+30`, `t+60`).
+    /// Три препарата по три приёма в сутки — это двадцать семь
+    /// запросов в день, и потолок iOS в 64 ожидающих достигается
+    /// на третьи сутки. Лишнее система **не отбивает**: `add`
+    /// отвечает успехом, а в очереди остаются ближайшие 64.
+    ///
+    /// Партию мы при этом ставим **целиком, не обрезая**, и это
+    /// решение, а не упущение. Своя обрезка была бы хуже системной:
+    /// система оставляет ближайшие по времени, а мы, обрезая
+    /// по порядку обхода схем, отдали бы слот завтрашней дозе
+    /// и выбросили сегодняшнюю. Счёт ожидающих нужен не для того,
+    /// чтобы решать за систему, а чтобы **сказать человеку**, что
+    /// часть напоминаний до него не дойдёт.
+    ///
+    /// Чего этот счёт НЕ знает: снятие
+    /// (`removePendingNotificationRequests` в `снятьНеждущие` строкой
+    /// ниже) система выполняет не мгновенно, и очередь на момент
+    /// замера может быть длиннее настоящей. Ошибка тогда идёт
+    /// в сторону ЛИШНЕЙ строки в журнале, а не потерянной дозы, —
+    /// и это та сторона, в которую ошибаться можно.
     static func scheduleDoses(dog: Dog?, at now: Date = Date()) async {
         guard let dog else { return }
 
@@ -185,6 +285,23 @@ enum ReminderScheduler {
 
         guard dog.isOnTreatment else { return }
 
+        // Снимается ПРЕЖДЕ постановки, отдельным заходом: иначе
+        // в очереди окажутся запросы, которые мы сами же и добавили,
+        // и переполнение объявлялось бы всегда.
+        let ожидают = await NotificationCenterService.ожидающие()
+        var ставим: [String] = []
+
+        // Одна дверь на три ступени: иначе исход читался бы в трёх
+        // местах, и забыть его в одном из них ничто бы не помешало.
+        // Три копии одного правила в этом файле уже расходились.
+        func поставить(_ id: String, на когда: Date,
+                       title: String, body: String) async {
+            ставим.append(id)
+            let исход = await NotificationCenterService.scheduleDose(
+                id: id, at: когда, title: title, body: body)
+            сообщить(исход, про: "dose")
+        }
+
         for medication in dog.medications where !medication.isPaused {
             // Пропущенная доза уведомлений не заводит — по той же причине,
             // по которой она не поднимает лестницу эскалации
@@ -195,29 +312,38 @@ enum ReminderScheduler {
                 guard dose.scheduledAt > now else { continue }
 
                 // За десять минут — дежурному.
-                await NotificationCenterService.scheduleDose(
-                    id: doseID(dose, stage: "t-10"),
-                    at: dose.scheduledAt.addingTimeInterval(-10 * 60),
+                await поставить(
+                    doseID(dose, stage: "t-10"),
+                    на: dose.scheduledAt.addingTimeInterval(-10 * 60),
                     title: "Через 10 минут доза",
                     body: "\(medication.name) \(medication.doseText) в \(Fmt.clock(dose.scheduledAt))"
                 )
 
                 // Через полчаса — если так и не отметили.
-                await NotificationCenterService.scheduleDose(
-                    id: doseID(dose, stage: "t+30"),
-                    at: dose.scheduledAt.addingTimeInterval(30 * 60),
+                await поставить(
+                    doseID(dose, stage: "t+30"),
+                    на: dose.scheduledAt.addingTimeInterval(30 * 60),
                     title: "Доза \(Fmt.clock(dose.scheduledAt)) не отмечена",
                     body: "Кто-то один — отметьте. Если дали, поправьте время."
                 )
 
                 // Через час — запись «пропуск». Не ругаем, предлагаем поправить.
-                await NotificationCenterService.scheduleDose(
-                    id: doseID(dose, stage: "t+60"),
-                    at: dose.scheduledAt.addingTimeInterval(60 * 60),
+                await поставить(
+                    doseID(dose, stage: "t+60"),
+                    на: dose.scheduledAt.addingTimeInterval(60 * 60),
                     title: "Доза \(Fmt.clock(dose.scheduledAt)) пропущена",
                     body: "Отметь в Togo: дали или пропустили."
                 )
             }
+        }
+
+        // Переполнение считается ПОСЛЕ партии, но по очереди,
+        // снятой ДО неё: это единственный способ узнать о нём вообще.
+        // Ни кода возврата, ни исключения у потерянного запроса нет —
+        // `add` отвечает успехом и на шестьдесят пятый.
+        let план = NotificationCenterService.планПартии(ожидают: ожидают, ставим: ставим)
+        if план.лишних > 0 {
+            сообщить(.очередьПолна(ожидает: план.ожидает), про: "dose")
         }
     }
 
@@ -309,10 +435,11 @@ enum ReminderScheduler {
     /// Не ошибка, а «подожди»: одно уведомление на конец окна.
     static func scheduleFasting(dog: Dog?, at now: Date = Date()) async {
         guard let dog, let window = DoseScheduler.fastingEnds(for: dog, at: now) else { return }
-        await NotificationCenterService.scheduleFastingEnd(
+        let исход = await NotificationCenterService.scheduleFastingEnd(
             id: "fasting-\(Int(window.until.timeIntervalSince1970))",
             at: window.until,
             dogName: dog.displayName
         )
+        сообщить(исход, про: "fasting")
     }
 }

@@ -11,6 +11,109 @@ enum NotificationCenterService {
         case escalation = "escalation"
     }
 
+    // MARK: Исход постановки
+
+    /// Чем кончилась постановка одного запроса.
+    ///
+    /// **Заведено 29.10.2026 вместо трёх `try? await center.add(request)`.**
+    /// `try?` здесь был не сокращением, а молчаливым путём: система
+    /// отказывала, функция возвращала `Void`, и ни один вызывающий
+    /// не мог узнать, что напоминания не будет. У сводки цена этого —
+    /// пропущенный груминг; у дозы (`.timeSensitive`) — пропущенное
+    /// лекарство, и человек не узнаёт об этом ничем.
+    ///
+    /// Значение возвращается наружу, а не пишется в лог изнутри,
+    /// по той же причине, по которой наружу уходит `fastingEndText`:
+    /// **утверждать можно только про то, что вернулось.** Лог читает
+    /// разработчик у Xcode, а решить, что сказать человеку, обязано
+    /// место вызова.
+    enum ИсходЗапроса: Equatable, Sendable {
+        /// Запрос в очереди.
+        case поставлен
+        /// Ставить было нечего — пустая сводка. Это не отказ.
+        case нечегоСтавить
+        /// `add` бросил. `причина` — слова системы, не наши.
+        case отказСистемы(String)
+        /// Партия не влезает под потолок: система оставит ближайшие
+        /// `потолокОжидающих` и остальные выбросит, ничего не сказав.
+        case очередьПолна(ожидает: Int)
+    }
+
+    /// Сколько ожидающих запросов iOS держит на одно приложение.
+    ///
+    /// **Это число нельзя узнать из кода отказа, потому что отказа
+    /// нет.** Шестьдесят пятый запрос `add` принимает успехом,
+    /// а система молча оставляет ближайшие 64 по времени срабатывания
+    /// и выбрасывает остальные. То есть `do/catch` переполнение
+    /// не ловит **по устройству** — ловит его только счёт ожидающих,
+    /// снятый ПЕРЕД постановкой партии.
+    ///
+    /// До 29.10.2026 числа 64 в этом файле не было вовсе,
+    /// а `pendingNotificationRequests` читал один отладочный список.
+    static let потолокОжидающих = 64
+
+    /// Что станет с очередью, если поставить партию.
+    ///
+    /// **Чистая функция, и это весь шов.** В модульном прогоне очереди
+    /// уведомлений не существует: `UNUserNotificationCenter` отдаёт
+    /// пусто, и правило, живущее внутри вызова к системе, проверить
+    /// было бы нечем — ровно та беда, что была у текста окна натощак
+    /// до `fastingEndText`.
+    ///
+    /// - Parameters:
+    ///   - ожидают: идентификаторы запросов, которые уже стоят.
+    ///   - ставим: идентификаторы партии, в порядке постановки.
+    ///
+    /// Повторный идентификатор слот НЕ занимает: `add` с тем же `id`
+    /// заменяет стоящий запрос. Наивный счёт «ожидает + размер партии»
+    /// объявлял бы переполнение на каждой пересборке — у доз
+    /// идентификаторы стабильные (`dose-<uuid>-t+30`), и партия почти
+    /// целиком состоит из замен.
+    static func планПартии(ожидают: Set<String>,
+                           ставим: [String],
+                           потолок: Int = потолокОжидающих) -> ПланПартии {
+        var новые = Set<String>()
+        for идентификатор in ставим where !ожидают.contains(идентификатор) {
+            новые.insert(идентификатор)
+        }
+        return ПланПартии(ожидает: ожидают.count,
+                          лишних: max(0, ожидают.count + новые.count - потолок))
+    }
+
+    struct ПланПартии: Equatable, Sendable {
+        /// Сколько запросов стояло в очереди до партии.
+        let ожидает: Int
+        /// Сколько запросов не поместится под потолок. **Ноль значит
+        /// «в этот раз влезло», а не «переполнения не бывает».**
+        let лишних: Int
+    }
+
+    /// Идентификаторы запросов, которые сейчас ждут срабатывания.
+    ///
+    /// Второй читатель `pendingNotificationRequests` за всё время
+    /// (первый — `отладочныйСписок`). Отдаёт множество, а не список:
+    /// вопрос к нему один — «этот идентификатор уже стоит».
+    static func ожидающие() async -> Set<String> {
+        Set(await UNUserNotificationCenter.current()
+            .pendingNotificationRequests()
+            .map(\.identifier))
+    }
+
+    /// Положить запрос в очередь и сказать, что из этого вышло.
+    ///
+    /// Единственное место во всём приложении, где зовётся `add`.
+    /// Собрано в одну функцию нарочно: три копии `try?` разошлись бы
+    /// молча, а здесь форма команды одна и чинится один раз.
+    private static func поставить(_ запрос: UNNotificationRequest) async -> ИсходЗапроса {
+        do {
+            try await UNUserNotificationCenter.current().add(запрос)
+        } catch {
+            log.error("Запрос «\(запрос.identifier)» не встал: \(error.localizedDescription)")
+            return .отказСистемы(error.localizedDescription)
+        }
+        return .поставлен
+    }
+
     static func requestAuthorization() async -> Bool {
         do {
             return try await UNUserNotificationCenter.current()
@@ -55,10 +158,15 @@ enum NotificationCenterService {
     }
 
     /// Один пуш в выбранный час со всеми сроками сразу.
-    static func scheduleMorningBrief(at hour: Int, lines: [String]) async {
+    ///
+    /// Возврат **без** `@discardableResult`, и это не стиль: умолчание
+    /// на исходе вернуло бы ровно тот дефект, ради которого он заведён —
+    /// исход снова можно было бы не прочитать, всё собралось бы,
+    /// и тесты остались бы зелёными. Забыть его не даёт компилятор.
+    static func scheduleMorningBrief(at hour: Int, lines: [String]) async -> ИсходЗапроса {
         let center = UNUserNotificationCenter.current()
         center.removePendingNotificationRequests(withIdentifiers: [Category.morningBrief.rawValue])
-        guard !lines.isEmpty else { return }
+        guard !lines.isEmpty else { return .нечегоСтавить }
 
         let content = UNMutableNotificationContent()
         // Через каталог: `content.title` — это `String`, и присвоение
@@ -90,11 +198,16 @@ enum NotificationCenterService {
             content: content,
             trigger: UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
         )
-        try? await center.add(request)
+        return await поставить(request)
     }
 
     /// Доза — единственное, что имеет право на time-sensitive.
-    static func scheduleDose(id: String, at date: Date, title: String, body: String) async {
+    ///
+    /// Исход возвращается и **читается обязательно** (см. запрет
+    /// на `@discardableResult` у сводки выше): это напоминание
+    /// медицинское, и его молчаливая пропажа дороже всех остальных.
+    static func scheduleDose(id: String, at date: Date,
+                             title: String, body: String) async -> ИсходЗапроса {
         let content = UNMutableNotificationContent()
         content.title = title
         content.body = body
@@ -106,8 +219,8 @@ enum NotificationCenterService {
             dateMatching: Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: date),
             repeats: false
         )
-        try? await UNUserNotificationCenter.current()
-            .add(UNNotificationRequest(identifier: id, content: content, trigger: trigger))
+        return await поставить(
+            UNNotificationRequest(identifier: id, content: content, trigger: trigger))
     }
 
     /// Текст уведомления об окне натощак — отдельно от его отправки.
@@ -144,7 +257,8 @@ enum NotificationCenterService {
     }
 
     /// Окно натощак: не ошибка, а «подожди». Одно уведомление на конец окна.
-    static func scheduleFastingEnd(id: String, at date: Date, dogName: String) async {
+    static func scheduleFastingEnd(id: String, at date: Date,
+                                   dogName: String) async -> ИсходЗапроса {
         let текст = fastingEndText(dogName: dogName)
         let content = UNMutableNotificationContent()
         content.title = текст.title
@@ -157,8 +271,8 @@ enum NotificationCenterService {
             timeInterval: max(1, date.timeIntervalSinceNow),
             repeats: false
         )
-        try? await UNUserNotificationCenter.current()
-            .add(UNNotificationRequest(identifier: id, content: content, trigger: trigger))
+        return await поставить(
+            UNNotificationRequest(identifier: id, content: content, trigger: trigger))
     }
 
     static func cancel(ids: [String]) {
@@ -203,7 +317,7 @@ enum NotificationCenterService {
 
         guard !заявки.isEmpty else {
             return """
-                Запланированных уведомлений: 0 · право: \(право).
+                Запланированных уведомлений: 0 из \(потолокОжидающих) · право: \(право).
 
                 Ноль при отказе — это «права нет», а не «не запланировали».
                 Ноль при разрешении — находка.
@@ -226,7 +340,11 @@ enum NotificationCenterService {
             }
             .sorted()
 
-        return "Запланировано: \(заявки.count) · право: \(право)\n"
+        // Потолок печатается РЯДОМ с числом, а не в шапке и не в чужой
+        // записи: «запланировано 61» без второго числа не отвечает
+        // ни на что, а «61 из 64» — отвечает. Шапку читают один раз,
+        // строку с числом — каждый раз.
+        return "Запланировано: \(заявки.count) из \(потолокОжидающих) · право: \(право)\n"
             + строки.joined(separator: "\n")
     }
 }
