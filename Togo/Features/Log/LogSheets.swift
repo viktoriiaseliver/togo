@@ -303,7 +303,7 @@ struct WaterSheet: View {
             amount: 200
         ) { мл in
             EventLog(context: context, appState: appState)
-                .record(.water, dog: dog, confirmation: "Записано · вода \(мл) мл") { event in
+                .record(.water, dog: dog, confirmation: String(localized: "Записано · вода \(мл) мл")) { event in
                     event.milliliters = мл
                 }
         }

@@ -244,17 +244,17 @@ struct RecordSheet: View {
                 // через неё не поднимала того, что поднимала через
                 // «Инцидент». Подпись называет туалет первым — его
                 // и ищут здесь чаще всего.
-                строка("Инцидент", "лужа или кучка дома, рвота, съел с земли",
+                строка("Инцидент", String(localized: "лужа или кучка дома, рвота, съел с земли"),
                        "exclamationmark.triangle", тон: Token.Status.overdueText,
                        маршрут: .incident)
                 TGDivider()
-                строка("Стул", "на улице · форма для врача", "leaf",
+                строка("Стул", String(localized: "на улице · форма для врача"), "leaf",
                        тон: Token.Ink.primary, маршрут: .stool)
                 TGDivider()
                 строка("Еда", порцияГрамм > 0 ? String(localized: "\(порцияГрамм) г") : nil,
                        "fork.knife", тон: Token.Ink.primary, маршрут: .meal)
                 TGDivider()
-                строка("Ещё", "лакомство, вода, заметка, день с собакой",
+                строка("Ещё", String(localized: "лакомство, вода, заметка, день с собакой"),
                        "ellipsis", тон: Token.Ink.primary, маршрут: .more)
             }
         }
