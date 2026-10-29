@@ -323,6 +323,47 @@ struct DayPlanActions {
         }
     }
 
+    // MARK: Отдельная доза
+
+    /// Записать ещё одну дозу того же препарата — своим временем, рядом
+    /// с уже отмеченной.
+    ///
+    /// **Зачем отдельный путь, а не `route = .more` (29.10.2026).**
+    /// Кнопка замка «Другая доза? Записать отдельно» вела в шторку «Ещё»,
+    /// а там нет ни дозы, ни препарата — лакомство, заметка, выездной
+    /// день. То есть кнопка обещала запись и приводила в тупик: человек
+    /// с таблеткой в руке искал, куда её записать, и не находил.
+    ///
+    /// Теперь доза ложится настоящей отметкой `DoseRecord` на минуту
+    /// записи — той же дорогой `markGiven`, что и плановая, со списанием
+    /// запаса и строкой в ленте. Плановая отметка остаётся на месте:
+    /// у новой своё `scheduledAt`, и `устойчивыйID` у неё свой.
+    ///
+    /// **Одна и та же минута запрещена нарочно.** `markGiven` ищет отметку
+    /// по минуте и на занятую отвечает «уже дали» — то есть вернул бы
+    /// ПЛАНОВУЮ дозу, а лента получила бы вторую строку без второй
+    /// отметки. Такую запись врач прочёл бы как две дозы при одной.
+    func recordSeparateDose(like item: DayPlanItem, at момент: Date) {
+        guard item.kind == .dose, let medication = item.medication else { return }
+        guard appState.can(.giveDose) else {
+            appState.showFailure(String(localized: "Дозы отмечает тот, кому это разрешено"))
+            return
+        }
+        let calendar = Calendar.current
+        let занято = medication.doses.contains {
+            $0.isGiven && calendar.isDate($0.scheduledAt, equalTo: момент, toGranularity: .minute)
+        }
+        guard !занято else {
+            Haptics.warning()
+            appState.showFailure(String(localized: "В эту минуту доза уже записана · попробуй через минуту"))
+            return
+        }
+        let отдельная = DayPlanItem(id: "separate-\(medication.id.uuidString)-\(Int(момент.timeIntervalSince1970))",
+                                    time: момент, title: item.title, kind: .dose,
+                                    isDone: false, medication: medication)
+        complete(отдельная, givenAt: момент)
+    }
+
     // MARK: Снять отметку
 
     func uncomplete(_ item: DayPlanItem) {

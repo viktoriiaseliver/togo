@@ -719,7 +719,9 @@ struct TodayScreen: View {
                               markedBy: locked.givenBy,
                               markedAt: locked.givenAt) {
                     // Другая доза — записываем отдельно, со своим временем.
-                    route = .more
+                    // Прежде здесь стояло `route = .more`: шторка «Ещё»,
+                    // в которой дозы нет (29.10.2026).
+                    actions.recordSeparateDose(like: locked.item, at: Date())
                 } onUndo: {
                     uncomplete(locked.item)
                 }
