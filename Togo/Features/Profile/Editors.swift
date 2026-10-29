@@ -1097,7 +1097,7 @@ struct MedicationEditorSheet: View {
                         Text("Давать после еды").textStyle(AppFont.body)
                         Spacer()
                         Text(послеЕдыМинут == 0 ? "не нужно" : "\(послеЕдыМинут) мин")
-                            .textStyle(AppFont.numeric(15))
+                            .textStyle(AppFont.numeric(Token.FontSize.meta))
                     }
                 }
                 .frame(minHeight: Token.Size.tapTarget)

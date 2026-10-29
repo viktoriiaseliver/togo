@@ -246,7 +246,7 @@ struct HistoryScreen: View {
                     HStack {
                         Text(Fmt.shortDay(замер.date)).textStyle(AppFont.caption)
                         Spacer()
-                        Text(Fmt.weight(замер.kg)).textStyle(AppFont.numeric(15))
+                        Text(Fmt.weight(замер.kg)).textStyle(AppFont.numeric(Token.FontSize.meta))
                     }
                 }
             } else {
@@ -373,7 +373,7 @@ struct HistoryScreen: View {
                         HStack {
                             Text(Fmt.shortDay(day.startedAt)).textStyle(AppFont.body)
                             Spacer()
-                            Text(Fmt.gap(day.duration())).textStyle(AppFont.numeric(15))
+                            Text(Fmt.gap(day.duration())).textStyle(AppFont.numeric(Token.FontSize.meta))
                             Image(systemName: "chevron.right")
                                 .font(.system(size: Token.Size.iconSm))
                                 .foregroundStyle(Token.Ink.secondary)

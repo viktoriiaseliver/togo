@@ -245,7 +245,7 @@ struct DayOutEditSheet: View {
                         Text("Примерно на").textStyle(AppFont.body)
                         Spacer()
                         Text(String(localized: "\(рассчитывали) часов"))
-                            .textStyle(AppFont.numeric(17))
+                            .textStyle(AppFont.numeric(Token.FontSize.body))
                     }
                 }
                 .frame(minHeight: Token.Size.tapTarget)
@@ -256,7 +256,10 @@ struct DayOutEditSheet: View {
                                 subtitle: "одной строкой, если есть что запомнить")
                 TextEditor(text: $заметка)
                     .textStyle(AppFont.body)
-                    .frame(minHeight: 70)
+                    // Высота от цели касания, а не числом: литерал размера —
+                    // долг `DesignLiteralTests`, и копия соседнего «70»
+                    // его бы вырастила.
+                    .frame(minHeight: Token.Size.tapTarget * 1.5)
                     .scrollContentBackground(.hidden)
             }
 
