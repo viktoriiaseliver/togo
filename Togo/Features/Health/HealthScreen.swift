@@ -863,9 +863,16 @@ struct ProtocolScreen: View {
     /// Различитель «ещё не делали» — `lastDone == nil`: у прививки
     /// и обработки он стоит всегда (их делали хоть раз), у контроля,
     /// назначенного вперёд, пуст. Так его и заводит карта.
+    ///
+    /// **Только медицинское и не «Контрольный приём» (29.10.2026).**
+    /// Прежний фильтр брал ЛЮБОЕ назначенное дело: груминг на субботу
+    /// или приём у врача после курса вставали в «когда сдавать»
+    /// со строкой «кровь около 13:30» — по ней поехали бы сдавать
+    /// кровь на стрижку.
     private var назначенныйКонтроль: CareTask? {
         dog?.careTasks
             .filter { $0.deletedAt == nil && $0.lastDone == nil }
+            .filter { $0.category == .medical && $0.title != TreatmentCourse.checkupTitle }
             .filter { ($0.scheduledDate ?? .distantPast) > Date() }
             .min { ($0.scheduledDate ?? .distantFuture) < ($1.scheduledDate ?? .distantFuture) }
     }
@@ -887,11 +894,19 @@ struct ProtocolScreen: View {
             if let dose = lastDose, let givenAt = dose.givenAt {
                 TGCard {
                     Text("T+\(Fmt.duration(now.timeIntervalSince(givenAt)))").textStyle(AppFont.display)
-                    Text("Доза дана в \(Fmt.clock(givenAt)) под наблюдением").textStyle(AppFont.caption)
+                    // «под наблюдением» отсюда снято 29.10.2026: отметка
+                    // дозы этого не говорит, а строку читает врач.
+                    // Утверждение, которого человек не делал, — та же
+                    // подстановка, что запрещена красной линией.
+                    Text("Доза дана в \(Fmt.clock(givenAt))").textStyle(AppFont.caption)
                 }
                 TGCard(spacing: 0) {
                     ProtocolRow(label: "T0", time: givenAt,
-                                title: "доза \(dog?.medications.first?.doseText ?? "")",
+                                // Доза ТОЙ схемы, чья отметка начала протокол.
+                                // До 29.10.2026 здесь стояла `medications.first` —
+                                // первая схема базы, то есть при двух препаратах
+                                // строка T0 называла дозу чужого лекарства.
+                                title: "доза \(dose.medication?.doseText ?? "")",
                                 detail: "отмечено с точностью до минуты", isDone: true)
                     TGDivider()
                     // ГАЛОЧКА ЧИТАЕТ ОТМЕТКУ ЧЕЛОВЕКА, А НЕ ЧАСЫ.
@@ -1024,8 +1039,16 @@ struct ProtocolScreen: View {
     /// Выдуманный час забора в медицинской записи хуже отсутствующего:
     /// по нему поедут в клинику.
     private func строкаПлана(_ дата: Date) -> String {
-        let дней = Calendar.current.dateComponents([.day], from: Date(), to: дата).day ?? 0
-        var строка = String(localized: "\(Fmt.shortDay(дата)) · через \(дней) дней")
+        // Сутки — календарные, от начала дня к началу дня. Прежний
+        // счёт «от этой минуты» давал «через 0 дней» на завтрашний
+        // забор, если экран открыли вечером.
+        let дней = CalendarDay.daysBetween(Date(), дата)
+        var строка: String
+        switch дней {
+        case ...0: строка = [Fmt.shortDay(дата), String(localized: "сегодня")].joined(separator: " · ")
+        case 1: строка = [Fmt.shortDay(дата), String(localized: "завтра")].joined(separator: " · ")
+        default: строка = String(localized: "\(Fmt.shortDay(дата)) · через \(дней) дней")
+        }
         if let утро = утренняяДоза {
             let таблетка = Fmt.clock(minuteOfDay: утро)
             let кровь = Fmt.clock(minuteOfDay: утро + 4 * 60)
@@ -1364,7 +1387,9 @@ struct WeightScreen: View {
                 TGSectionHeader(title: "история")
                 let history = (dog?.weights ?? []).sorted { $0.date > $1.date }.prefix(12)
                 if history.isEmpty {
-                    TGExplainer(text: "Пока одно значение — то, что ты ввела при добавлении собаки.")
+                    // Без рода человека (29.10.2026): «ты ввела» читал
+                    // и тот, кто собаку не заводил, и мужчина.
+                    TGExplainer(text: "Пока одно значение — то, что введено при добавлении собаки.")
                 } else {
                     ForEach(Array(history)) { entry in
                         // История читается всеми, а удаляется по праву:
@@ -1396,7 +1421,7 @@ struct WeightScreen: View {
                     // удалить: иначе она посылает человека делать то,
                     // чего ему не дадут.
                     if canEdit {
-                        TGExplainer(text: "Ошиблась — тапни по строке: там можно поправить число и день или удалить.")
+                        TGExplainer(text: "Опечатка — тапни по строке: там можно поправить число и день или удалить.")
                     }
                 }
             }
@@ -1490,8 +1515,12 @@ struct WeightScreen: View {
     /// Какую запись открыли на правку.
     @State private var правится: WeightEntry?
 
+    /// Тот же разбор, что у правки взвешивания (`WeightEntryEditorSheet`),
+    /// и то же «больше нуля». До 29.10.2026 здесь стоял голый `Double(…)`:
+    /// он принимал «0», «-4» и «inf», и ноль ложился текущим весом —
+    /// тем, от которого считают дозу.
     private var parsedWeight: Double? {
-        Double(newWeight.replacingOccurrences(of: ",", with: "."))
+        ЧислоСБланка.разобрать(newWeight).flatMap { $0 > 0 ? $0 : nil }
     }
 
     /// Записать взвешивание. Право — как у удаления, и по той же
