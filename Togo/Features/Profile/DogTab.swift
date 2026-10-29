@@ -247,8 +247,8 @@ struct DogTab: View {
             NavigationLink { ProfileScreen(dog: dog) } label: {
                 VStack(alignment: .leading, spacing: Token.Space.s2) {
                     Text("Профиль").textStyle(AppFont.cardTitle)
-                    if let приметы = приметы(dog) {
-                        Text(verbatim: приметы)
+                    if let строка = приметы(dog) {
+                        Text(verbatim: строка)
                             .textStyle(AppFont.caption)
                             .wraps()
                     }
