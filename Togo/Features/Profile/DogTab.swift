@@ -654,7 +654,7 @@ struct DogTab: View {
 
     private func documents(_ dog: Dog) -> some View {
         секция("на случай, когда спросят") {
-                        TGLink(title: "Документы и контакты", value: документыПусты(dog) ? "не заполнены" : nil, systemImage: "doc.text.image") { DocumentsScreen(dog: dog) }
+                        TGLink(title: "Документы и контакты", value: документыПусты(dog) ? "не заполнены" : nil, systemImage: "doc.text.image") { DocumentsScreen(dog: dog, плакат: true) }
             if dog.tracksHeat {
                 TGDivider()
                                 TGLink(title: "Цикл", value: циклПодпись(dog), systemImage: "calendar.badge.clock") { HeatScreen(dog: dog) }
