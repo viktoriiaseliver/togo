@@ -224,7 +224,15 @@ struct DogTab: View {
         return части.isEmpty ? nil : части.joined(separator: " · ")
     }
 
-    /// Опись собаки: кличка, порода, возраст, вес, чип.
+    /// Опись собаки: вес и чип — дверь в профиль.
+    ///
+    /// **Клички и пород с возрастом здесь больше нет** (аудит 29.10.2026,
+    /// решение Виктории). Кличка стояла на вкладке трижды — заголовок
+    /// навигации, крупно в шапке и первой строкой описи, — а порода
+    /// с возрастом дважды: надстрочником шапки и в приметах. Шапка
+    /// осталась как была; опись говорит только то, чего в шапке нет,
+    /// и называет дверь словом «Профиль»: без клички текста у ссылки
+    /// могло не остаться вовсе (вес не записан, чипа нет).
     ///
     /// Стекло, а не `TGCard`: пакет называет блок `Hero` как «фото +
     /// стекло», и карточка на фотографии обязана фотографию пропускать.
@@ -238,10 +246,12 @@ struct DogTab: View {
         HStack(spacing: Token.Space.s12) {
             NavigationLink { ProfileScreen(dog: dog) } label: {
                 VStack(alignment: .leading, spacing: Token.Space.s2) {
-                    Text(dog.displayName).textStyle(AppFont.cardTitle)
-                    Text(приметы(dog))
-                        .textStyle(AppFont.caption)
-                        .wraps()
+                    Text("Профиль").textStyle(AppFont.cardTitle)
+                    if let приметы = приметы(dog) {
+                        Text(verbatim: приметы)
+                            .textStyle(AppFont.caption)
+                            .wraps()
+                    }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .contentShape(Rectangle())
@@ -258,20 +268,21 @@ struct DogTab: View {
         .стекло(радиус: Token.Radius.card)
     }
 
-    /// «шипперке · 3 года · 8,4 кг · чип есть» — дословно с кадра `09`.
+    /// «8,4 кг · чип есть». На кадре `09` здесь стояли ещё порода
+    /// и возраст — сняты 29.10.2026: их уже говорит надстрочник шапки.
+    /// `nil`, когда сказать нечего: пустая строка под «Профилем»
+    /// держала бы место под текст, которого нет.
     ///
     /// Чип назван словом, а не номером: номер — это пятнадцать цифр,
     /// которые в опись не влезут, и читают его не здесь, а в документах.
-    private func приметы(_ dog: Dog) -> String {
+    private func приметы(_ dog: Dog) -> String? {
         let чип = dog.chipNumber == nil ? nil : String(localized: "чип есть")
         // `weightIfKnown`, а не `weight`: массив уже `compactMap`,
         // и незаписанный вес просто выпадает из описи. Прочерк
         // посреди «метис · 2 года · — · чип есть» читался бы как
         // пропуск вёрстки, а не как «не записано» (замер 25.10.2026).
-        return [dog.breed, dog.ageDescription,
-                Fmt.weightIfKnown(dog.weightKg), чип]
-            .compactMap { $0 }
-            .joined(separator: " · ")
+        let части = [Fmt.weightIfKnown(dog.weightKg), чип].compactMap { $0 }
+        return части.isEmpty ? nil : части.joined(separator: " · ")
     }
 
     /// Фотоаппарат на описи.
