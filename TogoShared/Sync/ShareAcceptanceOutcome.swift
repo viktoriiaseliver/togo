@@ -21,6 +21,7 @@ import CloudKit
 ///
 /// ```
 /// нет сети                «попробуй ещё раз» — помогает
+/// iCloud просит подождать «через несколько минут» — сразу НЕ помогает
 /// iCloud не вошёл         «войди в iCloud»  — помогает
 /// сторона приложения      не помогает НИЧЕГО, и сказать надо,
 ///                         что дело не в его настройках
@@ -43,6 +44,15 @@ public enum ShareAcceptanceOutcome: Equatable, Sendable {
     case принято(чей: String?)
 
     case нетСети
+    /// iCloud жив и сеть есть, но сервер просит подождать: слишком
+    /// часто, зона занята, сервис на обслуживании.
+    ///
+    /// **Отдельно от `.нетСети` с 29.10.2026.** Прежде `requestRateLimited`
+    /// и `serviceUnavailable` уходили в «нет связи» (а `zoneBusy` —
+    /// в «не знаем почему»), и совет был неверный дважды: человек
+    /// со связью шёл чинить связь, а «попробуй ещё раз» сразу —
+    /// ровно то, что продлевает просьбу подождать.
+    case iCloudПросилПодождать
     case нетiCloud
     /// Наша сторона: тип записи не выложен, права схемы, отказ сервера.
     /// Человеку делать нечего, и сказать надо именно это.
@@ -62,8 +72,10 @@ public enum ShareAcceptanceOutcome: Equatable, Sendable {
     public static func причина(_ error: Error) -> ShareAcceptanceOutcome {
         guard let ck = error as? CKError else { return .неизвестно }
         switch ck.code {
-        case .networkUnavailable, .networkFailure, .serviceUnavailable, .requestRateLimited:
+        case .networkUnavailable, .networkFailure:
             return .нетСети
+        case .requestRateLimited, .zoneBusy, .serviceUnavailable:
+            return .iCloudПросилПодождать
         case .notAuthenticated, .accountTemporarilyUnavailable:
             return .нетiCloud
         case .badContainer, .badDatabase, .permissionFailure, .invalidArguments,
@@ -88,6 +100,8 @@ public enum ShareAcceptanceOutcome: Equatable, Sendable {
             return String(localized: "Готово: ты в общем дневнике. Чей он — приложение пока не знает.")
         case .нетСети:
             return String(localized: "Приглашение не открылось: нет связи. Попробуй ещё раз, когда появится интернет.")
+        case .iCloudПросилПодождать:
+            return String(localized: "Приглашение не открылось: iCloud просит подождать. Нажми ссылку снова через несколько минут.")
         case .нетiCloud:
             return String(localized: "Приглашение не открылось: на телефоне не выполнен вход в iCloud. Войди и нажми ссылку снова.")
         case .сторонаПриложения:

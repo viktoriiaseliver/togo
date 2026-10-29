@@ -804,6 +804,50 @@ nonisolated enum SharedDiaryMerge {
         return nil
     }
 
+    /// Ничья по времени правки: побеждает версия, где заполнено больше,
+    /// а при равном счёте — **одна и та же на обоих телефонах**.
+    ///
+    /// ## Почему не «своя», замер чтением 29.10.2026
+    ///
+    /// Аудит назвал это место «на ничьей теряется более поздняя
+    /// правка». Это неверно: сюда доходит только РАВНОЕ `changedAt`,
+    /// а его ставит `FamilySync.enqueueLocalChanges` на каждое
+    /// сохранение — более поздняя правка выигрывает строкой раньше,
+    /// и другого времени правки у снимков нет.
+    ///
+    /// Настоящий дефект — в самой ничьей. Стояло
+    /// `заполнено(local) >= заполнено(remote) ? local : remote`, то есть
+    /// при равном счёте побеждала **местная**. Местная на каждом
+    /// телефоне своя:
+    ///
+    /// ```
+    /// телефон А   local = a, remote = b   → a
+    /// телефон Б   local = b, remote = a   → b
+    /// ```
+    ///
+    /// Каждый оставляет своё, и дневник расходится до следующей
+    /// правки — молча, потому что оба считают спор решённым.
+    ///
+    /// Правило теперь симметричное: из двух версий берётся бо́льшая
+    /// по байтам упорядоченного JSON. Смысла у этого порядка нет, и он
+    /// не нужен: нужен ОДИН ответ на двух концах, а не «верный».
+    /// Не вышло закодировать — прежний ответ, местная.
+    static func приНичьей<Снимок: Encodable & Equatable>(
+        _ local: Снимок,
+        _ remote: Снимок,
+        заполнено: (Снимок) -> Int
+    ) -> Снимок {
+        let своё = заполнено(local)
+        let чужое = заполнено(remote)
+        if своё != чужое { return своё > чужое ? local : remote }
+        guard local != remote else { return local }
+        let кодировщик = JSONEncoder()
+        кодировщик.outputFormatting = [.sortedKeys]
+        guard let a = try? кодировщик.encode(local),
+              let b = try? кодировщик.encode(remote) else { return local }
+        return a.lexicographicallyPrecedes(b) ? remote : local
+    }
+
     /// Спор о записи дневника.
     ///
     /// Правила по убыванию силы:
@@ -832,7 +876,7 @@ nonisolated enum SharedDiaryMerge {
             return local.changedAt > remote.changedAt ? local : remote
         }
 
-        return filledFields(local) >= filledFields(remote) ? local : remote
+        return приНичьей(local, remote, заполнено: filledFields)
     }
 
     /// Спор о профиле собаки.
@@ -856,7 +900,7 @@ nonisolated enum SharedDiaryMerge {
         if local.changedAt != remote.changedAt {
             return local.changedAt > remote.changedAt ? local : remote
         }
-        return filledFields(local) >= filledFields(remote) ? local : remote
+        return приНичьей(local, remote, заполнено: filledFields)
     }
 
     /// Спор о деле ухода и о схеме лечения.
@@ -920,7 +964,7 @@ nonisolated enum SharedDiaryMerge {
             if p.clinicID != nil || p.clinicName?.isEmpty == false { счёт += 1 }
             return счёт
         }
-        return заполнено(local) >= заполнено(remote) ? local : remote
+        return приНичьей(local, remote, заполнено: заполнено)
     }
 
     /// Спор о взвешивании.
@@ -984,7 +1028,7 @@ nonisolated enum SharedDiaryMerge {
             if !p.reportNumber.isEmpty { счёт += 1 }
             return счёт
         }
-        return заполнено(local) >= заполнено(remote) ? local : remote
+        return приНичьей(local, remote, заполнено: заполнено)
     }
 
     static func resolve(local: VetVisitPayload, remote: VetVisitPayload) -> VetVisitPayload {
@@ -1004,7 +1048,7 @@ nonisolated enum SharedDiaryMerge {
             if p.clinicID != nil || p.clinicName?.isEmpty == false { счёт += 1 }
             return счёт
         }
-        return заполнено(local) >= заполнено(remote) ? local : remote
+        return приНичьей(local, remote, заполнено: заполнено)
     }
 
     static func resolve(local: DiagnosisPayload, remote: DiagnosisPayload) -> DiagnosisPayload {
@@ -1033,7 +1077,7 @@ nonisolated enum SharedDiaryMerge {
             if !p.evidence.isEmpty { счёт += 1 }
             return счёт
         }
-        return заполнено(local) >= заполнено(remote) ? local : remote
+        return приНичьей(local, remote, заполнено: заполнено)
     }
 
     static func resolve(local: PrescriptionPayload, remote: PrescriptionPayload) -> PrescriptionPayload {
@@ -1062,7 +1106,7 @@ nonisolated enum SharedDiaryMerge {
             if !p.dispensed.isEmpty { счёт += 1 }
             return счёт
         }
-        return заполнено(local) >= заполнено(remote) ? local : remote
+        return приНичьей(local, remote, заполнено: заполнено)
     }
 
     /// Спор о записи справочника.
@@ -1089,7 +1133,7 @@ nonisolated enum SharedDiaryMerge {
             if p.phone?.isEmpty == false { счёт += 1 }
             return счёт
         }
-        return заполнено(local) >= заполнено(remote) ? local : remote
+        return приНичьей(local, remote, заполнено: заполнено)
     }
 
     static func resolve(local: MedicationPayload, remote: MedicationPayload) -> MedicationPayload {
