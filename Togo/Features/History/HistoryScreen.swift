@@ -453,13 +453,31 @@ struct HistoryScreen: View {
 
     // MARK: Эпизоды
 
+    /// # Порядок считается ОДИН раз, и разделитель смотрит на него же
+    ///
+    /// До 29.10.2026 строки шли `episodes.sorted { > }` — новые сверху,
+    /// а разделитель спрашивал `episodes.last` — последний по ВОЗРАСТАНИЮ,
+    /// то есть первую строку списка. Итог: черты не было под первым
+    /// эпизодом и была под последним, над кнопкой «Убрать», где своя
+    /// черта уже стоит. Вычисляемое `episodes` при этом звалось пять раз
+    /// на одну перерисовку — каждый раз проходом по всем эпизодам
+    /// хранилища.
+    ///
+    /// Корзина и «Убрать закончившиеся» стоят за `.editRecords`, «Собаке
+    /// лучше — закрыть» — за `.logBasics`: эпизод — объединение записей,
+    /// и правило у него то же, что у самих записей. До этой правки
+    /// наблюдатель удалял эпизоды наравне с владельцем — экран не
+    /// спрашивал прав ни разу.
     private var episodesCard: some View {
-        TGCard {
+        let порядок = episodes.sorted { $0.startedAt > $1.startedAt }
+        let закончились = порядок.filter { !$0.isActive() }
+        let можноУбирать = appState.can(.editRecords)
+        return TGCard {
             TGSectionHeader(title: "эпизоды")
-            if episodes.isEmpty {
+            if порядок.isEmpty {
                 TGExplainer(text: "Пока ни одного. Эпизод поднимается сам: два инцидента за сутки или несколько дней подряд с жидким стулом.")
             } else {
-                ForEach(episodes.sorted { $0.startedAt > $1.startedAt }) { episode in
+                ForEach(порядок) { episode in
                     VStack(alignment: .leading, spacing: Token.Space.s2) {
                         HStack {
                             Text(episode.title).textStyle(AppFont.bodyEmphasis)
@@ -472,26 +490,28 @@ struct HistoryScreen: View {
                             // в дереве — откат при несохранении.
                             // Заведённое приложением без спроса человек
                             // обязан уметь убрать.
-                            Button { удаляемый = episode } label: {
-                                Image(systemName: "trash")
-                                    .font(.system(size: Token.Size.iconSm))
-                                    .frame(width: Token.Size.tapTarget,
-                                           height: Token.Size.tapTarget)
-                                    .contentShape(Rectangle())
+                            if можноУбирать {
+                                Button { удаляемый = episode } label: {
+                                    Image(systemName: "trash")
+                                        .font(.system(size: Token.Size.iconSm))
+                                        .frame(width: Token.Size.tapTarget,
+                                               height: Token.Size.tapTarget)
+                                        .contentShape(Rectangle())
+                                }
+                                .buttonStyle(.plain)
+                                .foregroundStyle(Token.Status.overdueText)
+                                .accessibilityLabel("Удалить эпизод \(episode.title)")
                             }
-                            .buttonStyle(.plain)
-                            .foregroundStyle(Token.Status.overdueText)
-                            .accessibilityLabel("Удалить эпизод \(episode.title)")
                         }
                         Text(episode.detail).textStyle(AppFont.caption).wraps()
                         if episode.isActive() { activeEpisodeFooter(episode) }
                     }
                     .frame(minHeight: Token.Size.tapTarget)
-                    if episode.id != episodes.last?.id { TGDivider() }
+                    if episode.id != порядок.last?.id { TGDivider() }
                 }
-                if закончившиеся.count > 1 {
+                if можноУбирать, закончились.count > 1 {
                     TGDivider()
-                    TGButton(title: "Убрать закончившиеся · \(закончившиеся.count)",
+                    TGButton(title: "Убрать закончившиеся · \(закончились.count)",
                              variant: .destructive, size: .medium,
                              systemImage: "trash") {
                         убратьЗакончившиеся = true
@@ -548,9 +568,11 @@ extension HistoryScreen {
         Text("Идёт. Закроется сам \(Fmt.shortDay(episode.quietUntil)), если больше ничего не случится.")
             .textStyle(AppFont.micro.color(Token.Status.waitingText))
             .wraps()
-        TGButton(title: "Собаке лучше — закрыть", variant: .finish, size: .medium,
-                 systemImage: "checkmark") {
-            closing = episode
+        if appState.can(.logBasics) {
+            TGButton(title: "Собаке лучше — закрыть", variant: .finish, size: .medium,
+                     systemImage: "checkmark") {
+                closing = episode
+            }
         }
     }
 
@@ -564,18 +586,35 @@ extension HistoryScreen {
     /// иначе вердикт «просится» остался бы выключенным ссылкой
     /// на эпизод, которого уже нет.
     func удалить(_ episode: Episode) {
+        // Кнопку без права не рисуем, но проверка стоит и здесь:
+        // подтверждение живёт дольше кнопки, а права могут смениться,
+        // пока оно открыто (`AppState.permissions` читается в месте).
+        guard appState.can(.editRecords) else {
+            Haptics.warning()
+            appState.showFailure(Permission.editRecords.отказ)
+            удаляемый = nil
+            return
+        }
         let былоАктивным = appState.activeEpisode?.id == episode.id
         if былоАктивным { appState.activeEpisode = nil }
         context.delete(episode)
         guard context.persist(otherwise: {
             if былоАктивным { appState.activeEpisode = episode }
         }) else {
+            // `String(localized:)`: `showFailure` и `showUndo` принимают
+            // `String`, и голый литерал рисовался дословно, мимо каталога,
+            // — у соседа ниже это было названо, а здесь стояло до 29.10.
+            //
+            // «Проверь после перезапуска», а не «нажми ещё раз»: откатить
+            // `context.delete` нечем, строка из списка уже ушла, и нажать
+            // ещё раз не на что. Та же формула, что у `DayOutEditSheet`.
             Haptics.warning()
-            appState.showFailure("Не удалилось · нажми ещё раз")
+            appState.showFailure(String(localized: "Не удалилось · проверь после перезапуска"))
+            удаляемый = nil
             return
         }
         Haptics.success()
-        appState.showUndo("Эпизод удалён · записи остались")
+        appState.showUndo(String(localized: "Эпизод удалён · записи остались"))
         удаляемый = nil
     }
 
@@ -590,6 +629,12 @@ extension HistoryScreen {
     /// Счёт берётся ДО удаления: после `context.delete` массив пуст,
     /// и строка подтверждения сказала бы «Убрано 0».
     func убратьВсеЗакончившиеся() {
+        guard appState.can(.editRecords) else {
+            Haptics.warning()
+            appState.showFailure(Permission.editRecords.отказ)
+            убратьЗакончившиеся = false
+            return
+        }
         let кУдалению = закончившиеся.filter { $0.id != appState.activeEpisode?.id }
         guard !кУдалению.isEmpty else {
             убратьЗакончившиеся = false
@@ -603,23 +648,36 @@ extension HistoryScreen {
         // от ненужного было бы не отличить.
         guard context.persistNothingToUndo() else {
             Haptics.warning()
-            appState.showFailure(String(localized: "Не удалилось · нажми ещё раз"))
+            appState.showFailure(String(localized: "Не удалилось · проверь после перезапуска"))
+            убратьЗакончившиеся = false
             return
         }
         Haptics.success()
         // `String(localized:)`, а не голый литерал: `showUndo` принимает
         // `String` со значением, и такая строка рисуется дословно, мимо
-        // каталога. Соседний `удалить` именно так и теряет перевод —
-        // это названо, а не унаследовано.
+        // каталога. Соседний `удалить` терял так перевод до 29.10.2026.
         appState.showUndo(String(localized: "Убрано эпизодов: \(сколько) · записи остались"))
         убратьЗакончившиеся = false
     }
 
+    /// Закрыть идущий эпизод.
+    ///
+    /// До 29.10.2026 отказ сохранения кончался одной вибрацией: эпизод
+    /// возвращался в «идёт», подтверждение закрывалось, и человек
+    /// не узнавал, что нажатие не состоялось.
     func close(_ episode: Episode) {
+        guard appState.can(.logBasics) else {
+            Haptics.warning()
+            appState.showFailure(Permission.logBasics.отказ)
+            closing = nil
+            return
+        }
         let былЗакрыт = episode.endedAt
         episode.close()
         guard context.persist(otherwise: { episode.endedAt = былЗакрыт }) else {
             Haptics.warning()
+            appState.showFailure(String(localized: "Не сохранилось · нажми ещё раз"))
+            closing = nil
             return
         }
         Haptics.success()
