@@ -45,8 +45,24 @@ enum ЧужоеПринято {
                 """)
             return
         }
+        // Гость, у которого открыта ПУСТАЯ собака, а из дневника пришла
+        // собака с записями, — смотрит не туда. Ровно это и было у мамы
+        // Виктории 29.10.2026: приглашение принято, уведомление пришло,
+        // а на экране своя пустая собака, заведённая онбордингом,
+        // и «ничего не работает». Переключаем один раз, только с пустой
+        // на живую: собаку, у которой есть записи, гостю не подменяем.
+        if SharedZoneOwner.isGuest,
+           let открыта = appState.activeDog(from: собаки),
+           Diary.active(открыта.events).isEmpty,
+           let изДневника = собаки
+               .filter({ $0.id != открыта.id && !Diary.active($0.events).isEmpty })
+               .max(by: { $0.events.count < $1.events.count }) {
+            appState.activeDogID = изДневника.id
+        }
         let собака = appState.activeDog(from: собаки)
         LiveActivityController.publishSnapshot(dog: собака, appState: appState)
+        // Владельцу — «Мама — в дневнике», когда она вошла (`ВошедшиеВДневник`).
+        Task { await ВошедшиеВДневник.проверить() }
         Task { await ReminderScheduler.refresh(dog: собака, settings: settings) }
     }
 }

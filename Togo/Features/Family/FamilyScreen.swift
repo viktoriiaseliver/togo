@@ -173,7 +173,15 @@ struct FamilyScreen: View {
                         action: nil
                     )
                 }
+                if SharedZoneOwner.isGuest { гостьВДневнике }
+                if let вошёл = новоВошедший {
+                    TGBanner(tone: .done,
+                             title: .готовая(String(localized: "\(вошёл) — в дневнике")),
+                             subtitle: "приглашение открыто, записи теперь общие",
+                             systemImage: "checkmark.circle")
+                }
                 membersCard
+                if canManageFamily, SharedDiarySettings.isOn { доступКарточка }
                 rolesExplainer
                 sitterBriefingLink
                 if canManageFamily { inviteCard }
@@ -204,16 +212,13 @@ struct FamilyScreen: View {
                 // узнаёт, ЧТО он здесь может, а не упирается в молчащий
                 // орган.
                 if canManageFamily {
-                    TGButton(title: "Добавить человека", systemImage: "person.badge.plus") {
+                    // «Позвать в дневник» — одна дверь вместо трёх
+                    // (29.10.2026, разбор у `InviteSheet`). Ворота «двое
+                    // бесплатно» спрашивает сам лист — по составу
+                    // дневника, а не по карточкам на этом телефоне.
+                    TGButton(title: "Позвать в дневник", systemImage: "person.badge.plus") {
                         UsageLog.note(.open, "addMember", on: .family)
-                        // Порог «двое бесплатно» живёт в `ProLimit`, а не
-                        // числом здесь: см. `Togo/Store/ProGate.swift`.
-                        if ProGate.isOpen(.familyBeyondTwo(familyMembers: members.count),
-                                          isPro: store.isPro) {
-                            showInvite = true
-                        } else {
-                            showPaywall = true
-                        }
+                        showInvite = true
                     }
                 } else {
                     гостевоеПояснение
@@ -250,6 +255,7 @@ struct FamilyScreen: View {
                 // Флага «уже спрашивали» здесь поэтому нет: он сделал бы
                 // ворота вечно зелёными у того, кто не закрывал экран.
                 состав = await FamilyShare.участники()
+                новоВошедший = ВошедшиеВДневник.новые(среди: состав, для: .экран).first
                 guard !рольПрочитана else { return }
                 рольВОблаке = await FamilyShare.наряд()?.новичкам?.роль
                 if let рольВОблаке { рольНовичка = рольВОблаке }
@@ -259,7 +265,11 @@ struct FamilyScreen: View {
             // вкладки собаки, из которой этот экран и открывается.
             // Второй вход в настройки с пушнутого экрана — это та самая
             // «кнопка в шапке», которых по решению 22.10 быть не должно.
-            .sheet(isPresented: $showInvite) { InviteSheet() }
+            .sheet(isPresented: $showInvite) {
+                InviteSheet(состав: состав) {
+                    Task { await перечитатьДоступ() }
+                }
+            }
             .sheet(isPresented: $editingBriefing) { SitterBriefingEditor(dog: dog) }
             .sheet(item: $handingOver) { передача in
                 ShiftHandoverSheet(summary: summary(for: передача.сдающий),
@@ -603,6 +613,76 @@ struct FamilyScreen: View {
 
     /// Заголовок секции **над** карточкой, а не внутри неё: так на кадре
     /// `12` и так же переписан список вкладки собаки.
+    /// Кто вошёл с прошлого раза — одна строка сверху «Мама — в дневнике».
+    @State private var новоВошедший: String?
+
+    /// Перечитать, кто имеет доступ, — после листа приглашения и при входе.
+    private func перечитатьДоступ() async {
+        guard SharedDiarySettings.isOn else { return }
+        invite = await FamilyShare.existing().map(DiaryInvite.init)
+        состав = await FamilyShare.участники()
+        новоВошедший = ВошедшиеВДневник.новые(среди: состав, для: .экран).first
+    }
+
+    /// Доступ к дневнику — прямо здесь, а не на третьем экране.
+    ///
+    /// Карточка участника (выше) живёт на этом телефоне и доступа
+    /// не даёт; доступ — это состав `CKShare`. До 29.10.2026 второй
+    /// жил на отдельном экране «Кто имеет доступ», и человек видел
+    /// «Мама» в списке семьи при том, что мама в дневник не вошла.
+    /// Теперь оба списка на одном экране, и у приглашённого — слово
+    /// о том, где он: «ждём, когда откроет» или «в дневнике».
+    private var доступКарточка: some View {
+        VStack(alignment: .leading, spacing: Token.Space.s8) {
+            TGSectionHeader(title: "доступ к дневнику")
+            TGCard(spacing: 0) {
+                let гости = состав.filter { !$0.владелец }
+                if гости.isEmpty {
+                    TGExplainer(text: "Пока никого не позвали. «Позвать в дневник» внизу — приглашение создастся само.")
+                        .padding(.vertical, Token.Space.s8)
+                } else {
+                    ForEach(гости) { участник in
+                        HStack(spacing: Token.Space.s12) {
+                            Image(systemName: участник.принял ? "checkmark.circle.fill" : "clock")
+                                .foregroundStyle(участник.принял ? Token.Status.doneText : Token.Status.waitingText)
+                                .frame(width: Token.Size.avatarMd)
+                                .accessibilityHidden(true)
+                            VStack(alignment: .leading, spacing: Token.Space.s2) {
+                                Text(verbatim: участник.подпись ?? String(localized: "без имени в iCloud"))
+                                    .textStyle(AppFont.bodyEmphasis).wraps()
+                                // Через каталог явно: `Text(cond ? "…" : "…")`
+                                // берёт перегрузку со `String` и рисует дословно.
+                                Text(участник.принял
+                                     ? String(localized: "в дневнике")
+                                     : String(localized: "приглашён · ждём, когда откроет"))
+                                    .textStyle(AppFont.caption).wraps()
+                            }
+                            Spacer(minLength: 0)
+                        }
+                        .frame(minHeight: Token.Size.controlXL)
+                        .accessibilityElement(children: .combine)
+                        if участник.id != гости.last?.id { TGDivider(inset: 38) }
+                    }
+                }
+                TGDivider()
+                NavigationLink { УчастникиДневника() } label: {
+                    TGListRow(title: "Роли и доступ по одному", systemImage: "person.2.badge.key")
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
+
+    /// Гостю — чей это дневник, словом и надолго (`ЧейДневник`).
+    private var гостьВДневнике: some View {
+        TGCard {
+            TGIconRow(symbol: "checkmark.circle",
+                      title: .готовая(ЧейДневник.имя.map { String(localized: "Ты в дневнике · \($0)") }
+                                      ?? String(localized: "Ты в общем дневнике")),
+                      detail: "Твои отметки уходят в него, а записи оттуда — к тебе. Отмечай как обычно.")
+        }
+    }
+
     private var membersCard: some View {
         VStack(alignment: .leading, spacing: Token.Space.s8) {
             TGSectionHeader(title: "участники · \(members.count)")
@@ -1589,29 +1669,78 @@ private struct PermissionToggle: View {
 /// с разрешения владельца, а молчаливое поле дешевле миграции.
 /// Но утверждение о поведении, которого нет, стоить не должно ничего —
 /// поэтому оно и снято.
+/// «Позвать в дневник» — одна дверь на всё, что раньше жило в трёх местах.
+///
+/// **До 29.10.2026 приглашение было разложено по трём экранам**, и журнал
+/// действий Виктории показал, где оно рвалось: семь раз «Добавить
+/// человека» (а это только карточка на ЭТОМ телефоне, доступа она
+/// не даёт), два настоящих приглашения за три дня, и ни одного сегодня.
+/// Отправить ссылку надо было на втором экране («позвать в дневник»),
+/// а включить общий дневник — на третьем («Общий дневник»). Фраза
+/// из отзыва 22.09 — «человека создала, а пригласить не могу» —
+/// повторилась через пять недель слово в слово: «у меня и у мамы
+/// не получилось».
+///
+/// Теперь путь один и идёт вперёд сам:
+///
+/// ```
+/// имя и роль → «Дальше»
+///   общий дневник выключен — включается
+///   приглашения нет — создаётся, роль новичкам ставится
+///   карточка участника заводится
+/// → «Отправить приглашение маме» + что ей сделать на своём телефоне
+/// → в «Семье» напротив неё: «ждём, когда откроет» → «в дневнике»
+/// ```
+///
+/// Переключатель «у него свой телефон» оставлен: семья с одним
+/// телефоном на всех — настоящий случай, и ей приглашение не нужно.
 struct InviteSheet: View {
+    /// Кто уже в дневнике — ворота «двое бесплатно» считаются по нему.
+    var состав: [УчастникДневника] = []
+    var onDone: () -> Void = {}
+
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.familySync) private var sync
+    @Environment(SubscriptionStore.self) private var store
+    @Environment(AppState.self) private var appState
+    @Query private var dogs: [Dog]
+    @Query private var members: [FamilyMember]
+
     @State private var role: FamilyRole = .caregiver
     @State private var name = ""
+    @State private var свойТелефон = true
+    @State private var готовлю = false
+    @State private var ошибка: String?
+    @State private var invite: DiaryInvite?
+    @State private var showPaywall = false
 
     private let token = String(UUID().uuidString.prefix(6))
+    private var имя: String { name.trimmingCharacters(in: .whitespaces) }
+    private var dog: Dog? { appState.activeDog(from: dogs) }
 
     var body: some View {
-        TGSheet(title: "Новый участник", subtitle: "имя, роль и права") {
+        Group {
+            if let invite { отправить(invite) } else { ктоЭто }
+        }
+        .presentationDetents([.large])
+        .sheet(isPresented: $showPaywall) { NavigationStack { PaywallScreen() } }
+    }
+
+    // MARK: Шаг 1 — кто
+
+    private var ктоЭто: some View {
+        TGSheet(title: "Позвать в дневник", subtitle: "кто и с какими правами") {
             TGCard {
                 LabeledField(label: "Как зовут") {
                     TextField("Мама", text: $name).textInputAutocapitalization(.words)
                 }
             }
             TGCard {
-                // Было «принявший не сможет её поменять» — обещание,
-                // обратное устройству: `FamilyMember` по обмену не ездит
-                // (`SharedDiary.swift:78`, решение 08.10), второй телефон
-                // эту карточку не получает вовсе и заводит свою. Роль,
-                // выбранная здесь, живёт на ЭТОМ телефоне и решает, что
-                // можно тому, кто отмечает с него.
-                TGSectionHeader(title: "роль", subtitle: "на этом телефоне")
+                // Роль живёт на ЭТОМ телефоне и в наряде облака
+                // (`FamilyShare.назначитьНовичкам`): второй телефон
+                // карточку не получает (`SharedDiary.swift:78`).
+                TGSectionHeader(title: "роль")
                 TGChipGroup(
                     items: [FamilyRole.coOwner, .caregiver, .helper, .observer],
                     title: \.title,
@@ -1620,55 +1749,169 @@ struct InviteSheet: View {
                 ) { role = $0 }
             }
             TGCard {
-                TGSectionHeader(title: "что это даёт")
-                TGExplainer(text: "Здесь заводится участник: имя станет автором записей, права решат, что ему можно. Работает и с одним телефоном на семью, если передавать его из рук в руки.")
-                TGExplainer(text: "Чтобы он отмечал со своего телефона, включи общий дневник и отправь приглашение — «позвать в дневник» в списке семьи.")
+                Toggle(isOn: $свойТелефон) {
+                    VStack(alignment: .leading, spacing: Token.Space.s2) {
+                        Text("Отмечает со своего телефона").textStyle(AppFont.body)
+                        Text(свойТелефон
+                             ? String(localized: "пришлём приглашение — записи сойдутся в один дневник")
+                             : String(localized: "только имя автора здесь: телефон один на семью"))
+                            .textStyle(AppFont.caption)
+                    }
+                }
+                .frame(minHeight: Token.Size.tapTarget)
+            }
+            if let ошибка {
+                TGBanner(tone: .alarm, title: "Не получилось", subtitle: .готовая(ошибка),
+                         systemImage: "exclamationmark.triangle")
             }
         } footer: {
-            // Правило дизайна круга 5, п. 1: выключенная кнопка
-            // допустима, только если рядом словом сказано, чего
-            // не хватает. Форма — по образцу запаса корма (`d569d01`):
-            // строка над кнопкой, на ТОЙ ЖЕ величине, что ворота.
             VStack(spacing: Token.Space.s8) {
-                if name.trimmingCharacters(in: .whitespaces).isEmpty {
+                if имя.isEmpty {
                     Text("Напиши, как его зовут — имя станет автором его записей")
                         .textStyle(AppFont.caption.color(Token.Status.overdueText))
                         .wraps()
                 }
-                TGButton(title: "Добавить", isEnabled: !name.trimmingCharacters(in: .whitespaces).isEmpty) {
-                    create()
-                    dismiss()
+                TGButton(title: готовлю ? "Готовлю приглашение…" : (свойТелефон ? "Дальше" : "Добавить"),
+                         isEnabled: !имя.isEmpty && !готовлю) {
+                    Task { await дальше() }
                 }
             }
         }
-        .presentationDetents([.large])
     }
 
-    /// Участник заводится сразу и целиком: приглашения по ссылке нет,
-    /// потому что нечему приходить — обмена между устройствами ещё нет.
-    /// Токен всё равно записываем: он понадобится, когда обмен появится,
-    /// и заводить его задним числом будет неоткуда.
-    private func create() {
-        let member = FamilyMember(name: name.trimmingCharacters(in: .whitespaces),
-                                  role: role)
+    // MARK: Шаг 2 — отправить
+
+    private func отправить(_ invite: DiaryInvite) -> some View {
+        TGSheet(title: .готовая(String(localized: "Отправь приглашение · \(имя)")),
+                subtitle: "последний шаг на этом телефоне") {
+            TGCard {
+                ShareLink(item: invite,
+                          preview: SharePreview("Дневник · \(dog.flatMap(\.nameIfAny) ?? String(localized: "собаки"))",
+                                                image: Image(systemName: "pawprint.fill"))) {
+                    TGListRow(title: "Отправить приглашение", systemImage: "square.and.arrow.up",
+                              accessory: .none)
+                }
+                .buttonStyle(.plain)
+                TGExplainer(text: "Выбери человека в контактах — по номеру или почте его iCloud. Ссылка откроется только у него.")
+            }
+            TGCard {
+                TGSectionHeader(title: .готовая(String(localized: "что сделать на телефоне · \(имя)")))
+                TGIconRow(symbol: "arrow.down.app", title: "Поставить Togo",
+                          detail: "Тем же путём, каким его поставили здесь. Войти в iCloud в настройках телефона.")
+                TGIconRow(symbol: "link", title: "Открыть ссылку из сообщения",
+                          detail: "Нажать прямо в переписке и согласиться. Если Togo открылся с приветствием — «Меня позвали» и вставить ссылку или код ниже.")
+                TGIconRow(symbol: "pawprint", title: "Свою собаку не заводить",
+                          detail: "Дневник приедет сам вместе с собакой — обычно за минуту.")
+            }
+            if let код = invite.share.url?.lastPathComponent, !код.isEmpty {
+                TGCard {
+                    TGSectionHeader(title: "код, если ссылка не откроется")
+                    Text(verbatim: код)
+                        .textStyle(AppFont.numeric(15), color: Token.Ink.primary)
+                        .wraps()
+                    Button("Скопировать") {
+                        UIPasteboard.general.string = код
+                        Haptics.success()
+                    }
+                    .textStyle(AppFont.captionEmphasis.color(Token.Action.primary))
+                    .buttonStyle(.plain)
+                    .frame(minHeight: Token.Size.tapTarget)
+                    TGExplainer(text: "Код не даёт доступа сам по себе: входит только тот, кого выбрали в «Отправить приглашение».")
+                }
+            }
+            TGExplainer(text: "Когда откроет, на экране «Семья» напротив имени появится «в дневнике». До тех пор — «приглашён · ждём, когда откроет».")
+        } footer: {
+            TGButton(title: "Готово") {
+                onDone()
+                dismiss()
+            }
+        }
+    }
+
+    // MARK: Логика
+
+    /// Шаг вперёд — всё, что раньше человек делал на трёх экранах.
+    ///
+    /// Порядок держит отказ честным: карточка заводится ПОСЛЕДНЕЙ,
+    /// когда приглашение уже есть, — иначе отказ облака оставлял бы
+    /// в «Семье» участника, которого никто никуда не звал (ровно тот
+    /// след, что лежит в журнале: семь «familyMember» и два «invite»).
+    private func дальше() async {
+        ошибка = nil
+        guard свойТелефон else {
+            if завестиКарточку() { onDone(); dismiss() }
+            return
+        }
+        guard ProGate.isOpen(.familyBeyondTwo(среди: состав), isPro: store.isPro) else {
+            showPaywall = true
+            return
+        }
+        готовлю = true
+        defer { готовлю = false }
+
+        if !SharedDiarySettings.isOn {
+            SharedDiarySettings.isOn = true
+            if let sync { await sync.start() } else {
+                NotificationCenter.default.post(name: .familyShareAccepted, object: nil)
+            }
+        }
+        do {
+            let share: CKShare
+            if let есть = await FamilyShare.existing() {
+                share = есть
+            } else {
+                share = try await FamilyShare.invite(
+                    dogName: dog.flatMap(\.nameIfAny) ?? String(localized: "собаки"))
+            }
+            // Роль новичкам — не повод отказать в приглашении: доступ
+            // уже выдан листом «Поделиться», роль доедет следующим
+            // обменом. Отказ здесь пишется в журнал и говорится словом.
+            do {
+                try await FamilyShare.назначитьНовичкам(role)
+            } catch {
+                ошибка = String(localized: "Приглашение готово, а роль не записалась — поменяй её на экране «Семья».")
+                UsageLog.note(.record, "invite:роль:\(FamilyShare.причина(error))",
+                              on: .family, outcome: .failed)
+            }
+            guard завестиКарточку() else { return }
+            invite = DiaryInvite(share: share)
+            UsageLog.note(.record, "invite", on: .family)
+        } catch {
+            ошибка = error.localizedDescription
+            UsageLog.note(.record, "invite:\(FamilyShare.причина(error))",
+                          on: .family, outcome: .failed)
+        }
+    }
+
+    /// Карточка на этом телефоне. С тем же именем уже есть — новую
+    /// не заводим: повторное «Позвать» той же мамы не должно давать
+    /// двух мам в списке.
+    private func завестиКарточку() -> Bool {
+        if let есть = members.first(where: {
+            $0.name.trimmingCharacters(in: .whitespaces).lowercased() == имя.lowercased()
+        }) {
+            есть.role = role
+            return context.persist(otherwise: {})
+        }
+        let member = FamilyMember(name: имя, role: role)
         member.inviteToken = token
         member.inviteExpiresAt = Date().addingTimeInterval(24 * 3600)
         context.insert(member)
-        // Тоста у этой шторки нет, поэтому отказ виден откликом
-        // и остаётся в журнале действий — там же, где и сама попытка.
         guard context.persist(otherwise: { context.delete(member) }) else {
             Haptics.warning()
+            ошибка = String(localized: "Не сохранилось · нажми ещё раз")
             UsageLog.note(.record, "member", on: .family, outcome: .failed)
-            return
+            return false
         }
         // Без этой строки самое спорное действие экрана не оставляло следа:
         // 22.09 человек написал «человека создала, а пригласить не могу»,
-        // а в журнале за ту сессию не было ни одной записи о создании —
-        // только три открытия «Семьи» подряд за двадцать две секунды.
+        // а в журнале за ту сессию не было ни одной записи о создании.
         UsageLog.note(.record, "familyMember", outcome: .done)
         Haptics.success()
+        return true
     }
 }
+
 
 /// Что видит помощник или ситтер. Роль сама перечисляет, чего он не видит.
 struct SitterPreviewScreen: View {
