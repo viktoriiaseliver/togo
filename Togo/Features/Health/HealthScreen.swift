@@ -816,7 +816,10 @@ struct HealthScreen: View {
             }
                         TGLink(title: "Протокол контроля", value: "T0 / +4 / +6", systemImage: "timer") { ProtocolScreen(dog: dog) }
             TGDivider()
-                        TGLink(title: "Вес и симптомы", value: dog.map { .готовая(Fmt.weight($0.weightKg)) }, systemImage: "scalemass") { WeightScreen(dog: dog) }
+                        // «Вес», а не «Вес и симптомы» (решение Виктории
+                        // 29.10.2026): симптомов на экране за строкой нет,
+                        // они живут в инцидентах.
+                        TGLink(title: "Вес", value: dog.map { .готовая(Fmt.weight($0.weightKg)) }, systemImage: "scalemass") { WeightScreen(dog: dog) }
             TGDivider()
             // МЕСТО ВЫЗОВА. Без этой строки экран анализов существует
             // и недостижим: до 08.10.2026 `LabResult` создавался только
