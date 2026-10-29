@@ -65,6 +65,9 @@ struct LabChartScreen: View {
     }
     @State private var период: Период = .всё
     @State private var выбраннаяТочка: Точка?
+    /// Единица ряда, выбранная человеком. Пусто — единица последнего
+    /// анализа (`выбраннаяЕдиница`).
+    @State private var единица: String?
 
     enum Период: String, CaseIterable, Identifiable {
         case полгода = "6 мес", год = "год", всё = "всё"
@@ -133,6 +136,39 @@ struct LabChartScreen: View {
         return есть.first
     }
 
+    /// Единицы выбранного показателя, свежая первой.
+    ///
+    /// **Ряд делится по единице — решение Виктории 29.10.2026.** Две
+    /// лаборатории дают один показатель в разных единицах (нмоль/л
+    /// и мкг/дл), и на одной линии `16` и `1,3` читались падением
+    /// в двенадцать раз, которого не было. Пересчёт между единицами
+    /// приложение не делает: множитель у каждого вещества свой, и
+    /// выдуманный коэффициент в медицинском показе хуже двух графиков.
+    /// Сравнение «без единицы» с «нмоль/л» тоже не склеивается:
+    /// пустая единица — своя группа.
+    private var единицыПоказателя: [String] {
+        guard let выбранный else { return [] }
+        var видели = Set<String>()
+        var порядок: [String] = []
+        for анализ in всеАнализы.sorted(by: { $0.sampledOn > $1.sampledOn })
+        where анализ.value != nil && анализ.indicator.trimmingCharacters(in: .whitespaces) == выбранный {
+            let е = Self.ключЕдиницы(анализ.unit)
+            if видели.insert(е).inserted { порядок.append(е) }
+        }
+        return порядок
+    }
+
+    /// Единица без пробелов и регистра: «нмоль/л» и «Нмоль/л » — одна.
+    static func ключЕдиницы(_ единица: String) -> String {
+        единица.trimmingCharacters(in: .whitespaces).lowercased()
+    }
+
+    private var выбраннаяЕдиница: String? {
+        let есть = единицыПоказателя
+        if let единица, есть.contains(единица) { return единица }
+        return есть.first
+    }
+
     /// Время забора относительно последней дозы — **из домена**.
     ///
     /// Здесь стояли два своих расчёта: «идёт ли лечение» и «последняя
@@ -160,8 +196,10 @@ struct LabChartScreen: View {
         let порог: Date? = период.месяцев.flatMap {
             Calendar.current.date(byAdding: .month, value: -$0, to: Date())
         }
+        let своя = выбраннаяЕдиница
         return всеАнализы
             .filter { $0.indicator.trimmingCharacters(in: .whitespaces) == выбранный }
+            .filter { своя == nil || Self.ключЕдиницы($0.unit) == своя }
             .filter { порог == nil || $0.sampledOn >= порог! }
             .compactMap { анализ -> Точка? in
                 guard let значение = анализ.value else { return nil }
@@ -177,17 +215,29 @@ struct LabChartScreen: View {
             .sorted { $0.дата < $1.дата }
     }
 
-    /// Полоса нормы: берётся у последней точки, у которой норма есть.
-    /// Если нормы нет ни у одной — полосы нет, **и это не повод
+    /// Полоса нормы — только когда она ОДНА у всех точек с нормой.
+    ///
+    /// До 29.10.2026 полоса бралась у последней точки и прикладывалась
+    /// ко всем: норма одной лаборатории ложилась под точки другой,
+    /// и точка «в норме» по своему бланку читалась выходом за полосу.
+    /// Нормы на бланках разные — полосы нет, и это сказано словом
+    /// (`нормыРазные`); своя норма каждой точки — в её карточке.
+    /// Нормы нет ни у одной — полосы нет, **и это не повод
     /// не рисовать точки**: так записано у `bandBounds`.
     /// Ярлыки кортежа взяты у `bandBounds` (`low`/`high`), а не свои:
     /// компилятор не приводит `(low:high:)` к `(низ:верх:)`, и переводить
     /// их здесь значило бы заводить второе имя одной величины.
     private func полоса(_ точки: [Точка]) -> (low: Double?, high: Double?)? {
-        for точка in точки.reversed() {
-            if let границы = LabNorm.bandBounds(точка.норма) { return границы }
-        }
-        return nil
+        let нормы = точки.map(\.норма).filter { LabNorm.bandBounds($0) != nil }
+        guard let первая = нормы.first, нормы.allSatisfy({ $0 == первая }) else { return nil }
+        return LabNorm.bandBounds(первая)
+    }
+
+    /// У точек с нормой нормы не совпадают — полосы поэтому нет.
+    private func нормыРазные(_ точки: [Точка]) -> Bool {
+        let нормы = точки.map(\.норма).filter { LabNorm.bandBounds($0) != nil }
+        guard let первая = нормы.first else { return false }
+        return !нормы.allSatisfy { $0 == первая }
     }
 
     var body: some View {
@@ -334,6 +384,22 @@ struct LabChartScreen: View {
                 .frame(minHeight: Token.Size.tapTarget)
                 TGDivider()
             }
+            // Единиц у показателя несколько — выбор, а не смесь на одной
+            // линии (см. `единицыПоказателя`).
+            if единицыПоказателя.count > 1 {
+                Picker("Единица", selection: Binding(
+                    get: { выбраннаяЕдиница ?? "" },
+                    set: { единица = $0 }
+                )) {
+                    ForEach(единицыПоказателя, id: \.self) { е in
+                        if е.isEmpty { Text("без единицы").tag(е) } else { Text(verbatim: е).tag(е) }
+                    }
+                }
+                .pickerStyle(.menu)
+                .frame(minHeight: Token.Size.tapTarget)
+                TGExplainer(text: "Анализы в разных единицах — из разных лабораторий. На одной линии их не сравнить, поэтому каждая единица — свой график.")
+                TGDivider()
+            }
             Picker("Период", selection: $период) {
                 ForEach(Период.allCases) { Text($0.подпись).tag($0) }
             }
@@ -406,6 +472,9 @@ struct LabChartScreen: View {
 
             if !дозы.isEmpty { столбикиДозы(точки, дозы: дозы) }
 
+            if нормыРазные(точки) {
+                TGExplainer(text: "Полосы нормы нет: на бланках этих анализов нормы разные. Норма каждого — в карточке точки.")
+            }
             легенда
         }
     }

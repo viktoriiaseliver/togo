@@ -719,9 +719,16 @@ struct HealthScreen: View {
 
     /// Ряд того же показателя по датам — для полосы столбиков. Только
     /// числа: пропусков и нулей вместо пределов прибора в нём нет.
+    ///
+    /// И только в ЕДИНИЦЕ последнего анализа (29.10.2026): анализ другой
+    /// лаборатории в мкг/дл рядом с нмоль/л рисовал столбик в двенадцать
+    /// раз ниже — падение, которого не было. Правило единицы — то же,
+    /// что у графика (`LabChartScreen.ключЕдиницы`).
     private func рядПоказателя(_ dog: Dog, имя: String) -> [Double] {
-        dog.labResults
+        let единица = последнийПоказатель(dog, имя: имя).map { LabChartScreen.ключЕдиницы($0.unit) }
+        return dog.labResults
             .filter { $0.value != nil && $0.indicator.trimmingCharacters(in: .whitespaces) == имя }
+            .filter { единица == nil || LabChartScreen.ключЕдиницы($0.unit) == единица }
             .sorted { $0.sampledOn < $1.sampledOn }
             .suffix(КиноРазмеры.днейВПолосе)
             .compactMap(\.value)
