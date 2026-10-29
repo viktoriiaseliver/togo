@@ -14,6 +14,9 @@ struct AskSignalCard: View {
     let events: [LogEvent]
     let dogName: String
     var now: Date = Date()
+    /// Пол собаки — для заголовка «Как он / она просит» (`РодСобаки`).
+    /// Пусто или не задан — заголовок без местоимения.
+    var пол: DogSex? = nil
 
     private var thisWeek: Diary.SignalTally {
         Diary.signalTally(events, from: weekAgo, to: now)
@@ -72,13 +75,23 @@ struct AskSignalCard: View {
                 .foregroundStyle(isDisplacing ? Token.Status.waitingText : Token.Action.doneText)
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: Token.Space.s2) {
-                Text(isDisplacing ? "Лай вытесняет спокойный сигнал" : "Как он просит")
+                Text(.готовая(isDisplacing ? String(localized: "Лай вытесняет спокойный сигнал") : заголовок))
                     .textStyle(AppFont.cardTitle)
                 Text("\(thisWeek.total) просьб за неделю")
                     .textStyle(AppFont.caption)
             }
             Spacer(minLength: 0)
         }
+    }
+
+    /// «Как он просит» было вписано мужским родом намертво, и у суки
+    /// читалось как чужая собака (аудит 29.10.2026). Пол не задан —
+    /// фраза без местоимения: угадывать его приложение не должно.
+    private var заголовок: String {
+        РодСобаки.форма(пол,
+                        он: String(localized: "Как он просит"),
+                        она: String(localized: "Как она просит"),
+                        нейтрально: { String(localized: "Как просится на улицу") })
     }
 
     private var bars: some View {

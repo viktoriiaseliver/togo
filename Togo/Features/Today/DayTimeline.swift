@@ -38,8 +38,11 @@ import UIKit
 /// Хендофф просит `List` со `swipeActions`. `DayTimeline` стоит внутри
 /// `ScrollView` у обоих хозяев (`TodayScreen.swift:123` и `TGSheet`
 /// в `HistoryScreen`), а `List` внутри `ScrollView` не живёт: своей высоты
-/// он не считает. Поэтому `List`-редакция лежит отдельно —
-/// `DayTimelineList`, — и включается тем, кто владеет хозяином.
+/// он не считает. `List`-редакция лежала отдельно — `DayTimelineList`, —
+/// и **снята 29.10.2026 как мёртвая**: за неделю её не позвал ни один
+/// хозяин, и ни один тест её не читал (решение Виктории, «да все чини»).
+/// Вернуть свайп — задача того, кто владеет хозяином: `ScrollView`
+/// вокруг ленты должен уйти, а лента — стать своим скроллом.
 /// Собственный свайп взамен не писан нарочно: хендофф его прямо
 /// не рекомендует, а прежняя попытка и дала ту самую просвечивающую строку.
 struct DayTimeline: View {
@@ -48,14 +51,17 @@ struct DayTimeline: View {
     var showsAuthor: Bool = false
     /// В прошедшем дне «сейчас» не место: он давно прошёл.
     var showsNow: Bool = true
+    /// Что сказать, когда записей нет. Решает хозяин ленты: только он
+    /// знает, прошлый ли это день, в поездке ли собака и может ли
+    /// человек вообще отмечать (29.10.2026).
+    var пусто: EmptyDayState.Вид = .первыйДень(пол: nil)
     var onTap: (LogEvent) -> Void
 
     /// Короче часа промежуток не показываем: это шум, а не сведения.
     ///
-    /// **Не `private` нарочно: у решения один адрес на оба контейнера.**
-    /// Ровно та же строка с тем же комментарием стояла второй копией
-    /// в `DayTimelineList` (замер 28.10.2026) — как и у `DayTimelineRow`
-    /// ниже, расходиться им негде, а разойтись они могли молча.
+    /// **Не `private`** — ровно та же строка стояла второй копией
+    /// в `DayTimelineList` (замер 28.10.2026, тип снят 29.10.2026);
+    /// у решения один адрес на любой будущий контейнер ленты.
     static let gapThreshold: TimeInterval = 60 * 60
 
     var body: some View {
@@ -69,7 +75,7 @@ struct DayTimeline: View {
                 .padding(.bottom, Token.Space.s8)
 
             if blocks.isEmpty {
-                EmptyDayState()
+                EmptyDayState(вид: пусто)
                     .padding(.horizontal, Token.Spacing.cardPadding)
                     .padding(.bottom, Token.Spacing.cardPadding)
             } else {
@@ -123,8 +129,9 @@ struct DayTimeline: View {
 ///
 /// Геометрия из хендоффа: время 44 справа-выровнено 15 semibold · кружок
 /// категории 40 · заголовок 17 + подпись 14. Выносится отдельным типом,
-/// потому что её рисуют два контейнера — карточка (`DayTimeline`) и список
-/// со свайпом (`DayTimelineList`), — и расходиться им нельзя.
+/// потому что её рисовали два контейнера — карточка (`DayTimeline`)
+/// и список со свайпом (`DayTimelineList`, снят 29.10.2026), — и второй
+/// контейнер, если вернётся, обязан брать эту же строку.
 struct DayTimelineRow: View {
     let block: TimelineBlock
     /// В семье из одного человека подпись автора — шум: и так понятно, кто.
@@ -374,6 +381,14 @@ struct DayTimelineGapRow: View {
     /// Промежуток открыт: собака дома прямо сейчас.
     var isOpen: Bool = false
 
+    /// Голос говорит то же, что подпись. До 29.10.2026 он во всех
+    /// промежутках говорил «с прошлого выхода» — и между двумя выходами
+    /// дня тоже, где подпись на экране была «между выходами».
+    private var голос: Text {
+        isOpen ? Text("\(Fmt.duration(interval)) с прошлого выхода")
+               : Text("\(Fmt.duration(interval)) между выходами")
+    }
+
     @Environment(\.dynamicTypeSize) private var размерТекста
 
     /// Второе место того же вида, что `DayTimelineMarkRow` — разбор
@@ -396,14 +411,14 @@ struct DayTimelineGapRow: View {
                         .accessibilityHidden(true)
                     Spacer(minLength: 0)
                 }
-                Text(isOpen ? "дома с прошлого выхода" : "дома между выходами")
+                Text(isOpen ? "с прошлого выхода" : "между выходами")
                     .textStyle(AppFont.micro)
                     .wraps()
             }
             .padding(.horizontal, Token.Spacing.cardPadding)
             .padding(.vertical, Token.Space.s8)
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel("дома \(Fmt.duration(interval)) с прошлого выхода")
+            .accessibilityLabel(голос)
         } else {
             строкой
         }
@@ -502,7 +517,11 @@ struct DayTimelineGapRow: View {
             // нужно, то либо замороженный источник времени в сценарии,
             // либо `Tools/разница_кадров.py` с вырезанными полосами
             // часов — он называет адрес расхождения.
-            Text(isOpen ? "дома с прошлого выхода" : "дома между выходами")
+            // **Без слова «дома»** (решение Виктории 29.10.2026). Плакат
+            // с 29.10 считает «Дома» от ТУАЛЕТА, а эта строка — от конца
+            // ВЫХОДА: два числа на экране назывались одним словом и
+            // расходились. Подпись говорит теперь ровно то, что меряет.
+            Text(isOpen ? "с прошлого выхода" : "между выходами")
                 .textStyle(AppFont.micro)
                 .wraps()
             Spacer(minLength: 0)
@@ -510,7 +529,7 @@ struct DayTimelineGapRow: View {
         .padding(.horizontal, Token.Spacing.cardPadding)
         .padding(.vertical, Token.Space.s8)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("дома \(Fmt.duration(interval)) с прошлого выхода")
+        .accessibilityLabel(голос)
     }
 }
 
@@ -597,14 +616,37 @@ struct NowMarker: View {
             .padding(.top, Token.Space.s2)
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(sinceLast.map { "Сейчас \(Fmt.clock(now)), дома \(Fmt.duration($0)) с прошлого выхода" }
+        .accessibilityLabel(sinceLast.map { "Сейчас \(Fmt.clock(now)), \(Fmt.duration($0)) с прошлого выхода" }
                             ?? "Сейчас \(Fmt.clock(now))")
     }
 }
 
 /// Пустой экран первого дня рассказывает, что будет через три дня —
 /// вместо «нет данных».
+///
+/// **Видов пять с 29.10.2026, и каждый — правда о своём дне.** Был
+/// один текст на все случаи: «Нажми „Просится", когда **он** подойдёт
+/// к двери. Через день здесь появится **его** режим». Аудит «Сегодня»
+/// нашёл в нём четыре неправды: мужской род у суки; прошлый день, где
+/// нажимать уже нечего; поездку, где внизу не «Просится», а «Остановка»;
+/// и наблюдателя, у которого кнопок записи нет вовсе.
 struct EmptyDayState: View {
+    enum Вид {
+        /// Сегодня, записей нет, отмечать можно.
+        case первыйДень(пол: DogSex?)
+        /// Сегодня, но ритм у собаки уже есть: «через день появится
+        /// режим» было бы неправдой.
+        case сегодняПусто
+        /// Показан прошлый день.
+        case прошлыйДень
+        /// Собака весь день рядом — поездка или день по делам.
+        case рядом
+        /// Человек смотрит дневник и не отмечает.
+        case наблюдатель
+    }
+
+    var вид: Вид = .первыйДень(пол: nil)
+
     var body: some View {
         VStack(alignment: .leading, spacing: Token.Space.s8) {
             Image(systemName: "sun.horizon")
@@ -613,11 +655,34 @@ struct EmptyDayState: View {
                 .padding(.bottom, Token.Space.s2)
                 .accessibilityHidden(true)
             Text("Пока пусто").textStyle(AppFont.cardTitle, color: Token.Ink.primary)
-            Text("Нажми «Просится», когда он подойдёт к двери. Через день здесь появится его режим — и станет видно, когда он правда хочет на улицу.")
+            Text(.готовая(пояснение))
                 .textStyle(AppFont.caption, color: Token.Ink.secondary)
-            Text("Ничего заполнять заранее не надо.")
-                .textStyle(AppFont.caption, color: Token.Ink.secondary)
+            if case .первыйДень = вид {
+                Text("Ничего заполнять заранее не надо.")
+                    .textStyle(AppFont.caption, color: Token.Ink.secondary)
+            }
         }
         .padding(.vertical, Token.Space.s8)
+    }
+
+    private var пояснение: String {
+        switch вид {
+        case .первыйДень(let пол):
+            // Пол не задан — «собака … её»: род берётся у слова «собака»,
+            // а не угадывается у самой собаки.
+            return РодСобаки.форма(пол,
+                                   он: String(localized: "Нажми «Просится», когда он подойдёт к двери. Через день здесь появится его режим — и станет видно, когда он правда хочет на улицу."),
+                                   она: String(localized: "Нажми «Просится», когда она подойдёт к двери. Через день здесь появится её режим — и станет видно, когда она правда хочет на улицу."),
+                                   нейтрально: { String(localized: "Нажми «Просится», когда собака подойдёт к двери. Через день здесь появится её режим — и станет видно, когда она правда хочет на улицу.") })
+        case .сегодняПусто:
+            return String(localized: "Сегодня записей пока нет.")
+        case .прошлыйДень:
+            // Тот же ключ, что у «Истории» для пустого дня.
+            return String(localized: "В этот день записей нет.")
+        case .рядом:
+            return String(localized: "Собака сегодня с тобой — остановки отмечаются кнопкой «Остановка».")
+        case .наблюдатель:
+            return String(localized: "Записей пока нет — их отмечает семья.")
+        }
     }
 }
