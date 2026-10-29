@@ -16,6 +16,23 @@ struct VetSummaryScreen: View {
     @State private var to = Date()
     @State private var showsNotes = false
     @State private var isPresenting = false
+    /// Начало периода уже поставлено от прошлого приёма — один раз,
+    /// иначе каждое появление экрана затирало бы выбранное в пикере.
+    @State private var началоПоставлено = false
+
+    /// Последний приём, бывший до сегодня. Пусто — приёмов не записано,
+    /// и сравнивать «с прошлым приёмом» не с чем.
+    private var прошлыйПриём: VetVisit? {
+        dog?.vetVisits.filter { $0.date <= Date() }.max { $0.date < $1.date }
+    }
+
+    /// Период начинается ровно с прошлого приёма — тогда и только тогда
+    /// дельта честно называется «с прошлого приёма».
+    private var отПриёма: VetVisit? {
+        guard let приём = прошлыйПриём,
+              Calendar.current.isDate(приём.date, inSameDayAs: from) else { return nil }
+        return приём
+    }
 
     private var doses: [DoseRecord] {
         dog?.medications.flatMap(\.doses) ?? []
@@ -73,6 +90,16 @@ struct VetSummaryScreen: View {
         .usageScreen(.vetSummary)
         .fullScreenCover(isPresented: $isPresenting) {
             VetSummaryPresentation(summary: summary, delta: deltaLines, dog: dog)
+        }
+        // Сравнение «с прошлого приёма» — решение Виктории 29.10.2026.
+        // До этого период по умолчанию был «месяц назад», а заголовок
+        // дельты обещал «с прошлого приёма»: сравнивалось с прошлым
+        // месяцем той же длины, а не с визитом. Теперь начало периода
+        // по умолчанию — день прошлого приёма; человек может сдвинуть.
+        .task {
+            guard !началоПоставлено else { return }
+            началоПоставлено = true
+            if let приём = прошлыйПриём { from = приём.date }
         }
     }
 
@@ -144,7 +171,15 @@ struct VetSummaryScreen: View {
     private var deltaCard: some View {
         if !deltaLines.isEmpty {
             TGCard {
-                TGSectionHeader(title: "что изменилось с прошлого приёма")
+                // Заголовок называет, с чем сравниваем НА САМОМ ДЕЛЕ: период
+                // с прошлого приёма — против такого же до него; иначе —
+                // против прошлого периода той же длины.
+                if let приём = отПриёма {
+                    TGSectionHeader(title: .готовая(String(localized: "что изменилось с прошлого приёма · \(Fmt.shortDay(приём.date))")),
+                                    subtitle: "сравнение с таким же сроком до приёма")
+                } else {
+                    TGSectionHeader(title: "что изменилось против прошлого такого же периода")
+                }
                 ForEach(deltaLines, id: \.self) { line in
                     Text(line).textStyle(AppFont.body).wraps()
                 }
