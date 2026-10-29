@@ -43,7 +43,18 @@ struct EmergencyScreen: View {
         TGCard {
             TGSectionHeader(title: "позвонить")
             if contacts.isEmpty {
-                TGExplainer(text: "Телефонов пока нет. Впиши их в профиле собаки — тогда в нужный момент не придётся их искать.")
+                // **Подсказка посылала не туда** (аудит 29.10.2026):
+                // «впиши их в профиле собаки», а в профиле телефонов нет —
+                // они на экране «Документы и контакты», и дороги отсюда
+                // туда не было вовсе. Человек в панике искал бы поле,
+                // которого нет. Теперь дорога — строкой здесь же.
+                TGExplainer(text: "Телефонов пока нет. Впиши их по строке ниже — тогда в нужный момент не придётся их искать.")
+                if let dog {
+                    TGLink(title: "Документы и контакты", systemImage: "doc.text.image") {
+                        DocumentsScreen(dog: dog)
+                    }
+                    .buttonStyle(.plain)
+                }
             } else {
                 ForEach(contacts, id: \.0) { title, name, phone in
                     Button { call(phone) } label: {
@@ -68,13 +79,27 @@ struct EmergencyScreen: View {
         }
     }
 
+    /// Телефон без имени — всё равно телефон.
+    ///
+    /// **До 29.10.2026 имя было условием показа**: вписал номер клиники,
+    /// а название не вписал — и экран говорил «телефонов пока нет»,
+    /// то есть прятал единственное, ради чего он открыт. Имени нет —
+    /// строка называется тем, кто это: «Ветеринар», «Клиника 24 ч»
+    /// (подписи полей на экране документов, те же ключи).
+    ///
+    /// Роль — через каталог: `String`-значение, вставленное в `Text`,
+    /// мимо перевода рисуется дословно, и француз видел «клиника».
     private var contacts: [(String, String, String)] {
         var result: [(String, String, String)] = []
-        if let name = dog?.vetName, let phone = dog?.vetPhone, !phone.isEmpty {
-            result.append(("ветеринар", name, phone))
+        if let phone = dog?.vetPhone.flatMap(Fmt.notBlank) {
+            result.append((String(localized: "ветеринар"),
+                           dog?.vetName.flatMap(Fmt.notBlank) ?? String(localized: "Ветеринар"),
+                           phone))
         }
-        if let name = dog?.clinicName, let phone = dog?.clinicPhone, !phone.isEmpty {
-            result.append(("клиника", name, phone))
+        if let phone = dog?.clinicPhone.flatMap(Fmt.notBlank) {
+            result.append((String(localized: "клиника"),
+                           dog?.clinicName.flatMap(Fmt.notBlank) ?? String(localized: "Клиника 24 ч"),
+                           phone))
         }
         return result
     }
@@ -89,8 +114,11 @@ struct EmergencyScreen: View {
 
     private var toxicCard: some View {
         TGCard {
-            TGSectionHeader(title: "съела что-то не то",
-                            subtitle: "не вызывай рвоту сама — при части веществ это делает хуже")
+            // Без рода — ни собаки, ни человека (29.10.2026): «съела»
+            // у кобеля и «сама» у мужчины. Заголовок тот же, что пункт
+            // плашки на вкладке собаки, — одно место называется одинаково.
+            TGSectionHeader(title: "что нельзя есть",
+                            subtitle: "не вызывай рвоту без врача — при части веществ это делает хуже")
             ForEach(ToxicItem.common) { item in
                 Button {
                     withAnimation(.easeInOut(duration: Token.Duration.instant)) {
@@ -132,7 +160,9 @@ struct EmergencyScreen: View {
 
     private var vetBriefCard: some View {
         TGCard {
-            TGSectionHeader(title: "что скажут спросить",
+            // «что скажут спросить» читалось как обрывок фразы; имя
+            // раздела — то, которым его зовёт плашка на вкладке собаки.
+            TGSectionHeader(title: "справка врачу",
                             subtitle: "врач спросит это первым — тут всё уже собрано")
             ForEach(brief, id: \.0) { title, value in
                 HStack(alignment: .firstTextBaseline) {
@@ -169,13 +199,25 @@ struct EmergencyScreen: View {
         if !active.isEmpty {
             rows.append(("Принимает", active.map { "\($0.name) \($0.doseText)" }.joined(separator: ", ")))
         }
+        // «Ел последний раз» → «Последняя еда»: мужской род у суки,
+        // а ключ без рода уже лежал переведённым (окна поездки).
+        //
+        // И день, когда это было не сегодня: одно «08:40» врач читает
+        // как «утром», а запись могла быть позавчерашней — тот, кто
+        // в панике не отметил еду, получал ложную справку.
         if let lastMeal = Diary.last(dog.events, kind: .meal) {
-            rows.append(("Ел последний раз", Fmt.clock(lastMeal.date)))
+            rows.append((String(localized: "Последняя еда"), когда(lastMeal.date)))
         }
         if let lastStool = Diary.last(dog.events, kind: .stool) {
-            rows.append(("Стул", Fmt.clock(lastStool.date)))
+            rows.append(("Стул", когда(lastStool.date)))
         }
         return rows
+    }
+
+    private func когда(_ дата: Date) -> String {
+        Calendar.current.isDateInToday(дата)
+            ? Fmt.clock(дата)
+            : Fmt.shortDay(дата) + ", " + Fmt.clock(дата)
     }
 
     private var briefText: String? {
