@@ -105,7 +105,10 @@ struct HistoryScreen: View {
             .sheet(item: Binding(get: { selectedDay.map(DayRef.init) },
                                  set: { selectedDay = $0?.date })) { ref in
                 DayReadingScreen(day: ref.date, events: events,
-                                 showsAuthor: members.count > 1)
+                                 showsAuthor: members.count > 1,
+                                 взвешивания: (dog?.weights ?? [])
+                                    .filter { Calendar.current.isDate($0.date, inSameDayAs: ref.date) }
+                                    .sorted { $0.date < $1.date })
             }
             .confirmationDialog("Закрыть эпизод?",
                                 isPresented: Binding(get: { closing != nil },
@@ -864,7 +867,7 @@ nonisolated struct HistoryPoint: Identifiable, Sendable {
 
 // MARK: - Календарь
 
-/// Месяц с точкой на день. Тап открывает таймлайн этого дня в режиме чтения.
+/// Месяц с точкой на день. Тап открывает таймлайн этого дня (`DayReadingScreen`).
 ///
 /// Шапка с названием месяца уехала наружу (кадр 10: «ОКТЯБРЬ 2026 Г»
 /// прописными **над** карточкой) — здесь осталась только сетка.
@@ -912,7 +915,7 @@ struct MonthCalendar: View {
     /// начинается с воскресенья, и когда дойдут руки, менять придётся
     /// обе половины разом.
     private var weekdays: [String] {
-        var форматтер = DateFormatter()
+        let форматтер = DateFormatter()
         форматтер.locale = Locale(identifier: Locale.preferredLanguages.first ?? "ru")
         let короткие = форматтер.shortWeekdaySymbols ?? []
         guard короткие.count == 7 else {
@@ -1069,29 +1072,86 @@ private struct DayCell: View {
     }
 }
 
-/// Таймлайн дня в режиме чтения: правок здесь нет.
+/// Таймлайн прошедшего дня. Тап по записи открывает её правку.
+///
+/// # «Режим чтения» был мёртвыми кнопками — починка 29.10.2026
+///
+/// Здесь стояло `DayTimeline(…) { _ in }`, а `DayTimeline` рисует
+/// каждую строку `Button`-ом. Итог: строка нажималась, подсвечивалась,
+/// озвучка называла её кнопкой — и не происходило ничего. Поправить
+/// вчерашние граммы или убрать запись, сделанную не той собаке,
+/// из «Истории» было нельзя, хотя экран выглядел так, будто можно.
+///
+/// Тап ведёт в тот же `EventEditSheet`, что и на «Сегодня»: права
+/// он проверяет сам (без `.editRecords` — плашка права и выключенные
+/// поля, то есть то же чтение, только честное), удаление обратимо
+/// тостом. Тост рисуется ЗДЕСЬ, сверху: общий `UndoToastView` висит
+/// на `RootView` под этой шторкой, и «Отменить» оказалось бы
+/// за ней — тот же класс, что у режима прогулки (`WalkMode`).
+///
+/// # Взвешивания дня
+///
+/// Под фильтром «Вес» календарь ставит точку на день взвешивания,
+/// а взвешивания живут в `WeightEntry`, не в ленте. Без них лист
+/// такого дня говорил «записей нет» под точкой, которая говорила
+/// обратное.
 struct DayReadingScreen: View {
     let day: Date
     let events: [LogEvent]
     var showsAuthor: Bool = false
+    /// Взвешивания этого дня — уже отобранные по дню.
+    var взвешивания: [WeightEntry] = []
+
+    @State private var правимая: ПравимаяЗапись?
 
     private var dayEvents: [LogEvent] {
         Diary.onDay(events, day)
     }
 
     var body: some View {
-        TGSheet(title: .готовая(Fmt.dayTitle(day)), subtitle: "режим чтения") {
-            if dayEvents.isEmpty {
+        let записи = dayEvents
+        TGSheet(title: .готовая(Fmt.dayTitle(day)),
+                subtitle: записи.isEmpty ? nil : LocalizedStringKey.готовая(Fmt.records(записи.count))) {
+            if !взвешивания.isEmpty {
+                TGCard {
+                    ForEach(взвешивания) { замер in
+                        HStack {
+                            Text(.готовая(LogKind.weight.title)).textStyle(AppFont.body)
+                            Spacer()
+                            Text(Fmt.clock(замер.date)).textStyle(AppFont.caption)
+                            Text(Fmt.weight(замер.kg)).textStyle(AppFont.numeric(Token.FontSize.meta))
+                        }
+                        .frame(minHeight: Token.Size.tapTarget)
+                    }
+                }
+            }
+            if записи.isEmpty {
                 TGCard { TGExplainer(text: "В этот день записей нет.") }
             } else {
                 // Тот же рельс, что и на главном: промежутки между записями
                 // в прошлом читают ровно за тем же, зачем и сегодня.
-                DayTimeline(events: dayEvents, now: day,
-                            showsAuthor: showsAuthor, showsNow: false) { _ in }
+                DayTimeline(events: записи, now: day,
+                            showsAuthor: showsAuthor, showsNow: false) { event in
+                    правимая = ПравимаяЗапись(id: event.id)
+                }
             }
         }
         .presentationDetents([.medium, .large])
+        .sheet(item: $правимая) { запись in
+            EventEditSheet(eventID: запись.id)
+                .presentationDragIndicator(.visible)
+                .presentationCornerRadius(Token.Radius.sheet)
+        }
+        .overlay(alignment: .top) {
+            UndoToastView()
+                .padding(.top, Token.Space.s8)
+        }
     }
+}
+
+/// Обёртка, чтобы идентификатор записи можно было отдать в `.sheet(item:)`.
+private struct ПравимаяЗапись: Identifiable {
+    let id: UUID
 }
 
 nonisolated extension Calendar {
