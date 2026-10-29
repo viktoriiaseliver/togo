@@ -81,8 +81,35 @@ struct HealthScreen: View {
     /// Удалять их нельзя: история лечения — то, что спрашивает врач
     /// первым («чем лечили раньше и чем кончилось»). Поэтому они
     /// не исчезают, а уходят в свёрнутый раздел ниже.
+    ///
+    /// # Порядок: идёт → на паузе → курс кончился (29.10.2026)
+    ///
+    /// До этой правки порядок был порядком `@Query`, то есть ничьим:
+    /// временная схема на паузе или антибиотик с прошедшим концом
+    /// курса вставали ПЕРВЫМИ, над тем, что собака пьёт сегодня.
+    /// Экран открывают, чтобы сверить дозу, — и первым читается
+    /// то, что давать не надо.
+    ///
+    /// Внутри группы — по имени: стабильно между перерисовками
+    /// и между двумя телефонами семьи.
     private var действующиеСхемы: [Medication] {
-        medications.filter { $0.cancelledAt == nil }
+        let сегодня = Calendar.current.startOfDay(for: Date())
+        return medications.filter { $0.cancelledAt == nil }
+            .sorted { левая, правая in
+                let л = Self.очередь(левая, сегодня: сегодня)
+                let п = Self.очередь(правая, сегодня: сегодня)
+                if л != п { return л < п }
+                return левая.name.localizedStandardCompare(правая.name) == .orderedAscending
+            }
+    }
+
+    /// 0 — идёт, 1 — на паузе, 2 — назначенный конец курса прошёл.
+    ///
+    /// Конец курса сравнивается с НАЧАЛОМ сегодняшнего дня: курс
+    /// «до 29.10» в сам день 29.10 ещё идёт.
+    static func очередь(_ схема: Medication, сегодня: Date) -> Int {
+        if let конец = схема.courseEnd, конец < сегодня { return 2 }
+        return схема.isPaused ? 1 : 0
     }
 
     /// История: отменённые схемы, новые сверху.
@@ -344,9 +371,15 @@ struct HealthScreen: View {
                 // Дата начала — только названная (V8). Первую дозу журнала
                 // за начало здесь не выдаём: это догадка, а карточку
                 // читает врач.
-                if let начало = medication.startedAt {
-                    Text(.готовая(String(localized: "с \(Fmt.shortDay(начало))")))
+                //
+                // Конец курса — тем же рядом (29.10.2026): без него
+                // схема, курс которой кончился вчера, выглядела так же,
+                // как та, что идёт. Ключи оба уже в каталоге, склейка
+                // точкой — как у подписи прошлой схемы.
+                if let срок = срокСхемы(medication) {
+                    Text(.готовая(срок))
                         .textStyle(AppFont.caption.color(Token.Ink.secondary))
+                        .wraps()
                 }
                 if medication.isPaused {
                     Text("на паузе")
@@ -358,6 +391,19 @@ struct HealthScreen: View {
         }
         .buttonStyle(.plain)
         .disabled(!canEdit)
+    }
+
+    /// «с 01.10.2026 · до 30.10.2026». Обе половины — только названные:
+    /// ни начала из первой дозы журнала, ни конца «по умолчанию».
+    private func срокСхемы(_ medication: Medication) -> String? {
+        var части: [String] = []
+        if let начало = medication.startedAt {
+            части.append(String(localized: "с \(Fmt.shortDay(начало))"))
+        }
+        if let конец = medication.courseEnd {
+            части.append(String(localized: "до \(Fmt.shortDay(конец))"))
+        }
+        return части.isEmpty ? nil : части.joined(separator: " · ")
     }
 
     @ViewBuilder
