@@ -430,7 +430,10 @@ struct EventEditSheet: View {
                       // «синхронизировано» отсюда убрано вместе с галочкой:
                       // обмена между устройствами пока нет, и говорить о нём
                       // нельзя.
-                      subtitle: event.map { "Записала \($0.authorName) в \(Fmt.clock($0.date))" }) {
+                      // «Записано: …», а не «Записала …»: пол автора
+                      // приложению неизвестен, а запись второго телефона
+                      // подписывается именем из приглашения (29.10.2026).
+                      subtitle: event.map { "Записано: \($0.authorName), \(Fmt.clock($0.date))" }) {
             // Плашка была и адрес называла верно («Семья»), а имя
             // права — нет. Из трёх таких плашек в дереве ни одна
             // не называла права по имени каталога, и все три написаны
@@ -501,13 +504,36 @@ struct EventEditSheet: View {
                             .frame(minHeight: Token.Size.tapTarget)
                         }
 
-                        if event.kind == .outing {
+                        // # Результат: у остановки в дороге тоже, и пустой — пустой
+                        //
+                        // Две поломки, найденные 29.10.2026 при сверке
+                        // с «Историей»:
+                        //
+                        // ```
+                        // .travelStop          с 29.10 пишется с исходом
+                        //                      (`TripStopSheet`), фильтр
+                        //                      «Стул» его читает, а поправить
+                        //                      исход было негде
+                        // `outcome ?? .none`   выход БЕЗ ответа показывался
+                        //                      как «Не сходил» — утверждение,
+                        //                      которого человек не делал;
+                        //                      у кобеля такой выход по правилу
+                        //                      чтения `ToiletClock` — моча
+                        // ```
+                        //
+                        // Пустой ответ теперь — свой пункт и `nil` в базе:
+                        // подставлять «не сходил» за человека нельзя
+                        // (красная линия про подстановку).
+                        if event.kind == .outing || event.kind == .travelStop {
                             TGDivider()
-                            Picker("Результат", selection: Binding(
-                                get: { event.outcome ?? .none },
+                            Picker("Результат", selection: Binding<OutingOutcome?>(
+                                get: { event.outcome },
                                 set: { event.outcome = $0 }
                             )) {
-                                ForEach(OutingOutcome.allCases, id: \.self) { Text($0.title).tag($0) }
+                                Text("Не отмечено").tag(OutingOutcome?.none)
+                                ForEach(OutingOutcome.allCases, id: \.self) {
+                                    Text($0.title).tag(OutingOutcome?.some($0))
+                                }
                             }
                             .textStyle(AppFont.body)
                             .frame(minHeight: Token.Size.tapTarget)
@@ -599,7 +625,15 @@ struct EventEditSheet: View {
         case .meal, .treat:
             TGDivider()
             HStack {
-                Text(event.kind == .meal ? "Съел" : "Лакомство").textStyle(AppFont.body)
+                // Род собаки — у `РодСобаки` (29.10.2026): «Съел»
+                // стоял и у суки.
+                Text(.готовая(event.kind == .meal
+                              ? РодСобаки.форма(event.dog,
+                                                 он: String(localized: "Съел"),
+                                                 она: String(localized: "Съела"),
+                                                 нейтрально: { String(localized: "Съедено") })
+                              : String(localized: "Лакомство")))
+                    .textStyle(AppFont.body)
                 Spacer()
                 TGStepper(value: Binding(get: { event.grams ?? 0 },
                                          set: { event.grams = $0 }),
@@ -613,7 +647,11 @@ struct EventEditSheet: View {
         case .water:
             TGDivider()
             HStack {
-                Text("Выпил").textStyle(AppFont.body)
+                Text(.готовая(РодСобаки.форма(event.dog,
+                                               он: String(localized: "Выпил"),
+                                               она: String(localized: "Выпила"),
+                                               нейтрально: { String(localized: "Выпито") })))
+                    .textStyle(AppFont.body)
                 Spacer()
                 TGStepper(value: Binding(get: { event.milliliters ?? 0 },
                                          set: { event.milliliters = $0 }),
@@ -688,11 +726,13 @@ struct EventEditSheet: View {
             }
         }) else {
             Haptics.warning()
-            return appState.showFailure("Удаление не сохранилось · попробуй ещё раз")
+            // `String(localized:)`: обе плашки принимают `String`,
+            // и голый литерал рисовался дословно, мимо каталога.
+            return appState.showFailure(String(localized: "Удаление не сохранилось · попробуй ещё раз"))
         }
         Haptics.warning()
         UsageLog.note(.delete, event.kind.rawValue)
-        appState.showUndoRestore("Удалено · \(event.kind.title)",
+        appState.showUndoRestore(String(localized: "Удалено · \(event.kind.title)"),
                                  eventIDs: removed.map(\.id))
         dismiss()
     }

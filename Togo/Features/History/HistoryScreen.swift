@@ -76,7 +76,10 @@ struct HistoryScreen: View {
                     EmptyStateCard(
                         subject: .history,
                         title: "История начнётся с первой записи",
-                        message: "Здесь появятся календарь с точкой на каждый день, графики по стулу и весу и список эпизодов. Заполнять заранее ничего не надо.",
+                        // «Графики по стулу и весу» сняты 29.10.2026:
+                        // у веса графика нет нарочно (`полосаВеса`),
+                        // и обещание читалось как пропавшая функция.
+                        message: "Здесь появятся календарь с отметкой на каждый день, полоса за 30 дней и эпизоды. Заполнять заранее ничего не надо.",
                         actionTitle: nil,
                         action: nil
                     )
@@ -102,7 +105,10 @@ struct HistoryScreen: View {
             .sheet(item: Binding(get: { selectedDay.map(DayRef.init) },
                                  set: { selectedDay = $0?.date })) { ref in
                 DayReadingScreen(day: ref.date, events: events,
-                                 showsAuthor: members.count > 1)
+                                 showsAuthor: members.count > 1,
+                                 взвешивания: (dog?.weights ?? [])
+                                    .filter { Calendar.current.isDate($0.date, inSameDayAs: ref.date) }
+                                    .sorted { $0.date < $1.date })
             }
             .confirmationDialog("Закрыть эпизод?",
                                 isPresented: Binding(get: { closing != nil },
@@ -229,9 +235,16 @@ struct HistoryScreen: View {
     }
 
     /// Дни, в которые взвешивали, — для точки в календаре.
+    ///
+    /// Без служебного: прогрев схемы (`CloudKitSchemaWarmup`) пишет
+    /// взвешивание датой 2001 года, и ленте его не показывает
+    /// `Diary.служебная`, а сюда оно до 29.10.2026 доезжало.
+    /// Порог тот же, не копия: `SharedDiaryOutgoing.раньшеПриложения`.
     private var дниВзвешиваний: Set<Date> {
         let calendar = Calendar.current
-        return Set((dog?.weights ?? []).map { calendar.startOfDay(for: $0.date) })
+        return Set((dog?.weights ?? [])
+            .filter { $0.date >= SharedDiaryOutgoing.раньшеПриложения }
+            .map { calendar.startOfDay(for: $0.date) })
     }
 
     private var полосаВеса: some View {
@@ -243,21 +256,33 @@ struct HistoryScreen: View {
                 Text("30 дней").textStyle(AppFont.caption).wraps()
             }
             if let последний = замеры.first {
+                // Последний замер — крупно и со своей датой, а в списке
+                // под ним его больше нет. До 29.10.2026 он стоял дважды:
+                // числом и первой строкой списка с тем же числом.
                 Text(Fmt.weight(последний.kg)).textStyle(AppFont.display)
-                ForEach(замеры.prefix(10)) { замер in
+                Text(Fmt.shortDay(последний.date)).textStyle(AppFont.caption)
+                ForEach(замеры.dropFirst().prefix(10)) { замер in
                     HStack {
                         Text(Fmt.shortDay(замер.date)).textStyle(AppFont.caption)
                         Spacer()
                         Text(Fmt.weight(замер.kg)).textStyle(AppFont.numeric(Token.FontSize.meta))
                     }
                 }
-            } else {
+            } else if appState.can(.seeMedical) {
                 TGExplainer(text: "За эти 30 дней взвешиваний нет. Записать вес — «Здоровье» → «Вес и симптомы».")
+            } else {
+                // Без `.seeMedical` вкладки «Здоровье» нет вовсе
+                // (`RootView`), и дорога в неё вела бы в пустоту.
+                TGExplainer(text: "За эти 30 дней взвешиваний нет.")
             }
             if let low = dog?.targetWeightLow, let high = dog?.targetWeightHigh {
-                Text("цель \(Fmt.weight(low)) — \(Fmt.weight(high)) · поставил врач").textStyle(AppFont.caption)
+                // «от врача», а не «поставил врач»: пол врача
+                // приложению неизвестен.
+                Text("цель \(Fmt.weight(low)) — \(Fmt.weight(high)) · от врача").textStyle(AppFont.caption)
             }
-            Text(filter.chartExplainer).textStyle(AppFont.caption).wraps()
+            if !замеры.isEmpty {
+                Text(filter.chartExplainer).textStyle(AppFont.caption).wraps()
+            }
         }
     }
 
@@ -286,8 +311,32 @@ struct HistoryScreen: View {
         return (0..<30).compactMap { offset in
             guard let day = calendar.date(byAdding: .day, value: offset, to: start) else { return nil }
             let dayEvents = индекс[calendar.startOfDay(for: day)] ?? []
-            return HistoryPoint(day: day, value: filter.value(for: dayEvents),
+            return HistoryPoint(day: day, value: значение(dayEvents),
                                 isAlarm: dayEvents.contains(where: \.raisesAlarm))
+        }
+    }
+
+    /// Высота столбика за день.
+    ///
+    /// # «Выходы» считают ВЫХОДЫ, а не отметки — с 29.10.2026
+    ///
+    /// Прежде полоса брала `events.filter { $0.kind == .outing }.count`,
+    /// то есть СОБЫТИЯ: прогулка с тремя отметками «пописал» давала
+    /// здесь 3, а «Сегодня» за тот же день — 1 (`TimelineBuilder
+    /// .outingsCount` считает блоки). Расхождение было названо
+    /// в `OutingsCountTests.границы` и ждало решения; решение одно —
+    /// у «сколько раз выходили» не может быть двух ответов
+    /// на двух вкладках.
+    ///
+    /// Считается здесь, а не в `HistoryFilter.value`: перечисление
+    /// `nonisolated`, а `TimelineBuilder` живёт на главном акторе
+    /// приложения. Индекс дня уже отобран через `Diary.active`,
+    /// поэтому `blocks` зовётся на готовом дне, без второго прохода
+    /// по дневнику.
+    private func значение(_ dayEvents: [LogEvent]) -> Double {
+        switch filter {
+        case .all: Double(TimelineBuilder.blocks(dayEvents).filter(\.isOuting).count)
+        default: filter.value(for: dayEvents)
         }
     }
 
@@ -339,17 +388,39 @@ struct HistoryScreen: View {
         let mine = daysOut.filter { $0.dog?.persistentModelID == dog?.persistentModelID }
         let trace = DayOutAnalyzer.trace(daysOut: mine, events: события,
                                          norm: dog?.dailyGrams ?? 0)
-        if !trace.findings.isEmpty {
+        if !trace.findings(пол: dog?.sex).isEmpty {
+            // # Род собаки — у `РодСобаки`, а не вписан (29.10.2026)
+            //
+            // Здесь стояло «где она была с тобой» и «она иногда вялая»
+            // при любом поле, а `часов` — числом без склонения. Подпись
+            // собрана из двух готовых строк: «по 3 дням» и «6 часов»
+            // склоняет каталог, фразу вокруг — род.
+            //
+            // «Приложение не ставит диагнозов» снято из пояснения:
+            // та же фраза стоит под полосой выше, на одном экране —
+            // дважды.
+            let дням = String(localized: "\(trace.longDays) дням")
+            let часов = String(localized: "\(Int(DayOut.longDayHours)) часов")
             TGCard {
                 Text("После долгих дней дома").textStyle(AppFont.cardTitle).wraps()
-                Text("по \(String(localized: "\(trace.longDays) дням")), где она была с тобой дольше \(Int(DayOut.longDayHours)) часов")
-                    .textStyle(AppFont.caption)
-                    .wraps()
-                ForEach(trace.findings, id: \.self) { line in
-                    Text("• " + line).textStyle(AppFont.caption).wraps()
+                Text(.готовая(РодСобаки.форма(
+                    dog,
+                    он: String(localized: "по \(дням), когда он был с тобой дольше \(часов)"),
+                    она: String(localized: "по \(дням), когда она была с тобой дольше \(часов)"),
+                    нейтрально: { String(localized: "по \(дням), когда собака была с тобой дольше \(часов)") }
+                )))
+                .textStyle(AppFont.caption)
+                .wraps()
+                ForEach(trace.findings(пол: dog?.sex), id: \.self) { line in
+                    Text(verbatim: "• " + line).textStyle(AppFont.caption).wraps()
                 }
                 TGDivider()
-                TGExplainer(text: "Это совпадение, а не причина: приложение не ставит диагнозов. Но показать эту строку врачу полезнее, чем сказать «она иногда вялая».")
+                TGExplainer(text: .готовая(РодСобаки.форма(
+                    dog,
+                    он: String(localized: "Это совпадение, а не причина. Но показать эту строку врачу полезнее, чем сказать «он иногда вялый»."),
+                    она: String(localized: "Это совпадение, а не причина. Но показать эту строку врачу полезнее, чем сказать «она иногда вялая»."),
+                    нейтрально: { String(localized: "Это совпадение, а не причина. Но показать эту строку врачу полезнее, чем сказать «собака иногда вялая».") }
+                )))
             }
         }
     }
@@ -367,27 +438,43 @@ struct HistoryScreen: View {
             .filter { $0.dog?.persistentModelID == dog?.persistentModelID && $0.endedAt != nil }
             .sorted { $0.startedAt > $1.startedAt }
             .prefix(10)
+        // Правка и удаление прошедшего дня — за `.editRecords`, как
+        // у записей ленты. До 29.10.2026 лист правки открывал любой,
+        // в том числе наблюдатель, и «Удалить этот день» у него
+        // срабатывало. Без права строки остаются — день виден, —
+        // но без стрелки: обещать дверь, которой нет, нельзя.
+        let можноПравить = appState.can(.editRecords)
         if !мои.isEmpty {
             TGCard {
                 TGSectionHeader(title: "дни с собакой")
                 ForEach(Array(мои)) { day in
-                    Button { правимыйДень = day } label: {
-                        HStack {
-                            Text(Fmt.shortDay(day.startedAt)).textStyle(AppFont.body)
-                            Spacer()
-                            Text(Fmt.gap(day.duration())).textStyle(AppFont.numeric(Token.FontSize.meta))
-                            Image(systemName: "chevron.right")
-                                .font(.system(size: Token.Size.iconSm))
-                                .foregroundStyle(Token.Ink.secondary)
-                                .accessibilityHidden(true)
+                    if можноПравить {
+                        Button { правимыйДень = day } label: {
+                            строкаДня(day, соСтрелкой: true)
                         }
-                        .frame(minHeight: Token.Size.tapTarget)
-                        .contentShape(Rectangle())
+                        .buttonStyle(.plain)
+                    } else {
+                        строкаДня(day, соСтрелкой: false)
                     }
-                    .buttonStyle(.plain)
                 }
             }
         }
+    }
+
+    private func строкаДня(_ day: DayOut, соСтрелкой: Bool) -> some View {
+        HStack {
+            Text(Fmt.shortDay(day.startedAt)).textStyle(AppFont.body)
+            Spacer()
+            Text(Fmt.gap(day.duration())).textStyle(AppFont.numeric(Token.FontSize.meta))
+            if соСтрелкой {
+                Image(systemName: "chevron.right")
+                    .font(.system(size: Token.Size.iconSm))
+                    .foregroundStyle(Token.Ink.secondary)
+                    .accessibilityHidden(true)
+            }
+        }
+        .frame(minHeight: Token.Size.tapTarget)
+        .contentShape(Rectangle())
     }
 
     // MARK: Календарь
@@ -429,13 +516,31 @@ struct HistoryScreen: View {
 
     // MARK: Эпизоды
 
+    /// # Порядок считается ОДИН раз, и разделитель смотрит на него же
+    ///
+    /// До 29.10.2026 строки шли `episodes.sorted { > }` — новые сверху,
+    /// а разделитель спрашивал `episodes.last` — последний по ВОЗРАСТАНИЮ,
+    /// то есть первую строку списка. Итог: черты не было под первым
+    /// эпизодом и была под последним, над кнопкой «Убрать», где своя
+    /// черта уже стоит. Вычисляемое `episodes` при этом звалось пять раз
+    /// на одну перерисовку — каждый раз проходом по всем эпизодам
+    /// хранилища.
+    ///
+    /// Корзина и «Убрать закончившиеся» стоят за `.editRecords`, «Собаке
+    /// лучше — закрыть» — за `.logBasics`: эпизод — объединение записей,
+    /// и правило у него то же, что у самих записей. До этой правки
+    /// наблюдатель удалял эпизоды наравне с владельцем — экран не
+    /// спрашивал прав ни разу.
     private var episodesCard: some View {
-        TGCard {
+        let порядок = episodes.sorted { $0.startedAt > $1.startedAt }
+        let закончились = порядок.filter { !$0.isActive() }
+        let можноУбирать = appState.can(.editRecords)
+        return TGCard {
             TGSectionHeader(title: "эпизоды")
-            if episodes.isEmpty {
+            if порядок.isEmpty {
                 TGExplainer(text: "Пока ни одного. Эпизод поднимается сам: два инцидента за сутки или несколько дней подряд с жидким стулом.")
             } else {
-                ForEach(episodes.sorted { $0.startedAt > $1.startedAt }) { episode in
+                ForEach(порядок) { episode in
                     VStack(alignment: .leading, spacing: Token.Space.s2) {
                         HStack {
                             Text(episode.title).textStyle(AppFont.bodyEmphasis)
@@ -448,26 +553,28 @@ struct HistoryScreen: View {
                             // в дереве — откат при несохранении.
                             // Заведённое приложением без спроса человек
                             // обязан уметь убрать.
-                            Button { удаляемый = episode } label: {
-                                Image(systemName: "trash")
-                                    .font(.system(size: Token.Size.iconSm))
-                                    .frame(width: Token.Size.tapTarget,
-                                           height: Token.Size.tapTarget)
-                                    .contentShape(Rectangle())
+                            if можноУбирать {
+                                Button { удаляемый = episode } label: {
+                                    Image(systemName: "trash")
+                                        .font(.system(size: Token.Size.iconSm))
+                                        .frame(width: Token.Size.tapTarget,
+                                               height: Token.Size.tapTarget)
+                                        .contentShape(Rectangle())
+                                }
+                                .buttonStyle(.plain)
+                                .foregroundStyle(Token.Status.overdueText)
+                                .accessibilityLabel("Удалить эпизод \(episode.title)")
                             }
-                            .buttonStyle(.plain)
-                            .foregroundStyle(Token.Status.overdueText)
-                            .accessibilityLabel("Удалить эпизод \(episode.title)")
                         }
                         Text(episode.detail).textStyle(AppFont.caption).wraps()
                         if episode.isActive() { activeEpisodeFooter(episode) }
                     }
                     .frame(minHeight: Token.Size.tapTarget)
-                    if episode.id != episodes.last?.id { TGDivider() }
+                    if episode.id != порядок.last?.id { TGDivider() }
                 }
-                if закончившиеся.count > 1 {
+                if можноУбирать, закончились.count > 1 {
                     TGDivider()
-                    TGButton(title: "Убрать закончившиеся · \(закончившиеся.count)",
+                    TGButton(title: "Убрать закончившиеся · \(закончились.count)",
                              variant: .destructive, size: .medium,
                              systemImage: "trash") {
                         убратьЗакончившиеся = true
@@ -524,9 +631,11 @@ extension HistoryScreen {
         Text("Идёт. Закроется сам \(Fmt.shortDay(episode.quietUntil)), если больше ничего не случится.")
             .textStyle(AppFont.micro.color(Token.Status.waitingText))
             .wraps()
-        TGButton(title: "Собаке лучше — закрыть", variant: .finish, size: .medium,
-                 systemImage: "checkmark") {
-            closing = episode
+        if appState.can(.logBasics) {
+            TGButton(title: "Собаке лучше — закрыть", variant: .finish, size: .medium,
+                     systemImage: "checkmark") {
+                closing = episode
+            }
         }
     }
 
@@ -540,18 +649,35 @@ extension HistoryScreen {
     /// иначе вердикт «просится» остался бы выключенным ссылкой
     /// на эпизод, которого уже нет.
     func удалить(_ episode: Episode) {
+        // Кнопку без права не рисуем, но проверка стоит и здесь:
+        // подтверждение живёт дольше кнопки, а права могут смениться,
+        // пока оно открыто (`AppState.permissions` читается в месте).
+        guard appState.can(.editRecords) else {
+            Haptics.warning()
+            appState.showFailure(Permission.editRecords.отказ)
+            удаляемый = nil
+            return
+        }
         let былоАктивным = appState.activeEpisode?.id == episode.id
         if былоАктивным { appState.activeEpisode = nil }
         context.delete(episode)
         guard context.persist(otherwise: {
             if былоАктивным { appState.activeEpisode = episode }
         }) else {
+            // `String(localized:)`: `showFailure` и `showUndo` принимают
+            // `String`, и голый литерал рисовался дословно, мимо каталога,
+            // — у соседа ниже это было названо, а здесь стояло до 29.10.
+            //
+            // «Проверь после перезапуска», а не «нажми ещё раз»: откатить
+            // `context.delete` нечем, строка из списка уже ушла, и нажать
+            // ещё раз не на что. Та же формула, что у `DayOutEditSheet`.
             Haptics.warning()
-            appState.showFailure("Не удалилось · нажми ещё раз")
+            appState.showFailure(String(localized: "Не удалилось · проверь после перезапуска"))
+            удаляемый = nil
             return
         }
         Haptics.success()
-        appState.showUndo("Эпизод удалён · записи остались")
+        appState.showUndo(String(localized: "Эпизод удалён · записи остались"))
         удаляемый = nil
     }
 
@@ -566,6 +692,12 @@ extension HistoryScreen {
     /// Счёт берётся ДО удаления: после `context.delete` массив пуст,
     /// и строка подтверждения сказала бы «Убрано 0».
     func убратьВсеЗакончившиеся() {
+        guard appState.can(.editRecords) else {
+            Haptics.warning()
+            appState.showFailure(Permission.editRecords.отказ)
+            убратьЗакончившиеся = false
+            return
+        }
         let кУдалению = закончившиеся.filter { $0.id != appState.activeEpisode?.id }
         guard !кУдалению.isEmpty else {
             убратьЗакончившиеся = false
@@ -579,23 +711,36 @@ extension HistoryScreen {
         // от ненужного было бы не отличить.
         guard context.persistNothingToUndo() else {
             Haptics.warning()
-            appState.showFailure(String(localized: "Не удалилось · нажми ещё раз"))
+            appState.showFailure(String(localized: "Не удалилось · проверь после перезапуска"))
+            убратьЗакончившиеся = false
             return
         }
         Haptics.success()
         // `String(localized:)`, а не голый литерал: `showUndo` принимает
         // `String` со значением, и такая строка рисуется дословно, мимо
-        // каталога. Соседний `удалить` именно так и теряет перевод —
-        // это названо, а не унаследовано.
+        // каталога. Соседний `удалить` терял так перевод до 29.10.2026.
         appState.showUndo(String(localized: "Убрано эпизодов: \(сколько) · записи остались"))
         убратьЗакончившиеся = false
     }
 
+    /// Закрыть идущий эпизод.
+    ///
+    /// До 29.10.2026 отказ сохранения кончался одной вибрацией: эпизод
+    /// возвращался в «идёт», подтверждение закрывалось, и человек
+    /// не узнавал, что нажатие не состоялось.
     func close(_ episode: Episode) {
+        guard appState.can(.logBasics) else {
+            Haptics.warning()
+            appState.showFailure(Permission.logBasics.отказ)
+            closing = nil
+            return
+        }
         let былЗакрыт = episode.endedAt
         episode.close()
         guard context.persist(otherwise: { episode.endedAt = былЗакрыт }) else {
             Haptics.warning()
+            appState.showFailure(String(localized: "Не сохранилось · нажми ещё раз"))
+            closing = nil
             return
         }
         Haptics.success()
@@ -624,11 +769,31 @@ nonisolated enum HistoryFilter: String, CaseIterable, Sendable {
         }
     }
 
-    /// Фильтр меняет и календарь, и список эпизодов, и график — одно состояние на экран.
+    /// Фильтр меняет календарь и полосу — одно состояние на экран.
+    ///
+    /// Список эпизодов фильтр НЕ меняет, и прежняя строка, говорившая
+    /// обратное, была ложной в момент записи: `episodesCard` фильтра
+    /// не читает (замер 29.10.2026).
+    ///
+    /// # «Стул» брал выходы БЕЗ стула — починка 29.10.2026
+    ///
+    /// Стояло `outing && outcome != .urine`. Под это подходили выход
+    /// «не сходил» (`.none`) и выход без ответа (`nil`) — у кобеля
+    /// это вообще моча по правилу чтения `ToiletClock`. Человек
+    /// выбирал «Стул» и видел в календаре дни, где стула не было.
+    /// Теперь стул — то же, что считает `ToiletClock.stoolCount`
+    /// и `StoolSilence`: запись стула, стул в доме (он инцидент),
+    /// выход или остановка в дороге с ответом «стул» / «и то и другое».
     func matches(_ event: LogEvent) -> Bool {
         switch self {
         case .all: true
-        case .stool: event.kind == .stool || (event.kind == .outing && event.outcome != .urine)
+        case .stool:
+            switch event.kind {
+            case .stool: true
+            case .incident: event.incidentKind == .stoolIndoors
+            case .outing, .travelStop: event.outcome == .stool || event.outcome == .both
+            default: false
+            }
         case .symptoms: event.kind == .incident || event.raisesAlarm
         case .reactions: event.kind == .reaction || event.incidentKind == .reaction
         case .weight: event.kind == .weight
@@ -638,8 +803,9 @@ nonisolated enum HistoryFilter: String, CaseIterable, Sendable {
     /// Имя полосы БЕЗ срока: на кадре 10 срок стоит отдельной строкой
     /// справа, а не внутри заголовка.
     ///
-    /// `chartTitle` оставлен рядом и не удалён: он склеивает имя
-    /// со сроком и годится там, где строка одна (озвучка, отчёт).
+    /// `chartTitle`, склеивавший имя со сроком «для озвучки и отчёта»,
+    /// снят 29.10.2026: вызовов у него не было ни одного
+    /// (`grep -rn chartTitle` — только объявление).
     var chartName: String {
         switch self {
         case .all: String(localized: "Выходы")
@@ -650,10 +816,6 @@ nonisolated enum HistoryFilter: String, CaseIterable, Sendable {
         }
     }
 
-    var chartTitle: String {
-        [chartName, String(localized: "30 дней")].joined(separator: " · ")
-    }
-
     var chartExplainer: String {
         switch self {
         case .all: String(localized: "Сколько раз в день выходили. Ровная линия — устоявшийся режим.")
@@ -662,16 +824,34 @@ nonisolated enum HistoryFilter: String, CaseIterable, Sendable {
         case .reactions: String(localized: "Сколько раз собака срывалась за день. Смотреть надо не на отдельный день, а на то, куда идёт линия за месяц.")
         // Было «Зелёная полоса — коридор, который назвал врач»: полосы
         // не было ни в одной редакции экрана, а коридор показывается
-        // строкой «цель … · поставил врач» (`HistoryScreen.полосаВеса`).
-        case .weight: String(localized: "Взвешивания из «Вес и симптомы». Сравнивать стоит с собой месяц назад, а не с чужой собакой.")
+        // строкой «цель … · от врача» (`HistoryScreen.полосаВеса`).
+        //
+        // Вторая фраза — «сравнивать стоит с собой месяц назад, а не
+        // с чужой собакой» — снята 29.10.2026: слово в слово её говорит
+        // «как часто гуляете» карточкой ниже, на том же экране.
+        case .weight: String(localized: "Взвешивания из «Вес и симптомы» — за 30 дней, новые сверху.")
         }
     }
 
+    /// Высота столбика у фильтров, которым хватает самих записей.
+    ///
+    /// `.all` здесь — грубый запасной ответ, а не тот, что рисуется:
+    /// выходы считает экран блоками (`HistoryScreen.значение`), потому
+    /// что `TimelineBuilder` изолирован главным актором. Запасной
+    /// хотя бы не считает отметки внутри прогулки выходами, но выход,
+    /// ставший прогулкой, посчитает дважды — **для показа его
+    /// не звать**, звать `TimelineBuilder.outingsCount`.
+    ///
+    /// `.symptoms` считает всё, что фильтр отобрал: день с кровью
+    /// в стуле — тревожный, и столбик у него был бы нулевой,
+    /// под пояснением «столбик есть — был инцидент».
     func value(for events: [LogEvent]) -> Double {
         switch self {
-        case .all: Double(events.filter { $0.kind == .outing }.count)
+        case .all: Double(events.filter {
+            $0.kind == .walk || ($0.kind == .outing && $0.walkEventID == nil)
+        }.count)
         case .stool: events.compactMap { $0.stoolForm?.bristolScore }.map(Double.init).max() ?? 0
-        case .symptoms: Double(events.filter { $0.kind == .incident }.count)
+        case .symptoms: Double(events.filter(matches).count)
         case .reactions: Double(events.filter { $0.kind == .reaction || $0.incidentKind == .reaction }.count)
         case .weight: 0
         }
@@ -687,7 +867,7 @@ nonisolated struct HistoryPoint: Identifiable, Sendable {
 
 // MARK: - Календарь
 
-/// Месяц с точкой на день. Тап открывает таймлайн этого дня в режиме чтения.
+/// Месяц с точкой на день. Тап открывает таймлайн этого дня (`DayReadingScreen`).
 ///
 /// Шапка с названием месяца уехала наружу (кадр 10: «ОКТЯБРЬ 2026 Г»
 /// прописными **над** карточкой) — здесь осталась только сетка.
@@ -735,7 +915,7 @@ struct MonthCalendar: View {
     /// начинается с воскресенья, и когда дойдут руки, менять придётся
     /// обе половины разом.
     private var weekdays: [String] {
-        var форматтер = DateFormatter()
+        let форматтер = DateFormatter()
         форматтер.locale = Locale(identifier: Locale.preferredLanguages.first ?? "ru")
         let короткие = форматтер.shortWeekdaySymbols ?? []
         guard короткие.count == 7 else {
@@ -892,29 +1072,90 @@ private struct DayCell: View {
     }
 }
 
-/// Таймлайн дня в режиме чтения: правок здесь нет.
+/// Таймлайн прошедшего дня. Тап по записи открывает её правку.
+///
+/// # «Режим чтения» был мёртвыми кнопками — починка 29.10.2026
+///
+/// Здесь стояло `DayTimeline(…) { _ in }`, а `DayTimeline` рисует
+/// каждую строку `Button`-ом. Итог: строка нажималась, подсвечивалась,
+/// озвучка называла её кнопкой — и не происходило ничего. Поправить
+/// вчерашние граммы или убрать запись, сделанную не той собаке,
+/// из «Истории» было нельзя, хотя экран выглядел так, будто можно.
+///
+/// Тап ведёт в тот же `EventEditSheet`, что и на «Сегодня»: права
+/// он проверяет сам (без `.editRecords` — плашка права и выключенные
+/// поля, то есть то же чтение, только честное), удаление обратимо
+/// тостом. Тост рисуется ЗДЕСЬ, сверху: общий `UndoToastView` висит
+/// на `RootView` под этой шторкой, и «Отменить» оказалось бы
+/// за ней — тот же класс, что у режима прогулки (`WalkMode`).
+///
+/// # Взвешивания дня
+///
+/// Под фильтром «Вес» календарь ставит точку на день взвешивания,
+/// а взвешивания живут в `WeightEntry`, не в ленте. Без них лист
+/// такого дня говорил «записей нет» под точкой, которая говорила
+/// обратное.
 struct DayReadingScreen: View {
     let day: Date
     let events: [LogEvent]
     var showsAuthor: Bool = false
+    /// Взвешивания этого дня — уже отобранные по дню.
+    var взвешивания: [WeightEntry] = []
+
+    @State private var правимая: ПравимаяЗапись?
 
     private var dayEvents: [LogEvent] {
         Diary.onDay(events, day)
     }
 
     var body: some View {
-        TGSheet(title: .готовая(Fmt.dayTitle(day)), subtitle: "режим чтения") {
-            if dayEvents.isEmpty {
-                TGCard { TGExplainer(text: "В этот день записей нет.") }
+        let записи = dayEvents
+        TGSheet(title: .готовая(Fmt.dayTitle(day)),
+                subtitle: записи.isEmpty ? nil : LocalizedStringKey.готовая(Fmt.records(записи.count))) {
+            if !взвешивания.isEmpty {
+                TGCard {
+                    ForEach(взвешивания) { замер in
+                        HStack {
+                            Text(.готовая(LogKind.weight.title)).textStyle(AppFont.body)
+                            Spacer()
+                            Text(Fmt.clock(замер.date)).textStyle(AppFont.caption)
+                            Text(Fmt.weight(замер.kg)).textStyle(AppFont.numeric(Token.FontSize.meta))
+                        }
+                        .frame(minHeight: Token.Size.tapTarget)
+                    }
+                }
+            }
+            if записи.isEmpty {
+                // Под карточкой взвешивания «записей нет» читалось бы
+                // как спор с ней: взвешивание и есть запись дня.
+                if взвешивания.isEmpty {
+                    TGCard { TGExplainer(text: "В этот день записей нет.") }
+                }
             } else {
                 // Тот же рельс, что и на главном: промежутки между записями
                 // в прошлом читают ровно за тем же, зачем и сегодня.
-                DayTimeline(events: dayEvents, now: day,
-                            showsAuthor: showsAuthor, showsNow: false) { _ in }
+                DayTimeline(events: записи, now: day,
+                            showsAuthor: showsAuthor, showsNow: false) { event in
+                    правимая = ПравимаяЗапись(id: event.id)
+                }
             }
         }
         .presentationDetents([.medium, .large])
+        .sheet(item: $правимая) { запись in
+            EventEditSheet(eventID: запись.id)
+                .presentationDragIndicator(.visible)
+                .presentationCornerRadius(Token.Radius.sheet)
+        }
+        .overlay(alignment: .top) {
+            UndoToastView()
+                .padding(.top, Token.Space.s8)
+        }
     }
+}
+
+/// Обёртка, чтобы идентификатор записи можно было отдать в `.sheet(item:)`.
+private struct ПравимаяЗапись: Identifiable {
+    let id: UUID
 }
 
 nonisolated extension Calendar {

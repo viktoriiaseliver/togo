@@ -70,7 +70,12 @@ struct LocalizationDebtTests {
     /// > допуск.** Сторож с запасом, набранным из собственных ошибок,
     /// > зелен ровно на величину этих ошибок.
     private let долг: [String: Int] = [
-        "AlarmThreshold.swift": 1, "CareMigration.swift": 14, "DayOutPlan.swift": 3,
+        "AlarmThreshold.swift": 1, "CareMigration.swift": 14,
+        // `DayOutPlan.swift` стоял здесь с долгом 3 и ушёл 29.10.2026:
+        // три строки `DayOutTrace.findings` шли в `lines.append("…")`,
+        // то есть в `String`, мимо каталога, и на «Истории» рисовались
+        // по-русски на любом языке. Ключей в каталоге у них не было
+        // вовсе — новые ключи заведены правкой, перевод за переводчиком.
         "DogDocument.swift": 20, "FamilySync.swift": 3,
         // `FamilyShare.swift` стоял здесь с долгом 1 и ушёл 13.10.2026.
         // Красное было 9 при 1, и девять делились 8 + 1, а не на глаз:
