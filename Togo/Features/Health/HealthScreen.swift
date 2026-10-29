@@ -1101,10 +1101,36 @@ struct VetReportScreen: View {
 
     @State private var from = Calendar.current.date(byAdding: .month, value: -1, to: .now) ?? .now
     @State private var to = Date()
-    @State private var language = "RU"
 
+    /// Записи периода — ЦЕЛЫМИ СУТКАМИ (29.10.2026).
+    ///
+    /// Пикер с `.date` несёт час открытия экрана, и фильтр
+    /// `date >= from && date <= to` выбрасывал утро первого дня
+    /// и вечер последнего — в выгрузке врачу их не было, а на экране
+    /// оба дня стояли целиком. Правило одно со «Сводкой»:
+    /// `VetSummaryBuilder.целыеСутки`.
     private var events: [LogEvent] {
-        Diary.active(dog?.events ?? []).filter { $0.date >= from && $0.date <= to }
+        let период = VetSummaryBuilder.целыеСутки(с: from, по: to)
+        return Diary.active(dog?.events ?? []).filter { $0.date >= период.from && $0.date <= период.to }
+    }
+
+    /// Язык, на котором выйдет выгрузка, — язык приложения.
+    ///
+    /// # Почему здесь больше нет переключателя RU · FR · EN (29.10.2026)
+    ///
+    /// Переключатель стоял на `@State language` и не читался ничем:
+    /// `Exporter.csv` берёт заголовки и подписи через `String(localized:)`,
+    /// то есть на языке интерфейса, что бы ни было выбрано. Человек
+    /// выбирал «FR» для французского врача и отдавал русский файл.
+    ///
+    /// Сделать выбор настоящим здесь нельзя без второго пути перевода:
+    /// подписи видов записи, результата и формы стула приходят уже
+    /// переведёнными из десятка перечислений. Поэтому экран говорит
+    /// правду — на каком языке выйдет файл — и ведёт туда, где язык
+    /// правда меняется.
+    private var языкВыгрузки: String {
+        let код = Bundle.main.preferredLocalizations.first ?? "ru"
+        return LanguageScreen.names[код] ?? код.uppercased()
     }
 
     var body: some View {
@@ -1116,12 +1142,13 @@ struct VetReportScreen: View {
                 TGDivider()
                 DatePicker("По", selection: $to, in: from..., displayedComponents: .date)
                     .frame(minHeight: Token.Size.tapTarget)
-                TGDivider()
-                Picker("Язык", selection: $language) {
-                    ForEach(["RU", "FR", "EN"], id: \.self) { Text($0).tag($0) }
+            }
+
+            TGCard(spacing: 0) {
+                TGLink(title: "Язык", value: .готовая(языкВыгрузки), systemImage: "globe") {
+                    LanguageScreen()
                 }
-                .pickerStyle(.segmented)
-                .padding(.vertical, Token.Space.s8)
+                TGExplainer(text: "Файл выйдет на языке приложения. Нужен другой — смени язык приложения и выгрузи заново.")
             }
 
             TGCard {
