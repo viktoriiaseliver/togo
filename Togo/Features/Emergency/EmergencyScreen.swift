@@ -187,17 +187,21 @@ struct EmergencyScreen: View {
 
     private var brief: [(String, String)] {
         guard let dog else { return [] }
+        // Подписи — через каталог (29.10.2026). Кортеж держит `String`,
+        // а `Text(title)` со значением рисует его дословно: француз
+        // видел справку врачу по-русски при переведённых ключах.
+        // Тот же класс, что у списка сборов (`PackingListCard.items`).
         var rows: [(String, String)] = [
-            ("Кличка", dog.displayName),
-            ("Вес", Fmt.weight(dog.weightKg)),
+            (String(localized: "Кличка"), dog.displayName),
+            (String(localized: "Вес"), Fmt.weight(dog.weightKg)),
         ]
-        if let breed = dog.breed { rows.append(("Порода", breed)) }
-        if let age = dog.ageDescription { rows.append(("Возраст", age)) }
-        if let chip = dog.chipNumber, !chip.isEmpty { rows.append(("Чип", chip)) }
+        if let breed = dog.breed { rows.append((String(localized: "Порода"), breed)) }
+        if let age = dog.ageDescription { rows.append((String(localized: "Возраст"), age)) }
+        if let chip = dog.chipNumber, !chip.isEmpty { rows.append((String(localized: "Чип"), chip)) }
 
         let active = dog.medications.filter { !$0.isPaused }
         if !active.isEmpty {
-            rows.append(("Принимает", active.map { "\($0.name) \($0.doseText)" }.joined(separator: ", ")))
+            rows.append((String(localized: "Принимает"), active.map { "\($0.name) \($0.doseText)" }.joined(separator: ", ")))
         }
         // «Ел последний раз» → «Последняя еда»: мужской род у суки,
         // а ключ без рода уже лежал переведённым (окна поездки).
@@ -209,7 +213,7 @@ struct EmergencyScreen: View {
             rows.append((String(localized: "Последняя еда"), когда(lastMeal.date)))
         }
         if let lastStool = Diary.last(dog.events, kind: .stool) {
-            rows.append(("Стул", когда(lastStool.date)))
+            rows.append((String(localized: "Стул"), когда(lastStool.date)))
         }
         return rows
     }
