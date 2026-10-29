@@ -129,7 +129,8 @@ struct WalkModeScreen: View {
         if let dog {
             LiveActivityController.startWalk(dogName: dog.name,  // кличка-в-слот: вход живой активности кормит и именительный ярлык, и винительные подписи — падеж знает слот
                                              by: appState.currentUserName,
-                                             at: Date())
+                                             at: Date(),
+                                             кобель: dog.sex == .male)
         }
         Haptics.success()
     }
@@ -761,7 +762,8 @@ struct WalkModeScreen: View {
                 LiveActivityController.resumeWalk(
                     dogName: dog.name, by: resumed.startedBy,  // кличка-в-слот: вход живой активности кормит и именительный ярлык, и винительные подписи — падеж знает слот
                     effectiveStart: Date().addingTimeInterval(-resumed.duration()),
-                    tally: resumed.marks.isEmpty ? nil : resumed.tally
+                    tally: resumed.marks.isEmpty ? nil : resumed.tally,
+                    кобель: dog.sex == .male
                 )
             }
             Haptics.tap()

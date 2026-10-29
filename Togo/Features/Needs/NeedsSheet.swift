@@ -404,7 +404,8 @@ struct NeedsSheet: View {
         }
 
         appState.startOuting(by: appState.currentUserName)
-        LiveActivityController.startWalk(dogName: dog.name, by: appState.currentUserName, at: event.date)  // кличка-в-слот: вход живой активности кормит и именительный ярлык, и винительные подписи — падеж знает слот
+        LiveActivityController.startWalk(dogName: dog.name, by: appState.currentUserName, at: event.date,
+                                         кобель: dog.sex == .male)  // кличка-в-слот: вход живой активности кормит и именительный ярлык, и винительные подписи — падеж знает слот
 
         // Спрашиваем не каждый раз: только при смене сигнала или раз в пять
         // выходов. Ответил чипами — второй раз не спрашиваем.

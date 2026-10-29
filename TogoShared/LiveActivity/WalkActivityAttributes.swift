@@ -26,10 +26,16 @@ nonisolated struct WalkActivityAttributes: ActivityAttributes {
 
     public var dogName: String
     public var startedBy: String
+    /// Кобель: кнопки «Пописал» на блокировке нет (решение Виктории
+    /// 29.10.2026 — у кобеля выход сам и есть моча, `ToiletClock`).
+    /// Опционально: активность, запущенная прежней сборкой, декодируется
+    /// без этого поля и показывает обе кнопки, как показывала.
+    public var кобель: Bool?
 
-    public init(dogName: String, startedBy: String) {
+    public init(dogName: String, startedBy: String, кобель: Bool = false) {
         self.dogName = dogName
         self.startedBy = startedBy
+        self.кобель = кобель
     }
 }
 #endif
