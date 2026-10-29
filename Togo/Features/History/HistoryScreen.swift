@@ -49,6 +49,8 @@ struct HistoryScreen: View {
     /// Переход делает хозяин экрана: `NavigationLink` внутри `Menu`
     /// срабатывает непредсказуемо (разбор у `HeaderMenu`).
     @State private var показатьНастройки = false
+    /// Прошедший день с собакой, открытый на правку.
+    @State private var правимыйДень: DayOut?
 
     private var dog: Dog? { appState.activeDog(from: dogs) }
     private var events: [LogEvent] { Diary.active(dog?.events ?? []) }
@@ -72,6 +74,7 @@ struct HistoryScreen: View {
                     полосаВыходов
                     ритмВыходов
                     dayOutCard
+                    прошедшиеДни
                     месяцШапкой
                     MonthCalendar(month: $month, поДням: поДням, onSelect: { selectedDay = $0 })
                     episodesCard
@@ -81,6 +84,7 @@ struct HistoryScreen: View {
             .navigationDestination(isPresented: $показатьНастройки) {
                 SettingsScreen()
             }
+            .sheet(item: $правимыйДень) { day in DayOutEditSheet(day: day) }
             .sheet(item: Binding(get: { selectedDay.map(DayRef.init) },
                                  set: { selectedDay = $0?.date })) { ref in
                 DayReadingScreen(day: ref.date, events: events,
@@ -276,6 +280,42 @@ struct HistoryScreen: View {
                 }
                 TGDivider()
                 TGExplainer(text: "Это совпадение, а не причина: приложение не ставит диагнозов. Но показать эту строку врачу полезнее, чем сказать «она иногда вялая».")
+            }
+        }
+    }
+
+    /// Прошедшие дни с собакой — с дорогой к правке.
+    ///
+    /// **До 29.10.2026 прошедшего дня не было видно нигде**, кроме
+    /// как числом в «После долгих дней»: итог показывался один раз,
+    /// при «Закончить», и после него день нельзя было ни найти,
+    /// ни поправить, ни убрать. Десять последних — потому что правят
+    /// недавнее: забыли закончить вчера, а не в прошлом году.
+    @ViewBuilder
+    private var прошедшиеДни: some View {
+        let мои = daysOut
+            .filter { $0.dog?.persistentModelID == dog?.persistentModelID && $0.endedAt != nil }
+            .sorted { $0.startedAt > $1.startedAt }
+            .prefix(10)
+        if !мои.isEmpty {
+            TGCard {
+                TGSectionHeader(title: "дни с собакой")
+                ForEach(Array(мои)) { day in
+                    Button { правимыйДень = day } label: {
+                        HStack {
+                            Text(Fmt.shortDay(day.startedAt)).textStyle(AppFont.body)
+                            Spacer()
+                            Text(Fmt.gap(day.duration())).textStyle(AppFont.numeric(15))
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: Token.Size.iconSm))
+                                .foregroundStyle(Token.Ink.secondary)
+                                .accessibilityHidden(true)
+                        }
+                        .frame(minHeight: Token.Size.tapTarget)
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                }
             }
         }
     }

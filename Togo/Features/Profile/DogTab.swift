@@ -609,6 +609,16 @@ struct TripScreen: View {
 
             PackingListCard(dog: dog, days: trip.dayCount())
 
+            // Правка — тем же экраном, которым поездку заводили.
+            // До 29.10.2026 её здесь не было: опечатка в «куда» или
+            // сдвиг на день лечились только удалением.
+            TGCard(spacing: 0) {
+                TGLink(title: "Поправить поездку", systemImage: "pencil") {
+                    TripSetupScreen(dog: dog, trip: trip)
+                }
+            }
+            .buttonStyle(.plain)
+
             TGButton(title: "Убрать поездку", variant: .destructive,
                      size: .medium, systemImage: "trash") { isConfirmingDelete = true }
         }

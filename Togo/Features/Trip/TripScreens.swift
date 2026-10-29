@@ -5,6 +5,15 @@ import SwiftData
 /// экран и сам выключается. Не место, куда надо ходить.
 struct TripSetupScreen: View {
     let dog: Dog?
+    /// Заведённая поездка — правим её, а не заводим новую.
+    ///
+    /// **До 29.10.2026 поездку можно было завести и убрать, но не
+    /// поправить.** Опечатка в «куда» или сдвиг даты на день значили
+    /// «убрать и завести заново», и вместе с поездкой уходило то,
+    /// чего форма не спрашивает (`packedItems`, `participants`).
+    /// Экран один на оба действия — как у собаки (`DogEditorScreen`):
+    /// человеку не надо гадать, где правится то, что он завёл здесь.
+    var trip: Trip? = nil
 
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
@@ -17,6 +26,7 @@ struct TripSetupScreen: View {
     @State private var transport: TransportKind = .car
     @State private var hours = 5.0
     @State private var lodging = ""
+    @State private var загружено = false
 
     /// Кличка в шапке, а не вторым заголовком над ней.
     ///
@@ -126,12 +136,31 @@ struct TripSetupScreen: View {
                         .textStyle(AppFont.caption.color(Token.Status.overdueText))
                         .wraps()
                 }
-                TGButton(title: "Включить режим", systemImage: "car", isEnabled: !destination.isEmpty) { save() }
+                if trip == nil {
+                    TGButton(title: "Включить режим", systemImage: "car", isEnabled: !destination.isEmpty) { save() }
+                } else {
+                    TGButton(title: "Сохранить", isEnabled: !destination.isEmpty) { save() }
+                }
             }
         }
         .navigationTitle("Поездка")
         .cinemaScreen(экран: .sub("trip"))
         .usageScreen(.trip)
+        .task { загрузить() }
+    }
+
+    private func загрузить() {
+        guard !загружено else { return }
+        загружено = true
+        guard let trip else { return }
+        destination = trip.destination
+        start = trip.startDate
+        end = max(trip.endDate, trip.startDate)
+        transport = trip.transport
+        // Ноль у поездки, заведённой не на машине, — «не спрашивали»;
+        // шаговик начинается с единицы, и ноль ему не показать.
+        hours = trip.travelHours > 0 ? trip.travelHours : 5
+        lodging = trip.lodging
     }
 
     private var dayCount: Int {
@@ -140,6 +169,7 @@ struct TripSetupScreen: View {
 
     private func save() {
         guard let dog else { return }
+        if let trip { return сохранитьПравку(trip) }
         // **Якорь в полдень, а не «как отдал пикер».** `DatePicker`
         // с `displayedComponents: .date` сохраняет ВРЕМЯ СУТОК у
         // привязанного значения, и в базу уезжает момент, нередко
@@ -157,6 +187,41 @@ struct TripSetupScreen: View {
         // Здесь была одна вставка без сохранения и сразу «успех»:
         // не сохранилось — экран закрывался, будто поездка есть.
         guard context.persist(otherwise: { context.delete(trip) }) else {
+            Haptics.warning()
+            appState.showFailure(String(localized: "Поездка не сохранилась · нажми ещё раз"))
+            return
+        }
+        Haptics.success()
+        dismiss()
+    }
+
+    /// Правка заведённой поездки. Снимок до правки и откат — как
+    /// у соседних редакторов: экран, закрывшийся после несохранённой
+    /// правки, обещал бы режим не на те даты.
+    private func сохранитьПравку(_ trip: Trip) {
+        let былоКуда = trip.destination
+        let былоНачало = trip.startDate
+        let былКонец = trip.endDate
+        let былТранспорт = trip.transportRaw
+        let былиЧасы = trip.travelHours
+        let былоЖильё = trip.lodging
+
+        trip.destination = destination
+        // Якорь в полдень — та же причина, что у заведения выше.
+        trip.startDate = CalendarDay.anchored(start)
+        trip.endDate = CalendarDay.anchored(end)
+        trip.transport = transport
+        trip.travelHours = hours
+        trip.lodging = lodging
+
+        guard context.persist(otherwise: {
+            trip.destination = былоКуда
+            trip.startDate = былоНачало
+            trip.endDate = былКонец
+            trip.transportRaw = былТранспорт
+            trip.travelHours = былиЧасы
+            trip.lodging = былоЖильё
+        }) else {
             Haptics.warning()
             appState.showFailure(String(localized: "Поездка не сохранилась · нажми ещё раз"))
             return
