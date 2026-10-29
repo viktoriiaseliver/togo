@@ -616,8 +616,12 @@ struct NowMarker: View {
             .padding(.top, Token.Space.s2)
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(sinceLast.map { "Сейчас \(Fmt.clock(now)), \(Fmt.duration($0)) с прошлого выхода" }
-                            ?? "Сейчас \(Fmt.clock(now))")
+        // Обе ветки — через каталог (29.10.2026): `map { "…" } ?? "…"`
+        // давал `String`, и `accessibilityLabel(String)` читал фразу
+        // дословно — VoiceOver говорил по-русски на всех языках.
+        .accessibilityLabel(sinceLast.map {
+            String(localized: "Сейчас \(Fmt.clock(now)), \(Fmt.duration($0)) с прошлого выхода")
+        } ?? String(localized: "Сейчас \(Fmt.clock(now))"))
     }
 }
 
