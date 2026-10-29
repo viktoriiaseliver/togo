@@ -90,6 +90,53 @@ nonisolated enum SnapshotText {
         return String(localized: "ел \(прошло) назад · \(snapshot.mealsToday) из \(snapshot.mealsPlanned)")
     }
 
+    // MARK: - Счёт от туалета (29.10.2026)
+
+    /// Откуда считает виджет — то же правило, что у героя «Сегодня».
+    ///
+    /// **Запасной выход — `lastOutingEndedAt ?? lastWalkAt`, и второе
+    /// звено здесь только для старого снимка.** Снимок, записанный
+    /// версией до 29.10, знает лишь `lastWalkAt`; без отката виджет
+    /// после обновления приложения показал бы «записей пока нет»
+    /// до первого пересбора, то есть утверждение из отсутствия поля.
+    static func якорь(_ snapshot: WidgetSnapshot, now: Date) -> ToiletAnchor.Якорь? {
+        ToiletAnchor.якорь(туалет: snapshot.lastToiletAt,
+                           дома: snapshot.lastToiletAtHome ?? false,
+                           выход: snapshot.lastOutingEndedAt ?? snapshot.lastWalkAt,
+                           now: now)
+    }
+
+    /// Строка «сколько прошло» для локскрина — живая, от `now`.
+    ///
+    /// Прежняя `sinceText` печатает `sinceUrineSeconds`, посчитанные
+    /// в момент публикации, и на заблокированном экране число стояло,
+    /// пока кто-нибудь не открывал «Сегодня». Она оставлена как есть
+    /// и зовётся отсюда, когда считать не от чего: её правило тишины
+    /// мочи проверено своим набором, и подменять его нечем.
+    static func sinceText(_ snapshot: WidgetSnapshot, now: Date) -> String {
+        guard let якорь = якорь(snapshot, now: now) else { return sinceText(snapshot) }
+        if let тишина = ToiletAnchor.тишина(якорь, now: now) {
+            return String(localized: "Выходов нет с \(Fmt.shortDay(тишина))")
+        }
+        let прошло = Fmt.duration(max(0, now.timeIntervalSince(якорь.когда)))
+        switch якорь.откуда {
+        case .улица: return String(localized: "сходил \(прошло) назад")
+        case .дом: return String(localized: "сходил дома \(прошло) назад")
+        case .выход: return String(localized: "гулял \(прошло) назад")
+        }
+    }
+
+    /// Инлайн «острова» — живой, от `now`. Кличка в хвосте по тому же
+    /// замеру, что у `inlineText(_:)`; считать не от чего — прежняя.
+    static func inlineText(_ snapshot: WidgetSnapshot, now: Date) -> String {
+        guard let якорь = якорь(snapshot, now: now) else { return inlineText(snapshot) }
+        let кличка = Fmt.dogNameOrFallback(snapshot.dogName)
+        if ToiletAnchor.тишина(якорь, now: now) != nil {
+            return "\(String(localized: "нет отметок")) · \(кличка)"
+        }
+        return "\(Fmt.duration(max(0, now.timeIntervalSince(якорь.когда)))) · \(кличка)"
+    }
+
     /// Самая тесная поверхность: строка в «острове», где всё помещается
     /// в несколько знаков.
     ///
