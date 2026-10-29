@@ -801,6 +801,9 @@ struct WalkModeScreen: View {
             }
             OutingFinisher.записатьПрочиеОтметки(finished, dog: dog,
                                                  appState: appState, context: context)
+            if finished.count(of: .incident) > 0 {
+                EpisodeRaiser.afterIncident(dog: dog, context: context, appState: appState)
+            }
             показатьИтог(finished)
             return
         }
