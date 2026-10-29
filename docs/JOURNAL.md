@@ -11,6 +11,7 @@
 
 - [29 октября 2026 — tualet-noch-poezdka-i-audit-ekranov](journal/2026-10-29-tualet-noch-poezdka-i-audit-ekranov.md) — tualet-noch-poezdka-i-audit-ekranov
 - [29 октября 2026](journal/2026-10-29-svedenie-dvuh-liniy-i-chto-ono-vskrylo.md) — **29.10.2026.** Две линии работы 28.10 — локальная и облачная — завели разные схемы под одним номером
+- [29 октября 2026 — pr4-sborka-na-mac-i-286](journal/2026-10-29-pr4-sborka-na-mac-i-286.md) — pr4-sborka-na-mac-i-286
 - [29 октября 2026](journal/2026-10-29-gitkhab-oblachnaya-vetka-i-sborka-285.md) — **29.10.2026.** Виктория спросила: «ты нашёл, что я вчера правила — чисто код на гитхабе?» Нашёл, и нашёл не сразу: искал её правки по коммиттеру `GitHub` (так подписываются веб-правки), а их ноль
 - [28 октября 2026 — v10-vygruzka-i-refaktoring-segodnya](journal/2026-10-28-v10-vygruzka-i-refaktoring-segodnya.md) — v10-vygruzka-i-refaktoring-segodnya
 - [28 октября 2026](journal/2026-10-28-tri-zhivyh-otzyva-rezhim-kolco-i-chasy-vyhodov.md) — **28.10.2026, утро.** Три отзыва Виктории из TestFlight по сборке 282, разобранные по кадрам из `~/Projects/.отзывы/Togo/`
