@@ -557,8 +557,23 @@ struct DiagnosisEditor: View {
                 dismiss()
             }
             Button("Снять диагноз") {
-                diagnosis?.status = .withdrawn
-                diagnosis?.changedAt = Date()
+                // Записывается, а не только ставится в памяти (29.10.2026):
+                // без `persist` снятие жило до перезапуска, не ехало
+                // второму телефону, и отказ хранилища молчал.
+                guard let diagnosis else { dismiss(); return }
+                let былСтатус = diagnosis.statusRaw
+                let былоИзменено = diagnosis.changedAt
+                diagnosis.status = .withdrawn
+                diagnosis.changedAt = Date()
+                guard context.persist(otherwise: {
+                    diagnosis.statusRaw = былСтатус
+                    diagnosis.changedAt = былоИзменено
+                }) else {
+                    Haptics.warning()
+                    appState.showFailure("Не сохранилось · нажми ещё раз")
+                    return
+                }
+                Haptics.success()
                 dismiss()
             }
             Button("Отмена", role: .cancel) {}
