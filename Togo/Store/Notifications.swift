@@ -99,6 +99,30 @@ enum NotificationCenterService {
             .map(\.identifier))
     }
 
+    /// Ключ `userInfo`, под которым запрос дозы называет свою собаку.
+    static let ключСобаки = "dog"
+
+    /// Ждущие запросы доз ОДНОЙ собаки — по метке в `userInfo`.
+    ///
+    /// Заведено 29.10.2026 вместе с горизонтом доз. Пока ставились
+    /// только сегодняшние дозы, лишний запрос жил до вечера; на трое
+    /// суток вперёд запрос по передвинутому часу звонил бы трое суток,
+    /// а снять его было нечем: идентификатор считается из часа, и
+    /// старого часа у планировщика больше нет. Метка отвечает на вопрос
+    /// «чьё это» без часа.
+    ///
+    /// Запросы, поставленные до этой правки, метки не несут и сюда
+    /// не попадают. Их снимает прежняя уборка (`снятьНеждущие`) или
+    /// замена тем же идентификатором; не снимает ничто только запрос
+    /// по часу, который убрали в тот же день, — и он отзвонит один раз.
+    static func ожидающиеДозы(собаки собака: UUID) async -> Set<String> {
+        let метка = собака.uuidString
+        return Set(await UNUserNotificationCenter.current()
+            .pendingNotificationRequests()
+            .filter { ($0.content.userInfo[ключСобаки] as? String) == метка }
+            .map(\.identifier))
+    }
+
     /// Положить запрос в очередь и сказать, что из этого вышло.
     ///
     /// Единственное место во всём приложении, где зовётся `add`.
@@ -157,15 +181,32 @@ enum NotificationCenterService {
         }
     }
 
-    /// Один пуш в выбранный час со всеми сроками сразу.
+    /// Один пуш на один день со всеми сроками этого дня.
     ///
     /// Возврат **без** `@discardableResult`, и это не стиль: умолчание
     /// на исходе вернуло бы ровно тот дефект, ради которого он заведён —
     /// исход снова можно было бы не прочитать, всё собралось бы,
     /// и тесты остались бы зелёными. Забыть его не даёт компилятор.
-    static func scheduleMorningBrief(at hour: Int, lines: [String]) async -> ИсходЗапроса {
-        let center = UNUserNotificationCenter.current()
-        center.removePendingNotificationRequests(withIdentifiers: [Category.morningBrief.rawValue])
+    ///
+    /// # Почему с 29.10.2026 сводка НЕ повторяется
+    ///
+    /// Было `UNCalendarNotificationTrigger(…, repeats: true)` с одним
+    /// идентификатором `"brief"`. Повторяющийся запрос несёт **один
+    /// текст на все дни**, а текст собирался в момент последнего
+    /// открытия приложения. Не открывал человек «Togo» неделю — неделю
+    /// каждое утро приходило «Когти — сегодня» про когти, которые
+    /// подстригли в понедельник. Сводка утверждала то, чего уже нет.
+    ///
+    /// Теперь это обычный разовый запрос на конкретную минуту,
+    /// а дни раскладывает `ReminderScheduler.scheduleBrief` — по запросу
+    /// на день, у каждого свой текст. Пустой день не ставится вовсе:
+    /// сводка без строк — это пуш «ничего», и его честнее не слать.
+    ///
+    /// Идентификатор приходит снаружи (`brief-ГГГГММДД`). Старый
+    /// `"brief"` снимает планировщик: у обновившихся он стоит
+    /// повторяющимся и иначе звонил бы рядом с новыми вечно.
+    static func scheduleMorningBrief(id: String, at date: Date,
+                                     lines: [String]) async -> ИсходЗапроса {
         guard !lines.isEmpty else { return .нечегоСтавить }
 
         let content = UNMutableNotificationContent()
@@ -180,23 +221,21 @@ enum NotificationCenterService {
         // (`NotificationSettingsScreen`, отзыв «хочу выбирать часть дня
         // сама»), и заголовок называл её утренней в 19:00. Имя
         // `Category.morningBrief` и имя функции не тронуты нарочно —
-        // идентификатор запроса уходит в очередь уведомлений, и смена
-        // строки `"brief"` осиротила бы уже поставленные запросы
-        // у всех, кто обновится.
+        // `"brief"` остаётся нитью (`threadIdentifier`), и по нему же
+        // планировщик снимает запрос старой формы.
         content.title = String(localized: "Togo · сводка по уходу")
         content.body = lines.prefix(4).joined(separator: "\n")
         content.sound = .default
         content.interruptionLevel = .active
         content.threadIdentifier = Category.morningBrief.rawValue
 
-        var components = DateComponents()
-        components.hour = hour
-        components.minute = 0
-
         let request = UNNotificationRequest(
-            identifier: Category.morningBrief.rawValue,
+            identifier: id,
             content: content,
-            trigger: UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
+            trigger: UNCalendarNotificationTrigger(
+                dateMatching: Calendar.current.dateComponents(
+                    [.year, .month, .day, .hour, .minute], from: date),
+                repeats: false)
         )
         return await поставить(request)
     }
@@ -206,14 +245,26 @@ enum NotificationCenterService {
     /// Исход возвращается и **читается обязательно** (см. запрет
     /// на `@discardableResult` у сводки выше): это напоминание
     /// медицинское, и его молчаливая пропажа дороже всех остальных.
+    ///
+    /// `собака` кладётся в `userInfo` запроса (`ключСобаки`), и это
+    /// единственный способ потом узнать, ЧЕЙ это запрос. Идентификатор
+    /// дозы (`dose-<uuid>-t+30`) собаку не называет, а планировщику
+    /// с 29.10.2026 надо снимать СВОИ устаревшие запросы — передвинутый
+    /// час, снятую схему — и не трогать запросы второй собаки. Без
+    /// собаки (`nil`) идёт «Как он сейчас?»: он ни к одной схеме
+    /// не привязан, и уборка доз его не касается.
     static func scheduleDose(id: String, at date: Date,
-                             title: String, body: String) async -> ИсходЗапроса {
+                             title: String, body: String,
+                             собака: UUID?) async -> ИсходЗапроса {
         let content = UNMutableNotificationContent()
         content.title = title
         content.body = body
         content.sound = .default
         content.interruptionLevel = .timeSensitive
         content.categoryIdentifier = Category.dose.rawValue
+        if let собака {
+            content.userInfo = [ключСобаки: собака.uuidString]
+        }
 
         let trigger = UNCalendarNotificationTrigger(
             dateMatching: Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: date),
