@@ -35,6 +35,17 @@ import UserNotifications
 /// `сообщить(_:про:)`, и отказ виден в «Настройки → Журнал действий».
 /// Границу этого — чего оно НЕ делает — см. у самой `сообщить`.
 ///
+/// **Текст уведомления с 29.10.2026 идёт через каталог.** Было восемь
+/// голых литералов в аргументах `title:`/`body:` — пять названных
+/// в задании и три с подстановкой, найденные рядом. Все восемь имели
+/// в каталоге ключ с живым переводом на en/fr/kk/uk, и ни один
+/// до перевода не доезжал: `scheduleDose(title:body:)` принимает
+/// `String`, а не `LocalizedStringKey`, и литерал на месте вызова
+/// каталог не спрашивает вовсе. То есть сторож полноты всё это время
+/// честно отвечал «переведено» про строку, уходившую русской в пять
+/// локалей. Кадром это не ловится: пуш рисуется, когда приложение
+/// закрыто. Держит `ТекстУведомленияЧерезКаталогTests`.
+///
 /// И рядом улика: `NotificationCenterService.Category.escalation`
 /// объявлен и **не имеет ни одного читателя** — один `grep` находит
 /// только объявление. Это та самая форма, где «поле без читателя»
@@ -50,8 +61,8 @@ enum ReminderScheduler {
         let исход = await NotificationCenterService.scheduleDose(
             id: "watch-\(Int(date.timeIntervalSince1970))",
             at: date,
-            title: "Как он сейчас?",
-            body: "Час назад было три эпизода подряд. Если повторилось — стоит позвонить."
+            title: String(localized: "Как он сейчас?"),
+            body: String(localized: "Час назад было три эпизода подряд. Если повторилось — стоит позвонить.")
         )
         сообщить(исход, про: "watch")
     }
@@ -294,6 +305,12 @@ enum ReminderScheduler {
         // Одна дверь на три ступени: иначе исход читался бы в трёх
         // местах, и забыть его в одном из них ничто бы не помешало.
         // Три копии одного правила в этом файле уже расходились.
+        //
+        // `title`/`body` приходят сюда УЖЕ через каталог
+        // (`String(localized:)` на месте вызова, с 29.10.2026). Тип
+        // здесь `String`, а не `LocalizedStringKey`: дальше он уходит
+        // в `UNMutableNotificationContent`, и каталог по дороге
+        // не спрашивается ни разу. Держит это `ТекстУведомленияЧерезКаталогTests`.
         func поставить(_ id: String, на когда: Date,
                        title: String, body: String) async {
             ставим.append(id)
@@ -315,24 +332,24 @@ enum ReminderScheduler {
                 await поставить(
                     doseID(dose, stage: "t-10"),
                     на: dose.scheduledAt.addingTimeInterval(-10 * 60),
-                    title: "Через 10 минут доза",
-                    body: "\(medication.name) \(medication.doseText) в \(Fmt.clock(dose.scheduledAt))"
+                    title: String(localized: "Через 10 минут доза"),
+                    body: String(localized: "\(medication.name) \(medication.doseText) в \(Fmt.clock(dose.scheduledAt))")
                 )
 
                 // Через полчаса — если так и не отметили.
                 await поставить(
                     doseID(dose, stage: "t+30"),
                     на: dose.scheduledAt.addingTimeInterval(30 * 60),
-                    title: "Доза \(Fmt.clock(dose.scheduledAt)) не отмечена",
-                    body: "Кто-то один — отметьте. Если дали, поправьте время."
+                    title: String(localized: "Доза \(Fmt.clock(dose.scheduledAt)) не отмечена"),
+                    body: String(localized: "Кто-то один — отметьте. Если дали, поправьте время.")
                 )
 
                 // Через час — запись «пропуск». Не ругаем, предлагаем поправить.
                 await поставить(
                     doseID(dose, stage: "t+60"),
                     на: dose.scheduledAt.addingTimeInterval(60 * 60),
-                    title: "Доза \(Fmt.clock(dose.scheduledAt)) пропущена",
-                    body: "Отметь в Togo: дали или пропустили."
+                    title: String(localized: "Доза \(Fmt.clock(dose.scheduledAt)) пропущена"),
+                    body: String(localized: "Отметь в Togo: дали или пропустили.")
                 )
             }
         }
