@@ -123,21 +123,28 @@ nonisolated struct DayOutTrace: Equatable, Sendable {
     /// Род берётся у `РодСобаки` — целыми фразами, а не окончанием.
     func findings(пол: DogSex?) -> [String] {
         guard isReliable else { return [] }
+        // Знаменатель — СТРОКОЙ, а не `Int` (29.10.2026). Ключи этих
+        // фраз лежали в каталоге с переводами под `… %@ из %@.`, а
+        // `\(longDays)` у `Int` компилятор извлекает как `%lld`:
+        // каталог спрашивали ключом, которого в нём нет, и строка
+        // рисовалась по-русски. Завести рядом `%lld`-ключи нельзя без
+        // трёх новых пар-двойников (`LocalizationCoverageTests.двойников`).
+        let изДней = longDays.formatted()
         var lines: [String] = []
         if followedByLooseStool * 2 >= longDays {
-            lines.append(String(localized: "После долгих дней стул на следующий день бывал жиже — \(Fmt.times(followedByLooseStool)) из \(longDays)."))
+            lines.append(String(localized: "После долгих дней стул на следующий день бывал жиже — \(Fmt.times(followedByLooseStool)) из \(изДней)."))
         }
         if followedByPoorAppetite * 2 >= longDays {
             let раз = Fmt.times(followedByPoorAppetite)
             lines.append(РодСобаки.форма(
                 пол,
-                он: String(localized: "После долгих дней он ел заметно меньше обычного — \(раз) из \(longDays)."),
-                она: String(localized: "После долгих дней она ела заметно меньше обычного — \(раз) из \(longDays)."),
-                нейтрально: { String(localized: "После долгих дней собака ела заметно меньше обычного — \(раз) из \(longDays).") }
+                он: String(localized: "После долгих дней он ел заметно меньше обычного — \(раз) из \(изДней)."),
+                она: String(localized: "После долгих дней она ела заметно меньше обычного — \(раз) из \(изДней)."),
+                нейтрально: { String(localized: "После долгих дней собака ела заметно меньше обычного — \(раз) из \(изДней).") }
             ))
         }
         if followedByIncident * 2 >= longDays {
-            lines.append(String(localized: "После долгих дней случались инциденты — \(Fmt.times(followedByIncident)) из \(longDays)."))
+            lines.append(String(localized: "После долгих дней случались инциденты — \(Fmt.times(followedByIncident)) из \(изДней)."))
         }
         return lines
     }

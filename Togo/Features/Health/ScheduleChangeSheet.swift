@@ -227,7 +227,7 @@ struct ScheduleChangeSheet: View {
             // вибрация: шторка оставалась открытой, и человек не знал,
             // легла новая доза или нет, — а это доза.
             Haptics.warning()
-            appState.showFailure("Не сохранилось · нажми «Сохранить новую схему» ещё раз")
+            appState.showFailure(String(localized: "Не сохранилось · нажми «Сохранить новую схему» ещё раз"))
             return
         }
         Haptics.success()

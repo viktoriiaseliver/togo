@@ -539,6 +539,35 @@
         }
       }
     },
+    "%@ · берёт на себя · %@ осталось" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ · taking it · %@ left"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ · s'en charge · reste %@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ · өзіне алды · %@ қалды"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ · бере на себе · лишилося %@"
+          }
+        }
+      }
+    },
     "%@ · в %@" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -764,6 +793,64 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "%@ кличе тебе до спільного щоденника"
+          }
+        }
+      }
+    },
+    "%@ между выходами" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ between outings"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ entre les sorties"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "шығулар арасы %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ між виходами"
+          }
+        }
+      }
+    },
+    "%@ с прошлого выхода" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ since the last outing"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ depuis la dernière sortie"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "өткен шығудан бері %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ з минулого виходу"
           }
         }
       }
@@ -2666,6 +2753,93 @@
         }
       }
     },
+    "Анализ будет помечен «время не указано» и на графике встанет крестом." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The lab will be marked “time not given” and will show as a cross on the chart."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L'analyse sera marquée « heure non indiquée » et apparaîtra comme une croix sur le graphique."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Талдау «уақыты көрсетілмеген» деп белгіленеді және графикте айқыш болып тұрады."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Аналіз буде позначено «час не вказано» і на графіку стане хрестиком."
+          }
+        }
+      }
+    },
+    "Анализы в разных единицах — из разных лабораторий. На одной линии их не сравнить, поэтому каждая единица — свой график." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Labs in different units come from different laboratories. They can't be compared on one line, so each unit gets its own chart."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Des analyses dans des unités différentes viennent de laboratoires différents. On ne peut pas les comparer sur une seule ligne, donc chaque unité a son graphique."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Әртүрлі өлшем бірліктегі талдаулар — әртүрлі зертханалардан. Оларды бір сызықта салыстыруға болмайды, сондықтан әр бірліктің өз графигі бар."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Аналізи в різних одиницях — з різних лабораторій. На одній лінії їх не порівняти, тому кожна одиниця — свій графік."
+          }
+        }
+      }
+    },
+    "Без времени так и запишем — «время не указано». Это честнее, чем угадать: подставь мы «вероятно, утром», запись сказала бы врачу то, чего никто не вводил." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Without a time we'll write exactly that — “time not given”. It's more honest than guessing: if we filled in “probably morning”, the entry would tell the vet something nobody entered."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sans heure, nous écrirons exactement cela — « heure non indiquée ». C'est plus honnête que de deviner : si nous mettions « sans doute le matin », la note dirait au vétérinaire ce que personne n'a saisi."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Уақытсыз солай жазамыз — «уақыты көрсетілмеген». Бұл болжаудан шыншыл: «шамасы, таңертең» деп қойсақ, жазба дәрігерге ешкім енгізбеген нәрсені айтар еді."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Без часу так і запишемо — «час не вказано». Це чесніше, ніж вгадати: підстав ми «ймовірно, вранці», запис сказав би лікарю те, чого ніхто не вводив."
+          }
+        }
+      }
+    },
     "без даты события" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2695,6 +2869,35 @@
         }
       }
     },
+    "без единицы" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "no unit"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "sans unité"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "өлшем бірлігісіз"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "без одиниці"
+          }
+        }
+      }
+    },
     "биохимия" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2720,6 +2923,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "біохімія"
+          }
+        }
+      }
+    },
+    "Больше четырёх не ставим: карточки встали бы длинной лентой, и схема лечения ушла бы под них. Убери одну — освободится место." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "No more than four: the cards would form a long strip and push the treatment plan below them. Remove one to free a spot."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pas plus de quatre : les cartes formeraient un long ruban et le schéma de traitement passerait dessous. Retires-en une pour libérer une place."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Төрттен артық қоймаймыз: карточкалар ұзын лента болып, емдеу схемасы астына түсіп кетер еді. Біреуін алып тастасаң — орын босайды."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Більше чотирьох не ставимо: картки стали б довгою стрічкою, і схема лікування пішла б під них. Прибери одну — звільниться місце."
           }
         }
       }
@@ -2782,31 +3014,89 @@
         }
       }
     },
+    "В среднем %lld г в день — на %lld%% меньше нормы. Бодра и вес держится — не беда; вес падает — к врачу." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld g per day on average — %lld%% below the ration. If she's lively and holding her weight, no trouble; if the weight is dropping, see the vet."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "En moyenne %lld g par jour, soit %lld %% de moins que la ration. Si elle est en forme et garde son poids, pas de souci ; si elle maigrit, direction le vétérinaire."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Орташа күніне %lld г — нормадан %lld%% аз. Сергек және салмағы тұрақты болса — қауіпті емес; салмағы түссе — дәрігерге."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "У середньому %lld г на день — на %lld%% менше норми. Бадьора і вага тримається — не біда; вага падає — до лікаря."
+          }
+        }
+      }
+    },
+    "В среднем %lld г в день — на %lld%% меньше нормы. Собака бодра и вес держится — не беда; вес падает — к врачу." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld g per day on average — %lld%% below the ration. If the dog is lively and holding weight, no trouble; if the weight is dropping, see the vet."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "En moyenne %lld g par jour, soit %lld %% de moins que la ration. Si le chien est en forme et garde son poids, pas de souci ; s'il maigrit, direction le vétérinaire."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Орташа күніне %lld г — нормадан %lld%% аз. Ит сергек және салмағы тұрақты болса — қауіпті емес; салмағы түссе — дәрігерге."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "У середньому %lld г на день — на %lld%% менше норми. Собака бадьора і вага тримається — не біда; вага падає — до лікаря."
+          }
+        }
+      }
+    },
     "В тихие часы приложение не спрашивает результат выхода — соберёт утром одной карточкой. Сводка и «Можно кормить» приходят в конце тихих часов. Доза приходит в свой час всегда." : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "During quiet hours the app doesn't ask how the outing went — it will gather everything into one card in the morning. The brief and “OK to feed” arrive at the end of quiet hours. A dose always arrives at its own time."
+            "value" : "During quiet hours the app doesn't ask how the outing went — it will gather everything into one card in the morning. The brief and the “She can eat” notice arrive at the end of quiet hours. A dose always arrives at its own time."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Pendant les heures calmes, l'app ne demande pas le résultat de la sortie : elle rassemblera tout le matin en une seule carte. Le résumé et « on peut nourrir » arrivent à la fin des heures calmes. Une dose arrive toujours à son heure."
+            "value" : "Pendant les heures calmes, l'app ne demande pas le résultat de la sortie : elle rassemblera tout le matin en une seule carte. Le résumé et « Tu peux le nourrir » arrivent à la fin des heures calmes. Une dose arrive toujours à son heure."
           }
         },
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Тыныш сағаттарда қолданба шығудың нәтижесін сұрамайды — таңертең бір картамен жинайды. Жиынтық пен «тамақ беруге болады» тыныш сағаттардың соңында келеді. Доза әрқашан өз сағатында келеді."
+            "value" : "Тыныш сағаттарда қолданба шығудың нәтижесін сұрамайды — таңертең бір картамен жинайды. Жиынтық пен «Тамақтандыруға болады» тыныш сағаттардың соңында келеді. Доза әрқашан өз сағатында келеді."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "У тихі години застосунок не питає результат виходу — збере вранці однією карткою. Зведення і «можна годувати» приходять наприкінці тихих годин. Доза приходить у свою годину завжди."
+            "value" : "У тихі години застосунок не питає результат виходу — збере вранці однією карткою. Зведення і «Можна годувати» приходять наприкінці тихих годин. Доза приходить у свою годину завжди."
           }
         }
       }
@@ -2898,6 +3188,35 @@
         }
       }
     },
+    "Взвешиваний пока нет. Первое встанет сюда, как только его запишут." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "No weigh-ins yet. The first one will appear here as soon as it's logged."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pas encore de pesées. La première s'affichera ici dès qu'elle sera notée."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Әзірше салмақ өлшеу жоқ. Біріншісі жазылған бойда осында шығады."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Зважувань поки немає. Перше стане сюди, щойно його запишуть."
+          }
+        }
+      }
+    },
     "взвешивания" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2927,13 +3246,42 @@
         }
       }
     },
+    "Взвешивания из «Вес и симптомы» — за 30 дней, новые сверху." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Weigh-ins from “Weight and symptoms” — 30 days, newest first."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pesées de « Poids et symptômes » — sur 30 jours, les plus récentes en haut."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "«Салмақ және белгілер» бөліміндегі өлшеулер — 30 күн, жаңалары жоғарыда."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Зважування з «Вага й симптоми» — за 30 днів, нові згори."
+          }
+        }
+      }
+    },
     "Взвешивания из «Вес и симптомы». Сравнивать стоит с собой месяц назад, а не с чужой собакой." : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Weigh-ins from Weight and symptoms. Compare her with herself a month ago, not with another dog."
+            "value" : "Weigh-ins from “Weight and symptoms”. Compare her with herself a month ago, not with another dog."
           }
         },
         "fr" : {
@@ -2952,6 +3300,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Зважування з «Вага й симптоми». Порівнювати варто із собою місяць тому, а не з чужою собакою."
+          }
+        }
+      }
+    },
+    "Взвешивания из «Вес» — за 30 дней, новые сверху." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Weigh-ins from “Weight” — 30 days, newest first."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pesées de « Poids » — sur 30 jours, les plus récentes en haut."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "«Салмақ» бөліміндегі өлшеулер — 30 күн, жаңалары жоғарыда."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Зважування з «Вага» — за 30 днів, нові згори."
           }
         }
       }
@@ -3235,6 +3612,35 @@
         }
       }
     },
+    "выбрано %lld из %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld of %lld selected"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "choix : %lld sur %lld"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld / %lld таңдалды"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "обрано %lld з %lld"
+          }
+        }
+      }
+    },
     "выезды" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3293,6 +3699,93 @@
         }
       }
     },
+    "Выпила" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Drank"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "A bu"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Су ішті"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Випила"
+          }
+        }
+      }
+    },
+    "Выпито" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Drunk"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Bu"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ішілді"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Випито"
+          }
+        }
+      }
+    },
+    "Выходите как обычно" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Going out as usual"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sorties comme d'habitude"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Әдеттегідей шығып жүрсіңдер"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Виходите як зазвичай"
+          }
+        }
+      }
+    },
     "Выходы отмечаются, а стула нет. Не ест, рвёт или тужится — звони врачу сразу. Был — тапни и отметь." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3318,6 +3811,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Виходи позначаються, а випорожнень немає. Не їсть, блює або тужиться — дзвони лікарю одразу. Було — торкнись і познач."
+          }
+        }
+      }
+    },
+    "Выше" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Move up"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Monter"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Жоғары"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Вище"
           }
         }
       }
@@ -3386,7 +3908,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Two hours on the road — water and five minutes of walking. Note the stop with one tap on Today."
+            "value" : "Two hours on the road — water and five minutes of walking. Note the stop with one tap on “Today”."
           }
         },
         "fr" : {
@@ -3469,6 +3991,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "діагнози"
+          }
+        }
+      }
+    },
+    "Дни без записей в среднее не попадают: пустой день — это «дневник не вели», а не «еды не было»." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Days without entries don't count toward the average: an empty day means “no one kept the diary”, not “there was no food”."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Les jours sans entrées ne comptent pas dans la moyenne : un jour vide veut dire « journal pas tenu », pas « pas de repas »."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Жазбасыз күндер орташаға кірмейді: бос күн — «күнделік жүргізілмеді» дегенді білдіреді, «тамақ болмады» дегенді емес."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Дні без записів у середнє не потрапляють: порожній день — це «щоденник не вели», а не «їжі не було»."
           }
         }
       }
@@ -3647,6 +4198,35 @@
         }
       }
     },
+    "Доза дана в %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dose given at %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dose donnée à %@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Доза %@-де берілді"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Дозу дано о %@"
+          }
+        }
+      }
+    },
     "Доза записана только что · отдельную запиши через пару минут" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3672,6 +4252,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Дозу щойно записано · окрему запиши за пару хвилин"
+          }
+        }
+      }
+    },
+    "Доза откроется через столько минут после отметки еды. Еды не отметили — не откроется вовсе: это вопрос к врачу, а не сбой." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The dose opens this many minutes after a meal is marked. No meal marked — it doesn't open at all: that's a question for the vet, not a glitch."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "La dose s'ouvre ce nombre de minutes après le repas noté. Pas de repas noté — elle ne s'ouvre pas du tout : c'est une question pour le vétérinaire, pas une panne."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Доза тамақ белгіленгеннен кейін осынша минуттан соң ашылады. Тамақ белгіленбесе — мүлде ашылмайды: бұл ақау емес, дәрігерге сұрақ."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Доза відкриється через стільки хвилин після позначки їжі. Їжу не позначили — не відкриється зовсім: це питання до лікаря, а не збій."
           }
         }
       }
@@ -3821,6 +4430,151 @@
         }
       }
     },
+    "Еда в %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Meal at %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Repas à %@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Тамақ %@-де"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Їжа о %@"
+          }
+        }
+      }
+    },
+    "Ела в %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ate at %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "A mangé à %@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@-де жеді"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Їла о %@"
+          }
+        }
+      }
+    },
+    "если едете обратно в то же время" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "if you travel back at the same time"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "si vous rentrez à la même heure"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "егер сол уақытта қайтсаңдар"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "якщо їдете назад у той самий час"
+          }
+        }
+      }
+    },
+    "если собака потерялась" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "if the dog gets lost"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "si le chien se perd"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ит жоғалып кетсе"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "якщо собака загубилася"
+          }
+        }
+      }
+    },
+    "Если число неверное — тапни по строке: там можно поправить число и день или удалить." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "If a number is wrong, tap the line: you can fix the number and day there, or delete it."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Si un chiffre est faux, touche la ligne : tu pourras y corriger la valeur et le jour, ou la supprimer."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Сан қате болса — жолды түрт: онда санды және күнді түзетуге немесе жоюға болады."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Якщо число неправильне — торкнись рядка: там можна виправити число й день або видалити."
+          }
+        }
+      }
+    },
     "если это прививка" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3850,13 +4604,71 @@
         }
       }
     },
+    "её норма ≈ %@ мл в день, в жару больше · складная поилка" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "she needs ≈ %@ ml a day, more in the heat · folding water bowl"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "sa ration ≈ %@ ml par jour, plus par forte chaleur · gamelle pliable"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "оның нормасы ≈ күніне %@ мл, аптапта көбірек · жиналмалы су ыдысы"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "її норма ≈ %@ мл на день, у спеку більше · складана миска для води"
+          }
+        }
+      }
+    },
+    "За эти 30 дней взвешиваний нет." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "No weigh-ins in these 30 days."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aucune pesée sur ces 30 jours."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Осы 30 күнде салмақ өлшеу жоқ."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "За ці 30 днів зважувань немає."
+          }
+        }
+      }
+    },
     "За эти 30 дней взвешиваний нет. Записать вес — «Здоровье» → «Вес и симптомы»." : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "No weigh-ins in these 30 days. To log weight — Health → Weight and symptoms."
+            "value" : "No weigh-ins in these 30 days. To log weight — “Health” → “Weight and symptoms”."
           }
         },
         "fr" : {
@@ -3875,6 +4687,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "За ці 30 днів зважувань немає. Записати вагу — «Здоров'я» → «Вага й симптоми»."
+          }
+        }
+      }
+    },
+    "За эти 30 дней взвешиваний нет. Записать вес — «Здоровье» → «Вес»." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "No weigh-ins in these 30 days. To log weight — “Health” → “Weight”."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aucune pesée sur ces 30 jours. Pour noter le poids — « Santé » → « Poids »."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Осы 30 күнде салмақ өлшеу жоқ. Салмақты жазу — «Денсаулық» → «Салмақ»."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "За ці 30 днів зважувань немає. Записати вагу — «Здоров'я» → «Вага»."
           }
         }
       }
@@ -4024,6 +4865,35 @@
         }
       }
     },
+    "Записано · Вода предложена" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Noted · Water offered"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Noté · Eau proposée"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Жазылды · Су ұсынылды"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Записано · Воду запропоновано"
+          }
+        }
+      }
+    },
     "Записано · остановка" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4053,6 +4923,64 @@
         }
       }
     },
+    "записано, но одной записи мало" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "logged, but one entry isn't enough"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "noté, mais une seule entrée ne suffit pas"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "жазылды, бірақ бір жазба аз"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "записано, але одного запису мало"
+          }
+        }
+      }
+    },
+    "Записано: %@, %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Logged by %@, %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Noté par %@, %@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Жазған: %@, %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Записано: %@, %@"
+          }
+        }
+      }
+    },
     "Записать заметку" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4078,6 +5006,93 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Записати нотатку"
+          }
+        }
+      }
+    },
+    "Записей о еде пока нет. Отметь пару кормлений — и приложение увидит её режим само." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "No meal entries yet. Note a couple of meals and the app will see her routine on its own."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pas encore d'entrées de repas. Note deux ou trois repas, et l'app verra son rythme toute seule."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Тамақ туралы жазба әзірше жоқ. Бірер тамақтандыруды белгіле — сонда қолданба оның режимін өзі көреді."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Записів про їжу поки немає. Познач пару годувань — і застосунок побачить її режим сам."
+          }
+        }
+      }
+    },
+    "Записей о еде пока нет. Отметь пару кормлений — и приложение увидит режим само." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "No meal entries yet. Note a couple of meals and the app will see the routine on its own."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pas encore d'entrées de repas. Note deux ou trois repas, et l'app verra le rythme toute seule."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Тамақ туралы жазба әзірше жоқ. Бірер тамақтандыруды белгіле — сонда қолданба режимді өзі көреді."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Записів про їжу поки немає. Познач пару годувань — і застосунок побачить режим сам."
+          }
+        }
+      }
+    },
+    "Записей пока нет — их отмечает семья." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "No entries yet — the family logs them."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pas encore d'entrées — c'est la famille qui les note."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Әзірше жазба жоқ — оларды отбасы белгілейді."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Записів поки немає — їх позначає сім'я."
           }
         }
       }
@@ -4281,6 +5296,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Записує випорожнення вдома як інцидент. Форму можна вказати одразу або уточнити потім."
+          }
+        }
+      }
+    },
+    "Здесь появятся календарь с отметкой на каждый день, полоса за 30 дней и эпизоды. Заполнять заранее ничего не надо." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "A calendar with a mark for each day, a 30-day strip and episodes will appear here. Nothing needs filling in ahead of time."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ici apparaîtront un calendrier avec une marque par jour, une bande sur 30 jours et les épisodes. Rien à remplir à l'avance."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Мұнда әр күнге белгісі бар күнтізбе, 30 күндік жолақ және эпизодтар шығады. Алдын ала ештеңе толтырудың қажеті жоқ."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Тут з'являться календар із позначкою на кожен день, смуга за 30 днів і епізоди. Заповнювати заздалегідь нічого не треба."
           }
         }
       }
@@ -4517,6 +5561,122 @@
         }
       }
     },
+    "Как было: последний сданный анализ" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "As before: the latest lab result"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Comme avant : la dernière analyse"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Бұрынғыдай: соңғы тапсырылған талдау"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Як було: останній зданий аналіз"
+          }
+        }
+      }
+    },
+    "Как она просит" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "How she asks"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Comment elle demande"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Қалай сұрайды"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Як вона просить"
+          }
+        }
+      }
+    },
+    "Как просится на улицу" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "How the dog asks to go out"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Comment le chien demande à sortir"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Далаға қалай сұранады"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Як проситься надвір"
+          }
+        }
+      }
+    },
+    "Какие графики показывать" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Which charts to show"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Quels graphiques afficher"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Қандай графиктерді көрсету"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Які графіки показувати"
+          }
+        }
+      }
+    },
     "какой" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4726,6 +5886,35 @@
         }
       }
     },
+    "Лакомства — из дневной порции" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Treats come from the daily ration"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Friandises prises sur la ration du jour"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Тәттіліктер — күндік үлестен"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ласощі — з денної порції"
+          }
+        }
+      }
+    },
     "лакомство, вода, заметка, день с собакой" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4819,6 +6008,35 @@
         }
       }
     },
+    "между выходами" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "between outings"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "entre les sorties"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "шығулар арасы"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "між виходами"
+          }
+        }
+      }
+    },
     "Метки — не отдельные опорожнения: подряд идущие в пределах %@ приложение считает одним разом. Вердикт «просится» считает по ним, а не по тапам — %lld за этот выход." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4877,6 +6095,35 @@
         }
       }
     },
+    "можно добавить" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "can be added"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "à ajouter"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "қосуға болады"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "можна додати"
+          }
+        }
+      }
+    },
     "на улице · форма для врача" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4902,6 +6149,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "надворі · форма для лікаря"
+          }
+        }
+      }
+    },
+    "на экране, по порядку" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "on screen, in order"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "à l'écran, dans l'ordre"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "экранда, ретімен"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "на екрані, по порядку"
           }
         }
       }
@@ -4966,6 +6242,64 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "напоготові · телефони · що не можна їсти · довідка лікарю"
+          }
+        }
+      }
+    },
+    "Нажми «Просится», когда она подойдёт к двери. Через день здесь появится её режим — и станет видно, когда она правда хочет на улицу." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tap “Needs to go out?” when she comes to the door. In a day her routine will appear here, and you'll see when she really wants out."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Appuie sur « Envie de sortir ? » quand elle va vers la porte. Dès demain, sa routine apparaîtra ici, et tu verras quand elle a vraiment besoin de sortir."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ол есікке жақындағанда «Сұранып тұр» түймесін бас. Бір күннен кейін мұнда оның режимі шығады — және оның шынымен далаға шыққысы келетін кезі көрінеді."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Натисни «Проситься», коли вона підійде до дверей. Через день тут з'явиться її режим — і стане видно, коли вона справді хоче надвір."
+          }
+        }
+      }
+    },
+    "Нажми «Просится», когда собака подойдёт к двери. Через день здесь появится её режим — и станет видно, когда она правда хочет на улицу." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tap “Needs to go out?” when the dog comes to the door. In a day the routine will appear here, and you'll see when the dog really wants out."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Appuie sur « Envie de sortir ? » quand le chien va vers la porte. Dès demain, sa routine apparaîtra ici, et tu verras quand il a vraiment besoin de sortir."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ит есікке жақындағанда «Сұранып тұр» түймесін бас. Бір күннен кейін мұнда оның режимі шығады — және оның шынымен далаға шыққысы келетін кезі көрінеді."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Натисни «Проситься», коли собака підійде до дверей. Через день тут з'явиться її режим — і стане видно, коли вона справді хоче надвір."
           }
         }
       }
@@ -5057,6 +6391,64 @@
         }
       }
     },
+    "Настроить" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Customize"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Personnaliser"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Баптау"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Налаштувати"
+          }
+        }
+      }
+    },
+    "Настройка вида — только на этом телефоне. В дневник она не пишет, и у других в семье экран не меняется." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "This view setting is for this phone only. It doesn't write to the diary, and the screen doesn't change for others in the family."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ce réglage d'affichage ne vaut que pour ce téléphone. Il n'écrit rien dans le journal, et l'écran ne change pas pour les autres membres de la famille."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Көрініс баптауы — тек осы телефонда. Ол күнделікке жазбайды, отбасының басқа мүшелерінде экран өзгермейді."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Налаштування вигляду — лише на цьому телефоні. У щоденник воно не пише, і в інших у сім'ї екран не змінюється."
+          }
+        }
+      }
+    },
     "не вызывай рвоту без врача — при части веществ это делает хуже" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5115,6 +6507,93 @@
         }
       }
     },
+    "Не отмечено" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Not marked"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Non noté"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Белгіленбеген"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Не позначено"
+          }
+        }
+      }
+    },
+    "Не сохранилось · нажми «Сохранить новую схему» ещё раз" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Not saved · tap “Save the new plan” again"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pas enregistré · appuie de nouveau sur « Enregistrer le nouveau schéma »"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Сақталмады · «Жаңа схеманы сақтау» түймесін қайта бас"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Не збереглося · натисни «Зберегти нову схему» ще раз"
+          }
+        }
+      }
+    },
+    "Ниже" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Move down"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Descendre"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Төмен"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Нижче"
+          }
+        }
+      }
+    },
     "Никто" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5140,6 +6619,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Ніхто"
+          }
+        }
+      }
+    },
+    "Ничего не выбрано — на «Здоровье» останется последний сданный анализ." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nothing selected — “Health” will keep showing the latest lab result."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Rien de choisi — « Santé » gardera la dernière analyse faite."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ештеңе таңдалмады — «Денсаулық» бетінде соңғы тапсырылған талдау қалады."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Нічого не обрано — на екрані «Здоров'я» залишиться останній зданий аналіз."
           }
         }
       }
@@ -5231,6 +6739,35 @@
         }
       }
     },
+    "норма ≈ %@ мл в день, в жару больше · складная поилка" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "norm ≈ %@ ml a day, more in the heat · folding water bowl"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ration ≈ %@ ml par jour, plus par forte chaleur · gamelle pliable"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "нормасы ≈ күніне %@ мл, аптапта көбірек · жиналмалы су ыдысы"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "норма ≈ %@ мл на день, у спеку більше · складана миска для води"
+          }
+        }
+      }
+    },
     "норма ≈ %lld мл в день" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5256,6 +6793,122 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "норма ≈ %lld мл на день"
+          }
+        }
+      }
+    },
+    "обратная дорога" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "the way back"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "le retour"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "қайту жолы"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "зворотна дорога"
+          }
+        }
+      }
+    },
+    "Обычно выходите чаще — %@ за день" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "You usually go out more often — %@ a day"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "D'habitude vous sortez plus souvent — %@ par jour"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Әдетте жиірек шығасыңдар — күніне %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Зазвичай виходите частіше — %@ на день"
+          }
+        }
+      }
+    },
+    "Ограничения на лакомства нет: их можно брать из дневной порции — тогда награды не прибавляют веса." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "There's no limit on treats: you can take them from the daily ration — then rewards don't add weight."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pas de limite de friandises : tu peux les prendre sur la ration du jour — les récompenses ne font alors pas grossir."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Тәттіліктерге шектеу жоқ: оларды күндік үлестен алуға болады — сонда марапаттар салмақ қоспайды."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Обмеження на ласощі немає: їх можна брати з денної порції — тоді нагороди не додають ваги."
+          }
+        }
+      }
+    },
+    "Оставь хотя бы один приём — без часов напоминать не о чем" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Keep at least one dose time — without times there's nothing to remind about"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Garde au moins une prise — sans horaire, il n'y a rien à rappeler"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Кемінде бір қабылдауды қалдыр — сағатсыз еске салатын ештеңе жоқ"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Залиш хоча б один прийом — без годин нагадувати нема про що"
           }
         }
       }
@@ -5521,6 +7174,35 @@
         }
       }
     },
+    "Отсчёт пошёл с этой отметки, а не с расписания: покормили позже — доза сдвинулась ровно на столько же." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The countdown started from this mark, not from the schedule: fed later — the dose moved by exactly as much."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le décompte part de ce repère, pas de l'horaire : nourri plus tard — la dose s'est décalée d'autant."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Санақ кестеден емес, осы белгіден басталды: кешірек тамақтандырсаңыз — доза дәл соншаға жылжыды."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Відлік пішов від цієї позначки, а не від розкладу: погодували пізніше — доза зсунулася рівно на стільки ж."
+          }
+        }
+      }
+    },
     "Ошиблась — тапни по строке: там можно поправить число и день или удалить." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5608,6 +7290,151 @@
         }
       }
     },
+    "по %@, когда он был с тобой дольше %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "on %@ when he was with you for more than %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "les %@ où il est resté avec toi plus de %@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ол сенімен %@ артық болған %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "по %@, коли він був з тобою довше %@"
+          }
+        }
+      }
+    },
+    "по %@, когда она была с тобой дольше %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "on %@ when she was with you for more than %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "les %@ où elle est restée avec toi plus de %@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ол сенімен %@ артық болған %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "по %@, коли вона була з тобою довше %@"
+          }
+        }
+      }
+    },
+    "по %@, когда собака была с тобой дольше %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "on %@ when the dog was with you for more than %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "les %@ où le chien est resté avec toi plus de %@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ит сенімен %@ артық болған %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "по %@, коли собака була з тобою довше %@"
+          }
+        }
+      }
+    },
+    "показатели" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "indicators"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "indicateurs"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "көрсеткіштер"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "показники"
+          }
+        }
+      }
+    },
+    "Показать врачу" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Show the vet"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Montrer au vétérinaire"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Дәрігерге көрсету"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Показати лікарю"
+          }
+        }
+      }
+    },
     "Покакал" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5662,6 +7489,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Покакав?"
+          }
+        }
+      }
+    },
+    "Полосы нормы нет: на бланках этих анализов нормы разные. Норма каждого — в карточке точки." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "No reference band: these lab reports give different ranges. Each one's range is in the point's card."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pas de bande de norme : les bulletins de ces analyses donnent des normes différentes. La norme de chacune est dans la fiche du point."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Норма жолағы жоқ: бұл талдаулардың бланкілерінде нормалар әртүрлі. Әрқайсысының нормасы — нүкте карточкасында."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Смуги норми немає: на бланках цих аналізів норми різні. Норма кожного — у картці точки."
           }
         }
       }
@@ -5726,6 +7582,151 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Порція = норма ÷ годування: додаси годування — зменшиться порція, а не денна їжа. Норму називає лікар або упаковка. Вологий корм на три чверті вода — грами там інші."
+          }
+        }
+      }
+    },
+    "После долгих дней он ел заметно меньше обычного — %@ из %@." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "After long days he ate noticeably less than usual — %@ of %@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Après les longues journées, il a mangé nettement moins que d'habitude — %@ sur %@."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ұзақ күндерден кейін ол әдеттегіден айтарлықтай аз жеді — %@ / %@."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Після довгих днів він їв помітно менше звичайного — %@ з %@."
+          }
+        }
+      }
+    },
+    "После долгих дней собака ела заметно меньше обычного — %@ из %@." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "After long days the dog ate noticeably less than usual — %@ of %@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Après les longues journées, le chien a mangé nettement moins que d'habitude — %@ sur %@."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ұзақ күндерден кейін ит әдеттегіден айтарлықтай аз жеді — %@ / %@."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Після довгих днів собака їла помітно менше звичайного — %@ з %@."
+          }
+        }
+      }
+    },
+    "После еды до стула в среднем %@." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "From a meal to a stool: %@ on average."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Entre le repas et les selles : %@ en moyenne."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Тамақтан нәжіске дейін орташа %@."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Після їжі до випорожнення в середньому %@."
+          }
+        }
+      }
+    },
+    "После еды до стула у неё в среднем %@." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "From a meal to a stool she takes %@ on average."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Entre le repas et les selles, il lui faut en moyenne %@."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Тамақтан нәжіске дейін оған орташа %@ керек."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Після їжі до випорожнення в неї в середньому %@."
+          }
+        }
+      }
+    },
+    "Предложено" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Offered"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Proposé"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ұсынылды"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Запропоновано"
           }
         }
       }
@@ -5922,6 +7923,35 @@
         }
       }
     },
+    "Профиль и удаление" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Profile and deletion"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Profil et suppression"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Профиль және жою"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Профіль і видалення"
+          }
+        }
+      }
+    },
     "прочее направление" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5947,6 +7977,64 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "інший напрям"
+          }
+        }
+      }
+    },
+    "прошедшие" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "past"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "passés"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "өткендер"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "минулі"
+          }
+        }
+      }
+    },
+    "Прошедшие недели не заводятся: %lld из %lld уже позади." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Past weeks aren't scheduled: %lld of %lld are already behind."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Les semaines passées ne sont pas planifiées : %lld sur %lld sont déjà derrière."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Өткен апталар қосылмайды: %lld / %lld артта қалды."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Минулі тижні не заводяться: %lld з %lld уже позаду."
           }
         }
       }
@@ -6108,6 +8196,35 @@
         }
       }
     },
+    "с прошлого выхода" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "since the last outing"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "depuis la dernière sortie"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "өткен шығудан бері"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "з минулого виходу"
+          }
+        }
+      }
+    },
     "С туалета" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6162,6 +8279,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Від туалету вдома"
+          }
+        }
+      }
+    },
+    "сводка за период" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "summary for the period"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "résumé de la période"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "кезең бойынша жиынтық"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "зведення за період"
           }
         }
       }
@@ -6265,6 +8411,64 @@
         }
       }
     },
+    "Сегодня записей пока нет." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "No entries today yet."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pas encore d'entrées aujourd'hui."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Бүгін әзірше жазба жоқ."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Сьогодні записів поки немає."
+          }
+        }
+      }
+    },
+    "Сейчас %@, %@ с прошлого выхода" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "It's %@ now, %@ since the last outing"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Il est %@, %@ depuis la dernière sortie"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Қазір %@, өткен шығудан бері %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Зараз %@, %@ з минулого виходу"
+          }
+        }
+      }
+    },
     "Сейчас доз по расписанию нет." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6352,6 +8556,35 @@
         }
       }
     },
+    "Сколько съедено за две недели" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "How much was eaten over two weeks"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ce qui a été mangé en deux semaines"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Екі аптада қанша желінді"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Скільки з'їдено за два тижні"
+          }
+        }
+      }
+    },
     "Собака привыкает к промежутку, а не к цифре на часах: ровный интервал важнее точного часа. Ночь считается как день." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6383,6 +8616,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Собака звикає до проміжку, а не до цифри на годиннику: рівний інтервал важливіший за точну годину. Ніч рахуємо як день."
+          }
+        }
+      }
+    },
+    "Собака сегодня с тобой — остановки отмечаются кнопкой «Остановка»." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The dog is with you today — stops are logged with the “Rest stop” button."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le chien est avec toi aujourd'hui — les arrêts se notent avec le bouton « Arrêt »."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ит бүгін сенімен — аялдамалар «Аялдама» түймесімен белгіленеді."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Собака сьогодні з тобою — зупинки позначаються кнопкою «Зупинка»."
           }
         }
       }
@@ -6470,6 +8732,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "довідка лікарю"
+          }
+        }
+      }
+    },
+    "сравнение с таким же сроком до приёма" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "compared with the same length of time before the visit"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "comparé à la même durée avant la visite"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "қабылдауға дейінгі дәл сондай мерзіммен салыстыру"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "порівняння з таким самим терміном до прийому"
           }
         }
       }
@@ -6760,6 +9051,151 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "сходив удома %@ тому"
+          }
+        }
+      }
+    },
+    "Счёт ведёт приложение" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The app keeps count"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L'app tient le compte"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Есепті қолданба жүргізеді"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Лік веде застосунок"
+          }
+        }
+      }
+    },
+    "Съедено" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Eaten"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mangé"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Желінді"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "З'їдено"
+          }
+        }
+      }
+    },
+    "съедено" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "eaten"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "mangés"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "желінді"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "з'їдено"
+          }
+        }
+      }
+    },
+    "Съела" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ate"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "A mangé"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Жеді"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "З'їла"
+          }
+        }
+      }
+    },
+    "съела" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "eaten"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "mangés"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "жеді"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "з'їла"
           }
         }
       }
@@ -7287,6 +9723,35 @@
         }
       }
     },
+    "цель %@ — %@ · от врача" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "target %@ — %@ · from the vet"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "objectif %@ — %@ · du vétérinaire"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "мақсат %@ — %@ · дәрігерден"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ціль %@ — %@ · від лікаря"
+          }
+        }
+      }
+    },
     "Через 30 минут — забор крови" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7345,6 +9810,64 @@
         }
       }
     },
+    "Числа посчитаны по этой собаке, а не по общим таблицам. Дозировки и всё медицинское сверь с врачом — приложение только считает и напоминает." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The numbers are calculated for this dog, not from general tables. Check dosages and anything medical with the vet — the app only calculates and reminds."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Les chiffres sont calculés pour ce chien, pas d'après des tables générales. Vérifie les dosages et tout ce qui est médical avec le vétérinaire — l'app ne fait que calculer et rappeler."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Сандар жалпы кестелер бойынша емес, осы ит бойынша есептелген. Дозалар мен медициналық барлығын дәрігермен тексер — қолданба тек есептейді және еске салады."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Числа пораховано для цієї собаки, а не за загальними таблицями. Дозування і все медичне звір із лікарем — застосунок лише рахує й нагадує."
+          }
+        }
+      }
+    },
+    "что заметили" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "what you noticed"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ce que vous avez remarqué"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "не байқадыңыз"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "що помітили"
+          }
+        }
+      }
+    },
     "Что записать?" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7370,6 +9893,64 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Що записати?"
+          }
+        }
+      }
+    },
+    "что изменилось против прошлого такого же периода" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "what changed against the previous period of the same length"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ce qui a changé par rapport à la période précédente de même durée"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "өткен дәл сондай кезеңмен салыстырғанда не өзгерді"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "що змінилося проти минулого такого самого періоду"
+          }
+        }
+      }
+    },
+    "что изменилось с прошлого приёма · %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "what changed since the last visit · %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ce qui a changé depuis la dernière visite · %@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "өткен қабылдаудан бері не өзгерді · %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "що змінилося з минулого прийому · %@"
           }
         }
       }
@@ -7490,6 +10071,35 @@
         }
       }
     },
+    "Это вопрос к врачу, а не к приложению: без еды эту дозу по назначению не дают, а пропускать назначение — решение врача." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "This is a question for the vet, not the app: per the prescription this dose isn't given without food, and skipping a prescription is the vet's decision."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "C'est une question pour le vétérinaire, pas pour l'app : selon l'ordonnance, cette dose ne se donne pas sans repas, et sauter une prescription, c'est au vétérinaire d'en décider."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Бұл қолданбаға емес, дәрігерге сұрақ: тағайындау бойынша бұл доза тамақсыз берілмейді, ал тағайындауды өткізіп жіберу — дәрігердің шешімі."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Це питання до лікаря, а не до застосунку: без їжі цю дозу за призначенням не дають, а пропускати призначення — рішення лікаря."
+          }
+        }
+      }
+    },
     "Это ориентиры из его записей, а не расписание. Просится раньше — выводи раньше: ни часы, ни вердикт не спорят." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7521,6 +10131,122 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Це орієнтири з його записів, а не розклад. Проситься раніше — виводь раніше: ні години, ні вердикт не сперечаються."
+          }
+        }
+      }
+    },
+    "Это ориентиры из записей дневника, а не расписание. Просится раньше — выводи раньше: ни часы, ни вердикт не спорят." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "These are guides from the diary entries, not a schedule. Asking to go out earlier — take the dog out earlier: neither the clock nor the verdict argues."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ce sont des repères tirés du journal, pas un horaire. Il demande plus tôt — sors-le plus tôt : ni l'heure ni le verdict ne s'y opposent."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Бұл — кесте емес, күнделік жазбаларынан алынған бағдар. Ертерек сұранса — ертерек шығар: сағат та, шешім де қарсы емес."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Це орієнтири із записів щоденника, а не розклад. Проситься раніше — виводь раніше: ні години, ні вердикт не сперечаються."
+          }
+        }
+      }
+    },
+    "Это совпадение, а не причина. Но показать эту строку врачу полезнее, чем сказать «он иногда вялый»." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "This is a coincidence, not a cause. But showing this line to the vet is more useful than saying “he's listless sometimes”."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "C'est une coïncidence, pas une cause. Mais montrer cette ligne au vétérinaire est plus utile que dire « il est parfois apathique »."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Бұл себеп емес, сәйкестік. Бірақ бұл жолды дәрігерге көрсету «ол кейде сылбыр» дегеннен пайдалы."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Це збіг, а не причина. Але показати цей рядок лікарю корисніше, ніж сказати «він іноді млявий»."
+          }
+        }
+      }
+    },
+    "Это совпадение, а не причина. Но показать эту строку врачу полезнее, чем сказать «она иногда вялая»." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "This is a coincidence, not a cause. But showing this line to the vet is more useful than saying “she's listless sometimes”."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "C'est une coïncidence, pas une cause. Mais montrer cette ligne au vétérinaire est plus utile que dire « elle est parfois apathique »."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Бұл себеп емес, сәйкестік. Бірақ бұл жолды дәрігерге көрсету «ол кейде сылбыр» дегеннен пайдалы."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Це збіг, а не причина. Але показати цей рядок лікарю корисніше, ніж сказати «вона іноді млява»."
+          }
+        }
+      }
+    },
+    "Это совпадение, а не причина. Но показать эту строку врачу полезнее, чем сказать «собака иногда вялая»." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "This is a coincidence, not a cause. But showing this line to the vet is more useful than saying “the dog is listless sometimes”."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "C'est une coïncidence, pas une cause. Mais montrer cette ligne au vétérinaire est plus utile que dire « le chien est parfois apathique »."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Бұл себеп емес, сәйкестік. Бірақ бұл жолды дәрігерге көрсету «ит кейде сылбыр» дегеннен пайдалы."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Це збіг, а не причина. Але показати цей рядок лікарю корисніше, ніж сказати «собака іноді млява»."
           }
         }
       }
