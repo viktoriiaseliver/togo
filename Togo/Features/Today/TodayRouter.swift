@@ -18,6 +18,7 @@ enum TodayRoute: Identifiable, Hashable {
     case stool
     case meal
     case treat
+    case water
     case incident
     case note
     case training
@@ -49,6 +50,7 @@ struct TodayRouter: View {
             case .stool:            StoolSheet(dog: dog)
             case .meal:             MealSheet(dog: dog)
             case .treat:            TreatSheet(dog: dog)
+            case .water:            WaterSheet(dog: dog)
             case .incident:         IncidentSheet(dog: dog)
             case .note:             NoteSheet(dog: dog)
             // Маршрут занятия оставлен ПУСТЫМ, а не удалён: `case
@@ -102,6 +104,8 @@ struct MoreSheet: View {
             TGCard(padding: Token.Space.s4) {
                 VStack(spacing: 0) {
                     row("Лакомство", "sparkles") { next = .treat }
+                    TGDivider()
+                    row("Вода", "drop") { next = .water }
                     TGDivider()
                     row("Заметка", "text.alignleft") { next = .note }
                     TGDivider()

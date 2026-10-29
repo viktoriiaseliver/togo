@@ -254,7 +254,7 @@ struct RecordSheet: View {
                 строка("Еда", порцияГрамм > 0 ? String(localized: "\(порцияГрамм) г") : nil,
                        "fork.knife", тон: Token.Ink.primary, маршрут: .meal)
                 TGDivider()
-                строка("Ещё", "лакомство, занятие, заметка, вес",
+                строка("Ещё", "лакомство, вода, заметка, день с собакой",
                        "ellipsis", тон: Token.Ink.primary, маршрут: .more)
             }
         }

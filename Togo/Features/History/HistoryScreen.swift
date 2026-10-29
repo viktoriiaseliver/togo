@@ -31,7 +31,9 @@ import SwiftData
 /// значка разная, потому что цветом одним день не различить.
 struct HistoryScreen: View {
     @Query private var dogs: [Dog]
-    @Query private var episodes: [Episode]
+    /// Все эпизоды хранилища. Экран показывает только касающиеся
+    /// открытой собаки — `эпизоды` ниже (V10, `Episode.dogID`).
+    @Query(sort: \Episode.startedAt) private var всеЭпизоды: [Episode]
     @Query private var members: [FamilyMember]
     @Query private var daysOut: [DayOut]
 
@@ -504,6 +506,11 @@ struct HistoryScreen: View {
     /// чем они кончаются.
     private var закончившиеся: [Episode] {
         episodes.filter { !$0.isActive() }
+    }
+
+    /// Эпизоды открытой собаки и безымянные (до V10 — общие).
+    private var episodes: [Episode] {
+        всеЭпизоды.filter { $0.касается(dog) }
     }
 }
 

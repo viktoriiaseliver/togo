@@ -282,6 +282,34 @@ struct TreatSheet: View {
     }
 }
 
+/// Вода — сколько выпил.
+///
+/// `LogKind.water` и `LogEvent.milliliters` были в модели и правились
+/// в ленте, а записать воду было нечем: ни кнопки, ни шторки (аудит
+/// 29.10.2026). Для больной собаки это та величина, которую врач
+/// спрашивает второй после стула.
+struct WaterSheet: View {
+    let dog: Dog?
+    @Environment(\.modelContext) private var context
+    @Environment(AppState.self) private var appState
+
+    var body: some View {
+        QuantitySheet(
+            title: "Вода",
+            subtitle: dog.map { LocalizedStringKey.готовая(String(localized: "норма ≈ \($0.waterNormMl) мл в день")) },
+            unit: "мл",
+            step: 50,
+            range: 0...2000,
+            amount: 200
+        ) { мл in
+            EventLog(context: context, appState: appState)
+                .record(.water, dog: dog, confirmation: "Записано · вода \(мл) мл") { event in
+                    event.milliliters = мл
+                }
+        }
+    }
+}
+
 struct NoteSheet: View {
     let dog: Dog?
     @Environment(\.dismiss) private var dismiss
