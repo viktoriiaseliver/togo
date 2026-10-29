@@ -1815,6 +1815,11 @@ struct TodayScreen: View {
         if item.kind == .dose, !item.isDone, let medication = item.medication,
            let missed = MissedDoseAdvisor.evaluate(medication: medication,
                                                    scheduledAt: item.time, now: now) {
+            // Права — ДО шторки, как у `complete`: у наблюдателя есть
+            // `.seeMedical`, строку дозы он видит, и шторка «Дал / Пропустить»
+            // открывалась ему с двумя кнопками, которые запись отвергнет
+            // уже после выбора (аудит 29.10.2026).
+            guard actions.checkPermission(for: item) else { return }
             missedDose = MissedDoseTarget(item: item, medication: medication, missed: missed)
             return
         }
