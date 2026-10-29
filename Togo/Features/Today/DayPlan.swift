@@ -183,7 +183,17 @@ struct DayPlanList: View {
                            onCheck: {
                                // Закрытую дозу нажатие не отмечает —
                                // оно объясняет, чего ждём.
+                               //
+                               // Круг уже данной ДОЗЫ тоже не снимает
+                               // отметку, а открывает замок (29.10.2026).
+                               // Комментарий у `TodayScreen.open` это
+                               // обещал, а нажатие шло в `onUndo`: тот,
+                               // кто хотел проверить «дали ли», одним
+                               // касанием возвращал дозу в план — и её
+                               // давали второй раз. Снять отметку можно
+                               // и теперь, но явной кнопкой в замке.
                                if !item.gate.isOpen { onOpen(item) }
+                               else if isDone, item.kind == .dose { onOpen(item) }
                                else if isDone { onUndo(item) } else { onComplete(item) }
                            },
                            onOpen: { onOpen(item) })
