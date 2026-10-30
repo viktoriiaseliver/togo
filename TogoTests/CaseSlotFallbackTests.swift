@@ -104,13 +104,18 @@ struct CaseSlotFallbackTests {
             let корневой = Self.корень.appendingPathComponent(каталог)
             guard let обходчик = fm.enumerator(at: корневой,
                                                includingPropertiesForKeys: nil) else { continue }
+            // Имя — счётом компонентов, а не срезкой строки:
+            // `resolvingSymlinksInPath()` делает case-folding кириллицы
+            // и выдаёт путь к несуществующему файлу (замер 30.10.2026,
+            // разбор — `ИменаФайловПриОбходеTests`).
+            let глубина = корневой.pathComponents.count
             for случай in обходчик {
                 guard let url = случай as? URL, url.pathExtension == "swift" else { continue }
-                let путь = url.resolvingSymlinksInPath().path
-                if путь.contains("/Generated/") { continue }
+                if url.pathComponents.contains("Generated") { continue }
                 guard let текст = try? String(contentsOf: url, encoding: .utf8) else { continue }
                 файлов += 1
-                let имя = путь.replacingOccurrences(of: Self.корень.path + "/", with: "")
+                let имя = ([каталог] + url.pathComponents.dropFirst(глубина))
+                    .joined(separator: "/")
                 for (i, строка) in безКомментариев(текст).enumerated() {
                     guard строка.contains("displayName") else { continue }
                     // Падежное слово обязано стоять ПЕРЕД подстановкой,

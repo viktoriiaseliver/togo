@@ -48,12 +48,22 @@ struct WidgetBundleCatalogTests {
     private func каталоги() -> [String] {
         var найдено: [String] = []
         for место in ["Togo", "TogoShared", "TogoWidgets"] {
+            let основание = Self.корень.appendingPathComponent(место)
             let обход = FileManager.default.enumerator(
-                at: Self.корень.appendingPathComponent(место), includingPropertiesForKeys: nil)
+                at: основание, includingPropertiesForKeys: nil)
+            // Имя — счётом компонентов от основания, а не срезкой строки
+            // из резолвленного пути: `resolvingSymlinksInPath()` делает
+            // case-folding кириллицы и отдаёт путь к несуществующему
+            // файлу (замер 30.10.2026, разбор —
+            // `ИменаФайловПриОбходеTests`). Здесь это особенно тихо:
+            // испорченное имя не совпало бы с исключением
+            // `толькоПриложению`, и сторож закричал бы на здоровом
+            // каталоге — ровно то, от чего защищает проверка ниже.
+            let глубина = основание.pathComponents.count
             while let элемент = обход?.nextObject() as? URL {
                 guard элемент.pathExtension == "xcstrings" else { continue }
-                let путь = элемент.resolvingSymlinksInPath().path
-                    .replacingOccurrences(of: Self.корень.path + "/", with: "")
+                let путь = ([место] + элемент.pathComponents.dropFirst(глубина))
+                    .joined(separator: "/")
                 // Не отрезался префикс — считать дальше нельзя: путь
                 // станет чужим, исключения не сойдутся и сторож
                 // закричит на здоровом каталоге.

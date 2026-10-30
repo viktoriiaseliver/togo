@@ -68,19 +68,26 @@ struct ЗапретViewThatFitsTests {
     private static func исходники() -> [(путь: String, текст: String)] {
         var собрано: [(String, String)] = []
         for каталог in ["Togo", "TogoShared", "TogoWidgets"] {
+            let основание = корень.appendingPathComponent(каталог)
             guard let обход = FileManager.default.enumerator(
-                at: корень.appendingPathComponent(каталог),
-                includingPropertiesForKeys: nil
+                at: основание, includingPropertiesForKeys: nil
             ) else { continue }
+            // Симлинки развёрнуты у ОСНОВАНИЯ (замер в `корень`), а имя
+            // собирается счётом компонентов — не срезкой строки.
+            //
+            // **Прежняя форма звала резолв и у адреса, и это ввело свой
+            // класс отказа** (замер 30.10.2026): `resolvingSymlinksInPath()`
+            // делает case-folding кириллицы, «ПозвалиВСемью» становится
+            // «ПозваливСемью», и путь указывает на файл, которого нет.
+            // Здесь текст читается по `url` и прогон не падал — портился
+            // только адрес в отчёте. Разбор — `ИменаФайловПриОбходеTests`.
+            let глубина = основание.pathComponents.count
             for случай in обход {
                 guard let url = случай as? URL, url.pathExtension == "swift",
                       let текст = try? String(contentsOf: url, encoding: .utf8)
                 else { continue }
-                // Симлинки разворачиваются с ОБЕИХ сторон: иначе
-                // обрезка префикса не совпадает и путь остаётся
-                // абсолютным — см. замер в `корень`.
-                собрано.append((url.resolvingSymlinksInPath().path
-                    .replacingOccurrences(of: корень.path + "/", with: ""), текст))
+                собрано.append((([каталог] + url.pathComponents.dropFirst(глубина))
+                    .joined(separator: "/"), текст))
             }
         }
         return собрано
