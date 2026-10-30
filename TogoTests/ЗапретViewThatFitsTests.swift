@@ -81,12 +81,13 @@ struct ЗапретViewThatFitsTests {
             // «ПозваливСемью», и путь указывает на файл, которого нет.
             // Здесь текст читается по `url` и прогон не падал — портился
             // только адрес в отчёте. Разбор — `ИменаФайловПриОбходеTests`.
-            let глубина = основание.pathComponents.count
+            let глубина = основание.resolvingSymlinksInPath().pathComponents.count
             for случай in обход {
                 guard let url = случай as? URL, url.pathExtension == "swift",
                       let текст = try? String(contentsOf: url, encoding: .utf8)
                 else { continue }
-                собрано.append((([каталог] + url.pathComponents.dropFirst(глубина))
+                let длина = url.resolvingSymlinksInPath().pathComponents.count - глубина
+                собрано.append((([каталог] + url.pathComponents.suffix(max(0, длина)))
                     .joined(separator: "/"), текст))
             }
         }

@@ -349,18 +349,31 @@ struct СнятиеНапоминанийПодключеноTests {
             let основание = корень.appendingPathComponent(каталог).resolvingSymlinksInPath()
             guard let обход = FileManager.default.enumerator(
                 at: основание, includingPropertiesForKeys: nil) else { continue }
-            let глубина = основание.pathComponents.count
+            // ДЛИНУ хвоста считаем по РЕЗОЛВЛЕННЫМ путям, а сами имена
+            // берём из НЕРЕЗОЛВЛЕННОГО адреса. Две половины решают две
+            // разные беды, и ни одна не закрывает вторую:
+            //
+            // ```
+            // резолв у обоих      /tmp vs /private/tmp — иначе хвост
+            //                     съезжает на компонент («Togo/Togo/…»),
+            //                     и это замер 30.10 в worktree
+            // имя без резолва     case-folding кириллицы — «ПозвалиВСемью»
+            //                     превращается в «ПозваливСемью»
+            // ```
+            //
+            // Первая редакция этой починки считала глубину по
+            // нерезолвленному основанию и **прошла в рабочем дереве,
+            // упав в worktree** — ровно наоборот к дефекту, который
+            // чинила. Разбор — `ИменаФайловПриОбходеTests`.
+            let глубина = основание.resolvingSymlinksInPath().pathComponents.count
             for случай in обход {
                 guard let адрес = случай as? URL, адрес.pathExtension == "swift" else { continue }
-                // Относительный путь — СЧЁТОМ КОМПОНЕНТОВ, а не срезкой
-                // строки. Разбор у `ОшибкаОбхода.регистрИспорчен` ниже;
-                // коротко: `resolvingSymlinksInPath()` портил имя, а
-                // строковая срезка требовала звать его у обоих путей.
-                let хвост = адрес.pathComponents.dropFirst(глубина)
-                guard !хвост.isEmpty else {
+                let длина = адрес.resolvingSymlinksInPath().pathComponents.count - глубина
+                guard длина > 0 else {
                     throw ОшибкаОбхода.префиксНеСрезан(адрес: адрес.path,
                                                         основание: основание.path)
                 }
+                let хвост = адрес.pathComponents.suffix(длина)
                 итог.append((адрес, каталог + "/" + хвост.joined(separator: "/")))
             }
         }

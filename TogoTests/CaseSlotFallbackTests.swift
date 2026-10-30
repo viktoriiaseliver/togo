@@ -108,13 +108,14 @@ struct CaseSlotFallbackTests {
             // `resolvingSymlinksInPath()` делает case-folding кириллицы
             // и выдаёт путь к несуществующему файлу (замер 30.10.2026,
             // разбор — `ИменаФайловПриОбходеTests`).
-            let глубина = корневой.pathComponents.count
+            let глубина = корневой.resolvingSymlinksInPath().pathComponents.count
             for случай in обходчик {
                 guard let url = случай as? URL, url.pathExtension == "swift" else { continue }
                 if url.pathComponents.contains("Generated") { continue }
                 guard let текст = try? String(contentsOf: url, encoding: .utf8) else { continue }
                 файлов += 1
-                let имя = ([каталог] + url.pathComponents.dropFirst(глубина))
+                let длина = url.resolvingSymlinksInPath().pathComponents.count - глубина
+                let имя = ([каталог] + url.pathComponents.suffix(max(0, длина)))
                     .joined(separator: "/")
                 for (i, строка) in безКомментариев(текст).enumerated() {
                     guard строка.contains("displayName") else { continue }

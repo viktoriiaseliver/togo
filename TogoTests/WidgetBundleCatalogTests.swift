@@ -59,10 +59,11 @@ struct WidgetBundleCatalogTests {
             // испорченное имя не совпало бы с исключением
             // `толькоПриложению`, и сторож закричал бы на здоровом
             // каталоге — ровно то, от чего защищает проверка ниже.
-            let глубина = основание.pathComponents.count
+            let глубина = основание.resolvingSymlinksInPath().pathComponents.count
             while let элемент = обход?.nextObject() as? URL {
                 guard элемент.pathExtension == "xcstrings" else { continue }
-                let путь = ([место] + элемент.pathComponents.dropFirst(глубина))
+                let длина = элемент.resolvingSymlinksInPath().pathComponents.count - глубина
+                let путь = ([место] + элемент.pathComponents.suffix(max(0, длина)))
                     .joined(separator: "/")
                 // Не отрезался префикс — считать дальше нельзя: путь
                 // станет чужим, исключения не сойдутся и сторож
