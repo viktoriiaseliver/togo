@@ -34,6 +34,23 @@ nonisolated final class ЗондФонаUITests: XCTestCase {
         add(кадр)
     }
 
+    /// Главный экран БЕЗ собаки: на кадре мамы 30.10 статус-бар наезжал
+    /// на заголовок карточки «Дневник едет на этот телефон».
+    ///
+    /// Запускается своим сценарием, поэтому `setUp` здесь переигрывается:
+    /// нужна пустая база, а не `today`.
+    func testГлавныйБезСобаки() {
+        app.terminate()
+        app = XCUIApplication()
+        app.launchArguments = ["-UITesting", "-Сценарий", "onboarding"]
+        app.launch()
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 20),
+                      "приложение не поднялось — снимать нечего")
+        sleep(3)
+        снять("05-главный-без-собаки")
+        print("КАДРОВ СНЯТО: 1")
+    }
+
     func testЧетыреЭкранаСФоном() {
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 20),
                       "приложение не поднялось — снимать нечего")
