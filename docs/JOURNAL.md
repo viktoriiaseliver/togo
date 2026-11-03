@@ -10,6 +10,7 @@
 
 
 - [3 ноября 2026 — vitrina-vseh-yazykov-i-klass-lokalizacii](journal/2026-11-03-vitrina-vseh-yazykov-i-klass-lokalizacii.md) — vitrina-vseh-yazykov-i-klass-lokalizacii
+- [3 ноября 2026 — teksty-obeshchali-zanyatiya](journal/2026-11-03-teksty-obeshchali-zanyatiya.md) — teksty-obeshchali-zanyatiya
 - [3 ноября 2026 — storozh-dolga-tri-kornya-i-vtoraya-os](journal/2026-11-03-storozh-dolga-tri-kornya-i-vtoraya-os.md) — storozh-dolga-tri-kornya-i-vtoraya-os
 - [3 ноября 2026 — put-1-stranica-v-svoyom-kontekste](journal/2026-11-03-put-1-stranica-v-svoyom-kontekste.md) — put-1-stranica-v-svoyom-kontekste
 - [30 октября 2026 — klichka-ne-doehala-i-sborka-287](journal/2026-10-30-klichka-ne-doehala-i-sborka-287.md) — klichka-ne-doehala-i-sborka-287
