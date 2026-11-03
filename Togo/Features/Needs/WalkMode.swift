@@ -625,7 +625,8 @@ struct WalkModeScreen: View {
     ///
     /// > **Совпадение имён — не «кнопки нет», а худшее: кнопка есть,
     /// > и она чужая.** Различает только идентификатор — ровно так же
-    /// > это уже лечили у «Ещё» (`ScreenshotTests.test04Занятие`).
+    /// > это уже лечили у «Ещё» (`ScreenshotTests.test04Занятие`, снят
+                //    > 03.11.2026; правило — в `UITestHelpers.найти`).
     static func имяОтметки(_ kind: ActiveSession.Mark.Kind) -> String {
         "отметка-\(kind.rawValue)"
     }

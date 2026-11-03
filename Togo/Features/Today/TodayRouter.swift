@@ -165,7 +165,8 @@ struct MoreSheet: View {
     ///
     /// С `LocalizedStringKey` литерал с подстановкой собирает ключ
     /// `Занятие · %@` сам, и перевод находится у всех четырёх языков.
-    /// Поймано `ScreenshotTests.test04Занятие` на партии `uk`: кадра
+    /// Поймано `ScreenshotTests.test04Занятие` (снят 03.11.2026
+    /// вместе с занятиями) на партии `uk`: кадра
     /// `04-training` не было ни у одного языка, кроме русского.
     private func row(_ title: LocalizedStringKey, _ symbol: String,
                      action: @escaping () -> Void) -> some View {

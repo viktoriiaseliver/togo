@@ -169,7 +169,8 @@ nonisolated final class КегльAX5: XCTestCase {
     /// Строка шторки по началу подписи. `identifier != "шапка-меню"` —
     /// не перестраховка: у шапки-меню озвучка «Ещё», и без этого
     /// условия тап уходит в меню настроек, а тест идёт дальше довольным
-    /// (замер `ScreenshotTests.test04Занятие`).
+    /// (замер `ScreenshotTests.test04Занятие`, сам тест снят
+    /// 03.11.2026 — запись переехала в `UITestHelpers.найти`).
     private func строкаЗаписи(_ начало: String) -> XCUIElement {
         app.buttons.matching(
             NSPredicate(format: "label BEGINSWITH %@ AND identifier != %@",
@@ -267,31 +268,6 @@ nonisolated final class КегльAX5: XCTestCase {
             }
             вкладка.tap()
             _ = self.app.navigationBars["Здоровье"].waitForExistence(timeout: 10)
-        }
-    }
-
-    /// «+» → «Ещё» → «Занятие · N мин».
-    func test05Занятие() {
-        пара("05-занятие") { _ in
-            guard self.открытьЗапись() else {
-                XCTFail("шторка «Записать» не поднялась")
-                return
-            }
-            let ещё = self.строкаЗаписи("Ещё")
-            guard ещё.waitForExistence(timeout: 8) else {
-                XCTFail("в шторке «Записать» нет строки «Ещё» — занятие за ней")
-                return
-            }
-            ещё.tap()
-            let занятие = self.app.buttons.matching(
-                NSPredicate(format: "label BEGINSWITH %@", "Занятие")).firstMatch
-            guard занятие.waitForExistence(timeout: 8) else {
-                XCTFail("в шторке «Ещё» нет строки «Занятие»")
-                return
-            }
-            занятие.tap()
-            XCTAssertTrue(self.app.staticTexts["Он сделал"].waitForExistence(timeout: 8),
-                          "занятие открылось не то: кнопки разметки на экране нет")
         }
     }
 
@@ -420,33 +396,6 @@ nonisolated final class КегльAX5: XCTestCase {
             строка.tap()
             guard self.app.navigationBars["Семья"].waitForExistence(timeout: 15) else {
                 XCTFail("строка нажата, а экран «Семья» не открылся")
-                return
-            }
-            self.пролистатьДоУпора()
-        }
-    }
-
-    func test10ЗанятиеНизДостижим() {
-        пара("10-занятие-низ") { _ in
-            guard self.открытьЗапись() else {
-                XCTFail("шторка «Записать» не поднялась")
-                return
-            }
-            let ещё = self.строкаЗаписи("Ещё")
-            guard ещё.waitForExistence(timeout: 8) else {
-                XCTFail("в шторке «Записать» нет строки «Ещё»")
-                return
-            }
-            ещё.tap()
-            let занятие = self.app.buttons.matching(
-                NSPredicate(format: "label BEGINSWITH %@", "Занятие")).firstMatch
-            guard занятие.waitForExistence(timeout: 8) else {
-                XCTFail("в шторке «Ещё» нет строки «Занятие»")
-                return
-            }
-            занятие.tap()
-            guard self.app.staticTexts["Он сделал"].waitForExistence(timeout: 8) else {
-                XCTFail("занятие открылось не то")
                 return
             }
             self.пролистатьДоУпора()
@@ -982,100 +931,6 @@ nonisolated final class КегльAX5: XCTestCase {
             // > правила, а форма цели: берём подпись, у которой число
             // > 18, и форма «действий» от него не зависит.
             self.докрутитьДоПодписи("действий")
-        }
-    }
-
-    /// Шестое из семи — `TrainingScreens:38` в `SessionSummarySheet`:
-    /// маркер в момент · средняя задержка · ушло из порции.
-    ///
-    /// **Фикстуры здесь НЕТ, и это замер, а не экономия.**
-    /// `TrainingSessionScreen.finish()` требует ровно одного —
-    /// `guard let dog` (`:535`). Ни отметок, ни трёх минут, ни закрытого
-    /// шага: «Начать занятие» → «Закончить на удаче» ставит `summary`,
-    /// и шторка итога открывается на пустом занятии.
-    ///
-    /// > Значит это место было в списке отказов стенда **по ошибке
-    /// > адресата**: не хватало дороги в тесте, а не входа в данных.
-    /// > Завести ему фикстуру значило бы спрятать настоящую причину
-    /// > за данными, без которых экран и так открывается.
-    ///
-    /// Одна отметка всё же ставится — пара тапов «Он сделал» и маркер:
-    /// без них `markDelaysMs` пуст, и первое число ряда выходит
-    /// «0 из 0». Ряд нарисуется, но проверять в нём будет нечего.
-    func test18ИтогЗанятия() {
-        пара("18-итог-занятия") { крупный in
-            guard self.открытьЗапись() else {
-                XCTFail("шторка «Записать» не поднялась (крупный=\(крупный))")
-                return
-            }
-            let ещё = self.строкаЗаписи("Ещё")
-            guard ещё.waitForExistence(timeout: 8) else {
-                XCTFail("в шторке «Записать» нет строки «Ещё»")
-                return
-            }
-            ещё.tap()
-            let занятие = self.app.buttons.matching(
-                NSPredicate(format: "label BEGINSWITH %@", "Занятие")).firstMatch
-            guard занятие.waitForExistence(timeout: 8) else {
-                XCTFail("в шторке «Ещё» нет строки «Занятие»")
-                return
-            }
-            занятие.tap()
-            guard self.app.staticTexts["Он сделал"].waitForExistence(timeout: 8) else {
-                XCTFail("занятие открылось не то: карточки маркера на экране нет")
-                return
-            }
-            // «Начать занятие · 3 мин» — подпись несёт ЧИСЛО минут
-            // из профиля собаки, поэтому ищем по началу строки.
-            let начать = self.app.buttons.matching(
-                NSPredicate(format: "label BEGINSWITH %@", "Начать занятие")).firstMatch
-            guard начать.waitForExistence(timeout: 8) else {
-                XCTFail("в подвале занятия нет кнопки «Начать занятие»")
-                return
-            }
-            начать.tap()
-
-            // **Два тапа, и порядок у них жёсткий.** «Он сделал» ставит
-            // момент действия, маркер мерит задержку ДО него:
-            // `markMarker()` начинается с `guard let actionAt`
-            // и без первого тапа не пишет ничего. Органы при этом
-            // выключены по очереди — `исходДоступен` ложно, пока
-            // `isWaitingForMark`, и наоборот, — то есть два тапа
-            // по одной кнопке дали бы одну отметку и ноль задержек.
-            //
-            // Маркер ищется по подписи «жми, когда сделал», а не
-            // по заголовку: заголовок равен `dog.markerKind.title`,
-            // то есть ДАННЫМ профиля, и менялся бы вместе с ними.
-            let сделал = self.app.buttons.matching(
-                NSPredicate(format: "label BEGINSWITH %@", "Он сделал")).firstMatch
-            let маркер = self.app.buttons.matching(
-                NSPredicate(format: "label CONTAINS %@", "жми, когда сделал")).firstMatch
-            var отметок = 0
-            for _ in 0..<2 {
-                guard сделал.waitForExistence(timeout: 8), сделал.isEnabled else { break }
-                сделал.tap()
-                guard маркер.waitForExistence(timeout: 8), маркер.isEnabled else { break }
-                маркер.tap()
-                отметок += 1
-            }
-            print("AX5-ЗАМЕР: отметок поставлено \(отметок) из 2 — "
-                  + "при нуле первое число ряда выйдет «0 из 0», ряд нарисуется пустым")
-
-            let закончить = self.app.buttons.matching(
-                NSPredicate(format: "label BEGINSWITH %@", "Закончить")).firstMatch
-            guard закончить.waitForExistence(timeout: 8) else {
-                XCTFail("занятие идёт, а кнопки «Закончить на удаче» нет — "
-                        + "шторку итога нечем открыть")
-                return
-            }
-            закончить.tap()
-            guard self.app.staticTexts.matching(
-                NSPredicate(format: "label BEGINSWITH %@", "Занятие ·")
-            ).firstMatch.waitForExistence(timeout: 10) else {
-                XCTFail("«Закончить» нажата, а шторка итога занятия не открылась")
-                return
-            }
-            self.докрутитьДоПодписи("маркер в момент")
         }
     }
 
