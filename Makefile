@@ -261,6 +261,13 @@ archive: ## Собрать архив для App Store Connect
 	@# было нечем. Проверка стоит здесь же, на последнем звене.
 	@python3 Tools/check_storefront_languages.py \
 		build/Togo.xcarchive/Products/Applications/Togo.app
+	@# Копии утверждений-перечислений против их источника в коде.
+	@# Стоит здесь затем, что предмет уезжает ИМЕННО ЭТИМ шагом:
+	@# 03.11.2026 описание витрины на пяти языках обещало бесплатной
+	@# вещь, снятую из `freeForever` 28.10, а заметка ревьюеру обещала
+	@# матрицу переноса, убранную из Pro 24.10. Ни то, ни другое
+	@# не видел ни один сторож, потому что сверять их было нечем.
+	@python3 Tools/check_list_copies.py
 	@echo "Собрано: $(SCHEME) $$(plutil -extract ApplicationProperties.CFBundleShortVersionString raw build/Togo.xcarchive/Info.plist) ($$(plutil -extract ApplicationProperties.CFBundleVersion raw build/Togo.xcarchive/Info.plist))"
 	@echo "Загружает в TestFlight Tools/upload_testflight.sh — он архивирует сам."
 
@@ -268,6 +275,15 @@ archive: ## Собрать архив для App Store Connect
 guard: ## Проверить сторожа подделкой в отдельном дереве (ФАЙЛ, БЫЛО, СТАЛО, НАБОР)
 	@test -n "$(ФАЙЛ)" || (echo "Как звать: make guard ФАЙЛ=… БЫЛО=… СТАЛО=… НАБОР=TogoTests/XTests" && exit 1)
 	@python3 Tools/check_guard.py --файл "$(ФАЙЛ)" --было "$(БЫЛО)" --стало "$(СТАЛО)" --набор "$(НАБОР)"
+
+.PHONY: copies
+copies: ## Сверить копии утверждений-перечислений с их источником в коде
+	@# Класс «копии одного утверждения расходятся молча» выстрелил
+	@# 03.11.2026 четыре раза за день: список «бесплатно навсегда» жил
+	@# в четырёх местах и правился в три разных дня. Стоит целью, а не
+	@# тестом, потому что предмет — ПЯТЬ локалей витрины, тексты покупки
+	@# и страницы сайта: всё это вне тест-таргета, и часть вне Swift.
+	@python3 Tools/check_list_copies.py
 
 .PHONY: tokens-check
 tokens-check: ## Проверить, что сгенерированные токены не расходятся с tokens.json
