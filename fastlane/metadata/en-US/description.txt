@@ -6,9 +6,6 @@ In three or four days the app learns your dog's intervals and tells you whether 
 ONE TAP THAT CHANGES BEHAVIOR
 The door opens, and whatever the dog did just before it gets reinforced. Togo asks how exactly she asked, and shows you if barking is crowding out the quiet signal.
 
-TRAINING WITHOUT PRESSURE
-A dog learns from a marker that lands within half a second, not from the number of treats. Togo measures the delay and answers in one word: on time, almost, late. After three minutes it asks you to stop — past that the dog is guessing, not learning. Training food comes out of the daily ration, so there's no treat limit to keep.
-
 A SHARED DIARY
 Whoever you invite sees the day's entries and dose marks: outings, meals, stools, “needs to go out”. Two entries about the same thing don't overwrite each other — the app offers to merge them. No working out in the evening who took her out.
 
