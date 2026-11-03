@@ -45,22 +45,22 @@
           },
           "localizations" : [
             {
-              "description" : "Вторая собака, семья, матрица навыка",
+              "description" : "Вторая и следующие собаки, семья от трёх",
               "displayName" : "Togo Pro · месяц",
               "locale" : "ru_RU"
             },
             {
-              "description" : "Second dog, family, generalization matrix",
+              "description" : "Second and further dogs, family beyond two",
               "displayName" : "Togo Pro · monthly",
               "locale" : "en_US"
             },
             {
-              "description" : "Deuxième chien, famille, matrice de transfert",
+              "description" : "Deuxième chien et plus, famille dès trois",
               "displayName" : "Togo Pro · mensuel",
               "locale" : "fr_FR"
             },
             {
-              "description" : "Друга собака, сім'я, матриця перенесення",
+              "description" : "Друга й наступні собаки, сім'я від трьох",
               "displayName" : "Togo Pro · місяць",
               "locale" : "uk_UA"
             }
@@ -86,22 +86,22 @@
           },
           "localizations" : [
             {
-              "description" : "Вторая собака, семья, матрица навыка",
+              "description" : "Вторая и следующие собаки, семья от трёх",
               "displayName" : "Togo Pro · год",
               "locale" : "ru_RU"
             },
             {
-              "description" : "Second dog, family, generalization matrix",
+              "description" : "Second and further dogs, family beyond two",
               "displayName" : "Togo Pro · yearly",
               "locale" : "en_US"
             },
             {
-              "description" : "Deuxième chien, famille, matrice de transfert",
+              "description" : "Deuxième chien et plus, famille dès trois",
               "displayName" : "Togo Pro · annuel",
               "locale" : "fr_FR"
             },
             {
-              "description" : "Друга собака, сім'я, матриця перенесення",
+              "description" : "Друга й наступні собаки, сім'я від трьох",
               "displayName" : "Togo Pro · рік",
               "locale" : "uk_UA"
             }
