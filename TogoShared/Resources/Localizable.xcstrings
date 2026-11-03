@@ -8500,6 +8500,35 @@
         }
       }
     },
+    "Позвать человека в дневник и менять роли здесь нельзя. Попроси владельца — право придёт на этот же телефон." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "You can't invite anyone or change roles here. Ask the owner — the right will arrive on this same phone."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tu ne peux ni inviter quelqu'un ni changer les rôles ici. Demande au propriétaire : le droit arrivera sur ce téléphone."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Мұнда адам шақыруға және рөлдерді өзгертуге болмайды. Иесінен сұра — құқық осы телефонға келеді."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Запросити людину в щоденник і змінювати ролі тут не можна. Попроси власника — право прийде на цей самий телефон."
+          }
+        }
+      }
+    },
     "Пока никого не позвали. «Позвать в дневник» внизу — приглашение создастся само." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -9072,6 +9101,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "щеплення"
+          }
+        }
+      }
+    },
+    "Приглашать может владелец" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Only the owner can invite"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Seul le propriétaire peut inviter"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Шақыруды тек иесі жасайды"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Запрошувати може власник"
           }
         }
       }
