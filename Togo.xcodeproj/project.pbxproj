@@ -288,6 +288,7 @@
 				ru,
 				en,
 				fr,
+				kk,
 				uk,
 				Base,
 			);
