@@ -113,7 +113,13 @@ final class FamilySync: NSObject {
     /// Умолчание `= { _ in }` вернуло бы ровно эту беду и выглядело бы
     /// вежливостью. Без умолчания забыть нельзя: решение принимает
     /// компилятор на каждой точке создания, а их одна.
-    private let дозаБольшеНеЖдёт: @MainActor (DoseRecord) -> Void
+    ///
+    /// **Идентификатор, а не живая доза, и это замер устройства,
+    /// а не вкус** (29.10.2026, путь 1). Страница чужих изменений
+    /// живёт в своём контексте и выбрасывается вместе с ним; модель,
+    /// вынесенная наружу, пережила бы свой контекст, а снимающему
+    /// напоминание от неё нужен только `id`.
+    private let дозаБольшеНеЖдёт: @MainActor (UUID) -> Void
 
     /// Чужое записано — пересобрать то, что живёт ВНЕ экрана.
     ///
@@ -168,7 +174,7 @@ final class FamilySync: NSObject {
     private var заказанныеЗоны: Set<CKRecordZone.ID> = []
 
     init(modelContainer: ModelContainer,
-         дозаБольшеНеЖдёт: @escaping @MainActor (DoseRecord) -> Void,
+         дозаБольшеНеЖдёт: @escaping @MainActor (UUID) -> Void,
          чужоеПринято: @escaping @MainActor () -> Void,
          container: CKContainer = CKContainer(identifier: AppIdentifiers.cloudContainer)) {
         self.modelContainer = modelContainer
@@ -907,7 +913,9 @@ extension FamilySync: CKSyncEngineDelegate {
             applying = true
             defer { applying = false }
 
-            let ctx = context
+            // Главного контекста здесь нет нарочно: страница принимается
+            // в свой, и тронуть главный ей нечем. Разбор —
+            // `SharedDiaryInbox.открытаяСтраница`.
 
             // Собаки — первыми, и это не оптимизация.
             //
@@ -938,92 +946,52 @@ extension FamilySync: CKSyncEngineDelegate {
                 ранг($0.record.recordType) < ранг($1.record.recordType)
             }
 
-            // Что гасить, копится здесь, а гасится ПОСЛЕ записи страницы:
-            // до неё принятое — ещё не факт хранилища.
-            var схемыКСверке: [UUID] = []
-            var дозыКСверке: [UUID] = []
-
-            // **Одно сохранение на страницу, а не на запись** (29.10.2026).
-            // Прежде каждый `accept` звал `save()` сам, и догоняющая
-            // страница в сотни записей держала главный поток сотней
-            // сохранений подряд — экран стоял, пока шла вся пачка.
-            // Откаты при этом не потеряны: партия копит их и при отказе
-            // возвращает всё, что страница тронула. Разбор —
-            // `SharedDiaryInbox.партией`.
-            let записано = SharedDiaryInbox.партией(context: ctx) {
+            // **Одно сохранение на страницу, и страница в СВОЁМ
+            // контексте** (29.10.2026, путь 1 целиком). Прежде каждый
+            // `accept` звал `save()` сам, и догоняющая страница в сотни
+            // записей держала главный поток сотней сохранений подряд.
+            // Партия это убрала, но честность отказа оставила на откатах
+            // — а откат вставки не работает (замер в
+            // `SharedDiaryInbox.открытаяСтраница`). Теперь страница
+            // принимается в отдельный контекст: не записалась — контекст
+            // выброшен целиком, и в главном не появилось ни вставки,
+            // ни слияния.
+            let страница = SharedDiaryInbox.партией(контейнер: modelContainer) { приём in
                 for modification in modifications {
                     let record = modification.record
-                    // Пришедшее с сервера — тоже источник `recordChangeTag`:
-                    // свою правку этой записи мы пошлём уже поверх неё.
-                    outbox.remember(record)
 
                     switch SharedDiary.RecordType(rawValue: record.recordType) {
                     case .clinic:
                         guard let payload = SharedDiaryRecords.clinicPayload(record) else { continue }
-                        SharedDiaryInbox.accept(payload, context: ctx)
+                        SharedDiaryInbox.accept(payload, context: приём)
                     case .dog:
                         guard let payload = SharedDiaryRecords.dogPayload(record) else { continue }
-                        SharedDiaryInbox.accept(payload, context: ctx)
+                        SharedDiaryInbox.accept(payload, context: приём)
                     case .care:
                         guard let payload = SharedDiaryRecords.carePayload(record) else { continue }
                         // Клиника сшивается внутри `accept`: там контекст
                         // есть по устройству, и промах по id там же
                         // падает на поиск по имени.
                         SharedDiaryInbox.accept(
-                            payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
-                            context: ctx)
+                            payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: приём),
+                            context: приём)
                     case .medication:
                         guard let payload = SharedDiaryRecords.medicationPayload(record) else { continue }
-                        SharedDiaryInbox.accept(
-                            payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
-                            context: ctx)
-
-                        // Приехала отмена или пауза схемы — гасим запросы
-                        // по её дозам сейчас, а не когда человек откроет
-                        // приложение.
-                        //
-                        // **Почему это не повтор ветки `.dose` ниже.** Там
-                        // спрашивается `ждётОтметки` — предикат САМОЙ дозы,
-                        // и про схему он не знает нарочно. У доз отменённой
-                        // схемы собственный `cancelledAt` пуст, то есть
-                        // по нему они по-прежнему ждут: ветка `.dose`
-                        // не погасила бы их, даже если бы они приехали
-                        // следом. Поэтому здесь составной предикат,
-                        // а не тот же самый.
-                        //
-                        // Цена пропуска называется прямо, потому что она
-                        // про лекарство: Виктория отменила курс, у мамы он
-                        // жив, и мама получает «Через 10 минут доза»
-                        // по лечению, которого больше нет.
+                        // Приехала отмена или пауза схемы — запросы по её
+                        // дозам гаснут в конце этой же страницы. Схема
+                        // отмечается к сверке внутри `accept`, решение
+                        // снимается в контексте страницы до сохранения,
+                        // гашение идёт после удачного сохранения. Разбор —
+                        // `SharedDiaryInbox.дозыБезОжидания`.
                         //
                         // **Чего это НЕ закрывает:** при закрытом приложении
                         // на телефоне не выполняется ничего — `CKSubscription`
                         // в коде ноль, та же граница, что у ветки `.dose`.
                         // То есть напоминания гаснут с момента, когда
                         // у второго человека приложение живо, и не раньше.
-                        // Выборка под `do`, а не под `try?`, и это замер
-                        // 21.10.2026, а не осторожность. У `try?` здесь два
-                        // разных исхода склеены в один `nil`: «такой схемы
-                        // нет» и «посмотреть не удалось». Ответ кода на «нет»
-                        // — не гасить ничего, и при отказе выборки он молча
-                        // становится ответом на «не удалось»: напоминания
-                        // по дозам отменённого курса не гаснут, в лог
-                        // не идёт ни строки, а правка остаётся сделанной
-                        // НА ВИД — канал «гасим сейчас» вырождается
-                        // в прежний «когда человек откроет приложение»
-                        // (`ReminderScheduler.снятьНеждущие`).
-                        //
-                        // Схемы с этим id здесь быть не может только в одном
-                        // случае: `accept` строкой выше сам ничего не записал.
-                        // Это и есть третье состояние — ОТВЕЧАТЬ НЕЧЕМ, —
-                        // и у лекарственного слоя оно обязано быть названо.
-                        //
-                        // **Гасится ПОСЛЕ записи страницы, а не здесь** (29.10.2026):
-                        // страница теперь сохраняется одним разом, и до этого
-                        // разом её состояние — ещё не факт. Не записалась
-                        // страница — схема вернулась прежней, и гасить по ней
-                        // напоминания значило бы погасить живой курс.
-                        схемыКСверке.append(payload.id)
+                        SharedDiaryInbox.accept(
+                            payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: приём),
+                            context: приём)
                     case .event:
                         guard let payload = SharedDiaryRecords.eventPayload(record) else { continue }
                         // Собака берётся по id из самой записи. Раньше здесь
@@ -1031,39 +999,39 @@ extension FamilySync: CKSyncEngineDelegate {
                         // чужие отметки ложились на его собственную.
                         SharedDiaryInbox.accept(
                             payload,
-                            dog: SharedDiaryInbox.dog(for: payload, context: ctx),
-                            context: ctx
+                            dog: SharedDiaryInbox.dog(for: payload, context: приём),
+                            context: приём
                         )
                     case .document:
                         guard let payload = SharedDiaryRecords.documentPayload(record) else { continue }
                         SharedDiaryInbox.accept(
-                            payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
-                            context: ctx)
+                            payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: приём),
+                            context: приём)
                     case .weight:
                         guard let payload = SharedDiaryRecords.weightPayload(record) else { continue }
                         SharedDiaryInbox.accept(
-                            payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
-                            context: ctx)
+                            payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: приём),
+                            context: приём)
                     case .labResult:
                         guard let payload = SharedDiaryRecords.labResultPayload(record) else { continue }
                         SharedDiaryInbox.accept(
-                            payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
-                            context: ctx)
+                            payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: приём),
+                            context: приём)
                     case .vetVisit:
                         guard let payload = SharedDiaryRecords.vetVisitPayload(record) else { continue }
                         SharedDiaryInbox.accept(
-                            payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
-                            context: ctx)
+                            payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: приём),
+                            context: приём)
                     case .diagnosis:
                         guard let payload = SharedDiaryRecords.diagnosisPayload(record) else { continue }
                         SharedDiaryInbox.accept(
-                            payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
-                            context: ctx)
+                            payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: приём),
+                            context: приём)
                     case .prescription:
                         guard let payload = SharedDiaryRecords.prescriptionPayload(record) else { continue }
                         SharedDiaryInbox.accept(
-                            payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
-                            context: ctx)
+                            payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: приём),
+                            context: приём)
                     case .dose:
                         guard let payload = SharedDiaryRecords.dosePayload(record) else { continue }
                         // Препарат ищется по id, а при промахе — по имени:
@@ -1071,14 +1039,14 @@ extension FamilySync: CKSyncEngineDelegate {
                         // человека тот же препарат заведён с другим UUID.
                         SharedDiaryInbox.accept(
                             payload,
-                            medication: SharedDiaryInbox.medication(for: payload, context: ctx),
-                            context: ctx
+                            medication: SharedDiaryInbox.medication(for: payload, context: приём),
+                            context: приём
                         )
                         // Напоминания снимаются ПОСЛЕ слияния, а не по тому,
                         // что приехало: спор решает `SharedDiaryMerge`, и чужая
-                        // отметка могла проиграть своей. Спрашиваем ту дозу,
-                        // которая теперь лежит у нас, — иначе снимем запрос
-                        // по отметке, которая не победила.
+                        // отметка могла проиграть своей. Доза отмечается
+                        // к сверке внутри `accept`, а спрашивается в конце
+                        // страницы — та, которая теперь лежит у нас.
                         //
                         // Зачем это здесь, когда есть `снятьНеждущие`. У той
                         // уборки вход один — `.task` главного экрана
@@ -1094,20 +1062,28 @@ extension FamilySync: CKSyncEngineDelegate {
                         // есть, а `CKSubscription` в коде ноль — право есть,
                         // механизма нет. Это та же причина, что у записей
                         // голосом, которые не уезжают (`:103-107`, `:244`).
-                        //
-                        // Спрашивается тоже ПОСЛЕ записи страницы — довод тот же,
-                        // что у ветки `.medication` выше.
-                        дозыКСверке.append(payload.id)
                     default:
                         continue
                     }
                 }
             }
 
-            guard записано else {
-                // Страница не записалась целиком, и всё тронутое ею
-                // возвращено. Время сверки НЕ двигается: оно значит
-                // «чужое правда доехало», а здесь не доехало ничего.
+            guard страница.записано else {
+                // Страница не записалась целиком. Главный контекст её
+                // не видел вовсе — возвращать нечего, и это не оборот
+                // речи: приём шёл в отдельный контекст, который здесь
+                // и кончился.
+                //
+                // Серверные версии записей НЕ ЗАПОМИНАЮТСЯ, и это
+                // не забывчивость. `outbox.remember` говорит «мы видели
+                // эту версию» — своя правка пойдёт уже поверх неё.
+                // Сказать так про страницу, которой мы не приняли,
+                // значило бы отправить своё старое поверх чужого
+                // нового без спора: то же «частично», только снаружи
+                // хранилища.
+                //
+                // Время сверки НЕ двигается: оно значит «чужое правда
+                // доехало», а здесь не доехало ничего.
                 //
                 // **Вернётся ли страница сама — НЕ ИЗМЕРЕНО.** Движок
                 // сдвигает свою отметку чтения по `stateUpdate`, и судя
@@ -1117,44 +1093,25 @@ extension FamilySync: CKSyncEngineDelegate {
                 // журналу.
                 log.error("""
                     Общий дневник: страница из \(modifications.count) чужих \
-                    записей НЕ ЗАПИСАЛАСЬ — всё возвращено как было
+                    записей НЕ ЗАПИСАЛАСЬ — в главном контексте её нет
                     """)
                 страницаНеЗаписалась = true
                 state = .failed(Self.текстНеЗаписалось)
                 return
             }
 
-            // Схема отменена или на паузе — гасим запросы по её дозам.
-            // Разбор, почему предикат здесь составной, — у ветки
-            // `.medication` выше.
-            for схемаID in схемыКСверке {
-                do {
-                    if let схема = try ctx.fetch(
-                        FetchDescriptor<Medication>(
-                            predicate: #Predicate { $0.id == схемаID })
-                    ).first {
-                        for доза in схема.doses where !доза.ждётОтметкиСУчётомСхемы {
-                            дозаБольшеНеЖдёт(доза)
-                        }
-                    }
-                } catch {
-                    log.error("""
-                        Общий дневник: приехала схема \(схемаID), выборка \
-                        по id отказала — напоминания по её дозам СЕЙЧАС \
-                        не гаснут, погаснут при открытии приложения. \
-                        \(String(describing: error))
-                        """)
-                }
-            }
+            // Пришедшее с сервера — тоже источник `recordChangeTag`:
+            // свою правку этой записи мы пошлём уже поверх неё.
+            // Запоминается ПОСЛЕ удачного сохранения: до него страница
+            // ещё могла не доехать, а словарь версий откату
+            // не подлежит — он живёт вне хранилища.
+            for modification in modifications { outbox.remember(modification.record) }
 
-            // Доза — та, что лежит у нас ПОСЛЕ слияния; разбор у ветки
-            // `.dose` выше.
-            for дозаID in дозыКСверке {
-                if let доза = SharedDiaryInbox.доза(дозаID, context: ctx),
-                   !доза.ждётОтметки {
-                    дозаБольшеНеЖдёт(доза)
-                }
-            }
+            // Схема отменена или на паузе, либо доза приехала
+            // отмеченной — гасим запросы. Решение принято ВНУТРИ
+            // страницы, её контекстом и до сохранения; разбор —
+            // `SharedDiaryInbox.дозыБезОжидания`.
+            for дозаID in страница.большеНеЖдут { дозаБольшеНеЖдёт(дозаID) }
 
             if !modifications.isEmpty { принятоНовое = true }
 

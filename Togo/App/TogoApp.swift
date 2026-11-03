@@ -438,7 +438,7 @@ struct TogoApp: App {
             let состояние = appState
             let настройки = settings
             sync = FamilySync(modelContainer: container,
-                              дозаБольшеНеЖдёт: ReminderScheduler.cancelDose,
+                              дозаБольшеНеЖдёт: ReminderScheduler.cancelDose(дозаID:),
                               чужоеПринято: {
                                   ЧужоеПринято.пересобрать(container: container,
                                                            appState: состояние,
