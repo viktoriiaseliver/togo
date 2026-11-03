@@ -14,6 +14,7 @@
 - [3 ноября 2026 — storozh-dolga-tri-kornya-i-vtoraya-os](journal/2026-11-03-storozh-dolga-tri-kornya-i-vtoraya-os.md) — storozh-dolga-tri-kornya-i-vtoraya-os
 - [3 ноября 2026 — put-1-stranica-v-svoyom-kontekste](journal/2026-11-03-put-1-stranica-v-svoyom-kontekste.md) — put-1-stranica-v-svoyom-kontekste
 - [3 ноября 2026 — kopii-odnogo-spiska-rashodyatsya](journal/2026-11-03-kopii-odnogo-spiska-rashodyatsya.md) — kopii-odnogo-spiska-rashodyatsya
+- [3 ноября 2026 — 292-klassy-zakryty-i-otzyv-so-svezhey](journal/2026-11-03-292-klassy-zakryty-i-otzyv-so-svezhey.md) — 292-klassy-zakryty-i-otzyv-so-svezhey
 - [3 ноября 2026 — 291-zalita-i-tri-otkaza-vorot](journal/2026-11-03-291-zalita-i-tri-otkaza-vorot.md) — 291-zalita-i-tri-otkaza-vorot
 - [30 октября 2026 — klichka-ne-doehala-i-sborka-287](journal/2026-10-30-klichka-ne-doehala-i-sborka-287.md) — klichka-ne-doehala-i-sborka-287
 - [29 октября 2026 — tualet-noch-poezdka-i-audit-ekranov](journal/2026-10-29-tualet-noch-poezdka-i-audit-ekranov.md) — tualet-noch-poezdka-i-audit-ekranov
