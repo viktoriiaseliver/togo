@@ -371,7 +371,7 @@ struct NeedsSheet: View {
                                                     context: context)
         else {
             Haptics.warning()
-            appState.showFailure("Доза не отметилась · нажми ещё раз")
+            appState.showFailure(String(localized: "Доза не отметилась · нажми ещё раз"))
             return
         }
 

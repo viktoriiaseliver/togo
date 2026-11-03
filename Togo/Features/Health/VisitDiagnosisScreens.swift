@@ -228,7 +228,7 @@ struct VetVisitEditor: View {
                     let откат = ОбщееУдаление.удалить(visit)
                     guard context.persist(otherwise: откат) else {
                         Haptics.warning()
-                        appState.showFailure("Не удалилось · нажми ещё раз")
+                        appState.showFailure(String(localized: "Не удалилось · нажми ещё раз"))
                         return
                     }
                 }
@@ -287,7 +287,7 @@ struct VetVisitEditor: View {
             }
         }) else {
             Haptics.warning()
-            appState.showFailure("Не сохранилось · нажми ещё раз")
+            appState.showFailure(String(localized: "Не сохранилось · нажми ещё раз"))
             return
         }
         Haptics.success()
@@ -549,7 +549,7 @@ struct DiagnosisEditor: View {
                     let откат = ОбщееУдаление.удалить(diagnosis)
                     guard context.persist(otherwise: откат) else {
                         Haptics.warning()
-                        appState.showFailure("Не удалилось · нажми ещё раз")
+                        appState.showFailure(String(localized: "Не удалилось · нажми ещё раз"))
                         return
                     }
                 }
@@ -570,7 +570,7 @@ struct DiagnosisEditor: View {
                     diagnosis.changedAt = былоИзменено
                 }) else {
                     Haptics.warning()
-                    appState.showFailure("Не сохранилось · нажми ещё раз")
+                    appState.showFailure(String(localized: "Не сохранилось · нажми ещё раз"))
                     return
                 }
                 Haptics.success()
@@ -628,7 +628,7 @@ struct DiagnosisEditor: View {
             }
         }) else {
             Haptics.warning()
-            appState.showFailure("Не сохранилось · нажми ещё раз")
+            appState.showFailure(String(localized: "Не сохранилось · нажми ещё раз"))
             return
         }
         Haptics.success()

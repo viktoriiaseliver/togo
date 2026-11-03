@@ -280,7 +280,7 @@ struct FoodStockEditorSheet: View {
                 // (аудит 28.10.2026). Откатить удаление нечем — говорим правду.
                 guard context.persistNothingToUndo() else {
                     Haptics.warning()
-                    appState.showFailure("Не удалилось · проверь после перезапуска")
+                    appState.showFailure(String(localized: "Не удалилось · проверь после перезапуска"))
                     return
                 }
                 Haptics.warning()

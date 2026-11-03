@@ -233,7 +233,7 @@ struct CareScreen: View {
     /// а напоминание пришло бы в прежний срок.
     private func неСохранилось() {
         Haptics.warning()
-        appState.showFailure("Не сохранилось · попробуй ещё раз")
+        appState.showFailure(String(localized: "Не сохранилось · попробуй ещё раз"))
     }
 
     private func subtitle(for kind: CareKind, group: [CareTask]) -> String? {
@@ -293,7 +293,7 @@ struct CareScreen: View {
                 task.streak = былаСерия
             }) else {
                 Haptics.warning()
-                appState.showFailure("Не сохранилось · попробуй ещё раз")
+                appState.showFailure(String(localized: "Не сохранилось · попробуй ещё раз"))
                 return
             }
             Haptics.warning()
@@ -557,7 +557,7 @@ struct CareSuggestionsSheet: View {
         // выбрасывался, и шторка закрывалась с «успехом» без дел.
         guard SeedData.addCare(chosen, to: dog, context: context) > 0 else {
             Haptics.warning()
-            appState.showFailure("Не сохранилось · попробуй ещё раз")
+            appState.showFailure(String(localized: "Не сохранилось · попробуй ещё раз"))
             return
         }
         Haptics.success()

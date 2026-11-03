@@ -329,7 +329,7 @@ struct ClinicEditor: View {
             clinic.changedAt = былоИзменено
         }) else {
             Haptics.warning()
-            appState.showFailure("Не удалилось · попробуй ещё раз")
+            appState.showFailure(String(localized: "Не удалилось · попробуй ещё раз"))
             return
         }
         Haptics.warning()
@@ -367,7 +367,7 @@ struct ClinicEditor: View {
             }
         }) else {
             Haptics.warning()
-            appState.showFailure("Не сохранилось · нажми ещё раз")
+            appState.showFailure(String(localized: "Не сохранилось · нажми ещё раз"))
             return
         }
         Haptics.success()

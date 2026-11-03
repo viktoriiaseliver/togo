@@ -180,7 +180,7 @@ struct DayOutSummarySheet: View {
         context.delete(day)
         guard context.persistNothingToUndo() else {
             Haptics.warning()
-            appState.showFailure("Не удалилось · проверь после перезапуска")
+            appState.showFailure(String(localized: "Не удалилось · проверь после перезапуска"))
             return
         }
         Haptics.success()
@@ -309,7 +309,7 @@ struct DayOutEditSheet: View {
             day.note = былаЗаметка
         }) else {
             Haptics.warning()
-            appState.showFailure("Не сохранилось · нажми «Сохранить» ещё раз")
+            appState.showFailure(String(localized: "Не сохранилось · нажми «Сохранить» ещё раз"))
             return
         }
         Haptics.success()
@@ -323,7 +323,7 @@ struct DayOutEditSheet: View {
         context.delete(day)
         guard context.persistNothingToUndo() else {
             Haptics.warning()
-            appState.showFailure("Не удалилось · проверь после перезапуска")
+            appState.showFailure(String(localized: "Не удалилось · проверь после перезапуска"))
             return
         }
         Haptics.success()

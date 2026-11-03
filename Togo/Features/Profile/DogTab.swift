@@ -858,7 +858,7 @@ struct TripScreen: View {
                 // поэтому говорится правда.
                 guard context.persistNothingToUndo() else {
                     Haptics.warning()
-                    appState.showFailure("Не удалилось · проверь после перезапуска")
+                    appState.showFailure(String(localized: "Не удалилось · проверь после перезапуска"))
                     return
                 }
                 Haptics.warning()

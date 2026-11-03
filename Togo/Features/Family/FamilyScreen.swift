@@ -546,7 +546,7 @@ struct FamilyScreen: View {
             я.dutyUntil = былСрок
         }) else {
             Haptics.warning()
-            appState.showFailure("Не сохранилось · нажми ещё раз")
+            appState.showFailure(String(localized: "Не сохранилось · нажми ещё раз"))
             return
         }
         Haptics.success()
@@ -1587,7 +1587,7 @@ struct MemberScreen: View {
                 context.delete(member)
                 guard context.persistNothingToUndo() else {
                     Haptics.warning()
-                    appState.showFailure("Не удалилось · проверь после перезапуска")
+                    appState.showFailure(String(localized: "Не удалилось · проверь после перезапуска"))
                     return
                 }
                 dismiss()
@@ -1609,7 +1609,7 @@ struct MemberScreen: View {
         member.name = новое
         guard context.persist(otherwise: { member.name = было }) else {
             Haptics.warning()
-            appState.showFailure("Не сохранилось · нажми ещё раз")
+            appState.showFailure(String(localized: "Не сохранилось · нажми ещё раз"))
             return
         }
         // Своё имя — это ещё и подпись автора, которую держит

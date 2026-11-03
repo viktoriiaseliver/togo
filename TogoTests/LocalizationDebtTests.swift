@@ -195,52 +195,69 @@ struct LocalizationDebtTests {
     /// в TogoWidgets              0 — и это замеренный ноль, а не пропуск:
     ///                              обход читает его в том же заходе
     /// ```
+    ///
+    /// **Убыль 03.11.2026, тем же днём: 172 → 120, файлов 37 → 22.**
+    /// Снят класс «отказ показывается человеку по-русски»: 52 голых
+    /// литерала у `showFailure(_ message: String)` в 23 файлах уехали
+    /// в `String(localized:)`. Пятнадцать файлов обнулились и убраны
+    /// из списка — не из аккуратности, а потому что сторож требует
+    /// сам: «долг, которого больше нет, разрешает вернуть то, что уже
+    /// починено».
+    ///
+    /// Числа убыли посчитаны **по вызовам**, а не вердиктом сторожа,
+    /// и это названо здесь потому, что premise у арифметики своя:
+    /// сумма списка до правки (172) совпадала с замером того же дня,
+    /// то есть потолок был **притёрт** к предмету, и вычитание имело
+    /// смысл. У файла, где потолок выше предмета, так считать нельзя —
+    /// получится ноль там, где предмет ещё жив, и наоборот.
+    ///
+    /// > `String(localized:)` снимает долг по устройству оси,
+    /// > а не по договорённости: `осьЭкрановРазличаетСтоки()` проверяет
+    /// > ровно это — `"String(localized:"` в списке НЕ-стоков.
     private let долгЭкранов: [String: Int] = [
-        "Togo/App/RootView.swift": 2,
         "Togo/DesignSystem/Components/TGPoster.swift": 1,
-        "Togo/Features/Care/CareScreen.swift": 3,
-        "Togo/Features/DayOut/DayOutScreens.swift": 3,
         "Togo/Features/Emergency/DocumentPhotos.swift": 3,
-        "Togo/Features/Family/FamilyScreen.swift": 8,
-        "Togo/Features/Feeding/FeedingScreen.swift": 4,
-        "Togo/Features/Feeding/FoodStockScreen.swift": 1,
-        "Togo/Features/Feeding/HeatScreen.swift": 2,
+        "Togo/Features/Family/FamilyScreen.swift": 5,
+        "Togo/Features/Feeding/FeedingScreen.swift": 3,
         "Togo/Features/Health/AlarmThresholdScreen.swift": 1,
-        "Togo/Features/Health/ClinicScreens.swift": 2,
         "Togo/Features/Health/DoseGateSheet.swift": 1,
-        // Восемь: пять `showFailure` («Вес не записался · попробуй ещё
-        // раз») и три подписи протокола забора крови, уехавшие
-        // в `ProtocolRow.title`/`.detail` — оба объявлены `String`.
-        "Togo/Features/Health/HealthScreen.swift": 8,
+        // Было восемь, стало пять: 03.11 сняты три `showFailure`
+        // («Вес не записался · попробуй ещё раз», «Взвешивание
+        // не удалилось · …», «Не сохранилось · нажми «Сохранить»
+        // ещё раз») — проведены через каталог.
+        //
+        // **Прежняя редакция говорила «пять `showFailure` и три
+        // подписи протокола», и первое число было неверно: их три.**
+        // Разбор по вызовам даёт 3, а не 5; счёт самого сторожа —
+        // 8 на файл. Остаток в пять строк этим заходом НЕ разбирался,
+        // и декомпозиции тут нет нарочно: предыдущая была написана
+        // без замера и прожила ложной до первой попытки ею
+        // воспользоваться. Чем заняты оставшиеся пять — смотреть
+        // вердиктом `долгЭкрановНеРастёт()`, а не этой строкой.
+        "Togo/Features/Health/HealthScreen.swift": 5,
         "Togo/Features/Health/LabChartScreen.swift": 3,
-        "Togo/Features/Health/LabResultScreens.swift": 3,
         "Togo/Features/Health/MissedDoseSheet.swift": 4,
-        "Togo/Features/Health/PillSupplyScreen.swift": 1,
-        "Togo/Features/Health/PrescriptionScreens.swift": 2,
-        "Togo/Features/Health/VisitDiagnosisScreens.swift": 5,
-        "Togo/Features/Incident/EpisodeRaiser.swift": 4,
+        "Togo/Features/Incident/EpisodeRaiser.swift": 2,
         "Togo/Features/Incident/IncidentSheet.swift": 2,
         "Togo/Features/Log/LogSheets.swift": 2,
-        "Togo/Features/Needs/NeedsSheet.swift": 2,
-        "Togo/Features/Needs/WalkMode.swift": 3,
-        "Togo/Features/Needs/WalkSheets.swift": 2,
+        "Togo/Features/Needs/NeedsSheet.swift": 1,
+        "Togo/Features/Needs/WalkMode.swift": 2,
+        "Togo/Features/Needs/WalkSheets.swift": 1,
         "Togo/Features/Onboarding/OnboardingSteps.swift": 6,
-        "Togo/Features/Profile/DogTab.swift": 1,
-        "Togo/Features/Profile/Editors.swift": 7,
         "Togo/Features/Profile/ScheduleEditor.swift": 6,
-        // Десять: один `showFailure` и девять строк вопросов-ответов,
-        // уехавших в `FAQRow.question`/`.answer` — оба `String`.
-        // Это экран «Данные и приватность», его открывают намеренно.
-        "Togo/Features/Settings/DataPrivacyScreen.swift": 10,
+        // Было десять, стало девять: 03.11 снят единственный здесь
+        // `showFailure` («Удалилось не всё · нажми ещё раз») —
+        // проведён через каталог новым ключом. Остались девять строк
+        // вопросов-ответов, уехавших в `FAQRow.question`/`.answer` —
+        // оба `String`. Это экран «Данные и приватность», его
+        // открывают намеренно.
+        "Togo/Features/Settings/DataPrivacyScreen.swift": 9,
         // Пять заголовков полей брифинга — `field(_ заголовок: String, …)`.
         // **Этот экран читает ЧУЖОЙ человек**, и читает он его тогда,
         // когда собака осталась на нём одном.
         "Togo/Features/Sitter/SitterBriefingScreen.swift": 5,
-        "Togo/Features/Today/DayPlanActions.swift": 5,
         "Togo/Features/Today/GivenAtSheet.swift": 1,
         "Togo/Features/Today/TodayRouter.swift": 1,
-        "Togo/Features/Today/TodayScreen.swift": 1,
-        "Togo/Store/EventLog.swift": 1,
         // **Пятьдесят шесть, и это НЕ фикстура стенда — решение
         // Виктории, которого ещё нет.** Файл не под `#if DEBUG`,
         // то есть едет в Release целиком. Внутри три разные природы:

@@ -147,7 +147,7 @@ struct PillSupplyScreen: View {
         // то, по чему приложение скажет «пора покупать».
         if !context.persist(otherwise: {}) {
             Haptics.warning()
-            appState.showFailure("Не сохранилось · попробуй ещё раз")
+            appState.showFailure(String(localized: "Не сохранилось · попробуй ещё раз"))
         }
     }
 }

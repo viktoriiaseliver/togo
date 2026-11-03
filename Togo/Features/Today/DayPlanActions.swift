@@ -259,7 +259,7 @@ struct DayPlanActions {
                                                      by: appState.currentUserName, at: момент,
                                                      context: context) else {
                 Haptics.warning()
-                appState.showFailure("Доза не отметилась · нажми ещё раз")
+                appState.showFailure(String(localized: "Доза не отметилась · нажми ещё раз"))
                 return
             }
             отметка = dose
@@ -308,7 +308,7 @@ struct DayPlanActions {
                 (task.lastDone, task.streak, task.scheduledDate) = было
                 careUndo.wrappedValue[task.id] = nil
                 Haptics.warning()
-                appState.showFailure("Срок не пересчитался · нажми ещё раз")
+                appState.showFailure(String(localized: "Срок не пересчитался · нажми ещё раз"))
                 return
             }
         }
@@ -433,7 +433,7 @@ struct DayPlanActions {
         guard получилось else {
             вернуть.reversed().forEach { $0() }
             Haptics.warning()
-            appState.showFailure("Не снялось · нажми ещё раз")
+            appState.showFailure(String(localized: "Не снялось · нажми ещё раз"))
             return
         }
 
@@ -453,7 +453,7 @@ struct DayPlanActions {
             // Пропуск заводили ради врача: «отмечено» без записи
             // в истории — та же необъяснённая дыра, только с алиби.
             Haptics.warning()
-            appState.showFailure("Не записалось · нажми ещё раз")
+            appState.showFailure(String(localized: "Не записалось · нажми ещё раз"))
             return
         }
         Haptics.warning()
@@ -477,7 +477,7 @@ struct DayPlanActions {
         } catch {
             (dose.claimedBy, dose.claimedAt) = было
             Haptics.warning()
-            appState.showFailure("Не получилось взять на себя · нажми ещё раз")
+            appState.showFailure(String(localized: "Не получилось взять на себя · нажми ещё раз"))
             return
         }
         Haptics.tap()

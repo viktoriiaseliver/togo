@@ -425,7 +425,7 @@ struct PrescriptionEditor: View {
                     let откат = ОбщееУдаление.удалить(prescription)
                     guard context.persist(otherwise: откат) else {
                         Haptics.warning()
-                        appState.showFailure("Не удалилось · нажми ещё раз")
+                        appState.showFailure(String(localized: "Не удалилось · нажми ещё раз"))
                         return
                     }
                 }
@@ -557,7 +557,7 @@ struct PrescriptionEditor: View {
             }
         }) else {
             Haptics.warning()
-            appState.showFailure("Не сохранилось · нажми ещё раз")
+            appState.showFailure(String(localized: "Не сохранилось · нажми ещё раз"))
             return
         }
         Haptics.success()

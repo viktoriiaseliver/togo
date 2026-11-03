@@ -845,7 +845,7 @@ struct WalkModeScreen: View {
             }
             if !OutingFinisher.close(finished, dog: dog, at: Date(), context: context) {
                 Haptics.warning()
-                appState.showFailure("Ответ не записался · отметь ещё раз")
+                appState.showFailure(String(localized: "Ответ не записался · отметь ещё раз"))
             }
             OutingFinisher.записатьПрочиеОтметки(finished, dog: dog,
                                                  appState: appState, context: context)

@@ -246,7 +246,7 @@ struct HeatEditorSheet: View {
                 // Та же форма, что у запаса корма и выездного дня.
                 guard context.persistNothingToUndo() else {
                     Haptics.warning()
-                    appState.showFailure("Не удалилось · проверь после перезапуска")
+                    appState.showFailure(String(localized: "Не удалилось · проверь после перезапуска"))
                     return
                 }
                 Haptics.warning()
@@ -290,7 +290,7 @@ struct HeatEditorSheet: View {
             // Шторка остаётся открытой, и это сказано словом: одна
             // хаптика читалась как «кнопка не нажалась».
             Haptics.warning()
-            appState.showFailure("Не сохранилось · попробуй ещё раз")
+            appState.showFailure(String(localized: "Не сохранилось · попробуй ещё раз"))
             return
         }
         Haptics.success()

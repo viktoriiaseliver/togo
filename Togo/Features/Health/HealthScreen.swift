@@ -1640,7 +1640,7 @@ struct WeightScreen: View {
             откатНадгробия()
         }) else {
             Haptics.warning()
-            appState.showFailure("Взвешивание не удалилось · попробуй ещё раз")
+            appState.showFailure(String(localized: "Взвешивание не удалилось · попробуй ещё раз"))
             return false
         }
         Haptics.warning()
@@ -1683,7 +1683,7 @@ struct WeightScreen: View {
             dog.weightKg = былВес
         }) else {
             Haptics.warning()
-            return appState.showFailure("Вес не записался · попробуй ещё раз")
+            return appState.showFailure(String(localized: "Вес не записался · попробуй ещё раз"))
         }
         newWeight = ""
         Haptics.success()
@@ -1798,7 +1798,7 @@ struct WeightEntryEditorSheet: View {
             if let dog, let былТекущий { dog.weightKg = былТекущий }
         }) else {
             Haptics.warning()
-            appState.showFailure("Не сохранилось · нажми «Сохранить» ещё раз")
+            appState.showFailure(String(localized: "Не сохранилось · нажми «Сохранить» ещё раз"))
             return
         }
         Haptics.success()

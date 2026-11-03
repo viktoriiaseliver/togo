@@ -732,7 +732,7 @@ struct TodayScreen: View {
         day.endedAt = Date()
         guard context.persist(otherwise: { day.endedAt = былКонец }) else {
             Haptics.warning()
-            appState.showFailure("День не закрылся · нажми ещё раз")
+            appState.showFailure(String(localized: "День не закрылся · нажми ещё раз"))
             return
         }
         finishingDayOut = day

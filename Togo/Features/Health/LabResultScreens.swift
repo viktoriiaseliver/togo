@@ -941,7 +941,7 @@ struct LabResultEntryFlow: View {
             }
         }) else {
             Haptics.warning()
-            appState.showFailure("Не сохранилось · нажми «Сохранить анализ» ещё раз")
+            appState.showFailure(String(localized: "Не сохранилось · нажми «Сохранить анализ» ещё раз"))
             return
         }
         Haptics.success()
@@ -1226,7 +1226,7 @@ struct LabResultRowEditor: View {
                 let откат = ОбщееУдаление.удалить(result)
                 guard context.persist(otherwise: откат) else {
                     Haptics.warning()
-                    appState.showFailure("Не удалилось · нажми ещё раз")
+                    appState.showFailure(String(localized: "Не удалилось · нажми ещё раз"))
                     return
                 }
                 Haptics.warning()
@@ -1337,7 +1337,7 @@ struct LabResultRowEditor: View {
             result.changedAt = былоИзменено
         }) else {
             Haptics.warning()
-            appState.showFailure("Не сохранилось · нажми «Сохранить» ещё раз")
+            appState.showFailure(String(localized: "Не сохранилось · нажми «Сохранить» ещё раз"))
             return
         }
         Haptics.success()

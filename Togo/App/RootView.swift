@@ -425,7 +425,7 @@ struct UndoToastView: View {
               })
         else { return }
         if !DoseScheduler.unmark(схема, scheduledAt: доза.scheduledAt, context: context) {
-            appState.showFailure("Запись убрана, а отметка дозы — нет · сними её в плане дня")
+            appState.showFailure(String(localized: "Запись убрана, а отметка дозы — нет · сними её в плане дня"))
         }
     }
 
@@ -478,7 +478,7 @@ struct UndoToastView: View {
             // галочку. Это была ТРЕТЬЯ дверь к плашке: сторож знака
             // проверял `showUndo` и `showFailure`, а здесь не было
             // вызова вовсе — и оба его утверждения оставались зелёными.
-            appState.showFailure("Отмена не сохранилась · попробуй ещё раз",
+            appState.showFailure(String(localized: "Отмена не сохранилась · попробуй ещё раз"),
                                  action: toast.action)
         }
     }

@@ -133,7 +133,7 @@ struct DataPrivacyScreen: View {
         // трогаем ни отметки, ни напоминания: человек нажмёт ещё раз.
         guard неУдалось == 0 else {
             Haptics.warning()
-            appState.showFailure("Удалилось не всё · нажми ещё раз")
+            appState.showFailure(String(localized: "Удалилось не всё · нажми ещё раз"))
             return
         }
 

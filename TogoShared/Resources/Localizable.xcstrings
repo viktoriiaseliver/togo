@@ -5836,6 +5836,35 @@
         }
       }
     },
+    "Запись убрана, а отметка дозы — нет · сними её в плане дня" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The entry was removed, the dose mark wasn't · uncheck it in the day's plan"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L'entrée a été retirée, mais pas la coche de la dose · décoche-la dans le plan du jour"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Жазба алынды, доза белгісі — жоқ · оны күн жоспарынан алып қой"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Запис прибрано, а позначку дози — ні · зніми її в плані дня"
+          }
+        }
+      }
+    },
     "Здесь появятся календарь с отметкой на каждый день, полоса за 30 дней и эпизоды. Заполнять заранее ничего не надо." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -10388,6 +10417,35 @@
         }
       }
     },
+    "Схема сохранена, а напоминания об анализах — нет · открой и нажми ещё раз" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The plan was saved, the lab reminders weren't · open it and tap again"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le schéma est enregistré, mais pas les rappels d'analyses · ouvre et appuie encore"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Схема сақталды, талдаулар туралы еске салулар — жоқ · ашып, қайта бас"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Схема збереглася, а нагадування про аналізи — ні · відкрий і натисни ще раз"
+          }
+        }
+      }
+    },
     "схемы лечения" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -11349,6 +11407,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Прибрати фото?"
+          }
+        }
+      }
+    },
+    "Удалилось не всё · нажми ещё раз" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Not everything was deleted · tap again"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tout n'a pas été supprimé · appuie encore"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Барлығы жойылмады · қайта бас"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Видалилося не все · натисни ще раз"
           }
         }
       }

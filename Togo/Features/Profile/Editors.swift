@@ -496,7 +496,7 @@ struct DogEditorScreen: View {
     /// нажимает «Готово» ещё раз.
     private func неСохранилось() {
         Haptics.warning()
-        appState.showFailure("Не сохранилось · нажми «Готово» ещё раз")
+        appState.showFailure(String(localized: "Не сохранилось · нажми «Готово» ещё раз"))
     }
 
     /// Удалить собаку.
@@ -524,7 +524,7 @@ struct DogEditorScreen: View {
             откатНадгробия()
         }) else {
             Haptics.warning()
-            appState.showFailure("Не удалилось · нажми ещё раз")
+            appState.showFailure(String(localized: "Не удалилось · нажми ещё раз"))
             return
         }
         Haptics.warning()
@@ -738,7 +738,7 @@ struct CareTaskEditorSheet: View {
                     let откат = ОбщееУдаление.удалить(task)
                     guard context.persist(otherwise: откат) else {
                         Haptics.warning()
-                        appState.showFailure("Не удалилось · нажми ещё раз")
+                        appState.showFailure(String(localized: "Не удалилось · нажми ещё раз"))
                         return
                     }
                 }
@@ -887,7 +887,7 @@ struct CareTaskEditorSheet: View {
             }
         }) else {
             Haptics.warning()
-            appState.showFailure("Не сохранилось · нажми «Готово» ещё раз")
+            appState.showFailure(String(localized: "Не сохранилось · нажми «Готово» ещё раз"))
             return
         }
         Haptics.success()
@@ -1372,7 +1372,7 @@ struct MedicationEditorSheet: View {
                         анализы.forEach { $0.deletedAt = nil }
                     }) else {
                         Haptics.warning()
-                        appState.showFailure("Не удалилось · нажми ещё раз")
+                        appState.showFailure(String(localized: "Не удалилось · нажми ещё раз"))
                         return
                     }
                 }
@@ -1635,7 +1635,7 @@ struct MedicationEditorSheet: View {
             }
         }) else {
             Haptics.warning()
-            appState.showFailure("Не сохранилось · нажми «Готово» ещё раз")
+            appState.showFailure(String(localized: "Не сохранилось · нажми «Готово» ещё раз"))
             return
         }
         // Дела контроля — ПОСЛЕ сохранения схемы и отдельным сохранением:
@@ -1644,7 +1644,7 @@ struct MedicationEditorSheet: View {
         if let начало = target.startedAt, !контрольНедели.isEmpty,
            !завестиКонтроль(для: target, от: начало) {
             Haptics.warning()
-            appState.showFailure("Схема сохранена, а напоминания об анализах — нет · открой и нажми ещё раз")
+            appState.showFailure(String(localized: "Схема сохранена, а напоминания об анализах — нет · открой и нажми ещё раз"))
             return
         }
         Haptics.success()

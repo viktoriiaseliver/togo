@@ -47,7 +47,7 @@ enum EpisodeRaiser {
                 running.lastIncidentAt = былоПоследним
                 running.endedAt = былКонец
             }) else {
-                appState?.showFailure("Эпизод не продлился · отметь ещё раз")
+                appState?.showFailure(String(localized: "Эпизод не продлился · отметь ещё раз"))
                 return false
             }
             appState?.activeEpisode = running
@@ -69,7 +69,7 @@ enum EpisodeRaiser {
         // этому в дневнике не было, а после перезапуска эпизод исчезал
         // вместе с причиной, по которой приложение замолчало.
         guard context.persist(otherwise: { context.delete(episode) }) else {
-            appState?.showFailure("Эпизод не завёлся · отметь ещё раз")
+            appState?.showFailure(String(localized: "Эпизод не завёлся · отметь ещё раз"))
             return false
         }
         appState?.activeEpisode = episode

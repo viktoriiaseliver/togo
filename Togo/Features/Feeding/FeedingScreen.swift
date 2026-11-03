@@ -787,7 +787,7 @@ struct FeedingScreen: View {
             // Одна хаптика — это отказ без слова: расписание на экране
             // откатилось, и человек решил бы, что кнопка не сработала.
             Haptics.warning()
-            appState.showFailure("Не сохранилось · попробуй ещё раз")
+            appState.showFailure(String(localized: "Не сохранилось · попробуй ещё раз"))
             return
         }
         Haptics.success()
