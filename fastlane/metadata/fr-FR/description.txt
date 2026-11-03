@@ -27,7 +27,7 @@ Togo Pro est un abonnement à renouvellement automatique, mensuel ou annuel. Le 
 Conditions d'utilisation : https://viktoriiaseliver.github.io/togo/terms.html
 Politique de confidentialité : https://viktoriiaseliver.github.io/togo/privacy.html
 
-CINQ LANGUES
-Français, English, Русский, Українська, Қазақша. La langue se change dans les réglages, sans redémarrer le téléphone.
+LANGUES DE L'INTERFACE
+Français, English, Русский, Українська. La langue se change dans les réglages, sans redémarrer le téléphone.
 
 Nous n'avons pas de serveur, et il n'y a pas de compte à créer. Le carnet reste sur le téléphone ; si iCloud est activé, une copie se trouve dans ta bibliothèque privée, là où sont tes autres données. Le carnet partagé de la famille, c'est un partage iCloud : n'y entre que la personne que tu as nommée.
