@@ -9,6 +9,7 @@
 написанное рукой, пересборка не трогает.
 
 
+- [3 ноября 2026 — vitrina-vseh-yazykov-i-klass-lokalizacii](journal/2026-11-03-vitrina-vseh-yazykov-i-klass-lokalizacii.md) — vitrina-vseh-yazykov-i-klass-lokalizacii
 - [30 октября 2026 — klichka-ne-doehala-i-sborka-287](journal/2026-10-30-klichka-ne-doehala-i-sborka-287.md) — klichka-ne-doehala-i-sborka-287
 - [29 октября 2026 — tualet-noch-poezdka-i-audit-ekranov](journal/2026-10-29-tualet-noch-poezdka-i-audit-ekranov.md) — tualet-noch-poezdka-i-audit-ekranov
 - [29 октября 2026](journal/2026-10-29-svedenie-dvuh-liniy-i-chto-ono-vskrylo.md) — **29.10.2026.** Две линии работы 28.10 — локальная и облачная — завели разные схемы под одним номером
