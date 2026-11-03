@@ -244,7 +244,11 @@ nonisolated enum Diary {
         var outings: Int
         var meals: Int
         var walkMinutes: Int
-        var trainingGrams: Int
+        // `trainingGrams` снято 03.11.2026 вместе с единственным
+        // читателем (`TodaySummaryStrip:46`). Поле считалось по
+        // `kind == .training`, а таких событий не заводит ни один
+        // путь с 28.10 — значит оно вечно отдавало ноль, и ноль
+        // этот читался как «сегодня не занимались».
     }
 
     static func summary(_ events: [LogEvent], day: Date, dog: Dog?) -> DaySummary {
@@ -252,7 +256,7 @@ nonisolated enum Diary {
         return DaySummary(
             // Лакомства, взятые из дневной порции, — это та же еда.
             // Не считать их значит показывать «съел 60 из 120», когда
-            // тридцать граммов ушло на занятие.
+            // тридцать граммов ушло на лакомства.
             eatenGrams: today
                 .filter { $0.kind == .meal || ($0.kind == .treat && $0.fromPortion) }
                 .compactMap(\.grams)
@@ -266,8 +270,7 @@ nonisolated enum Diary {
             // «3 выхода», и оба числа были посчитаны верно.
             outings: today.filter { $0.kind == .outing }.count,
             meals: today.filter { $0.kind == .meal }.count,
-            walkMinutes: today.filter { $0.kind == .walk }.compactMap(\.durationSeconds).reduce(0, +) / 60,
-            trainingGrams: today.filter { $0.kind == .training }.compactMap(\.grams).reduce(0, +)
+            walkMinutes: today.filter { $0.kind == .walk }.compactMap(\.durationSeconds).reduce(0, +) / 60
         )
     }
 

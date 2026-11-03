@@ -4952,6 +4952,42 @@
         }
       }
     },
+    "Если лай не уходит за две недели или появился резко — это может быть не поведение, а дискомфорт. Тогда к врачу." : {
+      "comment" : "advice",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "If the barking doesn't go away in two weeks or started abruptly, it may not be behavior but discomfort. Then it's the vet."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si l'aboiement ne disparaît pas en deux semaines ou s'il est apparu d'un coup, ce n'est peut-être pas un comportement mais une gêne. Dans ce cas, direction le vétérinaire."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Егер үру екі аптада кетпесе немесе кенет пайда болса — бұл мінез емес, жайсыздық болуы мүмкін. Онда дәрігерге."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Если лай не уходит за две недели или появился резко — это может быть не поведение, а дискомфорт. Тогда к врачу."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Якщо гавкіт не йде за два тижні або з'явився різко — це може бути не поведінка, а дискомфорт. Тоді до лікаря."
+          }
+        }
+      }
+    },
     "если собака потерялась" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5615,6 +5651,42 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Записи сім'ї приїхали, але не записалися на телефоні"
+          }
+        }
+      }
+    },
+    "Записи, история и схемы лечения останутся на месте. Закроется только часть экранов — и откроется обратно, если снова включить подписку." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Entries, history and treatment plans all stay put. Only some screens close, and they open again if you turn the subscription back on."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les entrées, l'historique et les traitements restent en place. Seule une partie des écrans se ferme, et elle se rouvrira si tu réactives l'abonnement."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Жазбалар, тарих және емдеу схемалары орнында қалады. Тек экрандардың бір бөлігі жабылады — және жазылымды қайта қосса, қайта ашылады."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Записи, история и схемы лечения останутся на месте. Закроется только часть экранов — и откроется обратно, если снова включить подписку."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Записи, історія і схеми лікування залишаться на місці. Закриється тільки частина екранів — і відкриється назад, якщо знову увімкнути підписку."
           }
         }
       }
@@ -7696,6 +7768,42 @@
         }
       }
     },
+    "Окно натощак, защита от двойной дозы, «как попросил» и предупреждение о наказании после лужи бесплатны всегда и не входят в подписку." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The fasting window, double-dose protection, “how she asked” and the warning about punishing her after an accident are always free and aren't part of the subscription."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La fenêtre à jeun, la protection contre la double dose, « comment il a demandé » et l'avertissement sur la punition après un pipi à la maison sont gratuits pour toujours et ne font pas partie de l'abonnement."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ашқарын терезесі, қос дозадан қорғау, «қалай сұрады» және шалшықтан кейінгі жаза туралы ескерту әрқашан тегін және жазылымға кірмейді."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Окно натощак, защита от двойной дозы, «как попросил» и предупреждение о наказании после лужи бесплатны всегда и не входят в подписку."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Вікно натщесерце, захист від подвійної дози, «як попросив» і попередження про покарання після калюжі безкоштовні завжди і не входять у підписку."
+          }
+        }
+      }
+    },
     "Оставь хотя бы один приём — без часов напоминать не о чем" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -8539,6 +8647,42 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Порція = норма ÷ годування: додаси годування — зменшиться порція, а не денна їжа. Норму називає лікар або упаковка. Вологий корм на три чверті вода — грами там інші."
+          }
+        }
+      }
+    },
+    "порция, вес, напоминания" : {
+      "comment" : "detail",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "portion, weight, reminders"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "portion, poids, rappels"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "үлес, салмақ, еске салулар"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "порция, вес, напоминания"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "порція, вага, нагадування"
           }
         }
       }
@@ -11053,6 +11197,42 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Приберуться лише ті, що вже закінчилися. Той, що триває, залишиться — його закривають кнопкою «Собаці краще — закрити». Записи залишаться всі: видаляється тільки об'єднання їх в епізод."
+          }
+        }
+      }
+    },
+    "Убрали. Лакомства можно брать из дневной порции, а не сверх неё, — тогда лимит не нужен." : {
+      "comment" : "body",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Removed. Treats can come out of the daily portion instead of on top of it — then no limit is needed."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Retiré. Les friandises peuvent être prises sur la portion du jour, et non en plus — la limite n'a alors plus de raison d'être."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Алып тастадық. Сыйлық жемді күндік үлестен алуға болады, оның үстіне емес — сонда шек қажет емес."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Убрали. Лакомства можно брать из дневной порции, а не сверх неё, — тогда лимит не нужен."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Прибрали. Ласощі можна брати з денної порції, а не понад неї, — тоді ліміт не потрібен."
           }
         }
       }
@@ -13979,42 +14159,6 @@
         }
       }
     },
-    "%@ г ушло на занятие — вечерняя порция уже уменьшена." : {
-      "comment" : "indoors",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%@ g went into the session — the evening portion is already reduced."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ g sont partis en séance — la portion du soir est déjà réduite."
-          }
-        },
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%@ г сабаққа кетті — кешкі үлес азайтылды."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ г ушло на занятие — вечерняя порция уже уменьшена."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%@ г пішло на заняття — вечірню порцію вже зменшено."
-          }
-        }
-      }
-    },
     "%@ дали в %@. " : {
       "comment" : "fastingCard",
       "extractionState" : "manual",
@@ -16207,34 +16351,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "%lld г на день"
-          }
-        }
-      }
-    },
-    "%lld г ушло на занятие — вечерняя порция уже уменьшена." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%lld g went into the session — the evening portion is already reduced."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld g sont partis en séance — la portion du soir est déjà réduite."
-          }
-        },
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%lld г сабаққа кетті — кешкі үлес азайтылды."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%lld г пішло на заняття — вечірню порцію вже зменшено."
           }
         }
       }
@@ -47361,42 +47477,6 @@
         }
       }
     },
-    "Если лай не уходит за две недели или появился резко — это может быть не поведение, а дискомфорт. Тогда к врачу, а не к занятиям." : {
-      "comment" : "advice",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "If the barking doesn't go away in two weeks or started abruptly, it may not be behavior but discomfort. Then it's the vet, not training."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Si l'aboiement ne disparaît pas en deux semaines ou s'il est apparu d'un coup, ce n'est peut-être pas un comportement mais une gêne. Dans ce cas, direction le vétérinaire, pas les séances."
-          }
-        },
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Егер үру екі аптада кетпесе немесе кенет пайда болса — бұл мінез емес, жайсыздық болуы мүмкін. Онда сабаққа емес, дәрігерге."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Если лай не уходит за две недели или появился резко — это может быть не поведение, а дискомфорт. Тогда к врачу, а не к занятиям."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Якщо гавкіт не йде за два тижні або з'явився різко — це може бути не поведінка, а дискомфорт. Тоді до лікаря, а не до занять."
-          }
-        }
-      }
-    },
     "Если не берёт еду — заканчивай" : {
       "comment" : "observations",
       "extractionState" : "manual",
@@ -51449,42 +51529,6 @@
         }
       }
     },
-    "Занятие живёт отдельно от прогулки и длится две-три минуты. Собака учится в первые минуты, дальше устаёт и начинает угадывать." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "A session is separate from a walk and lasts two or three minutes. A dog learns in the first minutes; after that she tires and starts guessing."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La séance est séparée de la promenade et dure deux ou trois minutes. Le chien apprend dans les premières minutes, ensuite il se fatigue et commence à deviner."
-          }
-        },
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Сабақ серуеннен бөлек және екі-үш минутқа созылады. Ит алғашқы минуттарда үйренеді, одан кейін шаршап, болжай бастайды."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Занятие живёт отдельно от прогулки и длится две-три минуты. Собака учится в первые минуты, дальше устаёт и начинает угадывать."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Заняття живе окремо від прогулянки і триває дві-три хвилини. Собака вчиться в перші хвилини, далі втомлюється і починає вгадувати."
-          }
-        }
-      }
-    },
     "Занятие идёт" : {
       "comment" : "sessionSheet",
       "extractionState" : "manual",
@@ -54233,42 +54277,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Записи підуть в архів"
-          }
-        }
-      }
-    },
-    "Записи, занятия, история и схемы лечения останутся на месте. Закроется только часть экранов — и откроется обратно, если снова включить подписку." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Entries, sessions, history and treatment plans all stay put. Only some screens close, and they open again if you turn the subscription back on."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Les entrées, les séances, l'historique et les traitements restent en place. Seule une partie des écrans se ferme, et elle se rouvrira si tu réactives l'abonnement."
-          }
-        },
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Жазбалар, сабақтар, тарих және емдеу схемалары орнында қалады. Тек экрандардың бір бөлігі жабылады — және жазылымды қайта қосса, қайта ашылады."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Записи, занятия, история и схемы лечения останутся на месте. Закроется только часть экранов — и откроется обратно, если снова включить подписку."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Записи, заняття, історія і схеми лікування залишаться на місці. Закриється тільки частина екранів — і відкриється назад, якщо знову увімкнути підписку."
           }
         }
       }
@@ -79547,42 +79555,6 @@
         }
       }
     },
-    "Окно натощак, защита от двойной дозы, «как попросил», «не брал еду» и предупреждение о наказании после лужи бесплатны всегда и не входят в подписку." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "The fasting window, double-dose protection, “how she asked”, “didn't take food” and the warning about punishing her after an accident are always free and aren't part of the subscription."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La fenêtre à jeun, la protection contre la double dose, « comment il a demandé », « n'a pas pris la friandise » et l'avertissement sur la punition après un pipi à la maison sont gratuits pour toujours et ne font pas partie de l'abonnement."
-          }
-        },
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Ашқарын терезесі, қос дозадан қорғау, «қалай сұрады», «жемді алмады» және шалшықтан кейінгі жаза туралы ескерту әрқашан тегін және жазылымға кірмейді."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Окно натощак, защита от двойной дозы, «как попросил», «не брал еду» и предупреждение о наказании после лужи бесплатны всегда и не входят в подписку."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Вікно натщесерце, захист від подвійної дози, «як попросив», «не брав ласощі» і попередження про покарання після калюжі безкоштовні завжди і не входять у підписку."
-          }
-        }
-      }
-    },
     "окт" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -93490,42 +93462,6 @@
         }
       }
     },
-    "порция, вес, напоминания, занятия" : {
-      "comment" : "detail",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "portion, weight, reminders, sessions"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "portion, poids, rappels, séances"
-          }
-        },
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "үлес, салмақ, еске салулар, сабақтар"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "порция, вес, напоминания, занятия"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "порція, вага, нагадування, заняття"
-          }
-        }
-      }
-    },
     "после %@ в %@ · видят все" : {
       "comment" : "Что случилось — то, из-за чего экран открыли",
       "extractionState" : "manual",
@@ -97752,42 +97688,6 @@
         }
       }
     },
-    "Приложение меряет задержку между «он сделал» и маркером. До полусекунды — «в момент»; после секунды собака уже сделала что-то другое." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "The app measures the delay between “she did it” and the marker. Under half a second is “on time”; after a second the dog has already done something else."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "L'app mesure le délai entre « il l'a fait » et le marqueur. Moins d'une demi-seconde, c'est « pile au moment » ; après une seconde, le chien a déjà fait autre chose."
-          }
-        },
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Қолданба «ол жасады» мен маркер арасындағы кешігуді өлшейді. Жарты секундқа дейін — «дәл сол кезде»; бір секундтан кейін ит басқа нәрсе жасап үлгерген."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Приложение меряет задержку между «он сделал» и маркером. До полусекунды — «в момент»; после секунды собака уже сделала что-то другое."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Застосунок міряє затримку між «він зробив» і маркером. До півсекунди — «в момент»; після секунди собака вже зробила щось інше."
-          }
-        }
-      }
-    },
     "Приложение не знает лучше человека и говорит об этом прямо." : {
       "comment" : "principles",
       "extractionState" : "manual",
@@ -98108,42 +98008,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Застосунок запитає, замінити все чи додати те, чого бракує. Той самий файл, завантажений двічі, нічого не подвоїть — записи звіряємо між собою."
-          }
-        }
-      }
-    },
-    "Приложение стало секундомером и зеркалом, а не счётчиком корма: важна задержка маркера, а не количество кусочков." : {
-      "comment" : "items",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "The app became a stopwatch and a mirror, not a food counter: what matters is the marker's delay, not the number of treats."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "L'app est devenue un chronomètre et un miroir, pas un compteur de croquettes — ce qui compte, c'est le délai du marqueur, pas le nombre de morceaux."
-          }
-        },
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Қолданба жем есептегіші емес, секундомер мен айна болды: маркердің кешігуі маңызды, кесектердің саны емес."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Приложение стало секундомером и зеркалом, а не счётчиком корма: важна задержка маркера, а не количество кусочков."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Застосунок став секундоміром і дзеркалом, а не лічильником корму: важлива затримка маркера, а не кількість шматочків."
           }
         }
       }
@@ -107953,42 +107817,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "зліва — за спостереженнями, справа — що пропонуємо"
-          }
-        }
-      }
-    },
-    "След занятия. Само занятие лежит в «Занятиях и шагах» — там его можно и убрать." : {
-      "comment" : "result",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "A trace of a session. The session itself is in “Sessions and steps” — that's where you can remove it."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trace d'une séance. La séance elle-même est dans « Séances et étapes » — c'est là qu'on peut la retirer."
-          }
-        },
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Сабақтың ізі. Сабақтың өзі «Сабақтар мен қадамдар» бөлімінде — оны сол жерде алып тастауға болады."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "След занятия. Само занятие лежит в «Занятиях и шагах» — там его можно и убрать."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Слід заняття. Саме заняття лежить у «Заняттях і кроках» — там його можна й прибрати."
           }
         }
       }
@@ -117858,42 +117686,6 @@
         }
       }
     },
-    "Тренажёр точности маркера" : {
-      "comment" : "items",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Marker precision trainer"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Exercice de précision du marqueur"
-          }
-        },
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Маркер дәлдігінің жаттықтырғышы"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Тренажёр точности маркера"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Тренажер точності маркера"
-          }
-        }
-      }
-    },
     "третий" : {
       "comment" : "words",
       "extractionState" : "manual",
@@ -118879,42 +118671,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "У цієї збірки немає права на iCloud."
-          }
-        }
-      }
-    },
-    "Убрали. Корм на занятия берётся из дневной порции, а не сверх неё, поэтому лимит не нужен — он мешал обучению." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Removed. Session food comes out of the daily portion, not on top of it, so no limit is needed — it was getting in the way of learning."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Retiré. Les croquettes des séances viennent de la portion du jour, pas en plus, donc la limite n'a plus de raison d'être — elle gênait l'apprentissage."
-          }
-        },
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Алып тастадық. Сабаққа жем күндік үлестен алынады, оның үстіне емес, сондықтан шек қажет емес — ол үйренуге кедергі жасайтын."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Убрали. Корм на занятия берётся из дневной порции, а не сверх неё, поэтому лимит не нужен — он мешал обучению."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Прибрали. Корм на заняття беремо з денної порції, а не понад неї, тому ліміт не потрібен — він заважав навчанню."
           }
         }
       }
@@ -123445,42 +123201,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Фільтр"
-          }
-        }
-      }
-    },
-    "Флаг «не брал еду» останавливает занятие и снимает оценку. Отказ от корма значит, что учиться сейчас нельзя." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The “didn't take food” flag stops the session and leaves it unscored. Refusing food means learning isn't possible right now."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Le drapeau « n'a pas pris la friandise » arrête la séance et retire la note. Refuser la nourriture veut dire qu'apprendre est impossible pour l'instant."
-          }
-        },
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "«жемді алмады» белгісі сабақты тоқтатады және бағаны алып тастайды. Жемнен бас тарту қазір үйренуге болмайтынын білдіреді."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Флаг «не брал еду» останавливает занятие и снимает оценку. Отказ от корма значит, что учиться сейчас нельзя."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Прапорець «не брав ласощі» зупиняє заняття і знімає оцінку. Відмова від корму значить, що вчитися зараз не можна."
           }
         }
       }
@@ -129020,42 +128740,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "крок 3 з 5"
-          }
-        }
-      }
-    },
-    "Шаг закрыт, когда получилось 4 раза из 5 в двух занятиях подряд. Тогда меняем одно условие: место, человека или дистанцию — что-то одно." : {
-      "comment" : "body",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "A step is done when it worked 4 out of 5 times in two sessions in a row. Then you change one condition: the place, the person or the distance — one thing only."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Une étape est acquise quand ça a réussi 4 fois sur 5 dans deux séances de suite. Alors on change une condition : le lieu, la personne ou la distance — une seule."
-          }
-        },
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Қадам қатарынан екі сабақта 5-тен 4 рет шыққанда жабылады. Сонда бір шартты өзгертеміз: орын, адам немесе қашықтық — біреуін."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Шаг закрыт, когда получилось 4 раза из 5 в двух занятиях подряд. Тогда меняем одно условие: место, человека или дистанцию — что-то одно."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Крок закрито, коли вийшло 4 рази з 5 у двох заняттях поспіль. Тоді міняємо одну умову: місце, людину або дистанцію — щось одне."
           }
         }
       }

@@ -38,7 +38,11 @@ nonisolated enum Permission: String, Codable, CaseIterable, Sendable {
         case .seeMedical: String(localized: "схемы, дозы, анализы, отчёты")
         case .giveDose: String(localized: "и брать дозу на себя")
         case .editTreatment: String(localized: "препараты, часы, окно натощак")
-        case .editProfile: String(localized: "порция, вес, напоминания, занятия")
+        // «занятия» убраны 03.11.2026: право перечисляло то, чего
+        // в приложении нет с 28.10 (`82ba1e46`). Вес остаётся названным
+        // поимённо — на эту строку ссылается выбор права у взвешивания
+        // (`HealthScreen.swift:1405`), и ссылка от правки не страдает.
+        case .editProfile: String(localized: "порция, вес, напоминания")
         case .manageFamily: String(localized: "и выдавать права")
         case .exportData: String(localized: "CSV и отчёт врачу")
         }
