@@ -3989,6 +3989,35 @@
         }
       }
     },
+    "Выход не записан: не выбрана собака. Открой «Собака» и выбери её — отметить можно вручную." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The outing wasn't recorded: no dog is selected. Open “Dog” and choose one — you can mark it by hand."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "La sortie n'a pas été enregistrée : aucun chien n'est sélectionné. Ouvre « Chien » et choisis-le — tu peux la noter à la main."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Шығу жазылмады: ит таңдалмаған. «Ит» бөлімін ашып, оны таңда — қолмен белгілеуге болады."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Вихід не записано: не вибрано собаку. Відкрий «Собака» і вибери її — позначити можна вручну."
+          }
+        }
+      }
+    },
     "Выходите как обычно" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -8409,6 +8438,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "по %@, коли собака була з тобою довше %@"
+          }
+        }
+      }
+    },
+    "Поездка не сохранилась · нажми ещё раз" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The trip wasn't saved · tap again"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le voyage n'a pas été enregistré · appuie encore"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Сапар сақталмады · қайта бас"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Поїздка не збереглася · натисни ще раз"
           }
         }
       }
