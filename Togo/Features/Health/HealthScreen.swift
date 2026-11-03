@@ -760,7 +760,7 @@ struct HealthScreen: View {
     private func finish() {
         guard let dog else { return }
         TreatmentCourse.finish(dog, by: appState.currentUserName, context: context)
-        appState.showUndo("Курс завершён")
+        appState.showUndo(String(localized: "Курс завершён"))
         Haptics.success()
     }
 

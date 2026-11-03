@@ -373,14 +373,27 @@ enum SeedData {
         // прибавление, а выбранная собака легла бы в `UserDefaults`.
         if scenario == .onboarding { return container }
 
+        // ГРАНИЦА ПЕРЕВОДА В ФИКСТУРЕ (03.11.2026). Переводится то, что
+        // является общим словом, единицей или описанием; имена собственные
+        // не переводятся. Решение об именах уже записано и имеет читателя:
+        // `ScreenshotTests.swift:135` («Стич» — кличка, а не подпись
+        // интерфейса) и `:507` («Мама» — имя участника, такая же данность).
+        // Решения про слова — в `PlaceholderOriginTests.решения`: «курица,
+        // кукуруза» и «сыр, индейка, мячик» помечены `.пример`, то есть
+        // переводятся; «Левотироксин» — МНН, переводится, в отличие
+        // от торговой марки Lévothyrox.
         let dog = Dog(name: "Стич", weightKg: 4.1)
-        dog.breed = "Шипперке"
-        dog.foodBrand = "Acana ягнёнок"
+        dog.breed = String(localized: "Шипперке")
+        // Бренд разрезан: «Acana» — имя собственное и одинаково во всех
+        // странах, «ягнёнок» — вкус, и на французском мешке напечатано
+        // «agneau». Переводить целиком значило бы переводить марку.
+        dog.foodBrand = "Acana " + String(localized: "ягнёнок")
         dog.setServingGrams(60)
         dog.targetWeightLow = 4.0
         dog.targetWeightHigh = 4.3
-        dog.rewards = ["сыр", "индейка", "мячик"]
-        dog.forbiddenFoods = ["курица", "кукуруза"]
+        dog.rewards = [String(localized: "сыр"), String(localized: "индейка"),
+                       String(localized: "мячик")]
+        dog.forbiddenFoods = [String(localized: "курица"), String(localized: "кукуруза")]
         // Фотография собаки — вход стенда, которого у `PhotosPicker`
         // быть не может (`ФонФикстураСтенда.снимокСобаки`, флаг
         // `-ФотоСобакиФикстура`). Без флага поле не трогается вовсе,
@@ -440,7 +453,8 @@ enum SeedData {
             // (`DocumentPhotos.swift:326`), и по одной плитке не видно
             // ни переноса, ни того, что снимки РАЗНЫЕ. Приметы
             // и цифры у всех трёх разные нарочно.
-            let названия = ["Паспорт", "Прививки", "Чип"]
+            let названия = [String(localized: "Паспорт"), String(localized: "Прививки"),
+                            String(localized: "Чип")]
             for (индекс, название) in названия.enumerated() {
                 guard let снимок = ФонФикстураСтенда.снимокДокумента(
                     номер: индекс + 1, стенд: TogoApp.isUITesting
@@ -530,7 +544,7 @@ enum SeedData {
             morning.outcome = .urine
             let breakfast = LogEvent(kind: .meal, date: at(7, 34), authorName: "Виктория")
             breakfast.grams = 60
-            breakfast.note = "съел всё"
+            breakfast.note = String(localized: "съел всё")
             let second = LogEvent(kind: .outing, date: at(8, 15), authorName: "Тео")
             second.outcome = .both
             события = [morning, breakfast, second]
@@ -709,8 +723,8 @@ enum SeedData {
     @MainActor
     private static func добавитьТолькоНатощак(to dog: Dog, context: ModelContext) {
         dog.isOnTreatment = true
-        let препарат = Medication(name: "Левотироксин",
-                                  doseText: "½ таблетки",
+        let препарат = Medication(name: String(localized: "Левотироксин"),
+                                  doseText: String(localized: "½ таблетки"),
                                   times: [],
                                   fastingMinutes: 40)
         препарат.unit = .tab
@@ -756,8 +770,8 @@ enum SeedData {
         // текста, ради которой кадр, не выполнилась бы.
         let следующая = min(24 * 60 - 1, пропущенная + 540)
 
-        let препарат = Medication(name: "Левотироксин",
-                                  doseText: "½ таблетки",
+        let препарат = Medication(name: String(localized: "Левотироксин"),
+                                  doseText: String(localized: "½ таблетки"),
                                   times: [пропущенная, следующая],
                                   fastingMinutes: 40)
         препарат.unit = .tab
@@ -797,8 +811,8 @@ enum SeedData {
         //    состояние недостижимо, — только на уровень глубже:
         //    **проверять надо не «данные лежат», а «кадр показал».**
         dog.isOnTreatment = true
-        let левотироксин = Medication(name: "Левотироксин",
-                                      doseText: "½ таблетки",
+        let левотироксин = Medication(name: String(localized: "Левотироксин"),
+                                      doseText: String(localized: "½ таблетки"),
                                       times: [8 * 60, 20 * 60],
                                       fastingMinutes: 40)
         левотироксин.unit = .tab
@@ -819,8 +833,8 @@ enum SeedData {
         // 2. Навык «учится». Статус ставится явно: конструктор оставляет
         //    `.notStarted`, и демо-набор восемь месяцев не выходил
         //    из серого.
-        let лапа = ProcedureSkill(title: "Дать лапу и не забирать",
-                                  detail: "5 дней подряд · по 2 минуты")
+        let лапа = ProcedureSkill(title: String(localized: "Дать лапу и не забирать"),
+                                  detail: String(localized: "5 дней подряд · по 2 минуты"))
         лапа.statusRaw = SkillStatus.learning.rawValue
         лапа.attempts = 7
         лапа.successes = 4
@@ -830,7 +844,8 @@ enum SeedData {
         //    даёт `.almost` на 501–1000 мс; 640 и 870 — внутри, 420 —
         //    `.onTime`, чтобы на экране стояли обе ступени и янтарь
         //    было с чем сравнить.
-        let занятие = TrainingSession(cue: "Лапу", place: "кухня",
+        let занятие = TrainingSession(cue: String(localized: "Лапу"),
+                                      place: String(localized: "кухня"),
                                       person: "Виктория", distanceMeters: 0)
         занятие.markDelaysMs = [420, 640, 870]
         занятие.attempts = 3
@@ -971,11 +986,11 @@ enum SeedData {
                    значение: Double, доза: String) -> LabResult {
             let анализ = LabResult(sampledOn: дата(месяц: месяц, день: день,
                                                    час: часЗабора ?? 12),
-                                   indicator: "Т4 общий",
-                                   section: "гормоны")
+                                   indicator: String(localized: "Т4 общий"),
+                                   section: String(localized: "гормоны"))
             анализ.sampledAt = часЗабора.map { дата(месяц: месяц, день: день, час: $0) }
             анализ.value = значение
-            анализ.unit = "нмоль/л"
+            анализ.unit = String(localized: "нмоль/л")
             // Норма 1,0–4,5 нмоль/л — с кадра 14 и из ответа дизайна.
             анализ.referenceLow = 1.0
             анализ.referenceHigh = 4.5
@@ -983,7 +998,7 @@ enum SeedData {
             // нет, а на кадре 14 она у каждой строки есть. Заводить поле
             // ради заготовки нельзя: это форма схемы, её не меняют без
             // спроса. Расхождение названо в отчёте, а не замазано.
-            анализ.note = "доза \(доза)"
+            анализ.note = String(localized: "доза \(доза)")
             анализ.dog = dog
             return анализ
         }

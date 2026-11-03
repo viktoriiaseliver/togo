@@ -338,7 +338,7 @@ struct FeedingScreen: View {
     /// и ветка, которую реже видят, отстанет молча.
     @ViewBuilder
     private var числаСегодня: some View {
-        TGStat(value: "\(report.todayGrams) г",
+        TGStat(value: String(localized: "\(report.todayGrams) г"),
                // «съел» был мужским у любой собаки (аудит 29.10.2026).
                caption: report.normGramsPerDay > 0
                    ? "из \(report.normGramsPerDay)"

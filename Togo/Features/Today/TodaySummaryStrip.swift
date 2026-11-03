@@ -28,7 +28,7 @@ struct TodaySummaryStrip: View {
     var body: some View {
         TGCard {
             РядЧисел(выравнивание: .top) {
-                TGStat(value: "\(summary.eatenGrams) г",
+                TGStat(value: String(localized: "\(summary.eatenGrams) г"),
                        caption: summary.dailyGrams > 0 ? "из \(summary.dailyGrams) съел" : "съел")
                 // «С прогулки» отсюда убрано: на этот вопрос отвечает
                 // герой вверху экрана крупной цифрой, и повторять его

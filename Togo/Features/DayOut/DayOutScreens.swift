@@ -96,7 +96,7 @@ struct DayOutStartSheet: View {
             return
         }
         Haptics.success()
-        appState.showUndo("Режим включён · собака с тобой")
+        appState.showUndo(String(localized: "Режим включён · собака с тобой"))
         dismiss()
     }
 }

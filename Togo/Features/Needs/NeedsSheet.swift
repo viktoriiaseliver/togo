@@ -418,7 +418,7 @@ struct NeedsSheet: View {
         if какПопросил == nil, Diary.shouldAskHowAsked(dog.events) {
             askSignal = true
         } else {
-            appState.showUndo("Записано · Выход", eventID: event.id)
+            appState.showUndo(String(localized: "Записано · Выход"), eventID: event.id)
             dismiss()
         }
     }

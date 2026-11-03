@@ -1978,10 +1978,14 @@ struct SitterPreviewScreen: View {
     /// руках — осталось слово «Еда» без граммов.
     private var plan: [(String, String)] {
         let порция = dog?.servingGrams ?? 0
-        let еда = порция > 0 ? "Еда · \(порция) г" : String(localized: "Еда")
-        return [("08:00", "Утренний выход"),
+        let еда = порция > 0
+            ? String(localized: "Еда · \(порция) г")
+            : String(localized: "Еда")
+        // `Text(title)` берёт `String` и каталог НЕ читает: брифинг
+        // показывали по-русски ситтеру, который по-русски не читает.
+        return [("08:00", String(localized: "Утренний выход")),
                 ("08:30", еда),
-                ("13:00", "Прогулка 30 мин"),
+                ("13:00", String(localized: "Прогулка 30 мин")),
                 ("18:30", еда)]
     }
 }

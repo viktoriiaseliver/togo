@@ -539,6 +539,35 @@
         }
       }
     },
+    "%@ · %lld-й раз" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ · %lld times"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ · %lld fois"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ · %lld рет"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ · %lld-й раз"
+          }
+        }
+      }
+    },
     "%@ · берёт на себя · %@ осталось" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2689,6 +2718,35 @@
       },
       "shouldTranslate" : false
     },
+    "5 дней подряд · по 2 минуты" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "5 days in a row · 2 minutes each"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "5 jours d'affilée · 2 minutes chacune"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "5 күн қатарынан · 2 минуттан"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "5 днів поспіль · по 2 хвилини"
+          }
+        }
+      }
+    },
     "iCloud просит подождать · повторим сам" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2778,6 +2836,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Togo · зведення з догляду"
+          }
+        }
+      }
+    },
+    "½ таблетки" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "½ tablet"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "½ comprimé"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "½ таблетка"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "½ таблетки"
           }
         }
       }
@@ -4076,6 +4163,35 @@
         }
       }
     },
+    "Дать лапу и не забирать" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Give paw and hold it"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Donner la patte et la laisser"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Табанын беріп, тартып алмау"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Дати лапу і не забирати"
+          }
+        }
+      }
+    },
     "Два часа в дороге — вода и пять минут походить. Отметь остановку одним тапом на «Сегодня»." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4716,6 +4832,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "доступ до щоденника"
+          }
+        }
+      }
+    },
+    "Еда · %lld г" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Meal · %lld g"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Repas · %lld g"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Тамақ · %lld г"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Їжа · %lld г"
           }
         }
       }
@@ -5822,6 +5967,35 @@
         }
       }
     },
+    "индейка" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "turkey"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "dinde"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "күркетауық"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "індичка"
+          }
+        }
+      }
+    },
     "Инциденты реже — %1$lld против %2$lld за прошлый период." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6292,6 +6466,64 @@
         }
       }
     },
+    "кукуруза" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "corn"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "maïs"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "жүгері"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "кукурудза"
+          }
+        }
+      }
+    },
+    "кухня" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "kitchen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "cuisine"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ас үй"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "кухня"
+          }
+        }
+      }
+    },
     "лакомства" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6375,6 +6607,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "ласощі, вода, нотатка, день із собакою"
+          }
+        }
+      }
+    },
+    "Лапу" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Paw"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Patte"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Табан"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Лапу"
           }
         }
       }
@@ -6584,6 +6845,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "можна додати"
+          }
+        }
+      }
+    },
+    "мячик" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ball"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "balle"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "доп"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "м'ячик"
           }
         }
       }
@@ -10157,6 +10447,35 @@
         }
       }
     },
+    "съел всё" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ate everything"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "a tout mangé"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "бәрін жеді"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "з'їв усе"
+          }
+        }
+      }
+    },
     "Съела" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -11289,6 +11608,35 @@
         }
       }
     },
+    "Шипперке" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Schipperke"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Schipperke"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Шипперке"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Шипперке"
+          }
+        }
+      }
+    },
     "эпизод не сохранился — открой Togo" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -11523,6 +11871,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Це збіг, а не причина. Але показати цей рядок лікарю корисніше, ніж сказати «собака іноді млява»."
+          }
+        }
+      }
+    },
+    "ягнёнок" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "lamb"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "agneau"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "қозы"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ягня"
           }
         }
       }

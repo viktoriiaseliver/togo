@@ -298,7 +298,7 @@ struct CareScreen: View {
             }
             Haptics.warning()
             UsageLog.note(.care, "undone")
-            appState.showUndo("Снято · \(task.title)")
+            appState.showUndo(String(localized: "Снято · \(task.title)"))
             return
         }
 
@@ -352,7 +352,7 @@ struct CareScreen: View {
         }) else { return неСохранилось() }
         UsageLog.note(.care, "snooze")
         Haptics.tap()
-        appState.showUndo("\(task.title) · до завтра")
+        appState.showUndo(String(localized: "\(task.title) · до завтра"))
     }
 
     private func confirmation(for task: CareTask) -> String {

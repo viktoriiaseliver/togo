@@ -141,7 +141,8 @@ struct StoolSheet: View {
         guard let event = ensureEvent() else { return }
         event.stoolForm = candidate
         if flags.isEmpty {
-            appState.showUndo("Записано · Стул · \(candidate.title.lowercased())", eventID: event.id)
+            appState.showUndo(String(localized: "Записано · Стул · \(candidate.title.lowercased())"),
+                              eventID: event.id)
             dismiss()
         }
     }
@@ -152,7 +153,7 @@ struct StoolSheet: View {
         event.stoolFlags = flags
         event.photo = фото
         Haptics.success()
-        appState.showUndo("Записано · Стул", eventID: event.id)
+        appState.showUndo(String(localized: "Записано · Стул"), eventID: event.id)
         dismiss()
     }
 

@@ -30,7 +30,7 @@ nonisolated enum DayPlanBuilder {
             // до миски.
             items.append(DayPlanItem(id: "meal-\(minute)", time: at,
                                      title: dog.servingGrams > 0
-                                         ? "Еда · \(dog.servingGrams) г"
+                                         ? String(localized: "Еда · \(dog.servingGrams) г")
                                          : String(localized: "Еда"),
                                      hint: dog.foodBrand, kind: .meal, isDone: mealDone[index]))
         }

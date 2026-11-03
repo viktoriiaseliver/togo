@@ -735,20 +735,22 @@ struct WalkModeScreen: View {
         if !kind.isRepeatable, (appState.session?.count(of: kind) ?? 0) > 0 {
             appState.removeMarks(of: kind)
             Haptics.warning()
-            appState.showUndo("Отметка убрана · \(kind.title)")
+            appState.showUndo(String(localized: "Отметка убрана · \(kind.title)"))
             return
         }
 
         appState.mark(kind)
         Haptics.tap()
         let count = appState.session?.count(of: kind) ?? 1
-        appState.showUndo(count > 1 ? "\(kind.title) · \(count)-й раз" : "Отмечено · \(kind.title)")
+        appState.showUndo(count > 1
+                          ? String(localized: "\(kind.title) · \(count)-й раз")
+                          : String(localized: "Отмечено · \(kind.title)"))
     }
 
     private func undoMark() {
         if let removed = appState.undoLastMark() {
             Haptics.warning()
-            appState.showUndo("Отметка убрана · \(removed.kind.title)")
+            appState.showUndo(String(localized: "Отметка убрана · \(removed.kind.title)"))
         }
     }
 
@@ -1021,7 +1023,9 @@ struct WalkSummarySheet: View {
                            сЧислом: String(localized: "\(session.reactions) срывов"),
                            size: 20)
                 } else {
-                    TGStat(value: session.count(of: .stool) > 0 ? "да" : "нет", caption: "стул", size: 20)
+                    TGStat(value: session.count(of: .stool) > 0
+                               ? String(localized: "да") : String(localized: "нет"),
+                           caption: "стул", size: 20)
                 }
             }
             if !session.marks.isEmpty {

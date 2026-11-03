@@ -438,7 +438,7 @@ struct DayPlanActions {
         }
 
         Haptics.warning()
-        appState.showUndo("Снова в списке · \(item.title)")
+        appState.showUndo(String(localized: "Снова в списке · \(item.title)"))
     }
 
     // MARK: Пропустить и взять на себя
@@ -457,7 +457,7 @@ struct DayPlanActions {
             return
         }
         Haptics.warning()
-        appState.showUndo("Доза отмечена пропущенной")
+        appState.showUndo(String(localized: "Доза отмечена пропущенной"))
     }
 
     /// «Беру на себя» с запасом в 45 минут — чтобы двое не дали дозу дважды.
@@ -481,6 +481,6 @@ struct DayPlanActions {
             return
         }
         Haptics.tap()
-        appState.showUndo("Доза за тобой · 45 минут")
+        appState.showUndo(String(localized: "Доза за тобой · 45 минут"))
     }
 }
