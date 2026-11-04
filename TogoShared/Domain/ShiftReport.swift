@@ -39,6 +39,17 @@ nonisolated enum ShiftReport {
         var связь: UUID? = nil
         /// Кто закрыл, если это записано в самой отметке.
         var автор: String? = nil
+        /// Какая запись закрыла пункт, если это уже известно сборщику
+        /// плана.
+        ///
+        /// **Заведено 04.11.2026 вместо второго поиска по ленте.**
+        /// Ниже лежал `автор(для:среди:)` с собственным допуском
+        /// ±`MealSchedule.doneTolerance` — вторая копия правила
+        /// «эта запись закрывает этот слот», и расходиться с первой
+        /// она начала на записи вне слота: план считал пункт
+        /// закрытым, а итог смены отвечал «автора нет» при известном
+        /// авторе.
+        var записьID: UUID? = nil
     }
 
     /// - Parameters:
@@ -51,7 +62,7 @@ nonisolated enum ShiftReport {
         shift: Shift,
         plan: [Пункт],
         events: [LogEvent],
-        tolerance: TimeInterval = MealSchedule.doneTolerance,
+        tolerance: TimeInterval = MealSchedule.потолокЗакрытия,
         calendar: Calendar = .current
     ) -> ShiftSummary {
         let смены = Diary.active(events).filter { shift.covers($0.date) }
@@ -91,7 +102,12 @@ nonisolated enum ShiftReport {
             }
         }
         let найдено: LogEvent?
-        if entry.вид == .care, entry.связь != nil {
+        // Сборщик плана уже назвал запись — второй раз её не ищем.
+        // Этот путь существует для доз и ухода, у которых связь
+        // идёт по схеме и делу, а не по идентификатору записи.
+        if let id = entry.записьID {
+            найдено = подходящие.first { $0.id == id }
+        } else if entry.вид == .care, entry.связь != nil {
             найдено = подходящие
                 .filter { calendar.isDate($0.date, inSameDayAs: entry.due) }
                 .max { $0.date < $1.date }

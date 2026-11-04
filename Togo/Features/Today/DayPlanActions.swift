@@ -414,11 +414,36 @@ struct DayPlanActions {
                 вернуть.append { (task.lastDone, task.streak, task.scheduledDate) = было }
                 task.undoDone(previousDone: careUndo.wrappedValue[task.id] ?? nil)
             }
-        } else if let event = candidates.first,
-                  abs(event.date.timeIntervalSince(item.time)) <= MealSchedule.doneTolerance {
+        } else if let id = item.закрытаЗаписью,
+                  let event = candidates.first(where: { $0.id == id }) {
+            // ТРЕТЬЯ КОПИЯ ПРАВИЛА СНЯТА 04.11.2026.
+            //
+            // Здесь стояло `abs(event.date − item.time) <=
+            // MealSchedule.doneTolerance` — то есть снятие отметки
+            // решало ЗАНОВО, какая запись закрыла пункт, и решало
+            // по своему порогу.
+            //
+            // > **Это уже врало, просто до записи вне слота очередь
+            // > не доходила.** Кормление в 18:00 при слоте 15:30:
+            // > `candidates.first` дальше полутора часов не проходил
+            // > `guard`, удаления не было, `context.save()` отвечал
+            // > успехом, и человек получал тост «Снова в списке · Еда»
+            // > при закрытом пункте. Сказали одно, сделали другое,
+            // > и ни один тест этого не видел.
+            //
+            // Теперь гасится ровно та запись, которую назвал сборщик
+            // плана, и правило живёт в одном месте — `MealSchedule`.
             вернуть.append { event.deletedAt = nil; event.deletedBy = nil }
             event.deletedAt = Date()
             event.deletedBy = appState.currentUserName
+        } else if item.isDone, item.kind == .meal {
+            // Пункт закрыт, а записи под ним нет — значит разметка
+            // и лента разошлись. Молчать нельзя: следующий шаг покажет
+            // «Снова в списке», ничего не сняв.
+            Haptics.warning()
+            appState.showFailure(
+                String(localized: "Не нашлось, какую запись снять · открой историю"))
+            return
         }
 
         // Доза — не только запись в ленте: от неё считается окно натощак

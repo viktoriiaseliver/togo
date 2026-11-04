@@ -19,12 +19,17 @@ nonisolated enum DayPlanBuilder {
         var items: [DayPlanItem] = []
         let cal = Calendar.current
         let startOfDay = cal.startOfDay(for: now)
-        let doneMealTimes = Diary.onDay(events, now).filter { $0.kind == .meal }.map(\.date)
+        let mealEvents = Diary.onDay(events, now).filter { $0.kind == .meal }
+        let doneMealTimes = mealEvents.map(\.date)
 
         // Каждая запись закрывает ровно один пункт — ближайший к себе.
         let mealMinutes = dog.mealTimes.sorted()
-        let mealDone = MealSchedule.matchDone(planned: mealMinutes, logged: doneMealTimes,
-                                              startOfDay: startOfDay)
+        // Разметка, а не `[Bool]`: пункту нужен не только исход,
+        // но и ЗАПИСЬ, которая его закрыла, — иначе снятие отметки
+        // и итог смены ситтера ищут её заново, каждый по своему
+        // правилу.
+        let разметка = MealSchedule.разметить(planned: mealMinutes, logged: doneMealTimes,
+                                             startOfDay: startOfDay)
         for (index, minute) in mealMinutes.enumerated() {
             let at = cal.date(minuteOfDay: minute, on: startOfDay)
             // Граммов в заголовке нет, пока нормы нет: порция считается
@@ -35,7 +40,10 @@ nonisolated enum DayPlanBuilder {
                                      title: dog.servingGrams > 0
                                          ? String(localized: "Еда · \(dog.servingGrams) г")
                                          : String(localized: "Еда"),
-                                     hint: dog.foodBrand, kind: .meal, isDone: mealDone[index]))
+                                     hint: dog.foodBrand, kind: .meal,
+                                     isDone: разметка.закрыто[index] != nil,
+                                     фактВремя: разметка.закрыто[index].map { mealEvents[$0].date },
+                                     закрытаЗаписью: разметка.закрыто[index].map { mealEvents[$0].id }))
         }
         // Уход — такой же пункт дня, как еда и доза. Отдельной карточкой
         // он говорил, что надо сделать, но сделать оттуда было нельзя:

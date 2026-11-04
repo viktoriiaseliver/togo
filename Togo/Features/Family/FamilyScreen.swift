@@ -568,7 +568,8 @@ struct FamilyScreen: View {
                 switch пункт.kind {
                 case .meal:
                     return ShiftReport.Пункт(id: пункт.id, title: пункт.title, due: пункт.time,
-                                             isDone: пункт.isDone, вид: .meal)
+                                             isDone: пункт.isDone, вид: .meal,
+                                             записьID: пункт.закрытаЗаписью)
                 case .care:
                     return ShiftReport.Пункт(id: пункт.id, title: пункт.title, due: пункт.time,
                                              isDone: пункт.isDone, вид: .care,
