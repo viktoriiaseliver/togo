@@ -848,7 +848,7 @@ extension FamilySync: CKSyncEngineDelegate {
             let записи = поID.values.sorted {
                 ранг($0.recordType) < ранг($1.recordType)
             }
-            func отложить(_ исход: ИсходПриёма, _ запись: CKRecord) {
+            @MainActor func отложить(_ исход: ИсходПриёма, _ запись: CKRecord) {
                 if исход == .отказ { отложенныйПриём[запись.recordID] = запись }
             }
 

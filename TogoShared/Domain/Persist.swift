@@ -88,7 +88,7 @@ extension ModelContext {
 }
 
 /// Исход `ModelContext.опознать` — см. там.
-enum Опознание<T> {
+nonisolated enum Опознание<T> {
     case нашлась(T)
     case нет
     case нечемОтвечать
