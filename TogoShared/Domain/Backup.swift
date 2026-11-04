@@ -396,7 +396,30 @@ nonisolated enum BackupService {
     /// строк на пяти языках.
     @MainActor
     @discardableResult
-    static func restore(_ archive: BackupArchive, into context: ModelContext, strategy: Strategy) throws -> Int {
+    static func restore(_ archive: BackupArchive, into целевой: ModelContext, strategy: Strategy) throws -> Int {
+        // # Всё или ничего — отдельный контекст и ОДИН `save`
+        //
+        // До 04.11.2026 работа шла прямо в `mainContext`, и «заменить»
+        // чистило хранилище `delete(model:)` — пакетным удалением, которое
+        // уходит в хранилище без ожидания `save`. Бросок на полпути
+        // (битый снимок, отказ выборки) оставлял дневник уже стёртым,
+        // а вставленную половину — в контексте под автосохранением:
+        // человек получал «Не получилось восстановить» и полупустой
+        // дневник, который через секунду записывался сам.
+        //
+        // Теперь: свои изменения сначала записываются (иначе рабочий
+        // контекст их не увидит), чистка поштучная, автосохранение
+        // выключено, и в хранилище всё уходит одним `save` в конце.
+        // Бросок — и рабочий контекст просто выбрасывается вместе со
+        // всем, что успел натворить; хранилище остаётся прежним.
+        try целевой.save()
+        let context = ModelContext(целевой.container)
+        context.autosaveEnabled = false
+
+        func удалитьВсе<T: PersistentModel>(_ тип: T.Type) throws {
+            for запись in try context.fetch(FetchDescriptor<T>()) { context.delete(запись) }
+        }
+
         if strategy == .replace {
             // `ProcedureSkill` добавлен 07.10.2026 вместе с его снимком:
             // без чистки «заменить» удвоило бы навыки, потому что
@@ -420,7 +443,7 @@ nonisolated enum BackupService {
                           LabResult.self, VetVisit.self,
                           Diagnosis.self, Prescription.self,
                           FamilyMember.self, Dog.self] as [any PersistentModel.Type] {
-                try context.delete(model: model)
+                try удалитьВсе(model)
             }
         }
 
