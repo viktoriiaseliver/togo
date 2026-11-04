@@ -20,7 +20,7 @@ nonisolated enum AppGroupDefaults {
         if let группа = UserDefaults(suiteName: AppIdentifiers.appGroup) {
             return группа
         }
-        log.fault("общей группы приложения нет — настройки уходят в .standard, виджет и интенты их не увидят")
+        log.error("общей группы приложения нет — настройки уходят в .standard, виджет и интенты их не увидят")
         return .standard
     }
 }
