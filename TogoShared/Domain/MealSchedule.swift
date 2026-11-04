@@ -291,7 +291,13 @@ extension MealSchedule {
         // Умолчание параметра не может сослаться на `planned`, поэтому
         // настоящее окно считается здесь — а параметр остаётся дверью
         // для подделки.
-        let своё: (Int) -> TimeInterval = { слот in
+        //
+        // Считаем СПИСКОМ, а не замыканием: замыкание захватило бы
+        // non-escaping параметр, и компилятор это ловит
+        // (`escaping closure captures non-escaping parameter`).
+        // Заодно выходит дешевле — окно каждого слота считается один
+        // раз, а не на каждой паре «слот × запись».
+        let окна = planned.indices.map { слот in
             min(окно(слот), Self.окно(planned: planned, слот: слот))
         }
 
@@ -302,7 +308,7 @@ extension MealSchedule {
         for (recordIndex, date) in logged.enumerated() {
             for (slotIndex, slot) in slots.enumerated() {
                 let distance = abs(date.timeIntervalSince(slot))
-                guard distance <= своё(slotIndex) else { continue }
+                guard distance <= окна[slotIndex] else { continue }
                 pairs.append((distance, slotIndex, recordIndex))
             }
         }
