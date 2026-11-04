@@ -12,7 +12,6 @@ struct PillSupplyScreen: View {
     var courseEnds: Date?
 
     @Environment(\.modelContext) private var context
-    @Environment(\.dismiss) private var dismiss
 
     private var supply: PillSupply? {
         PillSupplyAdvisor.supply(remaining: medication.remaining,

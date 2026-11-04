@@ -153,20 +153,6 @@ enum FamilyShare {
         }
     }
 
-    /// Создать (или достать уже созданное) приглашение и вернуть ссылку.
-    /// Осталось для тех, кому нужен адрес как текст (тесты, отладка);
-    /// экран отдаёт в лист «Поделиться» сам `CKShare` через `invite`.
-    static func inviteURL(
-        dogName: String,
-        container: any ОблакоОбмена = CKContainer(identifier: AppIdentifiers.cloudContainer)
-    ) async throws -> URL {
-        let share = try await invite(dogName: dogName, container: container)
-        // Пустой `url` — не «ты не владелец»: запись уже наша и уже
-        // сохранена, облако просто не успело выдать адрес.
-        guard let url = share.url else { throw ShareError.linkNotReady }
-        return url
-    }
-
     /// Создать (или достать уже созданное) приглашение и вернуть сам `CKShare`.
     static func invite(
         dogName: String,

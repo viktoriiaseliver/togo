@@ -50,7 +50,6 @@ import Charts
 struct LabChartScreen: View {
     var dog: Dog?
 
-    @Environment(AppState.self) private var appState
     @Query private var медикаменты: [Medication]
 
     @State private var показатель: String?
