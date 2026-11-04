@@ -157,7 +157,7 @@ public enum SharedDiarySeed {
 nonisolated enum SyncSeedState {
 
     private static var defaults: UserDefaults {
-        UserDefaults(suiteName: AppIdentifiers.appGroup) ?? .standard
+        AppGroupDefaults.shared
     }
 
     /// **Это не подпись, и `String(localized:)` здесь был бы дефектом,

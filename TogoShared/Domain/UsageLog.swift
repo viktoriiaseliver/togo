@@ -342,7 +342,7 @@ nonisolated enum UsageLog {
     }
 
     private static var defaults: UserDefaults {
-        UserDefaults(suiteName: AppIdentifiers.appGroup) ?? .standard
+        AppGroupDefaults.shared
     }
 
     private static let lock = NSLock()

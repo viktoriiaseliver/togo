@@ -374,7 +374,7 @@ nonisolated enum BackgroundBridge {
     static let dogFallbackName = "dog-fallback.jpg"
 
     static var defaults: UserDefaults {
-        UserDefaults(suiteName: AppIdentifiers.appGroup) ?? .standard
+        AppGroupDefaults.shared
     }
 
     /// Папка со снимками внутри контейнера группы.

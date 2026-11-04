@@ -275,7 +275,7 @@ nonisolated enum НазначениеПоОбмену {
     private static let key = "sharedDiary.roleAssignment"
 
     private static var defaults: UserDefaults {
-        UserDefaults(suiteName: AppIdentifiers.appGroup) ?? .standard
+        AppGroupDefaults.shared
     }
 
     /// Роль и права, выбранные владельцем для меня. `nil` — не приезжало.

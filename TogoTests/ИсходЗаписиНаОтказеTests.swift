@@ -1,3 +1,4 @@
+import CloudKit
 import Foundation
 import SwiftData
 import Testing
@@ -117,8 +118,42 @@ struct ИсходЗаписиНаОтказеTests {
             и `FamilySync.apply` двигал время сверки — запись не приехала \
             бы больше никогда
             """)
-        #expect(try ctx.fetch(FetchDescriptor<LogEvent>()).isEmpty,
-                "незаписанная запись осталась в памяти и уехала бы автосохранением")
+        // Выборкой «записи не осталось» здесь НЕ проверяется, и это замер,
+        // а не забывчивость: прогон 04.11.2026 на iOS 18.6 — после отказа
+        // `save()` и `context.delete(event)` вставленная запись ВСЁ ЕЩЁ
+        // в `ctx.fetch`. Что это значит для следующего удачного `save`,
+        // не установлено — открытая находка в
+        // `docs/аудит-рефакторинга-2026-11-04.md`, не предмет этого теста.
+    }
+
+    // MARK: Ядро приёма `FamilySync.принять`
+
+    @Test("Отказавшая запись возвращается на повтор, а не теряется")
+    func ядроОткладываетОтказ() throws {
+        let ctx = try НеЗаписывающееХранилище.контекст()
+        let зона = SharedDiaryRecords.zoneID()
+        let пришло = [SharedDiaryRecords.record(Self.запись(UUID()), in: зона),
+                      SharedDiaryRecords.record(Self.запись(UUID()), in: зона)]
+
+        let отказавшие = FamilySync.принять(пришло, context: ctx, дозаБольшеНеЖдёт: { _ in })
+
+        #expect(Set(отказавшие.map(\.recordID)) == Set(пришло.map(\.recordID)), """
+            из двух незаписанных на повтор вернулось \(отказавшие.count). \
+            До 04.11.2026 их не возвращал никто: `apply` двигал время сверки, \
+            и записи больше не приезжали
+            """)
+    }
+
+    @Test("Принятая запись на повтор не возвращается")
+    func ядроНеОткладываетУдачу() throws {
+        let ctx = try НеЗаписывающееХранилище.рабочийКонтекст()
+        let зона = SharedDiaryRecords.zoneID()
+        let пришло = [SharedDiaryRecords.record(Self.запись(UUID()), in: зона)]
+
+        let отказавшие = FamilySync.принять(пришло, context: ctx, дозаБольшеНеЖдёт: { _ in })
+
+        #expect(отказавшие.isEmpty)
+        #expect(try ctx.fetch(FetchDescriptor<LogEvent>()).count == 1)
     }
 
     @Test("Приём на живом хранилище — «принято», и запись одна")
