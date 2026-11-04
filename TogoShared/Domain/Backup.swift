@@ -396,30 +396,42 @@ nonisolated enum BackupService {
     /// строк на пяти языках.
     @MainActor
     @discardableResult
-    static func restore(_ archive: BackupArchive, into целевой: ModelContext, strategy: Strategy) throws -> Int {
-        // # Всё или ничего — отдельный контекст и ОДИН `save`
+    static func restore(_ archive: BackupArchive, into context: ModelContext, strategy: Strategy) throws -> Int {
+        // # Половина восстановления не записывается сама
         //
-        // До 04.11.2026 работа шла прямо в `mainContext`, и «заменить»
-        // чистило хранилище `delete(model:)` — пакетным удалением, которое
-        // уходит в хранилище без ожидания `save`. Бросок на полпути
-        // (битый снимок, отказ выборки) оставлял дневник уже стёртым,
-        // а вставленную половину — в контексте под автосохранением:
-        // человек получал «Не получилось восстановить» и полупустой
-        // дневник, который через секунду записывался сам.
+        // Работа идёт прямо в контексте экрана, и до 04.11.2026 он оставался
+        // под автосохранением: бросок на полпути (битый снимок, отказ
+        // выборки) оставлял в нём вставленную половину и вычищенный
+        // дневник, а автосохранение через секунду записывало это само —
+        // человек видел «Не получилось восстановить» над полупустым
+        // дневником. Теперь автосохранение на время восстановления
+        // выключено, а бросок откатывает контекст.
         //
-        // Теперь: свои изменения сначала записываются (иначе рабочий
-        // контекст их не увидит), чистка поштучная, автосохранение
-        // выключено, и в хранилище всё уходит одним `save` в конце.
-        // Бросок — и рабочий контекст просто выбрасывается вместе со
-        // всем, что успел натворить; хранилище остаётся прежним.
-        try целевой.save()
-        let context = ModelContext(целевой.container)
+        // **Почему не отдельный контекст.** Пробовали тем же днём (`4d6cdf7e`):
+        // `ДоливкаАрхиваTests` покраснел на четырёх полях — объекты
+        // вызывающего контекста остались прежними, долитое лежало
+        // в хранилище, но не в них. Сливает ли `mainContext` чужое
+        // сохранение в уже загруженные объекты, не установлено, а экран
+        // восстановления держит именно их.
+        //
+        // **Граница отката:** `rollback()` на iOS 17…26 снимает признак
+        // изменений, но не возвращает значения (`Persist.swift`). То есть
+        // в хранилище половина НЕ уйдёт, а в памяти до перезапуска может
+        // остаться. Это меньшая из двух бед: прежде она уходила в файл.
+        let былоАвто = context.autosaveEnabled
         context.autosaveEnabled = false
-
-        func удалитьВсе<T: PersistentModel>(_ тип: T.Type) throws {
-            for запись in try context.fetch(FetchDescriptor<T>()) { context.delete(запись) }
+        defer { context.autosaveEnabled = былоАвто }
+        do {
+            return try восстановить(archive, into: context, strategy: strategy)
+        } catch {
+            context.rollback()
+            throw error
         }
+    }
 
+    @MainActor
+    private static func восстановить(_ archive: BackupArchive, into context: ModelContext,
+                                     strategy: Strategy) throws -> Int {
         if strategy == .replace {
             // `ProcedureSkill` добавлен 07.10.2026 вместе с его снимком:
             // без чистки «заменить» удвоило бы навыки, потому что
@@ -443,7 +455,7 @@ nonisolated enum BackupService {
                           LabResult.self, VetVisit.self,
                           Diagnosis.self, Prescription.self,
                           FamilyMember.self, Dog.self] as [any PersistentModel.Type] {
-                try удалитьВсе(model)
+                try context.delete(model: model)
             }
         }
 

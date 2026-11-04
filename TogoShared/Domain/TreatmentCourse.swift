@@ -46,7 +46,7 @@ nonisolated enum TreatmentCourse {
         // напоминания ни у кого — вся уборка смотрит на `isPaused`.
         // Разбор — `Medication.отменить(в:заметка:)`.
         let отменяемые = activeMedications(dog)
-        let было = отменяемые.map { ($0, $0.cancelledAt, $0.isPaused, $0.cancelledNote) }
+        let было = отменяемые.map { ($0, $0.isPaused, $0.cancelledNote) }
         for medication in отменяемые {
             medication.отменить(в: now, заметка: "Курс завершён \(Fmt.shortDay(now))")
         }
@@ -61,10 +61,15 @@ nonisolated enum TreatmentCourse {
         // прежде при отказе возвращался только `isOnTreatment`, а схемы
         // оставались отменёнными в памяти и уезжали следующим
         // автосохранением — курс «то ли закончен, то ли нет».
+        //
+        // Откат — тоже через модель: `cancelledAt` присваивает только
+        // `Medication` (сторож `ОтменаСтавитОбаПоляTests`). До отмены
+        // схемы были живыми, то есть `cancelledAt == nil`, — это ровно
+        // `вернутьВСтрой()`, а пауза и заметка возвращаются поверх.
         guard context.persist(otherwise: {
             dog.isOnTreatment = true
-            for (схема, когда, пауза, заметка) in было {
-                схема.cancelledAt = когда
+            for (схема, пауза, заметка) in было {
+                схема.вернутьВСтрой()
                 схема.isPaused = пауза
                 схема.cancelledNote = заметка
             }
@@ -149,8 +154,10 @@ nonisolated enum TreatmentCourse {
         // Парный путь к отмене, и тоже через модель: возврат, снявший
         // `cancelledAt` и забывший `isPaused`, оставил бы схему молча
         // немой — живой на вид и без единого напоминания.
-        let возвращаемые = dog.medications.filter { $0.cancelledAt != nil }
-        let было = возвращаемые.map { ($0, $0.cancelledAt, $0.isPaused, $0.cancelledNote) }
+        let было = dog.medications.compactMap { схема in
+            схема.cancelledAt.map { (схема, $0, схема.isPaused, схема.cancelledNote) }
+        }
+        let возвращаемые = было.map(\.0)
         for medication in возвращаемые {
             medication.вернутьВСтрой()
         }
@@ -160,10 +167,10 @@ nonisolated enum TreatmentCourse {
         // Откат всех тронутых полей и исход наружу — как у `finish`.
         return context.persist(otherwise: {
             dog.isOnTreatment = false
+            // Через `отменить`, а не присваиванием — см. `finish`.
             for (схема, когда, пауза, заметка) in было {
-                схема.cancelledAt = когда
+                схема.отменить(в: когда, заметка: заметка)
                 схема.isPaused = пауза
-                схема.cancelledNote = заметка
             }
         })
     }
