@@ -178,7 +178,12 @@ struct HealthScreen: View {
                         farewell: TreatmentCourse.farewell(dog),
                         onFinish: { finish() },
                         onScheduleCheckup: { days in
-                            TreatmentCourse.scheduleCheckup(for: dog, after: days, context: context)
+                            guard TreatmentCourse.scheduleCheckup(for: dog, after: days,
+                                                                  context: context) != nil else {
+                                appState.showFailure("Не сохранилось · попробуй ещё раз")
+                                return false
+                            }
+                            return true
                         }
                     )
                 }

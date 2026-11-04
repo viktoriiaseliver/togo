@@ -201,8 +201,18 @@ enum FamilyShare {
         // Уже поделились раньше — второй раз не создаём: у зоны бывает
         // ровно одна общая ссылка, и новая отрезала бы уже принявших.
         let shareID = CKRecord.ID(recordName: CKRecordNameZoneWideShare, zoneID: zoneID)
-        if let existing = try? await database.record(for: shareID) as? CKShare {
-            return existing
+        // «Нет такой записи» — только `unknownItem`. До 04.11.2026 здесь
+        // стоял `try?`, и сетевой отказ читался так же: создавался новый
+        // `CKShare` поверх живого, сервер отвечал `serverRecordChanged`,
+        // а человек видел «iCloud не принял приглашение» без причины.
+        do {
+            if let existing = try await database.record(for: shareID) as? CKShare {
+                return existing
+            }
+        } catch let ошибка as CKError where ошибка.code == .unknownItem {
+            // Делиться ещё не начинали — создаём ниже.
+        } catch let ошибка as CKError {
+            throw ShareError.saveFailed(code: ошибка.errorCode)
         }
 
         let share = CKShare(recordZoneID: zoneID)
