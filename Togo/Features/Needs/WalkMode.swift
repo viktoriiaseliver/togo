@@ -774,21 +774,12 @@ struct WalkModeScreen: View {
             return
         }
 
-        let log = EventLog(context: context, appState: appState)
+        // Одной записью, через ту же дверь, что прогулка с блокировки —
+        // разбор у `EventLog.recordWalk`.
         let duration = Int(finished.duration())
-
-        let walkEvent = log.record(.walk, dog: dog, at: finished.startedAt,
-                                   confirmation: "Записано · прогулка \(duration / 60) мин") { event in
-            event.durationSeconds = duration
-            event.note = finished.marks.isEmpty ? nil : finished.tally
-        }
-
-        for entry in finished.marks {
-            log.record(entry.kind.logKind, dog: dog, at: entry.at,
-                       confirmation: nil, haptic: .none) { event in
-                WalkRecorder.apply(entry, to: event, dog: dog, walkID: walkEvent?.id)
-            }
-        }
+        EventLog(context: context, appState: appState)
+            .recordWalk(finished, dog: dog,
+                        confirmation: "Записано · прогулка \(duration / 60) мин")
 
         показатьИтог(finished)
     }

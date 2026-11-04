@@ -117769,6 +117769,42 @@
         }
       }
     },
+    "Часть записей семьи не сохранилась — повторим при следующей сверке" : {
+      "comment" : "sync",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Some family entries weren't saved — we'll retry at the next sync"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Certaines notes de la famille n'ont pas été enregistrées — nouvel essai à la prochaine synchronisation"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Отбасының кейбір жазбалары сақталмады — келесі салыстыруда қайталаймыз"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Часть записей семьи не сохранилась — повторим при следующей сверке"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Частину записів родини не збережено — повторимо під час наступної звірки"
+          }
+        }
+      }
+    },
     "часы" : {
       "comment" : "3 · Часы",
       "extractionState" : "manual",

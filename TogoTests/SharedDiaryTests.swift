@@ -230,7 +230,7 @@ struct SharedDiaryInboxTests {
                                                 dog: dog, context: context)
 
         #expect(dog.events.first?.grams == 75)
-        #expect(needsPush, "наша версия победила — значит её надо отправить обратно")
+        #expect(needsPush == .вернуть, "наша версия победила — значит её надо отправить обратно")
     }
 
     @Test("Чужое удаление доходит")

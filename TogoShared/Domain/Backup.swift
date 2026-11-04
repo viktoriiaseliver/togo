@@ -41,16 +41,21 @@ nonisolated enum BackupService {
         let dogs = try context.fetch(FetchDescriptor<Dog>())
         // Детей берём явными выборками и раскладываем по собакам сами:
         // полагаться на то, что обратная связь уже materialised, нельзя.
-        let allStocks = (try? context.fetch(FetchDescriptor<FoodStock>())) ?? []
-        let allHeats = (try? context.fetch(FetchDescriptor<HeatRecord>())) ?? []
-        let allDocuments = (try? context.fetch(FetchDescriptor<DogDocument>())) ?? []
-        let allDaysOut = (try? context.fetch(FetchDescriptor<DayOut>())) ?? []
+        //
+        // Все выборки — `try`, а не `try?`, и это замер 04.11.2026:
+        // шесть разделов стояли под `try?`, три — под `try`. Отказ
+        // выборки давал архив БЕЗ раздела, а человек видел «сохранено».
+        // Тот же класс, что `try context.save()` строкой выше.
+        let allStocks = try context.fetch(FetchDescriptor<FoodStock>())
+        let allHeats = try context.fetch(FetchDescriptor<HeatRecord>())
+        let allDocuments = try context.fetch(FetchDescriptor<DogDocument>())
+        let allDaysOut = try context.fetch(FetchDescriptor<DayOut>())
         let members = try context.fetch(FetchDescriptor<FamilyMember>())
         let episodes = try context.fetch(FetchDescriptor<Episode>())
         // Навыки процедур — корневой список: связи с собакой у них нет.
-        let skills = (try? context.fetch(FetchDescriptor<ProcedureSkill>())) ?? []
+        let skills = try context.fetch(FetchDescriptor<ProcedureSkill>())
         // Справочник клиник — тоже корневой и по той же причине.
-        let clinics = (try? context.fetch(FetchDescriptor<Clinic>())) ?? []
+        let clinics = try context.fetch(FetchDescriptor<Clinic>())
 
         return BackupArchive(
             createdAt: Date(),

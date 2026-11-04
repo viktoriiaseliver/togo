@@ -635,18 +635,40 @@ extension DoseRecord {
 /// как `EventLog` единственная дверь для своих записей. Иначе правила
 /// слияния расползутся по экранам и разойдутся.
 @MainActor
+/// Чем кончился приём одной записи.
+///
+/// Три исхода вместо прежнего `Bool` («надо ли вернуть»), и третий —
+/// ради обмена, а не ради экрана. До 04.11.2026 отказ выборки читался
+/// как «записи нет» и заводил дубликат, а отказ записи терялся: `apply`
+/// двигал время сверки и сохранял положение движка, и запись больше
+/// не приезжала. Теперь `.отказ` доходит до `FamilySync.apply`, и тот
+/// не сохраняет положение движка до перезапуска — запись приедет снова.
+enum ИсходПриёма: Equatable {
+    /// Записано или сознательно не принято (пустая кличка, надгробие
+    /// на то, чего у нас не было).
+    case принято
+    /// Записано, и наша версия после слияния отличается от приехавшей —
+    /// её надо отправить обратно.
+    case вернуть
+    /// Выборка или запись отказали: у нас этой записи нет или она старая.
+    case отказ
+}
+
 enum SharedDiaryInbox {
 
     /// Принять запись дневника с другого телефона.
     ///
-    /// Возвращает `true`, если после слияния наша версия изменилась —
-    /// то есть её надо отправить обратно.
+    /// Исход — `ИсходПриёма`: `.вернуть`, если после слияния наша версия
+    /// изменилась, `.отказ`, если выборка или запись не удались.
     @discardableResult
-    static func accept(_ payload: EventPayload, dog: Dog?, context: ModelContext) -> Bool {
+    static func accept(_ payload: EventPayload, dog: Dog?, context: ModelContext) -> ИсходПриёма {
         let id = payload.id
-        let existing = try? context.fetch(
+        guard let existing = context.опознать(
             FetchDescriptor<LogEvent>(predicate: #Predicate { $0.id == id })
-        ).first
+        ).ответ else {
+            log.error("общий дневник: выборка по id отказала — запись пропущена до следующего захода")
+            return .отказ
+        }
 
         guard let local = existing else {
             let event = LogEvent(kind: .note, date: payload.date, authorName: payload.authorName)
@@ -658,9 +680,9 @@ enum SharedDiaryInbox {
             // кругом обмена — но круг станет вечным, если об этом молчать.
             guard context.persist(otherwise: { context.delete(event) }) else {
                 log.error("общий дневник: запись не записалась")
-                return false
+                return .отказ
             }
-            return false
+            return .принято
         }
 
         let merged = SharedDiaryMerge.resolve(local: local.payload, remote: payload)
@@ -670,9 +692,10 @@ enum SharedDiaryInbox {
             local.apply(merged)
             if !context.persist(otherwise: { local.apply(былПрежний) }) {
                 log.error("общий дневник: слияние записи не записалось")
+                return .отказ
             }
         }
-        return changed
+        return changed ? .вернуть : .принято
     }
 
     /// Принять профиль собаки с другого телефона.
@@ -687,7 +710,7 @@ enum SharedDiaryInbox {
     /// каких условиях — две «Стич» в одном доме это две собаки, и 23.09
     /// живой дневник уже разошёлся пополам именно так.
     @discardableResult
-    static func accept(_ payload: DogPayload, context: ModelContext) -> Bool {
+    static func accept(_ payload: DogPayload, context: ModelContext) -> ИсходПриёма {
         // Пустая кличка не принимается ни на заведение, ни на слияние,
         // и ворота стоят здесь, а не только в разборе записи.
         //
@@ -710,13 +733,16 @@ enum SharedDiaryInbox {
         // (`Dog(name:)` и `apply`).
         guard DogPayload.hasUsableName(payload.name) else {
             log.notice("общий дневник: снимок собаки без клички отклонён")
-            return false
+            return .принято
         }
 
         let id = payload.id
-        let existing = try? context.fetch(
+        guard let existing = context.опознать(
             FetchDescriptor<Dog>(predicate: #Predicate { $0.id == id })
-        ).first
+        ).ответ else {
+            log.error("общий дневник: выборка по id отказала — запись пропущена до следующего захода")
+            return .отказ
+        }
 
         guard let local = existing else {
             // Надгробие на запись, которой у нас НИКОГДА НЕ БЫЛО,
@@ -724,14 +750,14 @@ enum SharedDiaryInbox {
             // значило бы положить человеку в базу запись, которой он
             // не видел, — тот же класс, что «мусор, который уходит
             // от нас к человеку, хуже мусора, который лежит у нас».
-            if payload.deletedAt != nil { return false }
+            if payload.deletedAt != nil { return .принято }
             let dog = Dog(name: payload.name, weightKg: payload.weightKg)
             dog.id = payload.id
             dog.apply(payload)
             context.insert(dog)
             guard context.persist(otherwise: { context.delete(dog) }) else {
                 log.error("общий дневник: собака не записалась")
-                return false
+                return .отказ
             }
             // Крошка запуска уже умеет отличать приехавшую от заведённой
             // здесь — здесь мы это знаем точно, а не по разнице составов.
@@ -760,7 +786,7 @@ enum SharedDiaryInbox {
             // журналов: крошки, снятые ДО этого коммита, по данному
             // признаку не читаются вовсе.
             StartupLog.note("собака \(payload.id.uuidString.prefix(8)) — принята из общего дневника")
-            return false
+            return .принято
         }
 
         let merged = SharedDiaryMerge.resolve(local: local.payload, remote: payload)
@@ -770,9 +796,10 @@ enum SharedDiaryInbox {
             local.apply(merged)
             if !context.persist(otherwise: { local.apply(былПрежний) }) {
                 log.error("общий дневник: слияние профиля не записалось")
+                return .отказ
             }
         }
-        return changed
+        return changed ? .вернуть : .принято
     }
 
     /// Принять запись справочника клиник.
@@ -792,15 +819,18 @@ enum SharedDiaryInbox {
     /// при первой правке. Два справочника с похожими именами —
     /// видимая человеку неприятность; склейка — невидимая.
     @discardableResult
-    static func accept(_ payload: ClinicPayload, context: ModelContext) -> Bool {
+    static func accept(_ payload: ClinicPayload, context: ModelContext) -> ИсходПриёма {
         guard Fmt.notBlank(payload.name) != nil else {
             log.error("общий дневник: приехала клиника без имени — не принимаем")
-            return false
+            return .принято
         }
         let id = payload.id
-        let existing = try? context.fetch(
+        guard let existing = context.опознать(
             FetchDescriptor<Clinic>(predicate: #Predicate { $0.id == id })
-        ).first
+        ).ответ else {
+            log.error("общий дневник: выборка по id отказала — запись пропущена до следующего захода")
+            return .отказ
+        }
 
         guard let local = existing else {
             // Надгробие на запись, которой у нас НИКОГДА НЕ БЫЛО,
@@ -808,7 +838,7 @@ enum SharedDiaryInbox {
             // значило бы положить человеку в базу запись, которой он
             // не видел, — тот же класс, что «мусор, который уходит
             // от нас к человеку, хуже мусора, который лежит у нас».
-            if payload.deletedAt != nil { return false }
+            if payload.deletedAt != nil { return .принято }
             let clinic = Clinic(name: payload.name, detail: payload.detail,
                                 isLab: payload.isLab, phone: payload.phone)
             clinic.id = payload.id
@@ -817,9 +847,9 @@ enum SharedDiaryInbox {
             context.insert(clinic)
             guard context.persist(otherwise: { context.delete(clinic) }) else {
                 log.error("общий дневник: клиника не записалась")
-                return false
+                return .отказ
             }
-            return false
+            return .принято
         }
 
         let merged = SharedDiaryMerge.resolve(local: local.payload, remote: payload)
@@ -829,9 +859,10 @@ enum SharedDiaryInbox {
             local.apply(merged)
             if !context.persist(otherwise: { local.apply(былПрежний) }) {
                 log.error("общий дневник: слияние клиники не записалось")
+                return .отказ
             }
         }
-        return changed
+        return changed ? .вернуть : .принято
     }
 
     /// Клиника для приехавшего дела ухода: по id, при промахе — по имени.
@@ -865,15 +896,18 @@ enum SharedDiaryInbox {
     /// минуя `CKRecord`. Проверка в одном из двух входов — это
     /// проверка, которую обойдут, не заметив.
     @discardableResult
-    static func accept(_ payload: WeightPayload, dog: Dog?, context: ModelContext) -> Bool {
+    static func accept(_ payload: WeightPayload, dog: Dog?, context: ModelContext) -> ИсходПриёма {
         guard payload.kg > 0 else {
             log.error("общий дневник: приехало взвешивание с нулём — не принимаем")
-            return false
+            return .принято
         }
         let id = payload.id
-        let existing = try? context.fetch(
+        guard let existing = context.опознать(
             FetchDescriptor<WeightEntry>(predicate: #Predicate { $0.id == id })
-        ).first
+        ).ответ else {
+            log.error("общий дневник: выборка по id отказала — запись пропущена до следующего захода")
+            return .отказ
+        }
 
         guard let local = existing else {
             // Надгробие на запись, которой у нас НИКОГДА НЕ БЫЛО,
@@ -881,7 +915,7 @@ enum SharedDiaryInbox {
             // значило бы положить человеку в базу запись, которой он
             // не видел, — тот же класс, что «мусор, который уходит
             // от нас к человеку, хуже мусора, который лежит у нас».
-            if payload.deletedAt != nil { return false }
+            if payload.deletedAt != nil { return .принято }
             let запись = WeightEntry(date: payload.date, kg: payload.kg)
             запись.id = payload.id
             запись.changedAt = payload.changedAt
@@ -889,9 +923,9 @@ enum SharedDiaryInbox {
             context.insert(запись)
             guard context.persist(otherwise: { context.delete(запись) }) else {
                 log.error("общий дневник: взвешивание не записалось")
-                return false
+                return .отказ
             }
-            return false
+            return .принято
         }
 
         let merged = SharedDiaryMerge.resolve(local: local.payload, remote: payload)
@@ -901,9 +935,10 @@ enum SharedDiaryInbox {
             local.apply(merged)
             if !context.persist(otherwise: { local.apply(былПрежний) }) {
                 log.error("общий дневник: слияние взвешивания не записалось")
+                return .отказ
             }
         }
-        return changed
+        return changed ? .вернуть : .принято
     }
 
     /// Принять документ.
@@ -912,11 +947,14 @@ enum SharedDiaryInbox {
     /// и `apply` его не очищает: человек положил страницу паспорта
     /// у себя, и чужая правка номера не имеет права её стереть.
     @discardableResult
-    static func accept(_ payload: DocumentPayload, dog: Dog?, context: ModelContext) -> Bool {
+    static func accept(_ payload: DocumentPayload, dog: Dog?, context: ModelContext) -> ИсходПриёма {
         let id = payload.id
-        let existing = try? context.fetch(
+        guard let existing = context.опознать(
             FetchDescriptor<DogDocument>(predicate: #Predicate { $0.id == id })
-        ).first
+        ).ответ else {
+            log.error("общий дневник: выборка по id отказала — запись пропущена до следующего захода")
+            return .отказ
+        }
 
         guard let local = existing else {
             // Надгробие на запись, которой у нас НИКОГДА НЕ БЫЛО,
@@ -924,7 +962,7 @@ enum SharedDiaryInbox {
             // значило бы положить человеку в базу запись, которой он
             // не видел, — тот же класс, что «мусор, который уходит
             // от нас к человеку, хуже мусора, который лежит у нас».
-            if payload.deletedAt != nil { return false }
+            if payload.deletedAt != nil { return .принято }
             let документ = DogDocument(title: payload.title)
             документ.id = payload.id
             документ.apply(payload)
@@ -939,9 +977,9 @@ enum SharedDiaryInbox {
             context.insert(документ)
             guard context.persist(otherwise: { context.delete(документ) }) else {
                 log.error("общий дневник: документ не записался")
-                return false
+                return .отказ
             }
-            return false
+            return .принято
         }
 
         let merged = SharedDiaryMerge.resolve(local: local.payload, remote: payload)
@@ -957,9 +995,10 @@ enum SharedDiaryInbox {
             }
             if !context.persist(otherwise: { local.apply(былПрежний) }) {
                 log.error("общий дневник: слияние документа не записалось")
+                return .отказ
             }
         }
-        return changed
+        return changed ? .вернуть : .принято
     }
 
     // MARK: Медкнижка
@@ -983,11 +1022,14 @@ enum SharedDiaryInbox {
 
     /// Принять строку анализа.
     @discardableResult
-    static func accept(_ payload: LabResultPayload, dog: Dog?, context: ModelContext) -> Bool {
+    static func accept(_ payload: LabResultPayload, dog: Dog?, context: ModelContext) -> ИсходПриёма {
         let id = payload.id
-        let existing = try? context.fetch(
+        guard let existing = context.опознать(
             FetchDescriptor<LabResult>(predicate: #Predicate { $0.id == id })
-        ).first
+        ).ответ else {
+            log.error("общий дневник: выборка по id отказала — запись пропущена до следующего захода")
+            return .отказ
+        }
 
         guard let local = existing else {
             // Надгробие на запись, которой у нас НИКОГДА НЕ БЫЛО,
@@ -995,7 +1037,7 @@ enum SharedDiaryInbox {
             // значило бы положить человеку в базу запись, которой он
             // не видел, — тот же класс, что «мусор, который уходит
             // от нас к человеку, хуже мусора, который лежит у нас».
-            if payload.deletedAt != nil { return false }
+            if payload.deletedAt != nil { return .принято }
             let анализ = LabResult(sampledOn: payload.sampledOn)
             анализ.id = payload.id
             анализ.apply(payload)
@@ -1003,9 +1045,9 @@ enum SharedDiaryInbox {
             context.insert(анализ)
             guard context.persist(otherwise: { context.delete(анализ) }) else {
                 log.error("общий дневник: анализ не записался")
-                return false
+                return .отказ
             }
-            return false
+            return .принято
         }
 
         let merged = SharedDiaryMerge.resolve(local: local.payload, remote: payload)
@@ -1015,18 +1057,22 @@ enum SharedDiaryInbox {
             local.apply(merged)
             if !context.persist(otherwise: { local.apply(былПрежний) }) {
                 log.error("общий дневник: слияние анализа не записалось")
+                return .отказ
             }
         }
-        return changed
+        return changed ? .вернуть : .принято
     }
 
     /// Принять визит к врачу.
     @discardableResult
-    static func accept(_ payload: VetVisitPayload, dog: Dog?, context: ModelContext) -> Bool {
+    static func accept(_ payload: VetVisitPayload, dog: Dog?, context: ModelContext) -> ИсходПриёма {
         let id = payload.id
-        let existing = try? context.fetch(
+        guard let existing = context.опознать(
             FetchDescriptor<VetVisit>(predicate: #Predicate { $0.id == id })
-        ).first
+        ).ответ else {
+            log.error("общий дневник: выборка по id отказала — запись пропущена до следующего захода")
+            return .отказ
+        }
 
         guard let local = existing else {
             // Надгробие на запись, которой у нас НИКОГДА НЕ БЫЛО,
@@ -1034,7 +1080,7 @@ enum SharedDiaryInbox {
             // значило бы положить человеку в базу запись, которой он
             // не видел, — тот же класс, что «мусор, который уходит
             // от нас к человеку, хуже мусора, который лежит у нас».
-            if payload.deletedAt != nil { return false }
+            if payload.deletedAt != nil { return .принято }
             let визит = VetVisit(date: payload.date)
             визит.id = payload.id
             визит.apply(payload)
@@ -1043,9 +1089,9 @@ enum SharedDiaryInbox {
             context.insert(визит)
             guard context.persist(otherwise: { context.delete(визит) }) else {
                 log.error("общий дневник: визит не записался")
-                return false
+                return .отказ
             }
-            return false
+            return .принято
         }
 
         let merged = SharedDiaryMerge.resolve(local: local.payload, remote: payload)
@@ -1060,18 +1106,22 @@ enum SharedDiaryInbox {
             }
             if !context.persist(otherwise: { local.apply(былПрежний) }) {
                 log.error("общий дневник: слияние визита не записалось")
+                return .отказ
             }
         }
-        return changed
+        return changed ? .вернуть : .принято
     }
 
     /// Принять диагноз.
     @discardableResult
-    static func accept(_ payload: DiagnosisPayload, dog: Dog?, context: ModelContext) -> Bool {
+    static func accept(_ payload: DiagnosisPayload, dog: Dog?, context: ModelContext) -> ИсходПриёма {
         let id = payload.id
-        let existing = try? context.fetch(
+        guard let existing = context.опознать(
             FetchDescriptor<Diagnosis>(predicate: #Predicate { $0.id == id })
-        ).first
+        ).ответ else {
+            log.error("общий дневник: выборка по id отказала — запись пропущена до следующего захода")
+            return .отказ
+        }
 
         guard let local = existing else {
             // Надгробие на запись, которой у нас НИКОГДА НЕ БЫЛО,
@@ -1079,7 +1129,7 @@ enum SharedDiaryInbox {
             // значило бы положить человеку в базу запись, которой он
             // не видел, — тот же класс, что «мусор, который уходит
             // от нас к человеку, хуже мусора, который лежит у нас».
-            if payload.deletedAt != nil { return false }
+            if payload.deletedAt != nil { return .принято }
             let диагноз = Diagnosis(madeOn: payload.madeOn)
             диагноз.id = payload.id
             диагноз.apply(payload)
@@ -1087,9 +1137,9 @@ enum SharedDiaryInbox {
             context.insert(диагноз)
             guard context.persist(otherwise: { context.delete(диагноз) }) else {
                 log.error("общий дневник: диагноз не записался")
-                return false
+                return .отказ
             }
-            return false
+            return .принято
         }
 
         let merged = SharedDiaryMerge.resolve(local: local.payload, remote: payload)
@@ -1099,18 +1149,22 @@ enum SharedDiaryInbox {
             local.apply(merged)
             if !context.persist(otherwise: { local.apply(былПрежний) }) {
                 log.error("общий дневник: слияние диагноза не записалось")
+                return .отказ
             }
         }
-        return changed
+        return changed ? .вернуть : .принято
     }
 
     /// Принять назначение.
     @discardableResult
-    static func accept(_ payload: PrescriptionPayload, dog: Dog?, context: ModelContext) -> Bool {
+    static func accept(_ payload: PrescriptionPayload, dog: Dog?, context: ModelContext) -> ИсходПриёма {
         let id = payload.id
-        let existing = try? context.fetch(
+        guard let existing = context.опознать(
             FetchDescriptor<Prescription>(predicate: #Predicate { $0.id == id })
-        ).first
+        ).ответ else {
+            log.error("общий дневник: выборка по id отказала — запись пропущена до следующего захода")
+            return .отказ
+        }
 
         guard let local = existing else {
             // Надгробие на запись, которой у нас НИКОГДА НЕ БЫЛО,
@@ -1118,7 +1172,7 @@ enum SharedDiaryInbox {
             // значило бы положить человеку в базу запись, которой он
             // не видел, — тот же класс, что «мусор, который уходит
             // от нас к человеку, хуже мусора, который лежит у нас».
-            if payload.deletedAt != nil { return false }
+            if payload.deletedAt != nil { return .принято }
             let рецепт = Prescription(date: payload.date)
             рецепт.id = payload.id
             рецепт.apply(payload)
@@ -1127,9 +1181,9 @@ enum SharedDiaryInbox {
             context.insert(рецепт)
             guard context.persist(otherwise: { context.delete(рецепт) }) else {
                 log.error("общий дневник: назначение не записалось")
-                return false
+                return .отказ
             }
-            return false
+            return .принято
         }
 
         let merged = SharedDiaryMerge.resolve(local: local.payload, remote: payload)
@@ -1142,18 +1196,22 @@ enum SharedDiaryInbox {
             }
             if !context.persist(otherwise: { local.apply(былПрежний) }) {
                 log.error("общий дневник: слияние назначения не записалось")
+                return .отказ
             }
         }
-        return changed
+        return changed ? .вернуть : .принято
     }
 
     /// Принять дело ухода.
     @discardableResult
-    static func accept(_ payload: CarePayload, dog: Dog?, context: ModelContext) -> Bool {
+    static func accept(_ payload: CarePayload, dog: Dog?, context: ModelContext) -> ИсходПриёма {
         let id = payload.id
-        let existing = try? context.fetch(
+        guard let existing = context.опознать(
             FetchDescriptor<CareTask>(predicate: #Predicate { $0.id == id })
-        ).first
+        ).ответ else {
+            log.error("общий дневник: выборка по id отказала — запись пропущена до следующего захода")
+            return .отказ
+        }
 
         guard let local = existing else {
             // Надгробие на запись, которой у нас НИКОГДА НЕ БЫЛО,
@@ -1161,7 +1219,7 @@ enum SharedDiaryInbox {
             // значило бы положить человеку в базу запись, которой он
             // не видел, — тот же класс, что «мусор, который уходит
             // от нас к человеку, хуже мусора, который лежит у нас».
-            if payload.deletedAt != nil { return false }
+            if payload.deletedAt != nil { return .принято }
             let task = CareTask(title: payload.title, detail: payload.detail)
             task.id = payload.id
             task.apply(payload)
@@ -1170,9 +1228,9 @@ enum SharedDiaryInbox {
             context.insert(task)
             guard context.persist(otherwise: { context.delete(task) }) else {
                 log.error("общий дневник: дело ухода не записалось")
-                return false
+                return .отказ
             }
-            return false
+            return .принято
         }
 
         let merged = SharedDiaryMerge.resolve(local: local.payload, remote: payload)
@@ -1189,9 +1247,10 @@ enum SharedDiaryInbox {
             }
             if !context.persist(otherwise: { local.apply(былПрежний) }) {
                 log.error("общий дневник: слияние дела ухода не записалось")
+                return .отказ
             }
         }
-        return changed
+        return changed ? .вернуть : .принято
     }
 
     /// Принять схему лечения.
@@ -1202,11 +1261,14 @@ enum SharedDiaryInbox {
     /// человек видит приём открытым и даёт вторую таблетку. Поэтому
     /// приехавшая схема сразу забирает свои дозы.
     @discardableResult
-    static func accept(_ payload: MedicationPayload, dog: Dog?, context: ModelContext) -> Bool {
+    static func accept(_ payload: MedicationPayload, dog: Dog?, context: ModelContext) -> ИсходПриёма {
         let id = payload.id
-        let existing = try? context.fetch(
+        guard let existing = context.опознать(
             FetchDescriptor<Medication>(predicate: #Predicate { $0.id == id })
-        ).first
+        ).ответ else {
+            log.error("общий дневник: выборка по id отказала — запись пропущена до следующего захода")
+            return .отказ
+        }
 
         let схема: Medication
         var changed = false
@@ -1218,6 +1280,7 @@ enum SharedDiaryInbox {
                 local.apply(merged)
                 if !context.persist(otherwise: { local.apply(былПрежний) }) {
                     log.error("общий дневник: слияние схемы не записалось")
+                    return .отказ
                 }
             }
             схема = local
@@ -1225,7 +1288,7 @@ enum SharedDiaryInbox {
             // Надгробие на схему, которой у нас никогда не было,
             // заводить нечего — тот же страж, что у остальных десяти,
             // форма здесь другая (`if let`, а не `guard`).
-            if payload.deletedAt != nil { return false }
+            if payload.deletedAt != nil { return .принято }
             let свежая = Medication(name: payload.name, doseText: payload.doseText,
                                     times: payload.times)
             свежая.id = payload.id
@@ -1234,13 +1297,13 @@ enum SharedDiaryInbox {
             context.insert(свежая)
             guard context.persist(otherwise: { context.delete(свежая) }) else {
                 log.error("общий дневник: схема не записалась")
-                return false
+                return .отказ
             }
             схема = свежая
         }
 
         подобратьДозы(схемы: схема, context: context)
-        return changed
+        return changed ? .вернуть : .принято
     }
 
     /// Дозы, приехавшие до схемы, привязываются к ней.
@@ -1383,11 +1446,14 @@ enum SharedDiaryInbox {
 
     /// Принять отметку дозы.
     @discardableResult
-    static func accept(_ payload: DosePayload, medication: Medication?, context: ModelContext) -> Bool {
+    static func accept(_ payload: DosePayload, medication: Medication?, context: ModelContext) -> ИсходПриёма {
         let id = payload.id
-        let existing = try? context.fetch(
+        guard let existing = context.опознать(
             FetchDescriptor<DoseRecord>(predicate: #Predicate { $0.id == id })
-        ).first
+        ).ответ else {
+            log.error("общий дневник: выборка по id отказала — запись пропущена до следующего захода")
+            return .отказ
+        }
 
         guard let local = existing else {
             // Надгробие на запись, которой у нас НИКОГДА НЕ БЫЛО,
@@ -1395,7 +1461,7 @@ enum SharedDiaryInbox {
             // значило бы положить человеку в базу запись, которой он
             // не видел, — тот же класс, что «мусор, который уходит
             // от нас к человеку, хуже мусора, который лежит у нас».
-            if payload.deletedAt != nil { return false }
+            if payload.deletedAt != nil { return .принято }
             let dose = DoseRecord(scheduledAt: payload.scheduledAt)
             dose.id = payload.id
             dose.apply(payload)
@@ -1408,9 +1474,9 @@ enum SharedDiaryInbox {
             context.insert(dose)
             guard context.persist(otherwise: { context.delete(dose) }) else {
                 log.error("общий дневник: доза не записалась")
-                return false
+                return .отказ
             }
-            return false
+            return .принято
         }
 
         let merged = SharedDiaryMerge.resolve(local: local.payload, remote: payload)
@@ -1429,12 +1495,14 @@ enum SharedDiaryInbox {
             local.apply(merged)
             if !context.persist(otherwise: { local.apply(былПрежний) }) {
                 log.error("общий дневник: слияние дозы не записалось")
+                return .отказ
             }
         } else if linked {
             if !context.persist(otherwise: { local.medication = nil }) {
                 log.error("общий дневник: связь дозы с препаратом не записалась")
+                return .отказ
             }
         }
-        return changed
+        return changed ? .вернуть : .принято
     }
 }

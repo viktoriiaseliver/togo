@@ -34,36 +34,62 @@ nonisolated enum TreatmentCourse {
     /// Препараты не удаляются, а помечаются отменёнными датой: в отчёте
     /// врачу должно быть видно, что давали и до какого числа.
     @MainActor
+    @discardableResult
     static func finish(
         _ dog: Dog,
         at now: Date = Date(),
         by person: String?,
         context: ModelContext
-    ) {
+    ) -> Bool {
         // Через метод модели, а не двумя присваиваниями: мимо него
         // отмену нельзя выразить без паузы, а без паузы она не гасит
         // напоминания ни у кого — вся уборка смотрит на `isPaused`.
         // Разбор — `Medication.отменить(в:заметка:)`.
-        for medication in activeMedications(dog) {
+        let отменяемые = activeMedications(dog)
+        let было = отменяемые.map { ($0, $0.cancelledAt, $0.isPaused, $0.cancelledNote) }
+        for medication in отменяемые {
             medication.отменить(в: now, заметка: "Курс завершён \(Fmt.shortDay(now))")
         }
+        dog.isOnTreatment = false
+
+        // Курс закончен — из плана дня уходят дозы и напоминания. Если это
+        // не записалось, они вернутся при следующем запуске, и человек
+        // решит, что приложение «не отпускает» отменённую схему.
+        // (Вкладка при этом не двигается: её держит право, не курс.)
+        //
+        // Откат — ВСЕХ тронутых полей, а не одного флага (04.11.2026):
+        // прежде при отказе возвращался только `isOnTreatment`, а схемы
+        // оставались отменёнными в памяти и уезжали следующим
+        // автосохранением — курс «то ли закончен, то ли нет».
+        guard context.persist(otherwise: {
+            dog.isOnTreatment = true
+            for (схема, когда, пауза, заметка) in было {
+                схема.cancelledAt = когда
+                схема.isPaused = пауза
+                схема.cancelledNote = заметка
+            }
+        }) else { return false }
 
         // Незакрытые отметки будущих доз — мусор: они бы всплыли завтра
         // в плане дня уже после конца курса.
+        //
+        // Удаляются ВТОРЫМ шагом, после записи курса: удаление вернуть
+        // руками нельзя, а курс, который не записался, с удалёнными
+        // дозами — это лечение, которое идёт без приёмов. Отказ этого
+        // шага безвреден: курс уже закончен, удаление останется в
+        // контексте и уйдёт следующим сохранением.
         for medication in dog.medications {
             for dose in medication.doses
             where dose.givenAt == nil && dose.skippedAt == nil && dose.scheduledAt > now {
                 context.delete(dose)
             }
         }
-
-        dog.isOnTreatment = false
-        // Курс закончен — из плана дня уходят дозы и напоминания. Если это
-        // не записалось, они вернутся при следующем запуске, и человек
-        // решит, что приложение «не отпускает» отменённую схему.
-        // (Вкладка при этом не двигается: её держит право, не курс.)
-        _ = context.persist(otherwise: { dog.isOnTreatment = true })
+        if !context.persistNothingToUndo() {
+            log.error("курс: будущие дозы не удалились, уйдут следующим сохранением")
+        }
+        return true
     }
+
 
     /// Контрольный приём — единственное, что переживает курс.
     ///
@@ -118,17 +144,28 @@ nonisolated enum TreatmentCourse {
     /// Отмена решения обязана быть такой же дешёвой, как решение: без неё
     /// «Курс завершён» становится кнопкой, которую боятся нажимать.
     @MainActor
-    static func resume(_ dog: Dog, context: ModelContext) {
+    @discardableResult
+    static func resume(_ dog: Dog, context: ModelContext) -> Bool {
         // Парный путь к отмене, и тоже через модель: возврат, снявший
         // `cancelledAt` и забывший `isPaused`, оставил бы схему молча
         // немой — живой на вид и без единого напоминания.
-        for medication in dog.medications where medication.cancelledAt != nil {
+        let возвращаемые = dog.medications.filter { $0.cancelledAt != nil }
+        let было = возвращаемые.map { ($0, $0.cancelledAt, $0.isPaused, $0.cancelledNote) }
+        for medication in возвращаемые {
             medication.вернутьВСтрой()
         }
         dog.isOnTreatment = true
         // Возврат курса — отмена решения, и она обязана быть надёжной:
         // иначе дозы и напоминания пропадут при следующем запуске.
-        _ = context.persist(otherwise: { dog.isOnTreatment = false })
+        // Откат всех тронутых полей и исход наружу — как у `finish`.
+        return context.persist(otherwise: {
+            dog.isOnTreatment = false
+            for (схема, когда, пауза, заметка) in было {
+                схема.cancelledAt = когда
+                схема.isPaused = пауза
+                схема.cancelledNote = заметка
+            }
+        })
     }
 
     /// Итог курса: сколько шло, сколько доз и какая доля вовремя.

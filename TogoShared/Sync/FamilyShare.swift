@@ -558,9 +558,9 @@ enum FamilyShare {
         // переделкой входа, а не старанием.
         guard !SharedZoneOwner.isGuest else { throw ShareError.notOwner }
 
-        var наряд = await наряд(container: container) ?? НарядРолей()
-        наряд.поУчастникам[ключ] = НазначеннаяРоль(роль: роль, права: права)
-        try await записать(наряд, container: container)
+        try await изменитьНаряд(container: container) {
+            $0.поУчастникам[ключ] = НазначеннаяРоль(роль: роль, права: права)
+        }
     }
 
     // MARK: - Роль, выбранная владельцем
@@ -607,22 +607,52 @@ enum FamilyShare {
         return РолиВОбмене.разобрать(share[РолиВОбмене.полеНаряда] as? String)
     }
 
-    /// Положить наряд на запись общего доступа. Только владелец.
+    /// Поправить наряд на записи общего доступа. Только владелец.
     ///
     /// Гость отсекается здесь же и первой строкой — по той же причине,
     /// по которой это сделано в `invite` и `stopSharing`: проверка
     /// локальна, значит её можно проверить тестом без облака.
-    static func записать(
-        _ наряд: НарядРолей,
-        container: CKContainer = CKContainer(identifier: AppIdentifiers.cloudContainer)
+    ///
+    /// **Чтение и запись — по ОДНОМУ объекту `CKShare`, и «не прочитали»
+    /// не равно «пусто».** До 04.11.2026 правка шла в два захода:
+    /// `наряд() ?? НарядРолей()`, затем `записать` перечитывал share.
+    /// `наряд()` отвечает `nil` и на сетевой отказ, и на битый JSON,
+    /// и на наряд будущей версии — во всех трёх случаях подставлялся
+    /// пустой наряд, и запись затирала роли всех остальных одной новой.
+    /// Теперь пустым считается только отсутствующее поле; нечитаемое
+    /// поле — отказ, а не повод переписать его своим.
+    static func изменитьНаряд(
+        container: CKContainer = CKContainer(identifier: AppIdentifiers.cloudContainer),
+        _ правка: (inout НарядРолей) -> Void
     ) async throws {
         guard !SharedZoneOwner.isGuest else { throw ShareError.notOwner }
         let (database, shareID) = адрес(container)
-        guard let share = try? await database.record(for: shareID) as? CKShare else {
+        let share: CKShare
+        do {
+            guard let найден = try await database.record(for: shareID) as? CKShare else {
+                throw ShareError.linkNotReady
+            }
+            share = найден
+        } catch let ошибка as CKError where ошибка.code == .unknownItem {
             // Делиться ещё не начали — назначать некому. Это не отказ
             // облака, и кодом отказа называть его нельзя.
             throw ShareError.linkNotReady
+        } catch let ошибка as CKError {
+            throw ShareError.saveFailed(code: ошибка.errorCode)
         }
+        var наряд: НарядРолей
+        switch share[РолиВОбмене.полеНаряда] as? String {
+        case nil:
+            наряд = НарядРолей()
+        case let записанный?:
+            guard let разобран = РолиВОбмене.разобрать(записанный) else {
+                // Битый или будущей версии: переписать его своим значило
+                // бы стереть то, чего мы не умеем прочитать.
+                throw ShareError.saveFailed(code: nil)
+            }
+            наряд = разобран
+        }
+        правка(&наряд)
         guard let строка = РолиВОбмене.закодировать(наряд) else {
             throw ShareError.saveFailed(code: nil)
         }
@@ -650,9 +680,9 @@ enum FamilyShare {
         права: Set<Permission>? = nil,
         container: CKContainer = CKContainer(identifier: AppIdentifiers.cloudContainer)
     ) async throws {
-        var наряд = await наряд(container: container) ?? НарядРолей()
-        наряд.новичкам = НазначеннаяРоль(роль: роль, права: права)
-        try await записать(наряд, container: container)
+        try await изменитьНаряд(container: container) {
+            $0.новичкам = НазначеннаяРоль(роль: роль, права: права)
+        }
     }
 
     /// Забрать своё назначение с записи общего доступа и положить

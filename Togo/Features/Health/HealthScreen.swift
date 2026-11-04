@@ -602,7 +602,13 @@ struct HealthScreen: View {
 
     private func finish() {
         guard let dog else { return }
-        TreatmentCourse.finish(dog, by: appState.currentUserName, context: context)
+        // Тост «Курс завершён» — только после записи (04.11.2026): прежде
+        // он звучал при любом исходе, а результат записи выбрасывался.
+        guard TreatmentCourse.finish(dog, by: appState.currentUserName, context: context) else {
+            Haptics.warning()
+            appState.showFailure("Не сохранилось · попробуй ещё раз")
+            return
+        }
         appState.showUndo("Курс завершён")
         Haptics.success()
     }

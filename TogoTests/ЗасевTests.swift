@@ -49,7 +49,7 @@ struct ЗасевTests {
             for: Dog.self,
             configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         )
-        let изменения = SharedDiarySeed.изменения(
+        let изменения = try SharedDiarySeed.изменения(
             context: ModelContext(container), zone: zone
         )
         #expect(изменения.isEmpty, """
@@ -66,7 +66,7 @@ struct ЗасевTests {
     @Test("Собака, которую никто не трогал после приглашения, уезжает")
     func собакаУезжает() throws {
         let (context, dog) = try хранилище()
-        let изменения = SharedDiarySeed.изменения(context: context, zone: zone)
+        let изменения = try SharedDiarySeed.изменения(context: context, zone: zone)
 
         let ожидаемый = SharedDiaryRecords.recordID(dog.id, in: zone)
         #expect(изменения.contains(.saveRecord(ожидаемый)), """
@@ -79,7 +79,7 @@ struct ЗасевTests {
     @Test("Записи адресуются в зону владельца, а не в свою")
     func адресВЗонуВладельца() throws {
         let (context, _) = try хранилище()
-        let изменения = SharedDiarySeed.изменения(context: context, zone: zone)
+        let изменения = try SharedDiarySeed.изменения(context: context, zone: zone)
 
         #expect(!изменения.isEmpty, "сценарий не наполнился: засевать нечего")
         for change in изменения {
@@ -130,7 +130,7 @@ struct ЗасевTests {
 
         try context.save()
 
-        let изменения = SharedDiarySeed.изменения(context: context, zone: zone)
+        let изменения = try SharedDiarySeed.изменения(context: context, zone: zone)
         let адреса = Set(изменения.compactMap { change -> String? in
             guard case .saveRecord(let id) = change else { return nil }
             return id.recordName
@@ -183,7 +183,7 @@ struct ЗасевTests {
         let всего = (try? context.fetch(FetchDescriptor<Dog>()))?.count ?? 0
         #expect(всего == 16, "сценарий не наполнился: собак в хранилище \(всего), ждали 16")
 
-        let изменения = SharedDiarySeed.изменения(context: context, zone: zone)
+        let изменения = try SharedDiarySeed.изменения(context: context, zone: zone)
         let адреса = Set(изменения.compactMap { change -> String? in
             guard case .saveRecord(let id) = change else { return nil }
             return id.recordName

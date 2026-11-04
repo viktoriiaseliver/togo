@@ -38,6 +38,26 @@ final class FamilySync: NSObject {
     }
 
     private(set) var state: State = .off
+
+    /// Записи, чей приём отказал (выборка по id или запись), — ждут
+    /// повтора в памяти, ключом по id, новейшая побеждает.
+    ///
+    /// До 04.11.2026 `apply` после любого приёма двигал время сверки
+    /// и ставил `.idle`, а отказ `accept` терялся в журнале: движок уже
+    /// отдал запись и второй раз её не пришлёт, пока её не тронут снова.
+    /// Не сохранять положение движка было бы дороже — в его сериализации
+    /// лежит и исходящая очередь. Поэтому запись держим здесь и повторяем
+    /// следующим заходом (`fetchNow` и каждая новая пачка).
+    ///
+    /// **Чего не закрывает:** выгрузка приложения теряет отложенное, как
+    /// и прежде. Это граница памяти, а не обещание доставки.
+    private var отложенныйПриём: [CKRecord.ID: CKRecord] = [:]
+
+    /// Свои правки, которые не удалось прочитать из базы для отправки
+    /// (`record(for:)`), — вернутся в очередь движка в `fetchNow`.
+    /// Возврат не сразу, а следующим заходом: движок спросил бы ту же
+    /// запись тут же, и отказ хранилища крутился бы петлёй.
+    private var отложеннаяОтправка: Set<CKRecord.ID> = []
     /// Сколько своих изменений ещё не уехало.
     ///
     /// **Доккомментарий был верен, а величина его не исполняла.**
@@ -132,6 +152,33 @@ final class FamilySync: NSObject {
     /// Поднять обмен. Молча ничего не делает, если права на iCloud нет:
     /// обещать синхронизацию, которой не может быть, нельзя.
     func start() async {
+        // Два входа в один старт — не два старта. При холодном запуске
+        // по приглашению `.task` сцены и `.familyShareAccepted` приходят
+        // почти разом, оба проходили `await accountIsReady()` и заводили
+        // по паре движков: первая пара терялась на лету вместе с тем, что
+        // успела принять, а засев мог уйти дважды. Замер 04.11.2026 по
+        // коду, пачка 1 `docs/аудит-рефакторинга-2026-11-04.md`.
+        //
+        // Второй вход ждёт первый и делает сверку заново: он мог прийти
+        // ровно потому, что поменялась зона (приняли приглашение), и его
+        // смысл — «прочитай ещё раз», а не «заведи движки ещё раз».
+        if let идущий = стартИдёт {
+            await идущий.value
+            guard !engines.isEmpty else { return }
+            await fetchNow()
+            await засеять()
+            return
+        }
+        let старт = Task { await запустить() }
+        стартИдёт = старт
+        await старт.value
+        стартИдёт = nil
+    }
+
+    /// Задача идущего `start()` — см. там, зачем.
+    private var стартИдёт: Task<Void, Never>?
+
+    private func запустить() async {
         guard Persistence.hasCloudEntitlement else {
             state = .failed("У этой сборки нет права на iCloud")
             return
@@ -185,7 +232,15 @@ final class FamilySync: NSObject {
         let owner = SharedZoneOwner.name
         guard !SyncSeedState.засеяно(владелец: owner) else { return }
 
-        let changes = SharedDiarySeed.изменения(context: context, zone: zone)
+        // Отказ выборки — не «пусто»: флаг не ставим, засев повторится
+        // при следующем запуске обмена.
+        let changes: [CKSyncEngine.PendingRecordZoneChange]
+        do {
+            changes = try SharedDiarySeed.изменения(context: context, zone: zone)
+        } catch {
+            log.error("общий дневник: засев не собрался, повторим при следующем старте — \(String(describing: error))")
+            return
+        }
         guard !changes.isEmpty else {
             // Пустое хранилище — засевать нечего, и это засев, а не отказ.
             SyncSeedState.отметить(владелец: owner)
@@ -326,7 +381,17 @@ final class FamilySync: NSObject {
         // первой строкой, в облако не ходит.
         await FamilyShare.обновитьНазначение()
 
-        if отказы.isEmpty { SyncStateStore.lastSync = Date() }
+        if !отложеннаяОтправка.isEmpty, let engine = outgoingEngine {
+            engine.state.add(pendingRecordZoneChanges: отложеннаяОтправка.map { .saveRecord($0) })
+            отложеннаяОтправка = []
+        }
+
+        // Отложенное прошлыми пачками повторяем и тогда, когда новых
+        // записей не пришло, — иначе повтор ждал бы чужой правки.
+        if !отложенныйПриём.isEmpty { await apply([]) }
+
+        if отказы.isEmpty, отложенныйПриём.isEmpty { SyncStateStore.lastSync = Date() }
+        guard отложенныйПриём.isEmpty || !отказы.isEmpty else { return }  // `apply` уже назвал отказ
         state = Self.состояние(послеОтказов: отказы, lastSync: SyncStateStore.lastSync)
     }
 
@@ -533,7 +598,7 @@ extension FamilySync: CKSyncEngineDelegate {
             }
 
         case .fetchedRecordZoneChanges(let changes):
-            await apply(changes)
+            await apply(changes.modifications.map(\.record))
 
         case .sentRecordZoneChanges(let sent):
             await MainActor.run {
@@ -654,19 +719,32 @@ extension FamilySync: CKSyncEngineDelegate {
         // `recordChangeTag`, без которого сервер отбивает правку.
         let base = outbox.base(for: recordID)
 
-        if let event = try? ctx.fetch(
+        // Отказ выборки — не «записи нет». На `nil` движок снимает правку
+        // из очереди навсегда, поэтому отказавшую откладываем и вернём
+        // в очередь следующим заходом (`fetchNow`). До 04.11.2026 здесь
+        // было двенадцать `try?`, и отказ выборки молча выбрасывал правку.
+        var отказала = false
+        func найдена<T>(_ опознание: Опознание<T>) -> T? {
+            switch опознание {
+            case .нашлась(let запись): return запись
+            case .нет: return nil
+            case .нечемОтвечать: отказала = true; return nil
+            }
+        }
+
+        if let event = найдена(ctx.опознать(
             FetchDescriptor<LogEvent>(predicate: #Predicate { $0.id == id })
-        ).first {
+        )) {
             return SharedDiaryRecords.record(event.payload, base: base, in: recordID.zoneID)
         }
-        if let dose = try? ctx.fetch(
+        if let dose = найдена(ctx.опознать(
             FetchDescriptor<DoseRecord>(predicate: #Predicate { $0.id == id })
-        ).first {
+        )) {
             return SharedDiaryRecords.record(dose.payload, base: base, in: recordID.zoneID)
         }
-        if let dog = try? ctx.fetch(
+        if let dog = найдена(ctx.опознать(
             FetchDescriptor<Dog>(predicate: #Predicate { $0.id == id })
-        ).first {
+        )) {
             // Отправка профиля может вернуть `nil` — безымянную собаку
             // наружу не отправляем. Решение живёт в самой
             // `SharedDiaryRecords`, а не здесь: этот метод `private`
@@ -676,56 +754,60 @@ extension FamilySync: CKSyncEngineDelegate {
             // переносом решения, а не внимательностью.
             return SharedDiaryRecords.record(dog.payload, base: base, in: recordID.zoneID)
         }
-        if let care = try? ctx.fetch(
+        if let care = найдена(ctx.опознать(
             FetchDescriptor<CareTask>(predicate: #Predicate { $0.id == id })
-        ).first {
+        )) {
             return SharedDiaryRecords.record(care.payload, base: base, in: recordID.zoneID)
         }
-        if let medication = try? ctx.fetch(
+        if let medication = найдена(ctx.опознать(
             FetchDescriptor<Medication>(predicate: #Predicate { $0.id == id })
-        ).first {
+        )) {
             return SharedDiaryRecords.record(medication.payload, base: base, in: recordID.zoneID)
         }
-        if let clinic = try? ctx.fetch(
+        if let clinic = найдена(ctx.опознать(
             FetchDescriptor<Clinic>(predicate: #Predicate { $0.id == id })
-        ).first {
+        )) {
             return SharedDiaryRecords.record(clinic.payload, base: base, in: recordID.zoneID)
         }
-        if let документ = try? ctx.fetch(
+        if let документ = найдена(ctx.опознать(
             FetchDescriptor<DogDocument>(predicate: #Predicate { $0.id == id })
-        ).first {
+        )) {
             return SharedDiaryRecords.record(документ.payload, base: base, in: recordID.zoneID)
         }
-        if let взвешивание = try? ctx.fetch(
+        if let взвешивание = найдена(ctx.опознать(
             FetchDescriptor<WeightEntry>(predicate: #Predicate { $0.id == id })
-        ).first {
+        )) {
             return SharedDiaryRecords.record(взвешивание.payload, base: base, in: recordID.zoneID)
         }
-        if let анализ = try? ctx.fetch(
+        if let анализ = найдена(ctx.опознать(
             FetchDescriptor<LabResult>(predicate: #Predicate { $0.id == id })
-        ).first {
+        )) {
             return SharedDiaryRecords.record(анализ.payload, base: base, in: recordID.zoneID)
         }
-        if let визит = try? ctx.fetch(
+        if let визит = найдена(ctx.опознать(
             FetchDescriptor<VetVisit>(predicate: #Predicate { $0.id == id })
-        ).first {
+        )) {
             return SharedDiaryRecords.record(визит.payload, base: base, in: recordID.zoneID)
         }
-        if let диагноз = try? ctx.fetch(
+        if let диагноз = найдена(ctx.опознать(
             FetchDescriptor<Diagnosis>(predicate: #Predicate { $0.id == id })
-        ).first {
+        )) {
             return SharedDiaryRecords.record(диагноз.payload, base: base, in: recordID.zoneID)
         }
-        if let рецепт = try? ctx.fetch(
+        if let рецепт = найдена(ctx.опознать(
             FetchDescriptor<Prescription>(predicate: #Predicate { $0.id == id })
-        ).first {
+        )) {
             return SharedDiaryRecords.record(рецепт.payload, base: base, in: recordID.zoneID)
+        }
+        if отказала {
+            отложеннаяОтправка.insert(recordID)
+            log.error("общий дневник: выборка для отправки отказала — правка вернётся в очередь следующим заходом")
         }
         return nil
     }
 
     /// Принять чужие изменения.
-    private func apply(_ changes: CKSyncEngine.Event.FetchedRecordZoneChanges) async {
+    private func apply(_ пришедшие: [CKRecord]) async {
         await MainActor.run {
             applying = true
             defer { applying = false }
@@ -757,12 +839,20 @@ extension FamilySync: CKSyncEngineDelegate {
                 default: 2
                 }
             }
-            let modifications = changes.modifications.sorted {
-                ранг($0.record.recordType) < ранг($1.record.recordType)
+            // Отложенные прошлым заходом идут вместе с новыми и тем же
+            // порядком: отказавшая собака должна встать раньше своей ленты.
+            // Повтор той же записи из новой пачки вытесняет отложенную.
+            var поID = отложенныйПриём
+            отложенныйПриём = [:]
+            for запись in пришедшие { поID[запись.recordID] = запись }
+            let записи = поID.values.sorted {
+                ранг($0.recordType) < ранг($1.recordType)
+            }
+            func отложить(_ исход: ИсходПриёма, _ запись: CKRecord) {
+                if исход == .отказ { отложенныйПриём[запись.recordID] = запись }
             }
 
-            for modification in modifications {
-                let record = modification.record
+            for record in записи {
                 // Пришедшее с сервера — тоже источник `recordChangeTag`:
                 // свою правку этой записи мы пошлём уже поверх неё.
                 outbox.remember(record)
@@ -770,23 +860,23 @@ extension FamilySync: CKSyncEngineDelegate {
                 switch SharedDiary.RecordType(rawValue: record.recordType) {
                 case .clinic:
                     guard let payload = SharedDiaryRecords.clinicPayload(record) else { continue }
-                    SharedDiaryInbox.accept(payload, context: ctx)
+                    отложить(SharedDiaryInbox.accept(payload, context: ctx), record)
                 case .dog:
                     guard let payload = SharedDiaryRecords.dogPayload(record) else { continue }
-                    SharedDiaryInbox.accept(payload, context: ctx)
+                    отложить(SharedDiaryInbox.accept(payload, context: ctx), record)
                 case .care:
                     guard let payload = SharedDiaryRecords.carePayload(record) else { continue }
                     // Клиника сшивается внутри `accept`: там контекст
                     // есть по устройству, и промах по id там же
                     // падает на поиск по имени.
-                    SharedDiaryInbox.accept(
+                    отложить(SharedDiaryInbox.accept(
                         payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
-                        context: ctx)
+                        context: ctx), record)
                 case .medication:
                     guard let payload = SharedDiaryRecords.medicationPayload(record) else { continue }
-                    SharedDiaryInbox.accept(
+                    отложить(SharedDiaryInbox.accept(
                         payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
-                        context: ctx)
+                        context: ctx), record)
 
                     // Приехала отмена или пауза схемы — гасим запросы
                     // по её дозам сейчас, а не когда человек откроет
@@ -850,51 +940,51 @@ extension FamilySync: CKSyncEngineDelegate {
                     // Собака берётся по id из самой записи. Раньше здесь
                     // стояла первая местная — и у гостя с двумя собаками
                     // чужие отметки ложились на его собственную.
-                    SharedDiaryInbox.accept(
+                    отложить(SharedDiaryInbox.accept(
                         payload,
                         dog: SharedDiaryInbox.dog(for: payload, context: ctx),
                         context: ctx
-                    )
+                    ), record)
                 case .document:
                     guard let payload = SharedDiaryRecords.documentPayload(record) else { continue }
-                    SharedDiaryInbox.accept(
+                    отложить(SharedDiaryInbox.accept(
                         payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
-                        context: ctx)
+                        context: ctx), record)
                 case .weight:
                     guard let payload = SharedDiaryRecords.weightPayload(record) else { continue }
-                    SharedDiaryInbox.accept(
+                    отложить(SharedDiaryInbox.accept(
                         payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
-                        context: ctx)
+                        context: ctx), record)
                 case .labResult:
                     guard let payload = SharedDiaryRecords.labResultPayload(record) else { continue }
-                    SharedDiaryInbox.accept(
+                    отложить(SharedDiaryInbox.accept(
                         payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
-                        context: ctx)
+                        context: ctx), record)
                 case .vetVisit:
                     guard let payload = SharedDiaryRecords.vetVisitPayload(record) else { continue }
-                    SharedDiaryInbox.accept(
+                    отложить(SharedDiaryInbox.accept(
                         payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
-                        context: ctx)
+                        context: ctx), record)
                 case .diagnosis:
                     guard let payload = SharedDiaryRecords.diagnosisPayload(record) else { continue }
-                    SharedDiaryInbox.accept(
+                    отложить(SharedDiaryInbox.accept(
                         payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
-                        context: ctx)
+                        context: ctx), record)
                 case .prescription:
                     guard let payload = SharedDiaryRecords.prescriptionPayload(record) else { continue }
-                    SharedDiaryInbox.accept(
+                    отложить(SharedDiaryInbox.accept(
                         payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
-                        context: ctx)
+                        context: ctx), record)
                 case .dose:
                     guard let payload = SharedDiaryRecords.dosePayload(record) else { continue }
                     // Препарат ищется по id, а при промахе — по имени:
                     // схемы лечения не обмениваются, и у второго
                     // человека тот же препарат заведён с другим UUID.
-                    SharedDiaryInbox.accept(
+                    отложить(SharedDiaryInbox.accept(
                         payload,
                         medication: SharedDiaryInbox.medication(for: payload, context: ctx),
                         context: ctx
-                    )
+                    ), record)
                     // Напоминания снимаются ПОСЛЕ слияния, а не по тому,
                     // что приехало: спор решает `SharedDiaryMerge`, и чужая
                     // отметка могла проиграть своей. Спрашиваем ту дозу,
@@ -924,8 +1014,14 @@ extension FamilySync: CKSyncEngineDelegate {
                 }
             }
 
-            SyncStateStore.lastSync = Date()
-            state = .idle(lastSync: SyncStateStore.lastSync)
+            if отложенныйПриём.isEmpty {
+                SyncStateStore.lastSync = Date()
+                state = .idle(lastSync: SyncStateStore.lastSync)
+            } else {
+                log.error("общий дневник: не принято записей \(self.отложенныйПриём.count) — повтор следующим заходом")
+                state = .failed(String(
+                    localized: "Часть записей семьи не сохранилась — повторим при следующей сверке"))
+            }
         }
     }
 }

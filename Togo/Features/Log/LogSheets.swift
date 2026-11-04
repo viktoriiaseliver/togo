@@ -139,7 +139,15 @@ struct StoolSheet: View {
         Haptics.tap()
         // Форма пишется сразу: отменить можно тостом, «Сохранить» здесь лишний шаг.
         guard let event = ensureEvent() else { return }
+        let былаФорма = event.stoolForm
         event.stoolForm = candidate
+        // `record` выше сохранил само событие, а форма — правка ПОСЛЕ него.
+        // До 04.11.2026 она жила в памяти до автосохранения, а тост
+        // «Записано · Стул · …» звучал сразу. Выгрузи приложение — запись
+        // осталась бы без формы, то есть без того, ради чего её делали.
+        guard context.persist(otherwise: { event.stoolForm = былаФорма }) else {
+            return неСохранилось()
+        }
         if flags.isEmpty {
             appState.showUndo("Записано · Стул · \(candidate.title.lowercased())", eventID: event.id)
             dismiss()
@@ -148,9 +156,17 @@ struct StoolSheet: View {
 
     private func confirm() {
         guard let event = ensureEvent() else { return }
+        let было = (форма: event.stoolForm, признаки: event.stoolFlags, снимок: event.photo)
         event.stoolForm = form
         event.stoolFlags = flags
         event.photo = фото
+        // Признак крови решает `raisesAlarm`, то есть тревогу. Его нельзя
+        // оставлять в памяти под тостом «Записано» — см. `pick`.
+        guard context.persist(otherwise: {
+            event.stoolForm = было.форма
+            event.stoolFlags = было.признаки
+            event.photo = было.снимок
+        }) else { return неСохранилось() }
         Haptics.success()
         appState.showUndo("Записано · Стул", eventID: event.id)
         dismiss()
@@ -164,6 +180,14 @@ struct StoolSheet: View {
     /// проверки права: гость-наблюдатель получал отказ на главном экране
     /// и записывал стул отсюда. Тост и отклик даёт вызывающий — он знает,
     /// дополнили запись или только начали.
+    /// Отказ хранилища виден человеку — тот же текст, что у ухода
+    /// (`CareScreen.неСохранилось`). Шторка остаётся открытой: выбор
+    /// на экране, и нажать ещё раз можно, не вспоминая его.
+    private func неСохранилось() {
+        Haptics.warning()
+        appState.showFailure("Не сохранилось · попробуй ещё раз")
+    }
+
     private func ensureEvent() -> LogEvent? {
         if let created { return created }
         created = EventLog(context: context, appState: appState)
