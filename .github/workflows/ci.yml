@@ -163,10 +163,19 @@ jobs:
           # отдельным шагом, и у них порог свой. Низкий порог здесь
           # нужен не ради строгости: он даёт шагу-воротам способ
           # отличить «долгих нет» от «флаг не доехал».
+          #
+          # `-testLanguage ru -testRegion RU` — язык СТЕНДА, а не украшение
+          # (04.11.2026, первый прогон, дошедший до тестов: 1440 выполнено,
+          # 71 красный). Тесты сверяют строки каталога по-русски
+          # («5 месяцев», «минуты как есть»), а симулятор раннера —
+          # английский, и `String(localized:)` честно отдавал «5 months».
+          # Эталон снимается на Mac, где устройство русское; без ключа
+          # CI мерил бы другой стенд и докладывал его как регрессию.
           rc=0
           xcodebuild -project Togo.xcodeproj -scheme Togo -configuration Debug \
             -destination 'platform=iOS Simulator,id=${{ steps.sim.outputs.udid }}' \
             -resultBundlePath build/Togo.xcresult \
+            -testLanguage ru -testRegion RU \
             OTHER_SWIFT_FLAGS='$(inherited) -Xfrontend -warn-long-function-bodies=500 -Xfrontend -warn-long-expression-type-checking=500' \
             test -only-testing:TogoTests > build/unit.log 2>&1 || rc=$?
           tail -60 build/unit.log
