@@ -121,11 +121,41 @@ extension TGSheet where Footer == EmptyView {
     }
 }
 
+/// Каким экраном назвался `cinemaScreen(экран:)`.
+///
+/// Жил в `Togo/Features/Settings/CinemaHeader.swift` до 04.11.2026
+/// и переехал сюда, когда читателей стало два: шапка «Кино» и каркас
+/// `TGScreen` ниже. Слой дизайна не должен читать символ из слоя
+/// экранов — иначе по коду не понять, в какую сторону зависимость.
+///
+/// Форма ключа — та же, что у `PosterModeKey`: `@Entry` в проекте
+/// не применялся.
+private struct ЭкранКиноKey: EnvironmentKey {
+    static let defaultValue: ScreenKey? = nil
+}
+
+extension EnvironmentValues {
+    var экранКино: ScreenKey? {
+        get { self[ЭкранКиноKey.self] }
+        set { self[ЭкранКиноKey.self] = newValue }
+    }
+}
+
 /// Figma: `Screen`. Тёплая бумага, единые отступы, слот под нижнюю панель.
 struct TGScreen<Content: View, Bottom: View>: View {
     var title: LocalizedStringKey?
     @ViewBuilder var content: Content
     @ViewBuilder var bottom: Bottom
+
+    /// Назвал ли себя экран снаружи, через `cinemaScreen(экран:)`.
+    ///
+    /// **Ради этой строки каркас и правился 04.11.2026.** Полотно ниже
+    /// было безусловным, и фотография под ним не показывалась ни на одном
+    /// подэкране — при том, что ключ экрана ему передавали 43 вызова
+    /// из 44. Решение «Кино» исполнялось на шести экранах из сорока
+    /// четырёх, и отличить это от замысла было нечем: чёрный фон —
+    /// законный вид экрана без фото.
+    @Environment(\.экранКино) private var экранКино
 
     /// Рисовать ли линию над панелью. Разбор — у `нижняяПанель`.
     ///
@@ -150,7 +180,24 @@ struct TGScreen<Content: View, Bottom: View>: View {
             .padding(.horizontal, Token.Spacing.screenPadding)
             .padding(.bottom, Token.Space.s24)
         }
-        .background(Token.Surface.screen.ignoresSafeArea())
+        // ПОЛОТНО РИСУЕТСЯ, ТОЛЬКО ЕСЛИ ПОД КАРКАСОМ НЕТ ФОТОГРАФИИ.
+        //
+        // Безусловное `.background(Token.Surface.screen…)` стояло здесь
+        // до 04.11.2026 и закрывало подложку на всех подэкранах разом.
+        //
+        // Снимать его безопасно по измеренной причине, а не по надежде:
+        // у `CinemaBackdrop` своё дно — `ZStack(alignment: .top)`
+        // начинается с `Token.Surface.screen` (`CinemaHeader.swift:401`).
+        // Значит содержимое, уехавшее ниже 360 pt подложки, всё равно
+        // ложится на чёрное, а не на пустоту.
+        //
+        // Форма с замыканием, а не `ShapeStyle`-перегрузка: вторая
+        // не принимает `if`.
+        .background {
+            if экранКино == nil {
+                Token.Surface.screen.ignoresSafeArea()
+            }
+        }
         .safeAreaInset(edge: .bottom, spacing: 0) { нижняяПанель }
         .themeSurface(.screen)
     }

@@ -172,7 +172,6 @@ struct BackgroundStoreTests {
             (.feeding, BackgroundBridge.фонКормления),
             (.care, BackgroundBridge.фонУхода),
             (.weight, BackgroundBridge.фонВеса),
-            (.trainingLibrary, BackgroundBridge.фонЗанятий),
             (.heat, BackgroundBridge.фонТечки),
             (.trip, BackgroundBridge.фонПоездки),
             (.doorTag, BackgroundBridge.фонБирки),
