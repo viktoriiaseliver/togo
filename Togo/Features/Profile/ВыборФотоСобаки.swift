@@ -41,7 +41,7 @@ enum ФотоСобаки {
                          appState: AppState?,
                          экран: UsageLog.Screen) async -> Bool {
         guard let сырое = try? await item.loadTransferable(type: Data.self),
-              let ужатое = ФонФото.ужать(сырое)
+              let ужатое = await ФонФото.ужатьВФоне(сырое)
         else {
             appState?.showFailure(String(localized: "Снимок не открылся · попробуй другой"))
             return false

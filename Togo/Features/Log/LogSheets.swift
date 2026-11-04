@@ -916,7 +916,7 @@ struct ФотоМомента: View {
                 // Полноразмерный снимок — десятки мегабайт. В дневнике
                 // он не нужен: врач смотрит на вид, а не на текстуру.
                 guard let raw = try? await item.loadTransferable(type: Data.self),
-                      let shrunk = DocumentPhoto.shrink(raw)
+                      let shrunk = await DocumentPhoto.shrinkВФоне(raw)
                 else { picked = nil; return }
                 data = shrunk
                 picked = nil
