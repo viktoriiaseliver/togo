@@ -189,6 +189,7 @@ struct DogTab: View {
     private func герой(_ dog: Dog) -> some View {
         ФотоШапка(фото: фотоЭкрана(dog),
                   высота: Token.Size.backdropTab,
+                  якорь: .по(виду: .tab),
                   надстрочник: надстрочник(dog),
                   заголовок: .значение(dog.displayName)) {
             опись(dog)

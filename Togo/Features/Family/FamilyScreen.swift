@@ -290,6 +290,7 @@ struct FamilyScreen: View {
     private var герой: some View {
         ФотоШапка(фото: фотоЭкрана,
                   высота: Token.Size.backdropSub,
+                  якорь: .по(виду: .sub),
                   надстрочник: надстрочник,
                   заголовок: .ключ("Семья")) {
             if let duty {
