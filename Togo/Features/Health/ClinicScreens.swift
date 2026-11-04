@@ -323,7 +323,9 @@ struct ClinicEditor: View {
         guard let clinic else { return }
         let былоУдалено = clinic.deletedAt
         let былоИзменено = clinic.changedAt
-        ОбщееУдаление.удалить(clinic)
+        // `_ =` обязателен: Xcode 26.3 считает брошенное замыкание ошибкой даже при
+        // `@discardableResult` (CI, 04.11.2026: «function is unused»).
+        _ = ОбщееУдаление.удалить(clinic)
         guard context.persist(otherwise: {
             clinic.deletedAt = былоУдалено
             clinic.changedAt = былоИзменено
