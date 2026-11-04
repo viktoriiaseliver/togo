@@ -32,6 +32,17 @@ nonisolated enum DayPlanBuilder {
                                              startOfDay: startOfDay)
         for (index, minute) in mealMinutes.enumerated() {
             let at = cal.date(minuteOfDay: minute, on: startOfDay)
+            // Сколько выйдет до этого кормления от ПРОШЛОГО — от записи,
+            // которую назвала разметка, а не от «последней записи о еде».
+            // Второе правило рядом с первым разошлось бы: на этом Togo
+            // ловился трижды и чинил это 04.11 тем же коммитом, что завёл
+            // `закрытаЗаписью`.
+            let промежуток = (index > 0 ? разметка.закрыто[index - 1] : nil)
+                .flatMap { запись in
+                    MealSchedule.промежуток(planned: mealMinutes, слот: index,
+                                            фактПрошлого: mealEvents[запись].date,
+                                            датаСлота: at)
+                }
             // Граммов в заголовке нет, пока нормы нет: порция считается
             // из неё, и выдуманное число в плане дня человек выполняет
             // не задумываясь — это самый короткий путь от умолчания
@@ -43,6 +54,7 @@ nonisolated enum DayPlanBuilder {
                                      hint: dog.foodBrand, kind: .meal,
                                      isDone: разметка.закрыто[index] != nil,
                                      фактВремя: разметка.закрыто[index].map { mealEvents[$0].date },
+                                     промежуток: промежуток,
                                      закрытаЗаписью: разметка.закрыто[index].map { mealEvents[$0].id }))
         }
         // Уход — такой же пункт дня, как еда и доза. Отдельной карточкой
