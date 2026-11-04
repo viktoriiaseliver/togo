@@ -37,6 +37,18 @@ struct TodayScreen: View {
 
     @Environment(AppState.self) private var appState
     @Environment(Settings.self) private var settings
+    /// Идёт ли «Забрать сейчас» прямо сейчас.
+    ///
+    /// Заведено 04.11.2026 по отзыву 30.10: «Не работает кнопка».
+    /// Кнопка работала — она молчала. `fetchNow()` умеет выйти
+    /// немедленно (`engines.isEmpty`) и умеет поставить
+    /// `state = .failed`, когда iCloud просит подождать;
+    /// этот экран не читал ни того, ни другого.
+    ///
+    /// Сосед с такой же кнопкой (`ВходВДневник.swift:42`) умел
+    /// это с самого начала — две копии одного действия, и одна
+    /// из них немая.
+    @State private var забираюДневник = false
     @Environment(\.familySync) private var sync
     @Environment(\.modelContext) private var context
     @Environment(\.scenePhase) private var scenePhase
@@ -174,8 +186,22 @@ struct TodayScreen: View {
                 message: .готовая(ЧейДневник.имя.map {
                     String(localized: "Ты в дневнике · \($0). Собака приедет вместе с записями — обычно за минуту. Свою заводить не нужно.")
                 } ?? String(localized: "Ты в общем дневнике. Собака приедет вместе с записями — обычно за минуту. Свою заводить не нужно.")),
-                actionTitle: "Забрать сейчас",
-                action: { Task { await sync?.fetchNow() } }
+                actionTitle: забираюДневник ? "Забираю…" : "Забрать сейчас",
+                action: {
+                    guard !забираюДневник else { return }
+                    Task {
+                        забираюДневник = true
+                        await sync?.fetchNow()
+                        забираюДневник = false
+                        // Отказ называется словом. Молчаливый
+                        // возврат к прежней надписи человек
+                        // читает как «кнопка не работает» —
+                        // ровно это и было в отзыве.
+                        if case .failed(let почему) = sync?.state {
+                            appState.showFailure(почему)
+                        }
+                    }
+                }
             )
         } else {
             EmptyStateCard(
@@ -1981,7 +2007,8 @@ struct TodayScreen: View {
     /// «Через 30 дней» — это не дело на сегодня, это шум.
     private var planItems: [DayPlanItem] {
         DayPlanBuilder.items(dog: dog, events: events, now: отсчёт,
-                             seesMedical: appState.can(.seeMedical))
+                             seesMedical: appState.can(.seeMedical),
+                             часСводки: settings.briefHour)
     }
 
     /// «Беру на себя» с запасом в 45 минут — чтобы двое не дали дозу дважды.

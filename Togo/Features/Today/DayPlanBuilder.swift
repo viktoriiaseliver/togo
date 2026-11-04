@@ -10,8 +10,11 @@ nonisolated enum DayPlanBuilder {
     /// правил здесь много, и все они про то, что человек считает
     /// сделанным.
     @MainActor
+    /// - Parameter часСводки: `Settings.briefHour`. `nil` — зовущий
+    ///   про него не знает, и пункт ухода останется без части дня.
     static func items(dog: Dog?, events: [LogEvent], now: Date = Date(),
-                      seesMedical: Bool = true) -> [DayPlanItem] {
+                      seesMedical: Bool = true,
+                      часСводки: Int? = nil) -> [DayPlanItem] {
         guard let dog else { return [] }
         var items: [DayPlanItem] = []
         let cal = Calendar.current
@@ -49,7 +52,8 @@ nonisolated enum DayPlanBuilder {
                 kind: .care,
                 isDone: task.isDoneToday(on: now),
                 careTask: task,
-                showsTime: false
+                showsTime: false,
+                частьДня: часСводки.map(ЧастьДня.по(часу:))
             ))
         }
 
