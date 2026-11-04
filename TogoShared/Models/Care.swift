@@ -577,7 +577,10 @@ final class Medication {
     }
 
     var scheduleSummary: String {
-        let clock = times.sorted().map { String(format: "%02d:%02d", $0 / 60, $0 % 60) }.joined(separator: String(localized: " и "))
+        // Через `Fmt.clock(minuteOfDay:)`, а не `String(format:)`: тот
+        // всегда 24-часовой, и на американской витрине расписание
+        // расходилось с журналом доз на двенадцать часов (замер 04.11.2026).
+        let clock = times.sorted().map { Fmt.clock(minuteOfDay: $0) }.joined(separator: String(localized: " и "))
         return fastingMinutes > 0 ? String(localized: "\(clock) · натощак \(fastingMinutes) мин") : clock
     }
 
@@ -745,8 +748,11 @@ nonisolated struct DoseSlot: Codable, Hashable, Sendable {
     var minuteOfDay: Int
     var quantity: Double
 
+    /// Единственная реализация часа живёт в `Fmt`, а не здесь.
+    /// Прежний `String(format:)` был третьей копией одного правила
+    /// и единственной, не знавшей про 12-часовые сутки.
     var clock: String {
-        String(format: "%02d:%02d", minuteOfDay / 60, minuteOfDay % 60)
+        Fmt.clock(minuteOfDay: minuteOfDay)
     }
 }
 

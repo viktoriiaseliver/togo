@@ -39,7 +39,10 @@ nonisolated enum Exporter {
                 event.durationSeconds.map { String($0 / 60) } ?? "",
                 event.askSignal?.title ?? "",
                 event.incidentKind?.title ?? "",
-                event.walkEventID.flatMap { walkStart[$0] }.map(Fmt.clock) ?? "",
+                // Замыканием, а не `.map(Fmt.clock)`: у `clock` появился
+                // параметр локали с умолчанием, а ссылка на функцию
+                // умолчаний не применяет.
+                event.walkEventID.flatMap { walkStart[$0] }.map { Fmt.clock($0) } ?? "",
                 event.authorName,
                 event.note ?? "",
             ]
