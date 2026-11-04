@@ -325,7 +325,7 @@ final class FamilySync: NSObject {
     /// Синглтона здесь нет нарочно: экземпляр по-прежнему создаёт
     /// приложение и кладёт в окружение — эта ссылка лишь ЗЕРКАЛО
     /// того, что уже живёт, а не второй владелец.
-    private(set) nonisolated(unsafe) static weak var текущий: FamilySync?
+    private(set) static weak var текущий: FamilySync?
 
     /// Разбудить обмен по тихому пушу.
     ///
@@ -347,6 +347,25 @@ final class FamilySync: NSObject {
     }
 
     func fetchNow() async {
+        // Одна сверка за раз (04.11.2026). Пуш, возврат в приложение
+        // и потягивание списка приходят почти разом, и три параллельные
+        // сверки гоняли `state` между `.syncing`, `.idle` и `.failed`
+        // в произвольном порядке — экран показывал исход не последней,
+        // а той, что кончилась позже. Второй вход ждёт идущую.
+        if let идущая = сверкаИдёт {
+            await идущая.value
+            return
+        }
+        let сверка = Task { await сверить() }
+        сверкаИдёт = сверка
+        await сверка.value
+        сверкаИдёт = nil
+    }
+
+    /// Задача идущей сверки — см. `fetchNow`.
+    private var сверкаИдёт: Task<Void, Never>?
+
+    private func сверить() async {
         guard !engines.isEmpty else { return }
         state = .syncing
 
@@ -687,8 +706,26 @@ extension FamilySync: CKSyncEngineDelegate {
                 }
             }
 
-        case .accountChange:
-            await MainActor.run { self.state = .failed("Аккаунт iCloud сменился — включи общий дневник заново") }
+        case .accountChange(let смена):
+            await MainActor.run {
+                // Выход и смена аккаунта — движки и их положение принадлежат
+                // ПРЕЖНЕМУ аккаунту (04.11.2026). До этого здесь ставилось
+                // только `.failed`: движки жили дальше, а сохранённая
+                // сериализация при следующем старте приезжала к новому
+                // аккаунту чужой. `SyncStateStore.reset` был написан и не
+                // звался ни разу. Местные записи НЕ трогаем: что делать
+                // с дневником при выходе из iCloud — решение Виктории.
+                switch смена.changeType {
+                case .signOut, .switchAccounts:
+                    self.stop()
+                    SyncStateStore.reset()
+                    self.отложенныйПриём = [:]
+                    self.отложеннаяОтправка = []
+                default:
+                    break
+                }
+                self.state = .failed("Аккаунт iCloud сменился — включи общий дневник заново")
+            }
 
         default:
             break

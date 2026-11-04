@@ -94,7 +94,11 @@ nonisolated enum Persistence {
     /// Права лежат в профиле подписи внутри бандла. `SecTask` на iOS
     /// недоступен, поэтому читаем профиль: он обёрнут в CMS, но нужный
     /// plist лежит внутри открытым текстом.
-    static var hasCloudEntitlement: Bool {
+    // Считается ОДИН раз за процесс (04.11.2026): прежде каждое обращение
+    // заново читало и разбирало `embedded.mobileprovision`, а зовут его
+    // `FamilySync.start`, `invite`, `existing` и приём приглашения.
+    // Профиль внутри подписанного бандла за жизнь процесса не меняется.
+    static let hasCloudEntitlement: Bool = {
         #if targetEnvironment(simulator)
         // Симулятор сборкой из App Store не бывает: профиля в нём нет
         // никогда, и без этой ветки прогон тестов уходил в бесконечное
@@ -108,7 +112,7 @@ nonisolated enum Persistence {
                                            withExtension: "mobileprovision") != nil,
             entitlements: provisioningEntitlements())
         #endif
-    }
+    }()
 
     /// Решение отдельно от чтения бандла: `Bundle.main` в тест не подставить,
     /// а проверять надо именно решение — оно выключало iCloud у всех, кто
@@ -216,13 +220,36 @@ nonisolated enum Persistence {
     /// тест не мог подсунуть ему хранилище прежней или неизвестной формы.
     /// Решение «что показать человеку, когда хранилище не открылось» жило
     /// в коде, до которого тест не дотягивался.
+    /// Чем кончилось открытие хранилища — значением, а не глобальными
+    /// флагами.
+    ///
+    /// До 04.11.2026 `openContainer` писал `isUsingCloud` и `isEphemeral`
+    /// в `nonisolated(unsafe) static var`, а тесты Swift Testing идут
+    /// параллельно и зовут его из разных наборов: утверждение «флаг
+    /// после открытия такой-то» могло читать чужое открытие. Теперь
+    /// исход возвращается целиком, тесты читают его, а глобальные флаги
+    /// пишет только `openContainer` — разом и из одного исхода, поэтому
+    /// «сбросить на входе» (прежняя защита от `true` прошлого раза)
+    /// больше не нужно: флаги не переживают открытие, они его итог.
+    struct Открытие: @unchecked Sendable {
+        // `@unchecked`: у `ModelContainer` в этом SDK нет пометки
+        // `Sendable`, а поля здесь — только `let`, изменяемого нет.
+        let container: ModelContainer?
+        let isUsingCloud: Bool
+        let isEphemeral: Bool
+    }
+
+    /// Открыть хранилище для приложения и записать флаги, которые читают
+    /// экраны (`TodayScreen` — `isEphemeral`, `cloudState` — `isUsingCloud`).
     static func openContainer(storeURL: URL?, allowCloud: Bool) -> ModelContainer? {
+        let исход = открыть(storeURL: storeURL, allowCloud: allowCloud)
+        isUsingCloud = исход.isUsingCloud
+        isEphemeral = исход.isEphemeral
+        return исход.container
+    }
+
+    static func открыть(storeURL: URL?, allowCloud: Bool) -> Открытие {
         StartupLog.note("открываю хранилище")
-        // Сбрасываем на входе, а не на каждой ветке: успешная ветка iCloud
-        // его не трогала вовсе, и при повторном открытии там оставалось
-        // `true` от прошлого раза — плашка «записи не сохраняются» висела бы
-        // поверх исправного хранилища.
-        isEphemeral = false
 
         // iCloud пробуем, только если право на него действительно выдано.
         if allowCloud, let storeURL {
@@ -235,14 +262,13 @@ nonisolated enum Persistence {
             if let container = try? ModelContainer(for: schema,
                                                    migrationPlan: TogoMigrationPlan.self,
                                                    configurations: cloud) {
-                isUsingCloud = true
                 // Литерала здесь нет нарочно: по этой строке экран
                 // отказа решает, можно ли советовать переустановку.
                 // Два места, пишущих и читающих одну мысль разными
                 // литералами, расходятся на второй правке — а ценой
                 // расхождения тут будет чужой дневник.
                 StartupLog.note(StorageFailureAdvice.признакОблака)
-                return container
+                return Открытие(container: container, isUsingCloud: true, isEphemeral: false)
             }
             StartupLog.note("iCloud не открылся, откатываюсь на локальное")
         } else {
@@ -256,7 +282,6 @@ nonisolated enum Persistence {
             StartupLog.note("права на iCloud нет — только локально (профиль: \(профиль ? "есть" : "нет"))")
         }
 
-        isUsingCloud = false
         // `cloudKitDatabase: .none` — ЯВНО, и это не перестраховка.
         //
         // **Замерено 08.10.2026 на отказе стенда, который трижды сорвал
@@ -300,9 +325,8 @@ nonisolated enum Persistence {
             let container = try ModelContainer(for: schema,
                                                migrationPlan: TogoMigrationPlan.self,
                                                configurations: local)
-            isEphemeral = false
             StartupLog.note("хранилище: локальное")
-            return container
+            return Открытие(container: container, isUsingCloud: false, isEphemeral: false)
         } catch {
             StartupLog.note("локальное не открылось: \(error)")
         }
@@ -326,8 +350,7 @@ nonisolated enum Persistence {
         if let storeURL,
            FileManager.default.fileExists(atPath: storeURL.path(percentEncoded: false)) {
             StartupLog.note("файл дневника есть, но не открылся — «Дневник не открылся»")
-            isEphemeral = false
-            return nil
+            return Открытие(container: nil, isUsingCloud: false, isEphemeral: false)
         }
 
         // Файла нет — значит это первый запуск или чистая установка, и терять
@@ -347,12 +370,11 @@ nonisolated enum Persistence {
                                                    isStoredInMemoryOnly: true,
                                                    cloudKitDatabase: .none)
             )
-            isEphemeral = true
             StartupLog.note("хранилище: в памяти, записи не сохранятся")
-            return container
+            return Открытие(container: container, isUsingCloud: false, isEphemeral: true)
         } catch {
             StartupLog.note("не открылось ничего: \(error)")
-            return nil
+            return Открытие(container: nil, isUsingCloud: false, isEphemeral: false)
         }
     }
 

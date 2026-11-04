@@ -62,22 +62,19 @@ struct EphemeralFlagTests {
         //    «файл есть, но не открылся» и вернул nil с флагом false;
         #expect(FileManager.default.fileExists(atPath: url.path(percentEncoded: false)) == false,
                 "файл есть — значит проверяется не та ветка")
-        // 2. флаг до замера ложен, иначе «истинен после» ничего не значит.
-        //    `openContainer` сбрасывает его на входе сам, но полагаться
-        //    на это здесь нельзя: именно эту строку и мог бы кто-нибудь
-        //    убрать, а тест обязан увидеть ПЕРЕХОД, а не значение.
-        _ = Persistence.openContainer(storeURL: nil, allowCloud: false)
-        let доЗамера = Persistence.isEphemeral
+        // 2. (до 04.11.2026) «флаг до замера ложен» — снято вместе
+        //    с глобальным флагом в замере: исход открытия теперь значение
+        //    (`Persistence.Открытие`), у него нет «до», которое могло бы
+        //    остаться от чужого открытия в параллельном наборе.
+        let исход = Persistence.открыть(storeURL: url, allowCloud: false)
 
-        let контейнер = Persistence.openContainer(storeURL: url, allowCloud: false)
-
-        #expect(контейнер != nil, """
+        #expect(исход.container != nil, """
             дневник не открылся вовсе. На первом запуске и на чистой установке
             терять нечего, и человек обязан увидеть приложение — пусть
             с плашкой «записи не сохранятся», а не пустой экран отказа.
             """)
-        #expect(Persistence.isEphemeral == true, """
-            хранилище в памяти, а флаг ложен (до замера он был \(доЗамера)).
+        #expect(исход.isEphemeral == true, """
+            хранилище в памяти, а флаг ложен.
             Значит плашка «записи не сохраняются» на главном не появится,
             и человек будет отмечать дозы в хранилище, которое их не хранит.
 
@@ -96,9 +93,9 @@ struct EphemeralFlagTests {
         // это чинит; тест держит починку.
         let закрытая = try каталогБезЗаписи()
         defer { вернутьПрава(закрытая) }
-        _ = Persistence.openContainer(storeURL: закрытая.appendingPathComponent("Togo.store"),
-                                      allowCloud: false)
-        #expect(Persistence.isEphemeral == true, "стенд не привёл флаг в true — проверять нечего")
+        let первое = Persistence.открыть(storeURL: закрытая.appendingPathComponent("Togo.store"),
+                                         allowCloud: false)
+        #expect(первое.isEphemeral == true, "стенд не привёл флаг в true — проверять нечего")
 
         let папка = FileManager.default.temporaryDirectory
             .appendingPathComponent("togo-эфемерность-\(UUID().uuidString)", isDirectory: true)
@@ -106,9 +103,9 @@ struct EphemeralFlagTests {
         defer { try? FileManager.default.removeItem(at: папка) }
         let рабочий = папка.appendingPathComponent("Togo.store")
 
-        let контейнер = Persistence.openContainer(storeURL: рабочий, allowCloud: false)
-        #expect(контейнер != nil, "исправный путь обязан открыться")
-        #expect(Persistence.isEphemeral == false, """
+        let второе = Persistence.открыть(storeURL: рабочий, allowCloud: false)
+        #expect(второе.container != nil, "исправный путь обязан открыться")
+        #expect(второе.isEphemeral == false, """
             хранилище открылось на диске, а флаг остался истинным —
             плашка «записи не сохраняются» встанет поверх исправного
             дневника и научит человека её не читать.

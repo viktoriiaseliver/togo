@@ -260,6 +260,7 @@ nonisolated enum UsageLog {
 
     /// Всё, что записано, по возрастанию времени.
     static func entries() -> [Entry] {
+        файл.lock(); defer { файл.unlock() }
         flushNow()
         guard let url, let text = try? String(contentsOf: url, encoding: .utf8) else { return [] }
         let decoder = JSONDecoder()
@@ -275,12 +276,14 @@ nonisolated enum UsageLog {
 
     /// Файл целиком — его отдают в «Поделиться» и забирают с телефона.
     static func rawText() -> String {
+        файл.lock(); defer { файл.unlock() }
         flushNow()
         guard let url, let text = try? String(contentsOf: url, encoding: .utf8) else { return "" }
         return text
     }
 
     static func clear() {
+        файл.lock(); defer { файл.unlock() }
         lock.lock()
         buffer.removeAll()
         lock.unlock()
@@ -299,6 +302,10 @@ nonisolated enum UsageLog {
         // на старте — это лишняя переменная в тесте, который и без того
         // меряет запуск приложения.
         guard !isUITesting else { return 0 }
+        // Прочесть, отфильтровать и переписать — под одним замком:
+        // сброс с очереди между `entries()` и `write` терялся при
+        // атомарной замене файла.
+        файл.lock(); defer { файл.unlock() }
         let border = cutoff ?? now.addingTimeInterval(-keepDays * 24 * 3600)
         let all = entries()
         let kept = Array(all.filter { $0.at >= border }.suffix(maxEntries))
@@ -339,6 +346,14 @@ nonisolated enum UsageLog {
     }
 
     private static let lock = NSLock()
+    /// Замок на ФАЙЛ, отдельный от замка на буфер (04.11.2026).
+    ///
+    /// `flushNow` зовут и с `queue`, и с главного потока (`entries()`,
+    /// смена фазы), а `trim` читает файл и переписывает его атомарной
+    /// заменой. Без замка два сброса писали в один `FileHandle` разом,
+    /// а сброс между чтением и заменой в `trim` пропадал. Рекурсивный —
+    /// потому что `trim` → `entries` → `flushNow` берут его по цепочке.
+    private static let файл = NSRecursiveLock()
     private static let queue = DispatchQueue(label: "\(AppIdentifiers.bundlePrefix).usage-log",
                                              qos: .utility)
     nonisolated(unsafe) private static var buffer: [Entry] = []
@@ -373,6 +388,7 @@ nonisolated enum UsageLog {
 
     /// Слить накопленное на диск.
     static func flushNow() {
+        файл.lock(); defer { файл.unlock() }
         lock.lock()
         let pending = buffer
         buffer.removeAll()

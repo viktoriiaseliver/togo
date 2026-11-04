@@ -102,10 +102,10 @@ struct Schema25Tests {
         // 3. Ради чего опыт: человек с августовской сборкой обязан увидеть
         //    «дневник не открылся» и дорогу к восстановлению, а не пустой
         //    дневник поверх своего целого.
-        let контейнер = Persistence.openContainer(storeURL: url, allowCloud: false)
-        #expect(контейнер == nil,
+        let исход = Persistence.открыть(storeURL: url, allowCloud: false)
+        #expect(исход.container == nil,
                 "нужен StorageFailureScreen, а он показывается только при nil")
-        #expect(Persistence.isEphemeral == false,
+        #expect(исход.isEphemeral == false,
                 "хранилище в памяти поверх непустого файла — подмена дневника пустым")
 
         // 4. И файл цел: из него человек и будет восстанавливаться.

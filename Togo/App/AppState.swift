@@ -461,8 +461,35 @@ final class AppState {
     }
 
     /// Отметить, что собака что-то сделала прямо сейчас.
+    /// Правка идущей сессии — поверх того, что лежит в общем хранилище,
+    /// а не поверх своей копии (04.11.2026).
+    ///
+    /// Отметку с экрана блокировки пишет интент прямо в хранилище
+    /// (`ActiveSessionStore.appendMark`), а `session.didSet` сохраняет
+    /// объект ЦЕЛИКОМ. Правка своей копии, сделанная до `reloadSession`,
+    /// затирала отметку с блокировки — молча, и в итоге прогулки её
+    /// не было. Теперь правка берёт свежее из хранилища; своя копия —
+    /// только запас, когда хранилище пусто (протухло или не пишется).
+    ///
+    /// Из хранилища берётся только ТА ЖЕ прогулка — то же начало и вид.
+    /// Хранилище одно на процесс (и на параллельные тесты), и чужая
+    /// сессия в нём не должна подменить свою.
+    private func правитьСессию(_ правка: (inout ActiveSession) -> Void) {
+        guard let своя = session else { return }
+        var основа = свежаяСессия(вместо: своя)
+        правка(&основа)
+        session = основа   // `didSet` сохраняет
+    }
+
+    private func свежаяСессия(вместо своя: ActiveSession) -> ActiveSession {
+        guard let свежая = ActiveSessionStore.load(),
+              свежая.startedAt == своя.startedAt, свежая.kind == своя.kind
+        else { return своя }
+        return свежая
+    }
+
     func mark(_ kind: ActiveSession.Mark.Kind, at date: Date = Date()) {
-        session?.marks.append(ActiveSession.Mark(kind: kind, at: date))
+        правитьСессию { $0.marks.append(ActiveSession.Mark(kind: kind, at: date)) }
         UsageLog.note(.mark, kind.rawValue)
     }
 
@@ -482,17 +509,17 @@ final class AppState {
     /// Снять все отметки одного вида. Нужно для тех, что ставятся один раз
     /// за прогулку: повторный тап по ним — это «нет, всё-таки не было».
     func removeMarks(of kind: ActiveSession.Mark.Kind) {
-        session?.marks.removeAll { $0.kind == kind }
+        правитьСессию { $0.marks.removeAll { $0.kind == kind } }
         UsageLog.note(.mark, kind.rawValue, outcome: .cancelled)
     }
 
     func pauseSession() {
-        session?.pause()
+        правитьСессию { $0.pause() }
         UsageLog.note(.pause)
     }
 
     func resumeSession() {
-        session?.resume()
+        правитьСессию { $0.resume() }
         UsageLog.note(.resume)
     }
 
@@ -500,7 +527,8 @@ final class AppState {
     @discardableResult
     func undoLastMark() -> ActiveSession.Mark? {
         guard session?.marks.isEmpty == false else { return nil }
-        let removed = session?.marks.removeLast()
+        var removed: ActiveSession.Mark?
+        правитьСессию { removed = $0.marks.popLast() }
         UsageLog.note(.mark, removed?.kind.rawValue, outcome: .cancelled)
         return removed
     }
@@ -510,7 +538,12 @@ final class AppState {
         defer { session = nil }
         // Закрывать нечего — и отмечать нечего: пустой «закончил» в журнале
         // выглядел бы прогулкой, которой не было.
-        guard let session else { return nil }
+        //
+        // Закрывается СВЕЖАЯ сессия из хранилища, если она там есть:
+        // последняя отметка могла прийти с блокировки за секунду до
+        // «Закончить» и в своей копии ещё не лежать (04.11.2026).
+        guard let своя = session else { return nil }
+        let session = свежаяСессия(вместо: своя)
         UsageLog.note(.finish, session.kind.rawValue)
         return session
     }

@@ -12,6 +12,10 @@ nonisolated enum StartupLog {
     private static let fileName = "startup.log"
     /// Больше десяти запусков хранить незачем.
     private static let keepLines = 200
+    private static let замок = NSLock()
+    /// `ISO8601DateFormatter` потокобезопасен (документация Apple), поэтому
+    /// один на процесс, а не новый на каждую строку журнала.
+    nonisolated(unsafe) private static let отметка = ISO8601DateFormatter()
 
     static var url: URL? {
         try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask,
@@ -47,7 +51,12 @@ nonisolated enum StartupLog {
     static func note(_ message: String) {
         log.notice("старт: \(message, privacy: .public)")
         guard let url else { return }
-        let stamp = ISO8601DateFormatter().string(from: Date())
+        let stamp = Self.отметка.string(from: Date())
+        // Дописать и подрезать — одним куском (04.11.2026): `note` зовут
+        // из открытия хранилища на любом потоке, и две записи разом
+        // теряли строку — подрезка одной читала файл до дописи другой
+        // и заменяла его целиком.
+        замок.lock(); defer { замок.unlock() }
         guard let data = "\(stamp) \(message)\n".data(using: .utf8) else { return }
 
         let fd = open(url.path, O_WRONLY | O_CREAT | O_APPEND, 0o644)
