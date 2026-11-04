@@ -879,15 +879,10 @@ enum SharedDiaryInbox {
     /// Приедет своя запись клиники — связь сошьётся следующей правкой
     /// дела ухода.
     static func clinic(for payload: CarePayload, context: ModelContext) -> Clinic? {
-        if let id = payload.clinicID,
-           let найдена = try? context.fetch(
-               FetchDescriptor<Clinic>(predicate: #Predicate { $0.id == id })
-           ).first {
-            return найдена
-        }
-        guard let имя = Fmt.notBlank(payload.clinicName ?? "") else { return nil }
-        return try? context.fetch(FetchDescriptor<Clinic>())
-            .first { $0.name == имя }
+        // Одна реализация на четыре типа (04.11.2026): здесь стояла
+        // дословная копия `клиника(id:имя:)` — два поиска одного правила
+        // «по id, промах — по имени» расходятся молча.
+        клиника(id: payload.clinicID, имя: payload.clinicName, context: context)
     }
 
     /// Принять взвешивание.

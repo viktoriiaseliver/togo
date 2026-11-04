@@ -772,6 +772,12 @@ extension FamilySync: CKSyncEngineDelegate {
         if let event = найдена(ctx.опознать(
             FetchDescriptor<LogEvent>(predicate: #Predicate { $0.id == id })
         )) {
+            // Те же ворота, что при постановке в очередь и в засеве
+            // (04.11.2026): правка могла встать в очередь до того, как
+            // запись стала негодной (или в состоянии движка прошлой
+            // версии), и сборка записи — последняя дверь наружу.
+            // У собаки ворота стоят внутри `SharedDiaryRecords.record`.
+            guard SharedDiaryOutgoing.sendable(event) else { return nil }
             return SharedDiaryRecords.record(event.payload, base: base, in: recordID.zoneID)
         }
         if let dose = найдена(ctx.опознать(

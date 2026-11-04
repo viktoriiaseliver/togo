@@ -48,15 +48,15 @@ import SwiftData
 /// человека, то есть ровно тот дефект, от которого всё это написано,
 /// только теперь молча и с виду починенный.
 ///
-/// Отсюда устройство: одиннадцать коротких перегрузок одного имени,
-/// и пара стоит в каждой ровно один раз. Общей функции по протоколу
-/// здесь пока нет. Довод, на котором это стояло («у
-/// `TogoWidgetsExtension` изоляция по умолчанию другая»), ЛОЖЕН:
+/// Отсюда устройство: одна функция, и пара стоит в ней ровно один
+/// раз. До 04.11.2026 здесь было одиннадцать перегрузок одного имени —
+/// общей функции по протоколу не заводили нарочно. Довод («у
+/// `TogoWidgetsExtension` изоляция по умолчанию другая») ЛОЖЕН:
 /// `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` задан на уровне
 /// проекта и наследуется обоими таргетами — замер 04.11.2026,
 /// `xcodebuild -showBuildSettings -target TogoWidgetsExtension`.
-/// Протокол `@MainActor` здесь возможен; переход на него — пачка 4
-/// в `docs/аудит-рефакторинга-2026-11-04.md`.
+/// Теперь — протокол `Надгробное` и одна функция (пачка 4
+/// `docs/аудит-рефакторинга-2026-11-04.md`).
 ///
 /// # Чего здесь НЕТ и почему
 ///
@@ -106,116 +106,43 @@ import SwiftData
 ///                      видно человеку, — не удаление, а порча экрана
 /// ```
 @MainActor
+/// Запись, у которой удаление — надгробие с отметкой времени.
+///
+/// Одиннадцать типов обмена; `LogEvent` сюда не входит нарочно — у него
+/// своё удаление с автором и пятисекундным возвратом (`EventLog`).
+/// Соответствие не трогает формы схемы: протокол не добавляет полей,
+/// он называет два уже существующих.
+protocol Надгробное: AnyObject {
+    var deletedAt: Date? { get set }
+    var changedAt: Date { get set }
+}
+
+extension Dog: Надгробное {}
+extension CareTask: Надгробное {}
+extension Medication: Надгробное {}
+extension DoseRecord: Надгробное {}
+extension WeightEntry: Надгробное {}
+extension Clinic: Надгробное {}
+extension DogDocument: Надгробное {}
+extension LabResult: Надгробное {}
+extension VetVisit: Надгробное {}
+extension Diagnosis: Надгробное {}
+extension Prescription: Надгробное {}
+
 enum ОбщееУдаление {
 
-    /// Что вернуть, если сохранение не удалось.
-    ///
-    /// Отдельное имя, а не голый `() -> Void`, чтобы в сигнатуре было
-    /// видно назначение: это аргумент для `context.persist(otherwise:)`,
-    /// а не кнопка «Отменить» для человека.
     typealias Откат = @MainActor () -> Void
 
-    /// Удалить так, чтобы удаление доехало до второго человека.
+    /// Поставить надгробие ПАРОЙ — `deletedAt` и `changedAt` одним
+    /// моментом — и вернуть откат обоих полей.
     ///
-    /// Запись остаётся в своей базе надгробием: без неё `FamilySync`
-    /// не соберёт `CKRecord` и отправлять будет нечего. Видимость
-    /// закрывают фильтры на чтении, а не этот вызов.
-    ///
-    /// Сохранение здесь НЕ делается нарочно: его делает вызывающий
-    /// своим `context.persist(otherwise:)`, у которого есть откат.
-    /// Два сохранения на одно действие дали бы два круга обмена.
+    /// До 04.11.2026 здесь было одиннадцать одинаковых перегрузок, по одной
+    /// на тип: «протокол дал бы красное только в расширении». Довод был
+    /// ложным (изоляция у виджета та же — замер пачки 0), а одиннадцать
+    /// копий одной пары — ровно то место, где одна из них однажды
+    /// забыла бы вторую половину.
     @discardableResult
-    static func удалить(_ запись: Dog, когда: Date = Date()) -> Откат {
-        let былоНадгробие = запись.deletedAt
-        let былаПравка = запись.changedAt
-        запись.deletedAt = когда
-        запись.changedAt = когда
-        return { запись.deletedAt = былоНадгробие; запись.changedAt = былаПравка }
-    }
-
-    @discardableResult
-    static func удалить(_ запись: CareTask, когда: Date = Date()) -> Откат {
-        let былоНадгробие = запись.deletedAt
-        let былаПравка = запись.changedAt
-        запись.deletedAt = когда
-        запись.changedAt = когда
-        return { запись.deletedAt = былоНадгробие; запись.changedAt = былаПравка }
-    }
-
-    @discardableResult
-    static func удалить(_ запись: Medication, когда: Date = Date()) -> Откат {
-        let былоНадгробие = запись.deletedAt
-        let былаПравка = запись.changedAt
-        запись.deletedAt = когда
-        запись.changedAt = когда
-        return { запись.deletedAt = былоНадгробие; запись.changedAt = былаПравка }
-    }
-
-    @discardableResult
-    static func удалить(_ запись: DoseRecord, когда: Date = Date()) -> Откат {
-        let былоНадгробие = запись.deletedAt
-        let былаПравка = запись.changedAt
-        запись.deletedAt = когда
-        запись.changedAt = когда
-        return { запись.deletedAt = былоНадгробие; запись.changedAt = былаПравка }
-    }
-
-    @discardableResult
-    static func удалить(_ запись: WeightEntry, когда: Date = Date()) -> Откат {
-        let былоНадгробие = запись.deletedAt
-        let былаПравка = запись.changedAt
-        запись.deletedAt = когда
-        запись.changedAt = когда
-        return { запись.deletedAt = былоНадгробие; запись.changedAt = былаПравка }
-    }
-
-    @discardableResult
-    static func удалить(_ запись: Clinic, когда: Date = Date()) -> Откат {
-        let былоНадгробие = запись.deletedAt
-        let былаПравка = запись.changedAt
-        запись.deletedAt = когда
-        запись.changedAt = когда
-        return { запись.deletedAt = былоНадгробие; запись.changedAt = былаПравка }
-    }
-
-    @discardableResult
-    static func удалить(_ запись: DogDocument, когда: Date = Date()) -> Откат {
-        let былоНадгробие = запись.deletedAt
-        let былаПравка = запись.changedAt
-        запись.deletedAt = когда
-        запись.changedAt = когда
-        return { запись.deletedAt = былоНадгробие; запись.changedAt = былаПравка }
-    }
-
-    @discardableResult
-    static func удалить(_ запись: LabResult, когда: Date = Date()) -> Откат {
-        let былоНадгробие = запись.deletedAt
-        let былаПравка = запись.changedAt
-        запись.deletedAt = когда
-        запись.changedAt = когда
-        return { запись.deletedAt = былоНадгробие; запись.changedAt = былаПравка }
-    }
-
-    @discardableResult
-    static func удалить(_ запись: VetVisit, когда: Date = Date()) -> Откат {
-        let былоНадгробие = запись.deletedAt
-        let былаПравка = запись.changedAt
-        запись.deletedAt = когда
-        запись.changedAt = когда
-        return { запись.deletedAt = былоНадгробие; запись.changedAt = былаПравка }
-    }
-
-    @discardableResult
-    static func удалить(_ запись: Diagnosis, когда: Date = Date()) -> Откат {
-        let былоНадгробие = запись.deletedAt
-        let былаПравка = запись.changedAt
-        запись.deletedAt = когда
-        запись.changedAt = когда
-        return { запись.deletedAt = былоНадгробие; запись.changedAt = былаПравка }
-    }
-
-    @discardableResult
-    static func удалить(_ запись: Prescription, когда: Date = Date()) -> Откат {
+    static func удалить(_ запись: some Надгробное, когда: Date = Date()) -> Откат {
         let былоНадгробие = запись.deletedAt
         let былаПравка = запись.changedAt
         запись.deletedAt = когда

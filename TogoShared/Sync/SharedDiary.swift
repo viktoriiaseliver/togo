@@ -821,12 +821,11 @@ nonisolated enum SharedDiaryMerge {
         precondition(local.id == remote.id)
 
         // Удаление не отменяется чужой правкой — только явным возвратом.
-        if local.deletedAt != nil, remote.deletedAt == nil, remote.changedAt <= local.changedAt {
-            return local
-        }
-        if remote.deletedAt != nil, local.deletedAt == nil, local.changedAt <= remote.changedAt {
-            return remote
-        }
+        // Через общее правило (04.11.2026): здесь стояла его дословная
+        // копия, и правка одной из двух разошлась бы с другой молча.
+        if let решено = надгробиеРешает(
+            local, remote, надгробие: { $0.deletedAt }, правка: { $0.changedAt }
+        ) { return решено }
 
         if local.changedAt != remote.changedAt {
             return local.changedAt > remote.changedAt ? local : remote
@@ -1229,6 +1228,10 @@ nonisolated enum SharedDiaryMerge {
         if payload.reactionTrigger != nil { count += 1 }
         if payload.reactionDistance != nil { count += 1 }
         if payload.trainingSessionID != nil { count += 1 }
+        // 04.11.2026, тот же довод: «рассказала семье» и снимок вводит
+        // человек, и версия без них не должна выигрывать ничью по времени.
+        if payload.toldFamily == true { count += 1 }
+        if payload.photo != nil { count += 1 }
         return count
     }
 }

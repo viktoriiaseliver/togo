@@ -492,26 +492,24 @@ nonisolated enum Persistence {
         // спрашивать систему незачем. Право есть, аккаунт есть,
         // а зеркала нет — единственный случай, который до 23.09.2026
         // не говорил о себе ничего.
-        guard isUsingCloud else {
-            guard hasCloudEntitlement else { return .noEntitlement }
-            switch try? await CKContainer(identifier: AppIdentifiers.cloudContainer)
-                .accountStatus() {
-            case .some(.available): return .openFailed
-            case .some(.noAccount): return .noAccount
-            case .some(.restricted): return .restricted
-            default: return .unavailable
-            }
-        }
+        if !isUsingCloud, !hasCloudEntitlement { return .noEntitlement }
+
+        // Одна развилка на оба случая (04.11.2026): прежде их было две,
+        // почти одинаковые, и отказ запроса молча терялся в первой.
+        // Разница — одна строка: аккаунт есть, а зеркала нет — значит
+        // хранилище с облаком не открылось.
+        let статус: CKAccountStatus?
         do {
-            switch try await CKContainer(identifier: AppIdentifiers.cloudContainer).accountStatus() {
-            case .available: return .syncing
-            case .noAccount: return .noAccount
-            case .restricted: return .restricted
-            default: return .unavailable
-            }
+            статус = try await CKContainer(identifier: AppIdentifiers.cloudContainer).accountStatus()
         } catch {
             log.notice("Статус iCloud неизвестен: \(error.localizedDescription)")
-            return .unavailable
+            статус = nil
+        }
+        switch статус {
+        case .available?: return isUsingCloud ? .syncing : .openFailed
+        case .noAccount?: return .noAccount
+        case .restricted?: return .restricted
+        default: return .unavailable
         }
     }
 }
