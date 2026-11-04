@@ -529,7 +529,10 @@ struct FoodStockEditorSheet: View {
         // и человек возвращается на экран, где ничего не изменилось.
         syncBrand()
         guard context.persist(otherwise: {}) else {
+            // Была только вибрация.
             Haptics.warning()
+            appState.showFailure(
+                String(localized: "Запас не сохранился · нажми ещё раз"))
             return
         }
         Haptics.success()

@@ -59,7 +59,12 @@ struct ScheduleScreen: View {
         draft.apply(to: dog)
 
         guard context.persist(otherwise: { былоПитание.вернуть(в: dog) }) else {
+            // Была только вибрация: отказ ощущался, но не назывался.
+            // Режим дня — это часы кормления и выходов на весь день,
+            // и человек уходил с экрана, считая его записанным.
             Haptics.warning()
+            appState.showFailure(
+                String(localized: "Режим дня не сохранился · нажми ещё раз"))
             return
         }
         Haptics.success()

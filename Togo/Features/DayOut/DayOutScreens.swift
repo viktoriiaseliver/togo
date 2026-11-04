@@ -92,7 +92,12 @@ struct DayOutStartSheet: View {
         day.dog = dog
         context.insert(day)
         guard context.persist(otherwise: { context.delete(day) }) else {
+            // Была только вибрация — при том, что УСПЕХ этого же
+            // действия говорится словом строкой ниже. Половина пары
+            // молчала.
             Haptics.warning()
+            appState.showFailure(
+                String(localized: "Режим не включился · нажми ещё раз"))
             return
         }
         Haptics.success()
@@ -191,7 +196,10 @@ struct DayOutSummarySheet: View {
         let былаЗаметка = day.note
         day.note = note.isEmpty ? nil : note
         guard context.persist(otherwise: { day.note = былаЗаметка }) else {
+            // Была только вибрация.
             Haptics.warning()
+            appState.showFailure(
+                String(localized: "Заметка не сохранилась · нажми ещё раз"))
             return
         }
         Haptics.success()

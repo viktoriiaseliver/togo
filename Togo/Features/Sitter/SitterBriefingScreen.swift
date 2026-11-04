@@ -85,6 +85,9 @@ struct SitterBriefingEditor: View {
 
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
+    // Заведён 04.11.2026 ради одной строки — сказать об отказе
+    // сохранения. До этого отказ только вибрировал.
+    @Environment(AppState.self) private var appState
 
     var body: some View {
         TGSheet(title: "Инструкция ситтеру",
@@ -106,7 +109,13 @@ struct SitterBriefingEditor: View {
         } footer: {
             TGButton(title: "Сохранить") {
                 guard context.persist(otherwise: {}) else {
+                    // Была только вибрация. Памятку ситтеру пишут
+                    // перед отъездом и больше не перечитывают —
+                    // молчаливая потеря обнаружилась бы у чужого
+                    // человека с чужой собакой.
                     Haptics.warning()
+                    appState.showFailure(
+                        String(localized: "Памятка не сохранилась · нажми ещё раз"))
                     return
                 }
                 Haptics.success()
