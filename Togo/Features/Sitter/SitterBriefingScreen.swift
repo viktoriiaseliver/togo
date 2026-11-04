@@ -63,7 +63,7 @@ struct SitterBriefingScreen: View {
             }
         }
         .navigationTitle("Инструкция")
-        .cinemaScreen(экран: .sub("handover"))
+        .cinemaScreen(экран: ScreenKey.handoff)
         .usageScreen(.sitter)
         .navigationBarTitleDisplayMode(.inline)
     }

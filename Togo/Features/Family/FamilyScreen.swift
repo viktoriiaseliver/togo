@@ -2000,7 +2000,7 @@ struct SitterPreviewScreen: View {
             }
         }
         .navigationTitle("Вид ситтера")
-        .cinemaScreen(экран: .sub("handover"))
+        .cinemaScreen(экран: ScreenKey.handoff)
     }
 
     /// Брифинг ситтера читает чужой человек, и проверить число ему

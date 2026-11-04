@@ -379,7 +379,7 @@ struct DocumentsScreen: View {
             TGExplainer(text: "Всё это лежит на телефоне и никуда не отправляется само.")
         }
         .navigationTitle("Документы и контакты")
-        .cinemaScreen(экран: .sub("docs"))
+        .cinemaScreen(экран: ScreenKey.documents)
     }
 
     private func binding(_ keyPath: ReferenceWritableKeyPath<Dog, String?>) -> Binding<String> {

@@ -86,7 +86,7 @@ struct VetSummaryScreen: View {
             shareCard
         }
         .navigationTitle("Сводка")
-        .cinemaScreen(экран: .sub("visit"))
+        .cinemaScreen(экран: ScreenKey.vetSummary)
         .usageScreen(.vetSummary)
         .fullScreenCover(isPresented: $isPresenting) {
             VetSummaryPresentation(summary: summary, delta: deltaLines, dog: dog)

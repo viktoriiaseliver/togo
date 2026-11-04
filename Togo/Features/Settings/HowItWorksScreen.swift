@@ -97,6 +97,6 @@ struct HowItWorksScreen: View {
             }
         }
         .navigationTitle("Как это работает")
-        .cinemaScreen(экран: .sub("howitworks"))
+        .cinemaScreen(экран: ScreenKey.howItWorks)
     }
 }
