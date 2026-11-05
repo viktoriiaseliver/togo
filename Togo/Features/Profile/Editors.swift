@@ -626,8 +626,16 @@ struct CareTaskEditorSheet: View {
     }
 
     private func месяц(_ number: Int) -> String {
-        DateFormatter().monthSymbols?[number - 1].capitalized ?? "\(number)"
+        Self.месяцы.indices.contains(number - 1) ? Self.месяцы[number - 1] : "\(number)"
     }
+
+    /// Названия месяцев — один раз на процесс, а не новый `DateFormatter`
+    /// на каждый из 24 пунктов двух `Picker` при каждой перерисовке
+    /// (04.11.2026). Локаль та же, что была: `DateFormatter()` без
+    /// настройки берёт `Locale.current`, а она меняется только с
+    /// перезапуском.
+    private static let месяцы: [String] =
+        (DateFormatter().monthSymbols ?? []).map(\.capitalized)
 
     private func load() {
         guard !loaded, let task else { loaded = true; return }
@@ -735,6 +743,14 @@ struct MedicationEditorSheet: View {
     /// записи. Правило взято там же, где оно уже записано, а не
     /// придумано здесь заново.
     @State private var слоты: [DoseSlot] = [DoseSlot(minuteOfDay: 7 * 60, quantity: 1)]
+    /// Устойчивые идентификаторы строк — параллельно `слоты`, только
+    /// для экрана (04.11.2026). Было `ForEach(слоты.indices, id: \.self)`:
+    /// после «Убрать время» привязка соседней строки могла позвать
+    /// `слоты[index]` со старым индексом — выход за границу массива,
+    /// а `Picker` переезжал на чужую строку. В сам `DoseSlot` поле
+    /// не добавлено нарочно: он кодируется в `doseSlotsData` и уезжает
+    /// в общий дневник — форма данных не меняется ради экрана.
+    @State private var идСлотов: [UUID] = [UUID()]
     @State private var единица: MedUnit = .tab
     @State private var fastingMinutes = 0
     @State private var fastingBeforeMinutes = 0
@@ -906,12 +922,13 @@ struct MedicationEditorSheet: View {
 
             TGCard {
                 TGSectionHeader(title: "во сколько давать")
-                ForEach(слоты.indices, id: \.self) { index in
-                    слотРяд(index)
-                    if index < слоты.count - 1 { TGDivider() }
+                ForEach(идСлотов, id: \.self) { id in
+                    слотРяд(id)
+                    if id != идСлотов.last { TGDivider() }
                 }
                 TGButton(title: "Добавить время", variant: .secondary, size: .medium, systemImage: "plus") {
                     слоты.append(DoseSlot(minuteOfDay: 19 * 60, quantity: 1))
+                    идСлотов.append(UUID())
                 }
                 // Говорит ровно то, что считает код: расход берётся
                 // суммой количеств (`Medication.dailyUse`), и запас
@@ -1171,6 +1188,7 @@ struct MedicationEditorSheet: View {
         слоты = medication.schedule.isEmpty
             ? [DoseSlot(minuteOfDay: 7 * 60, quantity: 1)]
             : medication.schedule
+        идСлотов = слоты.map { _ in UUID() }
         единица = medication.unit
         номерНазначения = medication.prescriptionNumber ?? ""
         // Три «указан ли» читаются из `nil`, а не из значения: иначе
@@ -1220,18 +1238,27 @@ struct MedicationEditorSheet: View {
     /// стоила трёх секунд типизации (разбор — `ReminderScheduler
     /// .briefLines`). Явная граница снимает перебор целиком.
     @ViewBuilder
-    private func слотРяд(_ index: Int) -> some View {
+    private func слотРяд(_ id: UUID) -> some View {
+        // Индекс ищется в момент вызова, а не берётся из замыкания:
+        // строку могли убрать, и старый индекс указывал бы мимо.
+        let слот = место(id).map { слоты[$0] } ?? DoseSlot(minuteOfDay: 0, quantity: 1)
         HStack {
             Picker("Час", selection: Binding(
-                get: { слоты[index].minuteOfDay / 60 },
-                set: { слоты[index].minuteOfDay = $0 * 60 + слоты[index].minuteOfDay % 60 }
+                get: { место(id).map { слоты[$0].minuteOfDay / 60 } ?? 0 },
+                set: { час in
+                    guard let i = место(id) else { return }
+                    слоты[i].minuteOfDay = час * 60 + слоты[i].minuteOfDay % 60
+                }
             )) {
                 ForEach(0...23, id: \.self) { Text(String(format: "%02d", $0)).tag($0) }
             }
             .pickerStyle(.menu)
             Picker("Минуты", selection: Binding(
-                get: { слоты[index].minuteOfDay % 60 },
-                set: { слоты[index].minuteOfDay = (слоты[index].minuteOfDay / 60) * 60 + $0 }
+                get: { место(id).map { слоты[$0].minuteOfDay % 60 } ?? 0 },
+                set: { минуты in
+                    guard let i = место(id) else { return }
+                    слоты[i].minuteOfDay = (слоты[i].minuteOfDay / 60) * 60 + минуты
+                }
             )) {
                 ForEach([0, 15, 30, 45], id: \.self) { Text(String(format: "%02d", $0)).tag($0) }
             }
@@ -1239,7 +1266,9 @@ struct MedicationEditorSheet: View {
             Spacer()
             if слоты.count > 1 {
                 Button {
-                    слоты.remove(at: index)
+                    guard let i = место(id) else { return }
+                    слоты.remove(at: i)
+                    идСлотов.remove(at: i)
                 } label: {
                     Image(systemName: "minus.circle")
                         .foregroundStyle(Token.Status.overdueText)
@@ -1250,17 +1279,26 @@ struct MedicationEditorSheet: View {
         .frame(minHeight: Token.Size.tapTarget)
 
         Stepper(value: Binding(
-            get: { слоты[index].quantity },
-            set: { слоты[index].quantity = $0 }
+            get: { место(id).map { слоты[$0].quantity } ?? 1 },
+            set: { количество in
+                guard let i = место(id) else { return }
+                слоты[i].quantity = количество
+            }
         ), in: шагКоличества...20, step: шагКоличества) {
             HStack {
                 Text("Сколько давать").textStyle(AppFont.body)
                 Spacer()
-                Text(verbatim: "\(Fmt.decimal(слоты[index].quantity)) \(единица.shortName)")
+                Text(verbatim: "\(Fmt.decimal(слот.quantity)) \(единица.shortName)")
                     .textStyle(AppFont.numeric(15))
             }
         }
         .frame(minHeight: Token.Size.tapTarget)
+    }
+
+    /// Где строка `id` сейчас — или `nil`, если её уже убрали.
+    private func место(_ id: UUID) -> Int? {
+        guard let i = идСлотов.firstIndex(of: id), слоты.indices.contains(i) else { return nil }
+        return i
     }
 
     /// Шаг количества: таблетку делят пополам, миллилитр — мера сам

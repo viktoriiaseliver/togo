@@ -212,9 +212,17 @@ struct ProfileScreen: View {
                 get: { dog.isOnTreatment },
                 set: { isOn in
                     if isOn {
-                        TreatmentCourse.resume(dog, context: context)
+                        if !TreatmentCourse.resume(dog, context: context) {
+                            Haptics.warning()
+                            appState.showFailure("Не сохранилось · попробуй ещё раз")
+                        }
                     } else {
-                        TreatmentCourse.finish(dog, by: appState.currentUserName, context: context)
+                        // Отказ виден: тумблер вернётся сам (поле откатано),
+                        // но молча вернувшийся тумблер читается как сбой.
+                        if !TreatmentCourse.finish(dog, by: appState.currentUserName, context: context) {
+                            Haptics.warning()
+                            appState.showFailure("Не сохранилось · попробуй ещё раз")
+                        }
                     }
                 }
             )) {

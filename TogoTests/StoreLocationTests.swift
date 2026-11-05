@@ -70,9 +70,10 @@ struct StoreLocationTests {
 
         guard let контейнер else {
             // Отказ — законный исход, и тогда лестница отката уже
-            // проверена другими наборами. Здесь нечего добавить.
-            #expect(Persistence.isEphemeral == false || Persistence.isEphemeral,
-                    "ветка отказа разбирается в SchemaMigrationTests и EphemeralFlagTests")
+            // проверена другими наборами (SchemaMigrationTests,
+            // EphemeralFlagTests). Здесь стояло
+            // `#expect(isEphemeral == false || isEphemeral)` — тавтология,
+            // которая не могла покраснеть ни на чём; снято 04.11.2026.
             return
         }
 

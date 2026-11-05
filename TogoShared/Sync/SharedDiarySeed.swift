@@ -62,13 +62,16 @@ public enum SharedDiarySeed {
     @MainActor
     public static func изменения(
         context: ModelContext, zone: CKRecordZone.ID
-    ) -> [CKSyncEngine.PendingRecordZoneChange] {
+    ) throws -> [CKSyncEngine.PendingRecordZoneChange] {
         var собрано: [CKSyncEngine.PendingRecordZoneChange] = []
 
         func собрать<T: PersistentModel>(
             _ тип: T.Type, _ id: (T) -> UUID, годится: (T) -> Bool = { _ in true }
-        ) {
-            let все = ((try? context.fetch(FetchDescriptor<T>())) ?? []).filter(годится)
+        ) throws {
+            // `try`, а не `try? … ?? []`: до 04.11.2026 отказ выборки
+            // давал пустой список, засев считался сделанным, флаг ставился
+            // навсегда — и накопленное по этому типу не уехало бы никогда.
+            let все = try context.fetch(FetchDescriptor<T>()).filter(годится)
             собрано.append(contentsOf: все.map {
                 .saveRecord(SharedDiaryRecords.recordID(id($0), in: zone))
             })
@@ -96,23 +99,23 @@ public enum SharedDiarySeed {
         //
         // Своей копии условия здесь нет нарочно: два разбора одного
         // правила расходятся молча.
-        собрать(Dog.self, { $0.id }, годится: { SharedDiaryOutgoing.sendable($0) })
+        try собрать(Dog.self, { $0.id }, годится: { SharedDiaryOutgoing.sendable($0) })
         // Ворота на записи — те же, что у собак, и той же функцией.
         // Ловят отладочную запись прогрева схемы: она лежит в живых
         // данных (замер 08.10.2026 — одна из 182, дата 2001-01-01),
         // а продуктовая сборка её не удаляет, потому что весь
         // `CloudKitSchemaWarmup` под `#if DEBUG`.
-        собрать(LogEvent.self, { $0.id }, годится: { SharedDiaryOutgoing.sendable($0) })
-        собрать(CareTask.self) { $0.id }
-        собрать(Medication.self) { $0.id }
-        собрать(DoseRecord.self) { $0.id }
-        собрать(WeightEntry.self) { $0.id }
-        собрать(Clinic.self) { $0.id }
-        собрать(LabResult.self) { $0.id }
-        собрать(VetVisit.self) { $0.id }
-        собрать(Diagnosis.self) { $0.id }
-        собрать(Prescription.self) { $0.id }
-        собрать(DogDocument.self) { $0.id }
+        try собрать(LogEvent.self, { $0.id }, годится: { SharedDiaryOutgoing.sendable($0) })
+        try собрать(CareTask.self) { $0.id }
+        try собрать(Medication.self) { $0.id }
+        try собрать(DoseRecord.self) { $0.id }
+        try собрать(WeightEntry.self) { $0.id }
+        try собрать(Clinic.self) { $0.id }
+        try собрать(LabResult.self) { $0.id }
+        try собрать(VetVisit.self) { $0.id }
+        try собрать(Diagnosis.self) { $0.id }
+        try собрать(Prescription.self) { $0.id }
+        try собрать(DogDocument.self) { $0.id }
 
         return собрано
     }
@@ -154,7 +157,7 @@ public enum SharedDiarySeed {
 nonisolated enum SyncSeedState {
 
     private static var defaults: UserDefaults {
-        UserDefaults(suiteName: AppIdentifiers.appGroup) ?? .standard
+        AppGroupDefaults.shared
     }
 
     /// **Это не подпись, и `String(localized:)` здесь был бы дефектом,

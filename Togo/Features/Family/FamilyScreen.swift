@@ -482,9 +482,22 @@ struct FamilyScreen: View {
         // не должен — шторка без принимающего не показывает кнопку «Принять
         // смену» вовсе (`ShiftHandoverSheet.swift`, ветка `successor == nil`).
         guard let next else { return }
+        let было = (сдающий: current.isOnDuty, принимающий: next.isOnDuty, до: next.dutyUntil)
         current.isOnDuty = false
         next.isOnDuty = true
         next.dutyUntil = Calendar.current.date(bySettingHour: 22, minute: 0, second: 0, of: .now)
+        // Хаптик успеха — после записи, а не до неё (04.11.2026): иначе
+        // «смена передана» звучало и тогда, когда хранилище её не приняло,
+        // а дежурство после выгрузки оставалось у прежнего человека.
+        guard context.persist(otherwise: {
+            current.isOnDuty = было.сдающий
+            next.isOnDuty = было.принимающий
+            next.dutyUntil = было.до
+        }) else {
+            Haptics.warning()
+            appState.showFailure("Не сохранилось · попробуй ещё раз")
+            return
+        }
         Haptics.success()
     }
 
@@ -1574,6 +1587,7 @@ struct SitterPreviewScreen: View {
 struct MergeConflictCard: View {
     let left: LogEvent
     let right: LogEvent
+    @Environment(AppState.self) private var appState
 
     @Environment(\.modelContext) private var context
     @State private var resolved = false
@@ -1610,9 +1624,21 @@ struct MergeConflictCard: View {
     /// противоположное: «нужно показать» и «показывать нечего».
     /// Если у поля появится показ — пометку снять и строку перевести.
     private func merge() {
+        let было = (удалена: right.deletedAt, кем: right.deletedBy, заметка: left.note)
         right.deletedAt = Date()
         right.deletedBy = "слияние"  // внутреннее: маркер в общем поле автора, показа у поля нет (замер 13.10.2026)
         left.note = [left.note, "объединено с записью \(right.authorName)"].compactMap { $0 }.joined(separator: " · ")
+        // Карточка гаснет только после записи (04.11.2026): прежде она
+        // гасла сразу, а слияние жило в памяти до автосохранения.
+        guard context.persist(otherwise: {
+            right.deletedAt = было.удалена
+            right.deletedBy = было.кем
+            left.note = было.заметка
+        }) else {
+            Haptics.warning()
+            appState.showFailure("Не сохранилось · попробуй ещё раз")
+            return
+        }
         resolved = true
         Haptics.success()
     }

@@ -109,11 +109,7 @@ struct EventLog {
         // то есть ноль, то есть «всё отправлено». Величина и подпись
         // отвечают на разные вопросы. Это отдельная работа, не эта.
         guard appState.can(kind.requiredPermission) else {
-            appState.showFailure(String(localized: "Это записывает тот, кому разрешено")
-                                 + "\n " + String(localized: "Семья")
-                                 + " → " + String(localized: "Это я"))
-            Haptics.warning()
-            UsageLog.note(.record, kind.rawValue, outcome: .blocked)
+            запрещено(kind)
             return nil
         }
 
@@ -181,6 +177,49 @@ struct EventLog {
         }
         return event
     }
+    /// Отказ по праву — один текст на обе двери.
+    private func запрещено(_ kind: LogKind) {
+        appState.showFailure(String(localized: "Это записывает тот, кому разрешено")
+                             + "\n " + String(localized: "Семья")
+                             + " → " + String(localized: "Это я"))
+        Haptics.warning()
+        UsageLog.note(.record, kind.rawValue, outcome: .blocked)
+    }
+
+    /// Записать законченную прогулку с отметками — ОДНОЙ записью в базу.
+    ///
+    /// Вставку делает `WalkRecorder.record`, та же дверь, что у прогулки,
+    /// законченной на блокировке (`TodayScreen.дописатьПрогулкуСБлокировки`,
+    /// `WalkIntents`). До 04.11.2026 режим прогулки писал сам: прогулку
+    /// через `record`, а отметки циклом — по `save()` на каждую, и тост
+    /// «Записано · прогулка» звучал раньше, чем легла первая отметка.
+    /// Отказ на третьей отметке оставлял прогулку с двумя. Теперь либо
+    /// записано всё, либо ничего, а дубли отметок отсеиваются там же,
+    /// где у блокировки.
+    ///
+    /// Здесь остаётся то, чего у `WalkRecorder` нет нарочно: право,
+    /// тост с отменой и журнал действий — это экран, а не домен.
+    @discardableResult
+    func recordWalk(_ session: ActiveSession, dog: Dog, confirmation: String) -> LogEvent? {
+        guard appState.can(LogKind.walk.requiredPermission) else {
+            запрещено(.walk)
+            return nil
+        }
+        guard let walk = WalkRecorder.record(session, dog: dog,
+                                             author: appState.currentUserName,
+                                             context: context) else {
+            log.notice("Прогулка не сохранилась")
+            UsageLog.note(.record, LogKind.walk.rawValue, outcome: .failed)
+            Haptics.warning()
+            appState.showFailure("Не записалось · нажми ещё раз")
+            return nil
+        }
+        UsageLog.note(.record, LogKind.walk.rawValue)
+        Haptic.success.play()
+        appState.showUndo(confirmation, eventID: walk.id)
+        return walk
+    }
+
 
     enum Haptic {
         case success

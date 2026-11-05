@@ -153,24 +153,10 @@ enum FamilyShare {
         }
     }
 
-    /// Создать (или достать уже созданное) приглашение и вернуть ссылку.
-    /// Осталось для тех, кому нужен адрес как текст (тесты, отладка);
-    /// экран отдаёт в лист «Поделиться» сам `CKShare` через `invite`.
-    static func inviteURL(
-        dogName: String,
-        container: CKContainer = CKContainer(identifier: AppIdentifiers.cloudContainer)
-    ) async throws -> URL {
-        let share = try await invite(dogName: dogName, container: container)
-        // Пустой `url` — не «ты не владелец»: запись уже наша и уже
-        // сохранена, облако просто не успело выдать адрес.
-        guard let url = share.url else { throw ShareError.linkNotReady }
-        return url
-    }
-
     /// Создать (или достать уже созданное) приглашение и вернуть сам `CKShare`.
     static func invite(
         dogName: String,
-        container: CKContainer = CKContainer(identifier: AppIdentifiers.cloudContainer)
+        container: any ОблакоОбмена = CKContainer(identifier: AppIdentifiers.cloudContainer)
     ) async throws -> CKShare {
         // **Гость сюда заходить не должен, и до 05.10 заходил молча.**
         // Экран «Семья» не спрашивал `isGuest` ни разу, а здесь стояла
@@ -190,7 +176,7 @@ enum FamilyShare {
         guard Persistence.hasCloudEntitlement else { throw ShareError.noEntitlement }
         guard try await container.accountStatus() == .available else { throw ShareError.noAccount }
 
-        let database = container.privateCloudDatabase
+        let database = container.личнаяБаза
         let zoneID = SharedDiaryRecords.zoneID()
 
         // Зона должна существовать до того, как ею делятся.
@@ -201,8 +187,18 @@ enum FamilyShare {
         // Уже поделились раньше — второй раз не создаём: у зоны бывает
         // ровно одна общая ссылка, и новая отрезала бы уже принявших.
         let shareID = CKRecord.ID(recordName: CKRecordNameZoneWideShare, zoneID: zoneID)
-        if let existing = try? await database.record(for: shareID) as? CKShare {
-            return existing
+        // «Нет такой записи» — только `unknownItem`. До 04.11.2026 здесь
+        // стоял `try?`, и сетевой отказ читался так же: создавался новый
+        // `CKShare` поверх живого, сервер отвечал `serverRecordChanged`,
+        // а человек видел «iCloud не принял приглашение» без причины.
+        do {
+            if let existing = try await database.record(for: shareID) as? CKShare {
+                return existing
+            }
+        } catch let ошибка as CKError where ошибка.code == .unknownItem {
+            // Делиться ещё не начинали — создаём ниже.
+        } catch let ошибка as CKError {
+            throw ShareError.saveFailed(code: ошибка.errorCode)
         }
 
         let share = CKShare(recordZoneID: zoneID)
@@ -219,8 +215,8 @@ enum FamilyShare {
         // переслали адрес. Кого назвать — решается в листе «Поделиться».
         share.publicPermission = .none
 
-        let saved = try await database.modifyRecords(saving: [share], deleting: [])
-        switch saved.saveResults[shareID] {
+        let saved = try await database.изменить(saving: [share], deleting: [])
+        switch saved[shareID] {
         case .success(let record):
             guard let created = record as? CKShare else {
                 // Сохранилось, но вернулось не то. Своего кода у этого
@@ -257,13 +253,13 @@ enum FamilyShare {
     /// > верна, покрыта и не вызывается оттуда, где нужна.** Сторож
     /// > на вызов её не поймал бы — вызовы есть, просто не все.
     private static func адрес(
-        _ container: CKContainer
-    ) -> (database: CKDatabase, zoneID: CKRecord.ID) {
+        _ container: any ОблакоОбмена
+    ) -> (database: any БазаОбмена, zoneID: CKRecord.ID) {
         let owner = SharedZoneOwner.name
         let zone = SharedZoneRouting.zone(owner: owner)
         let database = SharedZoneRouting.scope(owner: owner) == .shared
-            ? container.sharedCloudDatabase
-            : container.privateCloudDatabase
+            ? container.общаяБаза
+            : container.личнаяБаза
         return (database, CKRecord.ID(recordName: CKRecordNameZoneWideShare, zoneID: zone))
     }
 
@@ -280,7 +276,7 @@ enum FamilyShare {
     /// Создавать здесь нельзя: экран открывают и те, кто приглашать
     /// не собирался, а `invite` пишет в облако.
     static func existing(
-        container: CKContainer = CKContainer(identifier: AppIdentifiers.cloudContainer)
+        container: any ОблакоОбмена = CKContainer(identifier: AppIdentifiers.cloudContainer)
     ) async -> CKShare? {
         guard Persistence.hasCloudEntitlement,
               (try? await container.accountStatus()) == .available else { return nil }
@@ -313,7 +309,7 @@ enum FamilyShare {
 
     /// Кто уже в дневнике.
     static func participants(
-        container: CKContainer = CKContainer(identifier: AppIdentifiers.cloudContainer)
+        container: any ОблакоОбмена = CKContainer(identifier: AppIdentifiers.cloudContainer)
     ) async -> [String] {
         // Гость тоже спрашивает — и до 05.10 спрашивал свою личную базу,
         // получал пусто и видел «Семья» без единого человека. Экран при
@@ -397,7 +393,7 @@ enum FamilyShare {
     /// станет нечем, и это тот же довод, которым `РолиВОбмене` вынесен
     /// из облака в чистое значение.
     static func участники(
-        container: CKContainer = CKContainer(identifier: AppIdentifiers.cloudContainer)
+        container: any ОблакоОбмена = CKContainer(identifier: AppIdentifiers.cloudContainer)
     ) async -> [УчастникДневника] {
         let (database, shareID) = адрес(container)
         guard let share = try? await database.record(for: shareID) as? CKShare
@@ -456,7 +452,7 @@ enum FamilyShare {
     /// сторону: там повышался вошедший, здесь — вернувшийся.
     static func убрать(
         участника различитель: String,
-        container: CKContainer = CKContainer(identifier: AppIdentifiers.cloudContainer)
+        container: any ОблакоОбмена = CKContainer(identifier: AppIdentifiers.cloudContainer)
     ) async throws {
         // Первой строкой и локально — по той же причине, что в `invite`
         // и `stopSharing`: быть гостем не зависит ни от аккаунта,
@@ -482,8 +478,8 @@ enum FamilyShare {
             share[РолиВОбмене.полеНаряда] = строка  // внутреннее: JSON наряда ролей, человек его не видит
         }
 
-        let saved = try await database.modifyRecords(saving: [share], deleting: [])
-        if case .failure(let error) = saved.saveResults[shareID] {
+        let saved = try await database.изменить(saving: [share], deleting: [])
+        if case .failure(let error) = saved[shareID] {
             throw ShareError.saveFailed(code: (error as? CKError)?.errorCode)
         }
     }
@@ -543,7 +539,7 @@ enum FamilyShare {
         _ роль: FamilyRole,
         права: Set<Permission>? = nil,
         участнику ключ: String,
-        container: CKContainer = CKContainer(identifier: AppIdentifiers.cloudContainer)
+        container: any ОблакоОбмена = CKContainer(identifier: AppIdentifiers.cloudContainer)
     ) async throws {
         // Гость отсекается ПЕРВОЙ строкой, раньше чтения наряда,
         // и это не вкус.
@@ -558,9 +554,9 @@ enum FamilyShare {
         // переделкой входа, а не старанием.
         guard !SharedZoneOwner.isGuest else { throw ShareError.notOwner }
 
-        var наряд = await наряд(container: container) ?? НарядРолей()
-        наряд.поУчастникам[ключ] = НазначеннаяРоль(роль: роль, права: права)
-        try await записать(наряд, container: container)
+        try await изменитьНаряд(container: container) {
+            $0.поУчастникам[ключ] = НазначеннаяРоль(роль: роль, права: права)
+        }
     }
 
     // MARK: - Роль, выбранная владельцем
@@ -601,34 +597,69 @@ enum FamilyShare {
     ///    `SharedDiaryRecords.swift`; поле на `cloudkit.share` в его
     ///    ось не входит. Зелёный оттуда — не замер этого канала.
     static func наряд(
-        container: CKContainer = CKContainer(identifier: AppIdentifiers.cloudContainer)
+        container: any ОблакоОбмена = CKContainer(identifier: AppIdentifiers.cloudContainer)
     ) async -> НарядРолей? {
         guard let share = await existing(container: container) else { return nil }
         return РолиВОбмене.разобрать(share[РолиВОбмене.полеНаряда] as? String)
     }
 
-    /// Положить наряд на запись общего доступа. Только владелец.
+    /// Поправить наряд на записи общего доступа. Только владелец.
     ///
     /// Гость отсекается здесь же и первой строкой — по той же причине,
     /// по которой это сделано в `invite` и `stopSharing`: проверка
     /// локальна, значит её можно проверить тестом без облака.
-    static func записать(
-        _ наряд: НарядРолей,
-        container: CKContainer = CKContainer(identifier: AppIdentifiers.cloudContainer)
+    ///
+    /// **Чтение и запись — по ОДНОМУ объекту `CKShare`, и «не прочитали»
+    /// не равно «пусто».** До 04.11.2026 правка шла в два захода:
+    /// `наряд() ?? НарядРолей()`, затем `записать` перечитывал share.
+    /// `наряд()` отвечает `nil` и на сетевой отказ, и на битый JSON,
+    /// и на наряд будущей версии — во всех трёх случаях подставлялся
+    /// пустой наряд, и запись затирала роли всех остальных одной новой.
+    /// Теперь пустым считается только отсутствующее поле; нечитаемое
+    /// поле — отказ, а не повод переписать его своим.
+    ///
+    /// `гость:` — параметром с прежним умолчанием, а не чтением на месте:
+    /// признак глобальный, и параллельные наборы тестов ставят его
+    /// временно — тест на эту функцию без параметра мигал бы.
+    static func изменитьНаряд(
+        container: any ОблакоОбмена = CKContainer(identifier: AppIdentifiers.cloudContainer),
+        гость: Bool = SharedZoneOwner.isGuest,
+        _ правка: (inout НарядРолей) -> Void
     ) async throws {
-        guard !SharedZoneOwner.isGuest else { throw ShareError.notOwner }
+        guard !гость else { throw ShareError.notOwner }
         let (database, shareID) = адрес(container)
-        guard let share = try? await database.record(for: shareID) as? CKShare else {
+        let share: CKShare
+        do {
+            guard let найден = try await database.record(for: shareID) as? CKShare else {
+                throw ShareError.linkNotReady
+            }
+            share = найден
+        } catch let ошибка as CKError where ошибка.code == .unknownItem {
             // Делиться ещё не начали — назначать некому. Это не отказ
             // облака, и кодом отказа называть его нельзя.
             throw ShareError.linkNotReady
+        } catch let ошибка as CKError {
+            throw ShareError.saveFailed(code: ошибка.errorCode)
         }
+        var наряд: НарядРолей
+        switch share[РолиВОбмене.полеНаряда] as? String {
+        case nil:
+            наряд = НарядРолей()
+        case let записанный?:
+            guard let разобран = РолиВОбмене.разобрать(записанный) else {
+                // Битый или будущей версии: переписать его своим значило
+                // бы стереть то, чего мы не умеем прочитать.
+                throw ShareError.saveFailed(code: nil)
+            }
+            наряд = разобран
+        }
+        правка(&наряд)
         guard let строка = РолиВОбмене.закодировать(наряд) else {
             throw ShareError.saveFailed(code: nil)
         }
         share[РолиВОбмене.полеНаряда] = строка  // внутреннее: JSON наряда ролей, человек его не видит
-        let saved = try await database.modifyRecords(saving: [share], deleting: [])
-        if case .failure(let error) = saved.saveResults[shareID] {
+        let saved = try await database.изменить(saving: [share], deleting: [])
+        if case .failure(let error) = saved[shareID] {
             throw ShareError.saveFailed(code: (error as? CKError)?.errorCode)
         }
     }
@@ -648,11 +679,11 @@ enum FamilyShare {
     static func назначитьНовичкам(
         _ роль: FamilyRole,
         права: Set<Permission>? = nil,
-        container: CKContainer = CKContainer(identifier: AppIdentifiers.cloudContainer)
+        container: any ОблакоОбмена = CKContainer(identifier: AppIdentifiers.cloudContainer)
     ) async throws {
-        var наряд = await наряд(container: container) ?? НарядРолей()
-        наряд.новичкам = НазначеннаяРоль(роль: роль, права: права)
-        try await записать(наряд, container: container)
+        try await изменитьНаряд(container: container) {
+            $0.новичкам = НазначеннаяРоль(роль: роль, права: права)
+        }
     }
 
     /// Забрать своё назначение с записи общего доступа и положить
@@ -673,7 +704,7 @@ enum FamilyShare {
     /// Разбор — у `РолиВОбмене.назначение`, там же цена.
     @discardableResult
     static func обновитьНазначение(
-        container: CKContainer = CKContainer(identifier: AppIdentifiers.cloudContainer)
+        container: any ОблакоОбмена = CKContainer(identifier: AppIdentifiers.cloudContainer)
     ) async -> НазначеннаяРоль? {
         guard SharedZoneOwner.isGuest else { return nil }
         guard let наряд = await наряд(container: container) else { return nil }
@@ -717,7 +748,7 @@ enum FamilyShare {
     /// его копией — забрать уже показанное CloudKit не умеет, и врать
     /// об этом нельзя.
     static func stopSharing(
-        container: CKContainer = CKContainer(identifier: AppIdentifiers.cloudContainer)
+        container: any ОблакоОбмена = CKContainer(identifier: AppIdentifiers.cloudContainer)
     ) async throws {
         // **Гость этим не пользуется, и раньше пользовался молча.**
         // Удаление записи общего доступа — право владельца. У гостя
@@ -730,15 +761,15 @@ enum FamilyShare {
         guard !SharedZoneOwner.isGuest else { throw ShareError.notOwner }
 
         let (database, shareID) = адрес(container)
-        _ = try await database.modifyRecords(saving: [], deleting: [shareID])
+        _ = try await database.изменить(saving: [], deleting: [shareID])
     }
 
     /// Принять приглашение по ссылке.
     static func accept(
         _ metadata: CKShare.Metadata,
-        container: CKContainer = CKContainer(identifier: AppIdentifiers.cloudContainer)
+        container: any ОблакоОбмена = CKContainer(identifier: AppIdentifiers.cloudContainer)
     ) async throws {
-        _ = try await container.accept(metadata)
+        try await container.принятьПриглашение(metadata)
     }
 }
 
@@ -856,7 +887,7 @@ enum ShareAcceptance {
     /// хранилище причин.
     static func принять(
         ссылку адрес: URL,
-        container: CKContainer = CKContainer(identifier: AppIdentifiers.cloudContainer)
+        container: any ОблакоОбмена = CKContainer(identifier: AppIdentifiers.cloudContainer)
     ) async -> ShareAcceptanceOutcome {
         guard Persistence.hasCloudEntitlement else { return .сторонаПриложения }
         do {
@@ -1000,7 +1031,7 @@ nonisolated enum НеудачаПриёма {
     private static let key = "share.acceptance.failure"
 
     private static var defaults: UserDefaults {
-        UserDefaults(suiteName: AppIdentifiers.appGroup) ?? .standard
+        AppGroupDefaults.shared
     }
 
     /// Причина последнего неудавшегося приёма — или `nil`, если

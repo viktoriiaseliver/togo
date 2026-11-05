@@ -41,16 +41,21 @@ nonisolated enum BackupService {
         let dogs = try context.fetch(FetchDescriptor<Dog>())
         // Детей берём явными выборками и раскладываем по собакам сами:
         // полагаться на то, что обратная связь уже materialised, нельзя.
-        let allStocks = (try? context.fetch(FetchDescriptor<FoodStock>())) ?? []
-        let allHeats = (try? context.fetch(FetchDescriptor<HeatRecord>())) ?? []
-        let allDocuments = (try? context.fetch(FetchDescriptor<DogDocument>())) ?? []
-        let allDaysOut = (try? context.fetch(FetchDescriptor<DayOut>())) ?? []
+        //
+        // Все выборки — `try`, а не `try?`, и это замер 04.11.2026:
+        // шесть разделов стояли под `try?`, три — под `try`. Отказ
+        // выборки давал архив БЕЗ раздела, а человек видел «сохранено».
+        // Тот же класс, что `try context.save()` строкой выше.
+        let allStocks = try context.fetch(FetchDescriptor<FoodStock>())
+        let allHeats = try context.fetch(FetchDescriptor<HeatRecord>())
+        let allDocuments = try context.fetch(FetchDescriptor<DogDocument>())
+        let allDaysOut = try context.fetch(FetchDescriptor<DayOut>())
         let members = try context.fetch(FetchDescriptor<FamilyMember>())
         let episodes = try context.fetch(FetchDescriptor<Episode>())
         // Навыки процедур — корневой список: связи с собакой у них нет.
-        let skills = (try? context.fetch(FetchDescriptor<ProcedureSkill>())) ?? []
+        let skills = try context.fetch(FetchDescriptor<ProcedureSkill>())
         // Справочник клиник — тоже корневой и по той же причине.
-        let clinics = (try? context.fetch(FetchDescriptor<Clinic>())) ?? []
+        let clinics = try context.fetch(FetchDescriptor<Clinic>())
 
         return BackupArchive(
             createdAt: Date(),
@@ -392,6 +397,41 @@ nonisolated enum BackupService {
     @MainActor
     @discardableResult
     static func restore(_ archive: BackupArchive, into context: ModelContext, strategy: Strategy) throws -> Int {
+        // # Половина восстановления не записывается сама
+        //
+        // Работа идёт прямо в контексте экрана, и до 04.11.2026 он оставался
+        // под автосохранением: бросок на полпути (битый снимок, отказ
+        // выборки) оставлял в нём вставленную половину и вычищенный
+        // дневник, а автосохранение через секунду записывало это само —
+        // человек видел «Не получилось восстановить» над полупустым
+        // дневником. Теперь автосохранение на время восстановления
+        // выключено, а бросок откатывает контекст.
+        //
+        // **Почему не отдельный контекст.** Пробовали тем же днём (`4d6cdf7e`):
+        // `ДоливкаАрхиваTests` покраснел на четырёх полях — объекты
+        // вызывающего контекста остались прежними, долитое лежало
+        // в хранилище, но не в них. Сливает ли `mainContext` чужое
+        // сохранение в уже загруженные объекты, не установлено, а экран
+        // восстановления держит именно их.
+        //
+        // **Граница отката:** `rollback()` на iOS 17…26 снимает признак
+        // изменений, но не возвращает значения (`Persist.swift`). То есть
+        // в хранилище половина НЕ уйдёт, а в памяти до перезапуска может
+        // остаться. Это меньшая из двух бед: прежде она уходила в файл.
+        let былоАвто = context.autosaveEnabled
+        context.autosaveEnabled = false
+        defer { context.autosaveEnabled = былоАвто }
+        do {
+            return try восстановить(archive, into: context, strategy: strategy)
+        } catch {
+            context.rollback()
+            throw error
+        }
+    }
+
+    @MainActor
+    private static func восстановить(_ archive: BackupArchive, into context: ModelContext,
+                                     strategy: Strategy) throws -> Int {
         if strategy == .replace {
             // `ProcedureSkill` добавлен 07.10.2026 вместе с его снимком:
             // без чистки «заменить» удвоило бы навыки, потому что
