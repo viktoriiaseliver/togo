@@ -737,7 +737,10 @@ struct FamilyScreen: View {
                         // `этоЯ` считает РЕЗОЛВЕР, а не поле карточки:
                         // у гостя `isMe` приезжает общим дневником
                         // и указывает на владельца. Разбор — в `MemberRow`.
-                        MemberRow(member: member, этоЯ: мояКарточка?.id == member.id)
+                        MemberRow(member: member, этоЯ: мояКарточка?.id == member.id,
+                                  настоящая: мояКарточка?.id == member.id
+                                      ? (appState.role, appState.customPermissions != nil)
+                                      : nil)
                     }
                     .buttonStyle(.plain)
                     if member.id != members.last?.id { TGDivider(inset: 38) }
@@ -1342,6 +1345,30 @@ private struct MemberRow: View {
     /// телефона (гость или свой дневник, какая карточка запомнена),
     /// а строка знает только участника.
     let этоЯ: Bool
+    /// Роль, по которой этот телефон РАБОТАЕТ, — только у своей строки.
+    ///
+    /// # Подпись роли бралась у карточки, а права — у `AppState`
+    ///
+    /// Ревизия 05.11.2026, жалоба «Где моя роль?» (отзыв 291). У гостя,
+    /// который до приглашения заводил свой дневник, на телефоне лежит
+    /// СВОЯ карточка с ролью `.owner` (её ставит онбординг, и
+    /// `myMemberID` указывает на неё). `FamilyResolver.меня` её
+    /// опознаёт, а `AppState.adoptMe` при этом берёт роль не у неё,
+    /// а у приехавшего назначения (`НазначениеПоОбмену`, «приехавшее
+    /// сильнее карточки — и только у гостя»). Итог — два ответа:
+    ///
+    /// ```
+    /// подпись строки   member.role         → «владелец»
+    /// права телефона   appState.role/права → со-владелец
+    /// ```
+    ///
+    /// Механизм установлен ПО КОДУ, не кадром: кадр 291 снят
+    /// в другом состоянии (участников 0, своя строка `РольВДневнике`
+    /// и пишет «со-владелец» верно). Правка — подпись своей строки
+    /// берётся из того же источника, что права. У хозяина в своём
+    /// дневнике `adopt(мой)` кладёт в `AppState` роль этой же карточки,
+    /// то есть для него ничего не меняется.
+    var настоящая: (роль: FamilyRole, правИзменены: Bool)? = nil
 
     var body: some View {
         HStack(spacing: Token.Space.s12) {
@@ -1432,10 +1459,12 @@ private struct MemberRow: View {
     /// на кадре у Вики стоят обе половины, и это разные вопросы —
     /// «что ему можно вообще» и «кто отвечает сегодня».
     private var подпись: LocalizedStringKey {
-        var части = [member.role.title.lowercased()]
-        части.append(member.hasCustomPermissions
+        let роль = настоящая?.роль ?? member.role
+        let изменены = настоящая?.правИзменены ?? member.hasCustomPermissions
+        var части = [роль.title.lowercased()]
+        части.append(изменены
                      ? String(localized: "права изменены")
-                     : member.role.permissionSummary)
+                     : роль.permissionSummary)
         if member.isOnDuty { части.append(String(localized: "дежурит")) }
         return .готовая(части.joined(separator: " · "))
     }
