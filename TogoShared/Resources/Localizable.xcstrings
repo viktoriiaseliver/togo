@@ -29867,38 +29867,38 @@
         }
       }
     },
-    "где: " : {
-      "comment" : "frictions",
+    "где: %@" : {
+      "comment" : "Журнал действий, трение: на каких экранах (список названий экранов через запятую).",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "where: "
+            "value" : "where: %@"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "où : "
+            "value" : "où : %@"
           }
         },
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "қайда: "
+            "value" : "қайда: %@"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "где: "
+            "value" : "где: %@"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "де: "
+            "value" : "де: %@"
           }
         }
       }
