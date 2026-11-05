@@ -55021,38 +55021,38 @@
         }
       }
     },
-    "Кормление в %@ попадает в окно натощак " : {
-      "comment" : "result",
+    "Кормление в %@ попадает в окно натощак %@–%@" : {
+      "comment" : "Экран кормления, карточка конфликтов: время кормления и окно натощак (начало–конец).",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "The meal at %@ falls inside the fasting window "
+            "value" : "The meal at %@ falls inside the fasting window %@–%@"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le repas de %@ tombe dans la fenêtre à jeun "
+            "value" : "Le repas de %@ tombe dans la fenêtre à jeun %@–%@"
           }
         },
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "%@-дегі тамақтандыру ашқарын терезесіне түседі "
+            "value" : "%@-дегі тамақтандыру %@–%@ ашқарын терезесіне түседі"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Кормление в %@ попадает в окно натощак "
+            "value" : "Кормление в %@ попадает в окно натощак %@–%@"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Годування о %@ потрапляє у вікно натщесерце "
+            "value" : "Годування о %@ потрапляє у вікно натщесерце %@–%@"
           }
         }
       }
