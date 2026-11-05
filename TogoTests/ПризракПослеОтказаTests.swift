@@ -300,7 +300,12 @@ struct ПризракПослеОтказаTests {
             try Self.чужаяПравка(ctx, dog)
 
             let после = try Self.содержимое(файл)
-            print("ЗАМЕР стирание после отказа, rollback=\(сRollback): прежняя \(после.записи.keys.contains(прежнейID) ? "ЕСТЬ" : "СТЁРТА"), новая \(после.записи.keys.contains(новойID) ? "ЛЕГЛА" : "нет"), строк \(после.записи.count)")
+            let все = try ModelContext(ModelContainer(
+                for: Persistence.schema,
+                configurations: ModelConfiguration(url: файл, cloudKitDatabase: .none)))
+                .fetch(FetchDescriptor<LogEvent>())
+            let кто = все.map { "\($0.authorName)/\($0.id == прежнейID ? "прежняя" : $0.id == новойID ? "новая" : "иная")" }
+            print("ЗАМЕР стирание после отказа, rollback=\(сRollback): прежняя \(после.записи.keys.contains(прежнейID) ? "ЕСТЬ" : "СТЁРТА"), новая \(после.записи.keys.contains(новойID) ? "ЛЕГЛА" : "нет"), разных id \(после.записи.count), строк \(все.count): \(кто)")
         }
     }
 
