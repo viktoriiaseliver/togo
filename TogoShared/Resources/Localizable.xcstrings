@@ -3304,6 +3304,64 @@
         }
       }
     },
+    "Вернули расписание" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Back on schedule"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Planning rétabli"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Кесте қайтарылды"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Розклад повернули"
+          }
+        }
+      }
+    },
+    "Вернуть расписание" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Back to the schedule"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Revenir au planning"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Кестені қайтару"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Повернути розклад"
+          }
+        }
+      }
+    },
     "ветеринарная клиника" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3681,6 +3739,35 @@
         }
       }
     },
+    "Во сколько кормить сегодня?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "What time to feed today?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "À quelle heure nourrir aujourd'hui ?"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Бүгін сағат нешеде тамақтандырамыз?"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "О котрій годувати сьогодні?"
+          }
+        }
+      }
+    },
     "Впиши корм и фасовку — приложение посчитает, на сколько хватит, и напомнит за неделю до конца." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4018,6 +4105,35 @@
         }
       }
     },
+    "Выход около %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Outing around %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sortie vers %@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Шығу шамамен %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Вихід близько %@"
+          }
+        }
+      }
+    },
     "Выходите как обычно" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4188,6 +4304,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Давати після їжі"
+          }
+        }
+      }
+    },
+    "Дальше · через %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Next · in %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Suivant · dans %@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Әрі қарай · %@ кейін"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Далі · через %@"
           }
         }
       }
@@ -5104,6 +5249,35 @@
         }
       }
     },
+    "Есть фото" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Has a photo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Avec photo"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Суреті бар"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Є фото"
+          }
+        }
+      }
+    },
     "её норма ≈ %@ мл в день, в жару больше · складная поилка" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5303,6 +5477,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Нотатка порожня — записувати нічого."
+          }
+        }
+      }
+    },
+    "Запас %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Stock: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Stock : %@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Қор: %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Запас %@"
           }
         }
       }
@@ -6509,6 +6712,35 @@
         }
       }
     },
+    "Кормить в другое время" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Feed at another time"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nourrir à une autre heure"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Басқа уақытта тамақтандыру"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Годувати в інший час"
+          }
+        }
+      }
+    },
     "кровь (ОАК)" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7420,6 +7652,35 @@
         }
       }
     },
+    "Не нашлось, какую запись снять · открой историю" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Couldn't find which entry to remove · open History"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Impossible de trouver l'entrée à retirer · ouvre l'historique"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Қай жазбаны алып тастау керегі табылмады · тарихты аш"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Не знайшлося, який запис зняти · відкрий історію"
+          }
+        }
+      }
+    },
     "Не отмечено" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7858,6 +8119,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Вікно натщесерце, захист від подвійної дози, «як попросив» і попередження про покарання після калюжі безкоштовні завжди і не входять у підписку."
+          }
+        }
+      }
+    },
+    "Оставить %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Keep %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Garder %@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ қалдыру"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Залишити %@"
           }
         }
       }
@@ -8674,6 +8964,35 @@
         }
       }
     },
+    "покормлено в %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "fed at %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "nourri à %@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ кезінде тамақтандырылды"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "погодовано о %@"
+          }
+        }
+      }
+    },
     "Полосы нормы нет: на бланках этих анализов нормы разные. Норма каждого — в карточке точки." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -8857,6 +9176,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Після довгих днів собака їла помітно менше звичайного — %@ з %@."
+          }
+        }
+      }
+    },
+    "после еды в %@ — %@ вместо %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "after the meal at %@ — %@ instead of %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "après le repas de %@ — %@ au lieu de %@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ тамақтан кейін — %3$@ орнына %2$@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "після їжі о %@ — %@ замість %@"
           }
         }
       }
@@ -9401,6 +9749,35 @@
         }
       }
     },
+    "Прогулка не записалась · отметки остались, нажми ещё раз" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The walk wasn't saved · your marks are still here, tap again"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "La promenade n'a pas été enregistrée · les repères sont toujours là, appuie encore"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Серуен жазылмады · белгілер сақталды, қайта бас"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Прогулянка не записалася · позначки лишилися, натисни ще раз"
+          }
+        }
+      }
+    },
     "Просто размялись" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -9571,6 +9948,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "пуші доз — на кожен телефон зі щоденником"
+          }
+        }
+      }
+    },
+    "Расписание останется прежним — меняется только сегодняшний день. Семья увидит этот час у себя." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The schedule stays the same — only today changes. Your family will see this time on their phones."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le planning reste le même — seul aujourd'hui change. La famille verra cette heure chez elle."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Кесте өзгермейді — тек бүгінгі күн өзгереді. Отбасы бұл уақытты өз телефонынан көреді."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Розклад лишиться тим самим — змінюється тільки сьогоднішній день. Родина побачить цю годину в себе."
           }
         }
       }
@@ -9972,6 +10378,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Свого собаку не заводити"
+          }
+        }
+      }
+    },
+    "Сегодня в %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Today at %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aujourd'hui à %@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Бүгін %@ кезінде"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Сьогодні о %@"
           }
         }
       }
@@ -11061,6 +11496,35 @@
         }
       }
     },
+    "Только на сегодня" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Just for today"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Juste pour aujourd'hui"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Тек бүгінге"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Лише на сьогодні"
+          }
+        }
+      }
+    },
     "Только пописал" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -11086,6 +11550,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Тільки попісяв"
+          }
+        }
+      }
+    },
+    "только сегодня" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "today only"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "aujourd'hui seulement"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "тек бүгін"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "лише сьогодні"
           }
         }
       }
@@ -12103,6 +12596,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Це питання до лікаря, а не до застосунку: без їжі цю дозу за призначенням не дають, а пропускати призначення — рішення лікаря."
+          }
+        }
+      }
+    },
+    "Это кормление уже сдвинули · открой план заново" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "This meal was already moved · reopen the plan"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ce repas a déjà été décalé · rouvre le plan"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Бұл тамақтандыру жылжытылып қойған · жоспарды қайта аш"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Це годування вже зсунули · відкрий план знову"
           }
         }
       }
