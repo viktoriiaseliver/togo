@@ -279,15 +279,8 @@ struct PrescriptionEditor: View {
                     TextField("фамилия врача", text: $врач)
                 }
                 TGDivider()
-                Picker("Клиника", selection: $клиника) {
-                    Text("не указана").tag(nil as Clinic?)
-                    ForEach(доступные) { Text(verbatim: $0.name).tag($0 as Clinic?) }
-                }
-                .pickerStyle(.menu)
-                .frame(minHeight: Token.Size.tapTarget)
-                if доступные.isEmpty {
-                    TGExplainer(text: "Справочник пуст. Клиники и лаборатории заводятся в «Здоровье» → «Клиники и лаборатории» — оттуда они и попадают в этот выбор.")
-                }
+                ВыборКлиники(подпись: "Клиника", выбор: $клиника,
+                             доступные: доступные)
                 // Телефон выписавшей клиники нажимаемым: по рецепту
                 // звонят, когда в аптеке чего-то не хватает или когда
                 // номер бланка не читается.
