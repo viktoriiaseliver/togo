@@ -376,7 +376,7 @@ struct NeedsSheet: View {
         }
 
         EventLog(context: context, appState: appState)
-            .record(.dose, dog: dog, confirmation: "Записано · \(доза.препарат)") { event in
+            .record(.dose, dog: dog, confirmation: String(localized: "Записано · \(доза.препарат)")) { event in
                 event.note = доза.препарат
                 event.medicationID = схема.id
             }

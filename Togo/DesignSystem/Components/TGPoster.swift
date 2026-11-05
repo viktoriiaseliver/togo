@@ -465,7 +465,10 @@ struct TGPoster<Trailing: View>: View {
             case .sentence(let фраза):
                 Text(фраза).textStyle(AppFont.cardTitle.color(ink)).lineLimit(1)
             case .hoursMinutes(let h, let m):
-                Text(.готовая("\(h) ч \(m) мин"))
+                // Литералом в Text, а не через `.готовая(String)`: строка
+                // в `.готовая` рисуется дословно, и «ч»/«мин» стояли
+                // по-русски на всех языках (05.11.2026).
+                Text("\(h) ч \(m) мин")
                     .textStyle(AppFont.cardTitle.color(ink))
                     .monospacedDigit()
             }

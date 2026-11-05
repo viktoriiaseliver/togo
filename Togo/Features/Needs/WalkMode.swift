@@ -861,7 +861,7 @@ struct WalkModeScreen: View {
         let duration = Int(finished.duration())
         let записана = EventLog(context: context, appState: appState)
             .recordWalk(finished, dog: dog,
-                        confirmation: "Записано · прогулка \(duration / 60) мин") != nil
+                        confirmation: String(localized: "Записано · прогулка \(duration / 60) мин")) != nil
 
         // Инцидент с прогулки поднимает эпизод так же, как из шторки
         // «Что случилось» (`EpisodeRaiser`, 29.10.2026).

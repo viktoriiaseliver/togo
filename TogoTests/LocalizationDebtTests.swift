@@ -121,7 +121,10 @@ struct LocalizationDebtTests {
         //    на четырёх языках всё это время.
         // Эталон держал обе половины на причине «текст заморожен,
         // носителя сегодня нет» — переводчик не был нужен ни одной.
-        "TogoShared/Domain/Feeding.swift": 1,
+        // `TogoShared/Domain/Feeding.swift` стоял здесь с долгом 1 и снят
+        // 05.11.2026: последнюю строку провёл через каталог `761fbca5`
+        // (конфликт кормления с окном натощак), а запись осталась —
+        // и сторож был красен на «протухшей» на `4e03d245`.
         "TogoShared/Domain/ScheduleChange.swift": 1,
         "TogoShared/Domain/TimelineBuilder.swift": 1,
         // 5 → 3 и 9 → 1, замер 03.11.2026 на вершине 22e5400a.
@@ -215,11 +218,17 @@ struct LocalizationDebtTests {
     /// > а не по договорённости: `осьЭкрановРазличаетСтоки()` проверяет
     /// > ровно это — `"String(localized:"` в списке НЕ-стоков.
     private let долгЭкранов: [String: Int] = [
-        "Togo/DesignSystem/Components/TGPoster.swift": 1,
+        // `TGPoster.swift` снят 05.11.2026: «\(h) ч \(m) мин» шло
+        // через `.готовая(String)` и рисовалось дословно — стало
+        // литералом в `Text`, ключ «%lld ч %lld мин» в каталоге.
         "Togo/Features/Emergency/DocumentPhotos.swift": 3,
         "Togo/Features/Family/FamilyScreen.swift": 5,
-        "Togo/Features/Feeding/FeedingScreen.swift": 3,
-        "Togo/Features/Health/AlarmThresholdScreen.swift": 1,
+        // `FeedingScreen.swift` (3) снят 05.11.2026: на `4e03d245` сторож
+        // находил в нём ноль — три строки провёл через каталог сам
+        // `4e03d245` («Сейчас кормить нельзя»), запись осталась.
+        // `AlarmThresholdScreen.swift` (1) снят тогда же: склейка
+        // «Позвонить» + « в \(клиника)» стала одной фразой
+        // «Позвонить в %@» через каталог.
         "Togo/Features/Health/DoseGateSheet.swift": 1,
         // Было восемь, стало пять: 03.11 сняты три `showFailure`
         // («Вес не записался · попробуй ещё раз», «Взвешивание

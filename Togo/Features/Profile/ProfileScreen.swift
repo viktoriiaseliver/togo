@@ -241,14 +241,14 @@ struct ProfileScreen: View {
                     if isOn {
                         if !TreatmentCourse.resume(dog, context: context) {
                             Haptics.warning()
-                            appState.showFailure("Не сохранилось · попробуй ещё раз")
+                            appState.showFailure(String(localized: "Не сохранилось · попробуй ещё раз"))
                         }
                     } else {
                         // Отказ виден: тумблер вернётся сам (поле откатано),
                         // но молча вернувшийся тумблер читается как сбой.
                         if !TreatmentCourse.finish(dog, by: appState.currentUserName, context: context) {
                             Haptics.warning()
-                            appState.showFailure("Не сохранилось · попробуй ещё раз")
+                            appState.showFailure(String(localized: "Не сохранилось · попробуй ещё раз"))
                         }
                     }
                 }

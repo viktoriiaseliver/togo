@@ -103,7 +103,7 @@ struct AskSignalCard: View {
         }
     }
 
-    private func row(title: String, tally: Diary.SignalTally) -> some View {
+    private func row(title: LocalizedStringKey, tally: Diary.SignalTally) -> some View {
         VStack(alignment: .leading, spacing: Token.Space.s4) {
             HStack {
                 Text(title).textStyle(AppFont.micro)

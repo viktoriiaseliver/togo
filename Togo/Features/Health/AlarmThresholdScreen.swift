@@ -35,7 +35,10 @@ struct AlarmThresholdScreen: View {
             TGExplainer(text: "Порог задаёт счёт, а не догадка: \(AlarmThresholdAnalyzer.minimumEpisodes) эпизода за \(Int(threshold.window / 3600)) часов. Приложение не ставит диагнозов — решение всегда за врачом.")
         } footer: {
             if let phone = dog.clinicPhone ?? dog.vetPhone, !phone.isEmpty {
-                TGButton(title: .готовая(String(localized: "Позвонить") + (dog.clinicName.map { " в \($0)" } ?? "")),
+                // Целой фразой: склейка «Позвонить» + « в …» оставляла
+                // предлог русским на всех языках.
+                TGButton(title: .готовая(dog.clinicName.map { String(localized: "Позвонить в \($0)") }
+                                         ?? String(localized: "Позвонить")),
                          systemImage: "phone.fill") {
                     call(phone)
                 }

@@ -269,7 +269,7 @@ struct DayPlanActions {
             .record(logKind(of: item),
                     dog: dog,
                     at: момент,
-                    confirmation: "Записано · \(item.title)") { event in
+                    confirmation: String(localized: "Записано · \(item.title)")) { event in
                 switch item.kind {
                 case .meal:
                     // **Выдуманных граммов в ЗАПИСИ быть не может:
