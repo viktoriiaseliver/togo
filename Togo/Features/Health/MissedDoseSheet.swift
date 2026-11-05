@@ -105,7 +105,7 @@ struct MissedDoseSheet: View {
                     }
                     Spacer(minLength: 0)
                     Image(systemName: "chevron.right")
-                        .font(.system(size: Token.Size.iconSm, weight: .semibold))
+                        .font(AppFont.icon.font)
                         .foregroundStyle(Token.Ink.secondary)
                 }
                 Text(detail).textStyle(AppFont.caption).wraps()
@@ -128,7 +128,7 @@ struct MissedDoseSheet: View {
                     Text("Спросить врача").textStyle(AppFont.cardTitle)
                     Spacer(minLength: 0)
                     Image(systemName: "square.and.arrow.up")
-                        .font(.system(size: Token.Size.iconSm, weight: .semibold))
+                        .font(AppFont.icon.font)
                         .foregroundStyle(Token.Ink.secondary)
                 }
                 Text("Готовое сообщение: название, доза и время пропуска.")

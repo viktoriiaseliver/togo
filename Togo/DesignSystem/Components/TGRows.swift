@@ -342,14 +342,39 @@ struct TGAvatar: View {
 /// притворяющимся сведениями, — вернётся, когда будет что показывать.
 ///
 /// Инициал автора остаётся, но только когда в семье больше одного
-/// человека: одному себе представляться незачем.
+/// человека: одному себе представляться незачем. Правило показа живёт
+/// у вызывающего (`DayTimeline.showsAuthor`), не здесь.
+///
+/// **С 05.11.2026 — кружок с заглавной буквой, а не голая буква.**
+/// До того здесь стояла одна буква имени как есть (то есть строчная,
+/// если имя так набрано) кеглем 11 без Dynamic Type, серым, в конце
+/// строки заголовка. На кадре сборки 289 она читалась как предлог
+/// «в» — продолжение строки, а не «кто записал». Форма аватара
+/// говорит «человек» без слов; кегль и диаметр растут с настройкой
+/// размера текста по одной оси (`.footnote`), поэтому буква
+/// не вываливается из кружка на крупных ступенях.
 struct TGAuthorMark: View {
     let author: String
 
+    /// Диаметр кружка — `Token.Size.avatarSm` на стандартной ступени,
+    /// дальше растёт вместе с кеглем буквы (та же ось `.footnote`,
+    /// что у `AppFont.micro`).
+    @ScaledMetric(relativeTo: .footnote) private var диаметр: CGFloat = Token.Size.avatarSm
+
+    private var инициал: String {
+        author.trimmingCharacters(in: .whitespacesAndNewlines).prefix(1).uppercased()
+    }
+
     var body: some View {
-        Text(String(author.prefix(1)))
-            .font(.system(size: 11, weight: .bold))
-            .foregroundStyle(Token.Ink.secondary)
-            .accessibilityLabel(Text("Записала \(author)"))
+        if !инициал.isEmpty {
+            Text(инициал)
+                .textStyle(AppFont.micro.weight(Token.FontWeight.bold).color(Token.Ink.primary))
+                .lineLimit(1)
+                .minimumScaleFactor(0.5)
+                .frame(width: диаметр, height: диаметр)
+                .background(Token.Action.doneQuiet, in: Circle())
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(Text("Записал(а): \(author)"))
+        }
     }
 }

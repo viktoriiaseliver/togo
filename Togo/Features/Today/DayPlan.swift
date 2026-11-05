@@ -188,7 +188,7 @@ struct DayPlanList: View {
         } label: {
             HStack(spacing: Token.Space.s6) {
                 Image(systemName: showsDone ? "chevron.down" : "chevron.right")
-                    .font(.system(size: 11, weight: .semibold))
+                    .font(AppFont.icon.font)
                 Text("сделано · \(done.count)")
                     .textStyle(AppFont.captionEmphasis)
                 Spacer(minLength: 0)
@@ -211,7 +211,7 @@ struct DayPlanList: View {
         Button(action: onOpenCare) {
             HStack(spacing: Token.Space.s8) {
                 Image(systemName: "calendar.badge.exclamationmark")
-                    .font(.system(size: 13, weight: .medium))
+                    .font(AppFont.icon.weight(Token.FontWeight.medium).font)
                     .foregroundStyle(Token.Status.waitingText)
                     .accessibilityHidden(true)
                 // `Fmt.plural` возвращает число ВМЕСТЕ со словом. Число
@@ -222,7 +222,7 @@ struct DayPlanList: View {
                     .wraps()
                 Spacer(minLength: 0)
                 Image(systemName: "chevron.right")
-                    .font(.system(size: 11, weight: .semibold))
+                    .font(AppFont.icon.font)
                     .foregroundStyle(Token.Ink.secondary)
             }
             .frame(minHeight: Token.Size.tapTarget)

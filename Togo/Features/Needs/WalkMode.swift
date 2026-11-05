@@ -716,7 +716,7 @@ struct WalkModeScreen: View {
                         .fixedSize()
                         .frame(minWidth: 44, alignment: .leading)
                     Image(systemName: entry.kind.symbol)
-                        .font(.system(size: 13, weight: .medium))
+                        .font(AppFont.icon.weight(Token.FontWeight.medium).font)
                         .foregroundStyle(Token.Ink.silhouette)
                         .accessibilityHidden(true)
                     Text(entry.kind.title).textStyle(AppFont.body)

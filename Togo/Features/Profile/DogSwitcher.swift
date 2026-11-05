@@ -268,7 +268,7 @@ private struct DogRow: View {
             Spacer(minLength: 0)
             if isActive {
                 Image(systemName: "checkmark")
-                    .font(.system(size: 13, weight: .semibold))
+                    .font(AppFont.icon.font)
                     .foregroundStyle(Token.Status.doneText)
                     .accessibilityLabel("открыта сейчас")
             }

@@ -140,6 +140,19 @@ enum AppFont {
     /// Капс: название секции. 14/600, в вёрстке — прописными.
     static let caps = TextStyleToken(size: Token.FontSize.caption, weight: Token.FontWeight.semibold, color: Token.Ink.secondary,
                                      relativeTo: .caption1)
+    /// Малый значок при строке: шеврон, галочка «открыта сейчас»,
+    /// значок вида отметки. `Token.Size.iconSm` (13) на стандартной
+    /// ступени, дальше растёт с Dynamic Type по оси `.footnote`.
+    ///
+    /// Заведён 05.11.2026 вместо `.font(.system(size: 11/13))` в шести
+    /// местах: прибитый кегль значка не рос с настройкой размера текста,
+    /// и на крупной ступени текст рядом вырастал, а значок оставался
+    /// точкой. Брать `.font(AppFont.icon.font)`, а не `.textStyle(…)`,
+    /// если цвет значку даёт предок: стиль несёт свой цвет и перекрыл
+    /// бы его. Шевроны, бывшие 11, стали 13 — ступени 11 в токенах нет,
+    /// и заводить её ради шеврона значило бы придумать дизайн-значение.
+    static let icon = TextStyleToken(size: Token.Size.iconSm, weight: Token.FontWeight.semibold, color: Token.Ink.secondary,
+                                     relativeTo: .footnote)
 
     /// Числа в строках и на плитках.
     static func numeric(_ size: CGFloat, weight: Font.Weight = Token.FontWeight.semibold) -> TextStyleToken {
