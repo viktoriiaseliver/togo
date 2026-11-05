@@ -558,7 +558,7 @@ nonisolated enum BackupService {
                           FoodStock.self, HeatRecord.self,
                           DogDocument.self, DayOut.self,
                           FamilyMember.self, Dog.self] as [any PersistentModel.Type] {
-                try context.delete(model: model)
+                try стеретьПоштучно(model, context: context)
             }
         }
 
@@ -1964,30 +1964,59 @@ extension BackupService {
         }
         откаты += накоплено
 
-        // Стереть то, что файл положит заново, — тем же способом, что
-        // и без обмена (`delete(model:)`), только с условием по id.
-        let ids = Array(вФайле)
-        try context.delete(model: LogEvent.self, where: #Predicate<LogEvent> { ids.contains($0.id) })
-        try context.delete(model: WeightEntry.self, where: #Predicate<WeightEntry> { ids.contains($0.id) })
-        try context.delete(model: DoseRecord.self, where: #Predicate<DoseRecord> { ids.contains($0.id) })
-        try context.delete(model: Medication.self, where: #Predicate<Medication> { ids.contains($0.id) })
-        try context.delete(model: CareTask.self, where: #Predicate<CareTask> { ids.contains($0.id) })
-        try context.delete(model: DogDocument.self, where: #Predicate<DogDocument> { ids.contains($0.id) })
-        try context.delete(model: LabResult.self, where: #Predicate<LabResult> { ids.contains($0.id) })
-        try context.delete(model: VetVisit.self, where: #Predicate<VetVisit> { ids.contains($0.id) })
-        try context.delete(model: Diagnosis.self, where: #Predicate<Diagnosis> { ids.contains($0.id) })
-        try context.delete(model: Prescription.self, where: #Predicate<Prescription> { ids.contains($0.id) })
-        try context.delete(model: Clinic.self, where: #Predicate<Clinic> { ids.contains($0.id) })
-        try context.delete(model: Dog.self, where: #Predicate<Dog> { ids.contains($0.id) })
+        // Стереть то, что файл положит заново, — ПОШТУЧНО, а не
+        // `delete(model:where:)`. Замер 05.11.2026 (прогон на `cecf62e3`):
+        // с пакетным стиранием по условию отвязанное надгробие пропадало
+        // вместе с собакой — пакет идёт мимо отвязки, сделанной в памяти.
+        // Поштучное стирание каскадит по связям КОНТЕКСТА, где ребёнок уже
+        // отвязан.
+        try стеретьПоштучно(LogEvent.self, context: context) { вФайле.contains($0.id) }
+        try стеретьПоштучно(WeightEntry.self, context: context) { вФайле.contains($0.id) }
+        try стеретьПоштучно(DoseRecord.self, context: context) { вФайле.contains($0.id) }
+        try стеретьПоштучно(Medication.self, context: context) { вФайле.contains($0.id) }
+        try стеретьПоштучно(CareTask.self, context: context) { вФайле.contains($0.id) }
+        try стеретьПоштучно(DogDocument.self, context: context) { вФайле.contains($0.id) }
+        try стеретьПоштучно(LabResult.self, context: context) { вФайле.contains($0.id) }
+        try стеретьПоштучно(VetVisit.self, context: context) { вФайле.contains($0.id) }
+        try стеретьПоштучно(Diagnosis.self, context: context) { вФайле.contains($0.id) }
+        try стеретьПоштучно(Prescription.self, context: context) { вФайле.contains($0.id) }
+        try стеретьПоштучно(Clinic.self, context: context) { вФайле.contains($0.id) }
+        try стеретьПоштучно(Dog.self, context: context) { вФайле.contains($0.id) }
 
         // Виды вне обмена — как без обмена: целиком.
         for model in [TrainingSession.self, TrainingStep.self, Trip.self,
                       Episode.self, ProcedureSkill.self,
                       FoodStock.self, HeatRecord.self, DayOut.self,
                       FamilyMember.self] as [any PersistentModel.Type] {
-            try context.delete(model: model)
+            try стеретьПоштучно(model, context: context)
         }
         return перепривязка
+    }
+
+    /// Стереть записи вида — в КОНТЕКСТЕ, до сохранения, а не пакетом.
+    ///
+    /// # Почему не `delete(model:)`
+    ///
+    /// Замер 05.11.2026 (`ПризракПослеОтказаTests`, хранилище, которое
+    /// отказывает и снова пишет, прогон на `cecf62e3`): «заменить»
+    /// с пакетным `delete(model:)` под отказом записи НЕ БРОСИЛО вовсе
+    /// и легло в файл целиком. Механизм не установлен; вероятнее всего,
+    /// пакет пишет в хранилище сам, мимо `save()`, и съедает отказ
+    /// записи (стенд снимает лимит на втором отказе). Если так, то при
+    /// отказе на `save()` стирание уже было бы в файле, а вставка — нет:
+    /// пустой дневник и «Не получилось восстановить».
+    ///
+    /// Поштучное стирание — изменение контекста: в хранилище оно уходит
+    /// тем же `save()`, что и вставка, то есть целиком или никак. Цена —
+    /// выборка всех записей вида; для дневника в тысячи записей это
+    /// секунды, а не минуты, и восстановление и так ждут.
+    @MainActor
+    static func стеретьПоштучно<T: PersistentModel>(
+        _: T.Type, context: ModelContext, где: (T) -> Bool = { _ in true }
+    ) throws {
+        for запись in try context.fetch(FetchDescriptor<T>()) where где(запись) {
+            context.delete(запись)
+        }
     }
 }
 

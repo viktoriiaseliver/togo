@@ -271,6 +271,39 @@ struct ПризракПослеОтказаTests {
 
     // MARK: Восстановление архива — откат без rollback()
 
+    /// Замер, на котором стоит откат восстановления: что делает со СТИРАНИЕМ
+    /// существующей записи и со вставкой отказ `save()`, поштучное
+    /// удаление вставленного, `rollback()` и выборка после.
+    ///
+    /// Печатает и не судит: таблица выше мерила только вставку, а откат
+    /// «заменить» держит и стирание. Строки «ЗАМЕР стирание» — в логе.
+    @Test("ЗАМЕР SwiftData: стирание и вставка после отказа, с rollback() и без")
+    func замерСтиранияПослеОтказа() throws {
+        for сRollback in [false, true] {
+            let (файл, ctx, dog) = try Self.хранилище()
+            let прежняя = LogEvent(kind: .note, date: Date(), authorName: "Аня")
+            прежняя.dog = dog
+            ctx.insert(прежняя)
+            try ctx.save()
+            let прежнейID = прежняя.id
+
+            ctx.delete(прежняя)
+            let новая = LogEvent(kind: .meal, date: Date(), authorName: "Мама")
+            новая.dog = dog
+            ctx.insert(новая)
+            let новойID = новая.id
+            try #require((try? Self.безЗаписи { try ctx.save() }) == nil, "отказа не было")
+
+            for вставленное in ctx.insertedModelsArray { ctx.delete(вставленное) }
+            if сRollback { ctx.rollback() }
+            ctx.осестьПослеОтказа()
+            try Self.чужаяПравка(ctx, dog)
+
+            let после = try Self.содержимое(файл)
+            print("ЗАМЕР стирание после отказа, rollback=\(сRollback): прежняя \(после.записи.keys.contains(прежнейID) ? "ЕСТЬ" : "СТЁРТА"), новая \(после.записи.keys.contains(новойID) ? "ЛЕГЛА" : "нет"), строк \(после.записи.count)")
+        }
+    }
+
     /// Записи и собаки в файле — свежим контейнером.
     private static func содержимое(_ файл: URL) throws -> (записи: [UUID: Date?], собак: Int) {
         let к = ModelContext(try ModelContainer(
