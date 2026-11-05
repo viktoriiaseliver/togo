@@ -96,6 +96,18 @@ enum LiveActivityController {
         let verdict = VerdictEngine.evaluate(signals)
         // Счёт от туалета — `ToiletClock`, тем же вызовом, что у героя
         // «Сегодня»; выход — конец последнего блока ленты, тоже как там.
+        // **Сколько кормлений СЕГОДНЯ, а не сколько их в режиме.**
+        // Здесь стояло `dog.mealsPerDay`, и это тот же класс, что
+        // починен в «Питании» 05.11.2026: читатель расписания,
+        // не знающий про разовое исключение. Обычно числа совпадают,
+        // но человек, сдвинувший кормление, видел на локскране «1 из 3»
+        // при двух пунктах в плане дня — две поверхности спорили
+        // друг с другом в один вечер.
+        //
+        // Откат на `mealsPerDay` оставлен для профиля без часов вовсе:
+        // «1 из 0» было бы хуже, чем «1 из 3».
+        let часыСегодня = dog.часыКормленийНа(now, calendar: .current)
+        let запланированоКормлений = часыСегодня.isEmpty ? dog.mealsPerDay : часыСегодня.count
         let туалет = ToiletClock.last(events, male: dog.sex == .male, now: now)
         let выход = TimelineBuilder.blocks(Diary.active(events)).last(where: \.isOuting)?.endedAt
 
@@ -120,7 +132,7 @@ enum LiveActivityController {
             fastingEndsAt: fastingEnd(for: dog, now: now),
             lastMealAt: мяЕда(events, now: now).0,
             mealsToday: мяЕда(events, now: now).1,
-            mealsPlanned: dog.mealsPerDay,
+            mealsPlanned: запланированоКормлений,
             updatedAt: now,
             lastToiletAt: туалет?.когда,
             lastToiletAtHome: туалет.map { $0.где == .дом },

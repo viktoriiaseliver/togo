@@ -2915,6 +2915,34 @@
         }
       }
     },
+    "Забор отмечен" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sample marked as taken"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Prélèvement marqué comme fait"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Үлгі алынды деп белгіленді"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Забір позначено"
+          }
+        }
+      }
+    },
     "Запас %@" : {
       "localizations" : {
         "en" : {
@@ -2939,6 +2967,34 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Запас %@"
+          }
+        }
+      }
+    },
+    "На этот час кормление уже стоит · выбери другое время" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "A feeding is already set for this hour · pick another time"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Un repas est déjà prévu à cette heure · choisis une autre heure"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Бұл уақытқа тамақтандыру қойылған · басқа уақыт таңдаңыз"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "На цю годину годування вже стоїть · вибери інший час"
           }
         }
       }
@@ -3303,6 +3359,90 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Запас не зберігся · натисни ще раз"
+          }
+        }
+      }
+    },
+    "Сегодня часы другие: %@. Расписание: %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Today the times are different: %@. The schedule: %@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aujourd'hui les heures sont différentes : %@. Le planning : %@."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Бүгін уақыттар басқа: %@. Кесте: %@."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Сьогодні години інші: %@. Розклад: %@."
+          }
+        }
+      }
+    },
+    "Сегодня в %@ вместо %@ — только на сегодня. Расписание не менялось." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Today at %@ instead of %@ — just for today. The schedule has not changed."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aujourd'hui à %@ au lieu de %@ — juste pour aujourd'hui. Le planning n'a pas changé."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Бүгін %@-де, %@ орнына — тек бүгінге. Кесте өзгермеді."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Сьогодні о %@ замість %@ — тільки на сьогодні. Розклад не змінювався."
+          }
+        }
+      }
+    },
+    "Следующее кормление примерно в %@ — только сегодня." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Next feeding at about %@ — today only."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Prochain repas vers %@ — aujourd'hui seulement."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Келесі тамақтандыру шамамен %@ — тек бүгінге."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Наступне годування приблизно о %@ — тільки сьогодні."
           }
         }
       }
