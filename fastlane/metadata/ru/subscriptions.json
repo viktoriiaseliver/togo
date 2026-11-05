@@ -7,39 +7,39 @@
   "products": {
     "app.togo.diary.pro.monthly": {
       "name": "Togo Pro · месяц",
-      "description": "Вторая собака, семья, матрица навыка",
+      "description": "Вторая и следующие собаки, семья от трёх",
       "price": "2.99",
       "localizations": {
         "fr-FR": {
           "name": "Togo Pro · mensuel",
-          "description": "Deuxième chien, famille, matrice de transfert"
+          "description": "Deuxième chien et plus, famille dès trois"
         },
         "uk": {
           "name": "Togo Pro · місяць",
-          "description": "Друга собака, сім'я, матриця перенесення"
+          "description": "Друга й наступні собаки, сім'я від трьох"
         },
         "en-US": {
           "name": "Togo Pro · monthly",
-          "description": "Second dog, family, generalization matrix"
+          "description": "Second and further dogs, family beyond two"
         }
       }
     },
     "app.togo.diary.pro.yearly": {
       "name": "Togo Pro · год",
-      "description": "Вторая собака, семья, матрица навыка",
+      "description": "Вторая и следующие собаки, семья от трёх",
       "price": "19.99",
       "localizations": {
         "fr-FR": {
           "name": "Togo Pro · annuel",
-          "description": "Deuxième chien, famille, matrice de transfert"
+          "description": "Deuxième chien et plus, famille dès trois"
         },
         "uk": {
           "name": "Togo Pro · рік",
-          "description": "Друга собака, сім'я, матриця перенесення"
+          "description": "Друга й наступні собаки, сім'я від трьох"
         },
         "en-US": {
           "name": "Togo Pro · yearly",
-          "description": "Second dog, family, generalization matrix"
+          "description": "Second and further dogs, family beyond two"
         }
       }
     }

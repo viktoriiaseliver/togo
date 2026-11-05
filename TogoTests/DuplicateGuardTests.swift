@@ -315,4 +315,40 @@ struct DuplicateGuardTests {
                 """)
         }
     }
+
+    // MARK: Инцидент от двойного срабатывания (29.10.2026)
+
+    private func инцидент(_ context: ModelContext, _ dog: Dog, at date: Date,
+                          _ вид: IncidentKind) throws -> LogEvent {
+        let event = LogEvent(kind: .incident, date: date, authorName: "Я")
+        event.incidentKind = вид
+        event.dog = dog
+        context.insert(event)
+        try context.save()
+        return event
+    }
+
+    @Test("Метка сработала дважды — вторая лужа дублем; лужа и рвота — две записи")
+    func двойнаяЛужа() throws {
+        let (context, dog) = try собакаИКонтекст()
+        let сейчас = Date()
+        _ = try инцидент(context, dog, at: сейчас, .puddle)
+
+        let вторая = LogEvent(kind: .incident, date: сейчас.addingTimeInterval(3), authorName: "Я")
+        вторая.incidentKind = .puddle
+        #expect(DuplicateGuard.recent(of: .incident, dog: dog, at: вторая.date,
+                                      like: вторая, in: context) != nil)
+
+        let рвота = LogEvent(kind: .incident, date: сейчас.addingTimeInterval(3), authorName: "Я")
+        рвота.incidentKind = .vomit
+        #expect(DuplicateGuard.recent(of: .incident, dog: dog, at: рвота.date,
+                                      like: рвота, in: context) == nil)
+
+        // Через десять минут — это вторая лужа, а не второй тап.
+        let потом = LogEvent(kind: .incident, date: сейчас.addingTimeInterval(600), authorName: "Я")
+        потом.incidentKind = .puddle
+        #expect(DuplicateGuard.recent(of: .incident, dog: dog, at: потом.date,
+                                      like: потом, in: context) == nil)
+    }
+
 }

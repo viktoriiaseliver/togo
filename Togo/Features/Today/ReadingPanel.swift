@@ -54,6 +54,12 @@ struct ReadingPanel<Шапка: View>: View {
     var докуда: String?
     /// Насколько заполнена полоса-косточка, 0…1. Пусто — полосы нет.
     var доля: Double?
+    /// Заголовок вместо «Сегодня» — когда показан другой день.
+    ///
+    /// Пусто — «Сегодня». На прошлом дне заголовок говорил «Сегодня»
+    /// над вчерашней лентой (аудит 29.10.2026); название дня приходит
+    /// готовым от экрана, у панели своего календаря нет.
+    var заголовок: String?
     /// Шапка: аватар, кличка, «вес · дежурит», кнопка «…».
     @ViewBuilder var шапка: Шапка
 
@@ -335,7 +341,7 @@ struct ReadingPanel<Шапка: View>: View {
     /// и её держит зелёный сторож `ШапкаНаФотоTests`, заказанный дизайном.
     private var строкаЗаголовка: some View {
         HStack(alignment: .firstTextBaseline, spacing: Token.Space.s8) {
-            Text("Сегодня")
+            (заголовок.map { Text(verbatim: $0) } ?? Text("Сегодня"))
                 .textStyle(AppFont.screenTitle, color: Token.Poster.labelOnColor)
                 .wraps()
             Spacer(minLength: Token.Space.s8)

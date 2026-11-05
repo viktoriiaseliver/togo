@@ -16,10 +16,10 @@ enum TodayRoute: Identifiable, Hashable {
     case walk
     case walkResult
     case stool
-    /// Пописал дома — отметка без прогулки.
-    case urineAtHome
     case meal
     case treat
+    case water
+    case travelStop
     case incident
     case note
     case training
@@ -49,9 +49,10 @@ struct TodayRouter: View {
             case .walk:             WalkModeScreen(dog: dog)
             case .walkResult:       WalkResultSheet(dog: dog)
             case .stool:            StoolSheet(dog: dog)
-            case .urineAtHome:      UrineAtHomeSheet(dog: dog)
             case .meal:             MealSheet(dog: dog)
             case .treat:            TreatSheet(dog: dog)
+            case .water:            WaterSheet(dog: dog)
+            case .travelStop:       TripStopSheet(dog: dog)
             case .incident:         IncidentSheet(dog: dog)
             case .note:             NoteSheet(dog: dog)
             // Маршрут занятия оставлен ПУСТЫМ, а не удалён: `case
@@ -102,15 +103,17 @@ struct MoreSheet: View {
 
     var body: some View {
         TGSheet(title: "Ещё", subtitle: "то, что нужно реже, чем раз в день") {
-            TGCard(padding: 4) {
+            TGCard(padding: Token.Space.s4) {
                 VStack(spacing: 0) {
                     row("Лакомство", "sparkles") { next = .treat }
+                    TGDivider()
+                    row("Вода", "drop") { next = .water }
                     TGDivider()
                     row("Заметка", "text.alignleft") { next = .note }
                     TGDivider()
                     row("Собака со мной весь день", "figure.walk.motion") { next = .dayOut }
                 }
-                .padding(.horizontal, 12)
+                .padding(.horizontal, Token.Space.s12)
             }
 
             Button {
@@ -124,9 +127,9 @@ struct MoreSheet: View {
                 }
             }
             .buttonStyle(.plain)
-            TGExplainer(text: "Питание, уход, документы и «если что-то случилось» живут на вкладке собаки — туда два тапа с любого экрана.")
+            TGExplainer(text: "Питание, уход, документы и «если что-то случилось» живут на вкладке собаки — туда два тапа с любого экрана.", памятка: "ещё.вкладкаСобаки")
         }
-        .presentationDetents([.medium])
+        .presentationDetents([.medium, .large])
         .sheet(item: $next) { route in
             TodayRouter(route: route, dog: dog, now: Date())
         }
@@ -162,7 +165,8 @@ struct MoreSheet: View {
     ///
     /// С `LocalizedStringKey` литерал с подстановкой собирает ключ
     /// `Занятие · %@` сам, и перевод находится у всех четырёх языков.
-    /// Поймано `ScreenshotTests.test04Занятие` на партии `uk`: кадра
+    /// Поймано `ScreenshotTests.test04Занятие` (снят 03.11.2026
+    /// вместе с занятиями) на партии `uk`: кадра
     /// `04-training` не было ни у одного языка, кроме русского.
     private func row(_ title: LocalizedStringKey, _ symbol: String,
                      action: @escaping () -> Void) -> some View {

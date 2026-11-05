@@ -221,7 +221,8 @@ struct ПозвалиВСемью: View {
             UsageLog.note(.record, "acceptByLink", on: .family)
         } else {
             Haptics.warning()
-            UsageLog.note(.record, "acceptByLink:failed", on: .family, outcome: .failed)
+            UsageLog.note(.record, "acceptByLink:failed:\(ответ.кодДляЖурнала)",
+                          on: .family, outcome: .failed)
         }
     }
 }

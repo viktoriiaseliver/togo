@@ -288,26 +288,91 @@ struct SharedDiaryOutboxTests {
         #expect(разбор.потеряно.first?.попыток == SharedDiaryOutbox.потолокПовторов)
     }
 
-    @Test("Пропавшая зона обнуляет все теги и считается ОБЪЯВЛЕННОЙ потерей")
-    func lostZoneForgetsEverything() {
+    /// **Прежняя редакция замораживала дефект** (переписана 29.10.2026).
+    ///
+    /// Звалась «Пропавшая зона обнуляет все теги и считается
+    /// ОБЪЯВЛЕННОЙ потерей» и требовала `повторим.isEmpty` — на доводе
+    /// «зону пересоздаёт движок». Движок зон сам не заводит: их кладут
+    /// ему `.saveZone`, а таких строк в коде не было. Запись владельца,
+    /// писавшего до первого приглашения, терялась с первой попытки.
+    @Test("Пропавшая зона: запись повторяется, зона заказана, теги только этой зоны забыты")
+    func lostZoneIsRecreatedAndRecordRetried() {
         let outbox = SharedDiaryOutbox()
         let server = serverRecord(UUID())
         outbox.remember(server)
 
         let разбор = outbox.retries(after: [(id: server.recordID, error: failure(.zoneNotFound))])
 
-        #expect(outbox.base(for: server.recordID) == nil)
-        // Повтора нет, но довод записан в коде: зону пересоздаёт движок.
-        // Поэтому `объявлено: true` — и в журнал это идёт `notice`,
-        // а не `error`. Вернётся ли запись после пересоздания зоны —
-        // НЕ ИЗМЕРЕНО, и различие уровней сделано ради того, чтобы
-        // этот вопрос был виден, а не ради тишины.
+        #expect(outbox.base(for: server.recordID) == nil, "тег записи из пропавшей зоны указывает в пустоту")
+        #expect(разбор.повторим == [server.recordID], """
+            запись в пропавшую зону не повторена — она уйдёт, только \
+            если её повторить ПОСЛЕ того, как зону заведут
+            """)
+        #expect(разбор.потеряно.isEmpty, "первая попытка — ещё не потеря")
+        #expect(разбор.зоныСоздать == [zone], "зону заказывать некому, кроме вызывающего")
+    }
+
+    /// Предмет правки 29.10.2026: `forgetAll()` на отказе зоны обнулял
+    /// счёт попыток ВСЕХ записей, и потолок не срабатывал никогда.
+    @Test("Отказ зоны не возвращает другим записям запас попыток")
+    func lostZoneKeepsOtherAttempts() {
+        let outbox = SharedDiaryOutbox()
+        let упрямая = serverRecord(UUID())
+        let вЗоне = serverRecord(UUID())
+        let потолок = SharedDiaryOutbox.потолокПовторов
+
+        for _ in 1...потолок {
+            _ = outbox.retries(after: [(id: упрямая.recordID, error: failure(.networkFailure))])
+        }
+        // Посреди повторов падает зона у соседней записи.
+        _ = outbox.retries(after: [(id: вЗоне.recordID, error: failure(.zoneNotFound))])
+
+        let разбор = outbox.retries(after: [(id: упрямая.recordID, error: failure(.networkFailure))])
+
+        #expect(разбор.потеряно.first?.попыток == потолок, """
+            отказ зоны соседней записи вернул упрямой полный запас \
+            попыток — потолок не срабатывает, и запись, которая не уйдёт \
+            никогда, крутится в очереди вечно
+            """)
         #expect(разбор.повторим.isEmpty)
+    }
+
+    /// Контроль к счёту: тот же потолок у самой записи в пропавшую
+    /// зону — иначе «зону заказали» превращается в вечный круг, если
+    /// зона не заведётся.
+    @Test("У записи в пропавшую зону тот же потолок повторов")
+    func lostZoneRetriesHaveCeiling() {
+        let outbox = SharedDiaryOutbox()
+        let server = serverRecord(UUID())
+
+        for _ in 1...SharedDiaryOutbox.потолокПовторов {
+            _ = outbox.retries(after: [(id: server.recordID, error: failure(.zoneNotFound))])
+        }
+        let разбор = outbox.retries(after: [(id: server.recordID, error: failure(.zoneNotFound))])
+
+        #expect(разбор.повторим.isEmpty, "потолок исчерпан, а запись снова в очереди")
+        #expect(разбор.потеряно.first?.попыток == SharedDiaryOutbox.потолокПовторов)
+    }
+
+    /// Человек сам стёр данные приложения в iCloud — это решение,
+    /// и зону за его спиной не возвращаем.
+    @Test("Удалённая человеком зона — объявленная потеря, и зону не заказываем")
+    func userDeletedZoneIsDeclaredLoss() {
+        let outbox = SharedDiaryOutbox()
+        let server = serverRecord(UUID())
+        outbox.remember(server)
+
+        let разбор = outbox.retries(after: [(id: server.recordID, error: failure(.userDeletedZone))])
+
+        #expect(outbox.base(for: server.recordID) == nil)
+        #expect(разбор.повторим.isEmpty)
+        #expect(разбор.зоныСоздать.isEmpty, "зону, которую стёр человек, мы не возвращаем")
         #expect(разбор.потеряно.first?.объявлено == true, """
             решение с доводом и дефект без довода помечены одинаково — \
             значит в журнале их не различить, а различие и есть \
             единственный способ найти второе
             """)
+        #expect(разбор.потеряно.first?.попыток == 0)
     }
 
     @Test("Подтверждённая сервером запись запоминается")

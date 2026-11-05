@@ -81,7 +81,7 @@ struct VetVisitsScreen: View {
             }
         }
         .navigationTitle("Визиты к врачу")
-        .cinemaScreen(экран: .sub("visit"))
+        .cinemaScreen(экран: ScreenKey.visits)
         .toolbar {
             if canEdit, dog != nil {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -228,7 +228,7 @@ struct VetVisitEditor: View {
                     let откат = ОбщееУдаление.удалить(visit)
                     guard context.persist(otherwise: откат) else {
                         Haptics.warning()
-                        appState.showFailure("Не удалилось · нажми ещё раз")
+                        appState.showFailure(String(localized: "Не удалилось · нажми ещё раз"))
                         return
                     }
                 }
@@ -287,7 +287,7 @@ struct VetVisitEditor: View {
             }
         }) else {
             Haptics.warning()
-            appState.showFailure("Не сохранилось · нажми ещё раз")
+            appState.showFailure(String(localized: "Не сохранилось · нажми ещё раз"))
             return
         }
         Haptics.success()
@@ -549,7 +549,7 @@ struct DiagnosisEditor: View {
                     let откат = ОбщееУдаление.удалить(diagnosis)
                     guard context.persist(otherwise: откат) else {
                         Haptics.warning()
-                        appState.showFailure("Не удалилось · нажми ещё раз")
+                        appState.showFailure(String(localized: "Не удалилось · нажми ещё раз"))
                         return
                     }
                 }
@@ -557,8 +557,23 @@ struct DiagnosisEditor: View {
                 dismiss()
             }
             Button("Снять диагноз") {
-                diagnosis?.status = .withdrawn
-                diagnosis?.changedAt = Date()
+                // Записывается, а не только ставится в памяти (29.10.2026):
+                // без `persist` снятие жило до перезапуска, не ехало
+                // второму телефону, и отказ хранилища молчал.
+                guard let diagnosis else { dismiss(); return }
+                let былСтатус = diagnosis.statusRaw
+                let былоИзменено = diagnosis.changedAt
+                diagnosis.status = .withdrawn
+                diagnosis.changedAt = Date()
+                guard context.persist(otherwise: {
+                    diagnosis.statusRaw = былСтатус
+                    diagnosis.changedAt = былоИзменено
+                }) else {
+                    Haptics.warning()
+                    appState.showFailure(String(localized: "Не сохранилось · нажми ещё раз"))
+                    return
+                }
+                Haptics.success()
                 dismiss()
             }
             Button("Отмена", role: .cancel) {}
@@ -613,7 +628,7 @@ struct DiagnosisEditor: View {
             }
         }) else {
             Haptics.warning()
-            appState.showFailure("Не сохранилось · нажми ещё раз")
+            appState.showFailure(String(localized: "Не сохранилось · нажми ещё раз"))
             return
         }
         Haptics.success()

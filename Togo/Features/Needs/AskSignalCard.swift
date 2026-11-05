@@ -14,6 +14,9 @@ struct AskSignalCard: View {
     let events: [LogEvent]
     let dogName: String
     var now: Date = Date()
+    /// Пол собаки — для заголовка «Как он / она просит» (`РодСобаки`).
+    /// Пусто или не задан — заголовок без местоимения.
+    var пол: DogSex? = nil
 
     private var thisWeek: Diary.SignalTally {
         Diary.signalTally(events, from: weekAgo, to: now)
@@ -72,13 +75,23 @@ struct AskSignalCard: View {
                 .foregroundStyle(isDisplacing ? Token.Status.waitingText : Token.Action.doneText)
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: Token.Space.s2) {
-                Text(isDisplacing ? "Лай вытесняет спокойный сигнал" : "Как он просит")
+                Text(.готовая(isDisplacing ? String(localized: "Лай вытесняет спокойный сигнал") : заголовок))
                     .textStyle(AppFont.cardTitle)
                 Text("\(thisWeek.total) просьб за неделю")
                     .textStyle(AppFont.caption)
             }
             Spacer(minLength: 0)
         }
+    }
+
+    /// «Как он просит» было вписано мужским родом намертво, и у суки
+    /// читалось как чужая собака (аудит 29.10.2026). Пол не задан —
+    /// фраза без местоимения: угадывать его приложение не должно.
+    private var заголовок: String {
+        РодСобаки.форма(пол,
+                        он: String(localized: "Как он просит"),
+                        она: String(localized: "Как она просит"),
+                        нейтрально: { String(localized: "Как просится на улицу") })
     }
 
     private var bars: some View {
@@ -99,7 +112,7 @@ struct AskSignalCard: View {
                     .textStyle(AppFont.micro)
             }
             GeometryReader { geometry in
-                HStack(spacing: 2) {
+                HStack(spacing: Token.Space.s2) {
                     let total = max(1, tally.total)
                     Rectangle()
                         .fill(Token.Action.done)
@@ -126,7 +139,11 @@ struct AskSignalCard: View {
             Text("Не открывать дверь в момент лая: подождать одну-две секунды тишины и открыть тогда. Дверь открылась после тишины — закрепилась тишина. Ругать не нужно: лай не проступок, а то, что работало.")
                 .textStyle(AppFont.caption)
                 .wraps()
-            Text("Если лай не уходит за две недели или появился резко — это может быть не поведение, а дискомфорт. Тогда к врачу, а не к занятиям.")
+            // «а не к занятиям» снято 03.11.2026: противопоставление
+            // опиралось на занятия, снятые 28.10 (`82ba1e46`).
+            // Совет от этого не беднеет — вес несёт «к врачу»,
+            // а вторая половина называла несуществующую развилку.
+            Text("Если лай не уходит за две недели или появился резко — это может быть не поведение, а дискомфорт. Тогда к врачу.")
                 .textStyle(AppFont.caption)
                 .wraps()
         } else if thisWeek.calm > thisWeek.barking {

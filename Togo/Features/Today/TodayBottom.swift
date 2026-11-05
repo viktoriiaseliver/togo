@@ -35,10 +35,17 @@ struct TodayBottomBar: View {
         let действие: () -> Void
     }
 
-    // `size.buttonPrimary = 60`, `size.plus = 60` — токенов с такими
-    // именами в проекте ещё нет, их заводит другой агент. Названо
-    // в отчёте.
-    private let высотаКнопки: CGFloat = 60
+    // Высота спрашивается у САМОЙ КНОПКИ, а не у её токена.
+    //
+    // Цель та же, что была: когда дизайн сдвинет высоту, нижняя панель
+    // сдвинется вместе с `TGButton`. Но `Token.Component.Button.*`
+    // в обход компонента — это ровно то, что запрещает
+    // `ComponentTokenScopeTests`: экран, читающий компонентный токен,
+    // пересобирает компонент сам, и починка внутри `TGButton` до него
+    // не доезжает. Здесь панель не кнопку рисует, а встаёт с ней в ряд,
+    // — и `TGButton.Size.large.height` отвечает на этот вопрос тем же
+    // числом, оставаясь единственной дорогой к нему.
+    private let высотаКнопки: CGFloat = TGButton.Size.large.height
 
     var body: some View {
         // Раскладка выбирается явным `if`, а не `ViewThatFits`:
@@ -66,7 +73,10 @@ struct TodayBottomBar: View {
         }
         .padding(.horizontal, Token.Spacing.screenPadding)
         .padding(.top, Token.Space.s10)
-        .padding(.bottom, Token.Space.s6)
+        // `s8`, как у остальных закреплённых низов (`TGScreen`, `TGSheet`):
+        // `s6` был единственным, и низ «Сегодня» сидел на два пункта ниже
+        // соседних экранов (аудит отступов 29.10.2026).
+        .padding(.bottom, Token.Space.s8)
     }
 
     /// Обе кнопки одинаковые: высота 60, `flex 1/1`, 17 semibold.
@@ -92,7 +102,9 @@ struct TodayBottomBar: View {
                     .minimumScaleFactor(0.45)
             }
             .foregroundStyle(чернила(главнаяЛи))
-            .padding(.horizontal, Token.Space.s8)
+            // `s12`, как у `TGButton`: две кнопки рядом с разным полем
+            // давали разный перенос одной и той же подписи.
+            .padding(.horizontal, Token.Space.s12)
             .frame(maxWidth: .infinity, minHeight: высотаКнопки)
             .background(заливка(главнаяЛи),
                         in: RoundedRectangle(cornerRadius: Token.Radius.control,
@@ -211,6 +223,14 @@ struct TodayBottomBar: View {
 /// Ещё       многоточие «лакомство, занятие, заметка, вес»
 /// ```
 ///
+/// **Подпись «Ещё» устарела, и это замер 03.11.2026.** Кадр
+/// `screenshots/06.png` снят до 28.10, а `MoreSheet.body`
+/// (`TodayRouter.swift:108`) сейчас держит другое:
+///
+/// ```
+/// Лакомство · Вода · Заметка · Собака со мной весь день
+/// ```
+///
 /// **Инцидент первым и красным.** Это не вкус: когда он нужен, его
 /// ищут в панике, и искать его в списке по алфавиту некогда. Тот же
 /// довод, по которому «Если что-то случилось» стоит первым блоком
@@ -233,27 +253,28 @@ struct RecordSheet: View {
         TGSheet(title: "Записать", subtitle: .готовая(подзаголовок),
                 closeTitle: "Отмена") {
             TGCard(spacing: 0) {
-                строка("Инцидент", "рвота, лужа, съел с земли",
+                // Туалет дома — ТОЖЕ инцидент. Решение Виктории 29.10.2026:
+                // «всё, что случилось дома по поводу луж и туалета, —
+                // в инциденте». Отдельная строка «Туалет дома» (27.10)
+                // снята: она делила одно событие на две двери, и лужа
+                // через неё не поднимала того, что поднимала через
+                // «Инцидент». Подпись называет туалет первым — его
+                // и ищут здесь чаще всего.
+                строка("Инцидент", String(localized: "лужа или кучка дома, рвота, съел с земли"),
                        "exclamationmark.triangle", тон: Token.Status.overdueText,
                        маршрут: .incident)
                 TGDivider()
-                строка("Стул", nil, "leaf", тон: Token.Ink.primary, маршрут: .stool)
-                TGDivider()
-                // «Туалет дома» заведён 27.10.2026 решением Виктории
-                // («с дома отметка туалет, покакал»). Стул дома
-                // отмечался всегда, моча — только на прогулке, хотя
-                // щенок и больная собака ходят именно дома.
-                строка("Туалет дома", "пописал или лужа",
-                       "drop", тон: Token.Ink.primary, маршрут: .urineAtHome)
+                строка("Стул", String(localized: "на улице · форма для врача"), "leaf",
+                       тон: Token.Ink.primary, маршрут: .stool)
                 TGDivider()
                 строка("Еда", порцияГрамм > 0 ? String(localized: "\(порцияГрамм) г") : nil,
                        "fork.knife", тон: Token.Ink.primary, маршрут: .meal)
                 TGDivider()
-                строка("Ещё", "лакомство, занятие, заметка, вес",
+                строка("Ещё", String(localized: "лакомство, вода, заметка, день с собакой"),
                        "ellipsis", тон: Token.Ink.primary, маршрут: .more)
             }
         }
-        .presentationDetents([.medium])
+        .presentationDetents([.medium, .large])
     }
 
     private func строка(_ название: LocalizedStringKey,

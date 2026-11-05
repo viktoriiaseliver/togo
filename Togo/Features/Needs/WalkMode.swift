@@ -117,7 +117,7 @@ struct WalkModeScreen: View {
                     }
                     .frame(minHeight: 34)
                 }
-                TGExplainer(text: "Время каждой отметки запишется само. Телефон можно убрать в карман — секунды считаются от начала, а не тикают на экране.")
+                TGExplainer(text: "Время каждой отметки запишется само. Телефон можно убрать в карман — секунды считаются от начала, а не тикают на экране.", памятка: "прогулка.времяСамо")
             }
         } footer: {
             TGButton(title: "Пошли", systemImage: "figure.walk") { start() }
@@ -129,7 +129,8 @@ struct WalkModeScreen: View {
         if let dog {
             LiveActivityController.startWalk(dogName: dog.name,  // кличка-в-слот: вход живой активности кормит и именительный ярлык, и винительные подписи — падеж знает слот
                                              by: appState.currentUserName,
-                                             at: Date())
+                                             at: Date(),
+                                             кобель: dog.sex == .male)
         }
         Haptics.success()
     }
@@ -459,8 +460,19 @@ struct WalkModeScreen: View {
             VStack(spacing: Token.Space.s10) {
                 // Самое частое — главной кнопкой экрана. В теме «Кино»
                 // она белая; роль та же, что у `Button.Primary`.
-                широкая(Self.главная, на: .accent, высота: Token.Size.capsule)
-                широкая(Self.вторая, на: .quiet, высота: Token.Size.controlL)
+                //
+                // **У кобеля мочи на экране нет** — решение Виктории
+                // 29.10.2026: «поход на улицу для кобеля = туалет,
+                // и незачем указывать мочу». Он метит на каждой прогулке,
+                // и прогулка сама считается мочой (`ToiletClock`). Главной
+                // становится единственная отметка, которая у него
+                // что-то сообщает, — стул.
+                if dog?.sex == .male {
+                    широкая(Self.вторая, на: .accent, высота: Token.Size.capsule)
+                } else {
+                    широкая(Self.главная, на: .accent, высота: Token.Size.capsule)
+                    широкая(Self.вторая, на: .quiet, высота: Token.Size.controlL)
+                }
 
                 // Инцидент первым и красным — порядок с кадра и из
                 // шторки «Записать»: то, о чём жалеют, что не записали.
@@ -613,7 +625,8 @@ struct WalkModeScreen: View {
     ///
     /// > **Совпадение имён — не «кнопки нет», а худшее: кнопка есть,
     /// > и она чужая.** Различает только идентификатор — ровно так же
-    /// > это уже лечили у «Ещё» (`ScreenshotTests.test04Занятие`).
+    /// > это уже лечили у «Ещё» (`ScreenshotTests.test04Занятие`, снят
+                //    > 03.11.2026; правило — в `UITestHelpers.найти`).
     static func имяОтметки(_ kind: ActiveSession.Mark.Kind) -> String {
         "отметка-\(kind.rawValue)"
     }
@@ -723,20 +736,22 @@ struct WalkModeScreen: View {
         if !kind.isRepeatable, (appState.session?.count(of: kind) ?? 0) > 0 {
             appState.removeMarks(of: kind)
             Haptics.warning()
-            appState.showUndo("Отметка убрана · \(kind.title)")
+            appState.showUndo(String(localized: "Отметка убрана · \(kind.title)"))
             return
         }
 
         appState.mark(kind)
         Haptics.tap()
         let count = appState.session?.count(of: kind) ?? 1
-        appState.showUndo(count > 1 ? "\(kind.title) · \(count)-й раз" : "Отмечено · \(kind.title)")
+        appState.showUndo(count > 1
+                          ? String(localized: "\(kind.title) · \(count)-й раз")
+                          : String(localized: "Отмечено · \(kind.title)"))
     }
 
     private func undoMark() {
         if let removed = appState.undoLastMark() {
             Haptics.warning()
-            appState.showUndo("Отметка убрана · \(removed.kind.title)")
+            appState.showUndo(String(localized: "Отметка убрана · \(removed.kind.title)"))
         }
     }
 
@@ -750,7 +765,8 @@ struct WalkModeScreen: View {
                 LiveActivityController.resumeWalk(
                     dogName: dog.name, by: resumed.startedBy,  // кличка-в-слот: вход живой активности кормит и именительный ярлык, и винительные подписи — падеж знает слот
                     effectiveStart: Date().addingTimeInterval(-resumed.duration()),
-                    tally: resumed.marks.isEmpty ? nil : resumed.tally
+                    tally: resumed.marks.isEmpty ? nil : resumed.tally,
+                    кобель: dog.sex == .male
                 )
             }
             Haptics.tap()
@@ -770,6 +786,72 @@ struct WalkModeScreen: View {
         Task { await LiveActivityController.finishWalk(outcome: finished.tally) }
 
         guard let dog else {
+            // **Путь теряет прогулку молча, и это про путь, а не про
+            // случай.** Ветка закрывает сессию, показывает итог — и
+            // не пишет ничего: ни в ленту, ни в журнал действий.
+            //
+            // ~~«Измерено 30.10.2026: прогулка 07:50 → 08:06 в журнале
+            // есть двумя `finish:walk · done` и ни одной `record:walk`,
+            // шестнадцать минут не записаны».~~ **Опровергнуто кадром
+            // отзыва того же утра** (`2026-10-30_0814-AMcNF8YO-3.jpg`,
+            // 09:07 локального): в ленте стоит «08:50 → 09:06 ·
+            // Прогулка · 15 минут». Выгул записан; не записалась
+            // строка `record` в журнале действий, и журнал шумит
+            // лишним вторым `finish`. Разные дефекты и разная цена.
+            //
+            // > **Отсутствие строки в журнале я прочитала как
+            // > отсутствие записи в дневнике.** Журнал отвечает про
+            // > себя: «я не отметил» и «этого не было» — у него одна
+            // > форма. Различил кадр, который человек приложил сам.
+            //
+            // Порядок выше менять нельзя — сессию закрываем безусловно,
+            // иначе таймер зависнет навсегда (довод на строке 780
+            // остаётся в силе). Чинится не порядок, а **молчание**:
+            //
+            // ```
+            // было   показатьИтог(finished)   — итог как у записанной
+            // стало  отказ человеку + отказ в журнале
+            // ```
+            //
+            // > **Итог прогулки, показанный после незаписанной
+            // > прогулки, — это не недоработка показа, а ложное
+            // > свидетельство:** человек уходит уверенным, что выход
+            // > в дневнике, и второй раз его не отметит.
+            //
+            // Живых случаев этой ветки в журнале за 27–30.10 ноль —
+            // и названо это так нарочно: сюда попадают, когда видимой
+            // собаки нет, а до 30.10 единственной причиной её
+            // отсутствия была пустая база. С правкой `Dog.canBeShown`
+            // того же дня причин стало меньше, не больше, — но ветка
+            // достижима и обязана говорить.
+            UsageLog.note(.finish, "walk:неЗаписана:нетСобаки",
+                          on: .walk, outcome: .failed)
+            Haptics.warning()
+            appState.showFailure(
+                String(localized: "Выход не записан: не выбрана собака. Открой «Собака» и выбери её — отметить можно вручную."))
+            dismiss()
+            return
+        }
+
+        // Короткий выход, открытый сюда кнопкой «Открыть» или тапом
+        // по живой активности, уже лежит в ленте с начала. Прогулкой
+        // поверх него он ложился вторым выходом за ту же дверь
+        // (29.10.2026). Одна запись — та, что есть; см. `OutingFinisher.close`.
+        if finished.kind == .outing {
+            guard appState.can(.logBasics) else {
+                appState.showFailure(String(localized: "Записывать может тот, кому это разрешено"))
+                dismiss()
+                return
+            }
+            if !OutingFinisher.close(finished, dog: dog, at: Date(), context: context) {
+                Haptics.warning()
+                appState.showFailure(String(localized: "Ответ не записался · отметь ещё раз"))
+            }
+            OutingFinisher.записатьПрочиеОтметки(finished, dog: dog,
+                                                 appState: appState, context: context)
+            if finished.count(of: .incident) > 0 {
+                EpisodeRaiser.afterIncident(dog: dog, context: context, appState: appState)
+            }
             показатьИтог(finished)
             return
         }
@@ -788,6 +870,11 @@ struct WalkModeScreen: View {
                        confirmation: nil, haptic: .none) { event in
                 WalkRecorder.apply(entry, to: event, dog: dog, walkID: walkEvent?.id)
             }
+        }
+        // Инцидент с прогулки поднимает эпизод так же, как из шторки
+        // «Что случилось» (`EpisodeRaiser`, 29.10.2026).
+        if finished.count(of: .incident) > 0 {
+            EpisodeRaiser.afterIncident(dog: dog, context: context, appState: appState)
         }
 
         показатьИтог(finished)
@@ -937,7 +1024,9 @@ struct WalkSummarySheet: View {
                            сЧислом: String(localized: "\(session.reactions) срывов"),
                            size: 20)
                 } else {
-                    TGStat(value: session.count(of: .stool) > 0 ? "да" : "нет", caption: "стул", size: 20)
+                    TGStat(value: session.count(of: .stool) > 0
+                               ? String(localized: "да") : String(localized: "нет"),
+                           caption: "стул", size: 20)
                 }
             }
             if !session.marks.isEmpty {

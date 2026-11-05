@@ -100,7 +100,7 @@ struct MissedDoseSheet: View {
                         Text("обычно так")
                             .textStyle(AppFont.micro.color(Token.Status.doneText))
                             .padding(.horizontal, Token.Space.s8)
-                            .padding(.vertical, 2)
+                            .padding(.vertical, Token.Space.s2)
                             .background(Token.Action.primaryQuiet, in: Capsule())
                     }
                     Spacer(minLength: 0)

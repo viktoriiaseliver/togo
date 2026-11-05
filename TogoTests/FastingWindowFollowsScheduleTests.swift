@@ -75,10 +75,12 @@ struct FastingWindowFollowsScheduleTests {
 
 /// Напоминание о конце окна тоже обязано следовать за расписанием.
 ///
-/// `ReminderScheduler` берёт окно у `DoseScheduler.fastingEnds` — то есть
-/// знает только окно после отметки. Это записано здесь, чтобы следующий
-/// не искал заново: на главном экране расчёт уже общий (`FeedingGate`),
-/// в напоминаниях — ещё нет.
+/// До 29.10.2026 `ReminderScheduler` брал окно у `DoseScheduler.fastingEnds`
+/// — то есть знал только окно после отметки, — и этот сторож держал его
+/// названным вторым местом. С 29.10.2026 «Можно кормить» спрашивает
+/// `FeedingGate` (`ReminderScheduler.моментМожноКормить`), и в списке
+/// остался один `DoseScheduler.swift` — объявление. Вызовов `fastingEnds(`
+/// в коде продукта больше нет; появится вызов — это снова второй расчёт.
 @Suite("Окно натощак: что ещё считает по-своему")
 struct FastingWindowSecondImplementationTests {
 
@@ -111,7 +113,7 @@ struct FastingWindowSecondImplementationTests {
                 места.append(элемент.lastPathComponent)
             }
         }
-        #expect(места.sorted() == ["DoseScheduler.swift", "ReminderScheduler.swift"], """
+        #expect(места.sorted() == ["DoseScheduler.swift"], """
             расчёт окна натощак разошёлся: \(места.sorted()).
             Правило одно — FeedingGate. Второй расчёт знает только окно
             после отметки приёма и молча не следует за сдвигом часа.

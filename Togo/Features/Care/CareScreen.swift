@@ -44,6 +44,24 @@ struct CareScreen: View {
     @State private var isChoosing = false
     @State private var now = Date()
 
+    /// Заводить, править, откладывать и удалять дела — `editProfile`
+    /// («Менять профиль и уход»). Отметить «сделали» — бытовая запись,
+    /// её право спрашивает `EventLog` (`logBasics`).
+    ///
+    /// **До 29.10.2026 прав здесь не спрашивалось вовсе**: помощник
+    /// и гость заводили и удаляли дела ухода у всей семьи.
+    private var canEdit: Bool { appState.can(.editProfile) }
+
+    /// Имя экрана — то же, что у строки, которая сюда ведёт.
+    ///
+    /// Голова типа объясняет, почему экран зовётся «Уход и прививки»,
+    /// и UI-тест `Янтарь` ждёт панель с этим именем, — а заголовок
+    /// оставался «Уход»: решение 27.10 доехало до строки на вкладке
+    /// и не доехало до самого экрана.
+    private var заголовок: LocalizedStringKey {
+        только == .medical ? "Прививки" : "Уход и прививки"
+    }
+
     private var tasks: [CareTask] {
         guard let dog else { return [] }
         // `deletedAt` спрашивается здесь, а не только у `dog.careTasks`:
@@ -58,8 +76,8 @@ struct CareScreen: View {
 
     var body: some View {
         TGScreen {
-            CinemaHeader(только == .medical ? LocalizedStringKey("Прививки") : "Уход",
-                         надпись: "от последнего раза", отступы: false)
+            CinemaHeader(заголовок, надпись: "от последнего раза", отступы: false)
+            if !canEdit { ПлашкаПрава(право: .editProfile) }
             if tasks.isEmpty {
                 emptyState
             } else {
@@ -70,11 +88,11 @@ struct CareScreen: View {
                 footer
             }
         }
-        .navigationTitle(только == .medical ? LocalizedStringKey("Прививки") : "Уход")
+        .navigationTitle(заголовок)
         .cinemaScreen(экран: .sub("care"))
         .usageScreen(.care)
         .toolbar {
-            if dog != nil {
+            if dog != nil, canEdit {
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
                         Button("Выбрать из списка", systemImage: "checklist") { isChoosing = true }
@@ -97,10 +115,10 @@ struct CareScreen: View {
                 subject: .care,
                 title: "Уход настраивается под собаку",
                 message: "У каждой собаки он свой: шипперке не купают часто, а зубы чистят всем и каждый день. Выбери из списка то, что делаешь, — или заведи своё.",
-                actionTitle: dog == nil ? nil : "Выбрать из списка",
-                action: dog == nil ? nil : { isChoosing = true }
+                actionTitle: dog == nil || !canEdit ? nil : "Выбрать из списка",
+                action: dog == nil || !canEdit ? nil : { isChoosing = true }
             )
-            if dog != nil {
+            if dog != nil, canEdit {
                 TGButton(title: "Завести своё дело", variant: .secondary,
                          size: .medium, systemImage: "plus") { isAdding = true }
             }
@@ -118,8 +136,8 @@ struct CareScreen: View {
                                 onToggle: { toggle(task) },
                                 // Ежедневное не откладывают — его просто
                                 // не делают сегодня, и «Потом» у него нет.
-                                onSnooze: kind == .daily ? nil : { snooze(task) },
-                                onEdit: { editing = task })
+                                onSnooze: kind == .daily || !canEdit ? nil : { snooze(task) },
+                                onEdit: { if canEdit { editing = task } })
                     if task.id != sorted(group).last?.id { TGDivider() }
                 }
             }
@@ -154,6 +172,7 @@ struct CareScreen: View {
                     ) { guess in
                         setDate(guess, for: task)
                     }
+                    .disabled(!canEdit)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.vertical, Token.Space.s6)
@@ -194,7 +213,7 @@ struct CareScreen: View {
     }
 
     private func setDate(_ guess: DateGuess, for task: CareTask) {
-        guard let date = guess.date(from: now) else { return }
+        guard canEdit, let date = guess.date(from: now) else { return }
         let былаДата = task.scheduledDate
         let былоСделано = task.lastDone
         if task.kind == .dated {
@@ -214,7 +233,7 @@ struct CareScreen: View {
     /// а напоминание пришло бы в прежний срок.
     private func неСохранилось() {
         Haptics.warning()
-        appState.showFailure("Не сохранилось · попробуй ещё раз")
+        appState.showFailure(String(localized: "Не сохранилось · попробуй ещё раз"))
     }
 
     private func subtitle(for kind: CareKind, group: [CareTask]) -> String? {
@@ -247,6 +266,14 @@ struct CareScreen: View {
         // Ежедневное можно снять, если отметили по ошибке: у привычки
         // нет долга, но и врать себе незачем.
         if task.kind == .daily, task.isDoneToday(on: now) {
+            // Снять отметку может тот же, кто её ставит: право записи
+            // (`LogKind.care`). Ставит её `EventLog` со своей проверкой,
+            // а снятие шло мимо него — и у гостя галочка снималась.
+            guard appState.can(LogKind.care.requiredPermission) else {
+                Haptics.warning()
+                appState.showFailure(LogKind.care.requiredPermission.отказ)
+                return
+            }
             // Снятие обязано вернуть ВЧЕРА, а не стереть историю. Здесь
             // было `lastDone = nil`: повторная отметка не узнавала
             // вчерашнюю и начинала серию с единицы — пять дней подряд
@@ -266,26 +293,42 @@ struct CareScreen: View {
                 task.streak = былаСерия
             }) else {
                 Haptics.warning()
-                appState.showFailure("Не сохранилось · попробуй ещё раз")
+                appState.showFailure(String(localized: "Не сохранилось · попробуй ещё раз"))
                 return
             }
             Haptics.warning()
             UsageLog.note(.care, "undone")
-            appState.showUndo("Снято · \(task.title)")
+            appState.showUndo(String(localized: "Снято · \(task.title)"))
             return
         }
 
+        // **Отметка дела и запись в дневник — одно действие, и откат
+        // у них общий** (29.10.2026). `markDone()` двигает срок до записи,
+        // а `EventLog` может отказать: нет права, дубль за минуту,
+        // не сохранилось. Тогда в ленте записи нет, а дело стояло
+        // сделанным — прививка уезжала на год вперёд без следа в дневнике.
+        let былоСделано = task.lastDone
+        let былаСерия = task.streak
+        let былаДата = task.scheduledDate
+        let былоОткладываний = task.snoozeCount
         task.markDone()
-        EventLog(context: context, appState: appState)
+        let запись = EventLog(context: context, appState: appState)
             .record(.care, dog: dog, confirmation: confirmation(for: task)) { event in
                 event.note = task.title
                 event.careTaskID = task.id
             }
+        if запись == nil {
+            task.lastDone = былоСделано
+            task.streak = былаСерия
+            task.scheduledDate = былаДата
+            task.snoozeCount = былоОткладываний
+        }
     }
 
     /// Отложить на завтра. Счётчик нужен не для укора: отложенное дважды
     /// подсвечивается в сводке, но в тревогу не переходит.
     private func snooze(_ task: CareTask) {
+        guard canEdit else { return }
         let calendar = Calendar.current
         let былоСделано = task.lastDone
         let былаДата = task.scheduledDate
@@ -309,7 +352,7 @@ struct CareScreen: View {
         }) else { return неСохранилось() }
         UsageLog.note(.care, "snooze")
         Haptics.tap()
-        appState.showUndo("\(task.title) · до завтра")
+        appState.showUndo(String(localized: "\(task.title) · до завтра"))
     }
 
     private func confirmation(for task: CareTask) -> String {
@@ -514,7 +557,7 @@ struct CareSuggestionsSheet: View {
         // выбрасывался, и шторка закрывалась с «успехом» без дел.
         guard SeedData.addCare(chosen, to: dog, context: context) > 0 else {
             Haptics.warning()
-            appState.showFailure("Не сохранилось · попробуй ещё раз")
+            appState.showFailure(String(localized: "Не сохранилось · попробуй ещё раз"))
             return
         }
         Haptics.success()

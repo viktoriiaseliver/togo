@@ -43,7 +43,18 @@ struct EmergencyScreen: View {
         TGCard {
             TGSectionHeader(title: "позвонить")
             if contacts.isEmpty {
-                TGExplainer(text: "Телефонов пока нет. Впиши их в профиле собаки — тогда в нужный момент не придётся их искать.")
+                // **Подсказка посылала не туда** (аудит 29.10.2026):
+                // «впиши их в профиле собаки», а в профиле телефонов нет —
+                // они на экране «Документы и контакты», и дороги отсюда
+                // туда не было вовсе. Человек в панике искал бы поле,
+                // которого нет. Теперь дорога — строкой здесь же.
+                TGExplainer(text: "Телефонов пока нет. Впиши их по строке ниже — тогда в нужный момент не придётся их искать.")
+                if let dog {
+                    TGLink(title: "Документы и контакты", systemImage: "doc.text.image") {
+                        DocumentsScreen(dog: dog, плакат: true)
+                    }
+                    .buttonStyle(.plain)
+                }
             } else {
                 ForEach(contacts, id: \.0) { title, name, phone in
                     Button { call(phone) } label: {
@@ -68,13 +79,27 @@ struct EmergencyScreen: View {
         }
     }
 
+    /// Телефон без имени — всё равно телефон.
+    ///
+    /// **До 29.10.2026 имя было условием показа**: вписал номер клиники,
+    /// а название не вписал — и экран говорил «телефонов пока нет»,
+    /// то есть прятал единственное, ради чего он открыт. Имени нет —
+    /// строка называется тем, кто это: «Ветеринар», «Клиника 24 ч»
+    /// (подписи полей на экране документов, те же ключи).
+    ///
+    /// Роль — через каталог: `String`-значение, вставленное в `Text`,
+    /// мимо перевода рисуется дословно, и француз видел «клиника».
     private var contacts: [(String, String, String)] {
         var result: [(String, String, String)] = []
-        if let name = dog?.vetName, let phone = dog?.vetPhone, !phone.isEmpty {
-            result.append(("ветеринар", name, phone))
+        if let phone = dog?.vetPhone.flatMap(Fmt.notBlank) {
+            result.append((String(localized: "ветеринар"),
+                           dog?.vetName.flatMap(Fmt.notBlank) ?? String(localized: "Ветеринар"),
+                           phone))
         }
-        if let name = dog?.clinicName, let phone = dog?.clinicPhone, !phone.isEmpty {
-            result.append(("клиника", name, phone))
+        if let phone = dog?.clinicPhone.flatMap(Fmt.notBlank) {
+            result.append((String(localized: "клиника"),
+                           dog?.clinicName.flatMap(Fmt.notBlank) ?? String(localized: "Клиника 24 ч"),
+                           phone))
         }
         return result
     }
@@ -89,8 +114,11 @@ struct EmergencyScreen: View {
 
     private var toxicCard: some View {
         TGCard {
-            TGSectionHeader(title: "съела что-то не то",
-                            subtitle: "не вызывай рвоту сама — при части веществ это делает хуже")
+            // Без рода — ни собаки, ни человека (29.10.2026): «съела»
+            // у кобеля и «сама» у мужчины. Заголовок тот же, что пункт
+            // плашки на вкладке собаки, — одно место называется одинаково.
+            TGSectionHeader(title: "что нельзя есть",
+                            subtitle: "не вызывай рвоту без врача — при части веществ это делает хуже")
             ForEach(ToxicItem.common) { item in
                 Button {
                     withAnimation(.easeInOut(duration: Token.Duration.instant)) {
@@ -132,7 +160,9 @@ struct EmergencyScreen: View {
 
     private var vetBriefCard: some View {
         TGCard {
-            TGSectionHeader(title: "что скажут спросить",
+            // «что скажут спросить» читалось как обрывок фразы; имя
+            // раздела — то, которым его зовёт плашка на вкладке собаки.
+            TGSectionHeader(title: "справка врачу",
                             subtitle: "врач спросит это первым — тут всё уже собрано")
             ForEach(brief, id: \.0) { title, value in
                 HStack(alignment: .firstTextBaseline) {
@@ -157,25 +187,41 @@ struct EmergencyScreen: View {
 
     private var brief: [(String, String)] {
         guard let dog else { return [] }
+        // Подписи — через каталог (29.10.2026). Кортеж держит `String`,
+        // а `Text(title)` со значением рисует его дословно: француз
+        // видел справку врачу по-русски при переведённых ключах.
+        // Тот же класс, что у списка сборов (`PackingListCard.items`).
         var rows: [(String, String)] = [
-            ("Кличка", dog.displayName),
-            ("Вес", Fmt.weight(dog.weightKg)),
+            (String(localized: "Кличка"), dog.displayName),
+            (String(localized: "Вес"), Fmt.weight(dog.weightKg)),
         ]
-        if let breed = dog.breed { rows.append(("Порода", breed)) }
-        if let age = dog.ageDescription { rows.append(("Возраст", age)) }
-        if let chip = dog.chipNumber, !chip.isEmpty { rows.append(("Чип", chip)) }
+        if let breed = dog.breed { rows.append((String(localized: "Порода"), breed)) }
+        if let age = dog.ageDescription { rows.append((String(localized: "Возраст"), age)) }
+        if let chip = dog.chipNumber, !chip.isEmpty { rows.append((String(localized: "Чип"), chip)) }
 
         let active = dog.medications.filter { !$0.isPaused }
         if !active.isEmpty {
-            rows.append(("Принимает", active.map { "\($0.name) \($0.doseText)" }.joined(separator: ", ")))
+            rows.append((String(localized: "Принимает"), active.map { "\($0.name) \($0.doseText)" }.joined(separator: ", ")))
         }
+        // «Ел последний раз» → «Последняя еда»: мужской род у суки,
+        // а ключ без рода уже лежал переведённым (окна поездки).
+        //
+        // И день, когда это было не сегодня: одно «08:40» врач читает
+        // как «утром», а запись могла быть позавчерашней — тот, кто
+        // в панике не отметил еду, получал ложную справку.
         if let lastMeal = Diary.last(dog.events, kind: .meal) {
-            rows.append(("Ел последний раз", Fmt.clock(lastMeal.date)))
+            rows.append((String(localized: "Последняя еда"), когда(lastMeal.date)))
         }
         if let lastStool = Diary.last(dog.events, kind: .stool) {
-            rows.append(("Стул", Fmt.clock(lastStool.date)))
+            rows.append((String(localized: "Стул"), когда(lastStool.date)))
         }
         return rows
+    }
+
+    private func когда(_ дата: Date) -> String {
+        Calendar.current.isDateInToday(дата)
+            ? Fmt.clock(дата)
+            : Fmt.shortDay(дата) + ", " + Fmt.clock(дата)
     }
 
     private var briefText: String? {
@@ -186,8 +232,44 @@ struct EmergencyScreen: View {
 
 /// Документы: чип, паспорт, страховка и фотографии.
 /// Нужны в двух случаях — у врача и когда собака потерялась.
+/// Шапка-плакат «Документов» — отдельным видом, и это не косметика.
+///
+/// `DocumentsScreen` показывают ТРЕМЯ дверями: переходом из вкладки
+/// собаки и из «Если что-то случилось» — и шторкой из
+/// `AlarmThresholdScreen` («впиши телефон» в три часа ночи). Решение
+/// дизайна — «шторки и системные поверхности без плаката», поэтому
+/// плакат стал свойством ПОКАЗА, а не вида: ровно так, как велит
+/// доккомментарий `posterHeader` — «„экран" и „шторка" — свойства
+/// показа, а не вью, и двойной вид разводится явным параметром
+/// на месте показа».
+///
+/// **Почему своим видом, а не `if` внутри экрана.**
+/// `ШапкаКиноОбластьTests` — сканер по тексту: он ищет вызов шапки
+/// и спрашивает, в каком `struct` тот лежит. Условие внутри
+/// `DocumentsScreen` он прочитать не может по устройству, и остался бы
+/// красным при честно убранном плакате. Вынос переносит вызов
+/// в вид, которым шторку не показывают ни разу, — то есть ответ
+/// сканера становится ВЕРНЫМ, а не обойдённым: плаката на шторке
+/// действительно нет.
+private struct ШапкаДокументов: View {
+    var body: some View {
+        // Имя экрана — то, которым его зовут обе двери (строка
+        // вкладки собаки и «Если что-то случилось»): половина экрана —
+        // телефоны, и «Документы» обещали только бумаги. 29.10.2026.
+        CinemaHeader("Документы и контакты", надпись: "когда спросят", отступы: false)
+    }
+}
+
 struct DocumentsScreen: View {
     let dog: Dog
+
+    /// Плакат — только у перехода, и по умолчанию его НЕТ.
+    ///
+    /// Умолчание выбрано в сторону запрета нарочно: кто добавит
+    /// четвёртую дверь шторкой и про плакат не подумает, получит
+    /// верное поведение молча. Обратное умолчание давало бы нарушение
+    /// молча — а это разные цены.
+    var плакат: Bool = false
 
     @Environment(AppState.self) private var appState
 
@@ -213,7 +295,7 @@ struct DocumentsScreen: View {
 
     var body: some View {
         TGScreen {
-            CinemaHeader("Документы", надпись: "когда спросят", отступы: false)
+            if плакат { ШапкаДокументов() }
             // Плашка на ТРИ выключенных карточки: номера, телефоны
             // и приметы. Экран, на котором всё поле ввода мертво
             // и ни слова о причине, — худший вид этого дефекта:
@@ -273,7 +355,9 @@ struct DocumentsScreen: View {
             .disabled(!canEdit)
 
             TGCard {
-                TGSectionHeader(title: "если потерялась",
+                // «если потерялась» — женский род у любой собаки (29.10.2026);
+                // существительное согласует глагол само.
+                TGSectionHeader(title: "если собака потерялась",
                                 subtitle: "приметы для объявления — писать их в панике невозможно")
                 TextEditor(text: binding(\.distinctiveMarks))
                     .textStyle(AppFont.body)
@@ -286,6 +370,7 @@ struct DocumentsScreen: View {
                                   systemImage: "square.and.arrow.up", accessory: .none)
                     }
                     .buttonStyle(.plain)
+                    TGExplainer(text: "Своего телефона приложение не знает — допиши его в объявление перед отправкой. Номер ветеринара сюда не ставится: звонить должны тебе.")
                 }
             }
 
@@ -293,8 +378,8 @@ struct DocumentsScreen: View {
 
             TGExplainer(text: "Всё это лежит на телефоне и никуда не отправляется само.")
         }
-        .navigationTitle("Документы")
-        .cinemaScreen(экран: .sub("docs"))
+        .navigationTitle("Документы и контакты")
+        .cinemaScreen(экран: ScreenKey.documents)
     }
 
     private func binding(_ keyPath: ReferenceWritableKeyPath<Dog, String?>) -> Binding<String> {
@@ -320,7 +405,18 @@ struct DocumentsScreen: View {
         if let age = dog.ageDescription { parts.append(String(localized: "Возраст: \(age)")) }
         if let chip = dog.chipNumber, !chip.isEmpty { parts.append(String(localized: "Чип: \(chip)")) }
         if let marks = dog.distinctiveMarks, !marks.isEmpty { parts.append(String(localized: "Приметы: \(marks)")) }
-        if let phone = dog.vetPhone, !phone.isEmpty { parts.append(String(localized: "Ветеринар: \(phone)")) }
+        // # Телефона ветеринара на плакате НЕТ, и это починка (29.10.2026)
+        //
+        // Здесь стояло `Ветеринар: <vetPhone>` — единственный номер
+        // объявления. Нашедший собаку звонил бы врачу, а не хозяину:
+        // врач собаку не ищет, на звонок незнакомца в выходной
+        // не ответит, а владельца по номеру чипа найдёт не сразу.
+        //
+        // Своего телефона у владельца в модели нет — ни у `Dog`,
+        // ни у `FamilyMember` (поля схемы без спроса не заводим).
+        // Поэтому номер в текст не подставляется вовсе, а под кнопкой
+        // сказано дописать свой перед отправкой. Пустое место честнее
+        // чужого номера: его видно и его заполнят.
         return parts.count > 1 ? parts.joined(separator: "\n") : nil
     }
 }

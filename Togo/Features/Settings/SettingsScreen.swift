@@ -637,10 +637,25 @@ struct NotificationSettingsScreen: View {
                 Picker("Конец", selection: $settings.quietHoursEnd) {
                     ForEach(5...9, id: \.self) { Text(Fmt.clock(minuteOfDay: $0 * 60)).tag($0) }
                 }
+                // С 29.10.2026 тихие часы сдвигают сводку — значит
+                // правка границы обязана её переставить сейчас, а не
+                // при следующем открытии. «Можно кормить» переставит
+                // ближайшая пересборка (возврат в приложение, сохранение).
+                .onChange(of: settings.quietHoursEnd) { _, _ in
+                    Task { await ReminderScheduler.scheduleBrief(dog: appState.activeDog(from: dogs), settings: settings) }
+                }
+                .onChange(of: settings.quietHoursStart) { _, _ in
+                    Task { await ReminderScheduler.scheduleBrief(dog: appState.activeDog(from: dogs), settings: settings) }
+                }
             } header: {
                 Text("тихие часы")
             } footer: {
-                Text("В тихие часы приложение не спрашивает результат выхода — соберёт утром одной карточкой.")
+                // Тихие часы с 29.10.2026 читает и планировщик
+                // уведомлений — футер обязан сказать, что именно они
+                // глушат, а что нет: доза звонит всегда, и человек,
+                // ставящий 23:00, должен знать это до ночи, а не в неё.
+                // Разбор — голова `ReminderScheduler`.
+                Text("В тихие часы приложение не спрашивает результат выхода — соберёт утром одной карточкой. Сводка и «Можно кормить» приходят в конце тихих часов. Доза приходит в свой час всегда.")
             }
 
             Section {

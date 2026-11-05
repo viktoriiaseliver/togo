@@ -64,9 +64,17 @@ struct ScheduleChangeSheet: View {
                 Text("Поменяй дозу или часы — пока менять нечего")
                     .textStyle(AppFont.caption.color(Token.Status.overdueText))
                     .wraps()
+            } else if times.isEmpty {
+                // Схема без единого часа — не «новая схема», а молча
+                // выключенные напоминания: дозы не встают в план дня,
+                // и снаружи это неотличимо от «приложение забыло».
+                // Отменяют схему не здесь, а в её форме (29.10.2026).
+                Text("Оставь хотя бы один приём — без часов напоминать не о чем")
+                    .textStyle(AppFont.caption.color(Token.Status.overdueText))
+                    .wraps()
             }
             TGButton(title: "Сохранить новую схему",
-                     isEnabled: isChanged && canEdit) { save() }
+                     isEnabled: isChanged && canEdit && !times.isEmpty) { save() }
             TGButton(title: "Отменить", variant: .secondary, size: .medium) { dismiss() }
         }
         .presentationDetents([.large])
@@ -139,7 +147,12 @@ struct ScheduleChangeSheet: View {
                 TGDivider()
             }
             Button {
-                times.append(9 * 60)
+                // Первый свободный час с 9:00. Прежде всегда 9:00 —
+                // второе касание заводило два приёма на одну минуту,
+                // то есть двойную дозу в расписании.
+                var минута = 9 * 60
+                for _ in 0..<24 where times.contains(минута) { минута = (минута + 60) % (24 * 60) }
+                times.append(минута)
                 times.sort()
             } label: {
                 TGListRow(title: "Добавить приём", systemImage: "plus", accessory: .none)
@@ -210,7 +223,11 @@ struct ScheduleChangeSheet: View {
         guard let removed = ScheduleChangeApplier.apply(change, to: medication,
                                                         now: now, context: context,
                                                         автор: appState.currentUserName) else {
+            // Отказ хранилища — словом (29.10.2026). Прежде только
+            // вибрация: шторка оставалась открытой, и человек не знал,
+            // легла новая доза или нет, — а это доза.
             Haptics.warning()
+            appState.showFailure(String(localized: "Не сохранилось · нажми «Сохранить новую схему» ещё раз"))
             return
         }
         Haptics.success()

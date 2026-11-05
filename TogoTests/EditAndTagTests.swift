@@ -91,6 +91,31 @@ struct WalkTagTests {
         return (context, dog)
     }
 
+    /// Короткий выход, законченный меткой, «Домой» или из режима
+    /// прогулки, ложился в дневник выходом И прогулкой (29.10.2026):
+    /// запись выхода заводится в начале, а конец писал `.walk` поверх.
+    @Test("Короткий выход закрывается своей записью, а не второй прогулкой")
+    func outingClosesAsOneRecord() throws {
+        let (context, dog) = try setup()
+        let started = Date().addingTimeInterval(-4 * 60)
+        let выход = LogEvent(kind: .outing, date: started, authorName: "Вика")
+        выход.dog = dog
+        context.insert(выход)
+        try context.save()
+
+        var session = ActiveSession(kind: .outing, startedAt: started.addingTimeInterval(2),
+                                    startedBy: "Вика")
+        session.marks = [.init(kind: .urine, at: started.addingTimeInterval(60))]
+        #expect(OutingFinisher.close(session, dog: dog, at: Date(), context: context))
+
+        let записи = Diary.active(dog.events)
+        #expect(записи.filter { $0.kind == .walk }.isEmpty, "поверх выхода легла прогулка")
+        #expect(записи.filter { $0.kind == .outing }.count == 1, "выход задвоился")
+        #expect(выход.outcome == .urine, "отметка с блокировки не дошла до результата выхода")
+        let минуты = (выход.durationSeconds ?? 0) / 60
+        #expect(минуты >= 3 && минуты <= 4)
+    }
+
     @Test("Прогулка записывается со своей длительностью")
     func walkIsRecorded() throws {
         let (context, dog) = try setup()

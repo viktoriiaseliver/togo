@@ -141,7 +141,8 @@ struct StoolSheet: View {
         guard let event = ensureEvent() else { return }
         event.stoolForm = candidate
         if flags.isEmpty {
-            appState.showUndo("Записано · Стул · \(candidate.title.lowercased())", eventID: event.id)
+            appState.showUndo(String(localized: "Записано · Стул · \(candidate.title.lowercased())"),
+                              eventID: event.id)
             dismiss()
         }
     }
@@ -152,7 +153,7 @@ struct StoolSheet: View {
         event.stoolFlags = flags
         event.photo = фото
         Haptics.success()
-        appState.showUndo("Записано · Стул", eventID: event.id)
+        appState.showUndo(String(localized: "Записано · Стул"), eventID: event.id)
         dismiss()
     }
 
@@ -271,12 +272,42 @@ struct TreatSheet: View {
             step: 1,
             range: 0...200,
             amount: 5,
-            explainer: "Лимита на лакомства нет. Есть дневная норма, часть которой собака зарабатывает, — это и снимает конфликт между занятиями и весом."
+            // Тот же текст, что у тумблера в профиле, и одним ключом:
+            // прежний говорил о «занятиях», снятых 28.10.2026.
+            explainer: "Ограничения на лакомства нет: их можно брать из дневной порции — тогда награды не прибавляют веса."
         ) { grams in
             EventLog(context: context, appState: appState)
                 .record(.treat, dog: dog, confirmation: "Записано · Лакомство \(grams) г") { event in
                     event.grams = grams
                     event.fromPortion = dog?.trainingFoodFromPortion ?? true
+                }
+        }
+    }
+}
+
+/// Вода — сколько выпил.
+///
+/// `LogKind.water` и `LogEvent.milliliters` были в модели и правились
+/// в ленте, а записать воду было нечем: ни кнопки, ни шторки (аудит
+/// 29.10.2026). Для больной собаки это та величина, которую врач
+/// спрашивает второй после стула.
+struct WaterSheet: View {
+    let dog: Dog?
+    @Environment(\.modelContext) private var context
+    @Environment(AppState.self) private var appState
+
+    var body: some View {
+        QuantitySheet(
+            title: "Вода",
+            subtitle: dog.map { LocalizedStringKey.готовая(String(localized: "норма ≈ \($0.waterNormMl) мл в день")) },
+            unit: "мл",
+            step: 50,
+            range: 0...2000,
+            amount: 200
+        ) { мл in
+            EventLog(context: context, appState: appState)
+                .record(.water, dog: dog, confirmation: String(localized: "Записано · вода \(мл) мл")) { event in
+                    event.milliliters = мл
                 }
         }
     }
@@ -356,7 +387,8 @@ struct EventEditSheet: View {
     @Query private var отметкиПрогулки: [LogEvent]
     @Query private var careTasks: [CareTask]
     @Query private var medications: [Medication]
-    @Query private var trainingSessions: [TrainingSession]
+    // `@Query private var trainingSessions` снят 03.11.2026 вместе
+    // с единственным читателем — веткой `origin` ниже.
     @State private var asking = false
     /// Слепок записи на момент открытия — по нему видно, правили её или
     /// просто открыли посмотреть. В журнал действий уходит только факт
@@ -400,7 +432,10 @@ struct EventEditSheet: View {
                       // «синхронизировано» отсюда убрано вместе с галочкой:
                       // обмена между устройствами пока нет, и говорить о нём
                       // нельзя.
-                      subtitle: event.map { "Записала \($0.authorName) в \(Fmt.clock($0.date))" }) {
+                      // «Записано: …», а не «Записала …»: пол автора
+                      // приложению неизвестен, а запись второго телефона
+                      // подписывается именем из приглашения (29.10.2026).
+                      subtitle: event.map { "Записано: \($0.authorName), \(Fmt.clock($0.date))" }) {
             // Плашка была и адрес называла верно («Семья»), а имя
             // права — нет. Из трёх таких плашек в дереве ни одна
             // не называла права по имени каталога, и все три написаны
@@ -471,13 +506,36 @@ struct EventEditSheet: View {
                             .frame(minHeight: Token.Size.tapTarget)
                         }
 
-                        if event.kind == .outing {
+                        // # Результат: у остановки в дороге тоже, и пустой — пустой
+                        //
+                        // Две поломки, найденные 29.10.2026 при сверке
+                        // с «Историей»:
+                        //
+                        // ```
+                        // .travelStop          с 29.10 пишется с исходом
+                        //                      (`TripStopSheet`), фильтр
+                        //                      «Стул» его читает, а поправить
+                        //                      исход было негде
+                        // `outcome ?? .none`   выход БЕЗ ответа показывался
+                        //                      как «Не сходил» — утверждение,
+                        //                      которого человек не делал;
+                        //                      у кобеля такой выход по правилу
+                        //                      чтения `ToiletClock` — моча
+                        // ```
+                        //
+                        // Пустой ответ теперь — свой пункт и `nil` в базе:
+                        // подставлять «не сходил» за человека нельзя
+                        // (красная линия про подстановку).
+                        if event.kind == .outing || event.kind == .travelStop {
                             TGDivider()
-                            Picker("Результат", selection: Binding(
-                                get: { event.outcome ?? .none },
+                            Picker("Результат", selection: Binding<OutingOutcome?>(
+                                get: { event.outcome },
                                 set: { event.outcome = $0 }
                             )) {
-                                ForEach(OutingOutcome.allCases, id: \.self) { Text($0.title).tag($0) }
+                                Text("Не отмечено").tag(OutingOutcome?.none)
+                                ForEach(OutingOutcome.allCases, id: \.self) {
+                                    Text($0.title).tag(OutingOutcome?.some($0))
+                                }
                             }
                             .textStyle(AppFont.body)
                             .frame(minHeight: Token.Size.tapTarget)
@@ -569,7 +627,15 @@ struct EventEditSheet: View {
         case .meal, .treat:
             TGDivider()
             HStack {
-                Text(event.kind == .meal ? "Съел" : "Лакомство").textStyle(AppFont.body)
+                // Род собаки — у `РодСобаки` (29.10.2026): «Съел»
+                // стоял и у суки.
+                Text(.готовая(event.kind == .meal
+                              ? РодСобаки.форма(event.dog,
+                                                 он: String(localized: "Съел"),
+                                                 она: String(localized: "Съела"),
+                                                 нейтрально: { String(localized: "Съедено") })
+                              : String(localized: "Лакомство")))
+                    .textStyle(AppFont.body)
                 Spacer()
                 TGStepper(value: Binding(get: { event.grams ?? 0 },
                                          set: { event.grams = $0 }),
@@ -583,7 +649,11 @@ struct EventEditSheet: View {
         case .water:
             TGDivider()
             HStack {
-                Text("Выпил").textStyle(AppFont.body)
+                Text(.готовая(РодСобаки.форма(event.dog,
+                                               он: String(localized: "Выпил"),
+                                               она: String(localized: "Выпила"),
+                                               нейтрально: { String(localized: "Выпито") })))
+                    .textStyle(AppFont.body)
                 Spacer()
                 TGStepper(value: Binding(get: { event.milliliters ?? 0 },
                                          set: { event.milliliters = $0 }),
@@ -658,11 +728,13 @@ struct EventEditSheet: View {
             }
         }) else {
             Haptics.warning()
-            return appState.showFailure("Удаление не сохранилось · попробуй ещё раз")
+            // `String(localized:)`: обе плашки принимают `String`,
+            // и голый литерал рисовался дословно, мимо каталога.
+            return appState.showFailure(String(localized: "Удаление не сохранилось · попробуй ещё раз"))
         }
         Haptics.warning()
         UsageLog.note(.delete, event.kind.rawValue)
-        appState.showUndoRestore("Удалено · \(event.kind.title)",
+        appState.showUndoRestore(String(localized: "Удалено · \(event.kind.title)"),
                                  eventIDs: removed.map(\.id))
         dismiss()
     }
@@ -693,10 +765,15 @@ struct EventEditSheet: View {
 
     /// Откуда взялась запись.
     ///
-    /// Связи с задачей ухода, препаратом и занятием писались в модель
-    /// и не читались никем: из ленты нельзя было понять, какое напоминание
-    /// отметили и какое занятие оставило след. Особенно это било по дозам:
-    /// препарат могли переименовать, а в записи оставалось старое имя.
+    /// Связи с задачей ухода и препаратом писались в модель и не читались
+    /// никем: из ленты нельзя было понять, какое напоминание отметили.
+    /// Особенно это било по дозам: препарат могли переименовать,
+    /// а в записи оставалось старое имя.
+    ///
+    /// Третья связь, `trainingSessionID`, читалась здесь же и снята
+    /// 03.11.2026 — разбор у `origin` ниже. Само поле в модели
+    /// ОСТАЁТСЯ (`LogEvent.swift:132`): это форма схемы, и у заставших
+    /// занятия в записях лежат живые идентификаторы.
     @ViewBuilder
     private var originCard: some View {
         if let origin {
@@ -727,104 +804,19 @@ struct EventEditSheet: View {
             return Origin(title: medication.name, detail: medication.doseText, symbol: "pills",
                           explainer: "Приём по схеме лечения. Если препарат переименовали, здесь всё равно видно, какой именно отметили.")
         }
-        if let id = event.trainingSessionID,
-           let session = trainingSessions.first(where: { $0.id == id }) {
-            let result = session.attempts > 0 ? "\(session.successes) из \(session.attempts)" : nil
-            return Origin(title: "\(session.cue) · \(session.place)", detail: result, symbol: "target",
-                          explainer: "След занятия. Само занятие лежит в «Занятиях и шагах» — там его можно и убрать.")
-        }
+        // Ветка занятия снята 03.11.2026. Её объяснение звучало
+        // «След занятия. Само занятие лежит в „Занятиях и шагах" —
+        // там его можно и убрать», то есть посылало человека на экран,
+        // снятый 28.10 (`82ba1e46`). Это форма «вход есть, механизма
+        // нет»: указание выполнимо на вид и неисполнимо на деле,
+        // и отказ при этом выходит НАШ, а не человека. Чинить текст
+        // было нечем — «Занятий и шагов» в приложении нет ни под
+        // каким именем (`git grep "Занятия и шаги"` — только эта
+        // строка и была).
         return nil
     }
 }
 
-
-/// Пописал дома — отметка без прогулки.
-///
-/// **Решение Виктории 27.10.2026: «с дома отметка туалет, покакал».**
-/// «Покакал» у нас был всегда (`StoolSheet`), а «пописал» — только
-/// на прогулке: кнопкой на экране «На улице» и на блокировке.
-/// Дома отметить его было нечем, хотя щенок и больная собака ходят
-/// именно дома, и для врача это та же величина.
-///
-/// # Почему отдельная шторка, а не кнопка в «Записать»
-///
-/// У мочи есть вопрос, которого нет у прогулочной отметки: **лужа это
-/// или попросился**. На улице он не стоит — там всё в траву. Дома
-/// разница медицинская: лужа у приученной собаки — это инцидент
-/// (`IncidentKind.puddle`), а попросился и вывели — обычный выход.
-///
-/// Спрашивается одним рядом из двух кнопок, без «Сохранить»: запись
-/// уходит сразу, как у стула. Человек с тряпкой в руке не заполняет
-/// форму.
-///
-/// > **Чего здесь НЕТ намеренно: времени.** Запись встаёт «сейчас»,
-/// > как все быстрые. Сдвинуть время можно правкой записи в ленте —
-/// > тот же путь, что у остальных, и второго входа он не заводит.
-struct UrineAtHomeSheet: View {
-    let dog: Dog?
-
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var context
-    @Environment(AppState.self) private var appState
-
-    var body: some View {
-        TGSheet(title: "Туалет дома", subtitle: .готовая(Fmt.clock(Date()))) {
-            TGExplainer(text: "Отмечаем, что было дома. На прогулке это отмечается кнопками на экране «На улице».")
-
-            TGCard(spacing: Token.Space.s8) {
-                кнопка(title: "Попросился и вывели",
-                       detail: "обычный выход, просто записали дома",
-                       symbol: "drop",
-                       тон: Token.Ink.primary) { записать(лужа: false) }
-
-                кнопка(title: "Лужа дома",
-                       detail: "уходит в инциденты — врач спросит именно про них",
-                       symbol: "exclamationmark.triangle",
-                       тон: Token.Status.overdueText) { записать(лужа: true) }
-            }
-        }
-        .presentationDetents([.medium])
-    }
-
-    private func кнопка(title: LocalizedStringKey,
-                        detail: LocalizedStringKey,
-                        symbol: String,
-                        тон: Color,
-                        действие: @escaping () -> Void) -> some View {
-        Button(action: действие) {
-            TGIconRow(symbol: symbol, title: title, detail: detail)
-                .foregroundStyle(тон)
-                // Нижняя граница цели касания, не «покрупнее»: у шторки,
-                // которую открывают с тряпкой в руке, промах стоит
-                // второго захода.
-                .frame(minHeight: Token.Size.tapTarget)
-        }
-        .buttonStyle(.plain)
-    }
-
-    /// Лужа — это ИНЦИДЕНТ, а не выход, и это не придирка к слову.
-    ///
-    /// `LogKind.incident` уезжает в сводку врачу и считается порогом
-    /// тревоги; `LogKind.outing` — обычная запись дня. Записать лужу
-    /// выходом значило бы спрятать её от врача ровно там, где она
-    /// и нужна.
-    private func записать(лужа: Bool) {
-        guard let dog else { dismiss(); return }
-        let log = EventLog(context: context, appState: appState)
-        if лужа {
-            log.record(.incident, dog: dog,
-                       confirmation: String(localized: "Записано · лужа дома")) { event in
-                event.incidentKindRaw = IncidentKind.puddle.rawValue
-            }
-        } else {
-            log.record(.outing, dog: dog,
-                       confirmation: String(localized: "Записано · пописал дома")) { event in
-                event.outcomeRaw = OutingOutcome.urine.rawValue
-            }
-        }
-        dismiss()
-    }
-}
 
 /// Снять момент — фотография, которая уедет в запись дневника.
 ///

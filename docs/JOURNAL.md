@@ -9,7 +9,28 @@
 написанное рукой, пересборка не трогает.
 
 
+- [5 ноября 2026](journal/2026-11-05-shest-agentov-za-noch.md) — Сводная запись координатора (`projects-b3`)
+- [5 ноября 2026 — hvosty-nochi-zakryty](journal/2026-11-05-hvosty-nochi-zakryty.md) — hvosty-nochi-zakryty
+- [4 ноября 2026 — якорь кадрирования подложки](journal/2026-11-04-yakor-kadrirovaniya-podlozhki.md) — якорь кадрирования подложки
+- [4 ноября 2026 — картинки, «Кино» на подэкранах, 293 друзьям](journal/2026-11-04-kartinki-kino-i-293-druzyam.md) — картинки, «Кино» на подэкранах, 293 друзьям
+- [3 ноября 2026 — vitrina-vseh-yazykov-i-klass-lokalizacii](journal/2026-11-03-vitrina-vseh-yazykov-i-klass-lokalizacii.md) — vitrina-vseh-yazykov-i-klass-lokalizacii
+- [3 ноября 2026 — teksty-obeshchali-zanyatiya](journal/2026-11-03-teksty-obeshchali-zanyatiya.md) — teksty-obeshchali-zanyatiya
+- [3 ноября 2026 — storozh-dolga-tri-kornya-i-vtoraya-os](journal/2026-11-03-storozh-dolga-tri-kornya-i-vtoraya-os.md) — storozh-dolga-tri-kornya-i-vtoraya-os
+- [3 ноября 2026 — put-1-stranica-v-svoyom-kontekste](journal/2026-11-03-put-1-stranica-v-svoyom-kontekste.md) — put-1-stranica-v-svoyom-kontekste
+- [3 ноября 2026 — kopii-odnogo-spiska-rashodyatsya](journal/2026-11-03-kopii-odnogo-spiska-rashodyatsya.md) — kopii-odnogo-spiska-rashodyatsya
+- [3 ноября 2026 — 292-klassy-zakryty-i-otzyv-so-svezhey](journal/2026-11-03-292-klassy-zakryty-i-otzyv-so-svezhey.md) — 292-klassy-zakryty-i-otzyv-so-svezhey
+- [3 ноября 2026 — 291-zalita-i-tri-otkaza-vorot](journal/2026-11-03-291-zalita-i-tri-otkaza-vorot.md) — 291-zalita-i-tri-otkaza-vorot
+- [30 октября 2026 — klichka-ne-doehala-i-sborka-287](journal/2026-10-30-klichka-ne-doehala-i-sborka-287.md) — klichka-ne-doehala-i-sborka-287
+- [29 октября 2026 — tualet-noch-poezdka-i-audit-ekranov](journal/2026-10-29-tualet-noch-poezdka-i-audit-ekranov.md) — tualet-noch-poezdka-i-audit-ekranov
+- [29 октября 2026](journal/2026-10-29-svedenie-dvuh-liniy-i-chto-ono-vskrylo.md) — **29.10.2026.** Две линии работы 28.10 — локальная и облачная — завели разные схемы под одним номером
+- [29 октября 2026 — pr4-sborka-na-mac-i-286](journal/2026-10-29-pr4-sborka-na-mac-i-286.md) — pr4-sborka-na-mac-i-286
+- [29 октября 2026](journal/2026-10-29-gitkhab-oblachnaya-vetka-i-sborka-285.md) — **29.10.2026.** Виктория спросила: «ты нашёл, что я вчера правила — чисто код на гитхабе?» Нашёл, и нашёл не сразу: искал её правки по коммиттеру `GitHub` (так подписываются веб-правки), а их ноль
 - [28 октября 2026 — v10-vygruzka-i-refaktoring-segodnya](journal/2026-10-28-v10-vygruzka-i-refaktoring-segodnya.md) — v10-vygruzka-i-refaktoring-segodnya
+- [28 октября 2026](journal/2026-10-28-tri-zhivyh-otzyva-rezhim-kolco-i-chasy-vyhodov.md) — **28.10.2026, утро.** Три отзыва Виктории из TestFlight по сборке 282, разобранные по кадрам из `~/Projects/.отзывы/Togo/`
+- [28 октября 2026](journal/2026-10-28-skroll-tormozil-zamer-shel-bez-progulok.md) — **28.10.2026, вечер.** Продолжение разбора «виснет»
+- [28 октября 2026](journal/2026-10-28-pochemu-prilozhenie-vislo-tri-prichiny.md) — **28.10.2026, день.** Жалоба Виктории: «виснет, плохо скроллится и плохо работает медленно»
+- [28 октября 2026](journal/2026-10-28-fony-razdelov-razdatchik-na-vide-ekrana.md) — **28.10.2026, утро.** Жалоба Виктории на сборку 282: «изображения всё ещё = изображения Стича», и отзыв 27.10 в 21:57: «Ожидала не синюю тему, а кино, и фото не Стича»
+- [28 октября 2026](journal/2026-10-28-auditvosem-zahodov-i-krug-v-priyomke.md) — **28.10.2026, вечер.** Виктория отдала новую выгрузку Claude Design и попросила: изучить код, прогнать аудит каждым профильным скиллом, оформить приёмку кадров, сверить приложение с прототипом `Togo iOS 28 — прототип v10` на пяти языках
 - [27 октября 2026](journal/2026-10-27-vecher-obshchiy-dnevnik-i-rol-gostya.md) — **27.10.2026, вечер.** После раздачи 280 и 281 Виктория поставила сборку на телефон, восстановила карту Стича и позвала маму
 - [27 октября 2026](journal/2026-10-27-polnaya-karta-sticha-redakciya-5.md) — **27.10.2026.** Виктория дала три файла — медкнижка Стича редакции 5 от 27.10.2026 в PDF, DOCX и французский перевод — и задачу: собрать данные так, чтобы она могла их восстановить
 - [27 октября 2026](journal/2026-10-27-opis-arkhiva-i-foto-v-cloudkit.md) — **27.10.2026, вечер.** Задание Виктории: «все чини и заливай»

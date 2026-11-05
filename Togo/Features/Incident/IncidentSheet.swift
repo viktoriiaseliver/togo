@@ -36,14 +36,14 @@ struct IncidentSheet: View {
                                 .foregroundStyle(Token.Ink.silhouette)
                             Text(kind.title).textStyle(AppFont.bodyEmphasis)
                         }
-                        .frame(maxWidth: .infinity, minHeight: 92)
+                        .frame(maxWidth: .infinity, minHeight: Token.Size.markerCard)
                         .background(Token.Surface.card,
                                     in: RoundedRectangle(cornerRadius: Token.Radius.tile, style: .continuous))
                     }
                     .buttonStyle(.plain)
                 }
             }
-            TGExplainer(text: "Запишется сразу, без вопросов «почему» и «чья вина». Уточнить можно потом, тапнув по строке в ленте.")
+            TGExplainer(text: "Запишется сразу, без вопросов «почему» и «чья вина». Уточнить можно потом, тапнув по строке в ленте.", памятка: "инцидент.запишетсяСразу")
         }
     }
 
@@ -71,46 +71,12 @@ struct IncidentSheet: View {
     }
 
     /// Второй инцидент за сутки поднимает флаг эпизода: вердикты гаснут,
-    /// пока не станет понятно, что происходит.
+    /// пока не станет понятно, что происходит. Правило — `EpisodeRaiser`,
+    /// одно на шторку, прогулку и голос.
     private func raiseEpisodeIfNeeded(for dog: Dog) {
-        let recent = Diary.incidentsInLast24h(dog.events)
-        guard recent.count >= 2 else { return }
-
-        // Ещё один инцидент — не новый эпизод, а продолжение старого.
-        if let running = appState.activeEpisode, running.isActive() {
-            let былоПоследним = running.lastIncidentAt
-            let былКонец = running.endedAt
-            running.extend()
-            guard context.persist(otherwise: {
-                running.lastIncidentAt = былоПоследним
-                running.endedAt = былКонец
-            }) else {
-                Haptics.warning()
-                appState.showFailure("Эпизод не продлился · отметь ещё раз")
-                return
-            }
-            return
-        }
-
-        let episode = Episode(
-            title: "Эпизод",
-            detail: "Два инцидента за сутки. Вердикты «просится» на паузе, пока не станет понятно, что происходит.",
-            startedAt: recent.map(\.date).min() ?? Date()
-        )
-        episode.extend()
-        context.insert(episode)
-
-        // `appState.activeEpisode` ставится только после удачного сохранения.
-        // Раньше здесь стоял `try?`, и эпизод открывался на экране, не
-        // существуя в хранилище: вердикты «просится» гасли, объяснения
-        // этому в дневнике не было, а после перезапуска эпизод исчезал
-        // вместе с причиной, по которой приложение замолчало.
-        guard context.persist(otherwise: { context.delete(episode) }) else {
+        if !EpisodeRaiser.afterIncident(dog: dog, context: context, appState: appState) {
             Haptics.warning()
-            appState.showFailure("Эпизод не завёлся · отметь ещё раз")
-            return
         }
-        appState.activeEpisode = episode
     }
 }
 
@@ -130,6 +96,7 @@ private struct IncidentDetailStep: View {
             subtitle: "записано · дальше только если хочешь"
         ) {
             if kind == .vomit { vomitDetails }
+            if kind == .stoolIndoors { stoolDetails }
             if kind.asksReactionDetails { reactionDetails }
             if kind.showsPunishmentWarning { punishmentWarning }
             if let previous = previousIncident { episodeNotice(previous) }
@@ -171,6 +138,26 @@ private struct IncidentDetailStep: View {
         }
     }
 
+    /// Форма стула и дома нужна врачу так же, как на улице.
+    ///
+    /// С 29.10.2026 кучка дома пишется только инцидентом, а форма
+    /// раньше спрашивалась одной шторкой «Стул». Не спроси её здесь —
+    /// и жидкий стул дома выпал бы из той самой сводки, ради которой
+    /// туалет дома и перенесли в инциденты.
+    private var stoolDetails: some View {
+        TGCard {
+            TGSectionHeader(title: "какой")
+            TGChipGroup(
+                items: StoolForm.allCases,
+                title: \.title,
+                isSelected: { event.stoolForm == $0 }
+            ) { form in
+                event.stoolForm = (event.stoolForm == form) ? nil : form
+                Haptics.tap()
+            }
+        }
+    }
+
     // MARK: Срыв
 
     /// Те же два вопроса, что и после прогулки: на что и как близко.
@@ -190,7 +177,7 @@ private struct IncidentDetailStep: View {
                 event.reactionDistance = event.reactionDistance == chosen ? nil : chosen
                 Haptics.tap()
             }
-            TGExplainer(text: "Срыв — это порог, а не проступок. Собака в этот момент не может учиться: полезно отойти дальше и дать ей выдохнуть, а не отчитывать.")
+            TGExplainer(text: "Срыв — это порог, а не проступок. Собака в этот момент не может учиться: полезно отойти дальше и дать ей выдохнуть, а не отчитывать.", памятка: "инцидент.срывПорог")
         }
     }
 
@@ -198,16 +185,28 @@ private struct IncidentDetailStep: View {
 
     /// Приложение видит момент записи и обязано в этот момент сказать это.
     /// Один раз, без морали, рядом с записью.
+    ///
+    /// **«Один раз» до 29.10.2026 было обещанием без механизма**: карточка
+    /// стояла на каждой луже. С того дня туалет дома — всегда инцидент,
+    /// и у щенка это пять лекций за день. Теперь — памятка
+    /// (`Памятки`, первые три лужи); «что было до» остаётся всегда:
+    /// оно каждый раз про другое.
     private var punishmentWarning: some View {
         VStack(alignment: .leading, spacing: Token.Spacing.stack) {
-            TGCard {
-                Text("Не наказывай").textStyle(AppFont.cardTitle)
-                Text("Тыкать носом и ругать учит не чистоплотности, а прятаться и делать лужи там, где не видно. Собака не связывает выговор с тем, что было десять минут назад.")
-                    .textStyle(AppFont.caption)
+            if лекцияВидна {
+                TGCard {
+                    Text("Не наказывай").textStyle(AppFont.cardTitle)
+                    Text("Тыкать носом и ругать учит не чистоплотности, а прятаться и делать лужи там, где не видно. Собака не связывает выговор с тем, что было десять минут назад.")
+                        .textStyle(AppFont.caption)
+                }
+                .onAppear { Памятки.показана(Self.лекция) }
             }
             historyBefore
         }
     }
+
+    private static let лекция = "инцидент.неНаказывай"
+    @State private var лекцияВидна = Памятки.видна(IncidentDetailStep.лекция)
 
     private var historyBefore: some View {
         let rows = Diary.hourBefore(dog?.events ?? [], incident: event.date)
@@ -238,7 +237,10 @@ private struct IncidentDetailStep: View {
     // MARK: Эпизод
 
     private var previousIncident: LogEvent? {
-        Diary.incidentsInLast24h(dog?.events ?? [])
+        // Тот же счёт, что поднимает эпизод: иначе баннер «второй раз
+        // за сутки» обещал бы паузу вердиктов после второй лужи щенка,
+        // а пауза не наступала бы.
+        Diary.episodeIncidentsInLast24h(dog?.events ?? [])
             .filter { $0.id != event.id }
             .max { $0.date < $1.date }
     }

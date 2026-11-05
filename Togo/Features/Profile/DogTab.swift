@@ -45,8 +45,8 @@ struct DogTab: View {
     /// кто поймал ссылку.
     @Binding var открытьСемью: Bool
 
-    @Query private var skills: [ProcedureSkill]
     @Environment(AppState.self) private var appState
+    @Environment(SubscriptionStore.self) private var store
     @Query private var dogs: [Dog]
     @Query private var trips: [Trip]
     @Query private var members: [FamilyMember]
@@ -57,6 +57,25 @@ struct DogTab: View {
     /// Снимок, выбранный кнопкой фотоаппарата на описи собаки.
     @State private var выбранныйСнимок: PhotosPickerItem?
     @State private var кладуСнимок = false
+    /// Человек попросил убрать снимок — ждёт подтверждения.
+    @State private var убратьСнимокСпрошено = false
+
+    /// Собаки нет, и человек нажал «Добавить собаку» в пустом состоянии.
+    @State private var заводимСобаку = false
+    @State private var показатьПейволл = false
+
+    /// Право менять собаку — одно на весь экран.
+    ///
+    /// **До 29.10.2026 вкладка не спрашивала прав ни разу**, хотя все
+    /// экраны за её строками спрашивают (`ProfileScreen`, `DocumentsScreen`,
+    /// `HeatScreen`, `WeightScreen` — `editProfile`). Помощник и гость
+    /// могли сменить и убрать фото собаки — то есть подложку и виджет
+    /// у всей семьи, — завести и убрать поездку, и видели «Завести ещё
+    /// собаку» и «+ Вторая собака», за которыми экран ничего им не даёт.
+    ///
+    /// > **Дверь, за которой отказ, хуже отсутствующей двери**: правило
+    /// > круга 5, п. 2 — органы, которых роль не даёт, не показываются.
+    private var canEdit: Bool { appState.can(.editProfile) }
 
     @Environment(\.modelContext) private var context
 
@@ -97,12 +116,18 @@ struct DogTab: View {
                     // Семья нужна и без собаки: человека могли позвать
                     // в чужой дневник, и собаку заводил не он.
                     семьяБлок
+                    // **Пустое состояние звало «заведи её» и не давало
+                    // кнопки** (аудит 29.10.2026). Сюда попадают, удалив
+                    // единственную собаку, и единственная дверь была
+                    // в «Настройках», о которых экран молчал. Кнопка —
+                    // только тому, кто вправе завести: гостю в чужом
+                    // дневнике собаку заводит владелец.
                     EmptyStateCard(
                         subject: .dog,
                         title: "Собаки пока нет",
                         message: "Заведи её — и приложению будет что считать.",
-                        actionTitle: nil,
-                        action: nil
+                        actionTitle: canEdit ? "Добавить собаку" : nil,
+                        action: canEdit ? { завестиСобаку() } : nil
                     )
                 }
             }
@@ -128,7 +153,28 @@ struct DogTab: View {
             .navigationDestination(isPresented: $открытьСемью) {
                 FamilyScreen(встроенный: true)
             }
+            .navigationDestination(isPresented: $заводимСобаку) {
+                DogEditorScreen()
+            }
+            .sheet(isPresented: $показатьПейволл) {
+                NavigationStack { PaywallScreen() }
+            }
             .onChange(of: выбранныйСнимок) { _, новый in взятьСнимок(новый) }
+        }
+    }
+
+    /// Дверь пустого состояния — **за теми же воротами Pro, что две
+    /// другие** (`SettingsScreen`, `DogsScreen`): сторож
+    /// `ProGateTests.каждаяДверьСобакиЗаВоротами` считает двери
+    /// по файлам, и третья без ворот стала бы обходом пейволла.
+    /// Собак здесь не видно ни одной, поэтому ворота открыты почти
+    /// всегда, — но «почти» решает фабрика, а не этот экран: безымянные
+    /// и надгробия она отсеивает сама.
+    private func завестиСобаку() {
+        if ProGate.isOpen(.secondDog(among: dogs), isPro: store.isPro) {
+            заводимСобаку = true
+        } else {
+            показатьПейволл = true
         }
     }
 
@@ -143,6 +189,7 @@ struct DogTab: View {
     private func герой(_ dog: Dog) -> some View {
         ФотоШапка(фото: фотоЭкрана(dog),
                   высота: Token.Size.backdropTab,
+                  якорь: .по(виду: .tab),
                   надстрочник: надстрочник(dog),
                   заголовок: .значение(dog.displayName)) {
             опись(dog)
@@ -178,7 +225,15 @@ struct DogTab: View {
         return части.isEmpty ? nil : части.joined(separator: " · ")
     }
 
-    /// Опись собаки: кличка, порода, возраст, вес, чип.
+    /// Опись собаки: вес и чип — дверь в профиль.
+    ///
+    /// **Клички и пород с возрастом здесь больше нет** (аудит 29.10.2026,
+    /// решение Виктории). Кличка стояла на вкладке трижды — заголовок
+    /// навигации, крупно в шапке и первой строкой описи, — а порода
+    /// с возрастом дважды: надстрочником шапки и в приметах. Шапка
+    /// осталась как была; опись говорит только то, чего в шапке нет,
+    /// и называет дверь словом «Профиль»: без клички текста у ссылки
+    /// могло не остаться вовсе (вес не записан, чипа нет).
     ///
     /// Стекло, а не `TGCard`: пакет называет блок `Hero` как «фото +
     /// стекло», и карточка на фотографии обязана фотографию пропускать.
@@ -192,35 +247,43 @@ struct DogTab: View {
         HStack(spacing: Token.Space.s12) {
             NavigationLink { ProfileScreen(dog: dog) } label: {
                 VStack(alignment: .leading, spacing: Token.Space.s2) {
-                    Text(dog.displayName).textStyle(AppFont.cardTitle)
-                    Text(приметы(dog))
-                        .textStyle(AppFont.caption)
-                        .wraps()
+                    Text("Профиль").textStyle(AppFont.cardTitle)
+                    if let строка = приметы(dog) {
+                        Text(verbatim: строка)
+                            .textStyle(AppFont.caption)
+                            .wraps()
+                    }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            кнопкаСнимка
+            // Фото — подложка всех вкладок и виджет у всей семьи,
+            // поэтому кладёт и убирает его тот, кто правит профиль.
+            if canEdit {
+                if dog.снимок != nil { кнопкаУбратьСнимок }
+                кнопкаСнимка
+            }
         }
         .padding(Token.Spacing.cardPadding)
         .стекло(радиус: Token.Radius.card)
     }
 
-    /// «шипперке · 3 года · 8,4 кг · чип есть» — дословно с кадра `09`.
+    /// «8,4 кг · чип есть». На кадре `09` здесь стояли ещё порода
+    /// и возраст — сняты 29.10.2026: их уже говорит надстрочник шапки.
+    /// `nil`, когда сказать нечего: пустая строка под «Профилем»
+    /// держала бы место под текст, которого нет.
     ///
     /// Чип назван словом, а не номером: номер — это пятнадцать цифр,
     /// которые в опись не влезут, и читают его не здесь, а в документах.
-    private func приметы(_ dog: Dog) -> String {
+    private func приметы(_ dog: Dog) -> String? {
         let чип = dog.chipNumber == nil ? nil : String(localized: "чип есть")
         // `weightIfKnown`, а не `weight`: массив уже `compactMap`,
         // и незаписанный вес просто выпадает из описи. Прочерк
         // посреди «метис · 2 года · — · чип есть» читался бы как
         // пропуск вёрстки, а не как «не записано» (замер 25.10.2026).
-        return [dog.breed, dog.ageDescription,
-                Fmt.weightIfKnown(dog.weightKg), чип]
-            .compactMap { $0 }
-            .joined(separator: " · ")
+        let части = [Fmt.weightIfKnown(dog.weightKg), чип].compactMap { $0 }
+        return части.isEmpty ? nil : части.joined(separator: " · ")
     }
 
     /// Фотоаппарат на описи.
@@ -271,6 +334,37 @@ struct DogTab: View {
         // у значка камеры нет, поэтому слово живёт в имени
         // для озвучки; разбор границы — у первого входа.
         .accessibilityLabel(кладуСнимок ? "Кладу снимок…" : "Снимок собаки")
+    }
+
+    /// Убрать снимок — рядом с тем, кто его кладёт.
+    ///
+    /// Отдельной кнопкой, а не пунктом меню над фотоаппаратом:
+    /// `PhotosPicker` внутри `Menu` — второй способ открыть выбор,
+    /// и у Togo записано, чем кончаются два пути к одному делу.
+    /// Есть только когда снимок есть: убрать букву нельзя.
+    private var кнопкаУбратьСнимок: some View {
+        Button { убратьСнимокСпрошено = true } label: {
+            Image(systemName: "trash")
+                .font(.system(size: Token.Size.iconMd, weight: .medium))
+                .foregroundStyle(Token.Ink.secondary)
+                .frame(width: Token.Size.tapTarget, height: Token.Size.tapTarget)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .disabled(кладуСнимок)
+        .accessibilityLabel("Убрать фото")
+        .confirmationDialog("Убрать фото?", isPresented: $убратьСнимокСпрошено,
+                            titleVisibility: .visible) {
+            Button("Убрать", role: .destructive) {
+                if let dog {
+                    ФотоСобаки.убрать(у: dog, context: context,
+                                      appState: appState, экран: .profile)
+                }
+            }
+            Button("Отмена", role: .cancel) {}
+        } message: {
+            Text("Вместо снимка будет буква клички. Если это фото стояло фоном под экранами, фон тоже уйдёт.")
+        }
     }
 
     /// **Ярлык `PhotosPicker` — `@Sendable`-замыкание.** Внутрь него
@@ -329,7 +423,10 @@ struct DogTab: View {
             UsageLog.note(.open, "family", on: .profile)
             открытьСемью = true
         } label: {
-            TGListRow(title: "Семья и дежурство",
+            // «Семья и дежурство» → «Семья» (аудит 29.10.2026): строка
+            // вела на экран «Семья», а пункт меню «…» с тем же делом
+            // и так звался «Семья». Одна дверь — одно имя с экраном.
+            TGListRow(title: "Семья",
                       value: семьяПодпись,
                       systemImage: "person.2")
         }
@@ -340,27 +437,38 @@ struct DogTab: View {
     /// просто дверью.
     ///
     /// Пусто, пока в семье никого, кроме хозяина: «1 человек» читается
-    /// упрёком, а не фактом, — то же правило, по которому
-    /// `procedureSummary` молчит на нуле попыток.
+    /// упрёком, а не фактом.
     ///
     /// Имя дежурного, а не число людей: число ничего не меняет в дне,
     /// а «дежурит Тео» отвечает на вопрос «кому писать, если что».
     ///
-    /// **Хвост «роли · пригласить» взят с кадра `12`** и говорит, что
-    /// за дверью, а не только кто дежурит. «Пригласить» дописывается
-    /// только тому, у кого есть право звать: обещание, которого экран
-    /// не исполнит, хуже отсутствия строки.
+    /// **Хвост «пригласить» взят с кадра `12`** и говорит, что за дверью,
+    /// а не только кто дежурит. Дописывается только тому, у кого есть
+    /// право звать: обещание, которого экран не исполнит, хуже отсутствия
+    /// строки.
+    ///
+    /// **«роли» сняты 29.10.2026:** на 320 pt «дежурит … · роли ·
+    /// пригласить» уходило во вторую строку, а из трёх пунктов этот
+    /// единственный не говорил ни о состоянии, ни о действии.
     private var семьяПодпись: LocalizedStringKey? {
         var части: [String] = []
         if let duty = members.first(where: \.isOnDuty) {
             части.append(String(localized: "дежурит \(duty.name)"))
         } else {
-            let другие = members.filter { !$0.isMe }.count
+            // «Кто я» — у резолвера, а не у поля `isMe` (29.10.2026).
+            // Поле едет общим дневником, и у гостя оно указывает
+            // на владельца: «кроме тебя» вычитало владельца, а не
+            // самого гостя. Тот же разбор — `FamilyScreen.мояКарточка`.
+            let я = FamilyResolver.меня(среди: members,
+                                        запомненный: appState.myMemberID,
+                                        гость: SharedZoneOwner.isGuest)
+            let другие = members.filter { $0.id != я?.id }.count
             if другие > 0 { части.append(String(localized: "\(другие) кроме тебя")) }
         }
-        части.append(String(localized: "роли"))
         if appState.can(.manageFamily) { части.append(String(localized: "пригласить")) }
-        return .готовая(части.joined(separator: " · "))
+        // Без «ролей» хвост бывает пустым (гость, никто не дежурит):
+        // тогда значения нет вовсе, а не пустая строка справа.
+        return части.isEmpty ? nil : .готовая(части.joined(separator: " · "))
     }
 
     /// Первым блоком и в терракоте: искать это в панике некогда.
@@ -436,9 +544,31 @@ struct DogTab: View {
         NavigationLink { EmergencyScreen(dog: dog) } label: {
             TGBanner(tone: .alarm,
                      title: "Если что-то случилось",
-                     subtitle: "наготове · телефоны · что мог съесть · справка врачу",
+                     // «что мог съесть» → «что нельзя есть» (29.10.2026):
+                     // глагол мужского рода у суки, а экран за плашкой
+                     // звал то же самое «съела». Без рода — одна строка
+                     // на обоих, и она же заголовок раздела там.
+                     subtitle: "наготове · телефоны · что нельзя есть · справка врачу",
                      systemImage: "cross.case",
-                     emphasis: .solid)
+                     // СПЛОШНАЯ ЗАЛИВКА СНЯТА 04.11.2026.
+                     //
+                     // Отзыв 27.10, сборка 282: «красная плашка
+                     // читается как ошибка». Коммит, который его
+                     // процитировал (`727ebde0`), починил СОСЕДНЕЕ
+                     // красное — тревогу, встававшую на любом
+                     // активном эпизоде, — а саму плашку не тронул.
+                     //
+                     // > **Цитата отзыва в коммите не означает,
+                     // > что отзыв закрыт.** Человек показал
+                     // > на экран, где аварии нет, а она
+                     // > нарисована во всю ширину терракотой.
+                     //
+                     // Это справочник наготове, а не происшествие:
+                     // телефоны врача и что нельзя есть лежат тут
+                     // всегда. Тихая плашка оставляет терракотовой
+                     // иконку — признак срочности сохраняется там,
+                     // где он к месту.
+                     emphasis: .quiet)
         }
         .buttonStyle(.plain)
     }
@@ -466,7 +596,6 @@ struct DogTab: View {
                         TGLink(title: "Уход и прививки", value: careSummary(dog).map { .готовая($0) }, systemImage: "scissors") { CareScreen(dog: dog) }
             TGDivider()
                         TGLink(title: "Вес", value: .готовая(Fmt.weight(dog.weightKg)), systemImage: "scalemass") { WeightScreen(dog: dog) }
-            TGDivider()
             // Второй вход в «Процедуры», и он тут не для удобства.
             //
             // Единственный вход был с вкладки «Здоровье», а она есть,
@@ -498,65 +627,169 @@ struct DogTab: View {
             //
             // У самой Виктории занятий ноль (замер по карте Стича:
             // trainingSteps 0, trainingSessions 0, procedureSkills 0).
-            TGDivider()
+            //
+            // Разделитель стоял здесь ВТОРОЙ подряд (аудит 29.10.2026):
+            // строку убрали, а её черту — нет, и между «Вес» и «Собаки»
+            // рисовались две линии.
             // Число — по показываемым, как и сам ряд чипов выше.
             // `dogs.count` здесь печатал базу: у Виктории 4 при одной
             // собаке. Экран, куда эта строка ведёт, уже считал правильно
             // (`DogsScreen`, `shownToPerson`), то есть строка и её дверь
             // называли разные числа.
-            TGLink(title: показываемые.count > 1 ? "Собаки" : "Завести ещё собаку",
-                   value: показываемые.count > 1 ? "\(показываемые.count)" : nil,
-                   systemImage: "pawprint") { DogsScreen() }
+            //
+            // **«Завести ещё собаку» снята 29.10.2026** (аудит вкладки,
+            // решение Виктории). При одной собаке на странице было две
+            // двери в один `DogsScreen`: эта строка и пилюля «+ Вторая
+            // собака» в переключателе выше. Осталась пилюля — она с кадра
+            // `09` и стоит там, где собак выбирают. Ворота Pro от этого
+            // не сдвинулись: обе двери вели в `DogsScreen`, и заводит
+            // собаку его кнопка за `ProGate.isOpen(.secondDog…)`
+            // (`ProGateTests.каждаяДверьСобакиЗаВоротами` считает
+            // `DogEditorScreen()`, а не дороги к списку).
+            //
+            // Строка «Собаки · N» осталась — она про число и про список,
+            // когда собак две и больше; переключаться может каждый.
+            if показываемые.count > 1 {
+                TGDivider()
+                TGLink(title: "Собаки",
+                       value: "\(показываемые.count)",
+                       systemImage: "pawprint") { DogsScreen() }
+            }
         }
         .buttonStyle(.plain)
     }
 
-    /// «2 из 3 получается» — чтобы ссылка говорила о состоянии,
-    /// а не была просто дверью. Пусто, пока ни одной попытки нет:
-    /// «0 из 3» читается упрёком, а не фактом.
-    private var procedureSummary: String? {
-        guard !skills.isEmpty, skills.contains(where: { $0.attempts > 0 }) else { return nil }
-        let получается = skills.filter { $0.status == .works }.count
-        return String(localized: "\(получается) из \(skills.count) получается")
-    }
+    // `procedureSummary` и `trainingSummary` сняты 29.10.2026 вместе
+    // с `@Query` навыков: их строки ушли 28.10 (решение про занятия),
+    // а запрос всех `ProcedureSkill` базы оставался на каждой
+    // перерисовке вкладки — без единого читателя.
 
     private func careSummary(_ dog: Dog) -> String? {
         let due = dog.careTasks.filter { $0.isDue() }.count
         return due > 0 ? String(localized: "\(due) сегодня") : nil
     }
 
-    private func trainingSummary(_ dog: Dog) -> String? {
-        let count = dog.trainingSessions.count
-        return count == 0 ? nil : String(localized: "\(count) занятий")
-    }
-
     // MARK: Документы и цикл
 
     private func documents(_ dog: Dog) -> some View {
         секция("на случай, когда спросят") {
-                        TGLink(title: "Документы и контакты", value: dog.chipNumber == nil ? "не заполнены" : nil, systemImage: "doc.text.image") { DocumentsScreen(dog: dog) }
+                        TGLink(title: "Документы и контакты", value: документыПусты(dog) ? "не заполнены" : nil, systemImage: "doc.text.image") { DocumentsScreen(dog: dog, плакат: true) }
             if dog.tracksHeat {
                 TGDivider()
-                                TGLink(title: "Цикл", value: HeatCycle.forecast(dog.heats).expectedNext.map { .готовая(Fmt.shortDay($0)) }, systemImage: "calendar.badge.clock") { HeatScreen(dog: dog) }
+                                TGLink(title: "Цикл", value: циклПодпись(dog), systemImage: "calendar.badge.clock") { HeatScreen(dog: dog) }
             }
         }
         .buttonStyle(.plain)
     }
 
+    /// «не заполнены» — только когда за строкой правда ничего нет.
+    ///
+    /// **До 29.10.2026 спрашивался один чип**, а экран за строкой
+    /// держит восемь полей и снимки: человек вписал телефон клиники
+    /// и паспорт, чипа у собаки нет — и строка продолжала говорить
+    /// «не заполнены». Ровно наоборот тоже было: чип есть, а телефонов
+    /// «Если что-то случилось» нет ни одного — и строка молчала.
+    ///
+    /// Молчание при частично заполненном — не «всё хорошо», а «тут
+    /// что-то есть»: перечислять, чего не хватает, строке негде.
+    private func документыПусты(_ dog: Dog) -> Bool {
+        let поля = [dog.chipNumber, dog.passportNumber, dog.insuranceNumber,
+                    dog.vetName, dog.vetPhone, dog.clinicName, dog.clinicPhone,
+                    dog.distinctiveMarks]
+        return поля.allSatisfy { ($0 ?? "").trimmingCharacters(in: .whitespaces).isEmpty }
+            && dog.documents.isEmpty
+    }
+
+    /// Пока течка идёт, строка говорит «идёт», а не дату следующей:
+    /// прогноз через полгода в первый же день читался как «записать
+    /// забыли». Слово то же, что у поездки в соседней секции.
+    private func циклПодпись(_ dog: Dog) -> LocalizedStringKey? {
+        if dog.heats.contains(where: \.isOngoing) { return "идёт" }
+        return HeatCycle.forecast(dog.heats).expectedNext.map { .готовая(Fmt.shortDay($0)) }
+    }
+
     // MARK: Поездки
 
+    /// Без поездок и без права их заводить секции нет вовсе: пустая
+    /// карточка под заголовком «поездки» с обещанием «режим включится
+    /// сам» говорила бы помощнику о том, чего он сделать не может.
+    ///
+    /// # Прошедшие — отдельно и с датами (29.10.2026)
+    ///
+    /// Аудит вкладки: поездки лежали одним списком навсегда, новые
+    /// сверху по дню отъезда, и у каждой справа стоял только этот день.
+    /// Через полгода «Лион · 12 мая» прошлогодний и «Ницца · 3 нояб»
+    /// завтрашний читались одинаково — а важна из них одна.
+    ///
+    /// Теперь наверху то, что идёт и впереди, **ближайшая первой**;
+    /// прошедшие — своей секцией ниже, новые сверху, и справа у них
+    /// весь срок «с — по», а не день отъезда: про прошлую поездку
+    /// спрашивают «когда это было», а не «когда ехать».
+    @ViewBuilder
     private func travel(_ dog: Dog) -> some View {
         let мои = trips.filter { $0.dog?.persistentModelID == dog.persistentModelID }
+        let сейчас = Date()
+        let впереди = мои.filter { !прошла($0, сейчас) }
+            .sorted { $0.startDate < $1.startDate }
+        let прошедшие = мои.filter { прошла($0, сейчас) }
             .sorted { $0.startDate > $1.startDate }
-        return секция("поездки",
-                      подпись: мои.isEmpty ? "режим включится сам в день отъезда" : nil) {
-            ForEach(мои) { trip in
+        if canEdit || !впереди.isEmpty {
+            поездки(впереди, dog: dog)
+        }
+        if !прошедшие.isEmpty {
+            прошедшиеПоездки(прошедшие, dog: dog)
+        }
+    }
+
+    /// Поездка кончилась: прошёл и её последний день целиком.
+    ///
+    /// Граница — та же, что у `Trip.isActive`: последний день считается
+    /// до конца («возвращаются вечером»), и тем же календарём дневника.
+    /// Своё правило здесь дало бы поездку, которая в один и тот же вечер
+    /// «идёт» на её экране и «прошла» в списке.
+    private func прошла(_ trip: Trip, _ сейчас: Date) -> Bool {
+        let календарь = CalendarDay.дневниковыйКалендарь
+        guard let конец = календарь.date(byAdding: .day, value: 1,
+                                         to: календарь.startOfDay(for: trip.endDate)) else {
+            return false
+        }
+        return сейчас > конец
+    }
+
+    private func поездки(_ впереди: [Trip], dog: Dog) -> some View {
+        секция("поездки",
+                      подпись: впереди.isEmpty ? "режим включится сам в день отъезда" : nil) {
+            ForEach(впереди) { trip in
                 TGLink(title: .готовая(trip.destination),
                        value: trip.isActive() ? "идёт" : .готовая(Fmt.shortDay(trip.startDate)),
                        systemImage: trip.transport.symbol) { TripScreen(trip: trip, dog: dog) }
-                TGDivider()
+                // Черта — между строками, а не после каждой: у помощника
+                // строки «Ещё поездка» нет, и черта висела бы последней.
+                if canEdit || trip.id != впереди.last?.id { TGDivider() }
             }
-                        TGLink(title: мои.isEmpty ? "Запланировать поездку" : "Ещё поездка", systemImage: "plus") { TripSetupScreen(dog: dog) }
+            // Заводит поездку тот, кто правит профиль: от неё меняется
+            // план дня и напоминания у всей семьи (`НапоминанияПоездки`).
+            if canEdit {
+                        TGLink(title: впереди.isEmpty ? "Запланировать поездку" : "Ещё поездка", systemImage: "plus") { TripSetupScreen(dog: dog) }
+            }
+        }
+        .buttonStyle(.plain)
+    }
+
+    /// Прошедшие поездки: открываются так же, правятся и убираются
+    /// на своём экране, — но стоят ниже и не спорят с предстоящими.
+    private func прошедшиеПоездки(_ прошедшие: [Trip], dog: Dog) -> some View {
+        секция("прошедшие") {
+            ForEach(прошедшие) { trip in
+                // Срок — значением, а не ключом каталога: это даты,
+                // переводить в них нечего (тот же вид, что в шапке
+                // `TripScreen`, только без числа дней).
+                TGLink(title: .готовая(trip.destination),
+                       value: .готовая("\(Fmt.shortDay(trip.startDate)) — \(Fmt.shortDay(trip.endDate))"),
+                       systemImage: trip.transport.symbol,
+                       tone: Token.Ink.secondary) { TripScreen(trip: trip, dog: dog) }
+                if trip.id != прошедшие.last?.id { TGDivider() }
+            }
         }
         .buttonStyle(.plain)
     }
@@ -590,6 +823,11 @@ struct TripScreen: View {
     @Environment(\.dismiss) private var dismiss
     @State private var isConfirmingDelete = false
 
+    /// Право — то же, что у строки «Запланировать поездку» на вкладке:
+    /// заводит, правит и убирает поездку один и тот же человек.
+    /// До 29.10.2026 правка и удаление были открыты помощнику и гостю.
+    private var canEdit: Bool { appState.can(.editProfile) }
+
     var body: some View {
         TGScreen {
             TGCard {
@@ -609,13 +847,29 @@ struct TripScreen: View {
 
             PackingListCard(dog: dog, days: trip.dayCount())
 
-            TGButton(title: "Убрать поездку", variant: .destructive,
-                     size: .medium, systemImage: "trash") { isConfirmingDelete = true }
+            // Правка — тем же экраном, которым поездку заводили.
+            // До 29.10.2026 её здесь не было: опечатка в «куда» или
+            // сдвиг на день лечились только удалением.
+            if canEdit {
+                TGCard(spacing: 0) {
+                    TGLink(title: "Поправить поездку", systemImage: "pencil") {
+                        TripSetupScreen(dog: dog, trip: trip)
+                    }
+                }
+                .buttonStyle(.plain)
+
+                TGButton(title: "Убрать поездку", variant: .destructive,
+                         size: .medium, systemImage: "trash") { isConfirmingDelete = true }
+            }
         }
         .navigationTitle(trip.destination)
         .cinemaScreen(экран: .sub("trip"))
         .confirmationDialog("Убрать поездку?", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
             Button("Убрать", role: .destructive) {
+                guard canEdit else { return }
+                // Остановки уходят вместе с поездкой: иначе убранная
+                // поездка звала бы «Остановка» в день, когда никто не едет.
+                НапоминанияПоездки.снять(trip)
                 context.delete(trip)
                 // Неудача сохранения выбрасывалась, и экран закрывался
                 // как после удаления. Форма — та же, что у выездного дня
@@ -623,7 +877,7 @@ struct TripScreen: View {
                 // поэтому говорится правда.
                 guard context.persistNothingToUndo() else {
                     Haptics.warning()
-                    appState.showFailure("Не удалилось · проверь после перезапуска")
+                    appState.showFailure(String(localized: "Не удалилось · проверь после перезапуска"))
                     return
                 }
                 Haptics.warning()

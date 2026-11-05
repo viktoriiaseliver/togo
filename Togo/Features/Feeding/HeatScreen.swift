@@ -105,7 +105,7 @@ struct HeatScreen: View {
     /// Строка истории: дата с длительностью слева, заметка человека справа.
     ///
     /// **Заметка — свободный текст, и вход у него живой:**
-    /// `TextField("что-то заметила", text: $note)` ниже в этом же файле
+    /// `TextField("что заметили", text: $note)` ниже в этом же файле
     /// (`HeatEditorSheet`), сохраняется в `target.note`. То есть длину
     /// задаёт человек, а не мы, и расчёта «влезет» тут быть не может.
     ///
@@ -217,7 +217,9 @@ struct HeatEditorSheet: View {
                 }
                 TGDivider()
                 LabeledField(label: "Заметка") {
-                    TextField("что-то заметила", text: $note)
+                    // Подсказка без рода человека (29.10.2026): «заметила»
+                    // назначало пол тому, кто пишет, а его приложение не знает.
+                    TextField("что заметили", text: $note)
                 }
             }
             if !isNew {
@@ -244,7 +246,7 @@ struct HeatEditorSheet: View {
                 // Та же форма, что у запаса корма и выездного дня.
                 guard context.persistNothingToUndo() else {
                     Haptics.warning()
-                    appState.showFailure("Не удалилось · проверь после перезапуска")
+                    appState.showFailure(String(localized: "Не удалилось · проверь после перезапуска"))
                     return
                 }
                 Haptics.warning()
@@ -261,6 +263,13 @@ struct HeatEditorSheet: View {
         // цикла, а на нём «опасные дни». Якорь в полдень — чтобы у второго
         // человека в другом поясе день не уехал на сутки. См. `CalendarDay`.
         let target = record ?? HeatRecord(startedAt: CalendarDay.anchored(startedAt))
+        // Снимок до правки (29.10.2026): откат возвращал только новую
+        // запись, а правленая при отказе хранилища оставалась в памяти
+        // с новыми датами — прогноз на вкладке считался от дат, которых
+        // в базе нет, до первого перезапуска.
+        let былоНачало = target.startedAt
+        let былКонец = target.endedAt
+        let былаЗаметка = target.note
         target.startedAt = CalendarDay.anchored(startedAt)
         target.endedAt = hasEnded ? CalendarDay.anchored(endedAt) : nil
         target.note = note.isEmpty ? nil : note
@@ -270,9 +279,18 @@ struct HeatEditorSheet: View {
             context.insert(target)
         }
         guard context.persist(otherwise: {
-            if новая { context.delete(target) }
+            if новая {
+                context.delete(target)
+            } else {
+                target.startedAt = былоНачало
+                target.endedAt = былКонец
+                target.note = былаЗаметка
+            }
         }) else {
+            // Шторка остаётся открытой, и это сказано словом: одна
+            // хаптика читалась как «кнопка не нажалась».
             Haptics.warning()
+            appState.showFailure(String(localized: "Не сохранилось · попробуй ещё раз"))
             return
         }
         Haptics.success()

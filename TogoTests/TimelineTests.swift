@@ -301,7 +301,11 @@ struct TimeIndoorsTests {
         let indoors = try! #require(
             TimelineBuilder.timeIndoors(before: 3, in: blocks, threshold: 3600)
         )
-        #expect(indoors == Double(8 * 3600 + 33 * 60))
+        // Ожидание константой с типом, а не `Double(8 * 3600 + …)` внутри
+        // `#expect`: та форма типизировалась 3,6 с на раннере CI
+        // (04.11.2026) и валила ворота «дороже 2000 мс».
+        let ожидаемо: TimeInterval = 8 * 3600 + 33 * 60
+        #expect(indoors == ожидаемо)
     }
 
     @Test("У первого выхода за день промежутка нет")

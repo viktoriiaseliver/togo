@@ -1,1 +1,1 @@
-chiot,promenade,pipi,propreté,vétérinaire,vaccin,médicament,traitement,chaleurs,poids,santé,famille
+santé,vétérinaire,médicament,rappel,promenade,alimentation,journal,animal,soins

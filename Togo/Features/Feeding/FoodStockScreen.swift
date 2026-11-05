@@ -88,8 +88,9 @@ struct FoodStockScreen: View {
                     action: canEdit ? { isAdding = true } : nil
                 )
             } else {
+                // Заголовок «чем кормим» над карточкой снят 29.10.2026:
+                // он повторял имя экрана строкой ниже шапки «Чем кормим».
                 TGCard(spacing: 0) {
-                    TGSectionHeader(title: "чем кормим")
                     ForEach(stocks) { stock in
                         Button { if canEdit { editing = stock } } label: {
                             StockRow(stock: stock, now: .now)
@@ -279,7 +280,7 @@ struct FoodStockEditorSheet: View {
                 // (аудит 28.10.2026). Откатить удаление нечем — говорим правду.
                 guard context.persistNothingToUndo() else {
                     Haptics.warning()
-                    appState.showFailure("Не удалилось · проверь после перезапуска")
+                    appState.showFailure(String(localized: "Не удалилось · проверь после перезапуска"))
                     return
                 }
                 Haptics.warning()
@@ -528,7 +529,10 @@ struct FoodStockEditorSheet: View {
         // и человек возвращается на экран, где ничего не изменилось.
         syncBrand()
         guard context.persist(otherwise: {}) else {
+            // Была только вибрация.
             Haptics.warning()
+            appState.showFailure(
+                String(localized: "Запас не сохранился · нажми ещё раз"))
             return
         }
         Haptics.success()

@@ -51,18 +51,21 @@ struct SitterBriefingScreen: View {
             }
 
             TGExplainer(text: "Это всё, что нужно знать. Диагнозов и истории болезни здесь нет — они хозяйке, не тебе.")
-        }
-        .navigationTitle("Инструкция")
-        .cinemaScreen(экран: .sub("handover"))
-        .usageScreen(.sitter)
-        .navigationBarTitleDisplayMode(.inline)
-        .safeAreaInset(edge: .bottom) {
+        } bottom: {
+            // Кнопка — в слоте каркаса, а не своим `safeAreaInset` поверх
+            // него. Свой стоял с полями 18 со всех сторон и БЕЗ подложки:
+            // текст прокручивался под прозрачной полосой и просвечивал
+            // в зазоре над кнопкой, а отступы расходились с каждым другим
+            // закреплённым низом (у каркаса 10 сверху, 8 снизу).
             TGButton(title: "Понятно, открыть «Сегодня»") {
                 onStart?()
                 dismiss()
             }
-            .padding(Token.Spacing.screenPadding)
         }
+        .navigationTitle("Инструкция")
+        .cinemaScreen(экран: ScreenKey.handoff)
+        .usageScreen(.sitter)
+        .navigationBarTitleDisplayMode(.inline)
     }
 
     private var untilText: String {
@@ -82,6 +85,9 @@ struct SitterBriefingEditor: View {
 
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
+    // Заведён 04.11.2026 ради одной строки — сказать об отказе
+    // сохранения. До этого отказ только вибрировал.
+    @Environment(AppState.self) private var appState
 
     var body: some View {
         TGSheet(title: "Инструкция ситтеру",
@@ -103,7 +109,13 @@ struct SitterBriefingEditor: View {
         } footer: {
             TGButton(title: "Сохранить") {
                 guard context.persist(otherwise: {}) else {
+                    // Была только вибрация. Памятку ситтеру пишут
+                    // перед отъездом и больше не перечитывают —
+                    // молчаливая потеря обнаружилась бы у чужого
+                    // человека с чужой собакой.
                     Haptics.warning()
+                    appState.showFailure(
+                        String(localized: "Памятка не сохранилась · нажми ещё раз"))
                     return
                 }
                 Haptics.success()
@@ -146,10 +158,44 @@ struct SitterBriefingEditor: View {
     ///
     /// Приёмка этой правки — **кадр**, не прогон: меняется то,
     /// что человек читает.
-    private func field(_ title: String, placeholder: LocalizedStringKey,
+    ///
+    /// # Заголовок закрыт 03.11.2026 — правка 15.10 остановилась на полпути
+    ///
+    /// `placeholder` стал ключом, а `title` остался `String` — в одной
+    /// и той же подписи, в одном заходе. Долг `SitterBriefingScreen: 5`
+    /// в `LocalizationDebtTests` — это ровно эти пять заголовков,
+    /// и сторож называл их поимённо всё это время.
+    ///
+    /// **Но ломало их не только `String`, а ещё и `.lowercased()`,
+    /// и это вторая причина, независимая от первой.** Было
+    /// `.готовая(title.lowercased())`, то есть поиск по каталогу шёл
+    /// по строчной форме. Замер 03.11.2026 по
+    /// `TogoShared/Resources/Localizable.xcstrings`
+    /// (отрицательный контроль — заведомо отсутствующий ключ):
+    ///
+    /// ```
+    /// «Еда»       ЕСТЬ, 5 языков    «еда»       ЕСТЬ, 5 языков  ← совпало
+    /// «Доза»      ЕСТЬ, 5 языков    «доза»      ЕСТЬ, 5 языков  ← совпало
+    /// «Гулять»    ЕСТЬ, 5 языков    «гулять»    НЕТ             ← русский
+    /// «Нельзя»    ЕСТЬ, 5 языков    «нельзя»    НЕТ             ← русский
+    /// «Если что»  ЕСТЬ, 5 языков    «если что»  НЕТ             ← русский
+    /// ```
+    ///
+    /// > **Два из пяти заголовков работали, и работали по случайности:**
+    /// > строчные «еда» и «доза» попали в каталог с других экранов.
+    /// > Три остальных показывались по-русски. Признак «вроде
+    /// > переводится» был верен на той трети, которую посмотрели.
+    ///
+    /// `.lowercased()` снят без последствий для вида: `TGSectionHeader`
+    /// сам ставит `.textCase(.uppercase)` (`TGRows.swift:12`), то есть
+    /// регистр литерала на экран не выходил никогда.
+    ///
+    /// Новых ключей правка не заводит — все пять уже переведены
+    /// на en/fr/kk/uk, и лежали мёртвым грузом, как и подсказки 15.10.
+    private func field(_ title: LocalizedStringKey, placeholder: LocalizedStringKey,
                        text: Binding<String>) -> some View {
         TGCard {
-            TGSectionHeader(title: .готовая(title.lowercased()))
+            TGSectionHeader(title: title)
             TextField(placeholder, text: text, axis: .vertical)
                 .lineLimit(2...5)
                 .textStyle(AppFont.body)

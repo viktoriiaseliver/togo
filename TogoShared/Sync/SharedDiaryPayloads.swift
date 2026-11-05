@@ -230,6 +230,8 @@ extension Dog {
             portionGrams: portionGrams,
             mealsPerDay: mealsPerDay,
             mealTimes: mealTimes,
+            mealTimesOverrideDay: mealTimesOverrideDay,
+            mealTimesOverride: mealTimesOverride,
             dailyNormGrams: dailyNormGrams,
             forbiddenFoods: forbiddenFoods,
             wakeMinuteOfDay: wakeMinuteOfDay,
@@ -272,6 +274,8 @@ extension Dog {
         portionGrams = payload.portionGrams
         mealsPerDay = payload.mealsPerDay
         mealTimes = payload.mealTimes
+        mealTimesOverrideDay = payload.mealTimesOverrideDay
+        mealTimesOverride = payload.mealTimesOverride
         dailyNormGrams = payload.dailyNormGrams
         forbiddenFoods = payload.forbiddenFoods
         wakeMinuteOfDay = payload.wakeMinuteOfDay
@@ -637,6 +641,213 @@ extension DoseRecord {
 @MainActor
 enum SharedDiaryInbox {
 
+    // MARK: Страница — ОДИН контекст от начала до конца
+
+    /// Контекст открытой страницы — или `nil`, если страницы нет.
+    ///
+    /// # Почему здесь больше нет отката
+    ///
+    /// **Решение Виктории 29.10.2026 — путь 1, и целиком.** До него
+    /// страница принималась в ГЛАВНЫЙ контекст, а честность отказа
+    /// держалась на откатах: каждый `accept` клал замыкание «вернуть
+    /// как было», и при неудавшемся сохранении они прокручивались
+    /// назад. Форма держится для правки поля и **не держится для
+    /// вставки** — это замер, а не подозрение. Запертое хранилище
+    /// (`allowsSave: false`), одна вставка, пять форм одного вызова:
+    ///
+    /// ```
+    /// [А] delete сразу после упавшего save    остался 1
+    /// [Б] fetch МЕЖДУ упавшим save и delete   стало 0 — работает
+    /// [В] rollback внутри otherwise           остался 1, hasChanges=false
+    /// [Г] rollback после возврата persist     остался 1, hasChanges=false
+    /// [Д] fetch сразу после упавшего save     отдал ОДНУ вставку ДВАЖДЫ
+    /// ```
+    ///
+    /// Два вывода дороже самого замера: после упавшего `save` состояние
+    /// контекста в памяти **недостоверно само по себе — оно двоит**;
+    /// `rollback()` ставит `hasChanges = false` и ОСТАВЛЯЕТ запись
+    /// видимой, то есть она на экране, а сохранить её уже нельзя
+    /// никогда. Работала ровно одна форма — [Б], — и механизма ей нет,
+    /// есть совпадение.
+    ///
+    /// > **Поэтому отката тут нет вовсе.** Страница живёт в своём
+    /// > контексте от начала до конца; не записалась — контекст
+    /// > выбрасывается целиком, и возвращать нечего, потому что
+    /// > в главном ничего и не менялось. «Целиком или никак»
+    /// > обеспечено устройством кода, а не порядком замыканий.
+    ///
+    /// # Чего это НЕ чинит
+    ///
+    /// `persist(otherwise: { context.delete(x) })` вне страницы — та же
+    /// неработающая форма отката вставки, и зовут её из двух десятков
+    /// мест, включая медицинские (разбор — `Persist.swift`). Здесь
+    /// закрыт один путь — приём чужой страницы. Остальные ждут хозяина.
+    private static var открытаяСтраница: ModelContext?
+
+    /// Схемы и дозы, приехавшие ЭТОЙ страницей.
+    ///
+    /// Копятся внутри `accept`, читаются один раз в конце страницы —
+    /// в её контексте и ДО сохранения. Список собирает не вызывающий,
+    /// а сам приём: пока его собирали снаружи, «решение в контексте
+    /// страницы» оставалось договорённостью с вызывающим.
+    private static var схемыСтраницы: [UUID] = []
+    private static var дозыСтраницы: [UUID] = []
+
+    /// Итог страницы: записалась ли она и что решила погасить.
+    struct ИтогСтраницы {
+        /// `false` значит «не записалось НИЧЕГО, и главный контекст
+        /// этой страницы не видел вовсе».
+        let записано: Bool
+
+        /// Дозы, по которым напоминания больше не ждут отметки, —
+        /// **идентификаторами, а не живыми моделями**: модель
+        /// принадлежит контексту страницы и пережила бы его.
+        ///
+        /// Решение принято ВНУТРИ страницы, до сохранения. Гасить —
+        /// после `записано == true`: до сохранения принятое ещё
+        /// не факт хранилища, и погашенный по нему курс мог оказаться
+        /// живым.
+        let большеНеЖдут: [UUID]
+    }
+
+    /// Записать принятое: сразу — если страницы нет.
+    ///
+    /// **Внутри страницы не сохраняет и не копит ничего** — ни `save`,
+    /// ни отката. Сохранение у страницы одно и оно последнее; откат
+    /// у неё — выброшенный контекст.
+    ///
+    /// Различитель — ТОЖДЕСТВО контекста, а не флаг «страница открыта».
+    /// Прежняя редакция смотрела на флаг, и всякий, кто звал `accept`
+    /// со своим контекстом, пока шла чужая страница, получал молчаливое
+    /// «записано» без сохранения. Тождество отвечает про тот контекст,
+    /// который ему дали, и про него одного.
+    static func записать(_ context: ModelContext, otherwise вернуть: () -> Void) -> Bool {
+        guard открытаяСтраница !== context else { return true }
+        return context.persist(otherwise: вернуть)
+    }
+
+    /// Принять страницу чужих изменений в ОТДЕЛЬНЫЙ контекст и сохранить
+    /// её один раз.
+    ///
+    /// **Главный контекст сюда не передаётся вовсе, и это не экономия
+    /// параметра.** Пока он был на входе, «на отказе его не трогаем»
+    /// оставалось обещанием исполнителя; теперь страница физически
+    /// не может его тронуть — у неё его нет.
+    ///
+    /// Вложенный вызов присоединяется к внешней странице, а не заводит
+    /// свою: второй `save()` посреди страницы вернул бы ровно то,
+    /// от чего мы ушли. Решение о напоминаниях принимает ВНЕШНЯЯ
+    /// страница — она одна знает весь состав.
+    static func партией(контейнер: ModelContainer,
+                        _ принять: (ModelContext) -> Void) -> ИтогСтраницы {
+        if let открытая = открытаяСтраница {
+            принять(открытая)
+            return ИтогСтраницы(записано: true, большеНеЖдут: [])
+        }
+
+        let страница = ModelContext(контейнер)
+        // Явно, а не по умолчанию: автосохранение посреди страницы —
+        // это и есть «частично».
+        страница.autosaveEnabled = false
+        открытаяСтраница = страница
+        схемыСтраницы = []
+        дозыСтраницы = []
+        defer {
+            открытаяСтраница = nil
+            схемыСтраницы = []
+            дозыСтраницы = []
+        }
+
+        принять(страница)
+
+        // Решение «эти дозы больше не ждут» снимается ЗДЕСЬ: в контексте
+        // страницы и ДО сохранения. Спрошенный в главном, он ответил бы
+        // по прежней картине — отменённый приехавшей схемой курс
+        // выглядел бы живым, и напоминание по его дозам осталось бы
+        // стоять.
+        let большеНеЖдут = дозыБезОжидания(context: страница)
+
+        guard страница.hasChanges else {
+            return ИтогСтраницы(записано: true, большеНеЖдут: большеНеЖдут)
+        }
+        do {
+            try страница.save()
+            return ИтогСтраницы(записано: true, большеНеЖдут: большеНеЖдут)
+        } catch {
+            // Возвращать нечего: контекст страницы здесь и кончается,
+            // а главный её не видел. Гасить тоже нечего — решение
+            // принято по тому, что не доехало.
+            log.error("""
+                общий дневник: страница не записалась — \
+                \(String(describing: error))
+                """)
+            return ИтогСтраницы(записано: false, большеНеЖдут: [])
+        }
+    }
+
+    /// Дозы страницы, которые больше не ждут отметки.
+    ///
+    /// **Два входа, и они не повторяют друг друга.** По дозам
+    /// спрашивается `ждётОтметки` — предикат САМОЙ дозы, и про схему
+    /// он не знает нарочно. По схемам спрашивается
+    /// `ждётОтметкиСУчётомСхемы`: у доз отменённой схемы собственный
+    /// `cancelledAt` пуст, то есть по первому предикату они по-прежнему
+    /// ждут, и одним только входом по дозам они бы не погасли.
+    ///
+    /// Цена пропуска называется прямо, потому что она про лекарство:
+    /// Виктория отменила курс, у мамы он жив, и мама получает «Через
+    /// 10 минут доза» по лечению, которого больше нет.
+    ///
+    /// Выборка схемы под `do`, а не под `try?`: у `try?` склеены «такой
+    /// схемы нет» (ответ — не гасить ничего) и «посмотреть не удалось»,
+    /// и при отказе второе молча становится первым.
+    private static func дозыБезОжидания(context: ModelContext) -> [UUID] {
+        var итог: [UUID] = []
+        var видели: Set<UUID> = []
+
+        for схемаID in схемыСтраницы {
+            do {
+                guard let схема = try context.fetch(
+                    FetchDescriptor<Medication>(predicate: #Predicate { $0.id == схемаID })
+                ).first else { continue }
+                for доза in схема.doses where !доза.ждётОтметкиСУчётомСхемы {
+                    if видели.insert(доза.id).inserted { итог.append(доза.id) }
+                }
+            } catch {
+                log.error("""
+                    общий дневник: приехала схема \(схемаID), выборка \
+                    по id отказала — напоминания по её дозам СЕЙЧАС \
+                    не гаснут, погаснут при открытии приложения. \
+                    \(String(describing: error))
+                    """)
+            }
+        }
+
+        // Доза — та, что лежит у нас ПОСЛЕ слияния, а не та, что
+        // приехала: спор решает `SharedDiaryMerge`, и чужая отметка
+        // могла проиграть своей.
+        for дозаID in дозыСтраницы {
+            guard let доза = доза(дозаID, context: context), !доза.ждётОтметки else { continue }
+            if видели.insert(доза.id).inserted { итог.append(доза.id) }
+        }
+        return итог
+    }
+
+    /// Страница привезла схему — её дозы надо пересмотреть в конце.
+    ///
+    /// Тождество контекста, а не флаг: приём вне страницы (архив,
+    /// тесты) не копит ничего и список не растит.
+    private static func кСверке(схема id: UUID, context: ModelContext) {
+        guard открытаяСтраница === context else { return }
+        схемыСтраницы.append(id)
+    }
+
+    /// Страница привезла отметку дозы — её надо пересмотреть в конце.
+    private static func кСверке(доза id: UUID, context: ModelContext) {
+        guard открытаяСтраница === context else { return }
+        дозыСтраницы.append(id)
+    }
+
     /// Принять запись дневника с другого телефона.
     ///
     /// Возвращает `true`, если после слияния наша версия изменилась —
@@ -656,7 +867,7 @@ enum SharedDiaryInbox {
             context.insert(event)
             // Приехавшая запись, которую не записали, вернётся следующим
             // кругом обмена — но круг станет вечным, если об этом молчать.
-            guard context.persist(otherwise: { context.delete(event) }) else {
+            guard записать(context, otherwise: { context.delete(event) }) else {
                 log.error("общий дневник: запись не записалась")
                 return false
             }
@@ -668,7 +879,7 @@ enum SharedDiaryInbox {
         if merged != local.payload {
             let былПрежний = local.payload
             local.apply(merged)
-            if !context.persist(otherwise: { local.apply(былПрежний) }) {
+            if !записать(context, otherwise: { local.apply(былПрежний) }) {
                 log.error("общий дневник: слияние записи не записалось")
             }
         }
@@ -729,7 +940,7 @@ enum SharedDiaryInbox {
             dog.id = payload.id
             dog.apply(payload)
             context.insert(dog)
-            guard context.persist(otherwise: { context.delete(dog) }) else {
+            guard записать(context, otherwise: { context.delete(dog) }) else {
                 log.error("общий дневник: собака не записалась")
                 return false
             }
@@ -768,7 +979,7 @@ enum SharedDiaryInbox {
         if merged != local.payload {
             let былПрежний = local.payload
             local.apply(merged)
-            if !context.persist(otherwise: { local.apply(былПрежний) }) {
+            if !записать(context, otherwise: { local.apply(былПрежний) }) {
                 log.error("общий дневник: слияние профиля не записалось")
             }
         }
@@ -815,7 +1026,7 @@ enum SharedDiaryInbox {
             clinic.createdAt = payload.createdAt
             clinic.changedAt = payload.changedAt
             context.insert(clinic)
-            guard context.persist(otherwise: { context.delete(clinic) }) else {
+            guard записать(context, otherwise: { context.delete(clinic) }) else {
                 log.error("общий дневник: клиника не записалась")
                 return false
             }
@@ -827,7 +1038,7 @@ enum SharedDiaryInbox {
         if merged != local.payload {
             let былПрежний = local.payload
             local.apply(merged)
-            if !context.persist(otherwise: { local.apply(былПрежний) }) {
+            if !записать(context, otherwise: { local.apply(былПрежний) }) {
                 log.error("общий дневник: слияние клиники не записалось")
             }
         }
@@ -887,7 +1098,7 @@ enum SharedDiaryInbox {
             запись.changedAt = payload.changedAt
             запись.dog = dog
             context.insert(запись)
-            guard context.persist(otherwise: { context.delete(запись) }) else {
+            guard записать(context, otherwise: { context.delete(запись) }) else {
                 log.error("общий дневник: взвешивание не записалось")
                 return false
             }
@@ -899,7 +1110,7 @@ enum SharedDiaryInbox {
         if merged != local.payload {
             let былПрежний = local.payload
             local.apply(merged)
-            if !context.persist(otherwise: { local.apply(былПрежний) }) {
+            if !записать(context, otherwise: { local.apply(былПрежний) }) {
                 log.error("общий дневник: слияние взвешивания не записалось")
             }
         }
@@ -937,7 +1148,7 @@ enum SharedDiaryInbox {
                                       имя: payload.clinicName, context: context)
             документ.dog = dog
             context.insert(документ)
-            guard context.persist(otherwise: { context.delete(документ) }) else {
+            guard записать(context, otherwise: { context.delete(документ) }) else {
                 log.error("общий дневник: документ не записался")
                 return false
             }
@@ -955,7 +1166,7 @@ enum SharedDiaryInbox {
                                    имя: merged.clinicName, context: context) {
                 local.clinic = сшита
             }
-            if !context.persist(otherwise: { local.apply(былПрежний) }) {
+            if !записать(context, otherwise: { local.apply(былПрежний) }) {
                 log.error("общий дневник: слияние документа не записалось")
             }
         }
@@ -1001,7 +1212,7 @@ enum SharedDiaryInbox {
             анализ.apply(payload)
             анализ.dog = dog
             context.insert(анализ)
-            guard context.persist(otherwise: { context.delete(анализ) }) else {
+            guard записать(context, otherwise: { context.delete(анализ) }) else {
                 log.error("общий дневник: анализ не записался")
                 return false
             }
@@ -1013,7 +1224,7 @@ enum SharedDiaryInbox {
         if merged != local.payload {
             let былПрежний = local.payload
             local.apply(merged)
-            if !context.persist(otherwise: { local.apply(былПрежний) }) {
+            if !записать(context, otherwise: { local.apply(былПрежний) }) {
                 log.error("общий дневник: слияние анализа не записалось")
             }
         }
@@ -1041,7 +1252,7 @@ enum SharedDiaryInbox {
             визит.clinic = клиника(id: payload.clinicID, имя: payload.clinicName, context: context)
             визит.dog = dog
             context.insert(визит)
-            guard context.persist(otherwise: { context.delete(визит) }) else {
+            guard записать(context, otherwise: { context.delete(визит) }) else {
                 log.error("общий дневник: визит не записался")
                 return false
             }
@@ -1058,7 +1269,7 @@ enum SharedDiaryInbox {
             if let сшита = клиника(id: merged.clinicID, имя: merged.clinicName, context: context) {
                 local.clinic = сшита
             }
-            if !context.persist(otherwise: { local.apply(былПрежний) }) {
+            if !записать(context, otherwise: { local.apply(былПрежний) }) {
                 log.error("общий дневник: слияние визита не записалось")
             }
         }
@@ -1085,7 +1296,7 @@ enum SharedDiaryInbox {
             диагноз.apply(payload)
             диагноз.dog = dog
             context.insert(диагноз)
-            guard context.persist(otherwise: { context.delete(диагноз) }) else {
+            guard записать(context, otherwise: { context.delete(диагноз) }) else {
                 log.error("общий дневник: диагноз не записался")
                 return false
             }
@@ -1097,7 +1308,7 @@ enum SharedDiaryInbox {
         if merged != local.payload {
             let былПрежний = local.payload
             local.apply(merged)
-            if !context.persist(otherwise: { local.apply(былПрежний) }) {
+            if !записать(context, otherwise: { local.apply(былПрежний) }) {
                 log.error("общий дневник: слияние диагноза не записалось")
             }
         }
@@ -1125,7 +1336,7 @@ enum SharedDiaryInbox {
             рецепт.clinic = клиника(id: payload.clinicID, имя: payload.clinicName, context: context)
             рецепт.dog = dog
             context.insert(рецепт)
-            guard context.persist(otherwise: { context.delete(рецепт) }) else {
+            guard записать(context, otherwise: { context.delete(рецепт) }) else {
                 log.error("общий дневник: назначение не записалось")
                 return false
             }
@@ -1140,7 +1351,7 @@ enum SharedDiaryInbox {
             if let сшита = клиника(id: merged.clinicID, имя: merged.clinicName, context: context) {
                 local.clinic = сшита
             }
-            if !context.persist(otherwise: { local.apply(былПрежний) }) {
+            if !записать(context, otherwise: { local.apply(былПрежний) }) {
                 log.error("общий дневник: слияние назначения не записалось")
             }
         }
@@ -1168,7 +1379,7 @@ enum SharedDiaryInbox {
             task.clinic = clinic(for: payload, context: context)
             task.dog = dog
             context.insert(task)
-            guard context.persist(otherwise: { context.delete(task) }) else {
+            guard записать(context, otherwise: { context.delete(task) }) else {
                 log.error("общий дневник: дело ухода не записалось")
                 return false
             }
@@ -1187,7 +1398,7 @@ enum SharedDiaryInbox {
             if let сшита = clinic(for: merged, context: context) {
                 local.clinic = сшита
             }
-            if !context.persist(otherwise: { local.apply(былПрежний) }) {
+            if !записать(context, otherwise: { local.apply(былПрежний) }) {
                 log.error("общий дневник: слияние дела ухода не записалось")
             }
         }
@@ -1204,6 +1415,11 @@ enum SharedDiaryInbox {
     @discardableResult
     static func accept(_ payload: MedicationPayload, dog: Dog?, context: ModelContext) -> Bool {
         let id = payload.id
+        // Приехала схема — значит её отмена или пауза могли приехать
+        // вместе с ней, и напоминания по её дозам надо пересмотреть
+        // в конце страницы. Отмечается ДО разбора и безусловно: так же,
+        // как это делал вызывающий, пока список жил у него.
+        кСверке(схема: id, context: context)
         let existing = try? context.fetch(
             FetchDescriptor<Medication>(predicate: #Predicate { $0.id == id })
         ).first
@@ -1216,7 +1432,7 @@ enum SharedDiaryInbox {
             if merged != local.payload {
                 let былПрежний = local.payload
                 local.apply(merged)
-                if !context.persist(otherwise: { local.apply(былПрежний) }) {
+                if !записать(context, otherwise: { local.apply(былПрежний) }) {
                     log.error("общий дневник: слияние схемы не записалось")
                 }
             }
@@ -1232,7 +1448,7 @@ enum SharedDiaryInbox {
             свежая.apply(payload)
             свежая.dog = dog
             context.insert(свежая)
-            guard context.persist(otherwise: { context.delete(свежая) }) else {
+            guard записать(context, otherwise: { context.delete(свежая) }) else {
                 log.error("общий дневник: схема не записалась")
                 return false
             }
@@ -1266,7 +1482,10 @@ enum SharedDiaryInbox {
             связали.append(доза)
         }
         guard !связали.isEmpty else { return }
-        if !context.persist(otherwise: { связали.forEach { $0.medication = nil } }) {
+        // Копия в `let`: откат теперь может уехать в конец партии,
+        // и держать он обязан тот состав, что связали здесь.
+        let связанные = связали
+        if !записать(context, otherwise: { связанные.forEach { $0.medication = nil } }) {
             log.error("общий дневник: связь доз со схемой не записалась")
         }
     }
@@ -1385,6 +1604,9 @@ enum SharedDiaryInbox {
     @discardableResult
     static func accept(_ payload: DosePayload, medication: Medication?, context: ModelContext) -> Bool {
         let id = payload.id
+        // То же, что у схемы: отметка приехала — в конце страницы
+        // спросим ту дозу, которая легла у нас после слияния.
+        кСверке(доза: id, context: context)
         let existing = try? context.fetch(
             FetchDescriptor<DoseRecord>(predicate: #Predicate { $0.id == id })
         ).first
@@ -1406,7 +1628,7 @@ enum SharedDiaryInbox {
                 dose.awaitedMedicationName = payload.medicationName
             }
             context.insert(dose)
-            guard context.persist(otherwise: { context.delete(dose) }) else {
+            guard записать(context, otherwise: { context.delete(dose) }) else {
                 log.error("общий дневник: доза не записалась")
                 return false
             }
@@ -1427,11 +1649,11 @@ enum SharedDiaryInbox {
         if merged != local.payload {
             let былПрежний = local.payload
             local.apply(merged)
-            if !context.persist(otherwise: { local.apply(былПрежний) }) {
+            if !записать(context, otherwise: { local.apply(былПрежний) }) {
                 log.error("общий дневник: слияние дозы не записалось")
             }
         } else if linked {
-            if !context.persist(otherwise: { local.medication = nil }) {
+            if !записать(context, otherwise: { local.medication = nil }) {
                 log.error("общий дневник: связь дозы с препаратом не записалась")
             }
         }

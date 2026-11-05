@@ -254,13 +254,23 @@ struct DogNameSubstitutionTests {
             let корневой = Self.корень.appendingPathComponent(каталог)
             guard let обходчик = fm.enumerator(at: корневой,
                                                includingPropertiesForKeys: nil) else { continue }
+            // Глубина основания — чтобы собрать относительное имя счётом
+            // компонентов, а не срезкой строки. Замер 30.10.2026:
+            // `resolvingSymlinksInPath()` делает case-folding кириллицы
+            // («ПозвалиВСемью» → «ПозваливСемью»), и собранное им имя
+            // указывает на файл, которого нет. Здесь это не роняло
+            // прогон — читаем-то по `url`, — но отправляло человека
+            // искать несуществующий путь по отчёту сторожа.
+            // Разбор — `ИменаФайловПриОбходеTests`.
+            let глубина = корневой.resolvingSymlinksInPath().pathComponents.count
             for случай in обходчик {
                 guard let url = случай as? URL, url.pathExtension == "swift" else { continue }
-                let путь = url.resolvingSymlinksInPath().path
-                if путь.contains("/Generated/") { continue }
+                if url.pathComponents.contains("Generated") { continue }
                 guard let текст = try? String(contentsOf: url, encoding: .utf8) else { continue }
                 файлов += 1
-                let имя = путь.replacingOccurrences(of: Self.корень.path + "/", with: "")
+                let длина = url.resolvingSymlinksInPath().pathComponents.count - глубина
+                let имя = ([каталог] + url.pathComponents.suffix(max(0, длина)))
+                    .joined(separator: "/")
                 // Пометки ищем в ИСХОДНОМ тексте: `безКомментариев`
                 // их как раз и срезает.
                 let сКомментариями = текст.components(separatedBy: .newlines)

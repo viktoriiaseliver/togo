@@ -5,11 +5,21 @@ import SwiftData
 /// экран и сам выключается. Не место, куда надо ходить.
 struct TripSetupScreen: View {
     let dog: Dog?
+    /// Заведённая поездка — правим её, а не заводим новую.
+    ///
+    /// **До 29.10.2026 поездку можно было завести и убрать, но не
+    /// поправить.** Опечатка в «куда» или сдвиг даты на день значили
+    /// «убрать и завести заново», и вместе с поездкой уходило то,
+    /// чего форма не спрашивает (`packedItems`, `participants`).
+    /// Экран один на оба действия — как у собаки (`DogEditorScreen`):
+    /// человеку не надо гадать, где правится то, что он завёл здесь.
+    var trip: Trip? = nil
 
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Environment(AppState.self) private var appState
-    @Query private var trips: [Trip]
+    // `@Query` всех поездок здесь снят 29.10.2026: читателя у него
+    // не было ни одного, а запрос шёл на каждой перерисовке формы.
 
     @State private var destination = ""
     @State private var start = Date()
@@ -17,6 +27,12 @@ struct TripSetupScreen: View {
     @State private var transport: TransportKind = .car
     @State private var hours = 5.0
     @State private var lodging = ""
+    /// Час выезда. До 29.10.2026 его не спрашивали вовсе: модель
+    /// хранила `departureMinuteOfDay = 9 * 60`, и все окна «до выезда»
+    /// («−2 ч последняя еда», «−20 м выход») считались от девяти утра —
+    /// при выезде в шесть экран звал кормить в семь.
+    @State private var выезд = Calendar.current.date(minuteOfDay: 9 * 60, on: Date())
+    @State private var загружено = false
 
     /// Кличка в шапке, а не вторым заголовком над ней.
     ///
@@ -79,6 +95,9 @@ struct TripSetupScreen: View {
                 DatePicker("По", selection: $end, in: start..., displayedComponents: .date)
                     .frame(minHeight: Token.Size.tapTarget)
                 TGDivider()
+                DatePicker("Выезжаем в", selection: $выезд, displayedComponents: .hourAndMinute)
+                    .frame(minHeight: Token.Size.tapTarget)
+                TGDivider()
                 LabeledField(label: "Где живём") {
                     TextField("отель, с собакой можно", text: $lodging)
                 }
@@ -121,17 +140,46 @@ struct TripSetupScreen: View {
             // в обе стороны сразу. Названо открытым пунктом, а строка
             // ставится на ту величину, что в воротах СЕЙЧАС.
             VStack(spacing: Token.Space.s8) {
-                if destination.isEmpty {
+                if куда.isEmpty {
                     Text("Напиши, откуда и куда — по этому собираются вещи")
                         .textStyle(AppFont.caption.color(Token.Status.overdueText))
                         .wraps()
                 }
-                TGButton(title: "Включить режим", systemImage: "car", isEnabled: !destination.isEmpty) { save() }
+                if trip == nil {
+                    TGButton(title: "Включить режим", systemImage: "car", isEnabled: !куда.isEmpty) { save() }
+                } else {
+                    TGButton(title: "Сохранить", isEnabled: !куда.isEmpty) { save() }
+                }
             }
         }
         .navigationTitle("Поездка")
         .cinemaScreen(экран: .sub("trip"))
         .usageScreen(.trip)
+        .task { загрузить() }
+    }
+
+    private func загрузить() {
+        guard !загружено else { return }
+        загружено = true
+        guard let trip else { return }
+        destination = trip.destination
+        start = trip.startDate
+        end = max(trip.endDate, trip.startDate)
+        transport = trip.transport
+        // Ноль у поездки, заведённой не на машине, — «не спрашивали»;
+        // шаговик начинается с единицы, и ноль ему не показать.
+        hours = trip.travelHours > 0 ? trip.travelHours : 5
+        lodging = trip.lodging
+        выезд = Calendar.current.date(minuteOfDay: trip.departureMinuteOfDay, on: Date())
+    }
+
+    /// «Куда» без пробелов по краям: поле из одних пробелов проходило
+    /// ворота `isEmpty` и заводило поездку без названия.
+    private var куда: String { destination.trimmingCharacters(in: .whitespacesAndNewlines) }
+
+    private var минутаВыезда: Int {
+        let c = Calendar.current.dateComponents([.hour, .minute], from: выезд)
+        return (c.hour ?? 9) * 60 + (c.minute ?? 0)
     }
 
     private var dayCount: Int {
@@ -140,18 +188,28 @@ struct TripSetupScreen: View {
 
     private func save() {
         guard let dog else { return }
+        // Право спрашивается и у записи, а не только у двери на вкладке:
+        // форма живёт дольше кадра, а право владелец может снять
+        // в «Семье», пока она открыта (тот же разбор — `WeightScreen.save`).
+        guard appState.can(.editProfile) else {
+            Haptics.warning()
+            appState.showFailure(Permission.editProfile.отказ)
+            return
+        }
+        if let trip { return сохранитьПравку(trip) }
         // **Якорь в полдень, а не «как отдал пикер».** `DatePicker`
         // с `displayedComponents: .date` сохраняет ВРЕМЯ СУТОК у
         // привязанного значения, и в базу уезжает момент, нередко
         // близкий к полуночи. У семьи западнее владельца такой момент
         // попадает в предыдущие сутки, и первый день поездки читается
         // как второй. Замер по поясам — в `CalendarDay`.
-        let trip = Trip(destination: destination,
+        let trip = Trip(destination: куда,
                         startDate: CalendarDay.anchored(start),
                         endDate: CalendarDay.anchored(end),
                         transport: transport)
         trip.travelHours = hours
         trip.lodging = lodging
+        trip.departureMinuteOfDay = минутаВыезда
         trip.dog = dog
         context.insert(trip)
         // Здесь была одна вставка без сохранения и сразу «успех»:
@@ -161,6 +219,46 @@ struct TripSetupScreen: View {
             appState.showFailure(String(localized: "Поездка не сохранилась · нажми ещё раз"))
             return
         }
+        Task { await НапоминанияПоездки.обновить(trip) }
+        Haptics.success()
+        dismiss()
+    }
+
+    /// Правка заведённой поездки. Снимок до правки и откат — как
+    /// у соседних редакторов: экран, закрывшийся после несохранённой
+    /// правки, обещал бы режим не на те даты.
+    private func сохранитьПравку(_ trip: Trip) {
+        let былоКуда = trip.destination
+        let былоНачало = trip.startDate
+        let былКонец = trip.endDate
+        let былТранспорт = trip.transportRaw
+        let былиЧасы = trip.travelHours
+        let былоЖильё = trip.lodging
+        let былВыезд = trip.departureMinuteOfDay
+
+        trip.destination = куда
+        trip.departureMinuteOfDay = минутаВыезда
+        // Якорь в полдень — та же причина, что у заведения выше.
+        trip.startDate = CalendarDay.anchored(start)
+        trip.endDate = CalendarDay.anchored(end)
+        trip.transport = transport
+        trip.travelHours = hours
+        trip.lodging = lodging
+
+        guard context.persist(otherwise: {
+            trip.destination = былоКуда
+            trip.startDate = былоНачало
+            trip.endDate = былКонец
+            trip.transportRaw = былТранспорт
+            trip.travelHours = былиЧасы
+            trip.lodging = былоЖильё
+            trip.departureMinuteOfDay = былВыезд
+        }) else {
+            Haptics.warning()
+            appState.showFailure(String(localized: "Поездка не сохранилась · нажми ещё раз"))
+            return
+        }
+        Task { await НапоминанияПоездки.обновить(trip) }
         Haptics.success()
         dismiss()
     }
@@ -237,7 +335,7 @@ struct PackingListCard: View {
             }
             TGExplainer(text: "Корм отсыпать в зип-пакеты по дням и подписать. Один пакет — в ручную кладь: если чемодан уедет не туда, у собаки останется ужин.")
             TGDivider()
-            Text("Числа посчитаны по нему, а не по общим таблицам. Дозировки и всё медицинское сверь с врачом — приложение только считает и напоминает.")
+            Text("Числа посчитаны по этой собаке, а не по общим таблицам. Дозировки и всё медицинское сверь с врачом — приложение только считает и напоминает.")
                 .textStyle(AppFont.caption)
         }
     }
@@ -294,7 +392,11 @@ struct PackingListCard: View {
                  : String(localized: "сначала запиши дневную норму в режиме питания — из неё считается всё")),
             (String(localized: "Вода в дорогу"),
              Fmt.litres(water),
-             String(localized: "его норма ≈ \(dog.waterNormMl.formatted()) мл в день, в жару больше · складная поилка")),
+             // «его норма» — мужской род у любой собаки (аудит 29.10.2026).
+             РодСобаки.форма(dog,
+                 он: String(localized: "его норма ≈ \(dog.waterNormMl.formatted()) мл в день, в жару больше · складная поилка"),
+                 она: String(localized: "её норма ≈ \(dog.waterNormMl.formatted()) мл в день, в жару больше · складная поилка"),
+                 нейтрально: { String(localized: "норма ≈ \(dog.waterNormMl.formatted()) мл в день, в жару больше · складная поилка") })),
             (String(localized: "Пакеты"),
              String(localized: "\((days * 4).formatted()) шт"),
              String(localized: "по четыре на день, с запасом")),
@@ -307,6 +409,8 @@ struct TripTodayBlock: View {
     let trip: Trip
     let dog: Dog?
     let now: Date
+
+    @Environment(\.openURL) private var openURL
 
     var body: some View {
         TGCard {
@@ -329,11 +433,36 @@ struct TripTodayBlock: View {
             // выход перед машиной 08:40» — семь часов после выезда,
             // предлагая сделать то, чего уже не сделать.
             if now < departure {
-                departureWindows
+                окнаДороги(от: departure, заголовок: "до выезда")
             } else {
+                // Обратная дорога — над советами на месте, а не вместо
+                // них: в последний день ветклиника рядом нужна так же.
+                if let обратно = обратныйВыезд, now < обратно {
+                    окнаДороги(от: обратно, заголовок: "обратная дорога",
+                              оговорка: "если едете обратно в то же время")
+                    TGDivider()
+                }
                 onSiteAdvice
             }
         }
+    }
+
+    /// Обратный выезд — **догадка, и она названа догадкой** (29.10.2026).
+    ///
+    /// Аудит: у последнего дня поездки не было ни одного окна «до дороги»,
+    /// хотя последняя еда и выход перед машиной нужны и на обратном пути.
+    /// Часа возвращения поездка не спрашивает, а новое поле — это смена
+    /// формы схемы, которой без отдельного решения не делаем. Поэтому
+    /// берётся час ВЫЕЗДА на дне возвращения, и блок подписан «если
+    /// едете обратно в то же время»: окна посчитаны от часа, которого
+    /// человек не называл, и сказать это обязан сам блок, а не разбор.
+    ///
+    /// Только у поездки длиннее дня: однодневная уезжает и возвращается
+    /// в один день, и обратная дорога «в то же время» совпала бы
+    /// с выездом — два одинаковых списка подряд.
+    private var обратныйВыезд: Date? {
+        guard trip.dayCount() > 1, trip.dayNumber(on: now) == trip.dayCount() else { return nil }
+        return Calendar.current.date(minuteOfDay: trip.departureMinuteOfDay, on: trip.endDate)
     }
 
     /// Момент выезда: минута выезда на дне отъезда.
@@ -348,10 +477,13 @@ struct TripTodayBlock: View {
         Calendar.current.date(minuteOfDay: trip.departureMinuteOfDay, on: trip.startDate)
     }
 
-    private var departureWindows: some View {
+    /// Окна перед дорогой — туда или обратно. Одна форма на оба пути:
+    /// вторая копия списка отстала бы от первой молча.
+    private func окнаДороги(от выезд: Date, заголовок: LocalizedStringKey,
+                            оговорка: LocalizedStringKey? = nil) -> some View {
         VStack(alignment: .leading, spacing: Token.Space.s8) {
-            TGSectionHeader(title: "до выезда")
-            ForEach(trip.transport.windows(before: departure), id: \.0) { offset, at, title in
+            TGSectionHeader(title: заголовок, subtitle: оговорка)
+            ForEach(trip.transport.windows(before: выезд), id: \.0) { offset, at, title in
                 HStack(spacing: Token.Space.s12) {
                     Text(offset)
                         .textStyle(AppFont.numeric(13, weight: .medium))
@@ -363,19 +495,130 @@ struct TripTodayBlock: View {
                 }
                 .frame(minHeight: 38)
             }
+            дозыВДороге(выезд: выезд)
             TGExplainer(text: .готовая(trip.transport.windowsDisclaimer))
         }
+    }
+
+    /// Сведение окон с приёмами — то, что `windowsDisclaimer` обещал
+    /// («приложение сведёт их с приёмами и покажет, где конфликт»)
+    /// и чего не делал никто до 29.10.2026. Правило — `TripPlan`.
+    @ViewBuilder
+    private func дозыВДороге(выезд: Date) -> some View {
+        if let dog, dog.isOnTreatment {
+            let окна = trip.transport.windows(before: выезд).map(\.1)
+            let дозы = TripPlan.дозыВДороге(
+                dog.medications.map { ($0.name, $0.times, $0.isPaused) },
+                выезд: выезд, вДороге: max(trip.travelHours, 1),
+                началоОкон: окна.min() ?? выезд)
+            ForEach(дозы, id: \.когда) { доза in
+                TGIconRow(symbol: "pills",
+                          title: .готовая(String(localized: "\(доза.препарат) в \(Fmt.clock(доза.когда))")),
+                          detail: доза.вПути
+                              ? "Доза в дороге — возьми её в ручную кладь и спланируй остановку на это время."
+                              : "Доза в окне перед выездом — проверь с врачом, можно ли с едой или без.",
+                          tint: Token.Status.waitingText)
+            }
+        }
+    }
+
+    private static var места: [(название: String, запрос: String, символ: String)] {
+        [(String(localized: "Ветклиника рядом"), String(localized: "ветеринарная клиника"), "cross.case"),
+         (String(localized: "Зоомагазин рядом"), String(localized: "зоомагазин"), "bag"),
+         (String(localized: "Где погулять с собакой"), String(localized: "площадка для выгула собак"), "tree")]
+    }
+
+    private static func карта(_ запрос: String) -> URL? {
+        var c = URLComponents(string: "https://maps.apple.com/")
+        c?.queryItems = [URLQueryItem(name: "q", value: запрос)]
+        return c?.url
     }
 
     private var onSiteAdvice: some View {
         VStack(alignment: .leading, spacing: Token.Space.s8) {
             TGSectionHeader(title: "в незнакомом городе")
-            Text("Три места, а не карта с сотней точек: нужен один ответ на вопрос «куда сейчас».")
-                .textStyle(AppFont.caption)
+            // «Три места» были обещанием без мест (аудит 29.10.2026):
+            // строка говорила «три места, а не карта», а ни одного
+            // места не давала. Теперь — три вопроса «куда сейчас»,
+            // каждый открывает поиск рядом в «Картах».
+            ForEach(Self.места, id: \.запрос) { место in
+                Button {
+                    if let url = Self.карта(место.запрос) { openURL(url) }
+                } label: {
+                    TGListRow(title: .готовая(место.название), systemImage: место.символ)
+                        .frame(minHeight: Token.Size.tapTarget)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+            }
             if let dog {
                 Text("Норма воды ≈ \(dog.waterNormMl) мл в день. В жару смотри на эту строку первым делом: смена воды и корма чаще всего даёт сбой именно тут.")
                     .textStyle(AppFont.caption)
             }
         }
+    }
+}
+
+/// Остановка в дороге — одним тапом.
+///
+/// Обещано экраном поездки («приложение запишет остановку одним
+/// тапом») и до 29.10.2026 не делалось: «Остановка» на «Сегодня»
+/// открывала таймер прогулки, а `LogKind.travelStop` в ленту не ложился
+/// ни разу. Здесь — одно касание по исходу, без формы: человек стоит
+/// на обочине с поводком в руке.
+///
+/// Исход у остановки тот же, что у выхода (`OutingOutcome`): её читает
+/// `ToiletClock`, и «сколько с туалета» в дороге считается от неё.
+/// У кобеля мочи не спрашиваем — остановка сама и есть туалет.
+struct TripStopSheet: View {
+    let dog: Dog?
+
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var context
+    @Environment(AppState.self) private var appState
+    @State private var долгая = false
+
+    private var варианты: [(OutingOutcome?, String)] {
+        dog?.sex == .male
+            ? [(.both, String(localized: "Покакал")),
+               (nil, String(localized: "Просто размялись"))]
+            : [(.urine, OutingOutcome.urine.title),
+               (.stool, OutingOutcome.stool.title),
+               (.both, OutingOutcome.both.title),
+               (OutingOutcome.none, String(localized: "Просто размялись"))]
+    }
+
+    var body: some View {
+        TGSheet(title: "Остановка", subtitle: .готовая(Fmt.clock(Date()))) {
+            VStack(spacing: Token.Space.s8) {
+                ForEach(Array(варианты.enumerated()), id: \.offset) { _, вариант in
+                    Button { записать(вариант.0) } label: {
+                        Text(вариант.1)
+                            .textStyle(AppFont.body)
+                            .foregroundStyle(Token.Ink.primary)
+                            .frame(maxWidth: .infinity, minHeight: Token.Size.controlL)
+                            .background(Token.Surface.card,
+                                        in: RoundedRectangle(cornerRadius: Token.Radius.tile, style: .continuous))
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            TGButton(title: "Долгая прогулка с таймером", variant: .secondary,
+                     size: .medium, systemImage: "figure.walk") { долгая = true }
+        }
+        .presentationDetents([.medium, .large])
+        .sheet(isPresented: $долгая, onDismiss: { dismiss() }) {
+            WalkModeScreen(dog: dog)
+        }
+    }
+
+    private func записать(_ исход: OutingOutcome?) {
+        guard let dog else { dismiss(); return }
+        EventLog(context: context, appState: appState)
+            .record(.travelStop, dog: dog,
+                    confirmation: String(localized: "Записано · остановка")) { event in
+                event.outcome = исход
+            }
+        dismiss()
     }
 }

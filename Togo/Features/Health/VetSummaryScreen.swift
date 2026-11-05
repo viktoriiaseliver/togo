@@ -16,6 +16,23 @@ struct VetSummaryScreen: View {
     @State private var to = Date()
     @State private var showsNotes = false
     @State private var isPresenting = false
+    /// Начало периода уже поставлено от прошлого приёма — один раз,
+    /// иначе каждое появление экрана затирало бы выбранное в пикере.
+    @State private var началоПоставлено = false
+
+    /// Последний приём, бывший до сегодня. Пусто — приёмов не записано,
+    /// и сравнивать «с прошлым приёмом» не с чем.
+    private var прошлыйПриём: VetVisit? {
+        dog?.vetVisits.filter { $0.date <= Date() }.max { $0.date < $1.date }
+    }
+
+    /// Период начинается ровно с прошлого приёма — тогда и только тогда
+    /// дельта честно называется «с прошлого приёма».
+    private var отПриёма: VetVisit? {
+        guard let приём = прошлыйПриём,
+              Calendar.current.isDate(приём.date, inSameDayAs: from) else { return nil }
+        return приём
+    }
 
     private var doses: [DoseRecord] {
         dog?.medications.flatMap(\.doses) ?? []
@@ -25,17 +42,28 @@ struct VetSummaryScreen: View {
         (dog?.weights ?? []).map { (date: $0.date, kg: $0.kg) }
     }
 
+    /// Период целыми сутками: пикер несёт час открытия экрана,
+    /// и без этого утро первого дня и вечер последнего выпадали
+    /// из сводки (29.10.2026, `VetSummaryBuilder.целыеСутки`).
+    private var период: (from: Date, to: Date) {
+        VetSummaryBuilder.целыеСутки(с: from, по: to)
+    }
+
     private var summary: VetSummary {
         VetSummaryBuilder.build(events: dog?.events ?? [], doses: doses,
-                                weights: weights, from: from, to: to)
+                                weights: weights, from: период.from, to: период.to)
     }
 
     /// Тот же по длине период до текущего — чтобы было с чем сравнивать.
+    ///
+    /// Конец — миг до начала текущего, а не само начало: иначе запись
+    /// ровно в полночь первого дня считалась бы в обоих периодах.
     private var previous: VetSummary {
-        let span = to.timeIntervalSince(from)
+        let span = период.to.timeIntervalSince(период.from)
         return VetSummaryBuilder.build(events: dog?.events ?? [], doses: doses,
                                        weights: weights,
-                                       from: from.addingTimeInterval(-span), to: from)
+                                       from: период.from.addingTimeInterval(-span),
+                                       to: период.from.addingTimeInterval(-0.001))
     }
 
     var body: some View {
@@ -53,15 +81,25 @@ struct VetSummaryScreen: View {
             // хендофф требует «сначала цифры, потом дельта словами»,
             // а бланки — это документы, которые врач читает после
             // того, как понял картину.
-            MedicalRecordCards(dog: dog, from: from, to: to)
+            MedicalRecordCards(dog: dog, from: период.from, to: период.to)
             notesCard
             shareCard
         }
         .navigationTitle("Сводка")
-        .cinemaScreen(экран: .sub("visit"))
+        .cinemaScreen(экран: ScreenKey.vetSummary)
         .usageScreen(.vetSummary)
         .fullScreenCover(isPresented: $isPresenting) {
             VetSummaryPresentation(summary: summary, delta: deltaLines, dog: dog)
+        }
+        // Сравнение «с прошлого приёма» — решение Виктории 29.10.2026.
+        // До этого период по умолчанию был «месяц назад», а заголовок
+        // дельты обещал «с прошлого приёма»: сравнивалось с прошлым
+        // месяцем той же длины, а не с визитом. Теперь начало периода
+        // по умолчанию — день прошлого приёма; человек может сдвинуть.
+        .task {
+            guard !началоПоставлено else { return }
+            началоПоставлено = true
+            if let приём = прошлыйПриём { from = приём.date }
         }
     }
 
@@ -133,7 +171,15 @@ struct VetSummaryScreen: View {
     private var deltaCard: some View {
         if !deltaLines.isEmpty {
             TGCard {
-                TGSectionHeader(title: "что изменилось с прошлого приёма")
+                // Заголовок называет, с чем сравниваем НА САМОМ ДЕЛЕ: период
+                // с прошлого приёма — против такого же до него; иначе —
+                // против прошлого периода той же длины.
+                if let приём = отПриёма {
+                    TGSectionHeader(title: .готовая(String(localized: "что изменилось с прошлого приёма · \(Fmt.shortDay(приём.date))")),
+                                    subtitle: "сравнение с таким же сроком до приёма")
+                } else {
+                    TGSectionHeader(title: "что изменилось против прошлого такого же периода")
+                }
                 ForEach(deltaLines, id: \.self) { line in
                     Text(line).textStyle(AppFont.body).wraps()
                 }
@@ -151,8 +197,12 @@ struct VetSummaryScreen: View {
                 }
             }
             if showsNotes {
+                // Целыми сутками, как вся сводка выше (29.10.2026): с голыми
+                // `from`/`to` заметки утра первого дня и вечера последнего
+                // выпадали, хотя период на экране стоял целым.
+                let период = self.период
                 let notes = Diary.active(dog?.events ?? [])
-                    .filter { $0.kind == .note && $0.date >= from && $0.date <= to }
+                    .filter { $0.kind == .note && $0.date >= период.from && $0.date <= период.to }
                 if notes.isEmpty {
                     TGExplainer(text: "Заметок за период нет.")
                 } else {
@@ -181,7 +231,7 @@ struct VetSummaryScreen: View {
             ShareLink(
                 item: CSVFile(name: "togo-svodka.csv",
                               text: Exporter.csv(events: Diary.active(dog?.events ?? [])
-                                  .filter { $0.date >= from && $0.date <= to })),
+                                  .filter { $0.date >= период.from && $0.date <= период.to })),
                 preview: SharePreview("Сводка Togo · CSV")
             ) {
                 TGListRow(title: "Выгрузить CSV", value: "без подписки",
@@ -279,10 +329,11 @@ struct VetSummaryPresentation: View {
             ForEach(delta, id: \.self) { line in
                 Text(line).textStyle(AppFont.body).wraps()
             }
-        }
-        .safeAreaInset(edge: .bottom) {
+        } bottom: {
+            // В слоте каркаса, а не своим `safeAreaInset`: тот стоял
+            // без подложки и с полями 18 со всех сторон — строки сводки
+            // просвечивали в зазоре над кнопкой при прокрутке.
             TGButton(title: "Закрыть", variant: .secondary) { dismiss() }
-                .padding(Token.Spacing.screenPadding)
         }
     }
 }

@@ -54,12 +54,34 @@ struct LabChartScreen: View {
     @Query private var медикаменты: [Medication]
 
     @State private var показатель: String?
+
+    /// `начальныйПоказатель` — с какого показателя открыться
+    /// (29.10.2026): карточка показателя на «Здоровье» ведёт сразу
+    /// на свой график, а не на последний сданный. Без него — как
+    /// раньше, первый из `доступныеПоказатели`.
+    init(dog: Dog?, начальныйПоказатель: String? = nil) {
+        self.dog = dog
+        _показатель = State(initialValue: начальныйПоказатель)
+    }
     @State private var период: Период = .всё
     @State private var выбраннаяТочка: Точка?
+    /// Единица ряда, выбранная человеком. Пусто — единица последнего
+    /// анализа (`выбраннаяЕдиница`).
+    @State private var единица: String?
 
     enum Период: String, CaseIterable, Identifiable {
         case полгода = "6 мес", год = "год", всё = "всё"
         var id: String { rawValue }
+        /// Подпись — ключом каталога, а не `rawValue` дословно
+        /// (29.10.2026): `Text(verbatim:)` показывал «6 мес / год / всё»
+        /// по-русски на всех языках, хотя ключи переведены.
+        var подпись: LocalizedStringKey {
+            switch self {
+            case .полгода: "6 мес"
+            case .год: "год"
+            case .всё: "всё"
+            }
+        }
         var месяцев: Int? {
             switch self {
             case .полгода: 6
@@ -86,10 +108,16 @@ struct LabChartScreen: View {
     /// Показатели, у которых есть хотя бы одно ЧИСЛО. Текстовые
     /// результаты (бактериология) в график не идут — им нечего рисовать,
     /// и это не пропуск, а природа величины.
-    private var доступныеПоказатели: [String] {
+    private var доступныеПоказатели: [String] { Self.показатели(всеАнализы) }
+
+    /// Тот же список для «Здоровья» — один источник, а не копия:
+    /// кандидаты в карточки показателей (`ПоказателиНаЗдоровье`)
+    /// обязаны совпадать с тем, что умеет рисовать этот экран.
+    /// Свежие первыми; имя — без пробелов по краям.
+    static func показатели(_ анализы: [LabResult]) -> [String] {
         var видели = Set<String>()
         var порядок: [String] = []
-        for анализ in всеАнализы.sorted(by: { $0.sampledOn > $1.sampledOn }) {
+        for анализ in анализы.sorted(by: { $0.sampledOn > $1.sampledOn }) {
             guard анализ.value != nil else { continue }
             let имя = анализ.indicator.trimmingCharacters(in: .whitespaces)
             guard !имя.isEmpty, !видели.contains(имя) else { continue }
@@ -99,7 +127,47 @@ struct LabChartScreen: View {
         return порядок
     }
 
-    private var выбранный: String? { показатель ?? доступныеПоказатели.first }
+    /// Выбранный — только из тех, что есть: начальный показатель
+    /// мог исчезнуть (строку удалили на другом телефоне), и тогда
+    /// экран открывается на первом, а не на пустом графике.
+    private var выбранный: String? {
+        let есть = доступныеПоказатели
+        if let показатель, есть.contains(показатель) { return показатель }
+        return есть.first
+    }
+
+    /// Единицы выбранного показателя, свежая первой.
+    ///
+    /// **Ряд делится по единице — решение Виктории 29.10.2026.** Две
+    /// лаборатории дают один показатель в разных единицах (нмоль/л
+    /// и мкг/дл), и на одной линии `16` и `1,3` читались падением
+    /// в двенадцать раз, которого не было. Пересчёт между единицами
+    /// приложение не делает: множитель у каждого вещества свой, и
+    /// выдуманный коэффициент в медицинском показе хуже двух графиков.
+    /// Сравнение «без единицы» с «нмоль/л» тоже не склеивается:
+    /// пустая единица — своя группа.
+    private var единицыПоказателя: [String] {
+        guard let выбранный else { return [] }
+        var видели = Set<String>()
+        var порядок: [String] = []
+        for анализ in всеАнализы.sorted(by: { $0.sampledOn > $1.sampledOn })
+        where анализ.value != nil && анализ.indicator.trimmingCharacters(in: .whitespaces) == выбранный {
+            let е = Self.ключЕдиницы(анализ.unit)
+            if видели.insert(е).inserted { порядок.append(е) }
+        }
+        return порядок
+    }
+
+    /// Единица без пробелов и регистра: «нмоль/л» и «Нмоль/л » — одна.
+    static func ключЕдиницы(_ единица: String) -> String {
+        единица.trimmingCharacters(in: .whitespaces).lowercased()
+    }
+
+    private var выбраннаяЕдиница: String? {
+        let есть = единицыПоказателя
+        if let единица, есть.contains(единица) { return единица }
+        return есть.first
+    }
 
     /// Время забора относительно последней дозы — **из домена**.
     ///
@@ -114,13 +182,24 @@ struct LabChartScreen: View {
                                    of: dog, among: медикаменты)
     }
 
-    private var точки: [Точка] {
+    /// Точки выбранного показателя за выбранный период.
+    ///
+    /// **Функция, а не вычисляемое свойство, и зовётся ОДИН раз
+    /// в `body`** (29.10.2026). Свойством её читали девять мест одной
+    /// перерисовки — счёт, полоса, линия, столбики, подпись оси,
+    /// заголовок, таблица, проверка сравнимости, пустой случай, —
+    /// и каждое заново фильтровало анализы и звало
+    /// `DoseScheduler.sampleTiming` на каждую точку. Выбор точки
+    /// в таблице платил за девять сборок графика.
+    private func собратьТочки() -> [Точка] {
         guard let выбранный else { return [] }
         let порог: Date? = период.месяцев.flatMap {
             Calendar.current.date(byAdding: .month, value: -$0, to: Date())
         }
+        let своя = выбраннаяЕдиница
         return всеАнализы
             .filter { $0.indicator.trimmingCharacters(in: .whitespaces) == выбранный }
+            .filter { своя == nil || Self.ключЕдиницы($0.unit) == своя }
             .filter { порог == nil || $0.sampledOn >= порог! }
             .compactMap { анализ -> Точка? in
                 guard let значение = анализ.value else { return nil }
@@ -136,17 +215,29 @@ struct LabChartScreen: View {
             .sorted { $0.дата < $1.дата }
     }
 
-    /// Полоса нормы: берётся у последней точки, у которой норма есть.
-    /// Если нормы нет ни у одной — полосы нет, **и это не повод
+    /// Полоса нормы — только когда она ОДНА у всех точек с нормой.
+    ///
+    /// До 29.10.2026 полоса бралась у последней точки и прикладывалась
+    /// ко всем: норма одной лаборатории ложилась под точки другой,
+    /// и точка «в норме» по своему бланку читалась выходом за полосу.
+    /// Нормы на бланках разные — полосы нет, и это сказано словом
+    /// (`нормыРазные`); своя норма каждой точки — в её карточке.
+    /// Нормы нет ни у одной — полосы нет, **и это не повод
     /// не рисовать точки**: так записано у `bandBounds`.
     /// Ярлыки кортежа взяты у `bandBounds` (`low`/`high`), а не свои:
     /// компилятор не приводит `(low:high:)` к `(низ:верх:)`, и переводить
     /// их здесь значило бы заводить второе имя одной величины.
-    private var полоса: (low: Double?, high: Double?)? {
-        for точка in точки.reversed() {
-            if let границы = LabNorm.bandBounds(точка.норма) { return границы }
-        }
-        return nil
+    private func полоса(_ точки: [Точка]) -> (low: Double?, high: Double?)? {
+        let нормы = точки.map(\.норма).filter { LabNorm.bandBounds($0) != nil }
+        guard let первая = нормы.first, нормы.allSatisfy({ $0 == первая }) else { return nil }
+        return LabNorm.bandBounds(первая)
+    }
+
+    /// У точек с нормой нормы не совпадают — полосы поэтому нет.
+    private func нормыРазные(_ точки: [Точка]) -> Bool {
+        let нормы = точки.map(\.норма).filter { LabNorm.bandBounds($0) != nil }
+        guard let первая = нормы.first else { return false }
+        return !нормы.allSatisfy { $0 == первая }
     }
 
     var body: some View {
@@ -159,9 +250,10 @@ struct LabChartScreen: View {
                     message: "График появится, когда будет хотя бы один анализ с числом. Бактериология и описания в график не идут — им нечего рисовать."
                 )
             } else {
+                let точки = собратьТочки()
                 выборПоказателя
-                if точки.count < 2 { нечегоСравнивать } else { график }
-                таблица
+                if точки.count < 2 { нечегоСравнивать(точки) } else { график(точки) }
+                таблица(точки)
             }
         }
         .navigationTitle("График")
@@ -262,10 +354,6 @@ struct LabChartScreen: View {
         }
     }
 
-    /// Есть ли хоть у одной точки доза числом.
-    private var дозаЕстьХотьГдеТо: Bool {
-        точки.contains { дозаЧислом(на: $0.дата) != nil }
-    }
 
     /// Вес В ТОТ ЖЕ ДЕНЬ, а не ближайший.
     ///
@@ -296,8 +384,24 @@ struct LabChartScreen: View {
                 .frame(minHeight: Token.Size.tapTarget)
                 TGDivider()
             }
+            // Единиц у показателя несколько — выбор, а не смесь на одной
+            // линии (см. `единицыПоказателя`).
+            if единицыПоказателя.count > 1 {
+                Picker("Единица", selection: Binding(
+                    get: { выбраннаяЕдиница ?? "" },
+                    set: { единица = $0 }
+                )) {
+                    ForEach(единицыПоказателя, id: \.self) { е in
+                        if е.isEmpty { Text("без единицы").tag(е) } else { Text(verbatim: е).tag(е) }
+                    }
+                }
+                .pickerStyle(.menu)
+                .frame(minHeight: Token.Size.tapTarget)
+                TGExplainer(text: "Анализы в разных единицах — из разных лабораторий. На одной линии их не сравнить, поэтому каждая единица — свой график.")
+                TGDivider()
+            }
             Picker("Период", selection: $период) {
-                ForEach(Период.allCases) { Text(verbatim: $0.rawValue).tag($0) }
+                ForEach(Период.allCases) { Text($0.подпись).tag($0) }
             }
             .pickerStyle(.segmented)
         }
@@ -305,7 +409,7 @@ struct LabChartScreen: View {
 
     /// **Одна точка — не график.** Так и сказано словами, а не пустой
     /// областью: пустая область читается как «не загрузилось».
-    private var нечегоСравнивать: some View {
+    private func нечегоСравнивать(_ точки: [Точка]) -> some View {
         TGCard {
             TGSectionHeader(title: .готовая(выбранный ?? ""))
             Text("Сравнивать пока не с чем")
@@ -318,13 +422,19 @@ struct LabChartScreen: View {
 
     // MARK: График
 
-    private var график: some View {
-        TGCard {
-            TGSectionHeader(title: .готовая(заголовокГрафика))
+    private func график(_ точки: [Точка]) -> some View {
+        // Доза на дату точки — один раз на точку, а не трижды: её
+        // спрашивали проверка «есть ли хоть где-то», столбики и подпись
+        // оси, и каждый вопрос фильтровал все схемы базы.
+        let дозы: [UUID: Double] = Dictionary(
+            точки.compactMap { точка in дозаЧислом(на: точка.дата).map { (точка.id, $0) } },
+            uniquingKeysWith: { первая, _ in первая })
+        return TGCard {
+            TGSectionHeader(title: .готовая(заголовокГрафика(точки)))
             Chart {
                 // Полоса нормы — ФОНОМ и нейтралью. Рисуется первой,
                 // чтобы линия шла поверх неё.
-                if let полоса, let низ = полоса.low, let верх = полоса.high {
+                if let границы = полоса(точки), let низ = границы.low, let верх = границы.high {
                     RectangleMark(
                         yStart: .value("низ нормы", низ),
                         yEnd: .value("верх нормы", верх)
@@ -360,8 +470,11 @@ struct LabChartScreen: View {
             // поверхность той же правды.
             .accessibilityHidden(true)
 
-            if дозаЕстьХотьГдеТо { столбикиДозы }
+            if !дозы.isEmpty { столбикиДозы(точки, дозы: дозы) }
 
+            if нормыРазные(точки) {
+                TGExplainer(text: "Полосы нормы нет: на бланках этих анализов нормы разные. Норма каждого — в карточке точки.")
+            }
             легенда
         }
     }
@@ -395,13 +508,13 @@ struct LabChartScreen: View {
     /// Нет массы ни у одной точки — панели нет вовсе, и это честнее
     /// нулевых столбиков: ноль утверждал бы «дозы не было», а мы
     /// не знаем силу таблетки.
-    private var столбикиДозы: some View {
+    private func столбикиДозы(_ точки: [Точка], дозы: [UUID: Double]) -> some View {
         VStack(alignment: .leading, spacing: Token.Space.s4) {
             Text("Доза в сутки")
                 .textStyle(AppFont.caption.color(Token.Ink.secondary))
             Chart {
                 ForEach(точки) { точка in
-                    if let доза = дозаЧислом(на: точка.дата) {
+                    if let доза = дозы[точка.id] {
                         BarMark(
                             x: .value("дата", точка.дата),
                             y: .value("доза", доза)
@@ -416,22 +529,22 @@ struct LabChartScreen: View {
             .chartYAxis { AxisMarks(position: .leading) }
             .frame(height: 90)
             .accessibilityHidden(true)
-            Text(verbatim: подписьОсиДозы)
+            Text(verbatim: подписьОсиДозы(дозы))
                 .textStyle(AppFont.caption.color(Token.Ink.secondary))
         }
     }
 
     /// Единица оси дозы — словом, потому что на оси стоят только числа.
     /// Берётся у `Fmt.doseMass`, единственного места перевода мкг → мг.
-    private var подписьОсиДозы: String {
-        let максимум = точки.compactMap { дозаЧислом(на: $0.дата) }.max() ?? 0
+    private func подписьОсиДозы(_ дозы: [UUID: Double]) -> String {
+        let максимум = дозы.values.max() ?? 0
         let единица = максимум >= 1000
             ? String(localized: "мг/сут")
             : String(localized: "мкг/сут")
         return String(localized: "ось дозы — \(единица); наибольшая \(Fmt.doseMass(максимум))")
     }
 
-    private var заголовокГрафика: String {
+    private func заголовокГрафика(_ точки: [Точка]) -> String {
         let единица = точки.compactMap { Fmt.notBlank($0.единица) }.last
         let имя = выбранный ?? ""
         return единица.map { "\(имя), \($0)" } ?? имя
@@ -464,7 +577,7 @@ struct LabChartScreen: View {
     /// размерах шрифта и для VoiceOver график не читается вовсе,
     /// и дизайн прямо требует таблицу вместо него. Каждая строка
     /// читается целиком: дата, значение, отклонение СЛОВОМ, часы.
-    private var таблица: some View {
+    private func таблица(_ точки: [Точка]) -> some View {
         TGCard(spacing: 0) {
             TGSectionHeader(title: "по датам")
             ForEach(Array(точки.reversed().enumerated()), id: \.element.id) { индекс, точка in
@@ -498,7 +611,7 @@ struct LabChartScreen: View {
                 .buttonStyle(.plain)
             }
 
-            if несравнимыеЕсть {
+            if несравнимыеЕсть(точки) {
                 TGExplainer(text: "Точки сняты в разное время после дозы — такие значения рядом не сравнивают без оговорки. Время забора у каждой строки выше.")
             }
         }
@@ -507,7 +620,7 @@ struct LabChartScreen: View {
     /// Есть ли в наборе пара, которую сравнивать нельзя.
     /// Спрашивается у `LabSampleTiming.comparable`, а не считается здесь:
     /// порог три часа — его решение, и второй копии у него быть не должно.
-    private var несравнимыеЕсть: Bool {
+    private func несравнимыеЕсть(_ точки: [Точка]) -> Bool {
         let времена = точки.map(\.время)
         for левый in времена.indices {
             for правый in времена.indices where правый > левый {

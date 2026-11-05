@@ -18,18 +18,30 @@ import SwiftData
 /// «+ Вторая собака» не показывалась бы никогда — ровно тому, кому
 /// она адресована.
 ///
-/// Дверь не вторая: «+ Вторая собака» ведёт в тот же `DogsScreen`, что
-/// и строка списка «Завести ещё собаку». Два пути к одному экрану,
-/// собранные порознь, расходятся молча — здесь они собраны одним
-/// назначением.
+/// **С 29.10.2026 пилюля — единственная дверь заведения на вкладке.**
+/// Строка списка «Завести ещё собаку» вела в тот же `DogsScreen`
+/// и снята решением Виктории: две двери к одному делу на одной
+/// странице. Строка «Собаки · N» осталась — она появляется только
+/// при двух собаках и больше.
 struct DogSwitcher: View {
     let dogs: [Dog]
     let active: Dog?
 
     @Environment(AppState.self) private var appState
 
+    /// Пилюля «+ Вторая собака» — дверь заведения, и показывается она
+    /// тому, кто вправе завести (`DogsScreen` прячет свою дверь от него же).
+    /// До 29.10.2026 помощник видел пилюлю, жал её и попадал на список
+    /// без единого действия.
+    private var можноЗавести: Bool { appState.can(.editProfile) }
+
+    /// Одна собака и нет права заводить — ряду нечего предложить:
+    /// переключаться не на кого, заводить нельзя. Пилюля единственной
+    /// собаки без соседей — это не выбор, а повтор клички с описи.
+    private var естьЧтоПоказать: Bool { dogs.count > 1 || (!dogs.isEmpty && можноЗавести) }
+
     var body: some View {
-        if !dogs.isEmpty {
+        if естьЧтоПоказать {
             ScrollView(.horizontal) {
                 HStack(spacing: Token.Space.s8) {
                     ForEach(dogs) { dog in
@@ -38,8 +50,10 @@ struct DogSwitcher: View {
                         }
                         .buttonStyle(.plain)
                     }
-                    NavigationLink { DogsScreen() } label: { ЕщёСобакаChip() }
-                        .buttonStyle(.plain)
+                    if можноЗавести {
+                        NavigationLink { DogsScreen() } label: { ЕщёСобакаChip() }
+                            .buttonStyle(.plain)
+                    }
                 }
                 .padding(.horizontal, Token.Spacing.screenPadding)
             }
@@ -194,7 +208,9 @@ struct DogsScreen: View {
                         DogRow(dog: dog, isActive: dog.id == appState.activeDog(from: dogs)?.id)
                     }
                     .buttonStyle(.plain)
-                    TGDivider()
+                    // Черта после последней — только если ниже дверь:
+                    // у помощника её нет, и черта висела бы в пустоту.
+                    if canEdit || dog.id != dogs.shownToPerson.last?.id { TGDivider() }
                 }
                 // Два права подряд, и порядок у них не случайный.
                 // `canEdit` — про роль: помощнику собаку заводить

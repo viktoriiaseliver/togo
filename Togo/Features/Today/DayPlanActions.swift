@@ -229,6 +229,14 @@ struct DayPlanActions {
 
     func complete(_ item: DayPlanItem, givenAt момент: Date) {
         guard let dog else { return }
+        // **Права — здесь, в общей двери, а не только у первой кнопки**
+        // (аудит «Сегодня» 29.10.2026). Проверку держал один из трёх
+        // путей — тап по строке плана. Шторка пропущенной дозы звала
+        // `complete` напрямую, и у человека без `.giveDose`
+        // `DoseScheduler.markGiven` успевал поставить дозе «дано», а запись
+        // в ленту `EventLog` потом отвергал: доза в схеме дана, в дневнике
+        // её нет, замок у второго телефона стоит на пустом месте.
+        guard checkPermission(for: item) else { return }
 
         // Повод спросить про уведомления считается ДО отметки.
         //
@@ -251,7 +259,7 @@ struct DayPlanActions {
                                                      by: appState.currentUserName, at: момент,
                                                      context: context) else {
                 Haptics.warning()
-                appState.showFailure("Доза не отметилась · нажми ещё раз")
+                appState.showFailure(String(localized: "Доза не отметилась · нажми ещё раз"))
                 return
             }
             отметка = dose
@@ -300,7 +308,7 @@ struct DayPlanActions {
                 (task.lastDone, task.streak, task.scheduledDate) = было
                 careUndo.wrappedValue[task.id] = nil
                 Haptics.warning()
-                appState.showFailure("Срок не пересчитался · нажми ещё раз")
+                appState.showFailure(String(localized: "Срок не пересчитался · нажми ещё раз"))
                 return
             }
         }
@@ -323,10 +331,63 @@ struct DayPlanActions {
         }
     }
 
+    // MARK: Отдельная доза
+
+    /// Записать ещё одну дозу того же препарата — своим временем, рядом
+    /// с уже отмеченной.
+    ///
+    /// **Зачем отдельный путь, а не `route = .more` (29.10.2026).**
+    /// Кнопка замка «Другая доза? Записать отдельно» вела в шторку «Ещё»,
+    /// а там нет ни дозы, ни препарата — лакомство, заметка, выездной
+    /// день. То есть кнопка обещала запись и приводила в тупик: человек
+    /// с таблеткой в руке искал, куда её записать, и не находил.
+    ///
+    /// Теперь доза ложится настоящей отметкой `DoseRecord` на минуту
+    /// записи — той же дорогой `markGiven`, что и плановая, со списанием
+    /// запаса и строкой в ленте. Плановая отметка остаётся на месте:
+    /// у новой своё `scheduledAt`, и `устойчивыйID` у неё свой.
+    ///
+    /// **Только что записанная доза запрещает вторую — и это два
+    /// механизма, а не один.** `markGiven` ищет отметку по МИНУТЕ
+    /// и на занятую отвечает «уже дали», то есть вернул бы ПЛАНОВУЮ дозу.
+    /// А строку в ленту `EventLog` пропускает через `DuplicateGuard`
+    /// (`window`, 90 секунд для дозы того же препарата) — и отбил бы её
+    /// уже ПОСЛЕ того, как отметка легла: доза в отметках есть, в ленте
+    /// нет. Поэтому оба условия проверяются здесь, до записи, и ответ
+    /// человеку один.
+    func recordSeparateDose(like item: DayPlanItem, at момент: Date) {
+        guard item.kind == .dose, let medication = item.medication else { return }
+        guard appState.can(.giveDose) else {
+            appState.showFailure(String(localized: "Дозы отмечает тот, кому это разрешено"))
+            return
+        }
+        let calendar = Calendar.current
+        let занято = medication.doses.contains { доза in
+            guard доза.isGiven else { return false }
+            if calendar.isDate(доза.scheduledAt, equalTo: момент, toGranularity: .minute) { return true }
+            guard let дана = доза.givenAt else { return false }
+            return abs(дана.timeIntervalSince(момент)) < DuplicateGuard.window
+        }
+        guard !занято else {
+            Haptics.warning()
+            appState.showFailure(String(localized: "Доза записана только что · отдельную запиши через пару минут"))
+            return
+        }
+        let отдельная = DayPlanItem(id: "separate-\(medication.id.uuidString)-\(Int(момент.timeIntervalSince1970))",
+                                    time: момент, title: item.title, kind: .dose,
+                                    isDone: false, medication: medication)
+        complete(отдельная, givenAt: момент)
+    }
+
     // MARK: Снять отметку
 
     func uncomplete(_ item: DayPlanItem) {
         guard dog != nil else { return }
+        // Снять — такая же правка дневника, как поставить, и права у неё
+        // те же. Записи здесь гасятся напрямую, мимо `EventLog`, поэтому
+        // его ворота сюда не доходят: до 29.10.2026 наблюдатель снимал
+        // чужую отметку кормления тапом по галочке «сделано».
+        guard checkPermission(for: item) else { return }
 
         // Убираем ту запись, которая этот пункт и закрыла, — ближайшую
         // к его времени.
@@ -353,11 +414,36 @@ struct DayPlanActions {
                 вернуть.append { (task.lastDone, task.streak, task.scheduledDate) = было }
                 task.undoDone(previousDone: careUndo.wrappedValue[task.id] ?? nil)
             }
-        } else if let event = candidates.first,
-                  abs(event.date.timeIntervalSince(item.time)) <= MealSchedule.doneTolerance {
+        } else if let id = item.закрытаЗаписью,
+                  let event = candidates.first(where: { $0.id == id }) {
+            // ТРЕТЬЯ КОПИЯ ПРАВИЛА СНЯТА 04.11.2026.
+            //
+            // Здесь стояло `abs(event.date − item.time) <=
+            // MealSchedule.doneTolerance` — то есть снятие отметки
+            // решало ЗАНОВО, какая запись закрыла пункт, и решало
+            // по своему порогу.
+            //
+            // > **Это уже врало, просто до записи вне слота очередь
+            // > не доходила.** Кормление в 18:00 при слоте 15:30:
+            // > `candidates.first` дальше полутора часов не проходил
+            // > `guard`, удаления не было, `context.save()` отвечал
+            // > успехом, и человек получал тост «Снова в списке · Еда»
+            // > при закрытом пункте. Сказали одно, сделали другое,
+            // > и ни один тест этого не видел.
+            //
+            // Теперь гасится ровно та запись, которую назвал сборщик
+            // плана, и правило живёт в одном месте — `MealSchedule`.
             вернуть.append { event.deletedAt = nil; event.deletedBy = nil }
             event.deletedAt = Date()
             event.deletedBy = appState.currentUserName
+        } else if item.isDone, item.kind == .meal {
+            // Пункт закрыт, а записи под ним нет — значит разметка
+            // и лента разошлись. Молчать нельзя: следующий шаг покажет
+            // «Снова в списке», ничего не сняв.
+            Haptics.warning()
+            appState.showFailure(
+                String(localized: "Не нашлось, какую запись снять · открой историю"))
+            return
         }
 
         // Доза — не только запись в ленте: от неё считается окно натощак
@@ -372,12 +458,12 @@ struct DayPlanActions {
         guard получилось else {
             вернуть.reversed().forEach { $0() }
             Haptics.warning()
-            appState.showFailure("Не снялось · нажми ещё раз")
+            appState.showFailure(String(localized: "Не снялось · нажми ещё раз"))
             return
         }
 
         Haptics.warning()
-        appState.showUndo("Снова в списке · \(item.title)")
+        appState.showUndo(String(localized: "Снова в списке · \(item.title)"))
     }
 
     // MARK: Пропустить и взять на себя
@@ -385,16 +471,113 @@ struct DayPlanActions {
     /// Пропуск записывается, а не просто исчезает: врач спросит именно
     /// про него, а в истории иначе останется необъяснённая дыра.
     func skipDose(_ target: MissedDoseTarget) {
+        // Пропуск — тоже отметка дозы; права те же, что у «дал».
+        guard checkPermission(for: target.item) else { return }
         guard DoseScheduler.markSkipped(target.medication, scheduledAt: target.item.time,
                                         by: appState.currentUserName, context: context) != nil else {
             // Пропуск заводили ради врача: «отмечено» без записи
             // в истории — та же необъяснённая дыра, только с алиби.
             Haptics.warning()
-            appState.showFailure("Не записалось · нажми ещё раз")
+            appState.showFailure(String(localized: "Не записалось · нажми ещё раз"))
             return
         }
         Haptics.warning()
-        appState.showUndo("Доза отмечена пропущенной")
+        appState.showUndo(String(localized: "Доза отмечена пропущенной"))
+    }
+
+    // MARK: Разовое исключение кормления
+
+    /// Передвинуть одно кормление **на сегодня**: «сегодня ужин в 22:00».
+    ///
+    /// Правится не расписание, а разовое исключение на дату
+    /// (`Dog.mealTimesOverrideDay` и `Dog.mealTimesOverride`). `mealTimes`
+    /// остаётся как был — завтра собака ест по-прежнему.
+    ///
+    /// **Часы берутся у `часыКормленийНа(_:)`, а не у `mealTimes`:**
+    /// иначе второй сдвиг в тот же день затирал бы первый, возвращая
+    /// расписание. Человек, двигающий ужин дважды, сдвига не отменял.
+    ///
+    /// Возврат при отказе записи — поимённо по трём полям, которые
+    /// трогаем, как требует `persist(otherwise:)`: `rollback()`
+    /// у SwiftData значений не возвращает.
+    func сдвинутьКормление(_ item: DayPlanItem, на момент: Date) {
+        guard checkPermission(for: item), let dog else { return }
+        let календарь = Calendar.current
+        let сутки = календарь.startOfDay(for: день)
+        let новаяМинута = FeedingAnalyzer.minuteOfDay(момент, calendar: календарь)
+        let прежняяМинута = FeedingAnalyzer.minuteOfDay(item.time, calendar: календарь)
+
+        var часы = dog.часыКормленийНа(день, calendar: календарь).sorted()
+        if let место = часы.firstIndex(of: прежняяМинута) {
+            часы[место] = новаяМинута
+        } else {
+            // Слота с таким часом в расписании нет — значит пункт
+            // пришёл не из него (или расписание уже сменили из другого
+            // места). Тогда исключение не чинит порядок, а заводит
+            // лишнее кормление; лучше не записать ничего, чем накормить
+            // собаку лишний раз.
+            Haptics.warning()
+            appState.showFailure(String(localized: "Это кормление уже сдвинули · открой план заново"))
+            return
+        }
+        // **Склейка часов отменена 05.11.2026 решением Виктории:
+        // приложение отказывает словами, а не решает за человека.**
+        //
+        // Здесь стояло `часы = Array(Set(часы)).sorted()`. Сдвинь ужин
+        // на час обеда — и часов становилось ДВА вместо трёх, то есть
+        // приложение молча решало кормить дважды. Человек этого
+        // не говорил: он сдвинул одно кормление, а не отменил его.
+        //
+        // > **Утверждение о дне собаки, выведенное из технической
+        // > нужды не держать два одинаковых слота.** Дедупликация
+        // > читается как опрятность и работает как отмена кормления.
+        //
+        // Цена ошибки в эту сторону измерима: план дня показал бы два
+        // пункта, а Live Activity — «из 3», и две поверхности спорили
+        // бы друг с другом в один вечер.
+        if новаяМинута != прежняяМинута, часы.contains(новаяМинута) {
+            Haptics.warning()
+            appState.showFailure(String(localized: "На этот час кормление уже стоит · выбери другое время"))
+            return
+        }
+        часы.sort()
+
+        let было = (dog.mealTimesOverrideDay, dog.mealTimesOverride, dog.changedAt)
+        dog.mealTimesOverrideDay = сутки
+        dog.mealTimesOverride = часы
+        // Без этого исключение не уедет ко второму человеку: спор двух
+        // телефонов разрешает поздняя правка, и профиль без свежего
+        // `changedAt` проиграет чужому старому.
+        dog.changedAt = сейчас
+
+        guard context.persist(otherwise: {
+            (dog.mealTimesOverrideDay, dog.mealTimesOverride, dog.changedAt) = было
+        }) else {
+            Haptics.warning()
+            appState.showFailure(String(localized: "Не записалось · нажми ещё раз"))
+            return
+        }
+        Haptics.tap()
+        appState.showUndo(String(localized: "Сегодня в \(Fmt.clock(момент))"))
+    }
+
+    /// Вернуть расписание этих суток: исключения больше нет.
+    func вернутьРасписание(_ item: DayPlanItem) {
+        guard checkPermission(for: item), let dog else { return }
+        let было = (dog.mealTimesOverrideDay, dog.mealTimesOverride, dog.changedAt)
+        dog.mealTimesOverrideDay = nil
+        dog.mealTimesOverride = []
+        dog.changedAt = сейчас
+
+        guard context.persist(otherwise: {
+            (dog.mealTimesOverrideDay, dog.mealTimesOverride, dog.changedAt) = было
+        }) else {
+            Haptics.warning()
+            appState.showFailure(String(localized: "Не записалось · нажми ещё раз"))
+            return
+        }
+        Haptics.tap()
+        appState.showUndo(String(localized: "Вернули расписание"))
     }
 
     /// «Беру на себя» с запасом в 45 минут — чтобы двое не дали дозу дважды.
@@ -414,10 +597,10 @@ struct DayPlanActions {
         } catch {
             (dose.claimedBy, dose.claimedAt) = было
             Haptics.warning()
-            appState.showFailure("Не получилось взять на себя · нажми ещё раз")
+            appState.showFailure(String(localized: "Не получилось взять на себя · нажми ещё раз"))
             return
         }
         Haptics.tap()
-        appState.showUndo("Доза за тобой · 45 минут")
+        appState.showUndo(String(localized: "Доза за тобой · 45 минут"))
     }
 }

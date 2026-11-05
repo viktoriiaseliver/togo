@@ -826,6 +826,53 @@ struct BackupTests {
             """)
     }
 
+    /// «Заменить всё» обещает стереть то, что на телефоне, — и обязано
+    /// стереть все виды, которые потом восстанавливает (29.10.2026).
+    ///
+    /// Запас корма, течки, документы и выезды держал один каскад
+    /// от собаки. Запись без собаки им не убирается и после «заменить»
+    /// ложилась рядом с приехавшей из файла.
+    @Test("«Заменить» стирает корм, течки, документы и выезды, а не держит их каскадом")
+    func заменитьСтираетЧетыреВида() throws {
+        let context = контекст()
+        let стич = завестиСтича(в: context)
+        let течка = HeatRecord(startedAt: Date().addingTimeInterval(-40 * 86_400))
+        течка.dog = стич
+        context.insert(течка)
+        let паспорт = DogDocument(title: "Паспорт", image: nil, note: nil)
+        паспорт.dog = стич
+        context.insert(паспорт)
+        let выезд = DayOut(startedAt: Date().addingTimeInterval(-8 * 3600), plannedHours: 6)
+        выезд.endedAt = Date().addingTimeInterval(-2 * 3600)
+        выезд.dog = стич
+        context.insert(выезд)
+        try context.save()
+
+        let данные = try BackupService.encode(
+            try BackupService.archive(context: context, appVersion: "1.0.0")
+        )
+        let корма = try context.fetch(FetchDescriptor<FoodStock>()).count
+        let течки = try context.fetch(FetchDescriptor<HeatRecord>()).count
+        let документы = try context.fetch(FetchDescriptor<DogDocument>()).count
+        let выезды = try context.fetch(FetchDescriptor<DayOut>()).count
+
+        // Сироты — записи без собаки. В файл они не попадают,
+        // и после «заменить всё» их не должно остаться.
+        context.insert(FoodStock(kind: .dry, brand: "Сирота", packGrams: 1000,
+                                 packsLeft: 1, gramsPerDay: 50))
+        context.insert(HeatRecord(startedAt: Date().addingTimeInterval(-400 * 86_400)))
+        context.insert(DogDocument(title: "Сирота", image: nil, note: nil))
+        context.insert(DayOut(startedAt: Date().addingTimeInterval(-30 * 3600), plannedHours: 2))
+        try context.save()
+
+        try BackupService.restore(try BackupService.decode(данные), into: context, strategy: .replace)
+
+        #expect(try context.fetch(FetchDescriptor<FoodStock>()).count == корма)
+        #expect(try context.fetch(FetchDescriptor<HeatRecord>()).count == течки)
+        #expect(try context.fetch(FetchDescriptor<DogDocument>()).count == документы)
+        #expect(try context.fetch(FetchDescriptor<DayOut>()).count == выезды)
+    }
+
     /// Пометка «часа не помню» — оговорка, без которой число лжёт.
     ///
     /// `WalkRhythm:71` отбрасывает записи с `isDayOnly`, прежде чем

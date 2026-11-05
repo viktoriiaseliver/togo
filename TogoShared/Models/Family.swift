@@ -13,7 +13,13 @@ final class FamilyMember {
     /// разницу между «мы ничего не меняли» и «мы всё сняли руками».
     var customPermissionsRaw: [String]?
 
-    /// Дежурный получает напоминания; передача дежурства — одно действие.
+    /// Кто дежурит сегодня — сведение для семьи, а НЕ адрес уведомлений.
+    ///
+    /// Прежняя строка обещала «дежурный получает напоминания»; ни один
+    /// постановщик уведомлений это поле не читает (замер 29.10.2026),
+    /// а карточка по обмену не ездит, то есть телефон дежурного о своём
+    /// дежурстве может не знать. Дозы звонят на каждом телефоне
+    /// с разрешением — разбор у `ReminderScheduler.scheduleDoses`.
     var isOnDuty: Bool = false
     var dutyUntil: Date?
 
@@ -123,12 +129,25 @@ final class Episode {
     var lastIncidentAt: Date = Date()
     var title: String = ""
     var detail: String = ""
+    /// Чей эпизод. Пусто — не записано (эпизоды до V10), и такой
+    /// эпизод читается общим, как читался всегда. Разбор — у объявления
+    /// `TogoSchemaV10`.
+    var dogID: UUID?
 
-    init(title: String, detail: String, startedAt: Date = Date()) {
+    init(title: String, detail: String, startedAt: Date = Date(), dogID: UUID? = nil) {
         self.title = title
         self.detail = detail
         self.startedAt = startedAt
         self.lastIncidentAt = startedAt
+        self.dogID = dogID
+    }
+
+    /// Касается ли эпизод этой собаки. Безымянный — касается всех:
+    /// так он и читался до V10, и спрятать его значило бы молча
+    /// вернуть вердикты посреди идущего эпизода.
+    func касается(_ dog: Dog?) -> Bool {
+        guard let dogID else { return true }
+        return dogID == dog?.id
     }
 
     /// Сколько тишины считается концом эпизода.

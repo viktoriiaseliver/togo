@@ -31,10 +31,15 @@ nonisolated enum DayOutPlan {
         // Кормления берём из расписания собаки: приложение уже знает,
         // во сколько она ест, и выдумывать второй раз незачем.
         var meals = 0
-        for minute in dog.mealTimes.sorted() {
-            // И сегодня, и завтра: длинный день переваливает за полночь.
-            for dayOffset in 0...1 {
-                guard let day = calendar.date(byAdding: .day, value: dayOffset, to: startOfDay) else { continue }
+        // И сегодня, и завтра: длинный день переваливает за полночь.
+        //
+        // **Часы спрашиваются У КАЖДОГО ДНЯ отдельно**, а не один раз
+        // снаружи цикла: разовое исключение стоит на одних сутках,
+        // и общий список для двух дней положил бы его и на завтра.
+        // Поэтому порядок циклов перевёрнут — день снаружи, час внутри.
+        for dayOffset in 0...1 {
+            guard let day = calendar.date(byAdding: .day, value: dayOffset, to: startOfDay) else { continue }
+            for minute in dog.часыКормленийНа(day, calendar: calendar).sorted() {
                 // Через `Calendar.date(minuteOfDay:on:)` (`DayTime.swift:20`),
                 // а не сложением секунд: в сутки перевода часов начало дня
                 // плюс 450 минут даёт не 07:30, и кормление у края окна
@@ -101,18 +106,50 @@ nonisolated struct DayOutTrace: Equatable, Sendable {
 
     var isReliable: Bool { longDays >= Self.minimumDays }
 
+    /// Что из этого стоит сказать вслух — без рода собаки.
+    ///
+    /// Оставлено для мест, где пола нет под рукой (и для тестов):
+    /// фраза про аппетит здесь нейтральная, «собака ела».
+    var findings: [String] { findings(пол: nil) }
+
     /// Что из этого стоит сказать вслух.
-    var findings: [String] {
+    ///
+    /// # Две поломки одной строки, найденные 29.10.2026
+    ///
+    /// ```
+    /// «она ела заметно меньше»   женский род вписан намертво —
+    ///                            у кобеля это читалось как чужая собака
+    /// lines.append("…")          `append` принимает `String`, и литерал
+    ///                            уходил мимо каталога: ни одной из трёх
+    ///                            строк в `Localizable.xcstrings` не было,
+    ///                            на всех языках они рисовались по-русски
+    /// ```
+    ///
+    /// Род берётся у `РодСобаки` — целыми фразами, а не окончанием.
+    func findings(пол: DogSex?) -> [String] {
         guard isReliable else { return [] }
+        // Знаменатель — СТРОКОЙ, а не `Int` (29.10.2026). Ключи этих
+        // фраз лежали в каталоге с переводами под `… %@ из %@.`, а
+        // `\(longDays)` у `Int` компилятор извлекает как `%lld`:
+        // каталог спрашивали ключом, которого в нём нет, и строка
+        // рисовалась по-русски. Завести рядом `%lld`-ключи нельзя без
+        // трёх новых пар-двойников (`LocalizationCoverageTests.двойников`).
+        let изДней = longDays.formatted()
         var lines: [String] = []
         if followedByLooseStool * 2 >= longDays {
-            lines.append("После долгих дней стул на следующий день бывал жиже — \(Fmt.times(followedByLooseStool)) из \(longDays).")
+            lines.append(String(localized: "После долгих дней стул на следующий день бывал жиже — \(Fmt.times(followedByLooseStool)) из \(изДней)."))
         }
         if followedByPoorAppetite * 2 >= longDays {
-            lines.append("После долгих дней она ела заметно меньше обычного — \(Fmt.times(followedByPoorAppetite)) из \(longDays).")
+            let раз = Fmt.times(followedByPoorAppetite)
+            lines.append(РодСобаки.форма(
+                пол,
+                он: String(localized: "После долгих дней он ел заметно меньше обычного — \(раз) из \(изДней)."),
+                она: String(localized: "После долгих дней она ела заметно меньше обычного — \(раз) из \(изДней)."),
+                нейтрально: { String(localized: "После долгих дней собака ела заметно меньше обычного — \(раз) из \(изДней).") }
+            ))
         }
         if followedByIncident * 2 >= longDays {
-            lines.append("После долгих дней случались инциденты — \(Fmt.times(followedByIncident)) из \(longDays).")
+            lines.append(String(localized: "После долгих дней случались инциденты — \(Fmt.times(followedByIncident)) из \(изДней)."))
         }
         return lines
     }

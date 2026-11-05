@@ -25,14 +25,72 @@ struct TGSectionHeader: View {
 
 /// Figma: `Explainer`. Объяснение стоит там, где возникает вопрос —
 /// отдельной справки в приложении нет и не нужно.
+///
+/// # Памятка: объяснение, которое перестаёт повторяться
+///
+/// Просьба Виктории 29.10.2026: «чтобы разные шторки не показывались
+/// миллион раз, которые несут только информацию». «Просится», «Как
+/// сходил?», «Что случилось» открываются по десять раз в день, и одно
+/// и то же «запишется сразу, без вопросов» на десятый раз — уже шум
+/// между человеком и кнопкой.
+///
+/// Объяснение с ключом `памятка` показывается первые
+/// `Памятки.сколькоРаз` появлений и дальше не рисуется. Без ключа —
+/// всегда, как прежде: объяснение СОСТОЯНИЯ («доза откроется
+/// в 18:30», «кровь поднимает запись») нужно каждый раз, потому что
+/// каждый раз оно про другое.
 struct TGExplainer: View {
     let text: LocalizedStringKey
+    /// Ключ памятки. Пусто — объяснение показывается всегда.
+    var памятка: String?
+
+    /// Решено при появлении, а не на каждом `body`: иначе счётчик,
+    /// увеличенный в `onAppear`, прятал бы текст прямо на глазах.
+    @State private var видна: Bool
+
+    init(text: LocalizedStringKey, памятка: String? = nil) {
+        self.text = text
+        self.памятка = памятка
+        _видна = State(initialValue: Памятки.видна(памятка))
+    }
 
     var body: some View {
-        Text(text)
-            .textStyle(AppFont.caption)
-            .wraps()
-            .frame(maxWidth: .infinity, alignment: .leading)
+        if видна {
+            Text(text)
+                .textStyle(AppFont.caption)
+                .wraps()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .onAppear { Памятки.показана(памятка) }
+        }
+    }
+}
+
+/// Сколько раз памятка уже показана — по ключу, на этом телефоне.
+///
+/// `UserDefaults`, а не база: это удобство вида, а не запись дневника,
+/// и уезжать второму человеку оно не должно — у мамы свои первые три раза.
+enum Памятки {
+    static let сколькоРаз = 3
+
+    private static func ключ(_ памятка: String) -> String { "памятка.\(памятка)" }
+
+    static func видна(_ памятка: String?) -> Bool {
+        guard let памятка else { return true }
+        return UserDefaults.standard.integer(forKey: ключ(памятка)) < сколькоРаз
+    }
+
+    static func показана(_ памятка: String?) {
+        guard let памятка else { return }
+        let k = ключ(памятка)
+        UserDefaults.standard.set(UserDefaults.standard.integer(forKey: k) + 1, forKey: k)
+    }
+
+    /// Вернуть все памятки — для «Настроек», если человек захочет
+    /// перечитать объяснения.
+    static func сбросить() {
+        for k in UserDefaults.standard.dictionaryRepresentation().keys where k.hasPrefix("памятка.") {
+            UserDefaults.standard.removeObject(forKey: k)
+        }
     }
 }
 
