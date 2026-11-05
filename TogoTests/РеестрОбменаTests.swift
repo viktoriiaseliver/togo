@@ -139,8 +139,12 @@ struct РеестрОбменаTests {
         let всеID = Set(ждём.map(\.1.uuidString))
 
         // Дверь «сохранили → отправили».
-        let ids = [собака, событие, дело, схема, доза, вес, клиника, документ,
-                   анализ, визит, диагноз, рецепт].map { ($0 as any PersistentModel).persistentModelID }
+        let ids: [PersistentIdentifier] = [
+            собака.persistentModelID, событие.persistentModelID, дело.persistentModelID,
+            схема.persistentModelID, доза.persistentModelID, вес.persistentModelID,
+            клиника.persistentModelID, документ.persistentModelID, анализ.persistentModelID,
+            визит.persistentModelID, диагноз.persistentModelID, рецепт.persistentModelID,
+        ]
         let отправка = РеестрОбмена.кОтправке(ids, context: ctx, zone: zone, now: Date())
         let неПоставлены = всеID.subtracting(имена(отправка.изменения))
         #expect(неПоставлены.isEmpty, "постановка не берёт: \(названия(неПоставлены, ждём))")
@@ -215,8 +219,10 @@ struct РеестрОбменаTests {
         let былоФантом = фантом.changedAt
         let былоПрогрев = прогрев.changedAt
 
-        let ids = ([живая, фантом, настоящая, прогрев] as [any PersistentModel])
-            .map(\.persistentModelID)
+        let ids: [PersistentIdentifier] = [
+            живая.persistentModelID, фантом.persistentModelID,
+            настоящая.persistentModelID, прогрев.persistentModelID,
+        ]
         let потом = Date(timeIntervalSinceNow: 3600)
         let отправка = РеестрОбмена.кОтправке(ids, context: ctx, zone: zone, now: потом)
 
