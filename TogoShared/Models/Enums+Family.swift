@@ -126,8 +126,4 @@ nonisolated enum FamilyRole: String, Codable, CaseIterable, Sendable {
     }
 
     var canWrite: Bool { defaultPermissions.contains(.logBasics) }
-    var canSeeMedical: Bool { defaultPermissions.contains(.seeMedical) }
-    /// По умолчанию схему лечения меняет только владелец — но это можно выдать.
-    var canEditTreatment: Bool { defaultPermissions.contains(.editTreatment) }
-    var canInvite: Bool { defaultPermissions.contains(.manageFamily) }
 }

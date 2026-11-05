@@ -31,7 +31,6 @@ final class TrainingStep {
     }
 
     var summary: String { String(localized: "\(place), \(distanceMeters) м") }
-    var fullSummary: String { String(localized: "\(cue) · \(place) · \(person) · \(distanceMeters) метров") }
     var isClosed: Bool { consecutiveGoodSessions >= 2 }
 }
 
@@ -71,16 +70,10 @@ final class TrainingSession {
         set { observationsRaw = newValue.map(\.rawValue).sorted() }
     }
 
-    var onTimeMarks: Int { markDelaysMs.filter { MarkAccuracy.from(delayMilliseconds: $0) == .onTime }.count }
 
-    var averageDelayMs: Int {
-        guard !markDelaysMs.isEmpty else { return 0 }
-        return markDelaysMs.reduce(0, +) / markDelaysMs.count
-    }
 
     /// «4 из 5» — не «сделали 100 повторов», а «работает предсказуемо».
     var isGoodSession: Bool { attempts > 0 && Double(successes) / Double(attempts) >= 0.8 }
-    var isPoorSession: Bool { attempts > 0 && Double(successes) / Double(attempts) < 0.6 }
 
     /// Отказ от корма, за который собака обычно работает, снимает оценку целиком.
     var isVoided: Bool { observations.contains(where: \.stopsSession) }
@@ -122,12 +115,4 @@ final class ProcedureSkill {
         status = SkillProgress.status(successes: successes, attempts: attempts)
     }
 
-    /// Отменить последнюю попытку. Нужна, потому что промахнуться
-    /// по кнопке — обычное дело, а иначе счёт правится только удалением
-    /// навыка вместе со всей историей.
-    func undoAttempt(wasSuccess: Bool) {
-        attempts = max(0, attempts - 1)
-        if wasSuccess { successes = max(0, successes - 1) }
-        status = SkillProgress.status(successes: successes, attempts: attempts)
-    }
 }

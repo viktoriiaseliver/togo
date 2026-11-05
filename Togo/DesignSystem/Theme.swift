@@ -26,14 +26,6 @@ struct Theme: Equatable, Sendable {
             }
         }
 
-        /// Поверхность, которую положит внутрь себя вложенный контейнер.
-        var nested: Surface {
-            switch self {
-            case .screen: .card
-            case .card, .accent: .sunken
-            case .sunken: .card
-            }
-        }
 
         var separator: Color { Token.Surface.hairline }
     }
