@@ -6184,38 +6184,38 @@
         }
       }
     },
-    "%@ %@: пропущена доза " : {
-      "comment" : "text",
+    "%@ %@: пропущена доза %@, сейчас %@. Что делать?" : {
+      "comment" : "Готовое сообщение врачу из шторки пропущенной дозы. Препарат, доза, время пропуска, текущее время.",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "%@ %@: dose missed "
+            "value" : "%@ %@: dose missed %@, it's now %@. What do you want to do?"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ %@ : dose sautée "
+            "value" : "%@ %@ : dose sautée %@, il est %@. Que faire ?"
           }
         },
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "%@ %@: доза өткізілді "
+            "value" : "%@ %@: доза өткізілді %@, қазір %@. Не істеу керек?"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ %@: пропущена доза "
+            "value" : "%@ %@: пропущена доза %@, сейчас %@. Что делать?"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "%@ %@: пропущена доза "
+            "value" : "%@ %@: пропущена доза %@, зараз %@. Що робити?"
           }
         }
       }
@@ -8039,42 +8039,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "%@, ще раз. Одне вдале заняття — не навичка; потрібне друге, щоб іти далі."
-          }
-        }
-      }
-    },
-    "%@, сейчас %@. Что делать?" : {
-      "comment" : "text",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%@, it's now %@. What do you want to do?"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@, il est %@. Que faire ?"
-          }
-        },
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%@, қазір %@. Не істеу керек?"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@, сейчас %@. Что делать?"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%@, зараз %@. Що робити?"
           }
         }
       }
