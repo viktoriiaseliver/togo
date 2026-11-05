@@ -59,8 +59,9 @@ extension LogEvent {
     //                              чернила `Category.onIncident`
     //     отметка внутри прогулки  DayTimeline.swift:334, `цвет` —
     //                              overdueText ↔ Ink.secondary; ряд
-    //                              рисуют ОБА контейнера ленты
-    //                              (DayTimeline:86, DayTimelineList:104)
+    //                              рисует контейнер ленты
+    //                              (DayTimeline:86; списочный
+    //                              DayTimelineList удалён 05.11.2026)
     //
     // Замер: последний вызов жил в `efc38a4`
     // (`DayTimeline.swift:48 .foregroundStyle(event.symbolColor)`)

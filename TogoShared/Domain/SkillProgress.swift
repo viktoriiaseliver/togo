@@ -44,13 +44,4 @@ nonisolated enum SkillProgress {
             ? .works
             : .learning
     }
-
-    /// Сколько ещё попыток нужно, прежде чем статус вообще может стать
-    /// «получается». Ноль — значит порог пройден.
-    ///
-    /// Показывается человеку: «не начинали» и «учится» без объяснения
-    /// выглядят оценкой собаки, а это счёт попыток.
-    static func attemptsUntilVerdict(attempts: Int) -> Int {
-        max(0, minimumAttempts - attempts)
-    }
 }

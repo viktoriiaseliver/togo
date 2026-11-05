@@ -121,13 +121,4 @@ final class ProcedureSkill {
         if success { successes += 1 }
         status = SkillProgress.status(successes: successes, attempts: attempts)
     }
-
-    /// Отменить последнюю попытку. Нужна, потому что промахнуться
-    /// по кнопке — обычное дело, а иначе счёт правится только удалением
-    /// навыка вместе со всей историей.
-    func undoAttempt(wasSuccess: Bool) {
-        attempts = max(0, attempts - 1)
-        if wasSuccess { successes = max(0, successes - 1) }
-        status = SkillProgress.status(successes: successes, attempts: attempts)
-    }
 }
