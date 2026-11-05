@@ -2128,7 +2128,7 @@ struct TodayScreen: View {
            let dose = medication.doses.first(where: {
                Calendar.current.isDate($0.scheduledAt, equalTo: item.time, toGranularity: .minute)
            }), dose.isGiven {
-            lockedDose = LockedDose(item: item, givenBy: dose.givenBy ?? "кто-то",
+            lockedDose = LockedDose(item: item, givenBy: dose.givenBy ?? String(localized: "кто-то"),
                                     givenAt: dose.givenAt ?? item.time)
             return
         }
