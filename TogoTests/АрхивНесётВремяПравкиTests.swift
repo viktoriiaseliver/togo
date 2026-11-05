@@ -153,10 +153,14 @@ struct АрхивНесётВремяПравкиTests {
         let наблюдатель = NotificationCenter.default.addObserver(
             forName: ModelContext.didSave, object: nil, queue: nil
         ) { уведомление in
+            // Уведомление приходит синхронно на главном — в потоке
+            // `save()` восстановления, — и дальше главного не уходит.
+            // Компилятор этого не видит, отсюда локальное `unsafe`.
+            nonisolated(unsafe) let тоЖе = уведомление
             MainActor.assumeIsolated {
-                guard let чей = уведомление.object as? ModelContext,
+                guard let чей = тоЖе.object as? ModelContext,
                       ObjectIdentifier(чей) == ключ else { return }
-                ответы.штамповать.append(FamilySync.штамповать(уведомление))
+                ответы.штамповать.append(FamilySync.штамповать(тоЖе))
             }
         }
         defer { NotificationCenter.default.removeObserver(наблюдатель) }
