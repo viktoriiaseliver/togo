@@ -274,7 +274,7 @@ struct MealSheet: View {
                 : "Порцию подставить не из чего: дневная норма не записана. Накрути сколько положил — или запиши норму в режиме питания, и дальше она будет подставляться сама."
         ) { grams in
             EventLog(context: context, appState: appState)
-                .record(.meal, dog: dog, confirmation: "Записано · Еда \(grams) г") { event in
+                .record(.meal, dog: dog, confirmation: String(localized: "Записано · Еда \(grams) г")) { event in
                     event.grams = grams
                     event.note = dog?.foodBrand.isEmpty == false ? dog?.foodBrand : nil
                 }
@@ -301,7 +301,7 @@ struct TreatSheet: View {
             explainer: "Ограничения на лакомства нет: их можно брать из дневной порции — тогда награды не прибавляют веса."
         ) { grams in
             EventLog(context: context, appState: appState)
-                .record(.treat, dog: dog, confirmation: "Записано · Лакомство \(grams) г") { event in
+                .record(.treat, dog: dog, confirmation: String(localized: "Записано · Лакомство \(grams) г")) { event in
                     event.grams = grams
                     event.fromPortion = dog?.trainingFoodFromPortion ?? true
                 }
@@ -374,7 +374,7 @@ struct NoteSheet: View {
                 TGButton(title: "Записать",
                          isEnabled: !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty) {
                 EventLog(context: context, appState: appState)
-                    .record(.note, dog: dog, confirmation: "Записано · Заметка") { event in
+                    .record(.note, dog: dog, confirmation: String(localized: "Записано · Заметка")) { event in
                         event.note = text
                     }
                     dismiss()

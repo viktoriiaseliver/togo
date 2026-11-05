@@ -5191,6 +5191,35 @@
         }
       }
     },
+    "если надо показать врачу" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "in case the vet needs to see it"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "si le véto doit la voir"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "дәрігерге көрсету керек болса"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "якщо треба показати лікарю"
+          }
+        }
+      }
+    },
     "если собака потерялась" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -8239,6 +8268,64 @@
         }
       }
     },
+    "Останавливает идущую прогулку. Итог покажется в приложении." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Stops the walk in progress. The summary shows up in the app."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Arrête la promenade en cours. Le bilan s'affiche dans l'app."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Жүріп жатқан серуенді тоқтатады. Қорытынды қолданбада көрсетіледі."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Зупиняє поточну прогулянку. Підсумок з'явиться в застосунку."
+          }
+        }
+      }
+    },
+    "останется в дневнике и в сводке врачу" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "stays in the diary and in the vet summary"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "reste dans le journal et dans le résumé pour le véto"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "күнделікте және дәрігерге есепте қалады"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "лишиться в щоденнику і в зведенні лікарю"
+          }
+        }
+      }
+    },
     "Открыть ссылку из сообщения" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -10701,6 +10788,35 @@
         }
       }
     },
+    "Снять или выбрать" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Take or choose"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Prendre ou choisir"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Түсіру немесе таңдау"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Зняти або вибрати"
+          }
+        }
+      }
+    },
     "Собака и её профиль, вся лента дня, уход и прививки, схемы лечения и отметки доз, вес, документы, анализы, визиты и клиники. Своё у каждого: поездки, дни с собакой, течки, запас корма и список семьи." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -12107,6 +12223,35 @@
         }
       }
     },
+    "Убрать фото" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Remove photo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Retirer la photo"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Суретті алып тастау"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Прибрати фото"
+          }
+        }
+      }
+    },
     "Убрать фото?" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -12248,6 +12393,64 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Файл вийде мовою застосунку. Потрібна інша — зміни мову застосунку й вивантаж знову."
+          }
+        }
+      }
+    },
+    "фото" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "photo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "photo"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "сурет"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "фото"
+          }
+        }
+      }
+    },
+    "Фото момента" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Photo of the moment"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Photo du moment"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Сәттің суреті"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Фото моменту"
           }
         }
       }
@@ -53379,38 +53582,38 @@
         }
       }
     },
-    "Записано · Еда %@ г" : {
+    "Записано · Еда %lld г" : {
       "comment" : "body",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Noted · Meal %@ g"
+            "value" : "Noted · Meal %lld g"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Noté · Repas %@ g"
+            "value" : "Noté · Repas %lld g"
           }
         },
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Жазылды · Тамақ %@ г"
+            "value" : "Жазылды · Тамақ %lld г"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Записано · Еда %@ г"
+            "value" : "Записано · Еда %lld г"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Записано · Їжа %@ г"
+            "value" : "Записано · Їжа %lld г"
           }
         }
       }
@@ -53574,38 +53777,38 @@
         }
       }
     },
-    "Записано · Лакомство %@ г" : {
+    "Записано · Лакомство %lld г" : {
       "comment" : "body",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Noted · Treat %@ g"
+            "value" : "Noted · Treat %lld g"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Noté · Friandise %@ g"
+            "value" : "Noté · Friandise %lld g"
           }
         },
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Жазылды · Тәттілік %@ г"
+            "value" : "Жазылды · Тәттілік %lld г"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Записано · Лакомство %@ г"
+            "value" : "Записано · Лакомство %lld г"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Записано · Ласощі %@ г"
+            "value" : "Записано · Ласощі %lld г"
           }
         }
       }
@@ -53639,38 +53842,38 @@
         }
       }
     },
-    "Записано · прогулка %@ мин" : {
+    "Записано · прогулка %lld мин" : {
       "comment" : "walkEvent",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Noted · walk %@ min"
+            "value" : "Noted · walk %lld min"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Noté · promenade %@ min"
+            "value" : "Noté · promenade %lld min"
           }
         },
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Жазылды · серуен %@ мин"
+            "value" : "Жазылды · серуен %lld мин"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Записано · прогулка %@ мин"
+            "value" : "Записано · прогулка %lld мин"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Записано · прогулянка %@ хв"
+            "value" : "Записано · прогулянка %lld хв"
           }
         }
       }
