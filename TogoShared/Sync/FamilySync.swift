@@ -440,8 +440,6 @@ final class FamilySync: NSObject {
     private func enqueueLocalChanges(_ notification: Notification) async {
         let zone = self.zone
         let ctx = context
-        var changes: [CKSyncEngine.PendingRecordZoneChange] = []
-        var stamped = false
 
         // Отметка времени ставится здесь, а не на экранах.
         //
@@ -453,145 +451,30 @@ final class FamilySync: NSObject {
         applying = true
         defer { applying = false }
 
-        let now = Date()
+        // Список типов, ворота годности и отметка времени — в реестре
+        // (`РеестрОбмена.кОтправке`), а не цепочкой `as?` здесь: до
+        // 05.11.2026 эта цепочка была одной из пяти копий списка типов,
+        // и копии расходились. Ворота те же, что у засева и сборки
+        // записи, — одним свойством `годитсяНаружу` у каждого типа.
+        var ids: [PersistentIdentifier] = []
         for key in ["inserted", "updated"] {
-            guard let ids = notification.userInfo?[key] as? [PersistentIdentifier] else { continue }
-            for id in ids {
-                if let event = ctx.model(for: id) as? LogEvent {
-                    // Ворота — ОБЩИЕ с засевом, той же функцией и по той
-                    // же причине, что у собаки ниже: запрет в одной двери
-                    // второй не знает.
-                    //
-                    // Ловят отладочную запись прогрева схемы. Замер
-                    // 08.10.2026 по выгрузке с телефона Виктории: из 182
-                    // записей одна с датой `2001-01-01` и автором
-                    // `ПРОГРЕВ СХЕМЫ`, у видимой собаки «Стич». Весь
-                    // `CloudKitSchemaWarmup` под `#if DEBUG` — в продуктовой
-                    // сборке она не создастся и **не удалится**, потому что
-                    // `remove()` тоже под `DEBUG`. Без ворот она уехала бы
-                    // маме первой записью истории.
-                    guard SharedDiaryOutgoing.sendable(event) else {
-                        log.notice("общий дневник: запись раньше приложения не отправляется")
-                        continue
-                    }
-                    event.changedAt = now
-                    stamped = true
-                    changes.append(.saveRecord(SharedDiaryRecords.recordID(event.id, in: zone)))
-                } else if let dose = ctx.model(for: id) as? DoseRecord {
-                    dose.changedAt = now
-                    stamped = true
-                    changes.append(.saveRecord(SharedDiaryRecords.recordID(dose.id, in: zone)))
-                } else if let care = ctx.model(for: id) as? CareTask {
-                    care.changedAt = now
-                    stamped = true
-                    changes.append(.saveRecord(SharedDiaryRecords.recordID(care.id, in: zone)))
-                } else if let medication = ctx.model(for: id) as? Medication {
-                    medication.changedAt = now
-                    stamped = true
-                    changes.append(.saveRecord(SharedDiaryRecords.recordID(medication.id, in: zone)))
-                } else if let документ = ctx.model(for: id) as? DogDocument {
-                    // Документы ездят с 07.10.2026 — подписью, без скана:
-                    // в клинике спрашивают номер, на границе срок,
-                    // и нужны они тому, кто СЕГОДНЯ один с собакой.
-                    документ.changedAt = now
-                    stamped = true
-                    changes.append(.saveRecord(SharedDiaryRecords.recordID(документ.id, in: zone)))
-                } else if let взвешивание = ctx.model(for: id) as? WeightEntry {
-                    // Взвешивания ездят с 07.10.2026: тип записи был
-                    // объявлен и не создавался ни разу. Доза считается
-                    // от веса, и расхождение веса даёт расхождение дозы.
-                    взвешивание.changedAt = now
-                    stamped = true
-                    changes.append(.saveRecord(SharedDiaryRecords.recordID(взвешивание.id, in: zone)))
-                } else if let анализ = ctx.model(for: id) as? LabResult {
-                    // Медкнижка ездит с 07.10.2026: без неё второй
-                    // человек приходил к врачу с пересказом.
-                    анализ.changedAt = now
-                    stamped = true
-                    changes.append(.saveRecord(SharedDiaryRecords.recordID(анализ.id, in: zone)))
-                } else if let визит = ctx.model(for: id) as? VetVisit {
-                    визит.changedAt = now
-                    stamped = true
-                    changes.append(.saveRecord(SharedDiaryRecords.recordID(визит.id, in: zone)))
-                } else if let диагноз = ctx.model(for: id) as? Diagnosis {
-                    диагноз.changedAt = now
-                    stamped = true
-                    changes.append(.saveRecord(SharedDiaryRecords.recordID(диагноз.id, in: zone)))
-                } else if let рецепт = ctx.model(for: id) as? Prescription {
-                    рецепт.changedAt = now
-                    stamped = true
-                    changes.append(.saveRecord(SharedDiaryRecords.recordID(рецепт.id, in: zone)))
-                } else if let clinic = ctx.model(for: id) as? Clinic {
-                    // Справочник ездит с 07.10.2026: без него второй
-                    // человек видел прививку и не видел, где её сделали.
-                    clinic.changedAt = now
-                    stamped = true
-                    changes.append(.saveRecord(SharedDiaryRecords.recordID(clinic.id, in: zone)))
-                } else if let dog = ctx.model(for: id) as? Dog {
-                    // Профиль ездит с 23.09: без него приглашение вело
-                    // в пустую комнату — мама не видела ни собаки,
-                    // ни веса, ни того, что идёт лечение.
-                    //
-                    // **Безымянная НЕ ОТПРАВЛЯЕТСЯ, и это не косметика.**
-                    // Замер 08.10.2026 по выгрузке с телефона Виктории:
-                    // шестнадцать собак, пятнадцать без клички, и пять
-                    // из них несут ОДНО И ТО ЖЕ `changed`
-                    // (2026-10-06T07:32:18Z) при трёх разных датах
-                    // создания. Один пакетный проход тронул пять строк —
-                    // и этот проход наш: `FeedingMigration` на каждом
-                    // запуске пишет `dailyNormGrams` всем собакам без
-                    // разбора, SwiftData видит изменение, а эта ветка
-                    // ставит отметку и кладёт запись в отправку.
-                    //
-                    // ```
-                    // FeedingMigration пишет фантому
-                    //   → changedAt = now здесь
-                    //   → saveRecord в общую зону
-                    //   → пятнадцать пустых собак уезжают маме
-                    // ```
-                    //
-                    // > **Мусор, который уходит от нас к человеку,
-                    // > хуже мусора, который лежит у нас.** Свои
-                    // > пустые записи мы хотя бы не показываем
-                    // > (`Dog.canBeShown`); уехавшие живут в чужом
-                    // > хранилище, и там наше правило показа
-                    // > не действует.
-                    //
-                    // Это ровно тот класс, что уже назван про четвёртую
-                    // поверхность (`f152078`); здесь он на пятой.
-                    //
-                    // **Чего эта правка НЕ делает.** Она не объясняет
-                    // и не чинит появление фантомов — откуда они
-                    // берутся, не установлено: девять записей созданы
-                    // в одну секунду 07.10 16:53:36, в ту же секунду,
-                    // в которую открылся онбординг, и совпадение времени
-                    // связью не является. Решающий замер — проход
-                    // онбординга на стёртом симуляторе со счётом `Dog`
-                    // после — НЕ СДЕЛАН.
-                    //
-                    // Ворота — ОБЩИЕ с засевом, а не свои.
-                    // `SharedDiaryOutgoing.sendable` зовут две двери
-                    // наружу: эта («сохранили → отправили») и засев уже
-                    // лежащих записей, который кладёт изменения
-                    // в движок напрямую, мимо этой функции. Запрет
-                    // в одной двери второй не знает.
-                    guard SharedDiaryOutgoing.sendable(dog) else {
-                        log.notice("общий дневник: собака без клички не отправляется")
-                        continue
-                    }
-                    dog.changedAt = now
-                    stamped = true
-                    changes.append(.saveRecord(SharedDiaryRecords.recordID(dog.id, in: zone)))
-                }
-            }
+            guard let часть = notification.userInfo?[key] as? [PersistentIdentifier] else { continue }
+            ids += часть
         }
+        let отправка = РеестрОбмена.кОтправке(ids, context: ctx, zone: zone, now: Date())
+        if отправка.задержано > 0 {
+            // Безымянная собака и отладочная запись прогрева — см.
+            // `годитсяНаружу` у `Dog` и `LogEvent` в `РеестрОбмена.swift`.
+            log.notice("общий дневник: не годных наружу не отправлено: \(отправка.задержано)")
+        }
+        let changes = отправка.изменения
 
         // Сохранение отметки времени не уйдёт по второму кругу:
         // на входе стоит тот же замок, что и у приёма чужого.
         // Отметка времени не записалась — отправлять нечего: иначе
         // уедет то, о чём хранилище не знает, и следующий круг увидит
         // расхождение вместо записи.
-        if stamped, !ctx.persist(otherwise: {}) {
+        if отправка.отмечено, !ctx.persist(otherwise: {}) {
             log.error("общий дневник: отметка времени не записалась")
             return
         }
@@ -760,93 +643,23 @@ extension FamilySync: CKSyncEngineDelegate {
         // из очереди навсегда, поэтому отказавшую откладываем и вернём
         // в очередь следующим заходом (`fetchNow`). До 04.11.2026 здесь
         // было двенадцать `try?`, и отказ выборки молча выбрасывал правку.
-        var отказала = false
-        func найдена<T>(_ опознание: Опознание<T>) -> T? {
-            switch опознание {
-            case .нашлась(let запись): return запись
-            case .нет: return nil
-            case .нечемОтвечать: отказала = true; return nil
-            }
-        }
-
-        if let event = найдена(ctx.опознать(
-            FetchDescriptor<LogEvent>(predicate: #Predicate { $0.id == id })
-        )) {
-            // Те же ворота, что при постановке в очередь и в засеве
-            // (04.11.2026): правка могла встать в очередь до того, как
-            // запись стала негодной (или в состоянии движка прошлой
-            // версии), и сборка записи — последняя дверь наружу.
-            // У собаки ворота стоят внутри `SharedDiaryRecords.record`.
-            guard SharedDiaryOutgoing.sendable(event) else { return nil }
-            return SharedDiaryRecords.record(event.payload, base: base, in: recordID.zoneID)
-        }
-        if let dose = найдена(ctx.опознать(
-            FetchDescriptor<DoseRecord>(predicate: #Predicate { $0.id == id })
-        )) {
-            return SharedDiaryRecords.record(dose.payload, base: base, in: recordID.zoneID)
-        }
-        if let dog = найдена(ctx.опознать(
-            FetchDescriptor<Dog>(predicate: #Predicate { $0.id == id })
-        )) {
-            // Отправка профиля может вернуть `nil` — безымянную собаку
-            // наружу не отправляем. Решение живёт в самой
-            // `SharedDiaryRecords`, а не здесь: этот метод `private`
-            // и требует `context` с `outbox`, то есть проверить его
-            // тестом нечем. Поверхность без шва — это не
-            // «непроверенная», а «непроверяемая», и лечится она
-            // переносом решения, а не внимательностью.
-            return SharedDiaryRecords.record(dog.payload, base: base, in: recordID.zoneID)
-        }
-        if let care = найдена(ctx.опознать(
-            FetchDescriptor<CareTask>(predicate: #Predicate { $0.id == id })
-        )) {
-            return SharedDiaryRecords.record(care.payload, base: base, in: recordID.zoneID)
-        }
-        if let medication = найдена(ctx.опознать(
-            FetchDescriptor<Medication>(predicate: #Predicate { $0.id == id })
-        )) {
-            return SharedDiaryRecords.record(medication.payload, base: base, in: recordID.zoneID)
-        }
-        if let clinic = найдена(ctx.опознать(
-            FetchDescriptor<Clinic>(predicate: #Predicate { $0.id == id })
-        )) {
-            return SharedDiaryRecords.record(clinic.payload, base: base, in: recordID.zoneID)
-        }
-        if let документ = найдена(ctx.опознать(
-            FetchDescriptor<DogDocument>(predicate: #Predicate { $0.id == id })
-        )) {
-            return SharedDiaryRecords.record(документ.payload, base: base, in: recordID.zoneID)
-        }
-        if let взвешивание = найдена(ctx.опознать(
-            FetchDescriptor<WeightEntry>(predicate: #Predicate { $0.id == id })
-        )) {
-            return SharedDiaryRecords.record(взвешивание.payload, base: base, in: recordID.zoneID)
-        }
-        if let анализ = найдена(ctx.опознать(
-            FetchDescriptor<LabResult>(predicate: #Predicate { $0.id == id })
-        )) {
-            return SharedDiaryRecords.record(анализ.payload, base: base, in: recordID.zoneID)
-        }
-        if let визит = найдена(ctx.опознать(
-            FetchDescriptor<VetVisit>(predicate: #Predicate { $0.id == id })
-        )) {
-            return SharedDiaryRecords.record(визит.payload, base: base, in: recordID.zoneID)
-        }
-        if let диагноз = найдена(ctx.опознать(
-            FetchDescriptor<Diagnosis>(predicate: #Predicate { $0.id == id })
-        )) {
-            return SharedDiaryRecords.record(диагноз.payload, base: base, in: recordID.zoneID)
-        }
-        if let рецепт = найдена(ctx.опознать(
-            FetchDescriptor<Prescription>(predicate: #Predicate { $0.id == id })
-        )) {
-            return SharedDiaryRecords.record(рецепт.payload, base: base, in: recordID.zoneID)
-        }
-        if отказала {
+        //
+        // Типы, выборки по id и ворота годности — в реестре
+        // (`РеестрОбмена.запись`). До 05.11.2026 здесь стояли двенадцать
+        // выборок подряд, и ворота были у двух типов из двенадцати
+        // по-разному: у записи дневника — здесь, у собаки — внутри
+        // `SharedDiaryRecords.record`. Теперь у всех одни, и они
+        // проверяемы тестом: этот метод `private` и требует `outbox`.
+        switch РеестрОбмена.запись(id, поверх: base, в: recordID.zoneID, context: ctx) {
+        case .нашлась(let запись):
+            return запись
+        case .нет:
+            return nil
+        case .нечемОтвечать:
             отложеннаяОтправка.insert(recordID)
             log.error("общий дневник: выборка для отправки отказала — правка вернётся в очередь следующим заходом")
+            return nil
         }
-        return nil
     }
 
     /// Принять чужие изменения.
@@ -933,28 +746,29 @@ extension FamilySync: CKSyncEngineDelegate {
             if исход == .отказ { отказавшие.append(запись) }
         }
 
+        // Разбор и `accept` — у каждого типа свои (`Обменный.принятьЗапись`
+        // в `РеестрОбмена.swift`): аргументы у них разные — собака по id,
+        // собака по записи, препарат по id или имени, без собаки вовсе.
+        // Здесь остаётся то, что не свойство одного типа: порядок выше
+        // и снятие напоминаний ниже. `guard let тип` вместо `default`:
+        // незнакомый тип записи (от новой версии приложения) пропускается,
+        // а знакомый без приёма не соберётся — `RecordType.модель`
+        // исчерпывающая.
         for record in записи {
-            switch SharedDiary.RecordType(rawValue: record.recordType) {
-            case .clinic:
-                guard let payload = SharedDiaryRecords.clinicPayload(record) else { continue }
-                отложить(SharedDiaryInbox.accept(payload, context: ctx), record)
-            case .dog:
-                guard let payload = SharedDiaryRecords.dogPayload(record) else { continue }
-                отложить(SharedDiaryInbox.accept(payload, context: ctx), record)
-            case .care:
-                guard let payload = SharedDiaryRecords.carePayload(record) else { continue }
-                // Клиника сшивается внутри `accept`: там контекст
-                // есть по устройству, и промах по id там же
-                // падает на поиск по имени.
-                отложить(SharedDiaryInbox.accept(
-                    payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
-                    context: ctx), record)
-            case .medication:
-                guard let payload = SharedDiaryRecords.medicationPayload(record) else { continue }
-                отложить(SharedDiaryInbox.accept(
-                    payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
-                    context: ctx), record)
+            guard let тип = SharedDiary.RecordType(rawValue: record.recordType),
+                  let исход = тип.модель.принятьЗапись(record, context: ctx)
+            else { continue }
+            отложить(исход, record)
 
+            // Id — имя записи: из него же его берёт разбор
+            // (`SharedDiaryRecords.medicationPayload`, `dosePayload`),
+            // и раз разбор прошёл, оно есть.
+            guard let id = UUID(uuidString: record.recordID.recordName) else { continue }
+
+            // Два входа снятия напоминаний, у каждого свой предикат.
+            // `default` здесь честный: остальным типам снимать нечего.
+            switch тип {
+            case .medication:
                 // Приехала отмена или пауза схемы — гасим запросы
                 // по её дозам сейчас, а не когда человек откроет
                 // приложение.
@@ -994,7 +808,7 @@ extension FamilySync: CKSyncEngineDelegate {
                 // случае: `accept` строкой выше сам ничего не записал.
                 // Это и есть третье состояние — ОТВЕЧАТЬ НЕЧЕМ, —
                 // и у лекарственного слоя оно обязано быть названо.
-                let схемаID = payload.id
+                let схемаID = id
                 do {
                     if let схема = try ctx.fetch(
                         FetchDescriptor<Medication>(
@@ -1012,56 +826,7 @@ extension FamilySync: CKSyncEngineDelegate {
                         \(String(describing: error))
                         """)
                 }
-            case .event:
-                guard let payload = SharedDiaryRecords.eventPayload(record) else { continue }
-                // Собака берётся по id из самой записи. Раньше здесь
-                // стояла первая местная — и у гостя с двумя собаками
-                // чужие отметки ложились на его собственную.
-                отложить(SharedDiaryInbox.accept(
-                    payload,
-                    dog: SharedDiaryInbox.dog(for: payload, context: ctx),
-                    context: ctx
-                ), record)
-            case .document:
-                guard let payload = SharedDiaryRecords.documentPayload(record) else { continue }
-                отложить(SharedDiaryInbox.accept(
-                    payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
-                    context: ctx), record)
-            case .weight:
-                guard let payload = SharedDiaryRecords.weightPayload(record) else { continue }
-                отложить(SharedDiaryInbox.accept(
-                    payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
-                    context: ctx), record)
-            case .labResult:
-                guard let payload = SharedDiaryRecords.labResultPayload(record) else { continue }
-                отложить(SharedDiaryInbox.accept(
-                    payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
-                    context: ctx), record)
-            case .vetVisit:
-                guard let payload = SharedDiaryRecords.vetVisitPayload(record) else { continue }
-                отложить(SharedDiaryInbox.accept(
-                    payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
-                    context: ctx), record)
-            case .diagnosis:
-                guard let payload = SharedDiaryRecords.diagnosisPayload(record) else { continue }
-                отложить(SharedDiaryInbox.accept(
-                    payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
-                    context: ctx), record)
-            case .prescription:
-                guard let payload = SharedDiaryRecords.prescriptionPayload(record) else { continue }
-                отложить(SharedDiaryInbox.accept(
-                    payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
-                    context: ctx), record)
             case .dose:
-                guard let payload = SharedDiaryRecords.dosePayload(record) else { continue }
-                // Препарат ищется по id, а при промахе — по имени:
-                // схемы лечения не обмениваются, и у второго
-                // человека тот же препарат заведён с другим UUID.
-                отложить(SharedDiaryInbox.accept(
-                    payload,
-                    medication: SharedDiaryInbox.medication(for: payload, context: ctx),
-                    context: ctx
-                ), record)
                 // Напоминания снимаются ПОСЛЕ слияния, а не по тому,
                 // что приехало: спор решает `SharedDiaryMerge`, и чужая
                 // отметка могла проиграть своей. Спрашиваем ту дозу,
@@ -1082,12 +847,12 @@ extension FamilySync: CKSyncEngineDelegate {
                 // есть, а `CKSubscription` в коде ноль — право есть,
                 // механизма нет. Это та же причина, что у записей
                 // голосом, которые не уезжают (`:103-107`, `:244`).
-                if let доза = SharedDiaryInbox.доза(payload.id, context: ctx),
+                if let доза = SharedDiaryInbox.доза(id, context: ctx),
                    !доза.ждётОтметки {
                     дозаБольшеНеЖдёт(доза)
                 }
             default:
-                continue
+                break
             }
         }
 
