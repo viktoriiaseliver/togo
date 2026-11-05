@@ -122,7 +122,10 @@ struct MissedDoseTests {
         let missed = try #require(
             MissedDoseAdvisor.evaluate(medication: дважды(), scheduledAt: at(9), now: at(12, 40))
         )
-        #expect(missed.timeToNext(from: at(12, 40)) == Double(8 * 3600 + 20 * 60))
+        // Константой с типом — та же причина, что в `TimelineTests`:
+        // `Double(8 * 3600 + …)` в `#expect` типизировалось 3,2 с на CI.
+        let ожидаемо: TimeInterval = 8 * 3600 + 20 * 60
+        #expect(missed.timeToNext(from: at(12, 40)) == ожидаемо)
     }
 
     /// # Почему здесь не стоит `12 * 3600`, и это замер 24.10.2026

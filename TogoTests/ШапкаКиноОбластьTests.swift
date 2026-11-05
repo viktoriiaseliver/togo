@@ -97,6 +97,18 @@ struct ШапкаКиноОбластьTests {
     /// В `LanguageScreen` и `SettingsScreen` стоят комментарии «Было
     /// `.posterHeader(…)` — снято решением», и сканер без этой строки
     /// считал бы их за вызовы.
+    /// Сколько раз в тексте файла вызвана шапка «Кино» — по всем её именам.
+    private func вызововШапки(в текст: String) -> Int {
+        var счёт = 0
+        for строка in текст.components(separatedBy: .newlines) {
+            let к: String = код(строка)
+            for имя in Self.именаШапки {
+                счёт += к.components(separatedBy: имя).count - 1
+            }
+        }
+        return счёт
+    }
+
     private func код(_ строка: String) -> String {
         строка.components(separatedBy: "//")[0]
     }
@@ -150,14 +162,10 @@ struct ШапкаКиноОбластьTests {
             откатили.
             """)
 
-        let всего = сШапкой.reduce(0) { сумма, файл in
-            сумма + файл.текст.components(separatedBy: .newlines)
-                .reduce(0) { счёт, строка in
-                    let к = код(строка)
-                    return счёт + Self.именаШапки.reduce(0) {
-                        $0 + к.components(separatedBy: $1).count - 1
-                    }
-                }
+        // Счёт вынесен в функцию с типами: три вложенных `reduce`
+        // без аннотаций типизировались 2,8 с на CI (04.11.2026).
+        let всего: Int = сШапкой.reduce(0) { (сумма: Int, файл) -> Int in
+            сумма + вызововШапки(в: файл.текст)
         }
         #expect(всего >= Self.вызововНеМенее, """
             вызовов шапки «Кино» \(всего), а раскатано было
