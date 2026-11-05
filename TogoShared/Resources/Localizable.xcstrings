@@ -120414,6 +120414,78 @@
         }
       }
     },
+    "Убрать %@ из списка?" : {
+      "comment" : "Семья: удаление карточки участника",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Remove %@ from the list?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Retirer %@ de la liste ?"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ тізімнен шығарылсын ба?"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Убрать %@ из списка?"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Вилучити %@ зі списку?"
+          }
+        }
+      }
+    },
+    "Записи этого человека останутся в дневнике." : {
+      "comment" : "Семья: удаление карточки участника",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "This person's entries will stay in the diary."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Les entrées de cette personne resteront dans le journal."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Бұл адамның жазбалары күнделікте қалады."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Записи этого человека останутся в дневнике."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Записи цієї людини залишаться в щоденнику."
+          }
+        }
+      }
+    },
     "Убрать из списка" : {
       "comment" : "next",
       "extractionState" : "manual",

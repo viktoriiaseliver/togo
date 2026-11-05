@@ -631,7 +631,7 @@ struct FamilyScreen: View {
             next.dutyUntil = было.до
         }) else {
             Haptics.warning()
-            appState.showFailure("Не сохранилось · попробуй ещё раз")
+            appState.showFailure(String(localized: "Не сохранилось · попробуй ещё раз"))
             return
         }
         Haptics.success()
@@ -2151,7 +2151,7 @@ struct MergeConflictCard: View {
             left.note = было.заметка
         }) else {
             Haptics.warning()
-            appState.showFailure("Не сохранилось · попробуй ещё раз")
+            appState.showFailure(String(localized: "Не сохранилось · попробуй ещё раз"))
             return
         }
         resolved = true
