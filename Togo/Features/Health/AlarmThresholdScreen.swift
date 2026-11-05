@@ -78,9 +78,9 @@ struct AlarmThresholdScreen: View {
                         .textStyle(AppFont.numeric(15))
                         .frame(width: 56, alignment: .leading)
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(episode.vomitDetail?.title ?? "без подробностей")
+                        Text(episode.vomitDetail?.title ?? String(localized: "без подробностей"))
                             .textStyle(AppFont.body)
-                        Text(Fmt.gap(Date().timeIntervalSince(episode.date)) + " назад")
+                        Text(String(localized: "\(Fmt.gap(Date().timeIntervalSince(episode.date))) назад"))
                             .textStyle(AppFont.caption)
                     }
                     Spacer(minLength: 0)
