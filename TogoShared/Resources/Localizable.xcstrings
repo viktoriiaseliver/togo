@@ -188,38 +188,38 @@
         }
       }
     },
-    "%@ · отменено" : {
-      "comment" : "Лента дня: отменённая запись — название вида записи и отметка «отменено».",
+    " · отменено" : {
+      "comment" : "body",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "%@ · canceled"
+            "value" : " · canceled"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ · annulé"
+            "value" : " · annulé"
           }
         },
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "%@ · бас тартылды"
+            "value" : " · бас тартылды"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ · отменено"
+            "value" : " · отменено"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "%@ · скасовано"
+            "value" : " · скасовано"
           }
         }
       }

@@ -166,7 +166,11 @@ struct DayTimelineRow: View {
                     // `foregroundStyle`. Прежняя редакция этой строки
                     // накладывала цвет сверху — на `bodyEmphasis` это
                     // сходило с рук только потому, что цвета совпадали.
-                    Text(isCancelled ? String(localized: "\(event.kind.title) · отменено") : event.kind.title)
+                    // Конкатенация `String` каталог не читает, и ключ
+                    // ` · отменено` (en ` · canceled`) лежал без дороги.
+                    Text(isCancelled
+                         ? event.kind.title + String(localized: " · отменено")
+                         : event.kind.title)
                         .textStyle(AppFont.bodyEmphasis,
                                    color: isCancelled ? Token.Ink.secondary : event.titleColor)
                         .strikethrough(isCancelled, color: Token.Ink.secondary)
@@ -599,11 +603,8 @@ struct NowMarker: View {
             .padding(.top, Token.Space.s2)
         }
         .accessibilityElement(children: .ignore)
-        // `map { "…" } ?? "…"` — это `String`, и `accessibilityLabel(String)`
-        // читает его дословно: VoiceOver говорил по-русски на всех языках,
-        // хотя оба ключа лежали в каталоге переведёнными (ревизия 05.11.2026).
-        .accessibilityLabel(sinceLast.map { String(localized: "Сейчас \(Fmt.clock(now)), дома \(Fmt.duration($0)) с прошлого выхода") }
-                            ?? String(localized: "Сейчас \(Fmt.clock(now))"))
+        .accessibilityLabel(sinceLast.map { "Сейчас \(Fmt.clock(now)), дома \(Fmt.duration($0)) с прошлого выхода" }
+                            ?? "Сейчас \(Fmt.clock(now))")
     }
 }
 
