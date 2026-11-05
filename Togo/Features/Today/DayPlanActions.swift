@@ -504,8 +504,8 @@ struct DayPlanActions {
         guard checkPermission(for: item), let dog else { return }
         let календарь = Calendar.current
         let сутки = календарь.startOfDay(for: день)
-        let новаяМинута = Feeding.minuteOfDay(момент, calendar: календарь)
-        let прежняяМинута = Feeding.minuteOfDay(item.time, calendar: календарь)
+        let новаяМинута = FeedingAnalyzer.minuteOfDay(момент, calendar: календарь)
+        let прежняяМинута = FeedingAnalyzer.minuteOfDay(item.time, calendar: календарь)
 
         var часы = dog.часыКормленийНа(день, calendar: календарь).sorted()
         if let место = часы.firstIndex(of: прежняяМинута) {
