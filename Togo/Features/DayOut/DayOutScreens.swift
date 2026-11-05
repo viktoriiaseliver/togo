@@ -74,7 +74,7 @@ struct DayOutStartSheet: View {
         }
     }
 
-    private func row(_ title: String, _ value: String) -> some View {
+    private func row(_ title: LocalizedStringKey, _ value: LocalizedStringKey) -> some View {
         HStack(alignment: .top) {
             Text(title).textStyle(AppFont.body)
             Spacer(minLength: Token.Space.s8)

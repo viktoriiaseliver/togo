@@ -913,6 +913,35 @@
         }
       }
     },
+    "%@ — сколько, скажет дневная норма, а она не записана" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ — how much depends on the daily ration, and it isn't set"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ — combien, la ration du jour le dirait, mais elle n'est pas notée"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ — қанша екенін күндік норма айтады, ал ол жазылмаған"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ — скільки, підкаже денна норма, а її не записано"
+          }
+        }
+      }
+    },
     "%@: сейчас доз по расписанию нет." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1794,6 +1823,35 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "%lld нед" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld wk"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld sem."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld апта"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld тиж."
           }
         }
       }
@@ -2927,6 +2985,35 @@
         }
       }
     },
+    "Анализ крови через" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Blood test after"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Prise de sang après"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Қан талдауы мына мерзімнен кейін"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Аналіз крові через"
+          }
+        }
+      }
+    },
     "Анализы в разных единицах — из разных лабораторий. На одной линии их не сравнить, поэтому каждая единица — свой график." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3271,6 +3358,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "У середньому %lld г на день — на %lld%% менше норми. Собака бадьора і вага тримається — не біда; вага падає — до лікаря."
+          }
+        }
+      }
+    },
+    "В среднем %lld г в день, норма не записана" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Average %lld g a day, no ration set"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "En moyenne %lld g par jour, ration non notée"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Күніне орта есеппен %lld г, норма жазылмаған"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "У середньому %lld г на день, норму не записано"
           }
         }
       }
@@ -5539,6 +5655,35 @@
         }
       }
     },
+    "Заметка не сохранилась · нажми ещё раз" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The note wasn't saved · tap again"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "La note n'a pas été enregistrée · appuie encore"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Жазба сақталмады · қайта бас"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Нотатка не збереглася · натисни ще раз"
+          }
+        }
+      }
+    },
     "Заметка пустая — записывать нечего." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5593,6 +5738,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Запас %@"
+          }
+        }
+      }
+    },
+    "Запас не сохранился · нажми ещё раз" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The stock wasn't saved · tap again"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le stock n'a pas été enregistré · appuie encore"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Қор сақталмады · қайта бас"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Запас не зберігся · натисни ще раз"
           }
         }
       }
@@ -6271,6 +6445,35 @@
         }
       }
     },
+    "Знаю, с какого дня даём" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "I know the start day"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Je connais le jour de début"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Қай күннен беретінімізді білемін"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Знаю, з якого дня даємо"
+          }
+        }
+      }
+    },
     "зоомагазин" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6470,6 +6673,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Інциденти частіше — %1$lld проти %2$lld за попередній період."
+          }
+        }
+      }
+    },
+    "Каждая станет делом в «Прививках» на свой день: %@. Напомнит утренней сводкой и встанет в план дня." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Each one becomes a task in “Vaccines” on its own day: %@. The morning summary will remind you, and it goes into the day plan."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Chacune devient une tâche dans « Vaccins » à son jour : %@. Le résumé du matin le rappellera, et elle entre dans le plan du jour."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Әрқайсысы өз күнінде «Екпелер» бөліміндегі іс болады: %@. Таңғы есеп еске салады, және ол күн жоспарына түседі."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Кожна стане справою в розділі «Щеплення» на свій день: %@. Нагадає ранкове зведення, і вона стане в план дня."
           }
         }
       }
@@ -6911,6 +7143,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "хто і з якими правами"
+          }
+        }
+      }
+    },
+    "кто имеет доступ · %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "who has access · %lld"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "qui a accès · %lld"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "кімде рұқсат бар · %lld"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "хто має доступ · %lld"
           }
         }
       }
@@ -7536,6 +7797,35 @@
         }
       }
     },
+    "Нажми, чтобы поменять" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tap to change"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Appuie pour changer"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Өзгерту үшін бас"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Натисни, щоб змінити"
+          }
+        }
+      }
+    },
     "напомнить не выйдет: уведомления выключены" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7677,6 +7967,64 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Налаштування вигляду — лише на цьому телефоні. У щоденник воно не пише, і в інших у сім'ї екран не змінюється."
+          }
+        }
+      }
+    },
+    "Начали раньше, чем завели здесь, — поставь настоящий день. От него считаются контрольные анализы." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Started before you added it here? Set the real day. Follow-up tests are counted from it."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Commencé avant de l'ajouter ici ? Mets le vrai jour. Les analyses de contrôle se comptent à partir de lui."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Мұнда енгізгеннен ертерек бастадың ба — нақты күнді қой. Бақылау талдаулары содан саналады."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Почали раніше, ніж завели тут, — постав справжній день. Від нього рахуються контрольні аналізи."
+          }
+        }
+      }
+    },
+    "Начало схемы" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Plan start"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Début du schéma"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Схеманың басы"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Початок схеми"
           }
         }
       }
@@ -8210,6 +8558,35 @@
         }
       }
     },
+    "Ориентиры выходов" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Suggested outing times"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Repères de sortie"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Шығу бағдарлары"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Орієнтири виходів"
+          }
+        }
+      }
+    },
     "Оставить %@" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -8728,6 +9105,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Помилилася — торкнись рядка: там можна виправити число й день або видалити."
+          }
+        }
+      }
+    },
+    "Памятка не сохранилась · нажми ещё раз" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The sitter brief wasn't saved · tap again"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Les consignes n'ont pas été enregistrées · appuie encore"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Нұсқаулық сақталмады · қайта бас"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Інструкція не збереглася · натисни ще раз"
           }
         }
       }
@@ -9923,6 +10329,35 @@
         }
       }
     },
+    "проверь: %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "check: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "vérifie : %@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "тексер: %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "перевір: %@"
+          }
+        }
+      }
+    },
     "Прогулка не записалась · отметки остались, нажми ещё раз" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -10180,6 +10615,64 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Розклад лишиться тим самим — змінюється тільки сьогоднішній день. Родина побачить цю годину в себе."
+          }
+        }
+      }
+    },
+    "Режим дня не сохранился · нажми ещё раз" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The daily routine wasn't saved · tap again"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "La routine du jour n'a pas été enregistrée · appuie encore"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Күн режимі сақталмады · қайта бас"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Режим дня не зберігся · натисни ще раз"
+          }
+        }
+      }
+    },
+    "Режим не включился · нажми ещё раз" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The mode didn't turn on · tap again"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le mode ne s'est pas activé · appuie encore"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Режим қосылмады · қайта бас"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Режим не ввімкнувся · натисни ще раз"
           }
         }
       }
@@ -12161,6 +12654,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Прибрано епізодів: %lld · записи лишилися"
+          }
+        }
+      }
+    },
+    "Убрать %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Remove %lld"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Retirer %lld"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld алып тастау"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Прибрати %lld"
           }
         }
       }
@@ -15095,38 +15617,38 @@
         }
       }
     },
-    "%@ г · %@ и запас" : {
+    "%lld г · %@ и запас" : {
       "comment" : "packingCard",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "%@ g · %@ plus reserve"
+            "value" : "%lld g · %@ plus reserve"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "%@ g · %@ et réserve"
+            "value" : "%lld g · %@ et réserve"
           }
         },
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "%@ г · %@ және қор"
+            "value" : "%lld г · %@ және қор"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ г · %@ и запас"
+            "value" : "%lld г · %@ и запас"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "%@ г · %@ і запас"
+            "value" : "%lld г · %@ і запас"
           }
         }
       }
