@@ -2559,6 +2559,35 @@
         }
       }
     },
+    "%lld ч %lld мин" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld h %lld min"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld h %lld min"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld сағ %lld мин"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld год %lld хв"
+          }
+        }
+      }
+    },
     "%lld шагов обучения" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5419,6 +5448,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Забираю…"
+          }
+        }
+      }
+    },
+    "Забор отмечен" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Blood draw noted"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Prise de sang notée"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Қан алу белгіленді"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Забір позначено"
           }
         }
       }
@@ -8819,6 +8877,35 @@
         }
       }
     },
+    "Позвонить в %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Call %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Appeler %@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Қоңырау шалу: %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Зателефонувати в %@"
+          }
+        }
+      }
+    },
     "Пока никого не позвали. «Позвать в дневник» внизу — приглашение создастся само." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -9919,6 +10006,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Минулі тижні не заводяться: %lld з %lld уже позаду."
+          }
+        }
+      }
+    },
+    "Прошлые схемы · %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Past plans · %lld"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Schémas passés · %lld"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Өткен схемалар · %lld"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Минулі схеми · %lld"
           }
         }
       }

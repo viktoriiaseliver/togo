@@ -237,7 +237,7 @@ struct HealthScreen: View {
                         onScheduleCheckup: { days in
                             guard TreatmentCourse.scheduleCheckup(for: dog, after: days,
                                                                   context: context) != nil else {
-                                appState.showFailure("Не сохранилось · попробуй ещё раз")
+                                appState.showFailure(String(localized: "Не сохранилось · попробуй ещё раз"))
                                 return false
                             }
                             return true
@@ -768,7 +768,7 @@ struct HealthScreen: View {
         // он звучал при любом исходе, а результат записи выбрасывался.
         guard TreatmentCourse.finish(dog, by: appState.currentUserName, context: context) else {
             Haptics.warning()
-            appState.showFailure("Не сохранилось · попробуй ещё раз")
+            appState.showFailure(String(localized: "Не сохранилось · попробуй ещё раз"))
             return
         }
         appState.showUndo(String(localized: "Курс завершён"))

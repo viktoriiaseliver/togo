@@ -211,7 +211,7 @@ struct EventLog {
             log.notice("Прогулка не сохранилась")
             UsageLog.note(.record, LogKind.walk.rawValue, outcome: .failed)
             Haptics.warning()
-            appState.showFailure("Не записалось · нажми ещё раз")
+            appState.showFailure(String(localized: "Не записалось · нажми ещё раз"))
             return nil
         }
         UsageLog.note(.record, LogKind.walk.rawValue)

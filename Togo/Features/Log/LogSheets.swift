@@ -186,7 +186,7 @@ struct StoolSheet: View {
     /// на экране, и нажать ещё раз можно, не вспоминая его.
     private func неСохранилось() {
         Haptics.warning()
-        appState.showFailure("Не сохранилось · попробуй ещё раз")
+        appState.showFailure(String(localized: "Не сохранилось · попробуй ещё раз"))
     }
 
     private func ensureEvent() -> LogEvent? {
