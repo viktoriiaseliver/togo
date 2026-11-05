@@ -81,7 +81,11 @@ struct FallbackLiteralTests {
         // Слой приложения. Сюда `LocalizationDebtTests` не смотрит
         // вовсе, и до 07.10.2026 эти строки не числились нигде.
         "BackupScreen.swift": 1,
-        "TodayScreen.swift": 1,
+        // `TodayScreen.swift` (1) и `AlarmThresholdScreen.swift` (1) сняты
+        // 05.11.2026 ревизией: «кто-то» у запертой дозы и «без подробностей»
+        // в пороге тревоги идут через `String(localized:)` (`d09572e1`,
+        // `434337d6`). `DayTimeline.swift` остаётся — метку VoiceOver
+        // «Сейчас …» чинит линия сборок, не эта ветка.
         "DayTimeline.swift": 1,
         // `TrainingSessionScreen.swift` снят 28.10.2026 вместе с файлом:
         // занятия удалены по решению Виктории («удали блок и логику
@@ -92,7 +96,6 @@ struct FallbackLiteralTests {
         // «файл есть, долга в нём нет» — утверждение о файле, которого
         // не существует. Такая запись пережила бы свой предмет
         // и молча разрешила бы вернуть литералы в файл с тем же именем.
-        "AlarmThresholdScreen.swift": 1,
         "PillSupplyScreen.swift": 1,
         // Был `"LogSheets.swift": 1`. 05.11.2026 (пачка 6 аудита)
         // `EventEditSheet` уехал из `LogSheets.swift` в свой файл

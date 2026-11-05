@@ -166,7 +166,11 @@ struct DayTimelineRow: View {
                     // `foregroundStyle`. Прежняя редакция этой строки
                     // накладывала цвет сверху — на `bodyEmphasis` это
                     // сходило с рук только потому, что цвета совпадали.
-                    Text(isCancelled ? event.kind.title + " · отменено" : event.kind.title)
+                    // Конкатенация `String` каталог не читает, и ключ
+                    // ` · отменено` (en ` · canceled`) лежал без дороги.
+                    Text(isCancelled
+                         ? event.kind.title + String(localized: " · отменено")
+                         : event.kind.title)
                         .textStyle(AppFont.bodyEmphasis,
                                    color: isCancelled ? Token.Ink.secondary : event.titleColor)
                         .strikethrough(isCancelled, color: Token.Ink.secondary)

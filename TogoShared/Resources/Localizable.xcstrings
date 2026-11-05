@@ -396,38 +396,38 @@
         }
       }
     },
-    " назад" : {
-      "comment" : "episodesCard",
+    "%@ назад" : {
+      "comment" : "Порог тревоги, строка эпизода: сколько времени прошло (Fmt.gap — уже переведённая длительность).",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : " ago"
+            "value" : "%@ ago"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " plus tôt"
+            "value" : "%@ plus tôt"
           }
         },
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : " бұрын"
+            "value" : "%@ бұрын"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " назад"
+            "value" : "%@ назад"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : " тому"
+            "value" : "%@ тому"
           }
         }
       }
@@ -6184,38 +6184,38 @@
         }
       }
     },
-    "%@ %@: пропущена доза " : {
-      "comment" : "text",
+    "%@ %@: пропущена доза %@, сейчас %@. Что делать?" : {
+      "comment" : "Готовое сообщение врачу из шторки пропущенной дозы. Препарат, доза, время пропуска, текущее время.",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "%@ %@: dose missed "
+            "value" : "%@ %@: dose missed %@, it's now %@. What do you want to do?"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ %@ : dose sautée "
+            "value" : "%@ %@ : dose sautée %@, il est %@. Que faire ?"
           }
         },
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "%@ %@: доза өткізілді "
+            "value" : "%@ %@: доза өткізілді %@, қазір %@. Не істеу керек?"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ %@: пропущена доза "
+            "value" : "%@ %@: пропущена доза %@, сейчас %@. Что делать?"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "%@ %@: пропущена доза "
+            "value" : "%@ %@: пропущена доза %@, зараз %@. Що робити?"
           }
         }
       }
@@ -6649,38 +6649,74 @@
         }
       }
     },
-    "%@ дали в %@. " : {
-      "comment" : "fastingCard",
+    "%@ дают натощак в %@ — к этому времени желудок должен быть пустым. Покормить можно после приёма." : {
+      "comment" : "Окно натощак ДО дозы: подпись красной плашки «Сейчас кормить нельзя». Первый — название препарата (данные человека), второй — время дозы.",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "%@ given at %@. "
+            "value" : "%@ is given on an empty stomach at %@ — by this time the stomach should be empty. You can feed her after the dose."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ donné à %@. "
+            "value" : "%@ se donne à jeun à %@ — à cette heure-là, l'estomac doit être vide. Repas possible après la prise."
           }
         },
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "%@ %@-де берілді. "
+            "value" : "%@ ашқарынға %@-де беріледі — осы уақытқа дейін асқазан бос болуы керек. Қабылдаудан кейін тамақтандыруға болады."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ дали в %@. "
+            "value" : "%@ дают натощак в %@ — к этому времени желудок должен быть пустым. Покормить можно после приёма."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "%@ дали о %@. "
+            "value" : "%@ дають натщесерце о %@ — до цього часу шлунок має бути порожнім. Погодувати можна після прийому."
+          }
+        }
+      }
+    },
+    "%@ дали в %@. Еда сейчас помешает всасыванию — можно с %@." : {
+      "comment" : "Окно натощак ПОСЛЕ дозы: подпись красной плашки «Сейчас кормить нельзя». Название препарата, время дозы, время, с которого можно есть.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ given at %@. Eating now would get in the way of absorption — it's fine from %@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ donné à %@. Manger maintenant gênerait l'absorption — possible à partir de %@."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ %@-де берілді. Тамақ қазір сіңуге кедергі жасайды — %@-ден бастап болады."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ дали в %@. Еда сейчас помешает всасыванию — можно с %@."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ дали о %@. Їжа зараз завадить всмоктуванню — можна з %@."
           }
         }
       }
@@ -6717,42 +6753,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "%@ дати"
-          }
-        }
-      }
-    },
-    "%@ дают натощак в %@ — " : {
-      "comment" : "fastingCard",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%@ is given on an empty stomach at %@ — "
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ se donne à jeun à %@ — "
-          }
-        },
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%@ ашқарынға %@-де беріледі — "
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ дают натощак в %@ — "
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%@ дають натщесерце о %@ — "
           }
         }
       }
@@ -8039,42 +8039,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "%@, ще раз. Одне вдале заняття — не навичка; потрібне друге, щоб іти далі."
-          }
-        }
-      }
-    },
-    "%@, сейчас %@. Что делать?" : {
-      "comment" : "text",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%@, it's now %@. What do you want to do?"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@, il est %@. Que faire ?"
-          }
-        },
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%@, қазір %@. Не істеу керек?"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@, сейчас %@. Что делать?"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%@, зараз %@. Що робити?"
           }
         }
       }
@@ -29903,38 +29867,38 @@
         }
       }
     },
-    "где: " : {
-      "comment" : "frictions",
+    "где: %@" : {
+      "comment" : "Журнал действий, трение: на каких экранах (список названий экранов через запятую).",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "where: "
+            "value" : "where: %@"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "où : "
+            "value" : "où : %@"
           }
         },
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "қайда: "
+            "value" : "қайда: %@"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "где: "
+            "value" : "где: %@"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "де: "
+            "value" : "де: %@"
           }
         }
       }
@@ -39200,42 +39164,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Їжа і режим"
-          }
-        }
-      }
-    },
-    "Еда сейчас помешает всасыванию — можно с %@." : {
-      "comment" : "fastingCard",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Eating now would get in the way of absorption — it's fine from %@."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Manger maintenant gênerait l'absorption — possible à partir de %@."
-          }
-        },
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Тамақ қазір сіңуге кедергі жасайды — %@-ден бастап болады."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Еда сейчас помешает всасыванию — можно с %@."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Їжа зараз завадить всмоктуванню — можна з %@."
           }
         }
       }
@@ -50937,42 +50865,6 @@
         }
       }
     },
-    "к этому времени желудок должен быть пустым. " : {
-      "comment" : "fastingCard",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "by this time the stomach should be empty. "
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "à cette heure-là, l'estomac doit être vide. "
-          }
-        },
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "осы уақытқа дейін асқазан бос болуы керек. "
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "к этому времени желудок должен быть пустым. "
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "до цього часу шлунок має бути порожнім. "
-          }
-        }
-      }
-    },
     "каждые %@" : {
       "comment" : "trialLength",
       "extractionState" : "manual",
@@ -55129,38 +55021,38 @@
         }
       }
     },
-    "Кормление в %@ попадает в окно натощак " : {
-      "comment" : "result",
+    "Кормление в %@ попадает в окно натощак %@–%@" : {
+      "comment" : "Экран кормления, карточка конфликтов: время кормления и окно натощак (начало–конец).",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "The meal at %@ falls inside the fasting window "
+            "value" : "The meal at %@ falls inside the fasting window %@–%@"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le repas de %@ tombe dans la fenêtre à jeun "
+            "value" : "Le repas de %@ tombe dans la fenêtre à jeun %@–%@"
           }
         },
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "%@-дегі тамақтандыру ашқарын терезесіне түседі "
+            "value" : "%@-дегі тамақтандыру %@–%@ ашқарын терезесіне түседі"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Кормление в %@ попадает в окно натощак "
+            "value" : "Кормление в %@ попадает в окно натощак %@–%@"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Годування о %@ потрапляє у вікно натщесерце "
+            "value" : "Годування о %@ потрапляє у вікно натщесерце %@–%@"
           }
         }
       }
@@ -84005,42 +83897,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Погодувала"
-          }
-        }
-      }
-    },
-    "Покормить можно после приёма." : {
-      "comment" : "fastingCard",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "You can feed her after the dose."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Repas possible après la prise."
-          }
-        },
-        "kk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Қабылдаудан кейін тамақтандыруға болады."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Покормить можно после приёма."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Погодувати можна після прийому."
           }
         }
       }

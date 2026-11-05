@@ -133,7 +133,7 @@ struct UsageLogScreen: View {
                         }
                         Text(item.detail).textStyle(AppFont.caption).wraps()
                         if !item.screens.isEmpty {
-                            Text("где: " + item.screens.joined(separator: ", "))
+                            Text("где: \(item.screens.joined(separator: ", "))")
                                 .textStyle(AppFont.micro)
                         }
                     }

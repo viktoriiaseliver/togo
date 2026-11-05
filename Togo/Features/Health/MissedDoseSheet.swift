@@ -105,7 +105,7 @@ struct MissedDoseSheet: View {
                     }
                     Spacer(minLength: 0)
                     Image(systemName: "chevron.right")
-                        .font(.system(size: 13, weight: .semibold))
+                        .font(.system(size: Token.Size.iconSm, weight: .semibold))
                         .foregroundStyle(Token.Ink.secondary)
                 }
                 Text(detail).textStyle(AppFont.caption).wraps()
@@ -118,15 +118,17 @@ struct MissedDoseSheet: View {
     /// Третий выход. Тоже кнопка, а не сноска: спросить врача — это
     /// нормальный ответ, а не признание поражения.
     private var askVet: some View {
-        let text = "\(medication.name) \(medication.doseText): пропущена доза "
-            + "\(Fmt.clock(missed.scheduledAt)), сейчас \(Fmt.clock(now)). Что делать?"
+        // Одна фраза — один `String(localized:)`. Склейка через `+` была
+        // обычным `String` мимо каталога: врачу уходило русское сообщение
+        // при любом языке телефона (ревизия 05.11.2026).
+        let text = String(localized: "\(medication.name) \(medication.doseText): пропущена доза \(Fmt.clock(missed.scheduledAt)), сейчас \(Fmt.clock(now)). Что делать?")
         return ShareLink(item: text) {
             TGCard {
                 HStack(spacing: Token.Space.s8) {
                     Text("Спросить врача").textStyle(AppFont.cardTitle)
                     Spacer(minLength: 0)
                     Image(systemName: "square.and.arrow.up")
-                        .font(.system(size: 13, weight: .semibold))
+                        .font(.system(size: Token.Size.iconSm, weight: .semibold))
                         .foregroundStyle(Token.Ink.secondary)
                 }
                 Text("Готовое сообщение: название, доза и время пропуска.")

@@ -84,7 +84,9 @@ struct LocalizationDebtTests {
         //    на четырёх языках всё это время.
         // Эталон держал обе половины на причине «текст заморожен,
         // носителя сегодня нет» — переводчик не был нужен ни одной.
-        "Feeding.swift": 1, "ScheduleChange.swift": 1,
+        // `Feeding.swift` (1) снят 05.11.2026: «Кормление в … попадает
+        // в окно натощак …» идёт через `String(localized:)` (`4ce33715`).
+        "ScheduleChange.swift": 1,
         "TimelineBuilder.swift": 1, "TreatmentCourse.swift": 5, "VetSummary.swift": 9, "WalkMarkIntent.swift": 8,
         // 6 → 8, 27.10.2026: `WalkFinishIntent` — кнопка «Домой»
         // на живой активности, решение Виктории. Две строки той же
