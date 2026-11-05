@@ -9,6 +9,10 @@
 написанное рукой, пересборка не трогает.
 
 
+- [5 ноября 2026](journal/2026-11-05-shest-agentov-za-noch.md) — Сводная запись координатора (`projects-b3`)
+- [5 ноября 2026 — hvosty-nochi-zakryty](journal/2026-11-05-hvosty-nochi-zakryty.md) — hvosty-nochi-zakryty
+- [4 ноября 2026 — якорь кадрирования подложки](journal/2026-11-04-yakor-kadrirovaniya-podlozhki.md) — якорь кадрирования подложки
+- [4 ноября 2026 — картинки, «Кино» на подэкранах, 293 друзьям](journal/2026-11-04-kartinki-kino-i-293-druzyam.md) — картинки, «Кино» на подэкранах, 293 друзьям
 - [3 ноября 2026 — vitrina-vseh-yazykov-i-klass-lokalizacii](journal/2026-11-03-vitrina-vseh-yazykov-i-klass-lokalizacii.md) — vitrina-vseh-yazykov-i-klass-lokalizacii
 - [3 ноября 2026 — teksty-obeshchali-zanyatiya](journal/2026-11-03-teksty-obeshchali-zanyatiya.md) — teksty-obeshchali-zanyatiya
 - [3 ноября 2026 — storozh-dolga-tri-kornya-i-vtoraya-os](journal/2026-11-03-storozh-dolga-tri-kornya-i-vtoraya-os.md) — storozh-dolga-tri-kornya-i-vtoraya-os
