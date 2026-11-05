@@ -1798,6 +1798,34 @@
         }
       }
     },
+    "%lld нед" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld wk"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld sem"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld апта"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld тиж"
+          }
+        }
+      }
+    },
     "%lld недель позади" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2743,6 +2771,370 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "5 днів поспіль · по 2 хвилини"
+          }
+        }
+      }
+    },
+    "Анализ крови · %lld нед от начала" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Blood test · week %lld from the start"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Analyse de sang · %lld sem après le début"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Қан талдауы · басталғаннан %lld апта"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Аналіз крові · %lld тиж від початку"
+          }
+        }
+      }
+    },
+    "Дальше · через %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Next · in %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ensuite · dans %@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Келесі · %@ кейін"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Далі · через %@"
+          }
+        }
+      }
+    },
+    "Запас %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Stock %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Stock %@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Қор %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Запас %@"
+          }
+        }
+      }
+    },
+    "Прогулка не записалась · отметки остались, нажми ещё раз" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The walk was not saved · your marks are kept, tap again"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "La promenade n'a pas été enregistrée · tes marques sont gardées, appuie encore"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Серуен жазылмады · белгілер сақталды, қайта басыңыз"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Прогулянка не записалася · позначки залишилися, натисни ще раз"
+          }
+        }
+      }
+    },
+    "Не нашлось, какую запись снять · открой историю" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Could not tell which entry to undo · open the history"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Impossible de savoir quelle entrée annuler · ouvre l'historique"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Қай жазбаны алып тастау керегі анықталмады · тарихты ашыңыз"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Не знайшлося, який запис зняти · відкрий історію"
+          }
+        }
+      }
+    },
+    "Памятка не сохранилась · нажми ещё раз" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "The briefing was not saved · tap again"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le mémo n'a pas été enregistré · appuie encore"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Жаднама сақталмады · қайта басыңыз"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Пам'ятка не збереглася · натисни ще раз"
+          }
+        }
+      }
+    },
+    "Режим дня не сохранился · нажми ещё раз" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Daily routine was not saved · tap again"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le rythme de la journée n'a pas été enregistré · appuie encore"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Күн режимі сақталмады · қайта басыңыз"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Режим дня не зберігся · натисни ще раз"
+          }
+        }
+      }
+    },
+    "Каждая станет делом в «Прививках» на свой день: %@. Напомнит утренней сводкой и встанет в план дня." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Each one becomes a task in Vaccinations on its own day: %@. It will remind you in the morning summary and stand in the day plan."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Chacune devient une tâche dans « Vaccins » à sa date : %@. Un rappel arrivera dans le résumé du matin et elle figurera dans le plan du jour."
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Әрқайсысы «Егулер» бөлімінде өз күніне іс болады: %@. Таңғы жиынтықта еске салады және күн жоспарына тұрады."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Кожна стане справою у «Щепленнях» на свій день: %@. Нагадає ранковою зведенням і стане в план дня."
+          }
+        }
+      }
+    },
+    "Прошлые схемы · %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Past regimens · %lld"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Protocoles passés · %lld"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Бұрынғы схемалар · %lld"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Минулі схеми · %lld"
+          }
+        }
+      }
+    },
+    "Запас не сохранился · нажми ещё раз" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Stock was not saved · tap again"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le stock n'a pas été enregistré · appuie encore"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Қор сақталмады · қайта басыңыз"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Запас не зберігся · натисни ще раз"
+          }
+        }
+      }
+    },
+    "Убрать %@ из списка?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Remove %@ from the list?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Retirer %@ de la liste ?"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ тізімнен шығарылсын ба?"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Вилучити %@ зі списку?"
+          }
+        }
+      }
+    },
+    "Заметка не сохранилась · нажми ещё раз" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Note was not saved · tap again"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "La note n'a pas été enregistrée · appuie encore"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Жазба сақталмады · қайта басыңыз"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Замітка не збереглася · натисни ще раз"
+          }
+        }
+      }
+    },
+    "Режим не включился · нажми ещё раз" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mode did not start · tap again"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le mode ne s'est pas activé · appuie encore"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Режим қосылмады · қайта басыңыз"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Режим не увімкнувся · натисни ще раз"
           }
         }
       }
