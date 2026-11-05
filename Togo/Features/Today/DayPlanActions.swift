@@ -485,6 +485,81 @@ struct DayPlanActions {
         appState.showUndo(String(localized: "Доза отмечена пропущенной"))
     }
 
+    // MARK: Разовое исключение кормления
+
+    /// Передвинуть одно кормление **на сегодня**: «сегодня ужин в 22:00».
+    ///
+    /// Правится не расписание, а разовое исключение на дату
+    /// (`Dog.разовыеВременаДата` и `Dog.разовыеВремена`). `mealTimes`
+    /// остаётся как был — завтра собака ест по-прежнему.
+    ///
+    /// **Часы берутся у `часыКормленийНа(_:)`, а не у `mealTimes`:**
+    /// иначе второй сдвиг в тот же день затирал бы первый, возвращая
+    /// расписание. Человек, двигающий ужин дважды, сдвига не отменял.
+    ///
+    /// Возврат при отказе записи — поимённо по трём полям, которые
+    /// трогаем, как требует `persist(otherwise:)`: `rollback()`
+    /// у SwiftData значений не возвращает.
+    func сдвинутьКормление(_ item: DayPlanItem, на момент: Date) {
+        guard checkPermission(for: item), let dog else { return }
+        let календарь = Calendar.current
+        let сутки = календарь.startOfDay(for: день)
+        let новаяМинута = Feeding.minuteOfDay(момент, calendar: календарь)
+        let прежняяМинута = Feeding.minuteOfDay(item.time, calendar: календарь)
+
+        var часы = dog.часыКормленийНа(день, calendar: календарь).sorted()
+        if let место = часы.firstIndex(of: прежняяМинута) {
+            часы[место] = новаяМинута
+        } else {
+            // Слота с таким часом в расписании нет — значит пункт
+            // пришёл не из него (или расписание уже сменили из другого
+            // места). Тогда исключение не чинит порядок, а заводит
+            // лишнее кормление; лучше не записать ничего, чем накормить
+            // собаку лишний раз.
+            Haptics.warning()
+            appState.showFailure(String(localized: "Это кормление уже сдвинули · открой план заново"))
+            return
+        }
+        часы = Array(Set(часы)).sorted()
+
+        let было = (dog.разовыеВременаДата, dog.разовыеВремена, dog.changedAt)
+        dog.разовыеВременаДата = сутки
+        dog.разовыеВремена = часы
+        // Без этого исключение не уедет ко второму человеку: спор двух
+        // телефонов разрешает поздняя правка, и профиль без свежего
+        // `changedAt` проиграет чужому старому.
+        dog.changedAt = сейчас
+
+        guard context.persist(otherwise: {
+            (dog.разовыеВременаДата, dog.разовыеВремена, dog.changedAt) = было
+        }) else {
+            Haptics.warning()
+            appState.showFailure(String(localized: "Не записалось · нажми ещё раз"))
+            return
+        }
+        Haptics.tap()
+        appState.showUndo(String(localized: "Сегодня в \(Fmt.clock(момент))"))
+    }
+
+    /// Вернуть расписание этих суток: исключения больше нет.
+    func вернутьРасписание(_ item: DayPlanItem) {
+        guard checkPermission(for: item), let dog else { return }
+        let было = (dog.разовыеВременаДата, dog.разовыеВремена, dog.changedAt)
+        dog.разовыеВременаДата = nil
+        dog.разовыеВремена = []
+        dog.changedAt = сейчас
+
+        guard context.persist(otherwise: {
+            (dog.разовыеВременаДата, dog.разовыеВремена, dog.changedAt) = было
+        }) else {
+            Haptics.warning()
+            appState.showFailure(String(localized: "Не записалось · нажми ещё раз"))
+            return
+        }
+        Haptics.tap()
+        appState.showUndo(String(localized: "Вернули расписание"))
+    }
+
     /// «Беру на себя» с запасом в 45 минут — чтобы двое не дали дозу дважды.
     ///
     /// Механика была написана в модели и не вызывалась ниоткуда: защита

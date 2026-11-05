@@ -31,10 +31,15 @@ nonisolated enum DayOutPlan {
         // Кормления берём из расписания собаки: приложение уже знает,
         // во сколько она ест, и выдумывать второй раз незачем.
         var meals = 0
-        for minute in dog.mealTimes.sorted() {
-            // И сегодня, и завтра: длинный день переваливает за полночь.
-            for dayOffset in 0...1 {
-                guard let day = calendar.date(byAdding: .day, value: dayOffset, to: startOfDay) else { continue }
+        // И сегодня, и завтра: длинный день переваливает за полночь.
+        //
+        // **Часы спрашиваются У КАЖДОГО ДНЯ отдельно**, а не один раз
+        // снаружи цикла: разовое исключение стоит на одних сутках,
+        // и общий список для двух дней положил бы его и на завтра.
+        // Поэтому порядок циклов перевёрнут — день снаружи, час внутри.
+        for dayOffset in 0...1 {
+            guard let day = calendar.date(byAdding: .day, value: dayOffset, to: startOfDay) else { continue }
+            for minute in dog.часыКормленийНа(day, calendar: calendar).sorted() {
                 // Через `Calendar.date(minuteOfDay:on:)` (`DayTime.swift:20`),
                 // а не сложением секунд: в сутки перевода часов начало дня
                 // плюс 450 минут даёт не 07:30, и кормление у края окна
