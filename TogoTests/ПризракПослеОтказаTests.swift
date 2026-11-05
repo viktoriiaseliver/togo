@@ -250,7 +250,9 @@ struct ПризракПослеОтказаTests {
 
     /// И запрет на «упрощение» отката до `rollback()`: на iOS 18.6 после
     /// отказа он не снимает вставку, а удваивает её.
-    /// `Backup.swift` откатывает восстановление именно им — см. аудит.
+    /// `Backup.swift` откатывал восстановление именно им до 05.11.2026 —
+    /// теперь поштучным удалением вставленного и `осестьПослеОтказа()`,
+    /// тест ниже.
     @Test("SwiftData: rollback() после отказа отправляет вставку в следующий save")
     func rollbackУезжает() throws {
         let (файл, ctx, dog) = try Self.хранилище()
@@ -265,5 +267,92 @@ struct ПризракПослеОтказаTests {
         let вФайле = try Self.вФайле(файл)
         print("ЗАМЕР rollback: строк \(вФайле.строк), разных id \(вФайле.разныхId)")
         #expect(вФайле.строк >= 1)
+    }
+
+    // MARK: Восстановление архива — откат без rollback()
+
+    /// Записи и собаки в файле — свежим контейнером.
+    private static func содержимое(_ файл: URL) throws -> (записи: [UUID: Date?], собак: Int) {
+        let к = ModelContext(try ModelContainer(
+            for: Persistence.schema,
+            configurations: ModelConfiguration(url: файл, cloudKitDatabase: .none)))
+        var записи: [UUID: Date?] = [:]
+        for запись in try к.fetch(FetchDescriptor<LogEvent>()) { записи[запись.id] = запись.deletedAt }
+        return (записи, try к.fetchCount(FetchDescriptor<Dog>()))
+    }
+
+    /// Архив ДРУГОГО дневника: своя собака и своя отметка, свои id.
+    private static func чужойАрхив() throws -> (BackupArchive, UUID) {
+        let к = ModelContext(Persistence.container())
+        let тео = Dog(name: "Тео", weightKg: 30)
+        к.insert(тео)
+        let запись = LogEvent(kind: .meal, date: Date(), authorName: "Мама")
+        запись.dog = тео
+        к.insert(запись)
+        try к.save()
+        return (try BackupService.archive(context: к, appVersion: "тест"), запись.id)
+    }
+
+    /// `restore` откатывал бросок `rollback()` — по строке таблицы выше
+    /// это вставка, уезжающая в следующее удачное сохранение. Здесь путь
+    /// целиком: «заменить» отказывает на записи, человек делает что-то
+    /// ещё, в файле обязан остаться ПРЕЖНИЙ дневник.
+    @Test("Неудавшееся «заменить» не уезжает в следующее сохранение")
+    func неудавшеесяЗаменитьНеУезжает() throws {
+        let (файл, ctx, dog) = try Self.хранилище()
+        let своя = LogEvent(kind: .note, date: Date(), authorName: "Аня")
+        своя.dog = dog
+        ctx.insert(своя)
+        try ctx.save()
+        let своейID = своя.id
+        let (архив, чужойID) = try Self.чужойАрхив()
+
+        #expect(throws: (any Error).self, "восстановление под лимитом не отказало — проверять нечего") {
+            try Self.безЗаписи {
+                _ = try BackupService.restore(архив, into: ctx, strategy: .replace, обмен: false)
+            }
+        }
+        try Self.чужаяПравка(ctx, dog)
+
+        let после = try Self.содержимое(файл)
+        #expect(после.записи[чужойID] == nil, """
+            запись из неудавшегося восстановления легла в файл следующим \
+            сохранением: человеку сказали «не получилось», а файл в дневнике
+            """)
+        #expect(после.записи.keys.contains(своейID), """
+            своя отметка пропала после НЕУДАВШЕГОСЯ «заменить»: стирание \
+            уехало в следующее сохранение, а вставка — нет
+            """)
+        #expect(после.собак == 1, "собак в файле \(после.собак), ожидалась одна прежняя")
+    }
+
+    /// То же при обмене: там «заменить» ставит надгробия, и откат обязан
+    /// вернуть их — иначе неудавшееся восстановление удалило бы запись
+    /// у обоих людей.
+    @Test("Неудавшееся «заменить» при обмене не оставляет надгробий")
+    func неудавшеесяЗаменитьПриОбменеБезНадгробий() throws {
+        let (файл, ctx, dog) = try Self.хранилище()
+        let своя = LogEvent(kind: .note, date: Date(), authorName: "Аня")
+        своя.dog = dog
+        ctx.insert(своя)
+        try ctx.save()
+        let своейID = своя.id
+        let (архив, чужойID) = try Self.чужойАрхив()
+
+        #expect(throws: (any Error).self, "восстановление под лимитом не отказало — проверять нечего") {
+            try Self.безЗаписи {
+                _ = try BackupService.restore(архив, into: ctx, strategy: .replace, обмен: true)
+            }
+        }
+        try Self.чужаяПравка(ctx, dog)
+
+        let после = try Self.содержимое(файл)
+        #expect(после.записи[чужойID] == nil, "запись из неудавшегося восстановления легла в файл")
+        #expect(после.записи.keys.contains(своейID), "своя отметка пропала после неудавшегося «заменить»")
+        let надгробие = после.записи[своейID] ?? nil
+        #expect(надгробие == nil, """
+            после НЕУДАВШЕГОСЯ «заменить» своя отметка легла с надгробием — \
+            обмен разослал бы удаление второму человеку
+            """)
     }
 }

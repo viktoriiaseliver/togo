@@ -42,6 +42,22 @@ nonisolated struct BackupArchive: Codable, Sendable {
     /// Подъём версии купил бы отказ там, где чтение работает, и ничего
     /// не защитил бы: новые поля аддитивны и опциональны. Поднимать
     /// её — когда поле станет ОБЯЗАТЕЛЬНЫМ или поменяет смысл.
+    ///
+    /// # Время правки — тоже 05.11.2026, тем же правилом
+    ///
+    /// Решение Виктории: «Возить время правки в архиве». `changedAt: Date?`
+    /// стоит в каждом снимке, у модели которого он есть (двенадцать
+    /// типов общего дневника). Без него восстановленная запись получала
+    /// «сейчас» и в споре `SharedDiaryMerge` у второго человека побеждала
+    /// всё: его более позднюю правку и его удаление. С ним спор решает
+    /// настоящее время правки. Разбор пути — в голове
+    /// `BackupService.restore`.
+    ///
+    /// **Точность — секунда, вниз.** `.iso8601` долей не пишет; файл
+    /// везёт время правки чуть РАНЬШЕ настоящего, то есть в споре
+    /// при равенстве до секунды уступает живой записи. Это сторона,
+    /// в которую ошибаться безопасно: старый файл не перебивает
+    /// живое.
     var formatVersion: Int = 1
     var createdAt: Date
     var appVersion: String
@@ -99,6 +115,8 @@ nonisolated struct BackupArchive: Codable, Sendable {
         var createdAt: Date
         /// Идентификатор записи — см. `BackupArchive.formatVersion`.
         var id: UUID?
+        /// Время правки — см. `BackupArchive.formatVersion`.
+        var changedAt: Date?
     }
 
     /// Навык подготовки к процедуре.
@@ -250,6 +268,8 @@ nonisolated struct BackupArchive: Codable, Sendable {
         /// при общем дневнике заводило у второго человека дубль собаки
         /// со всей историей.
         var id: UUID?
+        /// Время правки — см. `BackupArchive.formatVersion`.
+        var changedAt: Date?
     }
 
     /// Строка анализа.
@@ -288,6 +308,8 @@ nonisolated struct BackupArchive: Codable, Sendable {
         var note: String
         /// Идентификатор записи — см. `BackupArchive.formatVersion`.
         var id: UUID?
+        /// Время правки — см. `BackupArchive.formatVersion`.
+        var changedAt: Date?
     }
 
     /// Визит к врачу. Онлайн-консультация — такой же визит.
@@ -302,6 +324,8 @@ nonisolated struct BackupArchive: Codable, Sendable {
         var conclusion: String
         /// Идентификатор записи — см. `BackupArchive.formatVersion`.
         var id: UUID?
+        /// Время правки — см. `BackupArchive.formatVersion`.
+        var changedAt: Date?
     }
 
     /// Диагноз. Статус везётся обязательно: по подтверждённому лечат,
@@ -315,6 +339,8 @@ nonisolated struct BackupArchive: Codable, Sendable {
         var evidence: String
         /// Идентификатор записи — см. `BackupArchive.formatVersion`.
         var id: UUID?
+        /// Время правки — см. `BackupArchive.formatVersion`.
+        var changedAt: Date?
     }
 
     /// Назначение.
@@ -349,6 +375,8 @@ nonisolated struct BackupArchive: Codable, Sendable {
         var source: String
         /// Идентификатор записи — см. `BackupArchive.formatVersion`.
         var id: UUID?
+        /// Время правки — см. `BackupArchive.formatVersion`.
+        var changedAt: Date?
     }
 
     /// Фотография документа целиком: паспорт, потерянный вместе
@@ -436,6 +464,8 @@ nonisolated struct BackupArchive: Codable, Sendable {
         var deletedAt: Date?
         /// Идентификатор записи — см. `BackupArchive.formatVersion`.
         var id: UUID?
+        /// Время правки — см. `BackupArchive.formatVersion`.
+        var changedAt: Date?
     }
 
     struct StockSnapshot: Codable, Sendable {
@@ -592,6 +622,8 @@ nonisolated struct BackupArchive: Codable, Sendable {
         var careTaskID: UUID?
         var medicationID: UUID?
         var trainingSessionID: UUID?
+        /// Время правки — см. `BackupArchive.formatVersion`.
+        var changedAt: Date?
     }
 
     struct WeightSnapshot: Codable, Sendable {
@@ -599,6 +631,8 @@ nonisolated struct BackupArchive: Codable, Sendable {
         var kg: Double
         /// Идентификатор записи — см. `BackupArchive.formatVersion`.
         var id: UUID?
+        /// Время правки — см. `BackupArchive.formatVersion`.
+        var changedAt: Date?
     }
 
     struct CareTaskSnapshot: Codable, Sendable {
@@ -636,6 +670,8 @@ nonisolated struct BackupArchive: Codable, Sendable {
         var vaccineValidUntil: Date?
         /// Идентификатор записи — см. `BackupArchive.formatVersion`.
         var id: UUID?
+        /// Время правки — см. `BackupArchive.formatVersion`.
+        var changedAt: Date?
     }
 
     struct MedicationSnapshot: Codable, Sendable {
@@ -723,6 +759,8 @@ nonisolated struct BackupArchive: Codable, Sendable {
         var startedAt: Date?
         /// Идентификатор записи — см. `BackupArchive.formatVersion`.
         var id: UUID?
+        /// Время правки — см. `BackupArchive.formatVersion`.
+        var changedAt: Date?
     }
 
     struct DoseSnapshot: Codable, Sendable {
@@ -764,6 +802,8 @@ nonisolated struct BackupArchive: Codable, Sendable {
         /// на ту же схему, а не в никуда. Имя рядом остаётся: у старых
         /// файлов id нет, и сшивка «по id ИЛИ по имени» берёт имя.
         var awaitedMedicationID: UUID?
+        /// Время правки — см. `BackupArchive.formatVersion`.
+        var changedAt: Date?
     }
 
     struct TrainingStepSnapshot: Codable, Sendable {

@@ -91,7 +91,8 @@ nonisolated enum BackupService {
             clinics: clinics.map {
                 BackupArchive.ClinicSnapshot(
                     name: $0.name, detail: $0.detail, isLab: $0.isLab,
-                    phone: $0.phone, createdAt: $0.createdAt, id: $0.id)
+                    phone: $0.phone, createdAt: $0.createdAt, id: $0.id,
+                    changedAt: $0.changedAt)
             }
         )
     }
@@ -143,10 +144,12 @@ nonisolated enum BackupService {
                     reactionDistanceRaw: event.reactionDistanceRaw,
                     walkEventID: event.walkEventID, careTaskID: event.careTaskID,
                     medicationID: event.medicationID,
-                    trainingSessionID: event.trainingSessionID
+                    trainingSessionID: event.trainingSessionID,
+                    changedAt: event.changedAt
                 )
             },
-            weights: dog.weights.map { BackupArchive.WeightSnapshot(date: $0.date, kg: $0.kg, id: $0.id) },
+            weights: dog.weights.map { BackupArchive.WeightSnapshot(date: $0.date, kg: $0.kg, id: $0.id,
+                                                                       changedAt: $0.changedAt) },
             careTasks: dog.careTasks.map {
                 BackupArchive.CareTaskSnapshot(
                     title: $0.title, detail: $0.detail, intervalDays: $0.intervalDays,
@@ -162,7 +165,8 @@ nonisolated enum BackupService {
                     clinicName: $0.clinic?.name,
                     vaccineBatch: $0.vaccineBatch,
                     vaccineValidUntil: $0.vaccineValidUntil,
-                    id: $0.id
+                    id: $0.id,
+                    changedAt: $0.changedAt
                 )
             },
             medications: dog.medications.map { medication in
@@ -181,7 +185,8 @@ nonisolated enum BackupService {
                                                    claimedBy: $0.claimedBy, claimedAt: $0.claimedAt,
                                                    awaitedMedicationName: $0.awaitedMedicationName,
                                                    id: $0.id,
-                                                   awaitedMedicationID: $0.awaitedMedicationID)
+                                                   awaitedMedicationID: $0.awaitedMedicationID,
+                                                   changedAt: $0.changedAt)
                     },
                     unitRaw: medication.unitRaw,
                     massPerUnitMcg: medication.massPerUnitMcg,
@@ -200,7 +205,8 @@ nonisolated enum BackupService {
                     canGiveOutside: medication.canGiveOutside,
                     prescriptionNumber: medication.prescriptionNumber,
                     startedAt: medication.startedAt,
-                    id: medication.id
+                    id: medication.id,
+                    changedAt: medication.changedAt
                 )
             },
             trainingSteps: dog.trainingSteps.map {
@@ -253,7 +259,8 @@ nonisolated enum BackupService {
                                                directionRaw: $0.directionRaw,
                                                clinicName: $0.clinic?.name,
                                                deletedAt: $0.deletedAt,
-                                               id: $0.id)
+                                               id: $0.id,
+                                               changedAt: $0.changedAt)
             },
             daysOut: daysOut.map {
                 BackupArchive.DayOutSnapshot(startedAt: $0.startedAt, endedAt: $0.endedAt,
@@ -274,19 +281,19 @@ nonisolated enum BackupService {
                     unit: $0.unit,
                     referenceLow: $0.referenceLow, referenceHigh: $0.referenceHigh,
                     method: $0.method, labMark: $0.labMark, note: $0.note,
-                    id: $0.id)
+                    id: $0.id, changedAt: $0.changedAt)
             },
             vetVisits: dog.vetVisits.map {
                 BackupArchive.VetVisitSnapshot(
                     date: $0.date, clinicName: $0.clinic?.name, doctor: $0.doctor,
                     reasonRaw: $0.reasonRaw, conclusion: $0.conclusion,
-                    id: $0.id)
+                    id: $0.id, changedAt: $0.changedAt)
             },
             diagnoses: dog.diagnoses.map {
                 BackupArchive.DiagnosisSnapshot(
                     wording: $0.wording, statusRaw: $0.statusRaw,
                     madeOn: $0.madeOn, madeBy: $0.madeBy, evidence: $0.evidence,
-                    id: $0.id)
+                    id: $0.id, changedAt: $0.changedAt)
             },
             prescriptions: dog.prescriptions.map {
                 BackupArchive.PrescriptionSnapshot(
@@ -298,7 +305,7 @@ nonisolated enum BackupService {
                     controlFromWeeks: $0.controlFromWeeks,
                     controlToWeeks: $0.controlToWeeks,
                     dispensed: $0.dispensed, instruction: $0.instruction,
-                    source: $0.source, id: $0.id)
+                    source: $0.source, id: $0.id, changedAt: $0.changedAt)
             },
             // Надгробие собаки — 26.10.2026. Разбор в объявлении поля:
             // список собак идёт в архив нефильтрованным, и без этой
@@ -306,7 +313,8 @@ nonisolated enum BackupService {
             deletedAt: dog.deletedAt,
             // Идентификатор — решение 05.11.2026, разбор
             // у `BackupArchive.formatVersion`.
-            id: dog.id
+            id: dog.id,
+            changedAt: dog.changedAt
         )
     }
 
@@ -394,30 +402,42 @@ nonisolated enum BackupService {
     /// и у второго человека старые записи оставались, а восстановленные
     /// приезжали **дублями**: вторая собака со всей историей.
     ///
-    /// **`changedAt` в архив НЕ едет, и возить его бесполезно — замер
-    /// по коду, не по прогону.** `FamilySync.enqueueLocalChanges`
-    /// на каждом сохранении ставит ВСЕМ вставленным и изменённым
-    /// записям `changedAt = now` (там это сделано нарочно: правят из
-    /// полутора десятков мест). Восстановление сохраняет — значит
-    /// при работающем обмене любое `changedAt` из файла было бы
-    /// затёрто до отправки. Что из этого следует у второго человека
-    /// (`SharedDiaryMerge`):
+    /// # Время правки — решение «возить», 05.11.2026
+    ///
+    /// Первая редакция этого места говорила «`changedAt` возить
+    /// бесполезно»: `FamilySync.enqueueLocalChanges` на каждом сохранении
+    /// ставил всем вставленным записям `now`, и время из файла затиралось
+    /// до отправки. Следствие у второго человека было такое:
     ///
     /// ```
-    /// запись не трогали после снятия файла   тот же id, новее changedAt →
-    ///                                        выигрывает файл, содержимое
-    ///                                        то же — дубля нет
-    /// второй человек ПРАВИЛ её после         выигрывает файл (now позже) —
-    ///                                        его правка откатывается
-    /// второй человек УДАЛИЛ её после         надгробие проигрывает:
-    ///                                        `надгробиеРешает` требует
-    ///                                        правка(файл) ≤ правка(надгробие),
-    ///                                        а now позже — запись ОЖИВАЕТ
+    /// он ПРАВИЛ запись после снятия файла   побеждал файл — правка терялась
+    /// он УДАЛИЛ запись после снятия файла   надгробие проигрывало — запись
+    ///                                       оживала
     /// ```
     ///
-    /// Две нижние строки — не дефект этой правки, а развилка продукта:
-    /// «Заменить всё» в общем дневнике откатывает семью к файлу. Чинить
-    /// её здесь нечем — штамп времени ставит обмен, а не архив.
+    /// Решение Виктории — «Возить время правки в архиве». Теперь:
+    ///
+    /// ```
+    /// снимок        везёт changedAt (12 типов общего дневника)
+    /// восстановление ставит записи время из файла; у старого файла —
+    ///               «сейчас», как прежде
+    /// обмен         видит пометку `ВосстановлениеАрхива` у контекста
+    ///               и время НЕ перештамповывает, но в очередь ставит
+    /// доливка       дополненный профиль — правка сейчас, штамп ставит
+    ///               сама (`дополнитьПрофиль`)
+    /// «заменить»    при обмене не стирает то, чего нет в файле, а ставит
+    ///               надгробие — иначе второму человеку не уезжает ничего
+    ///               (`заменитьПриОбмене`)
+    /// ```
+    ///
+    /// **Чего это НЕ делает — расхождение, названное заранее.** Спор
+    /// по времени решается у того, КТО ПРИНИМАЕТ. Второй человек,
+    /// правивший запись после снятия файла, свою правку сохранит —
+    /// а у нас останется версия из файла: отказ облака «версия
+    /// устарела» обмен лечит повтором поверх серверной
+    /// (`FamilySync`, «Спор о версии — не отказ»), а не приёмом её.
+    /// Два телефона разойдутся по такой записи до её следующей правки
+    /// любым из двоих. Замер не делался — вывод по коду обмена.
     ///
     /// # Эпизоды и навыки процедур при `merge`
     ///
@@ -444,7 +464,8 @@ nonisolated enum BackupService {
     /// строк на пяти языках.
     @MainActor
     @discardableResult
-    static func restore(_ archive: BackupArchive, into context: ModelContext, strategy: Strategy) throws -> Int {
+    static func restore(_ archive: BackupArchive, into context: ModelContext, strategy: Strategy,
+                        обмен: Bool = SharedDiarySettings.isOn) throws -> Int {
         // # Половина восстановления не записывается сама
         //
         // Работа идёт прямо в контексте экрана, и до 04.11.2026 он оставался
@@ -462,25 +483,49 @@ nonisolated enum BackupService {
         // сохранение в уже загруженные объекты, не установлено, а экран
         // восстановления держит именно их.
         //
-        // **Граница отката:** `rollback()` на iOS 17…26 снимает признак
-        // изменений, но не возвращает значения (`Persist.swift`). То есть
-        // в хранилище половина НЕ уйдёт, а в памяти до перезапуска может
-        // остаться. Это меньшая из двух бед: прежде она уходила в файл.
+        // # Откат — НЕ `rollback()`, и это замер, а не вкус
+        //
+        // Здесь стоял `context.rollback()`. Таблица соседа
+        // (`ПризракПослеОтказаTests`, 05.11.2026: хранилище, которое
+        // отказывает и снова пишет) говорит, что `rollback()` вставку
+        // НЕ снимает: без выборки она уезжает в следующее удачное
+        // сохранение двумя строками, с выборкой — одной. То есть
+        // неудавшееся восстановление дописывало файл в дневник при
+        // первом же следующем действии человека, а экран говорил
+        // «Не получилось восстановить».
+        //
+        // Теперь: вставленное этим восстановлением удаляется поштучно,
+        // надгробия и отвязки возвращаются своими откатами,
+        // и `осестьПослеОтказа()` доводит откат до конца (одна выборка —
+        // разбор у неё). Тест — `ПризракПослеОтказаTests`,
+        // «Неудавшееся восстановление не уезжает в следующее сохранение».
         let былоАвто = context.autosaveEnabled
         context.autosaveEnabled = false
         defer { context.autosaveEnabled = былоАвто }
+        var откаты: [@MainActor () -> Void] = []
         do {
-            return try восстановить(archive, into: context, strategy: strategy)
+            return try ВосстановлениеАрхива.во(время: context) {
+                try восстановить(archive, into: context, strategy: strategy,
+                                 обмен: обмен, откаты: &откаты)
+            }
         } catch {
-            context.rollback()
+            for вставленное in context.insertedModelsArray {
+                context.delete(вставленное)
+            }
+            for откат in откаты.reversed() { откат() }
+            context.осестьПослеОтказа()
             throw error
         }
     }
 
     @MainActor
     private static func восстановить(_ archive: BackupArchive, into context: ModelContext,
-                                     strategy: Strategy) throws -> Int {
-        if strategy == .replace {
+                                     strategy: Strategy, обмен: Bool,
+                                     откаты: inout [@MainActor () -> Void]) throws -> Int {
+        var перепривязка = Перепривязка()
+        if strategy == .replace, обмен {
+            перепривязка = try заменитьПриОбмене(archive, context: context, откаты: &откаты)
+        } else if strategy == .replace {
             // `ProcedureSkill` добавлен 07.10.2026 вместе с его снимком:
             // без чистки «заменить» удвоило бы навыки, потому что
             // опознать их при вставке нечем.
@@ -571,6 +616,7 @@ nonisolated enum BackupService {
             let clinic = Clinic(name: имя, detail: snapshot.detail,
                                 isLab: snapshot.isLab, phone: snapshot.phone)
             if let id = snapshot.id { clinic.id = id }
+            clinic.changedAt = snapshot.changedAt ?? clinic.changedAt
             clinic.createdAt = snapshot.createdAt
             context.insert(clinic)
             клиники[имя] = clinic
@@ -773,6 +819,10 @@ nonisolated enum BackupService {
             context.insert(episode)
         }
 
+        // Отвязанные при «заменить при обмене» — к новым родителям с тем же
+        // id. Разбор — у `заменитьПриОбмене`.
+        перепривязка.привязать(context)
+
         // Сохраняем сразу: восстановление должно пережить закрытие
         // приложения, даже если человек тут же его убьёт. Заодно связи
         // применяются, и экраны показывают восстановленное, а не пустоту.
@@ -828,6 +878,7 @@ nonisolated enum BackupService {
         // карточку у второго человека и не заводит дубль. У старого
         // файла id нет — остаётся свежий из `init`.
         if let id = snapshot.id { dog.id = id }
+        dog.changedAt = snapshot.changedAt ?? dog.changedAt
         dog.photo = snapshot.photo
         dog.breed = snapshot.breed
         dog.birthDate = snapshot.birthDate
@@ -1030,6 +1081,12 @@ nonisolated enum BackupService {
             dog.photo = фото
             BackgroundStore.shared.запомнитьФотоСобаки(фото)
         }
+
+        // Дополненный профиль — правка ЭТОГО телефона, сделанная сейчас.
+        // Восстановление время не штампует (`ВосстановлениеАрхива`), значит
+        // поставить его обязана сама доливка: иначе заполненное пустое
+        // уехало бы со старым временем и проиграло бы спор.
+        if dog.hasChanges { dog.changedAt = Date() }
     }
 
     @MainActor
@@ -1044,6 +1101,8 @@ nonisolated enum BackupService {
             let event = LogEvent(kind: LogKind(rawValue: snapshot.kindRaw) ?? .note,
                                  date: snapshot.date, authorName: snapshot.authorName)
             event.id = snapshot.id
+            // Время правки из файла — разбор в голове `restore`.
+            event.changedAt = snapshot.changedAt ?? event.changedAt
             event.isSynced = snapshot.isSynced
             event.note = snapshot.note
             event.outcomeRaw = snapshot.outcomeRaw
@@ -1139,6 +1198,7 @@ nonisolated enum BackupService {
                                     times: medicationSnapshot.times,
                                     fastingMinutes: medicationSnapshot.fastingMinutes)
         if let id = medicationSnapshot.id { medication.id = id }
+        medication.changedAt = medicationSnapshot.changedAt ?? medication.changedAt
         medication.fastingBeforeMinutes = medicationSnapshot.fastingBeforeMinutes ?? 0
         medication.isPaused = medicationSnapshot.isPaused
         medication.prescriber = medicationSnapshot.prescriber
@@ -1339,6 +1399,7 @@ nonisolated enum BackupService {
             && !естьВеса.contains(ключ(секунды(weight.date), граммы(weight.kg))) {
             let entry = WeightEntry(date: weight.date, kg: weight.kg)
             if let id = weight.id { entry.id = id }
+            entry.changedAt = weight.changedAt ?? entry.changedAt
             entry.dog = dog
             context.insert(entry)
             добавлено += 1
@@ -1356,6 +1417,7 @@ nonisolated enum BackupService {
                                 category: CareCategory(rawValue: care.categoryRaw) ?? .grooming,
                                 lastDone: care.lastDone)
             if let id = care.id { task.id = id }
+            task.changedAt = care.changedAt ?? task.changedAt
             task.seasonStartMonth = care.seasonStartMonth
             task.seasonEndMonth = care.seasonEndMonth
             task.snoozeCount = care.snoozeCount
@@ -1452,6 +1514,7 @@ nonisolated enum BackupService {
                 // ОБА» для таких файлов прежний.
                 let dose = DoseRecord(scheduledAt: doseSnapshot.scheduledAt)
                 if let id = doseSnapshot.id { dose.id = id }
+                dose.changedAt = doseSnapshot.changedAt ?? dose.changedAt
                 dose.givenAt = doseSnapshot.givenAt
                 dose.givenBy = doseSnapshot.givenBy
                 dose.cancelledAt = doseSnapshot.cancelledAt
@@ -1599,6 +1662,7 @@ nonisolated enum BackupService {
                                        image: documentSnapshot.image,
                                        note: documentSnapshot.note)
             if let id = documentSnapshot.id { document.id = id }
+            document.changedAt = documentSnapshot.changedAt ?? document.changedAt
             document.addedAt = documentSnapshot.addedAt
             // Четыре поля шага 0: тип, номер, кем выдан, срок. Срок —
             // то, из-за чего шаг 0 и начался: истёкшую прививку нельзя
@@ -1650,6 +1714,7 @@ nonisolated enum BackupService {
                                    laboratory: снимок.laboratory,
                                    reportNumber: снимок.reportNumber)
             if let id = снимок.id { анализ.id = id }
+            анализ.changedAt = снимок.changedAt ?? анализ.changedAt
             анализ.sampledAt = снимок.sampledAt
             // Три поля значения — порознь. Сложить их в одно значило бы
             // превратить «<0,1» в число 0,1, то есть тихо неверное
@@ -1679,6 +1744,7 @@ nonisolated enum BackupService {
             let визит = VetVisit(date: снимок.date, doctor: снимок.doctor,
                                  reasonRaw: снимок.reasonRaw)
             if let id = снимок.id { визит.id = id }
+            визит.changedAt = снимок.changedAt ?? визит.changedAt
             визит.conclusion = снимок.conclusion
             if let имя = Fmt.notBlank(снимок.clinicName ?? "") {
                 визит.clinic = clinics[имя]
@@ -1699,6 +1765,7 @@ nonisolated enum BackupService {
             let диагноз = Diagnosis(wording: снимок.wording, madeOn: снимок.madeOn,
                                     statusRaw: снимок.statusRaw)
             if let id = снимок.id { диагноз.id = id }
+            диагноз.changedAt = снимок.changedAt ?? диагноз.changedAt
             диагноз.madeBy = снимок.madeBy
             диагноз.evidence = снимок.evidence
             диагноз.dog = dog
@@ -1715,6 +1782,7 @@ nonisolated enum BackupService {
             let рецепт = Prescription(number: снимок.number, date: снимок.date,
                                       medicationName: снимок.medicationName)
             if let id = снимок.id { рецепт.id = id }
+            рецепт.changedAt = снимок.changedAt ?? рецепт.changedAt
             рецепт.doctor = снимок.doctor
             рецепт.dogWeightKg = снимок.dogWeightKg
             рецепт.dosage = снимок.dosage
@@ -1757,6 +1825,248 @@ nonisolated enum BackupService {
             добавлено += 1
         }
         return добавлено
+    }
+}
+
+// MARK: - «Заменить» при обмене
+
+extension BackupService {
+
+    /// Все `id`, которые несёт файл, — без различия видов.
+    ///
+    /// Один набор на все виды, а не по видам: `UUID` уникален сам по себе,
+    /// и спутать запись одного вида с записью другого по нему нельзя.
+    static func idВФайле(_ archive: BackupArchive) -> Set<UUID> {
+        var ids: Set<UUID> = []
+        func взять(_ id: UUID?) { if let id { ids.insert(id) } }
+        for клиника in archive.clinics ?? [] { взять(клиника.id) }
+        for собака in archive.dogs {
+            взять(собака.id)
+            for запись in собака.events { ids.insert(запись.id) }
+            for вес in собака.weights { взять(вес.id) }
+            for дело in собака.careTasks { взять(дело.id) }
+            for схема in собака.medications {
+                взять(схема.id)
+                for доза in схема.doses { взять(доза.id) }
+            }
+            for документ in собака.documents ?? [] { взять(документ.id) }
+            for анализ in собака.labResults ?? [] { взять(анализ.id) }
+            for визит in собака.vetVisits ?? [] { взять(визит.id) }
+            for диагноз in собака.diagnoses ?? [] { взять(диагноз.id) }
+            for рецепт in собака.prescriptions ?? [] { взять(рецепт.id) }
+        }
+        return ids
+    }
+
+    /// «Заменить всё», когда общий дневник включён.
+    ///
+    /// # Почему не стирать
+    ///
+    /// Без обмена «заменить» стирает всё и кладёт файл — и это верно:
+    /// телефон один. При обмене стирание локально: жёстко удалённая
+    /// запись не приходит в `didSave` ни ключом `inserted`, ни `updated`
+    /// (разбор в голове `ОбщееУдаление`), значит **второму человеку
+    /// не уезжает ничего** — у него запись остаётся, и вернётся к нам
+    /// первой же его правкой. «Заменить» при обмене стирало бы только
+    /// у себя.
+    ///
+    /// Поэтому для двенадцати типов общего дневника и ленты:
+    ///
+    /// ```
+    /// id есть в файле     стереть — файл положит ту же запись
+    ///                     с тем же id и своим временем правки
+    /// id в файле нет      надгробие ПАРОЙ (`ОбщееУдаление`) — уезжает
+    ///                     второму человеку и побеждает его правку,
+    ///                     потому что поставлено сейчас
+    /// уже надгробие       не трогать
+    /// ```
+    ///
+    /// **Доза — исключение, и в сторону осторожности.** Своей двери
+    /// удаления у неё нет по решению: расписание пересчитывает каждый
+    /// телефон сам, а `id` будущих доз выводится из схемы
+    /// (`DoseRecord.устойчивыйID`). Надгробие на дозу, которой нет в файле,
+    /// погасило бы второму человеку завтрашний приём — то есть
+    /// напоминание о лекарстве. Доза, которой нет в файле, остаётся
+    /// как есть.
+    ///
+    /// # Отвязка и перепривязка
+    ///
+    /// Запись, которая остаётся (надгробие или доза), могла висеть
+    /// на собаке или схеме, которую файл кладёт заново. Стирание
+    /// родителя уносит детей каскадом — и надгробие умерло бы, не уехав.
+    /// Поэтому такие дети отвязываются до стирания и привязываются
+    /// к новому родителю с тем же id после вставки (`Перепривязка`).
+    ///
+    /// Остальные виды (запасы, течки, выезды, обучение, поездки, люди,
+    /// эпизоды, навыки) в обмен не ходят, и с ними — как без обмена.
+    @MainActor
+    static func заменитьПриОбмене(_ archive: BackupArchive, context: ModelContext,
+                                  откаты: inout [@MainActor () -> Void]) throws -> Перепривязка {
+        let вФайле = idВФайле(archive)
+        let когда = Date()
+        var перепривязка = Перепривязка()
+        var накоплено: [@MainActor () -> Void] = []
+
+        func отвязать(_ запись: some ЗаписьСобаки) {
+            guard let собака = запись.dog, вФайле.contains(собака.id) else { return }
+            запись.dog = nil
+            накоплено.append { запись.dog = собака }
+            перепривязка.кСобаке.append((запись, собака.id))
+        }
+        func разобрать<T: PersistentModel & ЗаписьСобаки & Надгробное>(_: T.Type) throws
+        where T.ID == UUID {
+            for запись in try context.fetch(FetchDescriptor<T>()) where !вФайле.contains(запись.id) {
+                if запись.deletedAt == nil {
+                    накоплено.append(ОбщееУдаление.удалить(запись, когда: когда))
+                }
+                отвязать(запись)
+            }
+        }
+
+        try разобрать(WeightEntry.self)
+        try разобрать(CareTask.self)
+        try разобрать(Medication.self)
+        try разобрать(DogDocument.self)
+        try разобрать(LabResult.self)
+        try разобрать(VetVisit.self)
+        try разобрать(Diagnosis.self)
+        try разобрать(Prescription.self)
+
+        // Лента — не `Надгробное` (у неё своё удаление с автором),
+        // но пара та же: `deletedAt` и `changedAt` одним моментом.
+        for запись in try context.fetch(FetchDescriptor<LogEvent>()) where !вФайле.contains(запись.id) {
+            if запись.deletedAt == nil {
+                let былоНадгробие = запись.deletedAt
+                let былаПравка = запись.changedAt
+                запись.deletedAt = когда
+                запись.changedAt = когда
+                накоплено.append { запись.deletedAt = былоНадгробие; запись.changedAt = былаПравка }
+            }
+            отвязать(запись)
+        }
+
+        // Доза: без надгробия, только отвязка от схемы, которую файл
+        // кладёт заново. Разбор — в голове функции.
+        for доза in try context.fetch(FetchDescriptor<DoseRecord>()) where !вФайле.contains(доза.id) {
+            guard let схема = доза.medication, вФайле.contains(схема.id) else { continue }
+            доза.medication = nil
+            накоплено.append { доза.medication = схема }
+            перепривязка.кСхеме.append((доза, схема.id))
+        }
+
+        for клиника in try context.fetch(FetchDescriptor<Clinic>())
+        where !вФайле.contains(клиника.id) && клиника.deletedAt == nil {
+            накоплено.append(ОбщееУдаление.удалить(клиника, когда: когда))
+        }
+        for собака in try context.fetch(FetchDescriptor<Dog>())
+        where !вФайле.contains(собака.id) && собака.deletedAt == nil {
+            накоплено.append(ОбщееУдаление.удалить(собака, когда: когда))
+        }
+        откаты += накоплено
+
+        // Стереть то, что файл положит заново, — тем же способом, что
+        // и без обмена (`delete(model:)`), только с условием по id.
+        let ids = Array(вФайле)
+        try context.delete(model: LogEvent.self, where: #Predicate<LogEvent> { ids.contains($0.id) })
+        try context.delete(model: WeightEntry.self, where: #Predicate<WeightEntry> { ids.contains($0.id) })
+        try context.delete(model: DoseRecord.self, where: #Predicate<DoseRecord> { ids.contains($0.id) })
+        try context.delete(model: Medication.self, where: #Predicate<Medication> { ids.contains($0.id) })
+        try context.delete(model: CareTask.self, where: #Predicate<CareTask> { ids.contains($0.id) })
+        try context.delete(model: DogDocument.self, where: #Predicate<DogDocument> { ids.contains($0.id) })
+        try context.delete(model: LabResult.self, where: #Predicate<LabResult> { ids.contains($0.id) })
+        try context.delete(model: VetVisit.self, where: #Predicate<VetVisit> { ids.contains($0.id) })
+        try context.delete(model: Diagnosis.self, where: #Predicate<Diagnosis> { ids.contains($0.id) })
+        try context.delete(model: Prescription.self, where: #Predicate<Prescription> { ids.contains($0.id) })
+        try context.delete(model: Clinic.self, where: #Predicate<Clinic> { ids.contains($0.id) })
+        try context.delete(model: Dog.self, where: #Predicate<Dog> { ids.contains($0.id) })
+
+        // Виды вне обмена — как без обмена: целиком.
+        for model in [TrainingSession.self, TrainingStep.self, Trip.self,
+                      Episode.self, ProcedureSkill.self,
+                      FoodStock.self, HeatRecord.self, DayOut.self,
+                      FamilyMember.self] as [any PersistentModel.Type] {
+            try context.delete(model: model)
+        }
+        return перепривязка
+    }
+}
+
+/// Запись, которая висит на собаке. Соответствие не трогает формы
+/// схемы: протокол называет уже существующее поле. `id` в требованиях
+/// нет нарочно — он приходит от `Identifiable` у `PersistentModel`,
+/// и второе требование того же имени сделало бы обращение неоднозначным.
+@MainActor
+protocol ЗаписьСобаки: AnyObject {
+    var dog: Dog? { get set }
+}
+
+extension LogEvent: ЗаписьСобаки {}
+extension WeightEntry: ЗаписьСобаки {}
+extension CareTask: ЗаписьСобаки {}
+extension Medication: ЗаписьСобаки {}
+extension DogDocument: ЗаписьСобаки {}
+extension LabResult: ЗаписьСобаки {}
+extension VetVisit: ЗаписьСобаки {}
+extension Diagnosis: ЗаписьСобаки {}
+extension Prescription: ЗаписьСобаки {}
+
+/// Дети, отвязанные перед стиранием родителя, — к новому родителю
+/// с тем же id после вставки файла. Разбор — у `заменитьПриОбмене`.
+@MainActor
+struct Перепривязка {
+    var кСобаке: [(any ЗаписьСобаки, UUID)] = []
+    var кСхеме: [(DoseRecord, UUID)] = []
+
+    func привязать(_ context: ModelContext) {
+        guard !кСобаке.isEmpty || !кСхеме.isEmpty else { return }
+        var собаки: [UUID: Dog] = [:]
+        var схемы: [UUID: Medication] = [:]
+        for вставленное in context.insertedModelsArray {
+            if let собака = вставленное as? Dog { собаки[собака.id] = собака }
+            if let схема = вставленное as? Medication { схемы[схема.id] = схема }
+        }
+        for (запись, id) in кСобаке { запись.dog = собаки[id] }
+        for (доза, id) in кСхеме { доза.medication = схемы[id] }
+    }
+}
+
+/// Идёт ли восстановление архива в этом контексте.
+///
+/// # Зачем
+///
+/// Решение Виктории 05.11.2026: «Возить время правки в архиве».
+/// `FamilySync.enqueueLocalChanges` на каждом сохранении ставит всем
+/// вставленным и изменённым записям `changedAt = now` — нарочно: рука
+/// правит запись из полутора десятков мест. Для восстановления это
+/// неверно: записи из файла несут СВОЁ время правки, и перештамповка
+/// сделала бы восстановленное новее всего у второго человека — его
+/// поздняя правка проиграла бы файлу, удалённое им ожило бы.
+///
+/// Поэтому на время восстановления контекст помечен, и обмен,
+/// получив `didSave` от помеченного контекста, ставит записи в очередь,
+/// но время не трогает (`FamilySync.штамповать`).
+///
+/// **Признак читается СИНХРОННО, в обработчике уведомления.** Сама
+/// очередь собирается в `Task` позже, когда восстановление уже
+/// вернулось и пометку сняло, — прочитай её там, и признак был бы
+/// всегда ложным.
+///
+/// Изолированное состояние главного актёра, а не глобальное
+/// `nonisolated(unsafe)`: пишут и читают его только с главного.
+@MainActor
+enum ВосстановлениеАрхива {
+    private static var контексты: Set<ObjectIdentifier> = []
+
+    static func идёт(в context: ModelContext?) -> Bool {
+        guard let context else { return false }
+        return контексты.contains(ObjectIdentifier(context))
+    }
+
+    static func во<T>(время context: ModelContext, _ работа: () throws -> T) rethrows -> T {
+        let ключ = ObjectIdentifier(context)
+        контексты.insert(ключ)
+        defer { контексты.remove(ключ) }
+        return try работа()
     }
 }
 

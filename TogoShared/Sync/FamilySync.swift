@@ -597,10 +597,24 @@ final class FamilySync: NSObject {
     /// где важнее всего.
     @objc private func localSaveHappened(_ notification: Notification) {
         guard !applying, !engines.isEmpty else { return }
-        Task { @MainActor in await enqueueLocalChanges(notification) }
+        // Читается ЗДЕСЬ, синхронно: очередь собирается в `Task` позже,
+        // когда восстановление уже вернулось и пометку сняло.
+        let штамповать = Self.штамповать(notification)
+        Task { @MainActor in await enqueueLocalChanges(notification, штамповать: штамповать) }
     }
 
-    private func enqueueLocalChanges(_ notification: Notification) async {
+    /// Ставить ли записям этого сохранения `changedAt = now`.
+    ///
+    /// Нет — только для сохранения восстановления архива: записи из файла
+    /// несут своё время правки, и перештамповка сделала бы файл новее
+    /// всего у второго человека (решение Виктории 05.11.2026 «Возить
+    /// время правки в архиве», разбор у `ВосстановлениеАрхива`). В очередь
+    /// отправки они при этом встают как обычно.
+    static func штамповать(_ notification: Notification) -> Bool {
+        !ВосстановлениеАрхива.идёт(в: notification.object as? ModelContext)
+    }
+
+    private func enqueueLocalChanges(_ notification: Notification, штамповать: Bool) async {
         let zone = self.zone
         let ctx = context
         var changes: [CKSyncEngine.PendingRecordZoneChange] = []
@@ -637,58 +651,80 @@ final class FamilySync: NSObject {
                         log.notice("общий дневник: запись раньше приложения не отправляется")
                         continue
                     }
-                    event.changedAt = now
-                    stamped = true
+                    if штамповать {
+                        event.changedAt = now
+                        stamped = true
+                    }
                     changes.append(.saveRecord(SharedDiaryRecords.recordID(event.id, in: zone)))
                 } else if let dose = ctx.model(for: id) as? DoseRecord {
-                    dose.changedAt = now
-                    stamped = true
+                    if штамповать {
+                        dose.changedAt = now
+                        stamped = true
+                    }
                     changes.append(.saveRecord(SharedDiaryRecords.recordID(dose.id, in: zone)))
                 } else if let care = ctx.model(for: id) as? CareTask {
-                    care.changedAt = now
-                    stamped = true
+                    if штамповать {
+                        care.changedAt = now
+                        stamped = true
+                    }
                     changes.append(.saveRecord(SharedDiaryRecords.recordID(care.id, in: zone)))
                 } else if let medication = ctx.model(for: id) as? Medication {
-                    medication.changedAt = now
-                    stamped = true
+                    if штамповать {
+                        medication.changedAt = now
+                        stamped = true
+                    }
                     changes.append(.saveRecord(SharedDiaryRecords.recordID(medication.id, in: zone)))
                 } else if let документ = ctx.model(for: id) as? DogDocument {
                     // Документы ездят с 07.10.2026 — подписью, без скана:
                     // в клинике спрашивают номер, на границе срок,
                     // и нужны они тому, кто СЕГОДНЯ один с собакой.
-                    документ.changedAt = now
-                    stamped = true
+                    if штамповать {
+                        документ.changedAt = now
+                        stamped = true
+                    }
                     changes.append(.saveRecord(SharedDiaryRecords.recordID(документ.id, in: zone)))
                 } else if let взвешивание = ctx.model(for: id) as? WeightEntry {
                     // Взвешивания ездят с 07.10.2026: тип записи был
                     // объявлен и не создавался ни разу. Доза считается
                     // от веса, и расхождение веса даёт расхождение дозы.
-                    взвешивание.changedAt = now
-                    stamped = true
+                    if штамповать {
+                        взвешивание.changedAt = now
+                        stamped = true
+                    }
                     changes.append(.saveRecord(SharedDiaryRecords.recordID(взвешивание.id, in: zone)))
                 } else if let анализ = ctx.model(for: id) as? LabResult {
                     // Медкнижка ездит с 07.10.2026: без неё второй
                     // человек приходил к врачу с пересказом.
-                    анализ.changedAt = now
-                    stamped = true
+                    if штамповать {
+                        анализ.changedAt = now
+                        stamped = true
+                    }
                     changes.append(.saveRecord(SharedDiaryRecords.recordID(анализ.id, in: zone)))
                 } else if let визит = ctx.model(for: id) as? VetVisit {
-                    визит.changedAt = now
-                    stamped = true
+                    if штамповать {
+                        визит.changedAt = now
+                        stamped = true
+                    }
                     changes.append(.saveRecord(SharedDiaryRecords.recordID(визит.id, in: zone)))
                 } else if let диагноз = ctx.model(for: id) as? Diagnosis {
-                    диагноз.changedAt = now
-                    stamped = true
+                    if штамповать {
+                        диагноз.changedAt = now
+                        stamped = true
+                    }
                     changes.append(.saveRecord(SharedDiaryRecords.recordID(диагноз.id, in: zone)))
                 } else if let рецепт = ctx.model(for: id) as? Prescription {
-                    рецепт.changedAt = now
-                    stamped = true
+                    if штамповать {
+                        рецепт.changedAt = now
+                        stamped = true
+                    }
                     changes.append(.saveRecord(SharedDiaryRecords.recordID(рецепт.id, in: zone)))
                 } else if let clinic = ctx.model(for: id) as? Clinic {
                     // Справочник ездит с 07.10.2026: без него второй
                     // человек видел прививку и не видел, где её сделали.
-                    clinic.changedAt = now
-                    stamped = true
+                    if штамповать {
+                        clinic.changedAt = now
+                        stamped = true
+                    }
                     changes.append(.saveRecord(SharedDiaryRecords.recordID(clinic.id, in: zone)))
                 } else if let dog = ctx.model(for: id) as? Dog {
                     // Профиль ездит с 23.09: без него приглашение вело
@@ -742,8 +778,10 @@ final class FamilySync: NSObject {
                         log.notice("общий дневник: собака без клички не отправляется")
                         continue
                     }
-                    dog.changedAt = now
-                    stamped = true
+                    if штамповать {
+                        dog.changedAt = now
+                        stamped = true
+                    }
                     changes.append(.saveRecord(SharedDiaryRecords.recordID(dog.id, in: zone)))
                 }
             }
