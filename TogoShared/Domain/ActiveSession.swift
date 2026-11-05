@@ -258,7 +258,23 @@ nonisolated enum ActiveSessionStore {
     /// Подбирать не из головы: восемь часов — это уже не выход с собакой.
     static let staleAfter: TimeInterval = 8 * 3600
 
+    /// Прогулка началась, кончилась или получила отметку — кем угодно.
+    ///
+    /// Заведено 29.10.2026 ради виджета. Прогулку пишут четыре двери:
+    /// экран (`AppState.session`), метка и Siri (`WalkControl`),
+    /// кнопки живой активности (`WalkMarkIntent`, `WalkFinishIntent`).
+    /// Снимок виджета пересобирал только экран «Сегодня», и прогулка,
+    /// начатая меткой у двери, на виджете не появлялась вовсе, а
+    /// законченная с блокировки — тикала «На улице» до открытия
+    /// приложения. Слушать одно уведомление дешевле, чем помнить
+    /// четыре места вызова: пятая дверь придёт сюда же сама.
+    ///
+    /// Слушает приложение (`WidgetRefresh`); в расширении слушателя
+    /// нет, и уведомление там ничего не стоит.
+    static let изменилась = Notification.Name("togo.activeSession.changed")
+
     static func save(_ session: ActiveSession?) {
+        defer { NotificationCenter.default.post(name: изменилась, object: nil) }
         guard let session else {
             defaults.removeObject(forKey: key)
             return

@@ -105,7 +105,10 @@ nonisolated enum CloudKitSchemaWarmup {
         let objects: [any PersistentModel] = [
             DayOut(startedAt: markerDate, plannedHours: 1),
             дозаСоВсемиПолями(),
-            Episode(title: markerTitle, detail: markerTitle, startedAt: markerDate),
+            // `dogID` заполнен нарочно: пустое поле в зеркало не уезжает,
+            // и `CD_dogID` (V10) не завёлся бы в контейнере.
+            Episode(title: markerTitle, detail: markerTitle, startedAt: markerDate,
+                    dogID: UUID()),
             HeatRecord(startedAt: markerDate, note: markerTitle),
             ProcedureSkill(title: markerTitle, detail: markerTitle),
             TrainingSession(cue: markerTitle, place: markerTitle, person: markerTitle,

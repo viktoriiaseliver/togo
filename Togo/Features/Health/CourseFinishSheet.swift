@@ -99,23 +99,45 @@ struct CourseFinishSheet: View {
                           title: "Контрольный приём \(Fmt.shortDay(checkupDate))",
                           detail: "Напомним за три дня. Дату поменяешь в уходе.")
             } else {
-                TGIconRow(symbol: "stethoscope",
-                          title: "Контрольный приём",
-                          detail: "Врач обычно смотрит результат через две недели.")
-                TGButton(title: "Напомнить через две недели",
-                         variant: .secondary, size: .medium) {
-                    guard onScheduleCheckup(TreatmentCourse.checkupDelayDays) else {
-                        // Отказ показывает вызывающий (у него `AppState`);
-                        // здесь — только не рисовать успеха.
-                        Haptics.warning()
-                        return
+                // Срок — из назначения курса, если врач его назвал
+                // (`TreatmentCourse.checkupDelay`, 29.10.2026). Прежде
+                // здесь всегда стояли «две недели», при назначенных
+                // в рецепте шести.
+                //
+                // Источник — по тому, ОТКУДА число, а не по его величине
+                // (29.10.2026): назначенные врачом ровно 14 дней прежде
+                // подписывались «врач обычно смотрит через две недели».
+                if let дней = TreatmentCourse.checkupDelayFromPrescription(for: dog) {
+                    TGIconRow(symbol: "stethoscope",
+                              title: "Контрольный приём",
+                              detail: "Срок контроля взят из назначения врача.")
+                    TGButton(title: "Напомнить через \(Fmt.days(дней))",
+                             variant: .secondary, size: .medium) {
+                        назначитьКонтроль(через: дней)
                     }
-                    checkupDate = Calendar.current.date(
-                        byAdding: .day, value: TreatmentCourse.checkupDelayDays, to: .now)
-                    Haptics.success()
+                } else {
+                    let дней = TreatmentCourse.checkupDelayDays
+                    TGIconRow(symbol: "stethoscope",
+                              title: "Контрольный приём",
+                              detail: "Врач обычно смотрит результат через две недели.")
+                    TGButton(title: "Напомнить через две недели",
+                             variant: .secondary, size: .medium) {
+                        назначитьКонтроль(через: дней)
+                    }
                 }
             }
         }
+    }
+
+    private func назначитьКонтроль(через дней: Int) {
+        guard onScheduleCheckup(дней) else {
+            // Отказ показывает вызывающий (у него `AppState`);
+            // здесь — только не рисовать успеха.
+            Haptics.warning()
+            return
+        }
+        checkupDate = Calendar.current.date(byAdding: .day, value: дней, to: .now)
+        Haptics.success()
     }
 
     private var consequences: some View {

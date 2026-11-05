@@ -48,7 +48,7 @@ la double dose», «Données et confidentialité», «Je le sors», «Pas clair�
 # отпечаток считается по НАБОРУ публикуемых документов, и рост набора
 # его сдвигает. Переводы дисклеймера были готовы заранее и сверены
 # построчно: разделов три, абзацев 3+2+3 в обоих языках.
-SOURCE_FINGERPRINT = "e07ecba5e1fe75a3"
+SOURCE_FINGERPRINT = "c9d30edae32cbb09"
 
 # Подписи вокруг текста: в шаблоне страницы их два языка.
 LABELS = {
@@ -112,7 +112,7 @@ DOCUMENTS = {
                 "La partie non utilisée de l'essai gratuit est perdue à l'achat d'un abonnement.",
             ]),
             ("Ce qui reste gratuit", [
-                "La fenêtre à jeun, la protection contre la double dose, « comment il a demandé », « n'a pas pris la friandise » et le rappel de ne pas punir après un pipi à la maison sont gratuits pour toujours et ne font pas partie de l'abonnement.",
+                "La fenêtre à jeun, la protection contre la double dose, « comment il a demandé » et le rappel de ne pas punir après un pipi à la maison sont gratuits pour toujours et ne font pas partie de l'abonnement.",
             ]),
             ("Responsabilité", [
                 "Les décisions sur la santé du chien, c'est toi et ton vétérinaire qui les prenez. L'app ne fait que montrer ce que vous y avez vous-mêmes noté.",

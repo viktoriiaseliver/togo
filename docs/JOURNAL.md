@@ -11,6 +11,18 @@
 
 - [4 ноября 2026 — refaktoring-po-auditu-pachki-0-7](journal/2026-11-04-refaktoring-po-auditu-pachki-0-7.md) — refaktoring-po-auditu-pachki-0-7
 - [29 октября 2026](journal/2026-10-29-svedenie-dvuh-liniy-i-chto-ono-vskrylo.md) — **29.10.2026.** Две линии работы 28.10 — локальная и облачная — завели разные схемы под одним номером
+
+- [3 ноября 2026 — vitrina-vseh-yazykov-i-klass-lokalizacii](journal/2026-11-03-vitrina-vseh-yazykov-i-klass-lokalizacii.md) — vitrina-vseh-yazykov-i-klass-lokalizacii
+- [3 ноября 2026 — teksty-obeshchali-zanyatiya](journal/2026-11-03-teksty-obeshchali-zanyatiya.md) — teksty-obeshchali-zanyatiya
+- [3 ноября 2026 — storozh-dolga-tri-kornya-i-vtoraya-os](journal/2026-11-03-storozh-dolga-tri-kornya-i-vtoraya-os.md) — storozh-dolga-tri-kornya-i-vtoraya-os
+- [3 ноября 2026 — put-1-stranica-v-svoyom-kontekste](journal/2026-11-03-put-1-stranica-v-svoyom-kontekste.md) — put-1-stranica-v-svoyom-kontekste
+- [3 ноября 2026 — kopii-odnogo-spiska-rashodyatsya](journal/2026-11-03-kopii-odnogo-spiska-rashodyatsya.md) — kopii-odnogo-spiska-rashodyatsya
+- [3 ноября 2026 — 292-klassy-zakryty-i-otzyv-so-svezhey](journal/2026-11-03-292-klassy-zakryty-i-otzyv-so-svezhey.md) — 292-klassy-zakryty-i-otzyv-so-svezhey
+- [3 ноября 2026 — 291-zalita-i-tri-otkaza-vorot](journal/2026-11-03-291-zalita-i-tri-otkaza-vorot.md) — 291-zalita-i-tri-otkaza-vorot
+- [30 октября 2026 — klichka-ne-doehala-i-sborka-287](journal/2026-10-30-klichka-ne-doehala-i-sborka-287.md) — klichka-ne-doehala-i-sborka-287
+- [29 октября 2026 — tualet-noch-poezdka-i-audit-ekranov](journal/2026-10-29-tualet-noch-poezdka-i-audit-ekranov.md) — tualet-noch-poezdka-i-audit-ekranov
+- [29 октября 2026](journal/2026-10-29-svedenie-dvuh-liniy-i-chto-ono-vskrylo.md) — **29.10.2026.** Две линии работы 28.10 — локальная и облачная — завели разные схемы под одним номером
+- [29 октября 2026 — pr4-sborka-na-mac-i-286](journal/2026-10-29-pr4-sborka-na-mac-i-286.md) — pr4-sborka-na-mac-i-286
 - [29 октября 2026](journal/2026-10-29-gitkhab-oblachnaya-vetka-i-sborka-285.md) — **29.10.2026.** Виктория спросила: «ты нашёл, что я вчера правила — чисто код на гитхабе?» Нашёл, и нашёл не сразу: искал её правки по коммиттеру `GitHub` (так подписываются веб-правки), а их ноль
 - [28 октября 2026 — v10-vygruzka-i-refaktoring-segodnya](journal/2026-10-28-v10-vygruzka-i-refaktoring-segodnya.md) — v10-vygruzka-i-refaktoring-segodnya
 - [28 октября 2026](journal/2026-10-28-tri-zhivyh-otzyva-rezhim-kolco-i-chasy-vyhodov.md) — **28.10.2026, утро.** Три отзыва Виктории из TestFlight по сборке 282, разобранные по кадрам из `~/Projects/.отзывы/Togo/`

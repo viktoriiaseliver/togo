@@ -786,6 +786,7 @@ struct КартинкиВРамкеКадрTests {
         func шапка(_ снимок: Data?) -> some View {
             ФотоШапка(фото: снимок,
                       высота: Token.Size.backdropTab,
+                      якорь: .по(виду: .tab),
                       надстрочник: "ШИППЕРКЕ · 3 ГОДА",
                       заголовок: .значение("Стич")) {
                 TGCard { Text(verbatim: "опись собаки").textStyle(AppFont.caption) }

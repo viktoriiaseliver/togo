@@ -26,7 +26,7 @@
 # отпечаток считается по НАБОРУ публикуемых документов, и рост набора
 # его сдвигает. Переводы дисклеймера были готовы заранее и сверены
 # построчно: разделов три, абзацев 3+2+3 в обоих языках.
-SOURCE_FINGERPRINT = "e07ecba5e1fe75a3"
+SOURCE_FINGERPRINT = "c9d30edae32cbb09"
 
 # Подписи вокруг текста: в шаблоне страницы их два языка.
 LABELS = {
@@ -90,7 +90,7 @@ DOCUMENTS = {
                 "Any unused part of a free trial is forfeited when a subscription is bought.",
             ]),
             ("What stays free", [
-                "The fasting window, double-dose protection, “asked to go”, “refused food” and the warning against punishing a dog after an accident are free for good and are not part of the subscription.",
+                "The fasting window, double-dose protection, “asked to go” and the warning against punishing a dog after an accident are free for good and are not part of the subscription.",
             ]),
             ("Liability", [
                 "Decisions about your dog’s health are made by you and your vet. The app only shows what you put into it yourself.",

@@ -92,11 +92,16 @@ struct DayOutStartSheet: View {
         day.dog = dog
         context.insert(day)
         guard context.persist(otherwise: { context.delete(day) }) else {
+            // Была только вибрация — при том, что УСПЕХ этого же
+            // действия говорится словом строкой ниже. Половина пары
+            // молчала.
             Haptics.warning()
+            appState.showFailure(
+                String(localized: "Режим не включился · нажми ещё раз"))
             return
         }
         Haptics.success()
-        appState.showUndo("Режим включён · собака с тобой")
+        appState.showUndo(String(localized: "Режим включён · собака с тобой"))
         dismiss()
     }
 }
@@ -180,7 +185,7 @@ struct DayOutSummarySheet: View {
         context.delete(day)
         guard context.persistNothingToUndo() else {
             Haptics.warning()
-            appState.showFailure("Не удалилось · проверь после перезапуска")
+            appState.showFailure(String(localized: "Не удалилось · проверь после перезапуска"))
             return
         }
         Haptics.success()
@@ -191,7 +196,142 @@ struct DayOutSummarySheet: View {
         let былаЗаметка = day.note
         day.note = note.isEmpty ? nil : note
         guard context.persist(otherwise: { day.note = былаЗаметка }) else {
+            // Была только вибрация.
             Haptics.warning()
+            appState.showFailure(
+                String(localized: "Заметка не сохранилась · нажми ещё раз"))
+            return
+        }
+        Haptics.success()
+        dismiss()
+    }
+}
+
+/// Правка прошедшего дня с собакой: когда начался, когда кончился,
+/// на сколько рассчитывали и как прошло.
+///
+/// **До 29.10.2026 прошедший день был неисправим.** Итог
+/// (`DayOutSummarySheet`) показывается один раз — когда день
+/// заканчивают, — и после него день уходил в выборку «после долгих
+/// дней» без дороги обратно. А длина дня здесь не украшение: от неё
+/// `DayOut.wasLong` решает, попадёт ли день в наблюдения истории.
+/// Забыли нажать «Закончить» до утра — и в истории навсегда стоял
+/// «долгий день» в двадцать часов, тянущий за собой чужие выводы.
+struct DayOutEditSheet: View {
+    let day: DayOut
+
+    @Environment(\.modelContext) private var context
+    @Environment(\.dismiss) private var dismiss
+    @Environment(AppState.self) private var appState
+
+    @State private var начало = Date()
+    @State private var конец = Date()
+    @State private var рассчитывали = 4
+    @State private var заметка = ""
+    @State private var загружено = false
+    @State private var удаляем = false
+
+    var body: some View {
+        TGSheet(title: "День с собакой", subtitle: .готовая(Fmt.shortDay(day.startedAt)),
+                closeTitle: "Закрыть") {
+            TGCard(spacing: 0) {
+                DatePicker("Началась", selection: $начало, in: ...Date(),
+                           displayedComponents: [.date, .hourAndMinute])
+                    .frame(minHeight: Token.Size.tapTarget)
+                    // Тот же класс, что у поездки (`TripSetupScreen`):
+                    // `in:` у конца не двигает уже выбранное значение.
+                    .onChange(of: начало) { _, новое in
+                        if конец < новое { конец = новое }
+                    }
+                TGDivider()
+                DatePicker("Закончилась", selection: $конец, in: начало...,
+                           displayedComponents: [.date, .hourAndMinute])
+                    .frame(minHeight: Token.Size.tapTarget)
+                TGDivider()
+                Stepper(value: $рассчитывали, in: 1...16) {
+                    HStack {
+                        Text("Примерно на").textStyle(AppFont.body)
+                        Spacer()
+                        Text(String(localized: "\(рассчитывали) часов"))
+                            .textStyle(AppFont.numeric(Token.FontSize.body))
+                    }
+                }
+                .frame(minHeight: Token.Size.tapTarget)
+            }
+
+            TGCard {
+                TGSectionHeader(title: "как прошло",
+                                subtitle: "одной строкой, если есть что запомнить")
+                TextEditor(text: $заметка)
+                    .textStyle(AppFont.body)
+                    // Высота от цели касания, а не числом: литерал размера —
+                    // долг `DesignLiteralTests`, и копия соседнего «70»
+                    // его бы вырастила.
+                    .frame(minHeight: Token.Size.tapTarget * 1.5)
+                    .scrollContentBackground(.hidden)
+            }
+
+            TGButton(title: "Удалить этот день", variant: .destructive, size: .medium,
+                     systemImage: "trash") {
+                удаляем = true
+            }
+            TGExplainer(text: "Записи дня — еда, выходы, дозы — останутся: удаляется только сам «день с собакой» и его след в наблюдениях истории.")
+        } footer: {
+            TGButton(title: "Сохранить") { сохранить() }
+        }
+        .presentationDetents([.large])
+        .task { загрузить() }
+        .confirmationDialog("Удалить этот день?", isPresented: $удаляем,
+                            titleVisibility: .visible) {
+            Button("Удалить", role: .destructive) { удалить() }
+            Button("Оставить", role: .cancel) {}
+        } message: {
+            Text("Сами записи останутся. Пропадёт только пометка, что собака была с тобой весь день, — и наблюдения «после долгих дней» перестанут считать его.")
+        }
+    }
+
+    private func загрузить() {
+        guard !загружено else { return }
+        загружено = true
+        начало = day.startedAt
+        конец = day.endedAt ?? max(day.startedAt, Date())
+        рассчитывали = day.plannedHours
+        заметка = day.note ?? ""
+    }
+
+    private func сохранить() {
+        let былоНачало = day.startedAt
+        let былКонец = day.endedAt
+        let былиЧасы = day.plannedHours
+        let былаЗаметка = day.note
+
+        day.startedAt = начало
+        day.endedAt = max(конец, начало)
+        day.plannedHours = рассчитывали
+        day.note = Fmt.notBlank(заметка)
+
+        guard context.persist(otherwise: {
+            day.startedAt = былоНачало
+            day.endedAt = былКонец
+            day.plannedHours = былиЧасы
+            day.note = былаЗаметка
+        }) else {
+            Haptics.warning()
+            appState.showFailure(String(localized: "Не сохранилось · нажми «Сохранить» ещё раз"))
+            return
+        }
+        Haptics.success()
+        dismiss()
+    }
+
+    /// Та же форма удаления, что у итога дня (`DayOutSummarySheet
+    /// .удалить`), и та же оговорка: откатить `context.delete` нечем,
+    /// поэтому при отказе говорится правда, а не «удалено».
+    private func удалить() {
+        context.delete(day)
+        guard context.persistNothingToUndo() else {
+            Haptics.warning()
+            appState.showFailure(String(localized: "Не удалилось · проверь после перезапуска"))
             return
         }
         Haptics.success()
@@ -203,7 +343,8 @@ struct DayOutSummarySheet: View {
 struct DayOutCard: View {
     let day: DayOut
     let now: Date
-    /// Когда в последний раз предлагали воду.
+    /// Когда в последний раз предлагали воду — по записям `.water`
+    /// в ленте, а не по памяти экрана (29.10.2026).
     let lastWater: Date?
     var onWater: () -> Void
     var onFinish: () -> Void
@@ -239,7 +380,10 @@ struct DayOutCard: View {
                     Text("Пора предложить воду")
                         .textStyle(AppFont.body)
                     Spacer(minLength: 0)
-                    Button("Предложила", action: onWater)
+                    // «Предложено», а не «Предложила»: пол человека
+                    // приложение не знает (29.10.2026). Кнопка пишет
+                    // настоящую запись `.water` — см. `TodayScreen.предложитьВоду`.
+                    Button("Предложено", action: onWater)
                         .textStyle(AppFont.captionEmphasis)
                         .buttonStyle(.plain)
                         .foregroundStyle(Token.Status.doneText)

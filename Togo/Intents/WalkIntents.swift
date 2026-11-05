@@ -31,7 +31,7 @@ enum WalkControl {
         let author = AppState.storedUserName
         let session = ActiveSession(kind: .walk, startedAt: now, startedBy: author)
         ActiveSessionStore.save(session)
-        LiveActivityController.startWalk(dogName: dog.name, by: author, at: now)  // кличка-в-слот: вход живой активности кормит и именительный ярлык, и винительные подписи — падеж знает слот
+        LiveActivityController.startWalk(dogName: dog.name, by: author, at: now, кобель: dog.sex == .male)  // кличка-в-слот: вход живой активности кормит и именительный ярлык, и винительные подписи — падеж знает слот
         return session
     }
 
@@ -55,15 +55,33 @@ enum WalkControl {
         // Не сохранилось — сессию не трогаем: приложение допишет её
         // при открытии (`дописатьПрогулкуСБлокировки`), а человек слышит
         // правду.
+        //
+        // Короткий выход (`.outing`) закрывается своей записью, которую
+        // завели в начале, — метка у двери писала поверх неё ещё
+        // и прогулку (29.10.2026). См. `OutingFinisher.close`.
+        if session.kind == .outing {
+            guard OutingFinisher.close(session, dog: dog, at: now, context: context) else {
+                throw QuickLogError.storageUnavailable
+            }
+            ActiveSessionStore.save(nil)
+            let minutes = Int(session.duration(at: now)) / 60
+            return String(localized: "Записала · выход \(String(localized: "\(minutes) минут"))")
+        }
         guard WalkRecorder.record(session, dog: dog,
                                   author: AppState.storedUserName, context: context) != nil else {
             throw QuickLogError.storageUnavailable
         }
         ActiveSessionStore.save(nil)
+        // Голосом закрытая прогулка с инцидентом — тот же эпизод, что
+        // из шторки. `AppState` здесь нет: эпизод ляжет в базу, экран
+        // подтянет его при открытии.
+        if session.count(of: .incident) > 0 {
+            EpisodeRaiser.afterIncident(dog: dog, context: context, appState: nil)
+        }
 
         let minutes = Int(session.duration(at: now)) / 60
         let tail = session.marks.isEmpty ? "" : " · \(session.tally)"
-        return "Записала · прогулка \(String(localized: "\(minutes) минут"))\(tail)"
+        return String(localized: "Записала · прогулка \(String(localized: "\(minutes) минут"))\(tail)")
     }
 }
 

@@ -77,7 +77,7 @@ struct PrescriptionsScreen: View {
             }
         }
         .navigationTitle("Назначения")
-        .cinemaScreen(экран: .sub("rx"))
+        .cinemaScreen(экран: ScreenKey.prescriptions)
         .toolbar {
             if canEdit, dog != nil {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -167,6 +167,16 @@ struct PrescriptionEditor: View {
     enum Срок: String, CaseIterable, Identifiable {
         case трёх = "3 нед", четыреШесть = "4–6 нед", четыреВосемь = "4–8 нед", своё = "своё"
         var id: String { rawValue }
+        /// Подпись ключом каталога — как у `LabChartScreen.Период`
+        /// (29.10.2026): дословный `rawValue` не переводился.
+        var подпись: LocalizedStringKey {
+            switch self {
+            case .трёх: "3 нед"
+            case .четыреШесть: "4–6 нед"
+            case .четыреВосемь: "4–8 нед"
+            case .своё: "своё"
+            }
+        }
         var недели: (от: Int, до: Int)? {
             switch self {
             case .трёх: (3, 3)
@@ -309,7 +319,7 @@ struct PrescriptionEditor: View {
             TGCard {
                 TGSectionHeader(title: "контроль через")
                 Picker("Срок контроля", selection: $срок) {
-                    ForEach(Срок.allCases) { Text(verbatim: $0.rawValue).tag($0) }
+                    ForEach(Срок.allCases) { Text($0.подпись).tag($0) }
                 }
                 .pickerStyle(.segmented)
 
@@ -415,7 +425,7 @@ struct PrescriptionEditor: View {
                     let откат = ОбщееУдаление.удалить(prescription)
                     guard context.persist(otherwise: откат) else {
                         Haptics.warning()
-                        appState.showFailure("Не удалилось · нажми ещё раз")
+                        appState.showFailure(String(localized: "Не удалилось · нажми ещё раз"))
                         return
                     }
                 }
@@ -547,7 +557,7 @@ struct PrescriptionEditor: View {
             }
         }) else {
             Haptics.warning()
-            appState.showFailure("Не сохранилось · нажми ещё раз")
+            appState.showFailure(String(localized: "Не сохранилось · нажми ещё раз"))
             return
         }
         Haptics.success()

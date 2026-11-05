@@ -81,6 +81,38 @@ enum ФотоСобаки {
         Haptics.success()
         return true
     }
+
+    /// Убрать снимок у собаки. Возвращает, убралось ли.
+    ///
+    /// **До 29.10.2026 снимок можно было положить и заменить, но не
+    /// убрать**: входы были только у `положить`, и неудачное фото
+    /// оставалось аватаром, подложкой и виджетом навсегда.
+    ///
+    /// Здесь же, а не на вкладке, по той же причине, что у `положить`:
+    /// запись в `Dog.photo` идёт одним путём (`ЖетонФотоСобакиTests
+    /// .писательОдин`). Откат — как у соседа: не сохранилось — снимок
+    /// возвращается и человеку говорится, а подложка не трогается.
+    @MainActor
+    @discardableResult
+    static func убрать(у dog: Dog,
+                       context: ModelContext,
+                       appState: AppState?,
+                       экран: UsageLog.Screen) -> Bool {
+        let былоФото = dog.photo
+        dog.photo = nil
+        guard context.persist(otherwise: { dog.photo = былоФото }) else {
+            Haptics.warning()
+            UsageLog.note(.record, "dogPhotoRemove", on: экран, outcome: .failed)
+            appState?.showFailure(String(localized: "Не удалилось · нажми ещё раз"))
+            return false
+        }
+        UsageLog.note(.record, "dogPhotoRemove", on: экран, outcome: .done)
+        // Подложка — после записи, а не до: при отказе хранилища снимок
+        // у собаки остался, и гасить его на экранах было бы неправдой.
+        BackgroundStore.shared.забытьФотоСобаки(былоФото)
+        Haptics.warning()
+        return true
+    }
 }
 
 /// Аватар-жетон в шапке «Сегодня». **Пустой — открывает выбор фото.**
@@ -117,8 +149,16 @@ struct ЖетонСобаки: View {
     @State private var выбранный: PhotosPickerItem?
     @State private var кладу = false
 
+    /// Кладёт фото тот, кто правит профиль, — как на описи вкладки
+    /// собаки (`DogTab.canEdit`). До 29.10.2026 пустой жетон открывал
+    /// выбор снимка и помощнику, и гостю, а фото — подложка всех
+    /// вкладок и виджет у всей семьи. Без состояния приложения
+    /// (галерея, превью) выбора нет: запись без права не открывается
+    /// и там, где спросить некого.
+    private var можноПоложить: Bool { appState?.can(.editProfile) ?? false }
+
     var body: some View {
-        if let dog, dog.снимок == nil {
+        if let dog, dog.снимок == nil, можноПоложить {
             жетонСВыбором(dog.initial)
                 .onChange(of: выбранный) { _, новый in взять(новый, для: dog) }
         } else {

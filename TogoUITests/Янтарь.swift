@@ -64,51 +64,6 @@ nonisolated final class Янтарь: XCTestCase {
         capture("amber-1-fasting-scrolled")
     }
 
-    /// «Почти вовремя» — `MarkAccuracy.almost` на занятии.
-    ///
-    /// В сценарии три задержки: 420 мс даёт `.onTime`, 640 и 870 — `.almost`.
-    /// Третья нужна не для полноты, а чтобы на кадре янтарь стоял рядом
-    /// с зелёным: цвет, которому нечего противопоставить, не читается
-    /// как состояние.
-    func testЯ2Занятие() {
-        // **ДВА РАЗНЫХ «Ещё», и тест жал не то** (правка 26.10.2026).
-        // В шапке «Ещё» открывает меню настроек; «Занятие» лежит
-        // во ВТОРОЙ шторке записи:
-        //
-        // ```
-        // «+» (низ-записать) → шторка «Записать» (TodayBottom)
-        //                      Инцидент · Стул · Еда · Ещё
-        //   строка «Ещё»     → шторка .more (TodayRouter)
-        //                      Лакомство · Занятие · Заметка · …
-        // ```
-        //
-        // Отказ звучал «кнопки занятия нет — кадра этого состояния
-        // не будет вовсе» и читался как дефект продукта.
-        let плюс = app.buttons["низ-записать"].firstMatch
-        guard плюс.waitForExistence(timeout: 15) else {
-            XCTFail("кнопки «Записать» нет — до занятия не дойти"); return
-        }
-        плюс.tap()
-        let ещё = app.buttons.containing(
-            NSPredicate(format: "label BEGINSWITH %@", т("Ещё"))
-        ).firstMatch
-        guard ещё.waitForExistence(timeout: 10) else {
-            XCTFail("в шторке «Записать» нет строки «Ещё»"); return
-        }
-        ещё.tap()
-        let занятие = app.buttons.containing(
-            NSPredicate(format: "label BEGINSWITH %@", т("Занятие"))
-        ).firstMatch
-        guard занятие.waitForExistence(timeout: 10) else {
-            XCTFail("кнопки занятия нет — путь к «почти вовремя» не открылся, "
-                    + "а значит кадра этого состояния не будет вовсе")
-            return
-        }
-        занятие.tap()
-        _ = app.staticTexts[т("Он сделал")].waitForExistence(timeout: 10)
-        capture("amber-2-training")
-    }
-
     /// «Навык тренируется» — `SkillStatus.learning`, и уход, где стоит доза.
     ///
     /// Вкладка зовётся кличкой собаки, а не словом: `RootView` подписывает

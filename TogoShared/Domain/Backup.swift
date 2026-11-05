@@ -122,6 +122,8 @@ nonisolated enum BackupService {
             sitterFood: dog.sitterFood, sitterDose: dog.sitterDose,
             sitterWalks: dog.sitterWalks, sitterForbidden: dog.sitterForbidden,
             sitterEscalation: dog.sitterEscalation,
+            разовыеВременаДата: dog.разовыеВременаДата,
+            разовыеВремена: dog.разовыеВремена,
             events: dog.events.map { event in
                 BackupArchive.EventSnapshot(
                     id: event.id, date: event.date, kindRaw: event.kindRaw,
@@ -454,6 +456,16 @@ nonisolated enum BackupService {
                           // `LogEvent` и `WeightEntry`.
                           LabResult.self, VetVisit.self,
                           Diagnosis.self, Prescription.self,
+                          // Запас корма, течки, документы и выезды —
+                          // 29.10.2026. Четыре вида восстанавливались,
+                          // а в перечне чистки их не было: держал их
+                          // один каскад от собаки, то есть запись
+                          // с пустым `dog` переживала «заменить всё»
+                          // и ложилась рядом с приехавшей из файла.
+                          // Обещание «то, что сейчас на телефоне, будет
+                          // стёрто» про них было неправдой.
+                          FoodStock.self, HeatRecord.self,
+                          DogDocument.self, DayOut.self,
                           FamilyMember.self, Dog.self] as [any PersistentModel.Type] {
                 try context.delete(model: model)
             }
@@ -659,6 +671,11 @@ nonisolated enum BackupService {
                 skill.attempts = snapshot.attempts
                 context.insert(skill)
             }
+            // `dogID` (V10) архив не несёт: у `DogSnapshot` нет своего
+            // идентификатора, а восстановленная собака получает новый.
+            // Восстановленный эпизод поэтому безымянный — то есть общий,
+            // как все эпизоды до V10. Это потеря «чей», а не эпизода,
+            // и названа здесь, а не найдена следующим.
             for snapshot in archive.episodes {
                 let episode = Episode(title: snapshot.title, detail: snapshot.detail, startedAt: snapshot.startedAt)
                 episode.endedAt = snapshot.endedAt
@@ -767,6 +784,12 @@ nonisolated enum BackupService {
         dog.sitterWalks = snapshot.sitterWalks ?? dog.sitterWalks
         dog.sitterForbidden = snapshot.sitterForbidden ?? dog.sitterForbidden
         dog.sitterEscalation = snapshot.sitterEscalation ?? dog.sitterEscalation
+        // Разовое исключение: переносится как есть. `?? dog.…` здесь
+        // не нужен — у новой записи поля пусты, у старого архива ключа
+        // нет, оба случая дают «исключения нет». Просроченное
+        // исключение из месячного архива отбросит читатель по дате.
+        dog.разовыеВременаДата = snapshot.разовыеВременаДата
+        dog.разовыеВремена = snapshot.разовыеВремена ?? []
         // Надгробие переносится как есть, и `?? dog.deletedAt` здесь
         // не нужен: у новой записи оно и так `nil`, а у старого архива
         // ключа нет — то есть собака из него не удалена. Оба случая

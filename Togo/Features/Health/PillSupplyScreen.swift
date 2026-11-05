@@ -12,6 +12,7 @@ struct PillSupplyScreen: View {
     var courseEnds: Date?
 
     @Environment(\.modelContext) private var context
+    @Environment(AppState.self) private var appState
 
     private var supply: PillSupply? {
         PillSupplyAdvisor.supply(remaining: medication.remaining,
@@ -74,7 +75,7 @@ struct PillSupplyScreen: View {
 
     private var startCard: some View {
         TGCard {
-            Text("Счёт веду сама").textStyle(AppFont.cardTitle)
+            Text("Счёт ведёт приложение").textStyle(AppFont.cardTitle)
             Text("Скажи, сколько таблеток в пачке — дальше приложение будет вычитать по одной с каждой отметки и предупредит за три дня до конца.")
                 .textStyle(AppFont.caption)
         }
@@ -141,7 +142,12 @@ struct PillSupplyScreen: View {
     /// Запас таблеток: «сохранилось» без записи — это человек, который
     /// думает, что таблетки посчитаны, и пропускает докупку.
     private func save() {
-        if !context.persist(otherwise: {}) { Haptics.warning() }
+        // Отказ — словом, а не одной вибрацией (29.10.2026): остаток —
+        // то, по чему приложение скажет «пора покупать».
+        if !context.persist(otherwise: {}) {
+            Haptics.warning()
+            appState.showFailure(String(localized: "Не сохранилось · попробуй ещё раз"))
+        }
     }
 }
 

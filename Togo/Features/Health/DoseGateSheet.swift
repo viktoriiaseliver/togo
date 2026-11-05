@@ -28,7 +28,11 @@ struct DoseGateSheet: View {
         } footer: {
             TGButton(title: "Понятно", variant: .secondary, size: .medium) { dismiss() }
         }
-        .presentationDetents([.medium])
+        // Ожидание — две карточки, одна с героем 56 pt и одна
+        // с пояснением в три строки, плюс закреплённая кнопка: на одном
+        // `.medium` это прокрутка внутри половинки уже на обычном кегле
+        // (оценка по исходнику, кадра нет). Второй упор — дотянуть вверх.
+        .presentationDetents([.medium, .large])
     }
 
     private func waiting(until: Date, since: Date) -> some View {
@@ -42,10 +46,17 @@ struct DoseGateSheet: View {
             }
             TGCard {
                 TGIconRow(symbol: "fork.knife",
-                          title: "Ел в \(Fmt.clock(since))",
-                          detail: "Отсчёт пошёл с этой отметки, а не с расписания: покормили позже — укол сдвинулся ровно на столько же.")
+                          // Род — у собаки (`РодСобаки`), а не прибит «Ел»;
+                          // «укол» снят: ворота еды стоят и у таблеток.
+                          // Обе правки 29.10.2026.
+                          title: .готовая(РодСобаки.форма(
+                              medication.dog,
+                              он: String(localized: "Ел в \(Fmt.clock(since))"),
+                              она: String(localized: "Ела в \(Fmt.clock(since))"),
+                              нейтрально: { String(localized: "Еда в \(Fmt.clock(since))") })),
+                          detail: "Отсчёт пошёл с этой отметки, а не с расписания: покормили позже — доза сдвинулась ровно на столько же.")
             }
-            TGExplainer(text: "Раньше времени отметить нельзя. Так задумано: \(Fmt.minutes(medication.minutesAfterMeal)) — это условие из назначения.")
+            TGExplainer(text: "Раньше времени отметить нельзя. Так задумано: \(Fmt.minutes(medication.minutesAfterMeal)) — это условие из назначения.", памятка: "доза.раньшеНельзя")
         }
     }
 
@@ -57,7 +68,7 @@ struct DoseGateSheet: View {
                      systemImage: "fork.knife")
             TGCard {
                 TGSectionHeader(title: "если собака не ест")
-                TGExplainer(text: "Это вопрос к врачу, а не к приложению: колоть в пустой желудок нельзя, а пропускать назначение — решение врача.")
+                TGExplainer(text: "Это вопрос к врачу, а не к приложению: без еды эту дозу по назначению не дают, а пропускать назначение — решение врача.")
                 ShareLink(item: "\(medication.name) \(medication.doseText): собака не ела, доза по условию не открывается. Что делать?") {
                     TGListRow(title: "Спросить врача", systemImage: "square.and.arrow.up",
                               accessory: .none)

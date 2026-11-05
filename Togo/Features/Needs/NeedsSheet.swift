@@ -371,7 +371,7 @@ struct NeedsSheet: View {
                                                     context: context)
         else {
             Haptics.warning()
-            appState.showFailure("Доза не отметилась · нажми ещё раз")
+            appState.showFailure(String(localized: "Доза не отметилась · нажми ещё раз"))
             return
         }
 
@@ -404,14 +404,21 @@ struct NeedsSheet: View {
         }
 
         appState.startOuting(by: appState.currentUserName)
-        LiveActivityController.startWalk(dogName: dog.name, by: appState.currentUserName, at: event.date)  // кличка-в-слот: вход живой активности кормит и именительный ярлык, и винительные подписи — падеж знает слот
+        // Пометка стоит на строке самой подстановки, а не под вызовом:
+        // сторож смотрит ту же строку и строку ВЫШЕ (`помечена(строка:в:)`),
+        // а строку ниже не смотрит вовсе. Когда у вызова появился
+        // аргумент `кобель:`, строка переехала — и пометка осталась
+        // под подстановкой, то есть там, где её никто не ищет.
+        LiveActivityController.startWalk(dogName: dog.name,  // кличка-в-слот: вход живой активности кормит и именительный ярлык, и винительные подписи — падеж знает слот
+                                         by: appState.currentUserName, at: event.date,
+                                         кобель: dog.sex == .male)
 
         // Спрашиваем не каждый раз: только при смене сигнала или раз в пять
         // выходов. Ответил чипами — второй раз не спрашиваем.
         if какПопросил == nil, Diary.shouldAskHowAsked(dog.events) {
             askSignal = true
         } else {
-            appState.showUndo("Записано · Выход", eventID: event.id)
+            appState.showUndo(String(localized: "Записано · Выход"), eventID: event.id)
             dismiss()
         }
     }
@@ -438,15 +445,15 @@ struct HowAskedSheet: View {
             title: "Как попросил?",
             subtitle: "Дверь откроется — то, что он сделал, закрепится. Отметь, и приложение покажет, если что-то идёт не туда."
         ) {
-            VStack(spacing: 8) {
+            VStack(spacing: Token.Space.s8) {
                 ForEach(AskSignal.allCases, id: \.self) { signal in
                     Button { record(signal) } label: {
-                        HStack(spacing: 12) {
+                        HStack(spacing: Token.Space.s12) {
                             Image(systemName: signal.symbol)
-                                .font(.system(size: 16, weight: .medium))
+                                .font(.system(size: Token.Size.iconMd, weight: .medium))
                                 .foregroundStyle(signal.isCalm ? Token.Action.doneText : Token.Ink.silhouette)
-                                .frame(width: 24)
-                            VStack(alignment: .leading, spacing: 2) {
+                                .frame(width: Token.Space.s24)
+                            VStack(alignment: .leading, spacing: Token.Space.s2) {
                                 Text(signal.title).textStyle(AppFont.body).foregroundStyle(Token.Ink.primary)
                                 if signal == .satAtDoor {
                                     Text("то, что учим").textStyle(AppFont.micro).foregroundStyle(Token.Action.doneText)
@@ -455,15 +462,20 @@ struct HowAskedSheet: View {
                             Spacer(minLength: 0)
                         }
                         .frame(minHeight: Token.Size.tapTarget)
-                        .padding(.horizontal, 14)
+                        .padding(.horizontal, Token.Space.s14)
                         .background(Token.Surface.card, in: RoundedRectangle(cornerRadius: Token.Radius.tile, style: .continuous))
                     }
                     .buttonStyle(.plain)
                 }
             }
-            TGExplainer(text: "Спрашиваем не каждый раз: только когда сигнал меняется или раз в несколько выходов.")
+            TGExplainer(text: "Спрашиваем не каждый раз: только когда сигнал меняется или раз в несколько выходов.", памятка: "просится.неКаждыйРаз")
         }
-        .presentationDetents([.medium])
+        // Пять строк по 44 + шапка с подзаголовком в три строки — это
+        // больше половины экрана уже на обычном кегле (оценка по
+        // исходнику, кадра нет): на одном `.medium` последний ответ
+        // и пояснение достаются только прокруткой внутри половинки,
+        // а поднять шторку нельзя. Второй упор даёт дотянуть её вверх.
+        .presentationDetents([.medium, .large])
     }
 
     private func record(_ signal: AskSignal) {

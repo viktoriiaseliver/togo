@@ -32,14 +32,14 @@ import CloudKit
 struct ПриёмПриглашенияГоворитTests {
 
     private let отказы: [ShareAcceptanceOutcome] = [
-        .нетСети, .нетiCloud, .сторонаПриложения, .неизвестно
+        .нетСети, .iCloudПросилПодождать, .нетiCloud, .сторонаПриложения, .неизвестно
     ]
 
     @Test("У каждой причины свой текст, и ни один не повторяет другой")
     func текстыРазные() {
         let тексты = отказы.map(\.текст)
 
-        #expect(тексты.count >= 4, "причин меньше четырёх — проверять нечего")
+        #expect(тексты.count >= 5, "причин меньше пяти — проверять нечего")
         #expect(Set(тексты).count == тексты.count, """
             две причины отказа говорят ОДНО И ТО ЖЕ: \(тексты).
             Один текст на несколько причин даёт совет, неверный для \
@@ -76,7 +76,12 @@ struct ПриёмПриглашенияГоворитTests {
         #expect(ShareAcceptanceOutcome.причина(чужая) == .неизвестно)
 
         // И у CloudKit-кода, которого мы не разбирали, — тоже.
-        let неразобранный = CKError(.zoneBusy)
+        //
+        // Здесь стоял `zoneBusy`, и 29.10.2026 он стал разобранным:
+        // это просьба подождать (`.iCloudПросилПодождать`). Предмет
+        // теста — «незнакомый не подгоняется», поэтому код заменён
+        // на заведомо не наш: про файл ассета приём не знает ничего.
+        let неразобранный = CKError(.assetFileNotFound)
         #expect(ShareAcceptanceOutcome.причина(неразобранный) == .неизвестно, """
             неразобранный код CloudKit подогнан под знакомую причину. \
             Подгонять незнакомый отказ под знакомый совет — то же самое, \
@@ -92,6 +97,14 @@ struct ПриёмПриглашенияГоворитTests {
     func знакомыеКодыРазбираются() {
         #expect(ShareAcceptanceOutcome.причина(CKError(.networkUnavailable)) == .нетСети)
         #expect(ShareAcceptanceOutcome.причина(CKError(.networkFailure)) == .нетСети)
+        // Просьба подождать — НЕ «нет связи» (29.10.2026): связь есть,
+        // а «попробуй ещё раз» сразу эту просьбу продлевает.
+        for код in [CKError.Code.requestRateLimited, .zoneBusy, .serviceUnavailable] {
+            #expect(ShareAcceptanceOutcome.причина(CKError(код)) == .iCloudПросилПодождать, """
+                код \(код.rawValue) — просьба iCloud подождать, а разобран \
+                иначе. Человек со связью пошёл бы чинить связь.
+                """)
+        }
         #expect(ShareAcceptanceOutcome.причина(CKError(.notAuthenticated)) == .нетiCloud)
         #expect(ShareAcceptanceOutcome.причина(CKError(.permissionFailure)) == .сторонаПриложения)
         #expect(ShareAcceptanceOutcome.причина(CKError(.unknownItem)) == .сторонаПриложения)

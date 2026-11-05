@@ -58,6 +58,13 @@ struct FeedingScreen: View {
     let dog: Dog?
 
     @Environment(\.modelContext) private var context
+    @Environment(AppState.self) private var appState
+
+    /// Расписание кормлений — поле профиля (`editProfile`: «порция,
+    /// вес, напоминания»), и правит его тот же, кто на `ScheduleScreen`.
+    /// До 29.10.2026 кнопка «Поставить это расписание» прав не
+    /// спрашивала: помощник переписывал часы и порцию всей семье.
+    private var canEdit: Bool { appState.can(.editProfile) }
     /// Системный кегль. Читается, а не задаётся: сюда он приезжает
     /// от настройки **процесса**, и на этом же месте его подменяет
     /// аргумент запуска `-UIPreferredContentSizeCategoryName`.
@@ -280,7 +287,7 @@ struct FeedingScreen: View {
                 // без данных, а не данными без графика.
                 if report.days.count > 1 {
                     столбикиДвухНедель
-                    TGExplainer(text: "Дни без записей в среднее не попадают: пустой день — это «дневник не вели», а не «не ел».")
+                    TGExplainer(text: "Дни без записей в среднее не попадают: пустой день — это «дневник не вели», а не «еды не было».")
                 }
 
                 TGDivider()
@@ -331,8 +338,14 @@ struct FeedingScreen: View {
     /// и ветка, которую реже видят, отстанет молча.
     @ViewBuilder
     private var числаСегодня: some View {
-        TGStat(value: "\(report.todayGrams) г",
-               caption: report.normGramsPerDay > 0 ? "из \(report.normGramsPerDay)" : "съел")
+        TGStat(value: String(localized: "\(report.todayGrams) г"),
+               // «съел» был мужским у любой собаки (аудит 29.10.2026).
+               caption: report.normGramsPerDay > 0
+                   ? "из \(report.normGramsPerDay)"
+                   : .готовая(РодСобаки.форма(dog,
+                                              он: String(localized: "съел"),
+                                              она: String(localized: "съела"),
+                                              нейтрально: { String(localized: "съедено") })))
         TGStat(value: "\(report.todayMeals)",
                caption: report.normMealsPerDay > 0
                    ? .готовая(String(localized: "из \(report.normMealsPerDay) кормлений"))
@@ -429,7 +442,7 @@ struct FeedingScreen: View {
         .frame(height: Self.высотаСтолбиков)
         .chartXAxis(.hidden)
         .chartYAxis(.hidden)
-        .accessibilityLabel(Text("Сколько ел последние две недели"))
+        .accessibilityLabel(Text("Сколько съедено за две недели"))
         // Озвучка не называет нормы, которой нет: «при норме 0 г»
         // звучит как назначение, а не как её отсутствие.
         .accessibilityValue(report.normGramsPerDay > 0
@@ -483,7 +496,11 @@ struct FeedingScreen: View {
                      systemImage: "arrow.up.right")
         case .underNorm:
             TGBanner(tone: .waiting, title: .готовая(report.status.title),
-                     subtitle: "В среднем \(Int(report.averageGramsPerDay)) г в день — на \(abs(report.deviationPercent))% меньше нормы. Бодр и вес держится — не беда; вес падает — к врачу.",
+                     // «Бодр» — мужской род у любой собаки (29.10.2026).
+                     subtitle: .готовая(РодСобаки.форма(dog,
+                         он: String(localized: "В среднем \(Int(report.averageGramsPerDay)) г в день — на \(abs(report.deviationPercent))% меньше нормы. Бодр и вес держится — не беда; вес падает — к врачу."),
+                         она: String(localized: "В среднем \(Int(report.averageGramsPerDay)) г в день — на \(abs(report.deviationPercent))% меньше нормы. Бодра и вес держится — не беда; вес падает — к врачу."),
+                         нейтрально: { String(localized: "В среднем \(Int(report.averageGramsPerDay)) г в день — на \(abs(report.deviationPercent))% меньше нормы. Собака бодра и вес держится — не беда; вес падает — к врачу.") })),
                      systemImage: "arrow.down.right")
         }
     }
@@ -554,8 +571,11 @@ struct FeedingScreen: View {
                             value: "")
 
                 if report.observedMealTimes.isEmpty {
-                    TGExplainer(text: "Записей о еде пока нет. Отметь пару кормлений — и приложение увидит его режим само.")
-                } else if !report.suggestedMealTimes.isEmpty,
+                    TGExplainer(text: .готовая(РодСобаки.форма(dog,
+                        он: String(localized: "Записей о еде пока нет. Отметь пару кормлений — и приложение увидит его режим само."),
+                        она: String(localized: "Записей о еде пока нет. Отметь пару кормлений — и приложение увидит её режим само."),
+                        нейтрально: { String(localized: "Записей о еде пока нет. Отметь пару кормлений — и приложение увидит режим само.") })))
+                } else if canEdit, !report.suggestedMealTimes.isEmpty,
                           report.suggestedMealTimes.sorted() != dog.mealTimes.sorted() {
                     // Кнопка остаётся: это единственный вход
                     // в `applySchedule()`. Убери её — и предложенное
@@ -566,9 +586,12 @@ struct FeedingScreen: View {
                     }
                 }
 
-                TGLink(title: "Настроить режим вручную", systemImage: "clock") {
-                    ScheduleScreen(dog: dog)
-                }
+                // «Настроить режим вручную» снят 29.10.2026 (аудит вкладки
+                // собаки, решение Виктории): это была вторая дверь
+                // в `ScheduleScreen` на том же экране. Осталась одна —
+                // «Поменять норму и режим» в блоке нормы: она называет
+                // оба дела, которые за ней лежат, а «вручную» обещало
+                // какой-то другой, ручной режим, которого нет.
                 TGExplainer(text: "Собака привыкает к промежутку, а не к цифре на часах: ровный интервал важнее точного часа. Ночь считается как день.")
             }
         }
@@ -678,7 +701,10 @@ struct FeedingScreen: View {
         TGCard {
             TGSectionHeader(title: "когда выводить")
             if let lag = report.stoolLagMinutes {
-                Text("После еды до стула у него в среднем \(Fmt.duration(Double(lag) * 60)).")
+                Text(verbatim: РодСобаки.форма(dog,
+                    он: String(localized: "После еды до стула у него в среднем \(Fmt.duration(Double(lag) * 60))."),
+                    она: String(localized: "После еды до стула у неё в среднем \(Fmt.duration(Double(lag) * 60))."),
+                    нейтрально: { String(localized: "После еды до стула в среднем \(Fmt.duration(Double(lag) * 60)).") }))
                     .textStyle(AppFont.body)
                     .wraps()
             }
@@ -690,7 +716,7 @@ struct FeedingScreen: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .accessibilityLabel(Text("Ориентиры выходов"))
                 .accessibilityValue(Text(verbatim: часыСтрокой(report.suggestedOutingTimes)))
-            TGExplainer(text: "Это ориентиры из его записей, а не расписание. Просится раньше — выводи раньше: ни часы, ни вердикт не спорят.")
+            TGExplainer(text: "Это ориентиры из записей дневника, а не расписание. Просится раньше — выводи раньше: ни часы, ни вердикт не спорят.")
         }
     }
 
@@ -737,7 +763,7 @@ struct FeedingScreen: View {
     // MARK: Действия
 
     private func applySchedule() {
-        guard let dog else { return }
+        guard canEdit, let dog else { return }
         // **Снимок для возврата берётся ПРЕЖДЕ правки.** Здесь он
         // брался после: `былиЧасы` читались уже из перезаписанного
         // `dog.mealTimes`, то есть возврат возвращал НОВОЕ расписание,
@@ -758,7 +784,10 @@ struct FeedingScreen: View {
         dog.setMealsPerDay(report.suggestedMealTimes.count)
         dog.syncSingleFoodShare()
         guard context.persist(otherwise: { былоПитание.вернуть(в: dog) }) else {
+            // Одна хаптика — это отказ без слова: расписание на экране
+            // откатилось, и человек решил бы, что кнопка не сработала.
             Haptics.warning()
+            appState.showFailure(String(localized: "Не сохранилось · попробуй ещё раз"))
             return
         }
         Haptics.success()

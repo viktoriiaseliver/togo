@@ -60,14 +60,18 @@ struct DataPrivacyScreen: View {
             TGCard {
                 TGSectionHeader(title: "выгрузить")
                 ShareLink(
-                    item: CSVFile(name: "togo-dnevnik.csv", text: Exporter.csv(events: activeEvents)),
+                    // Собирается в момент отправки, а не в `body`:
+                    // разбор у `ВыгрузкаДневника`.
+                    item: CSVFile(name: "togo-dnevnik.csv",
+                                  выгрузка: ВыгрузкаДневника(container: context.container, вид: .весьДневник)),
                     preview: SharePreview("Дневник Togo · CSV")
                 ) {
                     TGListRow(title: "Весь дневник · CSV", systemImage: "square.and.arrow.up")
                 }
                 TGDivider()
                 ShareLink(
-                    item: CSVFile(name: "togo-stul-vrachu.csv", text: Exporter.clinicalCSV(events: activeEvents)),
+                    item: CSVFile(name: "togo-stul-vrachu.csv",
+                                  выгрузка: ВыгрузкаДневника(container: context.container, вид: .стулВрачу)),
                     preview: SharePreview("Стул для врача · CSV")
                 ) {
                     TGListRow(title: "Стул для врача · CSV", systemImage: "cross.case")
@@ -129,7 +133,7 @@ struct DataPrivacyScreen: View {
         // трогаем ни отметки, ни напоминания: человек нажмёт ещё раз.
         guard неУдалось == 0 else {
             Haptics.warning()
-            appState.showFailure("Удалилось не всё · нажми ещё раз")
+            appState.showFailure(String(localized: "Удалилось не всё · нажми ещё раз"))
             return
         }
 
@@ -206,8 +210,13 @@ struct SupportScreen: View {
                 FAQRow(question: "Почему вердикт говорит «непонятно»?",
                        answer: "Ему нужно 3–4 дня записей, чтобы выучить интервалы. До этого он честно признаётся, что не знает, и не выдумывает.")
                 TGDivider()
+                // Ответ переписан 03.11.2026: он объяснял пропажу
+                // счётчика через занятия, которых в приложении нет
+                // с 28.10 (`82ba1e46`). Сам вопрос остаётся живым —
+                // лакомства никуда не делись (`TreatSheet`, флаг
+                // `trainingFoodFromPortion`, `ProfileScreen.marker`).
                 FAQRow(question: "Куда делся счётчик лакомств?",
-                       answer: "Убрали. Корм на занятия берётся из дневной порции, а не сверх неё, поэтому лимит не нужен — он мешал обучению.")
+                       answer: "Убрали. Лакомства можно брать из дневной порции, а не сверх неё, — тогда лимит не нужен.")
                 TGDivider()
                 FAQRow(question: "Где вкладка «Здоровье»?",
                        answer: "Она у того, кому разрешено видеть медицинское. У помощника её нет. Курс можно завершить внизу «Здоровья» — записи остаются в истории и в отчёте врачу, а вкладка никуда не денется.")
@@ -255,9 +264,35 @@ struct SupportScreen: View {
     }
 }
 
+/// Вопрос и ответ — **ключи каталога, а не `String`**, и это замер
+/// 03.11.2026, а не стиль.
+///
+/// Было `question: String` / `answer: String`, а читаются они
+/// `Text(question)` и `Text(answer)`. У `Text` две перегрузки, и выбор
+/// между ними делает ТИП аргумента: `LocalizedStringKey` спрашивает
+/// каталог, `StringProtocol` рисует дословно. Литералы стояли
+/// на месте вызова, но приходили сюда через параметр `String` —
+/// к моменту `Text` это уже была переменная.
+///
+/// Все восемь строк (четыре вопроса и четыре ответа) **уже лежали
+/// в каталоге переведёнными на en/fr/kk/uk** — замер по
+/// `TogoShared/Resources/Localizable.xcstrings`, отрицательный
+/// контроль на заведомо отсутствующем ключе. То есть переводы были
+/// оплачены и не доезжали: экран «Данные и приватность» открывают
+/// намеренно, и открывал его кто угодно на любом языке — а частые
+/// вопросы отвечали по-русски.
+///
+/// Новых ключей правка не заводит, каталог не трогает.
+///
+/// Долг этого файла в `LocalizationDebtTests` (9) закрывается
+/// не полностью: ниже остаётся `Release.date` («август 2026»,
+/// `DataPrivacyScreen.swift:385`), тоже `String`. Потолок в храповике
+/// **не понижен нарочно** — остаток я считал разбором, а не прогоном
+/// сторожа, и понижать число по невымеренному остатку значит
+/// заводить ложный красный следующему.
 private struct FAQRow: View {
-    let question: String
-    let answer: String
+    let question: LocalizedStringKey
+    let answer: LocalizedStringKey
 
     var body: some View {
         DisclosureGroup {
@@ -325,19 +360,58 @@ struct AboutScreen: View {
 /// «Что нового» показывается один раз после обновления и всегда доступно
 /// в настройках — а не всплывает поверх работы.
 struct WhatsNewScreen: View {
+    /// # Подписи — `LocalizedStringKey`, а не `String` (замер 03.11.2026)
+    ///
+    /// Было `[(String, String, String)]`, и показ шёл через
+    /// `TGIconRow(title: .готовая(title))`. `готовая` строит
+    /// `LocalizedStringKey` из готовой строки **дословно** — то есть
+    /// каталог не спрашивается вовсе, и экран «Что нового» рисовался
+    /// по-русски на всех языках.
+    ///
+    /// **Все шесть ключей в каталоге при этом ЛЕЖАЛИ, на четырёх
+    /// языках.** Перевод был куплен и не доезжал: дороги к нему
+    /// не было. Тот же класс, что закрывали сегодня в тринадцати
+    /// тостах — `showUndo(_ message: String)`.
+    ///
+    /// > **Тип `String` у подписи — это не «ещё не локализовано»,
+    /// > а «локализовано не будет».** Компилятор молчит, ключ
+    /// > в каталоге есть, грепом место выглядит здоровым. Лечится
+    /// > не обёрткой на месте показа, а типом в объявлении: литерал
+    /// > в `LocalizedStringKey` становится ключом сам.
+    ///
+    /// `symbol` остаётся `String` — это имя SF Symbol, не подпись.
+    ///
+    /// **Кортеж заменён типом, и это тоже замер, а не вкус.** Пока
+    /// пункт был `(String, String, String)`, `ForEach` опирался
+    /// на `id: \.1` — то есть на саму подпись. С переводом так нельзя:
+    /// `LocalizedStringKey` **не `Hashable`**, и компилятор сказал это
+    /// прямо, когда я сменил тип и оставил прежний `id`. Идентичность
+    /// строки списка не должна жить в её тексте: сегодня это подпись,
+    /// завтра перевод, а послезавтра две одинаковые.
     struct Release: Identifiable {
         let id = UUID()
         let version: String
         let date: String
-        let items: [(String, String, String)]
+        let items: [Пункт]
+
+        struct Пункт: Identifiable {
+            let id = UUID()
+            let symbol: String
+            let title: LocalizedStringKey
+            let detail: LocalizedStringKey
+        }
     }
 
     static let releases: [Release] = [
+        // «Тренажёр точности маркера» снят 03.11.2026. `MARKETING_VERSION`
+        // в `Configuration/Shared.xcconfig:15` по-прежнему 1.0.0, то есть
+        // это не история прошлого выпуска, а список того, что человек
+        // получит ПРИ УСТАНОВКЕ. Занятий в приложении нет с 28.10
+        // (`82ba1e46`), и первой же строкой «Что нового» обещало их.
         Release(version: "1.0.0", date: "август 2026", items: [
-            ("target", "Тренажёр точности маркера", "Приложение стало секундомером и зеркалом, а не счётчиком корма: важна задержка маркера, а не количество кусочков."),
-            ("figure.walk.departure", "«Как попросил»", "Один тап после выхода, который показывает, если лай вытесняет спокойный сигнал."),
-            ("car", "Режим путешествия", "Включается датой и гаснет сам. Сборы считаются из веса и порции."),
-            ("person.2", "Роли и дежурство", "Наблюдатель читает всё и не пишет, помощник пишет бытовое и не видит медицинского."),
+            Release.Пункт(symbol: "figure.walk.departure", title: "«Как попросил»", detail: "Один тап после выхода, который показывает, если лай вытесняет спокойный сигнал."),
+            Release.Пункт(symbol: "car", title: "Режим путешествия", detail: "Включается датой и гаснет сам. Сборы считаются из веса и порции."),
+            Release.Пункт(symbol: "person.2", title: "Роли и дежурство", detail: "Наблюдатель читает всё и не пишет, помощник пишет бытовое и не видит медицинского."),
         ]),
     ]
 
@@ -352,8 +426,8 @@ struct WhatsNewScreen: View {
                         Text(release.date).textStyle(AppFont.micro)
                     }
                     TGDivider()
-                    ForEach(release.items, id: \.1) { symbol, title, detail in
-                        TGIconRow(symbol: symbol, title: .готовая(title), detail: .готовая(detail))
+                    ForEach(release.items) { пункт in
+                        TGIconRow(symbol: пункт.symbol, title: пункт.title, detail: пункт.detail)
                     }
                 }
             }

@@ -73,13 +73,19 @@ struct TodayHero: View {
     var showsReading: Bool = true
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Token.Space.s6) {
-            if showsReading { headline }
-            if let support { Text(support).textStyle(AppFont.caption).wraps() }
+        // Без показания и без строки режима герою сказать нечего —
+        // и его нет вовсе (аудит «Сегодня» 29.10.2026). Пустой `VStack`
+        // в стопке экрана давал лишний промежуток между блоками,
+        // а озвучка находила невидимый элемент с текстом показания.
+        if showsReading || support != nil {
+            VStack(alignment: .leading, spacing: Token.Space.s6) {
+                if showsReading { headline }
+                if let support { Text(support).textStyle(AppFont.caption).wraps() }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel(voiceOver)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(voiceOver)
     }
 
     @ViewBuilder
@@ -140,17 +146,27 @@ struct TodayHero: View {
         let usual = Int(rhythm.outingsPerDay.rounded())
         guard usual > 0 else { return nil }
 
+        // **Сегодняшнего числа здесь нет** (решение Виктории 29.10.2026).
+        // Строка печатала «2 выхода из 4», а полоса сводки ниже — те же
+        // «2 выхода»: одно число дважды на экране. Число дня оставлено
+        // полосе, здесь — только сравнение с обычным, и обычное число:
+        // его на экране больше нет нигде.
+        //
         // `Fmt.plural` возвращает число ВМЕСТЕ со словом. Печатать число
         // перед ним — значит напечатать его дважды: «3 3 выхода за день».
         // Тот же дефект жил в строке «5 5 напоминаний ждут даты».
-        let выходы = String(localized: "\(outingsToday) выходов")
         if outingsToday < usual {
-            return String(localized: "Обычно выходите чаще · \(выходы) из \(usual) за день")
+            let обычно = String(localized: "\(usual) выходов")
+            return String(localized: "Обычно выходите чаще — \(обычно) за день")
         }
-        return String(localized: "\(выходы) за день — как обычно")
+        return String(localized: "Выходите как обычно")
     }
 
     private var voiceOver: String {
+        // Показание отдали плакату — его и озвучивает плакат. Здесь
+        // озвучивалось оно же второй раз, и прежней подписью «на улице
+        // были … назад», хотя с 29.10.2026 счёт идёт от туалета.
+        guard showsReading else { return support ?? "" }
         if let session {
             return session.isPaused ? String(localized: "Выход на паузе") : String(localized: "Идёт выход")
         }

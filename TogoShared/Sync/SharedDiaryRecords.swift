@@ -93,7 +93,48 @@ nonisolated enum SharedDiaryRecords {
         // пример за настоящее поле: в сверке появилось `LogEvent.поле`,
         // которого нет ни в одной записи. Инструмент читает файл
         // регулярным выражением и комментарии от кода не отличает.
-        record["photo"] = фотоАссетом(payload.photo, for: record)
+        //
+        // **Под условием с 29.10.2026, и условие — не украшение.**
+        // Прежде ассет собирался заново на КАЖДОЙ отправке: правка
+        // заметки, отметка «рассказал семье», повтор после спора
+        // версий — и снимок с камеры уезжал целиком ещё раз, потому
+        // что новый `CKAsset` для CloudKit это новый файл. Теперь
+        // ассет ставится, только если на записи лежит не то же фото.
+        if !фотоУжеНаЗаписи(payload.photo, record) {
+            record["photo"] = фотоАссетом(payload.photo, for: record)
+        }
+    }
+
+    /// Лежит ли на записи уже ровно это фото.
+    ///
+    /// **Сравнение по байтам файла ассета, а не по признаку «правили
+    /// фото».** Признака нет: `changedAt` ставится на любое сохранение
+    /// записи, а отдельной метки у фото в модели нет — и заводить её
+    /// значило бы менять схему. Хеш рядом с ассетом в записи — то же
+    /// самое, только в схеме CloudKit. Файл же у серверной версии
+    /// записи есть по устройству: приехавший ассет движок скачивает,
+    /// подтверждённый указывает на наш же временный файл.
+    ///
+    /// Сначала размер, потом байты: у разных фото размер почти всегда
+    /// разный, и читать файл целиком ради «нет» незачем.
+    ///
+    /// Не смогли прочесть файл — отвечаем «не то же» и шлём заново.
+    /// Лишняя отправка дороже по трафику, но потерянное фото дороже
+    /// по смыслу: ошибиться здесь можно только в сторону отправки.
+    ///
+    /// Есть ли у серверной версии из спора (`serverRecordChanged`)
+    /// скачанный файл ассета — **НЕ ИЗМЕРЕНО**; если нет, ответ здесь
+    /// «не то же», то есть прежнее поведение, а не потеря.
+    static func фотоУжеНаЗаписи(_ data: Data?, _ record: CKRecord) -> Bool {
+        let лежит = record["photo"] as? CKAsset
+        guard let data, !data.isEmpty else { return лежит == nil }
+        guard let url = лежит?.fileURL else { return false }
+        if let размер = try? url.resourceValues(forKeys: [.fileSizeKey]).fileSize,
+           размер != data.count {
+            return false
+        }
+        guard let было = try? Data(contentsOf: url) else { return false }
+        return было == data
     }
 
     /// Фото момента — `CKAsset`, а не поле записи.
@@ -258,6 +299,15 @@ nonisolated enum SharedDiaryRecords {
         record["portionGrams"] = payload.portionGrams
         record["mealsPerDay"] = payload.mealsPerDay
         record["mealTimes"] = payload.mealTimes
+        // Ключи записи — ЛАТИНИЦЕЙ, хотя поля модели и нагрузки
+        // по-русски. Имя поля `CKRecord` — это имя в схеме CloudKit,
+        // и правило Apple для него («буквы, цифры, подчёркивание,
+        // начинается с буквы») кириллицей не проверено ничем, что
+        // есть на этой машине: `cktool validate-schema` требует
+        // токена управления и живого контейнера. Латиница здесь
+        // ничего не стоит и снимает вопрос целиком.
+        record["mealTimesOverrideDay"] = payload.разовыеВременаДата
+        record["mealTimesOverride"] = payload.разовыеВремена
         record["dailyNormGrams"] = payload.dailyNormGrams
         record["forbiddenFoods"] = payload.forbiddenFoods
         record["wakeMinuteOfDay"] = payload.wakeMinuteOfDay
@@ -328,6 +378,8 @@ nonisolated enum SharedDiaryRecords {
             portionGrams: record["portionGrams"] as? Int ?? 0,
             mealsPerDay: record["mealsPerDay"] as? Int ?? 2,
             mealTimes: record["mealTimes"] as? [Int] ?? [],
+            разовыеВременаДата: record["mealTimesOverrideDay"] as? Date,
+            разовыеВремена: record["mealTimesOverride"] as? [Int] ?? [],
             dailyNormGrams: record["dailyNormGrams"] as? Int,
             forbiddenFoods: record["forbiddenFoods"] as? [String] ?? [],
             wakeMinuteOfDay: record["wakeMinuteOfDay"] as? Int ?? 7 * 60,

@@ -226,6 +226,14 @@ nonisolated enum IncidentKind: String, Codable, CaseIterable, Sendable {
     /// После лужи показываем строку «не наказывай» и час предыстории.
     var showsPunishmentWarning: Bool { self == .puddle || self == .stoolIndoors }
 
+    /// Туалет дома — лужа или кучка. С 29.10.2026 любой туалет дома
+    /// записывается инцидентом, а не выходом.
+    var isToiletAccident: Bool { self == .puddle || self == .stoolIndoors }
+
+    /// Поднимает ли эпизод. Туалет дома — нет: у щенка это обучение,
+    /// а не болезнь (разбор — `EpisodeRaiser`).
+    var raisesEpisode: Bool { !isToiletAccident }
+
     /// Срыв просит уточнить, на что и как близко.
     var asksReactionDetails: Bool { self == .reaction }
 }

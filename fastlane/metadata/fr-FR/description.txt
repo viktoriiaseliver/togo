@@ -1,36 +1,29 @@
-Togo — le carnet du chien, pour toute la famille. Qui l'a sorti, qui l'a nourri, comment étaient les selles : c'est noté, et le soir personne ne cherche qui a fait quoi.
+Togo, le carnet de ton chien pour toute la famille, sur iPhone.
+Qui l’a sorti ? Qui lui a donné à manger ? Tout est noté au même endroit.
 
-LE BOUTON PRINCIPAL — « ENVIE DE SORTIR ? »
-En trois ou quatre jours, l'app apprend ses intervalles et te dit si c'est un vrai besoin. Tant que les entrées manquent, elle répond honnêtement « pas clair » — et laisse quand même « Je le sors » en premier bouton. Elle ne sait pas mieux que le maître.
+Se passer le relais
+Une sortie, un repas, des selles, un médicament : chacun note ce qu’il a fait, et les proches invités le retrouvent dans le carnet. Plus besoin de faire le tour de la famille pour savoir où en est la journée. Deux personnes ont noté la même chose ? Togo propose de réunir les deux entrées, sans en effacer une en silence.
 
-UNE TOUCHE QUI CHANGE LE COMPORTEMENT
-La porte s'ouvre — ce que le chien a fait juste avant est renforcé. Togo demande comment il a demandé, et te montre si l'aboiement prend la place du signal calme.
+Mieux connaître son rythme
+Ton chien demande à sortir. Est-ce le moment ? Au fil des jours, Togo s’appuie sur les sorties notées pour t’aider à y voir plus clair. S’il manque des informations, l’app te le dit. Tu gardes toujours la main pour sortir avec lui.
+Tu peux aussi noter comment il a demandé. S’il se met à aboyer plutôt qu’à utiliser son signal habituel, Togo te le montre.
 
-DES SÉANCES SANS CONTRAINTE
-Le chien n'apprend pas au nombre de friandises, mais au marqueur qui arrive en une demi-seconde. Togo mesure le délai et répond d'un mot : à temps, presque, tard. Après trois minutes, il propose d'arrêter — ensuite le chien devine au lieu d'apprendre. Les friandises sont prises sur la ration du jour, donc pas de limite.
+Suivre les soins, simplement
+Un médicament à heure fixe, un délai sans manger à respecter avant une prise : Togo te rappelle les consignes du traitement enregistré et t’aide à éviter de donner deux fois la même dose. Les notes du quotidien servent aussi à préparer un compte rendu pour le vétérinaire. Tu choisis qui peut consulter les informations de santé.
+Les rappels de médicaments, de prises manquées et de périodes sans nourriture arrivent au moment prévu. Toilettage, vaccins et pesée sont regroupés dans un seul rappel, à l’heure choisie.
+Togo aide à tenir le carnet et à suivre les consignes. Il ne pose pas de diagnostic, ne prescrit pas de traitement et ne remplace pas le vétérinaire.
 
-LE CARNET PARTAGÉ
-La personne que tu invites voit les entrées du jour et les doses notées : sorties, repas, selles, « envie de sortir ». Deux entrées pour la même chose ne s'écrasent pas : Togo propose de les fusionner. Le soir, personne ne cherche qui a sorti le chien.
+Faire les valises avec lui
+Le mode voyage s’active aux dates prévues et s’arrête tout seul. Togo calcule la quantité de nourriture à emporter et t’aide à prévoir les repas avant un vol.
 
-LE MÉDICAL EST UN MODE, PAS UNE RUBRIQUE
-L'onglet « Santé » est ouvert à qui tu confies le médical : un assistant peut ne pas l'avoir. Fenêtre à jeun, protection contre la double dose, protocole « dose → prise de sang » et compte rendu pour le vétérinaire — construit à partir de ce qui est déjà noté.
+Un carnet qui reste chez toi
+Pas de compte Togo à créer. Les données restent sur ton iPhone et, si iCloud est activé, dans ton espace iCloud privé. Le partage avec tes proches passe par iCloud, sur invitation. Togo n’a pas de serveur pour stocker ton carnet.
 
-VOYAGES
-Le mode s'active par une date et s'éteint tout seul. Les bagages se calculent d'après le poids et la ration, les fenêtres avant le vol d'après l'heure de départ.
+Gratuit pour un chien et deux personnes
+Toutes les fonctions du quotidien sont incluses. Les rappels liés aux repas et aux médicaments, l’aide pour éviter une double dose, les notes sur sa façon de demander à sortir, et le rappel de ne pas le punir après un pipi à la maison restent gratuits, sans limite de durée.
+Togo Pro permet d’ajouter d’autres chiens ou de partager le carnet avec plus de deux personnes. Toutes les autres fonctions restent gratuites.
 
-CE QUI INTERROMPT
-Seulement la dose à l'heure dite, la fenêtre à jeun et la dose oubliée. Toilettage, vaccins, pesée arrivent en un seul message, à l'heure que tu choisis.
+Togo Pro est un abonnement mensuel ou annuel à renouvellement automatique. Le prix est indiqué dans l’App Store. Le paiement est débité sur ton compte Apple à la confirmation de l’achat. Pour éviter le renouvellement, annule au moins 24 heures avant la fin de la période en cours. Sur ton iPhone : Réglages > ton nom > Abonnements > Togo > Annuler l’abonnement.
 
-GRATUIT POUR TOUJOURS
-La fenêtre à jeun, la protection contre la double dose, « comment il a demandé », « n'a pas pris la friandise » et le rappel de ne pas punir après un pipi à la maison. Sans eux, l'app nuirait au chien en silence — donc ils ne se vendent pas.
-
-TOGO PRO
-Le deuxième chien et les suivants, une famille de plus de deux personnes. Le reste — avec la fenêtre à jeun et la protection contre la double dose — est gratuit pour toujours.
-Togo Pro est un abonnement à renouvellement automatique, mensuel ou annuel. Le prix est affiché sur l'App Store : il dépend du pays et peut changer. L'abonnement se renouvelle tout seul tant qu'il n'est pas annulé, au plus tard 24 heures avant la fin de la période. Le paiement est débité sur ton compte Apple à la confirmation de l'achat. Tu peux l'annuler dans les réglages de l'App Store.
-Conditions d'utilisation : https://viktoriiaseliver.github.io/togo/terms.html
-Politique de confidentialité : https://viktoriiaseliver.github.io/togo/privacy.html
-
-CINQ LANGUES
-Français, English, Русский, Українська, Қазақша. La langue se change dans les réglages, sans redémarrer le téléphone.
-
-Nous n'avons pas de serveur, et il n'y a pas de compte à créer. Le carnet reste sur le téléphone ; si iCloud est activé, une copie se trouve dans ta bibliothèque privée, là où sont tes autres données. Le carnet partagé de la famille, c'est un partage iCloud : n'y entre que la personne que tu as nommée.
+Conditions d’utilisation : https://viktoriiaseliver.github.io/togo/fr/terms.html
+Politique de confidentialité : https://viktoriiaseliver.github.io/togo/fr/privacy.html

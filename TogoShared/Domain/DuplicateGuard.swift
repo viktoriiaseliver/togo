@@ -73,10 +73,15 @@ enum DuplicateGuard {
     /// `.outing` здесь с 07.10.2026 — со своим окном, а не с общим:
     /// см. `repeatableWindow`. Остальное повторяемое по смыслу сюда
     /// не входит: воду собака пьёт когда хочет.
-    static let deduplicated: Set<LogKind> = [.outing, .meal, .walk, .care, .dose, .weight]
+    /// `.incident` и `.travelStop` — с 29.10.2026: метка у двери и
+    /// автоматизация «Команд» срабатывают дважды за пару секунд, и вторая
+    /// лужа ложилась в сводку врачу настоящей. Окно у них — короткое
+    /// (`repeatable`): две лужи за десять минут — это две лужи.
+    static let deduplicated: Set<LogKind> = [.outing, .meal, .walk, .care, .dose, .weight,
+                                             .incident, .travelStop]
 
     /// Виды, которым общее окно велико: повтор у них бывает настоящим.
-    static let repeatable: Set<LogKind> = [.outing]
+    static let repeatable: Set<LogKind> = [.outing, .incident, .travelStop]
 
     /// Своё окно вида, а не одно на всех.
     static func span(of kind: LogKind) -> TimeInterval {
@@ -130,6 +135,9 @@ enum DuplicateGuard {
         // то есть ВНУТРИ десятисекундного окна. Без него второй тип
         // записи блокировал бы первый.
         case .outing: lhs.outcome == rhs.outcome
+        // Лужа и рвота в одну секунду — два события, а не двойной тап.
+        case .incident: lhs.incidentKind == rhs.incidentKind
+        case .travelStop: lhs.outcome == rhs.outcome
         default: true
         }
     }

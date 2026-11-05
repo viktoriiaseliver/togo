@@ -37,6 +37,19 @@ struct TodayScreen: View {
 
     @Environment(AppState.self) private var appState
     @Environment(Settings.self) private var settings
+    /// Идёт ли «Забрать сейчас» прямо сейчас.
+    ///
+    /// Заведено 04.11.2026 по отзыву 30.10: «Не работает кнопка».
+    /// Кнопка работала — она молчала. `fetchNow()` умеет выйти
+    /// немедленно (`engines.isEmpty`) и умеет поставить
+    /// `state = .failed`, когда iCloud просит подождать;
+    /// этот экран не читал ни того, ни другого.
+    ///
+    /// Сосед с такой же кнопкой (`ВходВДневник.swift:42`) умел
+    /// это с самого начала — две копии одного действия, и одна
+    /// из них немая.
+    @State private var забираюДневник = false
+    @Environment(\.familySync) private var sync
     @Environment(\.modelContext) private var context
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.openURL) private var openURL
@@ -69,18 +82,31 @@ struct TodayScreen: View {
     /// это — за какой день считать. Пока показывают сегодня, они
     /// совпадают, и разницы не видно; на «вчера» она решает всё.
     @State private var показанныйДень = Date()
-    /// Когда в последний раз предлагали воду в режиме «собака со мной».
-    @State private var lastWaterOffer: Date?
+    // `lastWaterOffer` (`@State`) снят 29.10.2026: «Предложила» жила
+    // только в памяти экрана и терялась на перезапуске — после него
+    // карточка снова просила воду, которую только что дали. Теперь это
+    // запись `.water` в ленте, см. `предложитьВоду`.
     /// Когда дело ухода было сделано в прошлый раз — чтобы «вернуть»
     /// возвращало именно туда, а не обнуляло срок.
     @State private var lastCareDone: [UUID: Date?] = [:]
     @State private var lockedDose: LockedDose?
+    /// Эпизод, который просят закрыть со «Сегодня» (29.10.2026).
+    @State private var закрываемЭпизод: Episode?
     @State private var missedDose: MissedDoseTarget?
     @State private var gatedDose: GatedDose?
     @State private var alarm: AlarmThreshold?
     /// Пункт плана, по которому спрашиваем «когда дали». Не пусто только
     /// когда назначенный час уже прошёл дольше чем на `LateMarking.grace`.
     @State private var askingGivenAt: DayPlanItem?
+    /// Пункт еды, который двигают **на сегодня**: «во сколько кормить
+    /// сегодня». Тап по ТЕКСТУ неотмеченного кормления.
+    ///
+    /// До 05.11.2026 этот тап не делал ничего: `open(_:)` доходил
+    /// до `guard item.isDone` и возвращался. Вход у механизма должен
+    /// быть настоящим, а мёртвое нажатие — самое дешёвое место,
+    /// где его взять: человек уже читает здесь «после еды в 18:00 —
+    /// 3 ч 30 мин вместо 6 ч» и трогает именно эту строку.
+    @State private var сдвигКормления: DayPlanItem?
     /// Шторка «Записать» — та, что открывает круглая «+».
     @State private var показатьЗапись = false
     /// Настройки: открываются из меню «…», шестерёнки в шапке больше нет.
@@ -134,7 +160,13 @@ struct TodayScreen: View {
 
     private var dog: Dog? { appState.activeDog(from: dogs) }
     private var events: [LogEvent] { dog?.events ?? [] }
-    private var activeTrip: Trip? { trips.first { $0.isActive(on: now) } }
+    /// Идущая поездка ЭТОЙ собаки. До 29.10.2026 фильтра по собаке
+    /// не было — в отличие от дня с собакой строкой ниже: поездка
+    /// одной собаки включала режим дороги на экране второй, и у неё
+    /// «Просится» менялось на «Остановка».
+    private var activeTrip: Trip? {
+        trips.first { $0.dog?.persistentModelID == dog?.persistentModelID && $0.isActive(on: now) }
+    }
 
     /// Идущий день с собакой.
     private var activeDayOut: DayOut? {
@@ -151,14 +183,44 @@ struct TodayScreen: View {
 
     /// Собаку пропустили на онбординге. Говорим об этом прямо: пустой день
     /// без объяснения читается как сломанное приложение, а не как выбор.
+    @ViewBuilder
     private var нетСобаки: some View {
-        EmptyStateCard(
-            subject: .day,
-            title: "Собака пока не заведена",
-            message: "Отмечать некого: еда, выходы и дозы считаются по собаке. Заведи её — нужны только кличка и вес.",
-            actionTitle: "Завести собаку",
-            action: onOpenDog
-        )
+        // Гость в чужом дневнике собаку НЕ заводит — она приедет сама.
+        // До 29.10.2026 и ему говорили «Заведи её», и мама Виктории
+        // заводила свою пустую собаку поверх дневника, который ехал.
+        if SharedZoneOwner.isGuest {
+            EmptyStateCard(
+                subject: .day,
+                title: "Дневник едет на этот телефон",
+                message: .готовая(ЧейДневник.имя.map {
+                    String(localized: "Ты в дневнике · \($0). Собака приедет вместе с записями — обычно за минуту. Свою заводить не нужно.")
+                } ?? String(localized: "Ты в общем дневнике. Собака приедет вместе с записями — обычно за минуту. Свою заводить не нужно.")),
+                actionTitle: забираюДневник ? "Забираю…" : "Забрать сейчас",
+                action: {
+                    guard !забираюДневник else { return }
+                    Task {
+                        забираюДневник = true
+                        await sync?.fetchNow()
+                        забираюДневник = false
+                        // Отказ называется словом. Молчаливый
+                        // возврат к прежней надписи человек
+                        // читает как «кнопка не работает» —
+                        // ровно это и было в отзыве.
+                        if case .failed(let почему) = sync?.state {
+                            appState.showFailure(почему)
+                        }
+                    }
+                }
+            )
+        } else {
+            EmptyStateCard(
+                subject: .day,
+                title: "Собака пока не заведена",
+                message: "Отмечать некого: еда, выходы и дозы считаются по собаке. Заведи её — нужны только кличка и вес.",
+                actionTitle: "Завести собаку",
+                action: onOpenDog
+            )
+        }
     }
 
     /// Экран читается сверху вниз одним взглядом: что случилось, что идёт
@@ -204,6 +266,7 @@ struct TodayScreen: View {
                         VStack(alignment: .leading, spacing: 0) {
                             плакат
                             VStack(alignment: .leading, spacing: Token.Spacing.stack) {
+                                строкаСессии
                                 строкаДальше
                                 if dog == nil { нетСобаки }
                                 тревоги
@@ -213,7 +276,7 @@ struct TodayScreen: View {
                             }
                             .padding(.horizontal, Token.Spacing.screenPadding)
                             .padding(.top, Token.Spacing.stack)
-                            .padding(.bottom, 24)
+                            .padding(.bottom, Token.Space.s24)
                         }
                         // Прокрутка меряется ОДНИМ способом и в одном
                         // месте: компактная строка появляется за 120 pt,
@@ -352,8 +415,42 @@ struct TodayScreen: View {
         // прогулки — а дубль прогулки хуже её отсутствия, потому что
         // он уезжает в сводку врачу.
         guard let finished = appState.finishSession() else { return }
-        WalkRecorder.record(finished, dog: dog,
-                            author: AppState.storedUserName, context: context)
+        // Короткий выход уже лежит в ленте с начала — второй записью
+        // («прогулкой») его не дублируем. См. `OutingFinisher.close`.
+        if finished.kind == .outing {
+            OutingFinisher.close(finished, dog: dog, at: Date(), context: context)
+            OutingFinisher.записатьПрочиеОтметки(finished, dog: dog,
+                                                 appState: appState, context: context)
+        } else {
+            guard WalkRecorder.record(finished, dog: dog,
+                                      author: AppState.storedUserName, context: context) != nil
+            else {
+                // ЗДЕСЬ БЫЛ МОЛЧАЛИВЫЙ `return`, И ТЕРЯЛАСЬ САМАЯ
+                // ДОРОГАЯ ЗАПИСЬ ДНЯ.
+                //
+                // `WalkRecorder.record` возвращает `nil`, откатив свои
+                // вставки, и его собственный доккомментарий объясняет
+                // зачем: «чтобы экран не показал успех». Экран успех
+                // и не показывал — он не показывал НИЧЕГО. Двадцать
+                // минут отметок на прогулке исчезали без слова.
+                //
+                // Тот же отказ через Siri человек слышит
+                // (`WalkIntents.swift:70` → `QuickLogError
+                // .storageUnavailable`). Молчал ровно экранный путь —
+                // тот, которым ходят с экрана блокировки и от двери.
+                //
+                // > **«Не показать успех» и «сказать об отказе» —
+                // > разные обязательства.** Первое выполнялось,
+                // > второго здесь не было вовсе.
+                appState.showFailure(
+                    String(localized: "Прогулка не записалась · отметки остались, нажми ещё раз"))
+                return
+            }
+        }
+        // Инцидент с блокировки поднимает эпизод так же, как из шторки.
+        if finished.count(of: .incident) > 0 {
+            EpisodeRaiser.afterIncident(dog: dog, context: context, appState: appState)
+        }
     }
 
     private func обновитьДеньЗаписи() {
@@ -376,9 +473,17 @@ struct TodayScreen: View {
                 .textStyle(AppFont.caption)
                 .wraps()
             Spacer(minLength: Token.Space.s8)
-            Button("В сегодня") { показанныйДень = now }
-                .textStyle(AppFont.captionEmphasis.color(Token.Action.doneText))
-                .fixedSize()
+            // Рамка цели касания — ВНУТРИ метки: снаружи, на `HStack`,
+            // она растягивала строку, а нажималось только слово
+            // (аудит отступов 29.10.2026).
+            Button { показанныйДень = now } label: {
+                Text("В сегодня")
+                    .textStyle(AppFont.captionEmphasis.color(Token.Action.doneText))
+                    .frame(minHeight: Token.Size.tapTarget)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .fixedSize()
         }
         .foregroundStyle(Token.Status.waitingText)
         .frame(minHeight: Token.Size.tapTarget)
@@ -409,7 +514,7 @@ struct TodayScreen: View {
         // строку рядом с плакатом значило бы завести вторую
         // реализацию, которая разойдётся молча.
         TodayHero(indoors: timeIndoors,
-                  lastOutingEndedAt: lastOutingEndedAt,
+                  lastOutingEndedAt: якорьСчёта,
                   session: appState.session,
                   now: now,
                   rhythm: ритм,
@@ -426,6 +531,29 @@ struct TodayScreen: View {
                          systemImage: "phone.badge.waveform")
             }
             .buttonStyle(.plain)
+        }
+
+        // Стул: тревога выше окна натощак — это здоровье, а не
+        // расписание. «Не отмечали» тише и с кнопкой, которая снимает
+        // вопрос за одно касание.
+        // Только на сегодня: плашка про «сейчас», а отметка из неё легла бы
+        // в показанный прошлый день. И только тому, кто вправе записывать:
+        // у наблюдателя отказ приходил уже после шторки (аудит 29.10.2026).
+        // Тексты сжаты до двух строк на 320 pt; «третьи сутки» снято —
+        // порог у собаки со своим ритмом длиннее трёх суток.
+        if экранДень.этоСегодня {
+            switch тишинаСтула {
+            case .норма:
+                EmptyView()
+            case .тревога(let с):
+                плашкаСтула(tone: .alarm,
+                            title: String(localized: "Стула нет с \(Fmt.shortDay(с))"),
+                            subtitle: "Выходы отмечаются, а стула нет. Не ест, рвёт или тужится — звони врачу сразу. Был — тапни и отметь.")
+            case .неОтмечали(let с):
+                плашкаСтула(tone: .waiting,
+                            title: String(localized: "Стул не отмечали с \(Fmt.shortDay(с))"),
+                            subtitle: "Был — тапни и отметь. Не было — присмотрись к нему.")
+            }
         }
 
         if let fasting = fastingWindow {
@@ -466,6 +594,17 @@ struct TodayScreen: View {
         }
     }
 
+    @ViewBuilder
+    private func плашкаСтула(tone: TGTone, title: String, subtitle: LocalizedStringKey) -> some View {
+        let плашка = TGBanner(tone: tone, title: .готовая(title), subtitle: subtitle, systemImage: "leaf")
+        if appState.can(.logBasics) {
+            Button { route = .stool } label: { плашка }
+                .buttonStyle(.plain)
+        } else {
+            плашка
+        }
+    }
+
     // MARK: Что идёт прямо сейчас
 
     /// Поездка, выездной день и начатая прогулка. Всё это — состояния,
@@ -478,22 +617,69 @@ struct TodayScreen: View {
         }
 
         if let day = activeDayOut {
-            DayOutCard(day: day, now: now, lastWater: lastWaterOffer) {
-                lastWaterOffer = Date()
-                Haptics.tap()
+            DayOutCard(day: day, now: now, lastWater: последняяВода(с: day.startedAt)) {
+                предложитьВоду()
             } onFinish: {
                 закрытьДень(day)
             }
         }
 
+        // **Карточки идущей прогулки здесь больше нет** (решение Виктории
+        // 29.10.2026, «да все чини»). Прогулка стояла на экране трижды:
+        // таймер на плакате, второй таймер в карточке и «Открыть»
+        // и в карточке, и внизу. Полезная строка карточки — «кто · с 14:05
+        // · пописал ×2» — переехала под плакат (`строкаСессии`), конец
+        // выхода — в главную кнопку низа (`главноеДействие`, «Стоп»).
+        //
+        // Сам тип `ActiveSessionCard` в `WalkMode.swift` не снят: его
+        // исходник читает сторож `ActiveSessionTapTests`, и снятие
+        // типа — отдельная правка вместе со сторожем.
+    }
+
+    /// «Тео · с 14:05 · пописал ×2» — кто начал, с какого часа и что
+    /// уже отмечено. Под плакатом, а не карточкой: таймер уже стоит
+    /// на плакате, и второй был бы копией.
+    ///
+    /// Ключ тот же, что был у карточки, — `%@ · с %@ · %@`: строка
+    /// переехала, а не написана заново.
+    @ViewBuilder
+    private var строкаСессии: some View {
         if let session = appState.session {
-            ActiveSessionCard(
-                session: session,
-                now: now,
-                onOpen: { session.kind == .walk ? (route = .walk) : endOuting() },
-                onFinish: { endOuting() }
-            )
+            VStack(alignment: .leading, spacing: Token.Space.s2) {
+                if session.isPaused {
+                    Text(.готовая(session.kind.pausedTitle))
+                        .textStyle(AppFont.captionEmphasis, color: Token.Ink.secondary)
+                }
+                Text("\(session.startedBy) · с \(Fmt.clock(session.startedAt)) · \(session.tally)")
+                    .textStyle(AppFont.caption, color: Token.Ink.secondary)
+                    .wraps()
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .accessibilityElement(children: .combine)
         }
+    }
+
+    /// Когда в идущий день с собакой в последний раз предлагали воду —
+    /// по ленте, а не по памяти экрана: запись переживает перезапуск
+    /// и видна второму человеку в семье.
+    private func последняяВода(с начало: Date) -> Date? {
+        Diary.active(events)
+            .filter { $0.kind == .water && $0.date >= начало }
+            .map(\.date)
+            .max()
+    }
+
+    /// «Вода предложена» — настоящая запись `.water` через `EventLog`.
+    ///
+    /// Час — `Date()`, а не `моментЗаписи`: карточка дня с собакой
+    /// стоит и на прошлом дне, а вода предложена сейчас. Сколько выпила,
+    /// не спрашиваем — это предложение, а не замер, и `milliliters`
+    /// остаётся пустым (подставлять число — утверждение за человека).
+    private func предложитьВоду() {
+        EventLog(context: context, appState: appState)
+            .record(.water, dog: dog, at: Date(),
+                    confirmation: String(localized: "Записано · Вода предложена"),
+                    haptic: .tap)
     }
 
     // MARK: Что было за день и что осталось
@@ -505,7 +691,8 @@ struct TodayScreen: View {
                     showsAuthor: members.count > 1,
                     // Параметр у ленты был, а «Сегодня» его не передавало:
                     // во вчера стояло «23:59 · сейчас».
-                    showsNow: экранДень.этоСегодня) { event in
+                    showsNow: экранДень.этоСегодня,
+                    пусто: видПустогоДня) { event in
             route = .edit(event.id)
         }
 
@@ -561,7 +748,20 @@ struct TodayScreen: View {
         // литерал справа от `??` в каталог не идёт.
         AskSignalCard(events: events,
                       dogName: dog?.displayName ?? Fmt.dogNameOrFallback(""),
-                      now: now)
+                      now: now,
+                      пол: dog?.sex)
+    }
+
+    /// Что сказать в пустой ленте. Порядок — от того, что отменяет
+    /// совет «нажми „Просится"» целиком, к тому, что его уточняет:
+    /// на прошлом дне нажимать поздно, наблюдателю нечем, в поездке
+    /// внизу «Остановка», а у собаки с историей режим уже есть.
+    private var видПустогоДня: EmptyDayState.Вид {
+        if !экранДень.этоСегодня { return .прошлыйДень }
+        if !appState.can(.logBasics) { return .наблюдатель }
+        if isDogAlongside { return .рядом }
+        if ритм.days > 0 { return .сегодняПусто }
+        return .первыйДень(пол: dog?.sex)
     }
 
     private var планНаОстаток: some View {
@@ -588,7 +788,7 @@ struct TodayScreen: View {
         day.endedAt = Date()
         guard context.persist(otherwise: { day.endedAt = былКонец }) else {
             Haptics.warning()
-            appState.showFailure("День не закрылся · нажми ещё раз")
+            appState.showFailure(String(localized: "День не закрылся · нажми ещё раз"))
             return
         }
         finishingDayOut = day
@@ -605,15 +805,15 @@ struct TodayScreen: View {
     private func сЧасами(_ содержимое: some View) -> some View {
         содержимое
             .onReceive(tick) { date in
-                now = date
+                перевестиЧасы(date)
                 LiveActivityController.publishSnapshot(dog: dog, appState: appState, now: date)
             }
             .task {
                 LiveActivityController.publishSnapshot(dog: dog, appState: appState, now: now)
                 // Отметки приёма на сегодня заводятся лениво: без них
                 // эскалация не знает, что дозу пропустили.
-                if let dog { DoseScheduler.ensureDoses(for: dog, on: now, context: context) }
-                appState.refreshEpisode(from: episodes, at: now)
+                завестиДозыДня()
+                appState.refreshEpisode(from: episodes, at: now, dog: dog)
                 // Напоминания пересобираются при каждом открытии: их мало,
                 // а разойтись они могут молча.
                 await ReminderScheduler.refresh(dog: dog, settings: settings, at: now)
@@ -625,7 +825,7 @@ struct TodayScreen: View {
             // ленты, хотя лента была в порядке.
             .onChange(of: scenePhase) { _, phase in
                 guard phase == .active else { return }
-                now = Date()
+                перевестиЧасы(Date())
                 дописатьПрогулкуСБлокировки()
             }
             // Запись приходит с настоящим временем, а `now` — с тика:
@@ -634,11 +834,56 @@ struct TodayScreen: View {
             // прогулки оказывается в будущем. Кадр тестировщицы 24.09:
             // прогулка до 16:01 и «сейчас · 16:00» под ней.
             .onChange(of: events.count) { _, _ in
-                now = Date()
+                перевестиЧасы(Date())
+            }
+            // Эпизод с V10 — у собаки, а не у дома: сменили собаку —
+            // сменился и ответ «идёт ли эпизод».
+            .onChange(of: dog?.id) { _, _ in
+                appState.refreshEpisode(from: episodes, at: now, dog: dog)
+                // `.task` выше идёт один раз на появление экрана, а не
+                // на собаку: у второй собаки отметок приёма на сегодня
+                // не заводил никто, и плашка пропущенной дозы у неё
+                // не вставала до перезапуска (аудит «Сегодня» 29.10.2026).
+                завестиДозыДня()
             }
             .onChange(of: episodes.count) { _, _ in
-                appState.refreshEpisode(from: episodes, at: now)
+                appState.refreshEpisode(from: episodes, at: now, dog: dog)
             }
+    }
+
+    /// Перевести часы экрана — и не потерять «сегодня» на полуночи.
+    ///
+    /// **Аудит «Сегодня» 29.10.2026.** `показанныйДень` ставится один раз,
+    /// при создании экрана, а приложение в фоне живёт сутками. Вечером
+    /// свернули, утром открыли — `now` уже новый, а показанный день
+    /// остался вчерашним: лента вчерашняя, внизу полоса «Пишем в этот
+    /// день», хотя никто никуда не листал. И `деньЗаписи` при этом
+    /// оставался пустым — то есть полоса обещала «вчера», а записи
+    /// ложились в сегодня. Две неправды разом, и обе молча.
+    ///
+    /// Правило: кто смотрел СЕГОДНЯ, тот и остаётся в сегодня. Кто сам
+    /// ушёл листалкой в прошлое, остаётся на выбранном дне — его выбор
+    /// полночь не отменяет.
+    ///
+    /// Второе на той же границе: отметки приёма заводятся на день
+    /// (`DoseScheduler.ensureDoses`), а `.task` идёт один раз на появление
+    /// экрана. Без повтора здесь у утренней дозы отметки не было,
+    /// и плашка «Доза не отмечена» не вставала вовсе.
+    private func перевестиЧасы(_ новое: Date) {
+        let смениласьДата = !Calendar.current.isDate(новое, inSameDayAs: now)
+        let показывалиСегодня = экранДень.этоСегодня
+        now = новое
+        guard смениласьДата else { return }
+        if показывалиСегодня { показанныйДень = новое }
+        завестиДозыДня(на: новое)
+    }
+
+    /// Отметки приёма на день `now` — одна дорога на три повода:
+    /// появление экрана, смена собаки и смена даты. День — аргументом:
+    /// из `перевестиЧасы` он приходит раньше, чем экран перерисуется.
+    private func завестиДозыДня(на день: Date? = nil) {
+        guard let dog else { return }
+        DoseScheduler.ensureDoses(for: dog, on: день ?? now, context: context)
     }
 
     // MARK: Шторки
@@ -686,6 +931,20 @@ struct TodayScreen: View {
                     complete(item, givenAt: момент)
                 }
             }
+            .sheet(item: $сдвигКормления) { item in
+                if let dog {
+                    РазовыйЧасКормленияSheet(
+                        title: item.title,
+                        назначено: item.time,
+                        началоСуток: Calendar.current.startOfDay(for: отсчёт),
+                        исключениеСтоит: dog.естьРазовоеИсключение(отсчёт)
+                    ) { момент in
+                        actions.сдвинутьКормление(item, на: момент)
+                    } onReset: {
+                        actions.вернутьРасписание(item)
+                    }
+                }
+            }
             .sheet(item: $missedDose) { target in
                 MissedDoseSheet(medication: target.medication, missed: target.missed, now: now) {
                     // Нарочно без вопроса «когда дали»: отсюда он открыл бы
@@ -719,10 +978,24 @@ struct TodayScreen: View {
                               markedBy: locked.givenBy,
                               markedAt: locked.givenAt) {
                     // Другая доза — записываем отдельно, со своим временем.
-                    route = .more
+                    // Прежде здесь стояло `route = .more`: шторка «Ещё»,
+                    // в которой дозы нет (29.10.2026).
+                    actions.recordSeparateDose(like: locked.item, at: Date())
                 } onUndo: {
                     uncomplete(locked.item)
                 }
+            }
+            // Тот же вопрос и те же слова, что у «Собаке лучше — закрыть»
+            // в истории (`HistoryScreen`): одно действие — один текст.
+            .confirmationDialog("Закрыть эпизод?",
+                                isPresented: Binding(get: { закрываемЭпизод != nil },
+                                                     set: { if !$0 { закрываемЭпизод = nil } }),
+                                titleVisibility: .visible,
+                                presenting: закрываемЭпизод) { эпизод in
+                Button("Закрыть") { закрытьЭпизод(эпизод) }
+                Button("Ещё рано", role: .cancel) { закрываемЭпизод = nil }
+            } message: { _ in
+                Text("Записи останутся в истории. Вердикт «просится» снова начнёт считаться по обычным промежуткам — во время эпизода он не считается совсем.")
             }
     }
 
@@ -759,7 +1032,7 @@ struct TodayScreen: View {
             return .минутыСекунды(session.duration(at: now))
         }
         if let тишина = TodayHero.silence(indoors: timeIndoors,
-                                          lastOutingEndedAt: lastOutingEndedAt) {
+                                          lastOutingEndedAt: якорьСчёта) {
             return .фраза(.готовая(String(localized: "Выходов нет с \(Fmt.shortDay(тишина))")))
         }
         guard let indoors = timeIndoors else {
@@ -876,6 +1149,13 @@ struct TodayScreen: View {
         case .часыМинуты:
             // Единственный вид показания, которому нужно имя: голое
             // число часов. `timeIndoors` — сколько собака ДОМА.
+            //
+            //
+            // Ветки «Ночь» здесь нет нарочно (снята аудитом 29.10.2026):
+            // ночь — это тихие часы, а в тихие часы очередь состояний
+            // отдаёт `.night` раньше `.normal`, и чип «Тихие часы»
+            // рисует `чипСостояния`. До этого места ночью не доходит
+            // ни один день — ветка была недостижимой.
             return .init(символ: "house.fill", текст: "Дома")
         case .минутыСекунды, .фраза:
             // Таймер прогулки называет себя сам; предложение
@@ -886,7 +1166,12 @@ struct TodayScreen: View {
             // и пустого места на его месте дизайн не рисует.
             // Поэтому здесь называется ДЕНЬ, а не величина, — и это
             // ровно та граница, которую разбор выше и защищает.
-            return .init(символ: "pawprint", текст: "Сегодня")
+            //
+            // «Обычный день», а не «Сегодня» (аудит 29.10.2026): строкой
+            // выше панель печатает заголовок «Сегодня», а показание
+            // ниже — «Сегодня ещё не выходили». Три «Сегодня» подряд
+            // на одном плакате, и чип среди них не говорил ничего.
+            return .init(символ: "pawprint", текст: "Обычный день")
         }
     }
 
@@ -941,7 +1226,7 @@ struct TodayScreen: View {
         s.isNight = settings.isQuietHour(now)
         s.hasNoEntries = ритм.days == 0
         s.isSilent = TodayHero.silence(indoors: timeIndoors,
-                                       lastOutingEndedAt: lastOutingEndedAt) != nil
+                                       lastOutingEndedAt: якорьСчёта) != nil
         // **Третий из трёх незаполненных флагов закрыт 27.10.2026.**
         // Выше написано «у них в проекте нет готового источника»
         // со ссылкой на замер 22.10 («PillSupply.supply — ноль вызовов
@@ -1056,9 +1341,14 @@ struct TodayScreen: View {
         return ближайший
     }
 
-    /// «гулял в 15:44» — откуда считаем.
+    /// «сходил в 15:44» — откуда считаем.
+    ///
+    /// Подпись называет то, от чего на самом деле идёт счёт: туалет
+    /// на улице, туалет дома или — запасным — конец выхода. Скажи
+    /// она «гулял», а счёт иди от лужи дома, число под ней читалось бы
+    /// как время на диване после прогулки.
     private var откудаСчитаем: String? {
-        guard let конец = lastOutingEndedAt else { return nil }
+        guard let конец = якорьСчёта else { return nil }
         // За потолком тишины показание уже назвало ДАТУ («Выходов нет
         // с 7 окт.»), и голое «гулял в 22:52» под ним читалось как
         // сегодняшнее (кадр 28.10.2026). Дата там уже есть — час без неё
@@ -1066,7 +1356,13 @@ struct TodayScreen: View {
         guard TodayHero.silence(indoors: timeIndoors, lastOutingEndedAt: конец) == nil else {
             return nil
         }
-        return String(localized: "гулял в \(Fmt.clock(конец))")
+        guard считаемОтТуалета, let туалет = последнийТуалет else {
+            return String(localized: "гулял в \(Fmt.clock(конец))")
+        }
+        switch туалет.где {
+        case .улица: return String(localized: "сходил в \(Fmt.clock(конец))")
+        case .дом: return String(localized: "дома в \(Fmt.clock(конец))")
+        }
     }
 
     /// «обычно до 22:44» — докуда. Говорится только когда ритм
@@ -1082,9 +1378,14 @@ struct TodayScreen: View {
     /// посчитал `WalkRhythmAnalyzer`. Пусто, пока ритм ненадёжен:
     /// полоса без знаменателя показывала бы долю от выдуманного целого.
     private var доляРитма: Double? {
+        // Бодрствующие часы, а не часы на стене: ночью собака в туалет
+        // не ходит, и утром полоса стояла переполненной вдвое (решение
+        // Виктории 29.10.2026, `NightWindow`). Среднее у ритма — тоже
+        // без ночей (`WalkRhythmAnalyzer.nightThreshold`), то есть
+        // числитель и знаменатель теперь меряют одно.
         guard ритм.isReliable, ритм.averageIndoors > 0,
-              let дома = timeIndoors else { return nil }
-        return дома / ритм.averageIndoors
+              let якорь = якорьСчёта else { return nil }
+        return ночь.awake(from: якорь, to: now) / ритм.averageIndoors
     }
 
     // MARK: Низ — главная кнопка по состоянию
@@ -1138,15 +1439,30 @@ struct TodayScreen: View {
     private var главноеДействие: TodayBottomBar.Действие {
         switch состояниеВерхнее {
         case .alarm, .threshold:
+            // **При пороге внизу обычное действие, а не «Позвонить»**
+            // (решение Виктории 29.10.2026). Плашка «Похоже, пора звонить»
+            // и кнопка низа открывали одну и ту же шторку — две двери
+            // в одну комнату на одном экране. Плашка осталась: на ней
+            // написано, ЧТО случилось, а у кнопки — только глагол.
+            //
+            // Без порога (острое — кровь в стуле, одна запись) плашки нет,
+            // и «Позвонить» остаётся единственным путём к телефону врача.
+            guard порогТревоги == nil else { return обычноеДействие }
             return .init(название: "Позвонить", символ: "phone.badge.waveform") {
-                if let threshold = порогТревоги {
-                    alarm = threshold
-                } else {
-                    позвонитьВрачу()
-                }
+                позвонитьВрачу()
             }
         case .dose:
             return .init(название: "Дал", символ: "pills") {
+                // Плашка и состояние — про СЕГОДНЯШНЮЮ дозу, а план
+                // собран за ПОКАЗАННЫЙ день. На вчера своя доза в нём
+                // не находилась, и запасная ветка ниже отмечала первую
+                // неотмеченную ВЧЕРАШНЮЮ (аудит 29.10.2026). Поэтому
+                // с прошлого дня кнопка сперва возвращает в сегодня —
+                // туда, где доза из плашки и стоит.
+                guard экранДень.этоСегодня else {
+                    показанныйДень = now
+                    return
+                }
                 // Та доза, о которой говорит плашка, а не первая
                 // неотмеченная за день: утренняя могла быть уже не «той».
                 // И таймер от еды уважается, как в списке плана: закрытая
@@ -1163,6 +1479,19 @@ struct TodayScreen: View {
                 }
             }
         case .walk:
+            // **У короткого выхода главная — «Стоп»** (решение Виктории
+            // 29.10.2026). До того у выхода было два разных конца: «Открыть»
+            // внизу вела в режим прогулки, «Стоп» в карточке — в «Как
+            // сходил?». Карточка снята, и конец у выхода теперь один.
+            // `endOuting`, а не `route = .walkResult` напрямую: в тихие часы
+            // выход закрывается молча, это обещание из настроек.
+            //
+            // У долгой прогулки — по-прежнему «Открыть»: заканчивается она
+            // в самом режиме, слайдером «Домой», и там же отметки. На эту
+            // подпись опираются UI-тесты входа в выгул.
+            if appState.session?.kind == .outing {
+                return .init(название: "Стоп", символ: "stop.fill") { endOuting() }
+            }
             return .init(название: "Открыть", символ: "arrow.up.left.and.arrow.down.right") {
                 route = .walk
             }
@@ -1195,7 +1524,11 @@ struct TodayScreen: View {
     private var обычноеДействие: TodayBottomBar.Действие {
         .init(название: isDogAlongside ? "Остановка" : "Просится",
               символ: isDogAlongside ? "car" : "pawprint") {
-            route = isDogAlongside ? .walk : .needs
+            // «Остановка» пишет остановку одним тапом, как обещает
+            // экран поездки (`TripStopSheet`, 29.10.2026). До того
+            // она открывала таймер прогулки, а `LogKind.travelStop`
+            // не создавался нигде.
+            route = isDogAlongside ? .travelStop : .needs
         }
     }
 
@@ -1203,6 +1536,11 @@ struct TodayScreen: View {
     private var второеДействие: TodayBottomBar.Действие? {
         switch состояниеВерхнее {
         case .alarm, .threshold:
+            // При пороге обычное действие уже стоит главным (см.
+            // `главноеДействие`) — вторым ему быть незачем.
+            if порогТревоги != nil {
+                return .init(название: "Гулять", символ: "figure.walk") { route = .walk }
+            }
             // ОБЫЧНОЕ ДЕЙСТВИЕ ОСТАЁТСЯ И В ТРЕВОГЕ. Отзыв 27.10.2026,
             // 20:27: «Нет кнопок управления хотя ничего не случилось» —
             // внизу стояли «Позвонить» и «Что сказать», а отметить
@@ -1232,19 +1570,60 @@ struct TodayScreen: View {
             // «Пописал» ОТМЕЧАЕТ, а не открывает прогулку (аудит 28.10.2026:
             // кнопка с таким словом не ставила ничего). Отметка та же,
             // что в режиме прогулки, — `appState.mark`, с откатом.
-            // У короткого выхода отметок нет — там остаётся переход.
-            return .init(название: "Пописал", символ: "drop") {
-                guard appState.session?.kind == .walk else {
-                    route = .walk
-                    return
-                }
-                appState.mark(.urine)
+            //
+            // У кобеля — «Покакал»: моча у него не отмечается вовсе,
+            // прогулка сама считается мочой (`ToiletClock`, решение
+            // Виктории 29.10.2026).
+            //
+            // **У короткого выхода второй кнопки нет** (аудит 29.10.2026).
+            // Здесь стоял переход `route = .walk` — тот же, что у главной
+            // «Открыть» рядом: две кнопки внизу с разными словами делали
+            // одно и то же, и «Пописал» на выходе не отмечал ничего.
+            guard appState.session?.kind == .walk else { return nil }
+            let отметка: ActiveSession.Mark.Kind = dog?.sex == .male ? .stool : .urine
+            return .init(название: отметка == .stool ? "Покакал" : "Пописал",
+                         символ: отметка.symbol) {
+                appState.mark(отметка)
                 Haptics.tap()
-                appState.showUndo("Отмечено · \(ActiveSession.Mark.Kind.urine.title)")
+                // Подпись кнопки, а не имя отметки: нажали «Покакал» —
+                // тост «Отмечено · Стул» читался как другое действие.
+                appState.showUndo(String(localized: "Отмечено · \(отметка == .stool ? String(localized: "покакал") : String(localized: "пописал"))"))
             }
+        case .episode:
+            // # Закрыть эпизод со «Сегодня» — 29.10.2026
+            //
+            // Чип «Наблюдаем» говорил, что эпизод идёт, а закрыть его
+            // отсюда было нечем: «Собаке лучше — закрыть» жило только
+            // в истории, на третьем экране. Человек, увидевший утром,
+            // что собаке лучше, держал «Наблюдаем» ещё двое суток —
+            // до тишины `EpisodeLifetime.quietPeriod`, — а вердикт
+            // «просится» всё это время не считался.
+            if let эпизод = appState.activeEpisode, appState.can(.logBasics) {
+                return .init(название: "Собаке лучше", символ: "checkmark") {
+                    закрываемЭпизод = эпизод
+                }
+            }
+            return .init(название: "Гулять", символ: "figure.walk") { route = .walk }
         default:
             return .init(название: "Гулять", символ: "figure.walk") { route = .walk }
         }
+    }
+
+    /// Закрыть эпизод руками — тем же `Episode.close`, что в истории.
+    private func закрытьЭпизод(_ эпизод: Episode) {
+        let былЗакрыт = эпизод.endedAt
+        эпизод.close()
+        guard context.persist(otherwise: { эпизод.endedAt = былЗакрыт }) else {
+            Haptics.warning()
+            appState.showFailure(String(localized: "Не сохранилось · нажми ещё раз"))
+            return
+        }
+        Haptics.success()
+        закрываемЭпизод = nil
+        // С собакой, как в трёх других вызовах: без неё `касается(nil)`
+        // пропускал эпизоды этой собаки, и второй идущий эпизод
+        // после закрытия первого пропадал с экрана (аудит 29.10.2026).
+        appState.refreshEpisode(from: episodes, at: now, dog: dog)
     }
 
     // MARK: Строка «Дальше» и компактная строка
@@ -1257,22 +1636,44 @@ struct TodayScreen: View {
     /// и говорит про одну строку 17 semibold.
     @ViewBuilder
     private var строкаДальше: some View {
-        if let второе = TodayStateRouter.second(состояниеПоказания) {
-            блокДальше(подпись: подписьСостояния(второе),
-                       цвет: цветВторого(второе),
-                       когда: nil)
-        } else if let выход = ожидаемыйВыход {
-            // **Обычный день тоже говорит «дальше», и это кадр 01.**
-            // До 27.10.2026 строка показывалась ТОЛЬКО при втором
-            // состоянии, а при обычном дне её не было вовсе — на
-            // эталоне же стоит «Дальше · через 4 ч 50 / Выход около
-            // 16:29». Человек в спокойный день оставался без ответа
-            // на единственный вопрос, который у него есть: когда
-            // выходить снова.
-            блокДальше(подпись: .готовая(String(localized: "Выход около \(Fmt.clock(выход))")),
-                       цвет: Token.Ink.primary,
-                       когда: выход)
+        if let д = дальше {
+            блокДальше(подпись: д.подпись, цвет: д.цвет, когда: д.когда)
         }
+    }
+
+    /// Что сказать в строке «Дальше» — одно решение на два места:
+    /// строку под панелью и компактную строку при прокрутке.
+    ///
+    /// До 29.10.2026 компактная строка спрашивала только второе
+    /// состояние, и в обычный день, прокрутив экран, человек терял
+    /// «Выход около 16:29» — ровно то, что строка обещает удержать.
+    private var дальше: (подпись: LocalizedStringKey, цвет: Color, когда: Date?)? {
+        // Второе состояние — только когда у него нет своего места
+        // на экране (решение Виктории 29.10.2026). Иначе «Дальше» повторял
+        // плашку под собой: «Не кормить до 18:29» дважды подряд, «Доза
+        // в 17:00» над «Доза 17:00 не отмечена», «Запас кончается» рядом
+        // с пилюлей «Запас 3 дн», «Поездка» над блоком поездки. Тогда
+        // строка говорит то, чего на экране нет, — прогноз выхода ниже.
+        if let второе = TodayStateRouter.second(состояниеПоказания),
+           !естьСвоёМесто(второе) {
+            return (подпись: подписьСостояния(второе), цвет: цветВторого(второе), когда: nil)
+        }
+        // **Обычный день тоже говорит «дальше», и это кадр 01.**
+        // До 27.10.2026 строка показывалась ТОЛЬКО при втором
+        // состоянии, а при обычном дне её не было вовсе — на
+        // эталоне же стоит «Дальше · через 4 ч 50 / Выход около
+        // 16:29». Человек в спокойный день оставался без ответа
+        // на единственный вопрос, который у него есть: когда
+        // выходить снова.
+        //
+        // **Во время выхода прогноза нет** (аудит 29.10.2026). Очередь
+        // на прогулке — одно `.walk`, второго состояния не бывает,
+        // и строка падала сюда: «Дальше · через 1 ч / Выход около
+        // 15:29» стояло под таймером идущей прогулки — то есть
+        // предсказывало тот самый выход, на котором человек сейчас.
+        guard appState.session == nil, let выход = ожидаемыйВыход else { return nil }
+        return (подпись: .готовая(String(localized: "Выход около \(Fmt.clock(выход))")),
+                цвет: Token.Ink.primary, когда: выход)
     }
 
     /// Две строки под панелью: «Дальше · через N» и сама подпись.
@@ -1311,8 +1712,34 @@ struct TodayScreen: View {
     /// Условие надёжности то же: до трёх дней записей прогноз был бы
     /// выдумкой, а не прогнозом, и строки нет вовсе.
     private var ожидаемыйВыход: Date? {
-        guard ритм.isReliable, let конец = lastOutingEndedAt else { return nil }
-        return конец.addingTimeInterval(ритм.averageIndoors)
+        guard ритм.isReliable, let конец = якорьСчёта else { return nil }
+        // Через ночь: «обычно до 02:30» становится «обычно до 10:30».
+        return ночь.adding(awake: ритм.averageIndoors, to: конец)
+    }
+
+    /// Есть ли у состояния своя плашка или блок на этом экране.
+    ///
+    /// Условия — те же величины, что ставят флаги очереди
+    /// (`состояниеПоказания`), и те же, что рисуют плашки: флаг стоит —
+    /// значит и плашка стоит. Своего правила здесь нет, есть только
+    /// список: кто из состояний рисуется отдельно.
+    ///
+    /// ```
+    /// .fasting    плашка «Не кормить до …»        fastingWindow
+    /// .dose       плашка «Доза … не отмечена»      overdueDose
+    /// .threshold  плашка «Похоже, пора звонить»    порогТревоги
+    /// .stock      пилюля «Запас N дн» в заголовке  ближайшийЗапас
+    /// .trip       блок поездки                     activeTrip
+    /// .away       карточка дня с собакой           activeDayOut
+    /// ```
+    ///
+    /// У `.alarm` своей плашки нет (острое называет только чип, когда
+    /// оно верхнее), у эпизода — тоже: вторым он нигде больше не виден.
+    private func естьСвоёМесто(_ состояние: TodayState) -> Bool {
+        switch состояние {
+        case .fasting, .dose, .threshold, .stock, .trip, .away: true
+        default: false
+        }
     }
 
     /// Чем называется состояние в строке «Дальше».
@@ -1357,11 +1784,17 @@ struct TodayScreen: View {
     /// прокрутки, когда шапка уже уехала наверх.
     private var компактнаяСтрока: some View {
         HStack(spacing: Token.Space.s8) {
-            Text(Fmt.clock(now))
+            // Показание, а не часы (решение Виктории 29.10.2026): часы
+            // стоят в статус-баре прямо над строкой, а уехавшее с плакатом
+            // «сколько с туалета» — нет. Величина та же, что на плакате,
+            // `показаниеПанели`: вторая арифметика разошлась бы молча.
+            показаниеКоротко
                 .textStyle(AppFont.captionEmphasis, color: Token.Ink.primary)
-            if let второе = TodayStateRouter.second(состояниеПоказания) {
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+            if let д = дальше {
                 Text(verbatim: "·").foregroundStyle(Token.Ink.secondary)
-                Text(подписьСостояния(второе))
+                Text(д.подпись)
                     .textStyle(AppFont.caption, color: Token.Ink.secondary)
                     .lineLimit(1)
                     // Эта строка — единственное, что остаётся
@@ -1381,6 +1814,15 @@ struct TodayScreen: View {
         .accessibilityIdentifier("компактная-строка")
     }
 
+    /// Показание плаката одной строкой — для компактной строки.
+    private var показаниеКоротко: Text {
+        switch показаниеПанели {
+        case .часыМинуты(let интервал): Text(Fmt.hoursMinutes(интервал))
+        case .минутыСекунды(let интервал): Text(Fmt.stopwatch(интервал)).monospacedDigit()
+        case .фраза(let текст): Text(текст)
+        }
+    }
+
     /// Шапка панели: кличка, «вес · дежурит» и единственная кнопка «…».
     private var шапкаПанели: ШапкаПанели {
         ШапкаПанели(dog: dog,
@@ -1388,7 +1830,38 @@ struct TodayScreen: View {
                     день: показатьДругойДень ? экранДень : nil,
                     листать: { шаг in показанныйДень = экранДень.сдвинуть(на: шаг).начало },
                     настройки: { показатьНастройки = true },
-                    другойДень: { показатьДругойДень.toggle() })
+                    // Спрятали листалку — вернулись в сегодня. Иначе
+                    // шапка теряла дату, а лента оставалась вчерашней
+                    // под заголовком «Сегодня» (аудит 29.10.2026).
+                    другойДень: {
+                        показатьДругойДень.toggle()
+                        if !показатьДругойДень { показанныйДень = now }
+                    })
+    }
+
+    /// Заголовок плаката на другом дне: «Вчера», дальше — «Пн, 27 окт.».
+    /// Сегодня — `nil`, и панель пишет «Сегодня» сама.
+    ///
+    /// «вчера» берётся тем же ключом, что у листалки (`TodayHeader`),
+    /// с заглавной буквы: второй ключ на одно слово — четыре перевода
+    /// под заморозкой текстов. Дата — системным форматом, как
+    /// `Fmt.shortDay`, только с днём недели: порядок частей у языков свой.
+    private var заголовокДня: String? {
+        let день = экранДень
+        guard !день.этоСегодня else { return nil }
+        let начало = день.calendar.startOfDay(for: день.сейчас)
+        if let вчера = день.calendar.date(byAdding: .day, value: -1, to: начало),
+           день.calendar.isDate(день.начало, inSameDayAs: вчера) {
+            return Self.сЗаглавной(String(localized: "вчера"))
+        }
+        return Self.сЗаглавной(день.начало.formatted(.dateTime.weekday(.abbreviated).day().month(.abbreviated)))
+    }
+
+    /// Первая буква заглавной, остальное как есть: `capitalized`
+    /// подняло бы и месяц («Пн, 27 Окт.»).
+    private static func сЗаглавной(_ строка: String) -> String {
+        guard let первая = строка.first else { return строка }
+        return String(первая).uppercased(with: .current) + String(строка.dropFirst())
     }
 
     private var плакат: some View {
@@ -1398,7 +1871,8 @@ struct TodayScreen: View {
                      показание: показаниеПанели,
                      откуда: откудаСчитаем,
                      докуда: докудаСчитаем,
-                     доля: доляРитма) {
+                     доля: доляРитма,
+                     заголовок: заголовокДня) {
             шапкаПанели
         }
         // Опознаётся приёмкой, чтобы точку замера брать по РАМКЕ блока,
@@ -1431,9 +1905,52 @@ struct TodayScreen: View {
         память.блоки { TimelineBuilder.blocks(Diary.active(events)) }
     }
 
-    /// Сколько собака дома прямо сейчас.
+    /// Ночь — тихие часы из настроек: человек их уже назвал.
+    private var ночь: NightWindow {
+        NightWindow(startHour: settings.quietHoursStart, endHour: settings.quietHoursEnd)
+    }
+
+    /// Стул: «не отмечали» или настоящий сигнал (`StoolSilence`).
+    private var тишинаСтула: StoolSilence.Оценка {
+        память.стул { StoolSilence.assess(events, now: now) }
+    }
+
+    /// Сколько прошло с последнего туалета — главное показание экрана.
+    ///
+    /// **С 29.10.2026 считается от туалета, а не от выхода** (решение
+    /// Виктории: «считали время не тогда, когда собака гуляла, а тогда,
+    /// когда писяла-какала»). Имя свойства прежнее нарочно: его читают
+    /// шесть мест экрана, и все они спрашивают одну величину.
     private var timeIndoors: TimeInterval? {
-        TimelineBuilder.timeIndoorsNow(блокиДня, now: now, threshold: 0)
+        якорьСчёта.map { max(0, now.timeIntervalSince($0)) }
+    }
+
+    /// Последний туалет по всей ленте — `ToiletClock`.
+    private var последнийТуалет: ToiletClock.Момент? {
+        память.туалет { ToiletClock.last(events, male: dog?.sex == .male, now: now) }
+    }
+
+    /// Откуда считаем: последний туалет, а без него — конец выхода.
+    ///
+    /// **Выход остаётся запасным, а не выброшен.** У суки, которой
+    /// не отвечают «как сходил», туалета в дневнике может не быть
+    /// вовсе — и тогда честнее «на улице были 3 ч назад», чем
+    /// «сегодня ещё не выходили». И второе: туалет старше потолка
+    /// тишины при более свежем выходе — это не «терпит трое суток»,
+    /// а «перестали отвечать». Тогда считаем от выхода, иначе экран
+    /// сказал бы о собаке то, чего не знает (та же форма дефекта,
+    /// что «434 ч назад», `TodayHero.silenceCeiling`).
+    private var якорьСчёта: Date? {
+        let выход = lastOutingEndedAt
+        guard let туалет = последнийТуалет?.когда else { return выход }
+        guard let выход, выход > туалет else { return туалет }
+        return now.timeIntervalSince(туалет) < OutingSilence.ceiling ? туалет : выход
+    }
+
+    /// Считаем ли от туалета — от этого зависит подпись «откуда».
+    private var считаемОтТуалета: Bool {
+        guard let якорь = якорьСчёта, let туалет = последнийТуалет else { return false }
+        return якорь == туалет.когда
     }
 
     /// Конец последнего записанного выхода. Герою нужен, чтобы за потолком
@@ -1461,7 +1978,8 @@ struct TodayScreen: View {
 
     private var summaryStrip: some View {
         TodaySummaryStrip(summary: Diary.summary(events, day: отсчёт, dog: dog),
-                          outings: outingsToday)
+                          outings: outingsToday,
+                          стул: ToiletClock.stoolCount(events, on: отсчёт))
     }
 
     // MARK: Данные экрана
@@ -1512,7 +2030,8 @@ struct TodayScreen: View {
     /// «Через 30 дней» — это не дело на сегодня, это шум.
     private var planItems: [DayPlanItem] {
         DayPlanBuilder.items(dog: dog, events: events, now: отсчёт,
-                             seesMedical: appState.can(.seeMedical))
+                             seesMedical: appState.can(.seeMedical),
+                             часСводки: settings.briefHour)
     }
 
     /// «Беру на себя» с запасом в 45 минут — чтобы двое не дали дозу дважды.
@@ -1524,7 +2043,9 @@ struct TodayScreen: View {
     private func claimSubtitle(_ dose: DoseRecord) -> String {
         if dose.claimIsActive(at: now), let who = dose.claimedBy {
             let осталось = DoseRecord.claimTTL - now.timeIntervalSince(dose.claimedAt ?? now)
-            return String(localized: "\(who) взяла на себя · \(Fmt.duration(осталось)) осталось")
+            // Без рода (29.10.2026): пол человека приложение не знает,
+            // и «Тео взяла на себя» было догадкой, а не фактом.
+            return String(localized: "\(who) · берёт на себя · \(Fmt.duration(осталось)) осталось")
         }
         return dutyMember.map { String(localized: "Сегодня дежурит \($0.name)") } ?? String(localized: "Кто-то один — отметьте")
     }
@@ -1582,7 +2103,23 @@ struct TodayScreen: View {
         if item.kind == .dose, !item.isDone, let medication = item.medication,
            let missed = MissedDoseAdvisor.evaluate(medication: medication,
                                                    scheduledAt: item.time, now: now) {
+            // Права — ДО шторки, как у `complete`: у наблюдателя есть
+            // `.seeMedical`, строку дозы он видит, и шторка «Дал / Пропустить»
+            // открывалась ему с двумя кнопками, которые запись отвергнет
+            // уже после выбора (аудит 29.10.2026).
+            guard actions.checkPermission(for: item) else { return }
             missedDose = MissedDoseTarget(item: item, medication: medication, missed: missed)
+            return
+        }
+
+        // Еда, которую ещё не отметили: спрашиваем, во сколько кормить
+        // СЕГОДНЯ. Прежде этот тап не делал ничего — он доходил
+        // до `guard` ниже и возвращался, то есть у строки плана была
+        // живая на вид, но мёртвая половина.
+        //
+        // Только у того, у чего есть час: пункт без часа двигать некуда.
+        if item.kind == .meal, !item.isDone, item.showsTime, dog != nil {
+            сдвигКормления = item
             return
         }
 
@@ -1706,6 +2243,9 @@ final class ПамятьЛенты {
     private var порогПосчитан = false
     private var порог: AlarmThreshold?
     private var тревожная: Bool?
+    private var туалетПосчитан = false
+    private var туалет: ToiletClock.Момент?
+    private var стул: StoolSilence.Оценка?
 
     func сверить(_ события: [LogEvent], now: Date, день: Date) {
         let ключ = Self.отпечаток(события)
@@ -1715,12 +2255,16 @@ final class ПамятьЛенты {
             ритм = nil
             порогПосчитан = false
             тревожная = nil
+            туалетПосчитан = false
+            стул = nil
         }
         if now != момент {
             момент = now
             ритм = nil
             порогПосчитан = false
             тревожная = nil
+            туалетПосчитан = false
+            стул = nil
         }
         // Тревожная запись — за ПОКАЗАННЫЙ день: листание на вчера
         // не меняет ни ленту, ни `now`, а ответ меняет.
@@ -1749,6 +2293,23 @@ final class ПамятьЛенты {
         let ответ = посчитать()
         тревожная = ответ
         return ответ
+    }
+
+    /// Пол собаки в ключ не входит: смена пола перерисует экран через
+    /// `dog`, а не через ленту, — но `now` тикает раз в минуту и сбросит
+    /// память раньше, чем человек успеет посмотреть.
+    func туалет(_ посчитать: () -> ToiletClock.Момент?) -> ToiletClock.Момент? {
+        if туалетПосчитан { return туалет }
+        туалет = посчитать()
+        туалетПосчитан = true
+        return туалет
+    }
+
+    func стул(_ посчитать: () -> StoolSilence.Оценка) -> StoolSilence.Оценка {
+        if let стул { return стул }
+        let оценка = посчитать()
+        стул = оценка
+        return оценка
     }
 
     func порог(_ посчитать: () -> AlarmThreshold?) -> AlarmThreshold? {

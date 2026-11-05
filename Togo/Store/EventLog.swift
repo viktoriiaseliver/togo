@@ -157,7 +157,7 @@ struct EventLog {
             event.dog = nil
             context.delete(event)
             Haptics.warning()
-            appState.showFailure("Не записалось · нажми ещё раз")
+            appState.showFailure(String(localized: "Не записалось · нажми ещё раз"))
             return nil
         }
         UsageLog.note(.record, kind.rawValue)

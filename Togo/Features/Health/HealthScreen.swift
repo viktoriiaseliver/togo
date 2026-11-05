@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import UserNotifications
 
 /// Здоровье. Вкладка держится правом `.seeMedical`, а не лечением
 /// (`RootView`, решение 08.10.2026) — её нет только у помощника.
@@ -53,6 +54,10 @@ struct HealthScreen: View {
     /// `NavigationLink` внутри `Menu` срабатывает непредсказуемо
     /// (разбор у `HeaderMenu`).
     @State private var показатьНастройки = false
+    /// Какие показатели стоят карточками — выбор этого телефона
+    /// (`ПоказателиНаЗдоровье`). `nil` — не настраивали.
+    @State private var выборПоказателей: [String]?
+    @State private var настраиваемПоказатели = false
 
     private var dog: Dog? { appState.activeDog(from: dogs) }
 
@@ -80,8 +85,35 @@ struct HealthScreen: View {
     /// Удалять их нельзя: история лечения — то, что спрашивает врач
     /// первым («чем лечили раньше и чем кончилось»). Поэтому они
     /// не исчезают, а уходят в свёрнутый раздел ниже.
+    ///
+    /// # Порядок: идёт → на паузе → курс кончился (29.10.2026)
+    ///
+    /// До этой правки порядок был порядком `@Query`, то есть ничьим:
+    /// временная схема на паузе или антибиотик с прошедшим концом
+    /// курса вставали ПЕРВЫМИ, над тем, что собака пьёт сегодня.
+    /// Экран открывают, чтобы сверить дозу, — и первым читается
+    /// то, что давать не надо.
+    ///
+    /// Внутри группы — по имени: стабильно между перерисовками
+    /// и между двумя телефонами семьи.
     private var действующиеСхемы: [Medication] {
-        medications.filter { $0.cancelledAt == nil }
+        let сегодня = Calendar.current.startOfDay(for: Date())
+        return medications.filter { $0.cancelledAt == nil }
+            .sorted { левая, правая in
+                let л = Self.очередь(левая, сегодня: сегодня)
+                let п = Self.очередь(правая, сегодня: сегодня)
+                if л != п { return л < п }
+                return левая.name.localizedStandardCompare(правая.name) == .orderedAscending
+            }
+    }
+
+    /// 0 — идёт, 1 — на паузе, 2 — назначенный конец курса прошёл.
+    ///
+    /// Конец курса сравнивается с НАЧАЛОМ сегодняшнего дня: курс
+    /// «до 29.10» в сам день 29.10 ещё идёт.
+    static func очередь(_ схема: Medication, сегодня: Date) -> Int {
+        if let конец = схема.courseEnd, конец < сегодня { return 2 }
+        return схема.isPaused ? 1 : 0
     }
 
     /// История: отменённые схемы, новые сверху.
@@ -135,7 +167,13 @@ struct HealthScreen: View {
                 // Цена копии измерена не здесь: `QuotedNamesTests` ловил
                 // ровно это трижды за сутки 25.10.2026.
                 if !canEdit { ПлашкаПрава(право: .editTreatment) }
-                if действующиеСхемы.isEmpty && прошлыеСхемы.isEmpty {
+                // Схемы — ОДИН раз на перерисовку. `medications` фильтрует
+                // все схемы базы, и до 29.10.2026 его звали пять раз за
+                // `body`: дважды проверка пустоты, `ForEach` и трижды
+                // раздел прошлых (с сортировкой каждый раз).
+                let действующие = действующиеСхемы
+                let прошлые = прошлыеСхемы
+                if действующие.isEmpty && прошлые.isEmpty {
                     EmptyStateCard(
                         subject: .health,
                         title: "Схемы лечения пока нет",
@@ -144,19 +182,38 @@ struct HealthScreen: View {
                         action: canEdit ? { isAdding = true } : nil
                     )
                 } else {
-                    ForEach(действующиеСхемы) { medication in
+                    ForEach(действующие) { medication in
                         карточкаЛечения(medication)
                         карточкаЗапаса(medication)
                     }
-                    прошлыеСхемыРаздел
+                    прошлыеСхемыРаздел(прошлые)
                 }
 
-                показательКарточка
+                показателиБлок
                 sectionsGrid
                 finishCourse
                 disclaimer
             }
             .usageScreen(.health)
+            // Выбор — у каждой собаки свой: смена активной собаки
+            // перечитывает его, а не тащит чужой.
+            .task(id: dog?.id) {
+                выборПоказателей = dog.flatMap { ПоказателиНаЗдоровье.прочитать(собака: $0.id) }
+            }
+            .sheet(isPresented: $настраиваемПоказатели) {
+                if let dog {
+                    let показатели = LabChartScreen.показатели(dog.labResults)
+                    let естьВес = !dog.weights.isEmpty
+                    НастройкаПоказателейSheet(
+                        кандидаты: ПоказателиНаЗдоровье.кандидаты(показатели: показатели, естьВес: естьВес),
+                        начальный: ПоказателиНаЗдоровье.карточки(выбор: выборПоказателей,
+                                                                 показатели: показатели, естьВес: естьВес),
+                        сохранить: { новый in
+                            ПоказателиНаЗдоровье.записать(новый, собака: dog.id)
+                            выборПоказателей = новый
+                        })
+                }
+            }
             .navigationDestination(isPresented: $показатьНастройки) {
                 SettingsScreen()
             }
@@ -204,7 +261,7 @@ struct HealthScreen: View {
     /// в ней осталось бы от последнего дня приёма — то есть врало бы
     /// про сегодня.
     @ViewBuilder
-    private var прошлыеСхемыРаздел: some View {
+    private func прошлыеСхемыРаздел(_ прошлыеСхемы: [Medication]) -> some View {
         if !прошлыеСхемы.isEmpty {
             TGCard {
                 DisclosureGroup {
@@ -342,9 +399,15 @@ struct HealthScreen: View {
                 // Дата начала — только названная (V8). Первую дозу журнала
                 // за начало здесь не выдаём: это догадка, а карточку
                 // читает врач.
-                if let начало = medication.startedAt {
-                    Text(.готовая(String(localized: "с \(Fmt.shortDay(начало))")))
+                //
+                // Конец курса — тем же рядом (29.10.2026): без него
+                // схема, курс которой кончился вчера, выглядела так же,
+                // как та, что идёт. Ключи оба уже в каталоге, склейка
+                // точкой — как у подписи прошлой схемы.
+                if let срок = срокСхемы(medication) {
+                    Text(.готовая(срок))
                         .textStyle(AppFont.caption.color(Token.Ink.secondary))
+                        .wraps()
                 }
                 if medication.isPaused {
                     Text("на паузе")
@@ -356,6 +419,19 @@ struct HealthScreen: View {
         }
         .buttonStyle(.plain)
         .disabled(!canEdit)
+    }
+
+    /// «с 01.10.2026 · до 30.10.2026». Обе половины — только названные:
+    /// ни начала из первой дозы журнала, ни конца «по умолчанию».
+    private func срокСхемы(_ medication: Medication) -> String? {
+        var части: [String] = []
+        if let начало = medication.startedAt {
+            части.append(String(localized: "с \(Fmt.shortDay(начало))"))
+        }
+        if let конец = medication.courseEnd {
+            части.append(String(localized: "до \(Fmt.shortDay(конец))"))
+        }
+        return части.isEmpty ? nil : части.joined(separator: " · ")
     }
 
     @ViewBuilder
@@ -516,8 +592,12 @@ struct HealthScreen: View {
 
     // MARK: Показатель
 
-    /// Карточка последнего показателя — кадр 11, «Т4 · протокол контроля»
+    /// Карточки показателей — кадр 11, «Т4 · протокол контроля»
     /// с нормой справа, и кадр 14, где тот же блок стоит крупно.
+    ///
+    /// **С 29.10.2026 их выбирает человек** — какие, сколько (до четырёх)
+    /// и в каком порядке (`ПоказателиНаЗдоровье`, шторка «Настроить»).
+    /// Не настраивал — одна карточка последнего сданного, как было.
     ///
     /// **Нормы приложение не придумывает.** `referenceLow` / `referenceHigh`
     /// приходят с бланка; нет их — строка про норму не печатается вовсе.
@@ -528,55 +608,132 @@ struct HealthScreen: View {
     /// Округление до одного знака писано для веса: `16,75 нмоль/л`
     /// как `16,8` — потеря данных в медицинском числе.
     @ViewBuilder
-    private var показательКарточка: some View {
-        if let dog, let последний = последнийПоказатель(dog) {
-            NavigationLink { LabChartScreen(dog: dog) } label: {
-                TGCard {
-                    HStack(alignment: .firstTextBaseline, spacing: Token.Space.s8) {
-                        Text(verbatim: Fmt.notBlank(последний.indicator)
-                             ?? String(localized: "показатель")).textStyle(AppFont.cardTitle).wraps()
-                        Spacer(minLength: Token.Space.s8)
-                        if let норма = нормаСтрокой(последний) {
-                            Text(verbatim: норма).textStyle(AppFont.caption).wraps()
+    private var показателиБлок: some View {
+        if let dog {
+            let показатели = LabChartScreen.показатели(dog.labResults)
+            let естьВес = !dog.weights.isEmpty
+            let кандидаты = ПоказателиНаЗдоровье.кандидаты(показатели: показатели, естьВес: естьВес)
+            let карточки = ПоказателиНаЗдоровье.карточки(выбор: выборПоказателей,
+                                                       показатели: показатели, естьВес: естьВес)
+            if карточки.isEmpty {
+                // Анализов с числом нет, а вес есть: карточек по умолчанию
+                // ноль (как было), но дорога к настройке остаётся —
+                // иначе поставить себе вес было бы неоткуда.
+                if !кандидаты.isEmpty {
+                    Button { настраиваемПоказатели = true } label: {
+                        TGCard {
+                            TGListRow(title: "Какие графики показывать", systemImage: "slider.horizontal.3")
                         }
                     }
-                    HStack(alignment: .firstTextBaseline, spacing: Token.Space.s8) {
-                        Text(verbatim: ЧислоСБланка.показать(последний.value ?? 0))
-                            .textStyle(TextStyleToken(size: КиноРазмеры.метрика,
-                                                      weight: Token.FontWeight.light,
-                                                      color: Token.Ink.link,
-                                                      monospacedDigits: true,
-                                                      relativeTo: .title2))
+                    .buttonStyle(.plain)
+                }
+            } else {
+                HStack(alignment: .center, spacing: Token.Space.s8) {
+                    TGSectionHeader(title: "показатели")
+                    Spacer(minLength: Token.Space.s8)
+                    if кандидаты.count > 1 {
+                        КиноЧип(подпись: "Настроить", значок: "slider.horizontal.3") {
+                            настраиваемПоказатели = true
+                        }
+                    }
+                }
+                ForEach(карточки, id: \.self) { имя in
+                    if имя == ПоказателиНаЗдоровье.вес {
+                        карточкаВеса(dog)
+                    } else if let последний = последнийПоказатель(dog, имя: имя) {
+                        карточкаПоказателя(dog, последний, имя: имя,
+                                           сПояснением: карточки.count == 1)
+                    }
+                }
+            }
+        }
+    }
+
+    private func карточкаПоказателя(_ dog: Dog, _ последний: LabResult, имя: String,
+                                    сПояснением: Bool) -> some View {
+        NavigationLink { LabChartScreen(dog: dog, начальныйПоказатель: имя) } label: {
+            TGCard {
+                HStack(alignment: .firstTextBaseline, spacing: Token.Space.s8) {
+                    Text(verbatim: имя).textStyle(AppFont.cardTitle).wraps()
+                    Spacer(minLength: Token.Space.s8)
+                    if let норма = нормаСтрокой(последний) {
+                        Text(verbatim: норма).textStyle(AppFont.caption).wraps()
+                    }
+                }
+                HStack(alignment: .firstTextBaseline, spacing: Token.Space.s8) {
+                    Text(verbatim: ЧислоСБланка.показать(последний.value ?? 0))
+                        .textStyle(стильМетрики)
+                        .wraps()
+                    if let единица = Fmt.notBlank(последний.unit) {
+                        Text(verbatim: единица)
+                            .textStyle(AppFont.bodyEmphasis.color(Token.Ink.link))
                             .wraps()
-                        if let единица = Fmt.notBlank(последний.unit) {
-                            Text(verbatim: единица)
-                                .textStyle(AppFont.bodyEmphasis.color(Token.Ink.link))
-                                .wraps()
-                        }
                     }
-                    КиноСтолбики(значения: рядПоказателя(dog, like: последний))
+                }
+                КиноСтолбики(значения: ПоказателиНаЗдоровье.доли(рядПоказателя(dog, имя: имя)))
+                // Пояснение — один раз на экран, а не под каждой
+                // карточкой: при четырёх карточках одна и та же фраза
+                // четырежды — шум, а не забота.
+                if сПояснением {
                     Text("Смотреть надо не на одно число, а на то, куда идёт ряд. Открой график.")
                         .textStyle(AppFont.caption)
                         .wraps()
                 }
             }
-            .buttonStyle(.plain)
         }
+        .buttonStyle(.plain)
     }
 
-    /// Последний анализ с ЧИСЛОМ. Предел прибора (`<0,1`) сюда
-    /// не попадает нарочно: его нельзя нарисовать столбиком, не превратив
-    /// «меньше, чем прибор различает» в число.
-    private func последнийПоказатель(_ dog: Dog) -> LabResult? {
+    /// Вес — кандидатом наравне с анализами. Число — `Fmt.weight`:
+    /// округление до знака разрешено ровно для веса (красная линия).
+    /// Ведёт на экран веса, где его и правят.
+    private func карточкаВеса(_ dog: Dog) -> some View {
+        NavigationLink { WeightScreen(dog: dog) } label: {
+            TGCard {
+                Text("Вес").textStyle(AppFont.cardTitle).wraps()
+                Text(verbatim: Fmt.weight(dog.weightKg))
+                    .textStyle(стильМетрики)
+                    .wraps()
+                КиноСтолбики(значения: ПоказателиНаЗдоровье.доли(
+                    dog.weights.sorted { $0.date < $1.date }
+                        .suffix(КиноРазмеры.днейВПолосе)
+                        .map(\.kg)))
+            }
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var стильМетрики: TextStyleToken {
+        TextStyleToken(size: КиноРазмеры.метрика,
+                       weight: Token.FontWeight.light,
+                       color: Token.Ink.link,
+                       monospacedDigits: true,
+                       relativeTo: .title2)
+    }
+
+    /// Последний анализ с ЧИСЛОМ по этому показателю. Предел прибора
+    /// (`<0,1`) сюда не попадает нарочно: его нельзя нарисовать
+    /// столбиком, не превратив «меньше, чем прибор различает» в число.
+    /// Имя сравнивается обрезанным — так его собирает
+    /// `LabChartScreen.показатели`.
+    private func последнийПоказатель(_ dog: Dog, имя: String) -> LabResult? {
         dog.labResults
-            .filter { $0.value != nil }
+            .filter { $0.value != nil && $0.indicator.trimmingCharacters(in: .whitespaces) == имя }
             .max { $0.sampledOn < $1.sampledOn }
     }
 
-    /// Ряд того же показателя по датам — для полосы столбиков.
-    private func рядПоказателя(_ dog: Dog, like образец: LabResult) -> [Double] {
-        dog.labResults
-            .filter { $0.indicator == образец.indicator && $0.value != nil }
+    /// Ряд того же показателя по датам — для полосы столбиков. Только
+    /// числа: пропусков и нулей вместо пределов прибора в нём нет.
+    ///
+    /// И только в ЕДИНИЦЕ последнего анализа (29.10.2026): анализ другой
+    /// лаборатории в мкг/дл рядом с нмоль/л рисовал столбик в двенадцать
+    /// раз ниже — падение, которого не было. Правило единицы — то же,
+    /// что у графика (`LabChartScreen.ключЕдиницы`).
+    private func рядПоказателя(_ dog: Dog, имя: String) -> [Double] {
+        let единица = последнийПоказатель(dog, имя: имя).map { LabChartScreen.ключЕдиницы($0.unit) }
+        return dog.labResults
+            .filter { $0.value != nil && $0.indicator.trimmingCharacters(in: .whitespaces) == имя }
+            .filter { единица == nil || LabChartScreen.ключЕдиницы($0.unit) == единица }
             .sorted { $0.sampledOn < $1.sampledOn }
             .suffix(КиноРазмеры.днейВПолосе)
             .compactMap(\.value)
@@ -614,7 +771,7 @@ struct HealthScreen: View {
             appState.showFailure("Не сохранилось · попробуй ещё раз")
             return
         }
-        appState.showUndo("Курс завершён")
+        appState.showUndo(String(localized: "Курс завершён"))
         Haptics.success()
     }
 
@@ -677,7 +834,10 @@ struct HealthScreen: View {
             }
                         TGLink(title: "Протокол контроля", value: "T0 / +4 / +6", systemImage: "timer") { ProtocolScreen(dog: dog) }
             TGDivider()
-                        TGLink(title: "Вес и симптомы", value: dog.map { .готовая(Fmt.weight($0.weightKg)) }, systemImage: "scalemass") { WeightScreen(dog: dog) }
+                        // «Вес», а не «Вес и симптомы» (решение Виктории
+                        // 29.10.2026): симптомов на экране за строкой нет,
+                        // они живут в инцидентах.
+                        TGLink(title: "Вес", value: dog.map { .готовая(Fmt.weight($0.weightKg)) }, systemImage: "scalemass") { WeightScreen(dog: dog) }
             TGDivider()
             // МЕСТО ВЫЗОВА. Без этой строки экран анализов существует
             // и недостижим: до 08.10.2026 `LabResult` создавался только
@@ -790,6 +950,13 @@ struct ProtocolScreen: View {
     @Environment(\.modelContext) private var context
     @Environment(AppState.self) private var appState
     @State private var now = Date()
+    /// Открыт ли черновик анализа из «Отметить забор».
+    @State private var черновикАнализа = false
+    /// Момент забора, с которым открыт черновик.
+    @State private var заборВ = Date()
+    /// Напоминание за 30 минут до +4 не встало — строка обязана сказать
+    /// об этом, а не обещать.
+    @State private var напоминаниеНеВстало = false
 
     private let tick = Timer.publish(every: 30, on: .main, in: .common).autoconnect()
 
@@ -814,9 +981,16 @@ struct ProtocolScreen: View {
     /// Различитель «ещё не делали» — `lastDone == nil`: у прививки
     /// и обработки он стоит всегда (их делали хоть раз), у контроля,
     /// назначенного вперёд, пуст. Так его и заводит карта.
+    ///
+    /// **Только медицинское и не «Контрольный приём» (29.10.2026).**
+    /// Прежний фильтр брал ЛЮБОЕ назначенное дело: груминг на субботу
+    /// или приём у врача после курса вставали в «когда сдавать»
+    /// со строкой «кровь около 13:30» — по ней поехали бы сдавать
+    /// кровь на стрижку.
     private var назначенныйКонтроль: CareTask? {
         dog?.careTasks
             .filter { $0.deletedAt == nil && $0.lastDone == nil }
+            .filter { $0.category == .medical && $0.title != TreatmentCourse.checkupTitle }
             .filter { ($0.scheduledDate ?? .distantPast) > Date() }
             .min { ($0.scheduledDate ?? .distantFuture) < ($1.scheduledDate ?? .distantFuture) }
     }
@@ -838,11 +1012,19 @@ struct ProtocolScreen: View {
             if let dose = lastDose, let givenAt = dose.givenAt {
                 TGCard {
                     Text("T+\(Fmt.duration(now.timeIntervalSince(givenAt)))").textStyle(AppFont.display)
-                    Text("Доза дана в \(Fmt.clock(givenAt)) под наблюдением").textStyle(AppFont.caption)
+                    // «под наблюдением» отсюда снято 29.10.2026: отметка
+                    // дозы этого не говорит, а строку читает врач.
+                    // Утверждение, которого человек не делал, — та же
+                    // подстановка, что запрещена красной линией.
+                    Text("Доза дана в \(Fmt.clock(givenAt))").textStyle(AppFont.caption)
                 }
                 TGCard(spacing: 0) {
                     ProtocolRow(label: "T0", time: givenAt,
-                                title: "доза \(dog?.medications.first?.doseText ?? "")",
+                                // Доза ТОЙ схемы, чья отметка начала протокол.
+                                // До 29.10.2026 здесь стояла `medications.first` —
+                                // первая схема базы, то есть при двух препаратах
+                                // строка T0 называла дозу чужого лекарства.
+                                title: "доза \(dose.medication?.doseText ?? "")",
                                 detail: "отмечено с точностью до минуты", isDone: true)
                     TGDivider()
                     // ГАЛОЧКА ЧИТАЕТ ОТМЕТКУ ЧЕЛОВЕКА, А НЕ ЧАСЫ.
@@ -861,7 +1043,10 @@ struct ProtocolScreen: View {
                     // Время осталось в строке — но как ПЛАН («в 13:30
                     // забор»), а не как факт.
                     ProtocolRow(label: "+4", time: givenAt.addingTimeInterval(4 * 3600),
-                                title: "забор крови", detail: "напомним за 30 минут",
+                                title: "забор крови",
+                                detail: напоминаниеНеВстало
+                                    ? String(localized: "напомнить не выйдет: уведомления выключены")
+                                    : "напомним за 30 минут",
                                 isDone: заборы(после: givenAt).count >= 1,
                                 отметить: { recordDraw() })
                     TGDivider()
@@ -890,6 +1075,74 @@ struct ProtocolScreen: View {
         .navigationTitle("Протокол")
         .cinemaScreen(экран: .sub("protocol"))
         .onReceive(tick) { now = $0 }
+        // Напоминание ставится от ФАКТИЧЕСКОЙ отметки дозы, и при новой
+        // отметке — заново: `id` задачи — момент дозы.
+        .task(id: lastDose?.givenAt) { await поставитьНапоминание() }
+        .sheet(isPresented: $черновикАнализа, onDismiss: снятьНапоминаниеПослеЗабора) {
+            LabResultEntryFlow(dog: dog, забор: заборВ)
+        }
+    }
+
+    // MARK: Напоминание за 30 минут до +4
+
+    /// «Напомним за 30 минут» — обещание строки +4, и до 29.10.2026
+    /// его не держал никто: ни один вызов не ставил уведомления
+    /// о заборе. Человек верил строке и пропускал окно.
+    ///
+    /// Ставится через `NotificationCenterService.scheduleDose` — тот же
+    /// путь `.timeSensitive`, что у доз: забор в окне после таблетки
+    /// медицински привязан к ней так же, как сама доза. Идентификатор
+    /// стабильный (`protocol-draw-<id дозы>`): повторная постановка
+    /// заменяет запрос, а не множит его.
+    ///
+    /// Не ставится, если момент прошёл или забор уже отмечен. Отказ
+    /// системы или выключенные уведомления меняют подпись строки —
+    /// обещание, которое не держится, не печатается.
+    ///
+    /// **`собака: nil` здесь — замер, а не недосмотр.** Метка собаки
+    /// привязывает запрос к уборке доз, а уборка снимает всё помеченное,
+    /// чего нет в плане партии:
+    /// `устаревшие = прежниеСвои.subtracting(идентификаторы)`
+    /// (`ReminderScheduler:606`), где `идентификаторы` — только ступени
+    /// доз. Забор в их число не входит ни при каком плане, значит
+    /// с меткой он снимался бы первым же `scheduleDoses` — а тот зовётся
+    /// из `.task` главного экрана, то есть почти сразу. Вышло бы ровно
+    /// то, что эта функция и чинит: строка обещает, уведомления нет.
+    /// Снимается запрос своим стабильным идентификатором при замене,
+    /// и уборка доз ему не нужна.
+    private func поставитьНапоминание() async {
+        guard let dose = lastDose, let givenAt = dose.givenAt else { return }
+        let момент = givenAt.addingTimeInterval(4 * 3600 - 30 * 60)
+        guard момент > Date(), заборы(после: givenAt).isEmpty else { return }
+        switch await NotificationCenterService.authorizationStatus() {
+        case .authorized, .provisional, .ephemeral:
+            break
+        default:
+            напоминаниеНеВстало = true
+            return
+        }
+        let исход = await NotificationCenterService.scheduleDose(
+            id: Self.идНапоминания(dose),
+            at: момент,
+            title: String(localized: "Через 30 минут — забор крови"),
+            body: String(localized: "Четыре часа после дозы в \(Fmt.clock(givenAt)). Отметь забор в «Протоколе»."),
+            собака: nil
+        )
+        напоминаниеНеВстало = исход != .поставлен
+    }
+
+    /// ФОРМА ИДЕНТИФИКАТОРА ПЕРЕЕХАЛА 04.11.2026
+    /// в `ReminderScheduler.идЗабора`, и это не стиль.
+    ///
+    /// Снимать напоминание понадобилось ещё и уборке доз —
+    /// повод исчезает при удалении дозы, отмене курса
+    /// и выключенном лечении, а не только при отметке забора
+    /// на этом экране. Собери уборка строку сама — копий стало бы
+    /// две, и разошлись бы они молча: уборка перестала бы
+    /// попадать по живому запросу, и это выглядело бы как
+    /// «уборка работает, запросов нет».
+    private static func идНапоминания(_ dose: DoseRecord) -> String {
+        ReminderScheduler.идЗабора(dose.id)
     }
 
     /// Что будет в день назначенного забора.
@@ -927,8 +1180,16 @@ struct ProtocolScreen: View {
     /// Выдуманный час забора в медицинской записи хуже отсутствующего:
     /// по нему поедут в клинику.
     private func строкаПлана(_ дата: Date) -> String {
-        let дней = Calendar.current.dateComponents([.day], from: Date(), to: дата).day ?? 0
-        var строка = String(localized: "\(Fmt.shortDay(дата)) · через \(дней) дней")
+        // Сутки — календарные, от начала дня к началу дня. Прежний
+        // счёт «от этой минуты» давал «через 0 дней» на завтрашний
+        // забор, если экран открыли вечером.
+        let дней = CalendarDay.daysBetween(Date(), дата)
+        var строка: String
+        switch дней {
+        case ...0: строка = [Fmt.shortDay(дата), String(localized: "сегодня")].joined(separator: " · ")
+        case 1: строка = [Fmt.shortDay(дата), String(localized: "завтра")].joined(separator: " · ")
+        default: строка = String(localized: "\(Fmt.shortDay(дата)) · через \(дней) дней")
+        }
         if let утро = утренняяДоза {
             let таблетка = Fmt.clock(minuteOfDay: утро)
             let кровь = Fmt.clock(minuteOfDay: утро + 4 * 60)
@@ -937,42 +1198,67 @@ struct ProtocolScreen: View {
         return строка
     }
 
-    /// Отметки забора крови после дозы — то, чем закрываются точки
-    /// протокола.
+    /// Заборы крови после дозы — то, чем закрываются точки протокола.
     ///
-    /// # Почему сравнение по тексту, и где у него граница
+    /// # Два источника, и почему второй остался
     ///
-    /// Забор записывается как `LogKind.note` с текстом «Забор крови»
-    /// (`recordDraw` ниже). Отдельного поля у него нет, и завести
-    /// его — это менять форму схемы, то есть отдельное решение.
+    /// С 29.10.2026 забор — это **анализ** (`LabResult.sampledAt`):
+    /// «Отметить забор» открывает черновик анализа с моментом забора.
+    /// Строки одного бланка несут один момент, поэтому считаются
+    /// МОМЕНТЫ с точностью до минуты, а не строки: бланк на десять
+    /// показателей — один забор, а не десять.
     ///
-    /// Сравнивается И с текущим переводом, И с русским ключом: запись,
-    /// сделанная до смены языка интерфейса, иначе перестала бы
-    /// закрывать свою точку. Полного покрытия это не даёт — сменивший
-    /// язык с французского на английский посреди протокола увидит
-    /// точку открытой, — и граница названа здесь, а не обойдена
-    /// молчанием.
+    /// Прежде забор писался заметкой «Забор крови» (`LogKind.note`),
+    /// и такие заметки в дневниках уже лежат. Они по-прежнему
+    /// закрывают свою точку: иначе протокол, начатый вчера, сегодня
+    /// показал бы забор несделанным. Сравнение — и с текущим переводом,
+    /// и с русским ключом; граница та же, что была: сменивший язык
+    /// с французского на английский посреди протокола увидит старую
+    /// заметку незасчитанной.
     ///
     /// Порядок: первый забор закрывает +4, второй +6. Это проще
     /// сопоставления по времени и честнее: врач берёт кровь не минута
     /// в минуту, а окно вокруг плановой точки пришлось бы выдумывать.
-    private func заборы(после givenAt: Date) -> [LogEvent] {
+    private func заборы(после givenAt: Date) -> [Date] {
         let имя = String(localized: "Забор крови")
-        return Diary.active(dog?.events ?? [])
+        let заметки = Diary.active(dog?.events ?? [])
             .filter { $0.kind == .note && $0.date >= givenAt }
             .filter { $0.note == имя || $0.note == "Забор крови" }
-            .sorted { $0.date < $1.date }
+            .map(\.date)
+        let минуты = Set((dog?.labResults ?? [])
+            .compactMap(\.sampledAt)
+            .filter { $0 >= givenAt }
+            .map { Int($0.timeIntervalSince1970 / 60) })
+        let анализы = минуты.map { Date(timeIntervalSince1970: TimeInterval($0) * 60) }
+        return (заметки + анализы).sorted()
     }
 
+    /// Отметить забор — открыть ЧЕРНОВИК АНАЛИЗА с моментом забора.
+    ///
+    /// Прежде здесь писалась заметка «Забор крови»: её не видели список
+    /// анализов, график и сводка врачу, а «часы от дозы» по ней
+    /// не считались — то есть запись о заборе была, а анализа не было.
+    /// Право то же, что у ввода анализа на своём экране
+    /// (`LabResultsScreen.canEdit`).
+    ///
+    /// Напоминание о +4 снимается, когда забор правда лёг, — после
+    /// закрытия черновика (`снятьНапоминаниеПослеЗабора`). Не раньше:
+    /// случайное касание с отменой черновика не должно снимать
+    /// напоминание о заборе, которого не было.
     private func recordDraw() {
-        EventLog(context: context, appState: appState)
-            .record(.note, dog: dog, confirmation: "Записано · забор крови") { event in
-                // Через каталог: заметку человек читает в ленте дня
-                // и в сводке врачу. `note` — `String`, присвоение
-                // литерала каталог не спрашивает, и у француза
-                // в собственном дневнике встало бы русское слово.
-                event.note = String(localized: "Забор крови")
-            }
+        guard appState.can(.editTreatment) else {
+            Haptics.warning()
+            appState.showFailure(String(localized: "Записывать может тот, кому это разрешено"))
+            return
+        }
+        заборВ = Date()
+        черновикАнализа = true
+    }
+
+    private func снятьНапоминаниеПослеЗабора() {
+        guard let dose = lastDose, let givenAt = dose.givenAt,
+              !заборы(после: givenAt).isEmpty else { return }
+        NotificationCenterService.cancel(ids: [Self.идНапоминания(dose)])
     }
 }
 
@@ -1031,10 +1317,36 @@ struct VetReportScreen: View {
 
     @State private var from = Calendar.current.date(byAdding: .month, value: -1, to: .now) ?? .now
     @State private var to = Date()
-    @State private var language = "RU"
 
+    /// Записи периода — ЦЕЛЫМИ СУТКАМИ (29.10.2026).
+    ///
+    /// Пикер с `.date` несёт час открытия экрана, и фильтр
+    /// `date >= from && date <= to` выбрасывал утро первого дня
+    /// и вечер последнего — в выгрузке врачу их не было, а на экране
+    /// оба дня стояли целиком. Правило одно со «Сводкой»:
+    /// `VetSummaryBuilder.целыеСутки`.
     private var events: [LogEvent] {
-        Diary.active(dog?.events ?? []).filter { $0.date >= from && $0.date <= to }
+        let период = VetSummaryBuilder.целыеСутки(с: from, по: to)
+        return Diary.active(dog?.events ?? []).filter { $0.date >= период.from && $0.date <= период.to }
+    }
+
+    /// Язык, на котором выйдет выгрузка, — язык приложения.
+    ///
+    /// # Почему здесь больше нет переключателя RU · FR · EN (29.10.2026)
+    ///
+    /// Переключатель стоял на `@State language` и не читался ничем:
+    /// `Exporter.csv` берёт заголовки и подписи через `String(localized:)`,
+    /// то есть на языке интерфейса, что бы ни было выбрано. Человек
+    /// выбирал «FR» для французского врача и отдавал русский файл.
+    ///
+    /// Сделать выбор настоящим здесь нельзя без второго пути перевода:
+    /// подписи видов записи, результата и формы стула приходят уже
+    /// переведёнными из десятка перечислений. Поэтому экран говорит
+    /// правду — на каком языке выйдет файл — и ведёт туда, где язык
+    /// правда меняется.
+    private var языкВыгрузки: String {
+        let код = Bundle.main.preferredLocalizations.first ?? "ru"
+        return LanguageScreen.names[код] ?? код.uppercased()
     }
 
     var body: some View {
@@ -1046,12 +1358,13 @@ struct VetReportScreen: View {
                 TGDivider()
                 DatePicker("По", selection: $to, in: from..., displayedComponents: .date)
                     .frame(minHeight: Token.Size.tapTarget)
-                TGDivider()
-                Picker("Язык", selection: $language) {
-                    ForEach(["RU", "FR", "EN"], id: \.self) { Text($0).tag($0) }
+            }
+
+            TGCard(spacing: 0) {
+                TGLink(title: "Язык", value: .готовая(языкВыгрузки), systemImage: "globe") {
+                    LanguageScreen()
                 }
-                .pickerStyle(.segmented)
-                .padding(.vertical, Token.Space.s8)
+                TGExplainer(text: "Файл выйдет на языке приложения. Нужен другой — смени язык приложения и выгрузи заново.")
             }
 
             TGCard {
@@ -1086,7 +1399,18 @@ struct VetReportScreen: View {
             ("Приёмы и пропуски", events.filter { $0.kind == .dose }.count),
             ("Стул и симптомы", events.filter { $0.kind == .stool || $0.kind == .incident }.count),
             ("Вес и аппетит", events.filter { $0.kind == .weight || $0.kind == .meal }.count),
-            ("Занятия", events.filter { $0.kind == .training }.count),
+            // Строка «Занятия» снята 03.11.2026. Карточка «что войдёт»
+            // печатает ВСЕ строки, включая нулевые (`ForEach(contents)`
+            // выше, без отбора по `count`), — то есть у всех, кроме
+            // заставших старую сборку, в предпросмотре отчёта врачу
+            // стояло «Занятия 0» навсегда: событий `kind == .training`
+            // с 28.10 не заводит ни один путь.
+            //
+            // Список и без неё НЕ исчерпывающий — выходов, воды
+            // и лакомств в нём нет, а в CSV они есть. Он отбирает
+            // МЕДИЦИНСКИ ЗНАЧИМОЕ, поэтому минус строка — не обещание
+            // меньшего объёма: сам `Exporter.csv` не фильтруется этим
+            // списком и у заставших выгрузит занятия по-прежнему.
         ]
     }
 }
@@ -1215,13 +1539,25 @@ struct WeightScreen: View {
                 TGSectionHeader(title: "история")
                 let history = (dog?.weights ?? []).sorted { $0.date > $1.date }.prefix(12)
                 if history.isEmpty {
-                    TGExplainer(text: "Пока одно значение — то, что ты ввела при добавлении собаки.")
+                    // Было «Пока одно значение — то, что ты ввела при
+                    // добавлении собаки» (29.10.2026): неправда дважды.
+                    // Ветка — ПУСТАЯ история, то есть значения нет ни
+                    // одного, а «ввела» назначало человеку пол, которого
+                    // приложение не знает. Вес новой собаки теперь сам
+                    // встаёт первым взвешиванием (`attachStarterCare`).
+                    TGExplainer(text: "Взвешиваний пока нет. Первое встанет сюда, как только его запишут.")
                 } else {
                     ForEach(Array(history)) { entry in
                         // История читается всеми, а удаляется по праву:
                         // без права строка остаётся строкой, а не
                         // выключенной кнопкой, ведущей в тишину.
-                        Button { if canEdit { removing = entry } } label: {
+                        // Тап открывает ПРАВКУ, а удаление — внутри неё.
+                        // До 29.10.2026 тап вёл прямо в «Удалить?»:
+                        // опечатку «12,4 → 124» можно было только стереть
+                        // и набрать заново — и вместе с ней терялся день
+                        // взвешивания, потому что новая запись встаёт
+                        // сегодняшним числом.
+                        Button { if canEdit { правится = entry } } label: {
                             HStack {
                                 Text(Fmt.shortDay(entry.date)).textStyle(AppFont.caption)
                                 Spacer()
@@ -1241,7 +1577,7 @@ struct WeightScreen: View {
                     // удалить: иначе она посылает человека делать то,
                     // чего ему не дадут.
                     if canEdit {
-                        TGExplainer(text: "Ошиблась — тапни по строке и удали.")
+                        TGExplainer(text: "Если число неверное — тапни по строке: там можно поправить число и день или удалить.")
                     }
                 }
             }
@@ -1251,15 +1587,8 @@ struct WeightScreen: View {
         // Выход с цифровой клавиатуры: у `.decimalPad` своей клавиши
         // возврата нет.
         .готовоНадКлавиатурой { весВФокусе = false }
-        .confirmationDialog("Удалить взвешивание?",
-                            isPresented: Binding(get: { removing != nil },
-                                                 set: { if !$0 { removing = nil } }),
-                            titleVisibility: .visible,
-                            presenting: removing) { entry in
-            Button("Удалить", role: .destructive) { delete(entry) }
-            Button("Отмена", role: .cancel) { removing = nil }
-        } message: { entry in
-            Text("\(Fmt.shortDay(entry.date)) · \(Fmt.weight(entry.kg)). Из графика и из коридора веса запись тоже уйдёт.")
+        .sheet(item: $правится) { entry in
+            WeightEntryEditorSheet(entry: entry, dog: dog, canEdit: canEdit) { delete($0) }
         }
     }
 
@@ -1307,8 +1636,9 @@ struct WeightScreen: View {
     /// снимает его в «Семье», и обмен приносит это на чужой телефон).
     /// Проверка у показа отвечает на «рисовать ли кнопку»,
     /// а у записи — на «можно ли писать», и это разные вопросы.
-    private func delete(_ entry: WeightEntry) {
-        guard canEdit, let dog else { return }
+    @discardableResult
+    private func delete(_ entry: WeightEntry) -> Bool {
+        guard canEdit, let dog else { return false }
         // Надгробие вместо `context.delete`: вес — то, от чего считается
         // доза, и расхождение веса между двумя людьми даёт расхождение
         // дозы. Удаление, не доехавшее до второго человека, оставляло
@@ -1331,17 +1661,22 @@ struct WeightScreen: View {
             откатНадгробия()
         }) else {
             Haptics.warning()
-            return appState.showFailure("Взвешивание не удалилось · попробуй ещё раз")
+            appState.showFailure(String(localized: "Взвешивание не удалилось · попробуй ещё раз"))
+            return false
         }
         Haptics.warning()
-        removing = nil
+        return true
     }
 
-    /// Какую запись предлагается удалить.
-    @State private var removing: WeightEntry?
+    /// Какую запись открыли на правку.
+    @State private var правится: WeightEntry?
 
+    /// Тот же разбор, что у правки взвешивания (`WeightEntryEditorSheet`),
+    /// и то же «больше нуля». До 29.10.2026 здесь стоял голый `Double(…)`:
+    /// он принимал «0», «-4» и «inf», и ноль ложился текущим весом —
+    /// тем, от которого считают дозу.
     private var parsedWeight: Double? {
-        Double(newWeight.replacingOccurrences(of: ",", with: "."))
+        ЧислоСБланка.разобрать(newWeight).flatMap { $0 > 0 ? $0 : nil }
     }
 
     /// Записать взвешивание. Право — как у удаления, и по той же
@@ -1351,6 +1686,7 @@ struct WeightScreen: View {
         let entry = WeightEntry(kg: kg)
         entry.dog = dog
         context.insert(entry)
+        let былВес = dog.weightKg
         dog.weightKg = kg
 
         // Взвесили — значит, напоминание «Взвесить» отработало. Просить
@@ -1362,11 +1698,137 @@ struct WeightScreen: View {
         guard context.persist(otherwise: {
             context.delete(entry)
             задача?.lastDone = былоСделано
+            // Текущий вес возвращается вместе с записью: до 29.10.2026
+            // откат его не трогал, и при отказе хранилища приложение
+            // показывало вес, которого нет ни в одном взвешивании.
+            dog.weightKg = былВес
         }) else {
             Haptics.warning()
-            return appState.showFailure("Вес не записался · попробуй ещё раз")
+            return appState.showFailure(String(localized: "Вес не записался · попробуй ещё раз"))
         }
         newWeight = ""
         Haptics.success()
+    }
+}
+
+/// Правка одного взвешивания: число, день и удаление.
+///
+/// **Вес — то, от чего считается доза**, поэтому текущий вес собаки
+/// пересчитывается здесь же: правили последнее взвешивание — меняется
+/// и `dog.weightKg`, перенесли его днём раньше другого — текущим
+/// становится то, что теперь последнее. Правило одно с удалением
+/// (`WeightScreen.delete`): текущий вес — это вес последнего замера.
+struct WeightEntryEditorSheet: View {
+    let entry: WeightEntry
+    let dog: Dog?
+    let canEdit: Bool
+    /// Удаление делает хозяин списка: у него откат текущего веса
+    /// и надгробие, и второй копии этого правила здесь не нужно.
+    let удалить: (WeightEntry) -> Bool
+
+    @Environment(\.modelContext) private var context
+    @Environment(\.dismiss) private var dismiss
+    @Environment(AppState.self) private var appState
+
+    @State private var вес = ""
+    @State private var день = Date()
+    @State private var загружено = false
+    @State private var удаляем = false
+    @FocusState private var весВФокусе: Bool
+
+    private var разобранный: Double? {
+        ЧислоСБланка.разобрать(вес).flatMap { $0 > 0 ? $0 : nil }
+    }
+
+    var body: some View {
+        TGSheet(title: "Взвешивание", subtitle: .готовая(Fmt.shortDay(entry.date)),
+                closeTitle: "Закрыть") {
+            TGCard(spacing: 0) {
+                LabeledField(label: "Вес") {
+                    HStack(spacing: Token.Space.s4) {
+                        TextField("4,1", text: $вес)
+                            .keyboardType(.decimalPad)
+                            .focused($весВФокусе)
+                        Text("кг").textStyle(AppFont.caption)
+                    }
+                }
+                TGDivider()
+                DatePicker("Дата", selection: $день, in: ...Date(), displayedComponents: .date)
+                    .frame(minHeight: Token.Size.tapTarget)
+            }
+            if canEdit {
+                TGButton(title: "Удалить взвешивание", variant: .destructive, size: .medium, systemImage: "trash") {
+                    удаляем = true
+                }
+            }
+        } footer: {
+            VStack(spacing: Token.Space.s8) {
+                if разобранный == nil {
+                    Text("Нужно одно число — например 4,1")
+                        .textStyle(AppFont.caption.color(Token.Status.overdueText))
+                        .wraps()
+                }
+                TGButton(title: "Сохранить", isEnabled: canEdit && разобранный != nil) { сохранить() }
+            }
+        }
+        .presentationDetents([.medium, .large])
+        .готовоНадКлавиатурой { весВФокусе = false }
+        .task { загрузить() }
+        .confirmationDialog("Удалить взвешивание?", isPresented: $удаляем, titleVisibility: .visible) {
+            Button("Удалить", role: .destructive) {
+                if удалить(entry) { dismiss() }
+            }
+            Button("Отмена", role: .cancel) {}
+        } message: {
+            Text("\(Fmt.shortDay(entry.date)) · \(Fmt.weight(entry.kg)). Из графика и из коридора веса запись тоже уйдёт.")
+        }
+    }
+
+    private func загрузить() {
+        guard !загружено else { return }
+        загружено = true
+        // `ЧислоСБланка`, а не `Fmt.decimal`: тот округляет до знака,
+        // и правка «4,15» открылась бы как «4,2» — сохранение без единого
+        // касания записало бы другой вес.
+        вес = ЧислоСБланка.текст(entry.kg).replacingOccurrences(of: ".", with: ",")
+        день = entry.date
+    }
+
+    private func сохранить() {
+        guard canEdit, let kg = разобранный else { return }
+        let былВес = entry.kg
+        let былДень = entry.date
+        let былоИзменено = entry.changedAt
+        let былТекущий = dog?.weightKg
+
+        entry.kg = kg
+        // День меняется, время суток остаётся: взвешивание в 08:10
+        // осталось утренним и на другом дне.
+        entry.date = перенести(entry.date, на: день)
+        // Время правки — им решается спор двух телефонов
+        // (`WeightEntry.changedAt`).
+        entry.changedAt = Date()
+        if let dog, let последнее = dog.weights.max(by: { $0.date < $1.date }) {
+            dog.weightKg = последнее.kg
+        }
+
+        guard context.persist(otherwise: {
+            entry.kg = былВес
+            entry.date = былДень
+            entry.changedAt = былоИзменено
+            if let dog, let былТекущий { dog.weightKg = былТекущий }
+        }) else {
+            Haptics.warning()
+            appState.showFailure(String(localized: "Не сохранилось · нажми «Сохранить» ещё раз"))
+            return
+        }
+        Haptics.success()
+        dismiss()
+    }
+
+    private func перенести(_ момент: Date, на день: Date, calendar: Calendar = .current) -> Date {
+        let часы = calendar.dateComponents([.hour, .minute, .second], from: момент)
+        return calendar.date(bySettingHour: часы.hour ?? 12, minute: часы.minute ?? 0,
+                             second: часы.second ?? 0, of: день) ?? день
     }
 }

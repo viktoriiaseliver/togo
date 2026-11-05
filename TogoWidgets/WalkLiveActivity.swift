@@ -81,6 +81,7 @@ struct WalkLiveActivity: Widget {
                              startedBy: context.attributes.startedBy,
                              startedAt: context.state.startedAt,
                              tally: context.state.tally)
+                .environment(\.кобельНаПрогулке, context.attributes.кобель ?? false)
                 .widgetURL(Self.тапВедёт)
                 // **`#000000`, а не карточный `#1C1C1E`** — замер пикселя
                 // на эталоне `16.png` дал у карточки живой активности
@@ -105,6 +106,7 @@ struct WalkLiveActivity: Widget {
                     WalkIslandView.Bottom(startedBy: context.attributes.startedBy,
                                           dogName: context.attributes.dogName,
                                           tally: context.state.tally)
+                        .environment(\.кобельНаПрогулке, context.attributes.кобель ?? false)
                 }
             } compactLeading: {
                 WalkIslandView.CompactLeading()

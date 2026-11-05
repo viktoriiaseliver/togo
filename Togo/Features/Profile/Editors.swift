@@ -47,7 +47,13 @@ struct DogEditorScreen: View {
 
     var body: some View {
         TGScreen {
-            CinemaHeader(isNew ? "Новая собака" : "Профиль", отступы: false)
+            // «Профиль» → «Профиль и удаление» (аудит 29.10.2026): дверь
+            // сюда подписана «Править и удалить» (`ProfileScreen`), а экран
+            // назывался словом, которое не обещало удаления, — и тем же
+            // словом, что запасной заголовок самого профиля шагом раньше.
+            // Подпись двери не тронута: её ищут UI-тесты (`ПустыеСобаки`),
+            // и глагол у двери — то, что за ней делают.
+            CinemaHeader(isNew ? "Новая собака" : "Профиль и удаление", отступы: false)
             // **Было «Обязательны только кличка и вес» — и это ЛОЖЬ
             // с двух сторон сразу.**
             //
@@ -103,20 +109,73 @@ struct DogEditorScreen: View {
                         .accessibilityAddTraits(.isStaticText)
                 }
                 TGDivider()
-                LabeledField(label: "Вес") {
-                    HStack(spacing: Token.Space.s4) {
-                        // «4,1» — то же самое: подсказка про ФОРМАТ,
-                        // а не пример веса. У числа перевода нет,
-                        // но ключ в каталоге заводится всё равно
-                        // и зря просит вычитки на четырёх языках.
-                        TextField("Вес", text: $draft.weight).keyboardType(.decimalPad)
-                            .focused($весВФокусе)
-                        Text("кг").textStyle(AppFont.caption)
+                // # Вес правится в одном месте — на экране «Вес» (29.10.2026)
+                //
+                // Аудит вкладки собаки: вес правили два экрана по разным
+                // правилам. Здесь `save()` писал `dog.weightKg` голым
+                // присваиванием, мимо взвешиваний, а «Вес» считает текущим
+                // вес ПОСЛЕДНЕГО ЗАМЕРА (`WeightScreen.delete`,
+                // `WeightEntryEditorSheet`). Число, набранное в профиле,
+                // жило до первой правки или удаления любого взвешивания —
+                // и молча пропадало, а от веса считается доза.
+                //
+                // Решение Виктории («да все чини»): у заведённой собаки —
+                // дверь на «Вес», у новой — поле остаётся, и вес уезжает
+                // первым взвешиванием (`SeedData.attachStarterCare`), то
+                // есть тем же путём, что у онбординга.
+                if let dog {
+                    TGLink(title: "Вес", value: .готовая(Fmt.weight(dog.weightKg)),
+                           systemImage: "scalemass") { WeightScreen(dog: dog) }
+                } else {
+                    LabeledField(label: "Вес") {
+                        HStack(spacing: Token.Space.s4) {
+                            // «4,1» — то же самое: подсказка про ФОРМАТ,
+                            // а не пример веса. У числа перевода нет,
+                            // но ключ в каталоге заводится всё равно
+                            // и зря просит вычитки на четырёх языках.
+                            TextField("Вес", text: $draft.weight).keyboardType(.decimalPad)
+                                .focused($весВФокусе)
+                            Text("кг").textStyle(AppFont.caption)
+                        }
                     }
                 }
                 TGDivider()
                 LabeledField(label: "Порода") {
                     TextField("можно пропустить", text: $draft.breed)
+                }
+                TGDivider()
+                // # Дату рождения хранили, а спросить её было негде
+                //
+                // Замер 29.10.2026: `Dog.birthDate` ездит в обмене,
+                // в архиве и в сводке врачу (`ageMonths`), а писатель
+                // у неё в `Togo/` один — `DogDraft.makeDog()`. Поля
+                // `hasBirthDate`/`birthDate` в черновике лежат с первого
+                // дня, но с 28-го макета онбординг их не показывает,
+                // а профиль не показывал никогда — то есть возраст
+                // не мог назвать НИКТО, ни при заведении, ни потом.
+                //
+                // Тумблер отдельно от даты по той же причине, что
+                // у сроков лекарства (`MedicationEditorSheet`):
+                // `DatePicker` пустого значения не умеет, и без
+                // «знаю» первое же открытие профиля записало бы
+                // собаке днём рождения сегодняшнее число.
+                Toggle(isOn: Binding(
+                    get: { draft.hasBirthDate },
+                    set: { знаю in
+                        draft.hasBirthDate = знаю
+                        if знаю, draft.birthDate == nil { draft.birthDate = Date() }
+                    }
+                )) {
+                    Text("Знаю дату рождения").textStyle(AppFont.body)
+                }
+                .frame(minHeight: Token.Size.tapTarget)
+                if draft.hasBirthDate {
+                    DatePicker("Дата рождения",
+                               selection: Binding(get: { draft.birthDate ?? Date() },
+                                                  set: { draft.birthDate = $0 }),
+                               in: ...Date(), displayedComponents: .date)
+                        .textStyle(AppFont.body)
+                        .frame(minHeight: Token.Size.tapTarget)
                 }
                 TGDivider()
                 // **Пол спрашивали ровно в одном месте — в онбординге.**
@@ -156,11 +215,32 @@ struct DogEditorScreen: View {
                 }
             }
 
-            TGCard {
-                Toggle(isOn: $draft.isOnTreatment) {
-                    VStack(alignment: .leading, spacing: Token.Space.s2) {
-                        Text("Собака на лечении").textStyle(AppFont.body)
-                        Text("включит вкладку «Здоровье», дозы и окно натощак").textStyle(AppFont.caption)
+            // # Тумблер лечения — только у НОВОЙ собаки (29.10.2026)
+            //
+            // У заведённой он был вторым на тот же флаг, и с другим
+            // правилом. Профиль (`ProfileScreen.treatment`) зовёт
+            // `TreatmentCourse.finish`/`resume`: выключение отменяет схемы
+            // и гасит будущие дозы, включение возвращает отменённые курсом.
+            // Здесь же `save()` писал `dog.isOnTreatment = …` голым
+            // присваиванием — курс «закрывался», а схемы продолжали звать
+            // дозы, ровно то, от чего предостерегает комментарий профиля
+            // («схема оживала наполовину»). И право было не то:
+            // `editProfile` вместо `editTreatment`.
+            //
+            // Профиль — один экран назад, тумблер там на месте; у новой
+            // собаки схем нет, и голый флаг ей законен.
+            //
+            // Подпись заменена: «включит вкладку „Здоровье“» — неправда
+            // с 08.10.2026 (`02c1e88`): вкладку держит право `seeMedical`,
+            // а не курс. Взята подпись профиля — одно и то же действие
+            // теперь называется одними словами.
+            if isNew {
+                TGCard {
+                    Toggle(isOn: $draft.isOnTreatment) {
+                        VStack(alignment: .leading, spacing: Token.Space.s2) {
+                            Text("Собака на лечении").textStyle(AppFont.body)
+                            Text("включает дозы по часам, окно натощак и напоминания").textStyle(AppFont.caption)
+                        }
                     }
                 }
             }
@@ -171,7 +251,23 @@ struct DogEditorScreen: View {
                     TGButton(title: "Удалить собаку", variant: .destructive, size: .medium, systemImage: "trash") {
                         isConfirmingDelete = true
                     }
-                    TGExplainer(text: "Вместе с ней исчезнет весь её дневник — одиннадцать видов записей: отметки, взвешивания, дела ухода, схемы лечения с дозами, шаги и занятия, поездки, документы, выезды, течки и запас корма. Выгрузить дневник можно в «Настройки → Данные и приватность».")
+                    // # Текст обещал стирание, а код ставит надгробие (29.10.2026)
+                    //
+                    // Здесь и в диалоге стояло «исчезнет весь её
+                    // дневник… одиннадцать видов… Это нельзя отменить».
+                    // `delete()` ниже зовёт `ОбщееУдаление.удалить(dog)`:
+                    // собака получает `deletedAt`, каскад НЕ ходит,
+                    // записи остаются в базе телефона невидимыми.
+                    // То есть «исчезнет» было неправдой про базу,
+                    // а перечень — неполным: медкнижка (анализы,
+                    // визиты, диагнозы, рецепты) — четыре связи
+                    // `Dog` с каскадом, и в списке её не было вовсе.
+                    //
+                    // Теперь текст говорит, что видно человеку
+                    // («пропадёт из дневника»), перечисляет все
+                    // пятнадцать видов, а стирание насовсем называет
+                    // по месту, где оно правда есть.
+                    TGExplainer(text: "Вместе с ней из дневника пропадёт всё, что про неё записано: отметки, взвешивания, дела ухода, схемы лечения с дозами, шаги и занятия, поездки, документы, выезды, течки, запас корма, анализы, визиты, диагнозы и рецепты. Выгрузить дневник можно в «Настройки → Данные и приватность».")
                 }
             }
         }
@@ -230,7 +326,7 @@ struct DogEditorScreen: View {
             .padding(.horizontal, Token.Spacing.screenPadding)
             .padding(.bottom, Token.Space.s8)
         }
-        .navigationTitle(isNew ? "Новая собака" : "Профиль")
+        .navigationTitle(isNew ? "Новая собака" : "Профиль и удаление")
         // Строка отказа живёт до первой правки клички, а не до непустой:
         // человек уже начал исправлять, ругать его по дороге незачем.
         .onChange(of: draft.name) { _, _ in кличкаНеНазвана = false }
@@ -280,7 +376,7 @@ struct DogEditorScreen: View {
             Button("Удалить", role: .destructive) { delete() }
             Button("Отмена") {}
         } message: {
-            Text("Исчезнут все одиннадцать видов записей: отметки, взвешивания, дела ухода, схемы лечения с дозами, шаги и занятия, поездки, документы, выезды, течки и запас корма. Это нельзя отменить.")
+            Text("Из дневника пропадут она и все её записи: отметки, взвешивания, дела ухода, схемы лечения с дозами, шаги и занятия, поездки, документы, выезды, течки, запас корма, анализы, визиты, диагнозы и рецепты. Вернуть её из приложения нельзя. Стереть с телефона насовсем — «Данные и приватность → Удалить все данные».")
         }
     }
 
@@ -304,22 +400,24 @@ struct DogEditorScreen: View {
     private func load() {
         guard !loaded, let dog else { loaded = true; return }
         draft.name = dog.name
-        draft.weight = String(dog.weightKg).replacingOccurrences(of: ".", with: ",")
+        // Вес в черновик больше не читается: у заведённой собаки поля
+        // веса здесь нет, вместо него дверь на «Вес» (29.10.2026).
         draft.breed = dog.breed ?? ""
         draft.isOnTreatment = dog.isOnTreatment
         draft.sex = dog.sex
         draft.isNeutered = dog.isNeutered
+        draft.hasBirthDate = dog.birthDate != nil
+        draft.birthDate = dog.birthDate
         loaded = true
     }
 
     private func save() {
         if let dog {
             let былоИмя = dog.name
-            let былВес = dog.weightKg
             let былаПорода = dog.breed
-            let былоЛечение = dog.isOnTreatment
             let былПол = dog.sex
             let былаКастрация = dog.isNeutered
+            let былаДатаРождения = dog.birthDate
             // **Кличка триммится, потому что она КЛЮЧ, а не показ.**
             //
             // Соседняя ветка того же метода (`:102`, `draft.makeDog()`)
@@ -348,9 +446,12 @@ struct DogEditorScreen: View {
             // в живых данных — на 08.10 НЕ ИЗМЕРЕНО: съём крошек
             // с телефона отложен Викторией.
             dog.name = Fmt.dogName(draft.name) ?? dog.name
-            dog.weightKg = draft.weightValue ?? dog.weightKg
+            // `dog.weightKg` здесь больше не пишется: текущий вес — вес
+            // последнего взвешивания, и меняет его только экран «Вес»
+            // (разбор — у двери на него выше, 29.10.2026).
             dog.breed = draft.breed.isEmpty ? nil : draft.breed
-            dog.isOnTreatment = draft.isOnTreatment
+            // `isOnTreatment` здесь больше не пишется: курс у заведённой
+            // собаки меняет только `TreatmentCourse` (разбор — у тумблера).
             dog.sex = draft.sex
             // Кастрация привязана к полу и в показе, и в смысле: сняли
             // пол обратно в «не знаю» — утверждение «кастрирован»
@@ -358,13 +459,17 @@ struct DogEditorScreen: View {
             // в сводку врачу молча. Строка исчезает с экрана вместе
             // с полом, значит и значение не должно её пережить.
             dog.isNeutered = draft.sex == .unknown ? false : draft.isNeutered
+            // Начало дня, а не момент: день рождения — это день. Час,
+            // в который человек открыл профиль, о собаке ничего не говорит.
+            dog.birthDate = draft.hasBirthDate
+                ? draft.birthDate.map { Calendar.current.startOfDay(for: $0) }
+                : nil
             guard context.persist(otherwise: {
                 dog.name = былоИмя
-                dog.weightKg = былВес
                 dog.breed = былаПорода
-                dog.isOnTreatment = былоЛечение
                 dog.sex = былПол
                 dog.isNeutered = былаКастрация
+                dog.birthDate = былаДатаРождения
             }) else { return неСохранилось() }
         } else {
             let new = draft.makeDog()
@@ -391,7 +496,7 @@ struct DogEditorScreen: View {
     /// нажимает «Готово» ещё раз.
     private func неСохранилось() {
         Haptics.warning()
-        appState.showFailure("Не сохранилось · нажми «Готово» ещё раз")
+        appState.showFailure(String(localized: "Не сохранилось · нажми «Готово» ещё раз"))
     }
 
     /// Удалить собаку.
@@ -419,7 +524,7 @@ struct DogEditorScreen: View {
             откатНадгробия()
         }) else {
             Haptics.warning()
-            appState.showFailure("Не удалилось · нажми ещё раз")
+            appState.showFailure(String(localized: "Не удалилось · нажми ещё раз"))
             return
         }
         Haptics.warning()
@@ -447,8 +552,36 @@ struct CareTaskEditorSheet: View {
     @State private var isSeasonal = false
     @State private var seasonStart = 4
     @State private var seasonEnd = 10
+    /// Три поля прививки (`CareTask.vaccineBatch`, `vaccineValidUntil`,
+    /// `clinic`). Замер 29.10.2026: все три ездят в обмене и в архиве,
+    /// а пишет их в `Togo/` только прогрев схемы CloudKit — человеку
+    /// ввести партию с наклейки было негде, хотя повод у полей назван
+    /// днём (срок бешенства Стича истёк 03.10.2026, `Care.swift:16`).
+    @State private var партия = ""
+    @State private var естьДействуетДо = false
+    @State private var действуетДо = Date()
+    @State private var клиника: Clinic?
     @State private var loaded = false
     @State private var isConfirmingDelete = false
+
+    @Query private var всеКлиники: [Clinic]
+
+    /// Где делали — клиники без лабораторий, и выбранная остаётся
+    /// в списке всегда. Правило и его причина взяты у `VetVisitEditor`:
+    /// без этого правка старой прививки молча стёрла бы организацию.
+    private var доступныеКлиники: [Clinic] {
+        let живые = всеКлиники.filter { $0.deletedAt == nil && !$0.isLab }
+        let выбранная = клиника.map { [$0] } ?? []
+        let слитые = живые + выбранная.filter { выбор in
+            !живые.contains { $0.persistentModelID == выбор.persistentModelID }
+        }
+        return слитые.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+    }
+
+    /// Поля прививки показываются у медицинских дел, кроме ежедневных:
+    /// прививка — дело «по дате» или «раз в N дней», а у груминга
+    /// партии и срока с наклейки не бывает.
+    private var спрашиватьПрививку: Bool { category == .medical && kind != .daily }
 
     private var isNew: Bool { task == nil }
 
@@ -549,6 +682,10 @@ struct CareTaskEditorSheet: View {
                             isSelected: { $0 == category }) { category = $0 }
             }
 
+            if спрашиватьПрививку {
+                прививкаКарточка
+            }
+
             if kind != .daily {
             TGCard {
                 Toggle(isOn: $isSeasonal) {
@@ -601,7 +738,7 @@ struct CareTaskEditorSheet: View {
                     let откат = ОбщееУдаление.удалить(task)
                     guard context.persist(otherwise: откат) else {
                         Haptics.warning()
-                        appState.showFailure("Не удалилось · нажми ещё раз")
+                        appState.showFailure(String(localized: "Не удалилось · нажми ещё раз"))
                         return
                     }
                 }
@@ -611,6 +748,41 @@ struct CareTaskEditorSheet: View {
             Button("Отмена", role: .cancel) {}
         } message: {
             Text("Напоминание перестанет приходить по утрам. Записи о том, что уже сделано, останутся в истории.")
+        }
+    }
+
+    /// Партия, срок и клиника — то, что стоит на наклейке в паспорте.
+    ///
+    /// Всё необязательное и пустое по умолчанию: подставить срок
+    /// значило бы напечатать человеку дату, которой он не вводил,
+    /// а запись потом читает врач (красная линия «не подставлять»).
+    private var прививкаКарточка: some View {
+        TGCard(spacing: 0) {
+            TGSectionHeader(title: "если это прививка", subtitle: "с наклейки в паспорте")
+            LabeledField(label: "Партия") {
+                TextField("как в документе", text: $партия)
+                    .autocorrectionDisabled()
+            }
+            TGDivider()
+            Toggle(isOn: $естьДействуетДо) {
+                Text("Срок годности указан").textStyle(AppFont.body)
+            }
+            .frame(minHeight: Token.Size.tapTarget)
+            if естьДействуетДо {
+                DatePicker("Годен до", selection: $действуетДо, displayedComponents: .date)
+                    .textStyle(AppFont.body)
+                    .frame(minHeight: Token.Size.tapTarget)
+            }
+            TGDivider()
+            Picker("Клиника", selection: $клиника) {
+                Text("не указана").tag(nil as Clinic?)
+                ForEach(доступныеКлиники) { Text(verbatim: $0.name).tag($0 as Clinic?) }
+            }
+            .pickerStyle(.menu)
+            .frame(minHeight: Token.Size.tapTarget)
+            if доступныеКлиники.isEmpty {
+                TGExplainer(text: "Справочник пуст. Клиники и лаборатории заводятся в «Здоровье» → «Клиники и лаборатории» — оттуда они и попадают в этот выбор.")
+            }
         }
     }
 
@@ -650,6 +822,10 @@ struct CareTaskEditorSheet: View {
         isSeasonal = task.seasonStartMonth != nil
         seasonStart = task.seasonStartMonth ?? 4
         seasonEnd = task.seasonEndMonth ?? 10
+        партия = task.vaccineBatch ?? ""
+        естьДействуетДо = task.vaccineValidUntil != nil
+        действуетДо = task.vaccineValidUntil ?? Date()
+        клиника = task.clinic
         loaded = true
     }
 
@@ -670,6 +846,9 @@ struct CareTaskEditorSheet: View {
         let былоЗаранее = target.remindDaysBefore
         let былоНачалоСезона = target.seasonStartMonth
         let былКонецСезона = target.seasonEndMonth
+        let былаПартия = target.vaccineBatch
+        let былоДействуетДо = target.vaccineValidUntil
+        let былаКлиника = target.clinic
 
         target.title = title
         target.detail = detail
@@ -681,6 +860,14 @@ struct CareTaskEditorSheet: View {
         target.remindDaysBefore = remindDaysBefore
         target.seasonStartMonth = (isSeasonal && kind != .daily) ? seasonStart : nil
         target.seasonEndMonth = (isSeasonal && kind != .daily) ? seasonEnd : nil
+        // Пишем, только когда поля были на экране. Скрытая карточка
+        // (дело переложили в груминг) не повод стирать партию молча:
+        // поле, которое человек не видел, он и не менял.
+        if спрашиватьПрививку {
+            target.vaccineBatch = Fmt.notBlank(партия)
+            target.vaccineValidUntil = естьДействуетДо ? действуетДо : nil
+            target.clinic = клиника
+        }
         let новое = task == nil
         if новое {
             target.dog = dog
@@ -702,10 +889,13 @@ struct CareTaskEditorSheet: View {
                 target.remindDaysBefore = былоЗаранее
                 target.seasonStartMonth = былоНачалоСезона
                 target.seasonEndMonth = былКонецСезона
+                target.vaccineBatch = былаПартия
+                target.vaccineValidUntil = былоДействуетДо
+                target.clinic = былаКлиника
             }
         }) else {
             Haptics.warning()
-            appState.showFailure("Не сохранилось · нажми «Готово» ещё раз")
+            appState.showFailure(String(localized: "Не сохранилось · нажми «Готово» ещё раз"))
             return
         }
         Haptics.success()
@@ -754,6 +944,13 @@ struct MedicationEditorSheet: View {
     @State private var единица: MedUnit = .tab
     @State private var fastingMinutes = 0
     @State private var fastingBeforeMinutes = 0
+    /// Писатель для `Medication.minutesAfterMeal` (`Care.swift:337`).
+    ///
+    /// Замер 29.10.2026: поле читают `DoseGate` (замок дозы до еды),
+    /// `DoseGateSheet` (объяснение замка), обмен и архив — а писали
+    /// его только засев и откат архива. Инсулин, который колют
+    /// через N минут после еды, завести человеку было нечем.
+    @State private var послеЕдыМинут = 0
     @State private var prescriber = ""
     @State private var номерНазначения = ""
     /// Сроки — каждый со своим «указан ли». `nil` в модели значит
@@ -967,6 +1164,25 @@ struct MedicationEditorSheet: View {
                 TGExplainer(text: "Пока окно идёт, кнопка еды не исчезает — она объясняет причину и предлагает напомнить, когда можно.")
             }
 
+            // Окно «после еды» — ОТДЕЛЬНОЙ карточкой, а не третьей
+            // строкой рядом с натощак: у них противоположный смысл.
+            // Натощак запирает ЕДУ вокруг дозы, «после еды» запирает
+            // ДОЗУ до еды (`DoseGate.state`). В одной карточке два
+            // шаговика с одинаковой подписью «мин» читались бы как одно
+            // правило.
+            TGCard {
+                Stepper(value: $послеЕдыМинут, in: 0...120, step: 5) {
+                    HStack {
+                        Text("Давать после еды").textStyle(AppFont.body)
+                        Spacer()
+                        Text(послеЕдыМинут == 0 ? "не нужно" : "\(послеЕдыМинут) мин")
+                            .textStyle(AppFont.numeric(Token.FontSize.meta))
+                    }
+                }
+                .frame(minHeight: Token.Size.tapTarget)
+                TGExplainer(text: "Доза откроется через столько минут после отметки еды. Еды не отметили — не откроется вовсе: это вопрос к врачу, а не сбой.")
+            }
+
             // Писатель для `Medication.canGiveOutside` (`Care.swift:402`).
             //
             // **До 08.10.2026 у поля не было ни одного писателя в `Togo/`.**
@@ -1050,7 +1266,16 @@ struct MedicationEditorSheet: View {
                         }
                     }
                     if !контрольНедели.isEmpty {
-                        TGExplainer(text: .готовая(String(localized: "Каждая станет делом в «Прививках» на свой день: \(Self.даты(контрольНедели, от: началоСхемы)). Напомнит утренней сводкой и встанет в план дня.")))
+                        let даты = Self.даты(контрольНедели, от: началоСхемы)
+                        let прошли = Self.прошедших(контрольНедели, от: началоСхемы)
+                        if !даты.isEmpty {
+                            TGExplainer(text: .готовая(String(localized: "Каждая станет делом в «Прививках» на свой день: \(даты). Напомнит утренней сводкой и встанет в план дня.")))
+                        }
+                        if прошли > 0 {
+                            // Начало схемы в прошлом: часть недель уже позади,
+                            // и задним числом их не заводим (29.10.2026).
+                            TGExplainer(text: .готовая(String(localized: "Прошедшие недели не заводятся: \(прошли) из \(контрольНедели.count) уже позади.")))
+                        }
                     }
                 }
 
@@ -1154,10 +1379,17 @@ struct MedicationEditorSheet: View {
                 // по лечению, которого больше нет. Разбор —
                 // `Medication.deletedAt`.
                 if let medication {
-                    let откат = ОбщееУдаление.удалить(medication)
-                    guard context.persist(otherwise: откат) else {
+                    let момент = Date()
+                    let откат = ОбщееУдаление.удалить(medication, когда: момент)
+                    // Удалённая схема уносит свои будущие анализы крови
+                    // (`КонтрольКрови`); откат возвращает и их.
+                    let анализы = КонтрольКрови.снять(для: medication, в: момент)
+                    guard context.persist(otherwise: {
+                        откат()
+                        анализы.forEach { $0.deletedAt = nil }
+                    }) else {
                         Haptics.warning()
-                        appState.showFailure("Не удалилось · нажми ещё раз")
+                        appState.showFailure(String(localized: "Не удалилось · нажми ещё раз"))
                         return
                     }
                 }
@@ -1214,6 +1446,7 @@ struct MedicationEditorSheet: View {
         // У схемы, заведённой до появления поля, окно «до» читается
         // симметрично — показываем то же, что и применяем.
         fastingBeforeMinutes = medication.fastingBefore
+        послеЕдыМинут = medication.minutesAfterMeal
         prescriber = medication.prescriber ?? ""
         // Показываем в той единице, в которой число читается человеком,
         // а храним всегда в микрограммах.
@@ -1359,6 +1592,7 @@ struct MedicationEditorSheet: View {
         let былиЧасы = target.times
         let былоНатощак = target.fastingMinutes
         let былоНатощакДо = target.fastingBeforeMinutes
+        let былоПослеЕды = target.minutesAfterMeal
         let былВрач = target.prescriber
         let былаМасса = target.massPerUnitMcg
         let былоНаУлице = target.canGiveOutside
@@ -1396,6 +1630,7 @@ struct MedicationEditorSheet: View {
         target.shelfAfterOpenDays = вскрыт ? годенПослеВскрытияДней : 0
         target.fastingMinutes = fastingMinutes
         target.fastingBeforeMinutes = fastingBeforeMinutes
+        target.minutesAfterMeal = послеЕдыМинут
         target.prescriber = prescriber.isEmpty ? nil : prescriber
         // Разбор — `ЧислоСБланка`, уже заведённый для анализов: он терпит
         // и запятую, и точку, и неразрывные пробелы из PDF. Второго
@@ -1431,13 +1666,14 @@ struct MedicationEditorSheet: View {
                 target.shelfAfterOpenDays = былоПослеВскрытия
                 target.fastingMinutes = былоНатощак
                 target.fastingBeforeMinutes = былоНатощакДо
+                target.minutesAfterMeal = былоПослеЕды
                 target.prescriber = былВрач
                 target.massPerUnitMcg = былаМасса
                 target.canGiveOutside = былоНаУлице
             }
         }) else {
             Haptics.warning()
-            appState.showFailure("Не сохранилось · нажми «Готово» ещё раз")
+            appState.showFailure(String(localized: "Не сохранилось · нажми «Готово» ещё раз"))
             return
         }
         // Дела контроля — ПОСЛЕ сохранения схемы и отдельным сохранением:
@@ -1446,7 +1682,7 @@ struct MedicationEditorSheet: View {
         if let начало = target.startedAt, !контрольНедели.isEmpty,
            !завестиКонтроль(для: target, от: начало) {
             Haptics.warning()
-            appState.showFailure("Схема сохранена, а напоминания об анализах — нет · открой и нажми ещё раз")
+            appState.showFailure(String(localized: "Схема сохранена, а напоминания об анализах — нет · открой и нажми ещё раз"))
             return
         }
         Haptics.success()
@@ -1462,7 +1698,16 @@ struct MedicationEditorSheet: View {
     static func даты(_ недели: Set<Int>, от начало: Date) -> String {
         недели.sorted().compactMap {
             Calendar.current.date(byAdding: .weekOfYear, value: $0, to: начало)
-        }.map(Fmt.shortDay).joined(separator: ", ")
+        }
+        .filter { !КонтрольКрови.прошла($0, now: Date()) }
+        .map(Fmt.shortDay).joined(separator: ", ")
+    }
+
+    /// Сколько выбранных недель уже прошло — им дел не будет.
+    static func прошедших(_ недели: Set<Int>, от начало: Date) -> Int {
+        недели.compactMap { Calendar.current.date(byAdding: .weekOfYear, value: $0, to: начало) }
+            .filter { КонтрольКрови.прошла($0, now: Date()) }
+            .count
     }
 
     /// Завести по делу ухода на каждую выбранную неделю.
@@ -1481,7 +1726,11 @@ struct MedicationEditorSheet: View {
         var заведённые: [CareTask] = []
         for неделя in контрольНедели.sorted() {
             guard let день = календарь.date(byAdding: .weekOfYear, value: неделя, to: начало) else { continue }
-            let заголовок = String(localized: "Анализ крови · \(неделя) нед от начала")
+            // Прошедшая неделя не заводится: схема, начатая полтора месяца
+            // назад, получала «просроченные» анализы в первый же день
+            // (аудит 29.10.2026). Подсказка под чипами говорит об этом.
+            if КонтрольКрови.прошла(день, now: Date()) { continue }
+            let заголовок = КонтрольКрови.заголовок(недели: неделя)
             let уже = собака.careTasks.contains {
                 $0.title == заголовок && $0.scheduledDate.map { календарь.isDate($0, inSameDayAs: день) } == true
             }

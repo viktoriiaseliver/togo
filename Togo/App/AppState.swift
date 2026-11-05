@@ -258,9 +258,12 @@ final class AppState {
     var activeEpisode: Episode?
 
     /// Подтянуть эпизод из базы и убрать тот, что уже прошёл.
-    func refreshEpisode(from episodes: [Episode], at now: Date = Date()) {
+    ///
+    /// С V10 — только эпизоды этой собаки (`Episode.касается`): две рвоты
+    /// у щенка больше не гасят вердикты у второй собаки.
+    func refreshEpisode(from episodes: [Episode], at now: Date = Date(), dog: Dog? = nil) {
         activeEpisode = episodes
-            .filter { $0.isActive(at: now) }
+            .filter { $0.isActive(at: now) && $0.касается(dog) }
             .max { $0.lastIncidentAt < $1.lastIncidentAt }
     }
     /// Идущий выход или прогулка. Одновременно идёт что-то одно:
@@ -293,7 +296,7 @@ final class AppState {
         // вычисляемым от аргумента, просмотр нельзя было бы закончить —
         // аргумент процесса не меняется.
         просмотрОнбординга = TogoApp.просмотрОнбординга
-        activeDogID = UserDefaults.standard.string(forKey: Keys.activeDog).flatMap(UUID.init)
+        activeDogID = Self.запомненнаяСобака
         myMemberID = UserDefaults.standard.string(forKey: Keys.myMember).flatMap(UUID.init)
         session = ActiveSessionStore.load()
         // Прогулку могли забыть: приложение сняли из многозадачности,
@@ -336,8 +339,23 @@ final class AppState {
     /// Фильтр один на весь показ: `shownToPerson` рядом с правилом
     /// в `Dog.swift`.
     func activeDog(from dogs: [Dog]) -> Dog? {
+        Self.activeDog(from: dogs, выбрана: activeDogID)
+    }
+
+    /// То же правило без экземпляра — для фонового обновления
+    /// напоминаний (`ФоновоеОбновление`), у которого `AppState` нет:
+    /// система будит приложение без интерфейса, и заводить ради выбора
+    /// собаки весь `AppState` (с его разбором прогулки и живой
+    /// активности в `init`) значило бы делать в фоне чужую работу.
+    /// Правило одно — второй копии фильтра показа здесь нет.
+    static func activeDog(from dogs: [Dog], выбрана id: UUID?) -> Dog? {
         let показываемые = dogs.shownToPerson
-        return показываемые.first { $0.id == activeDogID } ?? показываемые.first
+        return показываемые.first { $0.id == id } ?? показываемые.first
+    }
+
+    /// Выбранная собака так, как её помнит телефон, — без экземпляра.
+    static var запомненнаяСобака: UUID? {
+        UserDefaults.standard.string(forKey: Keys.activeDog).flatMap(UUID.init)
     }
 
     /// Переключиться на другую собаку.

@@ -19,6 +19,8 @@ struct AlarmThresholdScreen: View {
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) private var openURL
+    /// Открыт ли редактор телефонов поверх тревоги.
+    @State private var вписываемТелефон = false
 
     private var vetText: String {
         AlarmThresholdAnalyzer.vetText(threshold, dog: dog,
@@ -27,7 +29,7 @@ struct AlarmThresholdScreen: View {
 
     var body: some View {
         TGSheet(title: "Похоже, пора звонить",
-                subtitle: "записала, но одной записи мало") {
+                subtitle: "записано, но одной записи мало") {
             episodesCard
             vetTextCard
             TGExplainer(text: "Порог задаёт счёт, а не догадка: \(AlarmThresholdAnalyzer.minimumEpisodes) эпизода за \(Int(threshold.window / 3600)) часов. Приложение не ставит диагнозов — решение всегда за врачом.")
@@ -38,8 +40,15 @@ struct AlarmThresholdScreen: View {
                     call(phone)
                 }
             } else {
+                // Кнопка обещает «вписать телефон» — и до 29.10.2026
+                // только закрывала шторку. Человек в тревоге оставался
+                // на «Сегодня» без номера и без подсказки, где его
+                // вписать: экран «Документы» лежит на вкладке собаки
+                // третьим уровнем. Теперь открывается ровно он, поверх
+                // тревоги, и после «Готово» кнопка выше уже звонит —
+                // `dog` тот же объект, и номер виден сразу.
                 TGButton(title: "Некуда звонить · вписать телефон",
-                         systemImage: "phone.badge.plus") { dismiss() }
+                         systemImage: "phone.badge.plus") { вписываемТелефон = true }
             }
             TGButton(title: "Наблюдать дальше · напомнить через час",
                      variant: .secondary, size: .medium) {
@@ -48,6 +57,16 @@ struct AlarmThresholdScreen: View {
             }
         }
         .presentationDetents([.large])
+        .sheet(isPresented: $вписываемТелефон) {
+            NavigationStack {
+                DocumentsScreen(dog: dog)
+                    .toolbar {
+                        ToolbarItem(placement: .confirmationAction) {
+                            Button("Готово") { вписываемТелефон = false }
+                        }
+                    }
+            }
+        }
     }
 
     private var episodesCard: some View {

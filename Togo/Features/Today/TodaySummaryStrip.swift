@@ -18,11 +18,17 @@ struct TodaySummaryStrip: View {
     let summary: Diary.DaySummary
     /// Выходы за день — блоками, не событиями. См. `TimelineBuilder.outingsCount`.
     let outings: Int
+    /// Сколько раз покакал за день — `ToiletClock.stoolCount`.
+    ///
+    /// Просьба Виктории 29.10.2026. Отдельным числом, а не подписью
+    /// у выходов: врач спрашивает «сколько раз в день стул», и выходы
+    /// на этот вопрос не отвечают — кобель выходит пять раз и какает два.
+    let стул: Int
 
     var body: some View {
         TGCard {
             РядЧисел(выравнивание: .top) {
-                TGStat(value: "\(summary.eatenGrams) г",
+                TGStat(value: String(localized: "\(summary.eatenGrams) г"),
                        caption: summary.dailyGrams > 0 ? "из \(summary.dailyGrams) съел" : "съел")
                 // «С прогулки» отсюда убрано: на этот вопрос отвечает
                 // герой вверху экрана крупной цифрой, и повторять его
@@ -35,11 +41,19 @@ struct TodaySummaryStrip: View {
                                                  summary.meals)))
                 TGStat(value: "\(outings)",
                        caption: .готовая(подпись(Fmt.outings(outings), outings)))
+                TGStat(value: "\(стул)", caption: "стул")
             }
-            if summary.trainingGrams > 0 {
-                TGDivider()
-                TGExplainer(text: "\(summary.trainingGrams) г ушло на занятие — вечерняя порция уже уменьшена.")
-            }
+            // Строка «N г ушло на занятие — вечерняя порция уже
+            // уменьшена» снята 03.11.2026 вместе со своим источником.
+            //
+            // Она стояла под `trainingGrams > 0`, а `trainingGrams`
+            // считался по `kind == .training` (`Diary.swift:270`).
+            // Событий этого вида не заводит НИКТО: `Event(kind: .training)`
+            // в дереве ноль вхождений при живом контроле на `.treat`
+            // и `.meal`. Писал их экран занятия, снятый 28.10
+            // (`82ba1e46`). То есть у всех, кроме заставших старую
+            // сборку, ветка недостижима, а у заставших — объясняет
+            // механику, которой больше нет.
         }
     }
 

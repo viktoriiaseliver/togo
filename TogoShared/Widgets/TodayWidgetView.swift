@@ -103,17 +103,31 @@ struct TodayWidgetView: View {
     var body: some View {
         switch family {
         case .accessoryInline:
-            Text(SnapshotText.inlineText(snapshot))
+            // С `now`, а не без: прежняя форма печатала интервал,
+            // посчитанный в момент публикации снимка, и «острову»
+            // было всё равно, сколько прошло с тех пор (29.10.2026).
+            Text(SnapshotText.inlineText(snapshot, now: now))
         case .accessoryRectangular:
             // Аксессуары локскрана система рисует своим вибрантным
             // монохромом: наши цвета туда не доезжают как цвета,
             // и красить их значило бы объявить управление, которого нет.
             // Поэтому здесь только иерархия кеглей, без токенов цвета.
+            //
+            // **По строке на показание, и это граница высоты, а не вкус**
+            // (29.10.2026). Плитка локскрана — три строки мелкого кегля;
+            // вердикт без `lineLimit` переносился на вторую, и строка
+            // про еду уезжала за нижний край — обрезалась системой молча.
+            // Ужатие вместо переноса — то же правило, что у крупного числа:
+            // мелкое верное лучше обрезанного.
             VStack(alignment: .leading, spacing: 2) {
                 Text(snapshot.verdictTitle).font(.headline)
-                Text(SnapshotText.sinceText(snapshot)).font(.caption)
+                    .lineLimit(1).minimumScaleFactor(0.8)
+                Text(SnapshotText.sinceText(snapshot, now: now)).font(.caption)
+                    .lineLimit(1).minimumScaleFactor(0.8)
                 Text(SnapshotText.mealLine(snapshot, now: now)).font(.caption2)
+                    .lineLimit(1).minimumScaleFactor(0.8)
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
         case .systemMedium:
             средний
         default:
@@ -131,22 +145,37 @@ struct TodayWidgetView: View {
     /// которого плитка и нарисована в макете. Если не отмечали
     /// ни разу, числа нет вовсе, и плитка переходит на слова: это
     /// та самая ступень тишины, ради которой заводилась галерея.
+    ///
+    /// **С 29.10.2026 «время с» считается от туалета, а не от прогулки**
+    /// — решение Виктории, то же, что у героя «Сегодня»
+    /// (`ToiletAnchor`). До этого здесь стоял `lastWalkAt`, а это
+    /// НАЧАЛО последней прогулки (`signals.lastWalk`): не выход, не
+    /// конец и не туалет. Двадцать минут на улице без результата
+    /// сбрасывали число в ноль, а короткие выходы по нужде не двигали
+    /// его вовсе.
     private enum Показание {
         case наУлице(с: Date)
-        case сПрогулки(с: Date)
+        case сПрогулки(с: Date, откуда: ToiletAnchor.Откуда)
         case словами
     }
 
     private var показание: Показание {
         if let начало = snapshot.walkStartedAt { return .наУлице(с: начало) }
-        if let последний = snapshot.lastWalkAt { return .сПрогулки(с: последний) }
+        // За потолком тишины число отвечает не на тот вопрос — плитка
+        // переходит на слова тем же правилом, что герой (`OutingSilence`).
+        if let якорь = SnapshotText.якорь(snapshot, now: now),
+           ToiletAnchor.тишина(якорь, now: now) == nil {
+            return .сПрогулки(с: якорь.когда, откуда: якорь.откуда)
+        }
         return .словами
     }
 
     private var шапкаПлитки: (String, String) {
         switch показание {
         case .наУлице: (String(localized: "На улице"), "figure.walk")
-        case .сПрогулки: (String(localized: "С прогулки"), "figure.walk")
+        case .сПрогулки(_, .улица): (String(localized: "С туалета"), "figure.walk")
+        case .сПрогулки(_, .дом): (String(localized: "С туалета дома"), "house")
+        case .сПрогулки(_, .выход): (String(localized: "С прогулки"), "figure.walk")
         case .словами: (snapshot.verdictTitle, "pawprint")
         }
     }
@@ -256,6 +285,12 @@ struct TodayWidgetView: View {
     /// пересбора снимка (у виджета это раз в пятнадцать минут,
     /// у живой активности — до следующего обновления от приложения).
     ///
+    /// > **29.10.2026: «замирает до пересбора» больше не про виджет.**
+    /// > Лента теперь — запись в минуту, и `now` приходит от записи
+    /// > (`TodayWidget.getTimeline`), так что строка `Fmt` замирает
+    /// > на минуту, а не на четверть часа. Довод о секундах выше остаётся:
+    /// > минута на плитке теперь точна, секунда — по-прежнему нет.
+    ///
     /// ```
     /// идущий выход   .timer   «23:14» тикает сам      формат НЕ из Fmt
     /// с прогулки     Fmt      «2 ч 11 мин» стоит      формат из Fmt
@@ -287,8 +322,8 @@ struct TodayWidgetView: View {
                 .foregroundStyle(Token.Ink.primary)
                 .lineLimit(1)
                 .minimumScaleFactor(0.5)
-        case .сПрогулки(let с):
-            Text(Fmt.hoursMinutes(now.timeIntervalSince(с)))
+        case .сПрогулки(let с, _):
+            Text(Fmt.hoursMinutes(max(0, now.timeIntervalSince(с))))
                 .font(.system(size: 28, weight: .light, design: .rounded).monospacedDigit())
                 .foregroundStyle(Token.Ink.primary)
                 .lineLimit(1)
@@ -298,7 +333,7 @@ struct TodayWidgetView: View {
             // словами той же функцией, что на локскране и в «острове»:
             // `sinceText` знает, что при отсутствии отметок печатается
             // дата, а не посчитанный интервал.
-            Text(SnapshotText.sinceText(snapshot))
+            Text(SnapshotText.sinceText(snapshot, now: now))
                 .font(.system(size: 17, weight: .semibold))
                 .foregroundStyle(Token.Ink.primary)
                 .lineLimit(3)

@@ -29,7 +29,7 @@ struct TGCheckRow<Trailing: View>: View {
         HStack(spacing: Token.Space.s12) {
             checkbox
             Button(action: onOpen) {
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: Token.Space.s2) {
                     Text(title)
                         .textStyle(AppFont.bodyEmphasis)
                         .foregroundStyle(isDone ? Token.Ink.secondary : Token.Ink.primary)

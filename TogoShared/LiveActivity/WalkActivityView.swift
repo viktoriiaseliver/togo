@@ -616,10 +616,13 @@ public enum WalkIslandView {
 public struct WalkMarkButtons: View {
     public init() {}
 
+    @Environment(\.кобельНаПрогулке) private var кобель
+
     public var body: some View {
         VStack(spacing: Token.Space.s8) {
             HStack(spacing: Token.Space.s8) {
-                кнопка(.urine)
+                // У кобеля мочи нет — как и в режиме прогулки в приложении.
+                if !кобель { кнопка(.urine) }
                 кнопка(.stool)
             }
             домой
@@ -686,5 +689,21 @@ public struct WalkMarkButtons: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel(String(localized: "Отметить: \(kind.title)"))
+    }
+}
+
+/// Кобель ли гуляет — для кнопок отметок на блокировке.
+///
+/// Средой, а не параметром: `WalkMarkButtons` стоит в двух видах
+/// (карточка и «остров»), и протаскивать флаг через их входы значило бы
+/// править обе подписи ради одной строки.
+private struct КобельНаПрогулкеKey: EnvironmentKey {
+    static let defaultValue = false
+}
+
+extension EnvironmentValues {
+    var кобельНаПрогулке: Bool {
+        get { self[КобельНаПрогулкеKey.self] }
+        set { self[КобельНаПрогулкеKey.self] = newValue }
     }
 }
