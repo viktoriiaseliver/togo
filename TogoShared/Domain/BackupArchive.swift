@@ -150,8 +150,8 @@ nonisolated struct BackupArchive: Codable, Sendable {
         /// просроченным — но отбрасывает его `Dog.часыКормленийНа(_:)`
         /// по дате, а не по тому, откуда запись взялась. То есть
         /// положить его в архив дешевле, чем объяснять его отсутствие.
-        var разовыеВременаДата: Date?
-        var разовыеВремена: [Int]?
+        var mealTimesOverrideDay: Date?
+        var mealTimesOverride: [Int]?
 
         var events: [EventSnapshot]
         var weights: [WeightSnapshot]

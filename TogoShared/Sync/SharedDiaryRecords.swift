@@ -306,8 +306,8 @@ nonisolated enum SharedDiaryRecords {
         // есть на этой машине: `cktool validate-schema` требует
         // токена управления и живого контейнера. Латиница здесь
         // ничего не стоит и снимает вопрос целиком.
-        record["mealTimesOverrideDay"] = payload.разовыеВременаДата
-        record["mealTimesOverride"] = payload.разовыеВремена
+        record["mealTimesOverrideDay"] = payload.mealTimesOverrideDay
+        record["mealTimesOverride"] = payload.mealTimesOverride
         record["dailyNormGrams"] = payload.dailyNormGrams
         record["forbiddenFoods"] = payload.forbiddenFoods
         record["wakeMinuteOfDay"] = payload.wakeMinuteOfDay
@@ -378,8 +378,8 @@ nonisolated enum SharedDiaryRecords {
             portionGrams: record["portionGrams"] as? Int ?? 0,
             mealsPerDay: record["mealsPerDay"] as? Int ?? 2,
             mealTimes: record["mealTimes"] as? [Int] ?? [],
-            разовыеВременаДата: record["mealTimesOverrideDay"] as? Date,
-            разовыеВремена: record["mealTimesOverride"] as? [Int] ?? [],
+            mealTimesOverrideDay: record["mealTimesOverrideDay"] as? Date,
+            mealTimesOverride: record["mealTimesOverride"] as? [Int] ?? [],
             dailyNormGrams: record["dailyNormGrams"] as? Int,
             forbiddenFoods: record["forbiddenFoods"] as? [String] ?? [],
             wakeMinuteOfDay: record["wakeMinuteOfDay"] as? Int ?? 7 * 60,
