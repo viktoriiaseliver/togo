@@ -9,7 +9,6 @@ struct TripSetupScreen: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Environment(AppState.self) private var appState
-    @Query private var trips: [Trip]
 
     @State private var destination = ""
     @State private var start = Date()

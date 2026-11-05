@@ -345,7 +345,7 @@ struct DocumentPhotosCard: View {
             // Неудача говорит о себе тем же текстом, что у фото собаки.
             picked = nil
             guard let raw = try? await item.loadTransferable(type: Data.self),
-                  let shrunk = DocumentPhoto.shrink(raw)
+                  let shrunk = await DocumentPhoto.shrinkВФоне(raw)
             else {
                 appState.showFailure(String(localized: "Снимок не открылся · попробуй другой"))
                 return
@@ -1016,6 +1016,16 @@ nonisolated enum DocumentPhoto {
     /// > проверял `DocumentPhoto.maxSide == 1600` — то есть **объявленную
     /// > константу вместо выхода помощника**: прокси вместо предмета.
     /// > Удовлетворить его можно, не ужав ни одного снимка.
+    /// То же, но не на главном потоке (04.11.2026).
+    ///
+    /// `shrink` объявлен `nonisolated`, но экраны звали его из `Task`
+    /// внутри вида — а такой `Task` наследует главный актор, и разбор
+    /// снимка в десятки мегабайт с ресайзом шёл на главном потоке:
+    /// экран замирал на время «Снять». `@concurrent` уводит работу
+    /// с актора вызывающего; синхронный `shrink` остаётся для тестов.
+    @concurrent
+    static func shrinkВФоне(_ data: Data) async -> Data? { shrink(data) }
+
     static func shrink(_ data: Data) -> Data? {
         guard let image = UIImage(data: data) else { return nil }
         let widthPx = image.size.width * image.scale

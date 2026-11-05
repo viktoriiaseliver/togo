@@ -316,10 +316,11 @@ nonisolated enum FeedingAnalyzer {
         var result: [String] = []
         for time in mealTimes {
             for window in fastingWindows where isInside(time, window) {
-                result.append(
-                    "Кормление в \(Fmt.clock(minuteOfDay: time)) попадает в окно натощак "
-                    + "\(Fmt.clock(minuteOfDay: window.start))–\(Fmt.clock(minuteOfDay: window.end))"
-                )
+                // Одна фраза — один `String(localized:)`: склейка через `+`
+                // была обычным `String` мимо каталога, и экран кормления
+                // (`FeedingScreen`, «• …» в карточке конфликтов) показывал
+                // её русской на всех языках (ревизия 05.11.2026).
+                result.append(String(localized: "Кормление в \(Fmt.clock(minuteOfDay: time)) попадает в окно натощак \(Fmt.clock(minuteOfDay: window.start))–\(Fmt.clock(minuteOfDay: window.end))"))
             }
         }
         return result

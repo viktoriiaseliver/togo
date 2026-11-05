@@ -123,7 +123,14 @@ struct ScheduleChangeSheet: View {
                 HStack {
                     DatePicker("Приём \(index + 1)", selection: Binding(
                         get: { dateFrom(minute) },
-                        set: { times[index] = minuteOf($0) }
+                        // Граница проверяется (04.11.2026): после «Убрать»
+                        // привязка старой строки может прийти с индексом,
+                        // которого уже нет. Идентичность по смещению
+                        // оставлена: подпись «Приём N» позиционная.
+                        set: { новое in
+                            guard times.indices.contains(index) else { return }
+                            times[index] = minuteOf(новое)
+                        }
                     ), displayedComponents: .hourAndMinute)
                     .textStyle(AppFont.body)
                     Button {

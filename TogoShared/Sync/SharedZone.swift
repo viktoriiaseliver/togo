@@ -20,7 +20,7 @@ nonisolated enum SharedZoneOwner {
     private static let key = "sharedDiary.ownerName"
 
     private static var defaults: UserDefaults {
-        UserDefaults(suiteName: AppIdentifiers.appGroup) ?? .standard
+        AppGroupDefaults.shared
     }
 
     /// Имя владельца зоны. `nil` — дневник наш собственный.
@@ -92,7 +92,7 @@ nonisolated enum ИмяПоПриглашению {
     private static let key = "sharedDiary.myName"
 
     private static var defaults: UserDefaults {
-        UserDefaults(suiteName: AppIdentifiers.appGroup) ?? .standard
+        AppGroupDefaults.shared
     }
 
     /// Имя вошедшего, как его знает CloudKit. `nil` — не знаем.

@@ -135,9 +135,15 @@ struct GuestSharePathTests {
             .map { (номер: $0.offset + 1, текст: String($0.element).trimmingCharacters(in: .whitespaces)) }
             .filter { !$0.текст.hasPrefix("//") && !$0.текст.hasPrefix("///") }
 
+        // 04.11.2026: базы теперь берутся через шов `ОблакоОбмена`
+        // (`личнаяБаза`/`общаяБаза`) — та же адресация под другим
+        // именем. Старые имена оставлены: вернётся прямой `CKContainer` —
+        // сторож его увидит.
         let прямые = строки.filter {
             $0.текст.contains("container.privateCloudDatabase")
                 || $0.текст.contains("container.sharedCloudDatabase")
+                || $0.текст.contains("container.личнаяБаза")
+                || $0.текст.contains("container.общаяБаза")
         }
 
         #expect(прямые.count > 0,

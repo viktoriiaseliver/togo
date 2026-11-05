@@ -419,7 +419,7 @@ struct BackgroundScreen: View {
         Task {
             defer { кладу = false; picked = nil }
             guard let raw = try? await item.loadTransferable(type: Data.self),
-                  let ужатое = ФонФото.ужать(raw)
+                  let ужатое = await ФонФото.ужатьВФоне(raw)
             else {
                 return appState.showFailure(String(localized: "Снимок не открылся · попробуй другой"))
             }
@@ -462,6 +462,10 @@ nonisolated enum ФонФото {
     ///
     /// `format.scale = 1` делает пиксель выхода равным запрошенной
     /// единице, поэтому дальше вся арифметика — одна система координат.
+    /// То же, не на главном потоке — разбор у `DocumentPhoto.shrinkВФоне`.
+    @concurrent
+    static func ужатьВФоне(_ data: Data) async -> Data? { ужать(data) }
+
     static func ужать(_ data: Data) -> Data? {
         guard let image = UIImage(data: data) else { return nil }
         // Пиксели, а не точки: у снимка из `PhotosPicker` масштаб бывает

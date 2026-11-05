@@ -193,7 +193,7 @@ nonisolated enum WidgetBridge {
     static let key = "widget.snapshot"
 
     static var defaults: UserDefaults {
-        UserDefaults(suiteName: AppIdentifiers.appGroup) ?? .standard
+        AppGroupDefaults.shared
     }
 
     static func publish(_ snapshot: WidgetSnapshot) {

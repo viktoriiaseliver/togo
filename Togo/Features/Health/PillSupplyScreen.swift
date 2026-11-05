@@ -12,7 +12,6 @@ struct PillSupplyScreen: View {
     var courseEnds: Date?
 
     @Environment(\.modelContext) private var context
-    @Environment(\.dismiss) private var dismiss
 
     private var supply: PillSupply? {
         PillSupplyAdvisor.supply(remaining: medication.remaining,
@@ -126,11 +125,14 @@ struct PillSupplyScreen: View {
     /// таблеток в остаток и **не включила бы счёт**: человек нажал,
     /// сохранилось, а экран по-прежнему говорит «включи счёт».
     ///
-    /// Поэтому здесь руками и только потолок. Просится в модель
-    /// пятым методом — «новая пачка» задаёт и остаток, и размер
-    /// упаковки разом; слой togo-45, заявка отправлена. До тех пор
-    /// второй писатель (шторка «Купил» с кадра 33) обязан прийти сюда,
-    /// а не повторить это у себя.
+    /// Поэтому здесь руками и только потолок. Кнопка «Купил»
+    /// на «Здоровье» ведёт сюда же, второго писателя у пачки нет.
+    ///
+    /// **Модельный `Medication.newPack` удалён 05.11.2026**: он ставил
+    /// пачку в `max(пачка, купленное)`, а не в новый остаток, и при
+    /// 10 + 30 давал «40 из 30». Потолок `returnDose` берётся у пачки —
+    /// снятая отметка срезала бы остаток до тридцати. Правило здесь
+    /// поднимает пачку до остатка, и потерь нет.
     private func поднятьПачку() {
         if medication.packAmount != nil {
             medication.packAmount = max(medication.packSize, medication.remaining)

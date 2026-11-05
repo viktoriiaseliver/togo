@@ -251,7 +251,7 @@ nonisolated enum ActiveSessionStore {
     private static let key = "active.session"
 
     private static var defaults: UserDefaults {
-        UserDefaults(suiteName: AppIdentifiers.appGroup) ?? .standard
+        AppGroupDefaults.shared
     }
 
     /// Дольше этого прогулка почти наверняка забыта, а не идёт.

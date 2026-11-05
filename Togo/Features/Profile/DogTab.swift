@@ -45,7 +45,6 @@ struct DogTab: View {
     /// кто поймал ссылку.
     @Binding var открытьСемью: Bool
 
-    @Query private var skills: [ProcedureSkill]
     @Environment(AppState.self) private var appState
     @Query private var dogs: [Dog]
     @Query private var trips: [Trip]
@@ -340,8 +339,8 @@ struct DogTab: View {
     /// просто дверью.
     ///
     /// Пусто, пока в семье никого, кроме хозяина: «1 человек» читается
-    /// упрёком, а не фактом, — то же правило, по которому
-    /// `procedureSummary` молчит на нуле попыток.
+    /// упрёком, а не фактом, — то же правило «на нуле молчим», что
+    /// стояло у сводки процедур (снята 04.11.2026: читателя не было).
     ///
     /// Имя дежурного, а не число людей: число ничего не меняет в дне,
     /// а «дежурит Тео» отвечает на вопрос «кому писать, если что».
@@ -511,23 +510,9 @@ struct DogTab: View {
         .buttonStyle(.plain)
     }
 
-    /// «2 из 3 получается» — чтобы ссылка говорила о состоянии,
-    /// а не была просто дверью. Пусто, пока ни одной попытки нет:
-    /// «0 из 3» читается упрёком, а не фактом.
-    private var procedureSummary: String? {
-        guard !skills.isEmpty, skills.contains(where: { $0.attempts > 0 }) else { return nil }
-        let получается = skills.filter { $0.status == .works }.count
-        return String(localized: "\(получается) из \(skills.count) получается")
-    }
-
     private func careSummary(_ dog: Dog) -> String? {
         let due = dog.careTasks.filter { $0.isDue() }.count
         return due > 0 ? String(localized: "\(due) сегодня") : nil
-    }
-
-    private func trainingSummary(_ dog: Dog) -> String? {
-        let count = dog.trainingSessions.count
-        return count == 0 ? nil : String(localized: "\(count) занятий")
     }
 
     // MARK: Документы и цикл

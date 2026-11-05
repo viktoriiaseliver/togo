@@ -38,6 +38,26 @@ final class FamilySync: NSObject {
     }
 
     private(set) var state: State = .off
+
+    /// Записи, чей приём отказал (выборка по id или запись), — ждут
+    /// повтора в памяти, ключом по id, новейшая побеждает.
+    ///
+    /// До 04.11.2026 `apply` после любого приёма двигал время сверки
+    /// и ставил `.idle`, а отказ `accept` терялся в журнале: движок уже
+    /// отдал запись и второй раз её не пришлёт, пока её не тронут снова.
+    /// Не сохранять положение движка было бы дороже — в его сериализации
+    /// лежит и исходящая очередь. Поэтому запись держим здесь и повторяем
+    /// следующим заходом (`fetchNow` и каждая новая пачка).
+    ///
+    /// **Чего не закрывает:** выгрузка приложения теряет отложенное, как
+    /// и прежде. Это граница памяти, а не обещание доставки.
+    private var отложенныйПриём: [CKRecord.ID: CKRecord] = [:]
+
+    /// Свои правки, которые не удалось прочитать из базы для отправки
+    /// (`record(for:)`), — вернутся в очередь движка в `fetchNow`.
+    /// Возврат не сразу, а следующим заходом: движок спросил бы ту же
+    /// запись тут же, и отказ хранилища крутился бы петлёй.
+    private var отложеннаяОтправка: Set<CKRecord.ID> = []
     /// Сколько своих изменений ещё не уехало.
     ///
     /// **Доккомментарий был верен, а величина его не исполняла.**
@@ -132,6 +152,33 @@ final class FamilySync: NSObject {
     /// Поднять обмен. Молча ничего не делает, если права на iCloud нет:
     /// обещать синхронизацию, которой не может быть, нельзя.
     func start() async {
+        // Два входа в один старт — не два старта. При холодном запуске
+        // по приглашению `.task` сцены и `.familyShareAccepted` приходят
+        // почти разом, оба проходили `await accountIsReady()` и заводили
+        // по паре движков: первая пара терялась на лету вместе с тем, что
+        // успела принять, а засев мог уйти дважды. Замер 04.11.2026 по
+        // коду, пачка 1 `docs/аудит-рефакторинга-2026-11-04.md`.
+        //
+        // Второй вход ждёт первый и делает сверку заново: он мог прийти
+        // ровно потому, что поменялась зона (приняли приглашение), и его
+        // смысл — «прочитай ещё раз», а не «заведи движки ещё раз».
+        if let идущий = стартИдёт {
+            await идущий.value
+            guard !engines.isEmpty else { return }
+            await fetchNow()
+            await засеять()
+            return
+        }
+        let старт = Task { await запустить() }
+        стартИдёт = старт
+        await старт.value
+        стартИдёт = nil
+    }
+
+    /// Задача идущего `start()` — см. там, зачем.
+    private var стартИдёт: Task<Void, Never>?
+
+    private func запустить() async {
         guard Persistence.hasCloudEntitlement else {
             state = .failed("У этой сборки нет права на iCloud")
             return
@@ -185,7 +232,15 @@ final class FamilySync: NSObject {
         let owner = SharedZoneOwner.name
         guard !SyncSeedState.засеяно(владелец: owner) else { return }
 
-        let changes = SharedDiarySeed.изменения(context: context, zone: zone)
+        // Отказ выборки — не «пусто»: флаг не ставим, засев повторится
+        // при следующем запуске обмена.
+        let changes: [CKSyncEngine.PendingRecordZoneChange]
+        do {
+            changes = try SharedDiarySeed.изменения(context: context, zone: zone)
+        } catch {
+            log.error("общий дневник: засев не собрался, повторим при следующем старте — \(String(describing: error))")
+            return
+        }
         guard !changes.isEmpty else {
             // Пустое хранилище — засевать нечего, и это засев, а не отказ.
             SyncSeedState.отметить(владелец: owner)
@@ -270,7 +325,7 @@ final class FamilySync: NSObject {
     /// Синглтона здесь нет нарочно: экземпляр по-прежнему создаёт
     /// приложение и кладёт в окружение — эта ссылка лишь ЗЕРКАЛО
     /// того, что уже живёт, а не второй владелец.
-    private(set) nonisolated(unsafe) static weak var текущий: FamilySync?
+    private(set) static weak var текущий: FamilySync?
 
     /// Разбудить обмен по тихому пушу.
     ///
@@ -292,6 +347,25 @@ final class FamilySync: NSObject {
     }
 
     func fetchNow() async {
+        // Одна сверка за раз (04.11.2026). Пуш, возврат в приложение
+        // и потягивание списка приходят почти разом, и три параллельные
+        // сверки гоняли `state` между `.syncing`, `.idle` и `.failed`
+        // в произвольном порядке — экран показывал исход не последней,
+        // а той, что кончилась позже. Второй вход ждёт идущую.
+        if let идущая = сверкаИдёт {
+            await идущая.value
+            return
+        }
+        let сверка = Task { await сверить() }
+        сверкаИдёт = сверка
+        await сверка.value
+        сверкаИдёт = nil
+    }
+
+    /// Задача идущей сверки — см. `fetchNow`.
+    private var сверкаИдёт: Task<Void, Never>?
+
+    private func сверить() async {
         guard !engines.isEmpty else { return }
         state = .syncing
 
@@ -326,7 +400,17 @@ final class FamilySync: NSObject {
         // первой строкой, в облако не ходит.
         await FamilyShare.обновитьНазначение()
 
-        if отказы.isEmpty { SyncStateStore.lastSync = Date() }
+        if !отложеннаяОтправка.isEmpty, let engine = outgoingEngine {
+            engine.state.add(pendingRecordZoneChanges: отложеннаяОтправка.map { .saveRecord($0) })
+            отложеннаяОтправка = []
+        }
+
+        // Отложенное прошлыми пачками повторяем и тогда, когда новых
+        // записей не пришло, — иначе повтор ждал бы чужой правки.
+        if !отложенныйПриём.isEmpty { await apply([]) }
+
+        if отказы.isEmpty, отложенныйПриём.isEmpty { SyncStateStore.lastSync = Date() }
+        guard отложенныйПриём.isEmpty || !отказы.isEmpty else { return }  // `apply` уже назвал отказ
         state = Self.состояние(послеОтказов: отказы, lastSync: SyncStateStore.lastSync)
     }
 
@@ -356,8 +440,6 @@ final class FamilySync: NSObject {
     private func enqueueLocalChanges(_ notification: Notification) async {
         let zone = self.zone
         let ctx = context
-        var changes: [CKSyncEngine.PendingRecordZoneChange] = []
-        var stamped = false
 
         // Отметка времени ставится здесь, а не на экранах.
         //
@@ -369,145 +451,30 @@ final class FamilySync: NSObject {
         applying = true
         defer { applying = false }
 
-        let now = Date()
+        // Список типов, ворота годности и отметка времени — в реестре
+        // (`РеестрОбмена.кОтправке`), а не цепочкой `as?` здесь: до
+        // 05.11.2026 эта цепочка была одной из пяти копий списка типов,
+        // и копии расходились. Ворота те же, что у засева и сборки
+        // записи, — одним свойством `годитсяНаружу` у каждого типа.
+        var ids: [PersistentIdentifier] = []
         for key in ["inserted", "updated"] {
-            guard let ids = notification.userInfo?[key] as? [PersistentIdentifier] else { continue }
-            for id in ids {
-                if let event = ctx.model(for: id) as? LogEvent {
-                    // Ворота — ОБЩИЕ с засевом, той же функцией и по той
-                    // же причине, что у собаки ниже: запрет в одной двери
-                    // второй не знает.
-                    //
-                    // Ловят отладочную запись прогрева схемы. Замер
-                    // 08.10.2026 по выгрузке с телефона Виктории: из 182
-                    // записей одна с датой `2001-01-01` и автором
-                    // `ПРОГРЕВ СХЕМЫ`, у видимой собаки «Стич». Весь
-                    // `CloudKitSchemaWarmup` под `#if DEBUG` — в продуктовой
-                    // сборке она не создастся и **не удалится**, потому что
-                    // `remove()` тоже под `DEBUG`. Без ворот она уехала бы
-                    // маме первой записью истории.
-                    guard SharedDiaryOutgoing.sendable(event) else {
-                        log.notice("общий дневник: запись раньше приложения не отправляется")
-                        continue
-                    }
-                    event.changedAt = now
-                    stamped = true
-                    changes.append(.saveRecord(SharedDiaryRecords.recordID(event.id, in: zone)))
-                } else if let dose = ctx.model(for: id) as? DoseRecord {
-                    dose.changedAt = now
-                    stamped = true
-                    changes.append(.saveRecord(SharedDiaryRecords.recordID(dose.id, in: zone)))
-                } else if let care = ctx.model(for: id) as? CareTask {
-                    care.changedAt = now
-                    stamped = true
-                    changes.append(.saveRecord(SharedDiaryRecords.recordID(care.id, in: zone)))
-                } else if let medication = ctx.model(for: id) as? Medication {
-                    medication.changedAt = now
-                    stamped = true
-                    changes.append(.saveRecord(SharedDiaryRecords.recordID(medication.id, in: zone)))
-                } else if let документ = ctx.model(for: id) as? DogDocument {
-                    // Документы ездят с 07.10.2026 — подписью, без скана:
-                    // в клинике спрашивают номер, на границе срок,
-                    // и нужны они тому, кто СЕГОДНЯ один с собакой.
-                    документ.changedAt = now
-                    stamped = true
-                    changes.append(.saveRecord(SharedDiaryRecords.recordID(документ.id, in: zone)))
-                } else if let взвешивание = ctx.model(for: id) as? WeightEntry {
-                    // Взвешивания ездят с 07.10.2026: тип записи был
-                    // объявлен и не создавался ни разу. Доза считается
-                    // от веса, и расхождение веса даёт расхождение дозы.
-                    взвешивание.changedAt = now
-                    stamped = true
-                    changes.append(.saveRecord(SharedDiaryRecords.recordID(взвешивание.id, in: zone)))
-                } else if let анализ = ctx.model(for: id) as? LabResult {
-                    // Медкнижка ездит с 07.10.2026: без неё второй
-                    // человек приходил к врачу с пересказом.
-                    анализ.changedAt = now
-                    stamped = true
-                    changes.append(.saveRecord(SharedDiaryRecords.recordID(анализ.id, in: zone)))
-                } else if let визит = ctx.model(for: id) as? VetVisit {
-                    визит.changedAt = now
-                    stamped = true
-                    changes.append(.saveRecord(SharedDiaryRecords.recordID(визит.id, in: zone)))
-                } else if let диагноз = ctx.model(for: id) as? Diagnosis {
-                    диагноз.changedAt = now
-                    stamped = true
-                    changes.append(.saveRecord(SharedDiaryRecords.recordID(диагноз.id, in: zone)))
-                } else if let рецепт = ctx.model(for: id) as? Prescription {
-                    рецепт.changedAt = now
-                    stamped = true
-                    changes.append(.saveRecord(SharedDiaryRecords.recordID(рецепт.id, in: zone)))
-                } else if let clinic = ctx.model(for: id) as? Clinic {
-                    // Справочник ездит с 07.10.2026: без него второй
-                    // человек видел прививку и не видел, где её сделали.
-                    clinic.changedAt = now
-                    stamped = true
-                    changes.append(.saveRecord(SharedDiaryRecords.recordID(clinic.id, in: zone)))
-                } else if let dog = ctx.model(for: id) as? Dog {
-                    // Профиль ездит с 23.09: без него приглашение вело
-                    // в пустую комнату — мама не видела ни собаки,
-                    // ни веса, ни того, что идёт лечение.
-                    //
-                    // **Безымянная НЕ ОТПРАВЛЯЕТСЯ, и это не косметика.**
-                    // Замер 08.10.2026 по выгрузке с телефона Виктории:
-                    // шестнадцать собак, пятнадцать без клички, и пять
-                    // из них несут ОДНО И ТО ЖЕ `changed`
-                    // (2026-10-06T07:32:18Z) при трёх разных датах
-                    // создания. Один пакетный проход тронул пять строк —
-                    // и этот проход наш: `FeedingMigration` на каждом
-                    // запуске пишет `dailyNormGrams` всем собакам без
-                    // разбора, SwiftData видит изменение, а эта ветка
-                    // ставит отметку и кладёт запись в отправку.
-                    //
-                    // ```
-                    // FeedingMigration пишет фантому
-                    //   → changedAt = now здесь
-                    //   → saveRecord в общую зону
-                    //   → пятнадцать пустых собак уезжают маме
-                    // ```
-                    //
-                    // > **Мусор, который уходит от нас к человеку,
-                    // > хуже мусора, который лежит у нас.** Свои
-                    // > пустые записи мы хотя бы не показываем
-                    // > (`Dog.canBeShown`); уехавшие живут в чужом
-                    // > хранилище, и там наше правило показа
-                    // > не действует.
-                    //
-                    // Это ровно тот класс, что уже назван про четвёртую
-                    // поверхность (`f152078`); здесь он на пятой.
-                    //
-                    // **Чего эта правка НЕ делает.** Она не объясняет
-                    // и не чинит появление фантомов — откуда они
-                    // берутся, не установлено: девять записей созданы
-                    // в одну секунду 07.10 16:53:36, в ту же секунду,
-                    // в которую открылся онбординг, и совпадение времени
-                    // связью не является. Решающий замер — проход
-                    // онбординга на стёртом симуляторе со счётом `Dog`
-                    // после — НЕ СДЕЛАН.
-                    //
-                    // Ворота — ОБЩИЕ с засевом, а не свои.
-                    // `SharedDiaryOutgoing.sendable` зовут две двери
-                    // наружу: эта («сохранили → отправили») и засев уже
-                    // лежащих записей, который кладёт изменения
-                    // в движок напрямую, мимо этой функции. Запрет
-                    // в одной двери второй не знает.
-                    guard SharedDiaryOutgoing.sendable(dog) else {
-                        log.notice("общий дневник: собака без клички не отправляется")
-                        continue
-                    }
-                    dog.changedAt = now
-                    stamped = true
-                    changes.append(.saveRecord(SharedDiaryRecords.recordID(dog.id, in: zone)))
-                }
-            }
+            guard let часть = notification.userInfo?[key] as? [PersistentIdentifier] else { continue }
+            ids += часть
         }
+        let отправка = РеестрОбмена.кОтправке(ids, context: ctx, zone: zone, now: Date())
+        if отправка.задержано > 0 {
+            // Безымянная собака и отладочная запись прогрева — см.
+            // `годитсяНаружу` у `Dog` и `LogEvent` в `РеестрОбмена.swift`.
+            log.notice("общий дневник: не годных наружу не отправлено: \(отправка.задержано)")
+        }
+        let changes = отправка.изменения
 
         // Сохранение отметки времени не уйдёт по второму кругу:
         // на входе стоит тот же замок, что и у приёма чужого.
         // Отметка времени не записалась — отправлять нечего: иначе
         // уедет то, о чём хранилище не знает, и следующий круг увидит
         // расхождение вместо записи.
-        if stamped, !ctx.persist(otherwise: {}) {
+        if отправка.отмечено, !ctx.persist(otherwise: {}) {
             log.error("общий дневник: отметка времени не записалась")
             return
         }
@@ -533,7 +500,7 @@ extension FamilySync: CKSyncEngineDelegate {
             }
 
         case .fetchedRecordZoneChanges(let changes):
-            await apply(changes)
+            await apply(changes.modifications.map(\.record))
 
         case .sentRecordZoneChanges(let sent):
             await MainActor.run {
@@ -622,8 +589,26 @@ extension FamilySync: CKSyncEngineDelegate {
                 }
             }
 
-        case .accountChange:
-            await MainActor.run { self.state = .failed("Аккаунт iCloud сменился — включи общий дневник заново") }
+        case .accountChange(let смена):
+            await MainActor.run {
+                // Выход и смена аккаунта — движки и их положение принадлежат
+                // ПРЕЖНЕМУ аккаунту (04.11.2026). До этого здесь ставилось
+                // только `.failed`: движки жили дальше, а сохранённая
+                // сериализация при следующем старте приезжала к новому
+                // аккаунту чужой. `SyncStateStore.reset` был написан и не
+                // звался ни разу. Местные записи НЕ трогаем: что делать
+                // с дневником при выходе из iCloud — решение Виктории.
+                switch смена.changeType {
+                case .signOut, .switchAccounts:
+                    self.stop()
+                    SyncStateStore.reset()
+                    self.отложенныйПриём = [:]
+                    self.отложеннаяОтправка = []
+                default:
+                    break
+                }
+                self.state = .failed("Аккаунт iCloud сменился — включи общий дневник заново")
+            }
 
         default:
             break
@@ -654,279 +639,224 @@ extension FamilySync: CKSyncEngineDelegate {
         // `recordChangeTag`, без которого сервер отбивает правку.
         let base = outbox.base(for: recordID)
 
-        if let event = try? ctx.fetch(
-            FetchDescriptor<LogEvent>(predicate: #Predicate { $0.id == id })
-        ).first {
-            return SharedDiaryRecords.record(event.payload, base: base, in: recordID.zoneID)
+        // Отказ выборки — не «записи нет». На `nil` движок снимает правку
+        // из очереди навсегда, поэтому отказавшую откладываем и вернём
+        // в очередь следующим заходом (`fetchNow`). До 04.11.2026 здесь
+        // было двенадцать `try?`, и отказ выборки молча выбрасывал правку.
+        //
+        // Типы, выборки по id и ворота годности — в реестре
+        // (`РеестрОбмена.запись`). До 05.11.2026 здесь стояли двенадцать
+        // выборок подряд, и ворота были у двух типов из двенадцати
+        // по-разному: у записи дневника — здесь, у собаки — внутри
+        // `SharedDiaryRecords.record`. Теперь у всех одни, и они
+        // проверяемы тестом: этот метод `private` и требует `outbox`.
+        switch РеестрОбмена.запись(id, поверх: base, в: recordID.zoneID, context: ctx) {
+        case .нашлась(let запись):
+            return запись
+        case .нет:
+            return nil
+        case .нечемОтвечать:
+            отложеннаяОтправка.insert(recordID)
+            log.error("общий дневник: выборка для отправки отказала — правка вернётся в очередь следующим заходом")
+            return nil
         }
-        if let dose = try? ctx.fetch(
-            FetchDescriptor<DoseRecord>(predicate: #Predicate { $0.id == id })
-        ).first {
-            return SharedDiaryRecords.record(dose.payload, base: base, in: recordID.zoneID)
-        }
-        if let dog = try? ctx.fetch(
-            FetchDescriptor<Dog>(predicate: #Predicate { $0.id == id })
-        ).first {
-            // Отправка профиля может вернуть `nil` — безымянную собаку
-            // наружу не отправляем. Решение живёт в самой
-            // `SharedDiaryRecords`, а не здесь: этот метод `private`
-            // и требует `context` с `outbox`, то есть проверить его
-            // тестом нечем. Поверхность без шва — это не
-            // «непроверенная», а «непроверяемая», и лечится она
-            // переносом решения, а не внимательностью.
-            return SharedDiaryRecords.record(dog.payload, base: base, in: recordID.zoneID)
-        }
-        if let care = try? ctx.fetch(
-            FetchDescriptor<CareTask>(predicate: #Predicate { $0.id == id })
-        ).first {
-            return SharedDiaryRecords.record(care.payload, base: base, in: recordID.zoneID)
-        }
-        if let medication = try? ctx.fetch(
-            FetchDescriptor<Medication>(predicate: #Predicate { $0.id == id })
-        ).first {
-            return SharedDiaryRecords.record(medication.payload, base: base, in: recordID.zoneID)
-        }
-        if let clinic = try? ctx.fetch(
-            FetchDescriptor<Clinic>(predicate: #Predicate { $0.id == id })
-        ).first {
-            return SharedDiaryRecords.record(clinic.payload, base: base, in: recordID.zoneID)
-        }
-        if let документ = try? ctx.fetch(
-            FetchDescriptor<DogDocument>(predicate: #Predicate { $0.id == id })
-        ).first {
-            return SharedDiaryRecords.record(документ.payload, base: base, in: recordID.zoneID)
-        }
-        if let взвешивание = try? ctx.fetch(
-            FetchDescriptor<WeightEntry>(predicate: #Predicate { $0.id == id })
-        ).first {
-            return SharedDiaryRecords.record(взвешивание.payload, base: base, in: recordID.zoneID)
-        }
-        if let анализ = try? ctx.fetch(
-            FetchDescriptor<LabResult>(predicate: #Predicate { $0.id == id })
-        ).first {
-            return SharedDiaryRecords.record(анализ.payload, base: base, in: recordID.zoneID)
-        }
-        if let визит = try? ctx.fetch(
-            FetchDescriptor<VetVisit>(predicate: #Predicate { $0.id == id })
-        ).first {
-            return SharedDiaryRecords.record(визит.payload, base: base, in: recordID.zoneID)
-        }
-        if let диагноз = try? ctx.fetch(
-            FetchDescriptor<Diagnosis>(predicate: #Predicate { $0.id == id })
-        ).first {
-            return SharedDiaryRecords.record(диагноз.payload, base: base, in: recordID.zoneID)
-        }
-        if let рецепт = try? ctx.fetch(
-            FetchDescriptor<Prescription>(predicate: #Predicate { $0.id == id })
-        ).first {
-            return SharedDiaryRecords.record(рецепт.payload, base: base, in: recordID.zoneID)
-        }
-        return nil
     }
 
     /// Принять чужие изменения.
-    private func apply(_ changes: CKSyncEngine.Event.FetchedRecordZoneChanges) async {
+    private func apply(_ пришедшие: [CKRecord]) async {
         await MainActor.run {
             applying = true
             defer { applying = false }
 
             let ctx = context
 
-            // Собаки — первыми, и это не оптимизация.
-            //
-            // Записи приезжают пачкой в порядке сервера, и лента почти
-            // всегда идёт раньше профиля: её правят каждый день, а профиль
-            // раз в месяц. Пока собака не заведена, каждая запись пачки
-            // цеплялась к ПЕРВОЙ местной (а у гостя это его собственная
-            // собака) или повисала ничьей, если местной нет ни одной.
-            // Разобрать профили до ленты стоит один проход по массиву.
-            // **Порядок, а не признак «это собака».** Прежняя редакция
-            // сортировала предикатом «слева собака» — он ставит профили
-            // вперёд и больше ничего не упорядочивает. С приездом
-            // справочника этого мало: дело ухода ссылается на клинику,
-            // и приехав раньше неё, оно сошьётся с пустотой, а второй
-            // попытки у него не будет до следующей правки.
-            //
-            // Ранг вместо предиката ещё и честнее перед `sorted`:
-            // предикат «слева собака» не задаёт строгого порядка,
-            // и устойчивость результата — везение, а не свойство.
-            func ранг(_ тип: String) -> Int {
-                switch SharedDiary.RecordType(rawValue: тип) {
-                case .clinic: 0   // на него ссылаются дела ухода
-                case .dog: 1      // на него ссылается всё остальное
-                default: 2
-                }
+            // Отложенные прошлым заходом идут вместе с новыми; повтор той же
+            // записи из новой пачки вытесняет отложенную. Порядок (клиника,
+            // собака, остальное) ставит `принять`.
+            var поID = отложенныйПриём
+            for запись in пришедшие { поID[запись.recordID] = запись }
+            let записи = Array(поID.values)
+            // Пришедшее с сервера — тоже источник `recordChangeTag`:
+            // свою правку этой записи мы пошлём уже поверх неё.
+            for запись in записи { outbox.remember(запись) }
+            let отказавшие = Self.принять(записи, context: ctx,
+                                          дозаБольшеНеЖдёт: дозаБольшеНеЖдёт)
+            отложенныйПриём = Dictionary(отказавшие.map { ($0.recordID, $0) },
+                                         uniquingKeysWith: { _, новая in новая })
+
+            if отложенныйПриём.isEmpty {
+                SyncStateStore.lastSync = Date()
+                state = .idle(lastSync: SyncStateStore.lastSync)
+            } else {
+                log.error("общий дневник: не принято записей \(self.отложенныйПриём.count) — повтор следующим заходом")
+                state = .failed(String(
+                    localized: "Часть записей семьи не сохранилась — повторим при следующей сверке"))
             }
-            let modifications = changes.modifications.sorted {
-                ранг($0.record.recordType) < ранг($1.record.recordType)
-            }
-
-            for modification in modifications {
-                let record = modification.record
-                // Пришедшее с сервера — тоже источник `recordChangeTag`:
-                // свою правку этой записи мы пошлём уже поверх неё.
-                outbox.remember(record)
-
-                switch SharedDiary.RecordType(rawValue: record.recordType) {
-                case .clinic:
-                    guard let payload = SharedDiaryRecords.clinicPayload(record) else { continue }
-                    SharedDiaryInbox.accept(payload, context: ctx)
-                case .dog:
-                    guard let payload = SharedDiaryRecords.dogPayload(record) else { continue }
-                    SharedDiaryInbox.accept(payload, context: ctx)
-                case .care:
-                    guard let payload = SharedDiaryRecords.carePayload(record) else { continue }
-                    // Клиника сшивается внутри `accept`: там контекст
-                    // есть по устройству, и промах по id там же
-                    // падает на поиск по имени.
-                    SharedDiaryInbox.accept(
-                        payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
-                        context: ctx)
-                case .medication:
-                    guard let payload = SharedDiaryRecords.medicationPayload(record) else { continue }
-                    SharedDiaryInbox.accept(
-                        payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
-                        context: ctx)
-
-                    // Приехала отмена или пауза схемы — гасим запросы
-                    // по её дозам сейчас, а не когда человек откроет
-                    // приложение.
-                    //
-                    // **Почему это не повтор ветки `.dose` ниже.** Там
-                    // спрашивается `ждётОтметки` — предикат САМОЙ дозы,
-                    // и про схему он не знает нарочно. У доз отменённой
-                    // схемы собственный `cancelledAt` пуст, то есть
-                    // по нему они по-прежнему ждут: ветка `.dose`
-                    // не погасила бы их, даже если бы они приехали
-                    // следом. Поэтому здесь составной предикат,
-                    // а не тот же самый.
-                    //
-                    // Цена пропуска называется прямо, потому что она
-                    // про лекарство: Виктория отменила курс, у мамы он
-                    // жив, и мама получает «Через 10 минут доза»
-                    // по лечению, которого больше нет.
-                    //
-                    // **Чего это НЕ закрывает:** при закрытом приложении
-                    // на телефоне не выполняется ничего — `CKSubscription`
-                    // в коде ноль, та же граница, что у ветки `.dose`.
-                    // То есть напоминания гаснут с момента, когда
-                    // у второго человека приложение живо, и не раньше.
-                    // Выборка под `do`, а не под `try?`, и это замер
-                    // 21.10.2026, а не осторожность. У `try?` здесь два
-                    // разных исхода склеены в один `nil`: «такой схемы
-                    // нет» и «посмотреть не удалось». Ответ кода на «нет»
-                    // — не гасить ничего, и при отказе выборки он молча
-                    // становится ответом на «не удалось»: напоминания
-                    // по дозам отменённого курса не гаснут, в лог
-                    // не идёт ни строки, а правка остаётся сделанной
-                    // НА ВИД — канал «гасим сейчас» вырождается
-                    // в прежний «когда человек откроет приложение»
-                    // (`ReminderScheduler.снятьНеждущие`).
-                    //
-                    // Схемы с этим id здесь быть не может только в одном
-                    // случае: `accept` строкой выше сам ничего не записал.
-                    // Это и есть третье состояние — ОТВЕЧАТЬ НЕЧЕМ, —
-                    // и у лекарственного слоя оно обязано быть названо.
-                    let схемаID = payload.id
-                    do {
-                        if let схема = try ctx.fetch(
-                            FetchDescriptor<Medication>(
-                                predicate: #Predicate { $0.id == схемаID })
-                        ).first {
-                            for доза in схема.doses where !доза.ждётОтметкиСУчётомСхемы {
-                                дозаБольшеНеЖдёт(доза)
-                            }
-                        }
-                    } catch {
-                        log.error("""
-                            Общий дневник: приехала схема \(схемаID), выборка \
-                            по id отказала — напоминания по её дозам СЕЙЧАС \
-                            не гаснут, погаснут при открытии приложения. \
-                            \(String(describing: error))
-                            """)
-                    }
-                case .event:
-                    guard let payload = SharedDiaryRecords.eventPayload(record) else { continue }
-                    // Собака берётся по id из самой записи. Раньше здесь
-                    // стояла первая местная — и у гостя с двумя собаками
-                    // чужие отметки ложились на его собственную.
-                    SharedDiaryInbox.accept(
-                        payload,
-                        dog: SharedDiaryInbox.dog(for: payload, context: ctx),
-                        context: ctx
-                    )
-                case .document:
-                    guard let payload = SharedDiaryRecords.documentPayload(record) else { continue }
-                    SharedDiaryInbox.accept(
-                        payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
-                        context: ctx)
-                case .weight:
-                    guard let payload = SharedDiaryRecords.weightPayload(record) else { continue }
-                    SharedDiaryInbox.accept(
-                        payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
-                        context: ctx)
-                case .labResult:
-                    guard let payload = SharedDiaryRecords.labResultPayload(record) else { continue }
-                    SharedDiaryInbox.accept(
-                        payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
-                        context: ctx)
-                case .vetVisit:
-                    guard let payload = SharedDiaryRecords.vetVisitPayload(record) else { continue }
-                    SharedDiaryInbox.accept(
-                        payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
-                        context: ctx)
-                case .diagnosis:
-                    guard let payload = SharedDiaryRecords.diagnosisPayload(record) else { continue }
-                    SharedDiaryInbox.accept(
-                        payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
-                        context: ctx)
-                case .prescription:
-                    guard let payload = SharedDiaryRecords.prescriptionPayload(record) else { continue }
-                    SharedDiaryInbox.accept(
-                        payload, dog: SharedDiaryInbox.dog(forDogID: payload.dogID, context: ctx),
-                        context: ctx)
-                case .dose:
-                    guard let payload = SharedDiaryRecords.dosePayload(record) else { continue }
-                    // Препарат ищется по id, а при промахе — по имени:
-                    // схемы лечения не обмениваются, и у второго
-                    // человека тот же препарат заведён с другим UUID.
-                    SharedDiaryInbox.accept(
-                        payload,
-                        medication: SharedDiaryInbox.medication(for: payload, context: ctx),
-                        context: ctx
-                    )
-                    // Напоминания снимаются ПОСЛЕ слияния, а не по тому,
-                    // что приехало: спор решает `SharedDiaryMerge`, и чужая
-                    // отметка могла проиграть своей. Спрашиваем ту дозу,
-                    // которая теперь лежит у нас, — иначе снимем запрос
-                    // по отметке, которая не победила.
-                    //
-                    // Зачем это здесь, когда есть `снятьНеждущие`. У той
-                    // уборки вход один — `.task` главного экрана
-                    // (`TodayScreen:430` → `refresh` → `scheduleDoses`),
-                    // то есть она срабатывает, когда человек ОТКРОЕТ
-                    // приложение. Здесь вход шире: пока приложение
-                    // работает, отметка второго человека гасит запрос
-                    // в момент приезда.
-                    //
-                    // **Чего не закрывает ни то, ни другое:** при закрытом
-                    // приложении на телефоне не выполняется ничего.
-                    // `UIBackgroundModes` с `remote-notification` в манифесте
-                    // есть, а `CKSubscription` в коде ноль — право есть,
-                    // механизма нет. Это та же причина, что у записей
-                    // голосом, которые не уезжают (`:103-107`, `:244`).
-                    if let доза = SharedDiaryInbox.доза(payload.id, context: ctx),
-                       !доза.ждётОтметки {
-                        дозаБольшеНеЖдёт(доза)
-                    }
-                default:
-                    continue
-                }
-            }
-
-            SyncStateStore.lastSync = Date()
-            state = .idle(lastSync: SyncStateStore.lastSync)
         }
+    }
+
+    /// Ядро приёма: разобрать пришедшие записи и принять их в базу.
+    ///
+    /// Вынесено из `apply` 04.11.2026 (пачка 3
+    /// `docs/аудит-рефакторинга-2026-11-04.md`): `CKSyncEngine` в тест
+    /// не поставить, а решение «что принято, что отложено» — проверяемо,
+    /// и без шва его не держал ни один тест (`FamilySync(` в тестах не было).
+    /// Состояния здесь нет: ни движка, ни `outbox`, ни времени сверки —
+    /// только база и обратный вызов. Возвращает записи, приём которых
+    /// отказал (`ИсходПриёма.отказ`), — их `apply` откладывает.
+    ///
+    /// Живёт в этом файле нарочно: `СнятиеНапоминанийПодключеноTests`
+    /// считает вызовы `дозаБольшеНеЖдёт` здесь, и входов по-прежнему два.
+    static func принять(
+        _ пришедшие: [CKRecord],
+        context ctx: ModelContext,
+        дозаБольшеНеЖдёт: (DoseRecord) -> Void
+    ) -> [CKRecord] {
+
+        // Собаки — первыми, и это не оптимизация.
+        //
+        // Записи приезжают пачкой в порядке сервера, и лента почти
+        // всегда идёт раньше профиля: её правят каждый день, а профиль
+        // раз в месяц. Пока собака не заведена, каждая запись пачки
+        // цеплялась к ПЕРВОЙ местной (а у гостя это его собственная
+        // собака) или повисала ничьей, если местной нет ни одной.
+        // Разобрать профили до ленты стоит один проход по массиву.
+        // **Порядок, а не признак «это собака».** Прежняя редакция
+        // сортировала предикатом «слева собака» — он ставит профили
+        // вперёд и больше ничего не упорядочивает. С приездом
+        // справочника этого мало: дело ухода ссылается на клинику,
+        // и приехав раньше неё, оно сошьётся с пустотой, а второй
+        // попытки у него не будет до следующей правки.
+        //
+        // Ранг вместо предиката ещё и честнее перед `sorted`:
+        // предикат «слева собака» не задаёт строгого порядка,
+        // и устойчивость результата — везение, а не свойство.
+        func ранг(_ тип: String) -> Int {
+            switch SharedDiary.RecordType(rawValue: тип) {
+            case .clinic: 0   // на него ссылаются дела ухода
+            case .dog: 1      // на него ссылается всё остальное
+            default: 2
+            }
+        }
+        let записи = пришедшие.sorted {
+            ранг($0.recordType) < ранг($1.recordType)
+        }
+        var отказавшие: [CKRecord] = []
+        func отложить(_ исход: ИсходПриёма, _ запись: CKRecord) {
+            if исход == .отказ { отказавшие.append(запись) }
+        }
+
+        // Разбор и `accept` — у каждого типа свои (`Обменный.принятьЗапись`
+        // в `РеестрОбмена.swift`): аргументы у них разные — собака по id,
+        // собака по записи, препарат по id или имени, без собаки вовсе.
+        // Здесь остаётся то, что не свойство одного типа: порядок выше
+        // и снятие напоминаний ниже. `guard let тип` вместо `default`:
+        // незнакомый тип записи (от новой версии приложения) пропускается,
+        // а знакомый без приёма не соберётся — `RecordType.модель`
+        // исчерпывающая.
+        for record in записи {
+            guard let тип = SharedDiary.RecordType(rawValue: record.recordType),
+                  let исход = тип.модель.принятьЗапись(record, context: ctx)
+            else { continue }
+            отложить(исход, record)
+
+            // Id — имя записи: из него же его берёт разбор
+            // (`SharedDiaryRecords.medicationPayload`, `dosePayload`),
+            // и раз разбор прошёл, оно есть.
+            guard let id = UUID(uuidString: record.recordID.recordName) else { continue }
+
+            // Два входа снятия напоминаний, у каждого свой предикат.
+            // `default` здесь честный: остальным типам снимать нечего.
+            switch тип {
+            case .medication:
+                // Приехала отмена или пауза схемы — гасим запросы
+                // по её дозам сейчас, а не когда человек откроет
+                // приложение.
+                //
+                // **Почему это не повтор ветки `.dose` ниже.** Там
+                // спрашивается `ждётОтметки` — предикат САМОЙ дозы,
+                // и про схему он не знает нарочно. У доз отменённой
+                // схемы собственный `cancelledAt` пуст, то есть
+                // по нему они по-прежнему ждут: ветка `.dose`
+                // не погасила бы их, даже если бы они приехали
+                // следом. Поэтому здесь составной предикат,
+                // а не тот же самый.
+                //
+                // Цена пропуска называется прямо, потому что она
+                // про лекарство: Виктория отменила курс, у мамы он
+                // жив, и мама получает «Через 10 минут доза»
+                // по лечению, которого больше нет.
+                //
+                // **Чего это НЕ закрывает:** при закрытом приложении
+                // на телефоне не выполняется ничего — `CKSubscription`
+                // в коде ноль, та же граница, что у ветки `.dose`.
+                // То есть напоминания гаснут с момента, когда
+                // у второго человека приложение живо, и не раньше.
+                // Выборка под `do`, а не под `try?`, и это замер
+                // 21.10.2026, а не осторожность. У `try?` здесь два
+                // разных исхода склеены в один `nil`: «такой схемы
+                // нет» и «посмотреть не удалось». Ответ кода на «нет»
+                // — не гасить ничего, и при отказе выборки он молча
+                // становится ответом на «не удалось»: напоминания
+                // по дозам отменённого курса не гаснут, в лог
+                // не идёт ни строки, а правка остаётся сделанной
+                // НА ВИД — канал «гасим сейчас» вырождается
+                // в прежний «когда человек откроет приложение»
+                // (`ReminderScheduler.снятьНеждущие`).
+                //
+                // Схемы с этим id здесь быть не может только в одном
+                // случае: `accept` строкой выше сам ничего не записал.
+                // Это и есть третье состояние — ОТВЕЧАТЬ НЕЧЕМ, —
+                // и у лекарственного слоя оно обязано быть названо.
+                let схемаID = id
+                do {
+                    if let схема = try ctx.fetch(
+                        FetchDescriptor<Medication>(
+                            predicate: #Predicate { $0.id == схемаID })
+                    ).first {
+                        for доза in схема.doses where !доза.ждётОтметкиСУчётомСхемы {
+                            дозаБольшеНеЖдёт(доза)
+                        }
+                    }
+                } catch {
+                    log.error("""
+                        Общий дневник: приехала схема \(схемаID), выборка \
+                        по id отказала — напоминания по её дозам СЕЙЧАС \
+                        не гаснут, погаснут при открытии приложения. \
+                        \(String(describing: error))
+                        """)
+                }
+            case .dose:
+                // Напоминания снимаются ПОСЛЕ слияния, а не по тому,
+                // что приехало: спор решает `SharedDiaryMerge`, и чужая
+                // отметка могла проиграть своей. Спрашиваем ту дозу,
+                // которая теперь лежит у нас, — иначе снимем запрос
+                // по отметке, которая не победила.
+                //
+                // Зачем это здесь, когда есть `снятьНеждущие`. У той
+                // уборки вход один — `.task` главного экрана
+                // (`TodayScreen:430` → `refresh` → `scheduleDoses`),
+                // то есть она срабатывает, когда человек ОТКРОЕТ
+                // приложение. Здесь вход шире: пока приложение
+                // работает, отметка второго человека гасит запрос
+                // в момент приезда.
+                //
+                // **Чего не закрывает ни то, ни другое:** при закрытом
+                // приложении на телефоне не выполняется ничего.
+                // `UIBackgroundModes` с `remote-notification` в манифесте
+                // есть, а `CKSubscription` в коде ноль — право есть,
+                // механизма нет. Это та же причина, что у записей
+                // голосом, которые не уезжают (`:103-107`, `:244`).
+                if let доза = SharedDiaryInbox.доза(id, context: ctx),
+                   !доза.ждётОтметки {
+                    дозаБольшеНеЖдёт(доза)
+                }
+            default:
+                break
+            }
+        }
+
+        return отказавшие
     }
 }
 
@@ -940,7 +870,7 @@ nonisolated enum SyncStateStore {
     private static let lastSyncKey = "sync.lastSync"
 
     private static var defaults: UserDefaults {
-        UserDefaults(suiteName: AppIdentifiers.appGroup) ?? .standard
+        AppGroupDefaults.shared
     }
 
     static func load(_ key: String) -> CKSyncEngine.State.Serialization? {
@@ -971,7 +901,7 @@ nonisolated enum SharedDiarySettings {
     private static let key = "sharedDiary.on"
 
     private static var defaults: UserDefaults {
-        UserDefaults(suiteName: AppIdentifiers.appGroup) ?? .standard
+        AppGroupDefaults.shared
     }
 
     /// Включён ли обмен — **чего хочет человек**, а не «работает ли».

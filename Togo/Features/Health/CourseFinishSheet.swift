@@ -22,8 +22,11 @@ struct CourseFinishSheet: View {
     var onFinish: () -> Void
     /// Врач продлил — курс продолжается.
     var onContinue: (() -> Void)?
-    /// Завести дело «контрольный приём».
-    var onScheduleCheckup: (Int) -> Void
+    /// Завести дело «контрольный приём». Отвечает, записалось ли:
+    /// до 04.11.2026 ответ терялся, и строка «Контрольный приём …»
+    /// с хаптиком успеха показывалась при отказе хранилища — человек
+    /// ждал напоминания, которого не будет.
+    var onScheduleCheckup: (Int) -> Bool
 
     @Environment(\.dismiss) private var dismiss
     @State private var checkupDate: Date?
@@ -101,7 +104,12 @@ struct CourseFinishSheet: View {
                           detail: "Врач обычно смотрит результат через две недели.")
                 TGButton(title: "Напомнить через две недели",
                          variant: .secondary, size: .medium) {
-                    onScheduleCheckup(TreatmentCourse.checkupDelayDays)
+                    guard onScheduleCheckup(TreatmentCourse.checkupDelayDays) else {
+                        // Отказ показывает вызывающий (у него `AppState`);
+                        // здесь — только не рисовать успеха.
+                        Haptics.warning()
+                        return
+                    }
                     checkupDate = Calendar.current.date(
                         byAdding: .day, value: TreatmentCourse.checkupDelayDays, to: .now)
                     Haptics.success()

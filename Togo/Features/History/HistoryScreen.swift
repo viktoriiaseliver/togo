@@ -54,6 +54,12 @@ struct HistoryScreen: View {
     private var events: [LogEvent] { Diary.active(dog?.events ?? []) }
 
     var body: some View {
+        // Разложение по дням — ОДИН раз на проход `body` (04.11.2026).
+        // Прежде его строили дважды: календарь и полоса выходов звали
+        // вычисляемое `поДням` каждый сам, а оно фильтрует весь дневник
+        // и раскладывает его заново. На полугодовой истории это два
+        // полных прохода на каждую перерисовку.
+        let дни = поДням
         NavigationStack {
             КиноЭкран(экран: .history,
                       кикер: .готовая(кикер),
@@ -69,11 +75,11 @@ struct HistoryScreen: View {
                     )
                 } else {
                     чипыФильтра
-                    полосаВыходов
+                    полосаВыходов(дни)
                     ритмВыходов
                     dayOutCard
                     месяцШапкой
-                    MonthCalendar(month: $month, поДням: поДням, onSelect: { selectedDay = $0 })
+                    MonthCalendar(month: $month, поДням: дни, onSelect: { selectedDay = $0 })
                     episodesCard
                 }
             }
@@ -165,19 +171,19 @@ struct HistoryScreen: View {
     /// «выше или ниже соседнего», и ось месяца этого не добавляла:
     /// на тридцати днях подписи всё равно рисовались через одну.
     /// Что именно на полосе — говорит строка под ней, а не ось.
-    private var полосаВыходов: some View {
+    private func полосаВыходов(_ дни: [Date: [LogEvent]]) -> some View {
         // Точки считаются ОДИН раз на всю карточку. Прежде тут стояли
         // `chartPoints` и `тревожныеДни` рядом — два обращения, и каждое
         // строило весь тридцатидневный набор заново.
-        let точки = chartPoints
+        let столбики = точки(дни)
         return TGCard {
             HStack(alignment: .firstTextBaseline, spacing: Token.Space.s8) {
                 Text(.готовая(filter.chartName)).textStyle(AppFont.cardTitle).wraps()
                 Spacer(minLength: Token.Space.s8)
                 Text("30 дней").textStyle(AppFont.caption).wraps()
             }
-            КиноСтолбики(значения: точки.map(\.value),
-                         тревожные: тревожные(точки))
+            КиноСтолбики(значения: столбики.map(\.value),
+                         тревожные: тревожные(столбики))
             Text(filter.chartExplainer).textStyle(AppFont.caption).wraps()
             TGDivider()
             Text("Приложение не ставит диагнозов. Оно умеет показать этот график врачу — вместе с датами еды и препаратов за те же дни.")
@@ -201,7 +207,6 @@ struct HistoryScreen: View {
     private var поДням: [Date: [LogEvent]] { Diary.поДням(filtered) }
 
     /// График строится только по дням без активного эпизода.
-    private var chartPoints: [HistoryPoint] { точки(поДням) }
 
     /// Тридцать точек из готового индекса: день достаётся за O(1),
     /// отсутствие ключа значит «записей не было» — так условились
@@ -612,8 +617,13 @@ struct MonthCalendar: View {
     /// **Это названное расхождение, а не недосмотр:** в США неделя
     /// начинается с воскресенья, и когда дойдут руки, менять придётся
     /// обе половины разом.
-    private var weekdays: [String] {
-        var форматтер = DateFormatter()
+    private var weekdays: [String] { Self.дниНедели }
+
+    /// Один раз на процесс (04.11.2026): прежде в каждом `body` заводился
+    /// новый `DateFormatter`. `preferredLanguages` меняется только
+    /// с перезапуском, поэтому кэш смысла не меняет.
+    private static let дниНедели: [String] = {
+        let форматтер = DateFormatter()
         форматтер.locale = Locale(identifier: Locale.preferredLanguages.first ?? "ru")
         let короткие = форматтер.shortWeekdaySymbols ?? []
         guard короткие.count == 7 else {
@@ -625,7 +635,7 @@ struct MonthCalendar: View {
         // `shortWeekdaySymbols` начинается с воскресенья; сетка —
         // с понедельника.
         return Array(короткие[1...6]) + [короткие[0]]
-    }
+    }()
 
     var body: some View {
         TGCard {
