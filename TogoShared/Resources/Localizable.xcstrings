@@ -52402,6 +52402,42 @@
         }
       }
     },
+    "Записал(а): %@" : {
+      "comment" : "VoiceOver: кружок-инициал автора записи в ленте дня",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Logged by %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Noté par %@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Жазған: %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Записал(а): %@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Записав(-ла): %@"
+          }
+        }
+      }
+    },
     "Записала %@" : {
       "comment" : "body",
       "extractionState" : "manual",
