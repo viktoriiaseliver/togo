@@ -11,6 +11,37 @@ import CoreTransferable
 /// которое хранит здоровье собаки, не имеет права быть чёрным ящиком.
 nonisolated struct BackupArchive: Codable, Sendable {
     /// Версия формата. Читатель обязан проверить её первой строкой.
+    ///
+    /// # Идентификаторы записей — 05.11.2026, и версия НЕ поднята
+    ///
+    /// Решение Виктории: «Хранить id в архиве». До него `id` нёс один
+    /// снимок из двадцати (`EventSnapshot`), и восстановление при
+    /// включённом общем дневнике рождало новые `UUID` у собаки, весов,
+    /// схем, доз, ухода, документов, медкнижки и клиник. Обмен узнаёт
+    /// запись по `id` — значит у второго человека старые записи
+    /// оставались, а восстановленные приезжали **дублями**.
+    ///
+    /// Теперь каждый снимок, у модели которого есть `id: UUID`, несёт
+    /// `id: UUID?`. Опционален он ради старых файлов: синтезированный
+    /// `Decodable` берёт опциональное через `decodeIfPresent`, и файл
+    /// без ключа читается с `nil` — тогда запись получает свежий `UUID`,
+    /// как прежде.
+    ///
+    /// **Версия остаётся `1`, и это решение с механизмом.**
+    /// `BackupService.decode` сверяет `formatVersion` ПОСЛЕ полного
+    /// разбора, а `JSONDecoder` лишние ключи молча пропускает. Значит:
+    ///
+    /// ```
+    /// новый файл · старая сборка, версия 1   читается; id отброшены —
+    ///                                        поведение прежнее, не хуже
+    /// новый файл · старая сборка, версия 2   ОТКАЗ «обнови Togo» на файле,
+    ///                                        который она прочитать могла
+    /// старый файл · новая сборка             читается; id = nil
+    /// ```
+    ///
+    /// Подъём версии купил бы отказ там, где чтение работает, и ничего
+    /// не защитил бы: новые поля аддитивны и опциональны. Поднимать
+    /// её — когда поле станет ОБЯЗАТЕЛЬНЫМ или поменяет смысл.
     var formatVersion: Int = 1
     var createdAt: Date
     var appVersion: String
@@ -66,6 +97,8 @@ nonisolated struct BackupArchive: Codable, Sendable {
         var isLab: Bool
         var phone: String?
         var createdAt: Date
+        /// Идентификатор записи — см. `BackupArchive.formatVersion`.
+        var id: UUID?
     }
 
     /// Навык подготовки к процедуре.
@@ -83,6 +116,8 @@ nonisolated struct BackupArchive: Codable, Sendable {
         var targetDate: Date?
         var successes: Int
         var attempts: Int
+        /// Идентификатор записи — см. `BackupArchive.formatVersion`.
+        var id: UUID?
     }
 
     struct DogSnapshot: Codable, Sendable {
@@ -207,6 +242,14 @@ nonisolated struct BackupArchive: Codable, Sendable {
         /// > без писателя. Названо исключением в `ArchiveParityTests`
         /// > с этим же доводом.
         var deletedAt: Date?
+
+        /// Идентификатор собаки.
+        ///
+        /// Решение Виктории 05.11.2026: «Хранить id в архиве». Разбор —
+        /// у `BackupArchive.formatVersion`: без него восстановление
+        /// при общем дневнике заводило у второго человека дубль собаки
+        /// со всей историей.
+        var id: UUID?
     }
 
     /// Строка анализа.
@@ -243,6 +286,8 @@ nonisolated struct BackupArchive: Codable, Sendable {
         var method: String?
         var labMark: String
         var note: String
+        /// Идентификатор записи — см. `BackupArchive.formatVersion`.
+        var id: UUID?
     }
 
     /// Визит к врачу. Онлайн-консультация — такой же визит.
@@ -255,6 +300,8 @@ nonisolated struct BackupArchive: Codable, Sendable {
         var doctor: String
         var reasonRaw: String
         var conclusion: String
+        /// Идентификатор записи — см. `BackupArchive.formatVersion`.
+        var id: UUID?
     }
 
     /// Диагноз. Статус везётся обязательно: по подтверждённому лечат,
@@ -266,6 +313,8 @@ nonisolated struct BackupArchive: Codable, Sendable {
         var madeOn: Date
         var madeBy: String
         var evidence: String
+        /// Идентификатор записи — см. `BackupArchive.formatVersion`.
+        var id: UUID?
     }
 
     /// Назначение.
@@ -298,6 +347,8 @@ nonisolated struct BackupArchive: Codable, Sendable {
         var dispensed: String
         var instruction: String
         var source: String
+        /// Идентификатор записи — см. `BackupArchive.formatVersion`.
+        var id: UUID?
     }
 
     /// Фотография документа целиком: паспорт, потерянный вместе
@@ -383,6 +434,8 @@ nonisolated struct BackupArchive: Codable, Sendable {
         /// > без писателя. Здесь обёртки нет. Решает не модель
         /// > и не форма поля, а то, **что читает сборщик**.
         var deletedAt: Date?
+        /// Идентификатор записи — см. `BackupArchive.formatVersion`.
+        var id: UUID?
     }
 
     struct StockSnapshot: Codable, Sendable {
@@ -422,12 +475,16 @@ nonisolated struct BackupArchive: Codable, Sendable {
         /// число на экране**, и неверное в сторону спокойствия.
         /// Добавлено 07.10.2026, `togo-1e`.
         var countedAt: Date?
+        /// Идентификатор записи — см. `BackupArchive.formatVersion`.
+        var id: UUID?
     }
 
     struct HeatSnapshot: Codable, Sendable {
         var startedAt: Date
         var endedAt: Date?
         var note: String?
+        /// Идентификатор записи — см. `BackupArchive.formatVersion`.
+        var id: UUID?
     }
 
     /// День с человеком: по делам, в дороге, в гостях.
@@ -446,6 +503,8 @@ nonisolated struct BackupArchive: Codable, Sendable {
         var endedAt: Date?
         var plannedHours: Int
         var note: String?
+        /// Идентификатор записи — см. `BackupArchive.formatVersion`.
+        var id: UUID?
     }
 
     struct EventSnapshot: Codable, Sendable {
@@ -525,10 +584,10 @@ nonisolated struct BackupArchive: Codable, Sendable {
         /// по писателям, а не по объявлению.
         var reactionTriggerRaw: String?
         var reactionDistanceRaw: String?
-        // Ссылки на другие записи. Восстановимы в принципе, и только
-        // здесь: `EventSnapshot` — единственный снимок, который несёт
-        // `id`, значит после восстановления идентичности совпадают
-        // и ссылка находит свою цель.
+        // Ссылки на другие записи. Восстановимы: `id` несёт и сама
+        // запись, и (с 05.11.2026) дело ухода, схема и занятие, на
+        // которые ссылка указывает, — после восстановления
+        // идентичности совпадают, и ссылка находит свою цель.
         var walkEventID: UUID?
         var careTaskID: UUID?
         var medicationID: UUID?
@@ -538,6 +597,8 @@ nonisolated struct BackupArchive: Codable, Sendable {
     struct WeightSnapshot: Codable, Sendable {
         var date: Date
         var kg: Double
+        /// Идентификатор записи — см. `BackupArchive.formatVersion`.
+        var id: UUID?
     }
 
     struct CareTaskSnapshot: Codable, Sendable {
@@ -573,6 +634,8 @@ nonisolated struct BackupArchive: Codable, Sendable {
         var clinicName: String?
         var vaccineBatch: String?
         var vaccineValidUntil: Date?
+        /// Идентификатор записи — см. `BackupArchive.formatVersion`.
+        var id: UUID?
     }
 
     struct MedicationSnapshot: Codable, Sendable {
@@ -658,6 +721,8 @@ nonisolated struct BackupArchive: Codable, Sendable {
         /// уехал людям в сборке 284 с другим содержимым. Разбор —
         /// в шапке `TogoSchemaV9`.
         var startedAt: Date?
+        /// Идентификатор записи — см. `BackupArchive.formatVersion`.
+        var id: UUID?
     }
 
     struct DoseSnapshot: Codable, Sendable {
@@ -680,17 +745,25 @@ nonisolated struct BackupArchive: Codable, Sendable {
 
         /// Чего доза ждёт, если схема до неё ещё не доехала.
         ///
-        /// Едет **только имя**, без `awaitedMedicationID`, и это
-        /// решение, а не недосмотр: `Medication.id` в архив не идёт
-        /// нарочно (`ArchiveParityTests`, «после восстановления это
-        /// другая запись»). Восстановленный `awaitedMedicationID`
-        /// указывал бы **в никуда** — и выглядел бы при этом валидным
-        /// UUID, то есть хуже отсутствия.
-        ///
-        /// Сшивка в `SharedDiaryPayloads:962` смотрит пару
-        /// «по id ИЛИ по имени»; после восстановления сработает имя.
+        /// До 05.11.2026 ехало **только имя**: `Medication.id` в архив
+        /// не шёл, и восстановленный `awaitedMedicationID` указывал бы
+        /// в никуда. Теперь id схемы едет, и id ожидания — тоже
+        /// (ниже). Имя остаётся для старых файлов: сшивка
+        /// в `SharedDiaryPayloads` смотрит пару «по id ИЛИ по имени».
         /// Добавлено 07.10.2026, `togo-1e`.
         var awaitedMedicationName: String?
+
+        /// Идентификатор дозы — см. `BackupArchive.formatVersion`.
+        var id: UUID?
+        /// Чего доза ждёт — **id**, вдобавок к имени.
+        ///
+        /// До 05.11.2026 не ехал, и причина была записана условием:
+        /// «перестанет быть верным, если `Medication.id` начнёт ехать
+        /// в архив» (`ArchiveParityTests`). С решением «хранить id
+        /// в архиве» он едет, и восстановленная ссылка указывает
+        /// на ту же схему, а не в никуда. Имя рядом остаётся: у старых
+        /// файлов id нет, и сшивка «по id ИЛИ по имени» берёт имя.
+        var awaitedMedicationID: UUID?
     }
 
     struct TrainingStepSnapshot: Codable, Sendable {
@@ -701,6 +774,8 @@ nonisolated struct BackupArchive: Codable, Sendable {
         var statusRaw: String
         var consecutiveGoodSessions: Int
         var order: Int
+        /// Идентификатор записи — см. `BackupArchive.formatVersion`.
+        var id: UUID?
     }
 
     struct TrainingSessionSnapshot: Codable, Sendable {
@@ -716,6 +791,8 @@ nonisolated struct BackupArchive: Codable, Sendable {
         var gramsUsed: Int
         var observationsRaw: [String]
         var countsTowardProgress: Bool
+        /// Идентификатор записи — см. `BackupArchive.formatVersion`.
+        var id: UUID?
     }
 
     struct TripSnapshot: Codable, Sendable {
@@ -728,6 +805,8 @@ nonisolated struct BackupArchive: Codable, Sendable {
         var participants: [String]
         var departureMinuteOfDay: Int
         var packedItems: [String]
+        /// Идентификатор записи — см. `BackupArchive.formatVersion`.
+        var id: UUID?
     }
 
     struct MemberSnapshot: Codable, Sendable {
@@ -740,6 +819,8 @@ nonisolated struct BackupArchive: Codable, Sendable {
         var dutyUntil: Date?
         var accessExpiresAt: Date?
         var acceptedAt: Date?
+        /// Идентификатор записи — см. `BackupArchive.formatVersion`.
+        var id: UUID?
     }
 
     struct EpisodeSnapshot: Codable, Sendable {
@@ -762,6 +843,12 @@ nonisolated struct BackupArchive: Codable, Sendable {
         /// эпизод не заканчивался никогда, здесь он кончался бы сразу.
         /// Добавлено 07.10.2026, `togo-1e`.
         var lastIncidentAt: Date?
+        /// Идентификатор записи — см. `BackupArchive.formatVersion`.
+        var id: UUID?
+        /// Чей эпизод — `Episode.dogID` (V10). Едет с 05.11.2026, когда
+        /// в архив поехал `DogSnapshot.id`: до этого ссылка указывала бы
+        /// на собаку, которой после восстановления нет.
+        var dogID: UUID?
     }
 
     /// Опись файла: каждая коллекция снимка — человеческими словами.

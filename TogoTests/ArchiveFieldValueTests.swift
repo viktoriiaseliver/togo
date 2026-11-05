@@ -27,10 +27,10 @@ import Testing
 ///                           схема до неё не доехала
 /// ```
 ///
-/// **`awaitedMedicationID` при этом НЕ едет, и это решение.**
-/// `Medication.id` в архив не идёт нарочно, значит восстановленная
-/// ссылка указывала бы в никуда — и выглядела бы валидным UUID, то есть
-/// хуже отсутствия. Решение записано в реестре `ArchiveParityTests`.
+/// **`awaitedMedicationID` до 05.11.2026 не ехал**: `Medication.id`
+/// в архив не шёл, и восстановленная ссылка указывала бы в никуда.
+/// С решением «хранить id в архиве» id схемы едет — и ссылка тоже,
+/// по условию, записанному в реестре `ArchiveParityTests` заранее.
 @Suite("Три поля архива — по значению", .serialized)
 struct ArchiveFieldValueTests {
 
@@ -108,7 +108,7 @@ struct ArchiveFieldValueTests {
                 "вернулось начало вместо последнего инцидента")
     }
 
-    @Test("Имя ожидаемой схемы переживает круг, а id не едет — и это решение")
+    @Test("Имя и id ожидаемой схемы переживают круг")
     func awaitedNameПереживает() throws {
         let container = try контейнер()
         let context = ModelContext(container)
@@ -118,7 +118,8 @@ struct ArchiveFieldValueTests {
         medication.dog = dog
         context.insert(medication)
         let dose = DoseRecord(scheduledAt: Date())
-        dose.awaitedMedicationID = UUID()
+        let ожидаемая = UUID()
+        dose.awaitedMedicationID = ожидаемая
         dose.awaitedMedicationName = "Левотироксин"
         dose.medication = medication
         context.insert(dose)
@@ -127,6 +128,10 @@ struct ArchiveFieldValueTests {
         let снимок = try #require(круг.dogs.first?.medications.first?.doses.first)
         #expect(снимок.awaitedMedicationName == "Левотироксин",
                 "имя ожидаемой схемы не вернулось — сшивать будет нечем")
+        #expect(снимок.awaitedMedicationID == ожидаемая, """
+            id ожидаемой схемы не пережил круг. С 05.11.2026 id схемы \
+            едет в архив, и ссылка на неё — тоже.
+            """)
     }
 
     /// Совпадают ли даты с точностью, которую НЕСЁТ ФОРМАТ.

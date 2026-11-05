@@ -72,24 +72,26 @@ nonisolated enum BackupService {
                     name: member.name, roleRaw: member.roleRaw, note: member.note,
                     isMe: member.isMe, customPermissionsRaw: member.customPermissionsRaw,
                     isOnDuty: member.isOnDuty, dutyUntil: member.dutyUntil,
-                    accessExpiresAt: member.accessExpiresAt, acceptedAt: member.acceptedAt
+                    accessExpiresAt: member.accessExpiresAt, acceptedAt: member.acceptedAt,
+                    id: member.id
                 )
             },
             episodes: episodes.map {
                 BackupArchive.EpisodeSnapshot(startedAt: $0.startedAt, endedAt: $0.endedAt,
                                               title: $0.title, detail: $0.detail,
-                                              lastIncidentAt: $0.lastIncidentAt)
+                                              lastIncidentAt: $0.lastIncidentAt,
+                                              id: $0.id, dogID: $0.dogID)
             },
             procedureSkills: skills.map {
                 BackupArchive.ProcedureSkillSnapshot(
                     title: $0.title, detail: $0.detail, statusRaw: $0.statusRaw,
                     targetDate: $0.targetDate, successes: $0.successes,
-                    attempts: $0.attempts)
+                    attempts: $0.attempts, id: $0.id)
             },
             clinics: clinics.map {
                 BackupArchive.ClinicSnapshot(
                     name: $0.name, detail: $0.detail, isLab: $0.isLab,
-                    phone: $0.phone, createdAt: $0.createdAt)
+                    phone: $0.phone, createdAt: $0.createdAt, id: $0.id)
             }
         )
     }
@@ -144,7 +146,7 @@ nonisolated enum BackupService {
                     trainingSessionID: event.trainingSessionID
                 )
             },
-            weights: dog.weights.map { BackupArchive.WeightSnapshot(date: $0.date, kg: $0.kg) },
+            weights: dog.weights.map { BackupArchive.WeightSnapshot(date: $0.date, kg: $0.kg, id: $0.id) },
             careTasks: dog.careTasks.map {
                 BackupArchive.CareTaskSnapshot(
                     title: $0.title, detail: $0.detail, intervalDays: $0.intervalDays,
@@ -159,7 +161,8 @@ nonisolated enum BackupService {
                     // где делали эту прививку.
                     clinicName: $0.clinic?.name,
                     vaccineBatch: $0.vaccineBatch,
-                    vaccineValidUntil: $0.vaccineValidUntil
+                    vaccineValidUntil: $0.vaccineValidUntil,
+                    id: $0.id
                 )
             },
             medications: dog.medications.map { medication in
@@ -176,7 +179,9 @@ nonisolated enum BackupService {
                                                    cancelReason: $0.cancelReason,
                                                    skippedAt: $0.skippedAt, skippedBy: $0.skippedBy,
                                                    claimedBy: $0.claimedBy, claimedAt: $0.claimedAt,
-                                                   awaitedMedicationName: $0.awaitedMedicationName)
+                                                   awaitedMedicationName: $0.awaitedMedicationName,
+                                                   id: $0.id,
+                                                   awaitedMedicationID: $0.awaitedMedicationID)
                     },
                     unitRaw: medication.unitRaw,
                     massPerUnitMcg: medication.massPerUnitMcg,
@@ -194,14 +199,16 @@ nonisolated enum BackupService {
                     packAmount: medication.packAmount,
                     canGiveOutside: medication.canGiveOutside,
                     prescriptionNumber: medication.prescriptionNumber,
-                    startedAt: medication.startedAt
+                    startedAt: medication.startedAt,
+                    id: medication.id
                 )
             },
             trainingSteps: dog.trainingSteps.map {
                 BackupArchive.TrainingStepSnapshot(
                     cue: $0.cue, place: $0.place, person: $0.person,
                     distanceMeters: $0.distanceMeters, statusRaw: $0.statusRaw,
-                    consecutiveGoodSessions: $0.consecutiveGoodSessions, order: $0.order
+                    consecutiveGoodSessions: $0.consecutiveGoodSessions, order: $0.order,
+                    id: $0.id
                 )
             },
             trainingSessions: dog.trainingSessions.map {
@@ -210,7 +217,8 @@ nonisolated enum BackupService {
                     place: $0.place, person: $0.person, distanceMeters: $0.distanceMeters,
                     markDelaysMs: $0.markDelaysMs, successes: $0.successes, attempts: $0.attempts,
                     gramsUsed: $0.gramsUsed, observationsRaw: $0.observationsRaw,
-                    countsTowardProgress: $0.countsTowardProgress
+                    countsTowardProgress: $0.countsTowardProgress,
+                    id: $0.id
                 )
             },
             trips: dog.trips.map {
@@ -218,7 +226,8 @@ nonisolated enum BackupService {
                     destination: $0.destination, startDate: $0.startDate, endDate: $0.endDate,
                     transportRaw: $0.transportRaw, travelHours: $0.travelHours, lodging: $0.lodging,
                     participants: $0.participants, departureMinuteOfDay: $0.departureMinuteOfDay,
-                    packedItems: $0.packedItems
+                    packedItems: $0.packedItems,
+                    id: $0.id
                 )
             },
             stocks: stocks.map {
@@ -227,10 +236,12 @@ nonisolated enum BackupService {
                                             gramsPerDay: $0.gramsPerDay, openedAt: $0.openedAt,
                                             expiry: $0.expiry,
                                             shelfAfterOpenDays: $0.shelfAfterOpenDays,
-                                            countedAt: $0.countedAt)
+                                            countedAt: $0.countedAt,
+                                            id: $0.id)
             },
             heats: heats.map {
-                BackupArchive.HeatSnapshot(startedAt: $0.startedAt, endedAt: $0.endedAt, note: $0.note)
+                BackupArchive.HeatSnapshot(startedAt: $0.startedAt, endedAt: $0.endedAt, note: $0.note,
+                                           id: $0.id)
             },
             documents: documents.map {
                 BackupArchive.DocumentSnapshot(title: $0.title, image: $0.image,
@@ -241,11 +252,13 @@ nonisolated enum BackupService {
                                                occurredOn: $0.occurredOn,
                                                directionRaw: $0.directionRaw,
                                                clinicName: $0.clinic?.name,
-                                               deletedAt: $0.deletedAt)
+                                               deletedAt: $0.deletedAt,
+                                               id: $0.id)
             },
             daysOut: daysOut.map {
                 BackupArchive.DayOutSnapshot(startedAt: $0.startedAt, endedAt: $0.endedAt,
-                                             plannedHours: $0.plannedHours, note: $0.note)
+                                             plannedHours: $0.plannedHours, note: $0.note,
+                                             id: $0.id)
             },
             // Медкнижка — 07.10.2026. Собирается здесь, а не отдельным
             // проходом: `togo-1e` нашёл сегодня три поля, объявленные
@@ -260,17 +273,20 @@ nonisolated enum BackupService {
                     aboveLimit: $0.aboveLimit, textValue: $0.textValue,
                     unit: $0.unit,
                     referenceLow: $0.referenceLow, referenceHigh: $0.referenceHigh,
-                    method: $0.method, labMark: $0.labMark, note: $0.note)
+                    method: $0.method, labMark: $0.labMark, note: $0.note,
+                    id: $0.id)
             },
             vetVisits: dog.vetVisits.map {
                 BackupArchive.VetVisitSnapshot(
                     date: $0.date, clinicName: $0.clinic?.name, doctor: $0.doctor,
-                    reasonRaw: $0.reasonRaw, conclusion: $0.conclusion)
+                    reasonRaw: $0.reasonRaw, conclusion: $0.conclusion,
+                    id: $0.id)
             },
             diagnoses: dog.diagnoses.map {
                 BackupArchive.DiagnosisSnapshot(
                     wording: $0.wording, statusRaw: $0.statusRaw,
-                    madeOn: $0.madeOn, madeBy: $0.madeBy, evidence: $0.evidence)
+                    madeOn: $0.madeOn, madeBy: $0.madeBy, evidence: $0.evidence,
+                    id: $0.id)
             },
             prescriptions: dog.prescriptions.map {
                 BackupArchive.PrescriptionSnapshot(
@@ -282,12 +298,15 @@ nonisolated enum BackupService {
                     controlFromWeeks: $0.controlFromWeeks,
                     controlToWeeks: $0.controlToWeeks,
                     dispensed: $0.dispensed, instruction: $0.instruction,
-                    source: $0.source)
+                    source: $0.source, id: $0.id)
             },
             // Надгробие собаки — 26.10.2026. Разбор в объявлении поля:
             // список собак идёт в архив нефильтрованным, и без этой
             // строки восстановление поднимало удалённую собаку живой.
-            deletedAt: dog.deletedAt
+            deletedAt: dog.deletedAt,
+            // Идентификатор — решение 05.11.2026, разбор
+            // у `BackupArchive.formatVersion`.
+            id: dog.id
         )
     }
 
@@ -328,16 +347,12 @@ nonisolated enum BackupService {
         case replace
         /// Добавить, чего нет.
         ///
-        /// **Лента сверяется по идентификатору, остальные четырнадцать
-        /// коллекций — по естественным ключам.** `id` несёт один снимок
-        /// из пятнадцати (`EventSnapshot`); у прочих его нет нарочно —
-        /// «после восстановления это ДРУГАЯ запись в другом хранилище»
-        /// (`ArchiveParityTests`). Чем опознаётся «та же запись»
-        /// у каждого вида, перечислено у `attachRest`.
-        ///
-        /// Здесь стояло «записи сверяются по идентификатору»: про ленту
-        /// правда, про остальное — нет, и обещание `detail` («повторы
-        /// не задвоятся») держал один этот комментарий.
+        /// **Сперва по идентификатору, потом по естественным ключам.**
+        /// С 05.11.2026 `id` несёт каждый снимок (решение «хранить id
+        /// в архиве», разбор у `BackupArchive.formatVersion`); до того —
+        /// один `EventSnapshot`. Естественный ключ остаётся для старых
+        /// файлов без id; чем он опознаёт «ту же запись» у каждого вида,
+        /// перечислено у `attachRest`.
         case merge
 
         var title: String {
@@ -361,31 +376,62 @@ nonisolated enum BackupService {
     /// # Две стратегии и одно правило на двоих
     ///
     /// ```
-    /// replace  всё стереть и положить файл; опознавать нечего
-    /// merge    долить недостающее: собаки и участники сливаются
-    ///          по имени, лента — по `id`, остальное — по естественным
-    ///          ключам (перечень у `attachRest`)
+    /// replace  всё стереть и положить файл С ТЕМИ ЖЕ id; опознавать
+    ///          нечего
+    /// merge    долить недостающее: сперва по `id` (у всех видов),
+    ///          потом собаки и участники по имени, остальное —
+    ///          по естественным ключам (перечень у `attachRest`)
     /// ```
     ///
     /// При `merge` существующая собака получает: ленту, все четырнадцать
     /// прочих коллекций и **пустые** поля профиля. Заполненное руками
     /// не трогается — разбор у `дополнитьПрофиль`.
     ///
-    /// # Чего `merge` НЕ приносит, и почему это решение
+    /// # Зачем id, и что он делает с общим дневником
     ///
-    /// **Эпизоды и навыки процедур** восстанавливаются только при
-    /// `replace`. Опознать «тот же эпизод» нечем: `id` в снимке у них
-    /// нет, связи с собакой нет тоже, а склейка по названию собрала бы
-    /// в одну группу всё безымянное —
+    /// Решение Виктории 05.11.2026. Без id восстановление при включённом
+    /// общем дневнике рождало новые `UUID`, обмен узнаёт запись по `id`,
+    /// и у второго человека старые записи оставались, а восстановленные
+    /// приезжали **дублями**: вторая собака со всей историей.
+    ///
+    /// **`changedAt` в архив НЕ едет, и возить его бесполезно — замер
+    /// по коду, не по прогону.** `FamilySync.enqueueLocalChanges`
+    /// на каждом сохранении ставит ВСЕМ вставленным и изменённым
+    /// записям `changedAt = now` (там это сделано нарочно: правят из
+    /// полутора десятков мест). Восстановление сохраняет — значит
+    /// при работающем обмене любое `changedAt` из файла было бы
+    /// затёрто до отправки. Что из этого следует у второго человека
+    /// (`SharedDiaryMerge`):
+    ///
+    /// ```
+    /// запись не трогали после снятия файла   тот же id, новее changedAt →
+    ///                                        выигрывает файл, содержимое
+    ///                                        то же — дубля нет
+    /// второй человек ПРАВИЛ её после         выигрывает файл (now позже) —
+    ///                                        его правка откатывается
+    /// второй человек УДАЛИЛ её после         надгробие проигрывает:
+    ///                                        `надгробиеРешает` требует
+    ///                                        правка(файл) ≤ правка(надгробие),
+    ///                                        а now позже — запись ОЖИВАЕТ
+    /// ```
+    ///
+    /// Две нижние строки — не дефект этой правки, а развилка продукта:
+    /// «Заменить всё» в общем дневнике откатывает семью к файлу. Чинить
+    /// её здесь нечем — штамп времени ставит обмен, а не архив.
+    ///
+    /// # Эпизоды и навыки процедур при `merge`
+    ///
+    /// Связи с собакой у них нет. До 05.11.2026 они восстанавливались
+    /// только при `replace`: опознать «тот же эпизод» было нечем, а
+    /// склейка по названию собрала бы в одну группу всё безымянное —
     ///
     /// > **группировка по полю со значением по умолчанию собирает
     /// > в одну группу всё, что это поле не заполнило.**
     ///
-    /// Цена названа, а не обойдена: человек, доливающий файл, эпизодов
-    /// и навыков не получит. Цена обратного выбора больше — разные
-    /// эпизоды, склеенные в один, и разделить их потом нечем.
-    /// Перестанет быть верным, если в `EpisodeSnapshot`
-    /// и `ProcedureSkillSnapshot` появится устойчивый идентификатор.
+    /// Условие снятия было записано здесь же: «если появится устойчивый
+    /// идентификатор». Он появился, и при доливке едут записи с `id`,
+    /// которого на телефоне нет. Файл без id (старый) эпизодов и навыков
+    /// при доливке по-прежнему не приносит.
     ///
     /// # Граница возвращаемого числа
     ///
@@ -480,6 +526,13 @@ nonisolated enum BackupService {
         let existingMemberNames: Set<String> = strategy == .merge
             ? Set(try context.fetch(FetchDescriptor<FamilyMember>()).map(\.name))
             : []
+        // Идентификаторы того, что УЖЕ лежит в хранилище, — по всем видам.
+        // При «заменить» пусто, как у ленты: опознавать нечего.
+        let известные = try strategy == .merge ? ИзвестныеID.из(context) : ИзвестныеID()
+        let собакиПоID: [UUID: Dog] = strategy == .merge
+            ? Dictionary(try context.fetch(FetchDescriptor<Dog>()).map { ($0.id, $0) },
+                         uniquingKeysWith: { первая, _ in первая })
+            : [:]
 
         var restored = 0
 
@@ -495,17 +548,29 @@ nonisolated enum BackupService {
         // по полю со значением по умолчанию собирает в одну группу
         // всё, что это поле не заполнило.
         var клиники: [String: Clinic] = [:]
+        var клиникиПоID: [UUID: Clinic] = [:]
         if strategy == .merge {
             for clinic in try context.fetch(FetchDescriptor<Clinic>()) {
+                клиникиПоID[clinic.id] = clinic
                 guard let имя = Fmt.notBlank(clinic.name) else { continue }
                 клиники[имя] = clinic
             }
         }
         for snapshot in archive.clinics ?? [] {
             guard let имя = Fmt.notBlank(snapshot.name) else { continue }
+            // Сперва по `id` (05.11.2026), потом по имени. Клиника с тем же
+            // id, которую на телефоне переименовали, — та же организация:
+            // имя из файла указывает на неё, чтобы дела ухода, визиты
+            // и рецепты из файла нашли свою клинику, а не остались
+            // без связи и не завели дубль.
+            if let id = snapshot.id, let есть = клиникиПоID[id] {
+                if клиники[имя] == nil { клиники[имя] = есть }
+                continue
+            }
             if клиники[имя] != nil { continue }
             let clinic = Clinic(name: имя, detail: snapshot.detail,
                                 isLab: snapshot.isLab, phone: snapshot.phone)
+            if let id = snapshot.id { clinic.id = id }
             clinic.createdAt = snapshot.createdAt
             context.insert(clinic)
             клиники[имя] = clinic
@@ -534,6 +599,18 @@ nonisolated enum BackupService {
             //
             // > **Группировка по полю со значением по умолчанию
             // > собирает в одну группу всё, что это поле не заполнило.**
+            // **Сперва по `id`, и только потом по кличке** (05.11.2026).
+            // Собака с тем же id — та же карточка, даже если её
+            // переименовали после снятия файла; без этой строки
+            // переименованная завелась бы второй, и обмен разослал бы
+            // семье дубль со всей историей.
+            if strategy == .merge, let id = snapshot.id, let dog = собакиПоID[id] {
+                дополнитьПрофиль(snapshot, у: dog)
+                restored += attachEvents(snapshot.events, to: dog, skipping: existingEventIDs, context: context)
+                restored += attachRest(snapshot, to: dog, clinics: клиники,
+                                       известные: известные, context: context)
+                continue
+            }
             if strategy == .merge, let имя = Fmt.dogName(snapshot.name),
                existingDogNames.contains(имя) {
                 // Собака уже есть — доливаем к ней всё, чего у неё нет.
@@ -554,25 +631,14 @@ nonisolated enum BackupService {
                 // > то есть отчитывался о том, что сделал, а не о том,
                 // > что обещал экран.
                 //
-                // **Эпизоды и навыки процедур сюда НЕ доливаются, и это
-                // решение, а не забывчивость.** Они восстанавливаются
-                // только при «заменить» (ниже), потому что опознать
-                // «тот же эпизод» нечем: `id` в снимке нет, связи
-                // с собакой у обоих нет тоже, а склейка по названию
-                // собрала бы в одну группу всё безымянное —
-                //
-                // > **группировка по полю со значением по умолчанию
-                // > собирает в одну группу всё, что это поле
-                // > не заполнило.**
-                //
-                // Цена записана прямо: человек, доливающий файл,
-                // эпизодов и навыков не получит. Цена обратного выбора
-                // больше — разные эпизоды, склеенные в один, и разделить
-                // их потом нечем.
+                // Эпизоды и навыки процедур доливаются не здесь, а ниже,
+                // корневыми списками и только по `id` — связи с собакой
+                // у них нет. Разбор — в голове `restore`.
                 if let dog = try context.fetch(FetchDescriptor<Dog>()).first(where: { $0.name == имя }) {
                     дополнитьПрофиль(snapshot, у: dog)
                     restored += attachEvents(snapshot.events, to: dog, skipping: existingEventIDs, context: context)
-                    restored += attachRest(snapshot, to: dog, clinics: клиники, context: context)
+                    restored += attachRest(snapshot, to: dog, clinics: клиники,
+                                           известные: известные, context: context)
                 }
                 continue
             }
@@ -632,7 +698,8 @@ nonisolated enum BackupService {
             // вместе со 140 анализами и 40 визитами, экран печатал
             // число отметок дневника — то есть умалчивал ровно о том,
             // ради чего файл и собран.
-            restored += attachRest(snapshot, to: dog, clinics: клиники, context: context)
+            restored += attachRest(snapshot, to: dog, clinics: клиники,
+                                   известные: известные, context: context)
         }
 
         // Участники сливаются по имени — и тот же класс, что у собак:
@@ -640,12 +707,17 @@ nonisolated enum BackupService {
         // из архива слился бы с безымянным из хранилища. Проверка
         // на пустоту делает «сливать по имени» осмысленным:
         // пустое имя именем не является.
+        //
+        // С 05.11.2026 участник с известным `id` пропускается раньше
+        // имени: тот же человек, которого переименовали, — не второй.
         for snapshot in archive.members
-        where !(strategy == .merge && Fmt.notBlank(snapshot.name) != nil
+        where !известные.содержит(snapshot.id, \.люди)
+            && !(strategy == .merge && Fmt.notBlank(snapshot.name) != nil
                 && existingMemberNames.contains(snapshot.name)) {
             let member = FamilyMember(name: snapshot.name,
                                       role: FamilyRole(rawValue: snapshot.roleRaw) ?? .helper,
                                       isMe: snapshot.isMe)
+            if let id = snapshot.id { member.id = id }
             member.note = snapshot.note
             member.customPermissionsRaw = snapshot.customPermissionsRaw
             member.isOnDuty = snapshot.isOnDuty
@@ -656,38 +728,49 @@ nonisolated enum BackupService {
             restored += 1
         }
 
-        if strategy == .replace {
-            // Навыки процедур: корневой список, собаки у них нет.
-            // В ветке «долить» не восстанавливаются по той же причине,
-            // что эпизоды, — опознать «тот же навык» нечем: ни `id`
-            // в снимке, ни связи, а склейка по названию собрала бы
-            // в одну группу всё, что названия не заполнило.
-            // Наш класс, оплаченный сегодня четырьмя случаями.
-            for snapshot in archive.procedureSkills ?? [] {
-                let skill = ProcedureSkill(title: snapshot.title, detail: snapshot.detail,
-                                           targetDate: snapshot.targetDate)
-                skill.statusRaw = snapshot.statusRaw
-                skill.successes = snapshot.successes
-                skill.attempts = snapshot.attempts
-                context.insert(skill)
-            }
-            // `dogID` (V10) архив не несёт: у `DogSnapshot` нет своего
-            // идентификатора, а восстановленная собака получает новый.
-            // Восстановленный эпизод поэтому безымянный — то есть общий,
-            // как все эпизоды до V10. Это потеря «чей», а не эпизода,
-            // и названа здесь, а не найдена следующим.
-            for snapshot in archive.episodes {
-                let episode = Episode(title: snapshot.title, detail: snapshot.detail, startedAt: snapshot.startedAt)
-                episode.endedAt = snapshot.endedAt
-                // Последний инцидент держит КОНЕЦ эпизода: `isOngoing`
-                // сравнивает `now − lastIncidentAt` с сорока восьмью
-                // часами. В `init` это поле равно `startedAt`, поэтому
-                // без восстановления тишина считалась бы от начала —
-                // и эпизод, у которого инциденты шли пять дней,
-                // объявился бы законченным задним числом.
-                episode.lastIncidentAt = snapshot.lastIncidentAt ?? snapshot.startedAt
-                context.insert(episode)
-            }
+        // Навыки процедур и эпизоды: корневые списки, собаки у них нет.
+        //
+        // В ветке «долить» до 05.11.2026 не восстанавливались вовсе —
+        // опознать «тот же навык» было нечем: ни `id` в снимке, ни
+        // связи, а склейка по названию собрала бы в одну группу всё,
+        // что названия не заполнило. Условие снятия было записано
+        // заранее: «если появится устойчивый идентификатор». Он
+        // появился — и теперь при доливке едут ТОЛЬКО записи с `id`,
+        // которого на телефоне нет. Файл без id (старый) по-прежнему
+        // эпизодов и навыков при доливке не приносит: склеивать
+        // по названию мы не начали.
+        for snapshot in archive.procedureSkills ?? []
+        where strategy == .replace
+            || (snapshot.id != nil && !известные.содержит(snapshot.id, \.навыки)) {
+            let skill = ProcedureSkill(title: snapshot.title, detail: snapshot.detail,
+                                       targetDate: snapshot.targetDate)
+            if let id = snapshot.id { skill.id = id }
+            skill.statusRaw = snapshot.statusRaw
+            skill.successes = snapshot.successes
+            skill.attempts = snapshot.attempts
+            context.insert(skill)
+        }
+        for snapshot in archive.episodes
+        where strategy == .replace
+            || (snapshot.id != nil && !известные.содержит(snapshot.id, \.эпизоды)) {
+            // Чей эпизод (`dogID`, V10). До 05.11.2026 архив его не нёс:
+            // «у `DogSnapshot` нет своего идентификатора, а восстановленная
+            // собака получает новый», и восстановленный эпизод становился
+            // общим. С id собаки в архиве ссылка указывает на ту же
+            // собаку. Старый файл ключа не знает — эпизод общий, как
+            // до V10.
+            let episode = Episode(title: snapshot.title, detail: snapshot.detail,
+                                  startedAt: snapshot.startedAt, dogID: snapshot.dogID)
+            if let id = snapshot.id { episode.id = id }
+            episode.endedAt = snapshot.endedAt
+            // Последний инцидент держит КОНЕЦ эпизода: `isOngoing`
+            // сравнивает `now − lastIncidentAt` с сорока восьмью
+            // часами. В `init` это поле равно `startedAt`, поэтому
+            // без восстановления тишина считалась бы от начала —
+            // и эпизод, у которого инциденты шли пять дней,
+            // объявился бы законченным задним числом.
+            episode.lastIncidentAt = snapshot.lastIncidentAt ?? snapshot.startedAt
+            context.insert(episode)
         }
 
         // Сохраняем сразу: восстановление должно пережить закрытие
@@ -741,6 +824,10 @@ nonisolated enum BackupService {
     @MainActor
     private static func makeDog(_ snapshot: BackupArchive.DogSnapshot) -> Dog {
         let dog = Dog(name: snapshot.name, weightKg: snapshot.weightKg)
+        // Тот же id, что у собаки в файле: обмен узнаёт по нему ту же
+        // карточку у второго человека и не заводит дубль. У старого
+        // файла id нет — остаётся свежий из `init`.
+        if let id = snapshot.id { dog.id = id }
         dog.photo = snapshot.photo
         dog.breed = snapshot.breed
         dog.birthDate = snapshot.birthDate
@@ -1051,6 +1138,7 @@ nonisolated enum BackupService {
                                     doseText: medicationSnapshot.doseText,
                                     times: medicationSnapshot.times,
                                     fastingMinutes: medicationSnapshot.fastingMinutes)
+        if let id = medicationSnapshot.id { medication.id = id }
         medication.fastingBeforeMinutes = medicationSnapshot.fastingBeforeMinutes ?? 0
         medication.isPaused = medicationSnapshot.isPaused
         medication.prescriber = medicationSnapshot.prescriber
@@ -1169,13 +1257,17 @@ nonisolated enum BackupService {
     /// и **умалчивала ровно о том, ради чего файл собран**. Тот же
     /// класс, что был у подписи диалога перед «Заменить всё».
     ///
-    /// # Пропуск — по ЕСТЕСТВЕННЫМ ключам, потому что `id` в снимке нет
+    /// # Пропуск — сперва по `id`, потом по ЕСТЕСТВЕННЫМ ключам
     ///
-    /// `id` несёт один снимок из пятнадцати — `EventSnapshot`, и по нему
-    /// работает дедупликация ленты (`attachEvents`). У остальных его нет
-    /// нарочно: «после восстановления это ДРУГАЯ запись в другом
-    /// хранилище» (`ArchiveParityTests`). Значит опознать «та же запись»
-    /// можно только тем, чем её опознаёт человек, — содержанием:
+    /// С 05.11.2026 `id` несёт каждый снимок, и запись, чей id уже лежит
+    /// в хранилище (`ИзвестныеID`), не вставляется. Схема с тем же id
+    /// у этой собаки — та же схема, в неё доливаются дозы.
+    ///
+    /// До этого `id` нёс один снимок из пятнадцати (`EventSnapshot`),
+    /// и опознать «та же запись» можно было только тем, чем её опознаёт
+    /// человек, — содержанием. Ключи остаются: у старых файлов id нет,
+    /// а запись, заведённая на ЭТОМ телефоне руками заново, имеет свой
+    /// id и узнаётся только по содержанию:
     ///
     /// ```
     /// вес             дата + килограммы
@@ -1227,9 +1319,15 @@ nonisolated enum BackupService {
         _ snapshot: BackupArchive.DogSnapshot,
         to dog: Dog,
         clinics: [String: Clinic],
+        известные: ИзвестныеID,
         context: ModelContext
     ) -> Int {
         var добавлено = 0
+        /// Запись с этим id уже лежит в хранилище — где угодно, не только
+        /// у этой собаки: два объекта с одним id обмен склеил бы сам.
+        func есть(_ id: UUID?, _ вид: KeyPath<ИзвестныеID, Set<UUID>>) -> Bool {
+            известные.содержит(id, вид)
+        }
 
         // Вес — `дата + килограммы`. Два взвешивания в один день бывают
         // (дома утром и у врача днём), поэтому одной даты мало; вес без
@@ -1237,8 +1335,10 @@ nonisolated enum BackupService {
         let естьВеса = Set((dog.weightsStorage ?? [])
             .map { ключ(секунды($0.date), граммы($0.kg)) })
         for weight in snapshot.weights
-        where !естьВеса.contains(ключ(секунды(weight.date), граммы(weight.kg))) {
+        where !есть(weight.id, \.веса)
+            && !естьВеса.contains(ключ(секунды(weight.date), граммы(weight.kg))) {
             let entry = WeightEntry(date: weight.date, kg: weight.kg)
+            if let id = weight.id { entry.id = id }
             entry.dog = dog
             context.insert(entry)
             добавлено += 1
@@ -1249,11 +1349,13 @@ nonisolated enum BackupService {
         // в ключ, доливка завела бы второе «Когти», и человек получил бы
         // два напоминания об одном.
         let естьДела = Set((dog.careTasksStorage ?? []).map(\.title))
-        for care in snapshot.careTasks where !естьДела.contains(care.title) {
+        for care in snapshot.careTasks
+        where !есть(care.id, \.дела) && !естьДела.contains(care.title) {
             let task = CareTask(title: care.title, detail: care.detail,
                                 intervalDays: care.intervalDays,
                                 category: CareCategory(rawValue: care.categoryRaw) ?? .grooming,
                                 lastDone: care.lastDone)
+            if let id = care.id { task.id = id }
             task.seasonStartMonth = care.seasonStartMonth
             task.seasonEndMonth = care.seasonEndMonth
             task.snoozeCount = care.snoozeCount
@@ -1290,7 +1392,18 @@ nonisolated enum BackupService {
         for схема in dog.medicationsStorage ?? [] {
             схемыПоКлючу[ключ(схема.name, схема.prescriptionNumber ?? "")] = схема
         }
+        // Схема с тем же id — та же схема, даже если её переименовали
+        // или вписали номер назначения после снятия файла. Ищется
+        // у этой собаки: доливать дозы в чужую схему нельзя.
+        let схемыПоID = Dictionary((dog.medicationsStorage ?? []).map { ($0.id, $0) },
+                                   uniquingKeysWith: { первая, _ in первая })
         for medicationSnapshot in snapshot.medications {
+            // Тот же id лежит у ДРУГОЙ собаки — пропускаем целиком:
+            // вторая схема с тем же id была бы дублем, который обмен
+            // склеит по-своему.
+            if let id = medicationSnapshot.id, схемыПоID[id] == nil, есть(id, \.схемы) {
+                continue
+            }
             let ключСхемы = ключ(medicationSnapshot.name,
                                  medicationSnapshot.prescriptionNumber ?? "")
             // Схемы ещё нет — заводим; есть — доливаем в неё одни дозы.
@@ -1306,7 +1419,9 @@ nonisolated enum BackupService {
             // не беремся; повторный долив того же файла их всё равно
             // не задвоит — ключ к тому времени в наборе есть.
             let medication: Medication
-            if let существующая = схемыПоКлючу[ключСхемы] {
+            if let id = medicationSnapshot.id, let тажеСамая = схемыПоID[id] {
+                medication = тажеСамая
+            } else if let существующая = схемыПоКлючу[ключСхемы] {
                 medication = существующая
             } else {
                 medication = makeMedication(medicationSnapshot)
@@ -1322,24 +1437,21 @@ nonisolated enum BackupService {
             let естьДозы = Set((medication.dosesStorage ?? [])
                 .map { секунды($0.scheduledAt) })
             for doseSnapshot in medicationSnapshot.doses
-            where !естьДозы.contains(секунды(doseSnapshot.scheduledAt)) {
-                // **`DoseRecord.устойчивыйID` здесь НЕ применяется, и это
-                // не недосмотр.** Он выводит id из `medication.id`,
-                // а `MedicationSnapshot` id схемы не несёт (см. ниже) —
-                // при восстановлении схема получает свежий `UUID()`.
-                // Значит выведенный id был бы функцией случайной
-                // величины: у двух телефонов, восстановивших ОДИН
-                // архив независимо, отметки всё равно разойдутся.
+            where !есть(doseSnapshot.id, \.дозы)
+                && !естьДозы.contains(секунды(doseSnapshot.scheduledAt)) {
+                // **id дозы — из файла** (05.11.2026). До этого здесь
+                // стоял разбор, почему `DoseRecord.устойчивыйID`
+                // не применяется: схема рождалась со свежим `UUID()`,
+                // и выведенный id был бы функцией случайной величины.
+                // Теперь едет сам id дозы, и выводить его не нужно:
+                // два телефона, восстановившие один файл, получают
+                // одинаковые отметки.
                 //
-                // Пока `MedicationSnapshot` не несёт устойчивый id схемы,
-                // независимое восстановление одного архива на двух
-                // телефонах даёт по две отметки на приём — тот же дефект,
-                // что чинит `устойчивыйID`, второй дорогой.
-                //
-                // Цена ниже, чем кажется: обычный путь — восстановили
-                // у одного, записи уехали обменом со своими id. Дефект
-                // достаётся только тем, кто восстановил архив ОБА.
+                // У старого файла id нет — остаётся свежий из `init`,
+                // и дефект «две отметки на приём у тех, кто восстановил
+                // ОБА» для таких файлов прежний.
                 let dose = DoseRecord(scheduledAt: doseSnapshot.scheduledAt)
+                if let id = doseSnapshot.id { dose.id = id }
                 dose.givenAt = doseSnapshot.givenAt
                 dose.givenBy = doseSnapshot.givenBy
                 dose.cancelledAt = doseSnapshot.cancelledAt
@@ -1350,11 +1462,11 @@ nonisolated enum BackupService {
                 dose.skippedAt = doseSnapshot.skippedAt
                 dose.skippedBy = doseSnapshot.skippedBy
                 // Чего доза ждёт, если схема до неё не доехала.
-                // Едет только имя: `awaitedMedicationID` в архив
-                // не идёт нарочно — `Medication.id` тоже не идёт,
-                // и восстановленная ссылка указывала бы в никуда,
-                // выглядя при этом валидным UUID.
+                // С 05.11.2026 едут и имя, и id: id схемы теперь в файле,
+                // и ссылка указывает на ту же схему. У старого файла id
+                // нет — остаётся имя, сшивка смотрит «по id ИЛИ по имени».
                 dose.awaitedMedicationName = doseSnapshot.awaitedMedicationName
+                dose.awaitedMedicationID = doseSnapshot.awaitedMedicationID
                 dose.claimedBy = doseSnapshot.claimedBy
                 dose.claimedAt = doseSnapshot.claimedAt
                 dose.medication = medication
@@ -1370,11 +1482,13 @@ nonisolated enum BackupService {
         let естьШаги = Set((dog.trainingStepsStorage ?? [])
             .map { ключ($0.cue, String($0.order)) })
         for stepSnapshot in snapshot.trainingSteps
-        where !естьШаги.contains(ключ(stepSnapshot.cue, String(stepSnapshot.order))) {
+        where !есть(stepSnapshot.id, \.шаги)
+            && !естьШаги.contains(ключ(stepSnapshot.cue, String(stepSnapshot.order))) {
             let step = TrainingStep(cue: stepSnapshot.cue, place: stepSnapshot.place,
                                     person: stepSnapshot.person,
                                     distanceMeters: stepSnapshot.distanceMeters,
                                     order: stepSnapshot.order)
+            if let id = stepSnapshot.id { step.id = id }
             step.statusRaw = stepSnapshot.statusRaw
             step.consecutiveGoodSessions = stepSnapshot.consecutiveGoodSessions
             step.dog = dog
@@ -1387,10 +1501,12 @@ nonisolated enum BackupService {
         let естьЗанятия = Set((dog.trainingSessionsStorage ?? [])
             .map { секунды($0.startedAt) })
         for sessionSnapshot in snapshot.trainingSessions
-        where !естьЗанятия.contains(секунды(sessionSnapshot.startedAt)) {
+        where !есть(sessionSnapshot.id, \.занятия)
+            && !естьЗанятия.contains(секунды(sessionSnapshot.startedAt)) {
             let session = TrainingSession(cue: sessionSnapshot.cue, place: sessionSnapshot.place,
                                           person: sessionSnapshot.person,
                                           distanceMeters: sessionSnapshot.distanceMeters)
+            if let id = sessionSnapshot.id { session.id = id }
             session.startedAt = sessionSnapshot.startedAt
             session.durationSeconds = sessionSnapshot.durationSeconds
             session.markDelaysMs = sessionSnapshot.markDelaysMs
@@ -1412,13 +1528,15 @@ nonisolated enum BackupService {
         let естьЗапасы = Set((dog.stocksStorage ?? [])
             .map { ключ($0.kindRaw, $0.brand, String($0.packGrams)) })
         for stockSnapshot in snapshot.stocks ?? []
-        where !естьЗапасы.contains(ключ(stockSnapshot.kindRaw, stockSnapshot.brand,
+        where !есть(stockSnapshot.id, \.запасы)
+            && !естьЗапасы.contains(ключ(stockSnapshot.kindRaw, stockSnapshot.brand,
                                         String(stockSnapshot.packGrams))) {
             let stock = FoodStock(kind: FoodKind(rawValue: stockSnapshot.kindRaw) ?? .dry,
                                   brand: stockSnapshot.brand,
                                   packGrams: stockSnapshot.packGrams,
                                   packsLeft: stockSnapshot.packsLeft,
                                   gramsPerDay: stockSnapshot.gramsPerDay)
+            if let id = stockSnapshot.id { stock.id = id }
             stock.openedAt = stockSnapshot.openedAt
             stock.expiry = stockSnapshot.expiry
             stock.shelfAfterOpenDays = stockSnapshot.shelfAfterOpenDays
@@ -1440,10 +1558,12 @@ nonisolated enum BackupService {
         // вторую течку поверх той же самой, как только первую закрыли.
         let естьТечки = Set((dog.heatsStorage ?? []).map { секунды($0.startedAt) })
         for heatSnapshot in snapshot.heats ?? []
-        where !естьТечки.contains(секунды(heatSnapshot.startedAt)) {
+        where !есть(heatSnapshot.id, \.течки)
+            && !естьТечки.contains(секунды(heatSnapshot.startedAt)) {
             let heat = HeatRecord(startedAt: heatSnapshot.startedAt,
                                   endedAt: heatSnapshot.endedAt,
                                   note: heatSnapshot.note)
+            if let id = heatSnapshot.id { heat.id = id }
             heat.dog = dog
             context.insert(heat)
             добавлено += 1
@@ -1453,9 +1573,11 @@ nonisolated enum BackupService {
         // на ходу.
         let естьВыезды = Set((dog.daysOutStorage ?? []).map { секунды($0.startedAt) })
         for dayOutSnapshot in snapshot.daysOut ?? []
-        where !естьВыезды.contains(секунды(dayOutSnapshot.startedAt)) {
+        where !есть(dayOutSnapshot.id, \.выезды)
+            && !естьВыезды.contains(секунды(dayOutSnapshot.startedAt)) {
             let выезд = DayOut(startedAt: dayOutSnapshot.startedAt,
                                plannedHours: dayOutSnapshot.plannedHours)
+            if let id = dayOutSnapshot.id { выезд.id = id }
             выезд.endedAt = dayOutSnapshot.endedAt
             выезд.note = dayOutSnapshot.note
             выезд.dog = dog
@@ -1470,11 +1592,13 @@ nonisolated enum BackupService {
         let естьДокументы = Set((dog.documentsStorage ?? [])
             .map { ключ($0.title, секунды($0.occurredOn)) })
         for documentSnapshot in snapshot.documents ?? []
-        where !естьДокументы.contains(ключ(documentSnapshot.title,
+        where !есть(documentSnapshot.id, \.документы)
+            && !естьДокументы.contains(ключ(documentSnapshot.title,
                                            секунды(documentSnapshot.occurredOn))) {
             let document = DogDocument(title: documentSnapshot.title,
                                        image: documentSnapshot.image,
                                        note: documentSnapshot.note)
+            if let id = documentSnapshot.id { document.id = id }
             document.addedAt = documentSnapshot.addedAt
             // Четыре поля шага 0: тип, номер, кем выдан, срок. Срок —
             // то, из-за чего шаг 0 и начался: истёкшую прививку нельзя
@@ -1517,13 +1641,15 @@ nonisolated enum BackupService {
         let естьАнализы = Set((dog.labResultsStorage ?? [])
             .map { ключ(секунды($0.sampledOn), $0.indicator, $0.reportNumber) })
         for снимок in snapshot.labResults ?? []
-        where !естьАнализы.contains(ключ(секунды(снимок.sampledOn), снимок.indicator,
+        where !есть(снимок.id, \.анализы)
+            && !естьАнализы.contains(ключ(секунды(снимок.sampledOn), снимок.indicator,
                                          снимок.reportNumber)) {
             let анализ = LabResult(sampledOn: снимок.sampledOn,
                                    indicator: снимок.indicator,
                                    section: снимок.section,
                                    laboratory: снимок.laboratory,
                                    reportNumber: снимок.reportNumber)
+            if let id = снимок.id { анализ.id = id }
             анализ.sampledAt = снимок.sampledAt
             // Три поля значения — порознь. Сложить их в одно значило бы
             // превратить «<0,1» в число 0,1, то есть тихо неверное
@@ -1548,9 +1674,11 @@ nonisolated enum BackupService {
         let естьВизиты = Set((dog.vetVisitsStorage ?? [])
             .map { ключ(секунды($0.date), $0.clinic?.name ?? "") })
         for снимок in snapshot.vetVisits ?? []
-        where !естьВизиты.contains(ключ(секунды(снимок.date), снимок.clinicName ?? "")) {
+        where !есть(снимок.id, \.визиты)
+            && !естьВизиты.contains(ключ(секунды(снимок.date), снимок.clinicName ?? "")) {
             let визит = VetVisit(date: снимок.date, doctor: снимок.doctor,
                                  reasonRaw: снимок.reasonRaw)
+            if let id = снимок.id { визит.id = id }
             визит.conclusion = снимок.conclusion
             if let имя = Fmt.notBlank(снимок.clinicName ?? "") {
                 визит.clinic = clinics[имя]
@@ -1566,9 +1694,11 @@ nonisolated enum BackupService {
         let естьДиагнозы = Set((dog.diagnosesStorage ?? [])
             .map { ключ($0.wording, секунды($0.madeOn)) })
         for снимок in snapshot.diagnoses ?? []
-        where !естьДиагнозы.contains(ключ(снимок.wording, секунды(снимок.madeOn))) {
+        where !есть(снимок.id, \.диагнозы)
+            && !естьДиагнозы.contains(ключ(снимок.wording, секунды(снимок.madeOn))) {
             let диагноз = Diagnosis(wording: снимок.wording, madeOn: снимок.madeOn,
                                     statusRaw: снимок.statusRaw)
+            if let id = снимок.id { диагноз.id = id }
             диагноз.madeBy = снимок.madeBy
             диагноз.evidence = снимок.evidence
             диагноз.dog = dog
@@ -1580,9 +1710,11 @@ nonisolated enum BackupService {
         let естьРецепты = Set((dog.prescriptionsStorage ?? [])
             .map { ключ($0.number, $0.medicationName) })
         for снимок in snapshot.prescriptions ?? []
-        where !естьРецепты.contains(ключ(снимок.number, снимок.medicationName)) {
+        where !есть(снимок.id, \.рецепты)
+            && !естьРецепты.contains(ключ(снимок.number, снимок.medicationName)) {
             let рецепт = Prescription(number: снимок.number, date: снимок.date,
                                       medicationName: снимок.medicationName)
+            if let id = снимок.id { рецепт.id = id }
             рецепт.doctor = снимок.doctor
             рецепт.dogWeightKg = снимок.dogWeightKg
             рецепт.dosage = снимок.dosage
@@ -1607,12 +1739,14 @@ nonisolated enum BackupService {
         let естьПоездки = Set((dog.tripsStorage ?? [])
             .map { ключ($0.destination, секунды($0.startDate)) })
         for tripSnapshot in snapshot.trips
-        where !естьПоездки.contains(ключ(tripSnapshot.destination,
+        where !есть(tripSnapshot.id, \.поездки)
+            && !естьПоездки.contains(ключ(tripSnapshot.destination,
                                          секунды(tripSnapshot.startDate))) {
             let trip = Trip(destination: tripSnapshot.destination,
                             startDate: tripSnapshot.startDate,
                             endDate: tripSnapshot.endDate,
                             transport: TransportKind(rawValue: tripSnapshot.transportRaw) ?? .car)
+            if let id = tripSnapshot.id { trip.id = id }
             trip.travelHours = tripSnapshot.travelHours
             trip.lodging = tripSnapshot.lodging
             trip.participants = tripSnapshot.participants
@@ -1623,6 +1757,71 @@ nonisolated enum BackupService {
             добавлено += 1
         }
         return добавлено
+    }
+}
+
+/// Идентификаторы записей, которые УЖЕ лежат в хранилище, — по видам.
+///
+/// Заведено 05.11.2026 вместе с `id` в снимках архива. Доливка
+/// опознаёт «ту же запись» сперва по `id`, и только потом
+/// по естественному ключу (`BackupService.attachRest`): ключ остаётся
+/// для старых файлов, у которых id нет.
+///
+/// **Набор глобальный, а не по собаке**, в отличие от естественных
+/// ключей: две записи с одним id у разных собак — не две записи,
+/// а одна, которую обмен склеит по-своему. Собран ДО долива
+/// и по ходу не пополняется — та же оговорка, что у ключей.
+///
+/// **Надгробия входят**, выборки идут без предиката: запись, удалённая
+/// на этом телефоне, долив файла не воскрешает.
+nonisolated struct ИзвестныеID {
+    var веса: Set<UUID> = []
+    var дела: Set<UUID> = []
+    var схемы: Set<UUID> = []
+    var дозы: Set<UUID> = []
+    var анализы: Set<UUID> = []
+    var визиты: Set<UUID> = []
+    var диагнозы: Set<UUID> = []
+    var рецепты: Set<UUID> = []
+    var документы: Set<UUID> = []
+    var запасы: Set<UUID> = []
+    var течки: Set<UUID> = []
+    var выезды: Set<UUID> = []
+    var шаги: Set<UUID> = []
+    var занятия: Set<UUID> = []
+    var поездки: Set<UUID> = []
+    var люди: Set<UUID> = []
+    var эпизоды: Set<UUID> = []
+    var навыки: Set<UUID> = []
+
+    /// `nil` — у старого файла id нет, и опознавать по нему нечего.
+    func содержит(_ id: UUID?, _ вид: KeyPath<ИзвестныеID, Set<UUID>>) -> Bool {
+        guard let id else { return false }
+        return self[keyPath: вид].contains(id)
+    }
+
+    @MainActor
+    static func из(_ context: ModelContext) throws -> ИзвестныеID {
+        var и = ИзвестныеID()
+        и.веса = Set(try context.fetch(FetchDescriptor<WeightEntry>()).map(\.id))
+        и.дела = Set(try context.fetch(FetchDescriptor<CareTask>()).map(\.id))
+        и.схемы = Set(try context.fetch(FetchDescriptor<Medication>()).map(\.id))
+        и.дозы = Set(try context.fetch(FetchDescriptor<DoseRecord>()).map(\.id))
+        и.анализы = Set(try context.fetch(FetchDescriptor<LabResult>()).map(\.id))
+        и.визиты = Set(try context.fetch(FetchDescriptor<VetVisit>()).map(\.id))
+        и.диагнозы = Set(try context.fetch(FetchDescriptor<Diagnosis>()).map(\.id))
+        и.рецепты = Set(try context.fetch(FetchDescriptor<Prescription>()).map(\.id))
+        и.документы = Set(try context.fetch(FetchDescriptor<DogDocument>()).map(\.id))
+        и.запасы = Set(try context.fetch(FetchDescriptor<FoodStock>()).map(\.id))
+        и.течки = Set(try context.fetch(FetchDescriptor<HeatRecord>()).map(\.id))
+        и.выезды = Set(try context.fetch(FetchDescriptor<DayOut>()).map(\.id))
+        и.шаги = Set(try context.fetch(FetchDescriptor<TrainingStep>()).map(\.id))
+        и.занятия = Set(try context.fetch(FetchDescriptor<TrainingSession>()).map(\.id))
+        и.поездки = Set(try context.fetch(FetchDescriptor<Trip>()).map(\.id))
+        и.люди = Set(try context.fetch(FetchDescriptor<FamilyMember>()).map(\.id))
+        и.эпизоды = Set(try context.fetch(FetchDescriptor<Episode>()).map(\.id))
+        и.навыки = Set(try context.fetch(FetchDescriptor<ProcedureSkill>()).map(\.id))
+        return и
     }
 }
 
