@@ -396,38 +396,38 @@
         }
       }
     },
-    " назад" : {
-      "comment" : "episodesCard",
+    "%@ назад" : {
+      "comment" : "Порог тревоги, строка эпизода: сколько времени прошло (Fmt.gap — уже переведённая длительность).",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : " ago"
+            "value" : "%@ ago"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " plus tôt"
+            "value" : "%@ plus tôt"
           }
         },
         "kk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : " бұрын"
+            "value" : "%@ бұрын"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " назад"
+            "value" : "%@ назад"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : " тому"
+            "value" : "%@ тому"
           }
         }
       }
