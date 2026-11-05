@@ -105,8 +105,16 @@ struct WeightCorridorVerdictTests {
 
     // MARK: - 2. Якорь от ПОКАЗА, а не от предиката
 
+    /// Ось сменила путь 05.11.2026 (пачка 6 аудита): `WeightScreen`
+    /// уехал из `HealthScreen.swift` в свой файл дословно, и показ
+    /// веса с `weightVerdict` уехал вместе с ним. В `HealthScreen.swift`
+    /// осталась только ссылка «Вес и симптомы» с числом `Fmt.weight`,
+    /// без вердикта: `weightVerdict` и `isWeightInRange` в его коде —
+    /// ноль вхождений (замер 05.11.2026, контроль: в `WeightScreen.swift`
+    /// `weightVerdict` один). Старый путь дал бы красный «не спрашивает
+    /// `weightVerdict`» про переезд, а не про возврат к предикату.
     private static var экраны: [String] {
-        ["Togo/Features/Health/HealthScreen.swift",
+        ["Togo/Features/Health/WeightScreen.swift",
          "Togo/Features/Profile/ProfileScreen.swift"]
     }
 
