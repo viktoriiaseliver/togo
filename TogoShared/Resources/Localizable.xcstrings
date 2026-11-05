@@ -2859,6 +2859,62 @@
         }
       }
     },
+    "годен до %@ · после вскрытия" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "good until %@ · after opening"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "valable jusqu'au %@ · après ouverture"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ дейін жарамды · ашылғаннан кейін"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "придатний до %@ · після відкриття"
+          }
+        }
+      }
+    },
+    "годен до %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "good until %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "valable jusqu'au %@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%@ дейін жарамды"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "придатний до %@"
+          }
+        }
+      }
+    },
     "Дальше · через %@" : {
       "localizations" : {
         "en" : {
@@ -3443,6 +3499,62 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Наступне годування приблизно о %@ — тільки сьогодні."
+          }
+        }
+      }
+    },
+    "срок истёк %@ · после вскрытия" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "expired on %@ · after opening"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "périmé le %@ · après ouverture"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "жарамдылық мерзімі %@ бітті · ашылғаннан кейін"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "термін вийшов %@ · після відкриття"
+          }
+        }
+      }
+    },
+    "срок истёк %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "expired on %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "périmé le %@"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "жарамдылық мерзімі %@ бітті"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "термін вийшов %@"
           }
         }
       }
