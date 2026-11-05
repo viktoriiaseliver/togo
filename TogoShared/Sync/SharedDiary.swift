@@ -309,8 +309,8 @@ nonisolated struct DogPayload: Equatable, Sendable, Codable {
     /// нагрузку с полями модели **по имени**, и латинский псевдоним
     /// пришлось бы вносить ему исключением, то есть прятать поле
     /// от проверки вместо того, чтобы её пройти.
-    var разовыеВременаДата: Date? = nil
-    var разовыеВремена: [Int] = []
+    var mealTimesOverrideDay: Date? = nil
+    var mealTimesOverride: [Int] = []
 
     var dailyNormGrams: Int?
     var forbiddenFoods: [String]

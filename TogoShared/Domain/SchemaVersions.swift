@@ -4741,8 +4741,8 @@ nonisolated enum TogoSchemaV10: VersionedSchema {
 //
 // ```
 // сущностей      21 → 21
-// новых свойств  2: Dog.разовыеВременаДата: Date? (опциональное)
-//                   Dog.разовыеВремена: [Int] = [] (с умолчанием)
+// новых свойств  2: Dog.mealTimesOverrideDay: Date? (опциональное)
+//                   Dog.mealTimesOverride: [Int] = [] (с умолчанием)
 // удалений, переименований  0
 // ```
 //
@@ -4847,7 +4847,7 @@ nonisolated enum TogoMigrationPlan: SchemaMigrationPlan {
             // читаются общими, как читались до сих пор.
             .lightweight(fromVersion: TogoSchemaV9.self, toVersion: TogoSchemaV10.self),
             // V10 → V11: два поля разового исключения кормления —
-            // необязательная `Dog.разовыеВременаДата` и `[Int]`
+            // необязательная `Dog.mealTimesOverrideDay` и `[Int]`
             // с умолчанием `[]`. Удалений и переименований ноль,
             // сущностей 21 → 21.
             //

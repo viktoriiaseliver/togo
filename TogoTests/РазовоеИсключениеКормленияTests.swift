@@ -69,8 +69,8 @@ struct РазовоеИсключениеКормленияTests {
     @Test("Исключение этих суток подменяет расписание целиком")
     func исключениеПодменяет() {
         let dog = стич()
-        dog.разовыеВременаДата = сутки()
-        dog.разовыеВремена = [570, 930, Self.УЖИН_В_22]
+        dog.mealTimesOverrideDay = сутки()
+        dog.mealTimesOverride = [570, 930, Self.УЖИН_В_22]
 
         #expect(dog.часыКормленийНа(сутки()) == [570, 930, Self.УЖИН_В_22])
         #expect(dog.естьРазовоеИсключение(сутки()))
@@ -90,8 +90,8 @@ struct РазовоеИсключениеКормленияTests {
     @Test("Чужой день отбрасывается: вчерашнее и завтрашнее исключение не действуют")
     func чужойДеньОтбрасывается() {
         let вчерашнее = стич()
-        вчерашнее.разовыеВременаДата = сутки(-1)
-        вчерашнее.разовыеВремена = [570, 930, Self.УЖИН_В_22]
+        вчерашнее.mealTimesOverrideDay = сутки(-1)
+        вчерашнее.mealTimesOverride = [570, 930, Self.УЖИН_В_22]
         #expect(вчерашнее.часыКормленийНа(сутки()) == Self.ЕЁ_ЧАСЫ, """
             вчерашнее исключение действует сегодня. Так «сегодня ужин \
             в 22:00» становится постоянным расписанием, которого никто \
@@ -101,8 +101,8 @@ struct РазовоеИсключениеКормленияTests {
         #expect(вчерашнее.естьРазовоеИсключение(сутки()) == false)
 
         let сегодняшнее = стич()
-        сегодняшнее.разовыеВременаДата = сутки()
-        сегодняшнее.разовыеВремена = [570, 930, Self.УЖИН_В_22]
+        сегодняшнее.mealTimesOverrideDay = сутки()
+        сегодняшнее.mealTimesOverride = [570, 930, Self.УЖИН_В_22]
         #expect(сегодняшнее.часыКормленийНа(сутки(1)) == Self.ЕЁ_ЧАСЫ)
 
         // Контроль того же замера: на СВОЙ день оно действует. Без него
@@ -120,8 +120,8 @@ struct РазовоеИсключениеКормленияTests {
     @Test("Пустые часы при заполненной дате значат «исключения нет»")
     func пустыеЧасыНеГолодныйДень() {
         let dog = стич()
-        dog.разовыеВременаДата = сутки()
-        dog.разовыеВремена = []
+        dog.mealTimesOverrideDay = сутки()
+        dog.mealTimesOverride = []
         #expect(dog.часыКормленийНа(сутки()) == Self.ЕЁ_ЧАСЫ)
         #expect(dog.естьРазовоеИсключение(сутки()) == false)
     }
@@ -145,8 +145,8 @@ struct РазовоеИсключениеКормленияTests {
             """)
         #expect(Self.УЖИН_В_22 > предел, "22:00 обязано быть ЗА пределом, иначе исключение не нужно")
 
-        dog.разовыеВременаДата = сутки()
-        dog.разовыеВремена = [570, 930, Self.УЖИН_В_22]
+        dog.mealTimesOverrideDay = сутки()
+        dog.mealTimesOverride = [570, 930, Self.УЖИН_В_22]
         #expect(dog.часыКормленийНа(сутки()).last == Self.УЖИН_В_22, """
             читатель обрезал названный человеком час по пределу \
             расписания. Тогда исключение не делает ровно того, ради \
@@ -195,8 +195,8 @@ struct ИсключениеВПланеДняTests {
     @Test("План дня берёт часы исключения и говорит об этом словом")
     func планБерётИсключение() throws {
         let dog = стич()
-        dog.разовыеВременаДата = Calendar.current.startOfDay(for: Date())
-        dog.разовыеВремена = [570, 930, 22 * 60]
+        dog.mealTimesOverrideDay = Calendar.current.startOfDay(for: Date())
+        dog.mealTimesOverride = [570, 930, 22 * 60]
 
         let пункты = DayPlanBuilder.items(dog: dog, events: [], now: время(600))
         let еды = пункты.filter { $0.kind == .meal }
@@ -263,8 +263,8 @@ struct ИсключениеЕдетTests {
             targetWeightLow: nil, targetWeightHigh: nil,
             foodBrand: "", portionGrams: 60, mealsPerDay: 3,
             mealTimes: [570, 930, 1290],
-            разовыеВременаДата: сутки,
-            разовыеВремена: [570, 930, 22 * 60],
+            mealTimesOverrideDay: сутки,
+            mealTimesOverride: [570, 930, 22 * 60],
             dailyNormGrams: nil, forbiddenFoods: [],
             wakeMinuteOfDay: 9 * 60, sleepMinuteOfDay: 23 * 60,
             isOnTreatment: false, chipNumber: nil,
@@ -286,16 +286,16 @@ struct ИсключениеЕдетTests {
         SharedDiaryInbox.accept(снимок(), context: context)
 
         let гостьСобака = try #require(try context.fetch(FetchDescriptor<Dog>()).first)
-        #expect(гостьСобака.разовыеВремена == [570, 930, 1320], """
+        #expect(гостьСобака.mealTimesOverride == [570, 930, 1320], """
             у гостя исключения нет. Значит «сегодня ужин в 22:00» \
             знает один телефон, а кормить собаку вечером будет другой.
             """)
-        let дата = try #require(гостьСобака.разовыеВременаДата)
+        let дата = try #require(гостьСобака.mealTimesOverrideDay)
         #expect(Calendar.current.isDate(дата, inSameDayAs: сутки))
         #expect(гостьСобака.часыКормленийНа(Date()) == [570, 930, 1320])
 
         // И обратно: то, что гость увидел, он же и отправляет дальше.
-        #expect(гостьСобака.payload.разовыеВремена == [570, 930, 1320])
+        #expect(гостьСобака.payload.mealTimesOverride == [570, 930, 1320])
     }
 
     /// Слой записи CloudKit. Нагрузка и `CKRecord` — **разные слои**,
@@ -318,8 +318,8 @@ struct ИсключениеЕдетTests {
         #expect(запись["mealTimesOverrideDay"] as? Date != nil)
 
         let обратно = try #require(SharedDiaryRecords.dogPayload(запись))
-        #expect(обратно.разовыеВремена == [570, 930, 1320])
-        let дата = try #require(обратно.разовыеВременаДата)
+        #expect(обратно.mealTimesOverride == [570, 930, 1320])
+        let дата = try #require(обратно.mealTimesOverrideDay)
         #expect(Calendar.current.isDate(дата, inSameDayAs: сутки))
     }
 
@@ -333,8 +333,8 @@ struct ИсключениеЕдетTests {
         запись["mealTimesOverrideDay"] = nil
 
         let обратно = try #require(SharedDiaryRecords.dogPayload(запись))
-        #expect(обратно.разовыеВременаДата == nil)
-        #expect(обратно.разовыеВремена.isEmpty)
+        #expect(обратно.mealTimesOverrideDay == nil)
+        #expect(обратно.mealTimesOverride.isEmpty)
         // Контроль: остальное из той же записи по-прежнему читается —
         // значит разбор не отказал целиком, а именно этих ключей нет.
         #expect(обратно.mealTimes == [570, 930, 1290])

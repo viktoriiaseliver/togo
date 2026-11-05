@@ -92,7 +92,7 @@ struct SchemaFrozenTests {
         // на настоящей `Schema`.
         #expect(поля(TogoSchemaV11.self, "Dog")
                     .subtracting(поля(TogoSchemaV10.self, "Dog"))
-                == ["разовыеВременаДата", "разовыеВремена"])
+                == ["mealTimesOverrideDay", "mealTimesOverride"])
         #expect(поля(TogoSchemaV10.self, "Dog")
                     .subtracting(поля(TogoSchemaV11.self, "Dog")).isEmpty, """
             V11 потеряла поле, которое было в V10. Удаление поля

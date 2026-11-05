@@ -230,8 +230,8 @@ extension Dog {
             portionGrams: portionGrams,
             mealsPerDay: mealsPerDay,
             mealTimes: mealTimes,
-            разовыеВременаДата: разовыеВременаДата,
-            разовыеВремена: разовыеВремена,
+            mealTimesOverrideDay: mealTimesOverrideDay,
+            mealTimesOverride: mealTimesOverride,
             dailyNormGrams: dailyNormGrams,
             forbiddenFoods: forbiddenFoods,
             wakeMinuteOfDay: wakeMinuteOfDay,
@@ -274,8 +274,8 @@ extension Dog {
         portionGrams = payload.portionGrams
         mealsPerDay = payload.mealsPerDay
         mealTimes = payload.mealTimes
-        разовыеВременаДата = payload.разовыеВременаДата
-        разовыеВремена = payload.разовыеВремена
+        mealTimesOverrideDay = payload.mealTimesOverrideDay
+        mealTimesOverride = payload.mealTimesOverride
         dailyNormGrams = payload.dailyNormGrams
         forbiddenFoods = payload.forbiddenFoods
         wakeMinuteOfDay = payload.wakeMinuteOfDay

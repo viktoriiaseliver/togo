@@ -108,7 +108,7 @@ final class Dog {
     //
     // Зеркало приватной базы берёт имя поля у модели:
     // `python3 Tools/derive_cloudkit_mirror.py --schema` печатает
-    // `CD_разовыеВремена BYTES QUERYABLE SORTABLE`. Правило Apple для
+    // `CD_mealTimesOverride BYTES QUERYABLE SORTABLE`. Правило Apple для
     // имени поля записи — «начинается с буквы, дальше буквы, цифры
     // и подчёркивание», — и что там считается буквой, кириллицей
     // не проверено НИЧЕМ, что есть на этой машине: `cktool
@@ -130,14 +130,14 @@ final class Dog {
     // не стали.
 
     /// На какие сутки стоит разовое исключение. Пусто — его нет.
-    var разовыеВременаДата: Date?
+    var mealTimesOverrideDay: Date?
 
     /// Часы кормлений ЭТИХ суток целиком, минутами от полуночи.
     ///
     /// Целиком, а не «смещение ужина»: читателю нужен тот же список,
     /// что `mealTimes`, — тогда подмена делается в одном месте,
     /// а не в каждом читателе по отдельности.
-    var разовыеВремена: [Int] = []
+    var mealTimesOverride: [Int] = []
 
     /// Во сколько собака встаёт и ложится. Из этого окна раскладываются
     /// кормления и выходы: у одной семьи день начинается в шесть,
@@ -809,15 +809,15 @@ final class Dog {
     /// просто перестаёт совпадать. Таймер был бы второй механикой,
     /// и его пришлось бы сторожить отдельно.
     ///
-    /// Пустой `разовыеВремена` при заполненной дате — это НЕ «не
+    /// Пустой `mealTimesOverride` при заполненной дате — это НЕ «не
     /// кормить сегодня», а «исключения нет»: такой записи человек
     /// не создаёт, и подставлять ей голодный день нельзя.
     func часыКормленийНа(_ день: Date, calendar: Calendar = .current) -> [Int] {
-        guard let дата = разовыеВременаДата,
-              разовыеВремена.isEmpty == false,
+        guard let дата = mealTimesOverrideDay,
+              mealTimesOverride.isEmpty == false,
               calendar.isDate(дата, inSameDayAs: день)
         else { return mealTimes }
-        return разовыеВремена
+        return mealTimesOverride
     }
 
     /// Стоит ли разовое исключение на названные сутки.
@@ -826,7 +826,7 @@ final class Dog {
     /// сказать об этом словами («сегодня по-другому»), а списку часов
     /// исключение и расписание неразличимы по устройству.
     func естьРазовоеИсключение(_ день: Date, calendar: Calendar = .current) -> Bool {
-        guard let дата = разовыеВременаДата, разовыеВремена.isEmpty == false
+        guard let дата = mealTimesOverrideDay, mealTimesOverride.isEmpty == false
         else { return false }
         return calendar.isDate(дата, inSameDayAs: день)
     }

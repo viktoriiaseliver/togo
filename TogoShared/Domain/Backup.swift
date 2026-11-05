@@ -117,8 +117,8 @@ nonisolated enum BackupService {
             sitterFood: dog.sitterFood, sitterDose: dog.sitterDose,
             sitterWalks: dog.sitterWalks, sitterForbidden: dog.sitterForbidden,
             sitterEscalation: dog.sitterEscalation,
-            разовыеВременаДата: dog.разовыеВременаДата,
-            разовыеВремена: dog.разовыеВремена,
+            mealTimesOverrideDay: dog.mealTimesOverrideDay,
+            mealTimesOverride: dog.mealTimesOverride,
             events: dog.events.map { event in
                 BackupArchive.EventSnapshot(
                     id: event.id, date: event.date, kindRaw: event.kindRaw,
@@ -748,8 +748,8 @@ nonisolated enum BackupService {
         // не нужен — у новой записи поля пусты, у старого архива ключа
         // нет, оба случая дают «исключения нет». Просроченное
         // исключение из месячного архива отбросит читатель по дате.
-        dog.разовыеВременаДата = snapshot.разовыеВременаДата
-        dog.разовыеВремена = snapshot.разовыеВремена ?? []
+        dog.mealTimesOverrideDay = snapshot.mealTimesOverrideDay
+        dog.mealTimesOverride = snapshot.mealTimesOverride ?? []
         // Надгробие переносится как есть, и `?? dog.deletedAt` здесь
         // не нужен: у новой записи оно и так `nil`, а у старого архива
         // ключа нет — то есть собака из него не удалена. Оба случая

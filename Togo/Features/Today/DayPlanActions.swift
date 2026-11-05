@@ -490,7 +490,7 @@ struct DayPlanActions {
     /// Передвинуть одно кормление **на сегодня**: «сегодня ужин в 22:00».
     ///
     /// Правится не расписание, а разовое исключение на дату
-    /// (`Dog.разовыеВременаДата` и `Dog.разовыеВремена`). `mealTimes`
+    /// (`Dog.mealTimesOverrideDay` и `Dog.mealTimesOverride`). `mealTimes`
     /// остаётся как был — завтра собака ест по-прежнему.
     ///
     /// **Часы берутся у `часыКормленийНа(_:)`, а не у `mealTimes`:**
@@ -522,16 +522,16 @@ struct DayPlanActions {
         }
         часы = Array(Set(часы)).sorted()
 
-        let было = (dog.разовыеВременаДата, dog.разовыеВремена, dog.changedAt)
-        dog.разовыеВременаДата = сутки
-        dog.разовыеВремена = часы
+        let было = (dog.mealTimesOverrideDay, dog.mealTimesOverride, dog.changedAt)
+        dog.mealTimesOverrideDay = сутки
+        dog.mealTimesOverride = часы
         // Без этого исключение не уедет ко второму человеку: спор двух
         // телефонов разрешает поздняя правка, и профиль без свежего
         // `changedAt` проиграет чужому старому.
         dog.changedAt = сейчас
 
         guard context.persist(otherwise: {
-            (dog.разовыеВременаДата, dog.разовыеВремена, dog.changedAt) = было
+            (dog.mealTimesOverrideDay, dog.mealTimesOverride, dog.changedAt) = было
         }) else {
             Haptics.warning()
             appState.showFailure(String(localized: "Не записалось · нажми ещё раз"))
@@ -544,13 +544,13 @@ struct DayPlanActions {
     /// Вернуть расписание этих суток: исключения больше нет.
     func вернутьРасписание(_ item: DayPlanItem) {
         guard checkPermission(for: item), let dog else { return }
-        let было = (dog.разовыеВременаДата, dog.разовыеВремена, dog.changedAt)
-        dog.разовыеВременаДата = nil
-        dog.разовыеВремена = []
+        let было = (dog.mealTimesOverrideDay, dog.mealTimesOverride, dog.changedAt)
+        dog.mealTimesOverrideDay = nil
+        dog.mealTimesOverride = []
         dog.changedAt = сейчас
 
         guard context.persist(otherwise: {
-            (dog.разовыеВременаДата, dog.разовыеВремена, dog.changedAt) = было
+            (dog.mealTimesOverrideDay, dog.mealTimesOverride, dog.changedAt) = было
         }) else {
             Haptics.warning()
             appState.showFailure(String(localized: "Не записалось · нажми ещё раз"))
