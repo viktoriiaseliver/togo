@@ -156,6 +156,9 @@ struct EventLog {
             UsageLog.note(.record, kind.rawValue, outcome: .failed)
             event.dog = nil
             context.delete(event)
+            // Без выборки после `delete` снятая запись уехала бы в следующее
+            // удачное сохранение — см. `ModelContext.осестьПослеОтказа`.
+            context.осестьПослеОтказа()
             Haptics.warning()
             appState.showFailure(String(localized: "Не записалось · нажми ещё раз"))
             return nil
